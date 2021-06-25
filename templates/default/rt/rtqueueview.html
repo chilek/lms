@@ -93,7 +93,8 @@
 						<input type="checkbox" class="lms-ui-multi-check-all">
 						{trans("Check all")}
 					</label>
-					{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+					{button icon="read" class="group-action-mark-as-read" label="Mark as read"}
+					{button icon="reply-all" class="group-action-run" label="Run group action"}
 					{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 						{button icon="delete" class="group-action-delete" label="Delete"}
 						{button icon="delete" class="group-action-delete-permanently" label="Delete permanently"}
@@ -117,8 +118,9 @@
 
 	$(function() {
 		function disableLink() {
-			$('.group-action-run,.group-action-delete').prop('disabled', $('.lms-ui-multi-check:checked').length < 2);
-			$('.group-action-delete-permanently').prop('disabled', $('.lms-ui-multi-check:checked[data-deleted="1"]').length < 2);
+			$('.group-action-run,.group-action-delete').prop('disabled', !$('.lms-ui-multi-check:checked').length);
+			$('.group-action-delete-permanently').prop('disabled', !$('.lms-ui-multi-check:checked[data-deleted="1"]').length);
+			$('.group-action-mark-as-read').prop('disabled', !$('.lms-ui-multi-check:checked[data-unread="1"]').length);
 		};
 		disableLink();
 
@@ -152,6 +154,14 @@
 				});
 				location.href = '?m=rtticketdel&taction=delperm&id[]=' + ticketid.join('&id[]=');
 			});
+		});
+
+		$('.group-action-mark-as-read').click(function () {
+			var ticketid = [];
+			$('[name="ticketid[]"][data-unread="1"]:checked').each(function () {
+				ticketid.push($(this).val());
+			});
+			location.href = '?m=rtticketedit&action=read&id[]=' + ticketid.join('&id[]=');
 		});
 
 		$('.delete-ticket').click(function() {

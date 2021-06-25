@@ -19,7 +19,7 @@
 
 	.row-container {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: flex-start;
@@ -28,9 +28,9 @@
 
 	.row-container-buttons {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		flex-direction: row;
-		justify-content: flex-start;
+		justify-content: flex-end;
 		align-items: center;
 	}
 
@@ -44,26 +44,34 @@
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: flex-start;
+		flex-grow: 0;
 	}
 
 	#clone-container, #export-container {
 		display: flex;
 		flex-wrap: wrap;
-		flex-direction: column;
+		flex-direction: row;
 		justify-content: flex-start;
-		align-items: flex-start;
+		align-items: center;
 	}
 
 	#clone-container > div {
-		padding-bottom: 0.5em;
+		padding-right: 0.5em;
 	}
 
 	#export-container > div {
-		padding-bottom: 0.5em;
+		padding-right: 0.5em;
 	}
 
 	.lms-ui-button-clipboard {
 		margin-left: 0.3em;
+	}
+
+	@media all and (max-width: 1200px) {
+		.row-container-buttons {
+			flex-direction: column;
+			align-items: flex-end;
+		}
 	}
 
 </style>
@@ -77,7 +85,7 @@
 		data-order='[[ 1, "asc" ]]'
 		data-page-length="{$pagelimit}"
 		data-state-save="true"
-		{if !empty($section)} data-search-columns='[ { "search": "{$section}" }, null, null, null, null, null, null, null ]'{/if}
+		data-search-columns='[ {if !empty($section)}{ "search": "{$section}" }{else}null{/if}, {if !empty($name)}{ "search": "{$name}" }{else}null{/if}, null, null, {if !empty($scope)}{ "search": "{$scope}" }{else}null{/if}, {if !empty($user)}{ "search": "{$user}" }{else}null{/if}, {if !empty($division)}{ "search": "{$division}" }{else}null{/if}, null ]'
 		data-empty-table-message='{t a="?m=configload"}No configuration options in database.<br>Click <A href="$a">here</A> to import them from lms.ini.{/t}'
 		style="display: none;" width="100%">
     <COLGROUP>
@@ -97,7 +105,7 @@
 			{icon name="url" class="lms-ui-button-section-link" tip="Copy link"
 				data_clipboard_text="{$url}?m=configlist&s=%section%"}
 		</TH>
-		<TH scope="col" class="valign-bottom bold nobr">
+		<TH scope="col" class="valign-bottom bold nobr" data-filter-id="name-filter">
 			{trans("Name:")}
 		</TH>
 		<TH scope="col" class="text-center valign-bottom">
@@ -142,7 +150,7 @@
 			{trans($config.reftypedescription)}
 		</TD>
 		<TD>
-			{if $config.userid}{$config.login} - {$config.firstname} {$config.lastname}{else}{trans('<!filter>- none -')}{/if}
+			{if $config.userid}{$config.rusername} ({$config.login}){else}{trans('<!filter>- none -')}{/if}
 		</TD>
 		<TD>
 			{if $config.divisionid}{$config.shortname|escape}{else}{trans('<!filter>- none -')}{/if}
@@ -154,7 +162,7 @@
 				{button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$config.id}&statuschange=1"}
 			{/if}
 			{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
-				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}"}
+				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}{if $config.userid}&u={$config.userid}{/if}{if $config.divisionid}&d={$config.divisionid}{/if}"}
 			{if empty($config.configid)}
 				{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}"}
 			{/if}
@@ -223,9 +231,8 @@
 							</div>
 
 							<div class="withchildbindings" style="display: none;">
-								<label>{trans('With child bindings')}
-									<input type="checkbox" id="withchildbindings">
-								</label>
+								<label for="withchildbindings">{trans('With child bindings')}</label>
+								<input type="checkbox" id="withchildbindings">
 							</div>
 
 							<div class="withparentbindings" style="display: none;">
@@ -488,21 +495,6 @@
 			});
 		});
 
-
-		function switchDirection() {
-			if ($('#export').is(':visible')) {
-				$('.row-container-buttons').css({
-					'flex-direction': 'column',
-					'align-items': 'flex-end'
-				});
-			} else {
-				$('.row-container-buttons').css({
-					'flex-direction': 'row',
-					'align-items': 'center'
-				});
-			}
-		}
-
 		function toggleActions() {
 			$('#export, #clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
 			{if !empty($configlist)}
@@ -570,28 +562,48 @@
 
 		$('#type-filter').change(function() {
 			toggleActions();
-			switchDirection();
 		})
 		$('#user-filter').change(function() {
 			toggleActions();
-			switchDirection();
 		})
 		$('#division-filter').change(function() {
 			toggleActions();
-			switchDirection();
 		})
 
 		toggleActions();
-		switchDirection();
 
 		$('[data-filter-id="section-filter"]').off('click');
 
 		new ClipboardJS('.lms-ui-button-section-link', {
 			text: function(trigger) {
+				var copylink = "";
+
 				var section = $('#section-filter').val();
 				if (section && section.length) {
-					return $(trigger).attr('data-clipboard-text').replace('%section%', section);
+					copylink += $(trigger).attr('data-clipboard-text').replace('%section%', section);
 				}
+
+				var name = $('#name-filter').val();
+				if (name && name.length) {
+					copylink += "&v="+name;
+				}
+
+				var scope = $('#type-filter').val();
+				if (scope && scope.length) {
+					copylink += "&sc="+encodeURIComponent(scope);
+				}
+
+				var user = $('#user-filter').val();
+				if (user && user.length) {
+					copylink += "&u="+encodeURIComponent(user);
+				}
+
+				var division = $('#division-filter').val();
+				if (division && division.length) {
+					copylink += "&d="+encodeURIComponent(division);
+				}
+
+				return copylink;
 			}
 		});
 

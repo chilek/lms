@@ -11,57 +11,63 @@
 
 <script type="text/javascript" src="js/location_box.js"></script>
 
-<form name="netdev" method="post" action="?m={$layout.module}{if $layout.module == 'netdevedit'}&id={$netdev.id}{/if}">
+<form name="netdev" id="netdev" method="post" action="?m={$layout.module}{if $layout.module == 'netdevedit'}&id={$netdev.id}{/if}">
 	<input type="submit" class="hiddenbtn">
 
 	{box_container id="netdev"}
-		{box_header icon="img/netdev.gif" label="Name:"}
+		{box_header icon="netdev" icon_class="fa-fw" label="Name"}
 			<input type="text" name="netdev[name]" value="{$netdev.name}" maxlength="32" required
-					{tip trigger="name" text="Enter device name" bold=1}>
+					{tip trigger="name" bold=1}>
 		{/box_header}
 
 		{box_contents}
 			{box_panel}
 
-				{box_row icon="img/producer.gif" label="Status:"}
-					<select name="netdev[status]" {tip text="Select device status" } value="{$netdev.status}">
+				{box_row icon="status" icon_class="fa-fw" label="Status"}
+					<select name="netdev[status]" value="{$netdev.status}">
 						{foreach $_NETELEMENTSTATUSES as $idx => $status}
 							<option value="{$idx}" {if $netdev.status== $idx} selected{/if}>{$status}</option>
 						{/foreach}
 					</select>
 				{/box_row}
 
-				{box_row icon="img/producer.gif" label="Manufacturer:"}
+				{box_row icon="hardware" icon_class="fa-fw" label="Manufacturer"}
 					<input type="hidden" id="producer-value" name="netdev[producer]">
 					<input type="hidden" id="producerid-value" name="netdev[producerid]">
-					<select id="producer" data-value="{$netdev.producer}" data-id-value="{$netdev.producerid}" data-alt-field="#producerid-value"
+					<select id="producer" maxlength="100"
+							data-value="{$netdev.producer}"
+							data-id-value="{$netdev.producerid}"
+							data-alt-field="#producerid-value"
 							data-alt-invalid-field="#producer-value"
-							{tip class="lms-ui-combobox" text="Enter producer name (optional)" trigger="producer"}>
+							{tip class="lms-ui-combobox" trigger="producer"}>
 						{foreach $producers as $producer}
 							<option value="{$producer.id}" {if $producer.id == $netdev.producerid} selected{/if}>{$producer.name}</option>
 						{/foreach}
 					</select>
 				{/box_row}
 
-				{box_row icon="img/netdev_model.gif" label="Model:"}
+				{box_row icon="hardware" icon_class="fa-fw"  label="Model"}
 					<input type="hidden" id="model-value" name="netdev[model]">
 					<input type="hidden" id="modelid-value" name="netdev[modelid]">
-					<select id="model" data-value="{$netdev.model}" data-id-value="{$netdev.modelid}" data-alt-field="#modelid-value"
+					<select id="model" maxlength="100"
+							data-value="{$netdev.model}"
+							data-id-value="{$netdev.modelid}"
+							data-alt-field="#modelid-value"
 							data-alt-invalid-field="#model-value"
-							{tip class="lms-ui-combobox" text="Enter device model (optional)" trigger="model"}> </select>
+							{tip class="lms-ui-combobox" trigger="model"}></select>
 				{/box_row}
 
-				{box_row icon="img/serialnumber.gif" label="Serial number:"}
+				{box_row icon="sn" icon_class="fa-fw" label="Serial number"}
 					<input type="text" name="netdev[serialnumber]" value="{$netdev.serialnumber}"
-							{tip text="Enter device serial number (optional)" }>
+						{tip}>
 				{/box_row}
 
-				{box_row icon="img/port.gif" label="Number of ports:"}
+				{box_row icon="port" icon_class="fa-fw" label="Number of ports"}
 					<input type="text" name="netdev[ports]" value="{if $netdev.ports}{$netdev.ports}{/if}"
-							{tip trigger="ports" text="Enter number of ports (optional)"}>
+							{tip trigger="ports"}>
 				{/box_row}
 
-				{box_row icon="img/customer.gif" label="Owner:"}
+				{box_row icon="customer" icon_class="fa-fw" label="Owner"}
 					{if isset($customer.id)}
 						{customerlist form="netdev" customers=$customers selected=$customer.id version=2
 							selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select"
@@ -73,7 +79,7 @@
 					{/if}
 				{/box_row}
 
-				{box_row id="location_select" icon="img/home.gif" label="Location:"}
+				{box_row id="location_select" icon="home" icon_class="fa-fw" label="Location"}
 					{if $netdev.address_id > 0 && $netdev.ownerid}
 						{$selected_address_id = $netdev.address_id}
 					{else}
@@ -83,74 +89,84 @@
 						trigger="address_id" selected_address_id=$selected_address_id}
 				{/box_row}
 
-				{box_row id="location_box" icon="img/home.gif" label="Location:"}
-					{location_box prefix = "netdev" address_id = "{$netdev.address_id}" location_name = "{$netdev.location_name}" location_state_name = "{$netdev.location_state_name}" location_state = "{$netdev.location_state}" location_city_name = "{$netdev.location_city_name}" location_city = "{$netdev.location_city}" location_postoffice = "{$netdev.location_postoffice}" location_street_name = "{$netdev.location_street_name}" location_street = "{$netdev.location_street}" location_house = "{$netdev.location_house}" location_flat = "{$netdev.location_flat}" location_zip = "{$netdev.location_zip}" location_country_id = "{$netdev.location_country_id}" teryt = "{$netdev.teryt}" }
+				{box_row id="location_box" icon="home" icon_class="fa-fw" label="Location"}
+					{location_box prefix="netdev" address_id="{$netdev.address_id}"
+						location_name="{$netdev.location_name}"
+						location_state_name="{$netdev.location_state_name}"
+						location_state="{$netdev.location_state}"
+						location_city_name="{$netdev.location_city_name}"
+						location_city="{$netdev.location_city}"
+						location_postoffice="{$netdev.location_postoffice}"
+						location_street_name="{$netdev.location_street_name}"
+						location_street="{$netdev.location_street}"
+						location_house="{$netdev.location_house}"
+						location_flat="{$netdev.location_flat}"
+						location_zip="{$netdev.location_zip}"
+						location_country_id="{$netdev.location_country_id}"
+						teryt="{$netdev.teryt}"}
 				{/box_row}
 
 				{box_row}
-					<img src="img/network.gif" alt="">
-					<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
+					{icon name="network"}
+					<span class="lms-ui-button" id="set_gps">
+						{trans("Determine GPS coordinates automatically")}
+					</span>
 				{/box_row}
 
-				{box_row icon="img/home.gif" label="GPS longitude:"}
+				{box_row icon="location" icon_class="fa-fw" label="GPS longitude"}
 					<input id="longitude" type="text" name="netdev[longitude]" value="{$netdev.longitude}"
-							{tip text="Enter device longitude (optional)" trigger="longitude"}>
-					<a href="javascript:void(0);" onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"
-							{tip text="Click to select gps coordinates from map" }>&raquo;&raquo;&raquo;</A>
+							{tip trigger="longitude"}>
+					{button type="link" icon="map" tip="Click to select gps coordinates from map"
+						onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"}
 				{/box_row}
 
-				{box_row icon="img/home.gif" label="GPS latitude:"}
-					<input id="latitude" type="text" name="netdev[latitude]" value="{$netdev.latitude}" {tip text="Enter device latitude (optional)" trigger="latitude" }>
-					<a href="javascript:void(0);"
-							onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"
-							{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+				{box_row icon="location" icon_class="fa-fw" label="GPS latitude"}
+					<input id="latitude" type="text" name="netdev[latitude]" value="{$netdev.latitude}"
+						{tip trigger="latitude" }>
+					{button type="link" icon="map" tip="Click to select gps coordinates from map"
+						onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"}
 				{/box_row}
 
 {if ConfigHelper::checkConfig('phpui.radius')}
-				{box_row icon="img/radius.gif" label="Shortname:"}
+				{box_row icon="radius" icon_class="fa-fw" label="Shortname"}
 					<input type="text" name="netdev[shortname]" value="{$netdev.shortname}" maxlength="32"
-							{tip trigger="shortname" text="Enter shortname (optional)"}>
+							{tip trigger="shortname"}>
 				{/box_row}
 
-				{box_row icon="img/radius.gif" label="Type:"}
-					<select name="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
+				{box_row icon="radius" icon_class="fa-fw" label="Type"}
+					<select name="netdev[nastype]" {tip trigger="nastype"}>
 						<option value="0"></option>
 						{foreach $nastypes as $key => $item}
-							<option value="{$key}" {if $key== $netdev.nastype} selected{/if}>{$item.name}</option>
+							<option value="{$key}"{if $key == $netdev.nastype} selected{/if}>{$item.name}</option>
 						{/foreach}
 					</select>
 				{/box_row}
 
-				{box_row icon="img/radius.gif" label="Max clients:"}
+				{box_row icon="radius" icon_class="fa-fw" label="Max clients"}
 					<input type="text" name="netdev[clients]" value="{if $netdev.clients}{$netdev.clients}{/if}"
-							{tip trigger="clients" text="Enter max clients (optional)"}>
+							{tip trigger="clients"}>
 				{/box_row}
 
-				{box_row icon="img/radius.gif" label="Login:"}
-					<input type="text" name="netdev[login]" value="{$netdev.login}" maxlength="60"
-							{tip text="Enter login (optional)"}>
+				{box_row icon="radius" icon_class="fa-fw" label="<!radius>Login"}
+					<input type="text" name="netdev[login]" value="{$netdev.login}" maxlength="60">
 				{/box_row}
 
-				{box_row icon="img/radius.gif" label="Secret:"}
-					<input type="text" name="netdev[secret]" value="{$netdev.secret}" maxlength="60"
-							{tip text="Enter secret (optional)"}>
+				{box_row icon="radius" icon_class="fa-fw" label="Secret"}
+					<input type="text" name="netdev[secret]" value="{$netdev.secret}" maxlength="60">
 				{/box_row}
 
-				{box_row icon="img/radius.gif" label="Community:"}
-					<input type="text" name="netdev[community]" value="{$netdev.community}" maxlength="50"
-							{tip text="Enter community (optional)"}>
+				{box_row icon="radius" icon_class="fa-fw" label="Community"}
+					<input type="text" name="netdev[community]" value="{$netdev.community}" maxlength="50">
 				{/box_row}
 {/if}
 
 {if isset($channels)}
 				{box_row icon="img/channel.gif" label="Channel:"}
 					<select name="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
-						<option value="">- {trans("none")} -
-						</option>
-						{foreach from=$channels item=item}
-							<option value="{$item.id}" {if
-									$item.id== $netdev.channelid}
-							selected{/if}>{$item.name}</option>
+						<option value="">- {trans("none")} -</option>
+						{foreach $channels as $item}
+							<option value="{$item.id}"
+								{if $item.id == $netdev.channelid} selected{/if}>{$item.name}</option>
 						{/foreach}
 					</select>
 				{/box_row}
@@ -159,42 +175,48 @@
 			{/box_panel}
 			{box_panel}
 
-				{box_row icon="img/calendar.gif" label="Purchase date:"}
-					<input type="text" name="netdev[purchasetime]" value="{if $netdev.purchasetime}{$netdev.purchasetime}{/if}" size="10" maxlength="10"
-							placeholder="{trans(" yyyy/mm/dd")}" {tip class="lms-ui-date lms-ui-date-unix" trigger="purchasetime" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
+				{box_row icon="calendar" icon_class="fa-fw" label="Purchase date"}
+					<input type="text" name="netdev[purchasetime]" value="{if $netdev.purchasetime}{$netdev.purchasetime}{/if}"
+						size="10" maxlength="10"
+						placeholder="{trans(" yyyy/mm/dd")}"
+						{tip class="lms-ui-date lms-ui-date-unix" trigger="purchasetime" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 				{/box_row}
 
-				{box_row icon="img/guarantee.png" label="Guarantee period:"}
-					<select size="1" name="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
-						{foreach from=$_GUARANTEEPERIODS key=key item=period}
-							<option value="{$key}" {if $netdev.guaranteeperiod== $key} selected{/if}>{$period}</option>
+				{box_row icon="warranty" icon_class="fa-fw" label="Warranty"}
+					<select size="1" name="netdev[guaranteeperiod]" {tip}>
+						{foreach $_GUARANTEEPERIODS as $key => $period}
+							<option value="{$key}" {if $netdev.guaranteeperiod == $key} selected{/if}>{$period}</option>
 						{/foreach}
 					</select>
 				{/box_row}
 
-				{box_row icon="img/desc.gif" label="Description:"}
-					<textarea name="netdev[description]" cols="40" rows="5" {tip text="Enter additional information (optional)" }>{$netdev.description}</textarea>
+				{box_row icon="description" icon_class="fa-fw" label="Description"}
+					<textarea name="netdev[description]" cols="40" rows="5"
+						>{$netdev.description|escape}</textarea>
 				{/box_row}
 
-				{box_row icon="img/money.gif" label="Investment project:"}
+				{box_row icon="invproject" icon_class="fa-fw" label="Investment project"}
 					<input type="hidden" name="netdev[project]" id="project-value">
 					<input type="hidden" name="netdev[projectid]" id="projectid-value">
-					<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
+					<select id="project" data-value="{$netdev.project}"
+						data-alt-field="#projectid-value"
+						data-alt-invalid-field="#project-value"
+						{tip class="lms-ui-combobox" trigger="project"}>
 						<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
 						<option value="1" {if $netdev.invprojectid == 1} selected{/if}>{trans("From root device")}</option>
 						{foreach $NNprojects as $project}
-							<option value="{$project.id}" {if ($netdev.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+							<option value="{$project.id}"
+								{if ($netdev.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
 						{/foreach}
 					</select>
 				{/box_row}
 
-				{box_row icon="img/netnode.png" label="Network node:"}
-					<select name="netdev[netnodeid]" {tip text="Select node" class="lms-ui-advanced-select"}>
-						<option value="-1">
-							{trans("None")}
-						</option>
+				{box_row icon="netnode" icon_class="fa-fw" label="Network Node"}
+					<select name="netdev[netnodeid]" {tip class="lms-ui-advanced-select"}>
+						<option value="-1">{trans("None")}</option>
 						{foreach $NNnodes as $node}
-							<option value="{$node.id}"{if ($netdev.netnodeid == $node.id)} selected{/if}>{$node.name}</option>
+							<option value="{$node.id}"
+								{if ($netdev.netnodeid == $node.id)} selected{/if}>{$node.name}</option>
 						{/foreach}
 					</select>
 				{/box_row}
@@ -204,8 +226,8 @@
 
 		{box_buttons}
 			{block name="netdevmodify-buttons"}
-			{button type="submit" id="submit_button" icon="save" accesskey="s" label="Submit"}
-			{button icon="cancel" onclick="location.href = '?m=netdevlist';" label="Cancel"}
+				{button type="submit" id="submit_button" icon="save" accesskey="s" label="Submit"}
+				{button icon="cancel" onclick="location.href = '?m=netdevlist';" label="Cancel"}
 			{/block}
 		{/box_buttons}
 	{/box_container}
@@ -239,58 +261,55 @@
 	$(function () {
 		$('[name="netdev[name]"]').focus();
 
+		/*
+         * \brief Update address location coordinates. Require google API key.
+         */
+		$('#set_gps').click(function () {
+			var owner_id = $('#ownerid_input').val();
+			var location = null;
+
+			if (owner_id != 'undefined' && owner_id > 0 && $('#customer_addresses').val() > 0) {
+				location = {
+					address_id: $('#customer_addresses').val()
+				}
+			} else if ($('[data-address="city"]').val().length) {
+				location = {
+					street: $('[data-address="street"]').val(),
+					house: $('[data-address="house"]').val(),
+					flat: $('[data-address="flat"]').val()
+				}
+				if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
+					location.city_id = $('[data-address="city-hidden"]').val();
+					location.street_id = $('[data-address="street-hidden"]').val();
+				} else {
+					location.state = $('[data-address="state"]').val();
+					location.zip = $('[data-address="zip"]').val();
+					location.city = $('[data-address="city"]').val();
+				}
+			}
+
+			if (location) {
+				xajax_get_gps_coordinates(location, '#latitude', '#longitude');
+			}
+		});
+
+		$('#producer').scombobox('change', function () {
+			updateModels();
+		});
+/*
+		$("#modelselect").click(function () {
+			netdevmodelchoosewin('netdev', 'netdev', $('#netdevmodelid'), $('#producer').val(), $('#model').val());
+			event.preventDefault();
+		});
+*/
+
 		{if $netdev.producerid}
 			initModels({$netdev.producerid});
 			$('#model').scombobox('val', '{if $netdev.modelid}{$netdev.modelid}{else}{$netdev.model}{/if}');
 		{else}
 			$('#producer').scombobox('val', '{$netdev.producer}');
 		{/if}
-
-		$('#producer').scombobox('change', function () {
-			updateModels();
-		});
 	});
-
-	/*
-     * \brief Update address location coordinates. Require google API key.
-     */
-	$('#set_gps').click(function () {
-		var owner_id = $('#ownerid_input').val();
-		var location = null;
-
-		if (owner_id != 'undefined' && owner_id > 0 && $('#customer_addresses').val() > 0) {
-			location = {
-				address_id: $('#customer_addresses').val()
-			}
-		} else if ($('[data-address="city"]').val().length) {
-			location = {
-				street: $('[data-address="street"]').val(),
-				house: $('[data-address="house"]').val(),
-				flat: $('[data-address="flat"]').val()
-			}
-			if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
-				location.city_id = $('[data-address="city-hidden"]').val();
-				location.street_id = $('[data-address="street-hidden"]').val();
-			} else {
-				location.state = $('[data-address="state"]').val();
-				location.zip = $('[data-address="zip"]').val();
-				location.city = $('[data-address="city"]').val();
-			}
-		}
-
-		if (location) {
-			xajax_get_gps_coordinates(location, '#latitude', '#longitude');
-		}
-	});
-
-	/*
-		$(function () {
-			$("#modelselect").click(function () {
-				netdevmodelchoosewin('netdev', 'netdev', $('#netdevmodelid'), $('#producer').val(), $('#model').val());
-				event.preventDefault();
-			});
-		});
-	*/
 
 	/*!
      * \brief Show / hide location choose box.

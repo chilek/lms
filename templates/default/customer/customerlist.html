@@ -79,35 +79,35 @@
         {block name="customerlist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
-			{icon name="customer" class="fa-fw"}
+			{icon name="customer"}
 			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=customername{if $filter.direction == "asc" && $filter.order == "customername"},desc{/if}">
 				{trans("First/last or Company name")}
 			</A>
 			{if $filter.order == "customername"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			/
-			{icon name="karma" class="fa-fw"}
+			{icon name="karma"}
 			<a href="?m={$layout.module}&s={$filter.state}&o=karma{if $filter.direction == "asc" && $filter.order == "karma"},desc{/if}">
 				{trans("Karma")}
 			</A>
 			{if $filter.order == "karma"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<br>
-			{icon name="home" class="fa-fw"}
+			{icon name="home"}
 			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=address{if $filter.direction == "asc" && $filter.order == "address"},desc{/if}">
-				{trans("Address:")}
+				{trans("Address")}
 			</A>
 			{if $filter.order == "address"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID:")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=extid{if $filter.direction == "asc" && $filter.order == "extid"},desc{/if}"><span class="bold">{trans("External ID")}</span></A> {if $filter.order == "extid"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			/
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=id{if $filter.direction == "asc" && $filter.order == "id"},desc{/if}"><span class="bold">{trans("ID:")}</span></A> {if $filter.order == "id"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=id{if $filter.direction == "asc" && $filter.order == "id"},desc{/if}"><span class="bold">{trans("ID")}</span></A> {if $filter.order == "id"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<BR>
-			{trans("Services:")}
+			{trans("Services")}
 		</td>
 		<td scope="col" class="text-right">
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=balance{if $filter.direction == "asc" && $filter.order == "balance"},desc{/if}">{trans("Balance:")}</A>&nbsp;{if $filter.order == "balance"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=tariff{if $filter.direction == "asc" && $filter.order == "tariff"},desc{/if}">{trans("Subscription:")}</A>&nbsp;{if $filter.order == "tariff"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=balance{if $filter.direction == "asc" && $filter.order == "balance"},desc{/if}">{trans("Balance")}</A>&nbsp;{if $filter.order == "balance"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<a href="?m={$layout.module}&amp;s={$filter.state}&amp;o=tariff{if $filter.direction == "asc" && $filter.order == "tariff"},desc{/if}">{trans("Subscription")}</A>&nbsp;{if $filter.order == "tariff"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
@@ -120,8 +120,8 @@
 		<TD colspan="{$number_of_table_columns}" class="nobr">
 			<div class="lms-ui-filter-container">
 			<div class="lms-ui-filter-definition">
-			<span class="bold">{trans("Filter:")}</span>
-			<label for="s">{trans("Customers:")}
+			{icon name="filter"}
+			<label for="s">{trans("Customers")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
 				<optgroup label="Status">
@@ -173,14 +173,15 @@
 					<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
 					<OPTION VALUE="68"{if $filter.state == 68} SELECTED{/if}>{trans("without zip (main address)")}</OPTION>
 					<OPTION VALUE="74"{if $filter.state == 74} SELECTED{/if}>{trans("without zip (other addresses)")}</OPTION>
+					<option value="81"{if $filter.state == 81} selected{/if}>{trans("without location address")}</option>
 				</optgroup>
 			</SELECT>
 			</label>
 
-			{division_selection name="d" selected=$filter.division onchange="document.choosefilter.submit();" label="Division:"}
+			{division_selection name="d" selected=$filter.division onchange="document.choosefilter.submit();" label="Division" tip=""}
 
 			<label for="n" class="nobr">
-			{trans("Network:")}
+			{trans("Network")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 				<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
 				{section name=networks loop=$networks}
@@ -191,7 +192,7 @@
 
 			{if is_array($customergroups) && count($customergroups)}
 				<label for="g[]">
-				{trans("Group:")}
+				{trans("Group")}
 				<input type="hidden" name="g[]" value="">
 				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all groups -")}">
 					{foreach $customergroups as $customergroup}
@@ -207,7 +208,7 @@
 
 			{if !empty($nodegroups) && count($nodegroups)}
 				<label for="ng">
-				{trans("Nodes Group:<!short>")}
+				{trans("Node Group<!short>")}
 				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 					{foreach from=$nodegroups item=nodegroup}
@@ -220,12 +221,14 @@
 			{/if}
 
 			<label for="assignments">
-			{trans("Assignments:")}
+			{trans("Assignments")}
 			<select size="1" name="assignments" onchange="document.choosefilter.submit();" {if $filter.assignments}class="active"{/if}>
 				<option value="0" {if $filter.assignments eq '0'} selected {/if}>{trans('- all -')}</option>
 				<option value="7" {if $filter.assignments eq '7'} selected {/if}>{trans('expire in $a days', 7)}</option>
 				<option value="14" {if $filter.assignments eq '14'} selected {/if}>{trans('expire in $a days', 14)}</option>
 				<option value="30" {if $filter.assignments eq '30'} selected {/if}>{trans('expire in $a days', 30)}</option>
+				<option value="60" {if $filter.assignments eq '60'} selected {/if}>{trans('expire in $a days', 60)}</option>
+				<option value="90" {if $filter.assignments eq '90'} selected {/if}>{trans('expire in $a days', 90)}</option>
 				<option value="-1" {if $filter.assignments eq '-1'} selected {/if}>{trans('without end date')}</option>
 				<option value="-2" {if $filter.assignments eq '-2'} selected {/if}>{trans('active')}</option>
 				<option value="-3" {if $filter.assignments eq '-3'} selected {/if}>{trans('active, with invoice')}</option>
@@ -235,7 +238,7 @@
 			</label>
 
 			<label>
-				{trans("Flags:")}
+				{trans("Flags")}
 				<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 						multiple onchange="document.choosefilter.submit();">
 					{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
@@ -303,7 +306,10 @@
 		<TD>
 			<i class="lms-ui-icon-customer-status-{$_CSTATUSES[$customer.status].alias}"></i>
 			{if $customer.info}&nbsp;<i class="lms-ui-icon-optional-info" title="{nl2br(htmlspecialchars($customer.info))}"></i>{/if}
-			<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A>
+			<a name="{$customer.id}" class="lms-ui-hint-rollover"
+				data-url="?m=customerinfoshort&id={$customer.id}">
+				<span class="bold">{$customer.customername|escape}</span>
+			</a>
 			{if !empty($customer.karma)}
 				<i class="lms-ui-icon-star{if $customer.karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
 				(<span class="lms-ui-counter">{$customer.karma}</span>)
@@ -315,7 +321,8 @@
 			({if $customer.extid}{$customer.extid|escape} / {/if}{$customer.id|string_format:"%04d"})
 			<BR>
 			{if $customer.account}
-				<i class="lms-ui-tooltip-nodelist lms-ui-icon-node{if !$customer.online}off{else}on{/if}" data-resourceid="{$customer.id}"></i>
+				<i class="lms-ui-hint-rollover lms-ui-icon-node{if !$customer.online}off{else}on{/if}"
+					data-url="?m=nodelistshort&id={$customer.id}"></i>
 			{else}
 				---
 			{/if}
@@ -379,11 +386,11 @@
         {/block}
 	{foreachelse}
         {block name="customerlist-list-empty-row"}
-	<TR>
-		<TD colspan="{$number_of_table_columns}" class="empty-table">
-			<p>{trans("No such customers matching search criteria or list is empty.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="{$number_of_table_columns}" class="empty-table">
+			{trans("No such customers matching search criteria or list is empty.")}
+		</td>
+	</tr>
         {/block}
 	{/foreach}
 	</TBODY>

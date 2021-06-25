@@ -14,7 +14,7 @@
     <THEAD>
 	<TR>
 		<TD>
-			{icon name="customer" class="fa-fw"}
+			{icon name="customer"}
 		</TD>
 		<TD>
 			<strong>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span class="alert">({trans("deleted customer")})</span>{/if}</strong>
@@ -24,7 +24,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}" class="fa-fw"}
+			{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}"}
 		</TD>
 		<TD class="bold">
 			{$_CSTATUSES[$customerinfo.status].singularlabel}
@@ -32,7 +32,7 @@
 	</TR>
 	<TR>
 		<TD>
-			{icon name="homr" class="fa-fw"}
+			{icon name="home"}
 		</TD>
 		<TD class="nobr">
 			{if $customerinfo.postoffice && $customerinfo.postoffice != $customerinfo.city && $customerinfo.street}{$customerinfo.city}, {/if}{$customerinfo.address}<BR>
@@ -42,7 +42,7 @@
 {if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
 	<TR>
 		<TD>
-			{icon name="mail" class="fa-fw"}
+			{icon name="mail"}
 		</TD>
 		<TD class="nobr">
 			{if $customerinfo.post_name != ""}{$customerinfo.post_name|escape}{/if}
@@ -63,7 +63,7 @@
 			<TD class="customer-contact">
 				<fieldset style="width: auto;">
 					<legend class="bold nobr">
-						{icon name="{$properties.ui.legend.icon}" class="fa-fw"}
+						{icon name="{$properties.ui.legend.icon}"}
 						{$properties.ui.legend.text}
 					</legend>
 					<TABLE>
@@ -88,7 +88,7 @@
 {if $customerinfo.icn != ""}
 	<TR>
 		<TD>
-			{icon name="user-id-number" class="fa-fw"}
+			{icon name="user-id-number"}
 		</TD>
 		<TD class="nobr">
 			{trans("Identity type:")}: {trans($_IDENTITY_TYPES[$customerinfo.ict])}
@@ -96,7 +96,7 @@
 	</TR>
 	<TR>
 		<TD>
-			{icon name="user-id-number" class="fa-fw"}
+			{icon name="user-id-number"}
 		</TD>
 		<TD class="nobr">
 			{trans("Identity number:")}: {$customerinfo.icn|escape}
@@ -106,7 +106,7 @@
 {if $customerinfo.ssn != ""}
 	<TR">
 		<TD>
-			{icon name="user-id-number" class="fa-fw"}
+			{icon name="user-id-number"}
 		</TD>
 		<TD class="nobr">
 			{trans("SSN")}: {$customerinfo.ssn|escape}
@@ -116,7 +116,7 @@
 {if $customerinfo.ten != ""}
 	<TR>
 		<TD>
-			{icon name="user-id-number" class="fa-fw"}
+			{icon name="user-id-number"}
 		</TD>
 		<TD class="nobr">
 			{trans("TEN")}: {$customerinfo.ten}
@@ -126,7 +126,7 @@
 {if $customerinfo.regon != ""}
 	<TR>
 		<TD>
-			{icon name="user-id-number" class="fa-fw"}
+			{icon name="user-id-number"}
 		</TD>
 		<TD class="nobr">
 			{trans("REGON")}: {$customerinfo.regon}
@@ -136,7 +136,7 @@
 {if $customerinfo.rbe != ""}
 	<TR>
 		<TD>
-			{icon name="user-id-number" class="fa-fw"}
+			{icon name="user-id-number"}
 		</TD>
 		<TD class="nobr">
 			{trans("RBE")}: {$customerinfo.rbe|escape}
@@ -146,7 +146,7 @@
 {if $customergroups}
 	<TR>
 		<TD>
-			{icon name="customergroup" class="fa-fw"}
+			{icon name="customergroup"}
 		</TD>
 		<TD>
 			{foreach from=$customergroups item=customergroup name=customergroup}
@@ -158,7 +158,7 @@
 {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 	<TR>
 		<TD>
-			{icon name="money" class="fa-fw"}
+			{icon name="money"}
 		</TD>
 		<TD class="nobr">
 			<strong>{trans("Balance:")}</strong>

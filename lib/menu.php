@@ -799,7 +799,7 @@ $menu = array(
                 'configimport' => array(
                     'name' => trans('Import settings'),
                     'link' => '?m=configimport',
-                    'tip' => trans('Allows you to import settings from file'),
+                    'tip' => trans('Import settings from file'),
                     'prio' => 11,
                 ),
                 'configadd' => array(

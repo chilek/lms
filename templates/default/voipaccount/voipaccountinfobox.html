@@ -204,7 +204,6 @@
                                 </tr>
                                 {/block}
                                 {block name="voipaccountinfobox-extra"}{/block}
-                                {block name="voipaccountinfobox-buttons"}
                             </TABLE>
                         </div>
                         <div id="voipaccount-right-panel">
@@ -236,6 +235,7 @@
             </table>
         </td>
     </tr>
+       {block name="voipaccountinfobox-buttons"}
         <tr>
             <td class="text-right" colspan="2">
 				<a href="?m=voipaccountbillinglist&fvoipaccid={$voipaccountinfo.id}">{trans("Billings")} <img src="img/voip.gif" alt="show billings"></a>

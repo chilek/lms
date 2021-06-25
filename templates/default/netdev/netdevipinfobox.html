@@ -12,6 +12,22 @@
 		white-space: nowrap;
 	}
 
+	.cell-flex {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	@media screen and (max-width: 500px) {
+		.cell-flex > div select {
+			max-width: 185px;
+			white-space: normal;
+		}
+
+		.cell-flex > div {
+			max-width: 165px;
+		}
+	}
+
 	.mac-address {
 		cursor: pointer;
 	}
@@ -23,38 +39,50 @@
 </style>
 
 <table class="lmsbox">
-    <thead>
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
 		<tr>
-			<td width="1%">
-				<img src="img/ip.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeipdata.id|string_format:"%04d"}" alt="">
+			<td>
+				{button type="link" icon="node" class="lms-ui-button-clipboard" data_clipboard_text="{$nodeipdata.id|string_format:"%04d"}"}
 			</td>
-			<td width="99%" colspan="2" class="bold">
-				{$nodeipdata.name} ({$nodeipdata.id|string_format:"%04d"})
+			<td colspan="2">
+				<strong>{$nodeipdata.name} (#{$nodeipdata.id})</strong>
 			</td>
 		</tr>
-    </thead>
-    <tbody>
+	</thead>
+	<tbody>
 		<tr>
-			<td width="100%" colspan="3" class="flr container">
-				<table width="100%" cellpadding="0">
+			<td colspan="3" class="container">
+				<table style="width: 100%" class="lmsbox-inner">
+					<colgroup>
+						<col style="width: 50%;">
+						<col style="width: 50%;">
+					</colgroup>
 					<tr>
-						<td width="50%" class="valign-top">
-							<table width="100%" class="tab-beautify">
+						<td class="valign-top">
+							<table style="width: 100%;" class="tab-beautify">
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
 									<col style="width: 98%;">
 								</colgroup>
-
 								<tr>
 									<td>
-										<img src="img/network.gif" alt="">
+										{icon name="network"}
 									</td>
 									<td>
-										{trans("Network:")}
+										{trans("Network")}
 									</td>
-									<td>
-										<a href="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</a>
+									<td class="cell-flex">
+										<span>
+											<a href="?m=netinfo&id={$nodeipdata.netid}">
+												{$nodeipdata.netname}
+											</a>
+										</span>
 									</td>
 								</tr>
 								<tr>
@@ -62,7 +90,7 @@
 										{icon name="routed" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$nodeipdata.ip}
 									</td>
 									<td>
-										{trans("IP address:")}
+										{trans("IP address")}
 									</td>
 									<td>
 										<a href="javascript:ping_popup('{$nodeipdata.ip}')">{$nodeipdata.ip}</a>
@@ -75,7 +103,7 @@
 										{icon name="routed" class="lms-ui-button-clipboard fa-fw" data_clipboard_text=$nodeipdata.ip_pub}
 									</td>
 									<td>
-										{trans("Pub. IP address:")}
+										{trans("Pub. IP address")}
 									</td>
 									<td>
 										<a href="javascript:ping_popup('{$nodeipdata.ip_pub}')">{$nodeipdata.ip_pub}</a>
@@ -89,10 +117,10 @@
 										{icon name="mac" class="lms-ui-button-clipboard mac-address-copy-to-clipboard fa-fw" data_clipboard_handler="1"}
 									</td>
 									<td>
-										{trans("MAC address:")}
+										{trans("MAC address")}
 									</td>
 									<td>
-										<span id="mac{$item@index}" class="mac-address lms-ui-no-user-select"
+										<span id="mac{$item@index}" class="mac-address"
 											{tip text="Change the format of presentation of the MAC address."}>
 											{if empty($item.mac)}{trans("<!mac>- none -")}{else}{$item.mac}{/if}
 										</span>
@@ -104,19 +132,17 @@
 								{if $nodeipdata.passwd}
 								<tr>
 									<td>
-										<img src="img/passwd.gif" alt="">
+										{icon name="password"}
 									</td>
 									<td>
-										{trans("Password:")}
+										{trans("Password")}
 									</td>
 									<td>
-										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-											<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeipdata.passwd}">
-												<i class="lms-ui-icon-clipboard"></i> {trans("Copy")}
-											</button>
-										{else}
-											{$nodeipdata.passwd}
+										{if !ConfigHelper::checkConfig('phpui.protect_passwords')}
+											{$nodeipdata.passwd|escape}
 										{/if}
+										{button type="link" icon="clipboard" class="lms-ui-button-clipboard"
+											data_clipboard_text="{$nodeipdata.passwd|escape}"}
 									</td>
 								</tr>
 								{/if}
@@ -125,10 +151,10 @@
 								{if !disable_active_links || ($nodeipdata.chkmac + $nodeipdata.halfduplex + $nas) != 0}
 								<tr>
 									<td class="valign-top">
-										<img src="img/options.gif" alt="{trans("Options:")}">
+										{icon name="option"}
 									</td>
 									<td>
-										{trans("Options:")}
+										{trans("Options")}
 									</td>
 									<td>
 										{if $disable_active_links}
@@ -162,10 +188,10 @@
 								{if !$disable_active_links || $nodeipdata.authtype != 0}
 								<tr>
 									<td>
-										<img src="img/netdev.gif" alt="">
+										{icon name="netdev"}
 									</td>
 									<td>
-										{trans("Type:")}
+										{trans("Type")}
 									</td>
 									<td class="nobr">
 										{if $disable_active_links}
@@ -185,10 +211,10 @@
 									</td>
 								</tr>
 								{/if}
-                            </table>
+							</table>
 						</td>
-						<td width="50%" class="valign-top">
-							<table width="100%" class="tab-beautify" id="netdevipinfo">
+						<td class="valign-top">
+							<table style="width: 100%;" class="tab-beautify" id="netdevipinfo">
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
@@ -198,68 +224,97 @@
 								{if $nodeipdata.info}
 								<tr>
 									<td>
-										<img src="img/info.gif" alt="">
+										{icon name="description"}
 									</td>
 									<td>
-										{trans("Description:")}
+										{trans("Description")}
 									</td>
-									<td>
-										{$nodeipdata.info}
+									<td class="cell-flex">
+										<div>
+											<table style="width: 100%;" cellpadding="5">
+												<tr>
+													<td class="fall superlight">
+														<div>{$nodeipdata.info|replace:"\n":"<br>"}</div>
+													</td>
+												</tr>
+											</table>
+										</div>
 									</td>
 								</tr>
 								{/if}
 
 								<tr>
 									<td>
-										{if $disable_active_links}
-											<img src="img/{if !$nodeipdata.access}no{/if}access.gif" alt="">
+										{if $nodeipdata.access}
+											{$icon = "connected"}
 										{else}
-											<a href="?m=netdevedit&id={$netdev.id}&action=ipset&ip={$nodeipdata.id}"><img src="img/{if !$nodeipdata.access}no{/if}access.gif" alt=""></a>
+											{$icon = "disconnected"}
+										{/if}
+										{if $disable_active_links}
+											{icon name=$icon}
+										{else}
+											<a href="?m=netdevedit&id={$netdev.id}&action=ipset&ip={$nodeipdata.id}">
+												{icon name=$icon}
+											</a>
 										{/if}
 									</td>
 									<td>
-										{trans("Status:")}
+										{trans("Status")}
 									</td>
 									<td>
-										{if $nodeipdata.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}
+										{if $nodeipdata.access}
+											{trans("connected<!singular>")}
+										{else}
+											{trans("disconnected<!singular>")}
+										{/if}
 									</td>
 								</tr>
 
 								<tr>
 									<td>
-										<img src="img/time.gif" alt="">
+										{icon name="time"}
 									</td>
 									<td>
-										{trans("Last online:")}
+										{trans("Last online")}
 									</td>
 									<td>
-										{if $nodeipdata.lastonline}{$nodeipdata.lastonlinedate}{else}-{/if}
+										{if $nodeipdata.lastonline}
+											{$nodeipdata.lastonlinedate}
+										{else}
+											-
+										{/if}
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<img src="img/users.gif" alt="">
+										{icon name="user"}
 									</td>
 									<td>
-										{trans("Created:")}<br>
-										{trans("Modified:")}
+										{trans("Created")}
+										<br>
+										{trans("Modified")}
 									</td>
-									<td>
-										{$nodeipdata.createdby|escape}, {$nodeipdata.creationdateh}<br>
-										{if $nodeipdata.moddate}{$nodeipdata.modifiedby|escape}, {$nodeipdata.moddateh}{else}-{/if}
+									<td class="cell-flex">
+										<div>
+											{$nodeipdata.createdby|escape}, {$nodeipdata.creationdateh}
+											<br>
+											{if $nodeipdata.moddate}{$nodeipdata.modifiedby|escape}, {$nodeipdata.moddateh}{else}-{/if}
+										</div>
 									</td>
 								</tr>
-	                        </TABLE>
+							</table>
 						</td>
 					</tr>
-				</TABLE>
+				</table>
 			</td>
 		</tr>
 		<tr>
-			<td width="100%" colspan="3" class="text-right">
-				<a href="?m=netdevedit&id={$netdev.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button type="link-button" id="edit-button" icon="edit" label="Edit"
+					href="?m=netdevedit&id={$netdev.id}&action=editip&ip={$nodeipdata.id}"}
 				<input type="hidden" value="{$nodeipdata.name}">
-				<a id="delete-address" href="?m=netdevedit&id={$netdev.id}&action=ipdel&ip={$nodeipdata.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+				{button id="delete-address" icon="delete" label="Delete"
+					data_href="?m=netdevedit&id={$netdev.id}&action=ipdel&ip={$nodeipdata.id}"}
 			</td>
 		</tr>
     </tbody>
@@ -311,15 +366,14 @@
 		});
 
 		$('.mac-address-copy-to-clipboard').on('lms:clipboard:click', function() {
-			return $(this).closest('tr').find('.mac-address').text();
+			return $(this).closest('tr').find('.mac-address').text().trim();
 		});
-    });
 
-	$('#delete-address').click(function() {
-		confirmDialog($t("Are you sure, you want to delete address '$a' from database?", $(this).prev().val()), this).done(function() {
-			location.href = $(this).attr('href');
+		$('#delete-address').click(function() {
+			confirmDialog($t("Are you sure, you want to delete address '$a' from database?", $(this).prev().val()), this).done(function() {
+				location.href = $(this).attr('data-href');
+			});
 		});
-		return false;
 	});
 
 </script>

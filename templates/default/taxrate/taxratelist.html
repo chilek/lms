@@ -3,106 +3,131 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 93%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD class="nobr">
-			<IMG src="img/tax.gif" alt=""> <A href="?m=taxratelist&amp;o=label{if $listdata.direction == "asc" && $listdata.order == "label"},desc{/if}"><B>{trans("Label:")}</B></A> {if $listdata.order == "label"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD class="nobr">
-			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=taxratelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD class="nobr">
-			<IMG src="img/empty.gif" alt=""> <A href="?m=taxratelist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD class="nobr">
-			{trans("Reverse charge:")}
-		</TD>
-		<TD class="nobr">{trans("Taxing:")}</TD>
-		<TD class="nobr">{trans("Binds from date:")}</TD>
-		<TD class="nobr">{trans("Binds to date:")}</TD>
-		<TD class="nobr">
-			<a href="?m=taxrateadd">{trans("Add tax rate")} <img src="img/save.gif" alt=""></a>
-		</TD>
-	</TR>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="8">
-			{include file="scroller.html" loop=$taxratelist}
-		</TD>
-	</TR>
-	{/if}
-    </THEAD>
-    <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}" data-name="{$taxratelist[taxratelist].label}">
-		<TD class="nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
-			<IMG src="img/tax.gif" alt=""><B> {$taxratelist[taxratelist].label}</B>
-		</TD>
-		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
-			({$taxratelist[taxratelist].id|string_format:"%04d"})
-		</TD>
-		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
-			{$taxratelist[taxratelist].value|string_format:"%.2f"} %
-		</TD>
-		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
-			{if $taxratelist[taxratelist].reversecharge}+{/if}
-		</TD>
-		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
-			{if $taxratelist[taxratelist].taxed}+{/if}
-		</TD>
-		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
-			{if $taxratelist[taxratelist].validfrom}{$taxratelist[taxratelist].validfrom|date_format:"%x"}{/if}
-		</TD>
-		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
-			{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
-		</TD>
-		<TD class="text-right nobr">
-			<A class="delete-taxrate" href="?m=taxratedel&id={$taxratelist[taxratelist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-		</TD>
-	</TR>
-	{sectionelse}
-	<TR>
-		<TD colspan="8" class="empty-table">
-			<p>{trans("No such tax rates in database.")}</p>
-		</TD>
-	</TR>
-	{/section}
-    </TBODY>
-    <TFOOT>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="8">
-			{include file="scroller.html" loop=$taxratelist}
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD colspan="8" class="text-right">
-			<a href="?m=taxrateadd">{trans("Add tax rate")} <img src="img/save.gif" alt=""></a>
-		</TD>
-	</TR>
-    </TFOOT>
-</TABLE>
-	<script>
-		$('.delete-taxrate').click(function() {
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 93%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="nobr">
+				{icon name="tax"}
+				<a href="?m=taxratelist&o=label{if $listdata.direction == "asc" && $listdata.order == "label"},desc{/if}">
+					<strong>{trans("Label:")}</strong>
+				</a>
+				{if $listdata.order == "label"}
+					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+				{/if}
+			</td>
+			<td class="nobr">
+				<a href="?m=taxratelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">
+					{trans("ID:")}
+				</a>
+				{if $listdata.order == "id"}
+					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+				{/if}
+			</td>
+			<td class="nobr">
+				<a href="?m=taxratelist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">
+					{trans("Value:")}
+				</a>
+				{if $listdata.order == "value"}
+					<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+				{/if}
+			</td>
+			<td class="nobr">
+				{trans("Reverse charge:")}
+			</td>
+			<td class="nobr">{trans("Taxing:")}</td>
+			<td class="nobr">{trans("Binds from date:")}</td>
+			<td class="nobr">{trans("Binds to date:")}</td>
+			<td class="nobr">
+				{button icon="add" label="Add tax rate" href="?m=taxrateadd"}
+			</td>
+		</tr>
+		{if $listdata.total != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="8">
+					{include file="scroller.html" loop=$taxratelist}
+				</td>
+			</tr>
+		{/if}
+	</thead>
+	<tbody>
+		{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
+			<tr class="highlight{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}" data-name="{$taxratelist[taxratelist].label}">
+				<td class="nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
+					{icon name="tax"}
+					<strong>{$taxratelist[taxratelist].label}</strong>
+				</td>
+				<td class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
+					({$taxratelist[taxratelist].id|string_format:"%04d"})
+				</td>
+				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
+					{$taxratelist[taxratelist].value|string_format:"%.2f"} %
+				</TD>
+				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
+					{if $taxratelist[taxratelist].reversecharge}
+						{icon name="checked"}
+					{/if}
+				</TD>
+				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
+					{if $taxratelist[taxratelist].taxed}
+						{icon name="checked"}
+					{/if}
+				</TD>
+				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
+					{if $taxratelist[taxratelist].validfrom}{$taxratelist[taxratelist].validfrom|date_format:"%x"}{/if}
+				</TD>
+				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
+					{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
+				</TD>
+				<td class="text-right nobr">
+					{button type="link" icon="delete" tip="Delete" class="delete-taxrate" data_resource_id=$taxratelist[taxratelist].id}
+					{button type="link" icon="edit" tip="Edit" href="?m=taxrateedit&id={$taxratelist[taxratelist].id}"}
+				</td>
+			</tr>
+		{sectionelse}
+			<tr>
+				<td colspan="8" class="empty-table">
+					{trans("No such tax rates in database.")}
+				</td>
+			</tr>
+		{/section}
+	</tbody>
+	<tfoot>
+		{if $listdata.total != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="8">
+					{include file="scroller.html" loop=$taxratelist}
+				</td>
+			</tr>
+		{/if}
+		<tr>
+			<td colspan="8" class="text-right">
+				{button icon="add" label="Add tax rate" href="?m=taxrateadd"}
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<script>
+
+	$(function() {
+		$('.delete-taxrate').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to delete taxrate '$a'?", name), this).done(function() {
-				location.href = $(this).attr('href');
+			confirmDialog($t("Are you sure, you want to delete taxrate '$a'?", name), this).done(function () {
+				location.href = '?m=taxratedel&id=' + $(this).attr('data-resource-id');
 			});
 			return false;
 		});
-	</script>
+	});
+
+</script>
 {/block}

@@ -130,7 +130,8 @@ if (isset($_POST['message'])) {
 
         $message['categories'] = is_array($message['categories']) ? array_flip($message['categories']) : array();
 
-        $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+        $userid = Auth::GetCurrentUser();
+        $user = $LMS->GetUserInfo($userid);
 
         $attachments = null;
 
@@ -150,6 +151,8 @@ if (isset($_POST['message'])) {
 
         $customer_notification_mail_subject = ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject');
 
+        $message['userid'] = $userid;
+
         foreach ($tickets as $ticketid) {
             $queue = $LMS->GetQueueByTicketId($ticketid);
             if ($message['queueid'] != -100 && $message['queueid'] != $queue['id']) {
@@ -163,7 +166,6 @@ if (isset($_POST['message'])) {
             $message['messageid'] = '<msg.' . $queue['id'] . '.' . $ticketid . '.' . time()
                 . '@rtsystem.' . gethostname() . '>';
 
-            $message['userid'] = Auth::GetCurrentUser();
             $message['customerid'] = null;
 
             $mailfname = '';
@@ -172,8 +174,7 @@ if (isset($_POST['message'])) {
             if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name)) {
                 if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
-                }
-                if ($mailfname == 'user') {
+                } elseif ($mailfname == 'user') {
                     $mailfname = $user['name'];
                 }
                 $mailfname = '"' . $mailfname . '"';
@@ -188,16 +189,18 @@ if (isset($_POST['message'])) {
             }
             $headers['Message-ID'] = $message['messageid'];
 
-            if ($message['userid'] && ($user['email'] || $queue['email'])) {
+            if ($message['userid'] && ($user['email'] || $queue['email'] || $requestor_mail)) {
                 $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
 
                 $message['mailfrom'] = $mailfrom;
                 $headers['Date'] = date('r');
                 $headers['From'] = $mailfname . ' <' . $message['mailfrom'] . '>';
-                $headers['Subject'] = str_replace(
-                    array('%tid', '%subject'),
-                    array($ticketid, $message['subject']),
-                    $customer_notification_mail_subject
+                $headers['Subject'] = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($ticketid) {
+                        return sprintf('%0' . $m[1] . 'd', $ticketid);
+                    },
+                    str_replace('%subject', $message['subject'], $customer_notification_mail_subject)
                 );
                 $headers['Reply-To'] = $headers['From'];
 
@@ -209,19 +212,35 @@ if (isset($_POST['message'])) {
                     $toemails = array();
                     $ccemails = array();
                     foreach ($message['contacts']['mails'] as $address => $contact) {
-                        $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($contact['display']) . ' ';
+                        $display = empty($message['contacts']['maildisplays'][$address]) ? '' : qp_encode($message['contacts']['maildisplays'][$address]) . ' ';
                         $message_source = $message['contacts']['mailsources'][$address];
-                        if ($message_source == 'requestor_mail' || $message_source == 'mailfrom') {
-                            $toemails[] = $display . '<' . $contact . '>';
+                        if ($message_source == 'requestor_mail' || $message_source == 'mailfrom' || $message_source == 'customer') {
+                            $toemails[] = array(
+                                'name' => $display,
+                                'email' => $contact,
+                            );
                         } else {
-                            $ccemails[] = $display . '<' . $contact . '>';
+                            $ccemails[] = array(
+                                'name' => $display,
+                                'email' => $contact,
+                            );
                         }
                     }
                     if (!empty($toemails)) {
-                        $headers['To'] = implode(',', $toemails);
+                        $headers['To'] = implode(
+                            ',',
+                            array_map(function ($toemail) {
+                                return $toemail['name'] . ' <' . $toemail['email']  . '>';
+                            }, $toemails)
+                        );
                     }
                     if (!empty($ccemails)) {
-                        $headers['Cc'] = implode(',', $ccemails);
+                        $headers['Cc'] = implode(
+                            ',',
+                            array_map(function ($ccemail) {
+                                return $ccemail['name'] . ' <' . $ccemail['email']  . '>';
+                            }, $ccemails)
+                        );
                     }
                 }
             } else {
@@ -314,12 +333,13 @@ if (isset($_POST['message'])) {
                         $recipients = '';
                     }
                 } else {
-                    $recipients = $headers['To'];
+                    $recipients = empty($toemails) ? '' : implode(',', Utils::array_column($toemails, 'email'));
                 }
-                if (!$recipients) {
+                if ($recipients) {
                     $LMS->SendMail($recipients, $headers, $message['body'], $attachments, null, $smtp_options);
                 }
             }
+            unset($headers['Cc']);
 
             $service = ConfigHelper::getConfig('sms.service');
 
@@ -346,7 +366,7 @@ if (isset($_POST['message'])) {
                 }
             }
 
-            // Users notification
+            // User notifications
             if (isset($message['notify']) || isset($message['customernotify'])) {
                 $mailfname = '';
 
@@ -450,15 +470,26 @@ if (isset($_POST['message'])) {
             if (isset($message['customernotify']) && !empty($ticketdata['customerid']) && (!empty($emails) || !empty($mobile_phones))) {
                 $queuedata = $LMS->GetQueueByTicketId($ticketid);
 
-                $ticket_id = sprintf("%06d", $ticketid);
                 $title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
 							ORDER BY id LIMIT 1', array($ticketid));
                 if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody']) && !empty($emails)) {
                     $custmail_subject = $queuedata['newmessagesubject'];
-                    $custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
+                    $custmail_subject = preg_replace_callback(
+                        '/%(\\d*)tid/',
+                        function ($m) use ($ticketid) {
+                            return sprintf('%0' . $m[1] . 'd', $ticketid);
+                        },
+                        $custmail_subject
+                    );
                     $custmail_subject = str_replace('%title', $title, $custmail_subject);
                     $custmail_body = $queuedata['newmessagebody'];
-                    $custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
+                    $custmail_body = preg_replace_callback(
+                        '/%(\\d*)tid/',
+                        function ($m) use ($ticketid) {
+                            return sprintf('%0' . $m[1] . 'd', $ticketid);
+                        },
+                        $custmail_body
+                    );
                     $custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
                     $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                     $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
@@ -475,7 +506,13 @@ if (isset($_POST['message'])) {
                 }
                 if (!empty($queuedata['newmessagesmsbody']) && !empty($mobile_phones)) {
                     $custsms_body = $queuedata['newmessagesmsbody'];
-                    $custsms_body = str_replace('%tid', $ticket_id, $custsms_body);
+                    $custsms_body = preg_replace_callback(
+                        '/%(\\d*)tid/',
+                        function ($m) use ($ticketid) {
+                            return sprintf('%0' . $m[1] . 'd', $ticketid);
+                        },
+                        $custsms_body
+                    );
                     $custsms_body = str_replace('%cid', $ticketdata['customerid'], $custsms_body);
                     $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                     $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
@@ -610,7 +647,7 @@ if (isset($_POST['message'])) {
                 }
             }
 
-            $message['subject'] = 'Re: ' . $reply['subject'];
+            $message['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($reply['subject']);
             $message['inreplyto'] = $reply['id'];
             $message['references'] = implode(' ', $reply['references']);
             $message['cc'] = $reply['cc'];

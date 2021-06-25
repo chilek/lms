@@ -7,7 +7,7 @@
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
 		<TD class="bold">
-			<i class="lms-ui-icon-timetable"></i> {trans("Timetable assigned events:")}
+			{icon name="timetable" label="Timetable assigned events:"}
 		</TD>
 		<TD class="text-right nobr">
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
@@ -41,13 +41,13 @@
 				<TBODY>
 				{foreach $assignedevents as $event}
 					{$day=$event.date}
-					{include file="event/eventlistboxrow.html" overdue=1}
+					{include file="event/eventlistboxrow.html" overdue=1 backid=null}
 				{foreachelse}
-					<TR>
-						<TD class="empty-table" colspan="6">
-							<p>{trans("There are no events in timetable.")}</p>
-						</TD>
-					</TR>
+					<tr>
+						<td class="empty-table" colspan="6">
+							{trans("There are no events in timetable.")}
+						</td>
+					</tr>
 				{/foreach}
 				</TBODY>
 			</table>

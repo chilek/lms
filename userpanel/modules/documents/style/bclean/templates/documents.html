@@ -26,9 +26,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Authorization")}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				{button class="close" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 			<div class="modal-body">
 				<div class="alert" role="alert" style="display: none;">
@@ -44,8 +42,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" formnovalidate=true}
+				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
 	</div>
@@ -58,9 +56,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Document submission")}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				{button class="close" data_dismiss="modal" icon="cancel"}
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
@@ -85,8 +81,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+				{button type="submit" class="btn btn-danger" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
+				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
 	</div>
@@ -130,23 +126,17 @@
 							{foreach $doc.attachments as $docattach}
 								<div class="row document-attachment">
 									<div class="col-md-auto">
-										<a class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 											{if $docattach.type == 1}
-												{trans("View")}
+												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="view" label="View"}
 											{else}
-												{$docattach.filename}
+												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="document" label="{$docattach.filename}"}
 											{/if}
-										</a>
 										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
 											{if $scan_active}
-												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
-													{trans("Submit scan")}
-												</a>
+												{button class="btn btn-primary" data_toggle="modal" data_target="#newscan-dialog" data_document_id="{$doc.id}" icon="upload" label="Submit scan"}
 											{/if}
 											{if $sms_active}
-												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#authcode-dialog" data-document-id="{$doc.id}">
-													{trans("Confirm")}
-												</a>
+												{button class="btn btn-primary" data_toggle="modal" data_target="#authcode-dialog" data_document_id="{$doc.id}" icon="confirm" label="<!userpanel>Confirm"}
 											{/if}
 										{/if}
 									</div>

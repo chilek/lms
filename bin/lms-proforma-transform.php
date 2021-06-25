@@ -137,7 +137,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/");
 }
 
 // Init database
@@ -169,7 +169,7 @@ $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
 // prepare customergroups in sql query
-$customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca
+$customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, vcustomerassignments ca
 	WHERE c.id = ca.customerid
 	AND g.id = ca.customergroupid
 	AND (%groups)) ";

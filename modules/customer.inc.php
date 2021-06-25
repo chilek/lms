@@ -117,6 +117,15 @@ if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']
     }
     $eventlist = $LMS->EventSearch($params, 'date,desc', true);
 }
+if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets']) {
+    $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+    $params = array(
+        'cid' => $customerid,
+        'short' => true,
+    );
+
+    $ticketlist = $LMS->GetQueueContents($params);
+}
 if (!isset($resource_tabs['customernodesbox']) || $resource_tabs['customernodesbox']) {
     $customernodes = $LMS->GetCustomerNodes($customerid);
 }
@@ -221,3 +230,5 @@ $SMARTY->assignByRef('taxeslist', $taxeslist);
 $SMARTY->assignByRef('allnodegroups', $allnodegroups);
 $SMARTY->assignByRef('messagelist', $messagelist);
 $SMARTY->assignByRef('eventlist', $eventlist);
+$SMARTY->assignByRef('ticketlist', $ticketlist);
+$SMARTY->assignByRef('aet', $aet);

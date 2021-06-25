@@ -1,3 +1,12 @@
+<style>
+
+	.reward-flags {
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
+		padding-inline-start: 1.5em;
+	}
+
+</style>
 <TABLE class="lmsbox-inner" id="table">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -7,7 +16,7 @@
     <THEAD>
 		<TR>
 			<TD>
-				{icon name="money" class="fa-fw"}
+				{icon name="money"}
 			</TD>
 			<TD class="bold nobr" colspan="2">
 				{trans("Liability's Options:")}
@@ -15,31 +24,39 @@
 		</TR>
     </THEAD>
     <TBODY>
-		{if $assignment.flags & $smarty.const.TARIFF_FLAG_REWARD_PENALTY}
+		{if !empty($assignment.flags)}
 		<tr>
 			<td>
 				{if $assignment.value < 0}
-					{icon name="reward" class="fa-fw"}
+					{icon name="reward"}
 				{else}
-					{icon name="penalty" class="fa-fw"}
+					{icon name="penalty"}
 				{/if}
 			</td>
 			<td class="bold nobr">
 				{if $assignment.value < 0}
-					{trans("Reward")}
+					{trans("Reward for")}
 				{else}
-					{trans("Penalty")}
+					{trans("Penalty for")}
 				{/if}
 			</td>
 			<td>
-				{trans("yes")}
+				<ul class="reward-flags">
+					{foreach $_TARIFF_FLAGS as $flag => $label}
+						{if intval($assignment.flags) & intval($flag)}
+							<li>
+								<strong>{$label}</strong>
+							</li>
+						{/if}
+					{/foreach}
+				</ul>
 			</td>
 		</tr>
 		{/if}
 		{if $assignment.attribute}
 		<TR>
 			<TD>
-				{icon name="user-id-number" class="fa-fw"}
+				{icon name="user-id-number"}
 			</TD>
 			<TD class="bold nobr">
 				{trans("Attribute:")}
@@ -51,14 +68,14 @@
 		{/if}
 		<TR>
 			<TD>
-				{icon name="user-id-number" class="fa-fw"}
+				{icon name="user-id-number"}
 			</TD>
 			<TD class="bold nobr">{trans("Numbering Plan:")}</TD>
 			<TD class="nobr">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
 		</TR>
 		<TR>
 			<TD>
-				{icon name="print" class="fa-fw"}
+				{icon name="print"}
 			</TD>
 			<TD class="bold nobr">
 				{trans("Payment Type:")}
@@ -69,7 +86,7 @@
 		</TR>
 		<TR>
 			<TD>
-				{icon name="options" class="fa-fw"}
+				{icon name="options"}
 			</TD>
 			<TD class="nobr">
 				{trans("document type:")}
@@ -88,7 +105,7 @@
 		</TR>
 		<TR>
 			<TD>
-				{icon name="options" class="fa-fw"}
+				{icon name="options"}
 			</TD>
 			<TD class="nobr">
 				{trans("separate document")}
@@ -99,7 +116,7 @@
 		</TR>
 		<TR>
 			<TD>
-				{icon name="money" class="fa-fw"}
+				{icon name="money"}
 			</TD>
 			<TD class="nobr">
 				{trans("split payment")}
@@ -110,7 +127,7 @@
 		</TR>
 		<TR>
 			<TD>
-				{icon name="money" class="fa-fw"}
+				{icon name="money"}
 			</TD>
 			<TD class="nobr">
 				{trans("Tax category:")}
@@ -125,7 +142,7 @@
 		</TR>
 		<TR>
 			<TD>
-				{icon name="options" class="fa-fw"}
+				{icon name="options"}
 			</TD>
 			<TD class="nobr">
 				{trans("with settlement")}:
@@ -136,7 +153,7 @@
 		</TR>
 		<TR>
 			<td>
-				{icon name="document" class="fa-fw"}
+				{icon name="document"}
 			</td>
 			<TD class="nobr">
 				{trans("Reference document:")}

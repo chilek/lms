@@ -7,6 +7,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TRIGGER IF EXISTS cash_customerbalances_delete_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_update_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_insert_trigger;
+DROP TRIGGER IF EXISTS customerassignments_insert_trigger;
 
 DROP VIEW IF EXISTS vnetworks;
 DROP VIEW IF EXISTS customermailsview;
@@ -31,6 +32,7 @@ DROP VIEW IF EXISTS vnodealltariffs_nodes;
 DROP VIEW IF EXISTS vnodealltariffs_tariffs;
 DROP VIEW IF EXISTS vnodealltariffs;
 DROP VIEW IF EXISTS customerconsentview;
+DROP VIEW IF EXISTS vcustomerassignments;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -188,6 +190,7 @@ CREATE TABLE users (
   login varchar(32)     NOT NULL DEFAULT '',
   firstname varchar(64) NOT NULL DEFAULT '',
   lastname varchar(64) NOT NULL DEFAULT '',
+  issuer varchar(100) DEFAULT NULL,
   email varchar(255)    NOT NULL DEFAULT '',
   phone varchar(32)     DEFAULT NULL,
   position varchar(255) NOT NULL DEFAULT '',
@@ -413,6 +416,9 @@ CREATE TABLE divisions (
 	shortname       varchar(255) 	NOT NULL DEFAULT '',
 	name        	text    	NOT NULL DEFAULT '',
 	label varchar(100) DEFAULT NULL,
+	firstname varchar(128) DEFAULT NULL,
+	lastname varchar(128) DEFAULT NULL,
+	birthdate int(11) DEFAULT NULL,
 	ten		varchar(50)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	rbe			varchar(255)	NOT NULL DEFAULT '',
@@ -971,6 +977,8 @@ CREATE TABLE tariffs (
 	authtype tinyint(1) NOT NULL DEFAULT '0',
     currency varchar(3),
     flags tinyint(1) DEFAULT 0 NOT NULL,
+    netflag tinyint(1) DEFAULT 0 NOT NULL,
+	netvalue decimal(9,2) DEFAULT NULL,
     PRIMARY KEY  (id),
 	UNIQUE KEY tariffs_name_key (name, value, currency, period),
 	INDEX type (type),
@@ -1041,6 +1049,8 @@ CREATE TABLE liabilities (
 	taxid int(11)           NOT NULL,
 	prodid varchar(255)     NOT NULL DEFAULT '',
 	type smallint DEFAULT -1 NOT NULL,
+    netflag tinyint(1) DEFAULT 0 NOT NULL,
+	netvalue decimal(9,2) DEFAULT NULL,
     PRIMARY KEY (id),
 	CONSTRAINT liabilities_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1116,7 +1126,7 @@ CREATE TABLE assignments (
 	invoice tinyint(1) NOT NULL DEFAULT '0',
 	suspended tinyint(1) NOT NULL DEFAULT '0',
 	settlement tinyint(1) NOT NULL DEFAULT '0',
-	pdiscount decimal(4,2) NOT NULL DEFAULT '0',
+	pdiscount decimal(5,2) NOT NULL DEFAULT '0',
 	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
 	paytype smallint DEFAULT NULL,
 	numberplanid int(11) DEFAULT NULL,
@@ -1170,7 +1180,7 @@ CREATE TABLE invoicecontents (
 	docid int(11) NOT NULL,
 	itemid smallint NOT NULL DEFAULT '0',
 	value decimal(12,5) NOT NULL DEFAULT '0',
-	pdiscount decimal(4,2) NOT NULL DEFAULT '0',
+	pdiscount decimal(5,2) NOT NULL DEFAULT '0',
 	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
 	taxid int(11) NOT NULL,
 	prodid varchar(255) NOT NULL DEFAULT '',
@@ -1528,8 +1538,8 @@ CREATE TABLE netdevices (
   id 		int(11) 	NOT NULL auto_increment,
   name 		varchar(32) 	NOT NULL DEFAULT '',
   description 	text 		NOT NULL DEFAULT '',
-  producer 	varchar(64) 	NOT NULL DEFAULT '',
-  model 	varchar(32) 	NOT NULL DEFAULT '',
+  producer 	varchar(256) 	NOT NULL DEFAULT '',
+  model 	varchar(256) 	NOT NULL DEFAULT '',
   serialnumber 	varchar(32) 	NOT NULL DEFAULT '',
   ports 	int(11) 	NOT NULL DEFAULT '0',
   purchasetime 	int(11) 	NOT NULL DEFAULT '0',
@@ -1868,9 +1878,13 @@ CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment,
   customergroupid int(11) NOT NULL,
   customerid int(11) NOT NULL,
+  startdate int(11) NOT NULL DEFAULT UNIX_TIMESTAMP(),
+  enddate int(11) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY customerassignment (customergroupid, customerid),
+  UNIQUE KEY customerassignments_customergroupid_ukey (customergroupid, customerid, enddate),
   INDEX customerid (customerid),
+  INDEX customerassignments_startdate_idx (startdate),
+  INDEX customerassignments_enddate_idx (enddate),
   CONSTRAINT customerassignments_customergroupid_fkey
   	FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT customerassignments_customerid_fkey
@@ -1992,7 +2006,7 @@ CREATE TABLE rtqueues (
 CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
   queueid int(11) NOT NULL,
-  requestor varchar(255) NOT NULL DEFAULT '',
+  requestor varchar(255) DEFAULT NULL,
   requestor_mail varchar(255) DEFAULT NULL,
   requestor_phone varchar(32) DEFAULT NULL,
   requestor_userid int(11) DEFAULT NULL,
@@ -2006,7 +2020,7 @@ CREATE TABLE rttickets (
   resolvetime int(11) NOT NULL DEFAULT '0',
   modtime int(11) NOT NULL DEFAULT '0',
   source tinyint(4) NOT NULL DEFAULT '0',
-  priority tinyint(4) NOT NULL DEFAULT '0',
+  priority tinyint(4) DEFAULT NULL,
   deleted tinyint(1) NOT NULL DEFAULT '0',
   deltime int(11) NOT NULL DEFAULT '0',
   deluserid int(11) DEFAULT NULL,
@@ -2977,6 +2991,11 @@ CREATE TABLE up_info_changes (
 #
 # Functions and Views
 #
+CREATE VIEW vcustomerassignments AS
+	SELECT ca.*
+	FROM customerassignments ca
+	WHERE startdate <= UNIX_TIMESTAMP() AND enddate = 0;
+
 CREATE VIEW nas AS
 	SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 				 d.clients AS ports, d.secret, d.community, d.description
@@ -3014,7 +3033,8 @@ CREATE VIEW vaddresses AS
 
 CREATE VIEW vdivisions AS
     SELECT d.*,
-        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
+        a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
+        (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
@@ -3218,7 +3238,7 @@ CREATE VIEW customerview AS
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE NOT EXISTS (
-        SELECT 1 FROM customerassignments a
+        SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)
         AND (lms_current_user() = 0 OR c.divisionid IN (
@@ -3355,6 +3375,16 @@ RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 DROP FUNCTION IF EXISTS int2txt;
 CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
+
+DELIMITER $$
+CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassignments
+    FOR EACH ROW
+BEGIN
+    IF NEW.startdate = 0 THEN
+        SET NEW.startdate = UNIX_TIMESTAMP();
+    END IF;
+END $$
+DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
@@ -3495,8 +3525,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','smarty_debug','false','',0),
 ('phpui','force_ssl','false','',0),
 ('phpui','allow_mac_sharing','false','',0),
-('phpui','big_networks','false','',0),
-('phpui','short_pagescroller','false','',0),
+('phpui','big_networks','true','',0),
+('phpui','short_pagescroller','true','',0),
 ('phpui','helpdesk_stats','true','',0),
 ('phpui','helpdesk_customerinfo','true','',0),
 ('phpui','helpdesk_customerinfo_mail_body','--
@@ -3566,7 +3596,7 @@ URL: %url
 ('mail','debug_email','','',0),
 ('mail','smtp_host','127.0.0.1','',0),
 ('mail','smtp_port','25','',0),
-('mail', 'backend', 'pear', '', 0),
+('mail', 'backend', 'phpmailer', '', 0),
 ('mail', 'smtp_secure', 'tls', '', 0),
 ('zones','hostmaster_mail','hostmaster.localhost','',0),
 ('zones','master_dns','localhost','',0),
@@ -3586,6 +3616,9 @@ URL: %url
 ('userpanel','show_tariffname','1','',0),
 ('userpanel','show_speeds','1','',0),
 ('userpanel','show_period','1','',0),
+('userpanel','show_discount','1','',0),
+('userpanel','show_discounted_value','1','',0),
+('userpanel','show_invoice_flag','1','',0),
 ('userpanel','queues','1','',0),
 ('userpanel','tickets_from_selected_queues','0','',0),
 ('userpanel','allow_message_add_to_closed_tickets','1','',0),
@@ -3626,6 +3659,10 @@ URL: %url
 ('userpanel', 'signed_document_scan_customer_notification_mail_format', 'text', '', 0),
 ('userpanel', 'signed_document_scan_customer_notification_mail_subject', '', '', 0),
 ('userpanel', 'signed_document_scan_customer_notification_mail_body', '', '', 0),
+('userpanel', 'document_approval_operator_notification_mail_recipient', '', '', 0),
+('userpanel', 'document_approval_operator_notification_mail_format', 'text', '', 0),
+('userpanel', 'document_approval_operator_notification_mail_subject', '', '', 0),
+('userpanel', 'document_approval_operator_notification_mail_body', '', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_format', 'text', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_subject', '', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_body', '', '', 0),
@@ -3646,6 +3683,7 @@ URL: %url
 ('userpanel', 'startup_module', 'info', '', 0),
 ('userpanel', 'pin_validation', 'true', '', 0),
 ('userpanel', 'show_all_assignments', 'false', '', 0),
+('userpanel', 'allowed_document_types', ''),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3990,4 +4028,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021032300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021061700');

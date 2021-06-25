@@ -146,4 +146,6 @@ interface LMSHelpdeskManagerInterface
     public function TicketIsAssigned($ticketid);
 
     public function getTicketImageGalleries(&$ticket);
+
+    public function cleanupTicketSubject($subject);
 }

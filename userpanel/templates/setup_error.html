@@ -1,19 +1,51 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+
+<style>
+
+	#layout-info {
+		text-align: center;
+		font-weight: bold;
+		padding: 2em;
+	}
+
+</style>
+
 {if $layout.info}
-<h1>{$layout.pagetitle}</h1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="dark"><TD CLASS="fall"><strong>{trans("Module Configuration:")}</strong></TD></TR>
-    <TR CLASS="light"><TD CLASS="fall">
-	<div style="text-align: center; margin-top:20px;"><strong>{$layout.info}</strong></div>
-	<p align="right">
-	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-	</p>
-    </TD></TR>
-</TABLE>
+	<h1>{$layout.pagetitle}</h1>
+	<table class="lmsbox" cellpadding="3">
+		<thead>
+			<tr>
+				<td class="bold">
+					{icon name="configuration"}
+					{trans("Module Configuration:")}
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td id="layout-info">
+					{$layout.info}
+				</td>
+			</tr>
+			<tr>
+				<td class="lms-ui-box-buttons">
+					{button icon="cancel" label="Cancel" href="?m=userpanel"}
+				</td>
+			</tr>
+		</tbody>
+	</table>
 {else}
-<H1 ALIGN="CENTER"><span class="red">{trans("Error!")}</span></H1>
-<P ALIGN="CENTER"><IMG SRC="img/error.gif" ALT=""></P>
-<P ALIGN="CENTER"><span class="alert">{$layout.error}</span></P>
+	<h1 class="text-center">
+		<span class="red">{trans("Error!")}</span>
+	</h1>
+	<p class="text-center">
+		<img src="img/error.gif">
+	</p>
+	<p class="text-center">
+		<span class="alert">
+			{$layout.error}
+		</span>
+	</p>
 {/if}
 {include file="footer.html"}

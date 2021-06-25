@@ -8,13 +8,24 @@ $eventuserlist = $DB->GetAll('SELECT userid AS id, vusers.name
 	FROM vusers, eventassignments
 	WHERE vusers.id = userid AND eventid = ?', array($event['id']));
 
+if ($SESSION->is_set('backto', true)) {
+    $backto = $SESSION->get('backto', true);
+} elseif ($SESSION->is_set('backto')) {
+    $backto = $SESSION->get('backto');
+} else {
+    $backto = 'm=eventlist';
+}
+$backid = $SESSION->get('backid');
+$backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
+
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
     $event['id'] = $_GET['id'];
     $DB->Execute('UPDATE events SET note=? WHERE id=?', array($event['note'], $event['id']));
-    $SESSION->redirect('?m=eventlist'
-        . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+    $SESSION->redirect($backurl);
 }
+
+$SMARTY->assign('backurl', $backurl);
 
 $event['userlist'] = ($eventuserlist) ? $eventuserlist : array();
 $layout['pagetitle'] = trans('Add Note');

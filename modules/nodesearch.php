@@ -179,7 +179,7 @@ function assign_nodes_to_customer_group($nodeids, $customergroupid)
     $customerids = $DB->GetCol(
         'SELECT DISTINCT n.ownerid FROM nodes n
         WHERE n.id IN ? AND NOT EXISTS (
-            SELECT id FROM customerassignments ca WHERE ca.customergroupid = ? AND n.ownerid = ca.customerid
+            SELECT id FROM vcustomerassignments ca WHERE ca.customergroupid = ? AND n.ownerid = ca.customerid
         )',
         array($nodeids, $customergroupid)
     );
@@ -204,7 +204,7 @@ function unassign_nodes_from_customer_group($nodeids, $customergroupid)
     $customerids = $DB->GetCol('SELECT DISTINCT ownerid FROM nodes WHERE id IN ?', array($nodeids));
     foreach ($customerids as $customerid) {
         $DB->Execute(
-            "DELETE FROM customerassignments WHERE customerid = ? AND customergroupid = ?",
+            "UPDATE customerassignments SET enddate = ?NOW? WHERE customerid = ? AND customergroupid = ? AND enddate = 0",
             array($customerid, $customergroupid)
         );
     }
@@ -305,7 +305,9 @@ if (isset($_GET['search'])) {
             $nodesearch['lastonlineafter'] = $lastonlineafter;
         }
 
-        $nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'sqlskey' => $k));
+        $status = $nodesearch['status'];
+        unset($nodesearch['status']);
+        $nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'status' => $status, 'sqlskey' => $k));
 
         $layout['pagetitle'] = trans('Nodes Search Results');
 

@@ -16,7 +16,7 @@
 <TABLE WIDTH="640" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="grey bb fleftu" ALIGN="CENTER" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">
+			{icon name="helpdesk"}
 		</TD>
 		<TD CLASS="grey bb fbt" ALIGN="CENTER" WIDTH="1%" NOWRAP>
 			<B>{$ticket.id|string_format:"%08d"}:</B>
@@ -69,18 +69,18 @@
 				    {$item.body|escape|replace:"\n":"<BR>"}
 				</TD>
 			    </TR>
-			    {/foreach}			
+			    {/foreach}
 			</TABLE>
 		</TD>
 	</TR>
 </TABLE><BR>
 {foreachelse}
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-    		<TD class="empty-table">
-			<p>{trans("No such requests in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+    	<td class="empty-table">
+			{trans("No such requests in database.")}
+		</td>
+	</tr>
 </TABLE>
 {/foreach}
 {include file="clearfooter.html"}

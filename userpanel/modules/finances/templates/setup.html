@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
-<TABLE class="lmsbox" cellpadding="3">
+<table class="lmsbox" cellpadding="3">
 	<thead>
 		<tr>
 			<td class="bold">
@@ -11,9 +11,9 @@
 		</tr>
 	</thead>
 	<tbody>
-		<TR>
-			<TD>
-				<FORM name="moduleconfig" method="POST" action="?m=userpanel&module=finances&f=submit_setup">
+		<tr>
+			<td>
+				<form name="moduleconfig" method="POST" action="?m=userpanel&module=finances&f=submit_setup">
 					<table>
 						<colgroup>
 							<col style="width: 1%;">
@@ -87,6 +87,41 @@
 						</tr>
 						<tr>
 							<td class="nobr">
+								<label for="show_discounted_value">
+									{trans("Value type in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<select name="show_discounted_value" id="show_discounted_value">
+									<option value="0"{if $show_discounted_value == 0} selected{/if}>{trans("Full value without discount")}</option>
+									<option value="1"{if $show_discounted_value == 1} selected{/if}>{trans("Pay value with discount included")}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_period">
+									{trans("Show discount column in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_discount" id="show_discount" value="1"
+									{if $show_discount == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_invoice_flag">
+									{trans("Show invoice column in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_invoice_flag" id="show_invoice_flag" value="1"
+									{if $show_invoice_flag == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
 								<label for="speed_unit_type">
 									{trans("Speed unit type")}
 								</label>
@@ -148,9 +183,9 @@
 							</td>
 						</tr>
 					</table>
-				</FORM>
-			</TD>
-		</TR>
+				</form>
+			</td>
+		</tr>
 	</tbody>
-</TABLE>
+</table>
 {include file="footer.html"}

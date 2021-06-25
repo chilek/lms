@@ -15,7 +15,8 @@
 <TABLE class="lmsbox">
     <TR>
         <TD style="width: 1%;" class="bold nobr">
-            <IMG src="img/customer.gif" alt=""> {trans("Customer:")}
+            {icon name="customer"}
+            {trans("Customer:")}
         </TD>
         <TD style="width: 99%;">
             <span class="bold">{$customer.customername}</span>
@@ -107,7 +108,7 @@
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;"
                        value="{$row.name|escape}" data-old-value="{$item.name|escape}"
                        {tip text="Enter description"}>
-                <span class="invoice-contents-field-value">{$item.name}</span>
+                <span class="invoice-contents-field-value">{$item.name|escape}</span>
                 {if isset($item.name_custom_contents)}
                     {$item.name_custom_contents}
                 {/if}
@@ -172,10 +173,10 @@
 				</span>
             </TD>
             <TD class="text-right">
-				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuenetto]"
-					value="{$row.valuenetto}" data-old-value="{$valuenetto}" SIZE="6"
+                <input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][valuenetto]"
+                    value="{$valuenetto}" data-old-value="{$valuenetto}" size="6"
                     {tip text="Enter unitary value without discount"} style="display: none;">
-				<span class="invoice-contents-field-value nobr">
+                <span class="invoice-contents-field-value nobr">
 				    {$item.valuenetto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.valuenetto_custom_contents)}
@@ -201,8 +202,8 @@
                 </span>
             </TD>
             <TD class="text-right">
-				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuebrutto]" SIZE="6"
-					value="{$row.valuebrutto}" data-old-value="{$valuebrutto}"
+				<input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][valuebrutto]"
+					value="{$valuebrutto}" data-old-value="{$valuebrutto}" size="6"
                     {tip text="Enter unitary value without discount"} style="display: none;">
 				<span class="invoice-contents-field-value nobr">
 				{$item.valuebrutto|string_format:"%01.2f"}
@@ -232,11 +233,11 @@
             </TD>
         </TR>
         {foreachelse}
-        <TR>
-            <TD COLSPAN="10" class="empty-table">
-                <p>{trans("Invoice have no items. Use form below for items addition.")}</p>
-            </TD>
-        </TR>
+        <tr>
+            <td colspan="10" class="empty-table">
+                {trans("Invoice have no items. Use form below for items addition.")}
+            </td>
+        </tr>
         {/foreach}
         {if $contents}
         <TR>

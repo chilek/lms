@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,6 +48,7 @@ if (isset($_POST['tariff'])) {
     }
 
     $tariff['id'] = $_GET['id'];
+    $tariff['netvalue'] = str_replace(',', '.', $tariff['netvalue']);
     $tariff['value'] = str_replace(',', '.', $tariff['value']);
 
     if (!preg_match('/^[-]?[0-9.,]+$/', $tariff['value'])) {

@@ -32,9 +32,9 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
 
     if ($SYSLOG) {
         $cids = $DB->GetCol(
-            'SELECT customerid FROM customerassignments a, customerview c
+            'SELECT customerid FROM vcustomerassignments a, customerview c
 				WHERE a.customerid = c.id AND a.customergroupid = ?
-				AND NOT EXISTS (SELECT 1 FROM customerassignments ca
+				AND NOT EXISTS (SELECT 1 FROM vcustomerassignments ca
 					WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
             array($from, $to)
         );
@@ -43,16 +43,16 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
     $DB->Execute(
         'INSERT INTO customerassignments (customergroupid, customerid)
 			SELECT ?, customerid 
-			FROM customerassignments a, customerview c
+			FROM vcustomerassignments a, customerview c
 			WHERE a.customerid = c.id AND a.customergroupid = ?
-			AND NOT EXISTS (SELECT 1 FROM customerassignments ca
+			AND NOT EXISTS (SELECT 1 FROM vcustomerassignments ca
 				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
         array($to, $from, $to)
     );
 
     if ($SYSLOG && $cids) {
         foreach ($cids as $cid) {
-            $aid = $DB->GetOne('SELECT a.id FROM customerassignments a, customerview c
+            $aid = $DB->GetOne('SELECT a.id FROM vcustomerassignments a, customerview c
 				WHERE a.customerid = c.id AND a.customerid = ? AND a.customergroupid = ?', array($cid, $to));
             $args = array(
                 SYSLOG::RES_CUSTASSIGN => $aid,
@@ -62,7 +62,7 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
             $SYSLOG->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_ADD, $args);
         }
 
-        $assigns = $DB->GetAll('SELECT id, customerid FROM customerassignments WHERE customergroupid = ?', array($from));
+        $assigns = $DB->GetAll('SELECT id, customerid FROM vcustomerassignments WHERE customergroupid = ?', array($from));
         if (!empty($assigns)) {
             foreach ($assigns as $assign) {
                 $args = array(
@@ -75,7 +75,7 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
         }
     }
 
-    $DB->Execute('DELETE FROM customerassignments WHERE customergroupid = ?', array($from));
+    $DB->Execute('UPDATE customerassignments SET enddate = ?NOW? WHERE customergroupid = ? AND enddate = 0', array($from));
 
     $DB->CommitTrans();
 

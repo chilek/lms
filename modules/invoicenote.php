@@ -34,8 +34,13 @@ if (isset($_GET['id']) && $action == 'init') {
     if ($invoice['doctype'] == DOC_CNOTE) {
         $invoice['number'] = $invoice['invoice']['number'];
         $invoice['template'] = $invoice['invoice']['template'];
-        $invoice['numberplanid'] = $invoice['invoice']['numberplanid'];
+        $cnote['numberplanid'] = $invoice['numberplanid'] = $invoice['invoice']['numberplanid'];
         $invoice['cdate'] = $invoice['invoice']['cdate'];
+    } else {
+        $cnote['numberplanid'] = $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
+            DOC_CNOTE,
+            empty($invoice['divisionid']) ? null : $invoice['divisionid']
+        );
     }
 
     if (!empty($invoice['cancelled'])) {
@@ -77,11 +82,6 @@ if (isset($_GET['id']) && $action == 'init') {
         $invoicecontents[$nitem['itemid']] = $nitem;
     }
     $invoice['content'] = $invoicecontents;
-
-    $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
-        DOC_CNOTE,
-        empty($invoice['divisionid']) ? null : $invoice['divisionid']
-    );
 
     $currtime = time();
     $cnote['cdate'] = $currtime;
@@ -136,6 +136,7 @@ $SESSION->restore('cnoteerror', $error, true);
 $numberplanlist = $LMS->GetNumberPlans(array(
     'doctype' => DOC_CNOTE,
     'customerid' => $invoice['customerid'],
+    'division' => $invoice['divisionid'],
 ));
 
 $taxeslist = $LMS->GetTaxes($invoice['cdate'], $invoice['cdate']);
@@ -249,9 +250,21 @@ switch ($action) {
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
 
-        if ($cnote['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-			WHERE planid = ? AND divisionid = ?', array($cnote['numberplanid'], $divisionid))) {
-                $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+        $args = array(
+            'doctype' => DOC_CNOTE,
+            'customerid' => $invoice['customerid'],
+            'division' => $divisionid,
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if ($cnote['numberplanid'] && !isset($numberplans[$cnote['numberplanid']])) {
+            $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+            unset($customer);
+        }
+
+        if (count($numberplans) && empty($cnote['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
         }
 
         break;
@@ -474,6 +487,21 @@ switch ($action) {
             $error['numberplanid'] = trans('Permission denied!');
         }
 
+        $use_current_customer_data = isset($cnote['use_current_customer_data']);
+
+        $args = array(
+            'doctype' => DOC_CNOTE,
+            'customerid' => $invoice['customerid'],
+            'division' => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
+                : (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($cnote['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
+        }
+
         $hook_data = array(
             'invoice' => $invoice,
             'contents' => $contents,
@@ -503,7 +531,11 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
-        $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
+        if ($DB->GetDbType() == 'postgres') {
+            $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
+        } else {
+            $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses', 'customer_addresses ca', 'customers c');
+        }
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
         }
@@ -557,12 +589,10 @@ switch ($action) {
         }
 
         if (empty($invoice['post_address_id'])) {
-            $invoice['post_address_id'] = null;
-        } else {
-            $invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
+            $invoice['post_address_id'] = $LMS->GetCustomerAddress($invoice['customerid'], BILLING_ADDRESS);
         }
+        $invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
 
-        $use_current_customer_data = isset($cnote['use_current_customer_data']);
         if ($use_current_customer_data) {
             $customer = $LMS->GetCustomer($invoice['customerid'], true);
         }
@@ -685,7 +715,7 @@ switch ($action) {
                     'comment' => $item['name'],
                     SYSLOG::RES_DOC => $id,
                     'itemid' => $idx,
-                    'servicetype' => $item['servicetype'],
+                    'servicetype' => empty($item['servicetype']) ? null : $item['servicetype'],
                 );
                 $DB->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, servicetype)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));

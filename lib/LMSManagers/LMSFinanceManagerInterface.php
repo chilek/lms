@@ -122,7 +122,7 @@ interface LMSFinanceManagerInterface
 
     public function GetHostingLimits($customerid);
 
-    public function GetTaxes($from = null, $to = null);
+    public function GetTaxes($from = null, $to = null, $default = null);
 
     public function CalcAt($period, $date);
 

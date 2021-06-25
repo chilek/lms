@@ -53,9 +53,9 @@ function CustomerAssignmentHelper(options) {
 	}
 
 	this.initEventHandlers = function() {
-		$('#submit-button').click(function () {
+		$('#submit-button,#print-button').click(function () {
 			if ($(this)[0].form.checkValidity()) {
-				$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
 			}
 		});
 
@@ -106,7 +106,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		if (cancelled) {
 			e.stopImmediatePropagation();
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').attr('disabled', true);
+			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
 			return false;
 		}
         return true;
@@ -532,12 +532,61 @@ function tariffSelectionHandler() {
 	$('#a_promotions,#a_align_periods').toggle(val == -2);
 
 	if (val == '') {
-		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').show();
+		$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').show();
+
+		if (assignmentGrossvalue) {
+			if (parseInt(assignmentNetflag) !== 0) {
+				$('#grossprice').val(assignmentGrossvalue).prop('disabled', true);
+				$('#netprice').val(assignmentNetvalue).prop('disabled', false);
+				$('#netflag').prop('checked', true);
+			} else {
+				$('#grossprice').val(assignmentGrossvalue).prop('disabled', false);
+				$('#netprice').val(assignmentNetvalue).prop('disabled', true);
+				$('#netflag').prop('checked', false);
+			}
+			$('#tax').val(assignmentTaxid).prop('disabled', false);
+		} else {
+			$('#grossprice').val('').prop('disabled', false);
+			$('#netprice').val('').prop('disabled', true);
+			$('#netflag').prop('checked', false).prop('disabled', false);
+			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
+		}
+
 		$('#a_attribute').hide();
 	} else {
-		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
+		var tariffGrossPrice = selected.attr('data-tariffvalue');
+		var tariffNetPrice = selected.attr('data-tariffnetvalue');
+		var tariffNetFlag = selected.attr('data-tariffnetflag');
+		var tariffTaxId = selected.attr('data-tarifftaxid');
+
+		$('#a_tax,#a_price').show();
+		$('#a_type,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
+
+		$('#grossprice').val(tariffGrossPrice).prop('disabled', true);
+		$('#netprice').val(tariffNetPrice).prop('disabled', true);
+
+		if(parseInt(tariffNetFlag) === 1) {
+			$('#netflag').prop('checked', true);
+		} else {
+			$('#netflag').prop('checked', false);
+		}
+		$('#netflag').prop('disabled', true);
+
+		assignmentGrossvalue = '';
+		assignmentNetvalue = '';
+		assignmentNetflag = false;
+
+		$('#tax').val(tariffTaxId).prop('disabled', true);
+
 		if (val == -1) {
-			$('#a_attribute').hide();
+			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
+
+			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name,#a_attribute').hide();
+		} else if (val == -2){
+			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
+
+			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
+			$('#a_attribute').show();
 		} else {
 			$('#a_attribute').show();
 		}
@@ -592,3 +641,77 @@ function tariffSelectionHandler() {
 }
 
 $('#tariff-select').change(tariffSelectionHandler);
+
+var netFlagElem = $("#netflag");
+var netPriceElem = $("#netprice");
+var grossPriceElem = $("#grossprice");
+
+function claculatePriceFromGross() {
+	var grossPriceElemVal = grossPriceElem.val();
+	if (grossPriceElem.val().length) {
+		var selectedTaxId = $("#tax").find('option:selected').val();
+		var tax = $('#tax' + selectedTaxId).val();
+
+		var grossPrice = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+		grossPrice = Math.round((grossPrice + Number.EPSILON) * 100) / 100;
+
+		var netPriceVal = Math.round(((grossPrice / (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+		netPriceVal = netPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+		netPriceElem.val(netPriceVal);
+
+		grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+		grossPriceElem.val(grossPrice);
+	} else {
+		netPriceElem.val('');
+	}
+}
+
+function claculatePriceFromNet() {
+	var netPriceElemVal = netPriceElem.val();
+	if (netPriceElem.val().length) {
+		var selectedTaxId = $("#tax").find('option:selected').val();
+		var tax = $('#tax' + selectedTaxId).val();
+
+		var netPrice = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'));
+		netPrice = Math.round((netPrice + Number.EPSILON) * 100) / 100;
+
+		var grossPriceVal = Math.round(((netPrice * (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+		grossPriceVal = grossPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+		grossPriceElem.val(grossPriceVal);
+
+		netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+		netPriceElem.val(netPrice);
+	} else {
+		grossPriceElem.val('');
+	}
+}
+
+$('#netflag').on('change', function () {
+	var netFlagChecked = netFlagElem.is(':checked');
+	if (netFlagChecked) {
+		grossPriceElem.prop('disabled', true);
+		netPriceElem.prop('disabled', false);
+		claculatePriceFromNet();
+	} else {
+		grossPriceElem.prop('disabled', false);
+		netPriceElem.prop('disabled', true);
+		claculatePriceFromGross();
+	}
+});
+
+$("#tax").on('change', function () {
+	var netFlagChecked = netFlagElem.is(':checked');
+	if (netFlagChecked) {
+		claculatePriceFromNet();
+	} else {
+		claculatePriceFromGross();
+	}
+});
+
+$("#grossprice").on('change', function () {
+	claculatePriceFromGross();
+});
+
+$("#netprice").on('change', function () {
+	claculatePriceFromNet();
+});

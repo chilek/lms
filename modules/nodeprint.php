@@ -98,7 +98,7 @@ switch ($type) {
 					    LEFT JOIN cash ON (cash.customerid = customers.id) 
 					    WHERE 1=1 '
                         .($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
-                        .($group ? ' AND EXISTS (SELECT 1 FROM customerassignments WHERE customerid = ownerid)' : '')
+                        .($group ? ' AND EXISTS (SELECT 1 FROM vcustomerassignments WHERE customerid = ownerid)' : '')
                         .' GROUP BY vnodes.id, ipaddr, mac, vnodes.name, vnodes.info, customers.lastname, customers.name
 					    HAVING SUM(value) < 0'
                         .($sqlord != '' ? $sqlord.' '.$direction : ''));

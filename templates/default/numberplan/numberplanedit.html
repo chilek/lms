@@ -13,21 +13,33 @@
     <thead>
 		<TR>
 			<TD>
-				{icon name="id" class="fa-fw"}
+				{icon name="id"}
 			</TD>
 			<TD class="bold">
 				{trans("Template:")}
 			</TD>
 			<TD>
 				<input type="text" name="numberplanedit[template]" value="{$numberplanedit.template|escape}"
-						{tip text="Enter number template<br><br>Supported substitution symbols:<br><strong>%N</strong> - document number,<br><strong>%m</strong> - month number (always two digits),<br><strong>%Y</strong> - year number (always four digits),<br><strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br><br>Other symbols can be used which are described in PHP <strong>strftime<strong> function documentation." trigger="template"}>
+					{tip trigger="template"}>
+				{capture assign="template_hint"}{strip}
+					Enter number template<br>
+					<br>
+					Supported substitution symbols:<br>
+					<strong>%N</strong> - document number,<br>
+					<strong>%m</strong> - month number (always two digits),<br>
+					<strong>%Y</strong> - year number (always four digits),<br>
+					<strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br>
+					<br>
+					Other symbols can be used which are described in PHP <a href="https://php.net/strftime"><strong>strftime</strong></a> function documentation.
+				{/strip}{/capture}
+				{hint content=$template_hint}
 			</TD>
 		</TR>
     </thead>
     <tbody>
 		<TR>
 			<TD>
-				{icon name="document" class="fa-fw"}
+				{icon name="document"}
 			</TD>
 			<TD class="bold nobr">
 				{trans("Document type:")}
@@ -42,7 +54,7 @@
 		</TR>
 		<TR>
 			<TD>
-				{icon name="calendar" class="fa-fw"}
+				{icon name="calendar"}
 			</TD>
 			<TD class="bold">
 				{trans("Period:")}
@@ -57,7 +69,7 @@
 		</TR>
 		<TR>
 			<TD class="valign-top">
-				{icon name="division" class="fa-fw"}
+				{icon name="division"}
 			</TD>
 			<TD class="bold nobr valign-top">
 				{trans("Division")}
@@ -74,7 +86,7 @@
 		</TR>
 		<TR>
 			<TD class="valign-top">
-				{icon name="user" class="fa-fw"}
+				{icon name="user"}
 			</TD>
 			<TD class="bold nobr valign-top">
 				{trans("User")}
@@ -91,7 +103,7 @@
 		</TR>
 		<TR>
 			<TD>
-				{icon name="option" class="fa-fw"}
+				{icon name="option"}
 			</TD>
 			<TD class="bold nobr">
 				<label for="numberplanedit_isdefault">{trans("Default:")}</label>

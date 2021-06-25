@@ -1,198 +1,276 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR{if $devicepanel} class="hand" onClick="showOrHide('devicepanel');"{/if}>
-		<TD WIDTH="1%">
-			<IMG SRC="img/netnode.png" ALT="">
-		</TD>
-		<TD WIDTH="99%" class="nobr bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
-	    <TD WIDTH="100%" COLSPAN="2"{if $devicepanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
-			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR>
-					<TD WIDTH="100%" class="valign-top">
-						<TABLE WIDTH="100%" CELLPADDING="3">
-       	{if $nodeinfo.division}
-        <TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">{trans("Division:")}</TD>
-		<TD WIDTH="98%">
-		        {$nodeinfo.division|escape}
-		</TD>
-	</TR>
-        {/if}
-       	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">{trans("Type:")}</TD>
-		<TD WIDTH="98%">
-		        {$_NETELEMENTTYPES[$nodeinfo.type]}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">{trans("Status:")}</TD>
-		<TD WIDTH="98%">
-		        {$_NETELEMENTSTATUSES[$nodeinfo.status]}
-		</TD>
-	</TR>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr{if $devicepanel} class="hand lmsbox-titlebar"  data-lmsbox-content="netnodepanel"{/if}>
+			<td>
+				{icon name="netnode"}
+			</td>
+			<td class="nobr">
+				<strong>{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr{if $devicepanel} id="netnodepanel" style="display:none;"{/if}>
+			<td colspan="2" class="container">
+				<table class="lmsbox-inner">
+					<colgroup>
+						<col style="width: 100%;">
+					</colgroup>
+					<tr>
+						<td class="valign-top">
+							<table class="lmsbox-inner">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								{if $nodeinfo.division}
+									<tr>
+										<td>
+											{icon name="division"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Division")}</strong>
+										</td>
+										<td>
+											{$nodeinfo.division|escape}
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="type"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Type")}</strong>
+									</td>
+									<td>
+										{$_NETELEMENTTYPES[$nodeinfo.type]}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="status"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Status")}</strong>
+									</td>
+									<td>
+										{$_NETELEMENTSTATUSES[$nodeinfo.status]}
+									</td>
+								</tr>
 
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">{trans("Project:")}</TD>
-		<TD WIDTH="98%">
-			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname|escape}{/if}
-		</TD>
-	</TR>
+								<tr>
+									<td>
+										{icon name="invproject"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Project")}</strong>
+									</td>
+									<td>
+										{if $nodeinfo.invprojectid == ''}
+											{trans("none")}
+										{else}
+											{$nodeinfo.projectname|escape}
+										{/if}
+									</td>
+								</tr>
 
-	{if $nodeinfo.location}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">{trans("Location:")}</TD>
-		<TD WIDTH="98%">
-			{if $nodeinfo.location_name}{$nodeinfo.location_name}, {/if}{$nodeinfo.location}
-			{if $nodeinfo.location_borough_name}
-				({$nodeinfo.location_state_name} / {$nodeinfo.location_district_name} / {$_BOROUGHTYPES[$nodeinfo.location_borough_type]} {$nodeinfo.location_borough_name})
-			{/if}
-		</TD>
-	</TR>
-	{/if}
+								{if $nodeinfo.location}
+									<tr>
+										<td>
+											{icon name="home"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Location")}</strong>
+										</td>
+										<td>
+											{if $nodeinfo.location_name}{$nodeinfo.location_name}, {/if}{$nodeinfo.location}
+											{if $nodeinfo.location_borough_name}
+												({$nodeinfo.location_state_name} / {$nodeinfo.location_district_name} / {$_BOROUGHTYPES[$nodeinfo.location_borough_type]} {$nodeinfo.location_borough_name})
+											{/if}
+										</td>
+									</tr>
+								{/if}
 
-	{if $nodeinfo.longitude || $nodeinfo.latitude}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">{trans("GPS longitude:")}</TD>
-		<TD WIDTH="98%">
-			<INPUT ID="longitude" TYPE="hidden" VALUE="{$nodeinfo.longitude}">
-			{$nodeinfo.longitude}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">
-			{trans("GPS latitude:")}
-		</TD>
-		<TD WIDTH="98%">
-			<INPUT ID="latitude" TYPE="hidden" VALUE="{$nodeinfo.latitude}">
-			{$nodeinfo.latitude}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="2%" COLSPAN="2">
-		</TD>
-		<TD WIDTH="98%">
-			<a HREF="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">{trans("Ownership:")}</TD>
-		<TD WIDTH="98%">
-			{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= 1)} ({$nodeinfo.coowner}) {/if}
-		</TD>
-	</TR>
-	{if $nodeinfo.ownerid != null}
-	<tr>
-		<td>
-			<img src="img/customer.gif" alt="">
-		</td>
-		<td class="bold">
-			{trans("Owner:")}
-		</td>
-		<td>
-			<a href="?m=customerinfo&id={$nodeinfo.ownerid}">{$nodeinfo.owner}</a>
-		</td>
-	</tr>
-	{/if}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="nobr bold">Udostępnianie powierzchni</TD>
-		<TD WIDTH="98%">
-			{if ($nodeinfo.uip == 1)} {trans('Yes')} {else} {trans('No')} {/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">	<IMG SRC="img/producer.gif" ALT=""></TD>
-		<TD WIDTH="1%" class="nobr bold">Instalacja anten</TD>
-		<TD WIDTH="98%">
-			{if ($nodeinfo.miar == 1)} {trans('Yes')} {else} {trans('No')} {/if}
-		</TD>
-	</TR>
-	{if $nodeinfo.info}
-	<TR>
-		<TD WIDTH="1%"><IMG SRC="img/note.gif" ALT=""></TD>
-		<TD width="1%" class="bold">{trans('Note')}</TD>
-		<TD width="98%">{$nodeinfo.info}</TD>
-	</TR>
-	{/if}
-        <TR>
-                <TD WIDTH="1%"><IMG SRC="img/users.gif" ALT=""></TD>
-                <TD width="1%" class="bold">{trans('Created:')}</TD>
-                <TD width="98%">{$nodeinfo.createtime|date_format:"%Y/%m/%d (%A)"}</TD>
-        </TR>
-        <TR>
-                <TD WIDTH="1%"><IMG SRC="img/calendar.gif" ALT=""></TD>
-                <TD width="1%" class="bold">{trans('Last inspection:')}</TD>
-                <TD width="98%">
-					{if $nodeinfo.lastinspectiontime}{$nodeinfo.lastinspectiontime|date_format:"%Y/%m/%d (%A)"}{else}-{/if}
-				</TD>
-        </TR>
-        <TR>
-                <TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>
-                <TD width="1%" class="bold">{trans('Administrative contact:')}</TD>
-                <TD width="98%">{$nodeinfo.admcontact}</TD>
-        </TR>
-</TABLE>
-				</TD>
-	</TR>
-			</TABLE>
-{if !$devicepanel}
-    		</TD>
-	</TR>
-	<TR>
-	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
-{/if}
-			<A href="?m=netnodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
-			<A id="delete-netnode" href="?m=netnodedel&id={$nodeinfo.id}" data-name="{$nodeinfo.name}">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
+								{if $nodeinfo.longitude || $nodeinfo.latitude}
+									<tr>
+										<td>
+											{icon name="location"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("GPS longitude")}</strong>
+										</td>
+										<td>
+											<input id="longitude" type="hidden" value="{$nodeinfo.longitude}">
+											{$nodeinfo.longitude}
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{icon name="location"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("GPS latitude")}</strong>
+										</td>
+										<td>
+											<input id="latitude" type="hidden" value="{$nodeinfo.latitude}">
+											{$nodeinfo.latitude}
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+										</td>
+										<td>
+											{button type="link" icon="map" label="Show on map"
+												href="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"}
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="user"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Ownership")}</strong>
+									</td>
+									<td>
+										{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= 1)} ({$nodeinfo.coowner}) {/if}
+									</td>
+								</tr>
+								{if !empty($nodeinfo.ownerid)}
+									<tr>
+										<td>
+											{icon name="customer"}
+										</td>
+										<td>
+											<strong>{trans("Owner")}</strong>
+										</td>
+										<td>
+											<a href="?m=customerinfo&id={$nodeinfo.ownerid}">{$nodeinfo.owner}</a>
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="share"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Sharing surface")}</strong>
+									</td>
+									<td>
+										{if $nodeinfo.uip == 1}
+											{icon name="check"}
+										{else}
+											-
+										{/if}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="antenna"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Antennas installation")}</strong>
+									</td>
+									<td>
+										{if $nodeinfo.miar == 1}
+											{icon name="check"}
+										{else}
+											-
+										{/if}
+									</td>
+								</tr>
+								{if $nodeinfo.info}
+									<tr>
+										<td>
+											{icon name="note"}
+										</td>
+										<td>
+											<strong>{trans('Note')}</strong>
+										</td>
+										<td>
+											{$nodeinfo.info|escape}
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="user"}
+									</td>
+									<td>
+										<strong>{trans('Created')}</strong>
+									</td>
+									<td>
+										{$nodeinfo.createtime|date_format:"%Y/%m/%d (%A)"}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="calendar"}
+									</td>
+									<td>
+										<strong>{trans('Last inspection')}</strong>
+									</td>
+									<td>
+										{if $nodeinfo.lastinspectiontime}
+											{$nodeinfo.lastinspectiontime|date_format:"%Y/%m/%d (%A)"}
+										{else}
+											-
+										{/if}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="phone"}
+									</td>
+									<td>
+										<strong>{trans('Administrative contact')}</strong>
+									</td>
+									<td>
+										{$nodeinfo.admcontact}
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				{if !$devicepanel}
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{/if}
+				{button icon="edit" label="Edit" href="?m=netnodeedit&id={$nodeinfo.id}"}
+				{button icon="delete" label="Delete" id="delete-netnode" data_name=$nodeinfo.name
+					data_href="?m=netnodedel&id={$nodeinfo.id}"}
+			</td>
+		</tr>
+	</tbody>
+</table>
 {if $devicepanel}
-<SCRIPT>
-if (getCookie('devicepanel') == '1')
-{
-	document.getElementById('devicepanel').style.display = '';
-}
-</SCRIPT>
+<script>
+
+	if (getCookie('netnodepanel') == '1') {
+		$('#netnodepanel').show();
+	}
+
+</script>
 {/if}
 <script>
-	$('#delete-netnode').click(function() {
-		var name = $(this).attr('data-name');
-		confirmDialog($t("Are you sure, you want to remove net device node '$a' from database?", name), this).done(function() {
-			location.href = $(this).attr('href');
+
+	$(function() {
+		$('#delete-netnode').click(function () {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove net device node '$a' from database?", name), this).done(function () {
+				location.href = $(this).attr('data-href');
+			});
 		});
-		return false;
 	});
+
 </script>

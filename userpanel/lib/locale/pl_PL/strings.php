@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['Value type in assignment panel'] = 'Rodzaj wartości w panelu zobowiązań';
+$_LANG['Full value without discount'] = 'Pełna kwota bez rabatu';
+$_LANG['Pay value with discount included'] = 'Kwota do zapłaty z uwzględnionym rabatem';
 $_LANG['Hide customer nodes box'] = 'Ukryj okno komputerów klienta';
 $_LANG['Access denied!'] = 'Brak dostępu!';
 $_LANG['and'] = 'i';
@@ -94,7 +97,7 @@ $_LANG['Reminder mail subject:'] = 'Temat listu z danymi do logowania:';
 $_LANG['Enter reminder mail subject'] = 'Wprowadź temat listu z danymi do logowania';
 $_LANG['Reminder mail body:'] = 'Treść listu z danymi do logowania:';
 $_LANG['Enter reminder mail body'] = 'Wprowadź treść listu z danymi do logowania';
-$_LANG['Reminder sms body:'] = 'Treść sms-a z danymi do logowania:';
+$_LANG['Reminder sms body:'] = 'Treść SMS-a z danymi do logowania:';
 $_LANG['Enter reminder sms body'] = 'Wprowadź treść SMS-a z danymi do logowania';
 $_LANG['Credential reminder couldn\'t be sent!'] = 'Przypomnienie danych do logowania nie mogło zostać wysłane!';
 
@@ -125,3 +128,5 @@ $_LANG['Logged as:'] = 'Zalogowany jako:';
 
 $_LANG['PIN validation'] = 'Walidacja PIN';
 $_LANG['Userpanel PIN validation'] = 'Walidacja PIN przy logowaniu do Panelu klienta';
+$_LANG['Update'] = 'Uaktualnij';
+$_LANG['<!userpanel>Confirm'] = 'Zapoznałem się';

@@ -46,7 +46,11 @@
 	</tr>
 	<tr>
 		<td colspan="5">
-			{$message.body|escape|replace:"\n":"<br/>"}
+			{if $message.contenttype == 'text/plain'}
+				{$message.body|trim|escape|regex_replace:"/\r?\n/":'<br/>'}
+			{else}
+				{$message.body}
+			{/if}
 		</td>
 	</tr>
 	{/foreach}

@@ -147,11 +147,22 @@ class Session
             $this->login = isset($_SESSION['session_login']) ? $_SESSION['session_login'] : null;
             $this->passwd = isset($_SESSION['session_passwd']) ? $_SESSION['session_passwd'] : null;
             $this->id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : 0;
+            if (isset($_SESSION['session_ip']) && $_SESSION['session_ip'] != $this->ip) {
+                $this->islogged = false;
+                writesyslog(
+                    "Session ip address does not match to web browser ip address. Customer ID: " . $this->login,
+                    LOG_WARNING
+                );
+                $this->LogOut();
+
+                return;
+            }
+            $this->ip = isset($_SESSION['session_ip']) ? $_SESSION['session_ip'] : null;
         }
 
         $authdata = null;
         if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
-            if ($this->ValidateRecaptchaResponse()) {
+            if ($this->passwd && $this->ValidateRecaptchaResponse()) {
                 $authdata = $this->VerifyPassword();
             }
         } elseif ($this->passwd) {
@@ -173,6 +184,7 @@ class Session
             $_SESSION['session_login'] = $this->login;
             $_SESSION['session_passwd'] = $this->passwd;
             $_SESSION['session_id'] = $this->id;
+            $_SESSION['session_ip'] = $this->ip;
 
             if ($this->id) {
                 $authinfo = $this->GetCustomerAuthInfo($this->id);

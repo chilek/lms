@@ -72,7 +72,7 @@
 							{if $reftype == 'division' || $reftype == 'divisionuser'}
 							<tr>
 								<td>
-									{icon name="division" class="fa-fw"}
+									{icon name="division"}
 								</td>
 								<td class="nobr bold">
 									{trans("Division")}
@@ -86,13 +86,13 @@
 							{if $reftype == 'divisionuser' || $reftype == 'user'}
 								<tr>
 									<td>
-										{icon name="user" class="fa-fw"}
+										{icon name="user"}
 									</td>
 									<td class="nobr bold">
 										{trans("User")}
 									</td>
 									<td>
-										<strong>{$config.userid}</strong>
+										<strong>{$userinfo.rname} ({$userinfo.login})</strong>
 										<INPUT type="hidden" name="config[userid]" value="{$config.userid}">
 									</td>
 								</tr>
@@ -100,7 +100,7 @@
 						{/if}
 						<TR>
 							<TD>
-								{icon name="configuration" class="fa-fw"}
+								{icon name="configuration"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Section:")}
@@ -121,7 +121,7 @@
 						</TR>
 						<TR>
 							<TD>
-								{icon name="service" class="fa-fw"}
+								{icon name="service"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Name:")}
@@ -156,7 +156,7 @@
 						<tbody>
 							<TR>
 								<TD>
-									{icon name="service" class="fa-fw"}
+									{icon name="service"}
 								</TD>
 								<TD class="bold">
 									{trans("Value:")}
@@ -169,7 +169,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="comment" class="fa-fw"}
+									{icon name="comment"}
 								</TD>
 								<TD class="bold">
 									{trans("Comment:")}
@@ -180,7 +180,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="wait" class="fa-fw"}
+									{icon name="wait"}
 								</TD>
 								<TD class="bold">
 									{trans("Status:")}
@@ -192,7 +192,7 @@
 							{if ConfigHelper::checkPrivilege('superuser') && empty($reftype)}
 								<TR>
 									<TD>
-										{icon name="type" class="fa-fw"}
+										{icon name="type"}
 									</TD>
 									<TD class="bold">
 										{trans("Type:")}
@@ -283,7 +283,7 @@
 
 		$('#delete-config').click(function() {
 			var name = '{$config.section}.{$config.var}';
-			confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function() {
 				location.href = $(this).attr('data-href');
 			});
 			return false;

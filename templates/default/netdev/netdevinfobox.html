@@ -1,383 +1,411 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox{if $devicepanel} lms-ui-sortable{/if}" id="netdevinfobox">
-    <COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 99%;">
-	</COLGROUP>
-	<THEAD>
-	<TR{if $devicepanel} class="hand lmsbox-titlebar" data-lmsbox-content="devicepanel"{/if}>
-		<TD>
-			<IMG SRC="img/netdev.gif" ALT="">
-		</TD>
-		<TD class="bold">
-			{$netdev.name} (#{$netdev.id})
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
-	    <TD WIDTH="100%" COLSPAN="2" {if $devicepanel}CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
-			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR>
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
-							{if !empty($netdev.ownerid)}
-							<tr>
-								<td><img src="img/customer.gif" alt=""></td>
-								<td class="bold">{trans("Owner:")}</td>
-								<td><a href="?m=customerinfo&id={$netdev.ownerid}">{$netdev.owner} (#{$netdev.ownerid})</a></td>
-							</tr>
-							{/if}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Status:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$_NETELEMENTSTATUSES[$netdev.status]}
-		</TD>
-	</TR>
-        {if $netdev.producer}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Producer:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.producer}
-		</TD>
-	</TR>
-	{/if}
-	{if $netdev.model}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/netdev_model.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Model:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.model}
-		</TD>
-	</TR>
-	{/if}
-	{if $netdev.serialnumber}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/serialnumber.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Serial number:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.serialnumber}
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/port.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Number of ports:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.ports}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/netdev_takenports.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Ports used:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.takenports}
-		</TD>
-	</TR>
-	{if $netdev.location || ($netdev.netnodeid && $netdev.netnode.location)}
-	<TR>
-		<TD>
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Location:")}
-		</TD>
-		<TD>
-			{if $netdev.location}
-				{if $netdev.location_name}{$netdev.location_name}, {/if}{$netdev.location}
-				{if $netdev.borough_name}
-					({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
-				{/if}
-			{else}
-				{$netdev.netnode.location}
-				{if $netdev.netnode.location_borough_name}
-					({$netdev.netnode.location_state_name} / {$netdev.netnode.location_district_name} / {$_BOROUGHTYPES[$netdev.netnode.location_borough_type]} {$netdev.netnode.location_borough_name})
-				{/if}
-				{trans("(from network node)")}
-			{/if}
-		</TD>
-	</TR>
-	{/if}
-	{if $netdev.longitude || $netdev.latitude || ($netdev.netnodeid && ($netdev.netnode.longitude || $netdev.netnode.latitude))}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS longitude:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			{if empty($netdev.longitude)}
-			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdev.netnode.longitude}">
-			{$netdev.netnode.longitude}&nbsp;{trans("(from network node)")}
-			{else}
-			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdev.longitude}">
-			{$netdev.longitude}
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS latitude:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			{if empty($netdev.latitude)}
-			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdev.netnode.latitude}">
-			{$netdev.netnode.latitude}&nbsp;{trans("(from network node)")}
-			{else}
-			<INPUT ID="latitude" TYPE="hidden" VALUE="{$netdev.latitude}">
-			{$netdev.latitude}
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="2%" COLSPAN="2">
-		</TD>
-		<TD WIDTH="98%">
-			<a HREF="?m=netdevmap&netdevid={$netdev.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
-		</TD>
-	</TR>
-	{/if}
-{if ConfigHelper::checkConfig('phpui.radius')}
-	{if $netdev.shortname}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Shortname:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.shortname}
-		</TD>
-	</TR>
-	{/if}
-	{if $netdev.nastype}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Type:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.nastypename}
-		</TD>
-	</TR>
-	{/if}
-	{if $netdev.clients}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Max clients:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.clients}
-		</TD>
-	</TR>
-	{/if}
-	{if $netdev.login}
-		<TR>
-			<TD WIDTH="1%">
-				<IMG SRC="img/radius.gif" ALT="">
-			</TD>
-			<TD WIDTH="1%" class="bold nobr">
-				{trans("Login:")}
-			</TD>
-			<TD WIDTH="98%">
-				{$netdev.login}
-			</TD>
-		</TR>
-	{/if}
-	{if $netdev.secret}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" class="bold nobr">
-			{trans("Secret:")}
-		</TD>
-		<TD WIDTH="98%">
-			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-				<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$netdev.secret}">
-					<i class="lms-ui-icon-clipboard"></i> {trans("Copy")}
-				</button>
-			{else}
-				{$netdev.secret}
-			{/if}
-		</TD>
-	</TR>
-	{/if}
-	{if $netdev.community}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/radius.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Community:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.community}
-		</TD>
-	</TR>
-	{/if}
-{/if}
-	{if $netdev.channelid}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/channel.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Channel:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        <a href="?m=ewxchinfo&id={$netdev.channelid}">{$netdev.channel} ({$netdev.channelid|string_format:"%04d"})</a>
-		</TD>
-	</TR>
-	{/if}
-	                        	</TABLE>
-				</TD>
-				<TD WIDTH="50%" style="vertical-align:top;">
-				        <TABLE WIDTH="100%" CELLPADDING="3">
-	{if $netdev.purchasetime}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/calendar.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Purchase date:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-		        {$netdev.purchasetime|date_format:"%Y/%m/%d"}
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/guarantee.png" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Guarantee:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			{if !$netdev.guaranteeperiod}
-				{trans("no guarantee")}
-			{elseif $netdev.guaranteeperiod == -1}
-				{trans("lifetime")}
-			{else}
-				{assign var=periodid value=$netdev.guaranteeperiod}
-				{$_GUARANTEEPERIODS.$periodid}
-		        	({if $netdev.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdev.guaranteetime|date_format:"%Y/%m/%d"}{/if})
-			{/if}
-		</TD>
-	</TR>
-        {if $netdev.description}
-        <TR>
-                <TD WIDTH="1%">
-                        <IMG SRC="img/desc.gif" ALT="">
-                </TD>
-                <TD WIDTH="99%" COLSPAN="2">
-                        <TABLE WIDTH="100%" CELLPADDING="5">
-                                <TR>
-                                        <TD class="fall superlight lms-ui-autolinker">
-						{$netdev.description|escape|replace:"\n":"<BR>"}
-                                        </TD>
-                                </TR>
-                        </TABLE>
-                </TD>
-        </TR>
-        {/if}
-	<TR>
-		<td>
-			<img src="img/money.gif" alt="">
-		</td>
-		<TD class="nobr bold">
-			{trans("Investment project:")}
-		</TD>
-		<TD>
-			{$netdev.projectname}
-		</TD>
-	</TR>
-
-	{if $netdev.netnodeid}
-	<TR>
-		<td>
-			<img src="img/netdev.gif" alt="">
-		</td>
-		<TD class="nobr bold">
-			{trans("Network node:")}
-		</TD>
-		<TD>
-			<a href="?m=netnodeinfo&id={$netdev.netnodeid}" class="bold">{$netdev.netnode.name}</a>
-		</TD>
-	</TR>
-	{/if}
-
-	                                        </TABLE>
-					</TD>
-				</TR>
-			</TABLE>
+<table class="lmsbox{if $devicepanel} lms-ui-tab-container lms-ui-sortable{/if}" id="netdevinfobox"
+	{if $devicepanel} data-label="{trans("Network Device")}"{/if}>
+    <colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr{if $devicepanel} class="hand lmsbox-titlebar" data-lmsbox-content="devicepanel"{/if}>
+			<td>
+				{icon name="netdev"}
+			</td>
+			<td>
+				<strong>{$netdev.name} (#{$netdev.id})</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr{if $devicepanel} id="devicepanel" style="display:none;"{/if}>
+			<td colspan="2" class="container">
+				<table class="lmsbox-inner">
+					<colgroup>
+						<col style="width: 50%;">
+						<col style="width: 50%;">
+					</colgroup>
+					<tr>
+						<td class="valign-top">
+							<table class="lmsbox-inner">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								{if !empty($netdev.ownerid)}
+									<tr>
+										<td>
+											{icon name="customer"}
+										</td>
+										<td>
+											<strong>{trans("Owner")}</strong>
+										</td>
+										<td>
+											<a href="?m=customerinfo&id={$netdev.ownerid}">
+												{$netdev.owner} (#{$netdev.ownerid})
+											</a>
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="status"}
+									</TD>
+									<td>
+										<strong>{trans("Status")}</strong>
+									</td>
+									<td>
+										{$_NETELEMENTSTATUSES[$netdev.status]}
+									</td>
+								</tr>
+								{if $netdev.producer}
+									<tr>
+										<td>
+											{icon name="hardware"}
+										</td>
+										<td>
+											<strong>{trans("Producer")}</strong>
+										</td>
+										<td>
+											{$netdev.producer}
+										</td>
+									</tr>
+								{/if}
+								{if $netdev.model}
+									<tr>
+										<td>
+											{icon name="hardware"}
+										</td>
+										<td>
+											<strong>{trans("Model")}</strong>
+										</td>
+										<td>
+											{$netdev.model}
+										</td>
+									</tr>
+								{/if}
+								{if $netdev.serialnumber}
+									<tr>
+										<td>
+											{icon name="sn"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Serial number")}</strong>
+										</td>
+										<td>
+											{$netdev.serialnumber}
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="port"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Number of ports")}</strong>
+									</td>
+									<td>
+										{$netdev.ports}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="port-connected"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Ports used")}</strong>
+									</td>
+									<td>
+										{$netdev.takenports}
+									</td>
+								</tr>
+								{if $netdev.location || ($netdev.netnodeid && $netdev.netnode.location)}
+									<tr>
+										<td>
+											{icon name="home"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Location")}</strong>
+										</td>
+										<td>
+											{if $netdev.location}
+												{if $netdev.location_name}{$netdev.location_name}, {/if}{$netdev.location}
+												{if $netdev.borough_name}
+													({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
+												{/if}
+											{else}
+												{$netdev.netnode.location}
+												{if $netdev.netnode.location_borough_name}
+													({$netdev.netnode.location_state_name} / {$netdev.netnode.location_district_name} / {$_BOROUGHTYPES[$netdev.netnode.location_borough_type]} {$netdev.netnode.location_borough_name})
+												{/if}
+												{trans("(from network node)")}
+											{/if}
+										</td>
+									</tr>
+								{/if}
+								{if $netdev.longitude || $netdev.latitude || ($netdev.netnodeid && ($netdev.netnode.longitude || $netdev.netnode.latitude))}
+									<tr>
+										<td>
+											{icon name="location"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("GPS longitude")}</strong>
+										</td>
+										<td>
+											{if empty($netdev.longitude)}
+												<input id="longitude" type="hidden" value="{$netdev.netnode.longitude}">
+												{$netdev.netnode.longitude}
+												{trans("(from network node)")}
+											{else}
+												<input id="longitude" type="hidden" value="{$netdev.longitude}">
+												{$netdev.longitude}
+											{/if}
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{icon name="location"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("GPS latitude")}</strong>
+										</td>
+										<td>
+											{if empty($netdev.latitude)}
+												<input id="longitude" type="hidden" value="{$netdev.netnode.latitude}">
+												{$netdev.netnode.latitude}
+												{trans("(from network node)")}
+											{else}
+												<input id="latitude" type="hidden" value="{$netdev.latitude}">
+												{$netdev.latitude}
+											{/if}
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+										</td>
+										<td>
+											{button type="link" icon="map" label="Show on map"
+												href="?m=netdevmap&netdevid={$netdev.id}"}
+										</td>
+									</tr>
+								{/if}
+								{if ConfigHelper::checkConfig('phpui.radius')}
+									{if $netdev.shortname}
+										<tr>
+											<td>
+												{icon name="radius"}
+											</td>
+											<td class="nobr">
+												<strong>{trans("Shortname")}</strong>
+											</td>
+											<td>
+												{$netdev.shortname}
+											</td>
+										</tr>
+									{/if}
+									{if $netdev.nastype}
+										<tr>
+											<td>
+												{icon name="radius"}
+											</td>
+											<td class="nobr">
+												<strong>{trans("Type")}</strong>
+											</td>
+											<td>
+												{$netdev.nastypename}
+											</td>
+										</tr>
+									{/if}
+									{if $netdev.clients}
+										<tr>
+											<td>
+												{icon name="radius"}
+											</td>
+											<td class="nobr">
+												<strong>{trans("Max clients")}</strong>
+											</td>
+											<td>
+												{$netdev.clients}
+											</td>
+										</tr>
+									{/if}
+									{if $netdev.login}
+										<tr>
+											<td>
+												{icon name="radius"}
+											</td>
+											<td class="nobr">
+												<strong>{trans("<!radius>Login")}</strong>
+											</td>
+											<td>
+												{$netdev.login}
+											</td>
+										</tr>
+									{/if}
+									{if $netdev.secret}
+										<tr>
+											<td>
+												{icon name="radius"}
+											</td>
+											<td class="nobr">
+												<strong>{trans("Secret")}</strong>
+											</td>
+											<td>
+												{if ConfigHelper::checkConfig('phpui.protect_passwords')}
+													{button class="lms-ui-button-clipboard" data_clipboard_text="{$netdev.secret}"
+														icon="copy" label="Copy"}
+												{else}
+													{$netdev.secret}
+												{/if}
+											</td>
+										</tr>
+									{/if}
+									{if $netdev.community}
+										<tr>
+											<td>
+												{icon name="radius"}
+											</td>
+											<td class="nobr">
+												<strong>{trans("Community")}</strong>
+											</td>
+											<td>
+												{$netdev.community}
+											</td>
+										</tr>
+									{/if}
+								{/if}
+								{if $netdev.channelid}
+									<tr>
+										<td>
+											<img src="img/channel.gif">
+										</td>
+										<td class="nobr">
+											<strong>{trans("Channel")}</strong>
+										</td>
+										<td>
+											<a href="?m=ewxchinfo&id={$netdev.channelid}">
+												{$netdev.channel}
+												(#{$netdev.channelid})
+											</a>
+										</td>
+									</tr>
+								{/if}
+							</table>
+						</td>
+						<td class="valign-top">
+							<table class="lmsbox-inner">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								{if $netdev.purchasetime}
+									<tr>
+										<td>
+											{icon name="calendar"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Purchase date")}</strong>
+										</td>
+										<td>
+											{$netdev.purchasetime|date_format:"%Y/%m/%d"}
+										</td>
+									</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="warranty"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Warranty")}</strong>
+									</td>
+									<td>
+										{if !$netdev.guaranteeperiod}
+											{trans("no guarantee")}
+										{elseif $netdev.guaranteeperiod == -1}
+											{trans("lifetime")}
+										{else}
+											{assign var=periodid value=$netdev.guaranteeperiod}
+											{$_GUARANTEEPERIODS.$periodid}
+												({if $netdev.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdev.guaranteetime|date_format:"%Y/%m/%d"}{/if})
+										{/if}
+									</td>
+								</tr>
+								{if $netdev.description}
+								<tr>
+									<td>
+										{icon name="description"}
+									</td>
+									<td colspan="2">
+										<table style="width: 100%;">
+											<tr>
+												<td class="fall superlight lms-ui-autolinker">
+													{$netdev.description|escape|replace:"\n":"<BR>"}
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								{/if}
+								<tr>
+									<td>
+										{icon name="invproject"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Investment project")}</strong>
+									</td>
+									<td>
+										{$netdev.projectname}
+									</td>
+								</tr>
+								{if $netdev.netnodeid}
+									<tr>
+										<td>
+											{icon name="netdev"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Network Node")}</strong>
+										</td>
+										<td>
+											<a href="?m=netnodeinfo&id={$netdev.netnodeid}">
+												<strong>{$netdev.netnode.name}</strong>
+											</a>
+										</td>
+									</tr>
+								{/if}
+							</table>
+						</td>
+					</tr>
+				</table>
 {if !$devicepanel}
-    		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%" COLSPAN="2" class="lms-ui-box-buttons">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
 {/if}
-			<div class="lms-ui-box-button-container">
-				{block name="netdevinfobox-buttons"}
-					{button icon="clone" id="clone-netdev" onclick="location.href = '?m=netdevadd&id={$netdev.id}&clone=1';" label="Clone"}
-					{button icon="edit" id="edit-netdev" onclick="location.href = '?m=netdevedit&id={$netdev.id}';" label="Edit" accesskey="E"}
-					{button icon="delete" id="delete-netdev" label="Delete" data_name="{$netdev.name}"}
-				{/block}
-			</div>
-			{if !empty($targetnetdevs)}
-			<div class="lms-ui-box-button-container">
-				{button icon="convert" id="replace-netdev" label="Replace"}
-				<select id="target-netdev" class="lms-ui-advanced-select">
-					<option value="">{trans("- select target network device -")}</option>
-					{foreach $targetnetdevs as $targetnetdev}
-						<option value="{$targetnetdev.id}" title="{$targetnetdev.producer} / {$targetnetdev.model}"
-							{if $netdev.ports > $targetnetdev.ports}disabled{/if}
-							>{$targetnetdev.name}{if !empty($targetnetdev.location)} ({$targetnetdev.location}){/if}</option>
-					{/foreach}
-				</select>
-			</div>
-			{/if}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
+				<div class="lms-ui-box-button-container">
+					{block name="netdevinfobox-buttons"}
+						{button icon="clone" id="clone-netdev" onclick="location.href = '?m=netdevadd&id={$netdev.id}&clone=1';" label="Clone"}
+						{button icon="edit" id="edit-netdev" onclick="location.href = '?m=netdevedit&id={$netdev.id}';" label="Edit" accesskey="E"}
+						{button icon="delete" id="delete-netdev" label="Delete" data_name="{$netdev.name}"}
+					{/block}
+				</div>
+				{if !empty($targetnetdevs)}
+					<div class="lms-ui-box-button-container">
+						{button icon="convert" id="replace-netdev" label="Replace"}
+						<select id="target-netdev" class="lms-ui-advanced-select">
+							<option value="">{trans("- select target network device -")}</option>
+							{foreach $targetnetdevs as $targetnetdev}
+								<option value="{$targetnetdev.id}" title="{$targetnetdev.producer} / {$targetnetdev.model}"
+									{if $netdev.ports > $targetnetdev.ports}disabled{/if}
+									>{$targetnetdev.name}{if !empty($targetnetdev.location)} ({$targetnetdev.location}){/if}</option>
+							{/foreach}
+						</select>
+					</div>
+					{/if}
+			</td>
+		</tr>
+	</tbody>
+</table>
 {if $devicepanel}
 <script>
 

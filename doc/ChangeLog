@@ -119,6 +119,72 @@ version 27-git (????-??-??):
   - enhancement: userpanel: introduced new 'finances' module option which controls visibility of all
     assignments (even those which will start in future) [chilan]
   - improvement: show customer phone contacts in event info views [chilan]
+  - enhancement: added service type selection in invoice report [chilan]
+  - improvement: allow to search nodes using status criterion [chilan]
+  - enhancement: --block-prechecks and --unclock-prechecks lms-notify.php parameters allow to specify
+    which type of checks are applied before executing actions [chilan]
+  - enhancement: userpanel:finance module, allow to control visibility of columns discount
+    and invoice [interduo]
+  - enhancement: lms-payments.php support new optional --issue-date parameter which gives possibility
+    to change issue date stored in generated cash and documents records [chilan]
+  - enhancement: userpanel:finance module, allow to control type of value shown
+    to the customer - with discount included or without (default) [interduo]
+  - enhancement: network properties can be selected in quick search field [chilan]
+  - improvement: added expire in 60, 90 and indicated number of days values in customer assignment
+    filters [chilan]
+  - improvement: %tid in ticket notifications is replaced by number without leading zeroes; if you want
+    to restore previous behavior you have to use digit prefix - ex. %6tid [chilan]
+  - improvement: 'rt.ticket_subject_remove_reply_prefix' controls if "Re:" or "Odp:" prefixes are removed
+    from ticket/message subject [chilan]
+  - enhancement: change the way liabilities data are displayed [ravvar]
+  - enhancement: introduce 'phpui.default_assignment_list_dataset' configuration variable to set default dataset
+    in liabilities list ('gross' by default) [ravvar]
+  - enhancement: lms-notify.php backend script allows to notify customers (and operator) about expiring document
+    pending action date [chilan]
+  - enhancement: added new customer consents - e-mail marketing and sms marketing [chilan]
+  - enhancement: new reward/penalty tariff flags: electronic invoice, e-mail marketing and sms marketing [chilan]
+  - improvement: allow to search customers by starting with phrase in customer name [chilan]
+  - enhancement: user issuer property allow to mask issuer name on documents [chilan]
+  - improvement: if GUS-REGON api returns many matched entities for single company identifier then allow
+    to select it from modal dialog [chilan]
+  - enhancement: waiting assignments filter in customer search form [chilan]
+  - improvement: 'payments.reward_penalty_deadline_grace_days' allows to be more polite for customers while
+    checking if they apply to reward/penalty for on-time payments (default: 0) [chilan]
+  - enhancement: uke income report can take customer group assignment history into account [chilan]
+  - enhancement: 'phpui.promotion_activation_at_same_day' allows to force the same day of activation
+    payment ('false' by default) [chilan]
+  - improvement: new 'active, without nodes' and 'waiting, without nodes' assignment filter selection
+    in customer search form [chilan]
+  - enhancement: allow to mark division as natural person (usefull for JPK reports) [chilan]
+  - enhancement: support for /31 networks [chilan]
+  - enhancement: implemented helpdesk category cloning [chilan]
+  - enhancement: 'dhcp.range_format' with default 'range %start% %end%;' allows to define expected
+    subnetwork range format [chilan]
+  - enhancement: implemented transaction log support for voip account management [chilan]
+  - enhancement: 'dhcp.network_begin' allows to define default subnetwork configuration fragment
+    (empty by default) [chilan]
+  - enhancement: implemented JPK-V7M declaration section generation as it is required by some external
+    financial software [chilan]
+  - enhancement: implemented --interval, --part-number, part-size parameter support with corresponding configuration
+    variables in lms-notify.php backend script [chilan]
+  - enhancement: added 'not sent to email' filter on invoice list [chilan]
+  - enhancement: lms-ui-tooltip-rollover allows to easily define element with toolips which are closed after
+    click out of them or mouse enter to them and then mouse leave [chilan]
+  - enhancement: lms-ui-tooltip-toggle elements toggle tooltip after click [chilan]
+  - enhancement: new smarty function 'hint' allows to conveniently embed hint buttons (supported modes
+    are 'toggle' and 'rollover') [chilan]
+  - enhancement: lms-notify.php support new action 'node-warning' which uses node warning flag [chilan]
+  - improvement: more notification symbols to use for ticket mail notification [interduo]
+  - improvement: 'mail.debug_level' can be applied when 'mail.debug_email' is not specified [chilan]
+  - improvement: changed default value of 'mail.backend' from 'pear' to 'phpmailer' [chilan]
+  - enhancement: added 'without location address' status filter in customerlist and customersearch forms [chilan]
+  - enhancement: implemented new group action on ticket list 'mark as read' [chilan]
+  - enhancement: allow to limit visible document types in userpanel documents tab [chilan]
+  - enhancement: implemented document approval operator notifications [chilan]
+  - enhancement: added '--division' parameter support in lms-notify.php backend script [chilan]
+  - improvement: 'invoices.show_balance_summary' enables friendlier customer balance presentation
+    on invoices [chilan]
+  - enhancement: new tickets panel in customerinfo form [interduo]
 
 version 26.0 (2020-12-15):
 

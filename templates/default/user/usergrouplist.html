@@ -15,27 +15,27 @@
 	<thead>
 	    <tr>
 		<td scope="col" class="nobr">
-		    <img src="img/group.gif" alt=""> {trans("Name:")}<br>
-		    <span class="lighter"><img src="img/info1.gif" alt=""> {trans("Description:")}</span>
+			{icon name="usergroup" label="Name"}<br>
+			{icon name="description" label="Description"}
 		</td>
 		<td scope="col" class="text-right lighter">{trans("ID:")}</td>
 		<td scope="col" class="text-right lighter">{trans("Members:")}</td>
-		<td scope="col" class="text-right nobr">{t a=$listdata.total|default:"0"}Total: $a{/t}</td>
+		<td scope="col" class="text-right nobr">{button icon="add" label="New Group" href="?m=usergroupadd"}</td>
 	    </tr>
 	</thead>
 	<tfoot>
 	    <tr>
-		<td colspan="2" class="text-right bold nobr"><img src="img/info2.gif" alt=""> {trans("Total:")}</td>
+		<td colspan="2" class="text-right bold nobr">{icon name="total" label="Total"}</td>
 		<td class="text-right bold">{$listdata.totalcount|default:"0"}</td>
-		<td>&nbsp;</td>
+		<td class="text-right bold">{t a=$listdata.total|default:"0"}Total: $a{/t}</td>
 	    </tr>
 	</tfoot>
 	<tbody>
 	    {foreach $usergrouplist as $usergroup}
 		<tr class="highlight" data-target-url="?m=usergroupinfo&id={$usergroup.id}" data-name="{$usergroup.name}">
 		    <td>
-				<img src="img/group.gif" alt="">&nbsp;<span class="bold">{$usergroup.name}</span><br>
-				{if $usergroup.description}<img src="img/info1.gif" alt="">&nbsp;{$usergroup.description}{/if}
+			{icon name="usergroup" label=$usergroup.name}<br>
+			{if $usergroup.description}{icon name="description" label=$usergroup.description}{/if}
 		    </td>
 		    <td class="text-right">
 				({$usergroup.id|string_format:"%04d"})
@@ -44,22 +44,21 @@
 				{$usergroup.userscount}
 		    </td>
 		    <td class="lms-ui-buttons text-right nobr">
-				{if $usergroup.userscount}
-				<A class="delete-usergroup-alert" href="#">
-				{else}
-				<a class="delete-usergroup" href="?m=usergroupdel&id={$usergroup.id}">
-				{/if}
-				<img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>
-				<a href="?m=usergroupedit&amp;id={$usergroup.id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></a>
-				<a href="?m=usergroupinfo&amp;id={$usergroup.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></a>
+			{if $usergroup.userscount}
+				{button type="link" icon="delete" tip="Delete" class="delete-usergroup-alert"}
+			{else}
+				{button type="link" icon="delete" tip="Delete" class="delete-usergroup" href="?m=usergroupdel&id={$usergroup.id}"}
+			{/if}
+			{button type="link" icon="edit" tip="Edit" href="?m=usergroupedit&id={$usergroup.id}"}
+			{button type="link" href="?m=usergroupinfo&id={$usergroup.id}" icon="info" tip="Info"}
 		    </td>
 		</tr>
 	    {foreachelse}
-		<tr>
-		    <td colspan="4" class="empty-table">
-			<p>{trans("There are no such groups in database.")}</p>
-		    </td>
-		</tr>
+			<tr>
+				<td colspan="4" class="empty-table">
+					{trans("There are no such groups in database.")}
+				</td>
+			</tr>
 		{/foreach}
 	</tbody>
     </table>

@@ -32,8 +32,7 @@
     display: none;
   }
 
-  &.lms-ui-error,
-  &[required] {
+  &.lms-ui-error {
     color: unset !important;
 
     .lms-ui-multiselect-launcher {
@@ -50,7 +49,7 @@
   .lms-ui-multiselect-launcher {
     vertical-align: middle;
     background-color: @lucid;
-    border: solid 1px @blend;
+    border: @form-element-border;
     min-height: 1.6em;
     box-sizing: border-box;
     display: flex;
@@ -138,13 +137,14 @@
       cursor: default;
       padding: 0;
       margin: 0;
-      border: solid 1px @blend;
+      border-bottom: solid 1px @blend;
       max-height: 200px;
       max-width: 350px;
       text-align: left;
       @media screen and (max-width: @mobile-max-width) {
         max-height: 80%;
         max-width: unset;
+        border: solid 1px @blend;
       }
       overflow-x: hidden;
       overflow-y: auto;
@@ -154,7 +154,7 @@
         margin: 0;
         background-color: @lucid;
         padding-left: 2em;
-        text-indent: -2.2em;
+        text-indent: -2em;
         @media screen and (max-width: @mobile-max-width) {
           padding-left: 1.2em;
           text-indent: -1.1em;

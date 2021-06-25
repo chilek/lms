@@ -1,71 +1,82 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS :{$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P>
-<TABLE width="100%" cellpadding="3">
-	<TR>
-		<TD>
-		<FORM NAME="changes" METHOD="POST" ACTION="?m=userpanel&module=info&f=changes">
-			<TABLE class="lmsbox">
-				<COLGROUP>
-					<COL style="width: 30%;">
-					<COL style="width: 15%;">
-					<COL style="width: 25%;">
-					<COL style="width: 25%;">
-					<COL style="width: 5%;">
-				</COLGROUP>
-				<THEAD>
-				<TR>
-					<TD class="bold nobr">{trans("Customer:")}</TD>
-					<TD class="nobr">{trans("Field:")}</TD>
-					<TD class="nobr">{trans("Old value:")}</TD>
-					<TD class="nobr">{trans("New value:")}</TD>
-					<TD>&nbsp;</TD>
-				</TR>
-				</THEAD>
-				<TBODY class="lms-ui-multi-check">
-				{cycle values="light,lucid" print=false}
-				{foreach $userchanges as $change}
-				<TR class="lms-ui-multi-check {cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD class="bold nobr" onClick="return self.location.href='?m=customerinfo&id={$change.customerid}';">
-						{$change.customername|truncate:50:" ..."} ({$change.customerid|string_format:"%04d"})
-					</TD>
-					<TD class="nobr">{t}{$change.fieldname|regex_replace:"/[^a-z]/":""}{/t}</TD>
-					<TD class="nobr">{$change.oldvalue}</TD>
-					<TD class="nobr">{$change.newvalue}</TD>
-					<TD>
-						<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="userchanges[]" VALUE="{$change.changeid}">
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="5">
-						<p>{trans("There are any changes to accept.")}</p>
-					</TD>
-				</TR>
-				{/foreach}
-				</TBODY>
-				<TFOOT>
-				<TR>
-					<td class="nobr">
-						<label>
-							{trans("Select All")}
-							<input type="checkbox" class="lms-ui-multi-check-all">
-						</label>
-					</td>
-					<TD class="buttons" COLSPAN="4">
-						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_save';document.changes.submit()">{trans("Save")} <IMG SRC="img/save.gif" alt=""></A>
-						/
-						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_delete';document.changes.submit()">{trans("Delete")} <IMG SRC="img/delete.gif" alt=""></A>
-					</TD>
-				</TR>
-				</TFOOT>
-			</TABLE>
-		</TD>
-	</FORM>
-	</TR>
-</TABLE>
-</P>
+
+<form name="changes" method="POST" action="?m=userpanel&module=info&f=changes" id="changes-form">
+</form>
+
+<table width="100%" cellpadding="3">
+	<tr>
+		<td>
+			<table class="lmsbox lms-ui-background-cycle">
+				<colgroup>
+					<col style="width: 30%;">
+					<col style="width: 15%;">
+					<col style="width: 25%;">
+					<col style="width: 25%;">
+					<col style="width: 5%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<td class="bold nobr">{trans("Customer:")}</td>
+						<td class="nobr">{trans("Field:")}</td>
+						<td class="nobr">{trans("Old value:")}</td>
+						<td class="nobr">{trans("New value:")}</td>
+						<td>&nbsp;</td>
+					</tr>
+				</thead>
+				<tbody class="lms-ui-multi-check">
+					{foreach $userchanges as $change}
+						<tr class="lms-ui-multi-check highlight"
+							<td class="bold nobr" data-target-url=?m=customerinfo&id={$change.customerid}">
+								{$change.customername|trunescape:50} ({$change.customerid|string_format:"%04d"})
+							</td>
+							<td class="nobr">{t}{$change.fieldname|regex_replace:"/[^a-z]/":""}{/t}</td>
+							<td class="nobr">{$change.oldvalue}</td>
+							<td class="nobr">{$change.newvalue}</td>
+							<td>
+								<input class="lms-ui-multi-check" type="checkbox" name="userchanges[]" value="{$change.changeid}"
+									form="changes-form">
+							</td>
+						</tr>
+					{foreachelse}
+						<tr>
+							<td class="empty-table" colspan="5">
+								{trans("There are any changes to accept.")}
+							</td>
+						</tr>
+					{/foreach}
+				</tbody>
+				<tfoot>
+					<tr class="dark">
+						<td class="buttons" colspan="4">
+							{button icon="save" label="Save" class="submit-changes-button" data_action="save"}
+							/
+							{button icon="delete" label="Delete" class="submit-changes-button" data_action="delete"}
+						</td>
+						<td class="nobr">
+							<label>
+								{trans("Select All")}
+								<input type="checkbox" class="lms-ui-multi-check-all" form="changes-form">
+							</label>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<script>
+
+	$(function() {
+		$('.submit-changes-button').click(function() {
+			$('#changes-form').attr('action', '?m=userpanel&module=info&f=submit_changes_' + $(this).attr('data-action')).submit();
+		});
+	});
+
+</script>
+
 {/block}

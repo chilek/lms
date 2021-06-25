@@ -344,7 +344,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 						COUNT(CASE WHEN i.status = '.MSG_ERROR.' THEN 1 ELSE NULL END) AS error
 					FROM messageitems i
 					LEFT JOIN (
-						SELECT DISTINCT a.customerid FROM customerassignments a
+						SELECT DISTINCT a.customerid FROM vcustomerassignments a
 							JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 						WHERE e.userid = lms_current_user()
 					) e ON (e.customerid = i.customerid)
@@ -366,7 +366,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 					COUNT(CASE WHEN i.status = '.MSG_ERROR.' THEN 1 ELSE NULL END) AS error
 				FROM messageitems i
 				LEFT JOIN (
-					SELECT DISTINCT a.customerid FROM customerassignments a
+					SELECT DISTINCT a.customerid FROM vcustomerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = i.customerid)

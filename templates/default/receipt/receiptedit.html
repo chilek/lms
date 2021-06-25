@@ -35,7 +35,7 @@
 	}
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptedit&action=setcustomer">
+<form name="setcustomer" id="setcusotmer" method="POST" action="?m=receiptedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
 <INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
@@ -143,7 +143,7 @@
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
+</form>
 {if $error.nocash}<h2 align="center"><span class="lms-ui-error">{$error.nocash}</span></h2>{/if}
 {if $receipt.selected && $customer}
 <P>
@@ -262,11 +262,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="4" class="empty-table">
-			<p>{trans("Receipt have no items. Use form below for items addition.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="4" class="empty-table">
+			{trans("Receipt have no items. Use form below for items addition.")}
+		</td>
+	</tr>
 	{/foreach}
 	{if $contents}
 	<TR>
@@ -335,9 +335,11 @@
     </TFOOT>
 </TABLE>
 </P>
-<SCRIPT>
-$(function() {
-	$('form[name="setcustomer"] [name="receipt[number]"]').focus();
-});
-</SCRIPT>
+<script>
+
+	$(function() {
+		$('[name="receipt[number]"]').focus();
+	});
+
+</script>
 {/block}

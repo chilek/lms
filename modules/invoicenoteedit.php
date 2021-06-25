@@ -255,6 +255,26 @@ switch ($action) {
             $cnote['numberplanid'] = $cnote['oldnumberplanid'];
         }
 
+        $use_current_customer_data = isset($cnote['use_current_customer_data']);
+
+        if ($use_current_customer_data) {
+            $customer = $LMS->GetCustomer($cnote['customerid'], true);
+        }
+
+        $divisionid = $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'];
+
+        $args = array(
+            'doctype' => DOC_CNOTE,
+            'customerid' => $cnote['customerid'],
+            'division' => $divisionid,
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($cnote['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
+        }
+
         if ($cnote['number']) {
             if (!preg_match('/^[0-9]+$/', $cnote['number'])) {
                 $error['number'] = trans('Credit note number must be integer!');
@@ -499,6 +519,24 @@ switch ($action) {
             $error['numberplanid'] = trans('Persmission denied!');
         }
 
+        $use_current_customer_data = isset($cnote['use_current_customer_data']);
+
+        if ($use_current_customer_data) {
+            $customer = $LMS->GetCustomer($cnote['customerid'], true);
+        }
+
+        $args = array(
+            'doctype' => DOC_CNOTE,
+            'customerid' => $cnote['customerid'],
+            'division' => $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'],
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($cnote['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
+        }
+
         $hook_data = array(
             'contents' => $contents,
             'cnote' => $cnote,
@@ -550,9 +588,8 @@ switch ($action) {
             }
         }
 
-        $use_current_customer_data = isset($cnote['use_current_customer_data']);
         if ($use_current_customer_data) {
-            $customer = $LMS->GetCustomer($cnote['customerid'], true);
+            $LMS->UpdateDocumentPostAddress($iid, $cnote['customerid']);
         }
 
         $division = $LMS->GetDivision($use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid']);

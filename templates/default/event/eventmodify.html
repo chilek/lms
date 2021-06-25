@@ -31,7 +31,7 @@
 		<INPUT type="submit" class="hiddenbtn">
 
 		{box_container id="event"}
-			{box_header icon="timetable" label="Title:"}
+			{box_header icon="timetable" label="Title:" icon_class="fa-fw"}
 				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" required size="50" {tip text="Enter event title" trigger="title"}>
 			{/box_header}
 
@@ -39,12 +39,12 @@
 				{box_panel}
 					{block name="eventmodify_left_panel"}
 
-					{box_row icon="uptime" label="Time:"}
+					{box_row icon="uptime" label="Time:" icon_class="fa-fw"}
 						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays
 							allow_past_date=ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
 					{/box_row}
 
-					{box_row icon="description" label="Description:"}
+					{box_row icon="description" label="Description:" icon_class="fa-fw"}
 						<TEXTAREA name="event[description]" id="description" cols="50" rows="5"
 								{tip text="Enter additional information (optional)" class="lms-ui-wysiwyg-editor" trigger="description"}
 								{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
@@ -96,8 +96,8 @@
 					{/box_row}
 
 					{$visibility=!empty($nodes)}
-					{box_row class="node-row" icon="node" label="Node:" visible=$visibility}
-						{if !isset($event.ticketid)}
+					{box_row class="node-row" icon="node" label="Node:" icon_class="fa-fw" visible=$visibility}
+						{if !empty($event.ticketid)}
 							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
 								<option value="">{trans("- none -")}</option>
 								{foreach $nodes as $node}
@@ -159,17 +159,18 @@
 
 					{function event_ticket_item_content}
 						{capture name="item_content_result" assign="item_content_result"}
-							{sprintf("#%06d", $item.id)}
+							{hint icon="info" mode="toggle" url="?m=rtticketinfo&id={$item.id}"}
+							#{$item.id}
 							<a href="?m=rtticketview&id={$item.id}">{$item.name}</a>
 						{/capture}
 					{/function}
 
 					{if $layout.module == 'eventedit'}
-						{box_row icon="note" label="Note:"}
+						{box_row icon="note" icon_class="fa-fw" label="Note:"}
 							<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
 						{/box_row}
 
-						{box_row icon="helpdesk" label="Assign ticket"}
+						{box_row icon="helpdesk" icon_class="fa-fw" label="Assign ticket"}
 							<input type="hidden" name="event[ticketid]" value="0">
 							{list id="eventedit-ticket" tipid="ticketid" tip="Test" items=$event.ticket
 								field_name_pattern="event[ticketid]" item_content="event_ticket_item_content"}
@@ -218,7 +219,7 @@
 					{trans("close event")}
 				</label>
 				{button type="submit" icon="save" accesskey="s" label="Submit"}
-				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backid)}#{$backid}{/if}';" label="Cancel"}
+				{button icon="cancel" href="{$backurl}" label="Cancel"}
 			{/box_buttons}
 		{/box_container}
         <div id="row"{if $layout.module == 'eventedit' || $event.helpdesk == 'none' || $event.helpdesk == 'assign'} style="display:none;"{/if}>

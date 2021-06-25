@@ -291,6 +291,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'login' => $user['login'],
             'firstname' => Utils::removeInsecureHtml($user['firstname']),
             'lastname' => Utils::removeInsecureHtml($user['lastname']),
+            'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
             'passwd' => crypt($user['password']),
             'rights' => $user['rights'],
@@ -307,9 +308,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
         );
         $user_inserted = $this->db->Execute(
-            'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone,
+            'INSERT INTO users (login, firstname, lastname, issuer, email, passwd, rights, hosts, position, ntype, phone,
                 passwdforcechange, passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
@@ -522,6 +523,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'login' => $user['login'],
             'firstname' => Utils::removeInsecureHtml($user['firstname']),
             'lastname' => Utils::removeInsecureHtml($user['lastname']),
+            'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
@@ -537,7 +539,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
             SYSLOG::RES_USER => $user['id']
         );
-        $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
+        $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, issuer = ?, email=?, rights=?,
 				hosts=?, position=?, ntype=?, phone=?, passwdforcechange=?, passwdexpiration=?, access=?,
 				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
 

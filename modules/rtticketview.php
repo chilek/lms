@@ -136,7 +136,7 @@ $LMS->MarkTicketAsRead($id);
 $layout['pagetitle'] = trans('Ticket Review: $a', sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
+$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
 if (isset($_GET['highlight'])) {
     $highlight = $_GET['highlight'];

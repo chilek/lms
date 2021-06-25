@@ -3,7 +3,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" class="hand text-left bold nobr" onClick="showOrHide('promotiontariffs');">
-			{icon name="money" class="fa-fw"}
+			{icon name="money"}
 			{if empty($promotion.tariffs)}{$count = 0}{else}{$count = count($promotion.tariffs)}{/if}
 			{t a=$count}Promotion's Tariffs ($a):{/t}
 		</TD>
@@ -60,11 +60,11 @@
 					</TD>
 				</TR>
 				{foreachelse}
-				<TR>
-					<TD colspan="7" class="empty-table">
-						<p>{trans("This promotion has no assigned tariffs.")}</p>
-					</TD>
-				</TR>
+				<tr>
+					<td colspan="7" class="empty-table">
+						{trans("This promotion has no assigned tariffs.")}
+					</td>
+				</tr>
 				{/foreach}
 				</TBODY>
 			</TABLE>

@@ -231,7 +231,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 						WHERE t.type IN (' . implode(',', $service) . ')
 					) s ON s.docid = d.id' : '') . '
 				LEFT JOIN (
-					SELECT DISTINCT a.customerid FROM customerassignments a
+					SELECT DISTINCT a.customerid FROM vcustomerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid)
@@ -273,7 +273,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE t.type IN (' . implode(',', $service) . ')
 				) s ON s.docid = d.id' : '') . '
 			LEFT JOIN (
-				SELECT DISTINCT a.customerid FROM customerassignments a
+				SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user()
 			) e ON (e.customerid = d.customerid)
@@ -469,15 +469,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT n.id,
                     (CASE WHEN a.planid IS NULL THEN (CASE WHEN u.planid IS NULL THEN 3 ELSE 1 END) ELSE (CASE WHEN u.planid IS NULL THEN 2 ELSE 0 END) END) AS idx
                 FROM numberplans n
-                LEFT JOIN numberplanassignments a ON a.planid = n.id AND a.divisionid = ?
-                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                LEFT JOIN numberplanassignments a ON a.planid = n.id
+                LEFT JOIN numberplanusers u ON u.planid = n.id
                 WHERE n.doctype = ? AND n.isdefault = 1
+                    AND (u.planid IS NULL OR u.userid = ?)
+                    AND (a.planid IS NULL OR a.divisionid = ?)
                 ORDER BY idx
                 LIMIT 1',
                 array(
-                    $divisionid,
-                    Auth::getCurrentUser(),
                     $doctype,
+                    Auth::getCurrentUser(),
+                    $divisionid,
                 )
             );
         } else {
@@ -485,13 +487,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT n.id,
                     (CASE WHEN u.planid IS NULL THEN 1 ELSE 0 END) AS idx
                 FROM numberplans n
-                LEFT JOIN numberplanusers u ON u.planid = n.id AND u.userid = ?
+                LEFT JOIN numberplanusers u ON u.planid = n.id
                 WHERE n.doctype = ? AND n.isdefault = 1
+                    AND (u.userid IS NULL OR u.userid = ?)
                 ORDER BY idx
                 LIMIT 1',
                 array(
-                    Auth::getCurrentUser(),
                     $doctype,
+                    Auth::getCurrentUser(),
                 )
             );
         }
@@ -1301,7 +1304,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, dc.fromdate AS datefrom,
 					d.reference, d.commitflags, d.confirmdate, d.closed,
-					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits
+					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
+                    (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
 				FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
 				LEFT JOIN docrights r ON r.doctype = d.type
@@ -1331,9 +1335,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
             $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
             $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
-            $mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
-            $mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
-            $mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
+            $operator_mail_recipient = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_recipient', '');
+            $operator_mail_format = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_format', 'text');
+            $operator_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_subject');
+            $operator_mail_body = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_body');
+            $customer_mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
+            $customer_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
+            $customer_mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
         }
 
         $customerinfos = array();
@@ -1369,97 +1377,141 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
-            if (!$userpanel || empty($doc['customerawaits'])) {
+            if (!$userpanel || (empty($doc['customerawaits']) && empty($doc['operatorawaits']))) {
                 continue;
             }
 
-            // customer awaits for signed document scan approval
-            // so we should probably notify him about document confirmation
-            if (!empty($mail_sender_address) && !empty($mail_subject) && !empty($mail_body)) {
-                if (!isset($customer_manager)) {
-                    $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-                }
-
-                if (!isset($customerinfos[$doc['customerid']])) {
-                    $customerinfos[$doc['customerid']] = $customer_manager->GetCustomer($doc['customerid']);
-                    $mail_contacts[$doc['customerid']] = $customer_manager->GetCustomerContacts($doc['customerid'], CONTACT_EMAIL);
-                }
-                $customerinfo = $customerinfos[$doc['customerid']];
-                $mail_recipients = $mail_contacts[$doc['customerid']];
-
-                $mail_subject = parse_notification_mail(
-                    $mail_subject,
-                    array(
-                        'customerinfo' => $customerinfo,
-                        'document' => array(
-                            'id' => $docid,
-                        ),
-                    )
-                );
-                $mail_body = parse_notification_mail(
-                    $mail_body,
-                    array(
-                        'customerinfo' => $customerinfo,
-                        'document' => array(
-                            'id' => $docid,
-                        ),
-                    )
-                );
-
-                if (!empty($mail_recipients)) {
-                    $destinations = array();
-                    foreach ($mail_recipients as $mail_recipient) {
-                        if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
-                            $destinations[] = $mail_recipient['contact'];
-                        }
+            if (!empty($mail_sender_address)) {
+                // notify operator about document confirmation
+                if (!empty($operator_mail_recipient) && !empty($operator_mail_subject) && !empty($operator_mail_body)) {
+                    if (!isset($customer_manager)) {
+                        $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
-                    if (!empty($destinations)) {
-                        $recipients = array(
-                            array(
-                                'id' => $doc['customerid'],
-                                'email' => implode(',', $destinations),
-                            )
-                        );
-                        $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
-                        if (!isset($message_manager)) {
-                            $message_manager = new LMSMessageManager($this->db, $this->auth, $this->cache, $this->syslog);
-                        }
-                        $message = $message_manager->addMessage(array(
-                            'type' => MSG_MAIL,
-                            'subject' => $mail_subject,
-                            'body' => $mail_body,
-                            'sender' => array(
-                                'name' => $mail_sender_name,
-                                'mail' => $mail_sender_address,
+
+                    if (!isset($customerinfos[$doc['customerid']])) {
+                        $customerinfos[$doc['customerid']] = $customer_manager->GetCustomer($doc['customerid']);
+                    }
+                    $customerinfo = $customerinfos[$doc['customerid']];
+
+                    $operator_mail_subject = parse_notification_mail(
+                        $operator_mail_subject,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => array(
+                                'id' => $docid,
                             ),
-                            'contenttype' => $mail_format == 'text' ? 'text/plain' : 'text/html',
-                            'recipients' => $recipients,
-                        ));
-                        $headers = array(
-                            'From' => $sender,
-                            'Recipient-Name' => $customerinfo['customername'],
-                            'Subject' => $mail_subject,
-                            'X-LMS-Format' => $mail_format,
-                        );
-                        if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
-                            $headers['Reply-To'] = $mail_reply_address;
-                        }
-                        if (!empty($mail_mdn)) {
-                            $headers['Return-Receipt-To'] = $mail_mdn;
-                            $headers['Disposition-Notification-To'] = $mail_mdn;
-                        }
-                        if (!empty($mail_dsn)) {
-                            $headers['Delivery-Status-Notification-To'] = true;
-                        }
-                        foreach ($destinations as $destination) {
-                            if (!empty($mail_dsn) || !empty($mail_mdn)) {
-                                $headers['X-LMS-Message-Item-Id'] = $message['items'][$doc['customerid']][$destination];
-                                $headers['Message-ID'] = '<messageitem-' . $message['items'][$doc['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
+                        )
+                    );
+                    $operator_mail_body = parse_notification_mail(
+                        $operator_mail_body,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => array(
+                                'id' => $docid,
+                            ),
+                        )
+                    );
+
+                    $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
+                    $headers = array(
+                        'From' => $sender,
+                        'Subject' => $operator_mail_subject,
+                        'X-LMS-Format' => $operator_mail_format,
+                    );
+                    if (!isset($lms)) {
+                        $lms = LMS::getInstance();
+                    }
+                    $lms->SendMail($operator_mail_recipient, $headers, $operator_mail_body);
+                }
+
+                // customer awaits for signed document scan approval
+                // so we should probably notify him about document confirmation
+                if (!empty($customer_mail_subject) && !empty($customer_mail_body)) {
+                    if (!isset($customer_manager)) {
+                        $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+
+                    if (!isset($customerinfos[$doc['customerid']])) {
+                        $customerinfos[$doc['customerid']] = $customer_manager->GetCustomer($doc['customerid']);
+                        $mail_contacts[$doc['customerid']] = $customer_manager->GetCustomerContacts($doc['customerid'], CONTACT_EMAIL);
+                    }
+                    $customerinfo = $customerinfos[$doc['customerid']];
+                    $mail_recipients = $mail_contacts[$doc['customerid']];
+
+                    $customer_mail_subject = parse_notification_mail(
+                        $customer_mail_subject,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => array(
+                                'id' => $docid,
+                            ),
+                        )
+                    );
+                    $customer_mail_body = parse_notification_mail(
+                        $customer_mail_body,
+                        array(
+                            'customerinfo' => $customerinfo,
+                            'document' => array(
+                                'id' => $docid,
+                            ),
+                        )
+                    );
+
+                    if (!empty($mail_recipients)) {
+                        $destinations = array();
+                        foreach ($mail_recipients as $mail_recipient) {
+                            if (($mail_recipient['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+                                $destinations[] = $mail_recipient['contact'];
                             }
-                            if (!isset($lms)) {
-                                $lms = LMS::getInstance();
+                        }
+                        if (!empty($destinations)) {
+                            $recipients = array(
+                                array(
+                                    'id' => $doc['customerid'],
+                                    'email' => implode(',', $destinations),
+                                )
+                            );
+                            $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
+                            if (!isset($message_manager)) {
+                                $message_manager = new LMSMessageManager($this->db, $this->auth, $this->cache, $this->syslog);
                             }
-                            $lms->SendMail($destination, $headers, $mail_body);
+                            $message = $message_manager->addMessage(array(
+                                'type' => MSG_MAIL,
+                                'subject' => $customer_mail_subject,
+                                'body' => $customer_mail_body,
+                                'sender' => array(
+                                    'name' => $mail_sender_name,
+                                    'mail' => $mail_sender_address,
+                                ),
+                                'contenttype' => $customer_mail_format == 'text' ? 'text/plain' : 'text/html',
+                                'recipients' => $recipients,
+                            ));
+                            $headers = array(
+                                'From' => $sender,
+                                'Recipient-Name' => $customerinfo['customername'],
+                                'Subject' => $customer_mail_subject,
+                                'X-LMS-Format' => $customer_mail_format,
+                            );
+                            if (!empty($mail_reply_address) && $mail_reply_address != $mail_sender_address) {
+                                $headers['Reply-To'] = $mail_reply_address;
+                            }
+                            if (!empty($mail_mdn)) {
+                                $headers['Return-Receipt-To'] = $mail_mdn;
+                                $headers['Disposition-Notification-To'] = $mail_mdn;
+                            }
+                            if (!empty($mail_dsn)) {
+                                $headers['Delivery-Status-Notification-To'] = true;
+                            }
+                            foreach ($destinations as $destination) {
+                                if (!empty($mail_dsn) || !empty($mail_mdn)) {
+                                    $headers['X-LMS-Message-Item-Id'] = $message['items'][$doc['customerid']][$destination];
+                                    $headers['Message-ID'] = '<messageitem-' . $message['items'][$doc['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
+                                }
+                                if (!isset($lms)) {
+                                    $lms = LMS::getInstance();
+                                }
+                                $lms->SendMail($destination, $headers, $customer_mail_body);
+                            }
                         }
                     }
                 }
@@ -1697,19 +1749,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function UpdateDocumentPostAddress($docid, $customerid)
     {
-        $post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
-        if ($post_addr) {
-            $this->db->Execute('DELETE FROM addresses WHERE id = ?', array($post_addr));
-        }
-
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $post_addr = $location_manager->GetCustomerAddress($customerid, POSTAL_ADDRESS);
+
         if (empty($post_addr)) {
-            $this->db->Execute(
-                "UPDATE documents SET post_address_id = NULL WHERE id = ?",
-                array($docid)
-            );
+            $post_addr = $location_manager->GetCustomerAddress($customerid, BILLING_ADDRESS);
+        }
+
+        $old_post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
+        if ($old_post_addr) {
+            $address = $location_manager->GetAddress($post_addr);
+            $address['address_id'] = $old_post_addr;
+            $location_manager->SetAddress($address);
         } else {
             $this->db->Execute(
                 'UPDATE documents SET post_address_id = ? WHERE id = ?',
@@ -2062,6 +2114,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $headers = array(
                     'From' => empty($dsn_email) ? $from : $dsn_email,
                     'To' => $mailto_qp_encoded,
+                    'Recipient-Name' => $document['name'],
                     'Subject' => $subject,
                     'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
                 );

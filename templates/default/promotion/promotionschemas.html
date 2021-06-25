@@ -3,7 +3,7 @@
     <THEAD>
 	<TR>
 		<TD width="99%" class="hand" onclick="showOrHide('promotionschemas');">
-			{icon name="money" class="fa-fw"}
+			{icon name="money"}
 			{if empty($promotion.schemas)}{$count = 0}{else}{$count = count($promotion.schemas)}{/if}
 			<B>{t a=$count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
@@ -62,11 +62,11 @@
 			    </TD>
 			</TR>
 			{foreachelse}
-			<TR>
-				<TD colspan="4" class="empty-table">
-					<p>{trans("This promotion hasn't got any schemas.")}</p>
-				</TD>
-			</TR>
+			<tr>
+				<td colspan="4" class="empty-table">
+					{trans("This promotion hasn't got any schemas.")}
+				</td>
+			</tr>
 			{/foreach}
 			</TBODY>
 			</TABLE>

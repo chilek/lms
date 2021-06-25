@@ -2,146 +2,161 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
+
 {if $newnoteid}
-<SCRIPT type="text/javascript">
-<!--
-window.open('?m=note&id={$newnoteid}');
-//-->
-</SCRIPT>
-{/if}
-<script type="text/javascript">
-<!--
-	function saveheader()
-	{
-		if (document.setcustomer.customer)
-			if (document.setcustomer.customer.value != 0)
-				document.setcustomer.customerid.value = document.setcustomer.customer.value;
+<script>
 
-		document.setcustomer.submit();
-	}
+	window.open('?m=note&id={$newnoteid}');
 
-	function setPayTime(type)
-	{
-		var list = document.setcustomer.elements['note[paytime_default]'];
-		list[0].checked = type ? true : false;
-		list[1].checked = type ? false : true;
-		document.setcustomer.elements['note[paytime]'].style.visibility = type ? 'hidden' : 'visible';
-	}
-
-	function printnote()
-	{
-		document.additem.action="?m=noteadd&action=save&print=1";
-		document.additem.submit();
-	}
-//-->
 </script>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&amp;action=setcustomer">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD WIDTH="100%" COLSPAN="2">
-			<B>{trans("Main Information:")}</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Debit note number:")}</B>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="note[number]" VALUE="{$note.number}" SIZE="10" {tip text="Enter note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			{if $numberplanlist}
-			<SELECT name="note[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplanlist}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$note.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$note.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-			{/foreach}
-			</SELECT>
-			{else}
-				<INPUT type="hidden" name="note[numberplanid]" value="0">
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Settlement date:")}</B>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-				{if $note.cdatewarning}
-					<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
-				{/if}
-			{else}
-				<INPUT TYPE="hidden" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}">
-				{$note.cdate|date_format:"%Y/%m/%d"}
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-        <TD WIDTH="1%" NOWRAP>
-	        <B>{trans("Deadline:")}</B>
-	    </TD>
-	    <TD WIDTH="99%" NOWRAP>
-			<INPUT type="radio" name="note[paytime_default]" value="1" id="type1" onchange="javascript:setPayTime(1)"{if !isset($note.paytime_default) || $note.paytime_default} checked{/if}><label for="type1">{trans("default")}</label>
-            <INPUT type="radio" name="note[paytime_default]" value="0" id="type0" onchange="javascript:setPayTime(0)"{if isset($note.paytime_default) && !$note.paytime_default} checked{/if}><label for="type0">{trans("other")}</label>
-	        <INPUT TYPE="TEXT" NAME="note[paytime]" VALUE="{$note.paytime}" SIZE="5"
-			{if !isset($note.paytime_default) || $note.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
-	                {* if $note.cdate}
-	                ({$note.cdate+$note.paytime*86400|date_format:"%Y/%m/%d"})
-	                {/if *}
-	        </TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Customer:")}
-		</TD>
-		<TD style="width: 99%;" class="nobr">
-			{if isset($customer.id)}
-				{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
-					selectname="customer" inputname="customerid"}
-			{else}
-				{customerlist form="setcustomer" customers=$customers selected=$note.customerid version=2
-					selectname="customer" inputname="customerid"}
-			{/if}
-		</TD>
-	</TR>
-	<tr>
-		<td class="bold">{trans("Currency:")}</td>
-		<td>
-			{currency_selection selected=$note.currency elementname="note[currency]"}
-		</td>
-	</tr>
-	<TR>
-		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
-{if $customer}
-<TABLE class="lmsbox">
-    <THEAD>
-        <TR>
-                <TD WIDTH="1%" nowrap>
-                        <IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
-                </TD>
-                <TD WIDTH="99%">
-                        <B>{$customer.customername}</B>
-                        &nbsp;&raquo;&nbsp; {if $customer.postoffice && $customer.postoffice != $customer.city && $customer.street}{$customer.city}, {/if}{$customer.address},
-                        	{$customer.zip} {if $customer.postoffice}{$customer.postoffice}{else}{$customer.city}{/if}
-                        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
-                </TD>
-        </TR>
-    </THEAD>
-</TABLE>
 {/if}
-<TABLE class="lmsbox lms-ui-background-cycle">
+
+<form name="setcustomer" id="setcustomer" method="POST" action="?m=noteadd&action=setcustomer">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+    <thead>
+		<tr>
+			<td colspan="2">
+				<strong>{trans("Main Information:")}</strong>
+			</td>
+		</tr>
+    </thead>
+    <tbody>
+		<tr>
+			<td class="nobr">
+				<strong>{trans("Debit note number:")}</strong>
+			</td>
+			<td class="nobr">
+				<input type="text" name="note[number]" value="{$note.number}" size="10" form="setcustomer"
+					{tip text="Enter note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+				{if $numberplanlist}
+					<select name="note[numberplanid]" {tip text="Select numbering plan"} required form="setcustomer">
+						<option value="">{trans("- select -")}</option>
+						{foreach $numberplanlist as $plan}
+							{$period = $plan.period}
+								<option value="{$plan.id}"{if $plan.id == $note.numberplanid} selected{/if}
+									>{number number=$plan.next template=$plan.template time=$note.cdate} ({$_NUM_PERIODS.$period})</option>
+						{/foreach}
+					</select>
+				{else}
+					<input type="hidden" name="note[numberplanid]" value="0" form="setcustomer">
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				<strong>{trans("Settlement date:")}</strong>
+			</td>
+			<td class="nobr">
+				{if ConfigHelper::checkPrivilege("invoice_consent_date")}
+					<input type="text" name="note[cdate]" value="{$note.cdate|date_format:"%Y/%m/%d"}" size="10"
+						placeholder="{trans("yyyy/mm/dd")}" form="setcustomer"
+						{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+					{if $note.cdatewarning}
+						<input type="hidden" name="note[cdatewarning]" value="1" form="setcustomer">
+					{/if}
+				{else}
+					<input type="hidden" name="note[cdate]" value="{$note.cdate|date_format:"%Y/%m/%d"}" form="setcustomer">
+					{$note.cdate|date_format:"%Y/%m/%d"}
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				<strong>{trans("Deadline:")}</strong>
+			</td>
+			<td class="nobr">
+				<label>
+					<input type="radio" name="note[paytime_default]" value="1" form="setcustomer"
+						{if !isset($note.paytime_default) || $note.paytime_default} checked{/if}>
+					{trans("default")}
+				</label>
+				<label>
+					<input type="radio" name="note[paytime_default]" value="0" form="setcustomer"
+						{if isset($note.paytime_default) && !$note.paytime_default} checked{/if}>
+					{trans("other")}
+				</label>
+				<input type="text" name="note[paytime]" value="{$note.paytime}" size="5" form="setcustomer"
+					{if !isset($note.paytime_default) || $note.paytime_default} style="visibility: hidden"{/if}
+					{tip text="Enter deadline in days (optional)" trigger="paytime"}>
+					{* if $note.cdate}
+					({$note.cdate+$note.paytime*86400|date_format:"%Y/%m/%d"})
+					{/if *}
+				</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				<strong>{trans("Customer:")}</strong>
+			</td>
+			<td class="nobr">
+				{if isset($customer.id)}
+					{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
+						selectname="customer" inputname="customerid" required=true}
+				{else}
+					{customerlist form="setcustomer" customers=$customers selected=$note.customerid version=2
+						selectname="customer" inputname="customerid" required=true}
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>{trans("Currency:")}</strong>
+			</td>
+			<td>
+				{currency_selection selected=$note.currency elementname="note[currency]" form="setcustomer"}
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="2">
+				{button type="submit" icon="save" label="Submit" form="setcustomer" id="submit-button"}
+			</td>
+		</tr>
+    </tbody>
+</table>
+
+{if $customer}
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="nobr">
+				{icon name="customer"}
+				<strong>{trans("Customer:")}</strong>
+			</td>
+			<td>
+				<strong>{$customer.customername}</strong>
+				{icon name="next"}
+				{if $customer.postoffice && $customer.postoffice != $customer.city && $customer.street}{$customer.city}, {/if}{$customer.address},
+				{$customer.zip} {if $customer.postoffice}{$customer.postoffice}{else}{$customer.city}{/if}
+				{icon name="next"}
+				{if $customer.balance < 0}
+					<span class="red">
+				{/if}
+				{moneyf($customer.balance)}
+				{if $customer.balance < 0}
+					</span>
+				{/if}
+			</td>
+		</tr>
+	</thead>
+</table>
+{/if}
+
+<form method="POST" id="additem" action="?m=noteadd&action=additem" name="additem">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox lms-ui-background-cycle">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 96%;">
@@ -149,127 +164,150 @@ window.open('?m=note&id={$newnoteid}');
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 	</colgroup>
-    <THEAD>
-	<TR>
-		<TD class="bold">
-			{trans("No.")}
-		</TD>
-		<TD>
-			{trans("Title:")}
-		</TD>
-		<td class="text-right">
-			{trans("Type")}
-		</td>
-		<TD class="text-right nobr">
-			{trans("Value:")}
-		</TD>
-		<TD>
-			&nbsp;
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	{foreach $contents as $item}
-	<TR class="highlight">
-		<TD class="bold">
-			{counter}.
-		</TD>
-		<TD>
-			{$item.description}
-		</TD>
-		<TD class="text-right">
-			{if isset($_SERVICETYPES[$item.servicetype])}
-				{$_SERVICETYPES[$item.servicetype]}
-			{else}
-				{trans("- none -")}
-			{/if}
-		</TD>
-		<TD class="text-right nobr">
-			{$item.value|string_format:"%01.2f"}
-		</TD>
-		<TD class="nobr">
-			<A HREF="?m=noteadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>
-	</TR>
-	{foreachelse}
-	<TR>
-		<TD COLSPAN="5" class="empty-table">
-			<p>{trans("Debit note have no items. Use form below for items addition.")}</p>
-		</TD>
-	</TR>
-	{/foreach}
-	{if $contents}
-	<TR>
-		<TD COLSPAN="3" class="bold text-right">
-			{trans("Total:")}
-		</TD>
-		<TD class="bold text-right nobr">
-			{sum array=$contents column=value string_format="%01.2f"}
-		</TD>
-		<TD>
-			&nbsp;
-		</TD>
-	</TR>
-	{/if}
-    </TBODY>
-	<TFOOT>
-	<FORM METHOD="POST" ACTION="?m=noteadd&amp;action=additem" NAME="additem">
-	<INPUT type="submit" class="hiddenbtn">
-	<TR>
-		<TD class="bold nobr">
-			{counter}.
-		</TD>
-		<TD class="nobr">
-			<INPUT TYPE="text" NAME="description" SIZE="80" {tip text="Enter description" trigger="description"}>
-		</TD>
-		<TD class="text-right nobr">
-			<select name="servicetype" {tip text="Select type" trigger="type"}>
-				<option value="">{trans("- none -")}</option>
-				{foreach $_SERVICETYPES as $servicetype => $label}
-					<option value="{$servicetype}">{$label}</option>
-				{/foreach}
-			</select>
-		</TD>
-		<TD class="text-right nobr">
-			<INPUT TYPE="text" NAME="value" SIZE="8" {tip text="Enter value" trigger="value"}>
-		</TD>
-		<TD>
-			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
-		</TD>
-	</TR>
-	<TR class="lms-ui-button-panel">
-		<TD colspan="5" class="text-right">
-			<A HREF="?m=notelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="?m=noteadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>
-			{if !$customer}
-			<A class="customer-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A class="customer-alert" href="#">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
-			{elseif !$contents}
-			<A class="document-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A class="document-alert" href="#">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
-			{else}
-			<A HREF="?m=noteadd&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printnote()">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
-			{/if}
-		</TD>
-	</TR>
-	</FORM>
-	</TFOOT>
-</TABLE>
-</FORM>
-<SCRIPT>
-$(function() {
-	$('form[name="setcustomer"] [name="note[number]"]').focus();
-});
+	<thead>
+		<tr>
+			<td>
+				<strong>{trans("No.")}</strong>
+			</td>
+			<td>
+				{trans("Title:")}
+			</td>
+			<td class="text-right">
+				{trans("Type")}
+			</td>
+			<td class="text-right nobr">
+				{trans("Value:")}
+			</td>
+			<td>
+				&nbsp;
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		{foreach $contents as $item}
+			<tr class="highlight">
+				<td>
+					<strong>{counter}.</strong>
+				</td>
+				<td>
+					{$item.description}
+				</td>
+				<td class="text-right">
+					{if isset($_SERVICETYPES[$item.servicetype])}
+						{$_SERVICETYPES[$item.servicetype]}
+					{else}
+						{trans("- none -")}
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{$item.value|string_format:"%01.2f"}
+				</td>
+				<td class="nobr">
+					{button type="link" icon="delete" tip="Remove this item from list"
+						href="?m=noteadd&action=deletepos&posuid={$item.posuid}"}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="5" class="empty-table">
+					{trans("Debit note have no items. Use form below for items addition.")}
+				</td>
+			</tr>
+		{/foreach}
+		{if $contents}
+			<tr>
+				<td colspan="3" class="text-right">
+					<strong>{trans("Total:")}</strong>
+				</td>
+				<td class="text-right nobr">
+					<strong>{sum array=$contents column=value string_format="%01.2f"}</strong>
+				</td>
+				<td>
+					&nbsp;
+				</td>
+			</tr>
+		{/if}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td class="nobr">
+				<strong>{counter}.</strong>
+			</td>
+			<td>
+				<input type="text" name="description" size="80" form="additem"
+					{tip text="Enter description" trigger="description"}>
+			</td>
+			<td class="text-right nobr">
+				<select name="servicetype" form="additem" {tip text="Select type" trigger="type"}>
+					<option value="">{trans("- none -")}</option>
+					{foreach $_SERVICETYPES as $servicetype => $label}
+						<option value="{$servicetype}">{$label}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td class="text-right">
+				<input type="text" name="value" size="8" form="additem"
+					{tip text="Enter value" trigger="value"}>
+			</td>
+			<td>
+				{button type="link" icon="save" tip="Add item" id="additem-button"}
+			</td>
+		</tr>
+		<tr class="lms-ui-button-panel">
+			<td colspan="5" class="text-right">
+				{button icon="cancel" label="Cancel" href="?m=notelist"}
+				{button icon="delete" label="Clear Contents" href="?m=noteadd&action=init"}
+				{if !$customer}
+					{button icon="save" class="customer-alert" label="Save"}
+					{button icon="print" class="customer-alert" label="Save & Print"}
+				{elseif !$contents}
+					{button icon="save" class="document-alert" label="Save"}
+					{button icon="print" class="document-alert" label="Save & Print"}
+				{else}
+					{button icon="save" label="Save" href="?m=noteadd&action=save"}
+					{button icon="print" label="Save & Print" id="print-button"}
+				{/if}
+			</td>
+		</tr>
+	</tfoot>
+</table>
+<script>
 
-$('.customer-alert').click(function() {
-	alertDialog($t("Customer not selected!"), this);
-	return;
-});
-$('.document-alert').click(function() {
-	alertDialog($t("Document has no items!"), this);
-	return;
-});
+	$(function() {
+		$('[name="note[number]"]').focus();
 
-</SCRIPT>
+		$('[name="note[paytime_default]"]').change(function() {
+			$('[name="note[paytime]"]').css('visibility', parseInt($(this).val()) ? 'hidden' : 'visible');
+		});
+
+		$('#setcustomer').submit(function() {
+			if ($(this).get(0).form.checkValidity()) {
+				return true;
+			}
+			$('#submit-button').prop('disabled', false);
+			return false;
+		});
+
+		$('#additem-button').click(function() {
+			$('#additem').submit();
+		});
+
+		$('#print-button').click(function() {
+			$('#additem').attr('action', '?m=noteadd&action=save&print=1').submit();
+		});
+
+		$('.customer-alert').click(function() {
+			alertDialog($t("Customer not selected!"), this);
+			return;
+		});
+
+		$('.document-alert').click(function() {
+			alertDialog($t("Document has no items!"), this);
+			return;
+		});
+
+
+	});
+
+</script>
 {/block}

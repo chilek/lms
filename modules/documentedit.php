@@ -111,6 +111,7 @@ if (isset($_POST['document'])) {
                 'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
+                'customerid' => $documentedit['customerid'],
             ))) {
                 $error['number'] = trans('Document with specified number exists!');
             }
@@ -204,6 +205,7 @@ if (isset($_POST['document'])) {
             $closed = 0;
         }
 
+        $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
         $DB->Execute(
             'UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, confirmdate = ?,
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
@@ -213,9 +215,13 @@ if (isset($_POST['document'])) {
                     $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
                     $documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
                     !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
-                    $documentedit['archived'],
-                    $documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0,
-                    $documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null,
+                    $allowed_archiving ? $documentedit['archived'] : $document['archived'],
+                    $allowed_archiving
+                        ? ($documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0)
+                        : $document['adate'],
+                    $allowed_archiving
+                        ? ($documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null)
+                        : $document['auserid'],
                     $documentedit['number'],
                     empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
                     $fullnumber,

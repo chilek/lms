@@ -292,7 +292,7 @@ switch ($type) {
                     JOIN voip_number_assignments vna ON vna.assignment_id = a.id
                     WHERE a.customerid = c.id AND t.type = ? AND vna.number_id = n.id
                 )'
-                . (empty($customergroups) ? '' : ' AND EXISTS (SELECT 1 FROM customerassignments ca WHERE ca.customerid = c.id AND ca.customergroupid IN (' . implode(',', $customergroups) . '))')
+                . (empty($customergroups) ? '' : ' AND EXISTS (SELECT 1 FROM vcustomerassignments ca WHERE ca.customerid = c.id AND ca.customergroupid IN (' . implode(',', $customergroups) . '))')
             . ' GROUP BY c.id, c.lastname, c.name
             ORDER BY c.lastname, c.name ASC',
             'id',

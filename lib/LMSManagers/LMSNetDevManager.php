@@ -549,7 +549,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
                 $address_id = $LMS->InsertAddress($data);
 
-                if (!empty($address_id)) {
+                if (!empty($address_id) && $address_id > 0) {
                     $this->db->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?', array($address_id, $id));
                 }
             }

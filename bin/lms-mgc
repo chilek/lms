@@ -225,8 +225,8 @@ sub instance($)
 	{
 		$customergroups = "UPPER('$customergroups')";
 	        $customergroups =~ s/[ \t]+/\'\),UPPER\(\'/g;
-		$groups_sql .= " WHERE ownerid IN (SELECT DISTINCT a.customerid 
-				FROM customerassignments a 
+		$groups_sql .= " WHERE ownerid IN (SELECT DISTINCT a.customerid
+				FROM vcustomerassignments a
 				JOIN customergroups g ON (a.customergroupid = g.id)
 				WHERE UPPER(g.name) IN ($customergroups)) ";
 	}
@@ -241,8 +241,8 @@ sub instance($)
 			$groups_sql .= ' WHERE';
 		}
 		
-		$groups_sql .= " ownerid NOT IN (SELECT DISTINCT a.customerid 
-				FROM customerassignments a 
+		$groups_sql .= " ownerid NOT IN (SELECT DISTINCT a.customerid
+				FROM vcustomerassignments a
 				JOIN customergroups g ON (a.customergroupid = g.id)
 				WHERE UPPER(g.name) IN ($excluded_customergroups)) ";
 	}

@@ -26,41 +26,67 @@
 
 class LMSSmartyPlugins
 {
+    const HINT_TYPE_ROLLOVER = 'rollover';
+    const HINT_TYPE_TOGGLE = 'toggle';
+
     public static function buttonFunction(array $params, $template)
     {
-        // optional - we want buttons without icon
-        $icon = isset($params['icon']) ? $params['icon'] : null;
-        // optional - button by default,
-        $type = isset($params['type']) ? $params['type'] : 'button';
-        // optional - text tip,
-        $tip = isset($params['tip']) ? trans($params['tip']) : null;
-        // optional - button with icon only don't use label
-        $label = isset($params['label']) ? trans($params['label']) : null;
-        // optional - href attribute of link type button
-        $href = isset($params['href']) ? trans($params['href']) : null;
-        // optional - allow to easily attach event handler in jquery,
-        $id = isset($params['id']) ? $params['id'] : null;
-        // optional - additional css classes which are appended to class attribute
-        $class = isset($params['class']) ? $params['class'] : null;
-        // optional - allow to specify javascript code lauched after click,
-        $onclick = isset($params['onclick']) && !empty($params['onclick']) ? $params['onclick'] : null;
-        // optional - if open in new window after click
-        $external = isset($params['external']) && $params['external'];
-        // optional - data-resourceid attribute value
-        $resourceid = isset($params['resourceid']) ? $params['resourceid'] : null;
-        // optional - if element should be initially visible
-        $visible = isset($params['visible']) ? $params['visible'] : true;
-        // optional - keyboard shortcut
-        $accesskey = isset($params['accesskey']) ? $params['accesskey'] : null;
-        // optional - contents copied to clipboard
-        $clipboard = isset($params['clipboard']) ? $params['clipboard'] : null;
-        // optional - form id
-        $form = isset($params['form']) ? $params['form'] : null;
+        static $defaults = array(
+            'icon' => null,
+            'type' => 'button',
+            'tip' => null,
+            'label' => null,
+            'href' => null,
+            'class' => null,
+            'onclick' => null,
+            'external' => false,
+            'resourceid' => null,
+            'visible' => true,
+            'disabled' => false,
+            'clipboard' => null,
+        );
 
-        $data_attributes = '';
+        extract($defaults);
+
+        $other_attributes = '';
+
         foreach ($params as $name => $value) {
-            if (strpos($name, 'data_') === 0) {
-                $data_attributes .= ' ' . str_replace('_', '-', $name) . '=\'' . $value . '\'';
+            switch ($name) {
+                // optional - we want buttons without icon
+                case 'icon':
+                // optional - button by default,
+                case 'type':
+                // optional - href attribute of link type button
+                case 'href':
+                // optional - additional css classes which are appended to class attribute
+                case 'class':
+                // optional - data-resourceid attribute value
+                case 'resourceid':
+                // optional - contents copied to clipboard
+                case 'clipboard':
+                    $$name = $value;
+                    break;
+                // optional - text tip,
+                case 'tip':
+                // optional - button with icon only don't use label
+                case 'label':
+                    $$name = trans($value);
+                    break;
+                // optional - allow to specify javascript code lauched after click,
+                case 'onclick':
+                    $onclick = !empty($value) ? $value : null;
+                    break;
+                // optional - if open in new window after click
+                case 'external':
+                // optional - if element should be initially visible
+                case 'visible':
+                // optional - if element should be initially disabled
+                case 'disabled':
+                    $$name = !empty($value);
+                    break;
+                default:
+                    $other_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+                    break;
             }
         }
 
@@ -70,15 +96,14 @@ class LMSSmartyPlugins
                 : ($onclick || !$href ? '' : ' onclick="location.href = \'' . $href . '\';"'))
             . ' class="lms-ui-button' . ($type == 'link-button' ? ' lms-ui-link-button ' : '')
             . ($class ? ' ' . $class : '') . '"'
-            . ($id ? ' id="' . $id . '"' : '') . ((($type == 'button' && empty($href)) || $type != 'button') && $onclick ? ' onclick="' . $onclick . '"' : '')
-            . ($form ? ' form="' . $form . '"' : '')
+            . ((($type == 'button' && empty($href)) || $type != 'button') && $onclick ? ' onclick="' . $onclick . '"' : '')
             . ($tip ? ' title="' . $tip . '" data-title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')
             . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
-            . $data_attributes
+            . $other_attributes
             . ($visible ? '' : ' style="display: none;"')
-            . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
+            . ($disabled ? ' disabled' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
             . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
@@ -139,6 +164,7 @@ class LMSSmartyPlugins
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
+        $tip = trans(isset($params['tip']) ? $params['tip'] : 'Select division');
 
         if (isset($user_divisions) && empty($user_divisions)) {
             if ($force_global_division_context) {
@@ -162,7 +188,8 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" ' . self::tipFunction(array('text' => 'Select division'), $template)
+                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" '
+                    . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . '>';
@@ -195,6 +222,8 @@ class LMSSmartyPlugins
 
         $customername = !isset($params['customername']) || $params['customername'];
 
+        $form = isset($params['form']) ? $params['form'] : null;
+
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
         }
@@ -203,20 +232,20 @@ class LMSSmartyPlugins
             . ($version == 2 ? ' data-show-id="1"' : '') . '>' . PHP_EOL;
 
         if (!empty($params['customers'])) {
-            $result .= sprintf('<select name="%s" value="%s" ', $params['selectname'], $params['selected']);
+            $result .= sprintf('<select name="%s" value="%s"', $params['selectname'], $params['selected']);
+
+            if (isset($form)) {
+                $result .= ' form="' . $form . '"';
+            }
 
             if (!empty($params['select_id'])) {
-                $result .= 'id="' . $params['select_id'] . '" ';
+                $result .= ' id="' . $params['select_id'] . '"';
             }
 
             if (!empty($params['selecttip'])) {
-                $result .= self::tipFunction(array('text' => $params['selecttip']), $template);
+                $result .= ' ' . self::tipFunction(array('text' => $params['selecttip']), $template);
             } else {
-                $result .= self::tipFunction(array('text' => 'Select customer (optional)'), $template);
-            }
-
-            if (!empty($params['customOnChange'])) {
-                $result .= ' onChange="' . $params['customOnChange'] . '"';
+                $result .= ' ' . self::tipFunction(array('text' => 'Select customer (optional)'), $template);
             }
 
             $result .= '">' . PHP_EOL;
@@ -260,6 +289,10 @@ class LMSSmartyPlugins
         $result .= '<input type="text" name="' . $params['inputname'] . '"' . (empty($params['selected']) ? '' : ' value="'
             . $params['selected'] . '"') . ' class="lms-ui-customer-select-customerid" data-prev-value="' . $params['selected'] . '" size="5"';
 
+        if (isset($form)) {
+            $result .= ' form="' . $form . '"';
+        }
+
         if (!empty($params['input_id'])) {
             $result .= ' id="' . $params['input_id'] . '"';
         }
@@ -286,8 +319,9 @@ class LMSSmartyPlugins
 
         if ($version == 2) {
             $result .= '<input type="text"'
-                . ' placeholder="' . trans('Search for customer')
-                . '" ' . self::tipFunction(
+                . ' placeholder="' . trans('Search for customer') . '"'
+                . (isset($form) ? ' form="' . $form . '"' : '')
+                . ' ' . self::tipFunction(
                     array(
                         'text' => 'Search for customer',
                         'trigger' => 'customerid',
@@ -329,6 +363,7 @@ class LMSSmartyPlugins
         }
 
         $form = isset($params['form']) ? $params['form'] : null;
+        $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
         // special treatment of file upload errors marked in error associative array
         $tmpl = $template->getTemplateVars('error');
@@ -351,9 +386,9 @@ class LMSSmartyPlugins
 			</div>
 			<div class="lms-ui-button-fileupload-container">
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
-            . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-fileupload"></i><span class="lms-ui-label">' . trans("Select files") . '</span></button>
+            . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-upload"></i><span class="lms-ui-label">' . trans("Select files") . '</span></button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
-				' . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0)
+				' . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0) && $image_resize
                     ? '<label><input type="checkbox" class="dont-scale-images" value="1">' . trans("don't scale images") . '</label>'
                     : '') . '
 			</div>
@@ -533,7 +568,7 @@ class LMSSmartyPlugins
           </tr>';
 
         echo '<tr>
-              <td class="nobr">' . trans('Postcode:') . '</td>
+              <td class="nobr">' . trans('Postcode') . '</td>
               <td>
                 <input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10">
                 <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
@@ -541,7 +576,7 @@ class LMSSmartyPlugins
           </tr>';
 
         echo '<tr>
-              <td class="nobr">' . trans('Post office:') . '</td>
+              <td class="nobr">' . trans('Post office') . '</td>
               <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
           </tr>';
 
@@ -555,7 +590,7 @@ class LMSSmartyPlugins
         }
 
         if ($countries) {
-            echo '<tr><td>' . trans('Country:') . '</td><td>
+            echo '<tr><td>' . trans('Country') . '</td><td>
                 <select name="' . $input_name_country_id . '" data-address="country">
                 <option value="">---</option>';
 
@@ -699,7 +734,7 @@ class LMSSmartyPlugins
             $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'home', 'tip' => 'Copy from billing address', 'class' => 'copy-address', 'data_type' => BILLING_ADDRESS), $template);
         }
         if (isset($params['data']['post_address_button'])) {
-            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'mail', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
+            $params['data']['buttons'] .= self::buttonFunction(array('icon' => 'message', 'tip' => 'Copy from post address', 'class' => 'copy-address', 'data_type' => POSTAL_ADDRESS), $template);
         }
 
         self::locationBoxFunction($params['data'], $template);
@@ -718,15 +753,14 @@ class LMSSmartyPlugins
             $result .= '<tr id="mac' . $key . '" class="mac">
 			<td style="width: 100%;">
 				<input type="text" name="' . $form . '[macs][' . $key . ']" value="' . $mac . '" ' . (!$i ? 'required ' : '')
-                . self::tipFunction(array(
-                    'text' => "Enter MAC address",
-                    'trigger' => 'mac' . $key
-                ), $template) . '>
+                . ' placeholder="' . trans('MAC address') . '">
 				<span class="ui-icon ui-icon-closethick remove-mac"></span>
-				<a href="#" class="mac-selector"
-					' . self::tipFunction(array(
+				<a class="lms-ui-button mac-selector"
+                ' . self::tipFunction(array(
                     'text' => "Click to select MAC from the list",
-                ), $template) . '>&raquo;&raquo;&raquo;</a>
+                ), $template) . '>' . self::iconFunction(array(
+                    'name' => 'next',
+                ), $template) . '</a>
 			</td>
 		</tr>';
             $i++;
@@ -809,7 +843,7 @@ class LMSSmartyPlugins
             $tip = isset($params['tip']) ? trans($params['tip']) : null;
             $label = isset($params['label']) ? $params['label'] : null;
             $labelid = isset($params['labelid']) ? $params['labelid'] : null;
-            $visible = (isset($params['visible']) && $params['visible']) || !isset($params['visible']);
+            $visible = !isset($params['visible']) || !empty($params['visible']);
             $class = isset($params['class']) ? $params['class'] : null;
             $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
             $label_class = isset($params['label_class']) ? $params['label_class'] : null;
@@ -953,6 +987,8 @@ class LMSSmartyPlugins
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
         // optional - text label
         $label = isset($params['label']) ? trans($params['label']) : null;
+        // optional - if icon should have fixed width
+        $fw = !isset($params['fw']) || !empty($params['fw']);
 
         $data_attributes = '';
         foreach ($params as $key => $value) {
@@ -967,6 +1003,7 @@ class LMSSmartyPlugins
             . (isset($name) ? (strpos($name, 'lms-ui-icon-') === 0 || strpos($name, 'fa') === 0
                 ? $name : 'lms-ui-icon-' . $name) : '')
             . (isset($class) ? ' ' . $class : '')
+            . ($fw ? ' fa-fw' : '')
             . '"'
             . (isset($tip) ? ' title="' . $tip . '"' : '')
             . $data_attributes
@@ -1098,5 +1135,19 @@ class LMSSmartyPlugins
         return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'
             . $options
             . '</select>';
+    }
+
+    public static function hintFunction(array $params, $template)
+    {
+        $mode = isset($params['mode']) && $params['mode'] == self::HINT_TYPE_ROLLOVER
+            ? self::HINT_TYPE_ROLLOVER : self::HINT_TYPE_TOGGLE;
+
+        return '<a class="lms-ui-button lms-ui-hint-' . $mode
+            . (isset($params['class']) ? ' ' . $params['class'] : '') . '"'
+            . (isset($params['content']) ? ' data-hint="' . htmlspecialchars(trans($params['content'])) . '"' : '')
+            . (isset($params['text']) ? ' data-hint="' . htmlspecialchars($params['text']) . '"' : '')
+            . (isset($params['url']) ? ' data-url="' . $params['url'] . '"' : '')
+            . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
+            . '><i class="lms-ui-icon-' . (isset($params['icon']) ? $params['icon'] : 'hint') . ' fa-fw"></i></a>';
     }
 }

@@ -55,24 +55,17 @@ function write_ini_file($configs_arr)
 
 function write_sql_file($configs_arr)
 {
-    $db = LMSDB::getInstance();
     $content = "";
-
     foreach ($configs_arr as $key => $elem) {
         unset($elem['id'], $elem['userid'], $elem['configid'], $elem['divisionid']);
-        $elem['disabled'] = intval($elem['disabled']);
-        $elem['type'] = intval($elem['type']);
-        $elem['value'] = $db->Escape($elem['value']);
-        $elem['description'] = $db->Escape($elem['description']);
-
         $content .= "INSERT INTO uiconfig (section, var, value, description, disabled, type)";
         $content .= " VALUES ("
             . "'" . $elem['section'] . "',"
             . "'" . $elem['var'] . "',"
-            . $elem['value'] . ","
-            . $elem['description'] . ","
+            . "'" . $elem['value'] . "',"
+            . "'" . $elem['description'] . "',"
             . $elem['disabled'] . ","
-            . $elem['type'] . ");\n";
+            . $elem['type'] . ");". PHP_EOL;
     }
     print $content;
 }
@@ -95,6 +88,20 @@ if (isset($_POST['marks'])) {
 if (!empty($configs)) {
     $cdate = date('YmdHi', time());
     $filename = 'configexport';
+
+    if ($fileType == 'ini') {
+        if (count($configs) == 1) {
+            reset($configs);
+            $section = key($configs);
+            $filename .= '-' . $section;
+        }
+    } else {
+        $section = array_unique(array_column($configs, 'section'));
+        $distinctSections = count($section);
+        if (count($section) == 1) {
+            $filename .= '-' . $section[0];
+        }
+    }
     if (!isset($_GET['source-division']) && !isset($_GET['source-user'])) {
         $filename .= '-' . trans('global value');
     }

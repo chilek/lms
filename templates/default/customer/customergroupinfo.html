@@ -3,58 +3,67 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/group.gif" alt="">
-		</TD>
-		<TD style="width: 99%;" class="bold nobr" colspan="2">
-			{$customergroup.name} ({$customergroup.id|string_format:"%04d"})
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/customers.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Members Count:")}
-		</TD>
-		<TD style="width: 98%;">
-			{$customergroup.count}
-		</TD>
-	</TR>
-	{if $customergroup.description}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/info1.gif" alt="">
-		</TD>
-		<TD style="width: 98%;" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR><TD class="fall superlight">
-					{$customergroup.description|escape|replace:"\n":"<BR>"}
-				</TD></TR>
-			</TABLE>
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD class="text-right" colspan="3">
-			<A href="?m=customergroupedit&amp;id={$customergroup.id}{if $membersnetid}&amp;membersnetid={$membersnetid}{/if}{if $othersnetid}&amp;othersnetid={$othersnetid}{/if}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-			{if $customergroup.count == 0} <A id="delete-group" href="?m=customergroupdel&id={$customergroup.id}">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>{/if}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="customergroup"}
+			</td>
+			<td class="nobr" colspan="2">
+				<strong>{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="customer"}
+			</td>
+			<td class="nobr" colspan="2">
+				<strong>{trans("Members Count:")}</strong>
+				{$customergroup.count}
+			</td>
+		</tr>
+		{if $customergroup.description}
+		<tr>
+			<td>
+				{icon name="info"}
+			</td>
+			<td colspan="2">
+				<table width="100%" cellpadding="3">
+					<tr>
+						<td class="fall superlight">
+							{$customergroup.description|escape|replace:"\n":"<br>"}
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		{/if}
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button icon="edit" label="Edit"
+					href="?m=customergroupedit&id={$customergroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}"}
+				{if $customergroup.count == 0}
+					{button icon="delete" label="Delete" id="delete-group" data_customer_group_id=$customergroup.id}
+				{/if}
+			</td>
+		</tr>
+	</tbody>
+</table>
 {include file="customer/customergroupassignments.html"}
-	<script>
-		$('#delete-group').click(function() {
-			confirmDialog($t("Are you sure, you want to delete that group?"), this).done(function() {
-				location.href = $(this).attr('href');
-			});
-			return false;
+<script>
+
+	$('#delete-group').click(function() {
+		confirmDialog($t("Are you sure, you want to delete that group?"), this).done(function() {
+			location.href = '?m=customergroupdel&id=' + $(this).attr('data-customer-group-id');
 		});
-	</script>
+		return false;
+	});
+
+</script>
 {/block}

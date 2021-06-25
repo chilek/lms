@@ -62,10 +62,10 @@
 				setCookie('main-menu-visible', mainMenuVisible);
 			});
 
-			$('body').toggleClass('lms-ui-mobile', parseInt($(window).outerWidth()) <= 800);
+			$('body').toggleClass('lms-ui-mobile', parseInt($(window).width()) <= 800);
 
 			$(window).resize(function() {
-				var mobileMode = parseInt($(window).outerWidth()) <= 800;
+				var mobileMode = parseInt($(window).width()) <= 800;
 				$('body').toggleClass('lms-ui-mobile', mobileMode)
 					.css('margin-top', mobileMode ? '' : $('#lms-ui-tool-panels').outerHeight());
 				$('.lms-ui-popup:visible').toggleClass('fullscreen-popup', mobileMode);

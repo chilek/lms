@@ -26,6 +26,7 @@
   text-align: left;
   min-width: 250px;
   font-size: @font-size-high;
+  font-weight: initial;
   @media screen and (max-width: @font-size-normal-max-width) {
     font-size: @font-size-normal;
   }
@@ -68,6 +69,9 @@
 }
 
 .chosen-container-single {
+  &.chosen-with-drop .chosen-single {
+    border: @form-element-border;
+  }
   .chosen-single {
     color: black;
     background-color: @lucid;

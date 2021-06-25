@@ -64,16 +64,19 @@
 					<input type="hidden" name="m" value="documentlist">
 
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
-					{customerlist form="page" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
+					{customerlist form="documentlist" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
 
 					<input type="hidden" name="t[]" value="0">
 					<label>
 						{trans("Type:")}
-						<SELECT size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
-							{foreach $_DOCTYPES as $key => $item}{if $key < 0}
-							<OPTION VALUE="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</OPTION>
-							{/if}{/foreach}
-						</SELECT>
+						<select size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect"
+							data-default-value="{trans("- all -")}">
+							{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
+								{if $key < 0}
+									<option value="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</option>
+								{/if}
+							{/foreach}
+						</select>
 					</label>
 
 					<input type="hidden" name="service[]" value="0">
@@ -119,31 +122,33 @@
 						</SELECT>
 					</label>
 
-					<span class="nobr">
+					<span class="lms-ui-date-period-container">
 						{date_period_preset from="#documentlist [name=\"from\"]" to="#documentlist [name=\"to\"]"}
-                        {trans("from")}
-                        <INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}"
-								onChange="javascript:applyFilter();"
-								{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-					    {trans("to")}
-                        <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}"
-								onChange="javascript:applyFilter();"
-								{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                    </span>
+						<span>{trans("from")}</span>
+						<input type="text" name="from" size="10" maxlength="10"
+							value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}"
+							onChange="javascript:applyFilter();"
+							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+						<span>{trans("to")}</span>
+						<input type="text" name="to" size="10" maxlength="10"
+							value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}"
+							onChange="javascript:applyFilter();"
+							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+					</span>
 
 					{if !empty($numberplans) && count($numberplans)}
-					<label>
-						{trans("Number plan:")}
-						<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
-							<OPTION value="0">- {trans("all")} -</OPTION>
-							{foreach $numberplans as $plan}
-							{$period = $plan.period}
-							<OPTION value="{$plan.id}"{if $filter.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$filter.customer} ({$_NUM_PERIODS.$period})</OPTION>
-							{/foreach}
-						</SELECT>
-					</label>
+						<label>
+							{trans("Number plan:")}
+							<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
+								<OPTION value="0">- {trans("all")} -</OPTION>
+								{foreach $numberplans as $plan}
+								{$period = $plan.period}
+								<OPTION value="{$plan.id}"{if $filter.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$filter.customer} ({$_NUM_PERIODS.$period})</OPTION>
+								{/foreach}
+							</SELECT>
+						</label>
 					{else}
-					<input type="hidden" name="p" value="0">
+						<input type="hidden" name="p" value="0">
 					{/if}
 
 					<label>
@@ -273,11 +278,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD colspan="5" class="empty-table">
-			<p>{trans("No such documents matching search criteria or list is empty.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="5" class="empty-table">
+			{trans("No such documents matching search criteria or list is empty.")}
+		</td>
+	</tr>
 	{/foreach}
 	</FORM>
     </TBODY>

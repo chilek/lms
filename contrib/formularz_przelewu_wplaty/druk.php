@@ -153,13 +153,13 @@ for ($j=0; $j<2; $j++) { // pętla główna
     }
 
 // nazwa beneficjenta:
-     
+
      $posx=75+$j*$SHIFT;
     for ($i=0; $i<27; $i++) {
          $posy=62+$i*19;
          echo('<span style="position: absolute; top: '. $posx .'px; left: '. $posy. 'px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'.mb_substr($ISP1_DO, $i, 1).'</span>');
     }
-     
+
      $posx=109+$j*$SHIFT;
     for ($i=0; $i<27; $i++) {
          $posy=62+$i*19;
@@ -233,7 +233,7 @@ for ($j=0; $j<2; $j++) { // pętla główna
 } //  koniec pętli głównej
 ?>
 
-<span style="position: absolute; top: 880px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy użyciu LMS (http://www.lms.org.pl)</span>
+<span style="position: absolute; top: 880px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy użyciu LMS (<?php echo LMS::SOFTWARE_URL; ?>)</span>
 <span style="position: absolute; top: 900px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">LMS kompletny system sieciowo-księgowy dla małych ISPów i ASKów, dostępny na licencji GNU GPL</span>
 
 </HTML>

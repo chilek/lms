@@ -137,7 +137,7 @@
 		<TH scope="col">
 			{trans("Description:")}
 		</TH>
-		<TH scope="col">&nbsp;</TH>
+		<TH scope="col">{button icon="add" label="New Balance" href="?m=balanceadd"}</TH>
 	</TR>
 	<TR>
 		<TD colspan="10">
@@ -171,14 +171,18 @@
 			</SELECT>
 			<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label
 					for="groupexclude">{trans("exclude group")}</label>&nbsp;
-			<span class="nobr">
+			<span class="lms-ui-date-period-container">
 				{date_period_preset from="#balancelist [name=\"from\"]" to="#balancelist [name=\"to\"]" time=true}
-				{trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="14" maxlength="16"
-										value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d %H:%M"}{/if}"
-										placeholder="{trans("yyyy/mm/dd hh:mm")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="14" maxlength="16"
-									  value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d %H:%M"}{/if}"
-									  placeholder="{trans("yyyy/mm/dd hh:mm")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				<span>{trans("From:")}</span>
+				<input type="text" name="from" size="14" maxlength="16"
+					value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d %H:%M"}{/if}"
+					placeholder="{trans("yyyy/mm/dd hh:mm")}"
+					{tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				<span>{trans("To:")}</span>
+				<input type="text" name="to" size="14" maxlength="16"
+					value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d %H:%M"}{/if}"
+					placeholder="{trans("yyyy/mm/dd hh:mm")}"
+					{tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 			</span>
 			<A href="javascript:filter();">&raquo;&raquo;&raquo;</A><BR>
 		</TD>
@@ -226,46 +230,60 @@
 			{if $balance.docid}
 				{if $balance.doctype==$smarty.const.DOC_INVOICE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+						{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 							href="?m=invoice&id={$balance.docid}&dontpublish=1"
-							resourceid="{$balance.docid}" external=true icon_tip="View"}
+							data_url="?m=invoiceinfo&id={$balance.docid}"
+							external=true
+							icon_tip="View"}
 					{/if}
-					{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+					{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 						href="?m=invoice&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Invoice"}
+						data_url="?m=invoiceinfo&id={$balance.docid}"
+						external=true
+						icon_tip="Invoice"}
 				{elseif $balance.doctype==$smarty.const.DOC_CNOTE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						{button type="link" icon="view" class="print-invoice lms-ui-tooltip-docnumber"
+						{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 							href="?m=invoice&id={$balance.docid}&dontpublish=1"
-							resourceid="{$balance.docid}" external=true icon_tip="View"}
+							data_url="?m=number&id={$balance.docid}"
+							external=true
+							icon_tip="View"}
 					{/if}
-					{button type="link" icon="print" class="print-invoice lms-ui-tooltip-docnumber"
+					{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 						href="?m=invoice&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Credit note"}
+						data_url="?m=number&id={$balance.docid}"
+						external=true
+						icon_tip="Credit note"}
 				{elseif $balance.doctype==$smarty.const.DOC_RECEIPT}
-					{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+					{button type="link" icon="print" class="lms-ui-hint-rollover"
 						href="?m=receipt&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Cash receipt"}
+						data_url="?m=number&id={$balance.docid}"
+						external=true
+						icon_tip="Cash receipt"}
 				{elseif $balance.doctype==$smarty.const.DOC_DNOTE}
 					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-						{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+						{button type="link" icon="view" class="lms-ui-hint-rollover"
 							href="?m=note&id={$balance.docid}&dontpublish=1"
-							resourceid="{$balance.docid}" external=true icon_tip="View"}
+							data_url="?mumber&id={$balance.docid}"
+							external=true
+							icon_tip="View"}
 					{/if}
-					{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+					{button type="link" icon="print" class="lms-ui-hint-rollover"
 						href="?m=note&id={$balance.docid}"
-						resourceid="{$balance.docid}" external=true icon_tip="Debit note"}
+						data_url="?m=number&id={$balance.docid}"
+						external=true
+						icon_tip="Debit note"}
 				{/if}
 			{/if}
 			<INPUT TYPE="checkbox" class="lms-ui-multi-check" NAME="marks[{$balance.id}]" VALUE="{$balance.id}">
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="10" class="empty-table">
-			<p>{trans("No such transactions found in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="10" class="empty-table">
+			{trans("No such transactions found in database.")}
+		</td>
+	</tr>
 	{/foreach}
     </TBODY>
     <TFOOT>

@@ -63,11 +63,11 @@
             "type": "package",
             "package": {
                 "name": "fortawesome/font-awesome",
-                "version": "5.15.1",
+                "version": "5.15.3",
                 "source": {
                     "url": "https://github.com/FortAwesome/Font-Awesome.git",
                     "type": "git",
-                    "reference": "5.15.1"
+                    "reference": "5.15.3"
                 }
             }
         },
@@ -94,13 +94,14 @@
         "ext-zip": "*",
         "ext-iconv": "*",
         "ext-gd": "*",
+        "ext-gmp": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",
         "tecnickcom/tcpdf": "^6",
         "spipu/html2pdf": "^5",
         "components/normalize.css": "^3.0",
-        "smarty/smarty": "3.1.36",
+        "smarty/smarty": "3.1.39",
         "rospdf/pdf-php": "^0.12",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",

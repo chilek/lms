@@ -38,7 +38,8 @@ function GetCustomerCovenants($customerid, $currency)
 
     return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.currency, c.comment, c.taxid, 
 			taxes.label AS tax, c.id AS cashid,
-			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net
+			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net,
+            c.servicetype
 			FROM cash c
 			LEFT JOIN taxes ON (c.taxid = taxes.id)
 			WHERE c.customerid = ? AND c.docid IS NULL AND c.currency = ? AND c.value < 0
@@ -309,6 +310,7 @@ switch ($action) {
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
+                $itemdata['servicetype'] = empty($_POST['l_servicetype'][$id]) ? null : $_POST['l_servicetype'][$id];
                 $itemdata['taxcategory'] = $_POST['l_taxcategory'][$id];
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
                 $itemdata['discount'] = 0;
@@ -376,10 +378,17 @@ switch ($action) {
         }
 
         if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($invoice['cdatewarning'])) {
-            $maxdate = $DB->GetOne(
-                'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?',
-                array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'])
-            );
+            if (empty($invoice['numberplanid'])) {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid IS NULL',
+                    array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE)
+                );
+            } else {
+                $maxdate = $DB->GetOne(
+                    'SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?',
+                    array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'])
+                );
+            }
 
             if ($invoice['cdate'] < $maxdate) {
                 $error['cdate'] = trans(
@@ -459,14 +468,24 @@ switch ($action) {
             $customer = $LMS->GetCustomer($cid, true);
         }
 
-        if (!isset($error)) {
+        if (empty($error)) {
             // finally check if selected customer can use selected numberplan
-            if ($invoice['numberplanid'] && isset($customer)) {
-                if (!$DB->GetOne('SELECT 1 FROM numberplanassignments
-					WHERE planid = ? AND divisionid = ?', array($invoice['numberplanid'], $customer['divisionid']))) {
-                    $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-                    unset($customer);
-                }
+            $args = array(
+                'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+                'customerid' => $customer['id'],
+                'division' => $customer['divisionid'],
+                'next' => false,
+            );
+            $numberplans = $LMS->GetNumberPlans($args);
+
+            if ($invoice['numberplanid'] && isset($customer)
+                && !isset($numberplans[$invoice['numberplanid']])) {
+                $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+                unset($customer);
+            }
+
+            if (count($numberplans) && empty($invoice['numberplanid'])) {
+                $error['numberplanid'] = trans('Select numbering plan');
             }
         }
         break;
@@ -524,6 +543,18 @@ switch ($action) {
 
         if (!empty($invoice['numberplanid']) && !$LMS->checkNumberPlanAccess($invoice['numberplanid'])) {
             $error['numberplanid'] = trans('Permission denied!');
+        }
+
+        $args = array(
+            'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'customerid' => $customer['id'],
+            'division' => $customer['divisionid'],
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($invoice['numberplanid'])) {
+            $error['numberplanid'] = trans('Select numbering plan');
         }
 
         $hook_data = array(

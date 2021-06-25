@@ -1,0 +1,84 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2021 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+.lms-ui-hint-rollover,
+.lms-ui-hint-toggle {
+  &:not(.ui-tooltip) {
+    cursor: pointer;
+  }
+
+  .lms-ui-hint-titlebar {
+    display: none;
+    justify-content: flex-end;
+    .close-button {
+      cursor: pointer;
+    }
+  }
+
+  &.ui-tooltip {
+    max-width: 50vw;
+    .lms-ui-hint-titlebar {
+      padding-bottom: 0.5em;
+    }
+    .lms-ui-hint-content {
+      max-height: 90vh;
+      overflow-y: auto;
+      overflow-x: visible;
+      padding-right: 1em;
+    }
+  }
+
+  @media screen and (max-width: @mobile-max-width) {
+    &.ui-tooltip {
+      padding: 0;
+      font-size: 200%;
+    }
+
+    &.ui-tooltip {
+      max-width: fit-content;
+    }
+
+    .ui-tooltip-content {
+      padding: 1em;
+    }
+
+    &.ui-widget.ui-widget-content {
+      border: 0;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      max-width: unset;
+      max-height: unset;
+      &.ui-widget-shadow {
+        box-shadow: unset;
+      }
+    }
+
+    & .lms-ui-hint-titlebar {
+      display: flex;
+    }
+  }
+}

@@ -64,13 +64,13 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 id="urgent-notice-title" class="modal-title">{$urgent_notice.cdate|date_format:"%Y/%m/%d %H:%M"} / {$urgent_notice.subject}</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        {button class="close" data_dismiss="modal" icon="cancel"}
                     </div>
                     <div id="urgent-notice-body" class="modal-body">
                         {$urgent_notice.body}
                     </div>
                     <div class="modal-footer">
-                        <a id="urgent-notice-confirm" href="#" data-id="{$urgent_notice.id}" class="btn btn-primary">{trans("I confirm reading")}</a>
+                        {button id="urgent-notice-confirm" data_id="{$urgent_notice.id}" class="btn btn-primary" icon="confirm" label="<!userpanel>Confirm"}
                     </div>
                 </div>
             </div>

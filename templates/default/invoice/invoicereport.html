@@ -6,6 +6,7 @@
 			<P class="hdf"><B>{$layout.pagetitle}</B>
 			{if $layout.division}<BR><span class="sdr"><B>{$layout.division}</B></span>{/if}
 			{if $layout.group}<BR><span class="sdr"><B>{$layout.group}</B></span>{/if}
+			{if $layout.servicetypes}<BR><span class="sdr"><strong>{$layout.servicetypes}</strong></span>{/if}
 			</P>
 		</TD>
 		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
@@ -95,11 +96,11 @@
 		{/if}
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="{math equation="5+x" x=$taxescount}" class="empty-table">
-			<p>{trans("No such invoices in selected time period.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="{math equation="5+x" x=$taxescount}" class="empty-table">
+			{trans("No such invoices in selected time period.")}
+		</td>
+	</tr>
 	{/foreach}
 	{/if}
 	<TR>

@@ -13,8 +13,9 @@
 	<THEAD>
 	<TR>
 		<TD scope="col" class="nobr">
-			<IMG src="img/group.gif" alt=""> {trans("Name:")}<BR>
-			<span class="lighter"><IMG src="img/info1.gif" alt=""> {trans("Description:")}</span>
+			{icon name="customergroup"}&nbsp;{trans("Name:")}
+			<br>
+			<span class="lighter">{icon name="optional-info"}&nbsp;{trans("Description:")}</span>
 		</TD>
 		<TD scope="col" class="text-right lighter">
 			{trans("ID:")}
@@ -23,14 +24,16 @@
 			{trans("Members:")}
 		</TD>
 		<TD scope="col" class="text-right nobr">
-			<span class="text-right"><A HREF="?m=customergroupadd"><IMG src="img/group.gif"> {trans("Add group")}</A></span><BR>{t a=$listdata.total|default:"0"}Total: $a{/t}
+			{button icon="customergroup" label="Add group" href="?m=customergroupadd"}
+			<br>
+			{t a=$listdata.total|default:"0"}Total: $a{/t}
 		</TD>
 	</TR>
 	</THEAD>
 	<TFOOT>
 	<TR>
 		<TD colspan="4" class="text-right bold nobr">
-			<IMG src="img/info2.gif" alt=""> {trans("Total:")}
+			{icon name="info"}&nbsp;{trans("Total:")}
 			{$listdata.totalcount|default:"0"}
 		</TD>
 	</TR>
@@ -39,8 +42,8 @@
 	{foreach $customergrouplist as $customergroup}
 	<TR class="highlight" data-target-url="?m=customergroupinfo&id={$customergroup.id}" data-name="{$customergroup.name}">
 		<TD>
-			<IMG src="img/group.gif" alt="">&nbsp;<span class="bold">{$customergroup.name}</span><BR>
-			{if $customergroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergroup.description|escape|replace:"\n":"<BR>"}{/if}
+			{icon name="customergroup"}&nbsp;<span class="bold">{$customergroup.name}</span><BR>
+			{if $customergroup.description}{icon name="optional-info"}&nbsp;{$customergroup.description|escape|replace:"\n":"<BR>"}{/if}
 		</TD>
 		<TD class="text-right">
 			({$customergroup.id|string_format:"%04d"})
@@ -50,30 +53,28 @@
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $customergroup.customerscount}
-			<A class="delete-group-alert">
+				{button type="link" class="delete-group-alert" icon="delete" tip="Delete"}
 			{else}
-			<A class="delete-group" href="?m=customergroupdel&id={$customergroup.id}">
+				{button type="link" class="delete-group" icon="delete" tip="Delete" data_customer_group_id=$customergroup.id}
 			{/if}
-			<IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=customergroupedit&amp;id={$customergroup.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A href="?m=customergroupinfo&amp;id={$customergroup.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{button type="link" icon="edit" tip="Edit" href="?m=customergroupedit&id={$customergroup.id}"}
+			{button type="link" icon="info" tip="Info" href="?m=customergroupinfo&id={$customergroup.id}"}
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD colspan="4" class="empty-table">
-			<p>{trans("There are no such groups in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="4" class="empty-table">
+			{trans("There are no such groups in database.")}
+		</td>
+	</tr>
 	{/foreach}
 	</TBODY>
 </TABLE>
 	<script>
 		$('.delete-group').click(function() {
 			var name = $(this).closest('tr').attr('data-name');
-			console.log('name=', name);
 			confirmDialog($t("Are you sure, you want to remove group '$a'?", name), this).done(function() {
-				location.href = $(this).attr('href');
+				location.href = '?m=customergroupdel&id=' + $(this).attr('data-customer-group-id');
 			});
 			return false;
 		});

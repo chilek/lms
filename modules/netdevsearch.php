@@ -106,7 +106,8 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
     }
 
     $netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, a.location, d.description, d.producer,
-					d.model, d.serialnumber, d.ports, p.name AS project,
+					d.model, m.type AS devtype, t.name AS devtypename,
+					d.serialnumber, d.ports, p.name AS project,
 					(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
 					+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports,
 					d.netnodeid, nn.name AS netnode,
@@ -131,6 +132,8 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 			    LEFT JOIN vaddresses a ON d.address_id = a.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes nn            ON nn.id = d.netnodeid
+				LEFT JOIN netdevicemodels m     ON m.id = d.netdevicemodelid
+				LEFT JOIN netdevicetypes t      ON t.id = m.type
 				LEFT JOIN location_streets lst  ON lst.id = a.street_id
 				LEFT JOIN location_cities lc    ON lc.id = a.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid

@@ -1,273 +1,330 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS :{$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+    #general-settings {
+        margin-bottom: 2em;
+    }
+
+    #userpanel-modules td {
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+    }
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
-<FORM NAME="config" METHOD="POST" ACTION="?m=userpanel&f=submit_setup">
-    <table class="lmsbox">
-        <colgroup>
-            <col style="width: 1%;">
-            <col style="width: 99%;">
-        </colgroup>
-        <THEAD>
-        <TR>
-            <TD colspan="2" class="bold">
+
+<form name="config" method="POST" action="?m=userpanel&f=submit_setup" id="general-settings-form">
+</form>
+
+<table class="lmsbox" id="general-settings">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 99%;">
+    </colgroup>
+    <thead>
+        <tr>
+            <td colspan="2" class="bold">
+                {icon name="configuration"}
                 {trans("Basic Configuration:")}
-            </TD>
-        </TR>
-        </THEAD>
-        <TBODY>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
         <tr>
             <td scope="col" class="nobr">
-                <label for="timeout">{trans("Session timeout:")}</label>
+                <label for="timeout">
+                    {trans("Session timeout:")}
+                </label>
             </td>
             <td scope="col">
-                <input type="number" size="20" name="timeout" id="timeout" value="{$timeout}">
+                <input type="number" size="20" name="timeout" id="timeout" value="{$timeout}" form="general-settings-form">
             </td>
         </tr>
         <tr>
             <td scope="col" class="nobr">
-                <label for="page_header">{trans("Page header")}:</label>
+                <label for="page_header">
+                    {trans("Page header")}:
+                </label>
             </td>
             <td scope="col">
-                <input type="text" size="50" name="page_header" id="page_header" value="{$page_header}">
+                <input type="text" size="50" name="page_header" id="page_header" value="{$page_header}" form="general-settings-form">
             </td>
         </tr>
         <tr>
             <td class="nobr">
-                <label for="company_logo">{trans("Company logo")}:</label>
+                <label for="company_logo">
+                    {trans("Company logo")}:
+                </label>
             </td>
             <td>
                 <input type="text" size="50" name="company_logo" id="company_logo" value="{$company_logo}"
-                       placeholder="{trans("Enter path to your company logo")}">
+                    placeholder="{trans("Enter path to your company logo")}" form="general-settings-form">
             </td>
         </tr>
         <tr>
             <td class="nobr">
-                <label for="shortcut_icon">{trans("Web browser icon")}:</label>
+                <label for="shortcut_icon">
+                    {trans("Web browser icon")}:
+                </label>
             </td>
             <td>
-                <input type="text" size="50" name="shortcut_icon" id="shortcut_icon" value="{$shortcut_icon}"
-                        placeholder="{trans("Web browser icon")}" title="{trans("Enter full or relative URL address of web browser icon")}">
+                <input type="text" size="50" name="shortcut_icon" id="shortcut_icon" value="{$shortcut_icon}" form="general-settings-form"
+                    placeholder="{trans("Web browser icon")}" title="{trans("Enter full or relative URL address of web browser icon")}">
             </td>
         </tr>
-        <TR>
-            <TD scope="col" class="text-left nobr">
+        <tr>
+            <td scope="col" class="text-left nobr">
                 {trans("Userpanel style:")}
-            </TD>
-            <TD scope="col">
-                <SELECT name="style" SIZE="1" {tip text="Userpanel design style" }>
-                    {foreach from=$stylelist item=styleitem}
-                    <OPTION value="{$styleitem}" {if ($styleitem== $style) || ($styleitem=="default" && $style=="")} selected{/if}>{$styleitem}</OPTION>
+            </td>
+            <td scope="col">
+                <select name="style" SIZE="1" {tip text="Userpanel design style" } form="general-settings-form">
+                    {foreach $stylelist as $styleitem}
+                        <option value="{$styleitem}"{if ($styleitem== $style) || ($styleitem=="default" && $style=="")} selected{/if}>{$styleitem}</option>
                     {/foreach}
-                </SELECT>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
                 {trans("Hint style:")}
-            </TD>
-            <TD scope="col">
-                <SELECT name="hint" SIZE="1" {tip text="Userpanel hints style. Chose modern for animated assistant, classic for tips in LMS style, or none to disable hints displaying"}>
-                    <OPTION value="modern" {if $hint=='modern'} SELECTED{/if}>{trans("modern")}</OPTION>
-                    <OPTION value="classic" {if $hint=='classic'} SELECTED{/if}>{trans("classic")}</OPTION>
-                    <OPTION value="none" {if $hint=='none'} SELECTED{/if}>{trans("none")}</OPTION>
-                </SELECT>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="text-left nobr">
+            </td>
+            <td scope="col">
+                <select name="hint" size="1"{tip text="Userpanel hints style. Chose modern for animated assistant, classic for tips in LMS style, or none to disable hints displaying"}
+                    form="general-settings-form">
+                    <option value="modern"{if $hint=='modern'} selected{/if}>{trans("modern")}</option>
+                    <option value="classic"{if $hint=='classic'} selected{/if}>{trans("classic")}</option>
+                    <option value="none"{if $hint=='none'} selected{/if}>{trans("none")}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="text-left nobr">
                 {trans("Startup module:")}
-            </TD>
-            <TD scope="col">
-                <SELECT name="startupmodule" SIZE="1">
+            </td>
+            <td scope="col">
+                <select name="startupmodule" size="1" form="general-settings-form">
                     {$menu2 = $menu}
                     {array_multisort(Utils::array_column($menu2, 'name'), SORT_LOCALE_STRING, $menu2)}
                     {foreach $menu2 as $m}
                         {if $m.module !== "logout"}
-                            <OPTION value="{$m.module}" {if $startupmodule == $m.module}selected{/if}>{$m.name}</OPTION>
+                            <option value="{$m.module}" {if $startupmodule == $m.module}selected{/if}>{$m.name}</option>
                         {/if}
                     {/foreach}
-                </SELECT>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="hide_nodes_modules">{trans("Disabling modules:")}</label>
-            </TD>
-            <TD scope="col">
-                <INPUT class="box light" type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1"
-                        {if $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes"}>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="mail_credential_reminders">{trans("Mail credential reminders:")}</label>
-            </TD>
-            <TD scope="col">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="hide_nodes_modules">
+                    {trans("Disabling modules:")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1" form="general-settings-form"
+                    {if $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes"}>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="mail_credential_reminders">
+                    {trans("Mail credential reminders:")}
+                </label>
+            </td>
+            <td scope="col">
                 <input type="checkbox" id="mail_credential_reminders" name="mail_credential_reminders" {tip text="Mail credential reminders" }
-                       value="1"{if $mail_credential_reminders} checked{/if}>
-            </TD>
-        </TR>
-        <TR class="mail-credential-reminders">
-            <TD scope="col" class="nobr">
-                <label for="reminder_mail_sender">{trans("Reminder mail sender:")}</label>
-            </TD>
-            <TD scope="col">
-                <INPUT type="text" size="50" name="reminder_mail_sender" id="reminder_mail_sender"
-                       value="{$reminder_mail_sender}" {tip text="Enter reminder mail sender" }>
-            </TD>
-        </TR>
-        <TR class="mail-credential-reminders">
-            <TD scope="col" class="nobr">
-                <label for="reminder_mail_subject">{trans("Reminder mail subject:")}</label>
-            </TD>
-            <TD scope="col">
-                <INPUT type="text" size="50" name="reminder_mail_subject" id="reminder_mail_subject"
-                       value="{$reminder_mail_subject}" {tip text="Enter reminder mail subject" }>
-            </TD>
-        </TR>
-        <TR class="mail-credential-reminders">
-            <TD scope="col" class="nobr">
-                <label for="reminder_mail_body">{trans("Reminder mail body:")}</label>
-            </TD>
-            <TD scope="col">
-                <TEXTAREA name="reminder_mail_body" id="reminder_mail_body" cols="60" rows="7" {tip text="Enter reminder mail body" }>{$reminder_mail_body}</TEXTAREA>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="sms_credential_reminders">{trans("SMS credential reminders:")}</label>
-            </TD>
-            <TD scope="col">
-                <input type="checkbox" id="sms_credential_reminders" name="sms_credential_reminders" {tip text="SMS credential reminders" }
-                       value="1"{if $sms_credential_reminders} checked{/if}>
-            </TD>
-        </TR>
-        <TR class="sms-credential-reminders">
-            <TD scope="col" class="nobr">
-                <label for="reminder_sms_body">{trans("Reminder sms body:")}</label>
-            </TD>
-            <TD scope="col">
-                <TEXTAREA name="reminder_sms_body" id="reminder_sms_body" cols="60" rows="7" {tip text="Enter reminder sms body" }>{$reminder_sms_body}</TEXTAREA>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="auth_type">{trans("Authentication type:")}</label>
-            </TD>
-            <TD scope="col">
-                <SELECT name="auth_type" {tip text="Userpanel authentication type" }>
+                    form="general-settings-form" value="1"{if $mail_credential_reminders} checked{/if}>
+            </td>
+        </tr>
+        <tr class="mail-credential-reminders">
+            <td scope="col" class="nobr">
+                <label for="reminder_mail_sender">
+                    {trans("Reminder mail sender:")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="text" size="50" name="reminder_mail_sender" id="reminder_mail_sender" form="general-settings-form"
+                    value="{$reminder_mail_sender}" {tip text="Enter reminder mail sender" }>
+            </td>
+        </tr>
+        <tr class="mail-credential-reminders">
+            <td scope="col" class="nobr">
+                <label for="reminder_mail_subject">
+                    {trans("Reminder mail subject:")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="text" size="50" name="reminder_mail_subject" id="reminder_mail_subject" form="general-settings-form"
+                    value="{$reminder_mail_subject}" {tip text="Enter reminder mail subject" }>
+            </td>
+        </tr>
+        <tr class="mail-credential-reminders">
+            <td scope="col" class="nobr">
+                <label for="reminder_mail_body">
+                    {trans("Reminder mail body:")}
+                </label>
+            </td>
+            <td scope="col">
+                <textarea name="reminder_mail_body" id="reminder_mail_body" cols="60" rows="7" {tip text="Enter reminder mail body" }
+                    form="general-settings-form">{$reminder_mail_body}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="sms_credential_reminders">
+                    {trans("SMS credential reminders:")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="checkbox" id="sms_credential_reminders" name="sms_credential_reminders" {tip text="SMS credential reminders"}
+                    form="general-settings-form" value="1"{if $sms_credential_reminders} checked{/if}>
+            </td>
+        </tr>
+        <tr class="sms-credential-reminders">
+            <td scope="col" class="nobr">
+                <label for="reminder_sms_body">
+                    {trans("Reminder sms body:")}
+                </label>
+            </td>
+            <td scope="col">
+                <textarea name="reminder_sms_body" id="reminder_sms_body" cols="60" rows="7" {tip text="Enter reminder sms body" }
+                    form="general-settings-form">{$reminder_sms_body}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="auth_type">
+                    {trans("Authentication type:")}
+                </label>
+            </td>
+            <td scope="col">
+                <select name="auth_type" {tip text="Userpanel authentication type" } form="general-settings-form">
                     {foreach $_USERPANEL_AUTH_TYPES as $typeidx => $type}
-                    <OPTION value="{$typeidx}" {if $auth_type == $typeidx} selected{/if}>{$type.selection}</OPTION>
+                        <option value="{$typeidx}"{if $auth_type == $typeidx} selected{/if}>{$type.selection}</option>
                     {/foreach}
-                </SELECT>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="pin_validation">{trans("PIN validation")}</label>
-            </TD>
-            <TD scope="col">
-                <input type="checkbox" name="pin_validation" id="pin_validation"
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="pin_validation">
+                    {trans("PIN validation")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="checkbox" name="pin_validation" id="pin_validation" form="general-settings-form"
                     {if !empty($pin_validation)} checked{/if}
                     {tip text="Userpanel PIN validation"}>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="force_ssl">{trans("Force SSL:")}</label>
-            </TD>
-            <TD scope="col">
-                <INPUT type="checkbox" name="force_ssl" id="force_ssl" value="1" {if $force_ssl} checked{/if}
-                        {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off)."}>
-            </TD>
-        </TR>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="force_ssl">
+                    {trans("Force SSL:")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="checkbox" name="force_ssl" id="force_ssl" value="1"{if $force_ssl} checked{/if}
+                    form="general-settings-form"
+                    {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off)."}>
+            </td>
+        </tr>
 
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="google_recaptcha_sitekey">{trans("Google reCAPTCHA site key:")}</label>
-            </TD>
-            <TD scope="col">
-                <INPUT type="text" size="50" name="google_recaptcha_sitekey" id="google_recaptcha_sitekey"
-                       value="{$google_recaptcha_sitekey}" {tip text="Enter Google reCAPTCHA site key" }>
-            </TD>
-        </TR>
-        <TR>
-            <TD scope="col" class="nobr">
-                <label for="google_recaptcha_secret">{trans("Google reCAPTCHA secret:")}</label>
-            </TD>
-            <TD scope="col">
-                <INPUT type="text" size="50" name="google_recaptcha_secret" id="google_recaptcha_secret"
-                       value="{$google_recaptcha_secret}" {tip text="Enter Google reCAPTCHA secret" }>
-            </TD>
-        </TR>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="google_recaptcha_sitekey">
+                    {trans("Google reCAPTCHA site key:")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="text" size="50" name="google_recaptcha_sitekey" id="google_recaptcha_sitekey"
+                    form="general-settings-form" value="{$google_recaptcha_sitekey}" {tip text="Enter Google reCAPTCHA site key"}>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="google_recaptcha_secret">
+                    {trans("Google reCAPTCHA secret:")}
+                </label>
+            </td>
+            <td scope="col">
+                <input type="text" size="50" name="google_recaptcha_secret" id="google_recaptcha_secret"
+                    form="general-settings-form" value="{$google_recaptcha_secret}" {tip text="Enter Google reCAPTCHA secret"}>
+            </td>
+        </tr>
 
-        <TR>
-            <TD class="buttons" colspan="2">
-                <A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif"
-                                                                                                    alt=""></A>
-            </TD>
-        </TR>
-        </TBODY>
-    </TABLE>
-    <BR>
-    <TABLE id="userpanel-modules" cellpadding="3" class="lmsbox lms-ui-background-cycle">
-        <THEAD>
-        <TR>
-            <TD class="text-center bold">{trans("Module")}</TD>
-            <TD class="text-center bold">{trans("Display name")}</TD>
-            <TD class="text-center bold">{trans("Database version")}</TD>
-            <TD class="text-center bold">{trans("Tip")}</TD>
-            <TD class="text-center bold">{trans("Description")}</TD>
-            <TD class="text-center bold">{trans("Enabled")}</TD>
-        </TR>
-        </THEAD>
-        <TBODY>
+        <tr>
+            <td class="lms-ui-box-buttons" colspan="2">
+                {button icon="save" label="Submit" onclick="document.config.submit();"}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table id="userpanel-modules" class="lmsbox lms-ui-background-cycle">
+    <thead>
+        <tr>
+            <td class="text-center bold">{trans("Module")}</td>
+            <td class="text-center bold">{trans("Display name")}</td>
+            <td class="text-center bold">{trans("Database version")}</td>
+            <td class="text-center bold">{trans("Tip")}</td>
+            <td class="text-center bold">{trans("Description")}</td>
+            <td class="text-center bold">{trans("Enabled")}</td>
+        </tr>
+    </thead>
+    <tbody>
         {foreach $menu as $menuitem}
-        <TR class="{if !in_array($menuitem.module, $enabled_modules)}blend {/if}"
-            onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')"
-            data-module="{$menuitem.module}">
-            <td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
-                <img src="img/recover.gif" alt="">&nbsp;{$menuitem.module}
-            </td>
-            <td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
-                {$menuitem.name}
-            </td>
-            <td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';" class="text-center">
-                {if $menuitem.dbver>0}{$menuitem.dbver}{else}{trans("-")}{/if}
-            </td>
-            <td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
-                {t}{$menuitem.tip}{/t}
-            </td>
-            <td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
-                {t}{$menuitem.description}{/t}
-            </td>
-            <td class="text-center">
-                <input type="checkbox" name="enabled_modules[{$menuitem.module}]" value="1" {if in_array($menuitem.module, $enabled_modules)} checked{/if}>
-            </td>
-        </TR>
+            <tr class="highlight{if !in_array($menuitem.module, $enabled_modules)} blend{/if}"
+                data-module="{$menuitem.module}">
+                <td data-target-url="?m=userpanel&module={$menuitem.module}">
+                    {if empty($menuitem.icon)}
+                        <img src="img/recover.gif" class="module-icon">
+                    {else}
+                        <i class="{$menuitem.icon} fa-fw module-icon"></i>
+                    {/if}
+                    {$menuitem.module}
+                </td>
+                <td data-target-url="?m=userpanel&module={$menuitem.module}">
+                    {$menuitem.name}
+                </td>
+                <td data-target-url="?m=userpanel&module={$menuitem.module}" class="text-center">
+                    {if $menuitem.dbver>0}{$menuitem.dbver}{else}{trans("-")}{/if}
+                </td>
+                <td data-target-url="?m=userpanel&module={$menuitem.module}">
+                    {t}{$menuitem.tip}{/t}
+                </td>
+                <td data-target-url="?m=userpanel&module={$menuitem.module}">
+                    {t}{$menuitem.description}{/t}
+                </td>
+                <td class="text-center">
+                    <input type="checkbox" name="enabled_modules[{$menuitem.module}]" value="1" form="general-settings-form"
+                        {if in_array($menuitem.module, $enabled_modules)} checked{/if}>
+                </td>
+            </tr>
         {/foreach}
-        </TBODY>
-        <TFOOT>
-        <TR>
-            <TD colspan="5" class="ftop bold text-center">
+    </tbody>
+    <tfoot>
+        <tr class="dark">
+            <td colspan="5" class="ftop bold text-center">
                 {trans("Total:")} {$total}
-            </TD>
-            <TD style="width: 2%;" class="ftop buttons nobr">
-                <A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif"
-                                                                                                    alt=""></A>
-            </TD>
-        </TR>
-        </TFOOT>
-    </table>
-</FORM>
+            </td>
+            <td class="ftop buttons nobr">
+                {button icon="save" label="Submit" onclick="document.config.submit();"}
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
 <script>
 
-	$(function () {
+	$(function() {
 		$('#userpanel-modules').sortable({
 			items: 'tbody > tr[data-module]',
-			handle: 'img',
+			handle: '.module-icon',
 			opacity: 0.9,
 			axis: 'y',
 			placeholder: 'light',
@@ -296,11 +353,11 @@
 			}
 		});
 
-        $('#mail_credential_reminders').change(function() {
+        $('#mail_credential_reminders').change(function () {
             $('.mail-credential-reminders').toggle($(this).prop('checked'));
         }).trigger('change');
 
-        $('#sms_credential_reminders').change(function() {
+        $('#sms_credential_reminders').change(function () {
             $('.sms-credential-reminders').toggle($(this).prop('checked'));
         }).trigger('change');
 	});

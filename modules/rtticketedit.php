@@ -28,12 +28,28 @@ $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$id = intval($_GET['id']);
+if (isset($_GET['id'])) {
+    if (is_array($_GET['id'])) {
+        $id = Utils::filterIntegers($_GET['id']);
+    } else {
+        $id = intval($_GET['id']);
+    }
+    if (empty($id)) {
+        die;
+    }
+}
+
 if (!empty($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if (!($LMS->CheckTicketAccess($id) & RT_RIGHT_WRITE)) {
+if (is_array($id)) {
+    foreach ($id as $ticketid) {
+        if (!($LMS->CheckTicketAccess($ticketid) & RT_RIGHT_WRITE)) {
+            access_denied();
+        }
+    }
+} elseif (!($LMS->CheckTicketAccess($id) & RT_RIGHT_WRITE)) {
     access_denied();
 }
 
@@ -90,7 +106,7 @@ if ($id && !isset($_POST['ticket'])) {
                     'customerid' => $ticket['customerid'],
                     'status' => $ticket['status'],
                     'categories' => $ticket['categorynames'],
-                    'priority' => $RT_PRIORITIES[$ticket['priority']],
+                    'priority' => $ticket['priority'] ? $RT_PRIORITIES[$ticket['priority']] : trans("undefined"),
                     'deadline' => $ticket['deadline'],
                     'service' => $ticket['service'],
                     'type' => $ticket['type'],
@@ -131,7 +147,9 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'read':
-                $LMS->MarkTicketAsRead($id);
+                foreach ($id as $ticketid) {
+                    $LMS->MarkTicketAsRead($ticketid);
+                }
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;
@@ -142,7 +160,7 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'resetpriority':
                 $ticket = $LMS->GetTicketContents($id);
-                if ($ticket['priority'] != RT_PRIORITY_NORMAL) {
+                if (isset($ticket['priority']) && $ticket['priority'] != RT_PRIORITY_NORMAL) {
                     $LMS->TicketChange($id, array('priority' => RT_PRIORITY_NORMAL));
                 }
                 $SESSION->redirect('?m=rtqueueview'
@@ -199,13 +217,24 @@ if ($id && !isset($_POST['ticket'])) {
                 $from = $mailfname . ' <' . $mailfrom . '>';
 
                 if (!empty($ticket['customerid'])) {
-                    $ticketid = sprintf("%06d", $id);
                     if (!empty($queue['resolveticketsubject']) && !empty($queue['resolveticketbody']) && !empty($emails)) {
                         $custmail_subject = $queue['resolveticketsubject'];
-                        $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                        $custmail_subject = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($id) {
+                                return sprintf('%0' . $m[1] . 'd', $id);
+                            },
+                            $custmail_subject
+                        );
                         $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
                         $custmail_body = $queue['resolveticketbody'];
-                        $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                        $custmail_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($id) {
+                                return sprintf('%0' . $m[1] . 'd', $id);
+                            },
+                            $custmail_body
+                        );
                         $custmail_body = str_replace('%cid', $info['id'], $custmail_body);
                         $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                         $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
@@ -223,7 +252,13 @@ if ($id && !isset($_POST['ticket'])) {
                     }
                     if (!empty($queue['resolveicketsmsbody']) && !empty($mobile_phones)) {
                         $custsms_body = $queue['resolveticketsmsbody'];
-                        $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
+                        $custsms_body = preg_replace_callback(
+                            '/%(\\d*)tid/',
+                            function ($m) use ($id) {
+                                return sprintf('%0' . $m[1] . 'd', $id);
+                            },
+                            $custsms_body
+                        );
                         $custsms_body = str_replace('%cid', $info['id'], $custsms_body);
                         $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                         $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
@@ -267,7 +302,7 @@ if ($id && !isset($_POST['ticket'])) {
                         'customerid' => $ticket['customerid'],
                         'status' => $ticket['status'],
                         'categories' => $ticket['categorynames'],
-                        'priority' => $RT_PRIORITIES[$ticket['priority']],
+                        'priority' => $ticket['priority'] ? $RT_PRIORITIES[$ticket['priority']] : trans("undefined"),
                         'deadline' => $ticket['deadline'],
                         'service' => $ticket['service'],
                         'type' => $ticket['type'],
@@ -426,7 +461,7 @@ if (isset($_POST['ticket'])) {
             'customerid' => $ticketedit['customerid'],
             'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
             'source' => $ticketedit['source'],
-            'priority' => $ticketedit['priority'],
+            'priority' => isset($ticketedit['priority']) ? $ticketedit['priority'] : null,
             'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
             'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
             'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
@@ -533,10 +568,30 @@ if (isset($_POST['ticket'])) {
                 'customerid' => $ticketedit['customerid'],
                 'status' => $ticketdata['status'],
                 'categories' => $ticketdata['categorynames'],
-                'priority' => $RT_PRIORITIES[$ticketdata['priority']],
-                'deadline' => $ticketdata['deadline'],
                 'subject' => $ticket['subject'],
                 'body' => $message['body'],
+                'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                'deadline' => $ticketdata['deadline'],
+                'service' => $ticketdata['service'],
+                'type' => $ticketdata['type'],
+                'invproject' => $ticketdata['invproject_name'],
+                'invprojectid' => $ticketdata['invproject'],
+                'requestor' => $ticketdata['requestor'],
+                'requestor_mail' => $ticketdata['requestor_mail'],
+                'requestor_phone' => $ticketdata['requestor_phone'],
+                'requestor_userid' => $ticketdata['requestor_userid'],
+                'parentid' => $ticketdata['parentid'],
+                'node' => $ticketdata['node_name'],
+                'nodeid' => $ticketdata['nodeid'],
+                'netnode' => $ticketdata['netnode_name'],
+                'netnodeid' => $ticketdata['netnodeid'],
+                'netdev' => $ticketdata['netdev_name'],
+                'netdevid' => $ticketdata['netdevid'],
+                'owner' => $ticketdata['ownername'],
+                'ownerid' => $ticketdata['owner'],
+                'verifier' => $ticketdata['verifier_username'],
+                'verifierid' => $ticketdata['verifierid'],
+                'attachments' => &$attachments,
             );
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
             $params['customerinfo'] =  isset($mail_customerinfo) ? $mail_customerinfo : null;

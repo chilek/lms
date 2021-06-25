@@ -1,8 +1,14 @@
 {block name="eventlistbox"}
 <style>
+
     .event-single-sortable-handler {
         cursor: grab;
     }
+
+    a.lms-ui-button.event-info-short-button:not(.lms-ui-link-button) > i:before {
+        color: inherit;
+    }
+
 </style>
 {foreach $daylist as $day}
 <TABLE id="event-day-{$day}" class="lmsbox lms-ui-background-cycle event-day-table">
@@ -17,14 +23,13 @@
     <THEAD>
         <TR{if $day == $today} class="superdark"{/if}>
             <TD class="bold nobr">
-                <i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{$day|date_format:"%A"}
+                {icon name="timetable" label="{$day|date_format:"%A"} ({$day|date_format:"%x"})"}
             </TD>
             <TD colspan="3">
-                <span class="bold">({$day|date_format:"%x"})</span>
                 {if $getHolidays[$day]}
                 <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>
                 {/if}
-                <a href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
+                {button type="link" href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}" icon="next"}
             </TD>
             <TD colspan="2" class="text-right nobr">
                 <div class="no-print">
@@ -39,7 +44,7 @@
     <TBODY class="event-day" data-event-day="{$day}">
         {foreach $eventlist as $event}
         {if $event.date == $day && !isset($event.hide)}
-            {include file="event/eventlistboxrow.html"}
+            {include file="event/eventlistboxrow.html" backid="event-day-{$day}"}
         {/if}
         {/foreach}
     </TBODY>
@@ -99,16 +104,6 @@
 			}
 		}
     });
-
-    $(function() {
-        $('.event-day-table').each(function() {
-            var id = $(this).attr('id');
-            $(this).find('.event-edit').each(function() {
-                var href = $(this).attr('href');
-                $(this).attr('href', href + id);
-            });
-        });
-    })
 
 </script>
 {/block}

@@ -568,16 +568,46 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_to_pay()
     {
+        $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
+
         $this->backend->Ln(-9);
-        $this->backend->SetFont(self::TCPDF_FONT, 'B', 14);
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', $show_balance_summary ? 9 : 14);
         if (isset($this->data['rebate'])) {
-            $this->backend->writeHTMLCell(0, 0, '', '', trans('To repay:') . ' ' . moneyf($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'L');
+            $this->backend->writeHTMLCell(
+                0,
+                0,
+                '',
+                '',
+                trans(
+                    $show_balance_summary ? 'Invoice value: $a' : 'To repay: $a',
+                    moneyf($this->data['value'], $this->data['currency'])
+                ),
+                0,
+                1,
+                0,
+                true,
+                'L'
+            );
         } else {
-            if ($this->use_alert_color) {
+            if (!$show_balance_summary && $this->use_alert_color) {
                 $this->backend->SetTextColorArray(array(255, 0, 0));
             }
-            $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'L');
-            if ($this->use_alert_color) {
+            $this->backend->writeHTMLCell(
+                0,
+                0,
+                '',
+                '',
+                trans(
+                    $show_balance_summary ? 'Invoice value: $a' : 'To pay: $a',
+                    moneyf($this->data['value'], $this->data['currency'])
+                ),
+                0,
+                1,
+                0,
+                true,
+                'L'
+            );
+            if (!$show_balance_summary && $this->use_alert_color) {
                 $this->backend->SetTextColor();
             }
         }
@@ -592,43 +622,91 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
 
-        if ($expired) {
+        $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
+
+        if ($expired || $show_balance_summary) {
             $lms = LMS::getInstance();
-            $balance = $lms->getCustomerBalance($this->data['customerid'], $this->data['cdate'] + 1, true);
-        } else {
-            $balance = $this->data['customerbalance'];
+            $expired_balance = $balance = $lms->getCustomerBalance($this->data['customerid'], $this->data['cdate'] + 1, true);
+        }
+
+        if (!$expired || $show_balance_summary) {
+            $total_balance = $balance = $this->data['customerbalance'];
         }
 
         if ($balance > 0) {
             $comment = trans('(excess payment)');
-        } elseif ($balance < 0) {
+        } elseif ($expired_balance < 0) {
             $comment = trans('(underpayment)');
         } else {
             $comment = '';
         }
-        if ($this->use_alert_color) {
-            $this->backend->SetTextColorArray(array(255, 0, 0));
+
+        if ($show_balance_summary) {
+            $this->backend->writeHTMLCell(
+                0,
+                0,
+                '',
+                '',
+                trans(
+                    'Previous balance: $a $b',
+                    moneyf(-$expired_balance / $this->data['currencyvalue'], $this->data['currency']),
+                    $comment
+                ),
+                0,
+                1,
+                0,
+                true,
+                'L'
+            );
+        } else {
+            if ($this->use_alert_color) {
+                $this->backend->SetTextColorArray(array(255, 0, 0));
+            }
+            $this->backend->writeHTMLCell(
+                0,
+                0,
+                '',
+                '',
+                trans(
+                    $expired ? 'Your balance without unexpired invoices: $a $b' : 'Your balance on date of invoice issue: $a $b',
+                    moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
+                    $comment
+                ),
+                0,
+                1,
+                0,
+                true,
+                'L'
+            );
+            if ($this->use_alert_color) {
+                $this->backend->SetTextColor();
+            }
         }
-        $this->backend->writeHTMLCell(
-            0,
-            0,
-            '',
-            '',
-            trans(
-                $expired ? 'Your balance without unexpired invoices: $a $b' : 'Your balance on date of invoice issue: $a $b',
-                moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
-                $comment
-            ),
-            0,
-            1,
-            0,
-            true,
-            'L'
-        );
-        if ($this->use_alert_color) {
-            $this->backend->SetTextColor();
-        }
-        if (!$expired) {
+
+        if ($show_balance_summary) {
+            $this->backend->SetFont(self::TCPDF_FONT, 'B', 14);
+            if ($this->use_alert_color) {
+                $this->backend->SetTextColorArray(array(255, 0, 0));
+            }
+            $this->backend->writeHTMLCell(
+                0,
+                0,
+                '',
+                '',
+                trans(
+                    'Total to pay: $a',
+                    moneyf($total_balance >= 0 ? 0 : (-$total_balance / $this->data['currencyvalue']), $this->data['currency'])
+                ),
+                0,
+                1,
+                0,
+                true,
+                'L'
+            );
+            if ($this->use_alert_color) {
+                $this->backend->SetTextColor();
+            }
+        } elseif (!$expired) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Balance includes current invoice'), 0, 1, 0, true, 'L');
         }
     }
@@ -658,7 +736,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_expositor()
     {
-        $expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
+        $expositor = empty($this->data['issuer']) ? (empty($this->data['user']) ? $this->data['division_author'] : $this->data['user']) : $this->data['issuer'];
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
         if (!ConfigHelper::checkConfig('invoices.hide_expositor')) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . (empty($expositor) ? trans('system') : $expositor) . '</b>', 0, 1, 0, true, 'R');
@@ -793,7 +871,18 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
-        $tmp = '|PL|'.bankaccount($this->data['customerid'], $this->data['account']).'|'.str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT).'|'.$this->data['division_name'].'|' . trans('QR Payment for Internet Invoice no.').' '.$docnumber.'|||';
+        $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
+            . '|'
+            . 'PL'
+            . '|'
+            . bankaccount($this->data['customerid'], $this->data['account'])
+            . '|'
+            . str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT)
+            . '|'
+            . mb_substr($this->data['division_shortname'], 0, 20)
+            . '|'
+            . trans('QR Payment for Internet Invoice no.') . ' ' . $docnumber
+            . '|||';
         $style['position'] = 'R';
         $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 30, 30, $style);
         unset($tmp);

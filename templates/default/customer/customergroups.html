@@ -20,7 +20,7 @@
 		{tab_table}
 			{if $customergroups}
 			<div class="lms-ui-tab-table-row header">
-				<div class="lms-ui-tab-table-wrapper col-3">
+				<div class="lms-ui-tab-table-wrapper col-4">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
 							<strong>{trans("Name:")}</strong>
@@ -30,8 +30,13 @@
 						</div>
 					</div>
 
-					<div class="lms-ui-tab-table-column id">
-						{trans("ID:")}
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
+						<div class="lms-ui-tab-table-column datefrom">
+							{trans("Od")}
+						</div>
 					</div>
 				</div>
 
@@ -43,7 +48,7 @@
 
 			{foreach $customergroups as $customergroup}
 			<div class="lms-ui-tab-table-row">
-				<div class="lms-ui-tab-table-wrapper col-3">
+				<div class="lms-ui-tab-table-wrapper col-4">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
 							<strong>
@@ -58,8 +63,17 @@
 						</div>
 					</div>
 
-					<div class="lms-ui-tab-table-column id">
-						({$customergroup.id|string_format:"%04d"})
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column id">
+							({$customergroup.id|string_format:"%04d"})
+						</div>
+						<div class="lms-ui-tab-table-column datefrom">
+							{if $customergroup.startdate}
+								{$customergroup.startdate|date_format:"%Y/%m/%d %H:%M"}
+							{else}
+								-
+							{/if}
+						</div>
 					</div>
 				</div>
 

@@ -130,7 +130,7 @@
 					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
 					<TD class="comment"
 						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
-						>{$item.comment}</TD>
+						>{$item.comment|escape}</TD>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
@@ -175,9 +175,11 @@
 											{/if}
 											return false;
 										{/textformat}
-										{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
 											href="?m=invoiceedit&id={$item.docid}&action=edit"
-											onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+											onclick=$onclick
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="Invoice"}
 									{/if}
 								{/if}
 								{if !$item.cancelled}
@@ -192,13 +194,14 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+									{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" icon_tip="View"}
+										data_url="?m=invoiceinfo&id={$item.docid}" icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+								{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" icon_tip="Invoice"}
+									data_url="?m=invoiceinfo&id={$item.docid}"
+									icon_tip="Invoice"}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
@@ -213,10 +216,11 @@
 											{/if}
 											return false;
 										{/textformat}
-										{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
 											href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
 											onclick=$onclick
-											resourceid="{$item.docid}" icon_tip="pro forma invoice"}
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="pro forma invoice"}
 									{/if}
 								{/if}
 								{if !$item.cancelled}
@@ -231,13 +235,15 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+									{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" icon_tip="View"}
+										data_url="?m=invoiceinfo&id={$item.docid}"
+										icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+								{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" icon_tip="pro forma invoice"}
+									data_url="?m=invoiceinfo&id={$item.docid}"
+									icon_tip="pro forma invoice"}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.cancelled && !$item.referenced}
 									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
@@ -258,9 +264,11 @@
 											{/if}
 											return false;
 										{/textformat}
-										{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
 											href="?m=invoicenoteedit&id={$item.docid}&action=edit"
-											onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+											onclick=$onclick
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="Invoice"}
 									{/if}
 								{/if}
 								{if !$item.cancelled}
@@ -275,21 +283,27 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-docnumber"
+									{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" icon_tip="View"}
+										data_url="?m=number&id={$item.docid}"
+										icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-docnumber"
+								{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" icon_tip="Credit note"}
+									data_url="?m=number&id={$item.docid}"
+									icon_tip="Credit note"}
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
 								{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
-									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+									{button type="link" icon="edit" class="lms-ui-hint-rollover"
 										href="?m=receiptedit&id={$item.docid}"
-										resourceid="{$item.docid}" externa=true icon_tip="Cash receipt"}
-									{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+										data_url="?m=number&id={$item.docid}"
+										external=true
+										icon_tip="Cash receipt"}
+									{button type="link" icon="print" class="lms-ui-hint-rollover"
 										href="?m=receipt&id={$item.docid}"
-										resourceid="{$item.docid}" external=true icon_tip="Cash receipt"}
+										data_url="?m=number&id={$item.docid}"
+										external=true
+										icon_tip="Cash receipt"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
@@ -305,9 +319,11 @@
 											{/if}
 											return false;
 										{/textformat}
-										{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
 											href="?m=noteedit&id={$item.docid}&action=edit"
-											onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+											onclick=$onclick
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="Invoice"}
 									{/if}
 								{/if}
 								{if !$item.cancelled}
@@ -323,13 +339,17 @@
 
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+									{button type="link" icon="view" class="lms-ui-hint-rollover"
 										href="?m=note&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
+										data_url="?m=number&id={$item.docid}"
+										external=true
+										icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+								{button type="link" icon="print" class="lms-ui-hint-rollover"
 									href="?m=note&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Debit note"}
+									data_url="?m=number&id={$item.docid}"
+									external=true
+									icon_tip="Debit note"}
 							{/if}
 						{/if}
 						<INPUT type="checkbox" form="addbalance-form"
@@ -422,9 +442,18 @@
 							<INPUT type="radio" form="addbalance-form" NAME="addbalance[type]" value="1" {tip text="Select type of operation"} checked>
 							{trans("income/expense")}
 						</label>
+						<div class="servicetype">
+							{icon name="money"}
+							<select id="servicetype" name="addbalance[servicetype]" form="addbalance-form" {tip text="Service type"}>
+								<option value="">{trans("- none -")}</option>
+								{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
+									<option value="{$type}"{if $servicetype == $type} selected{/if}>{$label}</option>
+								{/foreach}
+							</select>
+						</div>
 						{if $sourcelist}
 						<div class="isource">
-							<i class="lms-ui-icon-isource"></i>
+							<i class="lms-ui-icon-isource fa-fw"></i>
 							<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
 								<OPTION value="0">{trans("- none -")}</OPTION>
 								{foreach $sourcelist as $source}
@@ -595,6 +624,13 @@
 			location.href = '?m={$layout.module}&id={$objectid}&aggregate_documents=' +
 				($(this).prop('checked') ? '1' : '0');
 		});
+
+		$('[name="addbalance[type]"]').change(function() {
+			var that = this;
+			$('#servicetype').prop('disabled', function() {
+				return $(that).val() == '1';
+			});
+		}).change();
 	});
 
 	{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}

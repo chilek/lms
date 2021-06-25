@@ -31,6 +31,7 @@ class LMS
 {
     const SOFTWARE_NAME = 'LMS';
     const SOFTWARE_VERSION = '27-git';
+    const SOFTWARE_URL = 'https://lms.org.pl';
     const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
@@ -2376,6 +2377,12 @@ class LMS
         $manager->getTicketImageGalleries($ticket);
     }
 
+    public function cleanupTicketSubject($subject)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->cleanupTicketSubject($subject);
+    }
+
     /*
      *  LMS-UI configuration
      */
@@ -2644,10 +2651,9 @@ class LMS
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
         $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
-        $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', 2));
-        if (!$debug_level) {
-            $debug_level = 2;
-        }
+
+        $debug_email = ConfigHelper::getConfig('mail.debug_email');
+        $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', empty($debug_email) ? 0 : 2));
 
         if (ConfigHelper::getConfig('mail.backend') == 'pear') {
             if (!is_object($this->mail_object) || !$persist) {
@@ -2823,10 +2829,10 @@ class LMS
             $this->mail_object->CharSet = 'UTF-8';
             $this->mail_object->Subject = $headers['Subject'];
 
-            $debug_email = ConfigHelper::getConfig('mail.debug_email');
+            $this->mail_object->SMTPDebug = $debug_level;
+
             if (!empty($debug_email)) {
-                $this->mail_object->SMTPDebug = $debug_level;
-                $recipients = ConfigHelper::getConfig('mail.debug_email');
+                $recipients = $debug_email;
             } else {
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
@@ -3104,10 +3110,10 @@ class LMS
         return $manager->GetDocumentList($params);
     }
 
-    public function GetTaxes($from = null, $to = null)
+    public function GetTaxes($from = null, $to = null, $default = null)
     {
         $manager = $this->getFinanceManager();
-        return $manager->GetTaxes($from, $to);
+        return $manager->GetTaxes($from, $to, $default);
     }
 
     public function EventAdd($event)
@@ -3412,6 +3418,12 @@ class LMS
     {
         $manager = $this->getLocationManager();
         return $manager->UpdateAddress($args);
+    }
+
+    public function SetAddress($args)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->SetAddress($args);
     }
 
     public function UpdateCustomerAddress($customer_id, $args)
@@ -4781,6 +4793,7 @@ class LMS
                 $headers = array(
                     'From' => empty($dsn_email) ? $from : $dsn_email,
                     'To' => $mailto_qp_encoded,
+                    'Recipient-Name' => $doc['name'],
                     'Subject' => $subject,
                     'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
                 );

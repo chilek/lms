@@ -42,6 +42,20 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 
 $userlist = $LMS->GetUserNames();
 
+if ($SESSION->is_set('backto', true)) {
+    $backto = $SESSION->get('backto', true);
+} elseif ($SESSION->is_set('backto')) {
+    $backto = $SESSION->get('backto');
+} else {
+    $backto = 'm=eventlist';
+}
+if (preg_match('/m=rtticketview/', $backto)) {
+    $backid = '';
+} else {
+    $backid = $SESSION->get('backid');
+}
+$backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
+
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
@@ -285,10 +299,22 @@ if (isset($_POST['event'])) {
                         if (isset($event['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
                             && !empty($emails)) {
                             $custmail_subject = $queuedata['newticketsubject'];
-                            $custmail_subject = str_replace('%tid', $id, $custmail_subject);
+                            $custmail_subject = preg_replace_callback(
+                                '/%(\\d*)tid/',
+                                function ($m) use ($id) {
+                                    return sprintf('%0' . $m[1] . 'd', $id);
+                                },
+                                $custmail_subject
+                            );
                             $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
                             $custmail_body = $queuedata['newticketbody'];
-                            $custmail_body = str_replace('%tid', $id, $custmail_body);
+                            $custmail_body = preg_replace_callback(
+                                '/%(\\d*)tid/',
+                                function ($m) use ($id) {
+                                    return sprintf('%0' . $m[1] . 'd', $id);
+                                },
+                                $custmail_body
+                            );
                             $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
                             $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                             $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
@@ -358,13 +384,7 @@ if (isset($_POST['event'])) {
         $ticket = $hook_data['ticket'];
 
         if (!isset($event['reuse'])) {
-            $backto = $SESSION->get('backto');
-            if (isset($backto) && preg_match('/m=rtticketview/', $backto)) {
-                $SESSION->redirect('?' . $backto);
-            } else {
-                $SESSION->redirect('?m=eventlist'
-                    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            }
+            $SESSION->redirect($backurl);
         }
 
         unset($event['title']);
@@ -408,6 +428,8 @@ if (isset($_POST['event'])) {
     if (!isset($eventticketid)) {
         $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment') ? 'new' : 'none';
     }
+
+    $SMARTY->assign('backurl', $backurl);
 }
 
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
@@ -495,7 +517,7 @@ if (isset($eventticketid)) {
     $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
     $event['customername'] = $event['ticket']['customername'];
-    if (ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event', 'false')) {
+    if (ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event')) {
         $event['title'] = $event['ticket']['name'];
         $message = $LMS->GetFirstMessage($event['ticketid']);
         $event['description'] = $message['body'];

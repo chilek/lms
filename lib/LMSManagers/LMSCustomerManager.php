@@ -822,7 +822,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $state_conditions[] = 's.online = 1';
                     break;
                 case 54:
-                    $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM customerassignments a
+                    $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM vcustomerassignments a
                     WHERE c.id = a.customerid)';
                     break;
                 case 55:
@@ -929,6 +929,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 80:
                     $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments WHERE commited = 1 AND tariffid IS NULL AND customerid = c.id)';
                     break;
+                case 81:
+                    $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM customer_addresses WHERE customer_addresses.customer_id = c.id
+                        AND customer_addresses.type IN (' . LOCATION_ADDRESS . ',' . DEFAULT_LOCATION_ADDRESS . '))';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
@@ -962,19 +966,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         switch ($as) {
-            case 7:
-            case 14:
-            case 30:
-                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-                    .'a.suspended = 0 AND a.commited = 1 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
-                    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
-                break;
             case -1:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
                 break;
             case -2:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
-                .'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
+                    . 'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)';
                 break;
             case -3:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = ' . DOC_INVOICE
@@ -982,15 +979,46 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             case -4:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended <> 0';
                 break;
             case -5:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = ' . DOC_INVOICE_PRO
                     . ' AND a.suspended = 0 AND a.commited = 1
                     AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
+            case -6:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a
+                    LEFT JOIN documents d ON d.id = a.docid
+                    WHERE a.suspended = 0 AND a.commited = 1
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND a.period <> 0
+                    GROUP BY a.customerid, d.id
+                    HAVING MIN(a.datefrom) > ?NOW?';
+                break;
+            case -7:
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
+                    WHERE a.suspended = 0 AND a.commited = 1
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? OR a.period <> 0)
+                        AND NOT EXISTS (SELECT 1 FROM nodeassignments WHERE assignmentid = a.id)';
+                break;
+            case -8:
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
+                    LEFT JOIN documents d ON d.id = a.docid
+                    WHERE a.suspended = 0 AND a.commited = 1
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?) AND a.period <> 0
+                        AND NOT EXISTS (SELECT 1 FROM nodeassignments WHERE assignmentid = a.id)
+                    GROUP BY a.customerid, d.id
+                    HAVING MIN(a.datefrom) > ?NOW?';
+                break;
             default:
-                $assignment = null;
+                if ($as > 0) {
+                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
+                        a.suspended = 0 AND a.commited = 1 AND a.dateto > ' . time() . ' AND a.dateto <= ' . (time() + ($as * 86400))
+                        . ' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+                } else {
+                    $assignment = null;
+                }
                 break;
         }
 
@@ -1067,8 +1095,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                     AND UPPER(va.location) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
                             break;
                         case 'customername':
-                            // UPPER here is a workaround for postgresql ILIKE bug
-                            $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape("%$value%") . ')';
+                            if (!isset($search['customernamestartingwith'])) {
+                                // UPPER here is a workaround for postgresql ILIKE bug
+                                $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape("%$value%") . ')';
+                            }
+                            break;
+                        case 'customernamestartingwith':
+                            if ($search['customername'] != '') {
+                                $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape($search['customername'] . '%') . ')';
+                            }
                             break;
                         case 'createdfrom':
                             if ($search['createdto']) {
@@ -1268,11 +1303,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             OR d.type IN (' . DOC_INVOICE . ',' . DOC_DNOTE . ')) AND d.cdate + d.paytime  * 86400 < ' . ($time ?: time()) . ')))
                 GROUP BY cash.customerid
             ) b2 ON b2.customerid = c.id ' : '')
-            . (!empty($customergroup) ? 'LEFT JOIN (SELECT customerassignments.customerid, COUNT(*) AS gcount
-            	FROM customerassignments '
+            . (!empty($customergroup) ? 'LEFT JOIN (SELECT vcustomerassignments.customerid, COUNT(*) AS gcount
+            	FROM vcustomerassignments '
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
                         . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
-            		GROUP BY customerassignments.customerid) ca ON ca.customerid = c.id ' : '')
+            		GROUP BY vcustomerassignments.customerid) ca ON ca.customerid = c.id ' : '')
             . ($count ? '' : '
                 LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
                 FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
@@ -1914,7 +1949,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 array(SYSLOG::RES_CUST => $id, 'deleted' => 1)
             );
             if (in_array('customergroups', $delete_related_resources)) {
-                $assigns = $this->db->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
+                $assigns = $this->db->GetAll('SELECT id, customergroupid FROM vcustomerassignments WHERE customerid = ?', array($id));
                 if (!empty($assigns)) {
                     foreach ($assigns as $assign) {
                         $args = array(
@@ -1929,7 +1964,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         if (in_array('customergroups', $delete_related_resources)) {
-            $this->db->Execute('DELETE FROM customerassignments WHERE customerid=?', array($id));
+            $this->db->Execute('UPDATE customerassignments SET enddate = ?NOW? WHERE customerid = ? AND enddate = 0', array($id));
         }
 
         if ($this->syslog) {
@@ -2808,7 +2843,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $this->db->Execute(
             'UPDATE customers SET type = ? WHERE id = ?',
-            array($id, $type)
+            array($type, $id)
         );
         if ($this->syslog) {
             $userid = Auth::GetCurrentUser();

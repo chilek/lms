@@ -42,6 +42,11 @@
 		width: auto;
 	}
 
+	.reward-flags {
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
+		padding-inline-start: 1.5em;
+	}
 
 </style>
 
@@ -57,7 +62,7 @@
 	{/if}
 	<TR>
 		<TD style="width: 100%;" class="hand text-left bold nobr" onClick="showOrHide('promotionschemadata');">
-			{icon name="money" class="fa-fw"}
+			{icon name="money"}
 			{t a=$tariffcnt}Schema's Tariffs ($a):{/t}
 		</TD>
 	</TR>
@@ -102,7 +107,31 @@
 				{foreach $schema.tariffs as $tariff}
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
-						{icon name="money" class="drag-icon fa-fw"}&nbsp;<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+						{icon name="money" class="drag-icon"}
+						<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+						{if !empty($tariff.flags)}
+							{capture assign="reward_flags"}
+								{if $tariff.value < 0}
+									{trans("reward for")}
+								{else}
+									{trans("penalty for")}
+								{/if}
+								<ul class='reward-flags'>
+									{foreach $_TARIFF_FLAGS as $flag => $label}
+										{if intval($tariff.flags) & intval($flag)}
+											<li>
+												<strong>{$label}</strong>
+											</li>
+										{/if}
+									{/foreach}
+								</ul>
+							{/capture}
+							{if $tariff.value < 0}
+								{icon name="reward" tip=$reward_flags}
+							{else}
+								{icon name="penalty" tip=$reward_flags}
+							{/if}
+						{/if}
 					</TD>
 					<TD class="nobr valign-top">
 						{$_SERVICETYPES[$tariff.type]}
@@ -113,7 +142,7 @@
 					<td class="text-right valign-top nobr">
 						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
 								data-backwardperiod="{$tariff.backwardperiod}">
-							{if $tariff.backwardperiod}{trans("yes")}{else}{trans("no")}{/if}
+							{if $tariff.backwardperiod}{icon name="checked" tip="yes"}{/if}
 						</span>
 						<input class="tariff-edit" type="checkbox" name="form[{$tariff.id}][backwardperiod]" value="1"
 							   {tip text="Check if tariff should be accounted backward"}
@@ -123,7 +152,7 @@
 					<TD class="text-right valign-top nobr">
 						<SPAN class="tariff-view" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}
 								data-optional="{$tariff.optional}">
-							{if $tariff.optional}{trans("yes")}{else}{trans("no")}{/if}
+							{if $tariff.optional}{icon name="checked" tip="yes"}{/if}
 						</SPAN>
 						<INPUT type="checkbox" class="tariff-edit optional-edit" name="form[{$tariff.id}][optional]" value="1"
 								{tip text="Check if tariff should be optional"}
@@ -210,11 +239,11 @@
 					</TD>
 				</TR>
 				{foreachelse}
-				<TR>
-					<TD colspan="{$periodcnt+7}" class="empty-table">
-						<p>{trans("This schema has no assigned tariffs.")}</p>
-					</TD>
-				</TR>
+				<tr>
+					<td colspan="{$periodcnt+7}" class="empty-table">
+						{trans("This schema has no assigned tariffs.")}
+					</td>
+				</tr>
 				{/foreach}
 				</TBODY>
 				{if $tariffs}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -188,9 +188,9 @@ function GetConfigList()
 
     $config = $DB->GetAll(
         'SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid, c.divisionid, c.configid,
-        u.login, u.firstname, u.lastname, d.shortname
+        u.login, u.name AS username, u.rname AS rusername, d.shortname
         FROM uiconfig c
-        LEFT JOIN users u on c.userid = u.id
+        LEFT JOIN vallusers u on c.userid = u.id
         LEFT JOIN divisions d on c.divisionid = d.id
         WHERE section != \'userpanel\''
     );
@@ -237,8 +237,8 @@ $configlist = GetConfigList();
 
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($configlist));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']), true);
+$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']));
 
 $SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
 $SMARTY->assign('sections', $LMS->GetConfigSections());
@@ -246,4 +246,8 @@ $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');
+$SMARTY->assign('division', isset($_GET['d']) ? $_GET['d'] : '');
+$SMARTY->assign('user', isset($_GET['u']) ? $_GET['u'] : '');
+$SMARTY->assign('scope', isset($_GET['sc']) ? $_GET['sc'] : '');
+$SMARTY->assign('name', isset($_GET['v']) ? $_GET['v'] : '');
 $SMARTY->display('config/configlist.html');

@@ -22,14 +22,16 @@
 		<COl style="width: 1%;">
 		<COl style="width: 1%;">
 		<COl style="width: 1%;">
+		<COl style="width: 1%;">
+		<COl style="width: 1%;">
 	</COLGROUP>
 	<THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD class="nobr">
-			{icon name="money" class="fa-fw"} <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="money"} <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			({trans("Effective date")})
 			<BR>
-			{icon name="info" class="fa-fw"} <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="info"} <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=tarifflist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -43,8 +45,14 @@
 			<A href="?m=tarifflist&amp;o=upceil{if $listdata.direction == "asc" && $listdata.order == "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order == "upceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=tarifflist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}"><B>{trans("Value:")}</B></A> {if $listdata.order == "value"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			{trans("Tax:")}
+			<A href="?m=tarifflist&amp;o=netvalue{if $listdata.direction == "asc" && $listdata.order == "netvalue"},desc{/if}"><B>{trans("Net price")}</B></A> {if $listdata.order == "netvalue"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		</TD>
+		<td class="text-center">
+			{trans("Tax:")}<br>
+			{trans("Accounting:")}
+		</td>
+		<TD class="text-right nobr">
+			<A href="?m=tarifflist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}"><B>{trans("Gross price")}</B></A> {if $listdata.order == "value"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=tarifflist&amp;o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order == "count"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -55,11 +63,11 @@
 			{/if}
 		</TD>
 		<TD class="bold text-right nobr">
-			{t a=$listdata.total}Total: $a{/t}
+			{button icon="add" label="New Subscription" href="?m=tariffadd{if $listdata.type}&t={$listdata.type}{/if}"}
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="8">
+		<TD colspan="10">
 			<FORM METHOD="POST" ACTION="?m={$layout.module}" NAME="choosefilter" id="choosefilter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="tarifflist">
@@ -114,6 +122,19 @@
 						{/foreach}
 					</SELECT>
 				{/if}
+				{trans("PTU:")}
+				<select size="1" name="tax" onchange="document.choosefilter.submit();">
+					<option value="" {if !$listdata.tax} selected{/if}>{trans("- all -")}</option>
+					{foreach $taxeslist as $tax}
+						<option value="{$tax.id}"{if $tax.id == $listdata.tax} selected{/if}>{$tax.label}</option>
+					{/foreach}
+				</select>
+				{trans("Accounting:")}
+				<select size="1" name="netflag" onchange="document.choosefilter.submit();">
+					<option value="" {if !$listdata.netflag} selected{/if}>{trans("- all -")}</option>
+					<option value="1" {if $listdata.netflag == 1} selected{/if}>{trans("in net")}</option>
+					<option value="2" {if $listdata.netflag == 2} selected{/if}>{trans("in gross")}</option>
+				</select>
 			</FORM>
 		</TD>
 	</TR>
@@ -122,7 +143,7 @@
 	{foreach $tarifflist as $tariff}
 	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}" data-target-url="?m=tariffinfo&id={$tariff.id}" data-name="{$tariff.name}">
 		<TD>
-			{icon name="money" class="fa-fw"}
+			{icon name="money"}
 			<a href="?m=tariffinfo&id={$tariff.id}"><B>{$tariff.name}</B></a>
 			{if $tariff.datefrom || $tariff.dateto}
 				{if $tariff.datefrom}
@@ -134,7 +155,7 @@
 			{/if}
 			<BR>
 			{if $tariff.description}
-				{icon name="info" class="fa-fw"}
+				{icon name="info"}
 				{$tariff.description}
 			{/if}
 			{if !empty($tariff.tags)}
@@ -161,8 +182,18 @@
 			{if $tariff.upceil_n}({convert_to_units($tariff.upceil_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
-			<B>{moneyf($tariff.value, $tariff.currency)}</B><BR>
-			{$tariff.tax}
+			{moneyf($tariff.netvalue, $tariff.currency)}<br>
+		</TD>
+		<td class="text-center">
+			{$tariff.tax}<br>
+			{if $tariff.netflag}
+				{icon name="net-to-gross" tip="Billing according to the net price"}
+			{else}
+				{icon name="gross-to-net" tip="Billing according to the gross price"}
+			{/if}
+		</td>
+		<TD class="text-right nobr">
+			<B>{moneyf($tariff.value, $tariff.currency)}</B><br>
 		</TD>
 		<TD class="text-right nobr">
 			<span title="<span class=&quot;bold&quot;</span>{trans("Customer count")}">{$tariff.customerscount|default:0}</span>
@@ -193,16 +224,16 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="8" class="empty-table">
-			<p>{trans("No such subscriptions in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="10" class="empty-table">
+			{trans("No such subscriptions in database.")}
+		</td>
+	</tr>
 	{/foreach}
     </TBODY>
     <TFOOT>
 	<TR class="dark">
-		<TD COLSPAN="5" class="text-right">
+		<TD COLSPAN="7" class="text-right">
 			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
 		</TD>
 		<TD class="text-right nobr">
@@ -216,7 +247,7 @@
 				{/foreach}
 			{/if}
 		</TD>
-		<TD>&nbsp;</TD>
+		<TD class="bold">{t a=$listdata.total}Total: $a{/t}</TD>
 	</TR>
     </TFOOT>
 </TABLE>

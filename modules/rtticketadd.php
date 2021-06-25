@@ -190,6 +190,10 @@ if (isset($_POST['ticket'])) {
             $ticket['service'] = null;
         }
 
+        if ($ticket['priority'] == '') {
+            unset($ticket['priority']);
+        }
+
         $attachments = null;
 
         if (!empty($files)) {
@@ -288,12 +292,29 @@ if (isset($_POST['ticket'])) {
                     'customerid' => $ticket['customerid'],
                     'status' => $ticketdata['status'],
                     'categories' => $ticketdata['categorynames'],
+                    'subject' => $ticket['subject'],
+                    'body' => $ticket['body'],
                     'priority' => $RT_PRIORITIES[$ticketdata['priority']],
                     'deadline' => $ticketdata['deadline'],
                     'service' => $ticketdata['service'],
                     'type' => $ticketdata['type'],
-                    'subject' => $ticket['subject'],
-                    'body' => $ticket['body'],
+                    'invproject' => $ticketdata['invproject_name'],
+                    'invprojectid' => $ticketdata['invprojectid'],
+                    'requestor' => $ticketdata['requestor'],
+                    'requestor_mail' => $ticketdata['requestor_mail'],
+                    'requestor_phone' => $ticketdata['requestor_phone'],
+                    'requestor_userid' => $ticketdata['requestor_userid'],
+                    'parentid' => $ticketdata['parentid'],
+                    'node' => $ticketdata['node_name'],
+                    'nodeid' => $ticketdata['nodeid'],
+                    'netnode' => $ticketdata['netnode_name'],
+                    'netnodeid' => $ticketdata['netnodeid'],
+                    'netdev' => $ticketdata['netdev_name'],
+                    'netdevid' => $ticketdata['netdevid'],
+                    'owner' => $ticketdata['ownername'],
+                    'ownerid' => $ticketdata['owner'],
+                    'verifier' => $ticketdata['verifier_username'],
+                    'verifierid' => $ticketdata['verifierid'],
                     'attachments' => &$attachments,
                 );
                 $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
@@ -328,13 +349,24 @@ if (isset($_POST['ticket'])) {
 
         if (isset($ticket['customernotify']) && $ticket['customerid'] && ConfigHelper::checkConfig('phpui.newticket_notify')
             && (!empty($mails) || !empty($mobile_phones))) {
-            $ticketid = sprintf("%06d", $id);
             if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
                 $custmail_subject = $queuedata['newticketsubject'];
-                $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                $custmail_subject = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($id) {
+                        return sprintf('%0' . $m[1] . 'd', $id);
+                    },
+                    $custmail_subject
+                );
                 $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
                 $custmail_body = $queuedata['newticketbody'];
-                $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                $custmail_body = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($id) {
+                        return sprintf('%0' . $m[1] . 'd', $id);
+                    },
+                    $custmail_body
+                );
                 $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
                 $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                 $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
@@ -353,7 +385,13 @@ if (isset($_POST['ticket'])) {
             }
             if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {
                 $custsms_body = $queuedata['newticketsmsbody'];
-                $custsms_body = str_replace('%tid', $ticketid, $custsms_body);
+                $custsms_body = preg_replace_callback(
+                    '/%(\\d*)tid/',
+                    function ($m) use ($id) {
+                        return sprintf('%0' . $m[1] . 'd', $id);
+                    },
+                    $custsms_body
+                );
                 $custsms_body = str_replace('%cid', $ticket['customerid'], $custsms_body);
                 $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                 $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);

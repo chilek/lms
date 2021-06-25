@@ -122,11 +122,11 @@
 					</TD>
 				</TR>
 				{foreachelse}
-				<TR>
-                			<TD COLSPAN="5" class="empty-table">
-					        <p>{trans("No devices associated with this channel.")}</p>
-					</TD>
-				</TR>
+					<tr>
+						<td colspan="5" class="empty-table">
+							{trans("No devices associated with this channel.")}
+						</td>
+					</tr>
 				{/foreach}
 				{if $channel.freedevices}
 				<FORM METHOD="POST" NAME="device" ACTION="?m=ewxchedit&action=add&id={$channel.id}">
