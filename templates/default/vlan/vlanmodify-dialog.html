@@ -109,7 +109,7 @@
             updateAdvancedSelects("#dialog-netnode_selector");
 
             var customeridedit = $(row).find("[data-template-customerid]").attr('data-template-customerid');
-            $( "#dialog-customer_selector" ).removeAttr('value', 'data-customer-name', 'data-prev-value').val(customeridedit).trigger('input');
+            $( "#dialog-customer_selector" ).removeAttr('data-customer-name', 'data-prev-value').val(customeridedit).trigger('input');
         }
         $( "#addvlanmodal" ).dialog( "open" );
     };
