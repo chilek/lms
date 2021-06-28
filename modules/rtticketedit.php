@@ -147,8 +147,12 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'read':
-                foreach ($id as $ticketid) {
-                    $LMS->MarkTicketAsRead($ticketid);
+                if (is_array($id)) {
+                    foreach ($id as $ticketid) {
+                        $LMS->MarkTicketAsRead($ticketid);
+                    }
+                } else {
+                    $LMS->MarkTicketAsRead($id);
                 }
                 $SESSION->redirect('?m=rtqueueview'
                     . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
