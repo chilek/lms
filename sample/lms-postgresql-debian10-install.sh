@@ -27,9 +27,9 @@ sed -i 's|;date.timezone =|data.timezone = Europe/Warsaw|g' ${phpinifile}
 
 #LMS APP
 git clone https://github.com/lmsgit/lms ${lmsdir}
-mkdir -p $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
-chmod o-rwx -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
-chown $apacheuser:$apacheuser -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,img/xajax_js/deferred}
+mkdir -p $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,js/xajax_js/deferred}
+chmod o-rwx -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,js/xajax_js/deferred}
+chown $apacheuser:$apacheuser -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,js/xajax_js/deferred}
 cd ${lmsdir}; composer update --no-dev
 
 #LMS DB APP
