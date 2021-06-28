@@ -85,21 +85,17 @@
 
     function open_add_dialog() {
         $( "#addvlan-form" ).attr('action', '?m=vlanlist&action=add');
-        $( "#addvlanmodal" ).dialog( "open" );
-        $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Add VLAN")}");
-        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Submit")}</span>');
+        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Add")}</span>');
 
-        document.getElementById("dialog-vlanid").value = "";
-        document.getElementById("dialog-description").value = "";
-        document.getElementById("dialog-netnode_selector").value = "";
+        $( "dialog-vlanid", "dialog-description", "dialog-netnode_selector").val();
         updateAdvancedSelects("#dialog-netnode_selector");
 
-	    $( "#dialog-customer_selector" ).removeAttr( "data-customer-name", "data-prev-value" ).val('').trigger('input');
+	    $( "#dialog-customer_selector" ).val('').trigger('input');
+        $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Add VLAN")}").dialog( "open" );
     };
 
     function open_modify_dialog (template_id) {
-        $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Modify VLAN")} " + template_id);
-        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Modify")}</span>');
+        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Submit")}</span>');
         $( "#addvlan-form" ).attr('action', '?m=vlanlist&action=modify&id=' + template_id);
         if (template_id) {
             var row = $('[data-template-id=' + template_id + ']');
@@ -111,6 +107,6 @@
             var customeridedit = $(row).find("[data-template-customerid]").attr('data-template-customerid');
             $( "#dialog-customer_selector" ).removeAttr('data-customer-name', 'data-prev-value').val(customeridedit).trigger('input');
         }
-        $( "#addvlanmodal" ).dialog( "open" );
+        $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Modify VLAN")} " + template_id).dialog( "open" );
     };
 </script>
