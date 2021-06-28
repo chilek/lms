@@ -94,11 +94,10 @@
         document.getElementById("dialog-netnode_selector").value = "";
         updateAdvancedSelects("#dialog-netnode_selector");
 
-	    $( "#dialog-customer_selector" ).removeAttr( "value", "data-customer-name", "data-prev-value" ).trigger('input');
+	    $( "#dialog-customer_selector" ).removeAttr( "data-customer-name", "data-prev-value" ).val('').trigger('input');
     };
 
     function open_modify_dialog (template_id) {
-        $( "#addvlanmodal" ).dialog( "open" );
         $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Modify VLAN")} " + template_id);
         $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Modify")}</span>');
         $( "#addvlan-form" ).attr('action', '?m=vlanlist&action=modify&id=' + template_id);
@@ -112,5 +111,6 @@
             var customeridedit = $(row).find("[data-template-customerid]").attr('data-template-customerid');
             $( "#dialog-customer_selector" ).removeAttr('value', 'data-customer-name', 'data-prev-value').val(customeridedit).trigger('input');
         }
+        $( "#addvlanmodal" ).dialog( "open" );
     };
 </script>
