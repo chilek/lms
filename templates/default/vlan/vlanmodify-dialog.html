@@ -61,7 +61,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="button-bar text-center">
-                        {button type="submit" label="{if $action == 'modify'}Submit{else}Add{/if}" icon="submit"}
+                        {button id="submit-modal-button" type="submit" label="{if $action == 'modify'}Submit{else}Add{/if}" icon="submit"}
                         {button label="Cancel" icon="cancel" id="close"}
                     </td>
                 </tr>
@@ -87,18 +87,20 @@
         $( "#addvlan-form" ).attr('action', '?m=vlanlist&action=add');
         $( "#addvlanmodal" ).dialog( "open" );
         $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Add VLAN")}");
+        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Submit")}</span>');
 
         document.getElementById("dialog-vlanid").value = "";
         document.getElementById("dialog-description").value = "";
         document.getElementById("dialog-netnode_selector").value = "";
         updateAdvancedSelects("#dialog-netnode_selector");
 
-	    $( "#dialog-customer_selector" ).removeAttr( "value", "data-customer-name", "data-prev-value" ).trigger('change');
+	    $( "#dialog-customer_selector" ).removeAttr( "value", "data-customer-name", "data-prev-value" ).trigger('input');
     };
 
     function open_modify_dialog (template_id) {
         $( "#addvlanmodal" ).dialog( "open" );
         $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Modify VLAN")} " + template_id);
+        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Modify")}</span>');
         $( "#addvlan-form" ).attr('action', '?m=vlanlist&action=modify&id=' + template_id);
         if (template_id) {
             var row = $('[data-template-id=' + template_id + ']');
@@ -108,7 +110,7 @@
             updateAdvancedSelects("#dialog-netnode_selector");
 
             var customeridedit = $(row).find("[data-template-customerid]").attr('data-template-customerid');
-            $( "#dialog-customer_selector" ).removeAttr('value', 'data-customer-name', 'data-prev-value').val(customeridedit).trigger('change');
+            $( "#dialog-customer_selector" ).removeAttr('value', 'data-customer-name', 'data-prev-value').val(customeridedit).trigger('input');
         }
     };
 </script>
