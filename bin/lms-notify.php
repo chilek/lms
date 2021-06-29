@@ -529,7 +529,11 @@ function parse_customer_data($data, $format, $row)
     $data = preg_replace("/\%date-y/", strftime("%Y"), $data);
     $data = preg_replace("/\%date-m/", strftime("%m"), $data);
     $data = preg_replace("/\%date_month_name/", strftime("%B"), $data);
-    $deadline = $row['cdate'] + $row['paytime'] * 86400;
+    if (isset($row['deadline'])) {
+        $deadline = $row['deadline'];
+    } else {
+        $deadline = $row['cdate'] + $row['paytime'] * 86400;
+    }
     $data = preg_replace("/\%deadline-y/", strftime("%Y", $deadline), $data);
     $data = preg_replace("/\%deadline-m/", strftime("%m", $deadline), $data);
     $data = preg_replace("/\%deadline-d/", strftime("%d", $deadline), $data);
@@ -906,7 +910,7 @@ if (empty($types) || in_array('documents', $types)) {
     $days = $notifications['documents']['days'];
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
-            b.balance, m.email, x.phone, d.number, n.template, d.cdate, d.confirmdate
+            b.balance, m.email, x.phone, d.number, n.template, d.cdate, d.confirmdate AS deadline
         FROM customeraddressview c
         LEFT JOIN (
             SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash
