@@ -3683,7 +3683,7 @@ URL: %url
 ('userpanel', 'startup_module', 'info', '', 0),
 ('userpanel', 'pin_validation', 'true', '', 0),
 ('userpanel', 'show_all_assignments', 'false', '', 0),
-('userpanel', 'allowed_document_types', ''),
+('userpanel', 'allowed_document_types', '', '', 0),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
