@@ -3609,6 +3609,8 @@ URL: %url
 ('zones','default_webserver_ip','127.0.0.1','',0),
 ('zones','default_mailserver_ip','127.0.0.1','',0),
 ('zones','default_mx','localhost','',0),
+('userpanel','hint', '', '', 0),
+('userpanel','style', 'bclean', '', 0),
 ('userpanel','data_consent_text','','',0),
 ('userpanel','disable_transferform','0','',0),
 ('userpanel','disable_invoices','0','',0),
