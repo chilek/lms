@@ -1212,7 +1212,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
                 . trans(
                     'Previous balance: $a $b',
-                    moneyf(-$expired_balance / $this->data['currencyvalue'], $this->data['currency']),
+                    moneyf(abs($expired_balance) / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 )
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'

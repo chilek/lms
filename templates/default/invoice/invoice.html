@@ -495,7 +495,7 @@
     {if $show_balance_summary}
         <tr>
             <td colspan="2" style="padding-bottom: 1em;">
-                {trans('Previous balance: $a $b', moneyf(-$expired_customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
+                {trans('Previous balance: $a $b', moneyf(abs($expired_customerbalance) / $invoice.currencyvalue, $invoice.currency), $comment)}
                 <br>
                 {if $total_customerbalance >= 0}
                     {$total_to_pay = 0}
