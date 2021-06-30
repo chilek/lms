@@ -31,5 +31,5 @@ $USERPANEL->AddModule(
     20,         // Priority
     trans('This module is for showing financial informations, printing invoices'),  // Description
     '',
-    'lms-ui-icon-money'
+    'lms-ui-icon-money fa-fw'
 );

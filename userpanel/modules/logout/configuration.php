@@ -31,5 +31,5 @@ $USERPANEL->AddModule(
     100,            // Priority
     trans('This module allows your customers to logout'),    // Description
     '',
-    'lms-ui-icon-logout'
+    'lms-ui-icon-logout fa-fw'
 );
