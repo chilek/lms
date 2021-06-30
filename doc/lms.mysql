@@ -1878,7 +1878,7 @@ CREATE TABLE customerassignments (
   id int(11) NOT NULL auto_increment,
   customergroupid int(11) NOT NULL,
   customerid int(11) NOT NULL,
-  startdate int(11) NOT NULL DEFAULT UNIX_TIMESTAMP(),
+  startdate int(11) NOT NULL DEFAULT 0,
   enddate int(11) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY customerassignments_customergroupid_ukey (customergroupid, customerid, enddate),
