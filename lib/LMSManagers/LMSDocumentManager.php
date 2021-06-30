@@ -1433,6 +1433,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                     if (!isset($customerinfos[$doc['customerid']])) {
                         $customerinfos[$doc['customerid']] = $customer_manager->GetCustomer($doc['customerid']);
+                    }
+                    if (!isset($mail_contacts[$doc['customerid']])) {
                         $mail_contacts[$doc['customerid']] = $customer_manager->GetCustomerContacts($doc['customerid'], CONTACT_EMAIL);
                     }
                     $customerinfo = $customerinfos[$doc['customerid']];
