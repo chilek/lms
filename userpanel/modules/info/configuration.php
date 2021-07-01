@@ -38,5 +38,5 @@ $USERPANEL->AddModule(
             'prio' => 30,
         ),
     ),
-    'lms-ui-icon-documentation'
+    'lms-ui-icon-documentation fa-fw'
 );

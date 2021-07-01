@@ -31,5 +31,5 @@ $USERPANEL->AddModule(
     98,         // Priority
     trans('This module is for showing informations about modules'),  // Description
     '',
-    'lms-ui-icon-configuration'
+    'lms-ui-icon-configuration fa-fw'
 );

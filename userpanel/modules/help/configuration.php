@@ -31,5 +31,5 @@ $USERPANEL->AddModule(
     5,          // Priority
     trans('This module shows problems solving center'), // Description
     '',
-    'lms-ui-icon-help'
+    'lms-ui-icon-help fa-fw'
 );

@@ -31,5 +31,5 @@ $USERPANEL->AddModule(
     70,         // Priority
     trans('This module allows your customers to contact with you'), // Description
     '', //Submenu
-    'lms-ui-icon-helpdesk' //icon
+    'lms-ui-icon-helpdesk fa-fw' //icon
 );
