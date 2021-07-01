@@ -45,7 +45,7 @@
 				</div>
 			</div>
 			{foreach $ticketlist as $ticket}
-				<div class="lms-ui-tab-table-row{if $ticket.closed} blend{/if}" data-target-url="?m=rtticketview&id={$ticket.id}">
+				<div class="lms-ui-tab-table-row {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if}" data-target-url="?m=rtticketview&id={$ticket.id}">
 					<div class="lms-ui-tab-table-wrapper col-8">
 						<div class="lms-ui-tab-table-wrapper id-type-state-cdate col-4">
 							<div class="lms-ui-tab-table-wrapper id-type col-2">
