@@ -49,7 +49,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
      * @param array $file Import file information
      * @return array Invalid import file rows
      */
-    public function CashImportParseFile($filename, $contents, $patterns, $quiet = true, $filemtime = null)
+    public function CashImportParseFile($filename, $contents, $patterns, $quiet = true, $filemtime = null, $config_section = 'cashimport')
     {
         global $LMS;
 
@@ -173,7 +173,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         // if customer has unique source account assigned to all his cash import records
                         // then we matched customer by source account
                         if (!isset($unique_source_accounts)) {
-                            $days = intval(ConfigHelper::getConfig('cashimport.source_account_match_threshold_days'));
+                            $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
                             $unique_source_accounts = $this->db->GetAll(
                                 'SELECT customerid, MIN(srcaccount) AS srcaccount
                                 FROM cashimport
