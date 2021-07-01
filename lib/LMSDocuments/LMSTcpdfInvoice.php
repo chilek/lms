@@ -814,7 +814,11 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (!file_exists($image_path)) {
             return;
         }
-        $this->backend->Image($image_path, 12, 8, 40, 0);
+        if (preg_match('/\.svg$/i', $image_path)) {
+            $this->backend->ImageSVG($image_path, 12, 8, 40, 0);
+        } else {
+            $this->backend->Image($image_path, 12, 8, 40, 0);
+        }
     }
 
     public function invoice_cancelled()
