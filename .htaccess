@@ -1,4 +1,10 @@
 <Files lms.ini>
-Order Deny,Allow
-Deny From All
+	Order Deny,Allow
+	Deny From All
 </Files>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteCond %{REQUEST_URI} ^/.git/(.*)$
+	RewriteRule ^(.*)$ - [L,R=404]
+</IfModule>
