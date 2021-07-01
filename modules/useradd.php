@@ -84,6 +84,14 @@ if (count($useradd)) {
         $error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
     }
 
+    if ($useradd['netpassword'] != '') {
+        if ($useradd['netpassword'] != $useradd['confirmnetpassword']) {
+            $error['netpassword'] = trans('Passwords do not match!');
+        } elseif (!check_password_strength($useradd['netpassword'])) {
+            $error['netpassword'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
+        }
+    }
+
     if (!empty($useradd['accessfrom'])) {
         $accessfrom = date_to_timestamp($useradd['accessfrom']);
         if (empty($accessfrom)) {

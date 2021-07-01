@@ -185,6 +185,8 @@ version 27-git (????-??-??):
   - improvement: 'invoices.show_balance_summary' enables friendlier customer balance presentation
     on invoices [chilan]
   - enhancement: new tickets panel in customerinfo form [interduo]
+  - enhancement: implemented user network password support especially useful for radius
+    authentication [chilan]
 
 version 26.0 (2020-12-15):
 

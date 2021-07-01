@@ -37,18 +37,34 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      * @param int $id User id
      * @param string $passwd Password
      */
-    public function setUserPassword($id, $passwd)
+    public function setUserPassword($id, $passwd, $net = false)
     {
-        $args = array(
-            'passwd' => crypt($passwd),
-            'passwdforcechange' => 0,
-            SYSLOG::RES_USER => $id
-        );
-        $this->db->Execute('UPDATE users SET passwd = ?, passwdlastchange = ?NOW?, passwdforcechange = ?
-            WHERE id=?', array_values($args));
-        $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
-        if ($this->syslog) {
+        if ($net) {
+            $args = array(
+                'netpasswd' => empty($passwd) ? null : $passwd,
+                SYSLOG::RES_USER => $id
+            );
+            $result = $this->db->Execute(
+                'UPDATE users SET netpasswd = ?
+                WHERE id = ?',
+                array_values($args)
+            );
+        } else {
+            $args = array(
+                'passwd' => crypt($passwd),
+                'passwdforcechange' => 0,
+                SYSLOG::RES_USER => $id
+            );
+            $result = $this->db->Execute(
+                'UPDATE users SET passwd = ?, passwdlastchange = ?NOW?, passwdforcechange = ?
+                WHERE id = ?',
+                array_values($args)
+            );
+            $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
+        }
+        if ($result && $this->syslog) {
             unset($args['passwd']);
+            unset($args['netpasswd']);
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERPASSWDCHANGE, $args);
         }
     }
@@ -294,6 +310,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
             'passwd' => crypt($user['password']),
+            'netpasswd' => empty($user['netpassword']) ? null : $user['netpassword'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
             'position' => $user['position'],
@@ -676,12 +693,30 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         return false;
     }
 
-    public function checkPassword($password)
+    public function checkPassword($password, $net = false)
     {
-        $dbpasswd = $this->db->GetOne(
-            'SELECT passwd FROM users WHERE id = ?',
-            array(Auth::GetCurrentUser())
-        );
-        return crypt($password, $dbpasswd) == $dbpasswd;
+        if ($net) {
+            return $this->db->GetOne(
+                'SELECT netpasswd FROM users WHERE id = ?',
+                array(Auth::GetCurrentUser())
+            ) == $password;
+        } else {
+            $dbpasswd = $this->db->GetOne(
+                'SELECT passwd FROM users WHERE id = ?',
+                array(Auth::GetCurrentUser())
+            );
+            return crypt($password, $dbpasswd) == $dbpasswd;
+        }
+    }
+
+    public function isUserNetworkPasswordSet($id)
+    {
+        return $this->db->GetOne(
+            'SELECT 1 FROM users WHERE id = ? AND netpasswd <> ?',
+            array(
+                $id,
+                '',
+            )
+        ) == 1;
     }
 }

@@ -922,7 +922,8 @@ $_LANG['Enter name (optional)'] = 'Wprowadź nazwę (opcjonalnie)';
 $_LANG['Enter first/lastname of customer'] = 'Wprowadź nazwę/nazwisko klienta';
 $_LANG['Enter network domain (optional)'] = 'Wprowadź domenę sieci (opcjonalnie)';
 $_LANG['Enter network interface (optional)'] = 'Wprowadź interfejs sieci (opcjonalnie)';
-$_LANG['Enter new password:'] = 'Wprowadź nowe hasło:';
+$_LANG['Enter new password'] = 'Wprowadź nowe hasło';
+$_LANG['Enter new network password'] = 'Wprowadź nowe hasło sieciowe';
 $_LANG['Enter IP address or it\'s fragment'] = 'Wprowadź adres IP lub jego fragment';
 $_LANG['Enter MAC address or it\'s fragment'] = 'Wprowadź adres MAC lub jego fragment';
 $_LANG['Enter node name'] = 'Wprowadź nazwę komputera';
@@ -1434,7 +1435,7 @@ $_LANG['New Network'] = 'Nowa sieć';
 $_LANG['New network is too small!'] = 'Nowa sieć jest zbyt mała!';
 $_LANG['New Node'] = 'Nowy komputer';
 $_LANG['New Option for Instance: $a/$b'] = 'Nowa opcja dla instancji: $a/$b';
-$_LANG['New password:'] = 'Nowe hasło:';
+$_LANG['New password'] = 'Nowe hasło';
 $_LANG['New Payment'] = 'Nowa płatność';
 $_LANG['New Queue'] = 'Nowa kolejka';
 $_LANG['New Subscription'] = 'Nowa taryfa';
@@ -1682,7 +1683,7 @@ $_LANG['Remove customer from group'] = 'Usuń klienta z grupy';
 $_LANG['Remove queue ID: $a'] = 'Usuń kolejkę ID: $a';
 $_LANG['Remove this item from list'] = 'Usuń tę pozycję z listy';
 $_LANG['Removing network $a'] = 'Usuń sieć $a';
-$_LANG['Repeat password:'] = 'Powtórz hasło:';
+$_LANG['Repeat password'] = 'Powtórz hasło';
 $_LANG['Reply'] = 'Odpowiedź';
 $_LANG['Requests Tracking'] = 'System Obsługi Zgłoszeń';
 $_LANG['Resolve'] = 'Rozwiąż';
@@ -4961,7 +4962,7 @@ $_LANG['Authentication Settings: $a'] = 'Ustawienia uwierzytelniania: $a';
 $_LANG['Authentication Modification: $a'] = 'Modyfikacja uwierzytelniania: $a';
 
 $_LANG['Wrong current password!'] = 'Niepoprawne aktualne hasło!';
-$_LANG['Current password:'] = 'Aktualne hasło:';
+$_LANG['Current password'] = 'Aktualne hasło';
 $_LANG['Enter current password'] = 'Wprowadź aktualne hasło';
 
 $_LANG['trust this device till $a'] = 'ufaj temu urządzeniu do $a';
@@ -5300,3 +5301,10 @@ $_LANG['Show all customer tickets'] = 'Pokaż wszystkie zgłoszenia klienta';
 $_LANG['without location address'] = 'bez adresu lokalizacyjnego';
 
 $_LANG['Group name can contain letters (with national characters), digits, dots, underscores and dashes.'] = 'Nazwa grupy może składać się z liter (wraz ze znakami narodowymi), cyfr, kropek, podkreśleń i myślników.';
+
+$_LANG['Network password'] = 'Hasło sieciowe';
+$_LANG['Network Password'] = 'Hasło sieciowe';
+$_LANG['Change your network password'] = 'Zmiana Twojego hasła sieciowego';
+$_LANG['Repeat network password'] = 'Powtórz hasło sieciowe';
+$_LANG['Network password can be used to authenticate users via Radius server.'] = 'Hasło sieciowe może być używane do uwierzytelniania użytkowników w oparciu o serwer Radius.';
+$_LANG['Change network password'] = 'Zmiana hasła sieciowego';

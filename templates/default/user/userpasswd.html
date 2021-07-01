@@ -2,54 +2,60 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle|escape}</H1>
-<FORM method="POST" action="{if $target}{$target}{else}?m=userpasswd&id={$passwd.id}{/if}" name="password">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD colspan="2" class="bold nobr">
-			<img src="img/pass.gif" alt=""> {trans("Enter new password:")}
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	{if isset($current_password_required)}
-	<TR>
-		<TD class="text-right bold nobr">
-			{trans("Current password:")}
-		</TD>
-		<TD class="nobr">
-			<input type="password" name="password[currentpasswd]" {tip text="Enter current password" trigger="currentpasswd"} autocomplete="{if $passwd.id == $layout.logid}current-password{else}new-password{/if}">
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD class="text-right bold nobr">
-			{trans("New password:")}
-		</TD>
-		<TD class="nobr">
-			<input type="password" name="password[passwd]" {tip text="Enter password" trigger="passwd"} autocomplete="new-password">
-		</TD>
-	</TR>
-	<TR>
-		<TD class="text-right bold nobr">
-			{trans("Repeat password:")}
-		</TD>
-		<TD class="nobr">
-			<input type="password" name="password[confirm]" {tip text="Confirm password" trigger="passwd"} autocomplete="new-password">
-		</TD>
-	</TR>
-	<TR>
-		<TD class="text-right" colspan="2">
-			<A href="javascript:document.password.submit();" accesskey="s">{trans("Submit")} <img src="img/pass.gif" alt=""></A>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
+<h1>{$layout.pagetitle|escape}</h1>
+<form method="POST" action="{if $target}{$target}{else}?m=userpasswd&id={$passwd.id}{/if}{if !empty($net)}&net=1{/if}" name="password">
+<input type="submit" class="hiddenbtn">
+<table class="lmsbox">
+	<thead>
+		<tr>
+			<td colspan="2" class="nobr">
+				{icon name="password"}
+				<strong>
+					{if empty($net)}
+						{trans("Enter new password")}
+					{else}
+						{trans("Enter new network password")}
+					{/if}
+				</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		{if (!$net && isset($current_password_required)) || ($net && !empty($passwd.netpasswd))}
+			<tr>
+				<td class="text-right nobr">
+					<strong>{trans("Current password")}</strong>
+				</td>
+				<td class="nobr">
+					<input type="password" name="password[currentpasswd]"
+						{tip trigger="currentpasswd"} required autocomplete="{if $passwd.id == $layout.logid}current-password{else}new-password{/if}">
+				</td>
+			</tr>
+		{/if}
+		<tr>
+			<td class="text-right nobr">
+				<strong>{trans("New password")}</strong>
+			</td>
+			<td class="nobr">
+				<input type="password" name="password[passwd]"{if !$net} required{/if} {tip trigger="passwd"} autocomplete="new-password">
+			</td>
+		</tr>
+		<TR>
+			<TD class="text-right nobr">
+				<strong>{trans("Repeat password")}</strong>
+			</TD>
+			<TD class="nobr">
+				<input type="password" name="password[confirm]"{if !$net} required{/if} {tip text="Confirm password" trigger="passwd"} autocomplete="new-password">
+			</TD>
+		</TR>
+		<TR>
+			<TD class="lms-ui-box-buttons" colspan="2">
+				{button type="submit" icon="save" label="Submit"}
+			</TD>
+		</TR>
+	</tbody>
+</table>
+</form>
 <script>
 
 	$(function() {

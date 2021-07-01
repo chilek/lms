@@ -30,7 +30,7 @@
  */
 interface LMSUserManagerInterface
 {
-    public function setUserPassword($id, $passwd);
+    public function setUserPassword($id, $passwd, $net = false);
 
     public function forcePasswordChange($id);
 
@@ -66,5 +66,7 @@ interface LMSUserManagerInterface
 
     public function PasswdExistsInHistory($id, $passwd);
 
-    public function checkPassword($password);
+    public function checkPassword($password, $net = false);
+
+    public function isUserNetworkPasswordSet($id);
 }

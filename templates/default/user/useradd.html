@@ -170,7 +170,7 @@
 				<strong>{trans("Password:")}</strong>
 			</td>
 			<td>
-				<input type="password" name="useradd[password]" required {tip text="Enter password" trigger="password"} autocomplete="new-password">
+				<input type="password" name="useradd[password]" required {tip trigger="password"} autocomplete="new-password">
 			</td>
 		</tr>
 		<tr>
@@ -179,7 +179,27 @@
 				<strong>{trans("Repeat password:")}</strong>
 			</td>
 			<td>
-				<input type="password" name="useradd[confirm]" required {tip text="Confirm password" trigger="password"} autocomplete="new-password">
+				<input type="password" name="useradd[confirm]" required {tip trigger="password"} autocomplete="new-password">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+				<strong>{trans("Network password")}</strong>
+			</td>
+			<td>
+				<input type="password" name="useradd[netpassword]" {tip trigger="netpassword"} autocomplete="new-password">
+				{hint mode="toggle" content="Network password can be used to authenticate users via Radius server."}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="password"}
+				<strong>{trans("Repeat network password")}</strong>
+			</td>
+			<td>
+				<input type="password" name="useradd[confirmnetpassword]" {tip trigger="netpassword"} autocomplete="new-password">
+				{hint mode="toggle" content="Network password can be used to authenticate users via Radius server."}
 			</td>
 		</tr>
 		<tr>

@@ -378,10 +378,10 @@ class LMS
      * Users
      */
 
-    public function SetUserPassword($id, $passwd)
+    public function SetUserPassword($id, $passwd, $net = false)
     {
         $manager = $this->getUserManager();
-        return $manager->setUserPassword($id, $passwd);
+        return $manager->setUserPassword($id, $passwd, $net);
     }
 
     public function forcePasswordChange($id)
@@ -486,10 +486,16 @@ class LMS
         return $manager->PasswdExistsInHistory($id, $passwd);
     }
 
-    public function checkPassword($password)
+    public function checkPassword($password, $net = false)
     {
         $manager = $this->getUserManager();
-        return $manager->checkPassword($password);
+        return $manager->checkPassword($password, $net);
+    }
+
+    public function isUserNetworkPasswordSet($id)
+    {
+        $manager = $this->getUserManager();
+        return $manager->isUserNetworkPasswordSet($id);
     }
 
     /*

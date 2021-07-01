@@ -773,6 +773,12 @@ $menu = array(
                     'tip' => trans('Allows you to change your password'),
                     'prio' => 10,
                 ),
+                'chnetpasswd' => array(
+                    'name' => trans('Network Password'),
+                    'link' => '?m=chpasswd&net=1',
+                    'tip' => trans('Change your network password'),
+                    'prio' => 10,
+                ),
                 'twofactorauthinfo' => array(
                     'name' => trans('Settings'),
                     'link' => '?m=twofactorauthinfo',
