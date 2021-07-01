@@ -31,19 +31,19 @@ if ($LMS->UserExists($id)) {
 
     if (isset($_POST['passwd'])) {
         $passwd = $_POST['passwd'];
-        
+
         if ($passwd['passwd'] == '' || $passwd['confirm'] == '') {
             $error['password'] = trans('Empty passwords are not allowed!').'<BR>';
         }
-        
+
         if ($passwd['passwd'] != $passwd['confirm']) {
-            $error['password'] = trans('Passwords does not match!');
+            $error['password'] = trans('Passwords do not match!');
         }
-        
+
         if ($LMS->PasswdExistsInHistory($id, $passwd['passwd'])) {
             $error['password'] = trans('You already used this password!');
         }
-        
+
         if (!$error) {
             $LMS->SetUserPassword($id, $passwd['passwd']);
             $SESSION->redirect('?'.$SESSION->get('backto'));

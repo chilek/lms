@@ -37,7 +37,7 @@
 if (isset($_POST['account'])) {
     $account = $_POST['account'];
     $quota = $_POST['quota'];
-    
+
     foreach ($account as $key => $value) {
         if (!is_array($value)) {
                 $account[$key] = trim($value);
@@ -47,13 +47,13 @@ if (isset($_POST['account'])) {
     if (!($account['login'] || $account['domainid'] || $account['passwd1'] || $account['passwd2'])) {
         $SESSION->redirect('?m=accountlist');
     }
-    
+
     if (isset($account['type'])) {
         $account['type'] = array_sum($account['type']);
     } else {
         $error['type'] = true;
     }
-    
+
     if ($account['login'] == '') {
                 $error['login'] = trans('You have to specify login!');
     } elseif (!preg_match('/^[a-z0-9._-]+$/', $account['login'])) {
@@ -79,15 +79,15 @@ if (isset($_POST['account'])) {
     if ($account['mail_bcc'] != '' && !check_email($account['mail_bcc'])) {
             $error['mail_bcc'] = trans('Incorrect email!');
     }
-            
+
     if ($account['passwd1'] != $account['passwd2']) {
-        $error['passwd'] = trans('Passwords does not match!');
+        $error['passwd'] = trans('Passwords do not match!');
     }
-        
+
     if ($account['passwd1'] == '') {
         $error['passwd'] = trans('Empty passwords are not allowed!');
     }
-    
+
     if ($account['expdate'] == '') {
             $account['expdate'] = 0;
     } else {
@@ -169,13 +169,13 @@ if (isset($_POST['account'])) {
         $id = $DB->GetLastInsertId('passwd');
 
         $DB->Execute('UPDATE passwd SET uid = id + 2000 WHERE id = ?', array($id));
-        
+
         $DB->CommitTrans();
-        
+
         if (!isset($account['reuse'])) {
             $SESSION->redirect('?m=accountinfo&id='.$id);
         }
-        
+
         unset($account['login']);
         unset($account['home']);
         unset($account['realname']);
@@ -184,7 +184,7 @@ if (isset($_POST['account'])) {
         unset($account['mail_forward']);
         unset($account['description']);
     }
-    
+
     $SMARTY->assign('error', $error);
 } else {
     $quota = array();
