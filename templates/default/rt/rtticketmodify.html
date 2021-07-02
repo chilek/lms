@@ -128,7 +128,12 @@
 			{/box_row}
 
 			{box_row icon="note" label="Note:" icon_class="fa-fw"}
-				<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
+				<div class="valign-middle">
+					<textarea name="ticket[note]" id="ticket-note" cols="50" rows="5"
+						{tip text="Enter ticket content" trigger="body"}
+						>{$ticket.note}</textarea>
+					{speech_recognition target="#ticket-node"}
+				</div>
 			{/box_row}
 
 			{box_row icon="attachment" label="Attachments:" icon_class="fa-fw"}
