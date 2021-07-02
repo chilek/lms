@@ -662,8 +662,8 @@ function init_titlebars(selector) {
 		$(this).prop('onclick', null);
 		$(this).click(function () {
 			var elemid = $(this).attr('data-lmsbox-content');
-			$(this).toggle();
-			setStorageItem(elemid, $(this).is('visible') ? '1' : '0', 'local');
+			$('#' + elemid).toggle();
+			setStorageItem(elemid, $('#' + elemid).is('visible') ? '1' : '0', 'local');
 			$('#' + elemid).find('.lms-ui-datatable').each(function () {
 				if (!$.fn.dataTable.isDataTable(this)) {
 					init_datatables(this);
