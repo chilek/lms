@@ -187,6 +187,8 @@ version 27-git (????-??-??):
   - enhancement: new tickets panel in customerinfo form [interduo]
   - enhancement: implemented user network password support especially useful for radius
     authentication [chilan]
+  - enhancement: '{speech_recognition}' smarty function allows to easily insert speech recognition
+    buttons into forms [chilan]
 
 version 26.0 (2020-12-15):
 

@@ -1466,6 +1466,45 @@ $(function() {
 		}
 	});
 
+	var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+	var speechRecognitionTimeout = null;
+
+	$('.lms-ui-button-speech-recognition').click(function() {
+		var button = $(this);
+		var input = $(button.attr('data-target'));
+		var inputId = input.attr('id');
+		button.toggleClass('active');
+		if (button.is('.active')) {
+			$('.lms-ui-button-speech-recognition.active').not(button).removeClass('active');
+			var recognition = new SpeechRecognition();
+			recognition.continuous = true;
+			recognition.lang = lmsSettings.uiLanguage.replace('_', '-');
+			recognition.interimResults = false;
+			recognition.maxAlternatives = 1;
+			recognition.onresult = function(e) {
+				if (e.results.length) {
+					input.val(input.val() + e.results[e.results.length - 1][0].transcript)
+					var editor = tinyMCE.get(inputId);
+					if (editor) {
+						editor.setContent(input.val());
+					}
+					if (speechRecognitionTimeout) {
+						clearTimeout(speechRecognitionTimeout);
+					}
+					speechRecognitionTimeout = setTimeout(function() {
+						recognition.stop();
+						button.removeClass('active');
+					}, 5000);
+				}
+			}
+			recognition.start();
+			speechRecognitionTimeout = setTimeout(function() {
+				recognition.stop();
+				button.removeClass('active');
+			}, 5000);
+		}
+	});
+
 	$(document).mouseup(function(e) {
 		var hintPopups = $('.lms-ui-hint-toggle.ui-tooltip');
 		var hintTrigger = $(e.target).closest('.lms-ui-hint-toggle:not(.ui-tooltip)');

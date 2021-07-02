@@ -5308,3 +5308,5 @@ $_LANG['Change your network password'] = 'Zmiana Twojego hasła sieciowego';
 $_LANG['Repeat network password'] = 'Powtórz hasło sieciowe';
 $_LANG['Network password can be used to authenticate users via Radius server.'] = 'Hasło sieciowe może być używane do uwierzytelniania użytkowników w oparciu o serwer Radius.';
 $_LANG['Change network password'] = 'Zmiana hasła sieciowego';
+
+$_LANG['use speech recognition'] = 'użyj rozpoznawania mowy';

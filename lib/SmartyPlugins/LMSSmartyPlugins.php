@@ -1150,4 +1150,22 @@ class LMSSmartyPlugins
             . (isset($params['style']) ? ' style="' . $params['style'] . '"' : '')
             . '><i class="lms-ui-icon-' . (isset($params['icon']) ? $params['icon'] : 'hint') . ' fa-fw"></i></a>';
     }
+
+    public static function speechRecognitionFunction(array $params, $template)
+    {
+        if (!isset($params['target'])) {
+            return '';
+        }
+
+        return self::buttonFunction(
+            array(
+                'type' => 'link',
+                'icon' => 'microphone',
+                'tip' => 'use speech recognition',
+                'class' => 'lms-ui-button-speech-recognition',
+                'data_target' => $params['target'],
+            ),
+            $template
+        );
+    }
 }

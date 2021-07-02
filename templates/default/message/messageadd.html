@@ -582,10 +582,13 @@
 			</td>
 			<td>
 				<div class="valign-middle">
-					<textarea name="message[mailbody]" cols="80" rows="20"
+					<textarea name="message[mailbody]" id="mailbody-text" cols="80" rows="20"
 						{tip class="lms-ui-wysiwyg-editor" trigger="mailbody"}
 						{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</textarea>
-					{hint content=$body_hint}
+					<div class="lms-ui-util-buttons">
+						{hint content=$body_hint}
+						{speech_recognition target="#mailbody-text"}
+					</div>
 				</div>
 			</td>
 		</tr>
