@@ -1,5 +1,7 @@
 dist: xenial
 
+if: branch = master && repo = chilek/lmsgit
+
 env:
   global:
     - COMPOSER_DISABLE_XDEBUG_WARN="1"
