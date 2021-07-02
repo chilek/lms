@@ -1502,6 +1502,21 @@ $(function() {
 						}, 5000);
 					}
 				}
+				recognition.onspeechstart = function() {
+					if (speechRecognitionTimeout) {
+						clearTimeout(speechRecognitionTimeout);
+						speechRecognitionTimeout = null;
+					}
+				}
+				recognition.onspeechend = function() {
+					if (speechRecognitionTimeout) {
+						clearTimeout(speechRecognitionTimeout);
+					}
+					speechRecognitionTimeout = setTimeout(function () {
+						recognition.stop();
+						button.removeClass('active');
+					}, 5000);
+				}
 				recognition.start();
 				speechRecognitionTimeout = setTimeout(function () {
 					recognition.stop();
