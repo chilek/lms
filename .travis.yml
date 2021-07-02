@@ -1,6 +1,6 @@
 dist: xenial
 
-if: branch = master && repo = chilek/lmsgit
+if: (branch = master) AND (repo = chilek/lms)
 
 env:
   global:
