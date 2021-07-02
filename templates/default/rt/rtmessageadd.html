@@ -85,10 +85,13 @@
 
 			{block name="rtmessageadd-content"}
 			{box_row icon="edit" icon_class="fa-fw" label="Content:"}
-				<TEXTAREA name="message[body]" cols="75" rows="10"
-					{tip class="lms-ui-wysiwyg-editor lms-ui-helpdesk" text="Enter message content" trigger="body"}
-					{if isset($message.wysiwyg.body)} data-wysiwyg="{$message.wysiwyg.body}"{/if}
-					>{$message.body}</TEXTAREA>
+				<div class="valign-middle">
+					<textarea name="message[body]" id="message-body" cols="75" rows="10"
+						{tip class="lms-ui-wysiwyg-editor lms-ui-helpdesk" text="Enter message content" trigger="body"}
+						{if isset($message.wysiwyg.body)} data-wysiwyg="{$message.wysiwyg.body}"{/if}
+						>{$message.body}</textarea>
+					{speech_recognition target="#message-body"}
+				</div>
 			{/box_row}
 			{/block}
 			{box_row icon="attachment" icon_class="fa-fw" label="Attachments:"}

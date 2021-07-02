@@ -38,7 +38,12 @@
 			{trans("Note content:")}
 		</TD>
 		<TD>
-			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
+			<div class="valign-middle">
+				<textarea name="note[body]" id="note-body" cols="50" rows="5"
+					{tip text="Enter note content" trigger="body"}
+					>{$note.body}</textarea>
+				{speech_recognition target="#note-body"}
+			</div>
 		</TD>
 	</TR>
 	<TR>
