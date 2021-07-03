@@ -1523,6 +1523,11 @@ $(function() {
 					recognition.stop();
 					button.removeClass('active');
 				}, 5000);
+			} else {
+				if (speechRecognitionTimeout) {
+					clearTimeout(speechRecognitionTimeout);
+					speechRecognitionTimeout = null;
+				}
 			}
 		});
 	} else {
