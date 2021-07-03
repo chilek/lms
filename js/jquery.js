@@ -1485,11 +1485,16 @@ $(function() {
 				recognition.lang = lmsSettings.uiLanguage.replace('_', '-');
 				recognition.interimResults = false;
 				recognition.maxAlternatives = 1;
-				var firstLaunch = true;
 				recognition.onresult = function (e) {
+					var value = input.val();
 					if (e.results.length) {
-						input.val(input.val() + (firstLaunch && input.val().length ? ' ' : '') + e.results[e.results.length - 1][0].transcript)
-						firstLaunch = false;
+						var beginSubString = value.substring(0, input.get(0).selectionStart);
+						beginSubString += beginSubString.length && beginSubString[beginSubString.length - 1] != ' ' ? ' ' : '';
+						var endSubString = value.substring(input.get(0).selectionEnd);
+						endSubString = (endSubString.length && endSubString[0] != ' ' ? ' ' : '') + endSubString;
+						var result = e.results[e.results.length - 1][0].transcript;
+						input.val(beginSubString + result + endSubString);
+						input.get(0).selectionStart = input.get(0).selectionEnd = beginSubString.length + result.length;
 						var editor = tinyMCE.get(inputId);
 						if (editor) {
 							editor.setContent(input.val());
