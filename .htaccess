@@ -3,6 +3,16 @@
 	Deny From All
 </Files>
 
+<Files composer.lock>
+	Order Deny,Allow
+	Deny From All
+</Files>
+
+<FilesMatch "^\.(git|js|travis).*">
+	Order Deny,Allow
+	Deny From All
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	RewriteCond %{REQUEST_URI} ^/.git/(.*)$
