@@ -1,6 +1,6 @@
 dist: xenial
 
-if: (branch = master) AND (repo = chilek/lms)
+if: (repo = chilek/lms) OR (branch != master)
 
 env:
   global:
