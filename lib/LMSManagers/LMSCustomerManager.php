@@ -2860,13 +2860,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         switch ($limit) {
             case -1:
-                $limit = 'LIMIT ' . intval(ConfigHelper::getConfig('phpui.customer_call_limit', 5));
+                $limit = ' LIMIT ' . intval(ConfigHelper::getConfig('phpui.customer_call_limit', 5));
                 break;
             case 0:
                 $limit = '';
                 break;
             default:
-                $limit = 'LIMIT ' . intval($limit);
+                $limit = ' LIMIT ' . intval($limit);
                 break;
         }
 
