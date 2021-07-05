@@ -140,9 +140,15 @@ interface LMSCustomerManagerInterface
 
     public function changeCustomerType($id, $tyoe);
 
-    public function getCustomerCalls($id, $limit = -1);
+    public function getCustomerCalls($id = null, $limit = -1);
 
     public function deleteCustomerCall($id, $callid);
 
     public function getCustomerCallContent($callid);
+
+    public function isCustomerCallExists(array $params);
+
+    public function addCustomerCall(array $params);
+
+    public function addCustomerCallAssignment($customerid, $callid);
 }

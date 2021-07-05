@@ -2856,7 +2856,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
     }
 
-    public function getCustomerCalls($id, $limit = -1)
+    public function getCustomerCalls($id = null, $limit = -1)
     {
         switch ($limit) {
             case -1:
@@ -2871,12 +2871,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         return $this->db->GetAll(
-            'SELECT c.* FROM customercalls c
-            JOIN customercallassignments a ON a.customercallid = c.id
-            WHERE a.customerid = ?
-            ORDER BY dt DESC'
-            . $limit,
-            array($id)
+            'SELECT c.* FROM customercalls c'
+            . (isset($id) ? ' JOIN customercallassignments a ON a.customercallid = c.id
+                WHERE a.customerid =  ' . intval($id) : '')
+            . ' ORDER BY c.dt DESC'
+            . $limit
         );
     }
 
@@ -2921,5 +2920,45 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         echo file_get_contents($file_path);
         die;
+    }
+
+    public function isCustomerCallExists(array $params)
+    {
+        if (isset($params['filename'])) {
+            return $this->db->GetOne(
+                'SELECT id FROM customercalls WHERE filename = ?',
+                array($params['filename'])
+            ) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    public function addCustomerCall(array $params)
+    {
+        return $this->db->Execute(
+            'INSERT INTO customercalls (dt, filename, outgoing, phone, duration)
+            VALUES (?, ?, ?, ?, ?)',
+            array(
+                $params['dt'],
+                $params['filename'],
+                $params['outgoing'],
+                $params['phone'],
+                $params['duration'],
+            )
+        );
+    }
+
+    public function addCustomerCallAssignment($customerid, $callid)
+    {
+        if (!$this->db->GetOne(
+            'SELECT id FROM customercallassignments WHERE customercallid = ? AND customerid = ?',
+            array($callid, $customerid)
+        )) {
+            $this->db->Execute(
+                'INSERT INTO customercallassignments (customercallid, customerid) VALUES (?, ?)',
+                array($callid, $customerid)
+            );
+        }
     }
 }

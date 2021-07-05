@@ -856,7 +856,7 @@ class LMS
         return $manager->changeCustomerType($id, $type);
     }
 
-    public function getCustomerCalls($id, $limit = -1)
+    public function getCustomerCalls($id = null, $limit = -1)
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerCalls($id, $limit);
@@ -872,6 +872,24 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerCallContent($callid);
+    }
+
+    public function isCustomerCallExists(array $params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->isCustomerCallExists($params);
+    }
+
+    public function addCustomerCall(array $params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerCall($params);
+    }
+
+    public function addCustomerCallAssignment($customerid, $callid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerCallAssignment($customerid, $callid);
     }
 
     /*
