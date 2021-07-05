@@ -559,6 +559,11 @@ class Utils
                     );
                     if (count($locals) >= 1 && !isset($locals[0]['ErrorCode'])) {
                         foreach ($locals as $local) {
+                            if (!empty($local['lokpraw_dataZakonczeniaDzialalnosci']) && strtotime($local['lokpraw_dataZakonczeniaDzialalnosci']) < time()
+                                || !empty($local['lokpraw_dataSkresleniaZRegon']) && strtotime($local['lokpraw_dataSkresleniaZRegon']) < time()) {
+                                continue;
+                            }
+
                             $details['lastname'] = empty($local['lokpraw_nazwa']) ? $report['praw_nazwa'] : $local['lokpraw_nazwa'];
                             $details['regon'] = empty($local['lokpraw_regon14'])
                                 ? (array_key_exists('praw_regon9', $report) ? $report['praw_regon9'] : $report['praw_regon14'])
@@ -679,6 +684,11 @@ class Utils
                         );
                         if (count($locals) >= 1 && !isset($locals[0]['ErrorCode'])) {
                             foreach ($locals as $local) {
+                                if (!empty($local['lokfiz_dataZakonczeniaDzialalnosci']) && strtotime($local['lokfiz_dataZakonczeniaDzialalnosci']) < time()
+                                    || !empty($local['lokfiz_dataSkresleniaZRegon']) && strtotime($local['lokfiz_dataSkresleniaZRegon']) < time()) {
+                                    continue;
+                                }
+
                                 $details['lastname'] = empty($local['lokfiz_nazwa']) ? $report['fiz_nazwa'] : $local['lokfiz_nazwa'];
                                 $details['regon'] = empty($local['lokfiz_regon14'])
                                     ? (array_key_exists('fiz_regon9', $report) ? $report['fiz_regon9'] : $report['fiz_regon14'])
