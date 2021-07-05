@@ -42,7 +42,7 @@ if (!is_writable(BACKUP_DIR)) {
     $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . BACKUP_DIR . PHP_EOL . 'chmod -R 755 ' . BACKUP_DIR;
 }
 
-$rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+$rt_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt';
 
 if (!is_dir($rt_dir)) {
     $startup_errors[] = 'mkdir ' . $rt_dir;
@@ -52,7 +52,7 @@ if (!is_writable($rt_dir)) {
     $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $rt_dir . PHP_EOL . 'chmod -R 755 ' . $rt_dir;
 }
 
-$voip_call_dir = ConfigHelper::getConfig('voip.call_recording_directory', STORAGE_DIR . DIRECTORY_SEPARATOR . 'voipcalls');
+$voip_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'voipcalls';
 
 if (!is_dir($voip_call_dir)) {
     $startup_errors[] = 'mkdir ' . $voip_call_dir;
