@@ -856,6 +856,24 @@ class LMS
         return $manager->changeCustomerType($id, $type);
     }
 
+    public function getCustomerCalls($id, $limit = -1)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerCalls($id, $limit);
+    }
+
+    public function deleteCustomerCall($customerid, $callid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->deleteCustomerCall($customerid, $callid);
+    }
+
+    public function getCustomerCallContent($callid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerCallContent($callid);
+    }
+
     /*
      * Customer groups
      */

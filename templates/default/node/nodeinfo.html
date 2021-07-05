@@ -36,7 +36,7 @@
 	{include file="node/routednetworks.html"}
 {/block}
 {block name="transactions"}
-	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
+	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkPrivilege('privileges.transaction_logs'))}
 		{include file="transactions.html"}
 	{/if}
 {/block}
@@ -45,6 +45,13 @@
 {/block}
 {block name="customerdevices"}
     {include file="customer/customerdevices.html"}
+{/block}
+{block name="customercallbox"}
+	{if ConfigHelper::checkPrivilege('readonly')
+		|| ConfigHelper::checkPrivilege('customer_call_view')
+		|| ConfigHelper::checkPrivilege('customer_call_management')}
+		{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 5)}
+	{/if}
 {/block}
 {block name="customerdocuments"}
 	{include file="customer/customerdocuments.html" limit=10}

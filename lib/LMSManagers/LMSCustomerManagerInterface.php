@@ -139,4 +139,10 @@ interface LMSCustomerManagerInterface
     public function getCustomerPin($id);
 
     public function changeCustomerType($id, $tyoe);
+
+    public function getCustomerCalls($id, $limit = -1);
+
+    public function deleteCustomerCall($id, $callid);
+
+    public function getCustomerCallContent($callid);
 }

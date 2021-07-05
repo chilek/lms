@@ -2855,4 +2855,71 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
         }
     }
+
+    public function getCustomerCalls($id, $limit = -1)
+    {
+        switch ($limit) {
+            case -1:
+                $limit = 'LIMIT ' . intval(ConfigHelper::getConfig('phpui.customer_call_limit', 5));
+                break;
+            case 0:
+                $limit = '';
+                break;
+            default:
+                $limit = 'LIMIT ' . intval($limit);
+                break;
+        }
+
+        return $this->db->GetAll(
+            'SELECT c.* FROM customercalls c
+            JOIN customercallassignments a ON a.customercallid = c.id
+            WHERE a.customerid = ?
+            ORDER BY dt DESC'
+            . $limit,
+            array($id)
+        );
+    }
+
+    public function deleteCustomerCall($customerid, $callid)
+    {
+        if ($this->db->GetOne(
+            'SELECT COUNT(*) FROM customercallassignments WHERE customercallid = ?',
+            array($callid)
+        ) > 1) {
+            $this->db->Execute(
+                'DELETE FROM customerassignmentcalls WHERE customercallid = ? AND customerid = ?',
+                array($callid, $customerid)
+            );
+        } else {
+            $customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls';
+            $filename = $this->db->GetOne('SELECT filename FROM customercalls WHERE id = ?', array($callid));
+
+            if (empty($filename)) {
+                die;
+            }
+
+            @unlink($customer_call_dir . DIRECTORY_SEPARATOR . $filename);
+            $this->db->Execute('DELETE FROM customercalls WHERE id = ?', array($callid));
+        }
+    }
+
+    public function getCustomerCallContent($callid)
+    {
+        $customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls';
+        $filename = $this->db->GetOne('SELECT filename FROM customercalls WHERE id = ?', array($callid));
+
+        if (empty($filename)) {
+            die;
+        }
+
+        $file_path = $customer_call_dir . DIRECTORY_SEPARATOR . $filename;
+        if (!is_file($file_path) || !is_readable($file_path)) {
+            die;
+        }
+
+        header('Content-Type: ' . mime_content_type($file_path));
+
+        echo file_get_contents($file_path);
+        die;
+    }
 }

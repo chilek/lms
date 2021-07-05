@@ -31,6 +31,13 @@
 {block name="customervoipaccountsbox"}
 	{include file="customer/customervoipaccountsbox.html"}
 {/block}
+{block name="customercallbox"}
+	{if ConfigHelper::checkPrivilege('readonly')
+		|| ConfigHelper::checkPrivilege('customer_call_view')
+		|| ConfigHelper::checkPrivilege('customer_call_management')}
+		{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 5)}
+	{/if}
+{/block}
 {block name="customerdocuments"}
 	{include file="customer/customerdocuments.html" limit=10}
 {/block}

@@ -1,0 +1,108 @@
+<!--// $Id$ //-->
+
+{css}
+
+{tab_container id="customercalls" label="Phone Calls"}
+
+    {tab_header content_id="callpanel"}
+        {tab_header_cell icon="lms-ui-icon-phone-call"}
+            <strong>{trans("Phone Calls")}</strong>
+            &nbsp;({t a=$limit}last $a phone calls{/t})
+        {/tab_header_cell}
+        {tab_header_cell}
+            <a href="?m=customercalllist&c={$customerinfo.id}"
+               id="all-phone-calls">
+                {trans("All Phone Calls")}
+                {icon name="next" class="fa-fw"}
+            </a>
+        {/tab_header_cell}
+    {/tab_header}
+
+    {tab_contents id="callpanel"}
+
+        {tab_table}
+
+            {if $customercalls}
+                <div class="lms-ui-tab-table-row header">
+                    <div class="lms-ui-tab-table-wrapper col-4">
+                        <div class="lms-ui-tab-table-wrapper col-2">
+                            <div class="lms-ui-tab-table-column date">
+                                <strong>{trans("Date")}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column duration">
+                                {trans("Duration")}
+                            </div>
+                        </div>
+                        <div class="lms-ui-tab-table-wrapper col-2">
+                            <div class="lms-ui-tab-table-column type">
+                                {trans("Type")}
+                            </div>
+                            <div class="lms-ui-tab-table-column phone-number">
+                                <strong>{trans("Phone number")}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lms-ui-tab-table-column buttons">
+                        &nbsp;
+                    </div>
+                </div>
+            {/if}
+
+            {foreach $customercalls as $call}
+                <div class="lms-ui-tab-table-row">
+                    <div class="lms-ui-tab-table-wrapper col-4">
+                        <div class="lms-ui-tab-table-wrapper col-2">
+                            <div class="lms-ui-tab-table-column date">
+                                <strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column duration">
+                                {$call.duration|duration_format}
+                            </div>
+                        </div>
+                        <div class="lms-ui-tab-table-wrapper col-2">
+                            <div class="lms-ui-tab-table-column type">
+                                {capture assign="direction"}{if $call.outgoing}{trans("<!customer-call>outgoing")}{else}{trans("<!customer-call>incoming")}{/if}{/capture}
+                                {$direction}
+                            </div>
+                            <div class="lms-ui-tab-table-column phone-number">
+                                <strong>{$call.phone}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lms-ui-tab-table-column buttons">
+                        <audio src="?m=customercall&id={$call.id}" controls controlsList="nodownload"
+                               preload="none">
+                            {trans("Your browser does not support the audio element.")}
+                        </audio>
+                        {button type="link" icon="download" tip="<!customer-call>Download"
+                            href="?m=customercall&id={$call.id}"
+                            download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"%Y_%m_%d_%H_%M_%S"}-{$call.phone}"}
+                        {if ConfigHelper::checkPrivilege('customer_phonecall_delete')}
+                            {button type="link" icon="delete" tip="Delete"
+                                href="?m=customercall&id={$call.id}&cid={$customerinfo.id}&delete"}
+                        {/if}
+                    </div>
+                </div>
+            {foreachelse}
+                <div class="lms-ui-tab-empty-table">
+                    {trans("That customer hasn't got any phone calls.")}
+                </div>
+            {/foreach}
+
+        {/tab_table}
+    {/tab_contents}
+{/tab_container}
+
+<script>
+
+    $(function() {
+        $('#customercalls audio').on('play', function() {
+            $('#customercalls audio').not(this).each(function() {
+                this.pause();
+            });
+        });
+    });
+
+</script>

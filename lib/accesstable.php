@@ -123,6 +123,14 @@ $access_table = array(
             'documents' => Permission::MENU_ALL,
         ),
     ),
+    'customer_call_view' => array(
+        'label' => trans('customer phone call view'),
+        'allow_regexp' => '^customercalllist$',
+    ),
+    'customer_call_management' => array(
+        'label' => trans('customer phone call management'),
+        'allow_regexp' => '^customercall$',
+    ),
     'customer_removal' => array(
         'label' => trans('customer removal'),
         'allow_regexp' => '^customerdel$',

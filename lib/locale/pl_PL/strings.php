@@ -2823,6 +2823,7 @@ $_LANG['VoIP pricelist:'] = 'Cennik VoIP:';
 $_LANG['Phone tariff list'] = 'Lista taryf telefonicznych';
 $_LANG['Promotions/special rules for tariffs'] = 'Promocje/reguły specjalne dla taryf';
 $_LANG['Phone number:'] = 'Numer telefonu:';
+$_LANG['Phone number'] = 'Numer telefonu';
 $_LANG['Phone numbers:'] = 'Numery telefonów:';
 $_LANG['No such voip accounts in database.'] = 'Brak kont VoIP w bazie.';
 $_LANG['That customer does not own any voip account.'] = 'Klient nie posiada kont VoIP.';
@@ -5310,3 +5311,18 @@ $_LANG['Network password can be used to authenticate users via Radius server.'] 
 $_LANG['Change network password'] = 'Zmiana hasła sieciowego';
 
 $_LANG['use speech recognition'] = 'użyj rozpoznawania mowy';
+
+$_LANG['Customer Phone Calls'] = 'Połączenia telefoniczne klienta';
+$_LANG['Phone Calls'] = 'Połączenia telefoniczne';
+$_LANG['last $a phone calls'] = 'ostatnie $a połączeń telefonicznych';
+$_LANG['All Phone Calls'] = 'Wszystkie połączenia telefoniczne';
+$_LANG['Duration'] = 'Czas trwania';
+$_LANG['<!customer-call>incoming'] = 'przychodzące';
+$_LANG['<!customer-call>outgoing'] = 'wychodzące';
+$_LANG['That customer hasn\'t got any phone calls.'] = 'Ten klient nie posiada przypisanych żadnych połączeń telefonicznych.';
+$_LANG['Your browser does not support the audio element!'] = 'Twoja przeglądarka nie obsługuje znacznika HTML audio!';
+$_LANG['Customer Call List: $a'] = 'Lista połączeń telefonicznych klienta: $a';
+$_LANG['<!customer-call>Download'] = 'Pobierz';
+$_LANG['phone-call'] = 'połączenie';
+$_LANG['customer phone call view'] = 'podgląd połączeń telefonicznych klienta';
+$_LANG['customer phone call management'] = 'zarządzenie połączeniami telefonicznymi klienta';

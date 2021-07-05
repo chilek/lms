@@ -1,0 +1,108 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<style>
+
+	audio {
+		height: 2em;
+	}
+
+</style>
+
+<h1>{$layout.pagetitle}</h1>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 99%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="hand">
+				{icon name="phone-call" class="fa-fw"}
+				<strong>{trans("Customer Phone Calls")}</strong>
+			</td>
+			<td>
+				&nbsp;
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td style="width: 100%;" colspan="2">
+				<table class="lmsbox-inner lms-ui-background-cycle">
+					<colgroup>
+						<col style="width: 20%;">
+						<col style="width: 20%;">
+						<col style="width: 20%;">
+						<col style="width: 20%;">
+						<col style="width: 20%;">
+					</colgroup>
+					<thead>
+						<tr class="fbottom">
+							<td class="nobr">
+								<strong>{trans("Date")}</strong>
+							</td>
+							<td class="nobr">{trans("Duration")}</TD>
+							<td class="nobr">{trans("Type")}</TD>
+							<td class="nobr">
+								<strong>{trans("Phone number")}</strong>
+							</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach $customercalls as $call}
+							<tr class="highlight">
+								<td class="nobr">
+									<strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
+								</td>
+								<td class="nobr">
+									{$call.duration|duration_format}
+								</td>
+								<td class="nobr">
+									{capture assign="direction"}{if $call.outgoing}{trans("<!customer-call>outgoing")}{else}{trans("<!customer-call>incoming")}{/if}{/capture}
+									{$direction}
+								</td>
+								<td class="nobr">
+									<strong>{$call.phone}</strong>
+								</td>
+								<td class="buttons nobr">
+									<audio src="?m=customercall&id={$call.id}" controls controlsList="nodownload"
+										   preload="none">
+										{trans("Your browser does not support the audio element.")}
+									</audio>
+									{button type="link" icon="download" tip="<!customer-call>Download"
+										href="?m=customercall&id={$call.id}"
+										download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"%Y_%m_%d_%H_%M_%S"}-{$call.phone}"}
+									{if ConfigHelper::checkPrivilege('customer_call_management')}
+										{button type="link" icon="delete" tip="Delete"
+											href="?m=customercall&id={$call.id}&cid={$customerinfo.id}&delete"}
+									{/if}
+								</td>
+							</tr>
+						{foreachelse}
+							<tr>
+								<td class="empty-table" colspan="5">
+									<p>{trans("That customer hasn't got any phone calls.")}</p>
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script>
+
+	$(function() {
+		$('audio').on('play', function() {
+			$('audio').not(this).each(function() {
+				this.pause();
+			});
+		});
+	});
+
+</script>
+{/block}

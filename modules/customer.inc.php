@@ -165,6 +165,13 @@ $customerstats = array(
     'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
 
+if ((ConfigHelper::checkPrivilege('read_only')
+    || ConfigHelper::checkPrivilege('customer_call_view')
+    || ConfigHelper::checkPrivilege('customer_call_management'))
+    && (!isset($resource_tabs['customercallbox']) || $resource_tabs['customercallbox'])) {
+    $customercalls = $LMS->getCustomerCalls($customerid);
+}
+
 if (!isset($resource_tabs['customerdevices']) || $resource_tabs['customerdevices']) {
     $customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
     unset($customerdevices['total']);
@@ -230,5 +237,6 @@ $SMARTY->assignByRef('taxeslist', $taxeslist);
 $SMARTY->assignByRef('allnodegroups', $allnodegroups);
 $SMARTY->assignByRef('messagelist', $messagelist);
 $SMARTY->assignByRef('eventlist', $eventlist);
+$SMARTY->assignByRef('customercalls', $customercalls);
 $SMARTY->assignByRef('ticketlist', $ticketlist);
 $SMARTY->assignByRef('aet', $aet);
