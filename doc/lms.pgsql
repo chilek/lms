@@ -372,6 +372,42 @@ CREATE TABLE customerkarmalastchanges (
 CREATE INDEX customerkarmalastchanges_timestamp_idx ON customerkarmalastchanges (timestamp);
 
 /* --------------------------------------------------------
+  Structure of table "customercalls"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS customercalls_id_seq;
+CREATE SEQUENCE customercalls_id_seq;
+DROP TABLE IF EXISTS customercalls;
+CREATE TABLE customercalls (
+    id integer DEFAULT nextval('customercalls_id_seq'::text) NOT NULL,
+    dt integer DEFAULT 0 NOT NULL,
+    filename varchar(150) NOT NULL,
+    outgoing smallint DEFAULT 0 NOT NULL,
+    phone varchar(12) NOT NULL,
+    duration integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX customercalls_dt_idx ON customercalls (dt);
+CREATE INDEX customercalls_filename_idx ON customercalls (filename);
+CREATE INDEX customercalls_phone_idx ON customercalls (phone);
+
+/* --------------------------------------------------------
+  Structure of table "customercallassignments"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS customercallassignments_id_seq;
+CREATE SEQUENCE customercallassignments_id_seq;
+DROP TABLE IF EXISTS customercallassignments;
+CREATE TABLE customercallassignments (
+    id integer DEFAULT nextval('customercallassignments_id_seq'::text) NOT NULL,
+    customercallid integer NOT NULL
+        CONSTRAINT customercallassignments_customercallid_fkey REFERENCES customercalls (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    customerid integer NOT NULL
+        CONSTRAINT customercallassignments_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (id),
+    CONSTRAINT customercallassignments_customercallid_ukey
+        UNIQUE (customercallid, customerid)
+);
+
+/* --------------------------------------------------------
   Structure of table "numberplans"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS numberplans_id_seq;
@@ -4050,6 +4086,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070500');
 
 COMMIT;

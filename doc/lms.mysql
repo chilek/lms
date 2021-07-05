@@ -154,6 +154,8 @@ DROP TABLE IF EXISTS customer_addresses;
 DROP TABLE IF EXISTS zipcodes;
 DROP TABLE IF EXISTS states;
 DROP TABLE IF EXISTS numberplans;
+DROP TABLE IF EXISTS customercallassignments;
+DROP TABLE IF EXISTS customercalls;
 DROP TABLE IF EXISTS customerkarmalastchanges;
 DROP TABLE IF EXISTS customernotes;
 DROP TABLE IF EXISTS customerconsents;
@@ -536,6 +538,39 @@ CREATE TABLE customerkarmalastchanges (
     CONSTRAINT customerkarmalastchanges_userid_fkey
         FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) Engine=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customercalls
+#
+CREATE TABLE customercalls (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    dt int(11) DEFAULT 0 NOT NULL,
+    filename varchar(150) NOT NULL,
+    outgoing tinyint(1) DEFAULT 0 NOT NULL,
+    phone varchar(12) NOT NULL,
+    duration int(11) DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    KEY customercalls_dt_idx (dt),
+    KEY customercalls_filename_idx (filename),
+    KEY customercalls_phone_idx (phone)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customercallassignments
+#
+CREATE TABLE customercallassignments (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    customercallid int(11) NOT NULL,
+    customerid int(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT customercallassignments_customercallid_fkey
+        FOREIGN KEY (customercallid) REFERENCES customercalls (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT customercallassignments_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    UNIQUE KEY customercallassignments_customercallid_ukey (customercallid, customerid)
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -4031,4 +4066,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070500');
