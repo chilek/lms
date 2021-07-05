@@ -8,7 +8,8 @@ lms.ini
 backups/*
 bin/voip/cache/*
 bin/voip/templates_c/*
-voipcalls/*
+storage/rt/*
+storage/voipcalls/*
 documents/*
 !documents/templates
 cache/*

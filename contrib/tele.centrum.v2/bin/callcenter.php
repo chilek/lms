@@ -41,9 +41,11 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib'
     : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
 
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
@@ -88,6 +90,11 @@ $creatorid = ConfigHelper::getConfig('callcenter.queueuser');
 $hostname = "{".ConfigHelper::getConfig('callcenter.hostname')."}INBOX";
 $username = ConfigHelper::getConfig('callcenter.user');
 $password = ConfigHelper::getConfig('callcenter.pass');
+
+$rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+$storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', ConfigHelper::getConfig('rt.mail_dir_permission', '0700')), 8);
+$storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
+$storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
 
 $inbox  = imap_open($hostname, $username, $password) or die('Cannot connect to mail: ' . imap_last_error());
 $emails = imap_search($inbox, 'ALL FROM "'.ConfigHelper::getConfig('callcenter.mailfrom').'"');
@@ -136,7 +143,7 @@ if ($emails) {
         }
         if (count($attachments)!=0  and !empty($uid)) {
             foreach ($attachments as $at) {
-                if ($at[is_attachment] == 1  && ConfigHelper::getConfig('rt.mail_dir')) {
+                if ($at['is_attachment'] == 1  && !empty($rt_dir)) {
                     $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr ['.$uid.']';
                     $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
                     if (empty($message)) {
@@ -175,20 +182,31 @@ if ($emails) {
 
                         $message['ticketid'] = $id;
                     }
-                    file_put_contents($at[filename], $at[attachment]);
-                    $dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $message['ticketid'], $message['id']);
-                    @mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $message['ticketid']), 0700);
-                    @mkdir($dir, 0700);
-                    $newfile = $dir . DIRECTORY_SEPARATOR . $at[filename];
+                    file_put_contents($at['filename'], $at['attachment']);
 
-                    if (@rename($at[filename], $newfile)) {
+                    $ticket_dir = $rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $message['ticketid']);
+                    $message_dir = $ticket_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $message['id']);
+
+                    @umask(0007);
+                    @mkdir($ticket_dir, $storage_dir_permission);
+                    @chown($ticket_dir, $storage_dir_owneruid);
+                    @chgrp($ticket_dir, $storage_dir_ownergid);
+                    @mkdir($message_dir, $storage_dir_permission);
+                    @chown($message_dir, $storage_dir_owneruid);
+                    @chgrp($message_dir, $storage_dir_ownergid);
+
+                    $newfile = $message_dir . DIRECTORY_SEPARATOR . $at['filename'];
+
+                    if (@rename($at['filename'], $newfile)) {
+                        @chown($newfile, $storage_dir_owneruid);
+                        @chgrp($newfile, $storage_dir_ownergid);
+
                         $DB->Execute(
                             'INSERT INTO rtattachments (messageid, filename, contenttype)
                             VALUES (?,?,?)',
-                            array($message['id'], $at[filename], $at[contenttype])
+                            array($message['id'], $at['filename'], $at['contenttype'])
                         );
 
-                        exec("chown -R www-data:www-data ".ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $message['ticketid'])."");
                         imap_delete($inbox, $email_number);
                     }
                 }

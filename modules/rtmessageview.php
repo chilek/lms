@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+
 if (isset($_GET['file']) || isset($_GET['cid'])) {
     if (!($LMS->CheckTicketAccess($_GET['tid']) & RT_RIGHT_READ)) {
         access_denied();
@@ -38,7 +40,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
     }
 
     if ($attach) {
-        $file = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf(
+        $file = $rt_dir . DIRECTORY_SEPARATOR . sprintf(
             '%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s',
             $_GET['tid'],
             $_GET['mid'],
@@ -89,8 +91,8 @@ if ($message['customerid']) {
 
 if (!empty($message['attachments']) && count($message['attachments'])) {
     foreach ($message['attachments'] as $key => $val) {
-        list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR
-        . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
+        list ($size, $unit) = setunits(@filesize($rt_dir . DIRECTORY_SEPARATOR
+            . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
         $message['attachments'][$key]['size'] = $size;
         $message['attachments'][$key]['unit'] = $unit;
     }

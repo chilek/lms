@@ -647,12 +647,10 @@ function module_attachment()
     if (empty($attach)) {
         die;
     }
-    $file = ConfigHelper::getConfig('rt.mail_dir') . sprintf(
-        "/%06d/%06d/%s",
-        $attach['ticketid'],
-        $_GET['msgid'],
-        $attach['filename']
-    );
+
+    $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+
+    $file = $rt_dir . sprintf("/%06d/%06d/%s", $attach['ticketid'], $_GET['msgid'], $attach['filename']);
     if (file_exists($file)) {
         header('Content-Type: '. $attach['contenttype']);
         header('Cache-Control: private');

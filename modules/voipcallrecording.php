@@ -26,7 +26,7 @@
 
 define('VOIP_CALL_DIR', ConfigHelper::getConfig(
     'voip.call_recording_directory',
-    SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls'
+    STORAGE_DIR . DIRECTORY_SEPARATOR . 'voipcalls'
 ));
 
 $cdr = $DB->GetRow("SELECT uniqueid, caller, callee, call_start_time, totaltime FROM voip_cdr WHERE id = ?", array($_GET['id']));

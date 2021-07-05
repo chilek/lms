@@ -130,10 +130,10 @@ if (isset($_GET['record'])) {
 
     define('VOIP_CALL_DIR', ConfigHelper::getConfig(
         'voip.call_recording_directory',
-        SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls' . DIRECTORY_SEPARATOR
+        STORAGE_DIR . DIRECTORY_SEPARATOR . 'voipcalls'
     ));
 
-    $filepath = VOIP_CALL_DIR . $uid;
+    $filepath = VOIP_CALL_DIR . DIRECTORY_SEPARATOR . $uid;
 
     if (is_readable($filepath . '.mp3')) {
         $filepath .= '.mp3';

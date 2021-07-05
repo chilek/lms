@@ -189,6 +189,7 @@ version 27-git (????-??-??):
     authentication [chilan]
   - enhancement: '{speech_recognition}' smarty function allows to easily insert speech recognition
     buttons into forms [chilan]
+  - devel: added 'storage' directory which will contain different file resources [chilan]
 
 version 26.0 (2020-12-15):
 

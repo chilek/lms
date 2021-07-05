@@ -978,20 +978,30 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     private function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false)
     {
-        if (!empty($files) && ($dir = ConfigHelper::getConfig('rt.mail_dir'))) {
+        $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+        $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', ConfigHelper::getConfig('rt.mail_dir_permission', '0700')), 8);
+        $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
+        $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
+
+        if (!empty($files) && $rt_dir) {
+            $ticket_dir = $rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
+            $message_dir = $ticket_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $messageid);
+
             @umask(0007);
-            $dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
-            $dir = $dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
-            @mkdir($dir, $dir_permission);
-            $dir .= DIRECTORY_SEPARATOR . sprintf('%06d', $messageid);
-            @mkdir($dir, $dir_permission);
+
+            @mkdir($ticket_dir, $storage_dir_permission);
+            @chown($ticket_dir, $storage_dir_owneruid);
+            @chgrp($ticket_dir, $storage_dir_ownergid);
+            @mkdir($message_dir, $storage_dir_permission);
+            @chown($message_dir, $storage_dir_owneruid);
+            @chgrp($message_dir, $storage_dir_ownergid);
 
             $dirs_to_be_deleted = array();
             foreach ($files as $file) {
                 // handle spaces and unknown characters in filename
                 // on systems having problems with that
                 $filename = preg_replace('/[^\w\.-_]/', '_', basename($file['name']));
-                $dstfile = $dir . DIRECTORY_SEPARATOR . $filename;
+                $dstfile = $message_dir . DIRECTORY_SEPARATOR . $filename;
                 if (isset($file['content'])) {
                     $fh = @fopen($dstfile, 'w');
                     if (empty($fh)) {
@@ -1007,6 +1017,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         continue;
                     }
                 }
+
+                @chown($dstfile, $storage_dir_owneruid);
+                @chgrp($dstfile, $storage_dir_ownergid);
+
                 $this->db->Execute(
                     'INSERT INTO rtattachments (messageid, filename, contenttype, cid)
 					VALUES (?, ?, ?, ?)',
