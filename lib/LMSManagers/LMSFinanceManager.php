@@ -243,43 +243,39 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 if ($assignments[$idx]['netflag']) {
                     $assignments[$idx]['discounted_netprice'] = f_round(($row['unitary_netvalue'] - $row['unitary_netvalue'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']));
+                    if ($row['suspended'] == 1) {
+                        $assignments[$idx]['discounted_netprice'] = $assignments[$idx]['discounted_netprice'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
+                    }
                     $assignments[$idx]['discounted_netvalue'] = f_round($assignments[$idx]['discounted_netprice'] * $row['count']);
                     $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice']);
 
                     if ($assignments[$idx]['tax_value']) {
-                        $assignments[$idx]['discounted_value'] = ($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['tax_value'] / 100 + 1));
-                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['tax_value'] / 100 + 1));
+                        $assignments[$idx]['tax_from_discounted_value'] = f_round($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['tax_value'] / 100));
                     } elseif ($assignments[$idx]['taxl_value']) {
-                        $assignments[$idx]['discounted_value'] = ($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['taxl_value'] / 100 + 1));
-                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['taxl_value'] / 100 + 1));
+                        $assignments[$idx]['tax_from_discounted_value'] = f_round($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['taxl_value'] / 100));
                     }
-                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price']);
+                    $assignments[$idx]['discounted_value'] = f_round(($assignments[$idx]['discounted_netvalue'] + $assignments[$idx]['tax_from_discounted_value']));
+                    $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_value'] / $row['count']);
+                    $assignments[$idx]['unitary_discount'] = f_round(($row['unitary_value'] - $assignments[$idx]['discounted_price']) / $row['count']);
                 } else {
                     $assignments[$idx]['discounted_price'] = f_round(($row['unitary_value'] - $row['unitary_value'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']));
+                    if ($row['suspended'] == 1) {
+                        $assignments[$idx]['discounted_price'] = $assignments[$idx]['discounted_price'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
+                    }
                     $assignments[$idx]['discounted_value'] = f_round($assignments[$idx]['discounted_price'] * $row['count']);
                     $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price']);
 
                     if ($assignments[$idx]['tax_value']) {
-                        $assignments[$idx]['discounted_netvalue'] = ($assignments[$idx]['discounted_value'] / ($assignments[$idx]['tax_value'] / 100 + 1));
-                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['tax_value'] / 100 + 1));
+                        $assignments[$idx]['tax_from_discounted_value'] = f_round(($assignments[$idx]['discounted_value'] * $assignments[$idx]['tax_value'])
+                            / (100 + $assignments[$idx]['tax_value']));
                     } elseif ($assignments[$idx]['taxl_value']) {
-                        $assignments[$idx]['discounted_netvalue'] = ($assignments[$idx]['discounted_value'] / ($assignments[$idx]['taxl_value'] / 100 + 1));
-                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['taxl_value'] / 100 + 1));
+                        $assignments[$idx]['tax_from_discounted_value'] = f_round(($assignments[$idx]['discounted_value'] * $assignments[$idx]['taxl_value'])
+                            / (100 + $assignments[$idx]['taxl_value']));
                     }
-                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice']);
+                    $assignments[$idx]['discounted_netvalue'] = f_round(($assignments[$idx]['discounted_value'] - $assignments[$idx]['tax_from_discounted_value']));
+                    $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_netvalue'] / $row['count']);
+                    $assignments[$idx]['unitary_netdiscount'] = f_round(($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice']) / $row['count']);
                 }
-
-                if ($row['suspended'] == 1) {
-                    $assignments[$idx]['discounted_netvalue'] = $assignments[$idx]['discounted_netvalue'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
-                }
-
-                $assignments[$idx]['discounted_netvalue'] = round($assignments[$idx]['discounted_netvalue'], 2);
-
-                if ($row['suspended'] == 1) {
-                    $assignments[$idx]['discounted_value'] = $assignments[$idx]['discounted_value'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
-                }
-
-                $assignments[$idx]['discounted_value'] = round($assignments[$idx]['discounted_value'], 2);
 
                 $now = time();
 

@@ -276,7 +276,11 @@
 								<span class="net">
 									{if $a.tariffid || $a.liabilityid}
 										{if $a.pdiscount != 0}
-											{$a.pdiscount}%
+											{if $a.suspended == 1}
+												{$a.pdiscount}% + {ConfigHelper::getConfig('finances.suspension_percentage')}%
+											{else}
+												{$a.pdiscount}%
+											{/if}
 										{elseif $a.vdiscount != 0}
 											{if isset($a.real_unitary_netdiscount)}
 												{moneyf($a.real_unitary_netdiscount, $a.currency)}
@@ -302,7 +306,11 @@
 								<span class="gross">
 									{if $a.tariffid || $a.liabilityid}
 										{if $a.pdiscount != 0}
-											{$a.pdiscount}%
+											{if $a.suspended == 1}
+												{$a.pdiscount}% + {ConfigHelper::getConfig('finances.suspension_percentage')}%
+											{else}
+												{$a.pdiscount}%
+											{/if}
 										{elseif $a.vdiscount != 0}
 											{if isset($a.real_unitary_discount)}
 												{moneyf($a.real_unitary_discount, $a.currency)}
