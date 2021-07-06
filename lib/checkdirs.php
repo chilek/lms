@@ -62,6 +62,16 @@ if (!is_writable($voip_call_dir)) {
     $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $voip_call_dir . PHP_EOL . 'chmod -R 755 ' . $voip_call_dir;
 }
 
+$customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls';
+
+if (!is_dir($customer_call_dir)) {
+    $startup_errors[] = 'mkdir ' . $customer_call_dir;
+}
+
+if (!is_writable($customer_call_dir)) {
+    $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $customer_call_dir . PHP_EOL . 'chmod -R 755 ' . $customer_call_dir;
+}
+
 if (!is_dir(DOC_DIR)) {
     $startup_errors[] = 'mkdir ' . DOC_DIR;
 }
