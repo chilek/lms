@@ -2913,33 +2913,39 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'SELECT COUNT(*) FROM customercallassignments WHERE customercallid = ?',
             array($callid)
         ) > 1) {
-            $this->db->Execute(
+            return $this->db->Execute(
                 'DELETE FROM customerassignmentcalls WHERE customercallid = ? AND customerid = ?',
                 array($callid, $customerid)
             );
         } else {
             $customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls';
-            $filename = $this->db->GetOne('SELECT filename FROM customercalls WHERE id = ?', array($callid));
 
-            if (empty($filename)) {
-                die;
+            $call = $this->db->GetRow('SELECT * FROM customercalls WHERE id = ?', array($callid));
+
+            if (empty($call)) {
+                return false;
             }
 
-            @unlink($customer_call_dir . DIRECTORY_SEPARATOR . $filename);
-            $this->db->Execute('DELETE FROM customercalls WHERE id = ?', array($callid));
+            @unlink(
+                $customer_call_dir . DIRECTORY_SEPARATOR . date('Y-m-d', $call['dt'])
+                    . DIRECTORY_SEPARATOR . $call['filename']
+            );
+            return $this->db->Execute('DELETE FROM customercalls WHERE id = ?', array($callid));
         }
     }
 
     public function getCustomerCallContent($callid)
     {
-        $customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls';
-        $filename = $this->db->GetOne('SELECT filename FROM customercalls WHERE id = ?', array($callid));
+        $call = $this->db->GetRow('SELECT * FROM customercalls WHERE id = ?', array($callid));
 
-        if (empty($filename)) {
+        if (empty($call)) {
             die;
         }
 
-        $file_path = $customer_call_dir . DIRECTORY_SEPARATOR . $filename;
+        $customer_call_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'customercalls'
+            . DIRECTORY_SEPARATOR . date('Y-m-d', $call['dt']);
+
+        $file_path = $customer_call_dir . DIRECTORY_SEPARATOR . $call['filename'];
         if (!is_file($file_path) || !is_readable($file_path)) {
             die;
         }
