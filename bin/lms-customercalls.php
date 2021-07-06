@@ -332,9 +332,19 @@ foreach ($dirs as $dir) {
             $dst_number = $dst;
         }
 
-        $outgoing = !empty($dst_prefix) && isset($customers[$dst_prefix . $dst_number]) || isset($customers[$dst_number]);
-        if (!$outgoing && !isset($customers[$src_prefix . $src_number]) && !isset($customers[$src_number])) {
-            continue;
+        $userid = null;
+        if (!empty($src_prefix) && isset($users[$src_prefix . $src_number])) {
+            $userid = $users[$src_prefix . $src_number];
+            $outgoing = true;
+        } elseif (isset($users[$src_number])) {
+            $userid = $users[$src_number];
+            $outgoing = true;
+        } elseif (!empty($dst_prefix) && isset($users[$dst_prefix . $dst_number])) {
+            $userid = $users[$dst_prefix . $dst_number];
+            $outgoing = false;
+        } elseif (isset($users[$dst_number])) {
+            $userid = $users[$dst_number];
+            $outgoing = false;
         }
 
         $phone = $outgoing ? $dst : $src;
@@ -382,17 +392,6 @@ foreach ($dirs as $dir) {
         chmod($dst_file, $storage_dir_permission);
         chown($dst_file, $storage_dir_owneruid);
         chgrp($dst_file, $storage_dir_ownergid);
-
-        $userid = null;
-        if (!empty($src_prefix) && isset($users[$src_prefix . $src_number])) {
-            $userid = $users[$src_prefix . $src_number];
-        } elseif (isset($users[$src_number])) {
-            $userid = $users[$src_number];
-        } elseif (!empty($dst_prefix) && isset($users[$dst_prefix . $dst_number])) {
-            $userid = $users[$dst_prefix . $dst_number];
-        } elseif (isset($users[$dst_number])) {
-            $userid = $users[$dst_number];
-        }
 
         $LMS->addCustomerCall(
             array(
