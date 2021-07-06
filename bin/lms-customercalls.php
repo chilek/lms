@@ -135,6 +135,14 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
 
+// Load autoloader
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
+}
+
 // Init database
 
 $DB = null;
@@ -187,6 +195,18 @@ if (!is_dir($src_dir)) {
 $dirs = getdir($src_dir, '^[^\.].*$');
 if (empty($dirs)) {
     $dirs[] = '';
+} else {
+    $_dirs = array();
+    foreach ($dirs as $dir) {
+        if (is_dir($src_dir . DIRECTORY_SEPARATOR . $dir)) {
+            $_dirs[] = $dir;
+        }
+    }
+    $dirs = $_dirs;
+    unset($_dirs);
+    if (empty($dirs)) {
+        $dirs = array('');
+    }
 }
 
 function normalizePhoneNumber($number)
@@ -250,10 +270,9 @@ if (!empty($user_phones)) {
 }
 
 foreach ($dirs as $dir) {
-    $src_file_dir = ($dir == '' ? '' : $dir . DIRECTORY_SEPARATOR);
-    $dir = $src_dir . ($dir == '' ? '' : DIRECTORY_SEPARATOR . $dir);
+    $src_file_dir = $src_dir . ($dir == '' ? '' : DIRECTORY_SEPARATOR . $dir);
 
-    $files = getdir($dir, $file_name_pattern);
+    $files = getdir($src_file_dir, $file_name_pattern);
     if (empty($files)) {
         continue;
     }
@@ -279,7 +298,8 @@ foreach ($dirs as $dir) {
         } elseif (isset($m['duration'])) {
             $duration = intval($m['duration']);
         } else {
-            die('Fatal error: cannot find duration field!' . PHP_EOL);
+            echo 'Cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+            $duration = -1;
         }
 
         $src = normalizePhoneNumber($m['src']);
@@ -316,7 +336,7 @@ foreach ($dirs as $dir) {
         }
 
         $dst_dir = $customer_call_dir . DIRECTORY_SEPARATOR . date('Y-m-d', $dt);
-        $src_file = $src_file_dir . $src_file_name;
+        $src_file = $src_file_dir . DIRECTORY_SEPARATOR . $src_file_name;
 
         if (!is_dir($dst_dir)) {
             mkdir($dst_dir, $storage_dir_permission, true);

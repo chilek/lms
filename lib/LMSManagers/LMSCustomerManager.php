@@ -2878,7 +2878,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 default:
                     $order = 'c.dt';
             }
-            $order .= ',' . ($sort == 'desc' ? 'DESC' : 'ASC');
+            $order .= ' ' . (strtoupper($sort) == 'DESC' ? 'DESC' : 'ASC');
         } else {
             $order = 'c.dt DESC';
         }
@@ -2977,7 +2977,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $params['dt'],
                 isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null,
                 $params['filename'],
-                $params['outgoing'],
+                empty($params['outgoing']) ? 0 : 1,
                 $params['phone'],
                 $params['duration'],
             )

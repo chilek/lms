@@ -63,7 +63,11 @@
 									{$call.username|default:"-"|escape}
 								</td>
 								<td class="nobr">
-									{$call.duration|duration_format}
+									{if $call.duration == -1}
+										{trans("- unknown -")}
+									{else}
+										{$call.duration|duration_format}
+									{/if}
 								</td>
 								<td class="nobr">
 									{capture assign="direction"}{if $call.outgoing}{trans("<!customer-call>outgoing")}{else}{trans("<!customer-call>incoming")}{/if}{/capture}
