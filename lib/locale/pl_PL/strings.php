@@ -5322,6 +5322,7 @@ $_LANG['<!customer-call>outgoing'] = 'wychodzące';
 $_LANG['That customer hasn\'t got any phone calls.'] = 'Ten klient nie posiada przypisanych żadnych połączeń telefonicznych.';
 $_LANG['Your browser does not support the audio element!'] = 'Twoja przeglądarka nie obsługuje znacznika HTML audio!';
 $_LANG['Customer Call List: $a'] = 'Lista połączeń telefonicznych klienta: $a';
+$_LANG['User Call List: $a'] = 'Lista połączeń telefonicznych użytkownika: $a';
 $_LANG['<!customer-call>Download'] = 'Pobierz';
 $_LANG['phone-call'] = 'połączenie';
 $_LANG['customer phone call view'] = 'podgląd połączeń telefonicznych klienta';

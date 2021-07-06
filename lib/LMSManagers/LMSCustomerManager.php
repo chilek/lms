@@ -2883,6 +2883,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $order = 'c.dt DESC';
         }
 
+        $fields = array();
         $join = array();
         $where = array();
 
@@ -2893,18 +2894,53 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $where[] = 'a.customerid =  ' . intval($params['customerid']);
         }
 
-
         if (isset($params['userid'])) {
             $where[] = 'c.userid = ' . intval($params['userid']);
+            if (!isset($params['customerid'])) {
+                $fields[] = 'a2.customerid';
+                $fields[] = 'a2.customerlastname';
+                $fields[] = 'a2.customername';
+                $join[] = 'JOIN (
+                    SELECT cca.customercallid,
+                        ' . $this->db->GroupConcat('cca.customerid') . ' AS customerid,
+                        ' . $this->db->GroupConcat('cv.lastname') . ' AS customerlastname,
+                        ' . $this->db->GroupConcat('cv.name') . ' AS customername
+                    FROM customercallassignments cca
+                    JOIN customerview cv ON cv.id = cca.customerid
+                    GROUP BY cca.customercallid
+                ) a2 ON a2.customercallid = c.id';
+            }
         }
 
-        return $this->db->GetAll(
-            'SELECT c.*, u.name AS username FROM customercalls c '
+        $calls = $this->db->GetAll(
+            'SELECT c.*, u.name AS username ' . (empty($fields) ? '' : ', ' . implode(', ', $fields))
+            . ' FROM customercalls c '
             . implode(' ', $join)
             . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
             . ' ORDER BY ' . $order
             . $limit
         );
+
+        if (!empty($calls)) {
+            foreach ($calls as &$call) {
+                $call['customers'] = array();
+                $customerid = explode(',', $call['customerid']);
+                if (empty($customerid)) {
+                    continue;
+                }
+                $customerlastname = explode(',', $call['customerlastname']);
+                $customername = explode(',', $call['customername']);
+                foreach ($customerid as $idx => $cid) {
+                    $call['customers'][] = array(
+                        'id' => $cid,
+                        'lastname' => $customerlastname[$idx],
+                        'name' =>  $customername[$idx],
+                    );
+                }
+            }
+            unset($call);
+        }
+        return $calls;
     }
 
     public function deleteCustomerCall($customerid, $callid)

@@ -227,11 +227,17 @@ $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
 
+$customercalls = $LMS->getCustomerCalls(array(
+    'userid' => $userinfo['id'],
+    'limit' => -1,
+));
+
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('usergroups', $LMS->getAlluserGroups());
 $SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('customercalls', $customercalls);
 $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('user_divisions', $user_divisions);
 $SMARTY->assign('error', $error);

@@ -9,6 +9,19 @@
 			{include file="user/usereditbox.html"}
 		</TD>
 	</TR>
+
+	{block name="usercallbox"}
+		{if ConfigHelper::checkPrivilege('readonly')
+		|| ConfigHelper::checkPrivilege('customer_call_view')
+		|| ConfigHelper::checkPrivilege('customer_call_management')}
+			<tr>
+				<td>
+					{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 5)}
+				</td>
+			</tr>
+		{/if}
+	{/block}
+
 	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
 	<TR>
 		<TD style="width: 100%;">

@@ -83,7 +83,13 @@ if (!empty($userinfo['twofactorauth'])) {
     $SMARTY->assign('qrcode_image', base64_encode($barcodeObj->getPngData(false)));
 }
 
+$customercalls = $LMS->getCustomerCalls(array(
+    'userid' => $userinfo['id'],
+    'limit' => -1,
+));
+
 $SMARTY->assign('userinfo', $userinfo);
+$SMARTY->assign('customercalls', $customercalls);
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups 
 					    WHERE customergroupid = g.id AND userid = ?

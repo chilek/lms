@@ -26,18 +26,31 @@
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$id = intval($_GET['c']);
-if (!$LMS->CustomerExists($id)) {
-    $SESSION->redirect('?m=customerlist');
+if (isset($_GET['c'])) {
+    $cid = intval($_GET['c']);
+    if (!$LMS->CustomerExists($cid)) {
+        $SESSION->redirect('?m=customerlist');
+    }
+
+    $customername = $LMS->GetCustomerName($cid);
+    $layout['pagetitle'] = trans('Customer Call List: $a', '<a href="?m=customerinfo&id=' . $cid . '">' . $customername . '</a>');
+
+    $customercalls = $LMS->getCustomerCalls(array(
+        'customerid' => $cid,
+    ));
+} elseif (isset($_GET['u'])) {
+    $uid = intval($_GET['u']);
+    if (!$LMS->userExists($uid)) {
+        $SESSION->redirect('?m=userlist');
+    }
+
+    $username = $LMS->getUserName($uid);
+    $layout['pagetitle'] = trans('User Call List: $a', '<a href="?m=userinfo&id=' . $uid . '">' . $username . '</a>');
+
+    $customercalls = $LMS->getCustomerCalls(array(
+        'userid' => $uid,
+    ));
 }
-
-$customername = $LMS->GetCustomerName($id);
-
-$layout['pagetitle'] = trans('Customer Call List: $a', '<a href="?m=customerinfo&id=' . $id . '">' . $customername . '</a>');
-
-$customercalls = $LMS->getCustomerCalls(array(
-    'customerid' => $id,
-));
 
 $SMARTY->assign('customercalls', $customercalls);
 $SMARTY->assign('customername', $customername);

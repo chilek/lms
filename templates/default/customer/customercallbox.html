@@ -10,7 +10,7 @@
             &nbsp;({t a=$limit}last $a phone calls{/t})
         {/tab_header_cell}
         {tab_header_cell}
-            <a href="?m=customercalllist&c={$customerinfo.id}"
+            <a href="?m=customercalllist&{if isset($userinfo.id)}u={$userinfo.id}{else}c={$customerinfo.id}{/if}"
                id="all-phone-calls">
                 {trans("All Phone Calls")}
                 {icon name="next" class="fa-fw"}
@@ -77,6 +77,15 @@
                             </div>
                             <div class="lms-ui-tab-table-column phone-number">
                                 <strong>{$call.phone}</strong>
+                                {if !empty($call.customers)}
+                                    <ul class="customer-list">
+                                        {foreach $call.customers as $customer}
+                                            <li>
+                                                <a href="?m=customerinfo&id={$customer.id}">{$customer.lastname|escape} {$customer.name|escape}</a>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                {/if}
                             </div>
                         </div>
                     </div>
