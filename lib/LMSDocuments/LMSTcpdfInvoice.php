@@ -97,7 +97,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
                 if (!$hide_discount) {
-                    if (!empty(f_round($item['pdiscount']))) {
+                    if (!empty(floatval($item['pdiscount']))) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%.2f%%', $item['pdiscount']));
                     } elseif (!empty($item['vdiscount'])) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
