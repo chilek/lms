@@ -30,22 +30,30 @@ git clone https://github.com/lmsgit/lms ${lmsdir}
 mkdir -p $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,js/xajax_js/deferred}
 chmod o-rwx -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,js/xajax_js/deferred}
 chown $apacheuser:$apacheuser -R $lmsdir/{backups,cache,documents,templates_c,userpanel/templates_c,rtattachments,js/xajax_js/deferred}
+cd ${lmsdir}/userpanel/style/bclean; composer update --no-dev
 cd ${lmsdir}; composer update --no-dev
 
 #LMS DB APP
 pgconf=`find /etc/postgresql -name 'pg_hba.conf' | tail -1`
-su - postgres -c "/usr/bin/createuser -s -e -w ${dbuser}"
-su - postgres -c "/usr/bin/psql -U postgres -d postgres -c \"ALTER user ${dbuser} WITH PASSWORD '${dbpass}'\" "
-su - postgres -c "/usr/bin/createdb -E UTF8 -O ${dbuser} ${dbname};"
-touch ~/.pgpass
-chmod 600 ~/.pgpass
-echo "localhost:*:${dbname}:${dbuser}:${dbpass}" > ~/.pgpass
-su --shell="/bin/bash" postgres -c "cat ${lmsdir}/doc/lms.pgsql|/usr/bin/psql \"${dbname}\" "
 su - postgres -c "cp ${pgconf} ${pgconf}.bak"
-su - postgres -c "echo local   all             all                                     md5   > ${pgconf}"
+su - postgres -c "echo local   all             postgres                                peer  > ${pgconf}"
+su - postgres -c "echo local   all             all                                     md5   >> ${pgconf}"
 su - postgres -c "echo host    all             all             127.0.0.1/32            ident >> ${pgconf}"
 su - postgres -c "echo host    all             all             ::1/128                 ident >> ${pgconf}"
 systemctl restart postgresql
+
+su - postgres -c "psql -d postgres -c \"UPDATE pg_database SET datistemplate = FALSE WHERE datname = 'template1';\" "
+su - postgres -c 'dropdb template1'
+su - postgres -c 'createdb template1 --encoding=UNICODE --template=template0';
+su - postgres -c "psql -c \"UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template1' \" "
+su - postgres -c "psql -d template1 -c 'VACUUM FREEZE;' "
+
+su - postgres -c "/usr/bin/createuser -s -e -w ${dbuser}"
+su - postgres -c "/usr/bin/psql -d postgres -c \"ALTER user ${dbuser} WITH PASSWORD '${dbpass}'\" "
+su - postgres -c "/usr/bin/createdb -E UTF8 -O ${dbuser} ${dbname};"
+echo "localhost:*:${dbname}:${dbuser}:${dbpass}" > ~/.pgpass
+chmod 600 ~/.pgpass
+su --shell="/bin/bash" postgres -c "cat ${lmsdir}/doc/lms.pgsql|/usr/bin/psql \"${dbname}\" "
 
 #LMS CONFIG
 mkdir /etc/lms
@@ -57,12 +65,9 @@ user = ${dbuser}
 password = ${dbpass}
 database = ${dbname}
 
-[directory]
-sysdir = ${lmsdir}
+[directories]
+sys_dir = ${lmsdir}
 backup_dir = ${lmsdir}/backups
-doc_dir = ${lmsdir}/documents
-smarty_compile_dir = ${lmsdir}/templates_c
-userpanel_dir = ${lmsdir}/userpanel
 
 [rt]
 mail_dir = ${lmsdir}/rtattachements
