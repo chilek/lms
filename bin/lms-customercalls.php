@@ -344,6 +344,7 @@ foreach ($dirs as $dir) {
         if ($LMS->isCustomerCallExists(array(
             'filename' => $dst_file_name,
         ))) {
+            @unlink($src_file);
             continue;
         }
 
