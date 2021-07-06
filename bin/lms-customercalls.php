@@ -283,6 +283,8 @@ foreach ($dirs as $dir) {
             continue;
         }
 
+        $src_file = $src_file_dir . DIRECTORY_SEPARATOR . $src_file_name;
+
         if (isset($m['timestamp'])) {
             $dt = intval($m['timestamp']);
         } elseif (isset($m['datetime'])) {
@@ -298,8 +300,18 @@ foreach ($dirs as $dir) {
         } elseif (isset($m['duration'])) {
             $duration = intval($m['duration']);
         } else {
-            echo 'Cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
-            $duration = -1;
+            if ($file_extension == 'mp3') {
+                if (\wapmorgan\Mp3Info\Mp3Info::isValidAudio($src_file)) {
+                    $mp3info = new \wapmorgan\Mp3Info\Mp3Info($src_file);
+                    $duration = round($mp3info->duration);
+                } else {
+                    echo 'Cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+                    $duration = -1;
+                }
+            } else {
+                echo 'Cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+                $duration = -1;
+            }
         }
 
         $src = normalizePhoneNumber($m['src']);
@@ -336,7 +348,6 @@ foreach ($dirs as $dir) {
         }
 
         $dst_dir = $customer_call_dir . DIRECTORY_SEPARATOR . date('Y-m-d', $dt);
-        $src_file = $src_file_dir . DIRECTORY_SEPARATOR . $src_file_name;
 
         if (!is_dir($dst_dir)) {
             mkdir($dst_dir, $storage_dir_permission, true);
