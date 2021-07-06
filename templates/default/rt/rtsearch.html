@@ -14,7 +14,7 @@
     <THEAD>
 	<TR>
 		<TD class="bold nobr" colspan="2">
-			{trans("Display tickets matching the following criteria:")}:
+			{trans("Display tickets matching the following criteria")}:
 		</TD>
 	</TR>
     </THEAD>
@@ -29,7 +29,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="message" label="Body:"}
+			{icon name="message" label="<!rt>Content"}
 		</TD>
 		<TD>
 			<INPUT type="search" size="50" name="search[body][pattern]" value="{$search.body.pattern}" {tip text="Enter body fragment"}>
@@ -41,7 +41,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="requestor" label="Requestor:"}
+			{icon name="requestor" label="Requestor"}
 		</TD>
 		<TD>
 			<TABLE width="100%" cellpadding="1">
@@ -54,11 +54,11 @@
 					</TD>
 			    </TR>
 			    <TR>
-				<TD width="1%" NOWRAP>{trans("First/last or Company name:")}</TD>
+				<TD width="1%" NOWRAP>{trans("First/last or Company name")}</TD>
 				<TD width="99%"><INPUT type="text" name="search[name]" value="{$search.name}" {tip text="Select customer from list or enter his data if is not a customer"}></TD>
 			    </TR>
 			    <TR>
-				<TD width="1%">{trans("E-mail:")}</TD>
+				<TD width="1%">{trans("E-mail")}</TD>
 				<TD width="99%"><INPUT type="email" name="search[email]" value="{$search.email}" {tip text="Select customer from list or enter his data if is not a customer"}></TD>
 			    </TR>
 			</TABLE>
@@ -70,8 +70,8 @@
 		</TD>
 		<TD class="nobr">
 			<INPUT type="text" name="search[address]" VALUE="{$search.address}">
-			<span class="bold">{trans("City:")}</span> <INPUT type="text" name="search[city]" VALUE="{$search.city}">
-			<span class="bold">{trans("Postcode:")}</span> <INPUT type="text" name="search[zip]" VALUE="{$search.zip}" SIZE="10">
+			<span class="bold">{trans("City")}</span> <INPUT type="text" name="search[city]" VALUE="{$search.city}">
+			<span class="bold">{trans("Postcode")}</span> <INPUT type="text" name="search[zip]" VALUE="{$search.zip}" SIZE="10">
 		</TD>
 	</TR>
 	<TR>
@@ -126,7 +126,7 @@
 		</TD>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="helpdesk" label="Ticket type:"}
+			{icon name="helpdesk" label="Ticket type"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[type]" {tip text="Select ticket type" }>
@@ -175,7 +175,7 @@
 	{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="delete" label="Removed:"}
+			{icon name="delete" label="<!rt>Removed"}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[removed]" {tip text="Select ticket status"}>
@@ -187,7 +187,7 @@
 	</TR>
 	{/if}
 	<TR>
-        <TD class="bold nobr">{icon name="netnode" label="Network node:"}</TD>
+        <TD class="bold nobr">{icon name="netnode" label="Network node"}</TD>
 		<TD class="nobr">
 			<SELECT name="search[netnodeid]" {tip text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
 				<OPTION value="">{trans("- none -")}</OPTION>
@@ -198,24 +198,26 @@
 		</TD>
 	</TR>
 	<TR>
-        <TD class="bold nobr">{icon name="netdevice" label="Device:"}</TD>
+        <TD class="bold nobr">{icon name="netdevice" label="Device"}</TD>
 		<TD class="nobr" id="rtnetdevs">
 			{include file="rt/rtnetdevs.html" form="search"}
 		</TD>
 	</TR>
         <TR>
-		<TD class="bold nobr">{box_row icon="verifier" icon_class="fa-fw" label="Verifier:" field_id="rtverifiers"}{/box_row}</TD>
-		<TD>
-                        <SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
-                                <OPTION value="0">{trans("- all owners -")}</OPTION>
-                                {foreach $userlist as $item}
-                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.rname|escape}</OPTION>
-                                {/foreach}
-                        </SELECT>
-		</TD>
+			<TD class="bold nobr">
+				{icon name="verifier" label="Verifier"}
+			</TD>
+			<TD>
+				<SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
+					<OPTION value="0">{trans("- all owners -")}</OPTION>
+						{foreach $userlist as $item}
+							<OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.rname|escape}</OPTION>
+						{/foreach}
+				</SELECT>
+			</TD>
         </TR>
         <TR>
-		<TD class="bold nobr">{icon name="deadline" label="Deadline expired:"}</TD>
+		<TD class="bold">{icon name="deadline" label="Deadline expired"}</TD>
 		<TD>
 			<INPUT TYPE="checkbox" NAME="search[expired]" VALUE="1" {tip text="Check if ticket is expired" trigger="expired"}>
 		</TD>
