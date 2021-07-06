@@ -62,7 +62,7 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
-			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="{trans("Account payment")}" title="{trans("Account payment")}"></A>
+			<A HREF="javascript:document.addbalance{$payment@index}.submit();"><IMG src="img/pay.gif" alt="{trans("Account payment")}" title="{trans("Account payment")}"></A>
 			<A class="delete-payment" HREF="?m=paymentdel&id={$payment.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=paymentedit&id={$payment.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=paymentinfo&id={$payment.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>&nbsp;
