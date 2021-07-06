@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <style>
@@ -32,17 +32,19 @@
 			<td style="width: 100%;" colspan="2">
 				<table class="lmsbox-inner lms-ui-background-cycle">
 					<colgroup>
-						<col style="width: 20%;">
-						<col style="width: 20%;">
-						<col style="width: 20%;">
-						<col style="width: 20%;">
-						<col style="width: 20%;">
+						<col style="width: 17%;">
+						<col style="width: 17%;">
+						<col style="width: 17%;">
+						<col style="width: 17%;">
+						<col style="width: 17%;">
+						<col style="width: 15%;">
 					</colgroup>
 					<thead>
 						<tr class="fbottom">
 							<td class="nobr">
 								<strong>{trans("Date")}</strong>
 							</td>
+							<td class="nobr">{trans("User")}</TD>
 							<td class="nobr">{trans("Duration")}</TD>
 							<td class="nobr">{trans("Type")}</TD>
 							<td class="nobr">
@@ -56,6 +58,9 @@
 							<tr class="highlight">
 								<td class="nobr">
 									<strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
+								</td>
+								<td class="nobr">
+									{$call.username|default:"-"|escape}
 								</td>
 								<td class="nobr">
 									{$call.duration|duration_format}
@@ -83,7 +88,7 @@
 							</tr>
 						{foreachelse}
 							<tr>
-								<td class="empty-table" colspan="5">
+								<td class="empty-table" colspan="6">
 									<p>{trans("That customer hasn't got any phone calls.")}</p>
 								</td>
 							</tr>

@@ -379,6 +379,8 @@ CREATE SEQUENCE customercalls_id_seq;
 DROP TABLE IF EXISTS customercalls;
 CREATE TABLE customercalls (
     id integer DEFAULT nextval('customercalls_id_seq'::text) NOT NULL,
+    userid integer DEFAULT NULL
+        CONSTRAINT customercalls_userid_fkey REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL,
     dt integer DEFAULT 0 NOT NULL,
     filename varchar(150) NOT NULL,
     outgoing smallint DEFAULT 0 NOT NULL,
@@ -4086,6 +4088,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070600');
 
 COMMIT;

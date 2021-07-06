@@ -2856,25 +2856,53 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
     }
 
-    public function getCustomerCalls($id = null, $limit = -1)
+    public function getCustomerCalls(array $params)
     {
-        switch ($limit) {
-            case -1:
+        //$id = null, $limit = -1
+        if (isset($params['limit'])) {
+            if ($params['limit'] == -1) {
                 $limit = ' LIMIT ' . intval(ConfigHelper::getConfig('phpui.customer_call_limit', 5));
-                break;
-            case 0:
-                $limit = '';
-                break;
-            default:
-                $limit = ' LIMIT ' . intval($limit);
-                break;
+            } else {
+                $limit = ' LIMIT ' . intval($params['limit']);
+            }
+        } else {
+            $limit = '';
+        }
+
+        if (isset($params['order'])) {
+            list ($field, $sort) = explode(',', $params['order']);
+            switch ($field) {
+                case 'id':
+                    $order = 'c.id';
+                    break;
+                default:
+                    $order = 'c.dt';
+            }
+            $order .= ',' . ($sort == 'desc' ? 'DESC' : 'ASC');
+        } else {
+            $order = 'c.dt DESC';
+        }
+
+        $join = array();
+        $where = array();
+
+        $join[] = 'JOIN vusers u ON u.id = c.userid';
+
+        if (isset($params['customerid'])) {
+            $join[] = 'JOIN customercallassignments a ON a.customercallid = c.id';
+            $where[] = 'a.customerid =  ' . intval($params['customerid']);
+        }
+
+
+        if (isset($params['userid'])) {
+            $where[] = 'c.userid = ' . intval($params['userid']);
         }
 
         return $this->db->GetAll(
-            'SELECT c.* FROM customercalls c'
-            . (isset($id) ? ' JOIN customercallassignments a ON a.customercallid = c.id
-                WHERE a.customerid =  ' . intval($id) : '')
-            . ' ORDER BY c.dt DESC'
+            'SELECT c.*, u.name AS username FROM customercalls c '
+            . implode(' ', $join)
+            . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
+            . ' ORDER BY ' . $order
             . $limit
         );
     }
@@ -2936,17 +2964,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function addCustomerCall(array $params)
     {
-        return $this->db->Execute(
-            'INSERT INTO customercalls (dt, filename, outgoing, phone, duration)
-            VALUES (?, ?, ?, ?, ?)',
+        $res = $this->db->Execute(
+            'INSERT INTO customercalls (dt, userid, filename, outgoing, phone, duration)
+            VALUES (?, ?, ?, ?, ?, ?)',
             array(
                 $params['dt'],
+                isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null,
                 $params['filename'],
                 $params['outgoing'],
                 $params['phone'],
                 $params['duration'],
             )
         );
+        return $res ? $this->db->GetLastInsertID('customercalls') : null;
     }
 
     public function addCustomerCallAssignment($customerid, $callid)
@@ -2955,10 +2985,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'SELECT id FROM customercallassignments WHERE customercallid = ? AND customerid = ?',
             array($callid, $customerid)
         )) {
-            $this->db->Execute(
+            $res = $this->db->Execute(
                 'INSERT INTO customercallassignments (customercallid, customerid) VALUES (?, ?)',
                 array($callid, $customerid)
             );
+            return $res ? $this->db->GetLastInsertID('customercallassignments') : null;
+        } else {
+            return null;
         }
     }
 }

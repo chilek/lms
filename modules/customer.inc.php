@@ -169,7 +169,10 @@ if ((ConfigHelper::checkPrivilege('read_only')
     || ConfigHelper::checkPrivilege('customer_call_view')
     || ConfigHelper::checkPrivilege('customer_call_management'))
     && (!isset($resource_tabs['customercallbox']) || $resource_tabs['customercallbox'])) {
-    $customercalls = $LMS->getCustomerCalls($customerid);
+    $customercalls = $LMS->getCustomerCalls(array(
+        'customerid' => $customerid,
+        'limit' => -1,
+    ));
 }
 
 if (!isset($resource_tabs['customerdevices']) || $resource_tabs['customerdevices']) {

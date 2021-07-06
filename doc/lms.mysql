@@ -545,6 +545,7 @@ CREATE TABLE customerkarmalastchanges (
 #
 CREATE TABLE customercalls (
     id int(11) NOT NULL AUTO_INCREMENT,
+    userid int(11) DEFAULT NULL,
     dt int(11) DEFAULT 0 NOT NULL,
     filename varchar(150) NOT NULL,
     outgoing tinyint(1) DEFAULT 0 NOT NULL,
@@ -553,7 +554,9 @@ CREATE TABLE customercalls (
     PRIMARY KEY (id),
     KEY customercalls_dt_idx (dt),
     KEY customercalls_filename_idx (filename),
-    KEY customercalls_phone_idx (phone)
+    KEY customercalls_phone_idx (phone),
+    CONSTRAINT customercalls_userid_fkey
+        FOREIGN KEY (userid) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4066,4 +4069,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070600');

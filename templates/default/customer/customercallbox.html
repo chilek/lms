@@ -24,10 +24,13 @@
 
             {if $customercalls}
                 <div class="lms-ui-tab-table-row header">
-                    <div class="lms-ui-tab-table-wrapper col-4">
-                        <div class="lms-ui-tab-table-wrapper col-2">
+                    <div class="lms-ui-tab-table-wrapper col-5">
+                        <div class="lms-ui-tab-table-wrapper col-3">
                             <div class="lms-ui-tab-table-column date">
                                 <strong>{trans("Date")}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column username">
+                                {trans("User")}
                             </div>
                             <div class="lms-ui-tab-table-column duration">
                                 {trans("Duration")}
@@ -51,10 +54,13 @@
 
             {foreach $customercalls as $call}
                 <div class="lms-ui-tab-table-row">
-                    <div class="lms-ui-tab-table-wrapper col-4">
-                        <div class="lms-ui-tab-table-wrapper col-2">
+                    <div class="lms-ui-tab-table-wrapper col-5">
+                        <div class="lms-ui-tab-table-wrapper col-3">
                             <div class="lms-ui-tab-table-column date">
                                 <strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column username">
+                                {$call.username|default:"-"|escape}
                             </div>
                             <div class="lms-ui-tab-table-column duration">
                                 {$call.duration|duration_format}

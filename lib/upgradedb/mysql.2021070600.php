@@ -5,8 +5,6 @@
  *
  *  (C) Copyright 2001-2021 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
  *  published by the Free Software Foundation.
@@ -21,25 +19,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$this->BeginTrans();
 
-$id = intval($_GET['c']);
-if (!$LMS->CustomerExists($id)) {
-    $SESSION->redirect('?m=customerlist');
-}
+$this->Execute("ALTER TABLE customercalls ADD COLUMN userid int(11) DEFAULT NULL");
+$this->Execute("
+    ALTER TABLE customercalls ADD CONSTRAINT customercalls_userid_fkey
+    FOREIGN KEY (userid) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
+");
 
-$customername = $LMS->GetCustomerName($id);
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021070600', 'dbversion'));
 
-$layout['pagetitle'] = trans('Customer Call List: $a', '<a href="?m=customerinfo&id=' . $id . '">' . $customername . '</a>');
-
-$customercalls = $LMS->getCustomerCalls(array(
-    'customerid' => $id,
-));
-
-$SMARTY->assign('customercalls', $customercalls);
-$SMARTY->assign('customername', $customername);
-$SMARTY->assign('id', $id);
-$SMARTY->display('customer/customercalllist.html');
+$this->CommitTrans();

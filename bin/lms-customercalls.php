@@ -165,98 +165,47 @@ $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission
 $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
 $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
 $convert_command = ConfigHelper::getConfig($config_section . '.call_convert_command', 'sox %i %o');
+$file_name_pattern = ConfigHelper::getConfig(
+    $config_section . '.file_name_pattern',
+    '^(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})_+(?<hour>[0-9]{2})-(?<minute>[0-9]{2})-(?<second>[0-9]{2})'
+        . '_+(?<src>[0-9]+)_+(?<dst>[0-9]+)_+(?:(?<durationh>[0-9]+)h)?(?:(?<durationm>[0-9]{1,2})m)?(?:(?<durations>[0-9]{1,2})s)?\.wav$'
+);
 $file_extension = ConfigHelper::getConfig($config_section . '.file_extension', 'ogg');
+$local_number_pattern = ConfigHelper::getConfig(
+    $config_section . '.local_number_pattern',
+    '^(?<prefix>48)?(?<number>[0-9]{9})$'
+);
 
 if (!is_dir($customer_call_dir)) {
     die('Fatal error: customer call directory does not exist!' . PHP_EOL);
 }
 
-$dirs = getdir($src_dir, '^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
-if (empty($dirs)) {
-    die('Fatal error: there are no customer call directories!' . PHP_EOL);
+if (!is_dir($src_dir)) {
+    die('Fatal error: source directory does not exist!' . PHP_EOL);
 }
 
-define(
-    'FILENAME_PATTERN',
-    '^(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})_+(?<hour>[0-9]{2})-(?<minute>[0-9]{2})-(?<second>[0-9]{2})'
-    . '_+(?<src>[0-9]+)_+(?<dst>[0-9]+)_+(?:(?<durationh>[0-9]+)h)?(?:(?<durationm>[0-9]{1,2})m)?(?:(?<durations>[0-9]{1,2})s)?\.wav$'
-);
+$dirs = getdir($src_dir, '^[^\.].*$');
+if (empty($dirs)) {
+    $dirs[] = '';
+}
 
-foreach ($dirs as $dir) {
-    $files = getdir($src_dir . DIRECTORY_SEPARATOR . $dir, FILENAME_PATTERN);
-    if (empty($files)) {
-        continue;
-    }
-    foreach ($files as $file) {
-        $filename = $dir . DIRECTORY_SEPARATOR . $file;
-
-        preg_match('/' . FILENAME_PATTERN . '/', $file, $m);
-        $dt = mktime($m['hour'], $m['minute'], $m['second'], $m['month'], $m['day'], $m['year']);
-        $duration = (empty($m['durationh']) ? 0 : intval($m['durationh'])) * 3600
-            + (empty($m['durationm']) ? 0 : intval($m['durationm'])) * 60
-            + (empty($m['durations']) ? 0 : intval($m['durations']));
-        $outgoing = strlen($m['dst']) > 4 ? 1 : 0;
-        if (!$outgoing && strlen($m['src']) <= 4) {
-            continue;
-        }
-        $phone = $outgoing ? $m['dst'] : $m['src'];
-        $phone = preg_replace('/^0*/', '', $phone);
-
-        $out_filename = preg_replace('/\.[^\.]+$/', '.' . $file_extension, $filename);
-
-        if ($LMS->isCustomerCallExists(array(
-            'filename' => $out_filename,
-        ))) {
-            continue;
-        }
-
-        if (!is_dir($customer_call_dir . DIRECTORY_SEPARATOR . $dir)) {
-            mkdir($customer_call_dir . DIRECTORY_SEPARATOR . $dir, $storage_dir_permission, true);
-            chown($customer_call_dir . DIRECTORY_SEPARATOR . $dir, $storage_dir_owneruid);
-            chgrp($customer_call_dir . DIRECTORY_SEPARATOR . $dir, $storage_dir_ownergid);
-        }
-
-        $dst_file = $customer_call_dir . DIRECTORY_SEPARATOR . $out_filename;
-
-        if (preg_match('/\.(?<ext>[^\.]+)$/', $filename, $m) && $m['ext'] == $file_extension) {
-            if (!@rename($src_dir . DIRECTORY_SEPARATOR . $filename, $dst_file)) {
-                die('Fatal error: error during file ' . $src_dir . DIRECTORY_SEPARATOR . $out_filename . ' rename!' . PHP_EOL);
-            }
-        } else {
-            $cmd = str_replace(
-                array('%i', '%o'),
-                array($src_dir . DIRECTORY_SEPARATOR . $filename, $dst_file),
-                $convert_command
-            );
-            $ret = 0;
-            system($cmd, $ret);
-            if (!empty($ret)) {
-                die('Fatal error: error during file ' . $src_dir . DIRECTORY_SEPARATOR . $filename . ' conversion!' . PHP_EOL);
-            }
-
-            if (!@unlink($src_dir . DIRECTORY_SEPARATOR . $filename)) {
-                die('Fatal error: error during file ' . $src_dir . DIRECTORY_SEPARATOR . $filename . ' deletion!' . PHP_EOL);
-            }
-        }
-
-        chmod($dst_file, $storage_dir_permission);
-        chown($dst_file, $storage_dir_owneruid);
-        chgrp($dst_file, $storage_dir_ownergid);
-
-        $LMS->addCustomerCall(
-            array(
-                'dt' => $dt,
-                'filename' => $out_filename,
-                'outgoing' => $outgoing,
-                'phone' => $phone,
-                'duration' => $duration,
-            )
-        );
-    }
+function normalizePhoneNumber($number)
+{
+    return preg_replace(
+        array(
+            '/[^0-9]/',
+            '/^0*/',
+        ),
+        array(
+            '',
+            '',
+        ),
+        $number
+    );
 }
 
 $contacts = $DB->GetAll(
-    'SELECT REPLACE(REPLACE(contact, \' \', \'\'), \'-\', \'\') AS phone, customerid
+    'SELECT contact AS phone, customerid
     FROM customercontacts
     WHERE (type & ?) > 0',
     array(CONTACT_MOBILE | CONTACT_LANDLINE)
@@ -267,20 +216,180 @@ if (empty($contacts)) {
 
 $customers = array();
 foreach ($contacts as $contact) {
-    if (!isset($customers[$contact['phone']])) {
-        $customers[$contact['phone']] = array();
+    $phone = normalizePhoneNumber($contact['phone']);
+
+    if (preg_match('/' . $local_number_pattern . '/', $phone, $m) && isset($m['prefix'])) {
+        $phone = $m['number'];
     }
-    $customers[$contact['phone']][] = $contact['customerid'];
+
+    if (!isset($customers[$phone])) {
+        $customers[$phone] = array();
+    }
+    $customers[$phone][] = $contact['customerid'];
+}
+unset($contacts);
+
+$users = array();
+$user_phones = $DB->GetAll(
+    'SELECT u.id, u.phone
+    FROM users u
+    WHERE u.phone <> ?',
+    array('')
+);
+if (!empty($user_phones)) {
+    foreach ($user_phones as $user_phone) {
+        $phone = normalizePhoneNumber($user_phone['phone']);
+
+        $users[$phone] = $user_phone['id'];
+
+        if (preg_match('/' . $local_number_pattern . '/', $phone, $m) && isset($m['prefix'])) {
+            $users[$m['number']] = $user_phone['id'];
+        }
+    }
+    unset($user_phones);
 }
 
-$calls = $LMS->getCustomerCalls(null, 0);
+foreach ($dirs as $dir) {
+    $src_file_dir = ($dir == '' ? '' : $dir . DIRECTORY_SEPARATOR);
+    $dir = $src_dir . ($dir == '' ? '' : DIRECTORY_SEPARATOR . $dir);
+
+    $files = getdir($dir, $file_name_pattern);
+    if (empty($files)) {
+        continue;
+    }
+
+    foreach ($files as $src_file_name) {
+        if (!preg_match('/' . $file_name_pattern . '/', $src_file_name, $m)) {
+            echo 'File name \'' . $src_file_name . '\' does not match to pattern!' . PHP_EOL;
+            continue;
+        }
+
+        if (isset($m['timestamp'])) {
+            $dt = intval($m['timestamp']);
+        } elseif (isset($m['datetime'])) {
+            $dt = strtotime($m['datetime']);
+        } else {
+            $dt = mktime($m['hour'], $m['minute'], $m['second'], $m['month'], $m['day'], $m['year']);
+        }
+
+        if (isset($m['durationh'])) {
+            $duration = (empty($m['durationh']) ? 0 : intval($m['durationh'])) * 3600
+                + (empty($m['durationm']) ? 0 : intval($m['durationm'])) * 60
+                + (empty($m['durations']) ? 0 : intval($m['durations']));
+        } elseif (isset($m['duration'])) {
+            $duration = intval($m['duration']);
+        } else {
+            die('Fatal error: cannot find duration field!' . PHP_EOL);
+        }
+
+        $src = normalizePhoneNumber($m['src']);
+        if (preg_match('/' . $local_number_pattern . '/', $src, $mn) && isset($mn['prefix'])) {
+            $src_prefix = $mn['prefix'];
+            $src_number = $mn['number'];
+        } else {
+            $src_prefix = '';
+            $src_number = $src;
+        }
+
+        $dst = normalizePhoneNumber($m['dst']);
+        if (preg_match('/' . $local_number_pattern . '/', $dst, $mn) && isset($mn['prefix'])) {
+            $dst_prefix = $mn['prefix'];
+            $dst_number = $mn['number'];
+        } else {
+            $dst_prefix = '';
+            $dst_number = $dst;
+        }
+
+        $outgoing = !empty($dst_prefix) && isset($customers[$dst_prefix . $dst_number]) || isset($customers[$dst_number]);
+        if (!$outgoing && !isset($customers[$src_prefix . $src_number]) && !isset($customers[$src_number])) {
+            continue;
+        }
+
+        $phone = $outgoing ? $dst : $src;
+
+        $dst_file_name = preg_replace('/\.[^\.]+$/', '.' . $file_extension, $src_file_name);
+
+        if ($LMS->isCustomerCallExists(array(
+            'filename' => $dst_file_name,
+        ))) {
+            continue;
+        }
+
+        $dst_dir = $customer_call_dir . DIRECTORY_SEPARATOR . date('Y-m-d', $dt);
+        $src_file = $src_file_dir . $src_file_name;
+
+        if (!is_dir($dst_dir)) {
+            mkdir($dst_dir, $storage_dir_permission, true);
+            chown($dst_dir, $storage_dir_owneruid);
+            chgrp($dst_dir, $storage_dir_ownergid);
+        }
+
+        $dst_file = $dst_dir . DIRECTORY_SEPARATOR . $dst_file_name;
+
+        if (preg_match('/\.(?<ext>[^\.]+)$/', $dst_file_name, $m) && $m['ext'] == $file_extension) {
+            if (!@rename($src_file, $dst_file)) {
+                die('Fatal error: error during file ' . $src_file . ' rename!' . PHP_EOL);
+            }
+        } else {
+            $cmd = str_replace(
+                array('%i', '%o'),
+                array($src_file, $dst_file),
+                $convert_command
+            );
+            $ret = 0;
+            system($cmd, $ret);
+            if (!empty($ret)) {
+                die('Fatal error: error during file ' . $src_file . ' conversion!' . PHP_EOL);
+            }
+
+            if (!@unlink($src_file)) {
+                die('Fatal error: error during file ' . $src_file . ' deletion!' . PHP_EOL);
+            }
+        }
+
+        chmod($dst_file, $storage_dir_permission);
+        chown($dst_file, $storage_dir_owneruid);
+        chgrp($dst_file, $storage_dir_ownergid);
+
+        $userid = null;
+        if (!empty($src_prefix) && isset($users[$src_prefix . $src_number])) {
+            $userid = $users[$src_prefix . $src_number];
+        } elseif (isset($users[$src_number])) {
+            $userid = $users[$src_number];
+        } elseif (!empty($dst_prefix) && isset($users[$dst_prefix . $dst_number])) {
+            $userid = $users[$dst_prefix . $dst_number];
+        } elseif (isset($users[$dst_number])) {
+            $userid = $users[$dst_number];
+        }
+
+        $LMS->addCustomerCall(
+            array(
+                'dt' => $dt,
+                'userid' => $userid,
+                'filename' => $dst_file_name,
+                'outgoing' => $outgoing,
+                'phone' => $phone,
+                'duration' => $duration,
+            )
+        );
+    }
+}
+
+$calls = $LMS->getCustomerCalls(array(
+    'order' => 'id,asc'
+));
 if (empty($calls)) {
     die('Fatal error: the are no customer calls in database!' . PHP_EOL);
 }
 
 foreach ($calls as $call) {
-    if (isset($customers[$call['phone']])) {
-        foreach ($customers[$call['phone']] as $customerid) {
+    $phone = $call['phone'];
+    if (preg_match('/' . $local_number_pattern . '/', $phone, $m) && isset($m['prefix'])) {
+        $phone = $m['number'];
+    }
+
+    if (isset($customers[$phone])) {
+        foreach ($customers[$phone] as $customerid) {
             $LMS->addCustomerCallAssignment(
                 $customerid,
                 $call['id']

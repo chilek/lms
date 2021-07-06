@@ -856,10 +856,10 @@ class LMS
         return $manager->changeCustomerType($id, $type);
     }
 
-    public function getCustomerCalls($id = null, $limit = -1)
+    public function getCustomerCalls(array $params)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerCalls($id, $limit);
+        return $manager->getCustomerCalls($params);
     }
 
     public function deleteCustomerCall($customerid, $callid)

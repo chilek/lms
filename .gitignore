@@ -10,6 +10,7 @@ bin/voip/cache/*
 bin/voip/templates_c/*
 storage/rt/*
 storage/voipcalls/*
+storage/customercalls/*
 documents/*
 !documents/templates
 cache/*
