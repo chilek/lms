@@ -8,6 +8,13 @@
 		height: 2em;
 	}
 
+	ul.customer-list {
+		margin-block-start: 0.1em;
+		margin-block-end: 0.1em;
+		list-style: none;
+		padding-inline-start: 1em;
+	}
+
 </style>
 
 <h1>{$layout.pagetitle}</h1>
@@ -75,6 +82,15 @@
 								</td>
 								<td class="nobr">
 									<strong>{$call.phone}</strong>
+									{if !empty($call.customers)}
+										<ul class="customer-list">
+											{foreach $call.customers as $customer}
+												<li>
+													<a href="?m=customerinfo&id={$customer.id}">{$customer.lastname|escape} {$customer.name|escape}</a>
+												</li>
+											{/foreach}
+										</ul>
+									{/if}
 								</td>
 								<td class="buttons nobr">
 									<audio src="?m=customercall&id={$call.id}" controls controlsList="nodownload"
