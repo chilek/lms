@@ -77,7 +77,7 @@ if (!is_dir($voip_call_dir)) {
 }
 
 if (!is_writable($voip_call_dir)) {
-    $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $voip_call_dir . PHP_EOL . 'chmod -R 755 ' . $voip_call_dir;
+    $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $voip_call_dir;
     $startup_errors[] = 'chmod -R 755 ' . $voip_call_dir;
     if ($selinux_active) {
         $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($voip_call_dir, '/') . '/[^\.].*"';
@@ -142,7 +142,7 @@ if (!is_writable($__xajax_deferred_dir)) {
 }
 
 if ($selinux_error) {
-    $startup_errors[] = 'restorecron -R ' . SYS_DIR;
+    $startup_errors[] = 'restorecon -R ' . SYS_DIR;
 }
 
 if (count($startup_errors) > 0) {
