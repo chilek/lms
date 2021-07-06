@@ -97,9 +97,9 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
                 if (!$hide_discount) {
-                    if (!empty($this->data['pdiscount'])) {
+                    if (!empty(floatval($item['pdiscount']))) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%.2f%%', $item['pdiscount']));
-                    } elseif (!empty($this->data['vdiscount'])) {
+                    } elseif (!empty($item['vdiscount'])) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
                     }
                 }
@@ -130,9 +130,9 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
                 if (!$hide_discount) {
-                    if (!empty($this->data['pdiscount'])) {
+                    if (!empty(floatval($item['pdiscount']))) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%.2f%%', $item['pdiscount']));
-                    } elseif (!empty($this->data['vdiscount'])) {
+                    } elseif (!empty($item['vdiscount'])) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
                     }
                 }
@@ -201,9 +201,9 @@ class LMSTcpdfInvoice extends LMSInvoice
                     $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
                     $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
                     if (!$hide_discount) {
-                        if (!empty($this->data['pdiscount'])) {
+                        if (!empty(floatval($item['pdiscount']))) {
                             $this->backend->Cell($h_width['discount'], $h, sprintf('%.2f%%', $item['pdiscount']), 1, 0, 'R', 0, '', 1);
-                        } elseif (!empty($this->data['vdiscount'])) {
+                        } elseif (!empty($item['vdiscount'])) {
                             $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
                         }
                     }
@@ -275,9 +275,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
             $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
             if (!$hide_discount) {
-                if (!empty($this->data['pdiscount'])) {
+                if (!empty(floatval($item['pdiscount']))) {
                     $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f%%', $item['pdiscount']), 1, 0, 'R', 0, '', 1);
-                } elseif (!empty($this->data['vdiscount'])) {
+                } elseif (!empty($item['vdiscount'])) {
                     $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
                 }
             }
