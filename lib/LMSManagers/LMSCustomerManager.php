@@ -2900,7 +2900,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $fields[] = 'a2.customerid';
                 $fields[] = 'a2.customerlastname';
                 $fields[] = 'a2.customername';
-                $join[] = 'JOIN (
+                $join[] = 'LEFT JOIN (
                     SELECT cca.customercallid,
                         ' . $this->db->GroupConcat('cca.customerid') . ' AS customerid,
                         ' . $this->db->GroupConcat('cv.lastname') . ' AS customerlastname,
