@@ -1505,6 +1505,7 @@ $_LANG['No such transactions'] = 'Brak transakcji';
 $_LANG['Note'] = 'Notatka';
 $_LANG['Note:'] = 'Notatka:';
 $_LANG['Notes:'] = 'Notatki:';
+$_LANG['Notes'] = 'Notatki';
 $_LANG['No such transactions found in database.'] = 'Nie znaleziono żadnych transakcji w bazie danych.';
 $_LANG['Notice (+R)'] = 'Powiadomienia (+O)';
 $_LANG['not resolved'] = 'nierozwiązane';

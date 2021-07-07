@@ -103,8 +103,9 @@
                                     {hint mode="toggle" icon="view" class="customer-call-note-hint" text=$call.notes}
                                 </span>
                                 <span class="customer-call-edit" style="display: none;">
-                                    <input type="text" class="customer-call-note" value="{$call.notes|escape}"
-                                        data-original-value="{$call.notes|escape}">
+                                    <textarea type="text" class="customer-call-note lms-ui-autogrow"
+                                        data-original-value="{$call.notes|escape}"
+                                        >{$call.notes|escape}</textarea>
                                 </span>
                             </div>
                         </div>
@@ -150,9 +151,11 @@
 
         $('.customer-call-note').keyup(function(e) {
             switch (e.key) {
+/*
                 case 'Enter':
                     $(this).closest('.customer-call').find('.customer-call-save-button.lms-ui-button').click();
                     break;
+*/
                 case 'Escape':
                     $(this).closest('.customer-call').find('.customer-call-cancel-button.lms-ui-button').click();
                     break;
@@ -162,6 +165,7 @@
         $('.customer-call-view.lms-ui-button').click(function() {
             var row = $(this).closest('.customer-call');
             row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more)').toggle();
+            row.find('.customer-call-note').trigger('input');
         });
 
         $('.customer-call-edit.lms-ui-button').click(function() {

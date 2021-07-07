@@ -39,21 +39,23 @@
     width: 7em;
   }
   .duration {
-    width: 7em;
+    width: 5em;
   }
   .type {
-    width: 7em;
+    width: 5em;
   }
   .phone-number {
-    width: 7em;
+    width: 10em;
+  }
+  .notes {
+    width: 10em;
   }
   .buttons {
     width: 26em;
   }
 
   @media all and (max-width: 1200px) {
-    .col-3,
-    .col-2 {
+    .col-3 {
       flex-direction: column !important;
       width: 20em !important;
       div {
@@ -63,7 +65,7 @@
     }
   }
   @media all and (max-width: 800px) {
-    .col-5 {
+    .col-6 {
       flex-direction: column !important;
       width: 20em !important;
       div {
@@ -78,5 +80,13 @@
     margin-block-end: 0.1em;
     list-style: none;
     padding-inline-start: 1em;
+  }
+
+  .customer-call-edit {
+    display: none;
+  }
+
+  .customer-call-note {
+    min-height: 1.5em;
   }
 }
