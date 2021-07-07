@@ -3024,6 +3024,9 @@ if (!empty($intersect)) {
                                     case 'note':
                                         $target_doctype = DOC_DNOTE;
                                         break;
+                                    default:
+                                        $target_doctype = DOC_INVOICE;
+                                        break;
                                 }
                                 $where[] = 'EXISTS (SELECT id FROM assignments
                                     WHERE invoice = ' . $target_doctype . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
@@ -3277,6 +3280,9 @@ if (!empty($intersect)) {
                                         break;
                                     case 'note':
                                         $target_doctype = DOC_DNOTE;
+                                        break;
+                                    default:
+                                        $target_doctype = DOC_INVOICE;
                                         break;
                                 }
                                 $where[] = 'EXISTS (SELECT id FROM assignments
