@@ -392,7 +392,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $part = mailparse_msg_get_part($mail, $partid);
                 $partdata = mailparse_msg_get_part_data($part);
                 $html = strpos($partdata['content-type'], 'html') !== false;
-                if (preg_match('/text/', $partdata['content-type'])
+                if ((!isset($partdata['content-disposition']) || $partdata['content-disposition'] != 'attachment')
+                    && preg_match('/text/', $partdata['content-type'])
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
                     $charset = $partdata['content-charset'];
