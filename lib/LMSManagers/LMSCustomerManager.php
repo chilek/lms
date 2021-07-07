@@ -3021,6 +3021,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $res ? $this->db->GetLastInsertID('customercalls') : null;
     }
 
+    public function updateCustomerCall($callid, array $params)
+    {
+        return $this->db->Execute(
+            'UPDATE customercalls SET notes = ? WHERE id = ?',
+            array(
+                !isset($params['notes']) || empty($params['notes']) ? null : $params['notes'],
+                $callid,
+            )
+        );
+    }
+
     public function addCustomerCallAssignment($customerid, $callid)
     {
         if (!$this->db->GetOne(

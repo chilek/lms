@@ -31,6 +31,17 @@ if (isset($_GET['delete'])) {
     } else {
         access_denied();
     }
+} elseif (isset($_GET['edit'])) {
+    if (isset($_POST['callid']) && intval($_POST['callid']) && isset($_POST['notes'])) {
+        $LMS->updateCustomerCall(
+            intval($_POST['callid']),
+            array(
+                'notes' => $_POST['notes'],
+            )
+        );
+    }
+    header('Contet-Type: application/json');
+    die('[]');
 } else {
     $LMS->getCustomerCallContent($_GET['id']);
 }

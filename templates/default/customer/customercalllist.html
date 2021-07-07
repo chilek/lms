@@ -15,6 +15,10 @@
 		padding-inline-start: 1em;
 	}
 
+	.customer-call-edit {
+		display: none;
+	}
+
 </style>
 
 <h1>{$layout.pagetitle}</h1>
@@ -39,11 +43,12 @@
 			<td style="width: 100%;" colspan="2">
 				<table class="lmsbox-inner lms-ui-background-cycle">
 					<colgroup>
-						<col style="width: 17%;">
-						<col style="width: 17%;">
-						<col style="width: 17%;">
-						<col style="width: 17%;">
-						<col style="width: 17%;">
+						<col style="width: 13%;">
+						<col style="width: 15%;">
+						<col style="width: 12%;">
+						<col style="width: 12%;">
+						<col style="width: 13%;">
+						<col style="width: 20%;">
 						<col style="width: 15%;">
 					</colgroup>
 					<thead>
@@ -57,12 +62,15 @@
 							<td class="nobr">
 								<strong>{trans("Phone number")}</strong>
 							</td>
+							<td class="nobr">
+								{trans("Notes")}
+							</td>
 							<td></td>
 						</tr>
 					</thead>
 					<tbody>
 						{foreach $customercalls as $call}
-							<tr class="highlight">
+							<tr class="highlight customer-call" data-call-id="{$call.id}">
 								<td class="nobr">
 									<strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
 								</td>
@@ -92,11 +100,33 @@
 										</ul>
 									{/if}
 								</td>
+								<td>
+									<span class="customer-call-view customer-call-note-view">
+										{if $call.notes}
+											{$call.notes|trunescape:50}
+										{else}
+											-
+										{/if}
+									</span>
+									<span class="customer-call-view customer-call-note-more"
+										{if mb_strlen($call.notes) <= 50} style="display: none;"{/if}>
+										{hint mode="toggle" icon="view" class="customer-call-note-hint" text=$call.notes}
+									</span>
+									<span class="customer-call-edit" style="display: none;">
+										<input type="text" class="customer-call-note" value="{$call.notes|escape}"
+										data-original-value="{$call.notes|escape}">
+									</span>
+								</td>
 								<td class="buttons nobr">
 									<audio src="?m=customercall&id={$call.id}" controls controlsList="nodownload"
 										   preload="none">
 										{trans("Your browser does not support the audio element.")}
 									</audio>
+									{if ConfigHelper::checkPrivilege('customer_call_management')}
+										{button type="link" icon="edit" tip="Edit" class="customer-call-view customer-call-edit-button"}
+										{button type="link" icon="save" tip="Save" class="customer-call-edit customer-call-save-button"}
+										{button type="link" icon="cancel" tip="Cancel" class="customer-call-edit customer-call-cancel-button"}
+									{/if}
 									{button type="link" icon="download" tip="<!customer-call>Download"
 										href="?m=customercall&id={$call.id}"
 										download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"%Y_%m_%d_%H_%M_%S"}-{$call.phone}"}
@@ -108,7 +138,7 @@
 							</tr>
 						{foreachelse}
 							<tr>
-								<td class="empty-table" colspan="6">
+								<td class="empty-table" colspan="7">
 									<p>{trans("That customer hasn't got any phone calls.")}</p>
 								</td>
 							</tr>
@@ -126,6 +156,47 @@
 			$('audio').not(this).each(function() {
 				this.pause();
 			});
+		});
+
+		$('.customer-call-note').keypress(function(e) {
+			if (e.key == 'Enter') {
+				$(this).closest('.customer-call').find('.customer-call-save-button.lms-ui-button').click();
+			}
+		});
+
+		$('.customer-call-view.lms-ui-button').click(function() {
+			var row = $(this).closest('.customer-call');
+			row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more)').toggle();
+		});
+
+		$('.customer-call-edit.lms-ui-button').click(function() {
+			var row = $(this).closest('.customer-call');
+			var notesInput = row.find('.customer-call-note');
+			var notes = notesInput.val();
+			if ($(this).is('.customer-call-save-button')) {
+				$.ajax({
+					url: "?m=customercall&edit=1",
+					dataType: "json",
+					method: "POST",
+					data: {
+						callid: row.attr('data-call-id'),
+						notes: notes
+					}
+				}).always(function() {
+					row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more').toggle();
+				}).done(function() {
+					row.find('.customer-call-note-more').toggle(notes.length >= 50);
+					row.find('.customer-call-note-view').text(notes.length ? notes.substring(0, 50) + (notes.length > 50 ? '&hellip;' : '') : '-');
+					if (notes.length >= 50) {
+						row.find('.customer-call-note-hint').attr('data-hint', escapeHtml(notes)).removeAttr('data-init');
+					}
+					notesInput.attr('data-original-value', escapeHtml(notes));
+				});
+			} else {
+				row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more)').toggle();
+				row.find('.customer-call-note-more').toggle(notesInput.attr('data-original-value') >= 50);
+				notesInput.val(notesInput.attr('data-original-value'));
+			}
 		});
 	});
 

@@ -150,5 +150,7 @@ interface LMSCustomerManagerInterface
 
     public function addCustomerCall(array $params);
 
+    public function updateCustomerCall($callid, array $params);
+
     public function addCustomerCallAssignment($customerid, $callid);
 }

@@ -886,6 +886,12 @@ class LMS
         return $manager->addCustomerCall($params);
     }
 
+    public function updateCustomerCall($callid, array $params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerCall($callid, $params);
+    }
+
     public function addCustomerCallAssignment($customerid, $callid)
     {
         $manager = $this->getCustomerManager();

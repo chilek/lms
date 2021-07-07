@@ -24,7 +24,7 @@
 
             {if $customercalls}
                 <div class="lms-ui-tab-table-row header">
-                    <div class="lms-ui-tab-table-wrapper col-5">
+                    <div class="lms-ui-tab-table-wrapper col-6">
                         <div class="lms-ui-tab-table-wrapper col-3">
                             <div class="lms-ui-tab-table-column date">
                                 <strong>{trans("Date")}</strong>
@@ -36,12 +36,15 @@
                                 {trans("Duration")}
                             </div>
                         </div>
-                        <div class="lms-ui-tab-table-wrapper col-2">
+                        <div class="lms-ui-tab-table-wrapper col-3">
                             <div class="lms-ui-tab-table-column type">
                                 {trans("Type")}
                             </div>
                             <div class="lms-ui-tab-table-column phone-number">
                                 <strong>{trans("Phone number")}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column notes">
+                                <strong>{trans("Notes")}</strong>
                             </div>
                         </div>
                     </div>
@@ -53,8 +56,8 @@
             {/if}
 
             {foreach $customercalls as $call}
-                <div class="lms-ui-tab-table-row">
-                    <div class="lms-ui-tab-table-wrapper col-5">
+                <div class="lms-ui-tab-table-row customer-call" data-call-id="{$call.id}">
+                    <div class="lms-ui-tab-table-wrapper col-6">
                         <div class="lms-ui-tab-table-wrapper col-3">
                             <div class="lms-ui-tab-table-column date">
                                 <strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
@@ -70,7 +73,7 @@
                                 {/if}
                             </div>
                         </div>
-                        <div class="lms-ui-tab-table-wrapper col-2">
+                        <div class="lms-ui-tab-table-wrapper col-3">
                             <div class="lms-ui-tab-table-column type">
                                 {capture assign="direction"}{if $call.outgoing}{trans("<!customer-call>outgoing")}{else}{trans("<!customer-call>incoming")}{/if}{/capture}
                                 {$direction}
@@ -87,6 +90,23 @@
                                     </ul>
                                 {/if}
                             </div>
+                            <div class="lms-ui-tab-table-column notes">
+                                <span class="customer-call-view customer-call-note-view">
+                                    {if $call.notes}
+                                        {$call.notes|trunescape:50}
+                                    {else}
+                                        -
+                                    {/if}
+                                </span>
+                                <span class="customer-call-view customer-call-note-more"
+                                    {if mb_strlen($call.notes) <= 50} style="display: none;"{/if}>
+                                    {hint mode="toggle" icon="view" class="customer-call-note-hint" text=$call.notes}
+                                </span>
+                                <span class="customer-call-edit" style="display: none;">
+                                    <input type="text" class="customer-call-note" value="{$call.notes|escape}"
+                                        data-original-value="{$call.notes|escape}">
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -95,6 +115,11 @@
                                preload="none">
                             {trans("Your browser does not support the audio element.")}
                         </audio>
+                        {if ConfigHelper::checkPrivilege('customer_call_management')}
+                            {button type="link" icon="edit" tip="Edit" class="customer-call-view customer-call-edit-button"}
+                            {button type="link" icon="save" tip="Save" class="customer-call-edit customer-call-save-button"}
+                            {button type="link" icon="cancel" tip="Cancel" class="customer-call-edit customer-call-cancel-button"}
+                        {/if}
                         {button type="link" icon="download" tip="<!customer-call>Download"
                             href="?m=customercall&id={$call.id}"
                             download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"%Y_%m_%d_%H_%M_%S"}-{$call.phone}"}
@@ -121,6 +146,52 @@
             $('#customercalls audio').not(this).each(function() {
                 this.pause();
             });
+        });
+
+        $('.customer-call-note').keyup(function(e) {
+            switch (e.key) {
+                case 'Enter':
+                    $(this).closest('.customer-call').find('.customer-call-save-button.lms-ui-button').click();
+                    break;
+                case 'Escape':
+                    $(this).closest('.customer-call').find('.customer-call-cancel-button.lms-ui-button').click();
+                    break;
+            }
+        });
+
+        $('.customer-call-view.lms-ui-button').click(function() {
+            var row = $(this).closest('.customer-call');
+            row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more)').toggle();
+        });
+
+        $('.customer-call-edit.lms-ui-button').click(function() {
+            var row = $(this).closest('.customer-call');
+            var notesInput = row.find('.customer-call-note');
+            var notes = notesInput.val();
+            if ($(this).is('.customer-call-save-button')) {
+                $.ajax({
+                    url: "?m=customercall&edit=1",
+                    dataType: "json",
+                    method: "POST",
+                    data: {
+                        callid: row.attr('data-call-id'),
+                        notes: notes
+                    }
+                }).always(function() {
+                    row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more').toggle();
+                }).done(function() {
+                    row.find('.customer-call-note-more').toggle(notes.length >= 50);
+                    row.find('.customer-call-note-view').text(notes.length ? notes.substring(0, 50) + (notes.length > 50 ? '&hellip;' : '') : '-');
+                    if (notes.length >= 50) {
+                        row.find('.customer-call-note-hint').attr('data-hint', escapeHtml(notes)).removeAttr('data-init');
+                    }
+                    notesInput.attr('data-original-value', escapeHtml(notes));
+                });
+            } else {
+                row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more)').toggle();
+                row.find('.customer-call-note-more').toggle(notesInput.attr('data-original-value') >= 50);
+                notesInput.val(notesInput.attr('data-original-value'));
+            }
         });
     });
 
