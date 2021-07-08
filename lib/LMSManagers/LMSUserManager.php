@@ -325,9 +325,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
         );
         $user_inserted = $this->db->Execute(
-            'INSERT INTO users (login, firstname, lastname, issuer, email, passwd, rights, hosts, position, ntype, phone,
+            'INSERT INTO users (login, firstname, lastname, issuer, email, passwd, netpasswd, rights, hosts, position, ntype, phone,
                 passwdforcechange, passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
