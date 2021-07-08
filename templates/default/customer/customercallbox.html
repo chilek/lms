@@ -82,30 +82,28 @@
                             </div>
                             <div class="lms-ui-tab-table-column phone-number">
                                 <strong>{$call.phone}</strong>
-                                {if !empty($call.customers)}
-                                    <ul class="customer-list">
-                                        {foreach $call.customers as $customer}
-                                            <li data-customer-id="{$customer.id}">
-                                                <a href="?m=customerinfo&id={$customer.id}"
-                                                    class="customer-call-view">
-                                                    (#{$customer.id}) {$customer.lastname|escape} {$customer.name|escape}
-                                                </a>
-                                                <span class="customer-call-edit"></span>
-                                            </li>
-                                        {/foreach}
-                                        <li data-customer-id="">
-                                            <a href="?m=customerinfo&id=%customer_id%"
-                                               class="customer-call-view">
+                                <ul class="customer-list">
+                                    {foreach $call.customers as $customer}
+                                        <li data-customer-id="{$customer.id}">
+                                            <a href="?m=customerinfo&id={$customer.id}"
+                                                class="customer-call-view">
+                                                (#{$customer.id}) {$customer.lastname|escape} {$customer.name|escape}
                                             </a>
                                             <span class="customer-call-edit"></span>
                                         </li>
-                                        <li>
-                                            <span class="customer-call-edit">
-                                                {button type="link" icon="add" tip="Add" class="customer-add-button"}
-                                            </span>
-                                        </li>
-                                    </ul>
-                                {/if}
+                                    {/foreach}
+                                    <li data-customer-id="">
+                                        <a href="?m=customerinfo&id=%customer_id%"
+                                           class="customer-call-view">
+                                        </a>
+                                        <span class="customer-call-edit"></span>
+                                    </li>
+                                    <li>
+                                        <span class="customer-call-edit">
+                                            {button type="link" icon="add" tip="Add" class="customer-add-button"}
+                                        </span>
+                                    </li>
+                                </ul>
                             </div>
                             <div class="lms-ui-tab-table-column notes">
                                 <span class="customer-call-view customer-call-note-view">
