@@ -279,7 +279,7 @@ foreach ($dirs as $dir) {
 
     foreach ($files as $src_file_name) {
         if (!preg_match('/' . $file_name_pattern . '/', $src_file_name, $m)) {
-            echo 'File name \'' . $src_file_name . '\' does not match to pattern!' . PHP_EOL;
+            echo 'Warning: file name \'' . $src_file_name . '\' does not match to pattern!' . PHP_EOL;
             continue;
         }
 
@@ -305,11 +305,11 @@ foreach ($dirs as $dir) {
                     $mp3info = new \wapmorgan\Mp3Info\Mp3Info($src_file);
                     $duration = round($mp3info->duration);
                 } else {
-                    echo 'Cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+                    echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
                     $duration = -1;
                 }
             } else {
-                echo 'Cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+                echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
                 $duration = -1;
             }
         }
@@ -410,7 +410,7 @@ $calls = $LMS->getCustomerCalls(array(
     'order' => 'id,asc'
 ));
 if (empty($calls)) {
-    die('Fatal error: the are no customer calls in database!' . PHP_EOL);
+    die('Warning: the are no customer calls in database!' . PHP_EOL);
 }
 
 foreach ($calls as $call) {
