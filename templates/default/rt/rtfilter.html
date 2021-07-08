@@ -7,9 +7,8 @@
         <FORM method="GET" action="?m=rtqueueview" name="filter" form="filter-form">
             <INPUT type="submit" class="hiddenbtn">
             <INPUT type="HIDDEN" name="m" value="rtqueueview">
-            <span class="bold">{trans("Filter:")}</span>
             <label class="nobr">
-            {trans("Queue:")}
+            {trans("Queue")}
             <input type="hidden" name="id" value="all">
             <SELECT size="1" name="id[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                 {foreach $queues as $q}
@@ -18,7 +17,7 @@
             </SELECT>
             </label>
             <label class="nobr">
-            {trans("Service type:")}
+            {trans("Service type")}
             <input type="hidden" name="ts" value="all">
             <SELECT size="1" name="ts[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                 {foreach $_SERVICETYPES as $key => $ts}
@@ -27,7 +26,7 @@
             </SELECT>
             </label>
             <label class="nobr">
-                {trans("Ticket type:")}
+                {trans("Ticket type")}
                 <input type="hidden" name="tt" value="all">
                 <SELECT size="1" name="tt[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                 {foreach Localisation::arraySort($_RT_TYPES, 'label') as $key => $tt}
@@ -36,7 +35,7 @@
                 </SELECT>
             </label>
             <label class="nobr">
-            {trans("Category:")}
+            {trans("Category")}
             <input type="hidden" name="catid" value="all">
             <SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                     <option value="-1" {if !empty($filter.catids) && in_array(-1, $filter.catids)} selected{/if}>{trans('- no categories -')}</option>
@@ -46,7 +45,7 @@
             </SELECT>
             </label>
             <label class="nobr">
-            {trans("Status:")}
+            {trans("Status")}
             <input type="hidden" name="s" value="-2">
             <SELECT size="1" name="s[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
                 <option value="-1" data-exclusive{if !is_array($filter.state) && $filter.state == -1} selected{/if}>{trans("not resolved")}</option>
@@ -56,7 +55,7 @@
             </SELECT>
             </label>
             <label class="nobr">
-            {trans("Priority:")}
+            {trans("Priority")}
             <input type="hidden" name="priority" value="all">
             <SELECT size="1" name="priority[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
                 {foreach $_RT_PRIORITIES as $idx => $priority}
@@ -75,7 +74,7 @@
                 </SELECT>
             </label>
             <label class="nobr">
-            {trans("Owner:")}
+            {trans("Owner")}
                 <input type="hidden" name="owner" value="all">
                 <SELECT size="1" name="owner[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect"
                         data-default-value="{trans("No filter")}" data-popup-title="{trans("Select owners")}">
@@ -93,7 +92,7 @@
                 </SELECT>
             </label>
             <label class="nobr">
-                {trans("Verifier:")}
+                {trans("Verifier")}
                 <input type="hidden" name="vids" value="all">
                 <SELECT size="1" name="vids[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}" >
                     <option value="all" data-exclusive{if !is_array($filter.verifierids) && $filter.verifierids == "all"} selected{/if}>{trans("No filter")}</option>
@@ -110,7 +109,7 @@
             </label>
             {if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
             <label class="nobr">
-            {trans("Removed:")}
+            {trans("<!rt>Removed")}
             <SELECT size="1" name="r" OnChange="document.filter.submit();">
                 <OPTION value=""{if $filter.removed == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
                 <OPTION value="-1"{if $filter.removed == "-1"} SELECTED{/if}>{trans("No")}</OPTION>
@@ -119,7 +118,7 @@
             </label>
             {/if}
             <label class="nobr">
-            {trans("<!rt>Deadline:")}
+            {trans("<!rt>Deadline")}
             <SELECT size="1" name="d" OnChange="document.filter.submit();">
                 <OPTION value=""{if $filter.deadline == ""} SELECTED{/if}>{trans("all")}</OPTION>
                 <OPTION value="-1"{if $filter.deadline == "-1"} SELECTED{/if}>{trans("<!rt>Without deadline")}</OPTION>
@@ -130,7 +129,7 @@
             </SELECT>
             </label>
             <label class="nobr">
-                {trans("Unread:")}
+                {trans("<!rt>Unread")}
                 <SELECT size="1" name="unread" onChange="document.filter.submit()">
                     <option value="-1"{if $filter.unread == -1} selected{/if}>{trans("- all -")}</option>
                     <option value="0"{if $filter.unread == 0} selected{/if}>{trans("no")}</option>
@@ -138,21 +137,21 @@
                 </SELECT>
             </label>
             <label class="nobr">
-                {trans("Parent ticket:")}
+                {trans("Parent ticket")}
                 <SELECT size="1" name="parentids" onChange="document.filter.submit()">
                     <option value=""{if $filter.parentids == ""} selected{/if}>{trans("all")}</option>
                     <option value="-1"{if $filter.parentids == -1} selected{/if}>{trans("show only parent tickets")}</option>
                 </SELECT>
             </label>
             <label class="nobr">
-                {trans("Indicator panel:")}
+                {trans("Indicator panel")}
                 <SELECT size="1" name="rights" OnChange="document.filter.submit();">
                     <option value="0"{if $filter.rights == 0} selected{/if}>{trans("- all -")}</option>
                     <option value="{$smarty.const.RT_RIGHT_INDICATOR}" {if $filter.rights == $smarty.const.RT_RIGHT_INDICATOR} selected{/if}>{trans("yes")}</option>
                 </SELECT>
             </label>
             <label class="nobr">
-                {trans("Network node:")}
+                {trans("Network node")}
                 <input type="hidden" name="nnids" value="all">
                 <select name="nnids[]" size="1" multiple data-default-value="{trans("No filter")}" class="lms-ui-multiselect" {tip text="Select network node (optional)"} onchange="document.filter.submit();">
                     <option value="all" data-exclusive{if is_array($filter.netnodeids) && in_array(null, $filter.netnodeids)} selected{/if}>{trans("No filter")}</option>
@@ -164,7 +163,7 @@
                 </select>
             </label>
             <label class="nobr">
-                {trans("Investment project:")}
+                {trans("Investment project")}
                 <input type="hidden" name="pids" value="all">
                 <SELECT size="1" name="pids[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}">
                 {foreach $projects as $project}
@@ -182,10 +181,10 @@
 		}
             </label>
             <label class="nobr">
-                <input type="text" name="subject" value="{$filter.subject|escape}" placeholder="{trans("Subject:")}" onChange="document.filter.submit();">
+                <input type="text" name="subject" value="{$filter.subject|escape}" placeholder="{trans("Subject")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
-                {trans("Created:")}
+                {trans("Created")}
                 <input type="text" name="fromdate" SIZE="14" maxlength="16" value="{if $filter.fromdate}{$filter.fromdate|date_format:"%Y/%m/%d %H:%M"}{/if}"
                     placeholder="{trans("yyyy/mm/dd hh:mm")}"
                     {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
