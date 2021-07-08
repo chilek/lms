@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,83 +22,51 @@
  *  $Id$
  */
 
-$(function() {
-    function _getCustomerNames(ids, success) {
-        if (!ids || String(ids).length == 0)
-            return 0;
+var customerinputs = [];
 
-        $.ajax('?m=customerinfo&api=1&ajax=1', {
-            async: true,
-            method: 'POST',
-            data: {
-                id: ids
-            },
-            dataType: 'json',
-            success: success
-        });
+function __getCustomerNameDeferred(elem) {
+    customerinputs.push(elem);
+}
+
+function __getCustomerNames(ids, success) {
+    if (!ids || String(ids).length == 0)
+        return 0;
+
+    $.ajax('?m=customerinfo&api=1&ajax=1', {
+        async: true,
+        method: 'POST',
+        data: {
+            id: ids
+        },
+        dataType: 'json',
+        success: success
+    });
+}
+
+function __getCustomerName(elem) {
+    if ( $(elem).val().length == 0 ) {
+        $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html('');
+        return 0;
     }
 
-    function getCustomerName(elem) {
-        if ( $(elem).val().length == 0 ) {
-            $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html('');
+    __getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
+        if (typeof data.error !== 'undefined') {
+            $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html( data.error );
             return 0;
         }
 
-        _getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
-            if (typeof data.error !== 'undefined') {
-                $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html( data.error );
-                return 0;
-            }
+        var container = $(elem).closest('.lms-ui-customer-select-container');
+        container.find('.lms-ui-customer-select-name').html(data.customernames[$(elem).val()] === undefined ? ''
+            : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + (container.attr('data-show-id') ? '(#' + $(elem).val() + ') ' : '') +
+            data.customernames[$(elem).val()] + '</a>');
+    });
 
-            var container = $(elem).closest('.lms-ui-customer-select-container');
-            container.find('.lms-ui-customer-select-name').html(data.customernames[$(elem).val()] === undefined ? ''
-                : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + (container.attr('data-show-id') ? '(#' + $(elem).val() + ') ' : '') +
-                    data.customernames[$(elem).val()] + '</a>');
-        });
+    //$(elem).trigger('change');
+}
 
-        //$(elem).trigger('change');
-    }
-
-    var customerinputs = [];
-
-    function getCustomerNameDeferred(elem) {
-        customerinputs.push(elem);
-    }
-
-    if (typeof $ !== 'undefined') {
-        $(function() {
-            var cids = [];
-            $.each(customerinputs, function(index, elem) {
-                cids.push($(elem).val());
-            });
-            _getCustomerNames(cids, function(data, textStatus, jqXHR) {
-                $.each(customerinputs, function(index, elem) {
-                    if ( $(elem).val().length == 0 ) {
-                        $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html('');
-                        return 0;
-                    }
-
-                    if (data.error != undefined) {
-                        $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html( data.error );
-                        return 0;
-                    }
-
-                    var container = $(elem).closest('.lms-ui-customer-select-container');
-                    container.find('.lms-ui-customer-select-name').html(data.customernames[$(elem).val()] === undefined ?
-                        '' : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + (container.attr('data-show-id') ? '(#' + $(elem).val() + ') ' : '') +
-                            data.customernames[$(elem).val()] + '</a>');
-                });
-            });
-
-            $('a[rel="external"]')
-                .on('click keypress', function() {
-                    window.open(this.href);
-                    return false;
-                });
-        });
-    }
-
-    $('.lms-ui-customer-select-container').each(function () {
+function initCustomerList(selector)
+{
+    $(selector).each(function () {
         var container = $(this);
         var version = parseInt(container.attr('data-version'));
         var input = container.find('.lms-ui-customer-select-customerid');
@@ -147,7 +115,7 @@ $(function() {
                             clearTimeout(timer);
                         }
                         timer = setTimeout(function () {
-                            getCustomerName(elem[0]);
+                            __getCustomerName(elem[0]);
                             elem.attr('data-prev-value', elem.val());
                             timer = 0;
                         }, 500);
@@ -155,12 +123,12 @@ $(function() {
                 });
 
                 if (customerId) {
-                    getCustomerNameDeferred(input[0]);
+                    __getCustomerNameDeferred(input[0]);
                 }
             }
         }
 
-        if (version == 2) {
+        if (version === 2) {
             suggestionInput.one('focus', function() {
                 new AutoSuggest({
                     form: suggestionInput[0].form,
@@ -188,4 +156,41 @@ $(function() {
             }
         });
     });
+
+    if (typeof $ !== 'undefined') {
+        $(function() {
+            var cids = [];
+            $.each(customerinputs, function(index, elem) {
+                cids.push($(elem).val());
+            });
+            __getCustomerNames(cids, function(data, textStatus, jqXHR) {
+                $.each(customerinputs, function(index, elem) {
+                    if ( $(elem).val().length == 0 ) {
+                        $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html('');
+                        return 0;
+                    }
+
+                    if (data.error != undefined) {
+                        $(elem).closest('.lms-ui-customer-select-container').find('.lms-ui-customer-select-name').html( data.error );
+                        return 0;
+                    }
+
+                    var container = $(elem).closest('.lms-ui-customer-select-container');
+                    container.find('.lms-ui-customer-select-name').html(data.customernames[$(elem).val()] === undefined ?
+                        '' : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + (container.attr('data-show-id') ? '(#' + $(elem).val() + ') ' : '') +
+                        data.customernames[$(elem).val()] + '</a>');
+                });
+            });
+
+            $('a[rel="external"]')
+                .on('click keypress', function() {
+                    window.open(this.href);
+                    return false;
+                });
+        });
+    }
+}
+
+$(function() {
+    initCustomerList('.lms-ui-customer-select-container');
 });
