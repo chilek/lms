@@ -368,7 +368,7 @@ foreach ($dirs as $dir) {
 
         $dst_file = $dst_dir . DIRECTORY_SEPARATOR . $dst_file_name;
 
-        if (preg_match('/\.(?<ext>[^\.]+)$/', $dst_file_name, $m) && $m['ext'] == $file_extension) {
+        if (preg_match('/\.(?<ext>[^\.]+)$/', $src_file_name, $m) && $m['ext'] == $file_extension) {
             if (!@rename($src_file, $dst_file)) {
                 die('Fatal error: error during file ' . $src_file . ' rename!' . PHP_EOL);
             }
