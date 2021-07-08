@@ -401,6 +401,8 @@ if (isset($_POST['event'])) {
     }
     if (!isset($eventticketid)) {
         $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment') ? 'new' : 'none';
+    } elseif ($eventticketid == '-1') {
+        $event['helpdesk'] = 'none';
     }
 }
 
@@ -531,6 +533,19 @@ if (!isset($event['usergroup'])) {
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+}
+
+if (!empty($_GET['description'])) {
+    $event['description'] = filter_var($_GET['description'], FILTER_SANITIZE_SPECIAL_CHARS);
+}
+
+if (!empty($_GET['title'])) {
+    $event['title'] = filter_var($_GET['title'], FILTER_SANITIZE_SPECIAL_CHARS);
+}
+
+if (isset($_GET['today'])) {
+    $now = time();
+    $event['begin'] = date('Y/m/d H:i', strtotime("today", $now));
 }
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
