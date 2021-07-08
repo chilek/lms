@@ -93,14 +93,14 @@
                             <div class="lms-ui-tab-table-column notes">
                                 <span class="customer-call-view customer-call-note-view">
                                     {if $call.notes}
-                                        {$call.notes|trunescape:50}
+                                        {$call.notes|trunescape:50|@nl2br}
                                     {else}
                                         -
                                     {/if}
                                 </span>
                                 <span class="customer-call-view customer-call-note-more"
                                     {if mb_strlen($call.notes) <= 50} style="display: none;"{/if}>
-                                    {hint mode="toggle" icon="view" class="customer-call-note-hint" text=$call.notes}
+                                    {hint mode="toggle" icon="view" class="customer-call-note-hint" text=nl2br($call.notes)}
                                 </span>
                                 <span class="customer-call-edit" style="display: none;">
                                     <textarea type="text" class="customer-call-note lms-ui-autogrow"
@@ -185,9 +185,9 @@
                     row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more').toggle();
                 }).done(function() {
                     row.find('.customer-call-note-more').toggle(notes.length >= 50);
-                    row.find('.customer-call-note-view').text(notes.length ? notes.substring(0, 50) + (notes.length > 50 ? '&hellip;' : '') : '-');
+                    row.find('.customer-call-note-view').html(notes.length ? escapeHtml(notes.substring(0, 50)).replace(/\n/g, '<br>') + (notes.length > 50 ? '&hellip;' : '') : '-');
                     if (notes.length >= 50) {
-                        row.find('.customer-call-note-hint').attr('data-hint', escapeHtml(notes)).removeAttr('data-init');
+                        row.find('.customer-call-note-hint').attr('data-hint', escapeHtml(notes).replace(/\n/g, '<br>')).removeAttr('data-init');
                     }
                     notesInput.attr('data-original-value', escapeHtml(notes));
                 });
