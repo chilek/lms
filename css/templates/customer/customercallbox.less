@@ -75,11 +75,17 @@
     }
   }
 
-  ul.customer-list {
+  .customer-list {
     margin-block-start: 0.1em;
     margin-block-end: 0.1em;
     list-style: none;
     padding-inline-start: 1em;
+    li[data-customer-id]:not(:last-child) {
+      padding-bottom: 0.2em;
+    }
+    li[data-customer-id]:not(:first-child) {
+      padding-top: 0.2em;
+    }
   }
 
   .customer-call-edit {

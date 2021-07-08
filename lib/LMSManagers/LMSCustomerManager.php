@@ -2924,10 +2924,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (!empty($calls)) {
             foreach ($calls as &$call) {
                 $call['customers'] = array();
-                $customerid = explode(',', $call['customerid']);
-                if (empty($customerid)) {
+                if (empty($call['customerid'])) {
                     continue;
                 }
+                $customerid = explode(',', $call['customerid']);
                 $customerlastname = explode(',', $call['customerlastname']);
                 $customername = explode(',', $call['customername']);
                 foreach ($customerid as $idx => $cid) {
@@ -3023,13 +3023,33 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function updateCustomerCall($callid, array $params)
     {
-        return $this->db->Execute(
+        $res = $this->db->Execute(
             'UPDATE customercalls SET notes = ? WHERE id = ?',
             array(
                 !isset($params['notes']) || empty($params['notes']) ? null : $params['notes'],
                 $callid,
             )
         );
+
+        if ($res) {
+            if (!empty($params['added-customers'])) {
+                foreach ($params['added-customers'] as $customerid) {
+                    $this->db->Execute(
+                        'INSERT INTO customercallassignments (customercallid, customerid) VALUES (?, ?)',
+                        array($callid, $customerid)
+                    );
+                }
+            }
+            if (!empty($params['removed-customers'])) {
+                $this->db->Execute(
+                    'DELETE FROM customercallassignments
+                    WHERE customercallid = ? AND customerid IN ?',
+                    array($callid, $params['removed-customers'])
+                );
+            }
+        }
+
+        return $res;
     }
 
     public function addCustomerCallAssignment($customerid, $callid)
