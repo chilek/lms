@@ -2858,8 +2858,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerCalls(array $params)
     {
+        $count = isset($params['count']) && !empty($params['count']);
+
+        if (isset($params['offset'])) {
+            $offset = ' OFFSET ' . intval($params['offset']);
+        } else {
+            $offset = '';
+        }
+
         //$id = null, $limit = -1
-        if (isset($params['limit'])) {
+        if (!$count && isset($params['limit'])) {
             if ($params['limit'] == -1) {
                 $limit = ' LIMIT ' . intval(ConfigHelper::getConfig('phpui.customer_call_limit', 5));
             } else {
@@ -2912,14 +2920,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
-        $calls = $this->db->GetAll(
-            'SELECT c.*, u.name AS username ' . (empty($fields) ? '' : ', ' . implode(', ', $fields))
-            . ' FROM customercalls c '
-            . implode(' ', $join)
-            . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
-            . ' ORDER BY ' . $order
-            . $limit
-        );
+        if ($count) {
+            return $this->db->GetOne(
+                'SELECT COUNT(c.*) FROM customercalls c '
+                . implode(' ', $join)
+                . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
+            );
+        } else {
+            $calls = $this->db->GetAll(
+                'SELECT c.*, u.name AS username ' . (empty($fields) ? '' : ', ' . implode(', ', $fields))
+                . ' FROM customercalls c '
+                . implode(' ', $join)
+                . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
+                . ' ORDER BY ' . $order
+                . $limit
+                . $offset
+            );
+        }
 
         if (!empty($calls)) {
             foreach ($calls as &$call) {

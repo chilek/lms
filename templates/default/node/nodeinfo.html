@@ -50,7 +50,7 @@
 	{if ConfigHelper::checkPrivilege('readonly')
 		|| ConfigHelper::checkPrivilege('customer_call_view')
 		|| ConfigHelper::checkPrivilege('customer_call_management')}
-		{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 5)}
+		{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 20)}
 	{/if}
 {/block}
 {block name="customerdocuments"}

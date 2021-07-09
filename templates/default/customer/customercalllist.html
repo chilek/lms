@@ -51,7 +51,27 @@
 				&nbsp;
 			</td>
 		</tr>
+		{block name="customer-call-list-header-pagination"}
+			{if $pagination->getTotal() != 0}
+				<tr>
+					<td class="lms-ui-pagination" colspan="7">
+						{include file="pagination.html"}
+					</td>
+				</tr>
+			{/if}
+		{/block}
 	</thead>
+	<tfoot>
+		{block name="customer-call-list-footer-pagination"}
+			{if $pagination->getTotal() != 0}
+				<tr>
+					<td class="lms-ui-pagination" colspan="7">
+						{include file="pagination.html"}
+					</td>
+				</tr>
+			{/if}
+		{/block}
+	</tfoot>
 	<tbody>
 		<tr>
 			<td style="width: 100%;" colspan="2">

@@ -18,7 +18,7 @@
 		|| ConfigHelper::checkPrivilege('customer_call_management')}
 		<tr>
 			<td>
-				{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 5)}
+				{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 20)}
 			</td>
 		</tr>
 	{/if}
