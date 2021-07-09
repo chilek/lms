@@ -277,7 +277,17 @@ foreach ($dirs as $dir) {
         continue;
     }
 
-    foreach ($files as $src_file_name) {
+    if (!$quiet && !empty($dir)) {
+        echo 'Processing files in \'' . $dir . '\' directory ...' . PHP_EOL;
+    }
+
+    $file_count = count($files);
+
+    foreach ($files as $file_idx => $src_file_name) {
+        if (!$quiet && !($file_idx % 100)) {
+            echo 'Progress: ' . round(($file_idx  * 100) / $file_count, 2) . '%' . PHP_EOL;
+        }
+
         if (!preg_match('/' . $file_name_pattern . '/', $src_file_name, $m)) {
             echo 'Warning: file name \'' . $src_file_name . '\' does not match to pattern!' . PHP_EOL;
             continue;
