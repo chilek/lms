@@ -367,7 +367,8 @@ foreach ($dirs as $dir) {
 
         $dst_file = $dst_dir . DIRECTORY_SEPARATOR . $dst_file_name;
 
-        if (preg_match('/\.(?<ext>[^\.]+)$/', $src_file_name, $m) && $m['ext'] == $file_extension) {
+        if (preg_match('/\.(?<ext>[^\.]+)$/', $src_file_name, $m) && $m['ext'] == $file_extension
+            || empty($convert_command)) {
             if (!@rename($src_file, $dst_file)) {
                 die('Fatal error: error during file ' . $src_file . ' rename!' . PHP_EOL);
             }
@@ -388,7 +389,7 @@ foreach ($dirs as $dir) {
             }
         }
 
-        if ($duration == -1 && $duration_command) {
+        if ($duration == -1 && !empty($duration_command)) {
             $cmd = str_replace(
                 array('%i', '%o'),
                 array($src_file, $dst_file),
