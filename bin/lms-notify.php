@@ -3397,6 +3397,22 @@ if (!empty($intersect)) {
                                             printf("[unblock/assignment-invoice] CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $assign['customerid'], $assign['id']);
                                         }
 
+                                        if (empty($action_params)) {
+                                            $target_doctype = 0;
+                                        } else {
+                                            switch (reset($action_params)) {
+                                                case 'proforma':
+                                                    $target_doctype = DOC_INVOICE_PRO;
+                                                    break;
+                                                case 'invoice':
+                                                    $target_doctype = DOC_INVOICE;
+                                                    break;
+                                                case 'note':
+                                                    $target_doctype = DOC_DNOTE;
+                                                    break;
+                                            }
+                                        }
+
                                         if (!$debug) {
                                             $DB->Execute("UPDATE assignments SET invoice = ?
                                                 WHERE id = ?", array(DOC_INVOICE, $assign['id']));
@@ -3408,7 +3424,7 @@ if (!empty($intersect)) {
                                                     array(
                                                         SYSLOG::RES_ASSIGN => $assign['id'],
                                                         SYSLOG::RES_CUST => $assign['customerid'],
-                                                        'invoice' => DOC_INVOICE,
+                                                        'invoice' => $target_doctype,
                                                     )
                                                 );
                                             }
