@@ -303,25 +303,13 @@ foreach ($dirs as $dir) {
             $dt = mktime($m['hour'], $m['minute'], $m['second'], $m['month'], $m['day'], $m['year']);
         }
 
+        $duration = -1;
         if (isset($m['durationh'])) {
             $duration = (empty($m['durationh']) ? 0 : intval($m['durationh'])) * 3600
                 + (empty($m['durationm']) ? 0 : intval($m['durationm'])) * 60
                 + (empty($m['durations']) ? 0 : intval($m['durations']));
         } elseif (isset($m['duration'])) {
             $duration = intval($m['duration']);
-        } else {
-            if ($file_extension == 'mp3') {
-                if (\wapmorgan\Mp3Info\Mp3Info::isValidAudio($src_file)) {
-                    $mp3info = new \wapmorgan\Mp3Info\Mp3Info($src_file);
-                    $duration = round($mp3info->duration);
-                } else {
-                    echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
-                    $duration = -1;
-                }
-            } else {
-                echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
-                $duration = -1;
-            }
         }
 
         $src = normalizePhoneNumber($m['src']);
@@ -396,6 +384,19 @@ foreach ($dirs as $dir) {
 
             if (!@unlink($src_file)) {
                 die('Fatal error: error during file ' . $src_file . ' deletion!' . PHP_EOL);
+            }
+        }
+
+        if ($duration == -1) {
+            if ($file_extension == 'mp3') {
+                if (\wapmorgan\Mp3Info\Mp3Info::isValidAudio($dst_file)) {
+                    $mp3info = new \wapmorgan\Mp3Info\Mp3Info($dst_file);
+                    $duration = round($mp3info->duration);
+                } else {
+                    echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+                }
+            } else {
+                echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
             }
         }
 
