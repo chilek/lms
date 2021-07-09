@@ -40,6 +40,23 @@ if (isset($_GET['page'])) {
     }
 }
 
+if (isset($_POST['assigned'])) {
+    switch ($_POST['assigned']) {
+        case '1':
+            $assigned = 1;
+            break;
+        case '0':
+            $assigned = 0;
+            break;
+        case '':
+        default:
+            $assigned = '';
+            break;
+    }
+} elseif ($SESSION->is_set('customer_call_list_assigned')) {
+    $SESSION->get('customer_call_list_assigned,', $assigned);
+}
+
 $limit = intval(ConfigHelper::getConfig('phpui.customer_call_list_pagelimit', 20));
 $offset = ($page - 1) * $limit;
 
@@ -71,12 +88,14 @@ if ($cid) {
 
     $params = array(
         'customerid' => $cid,
+        'assigned' => $assigned,
         'count' => true
     );
     $total = intval($LMS->getCustomerCalls($params));
 
     $params = array(
         'customerid' => $cid,
+        'assigned' => $assigned,
         'count' => false,
         'total' => $total,
         'limit' => $limit,
@@ -99,12 +118,14 @@ if ($cid) {
 
     $params = array(
         'userid' => $uid,
+        'assigned' => $assigned,
         'count' => true
     );
     $total = intval($LMS->getCustomerCalls($params));
 
     $params = array(
         'userid' => $uid,
+        'assigned' => $assigned,
         'count' => false,
         'total' => $total,
         'limit' => $limit,
@@ -121,11 +142,13 @@ if ($cid) {
     $layout['pagetitle'] = trans('Call List');
 
     $params = array(
+        'assigned' => $assigned,
         'count' => true
     );
     $total = intval($LMS->getCustomerCalls($params));
 
     $params = array(
+        'assigned' => $assigned,
         'count' => false,
         'total' => $total,
         'limit' => $limit,
@@ -151,6 +174,8 @@ if ($uid) {
     $SESSION->remove('customer_call_list_userid');
 }
 $SESSION->save('customer_call_list_page', $page);
+
+$SMARTY->assign('assigned', $assigned);
 
 $SMARTY->assign('customercalls', $customercalls);
 $SMARTY->assign('customername', $customername);

@@ -5339,4 +5339,5 @@ $_LANG['customer phone call view'] = 'podgląd połączeń telefonicznych klient
 $_LANG['customer phone call management'] = 'zarządzenie połączeniami telefonicznymi klienta';
 $_LANG['Call List'] = 'Lista połączeń';
 $_LANG['List of Customer Calls'] = 'Lista połączeń telefonicznych';
-$_LANG['<!customer>Calls'] = 'Połączenia';
+$_LANG['<!customer-call>Calls'] = 'Połączenia';
+$_LANG['<!customer-call>Assigned'] = 'Przypisane';

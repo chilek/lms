@@ -34,6 +34,8 @@
 
 <form id="customer-call-edit"></form>
 
+<form id="filter" method="POST"></form>
+
 <h1>{$layout.pagetitle}</h1>
 
 <table class="lmsbox" id="callpanel">
@@ -49,6 +51,17 @@
 			</td>
 			<td>
 				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				{icon name="filter"}
+				{trans("<!customer-call>Assigned")}
+				<select name="assigned" form="filter" class="filter-item">
+					<option value=""{if $assigned === ''} selected{/if}>{trans("- all -")}</option>
+					<option value="1"{if $assigned === 1} selected{/if}>{trans("yes")}</option>
+					<option value="0"{if $assigned === 0} selected{/if}>{trans("no")}</option>
+				</select>
 			</td>
 		</tr>
 		{block name="customer-call-list-header-pagination"}
@@ -219,6 +232,10 @@
 			$('audio').not(this).each(function() {
 				this.pause();
 			});
+		});
+
+		$('.filter-item').change(function() {
+			$('#filter').submit();
 		});
 
 		$('.customer-call-note').keypress(function(e) {

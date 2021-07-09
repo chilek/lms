@@ -2898,6 +2898,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $join[] = 'LEFT JOIN vusers u ON u.id = c.userid';
         $join[] = 'LEFT JOIN customercallassignments a ON a.customercallid = c.id';
 
+        if ($params['assigned'] === 1) {
+            $where[] = 'a.id IS NOT NULL';
+        } elseif ($params['assigned'] === 0) {
+            $where[] = 'a.id IS NULL';
+        }
+
         $fields[] = 'a2.customerid';
         $fields[] = 'a2.customerlastname';
         $fields[] = 'a2.customername';
