@@ -2895,8 +2895,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $join = array();
         $where = array();
 
-        $join[] = 'JOIN vusers u ON u.id = c.userid';
-        $join[] = 'JOIN customercallassignments a ON a.customercallid = c.id';
+        $join[] = 'LEFT JOIN vusers u ON u.id = c.userid';
+        $join[] = 'LEFT JOIN customercallassignments a ON a.customercallid = c.id';
 
         $fields[] = 'a2.customerid';
         $fields[] = 'a2.customerlastname';
