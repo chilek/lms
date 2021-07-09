@@ -384,7 +384,7 @@ CREATE TABLE customercalls (
     dt integer DEFAULT 0 NOT NULL,
     filename varchar(150) NOT NULL,
     outgoing smallint DEFAULT 0 NOT NULL,
-    phone varchar(12) NOT NULL,
+    phone varchar(20) NOT NULL,
     duration integer DEFAULT 0 NOT NULL,
     notes text DEFAULT NULL,
     PRIMARY KEY (id)
@@ -4089,6 +4089,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070900');
 
 COMMIT;
