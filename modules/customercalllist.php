@@ -118,7 +118,7 @@ if ($cid) {
 
     $SMARTY->assign('uid', $uid);
 } else {
-    $layout['pagetitle'] = trans('Phone Call List');
+    $layout['pagetitle'] = trans('Call List');
 
     $params = array(
         'count' => true

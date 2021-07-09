@@ -118,7 +118,7 @@ $menu = array(
                     'prio' => 50,
                 ),
                 'customercalllist' => array(
-                    'name' => trans('Call List'),
+                    'name' => trans('<!customer>Calls'),
                     'link' => '?m=customercalllist&u=0&c=0',
                     'tip' => trans('List of Customer Calls'),
                     'prio' => 60,

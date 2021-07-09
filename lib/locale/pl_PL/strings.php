@@ -5337,6 +5337,6 @@ $_LANG['<!customer-call>Download'] = 'Pobierz';
 $_LANG['phone-call'] = 'połączenie';
 $_LANG['customer phone call view'] = 'podgląd połączeń telefonicznych klienta';
 $_LANG['customer phone call management'] = 'zarządzenie połączeniami telefonicznymi klienta';
-$_LANG['Phone Call List'] = 'Lista połączeń telefonicznych';
 $_LANG['Call List'] = 'Lista połączeń';
 $_LANG['List of Customer Calls'] = 'Lista połączeń telefonicznych';
+$_LANG['<!customer>Calls'] = 'Połączenia';
