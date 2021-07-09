@@ -389,6 +389,8 @@ foreach ($dirs as $dir) {
                 die('Fatal error: error during file ' . $src_file . ' conversion!' . PHP_EOL);
             }
 
+            touch($dst_file, filemtime($src_file));
+
             if (!@unlink($src_file)) {
                 die('Fatal error: error during file ' . $src_file . ' deletion!' . PHP_EOL);
             }
