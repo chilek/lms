@@ -165,7 +165,40 @@ define('ACTION_PARAM_OPTIONAL', -1);
 
 $supported_actions = array(
     'customer-status' => array(
-        'params' => ACTION_PARAM_NONE,
+        'params' => ACTION_PARAM_OPTIONAL,
+        'param_validator' => function ($params) {
+            global $CSTATUSES;
+            if (count($params) > 1) {
+                return false;
+            }
+            static $allowed_params = null;
+            if (!isset($allowed_params)) {
+                $allowed_params = Utils::array_column($CSTATUSES, 'alias');
+            }
+            foreach ($params as $param) {
+                if (!in_array($param, $allowed_params)) {
+                    return false;
+                }
+            }
+            return true;
+        },
+        'param_map' => function ($params) {
+            global $CSTATUSES;
+
+            $result = array();
+
+            static $allowed_params = null;
+            if (!isset($allowed_params)) {
+                $allowed_params = array_flip(Utils::array_column($CSTATUSES, 'alias'));
+            }
+            foreach ($params as $param) {
+                if (isset($allowed_params[$param])) {
+                    $result[$allowed_params[$param]] = $allowed_params[$param];
+                }
+            }
+
+            return $result;
+        },
     ),
     'node-access' => array(
         'params' => ACTION_PARAM_NONE,
@@ -212,6 +245,10 @@ if (isset($options['actions'])) {
                 && isset($supported_actions[$action]['param_validator']) && !($supported_actions[$action]['param_validator']($actions[$action])))) {
                 die('Invalid format of actions parameter!' . PHP_EOL);
             }
+
+            if (isset($supported_actions[$action]['param_map'])) {
+                $action[$action] = $supported_actions[$action]['param_map']($actions[$action]);
+            }
         }
     } else {
         die('Invalid format of actions parameter!' . PHP_EOL);
@@ -241,6 +278,10 @@ if (isset($options['block-prechecks'])) {
                     && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($block_prechecks[$precheck])))) {
                     die('Invalid format of block_prechecks parameter!' . PHP_EOL);
                 }
+
+                if (isset($supported_actions[$precheck]['param_map'])) {
+                    $block_prechecks[$precheck] = $supported_actions[$precheck]['param_map']($block_prechecks[$precheck]);
+                }
             }
         } else {
             die('Invalid format of block_prechecks parameter!' . PHP_EOL);
@@ -266,6 +307,10 @@ if (isset($options['unblock-prechecks'])) {
                 if (!empty($unblock_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
                     && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($unblock_prechecks[$precheck])))) {
                     die('Invalid format of unblock_prechecks parameter!' . PHP_EOL);
+                }
+
+                if (isset($supported_actions[$precheck]['param_map'])) {
+                    $unblock_prechecks[$precheck] = $supported_actions[$precheck]['param_map']($unblock_prechecks[$precheck]);
                 }
             }
         } else {
@@ -3034,8 +3079,12 @@ if (!empty($intersect)) {
                                         AND customerid = c.id)';
                                 break;
                             case 'customer-status':
+                                $target_cstatus = reset($precheck_params);
+                                if (empty($target_cstatus)) {
+                                    $target_cstatus = CSTATUS_DEBT_COLLECTION;
+                                }
                                 $where[] = 'EXISTS (SELECT id FROM customers
-                                    WHERE status <> ' . CSTATUS_DEBT_COLLECTION . ' AND customers.id = c.id)';
+                                    WHERE status <> ' . $target_cstatus . ' AND customers.id = c.id)';
                                 break;
                             case 'all-assignment-suspension':
                                 $where[] = 'NOT EXISTS (SELECT id FROM assignments
@@ -3180,6 +3229,11 @@ if (!empty($intersect)) {
                                     array(CSTATUS_DEBT_COLLECTION)
                                 );
                                 if (!empty($custids)) {
+                                    $target_cstatus = reset($action_params);
+                                    if (empty($target_cstatus)) {
+                                        $target_cstatus = CSTATUS_DEBT_COLLECTION;
+                                    }
+
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
                                             printf("[block/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
@@ -3188,7 +3242,7 @@ if (!empty($intersect)) {
                                         if (!$debug) {
                                             $DB->Execute(
                                                 "UPDATE customers SET status = ? WHERE id = ?",
-                                                array(CSTATUS_DEBT_COLLECTION, $custid)
+                                                array($target_cstatus, $custid)
                                             );
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
@@ -3291,8 +3345,12 @@ if (!empty($intersect)) {
                                         AND customerid = c.id)';
                                 break;
                             case 'customer-status':
+                                $target_cstatus = reset($precheck_params);
+                                if (empty($target_cstatus)) {
+                                    $target_cstatus = CSTATUS_CONNECTED;
+                                }
                                 $where[] = 'EXISTS (SELECT id FROM customers
-                                    WHERE status <> ' . CSTATUS_CONNECTED . ' AND customers.id = c.id)';
+                                    WHERE status <> ' . $target_cstatus . ' AND customers.id = c.id)';
                                 break;
                             case 'all-assignment-suspension':
                                 $where[] = 'EXISTS (SELECT id FROM assignments
@@ -3439,6 +3497,11 @@ if (!empty($intersect)) {
                                     array(CSTATUS_DEBT_COLLECTION)
                                 );
                                 if (!empty($custids)) {
+                                    $target_cstatus = reset($action_params);
+                                    if (empty($target_cstatus)) {
+                                        $target_cstatus = CSTATUS_CONNECTED;
+                                    }
+
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
                                             printf("[unblock/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
@@ -3447,7 +3510,7 @@ if (!empty($intersect)) {
                                         if (!$debug) {
                                             $DB->Execute(
                                                 "UPDATE customers SET status = ? WHERE id = ?",
-                                                array(CSTATUS_CONNECTED, $custid)
+                                                array($target_cstatus, $custid)
                                             );
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
