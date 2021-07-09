@@ -383,8 +383,9 @@ foreach ($dirs as $dir) {
                 $convert_command
             );
             $ret = 0;
-            system($cmd, $ret);
-            if (!empty($ret)) {
+            $output = array();
+            $res = exec($cmd, $output, $ret);
+            if (!empty($ret) || $res === false) {
                 die('Fatal error: error during file ' . $src_file . ' conversion!' . PHP_EOL);
             }
 
@@ -400,12 +401,13 @@ foreach ($dirs as $dir) {
                 $duration_command
             );
             $ret = 0;
-            $output = system($cmd, $ret);
-            if (!empty($ret) || $output === false) {
+            $output = array();
+            $res = exec($cmd, $output, $ret);
+            if (!empty($ret) || $res === false) {
                 die('Fatal error: error during duration determination for file ' . $src_file . '!' . PHP_EOL);
             }
 
-            $duration = str_replace(',', '.', round(floatval($output)));
+            $duration = str_replace(',', '.', round(floatval($res)));
         } else {
             echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
         }
