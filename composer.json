@@ -125,8 +125,7 @@
         "galleriajs/galleria": "^1",
         "rzani/zbar-qrdecoder": "^2",
         "dragonbe/vies": "*",
-        "ezyang/htmlpurifier": "^4.13",
-        "wapmorgan/mp3info": "^0.0.5"
+        "ezyang/htmlpurifier": "^4.13"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

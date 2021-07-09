@@ -173,6 +173,7 @@ $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission
 $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
 $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
 $convert_command = ConfigHelper::getConfig($config_section . '.call_convert_command', 'sox %i %o');
+$duration_command = ConfigHelper::getConfig($config_section . '.call_duration_command', 'soxi -D %o');
 $file_name_pattern = ConfigHelper::getConfig(
     $config_section . '.file_name_pattern',
     '^(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})_+(?<hour>[0-9]{2})-(?<minute>[0-9]{2})-(?<second>[0-9]{2})'
@@ -387,17 +388,21 @@ foreach ($dirs as $dir) {
             }
         }
 
-        if ($duration == -1) {
-            if ($file_extension == 'mp3') {
-                if (\wapmorgan\Mp3Info\Mp3Info::isValidAudio($dst_file)) {
-                    $mp3info = new \wapmorgan\Mp3Info\Mp3Info($dst_file);
-                    $duration = round($mp3info->duration);
-                } else {
-                    echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
-                }
-            } else {
-                echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+        if ($duration == -1 && $duration_command) {
+            $cmd = str_replace(
+                array('%i', '%o'),
+                array($src_file, $dst_file),
+                $duration_command
+            );
+            $ret = 0;
+            $output = system($cmd, $ret);
+            if (!empty($ret) || $output === false) {
+                die('Fatal error: error during duration determination for file ' . $src_file . '!' . PHP_EOL);
             }
+
+            $duration = str_replace(',', '.', round(floatval($output)));
+        } else {
+            echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
         }
 
         chmod($dst_file, $storage_dir_permission);
