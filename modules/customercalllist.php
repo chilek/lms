@@ -117,6 +117,25 @@ if ($cid) {
     $customercalls = $LMS->getCustomerCalls($params);
 
     $SMARTY->assign('uid', $uid);
+} else {
+    $layout['pagetitle'] = trans('Phone Call List');
+
+    $params = array(
+        'count' => true
+    );
+    $total = intval($LMS->getCustomerCalls($params));
+
+    $params = array(
+        'count' => false,
+        'total' => $total,
+        'limit' => $limit,
+        'offset' => $offset,
+    );
+    if ($total && $total < $params['offset']) {
+        $page = 1;
+        $params['offset'] = 0;
+    }
+    $customercalls = $LMS->getCustomerCalls($params);
 }
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));

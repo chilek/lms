@@ -126,10 +126,16 @@ $access_table = array(
     'customer_call_view' => array(
         'label' => trans('customer phone call view'),
         'allow_regexp' => '^customercalllist$',
+        'allow_menu_items' => array(
+            'customers' => array('customercalllist'),
+        ),
     ),
     'customer_call_management' => array(
         'label' => trans('customer phone call management'),
         'allow_regexp' => '^customercall$',
+        'allow_menu_items' => array(
+            'customers' => array('customercalllist'),
+        ),
     ),
     'customer_removal' => array(
         'label' => trans('customer removal'),
