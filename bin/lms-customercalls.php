@@ -283,10 +283,14 @@ foreach ($dirs as $dir) {
     }
 
     $file_count = count($files);
+    $progress_part = round(0.01 * $file_count);
+    if (empty($progress_part)) {
+        $progress_part = 1;
+    }
 
     foreach ($files as $file_idx => $src_file_name) {
-        if (!$quiet && !($file_idx % 100)) {
-            echo 'Progress: ' . round(($file_idx  * 100) / $file_count, 2) . '%' . PHP_EOL;
+        if (!$quiet && !($file_idx % $progress_part)) {
+            echo 'Progress: ' . round(($file_idx  * 100) / $file_count) . '%' . PHP_EOL;
         }
 
         if (!preg_match('/' . $file_name_pattern . '/', $src_file_name, $m)) {
