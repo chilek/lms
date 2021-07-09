@@ -2897,27 +2897,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $join[] = 'JOIN vusers u ON u.id = c.userid';
 
+        $join[] = 'JOIN customercallassignments a ON a.customercallid = c.id';
+
         if (isset($params['customerid'])) {
-            $join[] = 'JOIN customercallassignments a ON a.customercallid = c.id';
             $where[] = 'a.customerid =  ' . intval($params['customerid']);
+        } else {
+            $fields[] = 'a2.customerid';
+            $fields[] = 'a2.customerlastname';
+            $fields[] = 'a2.customername';
+            $join[] = 'LEFT JOIN (
+                SELECT cca.customercallid,
+                    ' . $this->db->GroupConcat('cca.customerid') . ' AS customerid,
+                    ' . $this->db->GroupConcat('cv.lastname') . ' AS customerlastname,
+                    ' . $this->db->GroupConcat('cv.name') . ' AS customername
+                FROM customercallassignments cca
+                JOIN customerview cv ON cv.id = cca.customerid
+                GROUP BY cca.customercallid
+            ) a2 ON a2.customercallid = c.id';
         }
 
         if (isset($params['userid'])) {
             $where[] = 'c.userid = ' . intval($params['userid']);
-            if (!isset($params['customerid'])) {
-                $fields[] = 'a2.customerid';
-                $fields[] = 'a2.customerlastname';
-                $fields[] = 'a2.customername';
-                $join[] = 'LEFT JOIN (
-                    SELECT cca.customercallid,
-                        ' . $this->db->GroupConcat('cca.customerid') . ' AS customerid,
-                        ' . $this->db->GroupConcat('cv.lastname') . ' AS customerlastname,
-                        ' . $this->db->GroupConcat('cv.name') . ' AS customername
-                    FROM customercallassignments cca
-                    JOIN customerview cv ON cv.id = cca.customerid
-                    GROUP BY cca.customercallid
-                ) a2 ON a2.customercallid = c.id';
-            }
         }
 
         if ($count) {
