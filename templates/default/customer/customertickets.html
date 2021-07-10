@@ -10,32 +10,42 @@
 			<strong>{trans("Customer tickets")}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
-			{button type="link" tip="New Ticket" icon="add" href="?m=rtticketadd&customerid={$customerinfo.id}"}
-			{button type="link" tip="Show all customer tickets" icon="search" href="?m=rtsearch&id={$customerinfo.id}"}
+			{button type="link" label="New Ticket" tip="New Ticket" icon="add" href="?m=rtticketadd&customerid={$customerinfo.id}"}
+			{button type="link" label="Show all customer tickets" tip="Show all customer tickets" icon="search" href="?m=rtsearch&id={$customerinfo.id}"}
 		{/tab_header_cell}
 	{/tab_header}
 
 	{tab_contents id="ticketspanel"}
 		{tab_table}
 			<div class="lms-ui-tab-table-row header">
-				<div class="lms-ui-tab-table-wrapper col-8">
-					<div class="lms-ui-tab-table-wrapper id-type-state-cdate col-4">
-						<div class="lms-ui-tab-table-wrapper id-type col-2">
-							<div class="lms-ui-tab-table-column id">{trans("ID")}</div>
-							<div class="lms-ui-tab-table-column type">{trans("Type")}</div>
+				<div class="lms-ui-tab-table-wrapper col-12">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column cdate">{trans("Create time")}</div>
+							<div class="lms-ui-tab-table-column queue">{trans("Queue")}</div>
 						</div>
-						<div class="lms-ui-tab-table-wrapper state-cdate col-2">
-							<div class="lms-ui-tab-table-column state">{trans("Status:")}</div>
-							<div class="lms-ui-tab-table-column cdate">{trans("Created:")}</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column state">{trans("Status")}</div>
+							<div class="lms-ui-tab-table-column priority">{trans("Priority")}</div>
 						</div>
 					</div>
-					<div class="lms-ui-tab-table-wrapper title-categories-deadline-owner col-4">
-						<div class="lms-ui-tab-table-wrapper title-service col-2">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column title">{trans("Title")}</div>
-							<div class="lms-ui-tab-table-column service">{trans("Service type")}</div>
+							{if ConfigHelper::checkConfig('rt.show_ticket_categories')}
+								<div class="lms-ui-tab-table-column categories">{trans("Categories")}</div>
+							{else}
+								<div class="lms-ui-tab-table-column empty">&nbsp;</div>
+							{/if}
 						</div>
-						<div class="lms-ui-tab-table-wrapper deadline-owner col-2">
-							<div class="lms-ui-tab-table-column deadline">{trans("<!rt>Deadline:")}</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column service">{trans("Service type")}</div>
+							<div class="lms-ui-tab-table-column type">{trans("Ticket type")}</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column deadline">{trans("<!rt>Deadline")}</div>
 							<div class="lms-ui-tab-table-column owner">{trans("Owner")}</div>
 						</div>
 					</div>
@@ -45,34 +55,63 @@
 				</div>
 			</div>
 			{foreach $ticketlist as $ticket}
-				<div class="lms-ui-tab-table-row {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if}" data-target-url="?m=rtticketview&id={$ticket.id}">
-					<div class="lms-ui-tab-table-wrapper col-8">
-						<div class="lms-ui-tab-table-wrapper id-type-state-cdate col-4">
-							<div class="lms-ui-tab-table-wrapper id-type col-2">
-								<div class="lms-ui-tab-table-column id" {if !empty($ticket.priority)}style="{$_RT_PRIORITY_STYLES[$ticket.priority]}"{/if}>{$ticket.id}</div>
-								<div class="lms-ui-tab-table-column type">{trans("{$_RT_TYPES[$ticket.type].label}")}</div>
-							</div>
-							<div class="lms-ui-tab-table-wrapper state-cdate col-2">
-								<div class="lms-ui-tab-table-column state">{$_RT_STATES[{$ticket.state}].label}</div>
+				<div class="lms-ui-tab-table-row" style="color:{$_RT_STATES[$ticket.state].color};" data-target-url="?m=rtticketview&id={$ticket.id}">
+					<div class="lms-ui-tab-table-wrapper col-12">
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2" {tip text=$ticket.id}>
 								<div class="lms-ui-tab-table-column cdate">
 									{$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
 								</div>
+								<div class="lms-ui-tab-table-column queue">
+									{$ticket.name}
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column state">
+									{$_RT_STATES[{$ticket.state}].label}
+								</div>
+								<div class="lms-ui-tab-table-column priority">
+									{$_RT_PRIORITIES[$ticket.priority]}
+								</div>
 							</div>
 						</div>
-						<div class="lms-ui-tab-table-wrapper title-service-deadline-owner col-4">
-							<div class="lms-ui-tab-table-wrapper title-service col-2">
-								<div class="lms-ui-tab-table-column title" {tip text="{$ticket.subject}"}>
-									{$ticket.subject|escape}
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column title" {tip text="{$ticket.subject}"}>
+								{$ticket.subject|escape}
+							</div>
+							{if ConfigHelper::checkConfig('rt.show_ticket_categories')}
+								<div class="lms-ui-tab-table-column categories">
+									{foreach $ticket.categories as $tc}
+										{button href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc"
+											style="{$tc.style}"
+											label=$tc.name
+										}
+									{/foreach}
 								</div>
+							{else}
+								<div class="lms-ui-tab-table-column empty">&nbsp;</div>
+							{/if}
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column service">
 									{$_SERVICETYPES[$ticket.service]}
 								</div>
+								<div class="lms-ui-tab-table-column type">
+									{trans("{$_RT_TYPES[$ticket.type].label}")}
+								</div>
 							</div>
-							<div class="lms-ui-tab-table-wrapper deadline-owner col-2">
+							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column deadline">
 									{if $ticket.deadline}
 										{if $ticket.deadline_diff < 0 && $ticket.state != $smarty.const.RT_RESOLVED}
-											<span class="lms-ui-important-box" {tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
+											<div class="lms-ui-alert">
+											{icon
+												name="expired"
+												label="<!rt>Expired"
+												tip="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"
+											}
+											</div>
 										{else}
 											{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}
 										{/if}
@@ -81,7 +120,10 @@
 									{/if}
 								</div>
 								<div class="lms-ui-tab-table-column owner">
-									{if $ticket.ownername}{$ticket.ownername|escape}{else}-{/if}
+									{if $ticket.ownername}
+										{$ticket.ownername|escape}
+									{else}-
+									{/if}
 								</div>
 							</div>
 						</div>
@@ -92,6 +134,7 @@
 						{/if}
 						{button type="link" icon="note" href="?m=rtnoteadd&ticketid={$ticket.id}" tip="New Note"}
 						{button type="link" icon="edit" href="?m=rtticketedit&id={$ticket.id}" tip="Edit"}
+						{button type='link' class="lms-ui-button-clipboard" icon="clipboard" clipboard="{$url}/?m=rtticketview&id={$ticket.id}" tip="Copy to clipboard"}
 						{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 							{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}
 							{button type="link" icon="delete" href="?m=rtremove&id={$ticket.id}&taction=delperm" tip="Delete permanently"}
