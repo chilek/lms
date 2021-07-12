@@ -78,8 +78,24 @@ if (!isset($_GET['reset'])) {
                 $assigned = '';
                 break;
         }
+    } elseif (isset($_GET['a'])) {
+        switch ($_GET['a']) {
+            case '1':
+                $assigned = 1;
+                break;
+            case '0':
+                $assigned = 0;
+                break;
+            case '':
+            default:
+                $assigned = '';
+                break;
+        }
     } elseif ($SESSION->is_set('customer_call_list_assigned')) {
-        $SESSION->get('customer_call_list_assigned,', $assigned);
+        $SESSION->restore('customer_call_list_assigned', $assigned);
+        if ($assigned !== '') {
+            $assigned = intval($assigned);
+        }
     }
 }
 
@@ -133,6 +149,12 @@ if ($uid) {
     $SESSION->remove('customer_call_list_userid');
 }
 $SESSION->save('customer_call_list_page', $page);
+
+if ($assigned !== '') {
+    $SESSION->save('customer_call_list_assigned', $assigned);
+} else {
+    $SESSION->remove('customer_call_list_assigned');
+}
 
 $SMARTY->assign('assigned', $assigned);
 
