@@ -25,30 +25,37 @@
 #ticketspanel {
 	.lms-ui-tab-table-row {
 		display: flex;
-	}
-	.id {
-		width: 4em;
-	}
-	.type {
-		width: 5em;
-	}
-	.state {
-		width: 4em;
+		padding-bottom: 0.3em;
 	}
 	.cdate {
 		width: 7em;
 	}
+	.queue {
+		width: 4em;
+	}
+	.state {
+		width: 4em;
+	}
+	.priority {
+		width: 4em;
+	}
 	.title {
-		width: 18em;
+		width: 20em;
+	}
+	.categories {
+		width: 20em;
 	}
 	.service {
 		width: 5em;
 	}
-	.owner {
+	.type {
 		width: 5em;
 	}
 	.deadline {
-		width: 5em;
+		width: 9em;
+	}
+	.owner {
+		width: 9em;
 	}
 	.buttons {
 		width: 6em;
@@ -75,7 +82,7 @@
 		}
 	}
 	@media all and (max-width: 768px) {
-		.col-8 {
+		.col-12 {
 			flex-direction: column !important;
 			width: 10em !important;
 			div {
