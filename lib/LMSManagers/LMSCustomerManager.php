@@ -2891,39 +2891,24 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $order = 'c.dt DESC';
         }
 
-        $fields = array();
         $join = array();
         $where = array();
 
         $join[] = 'LEFT JOIN vusers u ON u.id = c.userid';
-        $join[] = 'LEFT JOIN customercallassignments a ON a.customercallid = c.id';
-
-        if ($params['assigned'] === 1) {
-            $where[] = 'a.id IS NOT NULL';
-        } elseif ($params['assigned'] === 0) {
-            $where[] = 'a.id IS NULL';
-        }
-
-        $fields[] = 'a2.customerid';
-        $fields[] = 'a2.customerlastname';
-        $fields[] = 'a2.customername';
-
-        $join[] = 'LEFT JOIN (
-            SELECT cca.customercallid,
-                ' . $this->db->GroupConcat('cca.customerid') . ' AS customerid,
-                ' . $this->db->GroupConcat('cv.lastname') . ' AS customerlastname,
-                ' . $this->db->GroupConcat('cv.name') . ' AS customername
-            FROM customercallassignments cca
-            JOIN customerview cv ON cv.id = cca.customerid
-            GROUP BY cca.customercallid
-        ) a2 ON a2.customercallid = c.id';
-
-        if (isset($params['customerid'])) {
-            $where[] = 'a.customerid =  ' . intval($params['customerid']);
-        }
 
         if (isset($params['userid'])) {
             $where[] = 'c.userid = ' . intval($params['userid']);
+        }
+
+        if ($params['assigned'] === 1) {
+            $where[] = 'EXISTS (SELECT 1 FROM customercallassignments a WHERE a.customercallid = c.id'
+                . (isset($params['customerid']) ? ' AND a.customerid = ' . intval($params['customerid']) : '') . ')';
+        } elseif ($params['assigned'] === 0) {
+            $where[] = 'NOT EXISTS (SELECT 1 FROM customercallassignments a WHERE a.customercallid = c.id'
+                . (isset($params['customerid']) ? ' AND a.customerid = ' . intval($params['customerid']) : '') . ')';
+        } elseif (isset($params['customerid'])) {
+            $where[] = 'EXISTS (SELECT 1 FROM customercallassignments a WHERE a.customercallid = c.id AND a.customerid = '
+                . intval($params['customerid']) . ')';
         }
 
         if ($count) {
@@ -2934,8 +2919,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             );
         } else {
             $calls = $this->db->GetAll(
-                'SELECT c.*, u.name AS username ' . (empty($fields) ? '' : ', ' . implode(', ', $fields))
-                . ' FROM customercalls c '
+                'SELECT c.*, u.name AS username, a2.customerid, a2.customerlastname, a2.customername
+                FROM customercalls c
+                LEFT JOIN (
+                    SELECT cca.customercallid,
+                        ' . $this->db->GroupConcat('cca.customerid') . ' AS customerid,
+                        ' . $this->db->GroupConcat('cv.lastname') . ' AS customerlastname,
+                        ' . $this->db->GroupConcat('cv.name') . ' AS customername
+                    FROM customercallassignments cca
+                    JOIN customerview cv ON cv.id = cca.customerid
+                    GROUP BY cca.customercallid
+                ) a2 ON a2.customercallid = c.id '
                 . implode(' ', $join)
                 . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
                 . ' ORDER BY ' . $order

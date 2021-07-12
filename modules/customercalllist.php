@@ -40,128 +40,87 @@ if (isset($_GET['page'])) {
     }
 }
 
-if (isset($_POST['assigned'])) {
-    switch ($_POST['assigned']) {
-        case '1':
-            $assigned = 1;
-            break;
-        case '0':
-            $assigned = 0;
-            break;
-        case '':
-        default:
-            $assigned = '';
-            break;
-    }
-} elseif ($SESSION->is_set('customer_call_list_assigned')) {
-    $SESSION->get('customer_call_list_assigned,', $assigned);
-}
-
 $limit = intval(ConfigHelper::getConfig('phpui.customer_call_list_pagelimit', 20));
 $offset = ($page - 1) * $limit;
 
-if (isset($_GET['c'])) {
-    $cid = intval($_GET['c']);
-    $uid = 0;
-} elseif (isset($_GET['u'])) {
-    $uid = intval($_GET['u']);
-    $cid = 0;
+$cid = 0;
+$uid = 0;
+$assigned = '';
+if (!isset($_GET['reset'])) {
+    if (isset($_POST['customerid'])) {
+        $cid = intval($_POST['customerid']);
+    } elseif (isset($_GET['c'])) {
+        $cid = intval($_GET['c']);
+    } elseif ($SESSION->is_set('customer_call_list_customerid')) {
+        $SESSION->restore('customer_call_list_customerid', $cid);
+        $cid = intval($cid);
+    }
+
+    if (isset($_POST['userid'])) {
+        $uid = intval($_POST['userid']);
+    } elseif (isset($_GET['u'])) {
+        $uid = intval($_GET['u']);
+    } elseif ($SESSION->is_set('customer_call_list_userid')) {
+        $SESSION->restore('customer_call_list_userid', $uid);
+        $uid = intval($uid);
+    }
+
+    if (isset($_POST['assigned'])) {
+        switch ($_POST['assigned']) {
+            case '1':
+                $assigned = 1;
+                break;
+            case '0':
+                $assigned = 0;
+                break;
+            case '':
+            default:
+                $assigned = '';
+                break;
+        }
+    } elseif ($SESSION->is_set('customer_call_list_assigned')) {
+        $SESSION->get('customer_call_list_assigned,', $assigned);
+    }
 }
 
-if (!isset($uid) && !isset($_GET['c']) && $SESSION->is_set('customer_call_list_customerid')) {
-    $SESSION->restore('customer_call_list_customerid', $cid);
-    $cid = intval($cid);
+if ($cid && !$LMS->CustomerExists($cid)) {
+    $SESSION->redirect('?m=customerlist');
+}
+if ($uid && !$LMS->userExists($uid)) {
+    $SESSION->redirect('?m=userlist');
 }
 
-if (!isset($cid) && !isset($_GET['u']) && $SESSION->is_set('customer_call_list_userid')) {
-    $SESSION->restore('customer_call_list_userid', $uid);
-    $uid = intval($uid);
-}
+$params = array(
+    'assigned' => $assigned,
+    'count' => true
+);
 
 if ($cid) {
-    if (!$LMS->CustomerExists($cid)) {
-        $SESSION->redirect('?m=customerlist');
-    }
-
-    $customername = $LMS->GetCustomerName($cid);
-    $layout['pagetitle'] = trans('Customer Call List: $a', '<a href="?m=customerinfo&id=' . $cid . '">' . $customername . '</a>');
-
-    $params = array(
-        'customerid' => $cid,
-        'assigned' => $assigned,
-        'count' => true
-    );
-    $total = intval($LMS->getCustomerCalls($params));
-
-    $params = array(
-        'customerid' => $cid,
-        'assigned' => $assigned,
-        'count' => false,
-        'total' => $total,
-        'limit' => $limit,
-        'offset' => $offset,
-    );
-    if ($total && $total < $params['offset']) {
-        $page = 1;
-        $params['offset'] = 0;
-    }
-    $customercalls = $LMS->getCustomerCalls($params);
-
-    $SMARTY->assign('cid', $cid);
-} elseif ($uid) {
-    if (!$LMS->userExists($uid)) {
-        $SESSION->redirect('?m=userlist');
-    }
-
-    $username = $LMS->getUserName($uid);
-    $layout['pagetitle'] = trans('User Call List: $a', '<a href="?m=userinfo&id=' . $uid . '">' . $username . '</a>');
-
-    $params = array(
-        'userid' => $uid,
-        'assigned' => $assigned,
-        'count' => true
-    );
-    $total = intval($LMS->getCustomerCalls($params));
-
-    $params = array(
-        'userid' => $uid,
-        'assigned' => $assigned,
-        'count' => false,
-        'total' => $total,
-        'limit' => $limit,
-        'offset' => $offset,
-    );
-    if ($total && $total < $params['offset']) {
-        $page = 1;
-        $params['offset'] = 0;
-    }
-    $customercalls = $LMS->getCustomerCalls($params);
-
-    $SMARTY->assign('uid', $uid);
-} else {
-    $layout['pagetitle'] = trans('Call List');
-
-    $params = array(
-        'assigned' => $assigned,
-        'count' => true
-    );
-    $total = intval($LMS->getCustomerCalls($params));
-
-    $params = array(
-        'assigned' => $assigned,
-        'count' => false,
-        'total' => $total,
-        'limit' => $limit,
-        'offset' => $offset,
-    );
-    if ($total && $total < $params['offset']) {
-        $page = 1;
-        $params['offset'] = 0;
-    }
-    $customercalls = $LMS->getCustomerCalls($params);
+    $params['customerid'] = $cid;
+    $SMARTY->assign('customername', $LMS->GetCustomerName($cid));
 }
+if ($uid) {
+    $params['userid'] = $uid;
+    $SMARTY->assign('username', $LMS->getUserName($uid));
+}
+$total= intval($LMS->getCustomerCalls($params));
+
+$params['count'] = false;
+$params['total'] = $total;
+$params['limit'] = $limit;
+$params['offset'] = $offset;
+if ($total && $total < $params['offset']) {
+    $page = 1;
+    $params['offset'] = 0;
+}
+$customercalls = $LMS->getCustomerCalls($params);
+
+$SMARTY->assign('users', $LMS->getUserNames(array()));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
+$SMARTY->assign('uid', $uid);
+$SMARTY->assign('cid', $cid);
 
 if ($cid) {
     $SESSION->save('customer_call_list_customerid', $cid);
@@ -178,7 +137,6 @@ $SESSION->save('customer_call_list_page', $page);
 $SMARTY->assign('assigned', $assigned);
 
 $SMARTY->assign('customercalls', $customercalls);
-$SMARTY->assign('customername', $customername);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }

@@ -12,7 +12,7 @@
             &nbsp;({t a=$limit}last $a phone calls{/t})
         {/tab_header_cell}
         {tab_header_cell}
-            <a href="?m=customercalllist&{if isset($userinfo.id)}u={$userinfo.id}{else}c={$customerinfo.id}{/if}"
+            <a href="?m=customercalllist&u={if isset($userinfo.id)}{$userinfo.id}{else}0{/if}&c={if isset($customerinfo.id)}{$customerinfo.id}{else}0{/if}"
                id="all-phone-calls">
                 {trans("All Phone Calls")}
                 {icon name="next" class="fa-fw"}

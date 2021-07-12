@@ -30,13 +30,33 @@
 		min-height: 1.5em;
 	}
 
+	#clear-filter {
+		cursor: pointer;
+	}
+
 </style>
 
 <form id="customer-call-edit"></form>
 
 <form id="filter" method="POST"></form>
 
-<h1>{$layout.pagetitle}</h1>
+<h1>
+	{if $cid}
+		{capture assign="customerlink"}<a href="?m=customerinfo&id={$cid}">{$customername}</a>{/capture}
+	{/if}
+	{if $uid}
+		{capture assign="userlink"}<a href="?m=userinfo&id={$uid}">{$username}</a>{/capture}
+	{/if}
+	{if $cid && $uid}
+		{t a=$customerlink b=$userlink}Call List: $a / $b{/t}
+	{elseif $cid && !$uid}
+		{t a=$customerlink}Customer Call List: $a{/t}
+	{elseif $uid & !$cid}
+		{t a=$userlink}User Call List: $a{/t}
+	{else}
+		{trans("Call List")}
+	{/if}
+</h1>
 
 <table class="lmsbox" id="callpanel">
 	<colgroup>
@@ -55,13 +75,45 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				{icon name="filter"}
-				{trans("<!customer-call>Assigned")}
-				<select name="assigned" form="filter" class="filter-item">
-					<option value=""{if $assigned === ''} selected{/if}>{trans("- all -")}</option>
-					<option value="1"{if $assigned === 1} selected{/if}>{trans("yes")}</option>
-					<option value="0"{if $assigned === 0} selected{/if}>{trans("no")}</option>
-				</select>
+				<div class="lms-ui-filter-container">
+					<div class="lms-ui-filter-definition">
+						{icon name="filter"}
+						<label>
+							{trans("<!customer-call>Assigned")}
+							<select name="assigned" form="filter" class="filter-item">
+								<option value=""{if $assigned === ''} selected{/if}>{trans("- all -")}</option>
+								<option value="1"{if $assigned === 1} selected{/if}>{trans("yes")}</option>
+								<option value="0"{if $assigned === 0} selected{/if}>{trans("no")}</option>
+							</select>
+						</label>
+						{if !empty($users)}
+							<label>
+								{trans("User")}
+								<select name="userid" form="filter" class="filter-item">
+									<option value="">{trans("- all -")}</option>
+									{foreach $users as $user}
+										<option value="{$user.id}"{if $user.id == $uid} selected{/if}>{$user.rname|escape} ({$user.login|escape})</option>
+									{/foreach}
+								</select>
+							</label>
+						{/if}
+						<label>
+							{trans("Customer")}
+							{customerlist
+								form        = "filter"
+								customers   = $customers
+								selected    = $cid
+								selectname  = "customerid-select"
+								select_id   = "customerid-select"
+								inputname   = "customerid"
+								input_id    = "customerid"
+								firstoption = ""
+								version = 2
+							}
+						</label>
+						{icon name="clear" id="clear-filter"}
+					</div>
+				</div>
 			</td>
 		</tr>
 		{block name="customer-call-list-header-pagination"}
@@ -236,6 +288,15 @@
 
 		$('.filter-item').change(function() {
 			$('#filter').submit();
+		});
+
+		$('#customerid').change(function() {
+			$('#filter').submit();
+		});
+
+		$('#clear-filter').click(function() {
+			$('.filter-item').val('');
+			$('#customerid').val('').trigger('change');
 		});
 
 		$('.customer-call-note').keypress(function(e) {
