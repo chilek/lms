@@ -315,7 +315,7 @@
 											</select>
 											<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname|escape}"
 												{tip text="Enter new project name" trigger="projectname" } id="projectname"
-												{if !isset($nodeinfo.invprojectid) || empty($nodeinfo.invprojectid)} style="display: none;"{/if}>
+												{if !isset($nodeinfo.invprojectid) || $nodeinfo.invprojectid != -1} style="display: none;"{/if}>
 										</td>
 									</tr>
 
