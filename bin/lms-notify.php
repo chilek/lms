@@ -229,98 +229,6 @@ $supported_actions = array(
     ),
 );
 
-$actions = array();
-if (isset($options['actions'])) {
-    if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['actions'])
-        && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['actions'], $matches)) {
-        foreach ($matches[1] as $idx => $action) {
-            if (!isset($supported_actions[$action])
-                || ($supported_actions[$action]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
-                || ($supported_actions[$action]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
-                die('Invalid format of actions parameter!' . PHP_EOL);
-            }
-            $actions[$action] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
-
-            if (!empty($actions[$action]) && (($supported_actions[$action]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$action]['params'] == ACTION_PARAM_OPTIONAL)
-                && isset($supported_actions[$action]['param_validator']) && !($supported_actions[$action]['param_validator']($actions[$action])))) {
-                die('Invalid format of actions parameter!' . PHP_EOL);
-            }
-
-            if (isset($supported_actions[$action]['param_map'])) {
-                $action[$action] = $supported_actions[$action]['param_map']($actions[$action]);
-            }
-        }
-    } else {
-        die('Invalid format of actions parameter!' . PHP_EOL);
-    }
-} else {
-    $actions = array(
-        'node-access' => array(),
-        'customer-status' => array(),
-        'assignment-invoice' => array(),
-    );
-}
-
-$block_prechecks = array();
-if (isset($options['block-prechecks'])) {
-    if ($options['block-prechecks'] != 'none') {
-        if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['block-prechecks'])
-            && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['block-prechecks'], $matches)) {
-            foreach ($matches[1] as $idx => $precheck) {
-                if (!isset($supported_actions[$precheck])
-                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
-                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
-                    die('Invalid format of block_prechecks parameter!' . PHP_EOL);
-                }
-                $block_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
-
-                if (!empty($block_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
-                    && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($block_prechecks[$precheck])))) {
-                    die('Invalid format of block_prechecks parameter!' . PHP_EOL);
-                }
-
-                if (isset($supported_actions[$precheck]['param_map'])) {
-                    $block_prechecks[$precheck] = $supported_actions[$precheck]['param_map']($block_prechecks[$precheck]);
-                }
-            }
-        } else {
-            die('Invalid format of block_prechecks parameter!' . PHP_EOL);
-        }
-    }
-} else {
-    $block_prechecks = $actions;
-}
-
-$unblock_prechecks = array();
-if (isset($options['unblock-prechecks'])) {
-    if ($options['unblock-prechecks'] != 'none') {
-        if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['unblock-prechecks'])
-            && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['unblock-prechecks'], $matches)) {
-            foreach ($matches[1] as $idx => $precheck) {
-                if (!isset($supported_actions[$precheck])
-                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
-                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
-                    die('Invalid format of actions parameter!' . PHP_EOL);
-                }
-                $unblock_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
-
-                if (!empty($unblock_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
-                    && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($unblock_prechecks[$precheck])))) {
-                    die('Invalid format of unblock_prechecks parameter!' . PHP_EOL);
-                }
-
-                if (isset($supported_actions[$precheck]['param_map'])) {
-                    $unblock_prechecks[$precheck] = $supported_actions[$precheck]['param_map']($unblock_prechecks[$precheck]);
-                }
-            }
-        } else {
-            die('Invalid format of unblock_prechecks parameter!' . PHP_EOL);
-        }
-    }
-} else {
-    $unblock_prechecks = $actions;
-}
-
 $current_month = intval(strftime('%m'));
 $current_year = intval(strftime('%Y'));
 
@@ -383,6 +291,99 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+
+$actions = array();
+if (isset($options['actions'])) {
+    if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['actions'])
+        && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['actions'], $matches)) {
+        foreach ($matches[1] as $idx => $action) {
+            if (!isset($supported_actions[$action])
+                || ($supported_actions[$action]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
+                || ($supported_actions[$action]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
+                die('Invalid format of actions parameter!' . PHP_EOL);
+            }
+            $actions[$action] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+
+            if (!empty($actions[$action]) && (($supported_actions[$action]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$action]['params'] == ACTION_PARAM_OPTIONAL)
+                && isset($supported_actions[$action]['param_validator']) && !($supported_actions[$action]['param_validator']($actions[$action])))) {
+                die('Invalid format of actions parameter!' . PHP_EOL);
+            }
+
+            if (!empty($actions[$action]) && isset($supported_actions[$action]['param_map'])) {
+                $action[$action] = $supported_actions[$action]['param_map']($actions[$action]);
+            }
+        }
+    } else {
+        die('Invalid format of actions parameter!' . PHP_EOL);
+    }
+} else {
+    $actions = array(
+        'node-access' => array(),
+        'customer-status' => array(),
+        'assignment-invoice' => array(),
+    );
+}
+
+$block_prechecks = array();
+if (isset($options['block-prechecks'])) {
+    if ($options['block-prechecks'] != 'none') {
+        if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['block-prechecks'])
+            && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['block-prechecks'], $matches)) {
+            foreach ($matches[1] as $idx => $precheck) {
+                if (!isset($supported_actions[$precheck])
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
+                    die('Invalid format of block_prechecks parameter!' . PHP_EOL);
+                }
+                $block_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+
+                if (!empty($block_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
+                    && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($block_prechecks[$precheck])))) {
+                    die('Invalid format of block_prechecks parameter!' . PHP_EOL);
+                }
+
+                if (!empty($block_prechecks[$precheck]) && isset($supported_actions[$precheck]['param_map'])) {
+                    $block_prechecks[$precheck] = $supported_actions[$precheck]['param_map']($block_prechecks[$precheck]);
+                }
+            }
+        } else {
+            die('Invalid format of block_prechecks parameter!' . PHP_EOL);
+        }
+    }
+} else {
+    $block_prechecks = $actions;
+}
+
+$unblock_prechecks = array();
+if (isset($options['unblock-prechecks'])) {
+    if ($options['unblock-prechecks'] != 'none') {
+        if (preg_match('/^[^,\(]+(\([^\)]+\))?(,[^,\(]+(\([^\)]+\))?)*$/', $options['unblock-prechecks'])
+            && preg_match_all('/([^,\(]+)(?:\(([^\)]+)\))?/', $options['unblock-prechecks'], $matches)) {
+            foreach ($matches[1] as $idx => $precheck) {
+                if (!isset($supported_actions[$precheck])
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED && empty($matches[2][$idx]))
+                    || ($supported_actions[$precheck]['params'] == ACTION_PARAM_NONE && !empty($matches[2][$idx]))) {
+                    die('Invalid format of actions parameter!' . PHP_EOL);
+                }
+                $unblock_prechecks[$precheck] = empty($matches[2][$idx]) ? array() : preg_split('/,/', $matches[2][$idx], PREG_SPLIT_NO_EMPTY);
+
+                if (!empty($unblock_prechecks[$precheck]) && (($supported_actions[$precheck]['params'] == ACTION_PARAM_REQUIRED || $supported_actions[$precheck]['params'] == ACTION_PARAM_OPTIONAL)
+                    && isset($supported_actions[$precheck]['param_validator']) && !($supported_actions[$precheck]['param_validator']($unblock_prechecks[$precheck])))) {
+                    die('Invalid format of unblock_prechecks parameter!' . PHP_EOL);
+                }
+
+                if (!empty($unblock_prechecks[$precheck]) && isset($supported_actions[$precheck]['param_map'])) {
+                    $unblock_prechecks[$precheck] = $supported_actions[$precheck]['param_map']($unblock_prechecks[$precheck]);
+                }
+            }
+        } else {
+            die('Invalid format of unblock_prechecks parameter!' . PHP_EOL);
+        }
+    }
+} else {
+    $unblock_prechecks = $actions;
+}
+
 
 if (empty($fakedate)) {
     $currtime = time();
