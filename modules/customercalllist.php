@@ -24,6 +24,13 @@
  *  $Id$
  */
 
+if (isset($_GET['reset'])) {
+    $SESSION->remove('customer_call_list_customerid');
+    $SESSION->remove('customer_call_list_userid');
+    $SESSION->remove('customer_call_list_assigned');
+    $SESSION->redirect('?m=customercalllist');
+}
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (isset($_GET['page'])) {
@@ -46,56 +53,55 @@ $offset = ($page - 1) * $limit;
 $cid = 0;
 $uid = 0;
 $assigned = '';
-if (!isset($_GET['reset'])) {
-    if (isset($_POST['customerid'])) {
-        $cid = intval($_POST['customerid']);
-    } elseif (isset($_GET['c'])) {
-        $cid = intval($_GET['c']);
-    } elseif ($SESSION->is_set('customer_call_list_customerid')) {
-        $SESSION->restore('customer_call_list_customerid', $cid);
-        $cid = intval($cid);
-    }
 
-    if (isset($_POST['userid'])) {
-        $uid = intval($_POST['userid']);
-    } elseif (isset($_GET['u'])) {
-        $uid = intval($_GET['u']);
-    } elseif ($SESSION->is_set('customer_call_list_userid')) {
-        $SESSION->restore('customer_call_list_userid', $uid);
-        $uid = intval($uid);
-    }
+if (isset($_POST['customerid'])) {
+    $cid = intval($_POST['customerid']);
+} elseif (isset($_GET['c'])) {
+    $cid = intval($_GET['c']);
+} elseif ($SESSION->is_set('customer_call_list_customerid')) {
+    $SESSION->restore('customer_call_list_customerid', $cid);
+    $cid = intval($cid);
+}
 
-    if (isset($_POST['assigned'])) {
-        switch ($_POST['assigned']) {
-            case '1':
-                $assigned = 1;
-                break;
-            case '0':
-                $assigned = 0;
-                break;
-            case '':
-            default:
-                $assigned = '';
-                break;
-        }
-    } elseif (isset($_GET['a'])) {
-        switch ($_GET['a']) {
-            case '1':
-                $assigned = 1;
-                break;
-            case '0':
-                $assigned = 0;
-                break;
-            case '':
-            default:
-                $assigned = '';
-                break;
-        }
-    } elseif ($SESSION->is_set('customer_call_list_assigned')) {
-        $SESSION->restore('customer_call_list_assigned', $assigned);
-        if ($assigned !== '') {
-            $assigned = intval($assigned);
-        }
+if (isset($_POST['userid'])) {
+    $uid = intval($_POST['userid']);
+} elseif (isset($_GET['u'])) {
+    $uid = intval($_GET['u']);
+} elseif ($SESSION->is_set('customer_call_list_userid')) {
+    $SESSION->restore('customer_call_list_userid', $uid);
+    $uid = intval($uid);
+}
+
+if (isset($_POST['assigned'])) {
+    switch ($_POST['assigned']) {
+        case '1':
+            $assigned = 1;
+            break;
+        case '0':
+            $assigned = 0;
+            break;
+        case '':
+        default:
+            $assigned = '';
+            break;
+    }
+} elseif (isset($_GET['a'])) {
+    switch ($_GET['a']) {
+        case '1':
+            $assigned = 1;
+            break;
+        case '0':
+            $assigned = 0;
+            break;
+        case '':
+        default:
+            $assigned = '';
+            break;
+    }
+} elseif ($SESSION->is_set('customer_call_list_assigned')) {
+    $SESSION->restore('customer_call_list_assigned', $assigned);
+    if ($assigned !== '') {
+        $assigned = intval($assigned);
     }
 }
 
