@@ -121,10 +121,10 @@
 									{icon name="categories" label="Categories"}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
-									{foreach from=$categories item=category}
-									{if $category.checked > 0}
-									<A href="?m=rtcategoryinfo&amp;id={$category.id}">{$category.name}</A><BR>
-									{/if}
+									{foreach $ticket.categories as $tc}
+										<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&o=lastmodified,desc">
+											<div class="lms-ui-category-label" style="{$tc.style}">{$tc.name}</div>
+										</a>
 									{/foreach}
 								</TD>
 							</TR>
