@@ -292,7 +292,7 @@
 							{if $ticket.parentid}
 							<TR>
 								<TD class="bold">
-									{icon name="parentticket" label="Parent ticket"}
+									{icon name="parentticket" label="Primary ticket"}
 								</TD>
 								<TD>
 									#{$ticket.parent.id|string_format:"%06d"} <a href="?m=rtticketview&id={$ticket.parent.id}">{$ticket.parent.name|escape}</a><br>
@@ -302,7 +302,7 @@
 							{if $ticket.childtickets}
 								<TR>
 									<TD class="bold">
-										{icon name="childticket" label="Child tickets"}
+										{icon name="childticket" label="Secondary tickets"}
 									</TD>
 									<TD>
 										{foreach $ticket.childtickets as $t}
@@ -382,7 +382,7 @@
 				{/if}
 				{button type="link-button" icon="clone" label="Clone" tip="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
 				{if $ticket.state != $smarty.const.RT_RESOLVED}
-					{button type="link-button" icon="childticket" label="Create child ticket" tip="Create child ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
+					{button type="link-button" icon="childticket" label="Create secondary ticket" tip="Create secondary ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
 				{/if}
 				{if count($ticket.images)}
 					{button id="ticket-gallery-button" icon="gallery" label="Attachment gallery" tip="Attachment gallery" data_gallery="{base64_encode(json_encode($ticket.images))}"}

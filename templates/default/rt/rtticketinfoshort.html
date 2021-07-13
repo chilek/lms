@@ -72,7 +72,7 @@
 	{if $ticket.parentid}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="parentticket" label="Parent ticket"}
+			{icon name="parentticket" label="Primary ticket"}
 		</TD>
 		<TD>
 			<A href="?m=rtticketview&id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A><br>
@@ -94,7 +94,7 @@
 	{if $ticket.childtickets}
 	<TR>
 		<TD class="bold nobr">
-			{icon name="childticket" label="Child tickets"}
+			{icon name="childticket" label="Secondary tickets"}
 		</TD>
 		<TD>
 			{foreach $ticket.childtickets as $i}

@@ -324,14 +324,14 @@
 				{/strip}{/capture}
 			{/function}
 
-			{box_row icon="parentticket" label="Parent ticket" icon_class="fa-fw"}
-				{list id="parent-ticket" tipid="parentid" tip="Enter ID of parent ticket" items=$ticket.parent
+			{box_row icon="parentticket" label="Primary ticket" icon_class="fa-fw"}
+				{list id="parent-ticket" tipid="parentid" tip="Enter ID of primary ticket" items=$ticket.parent
 					field_name_pattern="ticket[parentid]" item_content="ticket_item_content"}
 			{/box_row}
 
 			{if empty($ticket.parent)}
 				{$class = "blend"}
-				{$tip = "No parent ticket is selected!"}
+				{$tip = "No primary ticket is selected!"}
 			{else}
 				{$class = ""}
 				{$tip = ""}

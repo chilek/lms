@@ -137,10 +137,10 @@
                 </SELECT>
             </label>
             <label class="nobr">
-                {trans("Parent ticket")}
+                {trans("Primary ticket")}
                 <SELECT size="1" name="parentids" onChange="document.filter.submit()">
                     <option value=""{if $filter.parentids == ""} selected{/if}>{trans("all")}</option>
-                    <option value="-1"{if $filter.parentids == -1} selected{/if}>{trans("show only parent tickets")}</option>
+                    <option value="-1"{if $filter.parentids == -1} selected{/if}>{trans("show only primary tickets")}</option>
                 </SELECT>
             </label>
             <label class="nobr">
