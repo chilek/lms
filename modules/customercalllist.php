@@ -61,6 +61,11 @@ if (isset($_POST['customerid'])) {
     $cid = intval($_POST['customerid']);
 } elseif (isset($_GET['c'])) {
     $cid = intval($_GET['c']);
+    $SESSION->remove('customer_call_list_userid');
+    $SESSION->remove('customer_call_list_assigned');
+    $SESSION->remove('customer_call_list_phone');
+    $SESSION->remove('customer_call_list_datefrom');
+    $SESSION->remove('customer_call_list_dateto');
 } elseif ($SESSION->is_set('customer_call_list_customerid')) {
     $SESSION->restore('customer_call_list_customerid', $cid);
     $cid = intval($cid);
@@ -70,6 +75,11 @@ if (isset($_POST['userid'])) {
     $uid = intval($_POST['userid']);
 } elseif (isset($_GET['u'])) {
     $uid = intval($_GET['u']);
+    $SESSION->remove('customer_call_list_customerid');
+    $SESSION->remove('customer_call_list_assigned');
+    $SESSION->remove('customer_call_list_phone');
+    $SESSION->remove('customer_call_list_datefrom');
+    $SESSION->remove('customer_call_list_dateto');
 } elseif ($SESSION->is_set('customer_call_list_userid')) {
     $SESSION->restore('customer_call_list_userid', $uid);
     $uid = intval($uid);
