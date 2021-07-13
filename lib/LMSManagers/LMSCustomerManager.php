@@ -2911,6 +2911,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . intval($params['customerid']) . ')';
         }
 
+        if (isset($params['phone']) && strlen($params['phone'])) {
+            $where[] = 'c.phone LIKE \'%' . $this->db->Escape($params['phone']) . '%\'';
+        }
+
+        if (isset($params['datefrom']) && !empty($params['datefrom'])) {
+            $where[] = 'c.dt >= ' . intval($params['datefrom']);
+        }
+
+        if (isset($params['dateto']) && !empty($params['dateto'])) {
+            $where[] = 'c.dt <= ' . intval($params['dateto']);
+        }
+
         if ($count) {
             return $this->db->GetOne(
                 'SELECT COUNT(c.*) FROM customercalls c '

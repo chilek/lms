@@ -28,6 +28,9 @@ if (isset($_GET['reset'])) {
     $SESSION->remove('customer_call_list_customerid');
     $SESSION->remove('customer_call_list_userid');
     $SESSION->remove('customer_call_list_assigned');
+    $SESSION->remove('customer_call_list_phone');
+    $SESSION->remove('customer_call_list_datefrom');
+    $SESSION->remove('customer_call_list_dateto');
     $SESSION->redirect('?m=customercalllist');
 }
 
@@ -105,6 +108,30 @@ if (isset($_POST['assigned'])) {
     }
 }
 
+if (isset($_POST['phone'])) {
+    $phone = intval($_POST['phone']);
+} elseif (isset($_GET['p'])) {
+    $phone = intval($_GET['p']);
+} elseif ($SESSION->is_set('customer_call_list_phone')) {
+    $SESSION->restore('customer_call_list_phone', $phone);
+}
+
+if (isset($_POST['datefrom'])) {
+    $datefrom = strtotime($_POST['datefrom']);
+} elseif (isset($_GET['df'])) {
+    $datefrom = intval($_GET['df']);
+} elseif ($SESSION->is_set('customer_call_list_datefrom')) {
+    $SESSION->restore('customer_call_list_datefrom', $datefrom);
+}
+
+if (isset($_POST['dateto'])) {
+    $dateto = strtotime($_POST['dateto']);
+} elseif (isset($_GET['dt'])) {
+    $dateto = intval($_GET['dt']);
+} elseif ($SESSION->is_set('customer_call_list_dateto')) {
+    $SESSION->restore('customer_call_list_dateto', $dateto);
+}
+
 if ($cid && !$LMS->CustomerExists($cid)) {
     $SESSION->redirect('?m=customerlist');
 }
@@ -125,6 +152,19 @@ if ($uid) {
     $params['userid'] = $uid;
     $SMARTY->assign('username', $LMS->getUserName($uid));
 }
+if ($phone) {
+    $params['phone'] = $phone;
+    $SMARTY->assign('phone', $phone);
+}
+if ($datefrom) {
+    $params['datefrom'] = $datefrom;
+    $SMARTY->assign('datefrom', $datefrom);
+}
+if ($dateto) {
+    $params['dateto'] = $dateto;
+    $SMARTY->assign('dateto', $dateto);
+}
+
 $total= intval($LMS->getCustomerCalls($params));
 
 $params['count'] = false;
@@ -160,6 +200,24 @@ if ($assigned !== '') {
     $SESSION->save('customer_call_list_assigned', $assigned);
 } else {
     $SESSION->remove('customer_call_list_assigned');
+}
+
+if ($phone !== '') {
+    $SESSION->save('customer_call_list_phone', $phone);
+} else {
+    $SESSION->remove('customer_call_list_phone');
+}
+
+if (!empty($datefrom)) {
+    $SESSION->save('customer_call_list_datefrom', $datefrom);
+} else {
+    $SESSION->remove('customer_call_list_datefrom');
+}
+
+if (!empty($dateto)) {
+    $SESSION->save('customer_call_list_dateto', $dateto);
+} else {
+    $SESSION->remove('customer_call_list_dateto');
 }
 
 $SMARTY->assign('assigned', $assigned);

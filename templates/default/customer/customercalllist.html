@@ -111,6 +111,21 @@
 								version = 2
 							}
 						</label>
+						<label>
+							{trans("Phone number")}
+							<input type="text" name="phone" value="{$phone|escape}" form="filter" class="filter-item">
+						</label>
+						{date_period_preset from="[name=\"datefrom\"]" to="[name=\"dateto\"]" time=true}
+						<label>
+							{trans("From")}
+							<input type="text" name="datefrom" value="{$datefrom|date_format:"%Y/%m/%d %H:%M:%S"}"
+								form="filter" class="filter-item lms-ui-datetime">
+						</label>
+						<label>
+							{trans("To")}
+							<input type="text" name="dateto" value="{$dateto|date_format:"%Y/%m/%d %H:%M:%S"}"
+								form="filter" class="filter-item lms-ui-datetime">
+						</label>
 						{icon name="clear" id="clear-filter"}
 					</div>
 				</div>
