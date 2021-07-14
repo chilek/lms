@@ -345,6 +345,7 @@ switch ($action) {
                             $new_valuebrutto = f_round($orig_valuebrutto * (1 - ($contents[$idx]['pdiscount'] / 100)));
                             $old_valuebrutto = $orig_valuebrutto;
                             $contents[$idx]['valuebrutto'] = f_round(-1 * ($new_valuebrutto - $old_valuebrutto));
+                            $contents[$idx]['pdiscount'] = 0;
                         } else {
                             $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['vdiscount']);
                             $contents[$idx]['vdiscount'] = 0;
