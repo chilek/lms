@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -60,7 +60,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 
     $cnotecontents = array();
     foreach ($cnote['content'] as $item) {
-        $deleted = $item['value'] == 0;
+        $deleted = ($item['value'] == 0 || $item['count'] == 0);
         $nitem['deleted'] = $deleted;
         $nitem['tariffid']  = $item['tariffid'];
         $nitem['name']      = $item['description'];
@@ -79,8 +79,9 @@ if (isset($_GET['id']) && $action == 'edit') {
         } else {
             $nitem['count']     = str_replace(',', '.', $item['count']);
             $pdiscount = floatval($item['pdiscount']);
+            $vdiscount = floatval($item['vdiscount']);
             $nitem['discount']  = (!empty($pdiscount) ? str_replace(',', '.', $item['pdiscount']) : str_replace(',', '.', $item['vdiscount']));
-            $nitem['discount_type'] = (!empty($pdiscount) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
+            $nitem['discount_type'] = ((!empty($pdiscount) && empty($vdiscount)) || (empty($pdiscount) && empty($vdiscount)) ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT);
             $nitem['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
             $nitem['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
             $nitem['content']       = str_replace(',', '.', $item['content']);
@@ -95,7 +96,6 @@ if (isset($_GET['id']) && $action == 'edit') {
         $nitem['taxcategory'] = $item['taxcategory'];
         $cnotecontents[$item['itemid']] = $nitem;
     }
-    $SESSION->save('cnotecontents', $cnotecontents, true);
 
     $cnote['oldcdate'] = $cnote['cdate'];
     $cnote['oldsdate'] = $cnote['sdate'];
@@ -115,6 +115,7 @@ if (isset($_GET['id']) && $action == 'edit') {
     $cnotecontents = $hook_data['contents'];
     $cnote = $hook_data['cnote'];
 
+    $SESSION->save('cnotecontents', $cnotecontents, true);
     $SESSION->save('cnote', $cnote, true);
     $SESSION->save('cnoteid', $cnote['id'], true);
 }
@@ -122,7 +123,6 @@ if (isset($_GET['id']) && $action == 'edit') {
 $SESSION->restore('cnotecontents', $contents, true);
 $SESSION->restore('cnote', $cnote, true);
 $SESSION->restore('cnoteediterror', $error, true);
-$itemdata = r_trim($_POST);
 
 $ntempl = docnumber(array(
     'number' => $cnote['number'],
@@ -356,6 +356,9 @@ switch ($action) {
 
             $contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
             $contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
+            if ($newcontents['valuebrutto'][$idx] == '') {
+                $error['valuebrutto[' . $idx . ']'] = trans('Wrong value!');
+            }
             $contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx] != '' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
             $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] != '' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
             $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
@@ -467,39 +470,38 @@ switch ($action) {
                         }
                     }
                 }
-                if (!empty($invoicecontents[$idx]['count']) && !empty($contents[$idx]['count'])) {
-                    //cash value for recovered/restored invoice position
-                    $contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
-                } else {
-                    $contents[$idx]['cash'] = 0;
-                }
 
-                $contents[$idx]['count'] = 0;
+                $contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $contents[$idx]['count']);
+                $contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
+                $contents[$idx]['cash'] -= f_round($invoicecontents[$idx]['value'] * $contents[$idx]['count']);
             } else { // if discount type or discount value dosen't change
-                if ($contents[$idx]['valuenetto'] != floatval($item['valuenetto'])) {
+                // zeroing discount
+                $contents[$idx]['pdiscount'] = 0;
+                $contents[$idx]['vdiscount'] = 0;
+
+                if (f_round($contents[$idx]['valuebrutto']) != f_round($item['valuebrutto'])) {
+                    $contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuebrutto'] / ($taxvalue / 100 + 1));
+                } elseif (f_round($contents[$idx]['valuenetto']) != f_round($item['valuenetto'])) {
                     $contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
-                    $contents[$idx]['pdiscount'] = 0;
-                    $contents[$idx]['vdiscount'] = 0;
-                } elseif (f_round($contents[$idx]['valuebrutto']) == f_round($item['valuebrutto'])) {
-                    $contents[$idx]['valuebrutto'] = $item['valuebrutto'];
                 }
 
-                if ((isset($item['deleted']) && $item['deleted']) || empty($contents[$idx]['count'])) {
-                    $contents[$idx]['valuebrutto'] = f_round(-1 * $invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count']);
-                    $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count'], 2);
+                if ((isset($item['deleted']) && $item['deleted']) || empty($contents[$idx]['count']) || empty($contents[$idx]['valuebrutto'])) {
+                    $contents[$idx]['valuebrutto'] = f_round(-1 * $invoicecontents[$idx]['value']);
+                    $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count']);
                     $contents[$idx]['count'] = f_round(-1 * $invoicecontents[$idx]['count'], 3);
-                } elseif ($contents[$idx]['count'] != $item['count']
-                    || $contents[$idx]['valuebrutto'] != $item['valuebrutto']) {
-                    $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['value']);
+                } elseif (f_round($contents[$idx]['count'], 3) == f_round($item['count'], 3)) {
                     $contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
-                    $contents[$idx]['pdiscount'] = 0;
-                    $contents[$idx]['vdiscount'] = 0;
-                    if (empty($contents[$idx]['count'])) {
-                        $contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
-                    } elseif (empty($contents[$idx]['valuebrutto'])) {
-                        $contents[$idx]['cash'] = f_round(-1 * $invoicecontents[$idx]['value'] * $contents[$idx]['count'], 2);
-                    } else {
-                        $contents[$idx]['cash'] = f_round(-1 * $invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count'], 2);
+                    $contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $contents[$idx]['count']);
+                    $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['value']);
+
+                    $contents[$idx]['cash'] += f_round(-1 * $contents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count']);
+                } elseif (f_round($contents[$idx]['count'], 3) != f_round($item['count'], 3)) {
+                    $contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
+                    $contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $contents[$idx]['count']);
+                    $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['value']);
+
+                    if (f_round($contents[$idx]['valuebrutto']) != f_round($item['valuebrutto'])) {
+                        $contents[$idx]['cash'] += f_round(-1 * $contents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count']);
                     }
                 } else {
                     $contents[$idx]['cash'] = 0;
