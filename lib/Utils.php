@@ -165,6 +165,9 @@ class Utils
             if ($mask == '') {
                 $mask = '255.255.255.255';
             } elseif (is_numeric($mask)) {
+                if ($mask == '0') {
+                    return true;
+                }
                 $mask = prefix2mask($mask);
             }
 
