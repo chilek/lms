@@ -369,7 +369,11 @@ foreach ($dirs as $dir) {
                 $outgoing = true;
             }
         } else {
-            $phone = $outgoing ? $dst : $src;
+            if (preg_match('/' . $local_number_pattern . '/', $outgoing ? $dst : $src, $m) && isset($m['prefix'])) {
+                $phone = $m['number'];
+            } else {
+                $phone = $outgoing ? $dst : $src;
+            }
         }
 
         $dst_file_name = preg_replace('/\.[^\.]+$/', '.' . $file_extension, $src_file_name);
