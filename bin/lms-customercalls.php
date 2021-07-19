@@ -353,27 +353,25 @@ foreach ($dirs as $dir) {
 
         if (!isset($outgoing)) {
             if (preg_match('/' . $local_number_pattern . '/', $src, $m) && isset($m['prefix'])) {
-                $phone = $m['number'];
+                $number = $m['number'];
             } else {
+                $number = $src;
+            }
+            if (isset($customers[$number])) {
+                $outgoing = false;
                 $phone = $src;
             }
-            if (isset($customers[$phone])) {
-                $outgoing = false;
-            }
             if (preg_match('/' . $local_number_pattern . '/', $dst, $m) && isset($m['prefix'])) {
-                $phone = $m['number'];
+                $number = $m['number'];
             } else {
+                $number = $dst;
+            }
+            if (!isset($outgoing) || isset($customers[$number])) {
+                $outgoing = true;
                 $phone = $dst;
             }
-            if (!isset($outgoing) || isset($customers[$phone])) {
-                $outgoing = true;
-            }
         } else {
-            if (preg_match('/' . $local_number_pattern . '/', $outgoing ? $dst : $src, $m) && isset($m['prefix'])) {
-                $phone = $m['number'];
-            } else {
-                $phone = $outgoing ? $dst : $src;
-            }
+            $phone = $outgoing ? $dst : $src;
         }
 
         $dst_file_name = preg_replace('/\.[^\.]+$/', '.' . $file_extension, $src_file_name);
