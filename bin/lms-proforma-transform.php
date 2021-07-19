@@ -197,7 +197,7 @@ $customers = $DB->GetAll(
                 SELECT customerid AS id, balance AS balance
                 FROM customerbalances
             ) UNION (
-                SELECT d.customerid AS id, -SUM(ic.count * ic.value * d.currencyvalue) AS balance
+                SELECT d.customerid AS id, -ROUND(SUM(ic.count * ic.value * d.currencyvalue), 2) AS balance
                 FROM documents d
                 JOIN invoicecontents ic ON ic.docid = d.id
                 WHERE d.type = ? AND d.cancelled = 0'
