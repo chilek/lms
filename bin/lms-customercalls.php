@@ -336,6 +336,7 @@ foreach ($dirs as $dir) {
         }
 
         $userid = null;
+        $outgoing = null;
         if (!empty($src_prefix) && isset($users[$src_prefix . $src_number])) {
             $userid = $users[$src_prefix . $src_number];
             $outgoing = true;
@@ -350,7 +351,26 @@ foreach ($dirs as $dir) {
             $outgoing = false;
         }
 
-        $phone = $outgoing ? $dst : $src;
+        if (!isset($outgoing)) {
+            if (preg_match('/' . $local_number_pattern . '/', $src, $m) && isset($m['prefix'])) {
+                $phone = $m['number'];
+            } else {
+                $phone = $src;
+            }
+            if (isset($customers[$phone])) {
+                $outgoing = false;
+            }
+            if (preg_match('/' . $local_number_pattern . '/', $dst, $m) && isset($m['prefix'])) {
+                $phone = $m['number'];
+            } else {
+                $phone = $dst;
+            }
+            if (!isset($outgoing) || isset($customers[$phone])) {
+                $outgoing = true;
+            }
+        } else {
+            $phone = $outgoing ? $dst : $src;
+        }
 
         $dst_file_name = preg_replace('/\.[^\.]+$/', '.' . $file_extension, $src_file_name);
 
