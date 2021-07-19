@@ -191,13 +191,13 @@ if (!empty($groupsql)) {
 // **********************************************************
 
 $customers = $DB->GetAll(
-    'SELECT c.id, ROUND(SUM(c.balance), 2) AS balance FROM
+    'SELECT c.id, SUM(c.balance) AS balance FROM
         (
             (
                 SELECT customerid AS id, balance AS balance
                 FROM customerbalances
             ) UNION (
-                SELECT d.customerid AS id, -SUM(ic.count * ic.value * d.currencyvalue) AS balance
+                SELECT d.customerid AS id, -SUM(ROUND(ROUND(ic.count * ic.value, 2) * d.currencyvalue, 2)) AS balance
                 FROM documents d
                 JOIN invoicecontents ic ON ic.docid = d.id
                 WHERE d.type = ? AND d.cancelled = 0'
@@ -231,14 +231,14 @@ foreach ($customers as $customer) {
     $documents = $DB->GetAll(
         '(
                 SELECT cash.time, cash.docid, documents.type AS doctype, documents.closed,
-                    documents.archived, ROUND(SUM(cash.value * cash.currencyvalue), 2) AS value
+                    documents.archived, SUM(ROUND(cash.value * cash.currencyvalue, 2)) AS value
                 FROM cash
                 LEFT JOIN documents ON documents.id = docid
                 WHERE cash.customerid = ? AND cash.value <> 0 AND (cash.value < 0 OR documents.type = ?)
                 GROUP BY cash.time, cash.docid, documents.type, documents.closed, documents.archived
             ) UNION (
                 SELECT d.cdate AS time, d.id AS docid, d.type AS doctype, d.closed,
-                    d.archived, ROUND(SUM(-ic.value * ic.count * d.currencyvalue)) AS value
+                    d.archived, -SUM(ROUND(ROUND(ic.count * ic.value, 2) * d.currencyvalue, 2)) AS value
                 FROM documents d
                 JOIN invoicecontents ic ON ic.docid = d.id
                 WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '') . '
