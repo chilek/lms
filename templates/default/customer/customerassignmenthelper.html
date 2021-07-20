@@ -474,7 +474,8 @@
 												</label>
 											</td>
 											<td>
-												<input type="text" size="11" id="netprice" name="{$variable_prefix}[netvalue]" value="">
+												<input type="text" size="11" id="netprice" name="{$variable_prefix}[netvalue]" value=""
+													   {tip text="Enter liability net price (tariffless liabilities only)" trigger="netvalue"}>
 											</td>
 											<td rowspan="2">
 												<label>
@@ -492,7 +493,7 @@
 											</td>
 											<td>
 												<input type="text" size="11" id="grossprice" name="{$variable_prefix}[value]" value=""
-													{tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
+													{tip text="Enter liability gross price (tariffless liabilities only)" trigger="value"}>
 											</td>
 										</tr>
 									</table>
