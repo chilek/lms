@@ -3435,6 +3435,45 @@ CREATE VIEW vallusers AS
 SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
 FROM users;
 
+CREATE VIEW vinvoicecontents AS
+    SELECT ic.*,
+        (CASE WHEN (d.flags & 16) > 0 THEN 1 ELSE 0 END) AS netflag,
+        (CASE WHEN (d.flags & 16) > 0
+            THEN
+                ROUND(((ic.value - ic.vdiscount) * (100 - ic.pdiscount)) / 100, 2)
+            ELSE
+                ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) / (1 + (t.value / 100)), 2)
+        END) AS netprice,
+        (CASE WHEN (d.flags & 16) > 0
+            THEN
+                ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * (1 + (t.value / 100)), 2)
+            ELSE
+                ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2)
+        END) AS grossprice,
+        (CASE WHEN (d.flags & 16) > 0
+            THEN
+                ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * ic.count, 2)
+            ELSE
+                ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * ic.count, 2)
+                    - ROUND(ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * ic.count, 2) * t.value / (100 + t.value), 2)
+        END) AS netvalue,
+        (CASE WHEN (d.flags & 16) > 0
+            THEN
+                ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * ic.count, 2)
+            ELSE
+                ROUND(ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * ic.count, 2) * t.value / (100 + t.value), 2)
+        END) AS taxvalue,
+        (CASE WHEN (d.flags & 16) > 0
+            THEN
+                ROUND(ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * ic.count, 2) * (1 + (t.value / 100)), 2)
+            ELSE
+                ROUND(ROUND((ic.value - ic.vdiscount) * (100 - ic.pdiscount) / 100, 2) * ic.count, 2)
+        END) AS grossvalue,
+        t.value AS taxrate
+    FROM invoicecontents ic
+    JOIN taxes t ON t.id = ic.taxid
+    JOIN documents d ON d.id = ic.docid;
+
 CREATE OR REPLACE FUNCTION customerbalances_update()
     RETURNS trigger
     LANGUAGE plpgsql
@@ -4089,6 +4128,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021070900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072000');
 
 COMMIT;
