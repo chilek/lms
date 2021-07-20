@@ -428,7 +428,7 @@ foreach ($dirs as $dir) {
             $output = array();
             $res = exec($cmd, $output, $ret);
             if (!empty($ret) || $res === false) {
-                die('Fatal error: error during duration determination for file ' . $src_file . '!' . PHP_EOL);
+                echo 'Warning: error during duration determination for file ' . $src_file . '!' . PHP_EOL;
             }
 
             $duration = str_replace(',', '.', round(floatval($res)));
