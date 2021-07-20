@@ -1331,6 +1331,7 @@ $_LANG['Members Count:'] = 'Liczba członków:';
 $_LANG['Members Count'] = 'Liczba członków';
 $_LANG['Message:'] = 'Wiadomość:';
 $_LANG['Message body:'] = 'Treść wiadomości:';
+$_LANG['Message body'] = 'Treść wiadomości';
 $_LANG['Show message body'] = 'Pokaż treść wiadomości';
 $_LANG['Message body is required!'] = 'Treść wiadomości jest wymagana!';
 $_LANG['Message body not specified!'] = 'Brak treści wiadomości!';
@@ -1670,6 +1671,7 @@ $_LANG['Receipt number:'] = 'Numer potwierdzenia:';
 $_LANG['Receipt number $a already exists!'] = 'Potwierdzenie nr $a już istnieje!';
 $_LANG['Receipt number must be integer!'] = 'Numer potwierdzenia musi być liczbą całkowitą!';
 $_LANG['Recipients:'] = 'Odbiorcy:';
+$_LANG['Recipients'] = 'Odbiorcy';
 $_LANG['Recipient\'s e-mail:'] = 'E-mail odbiorcy:';
 $_LANG['records $a - $b of $c'] = 'rekordy $a - $b z $c';
 $_LANG['Registered for:'] = 'Zarejestrowano dla:';
@@ -1787,7 +1789,9 @@ $_LANG['Select user/owner of the ticket'] = 'Wybierz użytkownika/właściciela 
 $_LANG['Select user(s) (optional)'] = 'Wybierz użytkowników (opcjonalnie)';
 $_LANG['Seller:'] = 'Sprzedawca:';
 $_LANG['Sender:'] = 'Nadawca:';
+$_LANG['Sender'] = 'Nadawca';
 $_LANG['Sender E-mail:'] = 'E-Mail nadawcy:';
+$_LANG['Sender E-mail'] = 'E-Mail nadawcy';
 $_LANG['Sender e-mail is required!'] = 'Adres nadawcy jest wymagany!';
 $_LANG['Sender name is required!'] = 'Nazwisko nadawcy jest wymagane!';
 $_LANG['Sending messages to:'] = 'Wysyłanie wiadomości do:';
@@ -2752,6 +2756,7 @@ $_LANG['private person'] = 'osoba fizyczna';
 $_LANG['legal entity'] = 'osoba prawna / firma';
 $_LANG['Select legal personality type'] = 'Wybierz typ osobowości prawnej';
 $_LANG['Link type:'] = 'Typ łącza:';
+$_LANG['Link type'] = 'Typ łącza';
 $_LANG['wire'] = 'przewodowe';
 $_LANG['Select link type'] = 'Wybierz typ łącza';
 $_LANG['With document of type:'] = 'Z dokumentem typu:';
@@ -3427,6 +3432,7 @@ $_LANG['Enabled'] = 'Włączony';
 $_LANG['Enter phone numbers separated by commas'] = 'Podaj numery telefonów oddzielone przecinkami';
 $_LANG['Specified phone number is not correct!'] = 'Podany numer telefonu nie jest poprawny!';
 $_LANG['Characters:'] = 'Znaków:';
+$_LANG['Characters'] = 'Znaków';
 $_LANG['Select users'] = 'Wybierz użytkowników';
 $_LANG['Enter discount percentage or value'] = 'Wprowadź wartość kwotową lub procentową rabatu';
 $_LANG['Min [bit/s]'] = 'Min [bit/s]';
@@ -3776,6 +3782,7 @@ $_LANG['SMS sent after ticket is resolved'] = 'SMS wysyłany, gdy zgłoszenie je
 $_LANG['backup access forbidden'] = 'brak dostępu do kopii zapasowych';
 
 $_LANG['Tariff type:'] = 'Typ taryfy:';
+$_LANG['Tariff type'] = 'Typ taryfy';
 
 $_LANG['consent required'] = 'wymagana zgoda';
 $_LANG['Check if ticket is expired'] = 'Zaznacz, jeśli zgłoszenie ma przekroczony termin ostateczny';
@@ -5039,6 +5046,7 @@ $_LANG['Invalid deadline format!'] = 'Niepoprawny format terminu płatności!';
 $_LANG['promotion management'] = 'zarządzanie promocjami';
 
 $_LANG['user group:'] = 'grupa użytkowników:';
+$_LANG['user group'] = 'grupa użytkowników';
 
 $_LANG['Customer data:'] = 'Dane klienta:';
 

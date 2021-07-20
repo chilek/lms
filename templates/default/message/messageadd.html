@@ -150,7 +150,7 @@
 				{icon name="filter"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Type:")}</strong>
+				<strong>{trans("Type")}</strong>
 			</td>
 			<TD>
 				{if $message.emailcount || empty($message.customers)}
@@ -229,7 +229,7 @@
 					{icon name="customergroup"}
 				</td>
 				<td class="nobr">
-					<strong>{trans("Recipients:")}</strong>
+					<strong>{trans("Recipients")}</strong>
 				</td>
 				<td>
 					<table width="100%">
@@ -244,7 +244,7 @@
 							<col style="width: 93%;">
 						</colgroup>
 						<tr>
-							<td class="nobr" rowspan="3">{trans("Status:")}</td>
+							<td class="nobr" rowspan="3">{trans("Status")}</td>
 							<td rowspan="3">
 								<select name="message[group]" {tip trigger="group" text="Select recipients group"}>
 									<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
@@ -266,7 +266,7 @@
 									<option value="59"{if $message.group == "59"} selected{/if}>{trans("opened documents")}</option>
 								</select>
 							</td>
-							<td class="nobr">{trans("Group:")}</td>
+							<td class="nobr">{trans("Group")}</td>
 							<td class="multiselect">
 								<select name="message[customergroup][]" multiple class="lms-ui-multiselect"
 									{tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
@@ -276,7 +276,7 @@
 									{/foreach}
 								</select>
 							</td>
-							<td class="nobr">{trans("Network:")}</td>
+							<td class="nobr">{trans("Network")}</td>
 							<td>
 								<select name="message[network]" {tip trigger="network" text="Select IP network"}>
 									<option value="0">{trans("- all networks -")}</option>
@@ -286,9 +286,9 @@
 									{/foreach}
 								</select>
 							</td>
-							<td class="nobr">{trans("Tariff type:")}</td>
+							<td class="nobr">{trans("Tariff type")}</td>
 							<td>
-								<select name="message[tarifftype]" {tip trigger="network" text="Select tariff type"}>
+								<select name="message[tarifftype]" {tip trigger="network"}>
 									<option value="0">{trans("- all -")}</option>
 									{foreach $_SERVICETYPES as $key => $type}
 										<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
@@ -297,9 +297,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="nobr">{trans("Nodes Group:<!short>")}</td>
+							<td class="nobr">{trans("Node Group<!short>")}</td>
 							<td>
-								<select size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
+								<select size="1" name="message[nodegroup]" {tip trigger="nodegroup"}>
 									<option value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</option>
 									{foreach $nodegroups as $nodegroup}
 										<option value="{$nodegroup.id}"{if $message.nodegroup == $nodegroup.id} selected{/if}
@@ -307,9 +307,9 @@
 									{/foreach}
 								</select>
 							</td>
-							<td class="nobr">{trans("Link type:")}</td>
+							<td class="nobr">{trans("Link type")}</td>
 							<td>
-								<select size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
+								<select size="1" name="message[linktype]" {tip trigger="linktype"}>
 									<option value="">{trans("- all -")}</option>
 									{foreach $_LINKTYPES as $type => $label}
 										<option value="{$type}">{$label}</option>
@@ -328,7 +328,7 @@
 						<tr>
 							<td class="nobr">
 								<label for="netdev">
-									{trans("Network device:")}
+									{trans("Network device")}
 								</label>
 							</td>
 							<td colspan="7" class="nobr">
@@ -356,7 +356,7 @@
 					{icon name="mail"}
 				</td>
 				<td class="nobr valign-top">
-					<strong>{trans("E-mail:")}</strong>
+					<strong>{trans("E-mail")}</strong>
 				</td>
 				<td class="customers">
 					<div class="customer-list-summary-container">
@@ -459,11 +459,11 @@
 				{icon name="mail"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Sender E-mail:")}</strong>
+				<strong>{trans("Sender E-mail")}</strong>
 			</td>
 			<td>
 				<input type="email" name="message[sender]" size="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}"
-					{tip trigger="sender" text="Enter sender e-mail address"}>
+					{tip trigger="sender"}>
 				<label {tip trigger="copytosender" text="Check if you want do send message copy to sender"}>
 				<input type="checkbox" name="message[copytosender]"{if ConfigHelper::checkConfig('phpui.send_message_to_sender_checkbox')} checked{/if}>
 				{trans("send copy to sender")}</label>
@@ -474,7 +474,7 @@
 				{icon name="user"}
 			</td>
 			<td>
-				<strong>{trans("Sender:")}</strong>
+				<strong>{trans("Sender")}</strong>
 			</td>
 			<td>
 				<input type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}"
@@ -487,16 +487,16 @@
 				{icon name="user"}
 			</td>
 			<td>
-				<strong>{trans("Users:")}</strong>
+				<strong>{trans("Users")}</strong>
 			</td>
 			<td>
 				<select size="4" name="message[users][]" id="user-selection" multiple class="lms-ui-multiselect"
-						{tip text="Select users"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
 					{foreach $users as $user}
 						<option value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|trunescape:30}</option>
 					{/foreach}
 				</select>
-				<strong>{trans("user group:")}</strong>
+				<strong>{trans("user group")}</strong>
 				<select name="message[usergroup]" id="usergroup-selection">
 					<option value="" data-users="[{implode(',', array_keys($users))}]">{trans("- all -")}</option>
 					{foreach $usergroups as $usergroup}
@@ -512,7 +512,7 @@
 				{icon name="sms"}
 			</td>
 			<td>
-				<strong>{trans("Phone number:")}</strong>
+				<strong>{trans("Phone number")}</strong>
 			</td>
 			<td>
 				<input type="tel" name="message[phonenumber]" size="60" value="{$message.phonenumber}"
@@ -524,11 +524,11 @@
 				{icon name="message"}
 			</td>
 			<td>
-				<strong>{trans("Subject:")}</strong>
+				<strong>{trans("Subject")}</strong>
 			</td>
 			<td>
 				<input type="text" name="message[subject]" id="subject" size="60" value="{$message.subject}"
-					{tip trigger="subject" text="Enter message subject"}>
+					{tip trigger="subject"}>
 			</td>
 		</tr>
 		<tr>
@@ -536,7 +536,7 @@
 				{icon name="document"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Message template:")}</strong>
+				<strong>{trans("Message template")}</strong>
 			</td>
 			<td>
 				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
@@ -578,7 +578,7 @@
 				{icon name="edit"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Message body:")}</strong>
+				<strong>{trans("Message body")}</strong>
 			</td>
 			<td>
 				<div class="valign-middle">
@@ -597,7 +597,7 @@
 				{icon name="edit"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Message body:")}</strong>
+				<strong>{trans("Message body")}</strong>
 			</td>
 			<td>
 				<div class="valign-middle">
@@ -640,7 +640,7 @@
 		<tr id="charscount"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 			<td></td>
 			<td class="nobr">
-				<strong>{trans("Characters:")}</strong>
+				<strong>{trans("Characters")}</strong>
 			</td>
 			<td id="charscounttext">0</td>
 		</tr>
@@ -649,7 +649,7 @@
 				{icon name="attachment"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("Attachments:")}</strong>
+				<strong>{trans("Attachments")}</strong>
 			</td>
 			<td>
 				{fileupload id="files" fileupload=$fileupload form="message"}
