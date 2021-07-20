@@ -534,21 +534,19 @@ function tariffSelectionHandler() {
 	if (val == '') {
 		$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').show();
 
-		if (assignmentGrossvalue) {
-			if (parseInt(assignmentNetflag) !== 0) {
-				$('#grossprice').val(assignmentGrossvalue).prop('disabled', true);
-				$('#netprice').val(assignmentNetvalue).prop('disabled', false);
-				$('#netflag').prop('checked', true);
-			} else {
-				$('#grossprice').val(assignmentGrossvalue).prop('disabled', false);
-				$('#netprice').val(assignmentNetvalue).prop('disabled', true);
-				$('#netflag').prop('checked', false);
-			}
+		if (assignmentNetflag && parseInt(assignmentNetflag) !== 0) {
+			$('#grossprice').val(assignmentGrossvalue).prop('disabled', true);
+			$('#netprice').val(assignmentNetvalue).prop('disabled', false);
+			$('#netflag').prop('checked', true);
+		} else {
+			$('#grossprice').val(assignmentGrossvalue).prop('disabled', false);
+			$('#netprice').val(assignmentNetvalue).prop('disabled', true);
+			$('#netflag').prop('checked', false);
+		}
+
+		if (assignmentTaxid) {
 			$('#tax').val(assignmentTaxid).prop('disabled', false);
 		} else {
-			$('#grossprice').val('').prop('disabled', false);
-			$('#netprice').val('').prop('disabled', true);
-			$('#netflag').prop('checked', false).prop('disabled', false);
 			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
 		}
 
