@@ -653,6 +653,7 @@ define('DOC_FLAG_RECEIPT', 1);
 define('DOC_FLAG_TELECOM_SERVICE', 2);
 define('DOC_FLAG_RELATED_ENTITY', 4);
 define('DOC_FLAG_SPLIT_PAYMENT', 8);
+define('DOC_FLAG_NET_ACCOUNT', 16);
 
 $DOC_FLAGS = array(
     DOC_FLAG_RECEIPT => trans('FP'),

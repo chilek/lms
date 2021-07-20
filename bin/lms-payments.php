@@ -467,6 +467,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 				ELSE $suspension_percentage / 100
 			END), 2) * a.count AS value,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
+		(CASE WHEN a.liabilityid IS NULL THEN t.netflag ELSE l.netflag END) AS netflag,
 		a.count AS count,
 		(SELECT COUNT(id) FROM assignments
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
@@ -481,8 +482,16 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 	LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
 	LEFT JOIN promotions p ON p.id = ps.promotionid
-	LEFT JOIN tariffs t ON (a.tariffid = t.id)
-	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+	LEFT JOIN (
+	    SELECT *,
+	        (CASE WHEN tariffs.netflag = 1 THEN tariffs.netvalue ELSE tariffs.value END) AS value
+	    FROM tariffs
+	) t ON a.tariffid = t.id
+	LEFT JOIN (
+	    SELECT *,
+	        (CASE WHEN liabilities.netflag = 1 THEN liabilities.netvalue ELSE liabilities.value END) AS value
+	    FROM liabilities
+	) l ON a.liabilityid = l.id
 	LEFT JOIN (
 		SELECT vna.assignment_id, " . $DB->GroupConcat('vn.phone', ',') . " AS phones
 		FROM voip_number_assignments vna
@@ -503,7 +512,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
     $doms[] = 0;
@@ -531,7 +540,10 @@ $query = "SELECT
 			a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-			t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
+			t.taxid AS taxid, '' as prodid,
+			voipcost.value,
+			(CASE WHEN a.liabilityid IS NULL THEN t.netflag ELSE l.netflag END) AS netflag,
+			t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
 			? AS count,
 			(SELECT COUNT(id)
@@ -602,7 +614,7 @@ $query = "SELECT
 			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
         . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
     $query,
@@ -827,6 +839,7 @@ $numbertemplates = array();
 $invoices = array();
 $telecom_services = array();
 $currencies = array();
+$netflags = array();
 $doctypes = array();
 $paytypes = array();
 $addresses = array();
@@ -1331,6 +1344,7 @@ foreach ($assigns as $assign) {
     if ($assign['value'] != 0) {
         $val = $assign['value'];
         $currency = $assign['currency'];
+        $netflag = intval($assign['netflag']);
         $splitpayment = $assign['splitpayment'];
         if ($assign['t_period'] && $assign['period'] != DISPOSABLE
             && $assign['t_period'] != $assign['period']) {
@@ -1382,7 +1396,7 @@ foreach ($assigns as $assign) {
 
             if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
-                || $currencies[$cid] != $currency) {
+                || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
                 if (!array_key_exists($plan, $numbertemplates)) {
                     $numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
                 }
@@ -1494,7 +1508,8 @@ foreach ($assigns as $assign) {
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],
                         ($telecom_service ? DOC_FLAG_TELECOM_SERVICE : 0)
-                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY ? DOC_FLAG_RELATED_ENTITY : 0),
+                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY ? DOC_FLAG_RELATED_ENTITY : 0)
+                            + (!$netflag || ($assign['invoice'] != DOC_INVOICE && $assign['invoice'] != DOC_INVOICE_PRO) ? 0 : DOC_FLAG_NET_ACCOUNT),
                     )
                 );
 
@@ -1503,6 +1518,7 @@ foreach ($assigns as $assign) {
                     $telecom_services[$invoices[$cid]] = $telecom_service;
                 }
                 $currencies[$cid] = $currency;
+                $netflags[$cid] = $netflag;
                 $doctypes[$cid] = $assign['invoice'];
                 //$LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
                 $paytypes[$cid] = $inv_paytype;
