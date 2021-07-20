@@ -456,16 +456,17 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
 		voipphones.phones,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) AS unitary_value,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) * a.count AS value,
+		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
 		(CASE WHEN a.liabilityid IS NULL THEN t.netflag ELSE l.netflag END) AS netflag,
 		a.count AS count,
@@ -483,14 +484,18 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
 	LEFT JOIN promotions p ON p.id = ps.promotionid
 	LEFT JOIN (
-	    SELECT *,
-	        (CASE WHEN tariffs.netflag = 1 THEN tariffs.netvalue ELSE tariffs.value END) AS value
+	    SELECT tariffs.*,
+	        taxes.value AS taxrate,
+	        (CASE WHEN tariffs.netflag = 1 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
 	    FROM tariffs
+	    JOIN taxes ON taxes.id = tariffs.taxid
 	) t ON a.tariffid = t.id
 	LEFT JOIN (
-	    SELECT *,
-	        (CASE WHEN liabilities.netflag = 1 THEN liabilities.netvalue ELSE liabilities.value END) AS value
+	    SELECT liabilities.*,
+	        taxes.value AS taxrate,
+	        (CASE WHEN liabilities.netflag = 1 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
 	    FROM liabilities
+	    JOIN taxes ON taxes.id = liabilities.taxid
 	) l ON a.liabilityid = l.id
 	LEFT JOIN (
 		SELECT vna.assignment_id, " . $DB->GroupConcat('vn.phone', ',') . " AS phones
@@ -542,6 +547,7 @@ $query = "SELECT
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
 			voipcost.value,
+			(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 			(CASE WHEN a.liabilityid IS NULL THEN t.netflag ELSE l.netflag END) AS netflag,
 			t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
@@ -591,8 +597,20 @@ $query = "SELECT
 				LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
-			LEFT JOIN tariffs t ON (a.tariffid = t.id)
-			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+            LEFT JOIN (
+                SELECT tariffs.*,
+                    taxes.value AS taxrate,
+                    (CASE WHEN tariffs.netflag = 1 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+                FROM tariffs
+                JOIN taxes ON taxes.id = tariffs.taxid
+            ) t ON a.tariffid = t.id
+            LEFT JOIN (
+                SELECT liabilities.*,
+                    taxes.value AS taxrate,
+                    (CASE WHEN liabilities.netflag = 1 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+                FROM liabilities
+                JOIN taxes ON taxes.id = liabilities.taxid
+            ) l ON a.liabilityid = l.id
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
            . $customer_status_condition
@@ -1031,6 +1049,8 @@ $cashes = $DB->GetAll(
     )
 );
 
+setlocale(LC_NUMERIC, 'en_US');
+
 // solid payments
 $payments = $DB->GetAll(
     "SELECT * FROM payments WHERE value <> 0
@@ -1115,7 +1135,7 @@ if (!empty($payments)) {
             array($issuetime, 1, $payment['value'] * -1, null, $payment['name'] . '/' . $payment['creditor'])
         );
         if (!$quiet) {
-            print "CID:0\tVAL:" . $payment['value'] . "\tDESC:" . $payment['name'] . "/" . $payment['creditor'] . PHP_EOL;
+            echo 'CID:-' . "\tVAL:" . $payment['value'] . "\tDESC:" . $payment['name'] . '/' . $payment['creditor'] . PHP_EOL;
         }
     }
 }
@@ -1148,7 +1168,7 @@ foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
-    $assign['value'] = str_replace(',', '.', floatval($assign['value']));
+    $assign['value'] = floatval($assign['value']);
     if (empty($assign['value'])) {
         continue;
     }
@@ -1341,39 +1361,47 @@ foreach ($assigns as $assign) {
         $numberplans[$cid] = 0;
     }
 
-    if ($assign['value'] != 0) {
-        $val = $assign['value'];
+    if ($assign['unitary_value'] != 0) {
+        $price = $assign['unitary_value'];
         $currency = $assign['currency'];
         $netflag = intval($assign['netflag']);
         $splitpayment = $assign['splitpayment'];
         if ($assign['t_period'] && $assign['period'] != DISPOSABLE
             && $assign['t_period'] != $assign['period']) {
             if ($assign['t_period'] == YEARLY) {
-                $val = $val / 12.0;
+                $price = $price / 12.0;
             } elseif ($assign['t_period'] == HALFYEARLY) {
-                $val = $val / 6.0;
+                $price = $price / 6.0;
             } elseif ($assign['t_period'] == QUARTERLY) {
-                $val = $val / 3.0;
+                $price = $price / 3.0;
             }
 
             if ($assign['period'] == YEARLY) {
-                $val = $val * 12.0;
+                $price = $price * 12.0;
             } elseif ($assign['period'] == HALFYEARLY) {
-                $val = $val * 6.0;
+                $price = $price * 6.0;
             } elseif ($assign['period'] == QUARTERLY) {
-                $val = $val * 3.0;
+                $price = $price * 3.0;
             } elseif ($assign['period'] == WEEKLY) {
-                $val = $val / 4.0;
+                $price = $price / 4.0;
             } elseif ($assign['period'] == DAILY) {
-                $val = $val / 30.0;
+                $price = $price / 30.0;
             }
         }
 
-        $val = str_replace(',', '.', sprintf("%.2f", $val));
+        $price = round($price, 2);
+        $value = round($price * $assign['count'], 2);
 
         $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
             && ($assign['customertype'] == CTYPES_PRIVATE || ($check_customer_vat_payer_flag_for_telecom_service
                 && !($assign['customerflags'] & CUSTOMER_FLAG_VAT_PAYER)));
+
+
+        if ($netflag) {
+            $grossvalue = $value + round($value * ($assign['taxrate'] / 100), 2);
+        } else {
+            $grossvalue = $value;
+        }
 
         if ($assign['invoice']) {
             if ($assign['a_paytype']) {
@@ -1542,7 +1570,7 @@ foreach ($assigns as $assign) {
                             "SELECT itemid FROM invoicecontents
                             WHERE tariffid IS NULL AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
                             array(
-                                str_replace(',', '.', $val / $assign['count']),
+                                $price,
                                 $invoices[$cid],
                                 $desc,
                                 $assign['pdiscount'],
@@ -1555,7 +1583,7 @@ foreach ($assigns as $assign) {
                             WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
                             array(
                                 $assign['tariffid'],
-                                str_replace(',', '.', $val / $assign['count']),
+                                $price,
                                 $invoices[$cid],
                                 $desc,
                                 $assign['pdiscount'],
@@ -1570,7 +1598,7 @@ foreach ($assigns as $assign) {
                         $DB->Execute(
                             "UPDATE debitnotecontents SET value = value + ? 
                             WHERE docid = ? AND itemid = ?",
-                            array($val, $invoices[$cid], $tmp_itemid)
+                            array($grossvalue, $invoices[$cid], $tmp_itemid)
                         );
                     } else {
                         $DB->Execute(
@@ -1583,7 +1611,7 @@ foreach ($assigns as $assign) {
                         $DB->Execute(
                             "UPDATE cash SET value = value + ? 
                             WHERE docid = ? AND itemid = ?",
-                            array(str_replace(',', '.', $val * -1), $invoices[$cid], $tmp_itemid)
+                            array(-$grossvalue, $invoices[$cid], $tmp_itemid)
                         );
                     }
                 } else {
@@ -1593,7 +1621,7 @@ foreach ($assigns as $assign) {
                         $DB->Execute(
                             "INSERT INTO debitnotecontents (docid, value, description, itemid) 
                             VALUES (?, ?, ?, ?)",
-                            array($invoices[$cid], $val, $desc, $itemid)
+                            array($invoices[$cid], $grossvalue, $desc, $itemid)
                         );
                     } else {
                         $DB->Execute(
@@ -1602,7 +1630,7 @@ foreach ($assigns as $assign) {
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
                                 $invoices[$cid],
-                                str_replace(',', '.', $val / $assign['count']),
+                                $price,
                                 $assign['taxid'],
                                 $assign['taxcategory'],
                                 $assign['prodid'],
@@ -1631,7 +1659,7 @@ foreach ($assigns as $assign) {
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
                                 $issuetime,
-                                str_replace(',', '.', $val * -1),
+                                -$grossvalue,
                                 $currency,
                                 $currencyvalues[$currency],
                                 $assign['taxid'],
@@ -1653,7 +1681,7 @@ foreach ($assigns as $assign) {
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $issuetime,
-                        str_replace(',', '.', $val * -1),
+                        -$grossvalue,
                         $currency,
                         $currencyvalues[$currency],
                         $assign['taxid'],
@@ -1667,7 +1695,7 @@ foreach ($assigns as $assign) {
         }
 
         if (!$quiet && (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom'])) {
-            print "CID:$cid\tVAL:$val $currency\tDESC:$desc" . PHP_EOL;
+            echo  'CID:' . $cid . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
         }
 
         // settlement accounting
@@ -1688,14 +1716,14 @@ foreach ($assigns as $assign) {
                     $d = $dom;
                     $m = $month;
                     $y = $year;
-                    $value = 0;
+                    $partial_price = 0;
                     $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
                     while ($diffdays) {
                         if ($d - $diffdays <= 0) {
-                            $value += ($d - 1) * $val / $month_days;
+                            $partial_price += ($d - 1) * $price / $month_days;
                             $diffdays -= ($d - 1);
                         } else {
-                            $value += $diffdays * $val / $month_days;
+                            $partial_price += $diffdays * $price / $month_days;
                             $diffdays = 0;
                         }
                         $date = mktime(0, 0, 0, $m, 0, $y);
@@ -1716,10 +1744,10 @@ foreach ($assigns as $assign) {
                     break;
             }
 
-            $value = str_replace(',', '.', sprintf("%.2f", $alldays != 30 ? $diffdays * $val / $alldays : $value));
+            $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 2);
 
-            if (floatval($value)) {
-                //print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value" . PHP_EOL;
+            if (floatval($price)) {
+                //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
 
                 if (empty($assign['backwardperiod'])) {
                     $sdesc = $s_comment;
@@ -1767,7 +1795,7 @@ foreach ($assigns as $assign) {
                                 "SELECT itemid FROM invoicecontents
                                 WHERE tariffid IS NULL AND value = ? AND docid = ? AND description = ?",
                                 array(
-                                    str_replace(',', '.', $value / $assign['count']),
+                                    $partial_price,
                                     $invoices[$cid],
                                     $sdesc
                                 )
@@ -1778,12 +1806,19 @@ foreach ($assigns as $assign) {
                                 WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
                                 array(
                                     $assign['tariffid'],
-                                    str_replace(',', '.', $value / $assign['count']),
+                                    $partial_price,
                                     $invoices[$cid],
                                     $sdesc
                                 )
                             );
                         }
+                    }
+
+                    $partial_value = round($partial_price * $assign['count'], 2);
+                    if ($netflag) {
+                        $partial_grossvalue = $partial_value + round($partial_value * ($assign['taxrate'] / 100), 2);
+                    } else {
+                        $partial_grossvalue = $partial_value;
                     }
 
                     if ($tmp_itemid != 0) {
@@ -1796,7 +1831,7 @@ foreach ($assigns as $assign) {
                             $DB->Execute(
                                 "UPDATE cash SET value = value + ?
 								WHERE docid = ? AND itemid = ?",
-                                array(str_replace(',', '.', $value * -1), $invoices[$cid], $tmp_itemid)
+                                array(-$partial_grossvalue, $invoices[$cid], $tmp_itemid)
                             );
                         }
                     } else {
@@ -1806,7 +1841,7 @@ foreach ($assigns as $assign) {
                             $DB->Execute(
                                 "INSERT INTO debitnotecontents (docid, value, description, itemid) 
 								VALUES (?, ?, ?, ?)",
-                                array($invoices[$cid], $value, $desc, $itemid)
+                                array($invoices[$cid], $partial_grossvalue, $desc, $itemid)
                             );
                         } else {
                             $DB->Execute(
@@ -1815,7 +1850,7 @@ foreach ($assigns as $assign) {
 								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
                                     $invoices[$cid],
-                                    str_replace(',', '.', $value / $assign['count']),
+                                    $partial_price,
                                     $assign['taxid'],
                                     $assign['taxcategory'],
                                     $assign['prodid'],
@@ -1844,7 +1879,7 @@ foreach ($assigns as $assign) {
 								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
                                     $issuetime,
-                                    str_replace(',', '.', $value * -1),
+                                    -$partial_grossvalue,
                                     $currency,
                                     $currencyvalues[$currency],
                                     $assign['taxid'],
@@ -1864,7 +1899,7 @@ foreach ($assigns as $assign) {
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         array(
                             $issuetime,
-                            str_replace(',', '.', $value * -1),
+                            -$partial_grossvalue,
                             $currency,
                             $currencyvalues[$currency],
                             $assign['taxid'],
@@ -1877,7 +1912,7 @@ foreach ($assigns as $assign) {
                 }
 
                 if (!$quiet) {
-                    print "CID:$cid\tVAL:$value $currency\tDESC:$sdesc" . PHP_EOL;
+                    echo 'CID : ' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                 }
             }
 
