@@ -642,8 +642,19 @@ input[type="text"][disabled] {
 	background-color: transparent;
 }
 
-INPUT[type="radio"] {
+input[type="radio"] {
     vertical-align: text-bottom;
+}
+
+.lms-ui-disabled {
+	color: @blend;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+	&[disabled] + .lms-ui-label {
+		color: @blend;
+	}
 }
 
 input {
