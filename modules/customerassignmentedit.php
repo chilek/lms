@@ -232,10 +232,14 @@ if (isset($_POST['assignment'])) {
         if ($a['name'] == '') {
             $error['name'] = trans('Liability name is required!');
         }
-        if (!$a['value']) {
+        if (!$a['value'] && !$a['netflag']) {
             $error['value'] = trans('Liability value is required!');
-        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value'])) {
+        } elseif (!$a['netvalue'] && $a['netflag']) {
+            $error['netvalue'] = trans('Liability value is required!');
+        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && !$a['netflag']) {
             $error['value'] = trans('Incorrect value!');
+        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && $a['netflag']) {
+            $error['netvalue'] = trans('Incorrect value!');
         } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
             $error['value'] = trans('Value less than discount are not allowed!');
             $error['discount'] = trans('Value less than discount are not allowed!');
