@@ -2521,6 +2521,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
+                        $row['grossvalue'] += $result['invoice']['content'][$idx]['grossvalue'];
+                        $row['netvalue'] += $result['invoice']['content'][$idx]['netvalue'];
+                        $row['totaltaxvalue'] += $result['invoice']['content'][$idx]['totaltaxvalue'];
                         $row['value'] += $result['invoice']['content'][$idx]['value'];
                         $row['count'] += $result['invoice']['content'][$idx]['count'];
                     }
@@ -2532,15 +2535,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $taxvalue = $rounded_taxvalue = $row['taxvalue'];
                     }
 
-                    if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
-                        $result['content'][$idx]['total'] = $result['invoice']['content'][$idx]['grossvalue'] + $row['grossvalue'];
-                        $result['content'][$idx]['totalbase'] = $result['invoice']['content'][$idx]['netvalue'] + $row['netvalue'];
-                        $result['content'][$idx]['totaltax'] = $result['invoice']['content'][$idx]['totaltaxvalue'] + $row['totaltaxvalue'];
-                    } else {
-                        $result['content'][$idx]['total'] = $row['grossvalue'];
-                        $result['content'][$idx]['totalbase'] = $row['netvalue'];
-                        $result['content'][$idx]['totaltax'] = $row['totaltaxvalue'];
-                    }
+                    $result['content'][$idx]['total'] = $result['content'][$idx]['grossvalue'] = $row['grossvalue'];
+                    $result['content'][$idx]['totalbase'] = $result['content'][$idx]['netvalue'] = $row['netvalue'];
+                    $result['content'][$idx]['totaltax'] = $result['content'][$idx]['totaltaxvalue'] = $row['totaltaxvalue'];
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
 
