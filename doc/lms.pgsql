@@ -3448,22 +3448,22 @@ CREATE VIEW vinvoicecontents AS
         END) AS grossprice,
         (CASE WHEN (d.flags & 16) > 0
             THEN
-                ROUND(ic.value * ic.count, 2)
+                ROUND(ic.value * ABS(ic.count), 2)
             ELSE
-                ROUND(ic.value * ic.count, 2)
-                    - ROUND(ROUND(ic.value * ic.count, 2) * t.value / (100 + t.value), 2)
+                ROUND(ic.value * ABS(ic.count), 2)
+                    - ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
         END) AS netvalue,
         (CASE WHEN (d.flags & 16) > 0
             THEN
-                ROUND(ic.value * ic.count, 2)
+                ROUND(ic.value * ABS(ic.count), 2)
             ELSE
-                ROUND(ROUND(ic.value * ic.count, 2) * t.value / (100 + t.value), 2)
+                ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
         END) AS taxvalue,
         (CASE WHEN (d.flags & 16) > 0
             THEN
-                ROUND(ROUND(ic.value * ic.count, 2) * (1 + (t.value / 100)), 2)
+                ROUND(ROUND(ic.value * ABS(ic.count), 2) * (1 + (t.value / 100)), 2)
             ELSE
-                ROUND(ic.value * ic.count, 2)
+                ROUND(ic.value * ABS(ic.count), 2)
         END) AS grossvalue,
         (CASE WHEN t.reversecharge = 1 THEN -2 ELSE (
             CASE WHEN t.taxed = 0 THEN -1 ELSE t.value END
@@ -4126,6 +4126,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072102');
 
 COMMIT;
