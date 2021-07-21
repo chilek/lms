@@ -1001,7 +1001,7 @@ if (!empty($assigns)) {
     // if payments.prefer_netto = true, use value netto+tax
     foreach ($assigns as &$assign) {
         if ($prefer_netto) {
-            if (isset($assign['netvalue']) && !empty($assign['netvalue']) != 0) {
+            if (isset($assign['netvalue']) && !empty($assign['netvalue'])) {
                 $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
             }
         }
