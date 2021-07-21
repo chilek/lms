@@ -769,7 +769,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     'backwardperiod' => $data['backwardperiod'],
                                     'at' => $partial_at,
                                     'count' => $data['count'],
-                                    'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
+                                    'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
                                     'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                                     'settlement' => 0,
                                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
@@ -867,7 +867,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'backwardperiod'    => $data['backwardperiod'],
                                 'at'                => $align_periods ? $partial_at : $data['at'],
                                 'count'             => $data['count'],
-                                'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+                                'invoice'           => isset($data['invoice']) ? intval($data['invoice']) : 0,
                                 'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                                 'settlement'        => 0,
                                 SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
@@ -1027,7 +1027,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'backwardperiod'    => 0,
                         'at'                => $partial_at,
                         'count'             => isset($data['count']) ? $data['count'] : 1,
-                        'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+                        'invoice'           => isset($data['invoice']) ? intval($data['invoice']) : 0,
                         'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                         'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
@@ -1104,7 +1104,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'backwardperiod'    => 0,
                         'at'                => $partial_at,
                         'count'             => isset($data['count']) ? $data['count'] : 1,
-                        'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+                        'invoice'           => isset($data['invoice']) ? intval($data['invoice']) : 0,
                         'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                         'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
@@ -1166,7 +1166,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'backwardperiod'    => isset($data['backwardperiod']) ? 1 : 0,
                     'at' => $data['at'],
                     'count'             => isset($data['count']) ? $data['count'] : 1,
-                    'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
+                    'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
                     'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                     'settlement' => !isset($data['settlement']) || $data['settlement'] != 1 ? 0 : 1,
                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
@@ -1433,6 +1433,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($to < $from && $to != 0 && $from != 0) {
                 $error['dateto'] = trans('Start date can\'t be greater than end date!');
             }
+        }
+
+        if (isset($a['netflag']) && !empty($a['netflag']) && isset($a['invoice']) && (empty($a['invoice']) || $a['invoice'] == DOC_DNOTE)) {
+            $error['invoice'] = trans('Select document type');
         }
 
         $a['discount'] = str_replace(',', '.', $a['discount']);

@@ -481,7 +481,7 @@
 												<label>
 													<input type="checkbox" id="netflag" name="{$variable_prefix}[netflag]" value="1"
 														{tip text="Billing according to the net price"}>
-													{trans('according in net')}
+													<span class="lms-ui-label">{trans('according in net')}</span>
 												</label>
 											</td>
 										</tr>
@@ -678,8 +678,8 @@
 					<TD>
 						<label>
 							{trans("document type:")}&nbsp;
-							<SELECT name="{$variable_prefix}[invoice]">
-								<OPTION value="0">{trans("without document")}</OPTION>
+							<SELECT id="invoice" name="{$variable_prefix}[invoice]" {tip text="Select document type" trigger="invoice"}>
+								<OPTION value="">{trans("without document")}</OPTION>
 								<OPTION value="{$smarty.const.DOC_INVOICE}"{if $variables.invoice == $smarty.const.DOC_INVOICE} selected{/if}>{trans("invoice")}</OPTION>
 								<OPTION value="{$smarty.const.DOC_INVOICE_PRO}"{if $variables.invoice == $smarty.const.DOC_INVOICE_PRO} selected{/if}>{trans("pro forma invoice")}</OPTION>
 								<OPTION value="{$smarty.const.DOC_DNOTE}"{if $variables.invoice == $smarty.const.DOC_DNOTE} selected{/if}>{trans("debit note")}</OPTION>
