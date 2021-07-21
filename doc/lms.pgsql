@@ -3436,7 +3436,7 @@ CREATE VIEW vinvoicecontents AS
         (CASE WHEN (d.flags & 16) > 0 THEN 1 ELSE 0 END) AS netflag,
         (CASE WHEN (d.flags & 16) > 0
             THEN
-                ic.value
+                ROUND(ic.value, 2)
             ELSE
                 ROUND(ic.value / (1 + (t.value / 100)), 2)
         END) AS netprice,
@@ -3444,7 +3444,7 @@ CREATE VIEW vinvoicecontents AS
             THEN
                 ROUND(ic.value * (1 + (t.value / 100)), 2)
             ELSE
-                ic.value
+                ROUND(ic.value, 2)
         END) AS grossprice,
         (CASE WHEN (d.flags & 16) > 0
             THEN
