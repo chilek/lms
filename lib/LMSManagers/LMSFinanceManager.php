@@ -2527,15 +2527,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     } else {
                         $taxvalue = $rounded_taxvalue = $row['taxvalue'];
                     }
-                    $result['content'][$idx]['total'] = round($row['value'] * $row['count'], 2);
-                    $result['content'][$idx]['totalbase'] = round($result['content'][$idx]['total'] / (100 + $taxvalue) * 100, 2);
-                    $result['content'][$idx]['totaltax'] = round($result['content'][$idx]['total'] - $result['content'][$idx]['totalbase'], 2);
+                    $result['content'][$idx]['total'] = $row['grossvalue'];
+                    $result['content'][$idx]['totalbase'] = $row['netvalue'];
+                    $result['content'][$idx]['totaltax'] = $row['taxvalue'];
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE && empty($row['count'])) {
-                        $result['content'][$idx]['basevalue'] = $result['invoice']['content'][$idx]['basevalue'];
+                        $result['content'][$idx]['basevalue'] = $result['invoice']['content'][$idx]['netprice'];
                     } else {
-                        $result['content'][$idx]['basevalue'] = round($result['content'][$idx]['totalbase'] / $row['count'], 2);
+                        $result['content'][$idx]['basevalue'] = $row['netprice'];
                     }
 
                     if (isset($result['taxest'][$rounded_taxvalue])) {
