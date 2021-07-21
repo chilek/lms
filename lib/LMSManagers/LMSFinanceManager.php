@@ -908,7 +908,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'backwardperiod' => $data['backwardperiod'],
                             'at' => $at,
                             'count' => $data['count'],
-                            'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
+                            'invoice' => isset($data['invoice']) ? intval($data['invoice']) : 0,
                             'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                             'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && ($idx == 1 || !$align_periods) ? 1 : 0,
                             SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
