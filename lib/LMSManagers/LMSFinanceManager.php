@@ -2508,7 +2508,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             if ($result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
-                        ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue,
+                        ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue, ic.netflag,
 						ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
 						cash.servicetype,
 						prodid, content, ic.count, ic.description AS description,
@@ -2521,9 +2521,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
+                        if (!floatval($row['count']) && !floatval($row['grossvalue'])) {
+                            if (empty($row['netflag'])) {
+                                $row['grossvalue'] = round($result['invoice']['content'][$idx]['count'] * $row['grossprice'], 2);
+                                $row['totaltaxvalue'] = round($row['grossvalue'] * $row['taxvalue'] / (100 + $row['taxvalue']), 2);
+                                $row['netvalue'] = $row['grossvalue'] - $row['totaltaxvalue'];
+                            } else {
+                                $row['netvalue'] = round($result['invoice']['content'][$idx]['count'] * $row['netprice'], 2);
+                                $row['totaltaxvalue'] = round($row['netvalue'] * $row['taxvalue'] / 100, 2);
+                                $row['grossvalue'] = $row['netvalue'] + $row['totaltaxvalue'];
+                            }
+                        }
                         $row['grossvalue'] += $result['invoice']['content'][$idx]['grossvalue'];
                         $row['netvalue'] += $result['invoice']['content'][$idx]['netvalue'];
                         $row['totaltaxvalue'] += $result['invoice']['content'][$idx]['totaltaxvalue'];
+                        $row['netprice'] += $result['invoice']['content'][$idx]['netprice'];
+                        $row['grossprice'] += $result['invoice']['content'][$idx]['grossprice'];
                         $row['value'] += $result['invoice']['content'][$idx]['value'];
                         $row['count'] += $result['invoice']['content'][$idx]['count'];
                     }
