@@ -79,7 +79,8 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 			t.uprate, t.downrate, t.upceil, t.downceil, t.climit, t.plimit,
 			t.uprate_n, t.downrate_n, t.upceil_n, t.downceil_n, t.climit_n, t.plimit_n,
 			t.description, t.period, a.customerscount, a.count, a.value AS sumval,
-            t.netvalue, t.netflag
+            t.netvalue, t.flags,
+            (CASE WHEN t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0 THEN 1 ELSE 0 END) AS netflag
 			FROM tariffs t
 			LEFT JOIN (
 			    SELECT a.tariffid, COUNT(*) AS count,
@@ -114,8 +115,8 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             . ($customergroupid || $promotionid ? ' AND a.tariffid IS NOT NULL' : '')
             . (!empty($tags) ? ' AND t.id IN (SELECT DISTINCT tariffid FROM tariffassignments WHERE tarifftagid IN (' . implode(',', $tags) . '))' : '')
             .($type ? ' AND t.type = '.intval($type) : '')
-            . ($netflag == 1 ? ' AND t.netflag = 1' : '')
-            . ($netflag == 2 ? ' AND t.netflag = 0' : '')
+            . ($netflag == 1 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0' : '')
+            . ($netflag == 2 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' = 0' : '')
             . ($tax ? ' AND taxes.id = '.intval($tax) : '')
             .($access ? ' AND t.authtype & ' . intval($access) . ' > 0' : '')
             .($promotionid ? ' AND t.id IN (SELECT pa.tariffid
@@ -158,8 +159,8 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 					)
 				)'
                 . ($type ? ' AND t.type = '.intval($type) : '')
-                . ($netflag == 1 ? ' AND t.netflag = 1' : '')
-                . ($netflag == 2 ? ' AND t.netflag = 0' : '')
+                . ($netflag == 1 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0' : '')
+                . ($netflag == 2 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' = 0' : '')
                 . ($tax ? ' AND taxes.id = '.intval($tax) : '')
                 . ($customergroupid ? ' AND cc.customergroupid = '.intval($customergroupid) : '')
                 . ($promotionid ? ' AND t.id IN (SELECT pa.tariffid
