@@ -26,7 +26,7 @@ define('DOC_FLAG_NET_ACCOUNT', 16);
 $this->BeginTrans();
 
 if ($this->ResourceExists('vinvoicecontents', LMSDB::RESOURCE_TYPE_VIEW)) {
-    $this->Execute("DROP VIEW vincoicecontents");
+    $this->Execute("DROP VIEW vinvoicecontents");
 }
 
 $this->Execute(
