@@ -540,13 +540,13 @@ function tariffSelectionHandler() {
 		if (assignmentNetflag && parseInt(assignmentNetflag) !== 0) {
 			$('#grossprice').val(assignmentGrossvalue).prop('disabled', true);
 			$('#netprice').val(assignmentNetvalue).prop('disabled', false);
-			$('#netflag').prop('checked', true).prop('disabled', false);
+			$('#netflag').prop({checked: true, disabled: false});
 			$('#invoice').prop('required', true);
 			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
 		} else {
 			$('#grossprice').val(assignmentGrossvalue).prop('disabled', false);
 			$('#netprice').val(assignmentNetvalue).prop('disabled', true);
-			$('#netflag').prop('checked', false).prop('disabled', false);
+			$('#netflag').prop({checked: false, disabled: false});
 			$('#invoice').prop('required', false);
 			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 		}
@@ -740,20 +740,23 @@ $("#netprice").on('change', function () {
 $('#invoice').on('change', function () {
 	var tariff_select_val = $('#tariff-select').val();
 	if ($(this).val() == assignment_settings.DOC_DNOTE) {
-		netFlagElem.prop('checked', false).prop('disabled', true);
+		netFlagElem.prop({checked: false, disabled: true});
 		$('#tax, #taxcategory, #splitpayment').prop('disabled', true);
 		$('#a_tax, #a_taxcategory, #a_splitpayment').addClass('lms-ui-disabled');
 	} else {
+		netFlagElem.prop('checked', netFlagElem.is(':checked'));
 		netFlagElem.prop('disabled', netFlagElem.is(':disabled'));
 		$('#taxcategory, #splitpayment').prop('disabled', false);
 		$('#a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
 		if (tariff_select_val == '') {
+			if (invoiceElem.val() == '') {
+				netFlagElem.prop({checked: false, disabled: false});
+			}
 			$('#tax').prop('disabled', false);
 			$('#a_tax').removeClass('lms-ui-disabled');
 		} else {
 			$('#tax').prop('disabled', $('#tax').is(':disabled'));
 			$('#a_tax').toggleClass('lms-ui-disabled', $('#tax').is(':disabled'));
 		}
-
 	}
 });
