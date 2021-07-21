@@ -2504,13 +2504,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             if ($result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
-						ic.itemid, ic.taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
-								CASE WHEN taxes.taxed = 0 THEN -1 ELSE taxes.value END
-							) END) AS taxvalue, taxes.label AS taxlabel, taxcategory,
+                        ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue, ic.grossvalue,
+						ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
 						cash.servicetype,
 						prodid, content, ic.count, ic.description AS description,
 						tariffid, ic.itemid, pdiscount, vdiscount
-						FROM invoicecontents ic
+						FROM vinvoicecontents ic
 						LEFT JOIN taxes ON taxid = taxes.id
                         LEFT JOIN cash ON cash.docid = ic.docid AND cash.itemid = ic.itemid
 						WHERE ic.docid = ?
@@ -4956,7 +4955,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             $this->AddBalance(array(
                 'time' => $currtime,
-                'value' => $item['value'] * $item['count']*-1,
+                'value' => -$item['grossvalue'],
                 'currency' => $proforma['currency'],
                 'currencyvalue' => $currencyvalues[$proforma['currencyvalue']],
                 'taxid' => $item['taxid'],

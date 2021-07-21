@@ -64,7 +64,9 @@ $this->Execute(
                 ELSE
                     ROUND(ic.value * ic.count, 2)
                 END) AS grossvalue,
-            t.value AS taxrate
+            (CASE WHEN t.reversecharge = 1 THEN -2 ELSE (
+                CASE WHEN t.taxed = 0 THEN -1 ELSE t.value END
+            ) END) AS taxrate
         FROM invoicecontents ic
         JOIN taxes t ON t.id = ic.taxid
         JOIN documents d ON d.id = ic.docid",
