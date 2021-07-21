@@ -440,7 +440,14 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
         (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 		a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
 		a.invoice, a.separatedocument, c.type AS customertype,
-		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL THEN t.splitpayment ELSE l.splitpayment END) END) AS splitpayment,
+		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
+			THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+			ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+		END) END) AS splitpayment,
+		(CASE WHEN a.liabilityid IS NULL
+			THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+			ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+		END) AS netflag,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
 		t.description AS description, a.id AS assignmentid,
 		c.divisionid, c.paytype, c.flags AS customerflags,
@@ -468,7 +475,6 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			END), 2) * a.count AS value,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
-		(CASE WHEN a.liabilityid IS NULL THEN t.netflag ELSE l.netflag END) AS netflag,
 		a.count AS count,
 		(SELECT COUNT(id) FROM assignments
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
@@ -486,14 +492,14 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 	LEFT JOIN (
 	    SELECT tariffs.*,
 	        taxes.value AS taxrate,
-	        (CASE WHEN tariffs.netflag = 1 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+	        (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
 	    FROM tariffs
 	    JOIN taxes ON taxes.id = tariffs.taxid
 	) t ON a.tariffid = t.id
 	LEFT JOIN (
 	    SELECT liabilities.*,
 	        taxes.value AS taxrate,
-	        (CASE WHEN liabilities.netflag = 1 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+	        (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
 	    FROM liabilities
 	    JOIN taxes ON taxes.id = liabilities.taxid
 	) l ON a.liabilityid = l.id
@@ -525,7 +531,14 @@ if ($last_dom) {
 $services = $DB->GetAll(
     $query,
     array(
-        CTYPES_PRIVATE, DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        CTYPES_PRIVATE,
+        TARIFF_FLAG_SPLIT_PAYMENT,
+        LIABILITY_FLAG_SPLIT_PAYMENT,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime, $currtime
     )
 );
@@ -538,7 +551,6 @@ $query = "SELECT
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
 			(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
-			(CASE WHEN c.type = ? THEN 0 ELSE t.splitpayment END) AS splitpayment,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, c.flags AS customerflags,
@@ -548,7 +560,14 @@ $query = "SELECT
 			t.taxid AS taxid, '' as prodid,
 			voipcost.value,
 			(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
-			(CASE WHEN a.liabilityid IS NULL THEN t.netflag ELSE l.netflag END) AS netflag,
+            (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) END) AS splitpayment,
+            (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) AS netflag,
 			t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
 			? AS count,
@@ -600,14 +619,14 @@ $query = "SELECT
             LEFT JOIN (
                 SELECT tariffs.*,
                     taxes.value AS taxrate,
-                    (CASE WHEN tariffs.netflag = 1 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+                    (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
                 FROM tariffs
                 JOIN taxes ON taxes.id = tariffs.taxid
             ) t ON a.tariffid = t.id
             LEFT JOIN (
                 SELECT liabilities.*,
                     taxes.value AS taxrate,
-                    (CASE WHEN liabilities.netflag = 1 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+                    (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
                 FROM liabilities
                 JOIN taxes ON taxes.id = liabilities.taxid
             ) l ON a.liabilityid = l.id
@@ -637,7 +656,15 @@ $query = "SELECT
 $billings = $DB->GetAll(
     $query,
     array(
-        CTYPES_PRIVATE, 1, SERVICE_PHONE,
+        CTYPES_PRIVATE,
+        TARIFF_FLAG_SPLIT_PAYMENT,
+        LIABILITY_FLAG_SPLIT_PAYMENT,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        1,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime,
     )
@@ -1556,8 +1583,11 @@ foreach ($assigns as $assign) {
 
             if ($splitpayment) {
                 $DB->Execute(
-                    "UPDATE documents SET splitpayment = ? WHERE id = ?",
-                    array(1, $invoices[$cid])
+                    "UPDATE documents SET flags = flags | ? WHERE id = ?",
+                    array(
+                        DOC_FLAG_SPLIT_PAYMENT,
+                        $invoices[$cid],
+                    )
                 );
             }
 

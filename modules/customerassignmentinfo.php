@@ -24,12 +24,20 @@
  *  $Id: 057973c06cb75a3348be6172466bc1bce55a4cb4 $
  */
 
-$a = $DB->GetRow('SELECT a.invoice, a.settlement,
+$a = $DB->GetRow(
+    'SELECT a.invoice, a.settlement,
         a.numberplanid, a.paytype, n.template, n.period, a.attribute,
         d.number AS docnumber, d.type AS doctype, d.cdate,
         n2.template AS numtemplate, a.customerid, a.separatedocument,
         t.value, t.flags,
-        (CASE WHEN l.splitpayment IS NULL THEN t.splitpayment ELSE l.splitpayment END) AS splitpayment,
+        (CASE WHEN l.flags IS NULL
+            THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+            ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+        END) AS splitpayment,
+        (CASE WHEN l.flags IS NULL
+            THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+            ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+        END) AS netflag,
         (CASE WHEN l.taxcategory IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory
     FROM assignments a
     LEFT JOIN numberplans n ON (n.id = a.numberplanid)
@@ -37,7 +45,15 @@ $a = $DB->GetRow('SELECT a.invoice, a.settlement,
     LEFT JOIN numberplans n2 ON n2.id = d.numberplanid
     LEFT JOIN tariffs t ON t.id = a.tariffid
     LEFT JOIN liabilities l ON l.id = a.liabilityid
-    WHERE a.id = ?', array($_GET['id']));
+    WHERE a.id = ?',
+    array(
+        TARIFF_FLAG_SPLIT_PAYMENT,
+        LIABILITY_FLAG_SPLIT_PAYMENT,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        $_GET['id'],
+    )
+);
 
 if ($a['template']) {
     $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';

@@ -313,7 +313,8 @@ if (isset($_POST['assignment'])) {
             } else {
                 $args = array(
                     'value' => str_replace(',', '.', $a['value']),
-                    'splitpayment' => isset($a['splitpayment']) ? 1 : 0,
+                    'flags' => (isset($a['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
+                        + (isset($a['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
                     'taxcategory' => $a['taxcategory'],
                     'currency' => $a['currency'],
                     'name' => $a['name'],
@@ -321,12 +322,11 @@ if (isset($_POST['assignment'])) {
                     'prodid' => $a['prodid'],
                     'type' => $a['type'],
                     'netvalue' => str_replace(',', '.', $a['netvalue']),
-                    'netflag' => isset($a['netflag']) ? 1 : 0,
                     SYSLOG::RES_LIAB => $a['liabilityid']
                 );
                 $DB->Execute(
-                    'UPDATE liabilities SET value = ?, splitpayment = ?, taxcategory = ?, currency = ?, name = ?,
-                    taxid = ?, prodid = ?, type = ?, netvalue = ?, netflag = ?
+                    'UPDATE liabilities SET value = ?, flags = ?, taxcategory = ?, currency = ?, name = ?,
+                    taxid = ?, prodid = ?, type = ?, netvalue = ?
                     WHERE id = ?',
                     array_values($args)
                 );
@@ -339,18 +339,18 @@ if (isset($_POST['assignment'])) {
             $args = array(
                 'name' => $a['name'],
                 'value' => $a['value'],
-                'splitpayment' => isset($a['splitpayment']) ? 1 : 0,
+                'flags' => (isset($a['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
+                    + (isset($a['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
                 'taxcategory' => $a['taxcategory'],
                 'currency' => $a['currency'],
                 SYSLOG::RES_TAX => intval($a['taxid']),
                 'prodid' => $a['prodid'],
                 'type' => $a['type'],
                 'netvalue' => str_replace(',', '.', $a['netvalue']),
-                'netflag' => isset($a['netflag']) ? 1 : 0,
             );
             $DB->Execute(
-                'INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type, netvalue, netflag)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO liabilities (name, value, flags, taxcategory, currency, taxid, prodid, type, netvalue)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 array_values($args)
             );
 
@@ -468,7 +468,14 @@ if (isset($_POST['assignment'])) {
         a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
         a.invoice, a.separatedocument,
         liabilities.type,
-        (CASE WHEN liabilityid IS NULL THEN tariffs.splitpayment ELSE liabilities.splitpayment END) AS splitpayment,
+        (CASE WHEN liabilityid IS NULL
+            THEN (CASE WHEN tariffs.flags & ? > 0 THEN 1 ELSE 0 END)
+            ELSE (CASE WHEN liabilities.flags & ? > 0 THEN 1 ELSE 0 END)
+        END) AS splitpayment,
+        (CASE WHEN liabilityid IS NULL
+            THEN (CASE WHEN tariffs.flags & ? > 0 THEN 1 ELSE 0 END)
+            ELSE (CASE WHEN liabilities.flags & ? > 0 THEN 1 ELSE 0 END)
+        END) AS netflag,
         (CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
         a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
         (CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
@@ -480,12 +487,18 @@ if (isset($_POST['assignment'])) {
         LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
         LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
         WHERE a.id = ?',
-        array($_GET['id'])
+        array(
+            TARIFF_FLAG_SPLIT_PAYMENT,
+            LIABILITY_FLAG_SPLIT_PAYMENT,
+            TARIFF_FLAG_NET_ACCOUNT,
+            LIABILITY_FLAG_NET_ACCOUT,
+            $_GET['id']
+        )
     );
 
     $a['pdiscount'] = floatval($a['pdiscount']);
     $a['vdiscount'] = floatval($a['vdiscount']);
-        $a['attribute'] = $a['attribute'];
+    $a['attribute'] = $a['attribute'];
     if (!empty($a['pdiscount'])) {
         $a['discount'] = $a['pdiscount'];
         $a['discount_type'] = DISCOUNT_PERCENTAGE;

@@ -502,7 +502,6 @@ CREATE TABLE documents (
 	ssn varchar(50)		DEFAULT '' NOT NULL,
 	paytime smallint	DEFAULT 0 NOT NULL,
 	paytype smallint	DEFAULT NULL,
-	splitpayment smallint NOT NULL DEFAULT 0,
 	closed smallint		DEFAULT 0 NOT NULL,
 	reference integer	DEFAULT NULL
 		CONSTRAINT documents_reference_fkey REFERENCES documents (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -812,7 +811,6 @@ CREATE TABLE tariffs (
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint		DEFAULT 1 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-    splitpayment smallint NOT NULL DEFAULT 0,
     taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT NULL,
 	taxid integer 		NOT NULL
@@ -870,7 +868,6 @@ CREATE TABLE tariffs (
 	authtype smallint 	DEFAULT 0 NOT NULL,
     currency varchar(3),
     flags smallint DEFAULT 0 NOT NULL,
-    netflag smallint DEFAULT 0 NOT NULL,
     netvalue numeric(9,2) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
@@ -936,7 +933,6 @@ DROP TABLE IF EXISTS liabilities CASCADE;
 CREATE TABLE liabilities (
 	id integer DEFAULT nextval('liabilities_id_seq'::text) NOT NULL,
 	value numeric(9,2)  	DEFAULT 0 NOT NULL,
-    splitpayment smallint NOT NULL DEFAULT 0,
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text           	DEFAULT '' NOT NULL,
@@ -944,7 +940,7 @@ CREATE TABLE liabilities (
 		CONSTRAINT liabilities_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint DEFAULT -1 NOT NULL,
-    netflag smallint DEFAULT 0 NOT NULL,
+    flags smallint DEFAULT 0 NOT NULL,
     netvalue numeric(9,2) DEFAULT NULL,
     PRIMARY KEY (id)
 );
@@ -4128,6 +4124,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072100');
 
 COMMIT;

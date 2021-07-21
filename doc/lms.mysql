@@ -655,7 +655,6 @@ CREATE TABLE documents (
 	ssn varchar(50) NOT NULL DEFAULT '',
 	paytime smallint NOT NULL DEFAULT '0',
 	paytype smallint DEFAULT NULL,
-	splitpayment smallint NOT NULL DEFAULT 0,
 	closed tinyint(1) NOT NULL DEFAULT '0',
 	reference int(11) DEFAULT NULL,
 	reason varchar(255) NOT NULL DEFAULT '',
@@ -963,7 +962,6 @@ CREATE TABLE tariffs (
 	name varchar(255) 	NOT NULL DEFAULT '',
 	type tinyint 		NOT NULL DEFAULT '1',
 	value decimal(9,2) 	NOT NULL DEFAULT '0',
-    splitpayment smallint NOT NULL DEFAULT 0,
     taxcategory smallint DEFAULT 0 NOT NULL,
 	taxid int(11) 	NOT NULL,
 	numberplanid integer DEFAULT NULL,
@@ -1017,7 +1015,6 @@ CREATE TABLE tariffs (
 	authtype tinyint(1) NOT NULL DEFAULT '0',
     currency varchar(3),
     flags tinyint(1) DEFAULT 0 NOT NULL,
-    netflag tinyint(1) DEFAULT 0 NOT NULL,
 	netvalue decimal(9,2) DEFAULT NULL,
     PRIMARY KEY  (id),
 	UNIQUE KEY tariffs_name_key (name, value, currency, period),
@@ -1082,14 +1079,13 @@ CREATE TABLE voip_emergency_numbers (
 CREATE TABLE liabilities (
 	id int(11)              NOT NULL auto_increment,
 	value decimal(9,2)      NOT NULL DEFAULT '0',
-    splitpayment smallint NOT NULL DEFAULT 0,
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
 	taxid int(11)           NOT NULL,
 	prodid varchar(255)     NOT NULL DEFAULT '',
 	type smallint DEFAULT -1 NOT NULL,
-    netflag tinyint(1) DEFAULT 0 NOT NULL,
+    flags smallint DEFAULT 0 NOT NULL,
 	netvalue decimal(9,2) DEFAULT NULL,
     PRIMARY KEY (id),
 	CONSTRAINT liabilities_taxid_fkey
@@ -4109,4 +4105,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072100');
