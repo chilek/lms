@@ -197,9 +197,9 @@ $customers = $DB->GetAll(
                 SELECT customerid AS id, balance AS balance
                 FROM customerbalances
             ) UNION (
-                SELECT d.customerid AS id, -SUM(ROUND(ROUND(ic.count * ic.value, 2) * d.currencyvalue, 2)) AS balance
+                SELECT d.customerid AS id, -SUM(ROUND(ic.grossvalue * d.currencyvalue, 2)) AS balance
                 FROM documents d
-                JOIN invoicecontents ic ON ic.docid = d.id
+                JOIN vinvoicecontents ic ON ic.docid = d.id
                 WHERE d.type = ? AND d.cancelled = 0'
                     . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? 'AND 1=0' : '') . '
                 GROUP BY d.customerid
@@ -238,9 +238,9 @@ foreach ($customers as $customer) {
                 GROUP BY cash.time, cash.docid, documents.type, documents.closed, documents.archived
             ) UNION (
                 SELECT d.cdate AS time, d.id AS docid, d.type AS doctype, d.closed,
-                    d.archived, -SUM(ROUND(ROUND(ic.count * ic.value, 2) * d.currencyvalue, 2)) AS value
+                    d.archived, -SUM(ROUND(ic.grossvalue * d.currencyvalue, 2)) AS value
                 FROM documents d
-                JOIN invoicecontents ic ON ic.docid = d.id
+                JOIN vinvoicecontents ic ON ic.docid = d.id
                 WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '') . '
                     d.customerid = ? AND d.type = ? AND d.cancelled = 0
                 GROUP BY d.cdate, d.id, d.type, d.closed, d.archived
