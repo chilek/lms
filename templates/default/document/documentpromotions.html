@@ -55,6 +55,7 @@
 		selected: selected,
 		internetTariffType: {$smarty.const.SERVICE_INTERNET},
 		phoneTariffType: {$smarty.const.SERVICE_PHONE},
+		DOC_DNOTE:{$smarty.const.DOC_DNOTE},
 		tariffTypes: tariffTypes,
 		variablePrefix: 'document[assignment]',
 		hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}

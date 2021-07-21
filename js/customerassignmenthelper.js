@@ -531,17 +531,24 @@ function tariffSelectionHandler() {
 
 	$('#a_promotions,#a_align_periods').toggle(val == -2);
 
+	$('#netflag, #tax, #taxcategory, #splitpayment').prop('disabled', false);
+	$('#a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
+
 	if (val == '') {
 		$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').show();
-
+		$('#a_price, #a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
 		if (assignmentNetflag && parseInt(assignmentNetflag) !== 0) {
 			$('#grossprice').val(assignmentGrossvalue).prop('disabled', true);
 			$('#netprice').val(assignmentNetvalue).prop('disabled', false);
-			$('#netflag').prop('checked', true);
+			$('#netflag').prop('checked', true).prop('disabled', false);
+			$('#invoice').prop('required', true);
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
 		} else {
 			$('#grossprice').val(assignmentGrossvalue).prop('disabled', false);
 			$('#netprice').val(assignmentNetvalue).prop('disabled', true);
-			$('#netflag').prop('checked', false);
+			$('#netflag').prop('checked', false).prop('disabled', false);
+			$('#invoice').prop('required', false);
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 		}
 
 		if (assignmentTaxid) {
@@ -562,11 +569,19 @@ function tariffSelectionHandler() {
 
 		$('#grossprice').val(tariffGrossPrice).prop('disabled', true);
 		$('#netprice').val(tariffNetPrice).prop('disabled', true);
+		$('#a_price, #a_tax').addClass('lms-ui-disabled');
 
 		if(parseInt(tariffNetFlag) === 1) {
 			$('#netflag').prop('checked', true);
+			$('#invoice').prop('required', true);
+			if ($('#invoice').val() == assignment_settings.DOC_DNOTE) {
+				$('#invoice').val('');
+			}
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
 		} else {
 			$('#netflag').prop('checked', false);
+			$('#invoice').prop('required', false).removeClass('lms-ui-error');
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 		}
 		$('#netflag').prop('disabled', true);
 
@@ -643,6 +658,7 @@ $('#tariff-select').change(tariffSelectionHandler);
 var netFlagElem = $("#netflag");
 var netPriceElem = $("#netprice");
 var grossPriceElem = $("#grossprice");
+var invoiceElem = $("#invoice");
 
 function claculatePriceFromGross() {
 	var grossPriceElemVal = grossPriceElem.val();
@@ -690,10 +706,17 @@ $('#netflag').on('change', function () {
 		grossPriceElem.prop('disabled', true);
 		netPriceElem.prop('disabled', false);
 		claculatePriceFromNet();
+		invoiceElem.prop('required', true);
+		if (invoiceElem.val() == assignment_settings.DOC_DNOTE) {
+			invoiceElem.val('');
+		}
+		invoiceElem.find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
 	} else {
 		grossPriceElem.prop('disabled', false);
 		netPriceElem.prop('disabled', true);
 		claculatePriceFromGross();
+		invoiceElem.prop('required', false).removeClass('lms-ui-error');
+		invoiceElem.find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 	}
 });
 
@@ -712,4 +735,25 @@ $("#grossprice").on('change', function () {
 
 $("#netprice").on('change', function () {
 	claculatePriceFromNet();
+});
+
+$('#invoice').on('change', function () {
+	var tariff_select_val = $('#tariff-select').val();
+	if ($(this).val() == assignment_settings.DOC_DNOTE) {
+		netFlagElem.prop('checked', false).prop('disabled', true);
+		$('#tax, #taxcategory, #splitpayment').prop('disabled', true);
+		$('#a_tax, #a_taxcategory, #a_splitpayment').addClass('lms-ui-disabled');
+	} else {
+		netFlagElem.prop('disabled', netFlagElem.is(':disabled'));
+		$('#taxcategory, #splitpayment').prop('disabled', false);
+		$('#a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
+		if (tariff_select_val == '') {
+			$('#tax').prop('disabled', false);
+			$('#a_tax').removeClass('lms-ui-disabled');
+		} else {
+			$('#tax').prop('disabled', $('#tax').is(':disabled'));
+			$('#a_tax').toggleClass('lms-ui-disabled', $('#tax').is(':disabled'));
+		}
+
+	}
 });
