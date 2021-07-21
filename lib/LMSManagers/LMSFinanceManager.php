@@ -2531,11 +2531,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     } else {
                         $taxvalue = $rounded_taxvalue = $row['taxvalue'];
                     }
-                    $result['content'][$idx]['total'] = $row['grossvalue'];
-                    $result['content'][$idx]['totalbase'] = $row['netvalue'];
-                    $result['content'][$idx]['totaltax'] = $row['totaltaxvalue'];
+
+                    if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
+                        $result['content'][$idx]['total'] = $result['invoice']['content'][$idx]['grossvalue'] + $row['grossvalue'];
+                        $result['content'][$idx]['totalbase'] = $result['invoice']['content'][$idx]['netvalue'] + $row['netvalue'];
+                        $result['content'][$idx]['totaltax'] = $result['invoice']['content'][$idx]['totaltaxvalue'] + $row['totaltaxvalue'];
+                    } else {
+                        $result['content'][$idx]['total'] = $row['grossvalue'];
+                        $result['content'][$idx]['totalbase'] = $row['netvalue'];
+                        $result['content'][$idx]['totaltax'] = $row['totaltaxvalue'];
+                    }
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
+
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE && empty($row['count'])) {
                         $result['content'][$idx]['basevalue'] = $result['invoice']['content'][$idx]['netprice'];
                     } else {
