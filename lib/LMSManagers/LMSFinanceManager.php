@@ -2504,7 +2504,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             if ($result['content'] = $this->db->GetAllByKey('SELECT ic.value AS value,
-                        ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue, ic.grossvalue,
+                        ic.netprice, ic.grossprice, ic.netvalue, ic.taxvalue AS totaltaxvalue, ic.grossvalue,
 						ic.itemid, ic.taxid, ic.taxrate AS taxvalue, taxes.label AS taxlabel, taxcategory,
 						cash.servicetype,
 						prodid, content, ic.count, ic.description AS description,
@@ -2529,7 +2529,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                     $result['content'][$idx]['total'] = $row['grossvalue'];
                     $result['content'][$idx]['totalbase'] = $row['netvalue'];
-                    $result['content'][$idx]['totaltax'] = $row['taxvalue'];
+                    $result['content'][$idx]['totaltax'] = $row['totaltaxvalue'];
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE && empty($row['count'])) {
