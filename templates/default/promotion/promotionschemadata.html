@@ -109,7 +109,7 @@
 					<TD class="valign-top">
 						{icon name="money" class="drag-icon"}
 						<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
-						{if !empty($tariff.flags)}
+						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
 							{capture assign="reward_flags"}
 								{if $tariff.value < 0}
 									{trans("reward for")}

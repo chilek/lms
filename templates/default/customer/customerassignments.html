@@ -203,7 +203,7 @@
 											</A>
 											{if $a.attribute} - {$a.attribute|escape}{/if}
 										</strong>
-										{if !empty($a.flags)}
+										{if ($a.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
 											{capture assign="reward_flags"}
 												{if $a.value < 0}
 													{trans("reward for")}
