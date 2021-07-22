@@ -380,7 +380,7 @@ if (isset($_POST['assignment'])) {
             'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
             'count' => $count,
-            'invoice' => isset($a['invoice']) ? $a['invoice'] : 0,
+            'invoice' => isset($a['invoice']) ? intval($a['invoice']) : 0,
             'separatedocument' => isset($a['separatedocument']) ? 1 : 0,
             'settlement' => !isset($a['settlement']) || empty($a['settlement']) ? 0 : 1,
             'datefrom' => $from,
