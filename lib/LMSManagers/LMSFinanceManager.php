@@ -2534,15 +2534,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						ORDER BY ic.itemid', 'itemid', array($invoiceid))
             ) {
                 foreach ($result['content'] as $idx => $row) {
-                    if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
-/*
-                        $row['count'] += $result['invoice']['content'][$idx]['count'];
-                        $row['value'] += $result['invoice']['content'][$idx]['value'];
-                        $row['netprice'] += $result['invoice']['content'][$idx]['netprice'];
-                        $row['grossprice'] += $result['invoice']['content'][$idx]['grossprice'];
-*/
-                    }
-
                     if ($row['taxvalue'] < 0) {
                         $rounded_taxvalue = round($row['taxvalue']);
                         $taxvalue = 0;
