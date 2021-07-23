@@ -2335,6 +2335,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $PAYTYPES;
 
+        static $netsted_flag = null;
+
+        if (!isset($nested_flag)) {
+            $nested_flag = 0;
+        } else {
+            $nested_flag++;
+        }
+
         if ($detail_level <= self::INVOICE_CONTENT_DETAIL_MORE) {
             $result = $this->db->GetRow(
                 'SELECT d.id, d.type AS doctype, d.number, d.fullnumber, d.name, d.customerid,
@@ -2494,7 +2502,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 DOC_FLAG_RELATED_ENTITY => ($result['flags'] & DOC_FLAG_RELATED_ENTITY) ? 1 : 0,
             );
 
-            if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO) {
+            if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO && !$nested_flag) {
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
                 if (isset($result['invoice']['invoice'])) {
                     // replace pointed correction note number to previous one in invoice chain
@@ -2527,19 +2535,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             ) {
                 foreach ($result['content'] as $idx => $row) {
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE) {
+/*
                         $row['count'] += $result['invoice']['content'][$idx]['count'];
                         $row['value'] += $result['invoice']['content'][$idx]['value'];
                         $row['netprice'] += $result['invoice']['content'][$idx]['netprice'];
                         $row['grossprice'] += $result['invoice']['content'][$idx]['grossprice'];
-                        if (empty($row['netflag'])) {
-                            $row['grossvalue'] = round($row['count'] * $row['grossprice'], 2);
-                            $row['totaltaxvalue'] = round($row['grossvalue'] * $row['taxvalue'] / (100 + $row['taxvalue']), 2);
-                            $row['netvalue'] = $row['grossvalue'] - $row['totaltaxvalue'];
-                        } else {
-                            $row['netvalue'] = round($row['count'] * $row['netprice'], 2);
-                            $row['totaltaxvalue'] = round($row['netvalue'] * $row['taxvalue'] / 100, 2);
-                            $row['grossvalue'] = $row['netvalue'] + $row['totaltaxvalue'];
-                        }
+*/
                     }
 
                     if ($row['taxvalue'] < 0) {
@@ -2638,8 +2639,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
             $result['protection_password'] = ConfigHelper::getConfig('invoices.protection_password');
 
+            if ($netsted_flag) {
+                $nested_flag--;
+            } else {
+                $nested_flag = null;
+            }
+
             return $result;
         } else {
+            if ($nested_flag) {
+                $nested_flag--;
+            } else {
+                $nested_flag = null;
+            }
+
             return false;
         }
     }
