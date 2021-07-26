@@ -49,7 +49,7 @@ $invoicecontents = $this->GetAll(
 );
 
 if (!empty($invoicecontents)) {
-    foreach ($invoicecontents as &$ic) {
+    foreach ($invoicecontents as $ic) {
         $docid = $ic['docid'];
         $itemid = $ic['itemid'];
         $refdoc = $ic['reference'];
@@ -80,7 +80,6 @@ if (!empty($invoicecontents)) {
             );
         }
     }
-    unset($ic);
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021072300', 'dbversion'));
