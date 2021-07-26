@@ -755,6 +755,9 @@ class SYSLOG
         if ($keysArray != null && is_array($keysArray)) {
             foreach ($keysArray as $key => $value) {
                 self::$resource_keys[$key] = $value;
+                if (isset($value)) {
+                    self::$resourceKeyByName[$value] = $key;
+                }
             }
         }
     }
