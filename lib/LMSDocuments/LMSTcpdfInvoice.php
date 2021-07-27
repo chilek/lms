@@ -72,7 +72,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             || !empty($this->data['invoice']['pdiscount']) || !empty($this->data['invoice']['vdiscount']))) {
             $heads['discount'] = trans('Discount:');
         }
-        $heads['basevalue'] = trans('Unitary Net Value:');
+        $heads['basevalue'] = ($this->data['netflag'] ? trans('Unitary Net Value:') : trans('Unitary gross value'));
         $heads['totalbase'] = trans('Net Value:');
         $heads['taxlabel'] = trans('Tax Rate:');
         $heads['totaltax'] = trans('Tax Value:');
@@ -104,7 +104,11 @@ class LMSTcpdfInvoice extends LMSInvoice
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
                     }
                 }
-                $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['basevalue'])) + 1;
+                if ($this->data['netflag']) {
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['basevalue'])) + 1;
+                } else {
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['value'])) + 1;
+                }
                 $t_width['totalbase'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['totalbase'])) + 1;
                 $t_width['taxlabel'] = $this->backend->getStringWidth($item['taxlabel']) + 1;
                 $t_width['totaltax'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['totaltax'])) + 1;
@@ -137,7 +141,11 @@ class LMSTcpdfInvoice extends LMSInvoice
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
                     }
                 }
-                $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['basevalue'])) + 1;
+                if ($this->data['invoice']['netflag']) {
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['basevalue'])) + 1;
+                } else {
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['value'])) + 1;
+                }
                 $t_width['totalbase'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['totalbase'])) + 1;
                 $t_width['taxlabel'] = $this->backend->getStringWidth($item['taxlabel']) + 1;
                 $t_width['totaltax'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['totaltax'])) + 1;
@@ -211,7 +219,11 @@ class LMSTcpdfInvoice extends LMSInvoice
                             $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', 0), 1, 0, 'R', 0, '', 1);
                         }
                     }
-                    $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
+                    if ($this->data['invoice']['netflag']) {
+                        $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
+                    } else {
+                        $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['value']), 1, 0, 'R', 0, '', 1);
+                    }
                     $this->backend->Cell($h_width['totalbase'], $h, sprintf('%01.2f', $item['totalbase']), 1, 0, 'R', 0, '', 1);
                     $this->backend->Cell($h_width['taxlabel'], $h, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
                     $this->backend->Cell($h_width['totaltax'], $h, sprintf('%01.2f', $item['totaltax']), 1, 0, 'R', 0, '', 1);
@@ -288,7 +300,11 @@ class LMSTcpdfInvoice extends LMSInvoice
                     $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', 0), 1, 0, 'R', 0, '', 1);
                 }
             }
-            $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
+            if ($this->data['netflag']) {
+                $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
+            } else {
+                $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['value']), 1, 0, 'R', 0, '', 1);
+            }
             $this->backend->Cell($h_width['totalbase'], $h, sprintf('%01.2f', $item['totalbase']), 1, 0, 'R', 0, '', 1);
             $this->backend->Cell($h_width['taxlabel'], $h, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
             $this->backend->Cell($h_width['totaltax'], $h, sprintf('%01.2f', $item['totaltax']), 1, 0, 'R', 0, '', 1);
@@ -718,6 +734,18 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
     }
 
+    protected function invoice_pricing_method()
+    {
+        $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
+
+        if (isset($this->data['netflag']) && !empty($this->data['netflag'])) {
+            $comment = trans('net');
+        } else {
+            $comment = trans('gross');
+        }
+        $this->backend->writeHTMLCell(0, 0, '', '', trans('The document is issued according to the $a price', $comment), 0, 1, 0, true, 'L');
+    }
+
     protected function invoice_dates()
     {
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
@@ -921,6 +949,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_data();
         $this->invoice_to_pay();
         $this->invoice_expositor();
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+            $this->invoice_pricing_method();
+        }
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
             $this->invoice_balance();
         }
@@ -1053,6 +1084,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_data();
         $this->invoice_to_pay();
         $this->invoice_expositor();
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+            $this->invoice_pricing_method();
+        }
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
             $this->invoice_balance();
         }

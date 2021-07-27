@@ -488,7 +488,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) {
             $t_data[$v++] = '<b>' . trans('Discount:') . '</b>';
         }
-        $t_data[$v++] = '<b>' . trans('Unitary Net Value:') . '</b>';
+        $t_data[$v++] = '<b>' . ($this->data['netflag'] ? trans('Unitary Net Value:') : trans('Unitary gross value')) . '</b>';
         $t_data[$v++] = '<b>' . trans('Net Value:') . '</b>';
         $t_data[$v++] = '<b>' . trans('Tax Rate:') . '</b>';
         $t_data[$v++] = '<b>' . trans('Tax Value:') . '</b>';
@@ -528,7 +528,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                         $v++;
                     }
                 }
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                if ($this->data['netflag']) {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                } else {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['value'])) + 6;
+                }
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
@@ -567,7 +571,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                         $v++;
                     }
                 }
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                if ($this->data['invoice']['netflag']) {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                } else {
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['value'])) + 6;
+                }
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
@@ -630,7 +638,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                             $t_data[$v++] = '';
                         }
                     }
-                    $t_data[$v++] = sprintf('%01.2f', $item['basevalue']);
+                    if ($this->data['invoice']['netflag']) {
+                        $t_data[$v++] = sprintf('%01.2f', $item['basevalue']);
+                    } else {
+                        $t_data[$v++] = sprintf('%01.2f', $item['value']);
+                    }
                     $t_data[$v++] = sprintf('%01.2f', $item['totalbase']);
                     $t_data[$v++] = $item['taxlabel'];
                     $t_data[$v++] = sprintf('%01.2f', $item['totaltax']);
@@ -720,7 +732,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                         $t_data[$v++] = '';
                     }
                 }
-                $t_data[$v++] = sprintf('%01.2f', $item['basevalue']);
+                if ($this->data['netflag']) {
+                    $t_data[$v++] = sprintf('%01.2f', $item['basevalue']);
+                } else {
+                    $t_data[$v++] = sprintf('%01.2f', $item['value']);
+                }
                 $t_data[$v++] = sprintf('%01.2f', $item['totalbase']);
                 $t_data[$v++] = $item['taxlabel'];
                 $t_data[$v++] = sprintf('%01.2f', $item['totaltax']);
@@ -828,7 +844,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         if ($show_tax_category) {
             $cols['taxcategory'] = '<b>' . trans('Tax Category:') . '</b>';
         }
-        $cols['basevalue'] = '<b>' . trans('Unitary Net Value:') . '</b>';
+        $cols['basevalue'] = '<b>' . ($this->data['netflag'] ? trans('Unitary Net Value:') : trans('Unitary gross value')) . '</b>';
         $cols['totalbase'] = '<b>' . trans('Net Value:') . '</b>';
         $cols['taxlabel'] = '<b>' . trans('Tax Rate:') . '</b>';
         $cols['totaltax'] = '<b>' . trans('Tax Value:') . '</b>';
@@ -864,7 +880,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                         }
                     }
                 }
-                $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                if ($this->data['netflag']) {
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                } else {
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['value'])) + 6;
+                }
                 $tt_width['totalbase'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
                 $tt_width['taxlabel'] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
                 $tt_width['totaltax'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
@@ -900,7 +920,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                         }
                     }
                 }
-                $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                if ($this->data['invoice']['netflag']) {
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['basevalue'])) + 6;
+                } else {
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['value'])) + 6;
+                }
                 $tt_width['totalbase'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
                 $tt_width['taxlabel'] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
                 $tt_width['totaltax'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
@@ -994,7 +1018,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                             $data[$i]['discount'] = sprintf('%01.2f', $item['vdiscount']);
                         }
                     }
-                    $data[$i]['basevalue'] = sprintf('%01.2f', $item['basevalue']);
+                    if ($this->data['invoice']['netflag']) {
+                        $data[$i]['basevalue'] = sprintf('%01.2f', $item['basevalue']);
+                    } else {
+                        $data[$i]['basevalue'] = sprintf('%01.2f', $item['value']);
+                    }
                     $data[$i]['totalbase'] = sprintf('%01.2f', $item['totalbase']);
                     $data[$i]['taxlabel'] = $item['taxlabel'];
                     $data[$i]['totaltax'] = sprintf('%01.2f', $item['totaltax']);
@@ -1075,7 +1103,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                         $data[$i]['discount'] = sprintf('%01.2f', $item['vdiscount']);
                     }
                 }
-                $data[$i]['basevalue'] = sprintf('%01.2f', $item['basevalue']);
+                if ($this->data['netflag']) {
+                    $data[$i]['basevalue'] = sprintf('%01.2f', $item['basevalue']);
+                } else {
+                    $data[$i]['basevalue'] = sprintf('%01.2f', $item['value']);
+                }
                 $data[$i]['totalbase'] = sprintf('%01.2f', $item['totalbase']);
                 $data[$i]['taxlabel'] = $item['taxlabel'];
                 $data[$i]['totaltax'] = sprintf('%01.2f', $item['totaltax']);
@@ -1256,6 +1288,24 @@ class LMSEzpdfInvoice extends LMSInvoice
         return $y;
     }
 
+    protected function invoice_pricing_method($x, $y)
+    {
+        if (isset($this->data['netflag']) && !empty($this->data['netflag'])) {
+            $comment = trans('net');
+        } else {
+            $comment = trans('gross');
+        }
+
+        $y = $y - $this->backend->text_align_left(
+            $x,
+            $y,
+            9,
+            '<b>' . trans('The document is issued according to the $a price', $comment) . '</b>'
+        );
+
+        return $y;
+    }
+
     protected function invoice_expositor($x, $y)
     {
         $expositor = empty($this->data['issuer']) ? (empty($this->data['user']) ? $this->data['division_author'] : $this->data['user']) : $this->data['issuer'];
@@ -1393,6 +1443,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->check_page_length($top);
         $top = $this->invoice_to_pay(30, $top);
 
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+            $top = $this->invoice_pricing_method(30, $top);
+        }
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
             $top = $this->invoice_balance(30, $top);
         }
@@ -1468,6 +1521,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         $top = $return[2] - 0;
         $top = $this->invoice_to_pay(30, $top);
 
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+            $top = $this->invoice_pricing_method(30, $top);
+        }
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
             $top = $this->invoice_balance(30, $top);
         }

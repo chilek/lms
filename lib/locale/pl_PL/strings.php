@@ -30,6 +30,11 @@ $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
 
 $_LANG['according in net'] = 'naliczanie w netto';
 $_LANG['according in gross'] = 'naliczanie w brutto';
+$_LANG['Add tariff'] = 'Dodaj taryfę';
+$_LANG['Document flags'] = 'Flagi dokumentu';
+$_LANG['The document is issued according to the $a price'] = 'Dokument wystawiony według ceny $a';
+$_LANG['according in net'] = 'naliczanie według netto';
+$_LANG['according in gross'] = 'naliczanie według brutto';
 $_LANG['in net'] = 'w netto';
 $_LANG['in gross'] = 'w brutto';
 $_LANG['Billing according to the net price'] = 'Naliczanie według ceny netto';
@@ -37,8 +42,10 @@ $_LANG['Billing according to the gross price'] = 'Naliczanie według ceny brutto
 $_LANG['Gross'] = 'Brutto';
 $_LANG['gross'] = 'brutto';
 $_LANG['Net'] = 'Netto';
+$_LANG['gross'] = 'brutto';
 $_LANG['net'] = 'netto';
 $_LANG['Currency'] = 'Waluta';
+$_LANG['Unitary gross value'] = 'Cena jedn. brutto';
 
 $_LANG['Birth date cannot be empty for natural person!'] = 'Data urodzenia nie może być pusta w przypadku osoby fizycznej!';
 $_LANG['First name cannot be empty for natural person!'] = 'Imię nie może być puste w przypadku osoby fizycznej!';
