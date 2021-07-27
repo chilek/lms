@@ -17,6 +17,9 @@
 <script>
 
 	function saveInvoice() {
+		$('.invoice-contents-field-grossprice').prop('disabled', false);
+		$('.invoice-contents-field-netprice').prop('disabled', false);
+
 		var which = 0;
 		$('form[name="save"] [name^="which"]:checked').each(function() {
 			which += parseInt($(this).val());
@@ -86,6 +89,7 @@
 </script>
 <FORM NAME="setheader" METHOD="POST" ACTION="?m={$layout.module}&action=setheader">
 <INPUT type="submit" class="hiddenbtn">
+<input type="hidden" name="cnote[netflag]" value="{$cnote.netflag}">
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -196,6 +200,21 @@
 			</label>
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold nobr">
+			{trans("Accounting")}
+		</td>
+		<td class="nobr">
+			<label>
+				<input type="radio" id="ingross" name="cnote[netflag]" value="0" {if !$cnote.netflag} checked{/if} disabled>
+				{trans("in gross")}
+			</label>
+			<label>
+				<input type="radio" id="innet" name="cnote[netflag]" value="1" {if $cnote.netflag} checked{/if} disabled>
+				{trans("in net")}
+			</label>
+		</td>
+	</tr>
 	{if $refdoc.divisionid != $refdoc.current_divisionid}
 		<TR>
 			<TD class="bold nobr">
@@ -392,7 +411,11 @@
 				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$itemid}]">{$item.valuenetto|money_format}
 				{else}
-					<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$itemid}]" SIZE="6">
+					<INPUT TYPE="text" class="invoice-contents-field-netprice" NAME="valuenetto[{$itemid}]" SIZE="6"
+						   VALUE="{$item.valuenetto|string_format:"%.2f"}"
+						   onchange="claculatePositionPriceFromNet({$itemid}, this)"
+							{tip text="Enter unitary value without discount"}
+							{if !$cnote.netflag} disabled{/if}>
 				{/if}
 				{if isset($item.valuenetto_custom_contents)}
 					{$item.valuenetto_custom_contents}
@@ -402,18 +425,30 @@
 				{if $item.deleted}
 					<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$itemid}]">{$item.tax}
 				{else}
-					<SELECT size="1" name="taxid[{$itemid}]" {tip text="Select Tax rate"}>
-						{foreach item=tax from=$taxeslist}
+					<SELECT size="1" name="taxid[{$itemid}]" id="invoice-contents-field-tax-{$itemid}" {tip text="Select Tax rate"}
+							onchange="claculatePositionPriceOnTaxChange({$itemid})">
+						{foreach $taxeslist as $tax}
 							<OPTION value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</OPTION>
 						{/foreach}
 					</SELECT>
+					{foreach $taxeslist as $tax}
+						<input type="hidden" id="contents-tax-{$itemid}-{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+					{/foreach}
 				{/if}
 			</TD>
 			<TD class="text-right nobr">
 				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" NAME="valuebrutto[{$itemid}]">{if !empty($item.valuebrutto)}{$item.valuebrutto|money_format}{/if}
+					<INPUT TYPE="hidden" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" NAME="valuebrutto[{$itemid}]">
+					{if !empty($item.valuebrutto)}
+						{$item.valuebrutto|money_format}
+					{/if}
 				{else}
-					<INPUT TYPE="text" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
+					<INPUT TYPE="text" class="invoice-contents-field-grossprice" NAME="valuebrutto[{$itemid}]" SIZE="6"
+						   VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}"
+						   onchange="claculatePositionPriceFromGross({$itemid}, this)"
+							{tip text="Enter unitary value without discount"}
+							{if $cnote.netflag} disabled{/if}>
+					<BR>
 				{/if}
 				{if isset($item.valuebrutto_custom_contents)}
 					{$item.valuebrutto_custom_contents}
@@ -474,10 +509,66 @@
 	</TBODY>
 </TABLE>
 </FORM>
+
 <script>
 
 	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+	const netFlagElem = $("#innet");
 	customer_addresses.init();
 
+	function claculatePositionPriceFromGross(posuid, elem) {
+		let grossPriceElem = $(elem);
+		let grossPriceElemVal = grossPriceElem.val();
+		let netPriceElem = $('[name="valuenetto[' + posuid + ']"]');
+		if (grossPriceElemVal.length) {
+			let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
+			let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
+
+			let grossPrice = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+			grossPrice = Math.round((grossPrice + Number.EPSILON) * 100) / 100;
+
+			let netPriceVal = Math.round(((grossPrice / (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+			netPriceVal = netPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+			netPriceElem.val(netPriceVal);
+
+			grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+			grossPriceElem.val(grossPrice);
+		} else {
+			netPriceElem.val('');
+		}
+	}
+
+	function claculatePositionPriceFromNet(posuid, elem) {
+		let netPriceElem = $(elem);
+		let netPriceElemVal = netPriceElem.val();
+		let grossPriceElem = $('[name="valuebrutto[' + posuid + ']"]');
+		if (netPriceElemVal.length) {
+			let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
+			let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
+
+			let netPrice = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'));
+			netPrice = Math.round((netPrice + Number.EPSILON) * 100) / 100;
+
+			let grossPriceVal = Math.round(((netPrice * (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+			grossPriceVal = grossPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+			grossPriceElem.val(grossPriceVal);
+
+			netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+			netPriceElem.val(netPrice);
+		} else {
+			grossPriceElem.val('');
+		}
+	}
+
+	function claculatePositionPriceOnTaxChange(posuid) {
+		let netPriceElem = $('[name="valuenetto[' + posuid + ']"]');
+		let grossPriceElem = $('[name="valuebrutto[' + posuid + ']"]');
+
+		if (netFlagElem.is(':checked')) {
+			claculatePositionPriceFromNet(posuid, netPriceElem);
+		} else {
+			claculatePositionPriceFromGross(posuid, grossPriceElem);
+		}
+	}
 </script>
 {/block}

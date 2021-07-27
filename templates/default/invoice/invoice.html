@@ -191,8 +191,13 @@
 		<B>{trans("Discount:")}</B>
 	</TD>
 	{/if}
-	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+	{if $invoice.netflag}
+		<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Unitary Net Value:")}</B>
+	{else}
+		<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>{trans("Unitary gross value")}</B>
+	{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Net Value:")}</B>
@@ -244,9 +249,15 @@
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
 	</TD>
 	{/if}
-	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.basevalue|string_format:"%01.2f"}
-	</TD>
+	{if $invoice.netflag}
+		<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
+			{$item.basevalue|string_format:"%01.2f"}
+		</TD>
+	{else}
+		<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
+			{$item.value|string_format:"%01.2f"}
+		</TD>
+	{/if}
 	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|string_format:"%01.2f"}
 	</TD>
@@ -342,9 +353,15 @@
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
 	</TD>
 	{/if}
-	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.basevalue|string_format:"%01.2f"}
-	</TD>
+	{if $invoice.netflag}
+		<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
+			{$item.basevalue|string_format:"%01.2f"}
+		</TD>
+	{else}
+		<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
+			{$item.value|string_format:"%01.2f"}
+		</TD>
+	{/if}
 	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|string_format:"%01.2f"}
 	</TD>
@@ -508,6 +525,18 @@
             </td>
         </tr>
     {else}
+		{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))}
+			<tr>
+				<td colspan="2" class="bold">
+					{if $invoice.netflag}
+						{$comment = trans('net')}
+					{else}
+						{$comment = trans('gross')}
+					{/if}
+					{trans('The document is issued according to the $a price', $comment)}
+				</td>
+			</tr>
+		{/if}
         {if $show_balance}
             <tr>
                 <td colspan="2">

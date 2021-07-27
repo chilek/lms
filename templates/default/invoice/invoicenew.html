@@ -19,6 +19,8 @@
 			if (document.setcustomer.customer.value != 0)
 				document.setcustomer.customerid.value = document.setcustomer.customer.value;
 
+		$('#ingross').prop('disabled', false);
+		$('#innet').prop('disabled', false);
 		document.setcustomer.submit();
 	}
 
@@ -39,7 +41,7 @@
 {$customerid = $invoice.customerid}
 {/if}
 {block name="invoicenew-header"}
-<FORM name="setcustomer" id="setcustomer" method="POST" action="?m=invoicenew&amp;action=setcustomer">
+<FORM name="setcustomer" id="setcustomer" method="POST" action="?m=invoicenew&action=setcustomer">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
@@ -142,6 +144,21 @@
 			</label>
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold nobr">
+			{trans("Accounting")}
+		</td>
+		<td class="nobr">
+			<label>
+				<input type="radio" id="ingross" name="invoice[netflag]" value="0" {if !$invoice.netflag} checked{/if}{if $contents} disabled{/if}>
+				{trans("in gross")}
+			</label>
+			<label>
+				<input type="radio" id="innet" name="invoice[netflag]" value="1" {if $invoice.netflag} checked{/if}{if $contents} disabled{/if}>
+				{trans("in net")}
+			</label>
+		</td>
+	</tr>
 	{if isset($invoice.proformaid) && !empty($invoice.proformaid)}
 	<TR>
 		<TD class="bold nobr">
@@ -199,7 +216,7 @@
 </FORM>
 {/block}
 
-{if $covenantlist}
+{if $covenantlist && !$invoice.netflag}
 	<FORM name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
 		<TABLE class="lmsbox lms-ui-background-cycle">
 			<colgroup>

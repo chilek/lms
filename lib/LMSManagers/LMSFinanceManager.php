@@ -1954,6 +1954,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             case 'name':
                 $sqlord = ' ORDER BY d.name';
                 break;
+            case 'netflag':
+                $sqlord = ' ORDER BY netflag';
+                break;
         }
 
         $join_cash = false;
@@ -2033,25 +2036,27 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         $invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,
+            (CASE WHEN d.flags & ' . DOC_FLAG_NET_ACCOUNT .' > 0 THEN 1 ELSE 0 END) AS netflag,
 			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed,
 			d.cancelled, d.published, d.archived, d.senddate,
 			(CASE WHEN d.type = ' . DOC_INVOICE_PRO . '
-			    THEN
-			        SUM(a.value * a.count)
-			    ELSE
-			        -SUM(cash.value)
+                THEN
+                    SUM(a.grossvalue)
+                ELSE
+                   -SUM(cash.value)
 			END) AS value,
 			d.currency, d.currencyvalue,
 			COUNT(a.docid) AS count,
 			i.sendinvoices,
 			(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
 			FROM documents d
-			JOIN invoicecontents a ON (a.docid = d.id)
+			JOIN vinvoicecontents a ON (a.docid = d.id)
 			LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
 			LEFT JOIN documents d2 ON d2.reference = d.id
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+            LEFT JOIN taxes ON a.taxid = taxes.id
 			LEFT JOIN (
 			SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customeraddressview c
 				JOIN customercontacts cc ON cc.customerid = c.id
@@ -2216,6 +2221,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         foreach ($invoice['contents'] as $idx => $item) {
             $itemid++;
             $item['valuebrutto'] = str_replace(',', '.', $item['valuebrutto']);
+            $item['valuenetto'] = str_replace(',', '.', $item['valuenetto']);
             $item['count'] = str_replace(',', '.', $item['count']);
             $item['discount'] = str_replace(',', '.', $item['discount']);
             $item['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
@@ -2225,7 +2231,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $args = array(
                 SYSLOG::RES_DOC => $iid,
                 'itemid' => $itemid,
-                'value' => $item['valuebrutto'],
+                'value' => empty($invoice['invoice']['netflag']) ? $item['valuebrutto'] : $item['valuenetto'],
                 SYSLOG::RES_TAX => $item['taxid'],
                 'taxcategory' => isset($item['taxcategory']) && !empty($item['taxcategory']) ? $item['taxcategory'] : 0,
                 'prodid' => $item['prodid'],
@@ -2247,7 +2253,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($type != DOC_INVOICE_PRO || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
                 $this->AddBalance(array(
                     'time' => $cdate,
-                    'value' => $item['valuebrutto'] * $item['count'] * -1,
+                    'value' => str_replace(',', '.', $item['s_valuebrutto']) * -1,
                     'currency' => $invoice['invoice']['currency'],
                     'currencyvalue' => $invoice['invoice']['currencyvalue'],
                     'taxid' => $item['taxid'],
@@ -2546,10 +2552,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['content'][$idx]['total'] = $result['content'][$idx]['grossvalue'] = $row['grossvalue'];
                     $result['content'][$idx]['totalbase'] = $result['content'][$idx]['netvalue'] = $row['netvalue'];
                     $result['content'][$idx]['totaltax'] = $result['content'][$idx]['totaltaxvalue'] = $row['totaltaxvalue'];
+                    $result['content'][$idx]['grossprice'] = $row['grossprice'];
+                    $result['content'][$idx]['netprice'] = $row['netprice'];
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
 
                     if (isset($result['invoice']) && $result['doctype'] == DOC_CNOTE && empty($row['count'])) {
+                        $result['content'][$idx]['value'] = $result['invoice']['content'][$idx]['grossprice'];
                         $result['content'][$idx]['basevalue'] = $result['invoice']['content'][$idx]['netprice'];
                     } else {
                         $result['content'][$idx]['basevalue'] = $row['netprice'];

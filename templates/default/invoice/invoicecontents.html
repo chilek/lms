@@ -86,15 +86,27 @@
         <TBODY>
         {foreach $contents as $posuid => $item}
         <TR id="invoice-contents-position-{$posuid}" class="highlight invoice-contents-position" data-posuid="{$posuid}">
-			{if $item.vdiscount != 0}
-				{$valuebrutto = $item.valuebrutto + $item.vdiscount}
-			{elseif $item.pdiscount != 0}
-				{$valuebrutto = (100 * $item.valuebrutto ) / (100 - $item.pdiscount)}
-			{else}
-				{$valuebrutto = $item.valuebrutto}
-			{/if}
-			{$valuebrutto = round($valuebrutto, 2)}
-			{$valuenetto = round(($valuebrutto * 100) / (100 + $taxeslist[$item.taxid].value), 2)}
+            {if $invoice.netflag}
+                {if $item.vdiscount != 0}
+                    {$valuenetto = $item.valuenetto + $item.vdiscount}
+                {elseif $item.pdiscount != 0}
+                    {$valuenetto = (100 * $item.valuenetto ) / (100 - $item.pdiscount)}
+                {else}
+                    {$valuenetto = $item.valuenetto}
+                {/if}
+                {$valuenetto = round($valuenetto, 2)}
+                {$valuebrutto = round($valuenetto * ($taxeslist[$item.taxid].value / 100 + 1), 2)}
+            {else}
+                {if $item.vdiscount != 0}
+                    {$valuebrutto = $item.valuebrutto + $item.vdiscount}
+                {elseif $item.pdiscount != 0}
+                    {$valuebrutto = (100 * $item.valuebrutto ) / (100 - $item.pdiscount)}
+                {else}
+                    {$valuebrutto = $item.valuebrutto}
+                {/if}
+                {$valuebrutto = round($valuebrutto, 2)}
+                {$valuenetto = round($valuebrutto / ($taxeslist[$item.taxid].value / 100 + 1), 2)}
+            {/if}
             {if isset($error.posuid)}
                 {$row = $itemdata}
             {else}
@@ -173,9 +185,11 @@
 				</span>
             </TD>
             <TD class="text-right">
-                <input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][valuenetto]"
+                <input type="text" class="invoice-contents-field-edit invoice-contents-field-netprice" name="invoice-contents[{$posuid}][valuenetto]"
                     value="{$valuenetto}" data-old-value="{$valuenetto}" size="6"
-                    {tip text="Enter unitary value without discount"} style="display: none;">
+                       onchange="claculatePositionPriceFromNet({$posuid}, this)"
+                        {tip text="Enter unitary value without discount"} style="display: none;"
+                        {if !$invoice.netflag} disabled{/if}>
                 <span class="invoice-contents-field-value nobr">
 				    {$item.valuenetto|string_format:"%01.2f"}
 				</span>
@@ -191,20 +205,26 @@
 				{/if}
             </TD>
             <TD class="text-right nobr">
-                <SELECT size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]"
-                        data-old-value="{$item.taxid}" {tip text="Select Tax rate"} style="display: none;">
+                <SELECT size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]" id="invoice-contents-field-tax-{$posuid}"
+                        data-old-value="{$item.taxid}" {tip text="Select Tax rate"} style="display: none;"
+                        onchange="claculatePositionPriceOnTaxChange({$posuid})">
                     {foreach $taxeslist as $tax}
                         <OPTION value="{$tax.id}"{if $tax.id == $row.taxid} selected{/if}>{$tax.label}</OPTION>
                     {/foreach}
                 </SELECT>
+                {foreach $taxeslist as $tax}
+                    <input type="hidden" id="contents-tax-{$posuid}-{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+                {/foreach}
                 <span class="invoice-contents-field-value">
                     {$item.tax}
                 </span>
             </TD>
             <TD class="text-right">
-				<input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][valuebrutto]"
+				<input type="text" class="invoice-contents-field-edit invoice-contents-field-grossprice" name="invoice-contents[{$posuid}][valuebrutto]"
 					value="{$valuebrutto}" data-old-value="{$valuebrutto}" size="6"
-                    {tip text="Enter unitary value without discount"} style="display: none;">
+                       onchange="claculatePositionPriceFromGross({$posuid}, this)"
+                        {tip text="Enter unitary value without discount"} style="display: none;"
+                        {if $invoice.netflag} disabled{/if}>
 				<span class="invoice-contents-field-value nobr">
 				{$item.valuebrutto|string_format:"%01.2f"}
 				</span>
@@ -266,24 +286,28 @@
         <TFOOT>
         {block name="`$layout.module`-additem"}
         {if !$invoice.closed}
+        <tr>
+            <TD class="nobr" id="tariff-selection" colspan="10">
+                {block name="`$layout.module`-tariff-selection"}
+                    {trans("Add tariff")}
+                    <SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Select tariff from the list"}>
+                        <OPTION value="0">-</OPTION>
+                        {foreach $tariffs as $tariff}
+                            {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
+                                <OPTION VALUE="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</OPTION>
+                            {/if}
+                        {/foreach}
+                    </SELECT>
+                {/block}
+            </TD>
+        </tr>
         <TR>
             <TD class="bold nobr">
                 {counter}.
             </TD>
             <TD class="nobr" id="tariff-selection">
-                {block name="`$layout.module`-tariff-selection"}
                 <INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
                         {tip text="Enter description or select tariff from the list"}>
-                <BR>
-                <SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
-                    <OPTION value="0">-</OPTION>
-                    {foreach $tariffs as $tariff}
-                        {if $tariff.currency == $invoice.currency}
-                            <OPTION VALUE="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</OPTION>
-                        {/if}
-                    {/foreach}
-                </SELECT>
-                {/block}
             </TD>
             <TD class="nobr">
                 <div class="servicetype-taxcategory">
@@ -319,20 +343,25 @@
                 </SELECT>
             </TD>
             <TD class="text-right nobr">
-                <INPUT TYPE="text" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}
-                    value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuenetto}{/if}">
+                <INPUT TYPE="text" id="netprice" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}
+                       value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuenetto}{/if}"
+                        {if !$invoice.netflag} disabled{/if}>
             </TD>
             <TD class="text-right nobr">
-                <SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
+                <SELECT size="1" id="tax" name="taxid" {tip text="Select Tax rate"}>
                     {foreach item=tax from=$taxeslist}
                     <OPTION value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</OPTION>
                     {/foreach}
                 </SELECT>
+                {foreach $taxeslist as $tax}
+                    <input type="hidden" id="tax{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
+                {/foreach}
                 <br>
             </TD>
             <TD class="text-right nobr">
-                <INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}
-                   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}">
+                <INPUT TYPE="text" id="grossprice" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}
+                       value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}"
+                        {if $invoice.netflag} disabled{/if}>
             </TD>
             <TD>
                 {button type="link" icon="save" tip="Add item" onclick="addItem();"}
@@ -390,6 +419,7 @@
         </TFOOT>
     </TABLE>
 </FORM>
+
 <script>
 	function setItem(index) {
 		var e = document.contents;
@@ -398,6 +428,7 @@
 			e.name.value = '{str_replace("'", "\\'", $tariff.name)}';
 			e.taxid.value = '{$tariff.taxid}';
 			e.valuebrutto.value = '{$tariff.value}';
+			e.valuenetto.value = '{$tariff.netvalue}';
 			e.prodid.value = '{$tariff.prodid}';
 			e.tariffid.value = '{$tariff.id}';
 			$(e.taxcategory).val({$tariff.taxcategory});
@@ -409,6 +440,7 @@
 		if (index == 0) {
             e.name.value = '';
             e.valuebrutto.value = '';
+            e.valuenetto.value = '';
             e.prodid.value = '';
             e.tariffid.value = '';
             $(e.taxcategory).val(0);
@@ -418,6 +450,8 @@
 	}
 
 	function addItem() {
+        netPriceElem.prop('disabled', false);
+        grossPriceElem.prop('disabled', false);
 		document.contents.action += '&action=additem';
 		document.contents.submit();
 	}
@@ -454,11 +488,17 @@
     }
 
 	function saveItem(posuid) {
+        $('[name="invoice-contents[' + posuid + '][valuenetto]"]').prop('disabled', false);
+        $('[name="invoice-contents[' + posuid + '][valuebrutto]"]').prop('disabled', false);
+
 		document.contents.action += '&action=savepos&posuid=' + posuid;
 		document.contents.submit();
 	}
 
 	function saveInvoice() {
+        $('.invoice-contents-field-grossprice').prop('disabled', false);
+        $('.invoice-contents-field-netprice').prop('disabled', false);
+
         var which = 0;
         $('form[name="contents"] [name^="which"]:checked').each(function() {
             which += parseInt($(this).val());
@@ -469,6 +509,9 @@
 	}
 
 	function printInvoice() {
+        $('.invoice-contents-field-grossprice').prop('disabled', false);
+        $('.invoice-contents-field-netprice').prop('disabled', false);
+
         var which = 0;
         $('form[name="contents"] [name^="which"]:checked').each(function() {
             which += parseInt($(this).val());
@@ -532,4 +575,118 @@
         return;
     });
 
+    const netFlagElem = $("#innet");
+    const netPriceElem = $("#netprice");
+    const grossPriceElem = $("#grossprice");
+
+    function claculatePriceFromGross() {
+        let grossPriceElemVal = grossPriceElem.val();
+        if (grossPriceElemVal.length) {
+            let selectedTaxId = $("#tax").find('option:selected').val();
+            let tax = $('#tax' + selectedTaxId).val();
+
+            let grossPrice = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+            grossPrice = Math.round((grossPrice + Number.EPSILON) * 100) / 100;
+
+            let netPriceVal = Math.round(((grossPrice / (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+            netPriceVal = netPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+            netPriceElem.val(netPriceVal);
+
+            grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+            grossPriceElem.val(grossPrice);
+        } else {
+            netPriceElem.val('');
+        }
+    }
+
+    function claculatePriceFromNet() {
+        let netPriceElemVal = netPriceElem.val();
+        if (netPriceElemVal.length) {
+            let selectedTaxId = $("#tax").find('option:selected').val();
+            let tax = $('#tax' + selectedTaxId).val();
+
+            let netPrice = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'));
+            netPrice = Math.round((netPrice + Number.EPSILON) * 100) / 100;
+
+            let grossPriceVal = Math.round(((netPrice * (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+            grossPriceVal = grossPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+            grossPriceElem.val(grossPriceVal);
+
+            netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+            netPriceElem.val(netPrice);
+        } else {
+            grossPriceElem.val('');
+        }
+    }
+
+    $("#tax").on('change', function () {
+        if (netFlagElem.is(':checked')) {
+            claculatePriceFromNet();
+        } else {
+            claculatePriceFromGross();
+        }
+    });
+
+    $("#grossprice").on('change', function () {
+        claculatePriceFromGross();
+    });
+
+    $("#netprice").on('change', function () {
+        claculatePriceFromNet();
+    });
+
+    function claculatePositionPriceFromGross(posuid, elem) {
+        let grossPriceElem = $(elem);
+        let grossPriceElemVal = grossPriceElem.val();
+        let netPriceElem = $('[name="invoice-contents[' + posuid + '][valuenetto]"]');
+        if (grossPriceElemVal.length) {
+            let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
+            let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
+
+            let grossPrice = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+            grossPrice = Math.round((grossPrice + Number.EPSILON) * 100) / 100;
+
+            let netPriceVal = Math.round(((grossPrice / (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+            netPriceVal = netPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+            netPriceElem.val(netPriceVal);
+
+            grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+            grossPriceElem.val(grossPrice);
+        } else {
+            netPriceElem.val('');
+        }
+    }
+
+    function claculatePositionPriceFromNet(posuid, elem) {
+        let netPriceElem = $(elem);
+        let netPriceElemVal = netPriceElem.val();
+        let grossPriceElem = $('[name="invoice-contents[' + posuid + '][valuebrutto]"]');
+        if (netPriceElemVal.length) {
+            let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
+            let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
+
+            let netPrice = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'));
+            netPrice = Math.round((netPrice + Number.EPSILON) * 100) / 100;
+
+            let grossPriceVal = Math.round(((netPrice * (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
+            grossPriceVal = grossPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
+            grossPriceElem.val(grossPriceVal);
+
+            netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+            netPriceElem.val(netPrice);
+        } else {
+            grossPriceElem.val('');
+        }
+    }
+
+    function claculatePositionPriceOnTaxChange(posuid) {
+        let netPriceElem = $('[name="invoice-contents[' + posuid + '][valuenetto]"]');
+        let grossPriceElem = $('[name="invoice-contents[' + posuid + '][valuebrutto]"]');
+
+        if (netFlagElem.is(':checked')) {
+            claculatePositionPriceFromNet(posuid, netPriceElem);
+        } else {
+            claculatePositionPriceFromGross(posuid, grossPriceElem);
+        }
+    }
 </script>

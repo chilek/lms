@@ -50,36 +50,39 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
-        <COL style="width: 1%" span="5">
-        <COL style="width: 94%">
+        <COL style="width: 1%" span="6">
+        <COL style="width: 93%">
         <COL style="width: 1%">
     </COLGROUP>
     <THEAD>
 	<TR>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=netflag{if $listdata.direction == "asc" && $listdata.order == "netflag"},desc{/if}">{trans("Accounting:")}</A> {if $listdata.order == "netflag"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD class="nobr">
+			<A href="?m=invoicelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD>
 			&nbsp;
 		</TD>
 	</TR>
 	<tr>
-		<td colspan="7">
+		<td colspan="8">
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
 					{icon name="filter"}
@@ -162,7 +165,7 @@
 	</tr>
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="7">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="pagination.html"}
 		</TD>
 	</TR>
@@ -189,6 +192,13 @@
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.count}
+		</TD>
+		<TD class="text-right nobr">
+			{if $invoice.netflag}
+				{trans('in net')}
+			{else}
+				{trans('in gross')}
+			{/if}
 		</TD>
 		<TD>
 			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country != ""}, {t}{$invoice.country}{/t}{/if}</A>
@@ -312,7 +322,7 @@
 	</TR>
 	{foreachelse}
 	<tr>
-		<td class="empty-table" colspan="7">
+		<td class="empty-table" colspan="8">
 			{trans("No such invoices in database.")}
 		</td>
 	</tr>
@@ -321,13 +331,13 @@
     <TFOOT>
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="7">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD COLSPAN="7">
+		<TD COLSPAN="8">
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="text-left" id="button-panel">
