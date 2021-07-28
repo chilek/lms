@@ -192,7 +192,7 @@ version 27-git (????-??-??):
   - devel: added 'storage' directory which will contain different file resources [chilan]
   - enhancement: customer call archive support [chilan]
   - improvement: lms-notify.php: 'customer-status' action handles customer status parameter [chilan]
-  - enhancement: add support for libilities, tariffs and invoices in net terms [chilan/ravvar]
+  - enhancement: add support for liabilities, tariffs and invoices in net terms [chilan/ravvar]
 
 version 26.0 (2020-12-15):
 
