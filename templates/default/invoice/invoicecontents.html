@@ -30,7 +30,6 @@
 
 <FORM METHOD="POST" ACTION="?m={$layout.module}" NAME="contents" id="contents">
     <INPUT type="submit" class="hiddenbtn">
-    <INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
     <TABLE class="lmsbox lms-ui-background-cycle invoice-contents">
         <COLGROUP>
             <COL style="width: 1%;">
@@ -117,6 +116,8 @@
                 {counter}.
             </TD>
             <TD class="invoice-contents-sortable-handler">
+                <input type="hidden" name="invoice-contents[{$posuid}][tariffid]" VALUE="{if $item.tariffid}{$item.tariffid}{else}0{/if}">
+
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;"
                        value="{$row.name|escape}" data-old-value="{$item.name|escape}"
                        {tip text="Enter description"}>
@@ -290,7 +291,7 @@
             <TD class="nobr" id="tariff-selection" colspan="10">
                 {block name="`$layout.module`-tariff-selection"}
                     {trans("Add tariff")}
-                    <SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Select tariff from the list"}>
+                    <SELECT SIZE="1" NAME="tariffid" style="width: 300px" onchange="setItem(document.contents.tariffid.value)">
                         <OPTION value="0">-</OPTION>
                         {foreach $tariffs as $tariff}
                             {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
