@@ -151,11 +151,11 @@
 		<td class="nobr">
 			<label>
 				<input type="radio" id="ingross" name="invoice[netflag]" value="0" {if !$invoice.netflag} checked{/if}{if $contents} disabled{/if}>
-				{trans("in gross")}
+				{trans("gross")}
 			</label>
 			<label>
 				<input type="radio" id="innet" name="invoice[netflag]" value="1" {if $invoice.netflag} checked{/if}{if $contents} disabled{/if}>
-				{trans("in net")}
+				{trans("net")}
 			</label>
 		</td>
 	</tr>
