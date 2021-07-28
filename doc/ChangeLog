@@ -193,6 +193,8 @@ version 27-git (????-??-??):
   - enhancement: customer call archive support [chilan]
   - improvement: lms-notify.php: 'customer-status' action handles customer status parameter [chilan]
   - enhancement: add support for liabilities, tariffs and invoices in net terms [chilan/ravvar]
+  - enhancement: end support for 'invoices.credit note relation_to_invoice' configuration variable
+    for invoice correction [ravvar]
 
 version 26.0 (2020-12-15):
 
