@@ -195,7 +195,7 @@ version 27-git (????-??-??):
   - enhancement: added support for liabilities, tariffs and invoices in net terms [chilan/ravvar]
   - enhancement: removed support for 'invoices.credit_note_relation_to_invoice' configuration variable
     for invoice correction [ravvar]
-  - enhancement: added 'invoices.show pricing method' configuration variable which allows display information
+  - enhancement: added 'invoices.show_pricing_method' configuration variable which allows display information
     about pricing method on invoice or invoice correction print [ravvar]
 
 version 26.0 (2020-12-15):
