@@ -24,7 +24,7 @@
 		</TR>
     </THEAD>
     <TBODY>
-		{if !empty($assignment.flags)}
+		{if ($assignment.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
 		<tr>
 			<td>
 				{if $assignment.value < 0}
