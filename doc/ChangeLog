@@ -192,6 +192,11 @@ version 27-git (????-??-??):
   - devel: added 'storage' directory which will contain different file resources [chilan]
   - enhancement: customer call archive support [chilan]
   - improvement: lms-notify.php: 'customer-status' action handles customer status parameter [chilan]
+  - enhancement: added support for liabilities, tariffs and invoices in net terms [chilan/ravvar]
+  - enhancement: removed support for 'invoices.credit_note_relation_to_invoice' configuration variable
+    for invoice correction [ravvar]
+  - enhancement: added 'invoices.show_pricing_method' configuration variable which allows display information
+    about pricing method on invoice or invoice correction print ('true' by default) [ravvar]
 
 version 26.0 (2020-12-15):
 
