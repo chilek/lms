@@ -132,8 +132,8 @@
 				{trans("Accounting:")}
 				<select size="1" name="netflag" onchange="document.choosefilter.submit();">
 					<option value="" {if !$listdata.netflag} selected{/if}>{trans("- all -")}</option>
-					<option value="1" {if $listdata.netflag == 1} selected{/if}>{trans("in net")}</option>
-					<option value="2" {if $listdata.netflag == 2} selected{/if}>{trans("in gross")}</option>
+					<option value="1" {if $listdata.netflag == 1} selected{/if}>{trans("net")}</option>
+					<option value="2" {if $listdata.netflag == 2} selected{/if}>{trans("gross")}</option>
 				</select>
 			</FORM>
 		</TD>
