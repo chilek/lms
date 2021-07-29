@@ -287,29 +287,32 @@
         <TFOOT>
         {block name="`$layout.module`-additem"}
         {if !$invoice.closed}
-        <tr>
-            <TD class="nobr" id="tariff-selection" colspan="10">
-                {block name="`$layout.module`-tariff-selection"}
-                    {trans("Add tariff")}
-                    <SELECT SIZE="1" NAME="tariffid" style="width: 300px" onchange="setItem(document.contents.tariffid.value)">
-                        <OPTION value="0">-</OPTION>
-                        {foreach $tariffs as $tariff}
-                            {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
-                                <OPTION VALUE="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</OPTION>
-                            {/if}
-                        {/foreach}
-                    </SELECT>
-                {/block}
-            </TD>
-        </tr>
-        <TR>
-            <TD class="bold nobr">
-                {counter}.
-            </TD>
-            <TD class="nobr" id="tariff-selection">
-                <INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
-                        {tip text="Enter description or select tariff from the list"}>
-            </TD>
+            <tr>
+                <td class="bold nobr" rowspan="2">
+                    {counter}.
+                </td>
+                <td class="nobr" id="other-selection" colspan="9">
+                    {block name="`$layout.module`-other-selection"}
+                    {/block}
+                </td>
+            </tr>
+            <tr style="border: none;">
+                <td class="nobr" id="tariff-selection">
+                    {block name="`$layout.module`-tariff-selection"}
+                        <select size="1" name="tariffid" id="tariff-select" style="width: 300px" onchange="setItem(document.contents.tariffid.value)">
+                            <option value="0">-{trans("Select tariff")}-</option>
+                            {foreach $tariffs as $tariff}
+                                {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
+                                    <option value="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</option>
+                                {/if}
+                            {/foreach}
+                        </select>
+                    {/block}
+                    <br>
+                    <input type="text" name="name" size="40" style="width:300px"
+                           value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
+                           placeholder="{trans('... or enter description')}">
+            </td>
             <TD class="nobr">
                 <div class="servicetype-taxcategory">
                     <select name="servicetype">

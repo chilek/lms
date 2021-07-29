@@ -30,7 +30,7 @@ $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
 
 $_LANG['according in net'] = 'naliczanie w netto';
 $_LANG['according in gross'] = 'naliczanie w brutto';
-$_LANG['Add tariff'] = 'Dodaj taryfę';
+$_LANG['Select tariff'] = 'Wybierz taryfę';
 $_LANG['Document flags'] = 'Flagi dokumentu';
 $_LANG['The document is issued according to the $a price'] = 'Dokument wystawiony według ceny $a';
 $_LANG['according in net'] = 'naliczanie według netto';
@@ -2590,7 +2590,7 @@ $_LANG['Configuration error. Patterns array not found!'] = 'Błąd w konfiguracj
 $_LANG['Line:'] = 'Linia:';
 $_LANG['Errors and Duplicated Entries'] = 'Błędy i duplikaty';
 $_LANG['24 months'] = '24 mies.';
-$_LANG['Enter description or select tariff from the list'] = 'Wprowadź opis lub wybierz taryfę z listy';
+$_LANG['... or enter description'] = '... lub wprowadź opis';
 $_LANG['Created by:'] = 'Utworzył:';
 $_LANG['Created by'] = 'Utworzył';
 $_LANG['Body:'] = 'Treść:';
