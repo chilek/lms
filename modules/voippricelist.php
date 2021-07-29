@@ -208,7 +208,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     }
 
     if (empty($_FILES['file']['name']) && !$pricelist_id) {
-        $error['file'] = trans('Price list must contains at least one group!');
+        $error['file'] = trans('Price list must contain at least one group!');
     }
 
     if (!$error) {

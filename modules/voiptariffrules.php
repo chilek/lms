@@ -210,7 +210,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     }
 
     if (empty($rule['group'])) {
-        $error['group_search'] = trans('Tariff rule must contains at least one group!');
+        $error['group_search'] = trans('Tariff rule must contain at least one group!');
     } else {
         foreach ($rule['group'] as $v) {
             $p  = 'price' . $v['ruleid'];
