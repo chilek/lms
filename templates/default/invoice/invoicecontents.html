@@ -4,6 +4,21 @@
         cursor: grab;
     }
 
+    #tariff-selection {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    #tariff-selection > * {
+        margin-right: 0.5em;
+        margin-top: 0.5em;
+    }
+
+    #tariff-selection > *:last-child {
+        margin-bottom: 0.5em;
+    }
+
     .servicetype-taxcategory {
         display: flex;
         flex-direction: column;
@@ -330,22 +345,23 @@
                         </td>
                     </tr>
                     <tr style="border: none;">
-                        <td class="nobr" id="tariff-selection">
-                            {block name="`$layout.module`-tariff-selection"}
-                                <select size="1" name="tariffid" id="tariff-select" style="width: 300px" onchange="setItem(document.contents.tariffid.value)">
-                                    <option value="0">- {trans("Select tariff")} -</option>
-                                    {foreach $tariffs as $tariff}
-                                        {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
-                                            <option value="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</option>
-                                        {/if}
-                                    {/foreach}
-                                </select>
-                            {/block}
-                            <br>
-                            <input type="text" name="name" size="40" style="width:300px"
-                                   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
-                                   placeholder="{trans('... or enter description')}"
-                            >
+                        <td>
+                            <div id="tariff-selection">
+                                {block name="`$layout.module`-tariff-selection"}
+                                    <select size="1" name="tariffid" id="tariff-select" style="width: 300px" onchange="setItem(document.contents.tariffid.value)">
+                                        <option value="0">- {trans("Select tariff")} -</option>
+                                        {foreach $tariffs as $tariff}
+                                            {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
+                                                <option value="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</option>
+                                            {/if}
+                                        {/foreach}
+                                    </select>
+                                {/block}
+                                <input type="text" name="name" size="40" style="width:300px"
+                                       value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.name}{/if}"
+                                       placeholder="{trans('... or enter description')}"
+                                >
+                            </div>
                         </td>
                         <td class="nobr">
                             <div class="servicetype-taxcategory">
