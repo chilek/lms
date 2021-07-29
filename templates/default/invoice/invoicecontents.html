@@ -300,7 +300,7 @@
                 <td class="nobr" id="tariff-selection">
                     {block name="`$layout.module`-tariff-selection"}
                         <select size="1" name="tariffid" id="tariff-select" style="width: 300px" onchange="setItem(document.contents.tariffid.value)">
-                            <option value="0">-{trans("Select tariff")}-</option>
+                            <option value="0">- {trans("Select tariff")} -</option>
                             {foreach $tariffs as $tariff}
                                 {if $tariff.currency == $invoice.currency && $tariff.netflag == $invoice.netflag}
                                     <option value="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</option>
