@@ -1,4 +1,5 @@
 <style>
+
     .invoice-contents-sortable-handler {
         cursor: grab;
     }
@@ -8,6 +9,7 @@
         flex-direction: column;
         align-items: flex-start;
     }
+
 </style>
 
 {if $customer}
@@ -479,6 +481,7 @@
 </form>
 
 <script>
+
     function setItem(index) {
         var e = document.contents;
         {foreach from=$tariffs item=tariff}
@@ -747,4 +750,5 @@
             claculatePositionPriceFromGross(posuid, grossPriceElem);
         }
     }
+
 </script>

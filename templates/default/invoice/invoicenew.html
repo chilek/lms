@@ -1,364 +1,372 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-	{$xajax}
-	<!--// $Id$ //-->
-	<h1>{$layout.pagetitle}</h1>
+{$xajax}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
 
-	{if $newinvoice}
-		<script>
-			window.open('?m=invoice&id={$newinvoice.invoice}&which={$newinvoice.which}');
-		</script>
-	{/if}
-	<script src="js/lms-ui-deadline-selection.js"></script>
+{if $newinvoice}
 	<script>
-		function saveheader() {
-			if (document.setcustomer.customer)
-				if (document.setcustomer.customer.value != 0)
-					document.setcustomer.customerid.value = document.setcustomer.customer.value;
 
-			$('#ingross').prop('disabled', false);
-			$('#innet').prop('disabled', false);
-			document.setcustomer.submit();
-		}
+		window.open('?m=invoice&id={$newinvoice.invoice}&which={$newinvoice.which}');
 
-		function GetNumberPlans() {
-			xajax_GetNumberPlans('{$invoice.proforma}', {
-				number: $('form[name="setcustomer"] [name="invoice[number]"]').val(),
-				cdate: $('form[name="setcustomer"] [name="invoice[cdate]"]').attr('data-cdate'),
-				numberplanid: $('form[name="setcustomer"] [name="invoice[numberplanid]"]').val(),
-			}, $('form[name="setcustomer"] [name="customerid"]').val());
-		}
 	</script>
+{/if}
+<script src="js/lms-ui-deadline-selection.js"></script>
+<script>
 
-	{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-	{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+	function saveheader() {
+		if (document.setcustomer.customer) {
+			if (document.setcustomer.customer.value != 0) {
+				document.setcustomer.customerid.value = document.setcustomer.customer.value;
+			}
+		}
 
-	{if isset($customer.id)}
-		{$customerid = $customer.id}
-	{else}
-		{$customerid = $invoice.customerid}
-	{/if}
+		$('#ingross').prop('disabled', false);
+		$('#innet').prop('disabled', false);
+		document.setcustomer.submit();
+	}
 
-	{block name="invoicenew-header"}
-		<form name="setcustomer" id="setcustomer" method="POST" action="?m=invoicenew&action=setcustomer">
-			<p style="display: none;">
-				<input type="submit" class="hiddenbtn">
-			</p>
-			<input type="hidden" name="invoice[proforma]" value="{$invoice.proforma}">
-			<input type="hidden" name="invoice[proformaid]" value="{$invoice.proformaid}">
-			<input type="hidden" name="invoice[proformanumber]" value="{$invoice.proformanumber}">
+	function GetNumberPlans() {
+		xajax_GetNumberPlans('{$invoice.proforma}', {
+			number: $('form[name="setcustomer"] [name="invoice[number]"]').val(),
+			cdate: $('form[name="setcustomer"] [name="invoice[cdate]"]').attr('data-cdate'),
+			numberplanid: $('form[name="setcustomer"] [name="invoice[numberplanid]"]').val(),
+		}, $('form[name="setcustomer"] [name="customerid"]').val());
+	}
 
-			<table class="lmsbox">
-				<colgroup>
-					<col style="width: 1%;">
-					<col style="width: 99%;">
-				</colgroup>
-				<thead>
-					<tr>
-						<th scope="col" colspan="2">
-							{trans("Main Information:")}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="bold nobr">
-							{trans("Invoice number:")}
-						</td>
-						<td class="nobr" id="invoicenumberplans">
-							{include file="invoice/invoicenumberplans.html" invoice=$invoice}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold nobr">
-							{trans("Settlement date:")}
-						</td>
-						<td class="nobr">
-							{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-								<input type="text" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
-									placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}"
-									{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
-								>
-								{if $invoice.cdatewarning}
-									<input type="hidden" name="invoice[cdatewarning]" value="1">
-								{/if}
-							{else}
-								<input type="hidden" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}">
-								{$invoice.cdate|date_format:"%Y/%m/%d"}
-							{/if}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold nobr">
-							{trans("Sale date:")}
-						</td>
-						<td class="nobr">
-							{if ConfigHelper::checkPrivilege("invoice_sale_date")}
-								<input type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12"
-									placeholder="{trans("yyyy/mm/dd")}"
-									{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
-								>
-							{else}
-								<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}">
-								{$invoice.sdate|date_format:"%Y/%m/%d"}
-							{/if}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold nobr">
-							{trans("Deadline:")}
-						</td>
-						<td class="nobr">
-							{deadline_selection name="invoice[deadline]" cdate_selector="#cdate" value=$invoice.deadline}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold nobr">
-							{trans("Payment type:")}
-						</td>
-						<td class="nobr">
-							{paytypes elemname="invoice[paytype]" selected=$invoice.paytype}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold nobr">
-							{trans("Document flags:")}
-						</td>
-						<td class="nobr">
-							<label id="splitpayment" {tip text="translates into JPK MPP flag"}
-									{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}
-							>
-								<input type="checkbox" name="invoice[splitpayment]" value="1"
-										{if !empty($suggested_flags.splitpayment) && $invoice.splitpayment} checked{/if}
-								>
-								{trans("split payment")}
-							</label>
-							<label {tip text="translates into JPK FP flag"}>
-								<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
-										{if $invoice.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
-								>
-								{trans("<!invoice>receipt")}
-							</label>
-							<label id="telecomservice" {tip text="translates into JPK EE flag"}
-									{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}
-							>
-								<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
-										{if $invoice.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}
-								>
-								{trans("<!invoice>telecommunication service")}
-							</label>
-						</td>
-					</tr>
-					<tr>
-						<td class="bold nobr">
-							{trans("Accounting")}
-						</td>
-						<td class="nobr">
-							<label>
-								<input type="radio" id="ingross" name="invoice[netflag]" value="0"
-										{if !$invoice.netflag} checked{/if}{if $contents} disabled{/if}
-								>
-								{trans("gross")}
-							</label>
-							<label>
-								<input type="radio" id="innet" name="invoice[netflag]" value="1"
-										{if $invoice.netflag} checked{/if}{if $contents} disabled{/if}
-								>
-								{trans("net")}
-							</label>
-						</td>
-					</tr>
-					{if isset($invoice.proformaid) && !empty($invoice.proformaid)}
-					<tr>
-						<td class="bold nobr">
-							<label for="preserve-proforma">
-								{trans("Preserve pro forma")}
-							</label>
-						</td>
-						<td class="nobr">
-							<input type="checkbox" id="preserve-proforma" name="invoice[preserve-proforma]" value="1"
-									{if isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma'])} checked{/if}
-							>
-						</td>
-					</tr>
-					{/if}
-					<tr>
-						<td class="bold nobr">
-							{trans("Customer:")}
-						</td>
-						<td class="nobr">
-							{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" version="2"
-								inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
-								select_id="ownerid_select" input_id="ownerid_input" required=true}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold">
-							{trans("Currency:")}
-						</td>
-						<td>
-							{currency_selection selected=$invoice.currency elementname="invoice[currency]"}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold">
-							{trans("Recipient address:")}
-						</td>
-						<td>
-							{if $invoice.customerid && $invoice.recipient_address_id }
-								{$selected_address_id = $invoice.recipient_address_id}
-							{else}
-								{$selected_address_id = null}
-							{/if}
-							{include file="customer/customeraddresses.html" id="customer_addresses" name="invoice[recipient_address_id]"
-								trigger="address_id" selected_address_id=$selected_address_id preselection=false}
-						</td>
-					</tr>
-					<tr>
-						<td class="bold">
-							{trans("Comment:")}
-						</td>
-						<td>
-							<textarea NAME="invoice[comment]" rows="4" cols="50" {tip text="Enter invoice comment"}>{$invoice.comment}</textarea>
-						</td>
-					</tr>
-					<tr>
-						<td class="lms-ui-box-buttons" colspan="2">
-							{button icon="save" label="Submit" onclick="saveheader();"}
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</form>
-	{/block}
+</script>
 
-	{if $covenantlist && !$invoice.netflag}
-		<form name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
-			<table class="lmsbox lms-ui-background-cycle">
-				<colgroup>
-					<col style="width: 1%;">
-					<col style="width: 92%;">
-					<col style="width: 1%;">
-					<col style="width: 1%;">
-					<col style="width: 1%;">
-					<col style="width: 1%;">
-					<col style="width: 1%;">
-					<col style="width: 1%;">
-					<col style="width: 1%;">
-					<col style="width: 1%;">
-				</colgroup>
-				<thead>
-					<tr>
-						<td colspan="10">
-							{icon name="money"}
-							{trans("Invoiceless liabilities:")}
-						</td>
-					</tr>
-					<tr>
-						<td scope="col">{trans("Date:")}</td>
-						<td scope="col">{trans("Name of product, commodity or service:")}</td>
-						<td scope="col" class="nobr">
-							{trans("Type")}
-							<br>
-							{trans("Tax Category:")}
-						</td>
-						<td scope="col" class="text-right nobr">{trans("Product ID:")}</td>
-						<td scope="col" class="text-right">{trans("Amount:")}</td>
-						<td scope="col" class="text-right">{trans("Unit:")}</td>
-						<td scope="col" class="text-right nobr">{trans("Net Value:")}</td>
-						<td scope="col" class="text-right nobr">{trans("Tax:")}</td>
-						<td scope="col" class="text-right nobr">{trans("Gross Value:")}</td>
-						<td scope="col">&nbsp;</td>
-					</tr>
-				</thead>
-				{cycle values="light,lucid" print=false}
-				{section name=covenantlist loop=$covenantlist}
-					<tr class="highlight {cycle}">
-						<td class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</td>
-						<td>{$covenantlist[covenantlist].comment|escape}</td>
-						<td>
-							<select name="l_servicetype[{$covenantlist[covenantlist].cashid}]">
-								<option value="">{trans("- none -")}</option>
-								{foreach $_SERVICETYPES as $servicetype => $label}
-									<option value="{$servicetype}"
-										{if $servicetype == $covenantlist[covenantlist].servicetype} selected{/if}>{$label}</option>
-								{/foreach}
-							</select>
-							{tax_category_selection elementname="l_taxcategory[{$covenantlist[covenantlist].cashid}]"
-								tip="Select tax category"}
-						</td>
-						<td class="text-right"><input type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></td>
-						<td class="text-right"><input type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></td>
-						<td class="text-right"><input type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}" size="3"></td>
-						<td class="text-right nobr">{moneyf($covenantlist[covenantlist].net, $covenantlist[covenantlist].currency)}</td>
-						<td class="text-right nobr">{$covenantlist[covenantlist].tax}</td>
-						<td class="text-right nobr">{moneyf($covenantlist[covenantlist].value, $covenantlist[covenantlist].currency)}</td>
-						<td class="text-right">
-							<input TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].cashid}">
-						</td>
-					</tr>
-				{/section}
-				<tr class="lms-ui-button-panel">
-					<td colspan="2" class="nobr">
-						<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1">
-						<label for="allbox">{trans("Check All")}</label>
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+
+{if isset($customer.id)}
+	{$customerid = $customer.id}
+{else}
+	{$customerid = $invoice.customerid}
+{/if}
+
+{block name="invoicenew-header"}
+	<form name="setcustomer" id="setcustomer" method="POST" action="?m=invoicenew&action=setcustomer">
+		<p style="display: none;">
+			<input type="submit" class="hiddenbtn">
+		</p>
+		<input type="hidden" name="invoice[proforma]" value="{$invoice.proforma}">
+		<input type="hidden" name="invoice[proformaid]" value="{$invoice.proformaid}">
+		<input type="hidden" name="invoice[proformanumber]" value="{$invoice.proformanumber}">
+
+		<table class="lmsbox">
+			<colgroup>
+				<col style="width: 1%;">
+				<col style="width: 99%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<th scope="col" colspan="2">
+						{trans("Main Information:")}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="bold nobr">
+						{trans("Invoice number:")}
 					</td>
-					<td class="text-right nobr" colspan="8">
-						{button icon="save" label="Add items" onclick="document.additemlist.submit();"}
+					<td class="nobr" id="invoicenumberplans">
+						{include file="invoice/invoicenumberplans.html" invoice=$invoice}
 					</td>
 				</tr>
-			</table>
-		</form>
-	{/if}
+				<tr>
+					<td class="bold nobr">
+						{trans("Settlement date:")}
+					</td>
+					<td class="nobr">
+						{if ConfigHelper::checkPrivilege("invoice_consent_date")}
+							<input type="text" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
+								placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}"
+								{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+							>
+							{if $invoice.cdatewarning}
+								<input type="hidden" name="invoice[cdatewarning]" value="1">
+							{/if}
+						{else}
+							<input type="hidden" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}">
+							{$invoice.cdate|date_format:"%Y/%m/%d"}
+						{/if}
+					</td>
+				</tr>
+				<tr>
+					<td class="bold nobr">
+						{trans("Sale date:")}
+					</td>
+					<td class="nobr">
+						{if ConfigHelper::checkPrivilege("invoice_sale_date")}
+							<input type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12"
+								placeholder="{trans("yyyy/mm/dd")}"
+								{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
+							>
+						{else}
+							<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}">
+							{$invoice.sdate|date_format:"%Y/%m/%d"}
+						{/if}
+					</td>
+				</tr>
+				<tr>
+					<td class="bold nobr">
+						{trans("Deadline:")}
+					</td>
+					<td class="nobr">
+						{deadline_selection name="invoice[deadline]" cdate_selector="#cdate" value=$invoice.deadline}
+					</td>
+				</tr>
+				<tr>
+					<td class="bold nobr">
+						{trans("Payment type:")}
+					</td>
+					<td class="nobr">
+						{paytypes elemname="invoice[paytype]" selected=$invoice.paytype}
+					</td>
+				</tr>
+				<tr>
+					<td class="bold nobr">
+						{trans("Document flags:")}
+					</td>
+					<td class="nobr">
+						<label id="splitpayment" {tip text="translates into JPK MPP flag"}
+								{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}
+						>
+							<input type="checkbox" name="invoice[splitpayment]" value="1"
+									{if !empty($suggested_flags.splitpayment) && $invoice.splitpayment} checked{/if}
+							>
+							{trans("split payment")}
+						</label>
+						<label {tip text="translates into JPK FP flag"}>
+							<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
+									{if $invoice.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
+							>
+							{trans("<!invoice>receipt")}
+						</label>
+						<label id="telecomservice" {tip text="translates into JPK EE flag"}
+								{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}
+						>
+							<input type="checkbox" name="invoice[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
+									{if $invoice.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}
+							>
+							{trans("<!invoice>telecommunication service")}
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="bold nobr">
+						{trans("Accounting")}
+					</td>
+					<td class="nobr">
+						<label>
+							<input type="radio" id="ingross" name="invoice[netflag]" value="0"
+									{if !$invoice.netflag} checked{/if}{if $contents} disabled{/if}
+							>
+							{trans("gross")}
+						</label>
+						<label>
+							<input type="radio" id="innet" name="invoice[netflag]" value="1"
+									{if $invoice.netflag} checked{/if}{if $contents} disabled{/if}
+							>
+							{trans("net")}
+						</label>
+					</td>
+				</tr>
+				{if isset($invoice.proformaid) && !empty($invoice.proformaid)}
+				<tr>
+					<td class="bold nobr">
+						<label for="preserve-proforma">
+							{trans("Preserve pro forma")}
+						</label>
+					</td>
+					<td class="nobr">
+						<input type="checkbox" id="preserve-proforma" name="invoice[preserve-proforma]" value="1"
+								{if isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma'])} checked{/if}
+						>
+					</td>
+				</tr>
+				{/if}
+				<tr>
+					<td class="bold nobr">
+						{trans("Customer:")}
+					</td>
+					<td class="nobr">
+						{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" version="2"
+							inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+							select_id="ownerid_select" input_id="ownerid_input" required=true}
+					</td>
+				</tr>
+				<tr>
+					<td class="bold">
+						{trans("Currency:")}
+					</td>
+					<td>
+						{currency_selection selected=$invoice.currency elementname="invoice[currency]"}
+					</td>
+				</tr>
+				<tr>
+					<td class="bold">
+						{trans("Recipient address:")}
+					</td>
+					<td>
+						{if $invoice.customerid && $invoice.recipient_address_id }
+							{$selected_address_id = $invoice.recipient_address_id}
+						{else}
+							{$selected_address_id = null}
+						{/if}
+						{include file="customer/customeraddresses.html" id="customer_addresses" name="invoice[recipient_address_id]"
+							trigger="address_id" selected_address_id=$selected_address_id preselection=false}
+					</td>
+				</tr>
+				<tr>
+					<td class="bold">
+						{trans("Comment:")}
+					</td>
+					<td>
+						<textarea NAME="invoice[comment]" rows="4" cols="50" {tip text="Enter invoice comment"}>{$invoice.comment}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="lms-ui-box-buttons" colspan="2">
+						{button icon="save" label="Submit" onclick="saveheader();"}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+{/block}
 
-	{include file="invoice/invoicecontents.html"}
+{if $covenantlist && !$invoice.netflag}
+	<form name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
+		<table class="lmsbox lms-ui-background-cycle">
+			<colgroup>
+				<col style="width: 1%;">
+				<col style="width: 92%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<td colspan="10">
+						{icon name="money"}
+						{trans("Invoiceless liabilities:")}
+					</td>
+				</tr>
+				<tr>
+					<td scope="col">{trans("Date:")}</td>
+					<td scope="col">{trans("Name of product, commodity or service:")}</td>
+					<td scope="col" class="nobr">
+						{trans("Type")}
+						<br>
+						{trans("Tax Category:")}
+					</td>
+					<td scope="col" class="text-right nobr">{trans("Product ID:")}</td>
+					<td scope="col" class="text-right">{trans("Amount:")}</td>
+					<td scope="col" class="text-right">{trans("Unit:")}</td>
+					<td scope="col" class="text-right nobr">{trans("Net Value:")}</td>
+					<td scope="col" class="text-right nobr">{trans("Tax:")}</td>
+					<td scope="col" class="text-right nobr">{trans("Gross Value:")}</td>
+					<td scope="col">&nbsp;</td>
+				</tr>
+			</thead>
+			{cycle values="light,lucid" print=false}
+			{section name=covenantlist loop=$covenantlist}
+				<tr class="highlight {cycle}">
+					<td class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</td>
+					<td>{$covenantlist[covenantlist].comment|escape}</td>
+					<td>
+						<select name="l_servicetype[{$covenantlist[covenantlist].cashid}]">
+							<option value="">{trans("- none -")}</option>
+							{foreach $_SERVICETYPES as $servicetype => $label}
+								<option value="{$servicetype}"
+									{if $servicetype == $covenantlist[covenantlist].servicetype} selected{/if}>{$label}</option>
+							{/foreach}
+						</select>
+						{tax_category_selection elementname="l_taxcategory[{$covenantlist[covenantlist].cashid}]"
+							tip="Select tax category"}
+					</td>
+					<td class="text-right"><input type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></td>
+					<td class="text-right"><input type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></td>
+					<td class="text-right"><input type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}" size="3"></td>
+					<td class="text-right nobr">{moneyf($covenantlist[covenantlist].net, $covenantlist[covenantlist].currency)}</td>
+					<td class="text-right nobr">{$covenantlist[covenantlist].tax}</td>
+					<td class="text-right nobr">{moneyf($covenantlist[covenantlist].value, $covenantlist[covenantlist].currency)}</td>
+					<td class="text-right">
+						<input TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].cashid}">
+					</td>
+				</tr>
+			{/section}
+			<tr class="lms-ui-button-panel">
+				<td colspan="2" class="nobr">
+					<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1">
+					<label for="allbox">{trans("Check All")}</label>
+				</td>
+				<td class="text-right nobr" colspan="8">
+					{button icon="save" label="Add items" onclick="document.additemlist.submit();"}
+				</td>
+			</tr>
+		</table>
+	</form>
+{/if}
 
-	<script>
-		var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+{include file="invoice/invoicecontents.html"}
 
-		/*!
-		 * \brief Update customer addresses list on select change.
-		 * Using when big_networks is set as false.
-		 */
+<script>
 
-		function updateDocumentFlags() {
-			$.ajax({
-				data: {
-					updatedocumentflags: 1,
-					customerid: $('#ownerid_input').val(),
-					cdate: $('#cdate').val(),
-					value: $('#s-valuebrutto').val()
-				},
-				dataType: "json",
-				success: function(result) {
-					$('#splitpayment').toggle(result.splitpayment);
-					if (!result.splitpayment) {
-						$('#splitpayment :checkbox').prop('checked', false);
-					}
-					//$('#telecomservice').toggle(result.telecomservice);
-					if (!result.telecomservice) {
-						$('#telecomservice :checkbox').prop('checked', false);
-					}
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
+	/*!
+	 * \brief Update customer addresses list on select change.
+	 * Using when big_networks is set as false.
+	 */
+
+	function updateDocumentFlags() {
+		$.ajax({
+			data: {
+				updatedocumentflags: 1,
+				customerid: $('#ownerid_input').val(),
+				cdate: $('#cdate').val(),
+				value: $('#s-valuebrutto').val()
+			},
+			dataType: "json",
+			success: function(result) {
+				$('#splitpayment').toggle(result.splitpayment);
+				if (!result.splitpayment) {
+					$('#splitpayment :checkbox').prop('checked', false);
 				}
-			});
-		}
-
-		function customer_change() {
-			getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
-				customer_addresses.setAddressList( addresses, false );
-			});
-			updateDocumentFlags()
-		}
-
-		customer_addresses.init();
-
-		$(function() {
-			$('form[name="setcustomer"] [name="invoice[number]"]').focus();
-
-			$('[name="invoice[cdate]"]').change(function() {
-				updateDocumentFlags()
-			});
+				//$('#telecomservice').toggle(result.telecomservice);
+				if (!result.telecomservice) {
+					$('#telecomservice :checkbox').prop('checked', false);
+				}
+			}
 		});
-	</script>
+	}
+
+	function customer_change() {
+		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
+			customer_addresses.setAddressList( addresses, false );
+		});
+		updateDocumentFlags()
+	}
+
+	customer_addresses.init();
+
+	$(function() {
+		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
+
+		$('[name="invoice[cdate]"]').change(function() {
+			updateDocumentFlags()
+		});
+	});
+
+</script>
 {/block}
