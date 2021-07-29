@@ -601,6 +601,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'rbe'            => $customeradd['rbe'],
             'ict'            => $customeradd['ict'],
             'icn'            => $customeradd['icn'],
+            'icexpires'      => intval($customeradd['icexpires']),
             'cutoffstop'     => $customeradd['cutoffstop'],
             SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
@@ -633,9 +634,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'INSERT INTO customers (extid, name, lastname, type,
             ten, ssn, status, creationdate,
             creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
-            ict, icn, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
+            ict, icn, icexpires, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
             VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
             array_values($args)
         );
 
@@ -1849,6 +1850,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'regon'          => $customerdata['regon'],
             'ict'            => $customerdata['ict'],
             'icn'            => $customerdata['icn'],
+            'icexpires'      => intval($customerdata['icexpires']),
             'rbename'        => $customerdata['rbename'],
             'rbe'            => $customerdata['rbe'],
             'cutoffstop'     => $customerdata['cutoffstop'],
@@ -1897,7 +1899,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'UPDATE customers SET extid=?, status=?, type=?,
             ten=?, ssn=?, moddate=?NOW?, modid=?,
             info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
-            deleted=0, message=?, documentmemo=?, pin=?, regon=?, ict=?, icn=?, rbename=?, rbe=?,
+            deleted=0, message=?, documentmemo=?, pin=?, regon=?, ict=?, icn=?, icexpires = ?, rbename=?, rbe=?,
             cutoffstop=?, divisionid=?, paytime=?, paytype=?, flags = ?
             WHERE id=?',
             array_values($args)

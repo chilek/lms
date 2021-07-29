@@ -233,21 +233,23 @@
 									{/if}
 									{if $customerinfo.icn != ""}
 										<tr>
-											<td>
+											<td class="valign-top">
 												{icon name="user-id-number"}
 											</td>
 											<td>
-												{trans("Identity type")}
+												{trans("Identity document")}
+												<br>
 												{trans($_IDENTITY_TYPES[$customerinfo.ict])}
-											</td>
-										</tr>
-										<tr>
-											<td>
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
-											</td>
-											<td>
-												{trans("Identity number")}
 												{$customerinfo.icn|escape}
+												{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
+												{if $customerinfo.icexpires}
+													{textformat assign="icexpires"}{strip}
+													<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
+														{$customerinfo.icexpires|date_format:"%Y/%m/%d"}
+													</span>
+													{/strip}{/textformat}
+													({t a=$icexpires}expires $a{/t})
+												{/if}
 											</td>
 										</tr>
 									{/if}

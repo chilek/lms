@@ -5354,3 +5354,7 @@ $_LANG['Call List'] = 'Lista połączeń';
 $_LANG['List of Customer Calls'] = 'Lista połączeń telefonicznych';
 $_LANG['<!customer-call>Calls'] = 'Połączenia';
 $_LANG['<!customer-call>Assigned'] = 'Przypisane';
+
+$_LANG['Identity document'] = 'Dokument tożsamości';
+$_LANG['Expires'] = 'Data ważności';
+$_LANG['expires $a'] = 'ważny do $a';

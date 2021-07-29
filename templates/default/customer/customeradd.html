@@ -41,6 +41,31 @@
 		cursor: pointer;
 	}
 
+	#identity-document-box .identity-document-properties {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+	}
+
+	#identity-document-box .identity-document-property {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+	}
+
+	#identity-document-box .identity-document-property > * {
+		margin-top: 0.25em;
+		margin-bottom: 0.25em;
+	}
+
+	#identity-document-box .identity-document-property > input[type] {
+		margin-left: 0;
+	}
+
+	#identity-document-box .identity-document-property > select {
+		margin-left: 0;
+	}
+
 </style>
 
 {include file="customer/customercompanyselectiondialog.html"}
@@ -345,25 +370,37 @@
 									<COL style="width: 1%;">
 									<COL style="width: 99%;">
 								</COLGROUP>
-								<TR>
-									<TD class="nobr">
-										{trans("Identity type")}
-									</TD>
-									<TD>
-										{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
-											tip="" trigger="ict"}
-									</TD>
-								</TR>
-								<TR>
-									<TD class="nobr">{trans("Identity number")}</TD>
-									<TD>
-										{if $customerinfo.icnwarning}
-											<input type="hidden" name="customeradd[icnwarning]" value="1">
-										{/if}
-										<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-											{tip trigger="icn"}>
-									</TD>
-								</TR>
+								<tr>
+									<td class="nobr" colspan="2">
+										<fieldset id="identity-document-box">
+											<legend class="bold">
+												{trans("Identity document")}
+											</legend>
+											<div class="identity-document-properties">
+												<label class="identity-document-property">
+													<span>{trans("Type")}</span>
+													{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
+														tip="" trigger="ict"}
+												</label>
+												<label class="identity-document-property">
+													<span>{trans("Number")}</span>
+													{if $customerinfo.icnwarning}
+														<input type="hidden" name="customeradd[icnwarning]" value="1">
+													{/if}
+													<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
+															{tip trigger="icn"}>
+												</label>
+												<label class="identity-document-property">
+													<span>{trans("Expires")}</span>
+													<input type="text" value="{$customeradd.icexpires}"
+														name="customeradd[icexpires]" size="10"
+														class="lms-ui-date lms-ui-date-unix"
+														{tip trigger="icexpires"}>
+												</label>
+											</div>
+										</fieldset>
+									</td>
+								</tr>
 								<TR>
 									<TD>{trans("SSN")}</TD>
 									<TD>
