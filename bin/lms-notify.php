@@ -3075,7 +3075,7 @@ if (!empty($intersect)) {
                                         break;
                                 }
                                 $where[] = 'EXISTS (SELECT id FROM assignments
-                                    WHERE invoice = ' . $target_doctype . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                    WHERE invoice <> ' . $target_doctype . ' AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
                                         AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
                                         AND customerid = c.id)';
                                 break;
@@ -3474,7 +3474,7 @@ if (!empty($intersect)) {
 
                                         if (!$debug) {
                                             $DB->Execute("UPDATE assignments SET invoice = ?
-                                                WHERE id = ?", array(DOC_INVOICE, $assign['id']));
+                                                WHERE id = ?", array($target_doctype, $assign['id']));
                                             if ($SYSLOG) {
                                                 $SYSLOG->NewTransaction('lms-notify.php');
                                                 $SYSLOG->AddMessage(
