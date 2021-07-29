@@ -239,6 +239,8 @@
 	</form>
 {/block}
 
+{include file="invoice/invoicecustomer.html"}
+
 {if $covenantlist && !$invoice.netflag}
 	<form name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
 		<table class="lmsbox lms-ui-background-cycle">
