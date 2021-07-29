@@ -6,13 +6,14 @@
 
 <style>
 
-		.servicetype-taxcategory {
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-		}
+	.servicetype-taxcategory {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
 
 </style>
+
 <script src="js/lms-ui-deadline-selection.js"></script>
 <script>
 
@@ -87,428 +88,498 @@
 	});
 
 </script>
-<FORM NAME="setheader" METHOD="POST" ACTION="?m={$layout.module}&action=setheader">
-<INPUT type="submit" class="hiddenbtn">
-<input type="hidden" name="cnote[netflag]" value="{$cnote.netflag}">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 99%;">
-	</COLGROUP>
-	<THEAD>
-	<TR>
-		<TD class="bold" COLSPAN="2">
-			{trans("Main Information:")}
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<tr>
-		<td class="nobr">
-			<strong>{trans("Credit note number:")}</strong>
-		</td>
-		<td class="nobr">
-			<input type="text" name="cnote[number]" value="{$cnote.number}" size="10"
-				{tip text="Enter credit note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			{if $numberplanlist}
-				<select name="cnote[numberplanid]" {tip text="Select numbering plan" trigger="numberplanid"} required>
-					<option value="">{trans("- select -")}</option>
-					{foreach $numberplanlist as $plan}
-						{$period = $plan.period}
-						<option value="{$plan.id}"{if $plan.id == $cnote.numberplanid} selected{/if}
-							>{number number=$plan.next template=$plan.template time=$cnote.cdate customerid=$refdoc.customerid} ({$_NUM_PERIODS.$period})
-						</option>
-					{/foreach}
-				</select>
-			{else}
-				<input type="hidden" name="cnote[numberplanid]" value="0">
-			{/if}
-		</td>
-	</tr>
-	<TR>
-		<TD class="bold nobr">
-			{trans("Settlement date:")}
-		</TD>
-		<TD class="nobr">
-			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT type="text" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}" size="12"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
-				>
-				{if $cnote.cdatewarning}
-					<INPUT type="hidden" name="cnote[cdatewarning]" value="1">
-				{/if}
-			{else}
-				<INPUT type="hidden" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}">
-				{$cnote.cdate|date_format:"%Y/%m/%d"}
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{trans("Sale date:")}
-		</TD>
-		<TD class="nobr">
-			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
-				<INPUT type="text" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}" size="12"
-					placeholder="{trans("yyyy/mm/dd")}"
-					{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
-				>
-			{else}
-				<INPUT type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}">
-				{$cnote.sdate|date_format:"%Y/%m/%d"}
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{trans("Deadline:")}
-		</TD>
-		<TD class="nobr">
-			{deadline_selection name="cnote[deadline]" cdate_selector="#cdate" value=$cnote.deadline}
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{trans("Payment type (cash/transfer/etc):")}
-		</TD>
-		<TD class="nobr">
-			{paytypes elemname="cnote[paytype]" selected=$cnote.paytype}
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{trans("Document flags:")}
-		</TD>
-		<TD class="nobr">
-			<label id="splitpayment" {tip text="translates into JPK MPP flag"}
-					{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}>
-				<input type="checkbox" name="cnote[splitpayment]" value="1"
-						{if !empty($suggested_flags.splitpayment) && $cnote.splitpayment} checked{/if}>
-				{trans("split payment")}
-			</label>
-			<label {tip text="translates into JPK FP flag"}>
-				<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
-						{if $cnote.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}>
-				{trans("<!invoice>receipt")}
-			</label>
-			<label id="telecomservice" {tip text="translates into JPK EE flag"}
-					{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}>
-				<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
-						{if $cnote.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}>
-				{trans("<!invoice>telecommunication service")}
-			</label>
-		</TD>
-	</TR>
-	<tr>
-		<td class="bold nobr">
-			{trans("Accounting")}
-		</td>
-		<td class="nobr">
-			<label>
-				<input type="radio" id="ingross" name="cnote[netflag]" value="0" {if !$cnote.netflag} checked{/if} disabled>
-				{trans("gross")}
-			</label>
-			<label>
-				<input type="radio" id="innet" name="cnote[netflag]" value="1" {if $cnote.netflag} checked{/if} disabled>
-				{trans("net")}
-			</label>
-		</td>
-	</tr>
-	{if $refdoc.divisionid != $refdoc.current_divisionid}
-		<TR>
-			<TD class="bold nobr">
-				{trans("Use current division data:")}
-			</TD>
-			<TD class="nobr">
-				<INPUT TYPE="checkbox" NAME="cnote[use_current_division]" VALUE="1"{if $cnote.use_current_division} CHECKED{/if}
-						{tip text="Seller data change"}>
-			</TD>
-		</TR>
-	{/if}
-	<TR>
-		<td class="bold nobr">
-			<label for="use_current_customer_data">{trans("Use current customer data:")}</label>
-		</td>
-		<TD class="nobr">
-			<input type="checkbox" id="use_current_customer_data" name="cnote[use_current_customer_data]" value="1"
-					{if $cnote.use_current_customer_data} checked{/if} {tip text="Check it if you want to use current customer data"}>
-		</TD>
-	</TR>
-	<tr>
-		<td class="bold">{trans("Currency:")}</td>
-		<td>
-			{currency_selection selected=$cnote.currency elementname="cnote[currency]" locked=true}
-		</td>
-	</tr>
-	<tr>
-		<td class="bold">{trans("Recipient address:")}</td>
-		<td>
-			{if $cnote.customerid && $cnote.recipient_address_id}
-				{$selected_address_id = $cnote.recipient_address_id}
-			{else}
-				{$selected_address_id = null}
-			{/if}
-			{include file="customer/customeraddresses.html" id="customer_addresses" name="cnote[recipient_address_id]"
-				trigger="address_id" selected_address_id=$selected_address_id preselection=false}
-		</td>
-	</tr>
-	<TR{if empty($messagetemplates)} style="display: none;"{/if}>
-		<td class="bold nobr">
-			{trans("Reason template:")}
-		</td>
-		<td class="nobr">
-			{include file="invoice/invoicenotereasontemplates.html" templates=$messagetemplates}
-		</td>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{trans("Reason:")}
-		</TD>
-		<TD class="nobr">
-			<TEXTAREA NAME="cnote[reason]" ROWS="4" COLS="50" {tip text="Enter reason (optional)"}>{$cnote.reason}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="lms-ui-box-buttons" COLSPAN="2">
-			{button type="submit" icon="save" label="Submit"}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
-<BR>
-<FORM NAME="save" METHOD="POST" ACTION="?m={$layout.module}&action=save">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox lms-ui-background-cycle">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 91%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR>
-		<TD class="bold">
-			{trans("No.")}
-		</TD>
-		<TD>
-			{trans("Name of product, commodity or service:")}
-		</TD>
-		<TD>
-			{trans("Type")}
-			<br>
-			{trans("Tax category:")}
-		</TD>
-		<TD class="nobr">
-			{trans("Product ID:")}
-		</TD>
-		<TD class="text-right">
-			{trans("Amount:")}<BR>
-			{trans("Unit:")}
-		</TD>
-		<TD class="text-right nobr">
-			{trans("Discount:")}
-		</TD>
-		<TD class="text-right nobr">
-			{trans("Net Price:")}
-		</TD>
-		<TD class="text-right">
-			{trans("Tax:")}
-		</TD>
-		<TD class="text-right nobr">
-			{trans("Gross Price:")}
-		</TD>
-		<TD>
-			&nbsp;
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	{foreach $contents as $itemid => $item}
-		<TR class="highlight{if $item.deleted} blend{/if}">
-			<TD class="bold">
-				{$itemid}.
-			</TD>
-			<TD>
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name|escape}
-				{else}
-					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48">
-				{/if}
-				{if isset($item.name_custom_contents)}
-					{$item.name_custom_contents}
-				{/if}
-			</TD>
-			<TD>
-				<div class="servicetype-taxcategory">
-					{if $item.deleted}
-						<input type="hidden" value="{$item.servicetype}" name="servicetype[{$itemid}]">
-						{if isset($_SERVICETYPES[$item.servicetype])}
-							<span class="invoice-contents-field-value">
-								{$_SERVICETYPES[$item.servicetype]}
-							</span>
-						{else}
-							{trans("- none -")}
-						{/if}
-						<INPUT TYPE="hidden" VALUE="{$item.taxcategory}" NAME="taxcategory[{$itemid}]">
-						{if $item.taxcategory}
-							<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
-								({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
-							</span>
-						{else}
-							{trans("- none -")}
-						{/if}
-					{else}
-						<select name="servicetype[{$itemid}]">
-							<option value="">{trans("- none -")}</option>
-							{foreach $_SERVICETYPES as $servicetype => $label}
-								<option value="{$servicetype}"{if $item.servicetype == $servicetype} selected{/if}>{$label}</option>
+
+<form name="setheader" method="POST" action="?m={$layout.module}&action=setheader">
+	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="cnote[netflag]" value="{$cnote.netflag}">
+
+	<table class="lmsbox">
+		<colgroup>
+			<col style="width: 1%;">
+			<col style="width: 99%;">
+		</colgroup>
+		<thead>
+			<tr>
+				<td class="bold" colspan="2">
+					{trans("Main Information:")}
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="nobr">
+					<strong>{trans("Credit note number:")}</strong>
+				</td>
+				<td class="nobr">
+					<input type="text" name="cnote[number]" value="{$cnote.number}" size="10"
+						{tip text="Enter credit note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}
+					>&nbsp;
+					{if $numberplanlist}
+						<select name="cnote[numberplanid]" {tip text="Select numbering plan" trigger="numberplanid"} required>
+							<option value="">{trans("- select -")}</option>
+							{foreach $numberplanlist as $plan}
+								{$period = $plan.period}
+								<option value="{$plan.id}"{if $plan.id == $cnote.numberplanid} selected{/if}>
+									{number number=$plan.next template=$plan.template time=$cnote.cdate customerid=$refdoc.customerid} ({$_NUM_PERIODS.$period})
+								</option>
 							{/foreach}
 						</select>
-						{tax_category_selection elementname="taxcategory["|cat:$itemid|cat:"]" selected=$item.taxcategory
-							tip="Select tax category"}
+					{else}
+						<input type="hidden" name="cnote[numberplanid]" value="0">
 					{/if}
-				</div>
-			</TD>
-			<TD class="nobr">
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]">{$item.prodid}
-				{else}
-					<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]" SIZE="6">
-				{/if}
-			</TD>
-			<TD>
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.3f"}
-					<INPUT TYPE="hidden" VALUE="{$item.content}" NAME="content[{$itemid}]">{$item.content}
-				{else}
-					<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$itemid}]" SIZE="3">
-					<INPUT TYPE="text" VALUE="{$item.content}" NAME="content[{$itemid}]" SIZE="3">
-				{/if}
-			</TD>
-			<TD class="text-right nobr">
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]">
-					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" NAME="discount_type[{$itemid}]">
-					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
-				{else}
-					<INPUT TYPE="text" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]" SIZE="6" {tip text="Enter discount percentage or value"}><BR>
-					<SELECT name="discount_type[{$itemid}]">
-						{foreach from=$_DISCOUNTTYPES item=item2 key=key}
-							<OPTION value="{$key}"{if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>{$item2}</OPTION>
-						{/foreach}
-					</SELECT>
-				{/if}
-			</TD>
-			<TD class="text-right nobr">
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$itemid}]">{$item.valuenetto|money_format}
-				{else}
-					<INPUT TYPE="text" class="invoice-contents-field-netprice" NAME="valuenetto[{$itemid}]" SIZE="6"
-						   VALUE="{$item.valuenetto|string_format:"%.2f"}"
-						   onchange="claculatePositionPriceFromNet({$itemid}, this)"
-							{tip text="Enter unitary value without discount"}
-							{if !$cnote.netflag} disabled{/if}>
-				{/if}
-				{if isset($item.valuenetto_custom_contents)}
-					{$item.valuenetto_custom_contents}
-				{/if}
-			</TD>
-			<TD class="text-right nobr">
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$itemid}]">{$item.tax}
-				{else}
-					<SELECT size="1" name="taxid[{$itemid}]" id="invoice-contents-field-tax-{$itemid}" {tip text="Select Tax rate"}
-							onchange="claculatePositionPriceOnTaxChange({$itemid})">
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Settlement date:")}
+				</td>
+				<td class="nobr">
+					{if ConfigHelper::checkPrivilege("invoice_consent_date")}
+						<input type="text" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}" size="12"
+							placeholder="{trans("yyyy/mm/dd")}"
+							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+						>
+						{if $cnote.cdatewarning}
+							<input type="hidden" name="cnote[cdatewarning]" value="1">
+						{/if}
+					{else}
+						<input type="hidden" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}">
+						{$cnote.cdate|date_format:"%Y/%m/%d"}
+					{/if}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Sale date:")}
+				</td>
+				<td class="nobr">
+					{if ConfigHelper::checkPrivilege("invoice_sale_date")}
+						<input type="text" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}" size="12"
+							placeholder="{trans("yyyy/mm/dd")}"
+							{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
+						>
+					{else}
+						<input type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}">
+						{$cnote.sdate|date_format:"%Y/%m/%d"}
+					{/if}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Deadline:")}
+				</td>
+				<td class="nobr">
+					{deadline_selection name="cnote[deadline]" cdate_selector="#cdate" value=$cnote.deadline}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Payment type (cash/transfer/etc):")}
+				</td>
+				<td class="nobr">
+					{paytypes elemname="cnote[paytype]" selected=$cnote.paytype}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Document flags:")}
+				</td>
+				<td class="nobr">
+					<label id="splitpayment" {tip text="translates into JPK MPP flag"}
+							{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}
+					>
+						<input type="checkbox" name="cnote[splitpayment]" value="1"
+								{if !empty($suggested_flags.splitpayment) && $cnote.splitpayment} checked{/if}
+						>
+						{trans("split payment")}
+					</label>
+					<label {tip text="translates into JPK FP flag"}>
+						<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
+								{if $cnote.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
+						>
+						{trans("<!invoice>receipt")}
+					</label>
+					<label id="telecomservice" {tip text="translates into JPK EE flag"}
+							{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}
+					>
+						<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
+								{if $cnote.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}
+						>
+						{trans("<!invoice>telecommunication service")}
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Accounting")}
+				</td>
+				<td class="nobr">
+					<label>
+						<input type="radio" id="ingross" name="cnote[netflag]" value="0"
+								{if !$cnote.netflag} checked{/if} disabled
+						>
+						{trans("gross")}
+					</label>
+					<label>
+						<input type="radio" id="innet" name="cnote[netflag]" value="1"
+								{if $cnote.netflag} checked{/if} disabled
+						>
+						{trans("net")}
+					</label>
+				</td>
+			</tr>
+			{if $refdoc.divisionid != $refdoc.current_divisionid}
+				<tr>
+					<td class="bold nobr">
+						{trans("Use current division data:")}
+					</td>
+					<td class="nobr">
+						<input type="checkbox" name="cnote[use_current_division]" value="1"
+								{if $cnote.use_current_division} checked{/if}
+								{tip text="Seller data change"}
+						>
+					</td>
+				</tr>
+			{/if}
+			<tr>
+				<td class="bold nobr">
+					<label for="use_current_customer_data">{trans("Use current customer data:")}</label>
+				</td>
+				<td class="nobr">
+					<input type="checkbox" id="use_current_customer_data" name="cnote[use_current_customer_data]" value="1"
+							{if $cnote.use_current_customer_data} checked{/if}
+							{tip text="Check it if you want to use current customer data"}
+					>
+				</td>
+			</tr>
+			<tr>
+				<td class="bold">{trans("Currency:")}</td>
+				<td>
+					{currency_selection selected=$cnote.currency elementname="cnote[currency]" locked=true}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold">{trans("Recipient address:")}</td>
+				<td>
+					{if $cnote.customerid && $cnote.recipient_address_id}
+						{$selected_address_id = $cnote.recipient_address_id}
+					{else}
+						{$selected_address_id = null}
+					{/if}
+					{include file="customer/customeraddresses.html" id="customer_addresses" name="cnote[recipient_address_id]"
+						trigger="address_id" selected_address_id=$selected_address_id preselection=false}
+				</td>
+			</tr>
+			<tr{if empty($messagetemplates)} style="display: none;"{/if}>
+				<td class="bold nobr">
+					{trans("Reason template:")}
+				</td>
+				<td class="nobr">
+					{include file="invoice/invoicenotereasontemplates.html" templates=$messagetemplates}
+				</td>
+			</tr>
+			<tr>
+				<td class="bold nobr">
+					{trans("Reason:")}
+				</td>
+				<td class="nobr">
+					<textarea name="cnote[reason]" rows="4" cols="50" {tip text="Enter reason (optional)"}>{$cnote.reason}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="lms-ui-box-buttons" colspan="2">
+					{button type="submit" icon="save" label="Submit"}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+
+<br>
+
+<form name="save" method="POST" action="?m={$layout.module}&action=save">
+	<input type="submit" class="hiddenbtn">
+
+	<table class="lmsbox lms-ui-background-cycle">
+		<colgroup>
+			<col style="width: 1%;">
+			<col style="width: 91%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+		</colgroup>
+		<thead>
+			<tr>
+				<td class="bold">
+					{trans("No.")}
+				</td>
+				<td>
+					{trans("Name of product, commodity or service:")}
+				</td>
+				<td>
+					{trans("Type")}
+					<br>
+					{trans("Tax category:")}
+				</td>
+				<td class="nobr">
+					{trans("Product ID:")}
+				</td>
+				<td class="text-right">
+					{trans("Amount:")}<br>
+					{trans("Unit:")}
+				</td>
+				<td class="text-right nobr">
+					{trans("Discount:")}
+				</td>
+				<td class="text-right nobr">
+					{trans("Net Price:")}
+				</td>
+				<td class="text-right">
+					{trans("Tax:")}
+				</td>
+				<td class="text-right nobr">
+					{trans("Gross Price:")}
+				</td>
+				<td>
+					&nbsp;
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+		{foreach $contents as $itemid => $item}
+			<tr class="highlight{if $item.deleted} blend{/if}">
+				<td class="bold">
+					{$itemid}.
+				</td>
+				<td>
+					{if $item.deleted}
+						<input type="hidden" value="{$item.name|escape}" name="name[{$itemid}]">
+						{$item.name|escape}
+					{else}
+						<input type="text" value="{$item.name|escape}" name="name[{$itemid}]" size="48">
+					{/if}
+					{if isset($item.name_custom_contents)}
+						{$item.name_custom_contents}
+					{/if}
+				</td>
+				<td>
+					<div class="servicetype-taxcategory">
+						{if $item.deleted}
+							<input type="hidden" value="{$item.servicetype}" name="servicetype[{$itemid}]">
+							{if isset($_SERVICETYPES[$item.servicetype])}
+								<span class="invoice-contents-field-value">
+									{$_SERVICETYPES[$item.servicetype]}
+								</span>
+							{else}
+								{trans("- none -")}
+							{/if}
+							<input type="hidden" value="{$item.taxcategory}" name="taxcategory[{$itemid}]">
+							{if $item.taxcategory}
+								<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
+									({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
+								</span>
+							{else}
+								{trans("- none -")}
+							{/if}
+						{else}
+							<select name="servicetype[{$itemid}]">
+								<option value="">{trans("- none -")}</option>
+								{foreach $_SERVICETYPES as $servicetype => $label}
+									<option value="{$servicetype}"{if $item.servicetype == $servicetype} selected{/if}>{$label}</option>
+								{/foreach}
+							</select>
+							{tax_category_selection elementname="taxcategory["|cat:$itemid|cat:"]" selected=$item.taxcategory
+								tip="Select tax category"}
+						{/if}
+					</div>
+				</td>
+				<td class="nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{$item.prodid}" name="prodid[{$itemid}]">
+						{$item.prodid}
+					{else}
+						<input type="text" value="{$item.prodid}" name="prodid[{$itemid}]" size="6">
+					{/if}
+				</td>
+				<td>
+					{if $item.deleted}
+						<input type="hidden" value="{$item.count}" name="count[{$itemid}]">
+						{$item.count|string_format:"%.3f"}
+						<input type="hidden" value="{$item.content}" name="content[{$itemid}]">
+						{$item.content}
+					{else}
+						<input type="text" value="{$item.count}" name="count[{$itemid}]" size="3">
+						<input type="text" value="{$item.content}" name="content[{$itemid}]" size="3">
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" name="discount[{$itemid}]"
+							   value="
+									{if $item.pdiscount != 0}
+										{$item.pdiscount|string_format:"%.2f"}
+									{else}
+										{if $item.vdiscount != 0}
+											{$item.vdiscount|string_format:"%.2f"}
+										{/if}
+									{/if}
+								"
+						>
+						<input type="hidden" name="discount_type[{$itemid}]"
+							   value="
+									{if $item.pdiscount != 0}
+										{$smarty.const.DISCOUNT_PERCENTAGE}
+									{else}
+										{if $item.vdiscount != 0}
+											{$smarty.const.DISCOUNT_AMOUNT}
+										{/if}
+									{/if}
+								"
+						>
+						{if $item.pdiscount != 0}
+							{$item.pdiscount|string_format:"%.2f%%"}
+						{else}
+							{if $item.vdiscount != 0}
+								{$item.vdiscount|money_format}
+							{/if}
+						{/if}
+					{else}
+						<input type="text" name="discount[{$itemid}]"
+							   value="
+									{if $item.pdiscount != 0}
+										{$item.pdiscount|string_format:"%.2f"}
+									{else}
+										{if $item.vdiscount != 0}
+											{$item.vdiscount|string_format:"%.2f"}
+										{/if}
+									{/if}
+								"
+							   size="6" {tip text="Enter discount percentage or value"}
+						>
+						<br>
+						<select name="discount_type[{$itemid}]">
+							{foreach from=$_DISCOUNTTYPES item=item2 key=key}
+								<option value="{$key}"{if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>
+									{$item2}
+								</option>
+							{/foreach}
+						</select>
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{$item.valuenetto}" name="valuenetto[{$itemid}]">
+						{$item.valuenetto|money_format}
+					{else}
+						<input type="text" class="invoice-contents-field-netprice" name="valuenetto[{$itemid}]" size="6"
+							   value="{$item.valuenetto|string_format:"%.2f"}"
+							   onchange="claculatePositionPriceFromNet({$itemid}, this)"
+								{tip text="Enter unitary value without discount"}
+								{if !$cnote.netflag} disabled{/if}
+						>
+					{/if}
+					{if isset($item.valuenetto_custom_contents)}
+						{$item.valuenetto_custom_contents}
+					{/if}
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{$item.taxid}" name="taxid[{$itemid}]">
+						{$item.tax}
+					{else}
+						<select size="1" name="taxid[{$itemid}]" id="invoice-contents-field-tax-{$itemid}" {tip text="Select Tax rate"}
+								onchange="claculatePositionPriceOnTaxChange({$itemid})"
+						>
+							{foreach $taxeslist as $tax}
+								<option value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</option>
+							{/foreach}
+						</select>
 						{foreach $taxeslist as $tax}
-							<OPTION value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</OPTION>
+							<input type="hidden" id="contents-tax-{$itemid}-{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
 						{/foreach}
-					</SELECT>
-					{foreach $taxeslist as $tax}
-						<input type="hidden" id="contents-tax-{$itemid}-{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
-					{/foreach}
-				{/if}
-			</TD>
-			<TD class="text-right nobr">
-				{if $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" NAME="valuebrutto[{$itemid}]">
-					{if !empty($item.valuebrutto)}
-						{$item.valuebrutto|money_format}
 					{/if}
-				{else}
-					<INPUT TYPE="text" class="invoice-contents-field-grossprice" NAME="valuebrutto[{$itemid}]" SIZE="6"
-						   VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}"
-						   onchange="claculatePositionPriceFromGross({$itemid}, this)"
-							{tip text="Enter unitary value without discount"}
-							{if $cnote.netflag} disabled{/if}>
-					<BR>
-				{/if}
-				{if isset($item.valuebrutto_custom_contents)}
-					{$item.valuebrutto_custom_contents}
-				{/if}
-			</TD>
-			<TD class="nobr">
-				{if $item.deleted}
-					{button type="link" icon="recover" tip="Recover this item" href="?m={$layout.module}&action=recoverpos&itemid={$itemid}"}
-				{else}
-					{button type="link" icon="delete" tip="Remove this item" href="?m={$layout.module}&action=deletepos&itemid={$itemid}"}
-				{/if}
-			</TD>
-		</TR>
-	{/foreach}
-	{if $contents}
-		<TR>
-			<TD COLSPAN="6" class="bold text-right">
-				{trans("Total:")}
-			</TD>
-			<TD class="bold nobr text-right">
-				{sum array=$contents column=s_valuenetto string_format="%01.2f"}
-			</TD>
-			<TD>
-				&nbsp;
-			</TD>
-			<TD class="bold nobr text-right">
-				{sum assign="s_valuebrutto" array=$contents column=s_valuebrutto string_format="%01.2f"}
-				{$s_valuebrutto}
-				<input type="hidden" id="s-valuebrutto" value="{$s_valuebrutto}">
-			</TD>
-			<TD>
-				&nbsp;
-			</TD>
-		</TR>
-	{else}
-		<input type="hidden" id="s-valuebrutto" value="0">
-	{/if}
-	<TR class="lms-ui-button-panel">
-		<TD COLSPAN="10" class="text-right">
-			{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-			<label>
-				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
-						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
-						{if preg_match('/original/i', $default_printpage)} checked{/if}>
-				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
-			</label>
-			<label>
-				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
-						value="{$smarty.const.DOC_ENTITY_COPY}"
-						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
-				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
-			</label>&nbsp;
-			{button icon="cancel" label="Cancel" href="?m=invoicelist"}
-			{button icon="save" label="Save" onclick="saveInvoice();"}
-			{button icon="print" label="Save & Print" onclick="printInvoice();"}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
+				</td>
+				<td class="text-right nobr">
+					{if $item.deleted}
+						<input type="hidden" value="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" name="valuebrutto[{$itemid}]">
+						{if !empty($item.valuebrutto)}
+							{$item.valuebrutto|money_format}
+						{/if}
+					{else}
+						<input type="text" class="invoice-contents-field-grossprice" name="valuebrutto[{$itemid}]" size="6"
+							   value="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}"
+							   onchange="claculatePositionPriceFromGross({$itemid}, this)"
+								{tip text="Enter unitary value without discount"}
+								{if $cnote.netflag} disabled{/if}
+						>
+						<br>
+					{/if}
+					{if isset($item.valuebrutto_custom_contents)}
+						{$item.valuebrutto_custom_contents}
+					{/if}
+				</td>
+				<td class="nobr">
+					{if $item.deleted}
+						{button type="link" icon="recover" tip="Recover this item" href="?m={$layout.module}&action=recoverpos&itemid={$itemid}"}
+					{else}
+						{button type="link" icon="delete" tip="Remove this item" href="?m={$layout.module}&action=deletepos&itemid={$itemid}"}
+					{/if}
+				</td>
+			</tr>
+		{/foreach}
+		{if $contents}
+			<tr>
+				<td colspan="6" class="bold text-right">
+					{trans("Total:")}
+				</td>
+				<td class="bold nobr text-right">
+					{sum array=$contents column=s_valuenetto string_format="%01.2f"}
+				</td>
+				<td>
+					&nbsp;
+				</td>
+				<td class="bold nobr text-right">
+					{sum assign="s_valuebrutto" array=$contents column=s_valuebrutto string_format="%01.2f"}
+					{$s_valuebrutto}
+					<input type="hidden" id="s-valuebrutto" value="{$s_valuebrutto}">
+				</td>
+				<td>
+					&nbsp;
+				</td>
+			</tr>
+		{else}
+			<input type="hidden" id="s-valuebrutto" value="0">
+		{/if}
+		<tr class="lms-ui-button-panel">
+			<td colspan="10" class="text-right">
+				{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+				<label>
+					<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+							value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+							{if preg_match('/original/i', $default_printpage)} checked{/if}
+					>
+					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
+				</label>
+				<label>
+					<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+							value="{$smarty.const.DOC_ENTITY_COPY}"
+							{if preg_match('/copy/i', $default_printpage)} checked{/if}
+					>
+					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
+				</label>&nbsp;
+				{button icon="cancel" label="Cancel" href="?m=invoicelist"}
+				{button icon="save" label="Save" onclick="saveInvoice();"}
+				{button icon="print" label="Save & Print" onclick="printInvoice();"}
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</form>
 
 <script>
 
@@ -570,5 +641,6 @@
 			claculatePositionPriceFromGross(posuid, grossPriceElem);
 		}
 	}
+
 </script>
 {/block}
