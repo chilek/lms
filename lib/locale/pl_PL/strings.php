@@ -28,13 +28,11 @@ $_LANG['Previous balance: $a $b'] = 'Dotychczasowe saldo: $a $b';
 $_LANG['Total to pay: $a'] = 'Razem do zapłaty: $a';
 $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
 
-$_LANG['according in net'] = 'naliczanie w netto';
-$_LANG['according in gross'] = 'naliczanie w brutto';
 $_LANG['Select tariff'] = 'Wybierz taryfę';
 $_LANG['Document flags'] = 'Flagi dokumentu';
 $_LANG['The document is issued according to the $a price'] = 'Dokument wystawiony według ceny $a';
-$_LANG['according in net'] = 'naliczanie według netto';
-$_LANG['according in gross'] = 'naliczanie według brutto';
+$_LANG['calculated from net'] = 'liczone od netto';
+$_LANG['calculated from gross'] = 'liczone od brutto';
 $_LANG['Billing according to the net price'] = 'Naliczanie według ceny netto';
 $_LANG['Billing according to the gross price'] = 'Naliczanie według ceny brutto';
 $_LANG['Gross'] = 'Brutto';
