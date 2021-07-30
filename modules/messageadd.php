@@ -146,7 +146,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
     $recipients = $LMS->DB->GetAll(
-        'SELECT c.id, pin, '
+        'SELECT c.id, pin, c.divisionid, '
         . ($type == MSG_MAIL ? 'cc.email, ' : '')
         . ($type == MSG_SMS ? 'x.phone, ' : '')
         . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
@@ -742,12 +742,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $format = $html_format ? 'html' : 'text';
 
-        if ($message['type'] == MSG_MAIL) {
-            if (!$html_format) {
-                $message['body'] = wordwrap($message['body'], 128, "\n");
-            }
-            $dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
-            $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
+        if ($message['type'] == MSG_MAIL && !$html_format) {
+            $message['body'] = wordwrap($message['body'], 128, "\n");
         }
 
         $message['contenttype'] = $html_format ? 'text/html' : 'text/plain';
@@ -844,14 +840,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if ($html_format) {
                 $headers['X-LMS-Format'] = 'html';
             }
-            if (!empty($dsn_email)) {
-                $headers['From'] = $dsn_email;
-                $headers['Delivery-Status-Notification-To'] = true;
-            }
-            if (!empty($mdn_email)) {
-                $headers['Return-Receipt-To'] = $mdn_email;
-                $headers['Disposition-Notification-To'] = $mdn_email;
-            }
         } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
@@ -863,8 +851,32 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $sms_options = $LMS->getCustomerSMSOptions();
         }
 
+        $divisionid = 0;
         $key = 1;
         foreach ($recipients as $row) {
+            if ($row['divisionid'] != $divisionid) {
+                ConfigHelper::setFilter($divisionid);
+                $divisionid = $row['divisionid'];
+            }
+
+            if ($message['type'] == MSG_MAIL) {
+                $dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
+                $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
+            }
+
+            if (empty($dsn_email)) {
+                unset($headers['From'], $headers['Delivery-Status-Notification-To']);
+            } else {
+                $headers['From'] = $dsn_email;
+                $headers['Delivery-Status-Notification-To'] = true;
+            }
+            if (empty($mdn_email)) {
+                unset($headers['Return-Receipt-To'], $headers['Disposition-Notification-To']);
+            } else {
+                $headers['Return-Receipt-To'] = $mdn_email;
+                $headers['Disposition-Notification-To'] = $mdn_email;
+            }
+
             $body = $message['body'];
 
             $customerid = isset($row['id']) ? $row['id'] : 0;
