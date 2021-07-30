@@ -259,7 +259,7 @@ function GetCustomers($customers)
     $deadline = intval(ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0)));
 
     return $DB->GetAllByKey(
-        'SELECT c.id, pin, '
+        'SELECT c.id, pin, c.divisionid, '
             . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
             divisions.account,
             COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS totalbalance,
@@ -286,7 +286,8 @@ function GetCustomers($customers)
                         OR d.type IN (?, ?, ?)) AND d.cdate + d.paytime * 86400 < ?NOW?)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
-        WHERE c.id IN ?',
+        WHERE c.id IN ?
+        ORDER BY c.divisionid, customername',
         'id',
         array(
             DOC_CNOTE,
