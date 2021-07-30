@@ -151,7 +151,7 @@ if (isset($_POST['customeradd'])) {
         Localisation::setSystemLanguage($billingCountryCode);
     }
 
-    $ic_expires = $customeradd['icexpires'] < time() || $customeradd['icexpires'] == '';
+    $ic_expires = $customeradd['icexpires'] && $customeradd['icexpires'] < time();
     if ($ic_expires) {
         $identity_card_expiration_check = ConfigHelper::getConfig(
             'phpui.customer_identity_card_expiration_check',

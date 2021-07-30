@@ -194,7 +194,7 @@ if (!isset($_POST['xjxfun'])) {
                 Localisation::setSystemLanguage($billingCountryCode);
             }
 
-            $ic_expires = $customerdata['icexpires'] < time() || $customerdata['icexpires'] == '';
+            $ic_expires = $customerdata['icexpires'] && $customerdata['icexpires'] < time();
             if ($ic_expires) {
                 $identity_card_expiration_check = ConfigHelper::getConfig(
                     'phpui.customer_identity_card_expiration_check',
