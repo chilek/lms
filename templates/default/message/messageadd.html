@@ -462,11 +462,15 @@
 				<strong>{trans("Sender E-mail")}</strong>
 			</td>
 			<td>
-				<input type="email" name="message[sender]" size="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}"
-					{tip trigger="sender"}>
+				<input type="email" name="message[sender]" size="40"
+					value="{if $message.sender}{$message.sender}{/if}"
+					{tip trigger="sender"}
+					{if $division_count > 1}style="display: none;"{/if}>
 				<label {tip trigger="copytosender" text="Check if you want do send message copy to sender"}>
-				<input type="checkbox" name="message[copytosender]"{if ConfigHelper::checkConfig('phpui.send_message_to_sender_checkbox')} checked{/if}>
-				{trans("send copy to sender")}</label>
+					<input type="checkbox" name="message[copytosender]"
+						{if ConfigHelper::checkConfig('phpui.send_message_to_sender_checkbox')} checked{/if}>
+					{trans("send copy to sender")}
+				</label>
 			</td>
 		</tr>
 		<tr id="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
