@@ -198,6 +198,8 @@ version 27-git (????-??-??):
   - enhancement: added 'invoices.show_pricing_method' configuration variable which allows display information
     about pricing method on invoice or invoice correction print ('true' by default) [ravvar]
   - enhancement: implemented identity document expiration date [chilan]
+  - enhancement: multi-division support in message add form ('phpui.message_sender_email' allows to specify
+    per division sender email addresses explicitily) [chilan]
 
 version 26.0 (2020-12-15):
 
