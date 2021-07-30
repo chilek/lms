@@ -129,11 +129,15 @@ $SESSION->restore('invoice', $invoice, true);
 $SESSION->restore('cnote', $cnote, true);
 $SESSION->restore('cnoteerror', $error, true);
 
-$numberplanlist = $LMS->GetNumberPlans(array(
+$args = array(
     'doctype' => DOC_CNOTE,
     'customerid' => $invoice['customerid'],
     'division' => $invoice['divisionid'],
-));
+);
+$numberplanlist = $LMS->GetNumberPlans($args);
+if (!$numberplanlist) {
+    $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
+}
 
 $taxeslist = $LMS->GetTaxes($invoice['cdate'], $invoice['cdate']);
 
@@ -721,6 +725,7 @@ $SMARTY->assign('refdoc', $invoice);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
+$SMARTY->assign('planDocumentType', DOC_CNOTE);
 
 $total_value = 0;
 if (!empty($contents)) {

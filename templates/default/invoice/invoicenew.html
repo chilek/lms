@@ -27,14 +27,6 @@
 		document.setcustomer.submit();
 	}
 
-	function GetNumberPlans() {
-		xajax_GetNumberPlans('{$invoice.proforma}', {
-			number: $('form[name="setcustomer"] [name="invoice[number]"]').val(),
-			cdate: $('form[name="setcustomer"] [name="invoice[cdate]"]').attr('data-cdate'),
-			numberplanid: $('form[name="setcustomer"] [name="invoice[numberplanid]"]').val(),
-		}, $('form[name="setcustomer"] [name="customerid"]').val());
-	}
-
 </script>
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
@@ -72,8 +64,21 @@
 					<td class="bold nobr">
 						{trans("Invoice number:")}
 					</td>
-					<td class="nobr" id="invoicenumberplans">
-						{include file="invoice/invoicenumberplans.html" invoice=$invoice}
+					<td class="nobr">
+						{numberplan_selection
+							customer_selector  = "#ownerid_input"
+							cdate_selector     = "#cdate"
+							numberplanlist    = $numberplanlist
+							input_name        = "invoice[number]"
+							input_value       = $invoice.number
+							select_name       = "invoice[numberplanid]"
+							selected          = $invoice.numberplanid
+							number_trigger    = "number"
+							plan_trigger      = "numberplanid"
+							time              = $invoice.cdate
+							customer_id       = $customerid
+							planDocumentType  = $planDocumentType
+						}
 					</td>
 				</tr>
 				<tr>
@@ -195,7 +200,7 @@
 					</td>
 					<td class="nobr">
 						{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" version="2"
-							inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+							inputname="customerid" customOnChange="customer_change();"
 							select_id="ownerid_select" input_id="ownerid_input" required=true}
 					</td>
 				</tr>
@@ -357,7 +362,7 @@
 		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
 			customer_addresses.setAddressList( addresses, false );
 		});
-		updateDocumentFlags()
+		updateDocumentFlags();
 	}
 
 	customer_addresses.init();
@@ -366,7 +371,7 @@
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
 
 		$('[name="invoice[cdate]"]').change(function() {
-			updateDocumentFlags()
+			updateDocumentFlags();
 		});
 	});
 

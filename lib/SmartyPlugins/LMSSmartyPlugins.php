@@ -1168,4 +1168,105 @@ class LMSSmartyPlugins
             $template
         );
     }
+
+    public static function numberplanSelectionFunction(array $params, $template)
+    {
+        static $numberplan_js = 0;
+
+        $result = '';
+
+        $form = isset($params['form']) ? $params['form'] : null;
+
+        if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
+            $params['selected'] = '';
+        }
+
+        //<editor-fold desc="numberplan container">
+        $result .= '<div class="lms-ui-numberplan-container" style="display: flex;"'
+                . 'data-customer-selector="'. $params['customer_selector'] .'"'
+                . 'data-cdate-selector="'. $params['cdate_selector'] .'"'
+                . 'data-plan-document-type="'. $params['planDocumentType'] .'"'
+                . '>' . PHP_EOL;
+
+        //<editor-fold desc="number">
+        $result .= '<div class="lms-ui-numberplan-number">' . PHP_EOL;
+            $result .= '<input type="text" size="12"'
+                . ' name="' . $params['input_name'] . '"'
+                . (empty($params['input_id']) ? '' : ' id="' . $params['input_id'] . '"')
+                . (empty($params['input_value']) ? '' : ' value="' . $params['input_value'] . '"')
+                . ' placeholder="- auto -"'
+                . (isset($form) ? ' form="' . $form . '"' : '')
+                . ' ' . self::tipFunction(
+                    array(
+                        'text' => 'Enter document number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)',
+                        'trigger' => $params['number_trigger'],
+                    ),
+                    $template
+                )
+                . '">&nbsp;' . PHP_EOL;
+        $result .= '</div>' . PHP_EOL;
+        //</editor-fold>
+
+        //<editor-fold desc="plan">
+        $result .= '<div class="lms-ui-numberplan-plan">' . PHP_EOL;
+        $result .= sprintf('<select name="%s" value="%s" required', $params['select_name'], $params['selected']);
+        if (!empty($params['planOnChange'])) {
+            $result .= ' onChange="' . $params['planOnChange'] . '"';
+        }
+
+        if (isset($form)) {
+            $result .= ' form="' . $form . '"';
+        }
+
+        if (!empty($params['select_id'])) {
+            $result .= ' id="' . $params['select_id'] . '"';
+        }
+        $result .= ' ' . self::tipFunction(
+            array(
+                'text' => 'Select numbering plan',
+                'trigger' => $params['plan_trigger'],
+            ),
+            $template
+        );
+        $result .= '">' . PHP_EOL;
+
+        if (!empty($params['numberplanlist'])) {
+            if (count($params['numberplanlist']) > 1) {
+                $result .= '<option value="" disabled selected hidden>' . trans("- select -") . '</option>';
+            }
+            foreach ($params['numberplanlist'] as $plan) {
+                $result .= '<option value="' . $plan['id'] . '"';
+                if ($plan['id'] == $params['selected']) {
+                    $result .= ' selected';
+                }
+                $result .= '>' . PHP_EOL;
+                $result .= ' ' . docnumber(
+                    array(
+                        'number' => $plan['next'],
+                        'template' => $plan['template'],
+                        'time' => $params['time'],
+                        'customerid' => $params['customer_id']
+                    ),
+                    $template
+                );
+                $result .= ' (' . $GLOBALS['NUM_PERIODS'][$plan['period']] . ')';
+                $result .= '</option>' . PHP_EOL;
+            }
+        } else {
+            $result .= '<option value="">' . trans("- select -") . '</option>';
+        }
+        $result .= '</select>' . PHP_EOL;
+        $result .= '</div>' . PHP_EOL;
+        //</editor-fold>
+
+        $result .= '</div>' . PHP_EOL;
+        //</editor-fold>
+
+        if (isset($numberplan_js) && empty($numberplan_js)) {
+            $result .= '<script src="js/lms-ui-numberplan-select.js"></script>';
+            $numberplan_js = 1;
+        }
+
+        return $result;
+    }
 }

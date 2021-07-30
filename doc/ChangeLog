@@ -208,6 +208,7 @@ version 27-git (????-??-??):
   - improvement: logical conjunction selection for customer group selection in search form [chilan]
   - enhancement: lms-notify.php 'events' type notifications support formatting of subject and message
     contents ('%title' and '%description' symbols are supported for now) [chilan]
+  - improvement: change presentation of the number plans in invoices forms [ravvar]
 
 version 26.0 (2020-12-15):
 

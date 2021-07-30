@@ -271,7 +271,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($cnote['numberplanid'])) {
+        if (count($numberplans) && empty($cnote['numberplanid']) && $cnote['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -783,7 +783,13 @@ $args = array(
     'customerid' => $cnote['customerid'],
     'division' => $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cnote['customerid'])),
 );
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+$numberplanlist = $LMS->GetNumberPlans($args);
+if (!$numberplanlist) {
+    $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
+}
+
+$SMARTY->assign('numberplanlist', $numberplanlist);
+$SMARTY->assign('planDocumentType', DOC_CNOTE);
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
 
 $total_value = 0;
