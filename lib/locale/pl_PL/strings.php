@@ -5358,3 +5358,5 @@ $_LANG['<!customer-call>Assigned'] = 'Przypisane';
 $_LANG['Identity document'] = 'Dokument tożsamości';
 $_LANG['Expires'] = 'Data ważności';
 $_LANG['expires $a'] = 'ważny do $a';
+
+$_LANG['Customer identity card expired or expires soon!'] = 'Dokument tożsamości klienta jest lub wkrótce stanie się nieważny';

@@ -151,6 +151,24 @@ if (isset($_POST['customeradd'])) {
         Localisation::setSystemLanguage($billingCountryCode);
     }
 
+    $ic_expires = $customeradd['icexpires'] < time() || $customeradd['icexpires'] == '';
+    if ($ic_expires) {
+        $identity_card_expiration_check = ConfigHelper::getConfig(
+            'phpui.customer_identity_card_expiration_check',
+            'none'
+        );
+        switch ($identity_card_expiration_check) {
+            case 'warning':
+                if (!isset($warnings['customeradd-icexpires-'])) {
+                    $warning['customeradd[icexpires]'] = trans('Customer identity card expired or expires soon!');
+                }
+                break;
+            case 'error':
+                $error['icexpires'] = trans('Customer identity card expired or expires soon!');
+                break;
+        }
+    }
+
     if ($customeradd['ten'] !='') {
         if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
             $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
