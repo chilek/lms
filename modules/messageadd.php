@@ -530,6 +530,17 @@ function GetNetDevicesInSubtree($netdevid)
 
 $layout['pagetitle'] = trans('Message Add');
 
+$divisions = $LMS->getDivisionList();
+$divivion_count = 0;
+foreach ($divisions as $division) {
+    if (!empty($division['cnt'])) {
+        $division_count++;
+    }
+}
+$SMARTY->assign('division_count', $division_count);
+
+$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+
 if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $message = $_POST['message'];
 
@@ -555,10 +566,13 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
     if ($message['type'] == MSG_MAIL) {
         $message['body'] = $html_format ? Utils::removeInsecureHtml($message['mailbody']) : $message['mailbody'];
-        if ($message['sender'] == '') {
-            $error['sender'] = trans('Sender e-mail is required!');
-        } elseif (!check_email($message['sender'])) {
-            $error['sender'] = trans('Specified e-mail is not correct!');
+        if ($division_count <= 1) {
+            if ($message['sender'] == '') {
+                $error['sender'] = trans('Sender e-mail is required!');
+            } elseif (!check_email($message['sender'])) {
+                $error['sender'] = trans('Specified e-mail is not correct!');
+            }
+            $message['sender'] = ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']);
         }
         if ($message['from'] == '') {
             $error['from'] = trans('Sender name is required!');
@@ -829,15 +843,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 echo '<B>'.trans('Warning! Debug mode (using address $a).', ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
             }
 
-            $headers['From'] = $globalFrom = '"' . qp_encode($message['from']) . '"' . ' <' . $message['sender'] . '>';
             $headers['Subject'] = $message['subject'];
 
-            $reply_email = ConfigHelper::getConfig('mail.reply_email');
-            $headers['Reply-To'] = empty($reply_email) ? $message['sender'] : $reply_email;
-
-            if (isset($message['copytosender'])) {
-                $headers['Cc'] = $headers['From'];
-            }
             if ($html_format) {
                 $headers['X-LMS-Format'] = 'html';
             }
@@ -856,27 +863,31 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $key = 1;
         foreach ($recipients as $row) {
             if ($row['divisionid'] != $divisionid) {
-                ConfigHelper::setFilter($divisionid);
                 $divisionid = $row['divisionid'];
-            }
+                ConfigHelper::setFilter($divisionid);
 
-            if ($message['type'] == MSG_MAIL) {
-                $dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
-                $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
-            }
+                if ($message['type'] == MSG_MAIL) {
+                    $sender_email = ConfigHelper::getConfig('phpui.message_sender_email', $message['sender']);
+                    $headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $sender_email . '>';
+                    if (isset($message['copytosender'])) {
+                        $headers['Cc'] = $headers['From'];
+                    }
 
-            if (empty($dsn_email)) {
-                $headers['From'] = $globalFrom;
-                unset($headers['Delivery-Status-Notification-To']);
-            } else {
-                $headers['From'] = $dsn_email;
-                $headers['Delivery-Status-Notification-To'] = true;
-            }
-            if (empty($mdn_email)) {
-                unset($headers['Return-Receipt-To'], $headers['Disposition-Notification-To']);
-            } else {
-                $headers['Return-Receipt-To'] = $mdn_email;
-                $headers['Disposition-Notification-To'] = $mdn_email;
+                    $reply_email = ConfigHelper::getConfig('mail.reply_email');
+                    $headers['Reply-To'] = empty($reply_email) ? $sender_email : $reply_email;
+
+                    $dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
+                    $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
+
+                    if (!empty($dsn_email)) {
+                        $headers['From'] = $dsn_email;
+                        $headers['Delivery-Status-Notification-To'] = true;
+                    }
+                    if (!empty($mdn_email)) {
+                        $headers['Return-Receipt-To'] = $mdn_email;
+                        $headers['Disposition-Notification-To'] = $mdn_email;
+                    }
+                }
             }
 
             $body = $message['body'];
@@ -927,7 +938,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 switch ($message['type']) {
                     case MSG_MAIL:
                         if (isset($message['copytosender'])) {
-                            $destination .= ',' . $message['sender'];
+                            $destination .= ',' . $sender_email;
                         }
                         if (!empty($dsn_email) || !empty($mdn_email)) {
                             $headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
@@ -1172,11 +1183,18 @@ if (isset($message['type'])) {
 } else {
     $msgtmpltype = TMPL_MAIL;
 }
+
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
+
+if (empty($message['sender'])) {
+    $message['sender'] = $userinfo['email'];
+}
+
+$SMARTY->assign('userinfo', $userinfo);
+
 $SMARTY->assign('users', $DB->GetAllByKey('SELECT id, rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', 'id', array('')));
 
 $usergroups = $LMS->UsergroupGetList();
