@@ -1190,7 +1190,7 @@ $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 
 if (empty($message['sender'])) {
-    $message['sender'] = $userinfo['email'];
+    $message['sender'] = ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']);
 }
 
 $SMARTY->assign('userinfo', $userinfo);
