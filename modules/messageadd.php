@@ -828,7 +828,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 echo '<B>'.trans('Warning! Debug mode (using address $a).', ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
             }
 
-            $headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $message['sender'] . '>';
+            $headers['From'] = $globalFrom = '"' . qp_encode($message['from']) . '"' . ' <' . $message['sender'] . '>';
             $headers['Subject'] = $message['subject'];
 
             $reply_email = ConfigHelper::getConfig('mail.reply_email');
@@ -865,7 +865,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
 
             if (empty($dsn_email)) {
-                unset($headers['From'], $headers['Delivery-Status-Notification-To']);
+                $headers['From'] = $globalFrom;
+                unset($headers['Delivery-Status-Notification-To']);
             } else {
                 $headers['From'] = $dsn_email;
                 $headers['Delivery-Status-Notification-To'] = true;
