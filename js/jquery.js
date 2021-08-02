@@ -1409,7 +1409,8 @@ $(function() {
 
 	if (tooltipsEnabled) {
 		$(document).on('mouseenter', '[title]:not(.lms-ui-hint-rollover,.lms-ui-hint-toggle)', function () {
-			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length) {
+			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length ||
+				$(this).prop('disabled') || $(this).is('[disabled]')) {
 				return;
 			}
 			tooltipClass = '';
