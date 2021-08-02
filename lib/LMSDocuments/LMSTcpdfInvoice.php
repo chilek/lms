@@ -379,7 +379,11 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         foreach ($this->data['flags'] as $flag => $value) {
             if (!empty($value)) {
-                $flags[] = $DOC_FLAGS[$flag];
+                if (($flag & DOC_FLAG_TELECOM_SERVICE) && $this->data['cdate'] >= mktime(0, 0, 0, 7, 1, 2021)) {
+                    $flags[] = trans('WSTO_EE');
+                } else {
+                    $flags[] = $DOC_FLAGS[$flag];
+                }
             }
         }
 
