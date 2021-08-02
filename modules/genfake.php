@@ -2045,6 +2045,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
         $customeradd['regon'] = '';
         $customeradd['rbe'] = '';
         $customeradd['rbename'] = '';
+        $customeradd['ict'] = 0;
         $customeradd['icn'] = '';
         $customeradd['notes'] = '';
         $customeradd['info'] = '';
