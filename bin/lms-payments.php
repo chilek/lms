@@ -1421,8 +1421,7 @@ foreach ($assigns as $assign) {
 
         $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
             && ($assign['customertype'] == CTYPES_PRIVATE || ($check_customer_vat_payer_flag_for_telecom_service
-                && !($assign['customerflags'] & CUSTOMER_FLAG_VAT_PAYER)));
-
+                && !($assign['customerflags'] & CUSTOMER_FLAG_VAT_PAYER))) && $issuetime < mktime(0, 0, 0, 7, 1, 2021);
 
         if ($netflag) {
             $grossvalue = $value + round($value * ($assign['taxrate'] / 100), 2);
@@ -1523,6 +1522,11 @@ foreach ($assigns as $assign) {
                     $recipient_address_id = null;
                 }
 
+                $exported_telecom_service = !empty($customer['countryid']) && !empty($division['countryid']) && $customer['countryid'] != $division['countryid'];
+                $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
+                    && $assign['customertype'] == CTYPES_PRIVATE && $issuetime >= mktime(0, 0, 0, 7, 1, 2021)
+                    && $exported_telecom_service;
+
                 $DB->Execute(
                     "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
@@ -1535,13 +1539,19 @@ foreach ($assigns as $assign) {
                         $plan ? $plan : null,
                         $assign['invoice'],
                         $customer['countryid'] ? $customer['countryid'] : null,
-                        $customer['divisionid'], $cid,
+                        $customer['divisionid'],
+                        $cid,
                         $customer['lastname']." ".$customer['name'],
                         ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
                             ? $customer['city'] . ', ' : '') . $customer['address'],
                         $customer['zip'] ? $customer['zip'] : null,
                         $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
-                        $customer['ten'], $customer['ssn'], $issuetime, $saledate, $paytime, $inv_paytype,
+                        $customer['ten'],
+                        $customer['ssn'],
+                        $issuetime,
+                        $saledate,
+                        $paytime,
+                        $inv_paytype,
                         ($division['name'] ? $division['name'] : ''),
                         ($division['shortname'] ? $division['shortname'] : ''),
                         ($division['address'] ? $division['address'] : ''),

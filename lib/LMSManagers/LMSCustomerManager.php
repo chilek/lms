@@ -2418,12 +2418,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $check_customer_vat_payer_flag_for_telecom_service =
             ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
-        return $this->db->GetOne(
-            'SELECT c.id FROM customers c
-            WHERE c.id = ? AND (c.type = ? OR '
-            . ($check_customer_vat_payer_flag_for_telecom_service ? 'c.flags & ' . CUSTOMER_FLAG_VAT_PAYER . ' = 0' : ' 1 = 0') . ')',
-            array($customerid, CTYPES_PRIVATE)
-        ) > 0;
+        if (time() < mktime(0, 0, 0, 7, 1, 2021)) {
+            return $this->db->GetOne(
+                'SELECT c.id FROM customers c
+                WHERE c.id = ? AND (c.type = ? OR '
+                . ($check_customer_vat_payer_flag_for_telecom_service ? 'c.flags & ' . CUSTOMER_FLAG_VAT_PAYER . ' = 0' : ' 1 = 0') . ')',
+                array($customerid, CTYPES_PRIVATE)
+            ) > 0;
+        } else {
+            return $this->db->GetOne(
+                'SELECT c.id FROM customeraddressview c
+                JOIN vdivisions d ON d.id = c.divisionid
+                WHERE c.id = ?
+                    AND c.type = ?
+                    AND c.countryid IS NOT NULL
+                    AND d.countryid IS NOT NULL
+                    AND c.countryid <> d.countryid',
+                array($customerid, CTYPES_PRIVATE)
+            ) > 0;
+        }
     }
 
     public function getCustomerSMSOptions()

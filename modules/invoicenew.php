@@ -144,7 +144,7 @@ switch ($action) {
         $invoice['numberplanid'] = null;
 
         if (ConfigHelper::checkConfig('invoices.force_telecom_service_flag')) {
-            $invoice['flags'][DOC_FLAG_TELECOM_SERVICE] = 1;
+            $invoice['flags'][DOC_FLAG_TELECOM_SERVICE] = time() < mktime(0, 0, 0, 7, 1, 2021) ? 1 : 0;
         }
 
         // get default invoice's numberplanid and next number
