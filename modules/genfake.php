@@ -1839,6 +1839,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
     echo '<B>'.trans('Clearing database...').'</B>';
     flush();
     $DB->Execute('DELETE FROM nodes');
+    $DB->Execute('DELETE FROM userdivisions');
     $DB->Execute('DELETE FROM divisions');
     $DB->Execute('DELETE FROM customers');
     $DB->Execute('DELETE FROM customercontacts');
@@ -1861,6 +1862,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
 
     if (ConfigHelper::getConfig('database.type')=='postgres') {
         $DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
+        $DB->Execite('DROP SEQUENCE "userdivisions_id_seq"; CREATE SEQUENCE "userdivisions_id_seq"');
         $DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
         $DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
         $DB->Execute('DROP SEQUENCE "customercontacts_id_seq"; CREATE SEQUENCE "customercontacts_id_seq"');
@@ -1879,6 +1881,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
         $DB->Execute('DROP SEQUENCE "customer_addresses_id_seq";  CREATE SEQUENCE "customer_addresses_id_seq"');
     } elseif (ConfigHelper::getConfig('database.type') == 'mysql' || ConfigHelper::getConfig('database.type') == 'mysqli') {
         $DB->Execute('ALTER TABLE customers auto_increment=0');
+        $DB->Execute('ALTER TABLE userdivisions auto_increment=0');
         $DB->Execute('ALTER TABLE customercontacts auto_increment=0');
         $DB->Execute('ALTER TABLE divisions auto_increment=0');
         $DB->Execute('ALTER TABLE nodes auto_increment=0');
