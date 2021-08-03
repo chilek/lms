@@ -1076,7 +1076,7 @@ $cashes = $DB->GetAll(
     )
 );
 
-setlocale(LC_NUMERIC, 'en_US');
+setlocale(LC_NUMERIC, 'C');
 
 // solid payments
 $payments = $DB->GetAll(
