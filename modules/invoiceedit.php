@@ -440,15 +440,21 @@ switch ($action) {
         if ($invoice['number']) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
                 $error['number'] = trans('Invoice number must be integer!');
-            } elseif (($invoice['oldcdate'] != $invoice['cdate'] || $invoice['oldnumber'] != $invoice['number']
-                ||  ($invoice['oldnumber'] == $invoice['number'] && $invoice['oldcustomerid'] != $invoice['customerid'])
-                || $invoice['oldnumberplanid'] != $invoice['numberplanid']) && ($docid = $LMS->DocumentExists(array(
+            } elseif ((
+                    $invoice['oldcdate'] != $invoice['cdate']
+                    || $invoice['oldnumber'] != $invoice['number']
+                    || $invoice['oldnumberplanid'] != $invoice['numberplanid']
+                    || ($invoice['oldcustomerid'] != $invoice['customerid'] && preg_match('/%[0-9]*C/', $invoice['template']))
+                )
+                && ($docid = $LMS->DocumentExists(array(
                     'number' => $invoice['number'],
                     'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
                     'planid' => $invoice['numberplanid'],
                     'cdate' => $invoice['cdate'],
                     'customerid' => $invoice['customerid'],
-                ))) > 0 && $docid != $invoice['id']) {
+                ))) > 0
+                && $docid != $invoice['id']
+            ) {
                 $error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
             }
         }

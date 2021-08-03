@@ -278,15 +278,21 @@ switch ($action) {
         if ($cnote['number']) {
             if (!preg_match('/^[0-9]+$/', $cnote['number'])) {
                 $error['number'] = trans('Credit note number must be integer!');
-            } elseif (($cnote['oldcdate'] != $cnote['cdate'] || $cnote['oldnumber'] != $cnote['number']
-                    || ($cnote['oldnumber'] == $cnote['number'] && $cnote['oldcustomerid'] != $cnote['customerid'])
-                    || $cnote['oldnumberplanid'] != $cnote['numberplanid']) && ($docid = $LMS->DocumentExists(array(
+            } elseif ((
+                    $cnote['oldcdate'] != $cnote['cdate']
+                    || $cnote['oldnumber'] != $cnote['number']
+                    || $cnote['oldnumberplanid'] != $cnote['numberplanid']
+                    || ($cnote['oldcustomerid'] != $cnote['customerid'] && preg_match('/%[0-9]*C/', $cnote['template']))
+                )
+                && ($docid = $LMS->DocumentExists(array(
                     'number' => $cnote['number'],
                     'doctype' => DOC_CNOTE,
                     'planid' => $cnote['numberplanid'],
                     'cdate' => $cnote['cdate'],
                     'customerid' => $cnote['customerid'],
-                    ))) > 0 && $docid != $cnote['id']) {
+                    ))) > 0
+                && $docid != $cnote['id']
+            ) {
                 $error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
             }
         }
