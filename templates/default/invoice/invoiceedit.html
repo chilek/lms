@@ -71,7 +71,7 @@
 				<td class="nobr">
 					{if ConfigHelper::checkPrivilege("invoice_consent_date")}
 						<input type="text" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
-							placeholder="{trans("yyyy/mm/dd")}" date-cdate="{$invoice.cdate}"
+							placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}"
 							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 						>
 						{if $invoice.cdatewarning}
