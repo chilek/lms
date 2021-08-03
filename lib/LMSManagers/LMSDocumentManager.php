@@ -632,7 +632,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             . (empty($params['userid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanusers WHERE planid = n.id AND userid = ' . intval($params['userid']) . ')')
             . (empty($params['divisionid']) ? '' : ' AND EXISTS (SELECT 1 FROM numberplanassignments WHERE planid = n.id AND divisionid = ' . intval($params['divisionid']) . ')')
             . (empty($params['type']) ? '' : ' AND n.doctype = ' . intval($params['type'])) . '
-            ORDER BY n.id'
+            ORDER BY n.template'
             . (isset($params['limit']) ? ' LIMIT ' . intval($params['limit']) : '')
             . (isset($params['offset']) ? ' OFFSET ' . intval($params['offset']) : ''),
             'id'
