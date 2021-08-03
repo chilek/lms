@@ -1178,7 +1178,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $doctype = null;
         }
         if (!isset($planid)) {
-            $planid = 0;
+            $planid = null;
         }
         if (!isset($cdate)) {
             $cdate = null;
@@ -1191,6 +1191,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $numplan = $this->db->GetRow('SELECT template, period FROM numberplans WHERE id=?', array($planid));
             $numtemplate = $numplan['template'];
             $period = $numplan['period'];
+        } else {
+            $planid = null;
         }
 
         $period = isset($period) ? $period : YEARLY;
@@ -1265,20 +1267,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             case CONTINUOUS:
                 return $this->db->GetOne(
                     'SELECT id FROM documents
-					WHERE type = ? AND number = ? AND numberplanid = ?'
+                    WHERE type = ? AND number = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
                     . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                         ? '' : ' AND customerid = ' . intval($customerid)),
-                    array($doctype, $number, $planid)
+                    array($doctype, $number)
                 );
-                break;
         }
 
         return $this->db->GetOne(
             'SELECT id FROM documents
-			WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?'
+            WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
             . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                 ? '' : ' AND customerid = ' . intval($customerid)),
-            array($start, $end, $doctype, $number, $planid)
+            array($start, $end, $doctype, $number)
         );
     }
 
