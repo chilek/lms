@@ -441,7 +441,6 @@ switch ($action) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
                 $error['number'] = trans('Invoice number must be integer!');
             } elseif (($invoice['oldcdate'] != $invoice['cdate'] || $invoice['oldnumber'] != $invoice['number']
-                ||  ($invoice['oldnumber'] == $invoice['number'] && $invoice['oldcustomerid'] != $invoice['customerid'])
                 || $invoice['oldnumberplanid'] != $invoice['numberplanid']) && ($docid = $LMS->DocumentExists(array(
                     'number' => $invoice['number'],
                     'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
