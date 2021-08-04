@@ -34,7 +34,7 @@ if (isset($_GET['id']) && $action == 'init') {
     if ($invoice['doctype'] == DOC_CNOTE) {
         $invoice['number'] = $invoice['invoice']['number'];
         $invoice['template'] = $invoice['invoice']['template'];
-        $cnote['numberplanid'] = $invoice['numberplanid'] = $invoice['invoice']['numberplanid'];
+        $cnote['numberplanid'] = $invoice['numberplanid'];
         $invoice['cdate'] = $invoice['invoice']['cdate'];
     } else {
         $cnote['numberplanid'] = $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
