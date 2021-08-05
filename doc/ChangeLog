@@ -200,6 +200,8 @@ version 27-git (????-??-??):
   - enhancement: implemented identity document expiration date [chilan]
   - enhancement: multi-division support in message add form ('phpui.message_sender_email' allows to specify
     per division sender email addresses explicitily) [chilan]
+  - improvement: 'invoices.default_net_account' changes default behavior of net account flag for newly
+    created invoices (default 'false' value means gross account usage) [chilan]
 
 version 26.0 (2020-12-15):
 

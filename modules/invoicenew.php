@@ -138,7 +138,7 @@ switch ($action) {
                 $invoice['customerid'] = $_GET['customerid'];
             }
             $invoice['currency'] = Localisation::getDefaultCurrency();
-            $invoice['netflag'] = 0;
+            $invoice['netflag'] = ConfigHelper::checkConfig('invoices.default_net_account');
         }
         $invoice['number'] = '';
         $invoice['numberplanid'] = null;
