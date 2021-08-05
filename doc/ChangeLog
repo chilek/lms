@@ -202,6 +202,7 @@ version 27-git (????-??-??):
     per division sender email addresses explicitily) [chilan]
   - improvement: 'invoices.default_net_account' changes default behavior of net account flag for newly
     created invoices (default 'false' value means gross account usage) [chilan]
+  - improvement: customer modification conflict detection support [chilan]
 
 version 26.0 (2020-12-15):
 

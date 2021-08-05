@@ -898,6 +898,12 @@ class LMS
         return $manager->addCustomerCallAssignment($customerid, $callid);
     }
 
+    public function getCustomerModificationInfo($customerid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerModificationInfo($customerid);
+    }
+
     /*
      * Customer groups
      */

@@ -3111,4 +3111,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return null;
         }
     }
+
+    public function getCustomerModificationInfo($customerid)
+    {
+        return $this->db->GetRow(
+            'SELECT c.moddate AS date, u.name AS username
+            FROM customerview c
+            LEFT JOIN vusers u ON u.id = c.modid
+            WHERE c.id = ?',
+            array($customerid)
+        );
+    }
 }

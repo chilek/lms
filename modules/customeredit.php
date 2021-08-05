@@ -25,6 +25,7 @@
  */
 
 if (isset($_GET['search'])) {
+
     $SESSION->restore('customersearch', $search);
     $SESSION->restore('cslo', $order);
     $SESSION->restore('csls', $state);
@@ -103,6 +104,23 @@ if (isset($_GET['oper'])) {
             header('Content-Type: application/json');
             $result = $LMS->lowerCustomerKarma($_GET['id']);
             die(json_encode($result));
+            break;
+        case 'check-conflict':
+            header('Content-Type: application/json');
+            $SESSION->restore('customer_edit_start', $customer_edit_start, true);
+            if (empty($customer_edit_start) || $customer_edit_start['id'] != $_GET['id']) {
+                die('[]');
+            }
+            $modification = $LMS->getCustomerModificationInfo($_GET['id']);
+            if ($customer_edit_start['date'] > $modification['date']) {
+                die('[]');
+            }
+            die(json_encode(trans(
+                "In mean time user '\$a' has modified edited customer (\$b).\n"
+                . 'Despite this you want to make customer modification which you had made in form?',
+                empty($modification['username']) ? trans('unknown') : htmlspecialchars($modification['username']),
+                date('Y/m/d H:i:s')
+            )));
             break;
     }
 }
@@ -352,6 +370,8 @@ if (!isset($_POST['xjxfun'])) {
             $warning = $hook_data['warning'];
 
             if (!$error && !$warning) {
+                $SESSION->remove('customer_edit_start', true);
+
                 $customerdata['cutoffstop'] = $cutoffstop;
 
                 if (!isset($customerdata['consents'])) {
@@ -496,6 +516,15 @@ if (!isset($_POST['xjxfun'])) {
             }
         }
         $SMARTY->assign('backurl', $backurl);
+
+        $SESSION->save(
+            'customer_edit_start',
+            array(
+                'id' => $customerinfo['id'],
+                'date' => time(),
+            ),
+            true
+        );
     }
 
     $layout['pagetitle'] = trans('Customer Edit: $a', $customerinfo['customername']);

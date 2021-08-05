@@ -699,6 +699,33 @@
 				});
 			}
 		});
+
+		var inSubmit = false;
+		$('#customeredit').submit(function () {
+			if (!inSubmit) {
+				inSubmit = true;
+				$('#save-button').prop('disabled', true);
+				$.ajax({
+					url: "?m={$layout.module}&id={$customerinfo.id}&oper=check-conflict",
+					dataType: "json",
+					success: function (data) {
+						if (data.length) {
+							confirmDialog(data, $('#save-button')).done(function() {
+								$('#customeredit').submit();
+								inSubmit = false;
+							}).fail(function() {
+								$('#save-button').prop('disabled', false);
+								inSubmit = false;
+							});
+						} else {
+							$('#customeredit').submit();
+							inSubmit = false;
+						}
+					}
+				});
+				return false;
+			}
+		});
 	});
 
 </script>
