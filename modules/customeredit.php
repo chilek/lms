@@ -115,7 +115,7 @@ if (isset($_GET['oper'])) {
                 die('[]');
             }
             die(json_encode(trans(
-                "In mean time user '\$a' has modified edited customer (\$b).\n"
+                "In meantime user '\$a' has modified edited customer (\$b).\n"
                 . 'Despite this you want to make customer modification which you had made in form?',
                 empty($modification['username']) ? trans('unknown') : htmlspecialchars($modification['username']),
                 date('Y/m/d H:i:s')

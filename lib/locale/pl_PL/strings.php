@@ -5362,7 +5362,7 @@ $_LANG['expires $a'] = 'ważny do $a';
 $_LANG['Customer identity card expired or expires soon!'] = 'Dokument tożsamości klienta jest lub wkrótce stanie się nieważny';
 
 $_LANG[
-    "In mean time user '\$a' has modified edited customer (\$b).\n"
+    "In meantime user '\$a' has modified edited customer (\$b).\n"
     . 'Despite this you want to make customer modification which you had made in form?'
 ] = "Użytkownik '\$a' w międzyczasie (\$b) zmienił dane edytowanego przez Ciebie klienta.\n"
     . 'Czy mimo tego chcesz zmienić dane klienta na te przez Ciebie wprowadzone w formularzu?';
