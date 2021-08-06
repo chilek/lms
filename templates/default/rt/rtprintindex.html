@@ -143,7 +143,7 @@
 					<td>
 						<input type="hidden" name="catids" value="all">
 						<select size="1" name="catids[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-							<option value="-1">{trans('- no categories -')}</option>
+							<option value="-1" data-exclusive>{trans('- no categories -')}</option>
 							{foreach $categories as $c}
 								<option value="{$c.id}">{$c.name}</option>
 							{/foreach}
@@ -245,7 +245,7 @@
 					<td>
 						<input type="hidden" name="catids" value="all">
 						<select size="1" name="catids[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-							<option value="-1">{trans('- no categories -')}</option>
+							<option value="-1" data-exclusive>{trans('- no categories -')}</option>
 							{foreach $categories as $c}
 								<option value="{$c.id}">{$c.name}</option>
 							{/foreach}
