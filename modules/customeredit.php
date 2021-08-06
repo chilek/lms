@@ -25,7 +25,6 @@
  */
 
 if (isset($_GET['search'])) {
-
     $SESSION->restore('customersearch', $search);
     $SESSION->restore('cslo', $order);
     $SESSION->restore('csls', $state);
