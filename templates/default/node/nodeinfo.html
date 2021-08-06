@@ -60,7 +60,7 @@
 	{include file="customer/customermessages.html" limit=10}
 {/block}
 {block name="customerevents"}
-	{include file="customer/customerevents.html" limit=10}
+	{include file="customer/customerevents.html" limit=ConfigHelper::getConfig('phpui.customer_event_limit', 10)}
 {/block}
 {block name="customergroups"}
 	{include file="customer/customergroups.html"}

@@ -203,6 +203,8 @@ version 27-git (????-??-??):
   - improvement: 'invoices.default_net_account' changes default behavior of net account flag for newly
     created invoices (default 'false' value means gross account usage) [chilan]
   - improvement: customer modification conflict detection support [chilan]
+  - improvement: added 'phpui.customer_event_limit' configuration variable support which controls
+    limit of displayed events in customer event box ('10' by default; '-1' means no limit) [chilan]
 
 version 26.0 (2020-12-15):
 
