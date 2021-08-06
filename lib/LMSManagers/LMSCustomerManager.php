@@ -709,6 +709,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $statesqlskey Logical conjunction used for state field
      * @param boolean $network With or without network params
      * @param int $customergroup Customer group
+     * @param string $customergroupsqlskey Logical conjunction used for customergroup field
      * @param array $search Search parameters
      * @param int $time Timestamp
      * @param string $sqlskey Logical conjunction
@@ -726,9 +727,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (!isset($order) || empty($order)) {
             $order = 'customername,asc';
         }
+
         if (!isset($sqlskey) || empty($sqlskey)) {
             $sqlskey = 'AND';
         }
+
         if (!isset($count)) {
             $count = false;
         }
@@ -763,6 +766,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($statesqlskey)) {
             $statesqlskey = 'AND';
+        }
+
+        if (!isset($customergroupsqlskey)) {
+            $customergroupsqlskey = 'AND';
         }
 
         if (!is_array($state) && !empty($state)) {
@@ -1433,7 +1440,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 		WHERE netdevices.ownerid = c.id AND (netid'
                             . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
-                . (!empty($customergroup) && $customergroup != -1 ? ' AND ca.gcount = ' . (is_array($customergroup) ? count($customergroup) : 1) : '')
+                . (!empty($customergroup) && $customergroup != -1 ? ' AND ca.gcount '
+                    . ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0') : '')
                 . ($customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
                     JOIN vnodes n ON (n.id = na.nodeid)

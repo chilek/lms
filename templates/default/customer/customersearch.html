@@ -554,20 +554,33 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="customergroup"} {trans("Group:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" name="g[]" multiple class="lms-ui-multiselect">
-				<OPTION value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if} data-exclusive>{trans("- all groups -")}</OPTION>
-				<OPTION value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if} data-exclusive>{trans("- without assigned groups -")}</OPTION>
+	<tr>
+		<td class="nobr">
+			{icon name="customergroup"}
+			<strong>{trans("Group")}</strong>
+		</td>
+		<td>
+			<select size="1" name="g[]" multiple class="lms-ui-multiselect">
+				<option value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if}
+					data-exclusive>{trans("- all groups -")}</option>
+				<option value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if}
+					data-exclusive>{trans("- without assigned groups -")}</option>
 				{foreach $customergroups as $customergroup}
-				<OPTION value="{$customergroup.id}"{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)} selected{/if}>{$customergroup.name|truncate:50:"&hellip;":true}</OPTION>
+					<option value="{$customergroup.id}"
+						{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)}selected{/if}
+						>{$customergroup.name|truncate:50:"&hellip;":true}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+			</select>
+			<label>
+				<input type="radio" value="AND" name="cgk"{if $cgk!='OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<input type="radio" value="OR" name="cgk"{if $cgk=='OR'} checked{/if}>
+				{trans("or")}
+			</label>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="nodegroup"} {trans("Nodes Group:")}

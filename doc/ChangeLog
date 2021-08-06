@@ -205,6 +205,7 @@ version 27-git (????-??-??):
   - improvement: customer modification conflict detection support [chilan]
   - improvement: added 'phpui.customer_event_limit' configuration variable support which controls
     limit of displayed events in customer event box ('10' by default; '-1' means no limit) [chilan]
+  - improvement: logical conjunction selection for customer group selection in search form [chilan]
 
 version 26.0 (2020-12-15):
 
