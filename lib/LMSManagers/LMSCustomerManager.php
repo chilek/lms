@@ -601,7 +601,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'rbe'            => $customeradd['rbe'],
             'ict'            => $customeradd['ict'],
             'icn'            => $customeradd['icn'],
-            'icexpires'      => intval($customeradd['icexpires']) ? strtotime('tomorrow', intval($customeradd['icexpires'])) - 1 : null,
+            'icexpires'      => intval($customeradd['icexpires'])
+                ? strtotime('tomorrow', intval($customeradd['icexpires'])) - 1
+                : ($customeradd['icexpires'] === '0' ? 0 : null),
             'cutoffstop'     => $customeradd['cutoffstop'],
             SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
@@ -1850,7 +1852,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'regon'          => $customerdata['regon'],
             'ict'            => $customerdata['ict'],
             'icn'            => $customerdata['icn'],
-            'icexpires'      => intval($customerdata['icexpires']) ? strtotime('tomorrow', intval($customerdata['icexpires'])) - 1 : null,
+            'icexpires'      => intval($customerdata['icexpires'])
+                ? strtotime('tomorrow', intval($customerdata['icexpires'])) - 1
+                : ($customerdata['icexpires'] === '0' ? 0 : null),
             'rbename'        => $customerdata['rbename'],
             'rbe'            => $customerdata['rbe'],
             'cutoffstop'     => $customerdata['cutoffstop'],

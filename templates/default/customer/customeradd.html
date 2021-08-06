@@ -396,10 +396,18 @@
 												</label>
 												<label class="identity-document-property">
 													<span>{trans("Expires")}</span>
-													<input type="text" value="{$customeradd.icexpires}"
-														name="customeradd[icexpires]" size="10"
+													<input type="text" value="{if $customeradd.expires !== '0'}{$customeradd.icexpires}{/if}"
+														name="customeradd[icexpires]" size="10" id="icexpires"
 														class="lms-ui-date lms-ui-date-unix"
-														{tip trigger="icexpires"}>
+														{tip trigger="icexpires"}
+														{if $customeradd.icexpires === '0'}disabled{/if}>
+												</label>
+												<label>
+													<input type="checkbox" name="customeradd[icexpires]"
+														id="icexpires-indefinitely"
+														value="0"{if $customeradd.icexpires === '0'}checked{/if}
+														{tip trigger="icexpires-indefinitely"}>
+													{trans("indefinitely")}
 												</label>
 											</div>
 										</fieldset>
@@ -703,6 +711,10 @@
 				generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{str_replace("'", "\'", $pin_allowed_characters)}')
 			);
 		});
+
+		$('#icexpires-indefinitely').change(function() {
+			$('#icexpires').datepicker("option", "disabled", $(this).prop('checked'));
+		}).change();
 
 		if (!$('[name="customeradd[pin]"]').val().length) {
 			$('#randomize').click();

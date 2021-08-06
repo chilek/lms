@@ -360,10 +360,18 @@
 												</label>
 												<label class="identity-document-property">
 													<span>{trans("Expires")}</span>
-													<input type="text" value="{$customerinfo.icexpires}"
-														name="customerdata[icexpires]" size="10"
+													<input type="text" value="{if $customerinfo.expires !== '0'}{$customerinfo.icexpires}{/if}"
+														name="customerdata[icexpires]" size="10" id="icexpires"
 														class="lms-ui-date lms-ui-date-unix"
-														{tip trigger="icexpires"}>
+														{tip trigger="icexpires"}
+														{if $customerinfo.icexpires === '0'}disabled{/if}>
+												</label>
+												<label>
+													<input type="checkbox" name="customerdata[icexpires]"
+														id="icexpires-indefinitely"
+														value="0"{if $customerinfo.icexpires === '0'} checked{/if}
+														{tip trigger="icexpires-indefinitely"}>
+													{trans("indefinitely")}
 												</label>
 											</div>
 										</fieldset>
@@ -699,6 +707,10 @@
 				});
 			}
 		});
+
+		$('#icexpires-indefinitely').change(function() {
+			$('#icexpires').datepicker("option", "disabled", $(this).prop('checked'));
+		}).change();
 
 		var inSubmit = false;
 		$('#customeredit').submit(function () {

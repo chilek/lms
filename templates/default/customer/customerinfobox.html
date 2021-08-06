@@ -242,13 +242,17 @@
 												{trans($_IDENTITY_TYPES[$customerinfo.ict])}
 												{$customerinfo.icn|escape}
 												{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
-												{if $customerinfo.icexpires}
+												{if $customerinfo.icexpires !== ''}
 													{textformat assign="icexpires"}{strip}
-													<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
-														{$customerinfo.icexpires|date_format:"%Y/%m/%d"}
+													<span{if $customerinfo.icexpires && $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
+														{if $customerinfo.icexpires}
+															({t a=$customerinfo.icexpires|date_format:"%Y/%m/%d"}expires $a{/t})
+														{else}
+															({trans("never expires")})
+														{/if}
 													</span>
 													{/strip}{/textformat}
-													({t a=$icexpires}expires $a{/t})
+													{$icexpires}
 												{/if}
 											</td>
 										</tr>
