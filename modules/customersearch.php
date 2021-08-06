@@ -245,6 +245,16 @@ if (isset($_GET['search'])) {
 } else {
     $layout['pagetitle'] = trans('Customer Search');
 
+    $listdata['state'] = $state;
+    $listdata['flags'] = $flags;
+    $listdata['karma'] = $karma;
+    $listdata['network'] = $network;
+    $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
+    $listdata['nodegroup'] = $nodegroup;
+    $listdata['division'] = $division;
+
+    $SMARTY->assign('listdata', $listdata);
+
     $SESSION->remove('cslp');
 
     $SMARTY->assign('networks', $LMS->GetNetworks());
