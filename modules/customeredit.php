@@ -211,7 +211,7 @@ if (!isset($_POST['xjxfun'])) {
                 Localisation::setSystemLanguage($billingCountryCode);
             }
 
-            $ic_expires = $customerdata['icexpires'] && $customerdata['icexpires'] < time();
+            $ic_expires = $customerdata['icexpires'] > 0 && $customerdata['icexpires'] < time();
             if ($ic_expires) {
                 $identity_card_expiration_check = ConfigHelper::getConfig(
                     'phpui.customer_identity_card_expiration_check',
@@ -473,6 +473,9 @@ if (!isset($_POST['xjxfun'])) {
                 $customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
                 $customerinfo['ssnexistencewarning'] = empty($ssnexistencewarning) ? 0 : 1;
                 $customerinfo['icnwarning'] = empty($icnwarning) ? 0 : 1;
+                if ($olddata['icexpires'] === '0') {
+                    $olddata['icexpires'] = -1;
+                }
             }
         } else {
             $customerinfo = $LMS->GetCustomer($_GET['id']);
@@ -512,6 +515,10 @@ if (!isset($_POST['xjxfun'])) {
                     'type' => 0
                 )
                 );
+            }
+
+            if ($customerinfo['icexpires'] === '0') {
+                $customerinfo['icexpires'] = -1;
             }
         }
         $SMARTY->assign('backurl', $backurl);

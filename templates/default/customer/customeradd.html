@@ -396,16 +396,16 @@
 												</label>
 												<label class="identity-document-property">
 													<span>{trans("Expires")}</span>
-													<input type="text" value="{if $customeradd.expires !== '0'}{$customeradd.icexpires}{/if}"
+													<input type="text" value="{if $customeradd.icexpires > 0}{$customeradd.icexpires}{/if}"
 														name="customeradd[icexpires]" size="10" id="icexpires"
 														class="lms-ui-date lms-ui-date-unix"
 														{tip trigger="icexpires"}
-														{if $customeradd.icexpires === '0'}disabled{/if}>
+														{if $customeradd.icexpires == -1}disabled{/if}>
 												</label>
 												<label>
 													<input type="checkbox" name="customeradd[icexpires]"
 														id="icexpires-indefinitely"
-														value="0"{if $customeradd.icexpires === '0'}checked{/if}
+														value="-1"{if $customeradd.icexpires == -1}checked{/if}
 														{tip trigger="icexpires-indefinitely"}>
 													{trans("indefinitely")}
 												</label>

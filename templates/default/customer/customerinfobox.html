@@ -243,7 +243,7 @@
 												{$customerinfo.icn|escape}
 												{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
 												{if $customerinfo.icexpires !== ''}
-													{if $customerinfo.icexpires}
+													{if $customerinfo.icexpires > 0}
 														{textformat assign="icexpires"}{strip}
 															<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
 																{$customerinfo.icexpires|date_format:"%Y/%m/%d"}
