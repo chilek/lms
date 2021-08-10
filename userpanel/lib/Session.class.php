@@ -175,6 +175,7 @@ class Session
                 && $authinfo['enabled'] == 0
                 && time() - $authinfo['failedlogindate'] < 600) {
                 $authdata['passwd'] = null;
+                $this->error = trans('Access is temporarily blocked. Please try again in 10 minutes.');
             }
         }
 
@@ -225,7 +226,9 @@ class Session
                     $this->SetCustomerAuthInfo($authinfo);
                 }
 
-                $this->error = trans('Access denied!');
+                if (empty($this->error)) {
+                    $this->error = trans('Access denied!');
+                }
             }
 
             $this->LogOut();
