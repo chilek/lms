@@ -932,7 +932,7 @@ if (empty($types) || in_array('timetable', $types)) {
                 $sms_contents .= ' ';
             }
 
-            if (!empty($user['email'])) {
+            if (!empty($user['email']) && in_array('mail', $channels)) {
                 if (!$quiet) {
                     printf("[timetable/mail] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
                 }
@@ -940,7 +940,7 @@ if (empty($types) || in_array('timetable', $types)) {
                     send_mail_to_user($user['email'], $user['name'], $subject, $mail_contents);
                 }
             }
-            if (!empty($user['phone'])) {
+            if (!empty($user['phone']) && in_array('sms', $channels)) {
                 if (!$quiet) {
                     printf("[timetable/sms] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
                 }
