@@ -2759,7 +2759,7 @@ if (empty($types) || in_array('events', $types)) {
             AND date <= ? AND enddate + 86400 >= ?
             AND begintime <= ? AND (endtime = 0 OR endtime >= ?)"
         . ($customerid ? ' AND customerid = ' . $customerid : ''),
-        array($daystart, $dayend, $dayend, $time, $time)
+        array($daystart, $dayend, $time, $time)
     );
 
     if (!empty($events)) {
