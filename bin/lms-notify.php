@@ -848,7 +848,7 @@ if (empty($types) || in_array('timetable', $types)) {
         WHERE deleted = 0 AND access = 1 AND ntype & ? > 0 AND (email <> '' OR phone <> '')",
         array(MSG_MAIL, MSG_SMS, (MSG_MAIL | MSG_SMS))
     );
-    $date = mktime(0, 0, 0);
+    $time = intval(strtotime('now') - strtotime('today'));
     $subject = $notifications['timetable']['subject'];
     $today = date("Y/m/d");
     foreach ($users as $user) {
@@ -863,18 +863,19 @@ if (empty($types) || in_array('timetable', $types)) {
             FROM events
             LEFT JOIN customeraddressview c ON (c.id = customerid)
             LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
-            WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?))
-                AND closed = 0
+            WHERE closed = 0
+                AND date <= ? AND enddate + 86400 >= ?
+                AND begintime <= ? AND (endtime = 0 OR endtime >= ?)
                 AND ((private = 1 AND (events.userid = ? OR eventassignments.userid = ?))
                     OR (private = 0 AND eventassignments.userid = ?)
                     OR (private = 0 AND eventassignments.userid IS NULL)
                 )
             ORDER BY begintime",
             array(
-                $date,
-                strtotime('tomorrow', $date),
-                strtotime('tomorrow', $date),
-                $date,
+                $daystart,
+                $dayend,
+                $time,
+                $time,
                 $user['id'],
                 $user['id'],
                 $user['id']
