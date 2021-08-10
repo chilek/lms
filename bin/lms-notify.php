@@ -2752,13 +2752,14 @@ if (empty($types) || in_array('warnings', $types)) {
 
 // Events about customers should be notified if they are still opened
 if (empty($types) || in_array('events', $types)) {
-    $time = intval(strftime('%H%M'));
+    $time = intval(strtotime('now') - strtotime('today'));
     $events = $DB->GetAll(
         "SELECT id, title, description, customerid, userid FROM events
-        WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0 AND date <= ? AND enddate >= ?
+        WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0
+            AND date <= ? AND enddate + 86400 >= ?
             AND begintime <= ? AND (endtime = 0 OR endtime >= ?)"
         . ($customerid ? ' AND customerid = ' . $customerid : ''),
-        array($daystart, $dayend, $time, $time)
+        array($daystart, $dayend, $dayend, $time, $time)
     );
 
     if (!empty($events)) {
