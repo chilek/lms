@@ -845,8 +845,10 @@ if (empty($types) || in_array('timetable', $types)) {
     $users = $DB->GetAll(
         "SELECT id, name, (CASE WHEN ntype & ? > 0 THEN email ELSE '' END) AS email,
             (CASE WHEN ntype & ? > 0 THEN phone ELSE '' END) AS phone FROM vusers
-        WHERE deleted = 0 AND access = 1 AND ntype & ? > 0 AND (email <> '' OR phone <> '')",
-        array(MSG_MAIL, MSG_SMS, (MSG_MAIL | MSG_SMS))
+        WHERE deleted = 0 AND access = 1
+            AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
+            AND ntype & ? > 0 AND (email <> '' OR phone <> '')",
+        array(MSG_MAIL, MSG_SMS, MSG_MAIL | MSG_SMS)
     );
     $time = intval(strtotime('now') - strtotime('today'));
     $subject = $notifications['timetable']['subject'];
@@ -2768,10 +2770,12 @@ if (empty($types) || in_array('events', $types)) {
         $users = $DB->GetAllByKey(
             "SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
                 (CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
-            WHERE deleted = 0 AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
+            WHERE deleted = 0 AND access = 1
+                AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
+                AND ntype & ? > 0 AND (email <> '' OR phone <> '')
             ORDER BY id",
             'id',
-            array(MSG_MAIL, MSG_SMS)
+            array(MSG_MAIL, MSG_SMS, MSG_MAIL | MSG_SMS)
         );
 
         foreach ($events as $event) {
