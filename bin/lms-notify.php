@@ -2845,7 +2845,7 @@ if (empty($types) || in_array('events', $types)) {
                         if (!array_key_exists($contact, $contacts)) {
                             $contacts[$contact] = array(
                                 'uid' => $uid,
-                                'phone' => $contact,
+                                'email' => $contact,
                             );
                         }
                     }
@@ -2869,7 +2869,8 @@ if (empty($types) || in_array('events', $types)) {
                         $uid = $contact['uid'];
                         if (in_array('mail', $channels) && array_key_exists('email', $contact)) {
                             printf(
-                                "[mail/events] %s (UID: %04d): %s" . PHP_EOL,
+                                "[mail/events] Event #%d, %s (UID: #%d): %s" . PHP_EOL,
+                                $event['id'],
                                 $users[$uid]['name'],
                                 $uid,
                                 $contact['email']
@@ -2880,7 +2881,8 @@ if (empty($types) || in_array('events', $types)) {
                         }
                         if (in_array('sms', $channels) && array_key_exists('phone', $contact)) {
                             printf(
-                                "[sms/events] %s (UID: %04d): %s" . PHP_EOL,
+                                "[sms/events] Event #%d, %s (UID: #%d): %s" . PHP_EOL,
+                                $event['id'],
                                 $users[$uid]['name'],
                                 $uid,
                                 $contact['phone']
@@ -2894,7 +2896,8 @@ if (empty($types) || in_array('events', $types)) {
                         $cid = $contact['cid'];
                         if (in_array('mail', $channels) && array_key_exists('email', $contact)) {
                             printf(
-                                "[mail/events] %s (CID: %04d): %s" . PHP_EOL,
+                                "[mail/events] Event #%d, %s (CID: #%d): %s" . PHP_EOL,
+                                $event['id'],
                                 $customers[$cid]['name'],
                                 $cid,
                                 $contact['email']
@@ -2913,7 +2916,8 @@ if (empty($types) || in_array('events', $types)) {
                         }
                         if (in_array('sms', $channels) && array_key_exists('phone', $contact)) {
                             printf(
-                                "[sms/events] %s (CID: %04d): %s" . PHP_EOL,
+                                "[sms/events] Event #%d, %s (CID: #%d): %s" . PHP_EOL,
+                                $event['id'],
                                 $customers[$cid]['name'],
                                 $cid,
                                 $contact['phone']
