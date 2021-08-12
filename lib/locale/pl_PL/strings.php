@@ -621,6 +621,7 @@ $_LANG['Connected<!nodes>:'] = 'Podłączone:';
 $_LANG['List of Connected Nodes'] = 'Lista podłączonych komputerów';
 $_LANG['Connection limit:'] = 'Limit połączeń:';
 $_LANG['Content:'] = 'Treść:';
+$_LANG['<!rt>Content'] = 'Treść';
 $_LANG['Customer notice content'] = 'Treść powiadomienia dla klienta';
 $_LANG['Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".'] = 'Content-type dokumentu. Jeżeli wpiszecie tutaj "application/octet-stream", to przeglądarka zechce wam wysłać plik do zapisania na dysku, zamiast go wyświetlić. Przydatne, jeżeli użyjecie własnego template\'a, który wygeneruje np. rtf\'a czy xls\'a. Domyślnie: "text/html"';
 $_LANG['Contract'] = 'Umowa';
