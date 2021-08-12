@@ -27,7 +27,7 @@
                         {icon name="vlan" label="VLAN ID"}
                     </td>
                     <td>
-                        <input type="text" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
+                        <input type="text" id="dialog-vlanid" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
                     </td>
                 </tr>
                 <tr>
@@ -35,7 +35,7 @@
                         {icon name="description" label="VLAN Description"}
                     </td>
                     <td>
-                        <input type="text" name="addvlan[description]" value="{$vlaninfo.description}">
+                        <input type="text" id="dialog-description" name="addvlan[description]" value="{$vlaninfo.description}">
                     </td>
                 </tr>
                 <tr>
@@ -43,7 +43,7 @@
                         {icon name="customer" label="Customer"}
                     </td>
                     <td>
-                        {customerlist form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]" version=2}
+                        {customerlist input_id="dialog-customer_selector" form="addvlan" selected="{$vlaninfo.customerid}" inputname="addvlan[customerid]" version=2}
                     </td>
                 </tr>
                 <tr>
@@ -51,7 +51,7 @@
                         {icon name="netnode" label="Network Node"}
                     </td>
                     <td>
-                        <select name="addvlan[netnodeid]" class="lms-ui-advanced-select">
+                        <select name="addvlan[netnodeid]" class="lms-ui-advanced-select" id="dialog-netnode_selector">
                             <option value="">{trans("- none -")}</option>
                             {foreach $netnodelist as $nn}
                                 <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name|escape} ({$nn.id})</option>
@@ -61,7 +61,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="button-bar text-center">
-                        {button type="submit" label="Submit" icon="submit"}
+                        {button id="submit-modal-button" type="submit" label="{if $action == 'modify'}Submit{else}Add{/if}" icon="submit"}
                         {button label="Cancel" icon="cancel" id="close"}
                     </td>
                 </tr>
@@ -79,11 +79,34 @@
         title: "{if $action == 'modify'}{trans("Modify VLAN")} {$vlaninfo.id}{else}{trans("Add VLAN")}{/if}"
     });
 
-    $( "#addvlanbtn" ).click(function() {
-        $( "#addvlanmodal" ).dialog( "open" );
-    });
-
     $( "#close" ).click(function() {
         $( "#addvlanmodal" ).dialog( "close" );
     });
+
+    function open_add_dialog() {
+        $( "#addvlan-form" ).attr('action', '?m=vlanlist&action=add');
+        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Add")}</span>');
+
+        $( "dialog-vlanid", "dialog-description", "dialog-netnode_selector").val();
+        updateAdvancedSelects("#dialog-netnode_selector");
+
+        $( "#dialog-customer_selector" ).val('').trigger('input');
+        $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Add VLAN")}").dialog( "open" );
+    };
+
+    function open_modify_dialog (template_id) {
+        $( "#submit-modal-button" ).html('<i class="lms-ui-icon-submit"></i><span class="lms-ui-label">{trans("Submit")}</span>');
+        $( "#addvlan-form" ).attr('action', '?m=vlanlist&action=modify&id=' + template_id);
+        if (template_id) {
+            var row = $('[data-template-id=' + template_id + ']');
+            $("#dialog-vlanid").val($(row).find("[data-template-vlanid]").attr('data-template-vlanid'));
+            $("#dialog-description").val($(row).find("[data-template-description]").attr('data-template-description'));
+            $("select#dialog-netnode_selector").val( $(row).find("[data-template-netnodeid]").attr('data-template-netnodeid'));
+            updateAdvancedSelects("#dialog-netnode_selector");
+
+            var customeridedit = $(row).find("[data-template-customerid]").attr('data-template-customerid');
+            $( "#dialog-customer_selector" ).removeAttr('data-customer-name', 'data-prev-value').val(customeridedit).trigger('input');
+        }
+        $( "#addvlanmodal" ).dialog( "option", "title", "{trans("Modify VLAN")} " + template_id).dialog( "open" );
+    };
 </script>

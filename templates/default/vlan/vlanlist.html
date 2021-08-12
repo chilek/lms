@@ -31,30 +31,30 @@
                     {button type='link' icon="netnode" tip="Network Node ID" href="?m=vlanlist&orderby=netnodeid"}
                 {/buttons}
 
-                {button name="addvlan" id="addvlanbtn" icon="add" accesskey="v" label="Add"}
+                {button name="addvlan" id="addvlanbtn" icon="add" accesskey="v" label="Add" onclick="open_add_dialog()"}
             </td>
         </tr>
     </thead>
     <tbody>
         {foreach $vlanlist as $v}
-        <tr class="highlight">
+        <tr class="highlight" data-template-id="{$v.id}">
             <td>
                 {$v.id}
             </td>
-            <td>
+            <td data-template-vlanid="{$v.vlanid}">
                 {$v.vlanid}
             </td>
-            <td {tip text=$v.description}>
+            <td data-template-description="{$v.description}" {tip text=$v.description}>
                 {$v.description|trunescape:40}
             </td>
-            <td {tip text=$v.customername}>
+            <td data-template-customerid="{$v.customerid}" {tip text=$v.customername}>
                 <a href="?m=customerinfo&id={$v.customerid}">{$v.customername|truncate:20:"&hellip;":true}</a>
             </td>
-            <td {tip text=$v.netnodename}>
+            <td data-template-netnodeid="{$v.netnodeid}" {tip text=$v.netnodename}>
                 <a href="?m=netnodeinfo&id={$v.netnodeid}">{$v.netnodename|truncate:20:"&hellip;":true}</a>
             </td>
             <td class="buttons">
-                {button type="link" icon="edit" href="?m=vlanlist&action=modify&id={$v.id}" tip="Edit"}
+                {button type="link" icon="edit" tip="Edit" onclick="open_modify_dialog({$v.id})"}
                 {button type="link" icon="delete" href="?m=vlanlist&action=delete&id={$v.id}" tip="Delete" class="delete-vlan"}
             </td>
         </tr>
@@ -76,4 +76,3 @@
 </script>
 
 {/block}
-
