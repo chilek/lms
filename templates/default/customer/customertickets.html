@@ -82,10 +82,9 @@
 							{if ConfigHelper::checkConfig('rt.show_ticket_categories')}
 								<div class="lms-ui-tab-table-column categories">
 									{foreach $ticket.categories as $tc}
-										{button href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc"
-											style="{$tc.style}"
-											label=$tc.name
-										}
+										<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&o=lastmodified,desc">
+											<span class="lms-ui-category-label" style="{$tc.style}">{$tc.name}</span>
+										</a>
 									{/foreach}
 								</div>
 							{else}
