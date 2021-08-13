@@ -511,7 +511,8 @@ foreach (array(
              'birthday',
              'warnings',
              'messages',
-             'timetable'
+             'timetable',
+             'events',
          ) as $type) {
     $notifications[$type] = array();
     $notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
@@ -2778,11 +2779,42 @@ if (empty($types) || in_array('events', $types)) {
             array(MSG_MAIL, MSG_SMS, MSG_MAIL | MSG_SMS)
         );
 
+        $customer_message_pattern = $notifications['events']['message'] == 'events notification'
+            ? '%description'
+            : $notifications['events']['message'];
+        $customer_subject_pattern = $notifications['events']['subject'] == 'events notification'
+            ? '%title'
+            : $notifications['events']['subject'];
+
         foreach ($events as $event) {
             $contacts = array();
 
             $message = $event['description'];
             $subject = $event['title'];
+
+            $customer_message = str_replace(
+                array(
+                    '%title',
+                    '%description',
+                ),
+                array(
+                    $subject,
+                    $message,
+                ),
+                $customer_message_pattern
+            );
+
+            $customer_subject = str_replace(
+                array(
+                    '%title',
+                    '%description',
+                ),
+                array(
+                    $subject,
+                    $message,
+                ),
+                $customer_subject_pattern
+            );
 
             $cid = intval($event['customerid']);
             $uid = intval($event['userid']);
@@ -2903,14 +2935,14 @@ if (empty($types) || in_array('events', $types)) {
                                 $contact['email']
                             );
                             if (!$debug) {
-                                $msgid = create_message(MSG_MAIL, $subject, $message);
+                                $msgid = create_message(MSG_MAIL, $customer_subject, $customer_message);
                                 send_mail(
                                     $msgid,
                                     $cid,
                                     $contact['email'],
                                     $customers[$cid]['name'],
-                                    $subject,
-                                    $message
+                                    $customer_subject,
+                                    $customer_message
                                 );
                             }
                         }
@@ -2923,8 +2955,8 @@ if (empty($types) || in_array('events', $types)) {
                                 $contact['phone']
                             );
                             if (!$debug) {
-                                $msgid = create_message(MSG_SMS, $subject, $message);
-                                send_sms($msgid, $cid, $contact['phone'], $message);
+                                $msgid = create_message(MSG_SMS, $customer_subject, $customer_message);
+                                send_sms($msgid, $cid, $contact['phone'], $customer_message);
                             }
                         }
                     }
