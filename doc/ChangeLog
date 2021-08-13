@@ -206,6 +206,8 @@ version 27-git (????-??-??):
   - improvement: added 'phpui.customer_event_limit' configuration variable support which controls
     limit of displayed events in customer event box ('10' by default; '-1' means no limit) [chilan]
   - improvement: logical conjunction selection for customer group selection in search form [chilan]
+  - enhancement: lms-notify.php 'events' type notifications support formatting of subject and message
+    contents ('%title' and '%description' symbols are supported for now) [chilan]
 
 version 26.0 (2020-12-15):
 
