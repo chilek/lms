@@ -107,12 +107,12 @@ if (isset($_POST['document'])) {
         } elseif (!preg_match('/^[0-9]+$/', $documentedit['number'])) {
             $error['number'] = trans('Document number must be an integer!');
         } elseif ($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid']) {
-            if ($LMS->DocumentExists(array(
+            if (($docid = $LMS->DocumentExists(array(
                 'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
                 'customerid' => $documentedit['customerid'],
-            ))) {
+            ))) > 0 && $docid != $documentedit['id']) {
                 $error['number'] = trans('Document with specified number exists!');
             }
         }
