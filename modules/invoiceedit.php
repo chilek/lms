@@ -443,7 +443,7 @@ switch ($action) {
             } elseif ((
                     $invoice['oldcdate'] != $invoice['cdate']
                     || $invoice['oldnumber'] != $invoice['number']
-                    || $invoice['oldnumberplanid'] != $invoice['numberplanid']
+                    || $invoice['oldnumberplanid'] != intval($invoice['numberplanid'])
                     || ($invoice['oldcustomerid'] != $invoice['customerid'] && preg_match('/%[0-9]*C/', $invoice['template']))
                 )
                 && ($docid = $LMS->DocumentExists(array(
