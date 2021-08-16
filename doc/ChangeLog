@@ -208,6 +208,8 @@ version 27-git (????-??-??):
   - improvement: logical conjunction selection for customer group selection in search form [chilan]
   - enhancement: lms-notify.php 'events' type notifications support formatting of subject and message
     contents ('%title' and '%description' symbols are supported for now) [chilan]
+  - improvement: hide resolved tickets in customer tickets panel
+    (variable: phpui.default_show_closed_tickets, default: false) [interduo]
 
 version 26.0 (2020-12-15):
 

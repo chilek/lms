@@ -12,6 +12,7 @@
 		{tab_header_cell}
 			{button type="link" label="New Ticket" tip="New Ticket" icon="add" href="?m=rtticketadd&customerid={$customerinfo.id}"}
 			{button type="link" label="Show all customer tickets" tip="Show all customer tickets" icon="search" href="?m=rtsearch&id={$customerinfo.id}"}
+			{button type="link" label="{if $alltickets}Hide resolved{else}Show resolved{/if}" icon="close" href="?m={$layout.module}&id={$customerinfo.id}{if !$alltickets}&alltickets=1{/if}"}
 		{/tab_header_cell}
 	{/tab_header}
 
