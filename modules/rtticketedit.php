@@ -392,7 +392,7 @@ if (isset($_POST['ticket'])) {
         }
     }
 
-    if (($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queue']) & 2) != 2) {
+    if (($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queue']) & RT_RIGHT_WRITE) > 0) {
         $error['queue'] = trans('You have no privileges to this queue!');
     }
 
