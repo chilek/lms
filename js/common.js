@@ -621,7 +621,6 @@ function changeMacFormat(id)
 			break;
 		case 2:
 			curmac = curmac.replace(/\./g, '-');
-			curmac = curmac.toUpperCase();
 			break;
 		case 3:
 			curmac = curmac.replace(/-/g, '');
