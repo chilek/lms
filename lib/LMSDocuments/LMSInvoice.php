@@ -33,10 +33,9 @@ abstract class LMSInvoice extends LMSDocument
     public function Draw($data)
     {
         parent::Draw($data);
+        $template = ConfigHelper::getConfig('invoices.template_file');
         if (isset($this->data['invoice'])) {
-            $template = ConfigHelper::getConfig('invoices.cnote_template_file');
-        } else {
-            $template = ConfigHelper::getConfig('invoices.template_file');
+            $template = ConfigHelper::getConfig('invoices.cnote_template_file', $template);
         }
         switch ($template) {
             case "standard":
