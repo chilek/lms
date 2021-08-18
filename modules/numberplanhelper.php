@@ -26,8 +26,7 @@
 
 $documentType = intval($_POST['documentType']);
 if (isset($_POST['cdate'])) {
-    list($year, $month, $day) = explode('/', $_POST['cdate']);
-    $cdate = mktime(0, 0, 0, $month, $day, $year);
+    $cdate = strtotime($_POST['cdate']);
 } else {
     $cdate = time();
 }
