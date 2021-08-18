@@ -126,9 +126,7 @@ if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets
 
     $alltickets = (isset($_GET['alltickets']) && !empty($_GET['alltickets']))
         || ((!isset($_GET['alltickets']) && ConfigHelper::checkConfig('phpui.default_show_closed_tickets')));
-    if ($alltickets) {
-        $params['state'] = null;
-    } else {
+    if (empty($alltickets)) {
         $params['state'] = -1;
     }
     $ticketlist = $LMS->GetQueueContents($params);
