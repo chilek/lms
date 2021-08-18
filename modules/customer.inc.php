@@ -124,6 +124,14 @@ if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets
         'short' => true,
     );
 
+    if (isset($_GET['alltickets'])) {
+        $alltickets = !empty($_GET['alltickets']);
+    } else {
+        $alltickets = ConfigHelper::checkConfig('phpui.default_show_closed_tickets');
+    };
+    if (empty($alltickets)) {
+        $params['state'] = -1;
+    }
     $ticketlist = $LMS->GetQueueContents($params);
 }
 if (!isset($resource_tabs['customernodesbox']) || $resource_tabs['customernodesbox']) {
@@ -216,6 +224,7 @@ $SMARTY->assign(array(
     'expired' => $expired,
     'period' => $period,
     'allevents' => $allevents,
+    'alltickets' => $alltickets,
     'time' => $SESSION->get('addbt'),
     'taxid' => $SESSION->get('addbtax'),
     'comment' => $SESSION->get('addbc'),

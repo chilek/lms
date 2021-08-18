@@ -212,7 +212,9 @@ version 27-git (????-??-??):
   - improvement: changed default invoice generation backend from 'html' to 'pdf' [chilan]
   - improvement: 'invoices.cnote_template_file' inherits its default value
     from 'invoices.template_file' [chilan]
-
+  - improvement: hide resolved tickets in customer tickets panel
+    (variable: phpui.default_show_closed_tickets, default: false) [interduo]
+    
 version 26.0 (2020-12-15):
 
   - enhancement: 'invoices.proforma_conversion_comment_format' allows to define comment format
