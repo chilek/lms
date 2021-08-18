@@ -462,6 +462,47 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $list;
     }
 
+    /*
+     \param array $properties - associative array with function parameters:
+        doctype: document type
+        cdate: document creation date
+    */
+    public function getSystemDefaultNumberPlan($properties)
+    {
+        extract($properties);
+        if (!isset($doctype)) {
+            $doctype = null;
+        }
+        if (!isset($cdate)) {
+            $cdate = null;
+        }
+
+        $list[0] = array(
+            'doctype' => $doctype,
+            'id' => 0,
+            'idx' => 1,
+            'isDefault' => 0,
+            'period' => YEARLY,
+            'template' => DEFAULT_NUMBER_TEMPLATE,
+        );
+
+        if ($cdate) {
+            list($curryear, $currmonth) = explode('/', $cdate);
+        } else {
+            $curryear = date('Y');
+        }
+
+        $cdate = mktime(0, 0, 0, 1, 1, $curryear);
+        $args = array(
+            'doctype' => $doctype,
+            'cdate' => $cdate,
+        );
+
+        $list[0]['next'] = $this->GetNewDocumentNumber($args);
+
+        return $list;
+    }
+
     public function getDefaultNumberPlanID($doctype, $divisionid = null)
     {
         if (!empty($divisionid)) {

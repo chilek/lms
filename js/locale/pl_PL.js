@@ -23,17 +23,17 @@
  *  $Id$
  */
 
+$_LANG['Enter document number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer dokumentu. UWAGA! Zmiana tego numeru może być NIEBEZPIECZNA! (pozostaw to pole puste, aby uzyskać kolejny numer)';
+
 $_LANG['Previous balance: $a $b'] = 'Dotychczasowe saldo: $a $b';
 $_LANG['Total to pay: $a'] = 'Razem do zapłaty: $a';
 $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
 
-$_LANG['according in net'] = 'naliczanie w netto';
-$_LANG['according in gross'] = 'naliczanie w brutto';
-$_LANG['Add tariff'] = 'Dodaj taryfę';
+$_LANG['Select tariff'] = 'Wybierz taryfę';
 $_LANG['Document flags'] = 'Flagi dokumentu';
 $_LANG['The document is issued according to the $a price'] = 'Dokument wystawiony według ceny $a';
-$_LANG['according in net'] = 'naliczanie według netto';
-$_LANG['according in gross'] = 'naliczanie według brutto';
+$_LANG['calculated from net'] = 'liczone od netto';
+$_LANG['calculated from gross'] = 'liczone od brutto';
 $_LANG['Billing according to the net price'] = 'Naliczanie według ceny netto';
 $_LANG['Billing according to the gross price'] = 'Naliczanie według ceny brutto';
 $_LANG['Gross'] = 'Brutto';
@@ -99,8 +99,8 @@ $_LANG['Bad file structure!'] = 'Nieprawidłowa struktura pliku!';
 
 $_LANG['Properties:'] = 'Właściwości:';
 $_LANG['Add property'] = 'Dodaj właściwość';
-$_LANG['Property name'] = 'Nazwa własciwości';
-$_LANG['Property value'] = 'Wartość własciwości';
+$_LANG['Property name'] = 'Nazwa właściwości';
+$_LANG['Property value'] = 'Wartość właściwości';
 
 $_LANG['full calendar periods'] = 'pełne okresy kalendarzowe';
 
@@ -354,7 +354,7 @@ $_LANG['Number coincides with pool `$a` !'] = 'Numer pokrywa się z pulą `$a` !
 $_LANG['Number range coincides with pool `$a` !'] = 'Zakres numerów pokrywa się z pulą `$a` !';
 $_LANG['Pool start is required!'] = 'Początek puli jest wymagany!';
 $_LANG['Pool end is required!'] = 'Koniec puli jest wymagany!';
-$_LANG['Pool start must be lower that end!'] = 'Początek puli musi być mniejszy niż numer końcowy!';
+$_LANG['Pool start must be lower than end!'] = 'Początek puli musi być mniejszy niż numer końcowy!';
 $_LANG['Name is already in use!'] = 'Nazwa jest obecnie używana!';
 $_LANG['Name is required!'] = 'Nazwa jest wymagana!';
 $_LANG['Incorrect format! Only values 0 to 9.'] = 'Niepoprawny format! Tylko znaki od 0 do 9.';
@@ -398,7 +398,7 @@ $_LANG['Assigned tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Ticket ID:'] = 'Nr zgłoszenia:';
 $_LANG['Ticket ID'] = 'Nr zgłoszenia';
 $_LANG['Add option'] = 'Dodaj opcję';
-$_LANG['select first avible'] = 'wybierz pierwszy wolny';
+$_LANG['select first available'] = 'wybierz pierwszy wolny';
 $_LANG['Select address'] = 'Wybierz adres';
 $_LANG['address'] = 'adres';
 $_LANG['Address'] = 'Adres';
@@ -587,7 +587,7 @@ $_LANG['Clear Account'] = 'Rozlicz';
 $_LANG['Clear Contents'] = 'Wyczyść zawartość';
 $_LANG['Clearing database...'] = 'Czyszczenie bazy danych…';
 $_LANG['Click here, to register your installation and learn more why you should - IT\'S FREE!'] = 'Kliknij tutaj, aby zarejestrować swoją instalację LMS-a i dowiedzieć się, dlaczego powinieneś to zrobić - TO NIC NIE KOSZTUJE!';
-$_LANG['Click on column name to change sorting order'] = 'Kliknij na nazwy kolumn w celu zmiany porządku sortowania';
+$_LANG['Click on column name to change sorting order'] = 'Kliknij nazwy kolumn w celu zmiany porządku sortowania';
 $_LANG['Click on the Computer name above to get it records'] = 'Kliknij nazwę komputera, żeby zaznaczyć jego dane';
 $_LANG['Click to close window'] = 'Kliknij, aby zamknąć okno';
 $_LANG['Click to select IP from the list'] = 'Kliknij, aby wybrać IP z listy';
@@ -622,6 +622,7 @@ $_LANG['Connected<!nodes>:'] = 'Podłączone:';
 $_LANG['List of Connected Nodes'] = 'Lista podłączonych komputerów';
 $_LANG['Connection limit:'] = 'Limit połączeń:';
 $_LANG['Content:'] = 'Treść:';
+$_LANG['<!rt>Content'] = 'Treść';
 $_LANG['Customer notice content'] = 'Treść powiadomienia dla klienta';
 $_LANG['Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".'] = 'Content-type dokumentu. Jeżeli wpiszecie tutaj "application/octet-stream", to przeglądarka zechce wam wysłać plik do zapisania na dysku, zamiast go wyświetlić. Przydatne, jeżeli użyjecie własnego template\'a, który wygeneruje np. rtf\'a czy xls\'a. Domyślnie: "text/html"';
 $_LANG['Contract'] = 'Umowa';
@@ -743,7 +744,6 @@ $_LANG['Delete Node $a'] = 'Usuń komputer $a';
 $_LANG['Delete stats of non-existing (deleted) nodes'] = 'Usuń statystyki nieistniejących (usuniętych) komputerów';
 $_LANG['Deletion of Database Backup'] = 'Usunięcie kopii zapasowej bazy danych';
 $_LANG['Deletion of Device with ID: $a'] = 'Usunięcie urządzenia o identyfikatorze: $a';
-$_LANG['Are you sure that you want remove group?'] = 'Czy na pewno chcesz usunąć grupę?';
 $_LANG['descending'] = 'malejąco';
 $_LANG['Description'] = 'Opis';
 $_LANG['Description:'] = 'Opis:';
@@ -920,9 +920,9 @@ $_LANG['Tariff rule list'] = 'Lista reguł taryfikacyjnych';
 $_LANG['Tariff rule name is required!'] = 'Nazwa reguły taryfikacyjnej jest wymagana!';
 $_LANG['Price list name is required!'] = 'Nazwa reguły cennika jest wymagana!';
 $_LANG['Price list assigned to tariff'] = 'Cennik przypisany do taryfy';
-$_LANG['Tariff rule must contains at least one group!'] = 'Reguła taryfikacyjna musi zawierać przynajmniej jedną grupę!';
+$_LANG['Tariff rule must contain at least one group!'] = 'Reguła taryfikacyjna musi zawierać przynajmniej jedną grupę!';
 $_LANG['Tariff rule assigned to tariff'] = 'Reguła taryfikacyjna przypisana do taryfy';
-$_LANG['Price list must contains at least one group!'] = 'Cennik musi zawierać przynajmniej jedną grupę!';
+$_LANG['Price list must contain at least one group!'] = 'Cennik musi zawierać przynajmniej jedną grupę!';
 $_LANG['Enter name (optional)'] = 'Wprowadź nazwę (opcjonalnie)';
 $_LANG['Enter first/lastname of customer'] = 'Wprowadź nazwę/nazwisko klienta';
 $_LANG['Enter network domain (optional)'] = 'Wprowadź domenę sieci (opcjonalnie)';
@@ -2589,7 +2589,7 @@ $_LANG['Configuration error. Patterns array not found!'] = 'Błąd w konfiguracj
 $_LANG['Line:'] = 'Linia:';
 $_LANG['Errors and Duplicated Entries'] = 'Błędy i duplikaty';
 $_LANG['24 months'] = '24 mies.';
-$_LANG['Enter description or select tariff from the list'] = 'Wprowadź opis lub wybierz taryfę z listy';
+$_LANG['... or enter description'] = '... lub wprowadź opis';
 $_LANG['Created by:'] = 'Utworzył:';
 $_LANG['Created by'] = 'Utworzył';
 $_LANG['Body:'] = 'Treść:';
@@ -2947,7 +2947,7 @@ $_LANG['sent'] = 'wysłano';
 $_LANG['sent<!plural>'] = 'wysłane';
 $_LANG['sms'] = 'SMS';
 $_LANG['subject'] = 'temat';
-$_LANG['Subject must contains less than 255 characters!'] = 'Temat musi zawierać mniej niż 255 znaków!';
+$_LANG['Subject must contain less than 255 characters!'] = 'Temat musi zawierać mniej niż 255 znaków!';
 $_LANG['traffic stats'] = 'statystyki ruchu sieciowego';
 $_LANG['traffic stats compacting'] = 'kompaktowanie statystyk ruchu sieciowego';
 $_LANG['Unable to send message. No recipients selected!'] = 'Nie można wysłać wiadomości. Nie wybrano odbiorców!';
@@ -3022,7 +3022,7 @@ $_LANG['Flags'] = 'Flagi';
 $_LANG['Confirming'] = 'Zatwierdzanie';
 $_LANG['payment pre-summons'] = 'przedsądowe wezwanie do zapłaty';
 $_LANG['payment summons'] = 'wezwanie do zapłaty';
-$_LANG['Users access rights to documents by type'] = 'Uprawnienia do dokumentów wg typu';
+$_LANG['Users access rights to document by type'] = 'Uprawnienia do dokumentów wg typu';
 $_LANG['Viewing'] = 'Podgląd';
 $_LANG['Add source'] = 'Nowe źródło';
 $_LANG['Are you sure, you want to remove source \'$a\'?'] = 'Czy na pewno chcesz usunąć źródło \'$a\'?';
@@ -3419,7 +3419,7 @@ $_LANG['GPS latitude:'] = 'Szerokość geograficzna:';
 $_LANG['GPS latitude'] = 'Szerokość geograficzna';
 $_LANG['GPS longitude:'] = 'Długość geograficzna:';
 $_LANG['GPS longitude'] = 'Długość geograficzna';
-$_LANG['Click to select gps coordinates from map'] = 'Kliknij w celu wybrania współrzędnych geograficznych z mapy';
+$_LANG['Click to select gps coordinates from map'] = 'Kliknij, aby wybrać współrzędne geograficzne z mapy';
 $_LANG['Select gps coordinates'] = 'Wybierz współrzędne geograficzne';
 $_LANG['Select gps coordinates:'] = 'Wybierz współrzędne geograficzne:';
 $_LANG['Show on map'] = 'Pokaż na mapie';
@@ -3647,7 +3647,7 @@ $_LANG['number plan assignment<!syslog>'] = 'powiązanie planu numeracyjnego z f
 $_LANG['number plan user<!syslog>'] = 'użytkownik planu numeracyjnego';
 $_LANG['Number plan is used by existing documents!'] = 'Plan numeracyjny używany w istniejących dokumentach!';
 $_LANG['VoIP account<!syslog>'] = 'konto VoIP';
-$_LANG['VoIP account number<!syslog>'] = 'number przypisany do konta VoIP';
+$_LANG['VoIP account number<!syslog>'] = 'numer przypisany do konta VoIP';
 $_LANG['division<!syslog>'] = 'firma';
 $_LANG['country<!syslog>'] = 'kraj';
 $_LANG['state<!syslog>'] = 'województwo';
@@ -5356,3 +5356,16 @@ $_LANG['Call List'] = 'Lista połączeń';
 $_LANG['List of Customer Calls'] = 'Lista połączeń telefonicznych';
 $_LANG['<!customer-call>Calls'] = 'Połączenia';
 $_LANG['<!customer-call>Assigned'] = 'Przypisane';
+
+$_LANG['Identity document'] = 'Dokument tożsamości';
+$_LANG['Expires'] = 'Data ważności';
+$_LANG['never expires'] = 'ważny bezterminowo';
+$_LANG['expires $a'] = 'ważny do $a';
+
+$_LANG['Customer identity card expired or expires soon!'] = 'Dokument tożsamości klienta jest lub wkrótce stanie się nieważny';
+
+$_LANG[
+    "In meantime user '\$a' has modified edited customer (\$b).\n"
+    + 'Despite this you want to make customer modification which you had made in form?'
+] = "Użytkownik '\$a' w międzyczasie (\$b) zmienił dane edytowanego przez Ciebie klienta.\n"
+    + 'Czy mimo tego chcesz zmienić dane klienta na te przez Ciebie wprowadzone w formularzu?';

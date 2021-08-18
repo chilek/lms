@@ -75,10 +75,6 @@
 		});
 	});
 
-	$(document).on('change', '[name="cnote[numberplanid]"]', function() {
-		$('[name="cnote[number]"]').val('');
-	});
-
 	$('body').on('change', '.template-selector', function() {
 		var selected = $('option:selected', this);
 		if (parseInt(selected.val()) == 0) {
@@ -111,22 +107,19 @@
 					<strong>{trans("Credit note number:")}</strong>
 				</td>
 				<td class="nobr">
-					<input type="text" name="cnote[number]" value="{$cnote.number}" size="10"
-						{tip text="Enter credit note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}
-					>&nbsp;
-					{if $numberplanlist}
-						<select name="cnote[numberplanid]" {tip text="Select numbering plan" trigger="numberplanid"} required>
-							<option value="">{trans("- select -")}</option>
-							{foreach $numberplanlist as $plan}
-								{$period = $plan.period}
-								<option value="{$plan.id}"{if $plan.id == $cnote.numberplanid} selected{/if}>
-									{number number=$plan.next template=$plan.template time=$cnote.cdate customerid=$refdoc.customerid} ({$_NUM_PERIODS.$period})
-								</option>
-							{/foreach}
-						</select>
-					{else}
-						<input type="hidden" name="cnote[numberplanid]" value="0">
-					{/if}
+					{numberplan_selection
+						cdate_selector     = "#cdate"
+						numberplanlist    = $numberplanlist
+						input_name        = "cnote[number]"
+						input_value       = $cnote.number
+						select_name       = "cnote[numberplanid]"
+						selected          = $cnote.numberplanid
+						number_trigger    = "number"
+						plan_trigger      = "numberplanid"
+						time              = $cnote.cdate
+						customer_id       = $refdoc.customerid
+						planDocumentType  = $planDocumentType
+					}
 				</td>
 			</tr>
 			<tr>
@@ -136,7 +129,7 @@
 				<td class="nobr">
 					{if ConfigHelper::checkPrivilege("invoice_consent_date")}
 						<input type="text" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}" size="12"
-							placeholder="{trans("yyyy/mm/dd")}"
+							placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$cnote.cdate}"
 							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 						>
 						{if $cnote.cdatewarning}

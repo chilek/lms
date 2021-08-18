@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
 // Invoiceless liabilities: Zobowiazania/obciazenia na ktore nie zostala wystawiona faktura
@@ -121,8 +120,8 @@ switch ($action) {
                 );
             }
 
+            $customer = $LMS->GetCustomer($invoice['customerid']);
             if (!isset($_GET['clone'])) {
-                $customer = $LMS->GetCustomer($invoice['customerid']);
                 $invoice['proformaid'] = $_GET['id'];
                 $invoice['proformanumber'] = docnumber(array(
                     'doctype' => DOC_INVOICE_PRO,
@@ -758,7 +757,12 @@ if (isset($customer)) {
 } else {
     $args['customerid'] = null;
 }
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+
+$numberplanlist = $LMS->GetNumberPlans($args);
+if (!$numberplanlist) {
+    $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
+}
+$SMARTY->assign('numberplanlist', $numberplanlist);
 
 $SMARTY->assign('taxeslist', $taxeslist);
 
@@ -788,6 +792,7 @@ if (isset($customer)) {
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
+$SMARTY->assign('planDocumentType', $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
 
 $total_value = 0;
 if (!empty($contents)) {

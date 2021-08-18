@@ -36,6 +36,8 @@ interface LMSDocumentManagerInterface
 
     public function GetNumberPlans($properties);
 
+    public function getSystemDefaultNumberPlan($properties);
+
     public function GetNewDocumentNumber($properties);
 
     public function DocumentExists($properties);
