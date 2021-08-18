@@ -124,8 +124,11 @@ if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets
         'short' => true,
     );
 
-    $alltickets = (isset($_GET['alltickets']) && !empty($_GET['alltickets']))
-        || ((!isset($_GET['alltickets']) && ConfigHelper::checkConfig('phpui.default_show_closed_tickets')));
+    if (isset($_GET['alltickets'])) {
+        $alltickets = !empty($_GET['alltickets']);
+    } else {
+        $alltickets = ConfigHelper::checkConfig('phpui.default_show_closed_tickets');
+    };
     if (empty($alltickets)) {
         $params['state'] = -1;
     }
