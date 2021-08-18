@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,26 +24,7 @@
  *  $Id$
  */
 
-abstract class LMSInvoice extends LMSDocument
+function smarty_function_numberplan_selection($params, $template)
 {
-    abstract public function invoice_body_standard();
-
-    abstract public function invoice_body_ft0100();
-
-    public function Draw($data)
-    {
-        parent::Draw($data);
-        $template = ConfigHelper::getConfig('invoices.template_file');
-        if (isset($this->data['invoice'])) {
-            $template = ConfigHelper::getConfig('invoices.cnote_template_file', $template);
-        }
-        switch ($template) {
-            case "standard":
-                $this->invoice_body_standard();
-                break;
-            case "FT-0100":
-                $this->invoice_body_ft0100();
-                break;
-        }
-    }
+    return LMSSmartyPlugins::numberplanSelectionFunction($params, $template);
 }

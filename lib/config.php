@@ -108,12 +108,12 @@ $DEFAULTS = array(
         'logout_confirmation' => false
     ),
     'invoices' => array(
-        'template_file' => 'invoice.html',
-        'content_type' => 'text/html',
-        'cnote_template_file' => 'invoice.html',
+        'template_file' => 'FT-0100',
+        'content_type' => 'application/pdf',
+        'cnote_template_file' => 'FT-0100',
         'print_balance_history' => false,
         'print_balance_history_limit' => 10,
-        'default_printpage' => 'original,copy',
+        'default_printpage' => 'original',
         'type' => 'html',
         'attachment_name' => '',
         'paytime' => 14,
