@@ -98,7 +98,8 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
                 if (!$hide_discount) {
-                    if (!empty($this->data['pdiscount']) && !empty(floatval($item['pdiscount']))) {
+                    $pdiscount = floatval($item['pdiscount']);
+                    if (!empty($this->data['pdiscount']) && !empty($pdiscount)) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%.2f%%', $item['pdiscount']));
                     } elseif (!empty($this->data['vdiscount']) && !empty($item['vdiscount'])) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
@@ -135,7 +136,8 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $t_width['content'] = $this->backend->getStringWidth($item['content']);
                 $t_width['count'] = $this->backend->getStringWidth((float)$item['count']);
                 if (!$hide_discount) {
-                    if (!empty($this->data['invoice']['pdiscount']) && !empty(floatval($item['pdiscount']))) {
+                    $pdiscount = floatval($item['pdiscount']);
+                    if (!empty($this->data['invoice']['pdiscount']) && !empty($pdiscount)) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%.2f%%', $item['pdiscount']));
                     } elseif (!empty($this->data['invoice']['vdiscount']) && !empty($item['vdiscount'])) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
@@ -210,12 +212,14 @@ class LMSTcpdfInvoice extends LMSInvoice
                     $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
                     $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
                     if (!$hide_discount) {
-                        if ((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && !empty(floatval($item['pdiscount']))) {
+                        $pdiscount = floatval($item['pdiscount']);
+                        $vdiscount = floatval($item['vdiscount']);
+                        if ((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && !empty($pdiscount)) {
                             $this->backend->Cell($h_width['discount'], $h, sprintf('%.2f%%', $item['pdiscount']), 1, 0, 'R', 0, '', 1);
                         } elseif ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && !empty($item['vdiscount'])) {
                             $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
-                        } elseif (((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && empty(floatval($item['pdiscount'])))
-                            || ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && empty(floatval($item['vdiscount'])))) {
+                        } elseif (((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && empty($pdiscount))
+                            || ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && empty($vdiscount))) {
                             $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', 0), 1, 0, 'R', 0, '', 1);
                         }
                     }
@@ -291,12 +295,14 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
             $this->backend->Cell($h_width['count'], $h, (float)$item['count'], 1, 0, 'C', 0, '', 1);
             if (!$hide_discount) {
-                if ((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && !empty(floatval($item['pdiscount']))) {
+                $pdiscount = floatval($item['pdiscount']);
+                $vdiscount = floatval($item['vdiscount']);
+                if ((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && !empty($pdiscount)) {
                     $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f%%', $item['pdiscount']), 1, 0, 'R', 0, '', 1);
                 } elseif ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && !empty($item['vdiscount'])) {
                     $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
-                } elseif (((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && empty(floatval($item['pdiscount'])))
-                    || ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && empty(floatval($item['vdiscount'])))) {
+                } elseif (((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && empty($pdiscount))
+                    || ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && empty($vdiscount))) {
                     $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', 0), 1, 0, 'R', 0, '', 1);
                 }
             }
