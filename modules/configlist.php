@@ -120,7 +120,7 @@ function GetConfigList()
             'default_author' => 'Default invoice issuer',
             'cplace' => 'Invoice draw-up place.',
             'template_file' => 'Invoice template file. Default: "invoice.html". Should be placed in templates directory.',
-            'cnote_template_file' => 'Credit note template file. Default: "invoice.html". Should be placed in templates directory.',
+            'cnote_template_file' => 'Credit note template file. Default: "FT-0100". Should be placed in templates directory.',
             'content_type' => 'Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".',
             'attachment_name' => 'File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.',
             'type' => 'Documents type. You can use "html" or "pdf". Default: html.',

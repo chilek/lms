@@ -36,7 +36,7 @@ $access_table = array(
     ),
     'read_only' => array(
         'label' => trans('read only (excluding helpdesk)'),
-        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|eventschedule|customeraddresses|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
+        'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|eventschedule|customeraddresses|numberplanhelper|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
         'allow_menu_items' => array(
             'admin' => array('userlist', 'dblist', 'copyrights', 'usergrouplist'),
             'customers' => array('customerlist', 'customersearch', 'customergrouplist'),
