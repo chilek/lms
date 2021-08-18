@@ -12,7 +12,7 @@
 				<tr class="align-middle p-2 {if !$usernodes[usernodes].access}text-muted{/if}">
 					<td>{$usernodes[usernodes].name}</td>
 					<td>{$usernodes[usernodes].mac|replace:",":"<br/>"}</td>
-					<td>{$usernodes[usernodes].ip}</td>
+					<td>{$usernodes[usernodes].ip}{if $usernodes[usernodes].ip_pub!="0.0.0.0"} ({$usernodes[usernodes].ip_pub}){/if}</td>
 				</tr>
 			{/if}
 		{sectionelse}

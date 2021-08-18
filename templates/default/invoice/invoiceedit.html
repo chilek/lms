@@ -18,18 +18,6 @@
 		document.setcustomer.submit();
 	}
 
-	function GetNumberPlans() {
-		xajax_GetNumberPlans('{$invoice.proforma}', {
-			number: $('form[name="setcustomer"] [name="invoice[number]"]').val(),
-			cdate: $('form[name="setcustomer"] [name="invoice[cdate]"]').attr('data-cdate'),
-			numberplanid: $('form[name="setcustomer"] [name="invoice[numberplanid]"]').val(),
-		}, $('form[name="setcustomer"] [name=customerid]').val());
-	}
-
-	$(document).on('change', '[name="invoice[numberplanid]"]', function() {
-		$('[name="invoice[number]"]').val('');
-	});
-
 </script>
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
@@ -60,8 +48,21 @@
 				<td class="bold nobr">
 					{trans("Invoice number:")}
 				</td>
-				<td class="nobr" id="invoicenumberplans">
-					{include file="invoice/invoicenumberplans.html" invoice=$invoice}
+				<td class="nobr">
+					{numberplan_selection
+						customer_selector  = "#ownerid_input"
+						cdate_selector     = "#cdate"
+						numberplanlist    = $numberplanlist
+						input_name        = "invoice[number]"
+						input_value       = $invoice.number
+						select_name       = "invoice[numberplanid]"
+						selected          = $invoice.numberplanid
+						number_trigger    = "number"
+						plan_trigger      = "numberplanid"
+						time              = $invoice.cdate
+						customer_id       = $customerid
+						planDocumentType  = $planDocumentType
+					}
 				</td>
 			</tr>
 			<tr>
@@ -174,11 +175,11 @@
 				<td class="nobr">
 					{if isset($customer.id)}
 						{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
-							selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+							selectname="customer" inputname="customerid" customOnChange="customer_change();"
 							select_id="ownerid_select" input_id="ownerid_input" required=true}
 					{else}
 						{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid version=2
-							selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();"
+							selectname="customer" inputname="customerid" customOnChange="customer_change();"
 							select_id="ownerid_select" input_id="ownerid_input" required=true}
 					{/if}
 				</td>
@@ -278,7 +279,7 @@
 			customer_addresses.appendAddressList( addresses, false );
 			customer_addresses.refresh();
 		});
-		updateDocumentFlags()
+		updateDocumentFlags();
 	}
 
 	{if $invoice.customerid && isset($invoice.recipient_address)}

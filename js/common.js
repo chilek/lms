@@ -586,17 +586,29 @@ function ping_popup(ip, type)
 
 function changeMacFormat(id)
 {
-	if (!id) return 0;
-	var elem = document.getElementById(id);
-	if (!elem) return 0;
-	var curmac = elem.innerHTML.trim();
-	var macpatterns = [ /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi, /^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
-		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi, /^[0-9a-f]{12}$/gi ];
-	for (var i in macpatterns)
-		if (macpatterns[i].test(curmac))
-			break;
-	if (i >= macpatterns.length)
+	if (!id) {
 		return 0;
+	}
+	var elem = document.getElementById(id);
+	if (!elem) {
+		return 0;
+	}
+	var curmac = elem.innerHTML.trim();
+	var macpatterns = [
+		/^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi,
+		/^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
+		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi,
+		/^([0-9a-f]{4}-){2}[0-9a-f]{4}$/gi,
+		/^[0-9a-f]{12}$/gi
+	];
+	for (var i in macpatterns) {
+		if (macpatterns[i].test(curmac)) {
+			break;
+		}
+	}
+	if (i >= macpatterns.length) {
+		return 0;
+	}
 	i = parseInt(i);
 	switch (i) {
 		case 0:
@@ -608,11 +620,15 @@ function changeMacFormat(id)
 			curmac = curmac.replace(/^([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})$/gi, '$1.$2.$3');
 			break;
 		case 2:
-			curmac = curmac.replace(/\./g, '');
-			curmac = curmac.toUpperCase();
+			curmac = curmac.replace(/\./g, '-');
 			break;
 		case 3:
+			curmac = curmac.replace(/-/g, '');
+			curmac = curmac.toUpperCase();
+			break;
+		case 4:
 			curmac = curmac.replace(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/gi, '$1:$2:$3:$4:$5:$6');
+			break;
 	}
 	elem.innerHTML = curmac;
 }

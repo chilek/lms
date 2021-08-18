@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
 function cleanUpValue($value)
@@ -433,7 +432,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($invoice['numberplanid'])) {
+        if (count($numberplans) && empty($invoice['numberplanid']) && $invoice['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -443,7 +442,7 @@ switch ($action) {
             } elseif ((
                     $invoice['oldcdate'] != $invoice['cdate']
                     || $invoice['oldnumber'] != $invoice['number']
-                    || $invoice['oldnumberplanid'] != $invoice['numberplanid']
+                    || $invoice['oldnumberplanid'] != intval($invoice['numberplanid'])
                     || ($invoice['oldcustomerid'] != $invoice['customerid'] && preg_match('/%[0-9]*C/', $invoice['template']))
                 )
                 && ($docid = $LMS->DocumentExists(array(
@@ -833,7 +832,12 @@ if (isset($invoice['customerid']) && !empty($invoice['customerid'])) {
     $args['customerid'] = $invoice['customerid'];
     $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($invoice['customerid']));
 }
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+
+$numberplanlist = $LMS->GetNumberPlans($args);
+if (!$numberplanlist) {
+    $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
+}
+$SMARTY->assign('numberplanlist', $numberplanlist);
 
 $hook_data = array(
     'customer' => $customer,
@@ -860,6 +864,7 @@ if (isset($customer)) {
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
+$SMARTY->assign('planDocumentType', $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
 
 $total_value = 0;
 if (!empty($contents)) {
