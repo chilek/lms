@@ -656,7 +656,11 @@ if (isset($_POST['ticket'])) {
 } else {
     $ticketedit['categories'] = $ticket['categories'];
 
-    $ticketedit['categorywarn'] = 0;
+    if (ConfigHelper::checkConfig('phpui.helpdesk_notify')) {
+        $ticket['notify'] = true;
+    }
+
+    $ticket['categorywarn'] = 0;
 }
 
 foreach ($categories as &$category) {
