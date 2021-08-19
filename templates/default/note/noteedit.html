@@ -29,6 +29,11 @@
 				<strong>{trans("Debit note number:")}</strong>
 			</td>
 			<td class="nobr">
+				{if isset($customer.id)}
+					{assign var=customerid value=$customer.id}
+				{else}
+					{assign var=customerid value=$note.customerid}
+				{/if}
 				{numberplan_selection
 					form              = "setcustomer"
 					customer_selector = "#customerid_input"
