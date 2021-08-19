@@ -2,47 +2,55 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox lms-ui-background-cycle">
-    <THEAD>
-	<TR>
-		<TD width="99%" NOWRAP>{icon name="document"} <B>{trans("Name:")}</B></TD>
-		<TD width="1%"></TD>
-	</TR>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="2">
-			{include file="scroller.html" loop=$typelist}
-		</TD>
-	</TR>
-	{/if}
-    </THEAD>
-    <TBODY>
-	{foreach from=$typelist key=key item=item}
-	<TR class="highlight">
-		<TD NOWRAP onClick="return self.location.href='?m=documenttypeedit&amp;id={$key}';">
-			{icon name="document"} <B>{$item}</B>
-		</TD>
-		<TD align="right" NOWRAP>
-			{button type="link" icon="edit" tip="{trans("Edit")}" href="?m=documenttypeedit&amp;id={$key}"}
-		</TD>
-	</TR>
-	{foreachelse}
-	<tr>
-		<td colspan="2" class="empty-table">
-			{trans("There are no types in database.")}
-		</td>
-	</tr>
-	{/foreach}
-	</TBODY>
-	<TFOOT>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="2">
-			{include file="scroller.html" loop=$typelist}
-		</TD>
-	</TR>
-	{/if}
-	</TFOOT>
-</TABLE>
+<h1>{$layout.pagetitle}</h1>
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<sol style="width: 99%;">
+		<sol style="width: 1%;">
+	</colgroup>
+	<thead>
+		<Ttr>
+			<td class="nobr">
+				{icon name="document"}
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td></td>
+		</Ttr>
+		{if $listdata.total != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="2">
+					{include file="scroller.html" loop=$typelist}
+				</td>
+			</tr>
+		{/if}
+	</thead>
+	<tbody>
+		{foreach Localisation::arraySort($typelist) as $key => $item}
+			<tr class="highlight" data-target-url="?m=documenttypeedit&id={$key}">
+				<td>
+					{icon name="document"}
+					<strong>{$item}</strong>
+				</td>
+				<td class="text-right nobr">
+					{button type="link" icon="edit" tip="{trans("Edit")}" href="?m=documenttypeedit&amp;id={$key}"}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="2" class="empty-table">
+					{trans("There are no types in database.")}
+				</td>
+		</tr>
+		{/foreach}
+	</tbody>
+	<tfoot>
+		{if $listdata.total != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="2">
+					{include file="scroller.html" loop=$typelist}
+				</td>
+			</tr>
+		{/if}
+	</tfoot>
+</table>
 {/block}

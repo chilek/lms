@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$typelist = $DOCTYPES;
-
-foreach ($typelist as $idx => $name) {
-    if ($idx >= 0) {
-        unset($typelist[$idx]);
-    }
-}
+$typelist = array_filter(
+    $DOCTYPES,
+    function ($name, $idx) {
+        return $idx < 0;
+    },
+    ARRAY_FILTER_USE_BOTH
+);
 
 if ($SESSION->is_set('dtlp') && !isset($_GET['page'])) {
     $SESSION->restore('dtlp', $_GET['page']);
