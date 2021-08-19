@@ -491,8 +491,8 @@ if (isset($_POST['ticket'])) {
         $hook_data = $LMS->executeHook(
             'ticketedit_after_submit',
             array(
-                        'ticketedit' => $ticketedit,
-                     )
+                'ticketedit' => $ticketedit,
+            )
         );
         $ticketedit = $hook_data['ticketedit'];
 
