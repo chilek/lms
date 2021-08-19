@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -66,6 +66,8 @@ if (empty($document)) {
     $SMARTY->display('noaccess.html');
     die;
 }
+
+$document['customer_name'] = $LMS->GetCustomerName($document['customerid']);
 
 $document['attachments'] = $DB->GetAllByKey('SELECT *, 0 AS deleted FROM documentattachments
 	WHERE docid = ? ORDER BY type DESC', 'id', array($_GET['id']));
@@ -306,9 +308,10 @@ if (!$rights || !$DB->GetOne(
 
 $numberplans = GetDocumentNumberPlans($document['type'], $document['customerid']);
 if (empty($numberplans)) {
-    $numberplans = array();
+    $numberplans = $LMS->getSystemDefaultNumberPlan(array('doctype' => $document['type']));
 }
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('planDocumentType', $document['type']);
 
 /*
 if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))

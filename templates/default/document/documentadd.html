@@ -17,6 +17,10 @@
 		padding-bottom: 0.3em;
 	}
 
+	table.lmsbox > thead >tr:not(:first-child) {
+		border-top: none;
+	}
+
 </style>
 
 <script>
@@ -31,19 +35,22 @@
 	function DocTypeChanged() {
 		reset_login_timeout();
 		xajax_DocTypeChanged($('[name="document[type]"]').val(),
-			$('[name="document[numberplanid]"]').val(),
 			$('[name="customerid"]').val());
 	}
 
-	function show_templates() {
-		$('#templates').css('display', 'table-row');
+	function enable_templates() {
+		$('#templates').prop('disabled', false);
+	}
+
+	function disable_templates() {
+		$('#templates').val('');
+		$('#templates').prop('disabled', true);
 	}
 
 	function CustomerChanged() {
 		reset_login_timeout();
 		xajax_CustomerChanged($('[name="document[type]"]').val(),
 			$('[name="document[templ]"]').val(),
-			$('[name="document[numberplanid]"').val(),
 			$('[name="customerid"]').val());
 		if (typeof customer_assignment_helper !== 'undefined') {
 			customer_assignment_helper.setCustomer($('[name="customerid"]').val());
@@ -62,6 +69,40 @@
 		<col style="width: 98%;">
 	</colgroup>
     <thead>
+		<tr>
+			<td>
+				{icon name="type"}
+			</td>
+			<td>
+				<strong>{trans("Type:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="document[type]" id="doctype" onchange="DocTypeChanged();"
+						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
+					<option value="0">{trans("select type")}</option>
+					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
+						{if $key < 0 && in_array($key, $docrights)}
+							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="template"}
+			</td>
+			<td>
+				<strong>{trans("Template:")}</strong>
+			</td>
+			<TD>
+				<select size="1" name="document[templ]" id="templates" {if $document.type >= 0} disabled{/if}
+						{tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"}
+						id="templ" onchange="DocTemplateChanged();">
+					{include file="document/documenttemplateoptions.html"}
+				</select>
+			</TD>
+		</tr>
 		<tr>
 			<td>
 				{icon name="document"}
@@ -85,7 +126,31 @@
 			</td>
 			<td>
 				{customerlist customers=$customers selected=$cid version=2
-					selectname="customer" inputname="customerid" required=true customOnChange="CustomerChanged();"}
+					selectname="customer" input_id="customerid_input" inputname="customerid" required=true customOnChange="CustomerChanged();"}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="id"}
+			</td>
+			<td>
+				<strong>{trans("Number:")}</strong>
+			</td>
+			<td>
+				{numberplan_selection
+				customer_selector = "#customerid_input"
+				doctype_selector  = "#doctype"
+				numberplanlist    = $numberplans
+				input_name        = "document[number]"
+				input_value       = $document.number
+				select_name       = "document[numberplanid]"
+				selected          = $document.numberplanid
+				number_trigger    = "number"
+				plan_trigger      = "numberplanid"
+				time              = $document.cdate
+				customer_id       = $cid
+				planDocumentType  = $planDocumentType
+				}
 			</td>
 		</tr>
 		<tr>
@@ -137,40 +202,6 @@
 					{tip text="Enter additional information (optional)"}>{$document.description}</textarea>
 			</td>
 		</tr>
-		<tr>
-			<td>
-				{icon name="type"}
-			</td>
-			<td>
-				<strong>{trans("Type:")}</strong>
-			</td>
-			<td>
-				<select size="1" name="document[type]" onchange="DocTypeChanged();"
-					{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
-					<option value="0">{trans("select type")}</option>
-					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
-						{if $key < 0 && in_array($key, $docrights)}
-							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
-						{/if}
-					{/foreach}
-				</select>
-			</td>
-		</tr>
-		<tr id="templates" style="display:{if $document.type<0}table-row{else}none{/if}">
-			<td>
-				{icon name="template"}
-			</td>
-			<td>
-				<strong>{trans("Template:")}</strong>
-			</td>
-			<TD>
-				<select size="1" name="document[templ]"
-					{tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"}
-					id="templ" onchange="DocTemplateChanged();">
-					{include file="document/documenttemplateoptions.html"}
-				</select>
-			</TD>
-		</tr>
 		<tr id="referencedocument">
 			{include file="document/documentreference.html"}
 		</tr>
@@ -194,22 +225,6 @@
 			</td>
 			<td id="attachment-cell">
 				{$attachment_result}
-			</td>
-		</tr>
-		<tr>
-			<td>
-				{icon name="id"}
-			</td>
-			<td>
-				<strong>{trans("Number:")}</strong>
-			</td>
-			<td>
-				<input type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}"
-					size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>
-				<div id="numberplans" style="display: {if empty($numberplans)}none{else}inline{/if};">
-					{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid
-						cdate=$document.cdate customerid=$cid}
-				</div>
 			</td>
 		</tr>
 		<tr>

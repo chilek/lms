@@ -6,7 +6,12 @@
 		{$selected=false}
 		{foreach $numberplans as $plan}
 		{$period=$plan.period}
-		<option value="{$plan.id}"{if (isset($numberplanid) && ($plan.id == $numberplanid || ($plan.id != $numberplanid && $plan.isdefault))) || (!isset($numberplanid) && $plan.isdefault)}{if !$selected} selected{$selected=true}{/if}{/if}>
+		<option value="{$plan.id}"
+				{if (isset($numberplanid) && ($plan.id == $numberplanid || ($plan.id != $numberplanid && $plan.isdefault)))
+					|| (!isset($numberplanid) && $plan.isdefault)}
+					{if !$selected} selected{$selected=true}{/if}
+				{/if}
+		>
 			{if isset($customerid)}
 				{number number=$plan.next template=$plan.template time=$cdate customerid=$customerid}
 			{else}

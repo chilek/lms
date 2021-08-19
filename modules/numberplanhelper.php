@@ -25,7 +25,7 @@
  */
 
 $documentType = intval($_POST['documentType']);
-if (isset($_POST['cdate'])) {
+if (!empty($_POST['cdate'])) {
     $cdate = strtotime($_POST['cdate']);
 } else {
     $cdate = time();

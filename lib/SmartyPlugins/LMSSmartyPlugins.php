@@ -1183,9 +1183,11 @@ class LMSSmartyPlugins
 
         //<editor-fold desc="numberplan container">
         $result .= '<div class="lms-ui-numberplan-container" style="display: flex;"'
+                . 'data-doctype-selector="'. $params['doctype_selector'] .'"'
                 . 'data-customer-selector="'. $params['customer_selector'] .'"'
                 . 'data-cdate-selector="'. $params['cdate_selector'] .'"'
                 . 'data-plan-document-type="'. $params['planDocumentType'] .'"'
+                . 'data-plan-customer-id="'. $params['customer_id'] .'"'
                 . '>' . PHP_EOL;
 
         //<editor-fold desc="number">

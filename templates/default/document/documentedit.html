@@ -11,6 +11,10 @@
 		margin-left: 0.5em;
 	}
 
+	table.lmsbox > thead >tr:not(:first-child) {
+		border-top: none;
+	}
+
 </style>
 
 <form name="documentedit" method="POST" id="documentedit-form" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
@@ -23,6 +27,24 @@
 		<col style="width: 98%;">
 	</colgroup>
 	<thead>
+		<tr>
+			<td>
+				{icon name="type"}
+			</td>
+			<td>
+				<strong>{trans("Type:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="document[type]" id="doctype" onchange="setnumberplans();"
+						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"}>
+					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
+						{if $key < 0 && in_array($key, $docrights)}
+							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				{icon name="document"}
@@ -39,20 +61,13 @@
 	<tbody>
 		<tr>
 			<td>
-				{icon name="type"}
+				{icon name="customer"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Customer:")}</strong>
 			</td>
 			<td>
-				<strong>{trans("Type:")}</strong>
-			</td>
-			<td>
-				<select size="1" name="document[type]" onchange="setnumberplans();"
-					{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"}>
-					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
-						{if $key < 0 && in_array($key, $docrights)}
-							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
-						{/if}
-					{/foreach}
-				</select>
+				<a href="?m=customerinfo&id={$document.customerid}">{$document.customer_name}</a>
 			</td>
 		</tr>
 		<tr>
@@ -63,12 +78,19 @@
 				<strong>{trans("Number:")}</strong>
 			</td>
 			<td>
-				<input type="text" name="document[number]" value="{$document.number}"
-					size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-				<div id="numberplans" style="display: {if empty($numberplans)}none{else}inline{/if};">
-					{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid
-						cdate=$document.cdate customerid=$document.customerid}
-				</div>
+				{numberplan_selection
+					doctype_selector  = "#doctype"
+					numberplanlist    = $numberplans
+					input_name        = "document[number]"
+					input_value       = $document.number
+					select_name       = "document[numberplanid]"
+					selected          = $document.numberplanid
+					number_trigger    = "number"
+					plan_trigger      = "numberplanid"
+					time              = $document.cdate
+					customer_id       = $document.customerid
+					planDocumentType  = $planDocumentType
+				}
 			</td>
 		</tr>
 		<tr>
@@ -229,9 +251,6 @@
 
 	function setnumberplans() {
 		reset_login_timeout();
-		xajax_GetNumberPlans(document.forms['documentedit'].elements['document[type]'].value,
-				document.forms['documentedit'].elements['document[numberplanid]'].value,
-				{$document.customerid});
 	}
 
 	$(function() {

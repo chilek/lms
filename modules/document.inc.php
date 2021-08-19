@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -174,16 +174,17 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
     $JSResponse->assign('templ', 'innerHTML', $contents);
-    if (!empty($doctype)) {
-        $JSResponse->call('show_templates');
+    if (isset($doctype) && !empty($doctype)) {
+        $JSResponse->call('enable_templates');
+    } else {
+        $JSResponse->call('disable_templates');
     }
 }
 
 function GetDocumentNumberPlans($doctype, $customerid = null)
 {
-    global $LMS;
-
-    $DB = LMSDB::getInstance();
+    $db = LMSDB::getInstance();
+    $lms = LMS::getInstance();
 
     if (!empty($doctype)) {
         $args = array(
@@ -193,12 +194,12 @@ function GetDocumentNumberPlans($doctype, $customerid = null)
             $args['customerid'] = array(
                 'customerid' => $customerid,
             );
-            $divisionid = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerid));
+            $divisionid = $db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerid));
             if (!empty($divisionid)) {
                 $args['division'] = $divisionid;
             }
         }
-        $numberplans = $LMS->GetNumberPlans($args);
+        $numberplans = $lms->GetNumberPlans($args);
         if (empty($numberplans)) {
             $numberplans = array();
         }
@@ -207,30 +208,6 @@ function GetDocumentNumberPlans($doctype, $customerid = null)
     }
 
     return $numberplans;
-}
-
-function _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse)
-{
-    global $SMARTY;
-
-    $numberplans = GetDocumentNumberPlans($doctype, $customerid);
-
-    $SMARTY->assign('numberplans', $numberplans);
-    $SMARTY->assign('numberplanid', $numberplanid);
-    $SMARTY->assign('customerid', $customerid);
-    $contents = $SMARTY->fetch('document/documentnumberplans.html');
-
-    $JSResponse->assign('numberplans', 'innerHTML', $contents);
-    $JSResponse->assign('numberplans', 'style', empty($numberplans) ? 'display: none' : 'display: inline');
-}
-
-function GetNumberPlans($doctype, $numberplanid, $customerid)
-{
-    $JSResponse = new XajaxResponse();
-
-    _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
-
-    return $JSResponse;
 }
 
 function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
@@ -292,23 +269,21 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
-function CustomerChanged($doctype, $doctemplate, $numberplanid, $customerid)
+function CustomerChanged($doctype, $doctemplate, $customerid)
 {
     $JSResponse = new XajaxResponse();
 
     GetPlugin($doctemplate, $customerid, false, $JSResponse);
-    _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
     GetTemplates($doctype, $doctemplate, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
 
     return $JSResponse;
 }
 
-function DocTypeChanged($doctype, $numberplanid, $customerid)
+function DocTypeChanged($doctype, $customerid)
 {
     $JSResponse = new XajaxResponse();
 
-    _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
     GetTemplates($doctype, null, $JSResponse);
     GetReferenceDocuments(null, $customerid, $JSResponse);
 
@@ -329,5 +304,5 @@ function DocTemplateChanged($doctype, $doctemplate, $customerid)
 
 
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetNumberPlans', 'DocTypeChanged', 'DocTemplateChanged', 'CustomerChanged'));
+$LMS->RegisterXajaxFunction(array('DocTypeChanged', 'DocTemplateChanged', 'CustomerChanged'));
 $SMARTY->assign('xajax', $LMS->RunXajax());

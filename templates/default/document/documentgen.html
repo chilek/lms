@@ -4,6 +4,15 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
+
+<style>
+
+	table.lmsbox > thead >tr:not(:first-child) {
+		border-top: none;
+	}
+
+</style>
+
 <script>
 
 	function DocTemplateChanged() {
@@ -15,9 +24,16 @@
 
 	function DocTypeChanged() {
 		reset_login_timeout();
-		xajax_DocTypeChanged($('[name="document[type]"]').val(),
-			$('[name="document[numberplanid]"]').val(),
-			0);
+		xajax_DocTypeChanged($('[name="document[type]"]').val(), 0);
+	}
+
+	function enable_templates() {
+		$('#templates').prop('disabled', false);
+	}
+
+	function disable_templates() {
+		$('#templates').val(0);
+		$('#templates').prop('disabled', true);
 	}
 
 	function printdoc() {
@@ -36,6 +52,45 @@
 		<col style="width: 98%;">
 	</colgroup>
 	<thead>
+		<tr>
+			<td>
+				{icon name="type"}
+			</td>
+			<td>
+				<strong>{trans("Type:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="document[type]" id="doctype" onChange="DocTypeChanged();"
+						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required
+				>
+					<option value="0">{trans("select type")}</option>
+					{foreach $_DOCTYPES as $key => $item}
+						{if $key < 0 && in_array($key, $docrights)}
+							<option value="{$key}"{if $document.type == $key} selected{/if}>{$item}</option>
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="template"}
+			</td>
+			<td>
+				<strong>{trans("Template:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="document[templ]" id="templates" {if $document.type >= 0} disabled{/if}
+						{tip text="Select document template" trigger="templ"}
+						id="templ" onChange="DocTemplateChanged();"
+				>
+					<option value="0">... {trans("select template")} ...</option>
+					{foreach $docengines as $docengine}
+						<option value="{$docengine.name}"{if $document.templ == $docengine.name} selected{/if}>{$docengine.title}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				{icon name="document"}
@@ -58,11 +113,18 @@
 				<strong>{trans("First number:")}</strong>
 			</td>
 			<td>
-				<input type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}"
-					size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>
-				<div id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
-					{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate}
-				</div>
+				{numberplan_selection
+					doctype_selector  = "#doctype"
+					numberplanlist    = $numberplans
+					input_name        = "document[number]"
+					input_value       = $document.number
+					select_name       = "document[numberplanid]"
+					selected          = $document.numberplanid
+					number_trigger    = "number"
+					plan_trigger      = "numberplanid"
+					time              = $document.cdate
+					planDocumentType  = $planDocumentType
+				}
 			</td>
 		</tr>
 		<tr>
@@ -93,42 +155,6 @@
 			<td>
 				<textarea name="document[description]" rows="5" cols="50"
 					{tip text="Enter additional information (optional)"}>{$document.description}</textarea>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				{icon name="type"}
-			</td>
-			<td>
-				<strong>{trans("Type:")}</strong>
-			</td>
-			<td>
-				<select size="1" name="document[type]" onChange="DocTypeChanged();"
-						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
-					<option value="0">{trans("select type")}</option>
-					{foreach $_DOCTYPES as $key => $item}
-						{if $key < 0 && in_array($key, $docrights)}
-							<option value="{$key}"{if $document.type == $key} selected{/if}>{$item}</option>
-						{/if}
-					{/foreach}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				{icon name="template"}
-			</td>
-			<td>
-				<strong>{trans("Template:")}</strong>
-			</td>
-			<td>
-				<select size="1" name="document[templ]" {tip text="Select document template" trigger="templ"}
-					id="templ" onChange="DocTemplateChanged();">
-					<option value="0">... {trans("select template")} ...</option>
-					{foreach $docengines as $docengine}
-						<option value="{$docengine.name}"{if $document.templ == $docengine.name} selected{/if}>{$docengine.title}</option>
-					{/foreach}
-				</select>
 			</td>
 		</tr>
 		<tr id="document-file-row"{if !$document.type} style="display: none;"{/if}>
