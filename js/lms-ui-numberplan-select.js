@@ -26,6 +26,7 @@ $(function () {
 
     $('.lms-ui-numberplan-container').each(function () {
         let planElem = $(this);
+        let doctypeElemId = planElem.attr('data-doctype-selector');
         let customerElemId = planElem.attr('data-customer-selector');
         let cdateElemId = planElem.attr('data-cdate-selector');
         let number = planElem.find('.lms-ui-numberplan-number input');
@@ -35,25 +36,42 @@ $(function () {
             number.val('');
         })
 
+        if (doctypeElemId) {
+            $(doctypeElemId).on('change', function () {
+                let documentType = $(this).val();
+                let customerId = $(customerElemId).val();
+                let cdate = $(cdateElemId).val();
+                number.val('');
+                getNumberPlans(planElem, documentType, customerId, cdate);
+            });
+        }
+
         if (customerElemId) {
             $(customerElemId).on('change', function () {
-                let customerId = $(this).val()
+                let customerId = $(this).val();
+                let documentType = $(doctypeElemId).val();
                 let cdate = $(cdateElemId).val();
-                getNumberPlans(planElem, customerId, cdate);
+                getNumberPlans(planElem, documentType, customerId, cdate);
             });
         }
 
         if (cdateElemId) {
             $(cdateElemId).on('change', function () {
                 let cdate = $(this).val();
-                let customerId = $(customerElemId).val()
-                getNumberPlans(planElem, customerId, cdate);
+                let documentType = $(doctypeElemId).val();
+                let customerId = $(customerElemId).val();
+                getNumberPlans(planElem, documentType, customerId, cdate);
             });
         }
     });
 
-    function getNumberPlans(planElem, customerId, cdate) {
-        let documentType = planElem.attr('data-plan-document-type');
+    function getNumberPlans(planElem, documentType, customerId, cdate) {
+        if (!documentType) {
+            documentType = planElem.attr('data-plan-document-type');
+        }
+        if (!customerId) {
+            customerId = planElem.attr('data-plan-customer-id');
+        }
         let selectElem = planElem.find('.lms-ui-numberplan-plan select');
         let currentPlanId = selectElem.val();
 

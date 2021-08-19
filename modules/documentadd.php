@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -473,6 +473,7 @@ if (isset($document['type'])) {
     $numberplans = array();
 }
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('planDocumentType', isset($document['type']) ? $document['type'] : null);
 
 $docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : null);
 
