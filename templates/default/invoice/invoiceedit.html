@@ -49,6 +49,11 @@
 					{trans("Invoice number:")}
 				</td>
 				<td class="nobr">
+					{if isset($customer.id)}
+						{assign var=customerid value=$customer.id}
+					{else}
+						{assign var=customerid value=$invoice.customerid}
+					{/if}
 					{numberplan_selection
 						customer_selector = "#ownerid_input"
 						cdate_selector    = "#cdate"
