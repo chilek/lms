@@ -34,20 +34,21 @@
 				<strong>{trans("Debit note number:")}</strong>
 			</td>
 			<td class="nobr">
-				<input type="text" name="note[number]" value="{$note.number}" size="10" form="setcustomer"
-					{tip text="Enter note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-				{if $numberplanlist}
-					<select name="note[numberplanid]" {tip text="Select numbering plan"} required form="setcustomer">
-						<option value="">{trans("- select -")}</option>
-						{foreach $numberplanlist as $plan}
-							{$period = $plan.period}
-								<option value="{$plan.id}"{if $plan.id == $note.numberplanid} selected{/if}
-									>{number number=$plan.next template=$plan.template time=$note.cdate} ({$_NUM_PERIODS.$period})</option>
-						{/foreach}
-					</select>
-				{else}
-					<input type="hidden" name="note[numberplanid]" value="0" form="setcustomer">
-				{/if}
+				{numberplan_selection
+					form              = "setcustomer"
+					customer_selector = "#customerid_input"
+					cdate_selector    = "#cdate"
+					numberplanlist    = $numberplanlist
+					input_name        = "note[number]"
+					input_value       = $note.number
+					select_name       = "note[numberplanid]"
+					selected          = $note.numberplanid
+					number_trigger    = "number"
+					plan_trigger      = "numberplanid"
+					time              = $note.cdate
+					customer_id       = $customerid
+					planDocumentType  = $planDocumentType
+				}
 			</td>
 		</tr>
 		<tr>
@@ -56,14 +57,15 @@
 			</td>
 			<td class="nobr">
 				{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-					<input type="text" name="note[cdate]" value="{$note.cdate|date_format:"%Y/%m/%d"}" size="10"
+					<input type="text" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"%Y/%m/%d"}" size="10"
 						placeholder="{trans("yyyy/mm/dd")}" form="setcustomer"
-						{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+						{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
+					>
 					{if $note.cdatewarning}
 						<input type="hidden" name="note[cdatewarning]" value="1" form="setcustomer">
 					{/if}
 				{else}
-					<input type="hidden" name="note[cdate]" value="{$note.cdate|date_format:"%Y/%m/%d"}" form="setcustomer">
+					<input type="hidden" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"%Y/%m/%d"}" form="setcustomer">
 					{$note.cdate|date_format:"%Y/%m/%d"}
 				{/if}
 			</td>
@@ -98,10 +100,10 @@
 			<td class="nobr">
 				{if isset($customer.id)}
 					{customerlist form="setcustomer" customers=$customers selected=$customer.id version=2
-						selectname="customer" inputname="customerid" required=true}
+						selectname="customer" input_id="customerid_input" inputname="customerid" required=true}
 				{else}
 					{customerlist form="setcustomer" customers=$customers selected=$note.customerid version=2
-						selectname="customer" inputname="customerid" required=true}
+						selectname="customer" input_id="customerid_input" inputname="customerid" required=true}
 				{/if}
 			</td>
 		</tr>
@@ -305,8 +307,6 @@
 			alertDialog($t("Document has no items!"), this);
 			return;
 		});
-
-
 	});
 
 </script>
