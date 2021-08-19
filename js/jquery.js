@@ -1646,9 +1646,11 @@ $(function() {
 	})
 	.draggable();
 
-	$(document).on('keyup keydown', function(e) {
-		$('body').css('user-select', e.shiftKey ? 'none' : 'auto');
-	});
+	// we wanted to remove visual text selection effect earlier, but this caused
+	// some selection editing problems, so we commented it out and left it for better times
+//	$(document).on('keyup keydown', function(e) {
+//		$('body').css('user-select', e.shiftKey ? 'none' : 'auto');
+//	});
 
 	initMultiChecks('table.lms-ui-multi-check,tbody.lms-ui-multi-check,div.lms-ui-multi-check');
 
