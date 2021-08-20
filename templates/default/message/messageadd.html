@@ -119,24 +119,6 @@
 		$('textarea[name="message[' + messageelem + ']"]').html(message);
 	}
 
-	function submit_try(threshold) {
-		$.ajax('?m=messageadd&count_recipients=1', {
-				method: "POST",
-				dataType: "json",
-				data: $('form[name="message"]').serialize()
-			}
-		).done(function (data) {
-			if (data.recipients <= threshold) {
-				document.message.submit();
-			} else {
-				confirmDialog($t("Are you sure you want to send messages to $a customer(s)?", data.recipients), $('#submit-try')).done(function() {
-					document.message.submit();
-				});
-			}
-		});
-		return false;
-	}
-
 </script>
 <table class="lmsbox">
 	<colgroup>
@@ -661,8 +643,7 @@
 		</tr>
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
-				{button icon="quick-send" id="submit-try" label="Send"
-					onclick="submit_try({ConfigHelper::getConfig('phpui.send_message_confirm_threshold',50)});"}
+				{button icon="quick-send" id="submit-button" label="Send"}
 			</td>
 		</tr>
     </tbody>
@@ -776,6 +757,54 @@
 			countChars(this);
 			pophide();
 		}).mouseout();
+
+		$('#submit-button').click(function() {
+			var that = this;
+			tinyMCE.triggerSave();
+			$.ajax(
+				'?m=messageadd&count_recipients=1',
+				{
+					method: "POST",
+					dataType: "json",
+					data: $('#message').serialize()
+				}
+			).done(function (data) {
+				var confirmThreshold = {intval(ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50))};
+				if (data.recipients <= confirmThreshold) {
+					if (data.recipients > 0) {
+						$('#message').submit();
+					}
+				} else {
+					var violationType = '{ConfigHelper::getConfig('phpui.send_message_limit_violation_type', 'warning')}';
+					switch (violationType) {
+						case 'error':
+							alertDialog(
+								$t(
+									"You violate recipient limit ($a) trying to send messages to $b customer(s)!",
+									confirmThreshold,
+									data.recipients
+								),
+								that
+							);
+							break;
+						case 'warning':
+							confirmDialog(
+								$t(
+									"Are you sure you want to send messages to $a customer(s)?",
+									data.recipients
+								),
+								that
+							).done(function() {
+								$('#message').submit();
+							});
+							break;
+						default:
+							$('#message').submit();
+							break;
+					}
+				}
+			});
+		});
 	});
 
 </script>
