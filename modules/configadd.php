@@ -216,7 +216,7 @@ if (!empty($reftype)) {
         case 'division':
             $layout['pagetitle'] = trans('Overriding config option for division');
 
-            $params['exludedDivisions'] = implode(',', array_keys($LMS->getRelatedDivisions($refconfigid)));
+            $params['exludedDivisions'] = implode(',', array_keys($LMS->getRelatedDivisions($refconfigid) ?: array()));
             $divisionslist = $LMS->getDivisionList($params);
             $SMARTY->assign('divisionslist', $divisionslist);
             break;
@@ -226,7 +226,7 @@ if (!empty($reftype)) {
             $divisioninfo = $LMS->GetDivision($divisionid);
             $SMARTY->assign('divisioninfo', $divisioninfo);
 
-            $params['excludedUsers'] = implode(',', array_keys($LMS->getRelatedUsers($refconfigid, $divisionid)));
+            $params['excludedUsers'] = implode(',', array_keys($LMS->getRelatedUsers($refconfigid, $divisionid) ?: array()));
             $params['divisions'] = $divisionid;
             $userslist = $LMS->GetUsers($params);
             $SMARTY->assign('userslist', $userslist);
@@ -234,7 +234,7 @@ if (!empty($reftype)) {
         case 'user':
             $layout['pagetitle'] = trans('Overriding config option for user');
 
-            $params['excludedUsers'] = implode(',', array_keys($LMS->getRelatedUsers($refconfigid)));
+            $params['excludedUsers'] = implode(',', array_keys($LMS->getRelatedUsers($refconfigid) ?: array()));
             $userslist = $LMS->GetUsers($params);
             $SMARTY->assign('userslist', $userslist);
             break;

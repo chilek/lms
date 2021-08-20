@@ -39,7 +39,7 @@ if ($SESSION->is_set('backtoStack', true)) {
         $SESSION->save('backtoStack', $backtoStack, true);
     }
 } elseif ($SESSION->is_set('backto')) {
-    $backtoStack = $SESSION->get('backtoStack');
+    $backtoStack = $SESSION->get('backtoStack') ?: array();
     $queryString = $_SERVER['QUERY_STRING'];
     $backto = end($backtoStack);
     if (!in_array($queryString, $backtoStack) && $queryString != $backto) {
