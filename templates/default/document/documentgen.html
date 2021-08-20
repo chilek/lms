@@ -28,12 +28,12 @@
 	}
 
 	function enable_templates() {
-		$('#templates').prop('disabled', false);
+		$('#templ').prop('disabled', false);
 	}
 
 	function disable_templates() {
-		$('#templates').val(0);
-		$('#templates').prop('disabled', true);
+		$('#templ').val(0);
+		$('#templ').prop('disabled', true);
 	}
 
 	function printdoc() {
@@ -72,7 +72,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr>
+		<tr style="display:table-row;">
 			<td>
 				{icon name="template"}
 			</td>
@@ -80,9 +80,9 @@
 				<strong>{trans("Template:")}</strong>
 			</td>
 			<td>
-				<select size="1" name="document[templ]" id="templates" {if $document.type >= 0} disabled{/if}
-						{tip text="Select document template" trigger="templ"}
-						id="templ" onChange="DocTemplateChanged();"
+				<select size="1" name="document[templ]" id="templ" {if $document.type >= 0} disabled{/if}
+					onChange="DocTemplateChanged();"
+					{tip text="Select document template" trigger="templ"}
 				>
 					<option value="0">... {trans("select template")} ...</option>
 					{foreach $docengines as $docengine}

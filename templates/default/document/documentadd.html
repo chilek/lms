@@ -39,12 +39,12 @@
 	}
 
 	function enable_templates() {
-		$('#templates').prop('disabled', false);
+		$('#templ').prop('disabled', false);
 	}
 
 	function disable_templates() {
-		$('#templates').val('');
-		$('#templates').prop('disabled', true);
+		$('#templ').val('');
+		$('#templ').prop('disabled', true);
 	}
 
 	function CustomerChanged() {
@@ -88,20 +88,21 @@
 				</select>
 			</td>
 		</tr>
-		<tr>
+		<tr style="display:table-row;">
 			<td>
 				{icon name="template"}
 			</td>
 			<td>
 				<strong>{trans("Template:")}</strong>
 			</td>
-			<TD>
-				<select size="1" name="document[templ]" id="templates" {if $document.type >= 0} disabled{/if}
-						{tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"}
-						id="templ" onchange="DocTemplateChanged();">
+			<td>
+				<select size="1" id="templ" name="document[templ]" {if $document.type >= 0} disabled{/if}
+					onchange="DocTemplateChanged();"
+					{tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"}
+				>
 					{include file="document/documenttemplateoptions.html"}
 				</select>
-			</TD>
+			</td>
 		</tr>
 		<tr>
 			<td>
