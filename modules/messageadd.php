@@ -751,6 +751,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     }
 
     if (!$error) {
+        die;
         set_time_limit(0);
 
         $message['body'] = str_replace("\r", '', $message['body']);
