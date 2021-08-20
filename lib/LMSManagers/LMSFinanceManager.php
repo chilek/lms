@@ -5030,7 +5030,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function isTariffEditable($id)
     {
-        return (ConfigHelper::checkPrivilege('used_tariff_edit') || $this->db->GetOne(
+        return (ConfigHelper::checkPrivilege('used_tariff_edit') || !$this->db->GetOne(
             'SELECT COUNT(CASE WHEN s.customerid IS NULL AND commited = 1 AND suspended = 0 AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE NULL END) AS active
             FROM assignments
             LEFT JOIN (
@@ -5041,7 +5041,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             ) s ON s.customerid = assignments.customerid
             WHERE tariffid = ?',
             array($id)
-        ) > 0);
+        ));
     }
 
     public function getPromotionSchema($id)
