@@ -214,7 +214,9 @@ version 27-git (????-??-??):
     from 'invoices.template_file' [chilan]
   - improvement: hide resolved tickets in customer tickets panel
     (variable: phpui.default_show_closed_tickets, default: false) [interduo]
-    
+  - enhancement: 'phpui.send_message_limit_violation_type' with 'warning' as default value specifies
+    reaction on recipient limit overrun in send message form [chilan]
+
 version 26.0 (2020-12-15):
 
   - enhancement: 'invoices.proforma_conversion_comment_format' allows to define comment format
