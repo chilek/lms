@@ -83,7 +83,12 @@
 											<br><A href="mailto:{$ticket.requestor_mail}">{$ticket.requestor_mail}</A>
 										{/if}
 										{if $ticket.requestor_phone}
-											<br>{$ticket.requestor_phone}
+											<br>
+											<a class="phone_number" href="tel:{$ticket.requestor_phone|escape}">
+												{icon name="phone"}
+												{$ticket.requestor_phone|escape}
+											</a>
+											{Utils::createCallPhoneUrl($ticket.requestor_phone)}
 										{/if}
 									{/if}
 								</TD>
@@ -433,6 +438,7 @@
 					{icon name="phone"}
 					{$customerinfo.phone|escape}
 				</a>
+				{Utils::createCallPhoneUrl($customerinfo.phone)}
 			{/if}
 			{icon name="money"} {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
 		</TD>
