@@ -414,6 +414,32 @@ switch ($action) {
             $contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
         }
 
+        $contentDiff = false;
+        foreach ($invoicecontents as $item) {
+            $idx = $item['itemid'];
+
+            if (!($invoicecontents[$idx]['deleted'] === $contents[$idx]['deleted']
+                && intval($invoicecontents[$idx]['taxid']) === intval($contents[$idx]['taxid'])
+                && intval($invoicecontents[$idx]['taxcategory']) === intval($contents[$idx]['taxcategory'])
+                && intval($invoicecontents[$idx]['servicetype']) === intval($contents[$idx]['servicetype'])
+                && $invoicecontents[$idx]['prodid'] == $contents[$idx]['prodid']
+                && $invoicecontents[$idx]['content'] == $contents[$idx]['content']
+                && f_round($invoicecontents[$idx]['count'], 3) === f_round($contents[$idx]['count'], 3)
+                && f_round($invoicecontents[$idx]['pdiscount']) === f_round($contents[$idx]['pdiscount'])
+                && f_round($invoicecontents[$idx]['vdiscount']) === f_round($contents[$idx]['vdiscount'])
+                && $invoicecontents[$idx]['name'] == $contents[$idx]['name']
+                && intval($invoicecontents[$idx]['tariffid']) === intval($contents[$idx]['tariffid'])
+                && f_round($invoicecontents[$idx]['valuebrutto']) === f_round($contents[$idx]['valuebrutto'])
+                && f_round($invoicecontents[$idx]['s_valuebrutto']) === f_round($contents[$idx]['s_valuebrutto']))
+            ) {
+                $contentDiff = true;
+                break;
+            }
+        }
+        if (!$contentDiff) {
+            break;
+        }
+
         $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 
         $cnote['currency'] = $cnote['oldcurrency'];
