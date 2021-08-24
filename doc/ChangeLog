@@ -2,6 +2,8 @@ $Id$
 
 version 28-git (????-??-??):
 
+  - improvement: 'phpui.call_phone_url' support in ticket view form [chilan]
+
 version 27.0 (2021-08-20):
 
   - enhancement: require user selection in event(add/edit) forms,
