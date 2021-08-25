@@ -321,9 +321,6 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
-
-$_LANG['billing'] = 'billing';
-
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -1484,6 +1481,7 @@ $_LANG['nodes management'] = 'zarządzanie komputerami';
 $_LANG['Nodes Scanning'] = 'Skanowanie komputerów';
 $_LANG['Nodes Search'] = 'Wyszukiwanie komputerów';
 $_LANG['Nodes Search Results'] = 'Wyniki wyszukiwania komputerów';
+$_LANG['Nothing has changed in positions of the document!'] = 'W pozycjach dokumentu nic się nie zmieniło!';
 $_LANG['no device'] = 'brak urządzenia';
 $_LANG['No, I\'ve changed my mind.'] = 'Nie, zmieniłem zdanie.';
 $_LANG['no limits'] = 'bez ograniczeń';
