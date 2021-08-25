@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$_LANG['Nothing has changed in positions of the document!'] = 'W pozycjach dokumentu nic się nie zmieniło!';
 $_LANG['Enter document number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer dokumentu. UWAGA! Zmiana tego numeru może być NIEBEZPIECZNA! (pozostaw to pole puste, aby uzyskać kolejny numer)';
 
 $_LANG['Previous balance: $a $b'] = 'Dotychczasowe saldo: $a $b';
@@ -1483,6 +1482,7 @@ $_LANG['nodes management'] = 'zarządzanie komputerami';
 $_LANG['Nodes Scanning'] = 'Skanowanie komputerów';
 $_LANG['Nodes Search'] = 'Wyszukiwanie komputerów';
 $_LANG['Nodes Search Results'] = 'Wyniki wyszukiwania komputerów';
+$_LANG['Nothing has changed in positions of the document!'] = 'W pozycjach dokumentu nic się nie zmieniło!';
 $_LANG['no device'] = 'brak urządzenia';
 $_LANG['No, I\'ve changed my mind.'] = 'Nie, zmieniłem zdanie.';
 $_LANG['no limits'] = 'bez ograniczeń';
