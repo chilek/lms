@@ -377,7 +377,7 @@ CREATE INDEX customerkarmalastchanges_timestamp_idx ON customerkarmalastchanges 
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS customercalls_id_seq;
 CREATE SEQUENCE customercalls_id_seq;
-DROP TABLE IF EXISTS customercalls;
+DROP TABLE IF EXISTS customercalls CASCADE;
 CREATE TABLE customercalls (
     id integer DEFAULT nextval('customercalls_id_seq'::text) NOT NULL,
     userid integer DEFAULT NULL
