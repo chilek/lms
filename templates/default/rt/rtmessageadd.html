@@ -209,16 +209,17 @@
 			{/box_row}
 
 			{box_row icon="queue" icon_class="fa-fw" label="Queue"}
-				<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+				<select size="1" name="message[queueid]" {tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
+					onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 					{if $group_action}
 						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
 					{/if}
 					{foreach $queuelist as $item}
-					<OPTION value="{$item.id}"
-						{if $item.newmessagesubject && $item.newmessagebody || $item.newmessagesmsbody} data-newmessage-notify="1"{/if}
-						{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
+						<option value="{$item.id}"
+							{if $item.newmessagesubject && $item.newmessagebody || $item.newmessagesmsbody} data-newmessage-notify="1"{/if}
+							{if $item.id == $message.queueid} selected{/if}>{$item.name}</option>
 					{/foreach}
-				</SELECT>
+				</select>
 			{/box_row}
 
 			{box_row icon="owner" icon_class="fa-fw" label="Owner"}

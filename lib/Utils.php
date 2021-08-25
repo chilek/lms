@@ -778,4 +778,20 @@ class Utils
             return $e->getMessage();
         }
     }
+
+    public static function createCallPhoneUrl($phone)
+    {
+        static $call_phone_url = null;
+
+        if (!isset($call_phone_url)) {
+            $call_phone_url = ConfigHelper::getConfig('phpui.call_phone_url', '', true);
+        }
+
+        if (empty($call_phone_url)) {
+            return null;
+        }
+
+        $url = str_replace('%phone', $phone, $call_phone_url);
+        return '<a href="' . $url . '"><i class="lms-ui-icon-phone"></i></a>';
+    }
 }
