@@ -23,7 +23,6 @@
 
 	function checkChanges() {
 		let contentDiff = '{$cnote.content_diff}';
-		console.log('test = ',contentDiff)
 		if (!parseInt(contentDiff)) {
 			alertDialog($t("Nothing has changed in positions of the document!"));
 			return;

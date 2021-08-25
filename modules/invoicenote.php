@@ -111,15 +111,16 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['recipient_address_id'] = $invoice['recipient_address_id'];
 
     //old header values
-    $cnote['oldheader']['sdate'] = date("Y/m/d", $cnote['sdate']);
-    $cnote['oldheader']['flags'] = serialize($cnote['flags']);
-    $cnote['oldheader']['netflag'] = $cnote['netflag'];
-    $cnote['oldheader']['paytype'] = $cnote['paytype'];
-    $cnote['oldheader']['deadline'] = date("Y/m/d", intval($cnote['deadline']));
-    $cnote['oldheader']['recipient_address_id'] = $cnote['recipient_address_id'];
-    $cnote['oldheader']['use_current_customer_data'] = isset($cnote['use_current_customer_data']);
-    $cnote['oldheader']['reason'] = $cnote['reason'];
-
+    $cnote['oldheader'] = array(
+        'sdate' => date("Y/m/d", $cnote['sdate']),
+        'flags' => serialize($cnote['flags']),
+        'netflag' => $cnote['netflag'],
+        'paytype' => $cnote['paytype'],
+        'deadline' => date("Y/m/d", intval($cnote['deadline'])),
+        'recipient_address_id' => $cnote['recipient_address_id'],
+        'use_current_customer_data' => isset($cnote['use_current_customer_data']),
+        'reason' => $cnote['reason'],
+    );
     $cnote['content_diff'] = 1;
 
     $hook_data = array(
@@ -261,18 +262,22 @@ switch ($action) {
         $cnote['customerid'] = $invoice['customerid'];
 
         //new header values
-        $cnote['newheader']['sdate'] = date("Y/m/d", $cnote['sdate']);
-        $cnote['newheader']['flags'] = serialize(array(
-            DOC_FLAG_RECEIPT => empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : 1,
-            DOC_FLAG_TELECOM_SERVICE => empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : 1,
-            DOC_FLAG_RELATED_ENTITY => empty($cnote['flags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : 1,
-        ));
-        $cnote['newheader']['netflag'] = $cnote['netflag'];
-        $cnote['newheader']['paytype'] = $cnote['paytype'];
-        $cnote['newheader']['deadline'] = date("Y/m/d", $cnote['deadline']);
-        $cnote['newheader']['recipient_address_id'] = $_POST['cnote[recipient_address_id]'];
-        $cnote['newheader']['use_current_customer_data'] = isset($cnote['use_current_customer_data']);
-        $cnote['newheader']['reason'] = $cnote['reason'];
+        $cnote['newheader'] = array(
+            'sdate' => date("Y/m/d", $cnote['sdate']),
+            'flags' => serialize(array(
+                            DOC_FLAG_RECEIPT => empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : 1,
+                            DOC_FLAG_TELECOM_SERVICE => empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : 1,
+                            DOC_FLAG_RELATED_ENTITY => empty($cnote['flags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : 1,
+                        )),
+            'netflag' => $cnote['netflag'],
+            'paytype' => $cnote['paytype'],
+            'deadline' => date("Y/m/d", $cnote['deadline']),
+            'recipient_address_id' => $_POST['cnote[recipient_address_id]'],
+            'use_current_customer_data' => isset($cnote['use_current_customer_data']),
+            'reason' => $cnote['reason'],
+        );
+        $cnote['content_diff'] = 1;
+
         //old header values
         $cnote['oldheader'] = $oldHeader;
 
