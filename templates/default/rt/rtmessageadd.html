@@ -209,8 +209,9 @@
 			{/box_row}
 
 			{box_row icon="queue" icon_class="fa-fw" label="Queue"}
-				<select size="1" name="message[queueid]" {tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
-					onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+				<select size="1" name="message[queueid]"
+					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
+					onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
 					{if $group_action}
 						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
 					{/if}
@@ -223,19 +224,20 @@
 			{/box_row}
 
 			{box_row icon="owner" icon_class="fa-fw" label="Owner"}
-				<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
-					<OPTION value="0">- {trans("select user")} -</OPTION>
+				<select size="1" name="message[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
+					<option value="0">- {trans("select user")} -</option>
 					{if $group_action}
 						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("- no changes -")}</option>
 					{/if}
 					{foreach $userlist as $user}
-					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-						|| $user.id == $message.owner}
-					<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.owner} selected{/if}>{$user.rname|escape} ({$user.login})</OPTION>
-					{/if}
+						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+							|| $user.id == $message.owner}
+							<option value="{$user.id}"{if !$user.access} class="blend"{/if}
+								{if $user.id == $message.owner}selected{/if}>{$user.rname|escape} ({$user.login})</option>
+						{/if}
 					{/foreach}
-				</SELECT>
+				</select>
 				&nbsp;
 				<label>
 					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
@@ -245,8 +247,9 @@
 
 			{box_row icon="verifier" icon_class="fa-fw" label="Verifier" field_id="rtverifiers"}
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-					<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
-						<OPTION value="0">- {trans("select user")} -</OPTION>
+					<select size="1" name="message[verifierid]"
+						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
+						<option value="0">- {trans("select user")} -</option>
 						{if $group_action}
 							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
 						{/if}
@@ -254,10 +257,12 @@
 							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 								|| $user.id == $message.verifierid}
-							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.rname|escape} ({$user.login})</OPTION>
+								<option value="{$user.id}"{if !$user.access} class="blend"{/if}
+									{if $user.id == $message.verifierid} selected{/if}
+									>{$user.rname|escape} ({$user.login})</option>
 							{/if}
 						{/foreach}
-					</SELECT>
+					</select>
 				{else}
 					<input type="hidden" name="message[verifierid]" value="{$ticket.verifierid}">
 					<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>

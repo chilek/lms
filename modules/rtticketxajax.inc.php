@@ -131,6 +131,8 @@ function queue_changed($queue)
 
     $JSResponse->assign('rtverifiers', 'innerHTML', $content);
 
+    $JSResponse->script('initAdvancedSelects("#rtverifiers select")');
+
     return $JSResponse;
 }
 

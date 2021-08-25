@@ -176,16 +176,18 @@
 
 			{box_row icon="verifier" label="Verifier" field_id="rtverifiers" icon_class="fa-fw"}
 				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid || ConfigHelper::checkConfig('privileges.superuser')}
-					<SELECT size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
-						<OPTION value="">- {trans("select user")} -</OPTION>
+					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
+						<option value="">- {trans("select user")} -</option>
 						{foreach $userlist as $user}
 							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 							|| $user.id == $ticket.verifierid}
-								<OPTION value="{$user.id}"{if $user.id == $ticket.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.rname|escape} ({$user.login})</OPTION>
+								<option value="{$user.id}"{if !$user.access} class="blend"{/if}
+									{if $user.id == $ticket.verifierid}selected{/if}
+									>{$user.rname|escape} ({$user.login})</option>
 							{/if}
 						{/foreach}
-					</SELECT>
+					</select>
 				{else}
 					<input type="hidden" name="ticket[verifierid]" value="{$ticket.oldverifierid}">
 					<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>
@@ -217,13 +219,15 @@
 			{/box_row}
 
 			{box_row icon="queue" label="Queue" icon_class="fa-fw"}
-				<SELECT size="1" name="ticket[queue]" {tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+				<select size="1" name="ticket[queue]"
+						{tip class="lms-ui-advanced-select" text="Select queue" trigger="queue"}
+						onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
 					{foreach $queuelist as $item}
-					<OPTION value="{$item.id}"
-						{if $item.newticketsubject && $item.newticketbody || $item.newticketsmsbody} data-newticket-notify="1"{/if}
-						{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
+						<option value="{$item.id}"
+							{if $item.newticketsubject && $item.newticketbody || $item.newticketsmsbody} data-newticket-notify="1"{/if}
+							{if $item.id == $queue} selected{/if}>{$item.name}</option>
 					{/foreach}
-				</SELECT>
+				</select>
 			{/box_row}
 
 			{box_row icon="cause" label="Cause" icon_class="fa-fw"}

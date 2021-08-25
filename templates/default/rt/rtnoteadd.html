@@ -144,7 +144,7 @@
 		</TD>
 		<td>
 			<select size="1" name="note[queueid]" {tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
-				onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+				onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
 				{foreach $queuelist as $item}
 				<option value="{$item.id}"
 					{if $item.id == $note.queueid}selected{/if}>{$item.name}</option>
@@ -157,46 +157,49 @@
 			{icon name="owner"}
 			{trans("Owner")}
 		</TD>
-		<TD>
-			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
-				<OPTION value="0">- {trans("select user")} -</OPTION>
+		<td>
+			<select size="1" name="note[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
+				<option value="0">- {trans("select user")} -</option>
 				{foreach $userlist as $user}
-				{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-					|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-					|| $user.id == $note.owner}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.owner} selected{/if}>{$user.name|escape} ({$user.login})</OPTION>
-				{/if}
+					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+						|| $user.id == $note.owner}
+						<option value="{$user.id}"{if !$user.access} class="blend"{/if}
+							{if $user.id == $note.owner}selected{/if}>{$user.name|escape} ({$user.login})</option>
+					{/if}
 				{/foreach}
-			</SELECT>
+			</select>
 			&nbsp;
 			<label>
 				<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
 				{trans("assign to me")}
 			</label>
-		</TD>
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="verifier"}
 			{trans("Verifier")}
 		</TD>
-		<TD>
+		<td id="rtverifiers">
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-				<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"} id="rtverifiers">
-					<OPTION value="0">- {trans("select user")} -</OPTION>
+				<select size="1" name="note[verifierid]"
+					{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
+					<option value="0">- {trans("select user")} -</option>
 					{foreach $userlist as $user}
 						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 							|| $user.id == $note.verifierid}
-							<OPTION value="{$user.id}"{if $user.id == $note.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.name|escape} ({$user.login})</OPTION>
+							<option value="{$user.id}"{if !$user.access} class="blend"{/if}
+								{if $user.id == $note.verifierid} selected{/if}>{$user.name|escape} ({$user.login})</option>
 						{/if}
 					{/foreach}
-				</SELECT>
+				</select>
 			{else}
 				<input type="hidden" name="note[verifierid]" value="{$ticket.verifierid}">
 				<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>
 			{/if}
-		</TD>
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
