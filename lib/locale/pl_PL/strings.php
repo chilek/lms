@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Nothing has changed in positions of the document!'] = 'W pozycjach dokumentu nic się nie zmieniło!';
 $_LANG['Enter document number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer dokumentu. UWAGA! Zmiana tego numeru może być NIEBEZPIECZNA! (pozostaw to pole puste, aby uzyskać kolejny numer)';
 
 $_LANG['Previous balance: $a $b'] = 'Dotychczasowe saldo: $a $b';

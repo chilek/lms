@@ -120,6 +120,8 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['oldheader']['use_current_customer_data'] = isset($cnote['use_current_customer_data']);
     $cnote['oldheader']['reason'] = $cnote['reason'];
 
+    $cnote['content_diff'] = 1;
+
     $hook_data = array(
         'invoice' => $invoice,
         'cnote' => $cnote,
@@ -449,7 +451,9 @@ switch ($action) {
                 foreach ($invoicecontents as $item) {
                     $idx = $item['itemid'];
 
-                    $itemContentDiff = (f_round($invoicecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
+                    $itemContentDiff = ($invoicecontents[$idx]['deleteed'] != $contents[$idx]['deleteed']
+                        || f_round($invoicecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
+                        || f_round($invoicecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
                         || f_round($invoicecontents[$idx]['valuebrutto']) !== f_round($contents[$idx]['valuebrutto'])
                         || f_round($invoicecontents[$idx]['count'], 3) !== f_round($contents[$idx]['count'], 3)
                         || $invoicecontents[$idx]['content'] != $contents[$idx]['content']
@@ -470,6 +474,7 @@ switch ($action) {
                     }
                 }
             }
+            $cnote['content_diff'] = $contentDiff ? 1 : 0;
             if (empty($contentDiff)) {
                 break;
             }

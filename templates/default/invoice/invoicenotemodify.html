@@ -17,6 +17,20 @@
 <script src="js/lms-ui-deadline-selection.js"></script>
 <script>
 
+	$(function () {
+		checkChanges();
+	});
+
+	function checkChanges() {
+		let contentDiff = '{$cnote.content_diff}';
+		console.log('test = ',contentDiff)
+		if (!parseInt(contentDiff)) {
+			alertDialog($t("Nothing has changed in positions of the document!"));
+			return;
+		}
+
+	}
+
 	function saveInvoice() {
 		$('.invoice-contents-field-grossprice').prop('disabled', false);
 		$('.invoice-contents-field-netprice').prop('disabled', false);
