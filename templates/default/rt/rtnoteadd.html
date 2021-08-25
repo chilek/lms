@@ -142,13 +142,15 @@
 			{icon name="queue"}
 			{trans("Queue")}
 		</TD>
-		<TD>
-			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
-			{foreach from=$queuelist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $note.queueid}SELECTED{/if}>{$item.name}</OPTION>
-			{/foreach}
-			</SELECT>
-		</TD>
+		<td>
+			<select size="1" name="note[queueid]" {tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
+				onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+				{foreach $queuelist as $item}
+				<option value="{$item.id}"
+					{if $item.id == $note.queueid}selected{/if}>{$item.name}</option>
+				{/foreach}
+			</select>
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
