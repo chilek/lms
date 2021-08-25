@@ -23,6 +23,7 @@ DROP VIEW IF EXISTS vnodes;
 DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vusers;
+DROP VIEW IF EXISTS vinvoicecontents;
 DROP VIEW IF EXISTS vallusers;
 DROP VIEW IF EXISTS vdivisions;
 DROP VIEW IF EXISTS vnodetariffs_allsuspended;
