@@ -110,6 +110,16 @@ if (isset($_GET['id']) && $action == 'init') {
 
     $cnote['recipient_address_id'] = $invoice['recipient_address_id'];
 
+    //old header values
+    $cnote['oldheader']['sdate'] = date("Y/m/d", $cnote['sdate']);
+    $cnote['oldheader']['flags'] = serialize($cnote['flags']);
+    $cnote['oldheader']['netflag'] = $cnote['netflag'];
+    $cnote['oldheader']['paytype'] = $cnote['paytype'];
+    $cnote['oldheader']['deadline'] = date("Y/m/d", intval($cnote['deadline']));
+    $cnote['oldheader']['recipient_address_id'] = $cnote['recipient_address_id'];
+    $cnote['oldheader']['use_current_customer_data'] = isset($cnote['use_current_customer_data']);
+    $cnote['oldheader']['reason'] = $cnote['reason'];
+
     $hook_data = array(
         'invoice' => $invoice,
         'cnote' => $cnote,
@@ -161,6 +171,7 @@ switch ($action) {
     case 'setheader':
         $oldcurrency = $cnote['oldcurrency'];
         $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
+        $oldHeader = $cnote['oldheader'];
 
         $cnote = null;
         $error = null;
@@ -246,6 +257,22 @@ switch ($action) {
         $cnote['oldcurrency'] = $oldcurrency;
         $cnote['oldcurrencyvalue'] = $oldcurrencyvalue;
         $cnote['customerid'] = $invoice['customerid'];
+
+        //new header values
+        $cnote['newheader']['sdate'] = date("Y/m/d", $cnote['sdate']);
+        $cnote['newheader']['flags'] = serialize(array(
+            DOC_FLAG_RECEIPT => empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : 1,
+            DOC_FLAG_TELECOM_SERVICE => empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : 1,
+            DOC_FLAG_RELATED_ENTITY => empty($cnote['flags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : 1,
+        ));
+        $cnote['newheader']['netflag'] = $cnote['netflag'];
+        $cnote['newheader']['paytype'] = $cnote['paytype'];
+        $cnote['newheader']['deadline'] = date("Y/m/d", $cnote['deadline']);
+        $cnote['newheader']['recipient_address_id'] = $_POST['cnote[recipient_address_id]'];
+        $cnote['newheader']['use_current_customer_data'] = isset($cnote['use_current_customer_data']);
+        $cnote['newheader']['reason'] = $cnote['reason'];
+        //old header values
+        $cnote['oldheader'] = $oldHeader;
 
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
@@ -414,30 +441,38 @@ switch ($action) {
             $contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
         }
 
-        $contentDiff = false;
-        foreach ($invoicecontents as $item) {
-            $idx = $item['itemid'];
+        if (!isset($cnote['newheader'])
+            || (isset($cnote['newheader']) && empty(array_diff_assoc($cnote['oldheader'], $cnote['newheader'])))
+        ) {
+            $contentDiff = false;
+            if ($invoicecontents) {
+                foreach ($invoicecontents as $item) {
+                    $idx = $item['itemid'];
 
-            if (!($invoicecontents[$idx]['deleted'] === $contents[$idx]['deleted']
-                && intval($invoicecontents[$idx]['taxid']) === intval($contents[$idx]['taxid'])
-                && intval($invoicecontents[$idx]['taxcategory']) === intval($contents[$idx]['taxcategory'])
-                && intval($invoicecontents[$idx]['servicetype']) === intval($contents[$idx]['servicetype'])
-                && $invoicecontents[$idx]['prodid'] == $contents[$idx]['prodid']
-                && $invoicecontents[$idx]['content'] == $contents[$idx]['content']
-                && f_round($invoicecontents[$idx]['count'], 3) === f_round($contents[$idx]['count'], 3)
-                && f_round($invoicecontents[$idx]['pdiscount']) === f_round($contents[$idx]['pdiscount'])
-                && f_round($invoicecontents[$idx]['vdiscount']) === f_round($contents[$idx]['vdiscount'])
-                && $invoicecontents[$idx]['name'] == $contents[$idx]['name']
-                && intval($invoicecontents[$idx]['tariffid']) === intval($contents[$idx]['tariffid'])
-                && f_round($invoicecontents[$idx]['valuebrutto']) === f_round($contents[$idx]['valuebrutto'])
-                && f_round($invoicecontents[$idx]['s_valuebrutto']) === f_round($contents[$idx]['s_valuebrutto']))
-            ) {
-                $contentDiff = true;
+                    $itemContentDiff = (f_round($invoicecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
+                        || f_round($invoicecontents[$idx]['valuebrutto']) !== f_round($contents[$idx]['valuebrutto'])
+                        || f_round($invoicecontents[$idx]['count'], 3) !== f_round($contents[$idx]['count'], 3)
+                        || $invoicecontents[$idx]['content'] != $contents[$idx]['content']
+                        || f_round($invoicecontents[$idx]['pdiscount']) !== f_round($contents[$idx]['pdiscount'])
+                        || f_round($invoicecontents[$idx]['vdiscount']) !== f_round($contents[$idx]['vdiscount'])
+                        || $invoicecontents[$idx]['deleted'] !== $contents[$idx]['deleted']
+                        || intval($invoicecontents[$idx]['taxid']) !== intval($contents[$idx]['taxid'])
+                        || intval($invoicecontents[$idx]['taxcategory']) !== intval($contents[$idx]['taxcategory'])
+                        || intval($invoicecontents[$idx]['servicetype']) !== intval($contents[$idx]['servicetype'])
+                        || $invoicecontents[$idx]['prodid'] != $contents[$idx]['prodid']
+                        || $invoicecontents[$idx]['name'] != $contents[$idx]['name']
+                        || intval($invoicecontents[$idx]['tariffid']) !== intval($contents[$idx]['tariffid'])
+                    );
+
+                    if ($itemContentDiff) {
+                        $contentDiff = true;
+                        break;
+                    }
+                }
+            }
+            if (empty($contentDiff)) {
                 break;
             }
-        }
-        if (!$contentDiff) {
-            break;
         }
 
         $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
