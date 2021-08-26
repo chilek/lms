@@ -277,16 +277,6 @@
 
 <script>
 
-	{if empty($promotions)}
-		$('#submit-button').click(function() {
-			var form = $('#documentadd-form');
-			if (form.get(0).checkValidity()) {
-				$(this).prop('disabled', !$('#new-window-toggle').prop('checked'));
-				form.attr('action', form.attr('action').replace('&print=1', '')).submit();
-			}
-		});
-	{/if}
-
 	$('.operation-button').click(function() {
 		var form = $('#documentadd-form');
 		if (form.get(0).checkValidity()) {
@@ -295,6 +285,10 @@
 				form.attr('action', form.attr('action') + '&print=1');
 				{if empty($promotions)}
 					form.submit();
+				{/if}
+			} else {
+				{if empty($promotions)}
+					form.attr('action', form.attr('action').replace('&print=1', '')).submit();
 				{/if}
 			}
 		}
