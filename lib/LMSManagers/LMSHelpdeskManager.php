@@ -2079,7 +2079,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        if ($params['queue']) {
+        if (empty($params['nousernotify']) && $params['queue']) {
             if ($recipients = $this->db->GetCol(
                 'SELECT DISTINCT email
 			FROM users, rtrights
