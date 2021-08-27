@@ -1233,6 +1233,9 @@ foreach ($assigns as $assign) {
     if (!$assign['suspended'] && $assign['allsuspended']) {
         $assign['value'] = $assign['value'] * $suspension_percentage / 100;
     }
+    if (empty($assign['value'])) {
+        continue;
+    }
 
     if ($assign['liabilityid']) {
         $desc = $assign['name'];
