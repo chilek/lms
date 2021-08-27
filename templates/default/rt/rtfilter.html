@@ -192,6 +192,13 @@
                     placeholder="{trans("yyyy/mm/dd hh:mm")}"
                     {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
             </label>
+            <label class="nobr">
+                {trans("Watched tickets")}
+                <SELECT size="1" name="watching" onChange="document.filter.submit()">
+                    <option value="-1"{if $filter.watching == -1} selected{/if}>{trans("no")}</option>
+                    <option value="1"{if $filter.watching == 1} selected{/if}>{trans("yes")}</option>
+                </SELECT>
+            </label>
         </FORM>
         </div>
         {persistent_filter}

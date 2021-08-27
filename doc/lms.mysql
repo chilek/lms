@@ -40,6 +40,7 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS rtticketwatchers;
 DROP TABLE IF EXISTS files;
 DROP TABLE IF EXISTS filecontainers;
 DROP TABLE IF EXISTS passwdhistory;
@@ -2951,6 +2952,23 @@ CREATE TABLE files (
 	INDEX md5sum (md5sum),
 	UNIQUE KEY files_containerid_key (containerid, md5sum),
 	FOREIGN KEY (containerid) REFERENCES filecontainers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+
+# --------------------------------------------------------
+#
+# Structure of table rtticketwatchers
+#
+CREATE TABLE rtticketwatchers (
+	id int(11) NOT NULL auto_increment,
+	ticketid int(11) NOT NULL,
+	userid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT rtticketwatchers_rttickets_fkey
+	    FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT rtticketwatchers_users_fkey
+	    FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY rtticketwatchers_ticketid_ukey (ticketid, userid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

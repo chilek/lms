@@ -5136,6 +5136,9 @@ $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
 
 $_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';
+$_LANG['Start watching'] = 'Obserwuj';
+$_LANG['Stop watching'] = 'Nie obserwuj';
+$_LANG['Watched tickets'] = 'Obserwowane zgłoszenia';
 
 $_LANG['Sent by customer at $a'] = 'Przesłane przez klienta $a';
 

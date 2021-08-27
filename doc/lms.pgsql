@@ -2133,6 +2133,23 @@ CREATE TABLE rtqueuecategories (
 );
 
 /* ---------------------------------------------------
+ Structure of table "rtticketwatchers"
+------------------------------------------------------*/
+
+DROP SEQUENCE IF EXISTS rtticketwatchers_id_seq;
+CREATE SEQUENCE rtticketwatchers_id_seq;
+DROP TABLE IF EXISTS rtticketwatchers CASCADE;
+CREATE TABLE rtticketwatchers (
+	id integer		DEFAUlT nextval('rtticketwatchers_id_seq'::text) NOT NULL,
+	ticketid integer	NOT NULL
+		CONSTRAINT rtticketwatchers_rttickets_fkey REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	userid integer	NOT NULL
+		CONSTRAINT rtticketwatchers_users_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	CONSTRAINT rtticketwatchers_ticketid_ukey UNIQUE (ticketid, userid)
+);
+
+/* ---------------------------------------------------
  Structure of table "domains"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS domains_id_seq;
@@ -4145,6 +4162,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021082800');
 
 COMMIT;

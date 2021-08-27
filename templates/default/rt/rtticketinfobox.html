@@ -385,6 +385,11 @@
 				{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 					{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" tip="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 				{/if}
+				{if $ticket.watched}
+				    {button icon="unwatch" label="Stop watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=0"}
+				{else}
+				    {button icon="watch" label="Start watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=1"}
+				{/if}
 				{button type="link-button" icon="clone" label="Clone" tip="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
 				{if $ticket.state != $smarty.const.RT_RESOLVED}
 					{button type="link-button" icon="childticket" label="Create secondary ticket" tip="Create secondary ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
