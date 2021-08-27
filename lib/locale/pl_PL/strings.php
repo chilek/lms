@@ -437,6 +437,7 @@ $_LANG['Allows you to find customer'] = 'Wyszukiwanie klientów';
 $_LANG['Allows you to manage database backups'] = 'Zarządzanie kopiami zapasowymi';
 $_LANG['Allows you to search node'] = 'Wyszukiwanie komputerów';
 $_LANG['All ports in that device are in use.'] = 'Wszystkie porty w tym urządzeniu są już zajęte.';
+$_LANG['all suspended'] = 'zawieszenie wszystkich';
 $_LANG['All tickets and messages in queue will be lost.'] = 'Wszystkie zgłoszenia i wiadomości w tej kolejce zostaną utracone.';
 $_LANG['All customer data and computers bound to this customer will be lost!'] = 'Wszystkie dane klienta i komputery przypisane do tego klienta zostaną utracone!';
 $_LANG['- all users -'] = '- wszyscy -';

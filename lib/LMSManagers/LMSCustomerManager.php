@@ -1021,6 +1021,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     GROUP BY a.customerid, d.id
                     HAVING MIN(a.datefrom) > ?NOW?';
                 break;
+            case -9:
+                $assignment = 'SELECT DISTINCT(a.customerid)
+                    FROM assignments a
+                    WHERE a.commited = 1 AND tariffid IS NULL AND liabilityid IS NULL
+                        AND datefrom <= ?NOW?
+                        AND (dateto >= ?NOW? OR dateto = 0)';
+                break;
             default:
                 if ($as > 0) {
                     $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
