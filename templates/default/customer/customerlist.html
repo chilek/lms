@@ -194,7 +194,7 @@
 				<label for="g[]">
 				{trans("Group")}
 				<input type="hidden" name="g[]" value="">
-				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all groups -")}">
+				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-advanced-select" multiple>
 					{foreach $customergroups as $customergroup}
 					<OPTION value="{$customergroup.id}"
 						{if (is_array($filter.customergroup) && in_array($customergroup.id, $filter.customergroup))

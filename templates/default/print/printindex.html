@@ -1589,7 +1589,7 @@
 								{trans("Group:")}
 							</TD>
 							<TD class="nobr">
-								<SELECT size="4" name="customergroups[]" class="lms-ui-multiselect"
+								<SELECT size="4" name="customergroups[]" class="lms-ui-advanced-select"
 										multiple {tip text="Select group"}
 										data-default-value="{trans("- all groups -")}">
 									{foreach $customergroups as $customergroup}
@@ -1840,7 +1840,7 @@
 			</td>
 			<td>
 				<div id="uke-income-customergroup-selection">
-					<select name="customergroup">
+					<select name="customergroup"  class="lms-ui-advanced-select">
 						<option value="">{trans("- any -")}</option>
 						{foreach $customergroups as $group}
 							<option value="{$group.id}"{if isset($filter['uke-income']['customergroup']) && $filter['uke-income']['customergroup'] == $group.id} selected{/if}

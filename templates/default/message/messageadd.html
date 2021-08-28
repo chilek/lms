@@ -250,7 +250,7 @@
 							</td>
 							<td class="nobr">{trans("Group")}</td>
 							<td class="multiselect">
-								<select name="message[customergroup][]" multiple class="lms-ui-multiselect"
+								<select name="message[customergroup][]" multiple class="lms-ui-advanced-select"
 									{tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
 									{foreach $customergroups as $customergroup}
 										<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}

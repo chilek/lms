@@ -163,7 +163,7 @@
 				<OPTION value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</OPTION>
 			</SELECT>
 			{trans("Group:")}
-			<SELECT size="1" name="group">
+			<SELECT size="1" name="group"  class="lms-ui-advanced-select" multiple>
 				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
 				{section name="grouplist" loop=$grouplist}
 					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"&hellip;":true}</OPTION>

@@ -561,7 +561,7 @@
 			<strong>{trans("Group")}</strong>
 		</td>
 		<td>
-			<select size="1" name="g[]" multiple class="lms-ui-multiselect">
+			<select size="1" name="g[]" multiple class="lms-ui-advanced-select">
 				<option value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if}
 					data-exclusive>{trans("- all groups -")}</option>
 				<option value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if}

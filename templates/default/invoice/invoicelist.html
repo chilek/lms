@@ -123,7 +123,7 @@
 					<label>
 						{trans("Group")}
 						<input type="hidden" name="group" value="all">
-						<select size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
+						<select size="1" name="group[]" class="lms-ui-advanced-select" multiple>
 							{foreach $grouplist as $group}
 								<option value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}
 									>{$group.name|truncate:30:"&hellip;":true}</option>
