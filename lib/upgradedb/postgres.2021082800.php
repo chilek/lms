@@ -32,8 +32,9 @@ $this->Execute("
         userid integer	NOT NULL
             CONSTRAINT rtticketwatchers_users_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT rtticketwatchers_ticketid_ukey UNIQUE (ticketid, userid),
-        PRIMARY KEY (id))
-    ");
+        PRIMARY KEY (id)
+    )
+");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021082800', 'dbversion'));
 
