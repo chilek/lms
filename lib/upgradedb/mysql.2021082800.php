@@ -32,7 +32,7 @@ $this->Execute("
 		CONSTRAINT rtticketwatchers_rttickets_fkey
 		    FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 		CONSTRAINT rtticketwatchers_users_fkey
-		    FOREIGN KEY (userid) REFERENCES userid (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		    FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 		UNIQUE KEY rtticketwatchers_ticketid_ukey (ticketid, userid)
 	);
 ");
