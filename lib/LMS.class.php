@@ -2275,6 +2275,12 @@ class LMS
         return $manager->TicketChange($ticketid, $props);
     }
 
+    public function changeTicketWatching($ticketid, $watching)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->changeTicketWatching($ticketid, $watching);
+    }
+
     public function GetQueueCategories($queueid)
     {
         $manager = $this->getHelpdeskManager();
