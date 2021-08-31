@@ -612,7 +612,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $show_balance_summary ? 'Invoice value: $a' : 'To repay: $a',
+                    'Invoice value: $a (to repay)',
                     moneyf($this->data['value'], $this->data['currency'])
                 ),
                 0,
@@ -631,7 +631,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $show_balance_summary ? 'Invoice value: $a' : 'To pay: $a',
+                    'Invoice value: $a (to pay)',
                     moneyf($this->data['value'], $this->data['currency'])
                 ),
                 0,
@@ -669,12 +669,17 @@ class LMSTcpdfInvoice extends LMSInvoice
         if ($balance > 0) {
             $comment = trans('(excess payment)');
         } elseif ($expired_balance < 0) {
-            $comment = trans('(underpayment)');
+            $comment = trans('(to pay)');
         } else {
             $comment = '';
         }
 
         if ($show_balance_summary) {
+            if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
+                $total = $this->data['total'] - $this->data['invoice']['total'];
+            } else {
+                $total = $this->data['total'];
+            }
             $this->backend->writeHTMLCell(
                 0,
                 0,
@@ -682,7 +687,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 trans(
                     'Previous balance: $a $b',
-                    moneyf(abs($expired_balance) / $this->data['currencyvalue'], $this->data['currency']),
+                    moneyf((abs($balance) - $total) / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ),
                 0,
@@ -726,10 +731,15 @@ class LMSTcpdfInvoice extends LMSInvoice
                 0,
                 '',
                 '',
-                trans(
-                    'Total to pay: $a',
-                    moneyf($total_balance >= 0 ? 0 : (-$total_balance / $this->data['currencyvalue']), $this->data['currency'])
-                ),
+                $total_balance >= 0
+                    ? trans(
+                        'Excess payment: $a',
+                        moneyf($total_balance / $this->data['currencyvalue'], $this->data['currency'])
+                    )
+                    : trans(
+                        'Total to pay: $a',
+                        moneyf(-$total_balance / $this->data['currencyvalue'], $this->data['currency'])
+                    ),
                 0,
                 1,
                 0,

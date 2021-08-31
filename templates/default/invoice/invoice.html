@@ -529,11 +529,11 @@
 			<td width="50%" align="left" class="hdf">
 				{if $invoice.rebate}
 					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-					{t a=moneyf($invoice.value, $invoice.currency)}{if $show_balance_summary}Invoice value: $a{else}To repay: $a{/if}{/t}
+					{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
 					{if $use_alert_color && !$show_balance_summary}</span>{/if}
 				{else}
 					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-					{t a=moneyf($invoice.value, $invoice.currency)}{if $show_balance_summary}Invoice value: $a{else}To pay: $a{/if}{/t}
+					{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
 					{if $use_alert_color && !$show_balance_summary}</span>{/if}
 				{/if}
 			</td>
@@ -576,14 +576,19 @@
 		{if $icustomerbalance > 0}
 			{$comment = trans('(excess payment)')}
 		{elseif $customerbalance < 0}
-			{$comment = trans('(underpayment)')}
+			{$comment = trans('(to pay)')}
 		{else}
 			{$comment = ''}
 		{/if}
 		{if $show_balance_summary}
 			<tr>
 				<td colspan="2" style="padding-bottom: 1em;">
-					{trans('Previous balance: $a $b', moneyf(abs($expired_customerbalance) / $invoice.currencyvalue, $invoice.currency), $comment)}
+					{if isset($invoice.invoice) && $invoice.doctype == $smarty.const.DOC_CNOTE}
+						{$total = $invoice.total - $invoice.invoice.total}
+					{else}
+						{$total = $invoice.total}
+					{/if}
+					{trans('Previous balance: $a $b', moneyf((abs($total_customerbalance) - $total) / $invoice.currencyvalue, $invoice.currency), $comment)}
 					<br>
 					{if $total_customerbalance >= 0}
 						{$total_to_pay = 0}
