@@ -5,6 +5,8 @@ version 28-git (????-??-??):
   - improvement: 'phpui.call_phone_url' support in ticket view form [chilan]
   - improvement: implemented 'all suspended' for assignment filter [chilan]
   - enhancement: ticket watching support [interduo]
+  - devel/cleanup: removed support for 'invoices.show_expired_balance' as it's logically replaced
+    by 'invoices.show_balance_summary' [chilan]
 
 version 27.0 (2021-08-20):
 
