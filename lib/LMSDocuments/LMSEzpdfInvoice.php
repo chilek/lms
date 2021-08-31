@@ -1217,26 +1217,11 @@ class LMSEzpdfInvoice extends LMSInvoice
         return $y;
     }
 
-    protected function invoice_balance($x, $y, $expired = false)
+    protected function invoice_balance($x, $y)
     {
         $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
 
-        if ($expired || $show_balance_summary) {
-            $lms = LMS::getInstance();
-            $expired_balance = $balance = $lms->getCustomerBalance($this->data['customerid'], $this->data['cdate'] + 1, true);
-        }
-
-        if (!$expired || $show_balance_summary) {
-            $total_balance = $balance = $this->data['customerbalance'];
-        }
-
-        if ($balance > 0) {
-            $comment = trans('(excess payment)');
-        } elseif ($expired_balance < 0) {
-            $comment = trans('(to pay)');
-        } else {
-            $comment = '';
-        }
+        $balance = $this->data['customerbalance'];
 
         if ($show_balance_summary) {
             if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
@@ -1244,28 +1229,53 @@ class LMSEzpdfInvoice extends LMSInvoice
             } else {
                 $total = $this->data['total'];
             }
+            $previous_balance = $balance + $total;
+
+            if ($previous_balance > 0) {
+                $comment = trans('(excess payment)');
+            } elseif ($previous_balance < 0) {
+                $comment = trans('(to pay)');
+            } else {
+                $comment = '';
+            }
+
+
             $y = $y - $this->backend->text_align_left(
                 $x,
                 $y,
                 9,
                 '<b>' . trans(
                     'Previous balance: $a $b',
-                    moneyf((abs($balance) - $total) / $this->data['currencyvalue'], $this->data['currency']),
+                    moneyf(abs($previous_balance) / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ) . '</b>'
             );
         } else {
+            if ($balance > 0) {
+                $comment = trans('(excess payment)');
+            } elseif ($balance < 0) {
+                $comment = trans('(to pay)');
+            } else {
+                $comment = '';
+            }
+
             $y = $y - $this->backend->text_align_left(
                 $x,
                 $y,
                 9,
                 ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
                 . trans(
-                    $expired ? 'Your balance without unexpired invoices: $a $b' : 'Your balance on date of invoice issue: $a $b',
+                    'Your balance on date of invoice issue: $a $b',
                     moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 )
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
+            );
+            $y = $y - $this->backend->text_align_left(
+                $x,
+                $y,
+                9,
+                '<b>' . trans('Balance includes current invoice') . '</b>'
             );
         }
 
@@ -1275,23 +1285,16 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $y,
                 14,
                 ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
-                . ($total_balance >= 0
+                . ($balance >= 0
                     ? trans(
                         'Excess payment: $a',
-                        moneyf($total_balance / $this->data['currencyvalue'], $this->data['currency'])
+                        moneyf($balance / $this->data['currencyvalue'], $this->data['currency'])
                     )
                     : trans(
                         'Total to pay: $a',
-                        moneyf(-$total_balance / $this->data['currencyvalue'], $this->data['currency'])
+                        moneyf(-$balance / $this->data['currencyvalue'], $this->data['currency'])
                     ))
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
-            );
-        } elseif (!$expired) {
-            $y = $y - $this->backend->text_align_left(
-                $x,
-                $y,
-                9,
-                '<b>' . trans('Balance includes current invoice') . '</b>'
             );
         }
 
@@ -1456,11 +1459,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $top = $this->invoice_balance(30, $top);
-        }
-        if (ConfigHelper::checkConfig('invoices.show_expired_balance')) {
-            $top = $this->invoice_balance(30, $top, true);
         }
 
         $top = $top - 20;
@@ -1534,11 +1535,9 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $top = $this->invoice_balance(30, $top);
-        }
-        if (ConfigHelper::checkConfig('invoices.show_expired_balance')) {
-            $top = $this->invoice_balance(30, $top, true);
         }
 
         $this->backend->check_page_length($top, 200);
