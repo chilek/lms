@@ -277,6 +277,10 @@ $RT_RIGHTS = array(
     RT_RIGHT_INDICATOR => trans("Indicator (+R)"),
 );
 
+// helpdesk new message/note notification recipients
+define('RT_NOTIFICATION_USER', 1);
+define('RT_NOTIFICATION_VERIFIER', 2);
+
 //Helpdesk ticket source
 define('RT_SOURCE_UNKNOWN', 0);
 define('RT_SOURCE_PHONE', 1);

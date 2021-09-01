@@ -151,7 +151,7 @@ if (isset($_GET['ticketid'])) {
 
         $LMS->TicketChange($note['ticketid'], $props);
 
-        if (isset($note['notify'])) {
+        if (isset($note['notify']) || !empty($note['verifierid'])) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
             $queue = $LMS->GetQueueByTicketId($note['ticketid']);
             $mailfname = '';
@@ -239,6 +239,8 @@ if (isset($_GET['ticketid'])) {
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
                 'attachments' => &$attachments,
+                'recipients' => ($note['notify'] ? RT_NOTIFICATION_USER : 0)
+                    | (empty($note['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
             ));
         }
 

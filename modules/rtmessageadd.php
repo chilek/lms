@@ -367,7 +367,7 @@ if (isset($_POST['message'])) {
             }
 
             // User notifications
-            if (isset($message['notify']) || isset($message['customernotify'])) {
+            if (isset($message['notify']) || isset($message['customernotify']) || !empty($message['verifierid'])) {
                 $mailfname = '';
 
                 $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
@@ -407,7 +407,7 @@ if (isset($_POST['message'])) {
                         return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
                     });
 
-                    if (isset($message['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                    if ((isset($message['notify']) || !empty($message['verifierid'])) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                         $params = array(
                             'id' => $ticketid,
                             'customerid' => $ticketdata['customerid'],
@@ -418,12 +418,12 @@ if (isset($_POST['message'])) {
                         $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
                         $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
                     }
-                } elseif (isset($message['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                } elseif ((isset($message['notify']) || !empty($message['verifierid'])) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                     $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
                     $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
                 }
 
-                if (isset($message['notify'])) {
+                if (isset($message['notify']) || !empty($message['verifierid'])) {
                     $params = array(
                         'id' => $ticketid,
                         'queue' => $queue['name'],
@@ -463,6 +463,8 @@ if (isset($_POST['message'])) {
                         'sms_body' => $sms_body,
                         'contenttype' => $message['contenttype'],
                         'attachments' => &$attachments,
+                        'recipients' => ($message['notify'] ? RT_NOTIFICATION_USER : 0)
+                            | (empty($message['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
                     ));
                 }
             }
