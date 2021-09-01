@@ -849,7 +849,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
                             $_dateto = $data['dateto'];
                         } else {
-                            list ($year, $nonth, $dom) = explode('/', date('Y/m/d', $dateto + 1));
+                            list ($year, $month, $dom) = explode('/', date('Y/m/d', $dateto + 1));
                             $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                             $diffdays = $cday - 1;
                             $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
