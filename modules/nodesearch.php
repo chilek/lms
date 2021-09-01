@@ -283,6 +283,20 @@ if (isset($_GET['search'])) {
 
     $error = null;
 
+    if (!empty($nodesearch['createdfrom'])) {
+        $createdfrom = strtotime($nodesearch['createdfrom']);
+        if (empty($createdfrom)) {
+            $error['createdfrom'] = trans('Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar');
+        }
+    }
+
+    if (!empty($nodesearch['createdto'])) {
+        $createdto = strtotime($nodesearch['createdto']);
+        if (empty($createdto)) {
+            $error['createdto'] = trans('Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar');
+        }
+    }
+
     if (!empty($nodesearch['lastonlinebefore'])) {
         $lastonlinebefore = datetime_to_timestamp($nodesearch['lastonlinebefore']);
         if (empty($lastonlinebefore)) {
@@ -298,6 +312,12 @@ if (isset($_GET['search'])) {
     }
 
     if (!$error) {
+        if (isset($createdfrom)) {
+            $nodesearch['createdfrom'] = $createdfrom;
+        }
+        if (isset($createdto)) {
+            $nodesearch['createdto'] = $createdto;
+        }
         if (isset($lastonlinebefore)) {
             $nodesearch['lastonlinebefore'] = $lastonlinebefore;
         }
