@@ -7,6 +7,7 @@ version 28-git (????-??-??):
   - enhancement: ticket watching support [interduo]
   - devel/cleanup: removed support for 'invoices.show_expired_balance' as it's logically replaced
     by 'invoices.show_balance_summary' [chilan]
+  - enhancement: allow to search nodes by creation date period [chilan]
 
 version 27.0 (2021-08-20):
 
