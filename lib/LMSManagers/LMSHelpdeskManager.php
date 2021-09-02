@@ -871,7 +871,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return 1;
         }
 
-        $owner = $this->db->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid=? AND categoryid ' .
+        if (!$this->db->GetOne('SELECT 1 FROM rtcategories WHERE id = ?', array($category))) {
+            return true;
+        }
+
+        $owner = $this->db->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid = ? AND categoryid ' .
                 (is_array($category) ? 'IN (' . implode(',', $category) . ')' : '= ' . $category), array($user));
 
         return ($owner === '1');
