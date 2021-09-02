@@ -891,6 +891,9 @@ $addresses = array();
 $numberplans = array();
 $divisions = array();
 
+$old_locale = setlocale(LC_NUMERIC, '0');
+setlocale(LC_NUMERIC, 'C');
+
 $result = $LMS->ExecuteHook(
     'payments_before_assignment_loop',
     array(
@@ -901,6 +904,8 @@ $result = $LMS->ExecuteHook(
 if ($result['assignments']) {
     $assigns = $result['assignments'];
 }
+
+setlocale(LC_NUMERIC, $old_locale);
 
 if ($prefer_netto) {
     $taxeslist = $LMS->GetTaxes();
