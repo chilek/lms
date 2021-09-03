@@ -707,13 +707,15 @@
 						{if !$variables.id}
 						<br>
 						<label>
-							<INPUT type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"{if $variables['last-settlement']} checked{/if}>
+							<input type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"
+								id="last-settlement" {if $variables['last-settlement']} checked{/if}>
 							{trans("with settlement of last deficient period")}
 						</label>
 						<span id="a_align_periods">
 							<br>
 							<label>
-								<INPUT type="checkbox" name="{$variable_prefix}[align-periods]" value="1"{if $variables['align-periods']} checked{/if}>
+								<input type="checkbox" name="{$variable_prefix}[align-periods]" value="1"
+									id="align-periods" {if $variables['align-periods']} checked{/if}>
 								{trans("full calendar periods")}
 							</label>
 						</span>

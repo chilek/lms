@@ -531,6 +531,9 @@ function tariffSelectionHandler() {
 
 	$('#a_promotions,#a_align_periods').toggle(val == -2);
 
+	$('#last-settlement').prop('disabled', $('#align-periods').prop('checked') && val == -2)
+		.closest('label').toggleClass('lms-ui-disabled', $('#align-periods').prop('checked') && val == -2);
+
 	$('#netflag, #tax, #taxcategory, #splitpayment').prop('disabled', false);
 	$('#a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
 
@@ -760,3 +763,10 @@ $('#invoice').on('change', function () {
 		}
 	}
 });
+
+$('#align-periods').change(function() {
+	$('#last-settlement').prop({
+		"disabled": $(this).prop('checked'),
+		"checked": $(this).prop('checked') ? false : $('#last-settlement').prop('checked')
+	}).closest('label').toggleClass('lms-ui-disabled', $(this).prop('checked'));
+}).change();
