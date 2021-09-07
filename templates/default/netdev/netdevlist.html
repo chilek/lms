@@ -173,8 +173,17 @@
 			{/if}
 
 			{foreach $netdev.customlinks as $link}
-			<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
-			{if isset($link.extra)}{$link.extra}{/if}
+				<a {if isset($link.url)} href="{$link.url}" {/if} rel="external"
+						{if isset($link.onclick)} onclick="{$link.onclick}"{/if}
+						{if isset($link.class)} class="{$link.class}"{/if}
+				>
+					{if isset($link.icon)}
+						<img src="{$link.icon}" alt="{$link.label}" {$link.tip}>
+					{else}
+						{$link.label}
+					{/if}
+				</a>
+				{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
 			{button type="link" icon="delete" class="delete-netdev" tip="Delete" href="?m=netdevdel&id={$netdev.id}&is_sure=1"}
 			{button type="link" icon="edit" tip="Edit" href="?m=netdevedit&id={$netdev.id}"}
