@@ -1532,7 +1532,7 @@ foreach ($assigns as $assign) {
 
                 $exported_telecom_service = !empty($customer['countryid']) && !empty($division['countryid']) && $customer['countryid'] != $division['countryid'];
                 $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
-                    && $assign['customertype'] == CTYPES_PRIVATE && $issuetime >= mktime(0, 0, 0, 7, 1, 2021)
+                    && $assign['customertype'] == CTYPES_PRIVATE && $issuetime < mktime(0, 0, 0, 7, 1, 2021)
                     && $exported_telecom_service;
 
                 $DB->Execute(
