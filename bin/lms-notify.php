@@ -720,7 +720,8 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         WHERE messageid = ? AND customerid = ? AND id = ?";
 
     if (is_string($result)) {
-        $DB->Execute($query, array(3, $result, $msgid, $cid, $msgitemid));
+        $DB->Execute($query, array(MSG_ERROR, $result, $msgid, $cid, $msgitemid));
+        fprintf(STDERR, trans('Error sending mail: $a', $result) . PHP_EOL);
     } else { // MSG_SENT
         $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
     }
@@ -794,6 +795,10 @@ function send_sms_to_user($phone, $data)
     global $LMS;
 
     $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data);
+
+    if (is_string($result)) {
+        fprintf(STDERR, trans('Error sending SMS: $a', $result) . PHP_EOL);
+    }
 }
 
 // prepare customergroups in sql query

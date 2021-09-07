@@ -4254,6 +4254,7 @@ $_LANG['Debit Note No. $a for $b'] = 'Nota obciążeniowa nr $a dla $b';
 $_LANG['Credit Note No. $a for $b'] = 'Faktura korygująca nr $a dla $b';
 $_LANG['Invoice No. $a for $b'] = 'Faktura nr $a dla $b';
 $_LANG['Error sending mail: $a'] = 'Błąd wysyłki maila: $a';
+$_LANG['Error sending SMS: $a'] = 'Błąd wysyłki SMS-a: $a';
 $_LANG['Fatal error: sender_email unset! Can\'t continue, exiting.'] = 'Błąd krytyczny: nie ustawiono sender_email! Próba wysyłki zakończona.';
 $_LANG['Fatal error: smtp_auth value not supported! Can\'t continue, exiting.'] = 'Błąd krytyczny: nieobsługiwana wartość smtp_auth! Próba wysyłki zakończona.';
 $_LANG['Send invoices'] = 'Wyślij faktury';
