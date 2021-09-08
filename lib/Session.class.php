@@ -153,7 +153,7 @@ class Session
 
     public function save($variable, $content, $tab = false)
     {
-        if ($tab) {
+        if ($tab || $variable == 'backto') {
             if ($variable === 'backto') {
                 self::$oldBackTo = $this->_tab_content[$this->tabId]['backto'];
                 self::$backTo = $content;
@@ -179,7 +179,7 @@ class Session
 
     public function save_by_ref($variable, &$content, $tab = false)
     {
-        if ($tab) {
+        if ($tab || $variable == 'backto') {
             if (!isset($this->_tab_content[$this->tabId])) {
                 $this->_tab_content[$this->tabId] = array();
             }
@@ -196,7 +196,7 @@ class Session
 
     public function restore($variable, &$content, $tab = false)
     {
-        if ($tab) {
+        if ($tab || $variable == 'backto') {
             if (isset($this->_tab_content[$this->tabId][$variable])) {
                 $content = $this->_tab_content[$this->tabId][$variable];
             } else {
@@ -213,7 +213,7 @@ class Session
 
     public function get($variable, $tab = false)
     {
-        if ($tab) {
+        if ($tab || $variable == 'backto') {
             if (isset($this->_tab_content[$this->tabId][$variable])) {
                 return $this->_tab_content[$this->tabId][$variable];
             } else {
@@ -230,7 +230,7 @@ class Session
 
     public function remove($variable, $tab = false)
     {
-        if ($tab) {
+        if ($tab || $variable == 'backto') {
             if (isset($this->_tab_content[$this->tabId][$variable])) {
                 unset($this->_tab_content[$this->tabId][$variable]);
             } else {
@@ -253,7 +253,7 @@ class Session
 
     public function is_set($variable, $tab = false)
     {
-        if ($tab) {
+        if ($tab || $variable == 'backto') {
             return isset($this->_tab_content[$this->tabId][$variable]);
         } else {
             return isset($this->_content[$variable]);
