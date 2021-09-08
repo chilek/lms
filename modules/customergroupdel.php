@@ -26,4 +26,8 @@
 
 $LMS->CustomergroupDelete($_GET['id']);
 
+if ($SESSION->is_set('backto')) {
+    $SESSION->redirect('?' . $SESSION->get('backto'));
+}
+
 $SESSION->redirect('?m=customergrouplist');

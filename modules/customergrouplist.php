@@ -34,6 +34,8 @@ $listdata['totalcount'] = $customergrouplist['totalcount'];
 unset($customergrouplist['total']);
 unset($customergrouplist['totalcount']);
 
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
 $SMARTY->assign('customergrouplist', $customergrouplist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('customer/customergrouplist.html');
