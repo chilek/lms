@@ -626,16 +626,15 @@
 
 			function claculatePriceFromGross() {
 				let grossPriceElemVal = grossPriceElem.val();
-				if (grossPriceElem.val().length) {
+				if (grossPriceElemVal.length) {
 					let selectedTaxId = $("#tax").find('option:selected').val();
 					let tax = $('#tax' + selectedTaxId).val();
 
-					let grossPrice = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
-					grossPrice = Math.round((grossPrice + Number.EPSILON) * 100) / 100;
+					let grossPrice = financeDecimals.round(parseFloat(grossPriceElemVal.replace(/[\,]+/, '.')));
+					let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
 
-					let netPriceVal = Math.round(((grossPrice / (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
-					netPriceVal = netPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
-					netPriceElem.val(netPriceVal);
+					netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+					netPriceElem.val(netPrice);
 
 					grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
 					grossPriceElem.val(grossPrice);
@@ -646,16 +645,15 @@
 
 			function claculatePriceFromNet() {
 				let netPriceElemVal = netPriceElem.val();
-				if (netPriceElem.val().length) {
+				if (netPriceElemVal.length) {
 					let selectedTaxId = $("#tax").find('option:selected').val();
 					let tax = $('#tax' + selectedTaxId).val();
 
-					let netPrice = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'));
-					netPrice = Math.round((netPrice + Number.EPSILON) * 100) / 100;
+					let netPrice = financeDecimals.round(parseFloat(netPriceElemVal.replace(/[\,]+/, '.')));
+					let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
 
-					let grossPriceVal = Math.round(((netPrice * (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
-					grossPriceVal = grossPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
-					grossPriceElem.val(grossPriceVal);
+					grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+					grossPriceElem.val(grossPrice);
 
 					netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
 					netPriceElem.val(netPrice);
@@ -665,8 +663,7 @@
 			}
 
 			$('#netflag').on('change', function () {
-				let netFlagChecked = netFlagElem.is(':checked');
-				if (netFlagChecked) {
+				if (netFlagElem.is(':checked')) {
 					grossPriceElem.prop('disabled', true);
 					netPriceElem.prop('disabled', false);
 					claculatePriceFromNet();
@@ -678,8 +675,7 @@
 			});
 
 			$("#tax").on('change', function () {
-				let netFlagChecked = netFlagElem.is(':checked');
-				if (netFlagChecked) {
+				if (netFlagElem.is(':checked')) {
 					claculatePriceFromNet();
 				} else {
 					claculatePriceFromGross();
