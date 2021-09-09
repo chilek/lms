@@ -8,6 +8,7 @@ version 28-git (????-??-??):
   - devel/cleanup: removed support for 'invoices.show_expired_balance' as it's logically replaced
     by 'invoices.show_balance_summary' [chilan]
   - enhancement: allow to search nodes by creation date period [chilan]
+  - improvement: show total debt value for customers with debt collection status [chilan]
 
 version 27.0 (2021-08-20):
 
