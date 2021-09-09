@@ -1055,7 +1055,7 @@ switch ($mode) {
 			FROM documents d
 			JOIN customerview c ON c.id = d.customerid
 			WHERE LOWER(fullnumber) ?LIKE? LOWER($sql_search)");
-        if (count($docs) == 1) {
+        if (!empty($docs) && count($docs) == 1) {
             $cid = $docs[0]['cid'];
 /*
             $docid = $docs[0]['id'];
