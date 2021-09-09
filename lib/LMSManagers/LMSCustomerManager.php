@@ -496,13 +496,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         );
 
         $tmp = $this->db->GetRow(
-            'SELECT SUM(a.value)*-1 AS debtvalue, COUNT(*) AS debt
+            'SELECT
+                SUM(a.value) * -1 AS debtvalue,
+                COUNT(*) AS debt,
+                SUM(CASE WHEN a.status = ? THEN a.value ELSE 0 END) * -1 AS debtcollectionvalue
             FROM (
-                SELECT balance AS value
-                FROM customerbalances
-                LEFT JOIN customerview ON (customerid = customerview.id)
-                WHERE deleted = 0 AND balance < 0
-            ) a'
+                SELECT c.status, b.balance AS value
+                FROM customerbalances b
+                LEFT JOIN customerview c ON (customerid = c.id)
+                WHERE c.deleted = 0 AND b.balance < 0
+            ) a',
+            array(
+                CSTATUS_DEBT_COLLECTION,
+            )
         );
 
         if (is_array($tmp)) {
