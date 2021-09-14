@@ -988,7 +988,7 @@ function unescapeHtml(text) {
 // dedicated to financial calculations on decimals
 var financeDecimals = {
 	isRound: function(n,p){
-		let l = n.toString().split('.')[1].length;
+		let l = n.toFixed(20).replace(/\.?0+$/,"").split('.')[1].length;
 		return (p >= l);
 	},
 	round: function(n, p=2) {
