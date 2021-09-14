@@ -71,7 +71,7 @@ if (!$this->ResourceExists('vcustomerassignments', LMSDB::RESOURCE_TYPE_VIEW)) {
                     WHERE ud.userid = lms_current_user()))
                 AND c.type < 2
     ");
-    $this->Exeucte("UPDATE customerassignments SET startdate = NULL");
+    $this->Execute("UPDATE customerassignments SET startdate = NULL");
 
     $this->Execute("
         CREATE TRIGGER customerassignments_insert_trigger BEFORE INSERT ON customerassignments
