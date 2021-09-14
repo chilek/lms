@@ -986,22 +986,12 @@ function unescapeHtml(text) {
 }
 
 // dedicated to financial calculations on decimals
-var financeDecimals = (function() {
-	if (Number.EPSILON === undefined) {
-		Number.EPSILON = Math.pow(2, -52);
-	}
-	if (Number.isInteger === undefined) {
-		Number.isInteger = function(value) {
-			return typeof value === 'number' &&
-				isFinite(value) &&
-				Math.floor(value) === value;
-		};
-	}
-	this.isRound = function(n,p){
+var financeDecimals = {
+	isRound: function(n,p){
 		let l = n.toString().split('.')[1].length;
 		return (p >= l);
-	}
-	this.round = function(n, p=2) {
+	},
+	round: function(n, p=2) {
 		if (Number.isInteger(n) || this.isRound(n,p)) {
 			return n;
 		}
@@ -1011,16 +1001,16 @@ var financeDecimals = (function() {
 			o *= -1;
 		}
 		return Math.round((n + r) * o) / o;
-	}
-	this.ceil = function(n, p=2) {
+	},
+	ceil: function(n, p=2) {
 		if(Number.isInteger(n) || this.isRound(n,p)) {
 			return n;
 		}
 		let r = 0.5 * Number.EPSILON * n;
 		let o = 1; while(p-- > 0) o *= 10;
 		return Math.ceil((n + r) * o) / o;
-	}
-	this.floor = function(n, p=2) {
+	},
+	floor: function(n, p=2) {
 		if(Number.isInteger(n) || this.isRound(n,p)) {
 			return n;
 		}
@@ -1028,5 +1018,4 @@ var financeDecimals = (function() {
 		let o = 1; while(p-- > 0) o *= 10;
 		return Math.floor((n + r) * o) / o;
 	}
-	return this;
-})();
+};
