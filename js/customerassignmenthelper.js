@@ -665,11 +665,13 @@ const invoiceElem = $("#invoice");
 
 function claculatePriceFromGross() {
 	let grossPriceElemVal = grossPriceElem.val();
-	if (grossPriceElemVal.length) {
+	grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+
+	if (!isNaN(grossPriceElemVal)) {
 		let selectedTaxId = $("#tax").find('option:selected').val();
 		let tax = $('#tax' + selectedTaxId).val();
 
-		let grossPrice = financeDecimals.round(parseFloat(grossPriceElemVal.replace(/[\,]+/, '.')));
+		let grossPrice = financeDecimals.round(grossPriceElemVal);
 		let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
 
 		netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
@@ -679,16 +681,19 @@ function claculatePriceFromGross() {
 		grossPriceElem.val(grossPrice);
 	} else {
 		netPriceElem.val('');
+		grossPriceElem.val('');
 	}
 }
 
 function claculatePriceFromNet() {
 	let netPriceElemVal = netPriceElem.val();
-	if (netPriceElemVal.length) {
+	netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
+
+	if (!isNaN(netPriceElemVal)) {
 		let selectedTaxId = $("#tax").find('option:selected').val();
 		let tax = $('#tax' + selectedTaxId).val();
 
-		let netPrice = financeDecimals.round(parseFloat(netPriceElemVal.replace(/[\,]+/, '.')));
+		let netPrice = financeDecimals.round(netPriceElemVal);
 		let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
 
 		grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
@@ -698,6 +703,7 @@ function claculatePriceFromNet() {
 		netPriceElem.val(netPrice);
 	} else {
 		grossPriceElem.val('');
+		netPriceElem.val('');
 	}
 }
 

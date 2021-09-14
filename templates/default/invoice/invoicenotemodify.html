@@ -596,11 +596,13 @@
 		let grossPriceElem = $(elem);
 		let grossPriceElemVal = grossPriceElem.val();
 		let netPriceElem = $('[name="valuenetto[' + posuid + ']"]');
-		if (grossPriceElemVal.length) {
+		grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+
+		if (!isNaN(grossPriceElemVal)) {
 			let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
 			let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
 
-			let grossPrice = financeDecimals.round(parseFloat(grossPriceElemVal.replace(/[\,]+/, '.')));
+			let grossPrice = financeDecimals.round(grossPriceElemVal);
 			let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
 
 			netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
@@ -610,6 +612,7 @@
 			grossPriceElem.val(grossPrice);
 		} else {
 			netPriceElem.val('');
+			grossPriceElem.val('');
 		}
 	}
 
@@ -617,11 +620,13 @@
 		let netPriceElem = $(elem);
 		let netPriceElemVal = netPriceElem.val();
 		let grossPriceElem = $('[name="valuebrutto[' + posuid + ']"]');
-		if (netPriceElemVal.length) {
+		netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
+
+		if (!isNaN(netPriceElemVal)) {
 			let selectedTaxId = $('#invoice-contents-field-tax-'+posuid).find('option:selected').val();
 			let tax = $('#contents-tax-' + posuid + '-' + selectedTaxId).val();
 
-			let netPrice = financeDecimals.round(parseFloat(netPriceElemVal.replace(/[\,]+/, '.')));
+			let netPrice = financeDecimals.round(netPriceElemVal);
 			let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
 
 			grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
@@ -631,6 +636,7 @@
 			netPriceElem.val(netPrice);
 		} else {
 			grossPriceElem.val('');
+			netPriceElem.val('');
 		}
 	}
 
