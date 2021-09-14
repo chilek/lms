@@ -239,8 +239,6 @@ if (isset($_POST['event'])) {
 
 $layout['pagetitle'] = trans('Event Edit');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 
 if (isset($event['customerid']) && intval($event['customerid'])) {

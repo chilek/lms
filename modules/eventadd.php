@@ -546,10 +546,6 @@ if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
 
 $layout['pagetitle'] = trans('New Event');
 
-if (!isset($_GET['ticketid'])) {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-}
-
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 
 if (!isset($event['usergroup'])) {
