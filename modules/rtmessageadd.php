@@ -81,7 +81,7 @@ if (isset($_POST['message'])) {
         $LMS->MarkTicketAsRead($ticketid);
         if ($message['watching'] == 1) {
             $LMS->changeTicketWatching($ticketid, 1);
-        } elseif ($message['watching_change'] == 0) {
+        } elseif ($message['watching'] == 0) {
             $LMS->changeTicketWatching($ticketid, 0);
         }
     }
