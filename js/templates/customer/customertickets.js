@@ -30,3 +30,23 @@ $(function() {
 		return false;
 	});
 });
+
+$(function() {
+	$('.ticket-image-gallery').click(function () {
+		var btn = this;
+		$.ajax({
+			url: "?m=rtticketview&api=1&ajax=1&op=get-image-gallery&id=" +
+				parseInt($(this).attr('data-ticket-id')),
+			method: "GET",
+			dataType: "json",
+			success: function (data) {
+				if (data.length) {
+					showGallery(data);
+				} else {
+					$(btn).hide();
+				}
+			}
+		})
+		return false;
+	})
+})
