@@ -308,7 +308,7 @@ $_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
 $_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego (opcjonalnie)';
 $_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
-$_LANG['Notify customer:'] = 'Powiadom klienta:';
+$_LANG['Notify customer'] = 'Powiadom klienta';
 $_LANG['Notify customer via e-mail'] = 'Powiadom klienta e-mailem';
 $_LANG['Notify customer via SMS'] = 'Powiadom klienta SMS-em';
 
