@@ -175,6 +175,14 @@
 				</label>
 			{/box_row}
 
+			{box_row icon="watch" icon_class="fa-fw" label="Obserwowanie zgłoszeń"}
+				<SELECT size="1" name="message[watching]">
+					<option value="-100" selected>{trans("- no changes -")}</option>
+					<option value="1">{trans("Start watching")}</option>
+					<option value="0">{trans("Stop watching")}</option>
+				</SELECT>
+			{/box_row}
+
 			{box_row icon="cause" icon_class="fa-fw" label="Cause"}
 				<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
 					{if $group_action}
