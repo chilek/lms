@@ -29,8 +29,8 @@
 				</thead>
 				<tbody class="lms-ui-multi-check">
 					{foreach $userchanges as $change}
-						<tr class="lms-ui-multi-check highlight"
-							<td class="bold nobr" data-target-url=?m=customerinfo&id={$change.customerid}">
+						<tr class="lms-ui-multi-check highlight">
+							<td class="bold nobr" data-target-url="?m=customerinfo&id={$change.customerid}">
 								{$change.customername|trunescape:50} ({$change.customerid|string_format:"%04d"})
 							</td>
 							<td class="nobr">{t}{$change.fieldname|regex_replace:"/[^a-z]/":""}{/t}</td>
