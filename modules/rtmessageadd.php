@@ -79,6 +79,11 @@ if (isset($_POST['message'])) {
 
     foreach ($tickets as $ticketid) {
         $LMS->MarkTicketAsRead($ticketid);
+        if ($message['watching'] == 1) {
+            $LMS->changeTicketWatching($ticketid, 1);
+        } elseif ($message['watching_change'] == 0) {
+            $LMS->changeTicketWatching($ticketid, 0);
+        }
     }
 
     if ($message['subject'] == '') {
