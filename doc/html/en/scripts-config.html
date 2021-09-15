@@ -89,7 +89,7 @@ NAME="LMS-NOTIFY"
 ><P
 >lms-notify it's a perfect tool to remind your customers that they are actually the ones who
     		cover all your network and WAN links costs. It makes you possible to create numerous text templates
-		for various occasions and use them for mailing your customers. For SMTP connection Mail::Sender 
+		for various occasions and use them for mailing your customers. For SMTP connection Mail::Sender
 		module is used.</P
 ><DIV
 CLASS="SECT3"
@@ -185,7 +185,7 @@ NAME="NOTIFY-TEMPLATE"
 CLASS="SCREEN"
 >NOTE: This message has been generated automatically.
 
-We kindly remind that you have debt on your internet service provide account 
+We kindly remind that you have debt on your internet service provide account
 for the amount of $ %B.
 
 If you have already regulated your subscription fees for current month, that
@@ -387,7 +387,7 @@ CLASS="PROMPT"
 ><P
 >smtp_auth</P
 ><P
->SMTP authorization type. Allowed values: 
+>SMTP authorization type. Allowed values:
 					LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
 ><P
 >Example:	<SAMP
@@ -530,8 +530,8 @@ CLASS="PROMPT"
 ><P
 >message (optional)</P
 ><P
->If not empty, that message will be written to warning message field in customer record 
-	   after cutting him off.  You can use %now variable - it will be replaced by current date, and 
+>If not empty, that message will be written to warning message field in customer record
+	   after cutting him off.  You can use %now variable - it will be replaced by current date, and
 	   %b and %B like in lms-notify script.
 	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
 ><P
@@ -596,7 +596,7 @@ CLASS="PROMPT"
 ><P
 >suspension_description (optional)</P
 ><P
->Suspension description for suspended liabilities added at the end of comment. 
+>Suspension description for suspended liabilities added at the end of comment.
 	   Default: ''</P
 ><P
 >Example:	<SAMP
@@ -1084,7 +1084,7 @@ NAME="LMS-MAKEIPTABLES"
 >4.3.8. lms-makeiptables, lms-makeipchains</A
 ></H2
 ><P
->This pair of script is being used to generate files with firewall 
+>This pair of script is being used to generate files with firewall
 rules inside. You can prepend this file with previously written header (ie.
 containing network-wide rules or NAT rules) and set some fixed permissions to
 it. Those scripts does not run generated files.</P
@@ -1434,7 +1434,7 @@ CLASS="PROMPT"
 ><P
 >mail_subject</P
 ><P
->Email subject. %invoice variable will be replaced by invoice number. 
+>Email subject. %invoice variable will be replaced by invoice number.
 		    Default: 'Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
@@ -1446,7 +1446,7 @@ CLASS="PROMPT"
 ><P
 >mail_body</P
 ><P
->Email body. %invoice variable will be replaced by invoice number. 
+>Email body. %invoice variable will be replaced by invoice number.
 		    Default: 'Attached file with Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
@@ -1481,7 +1481,7 @@ CLASS="PROMPT"
 ><P
 >smtp_auth</P
 ><P
->SMTP authorization type. Allowed values: 
+>SMTP authorization type. Allowed values:
 	    	    LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
 ><P
 >Example:	<SAMP
@@ -1516,12 +1516,12 @@ CLASS="PROMPT"
 >Script has also one useful command line parameter: <SAMP
 CLASS="PROMPT"
 >--fakedate</SAMP
-> 
+>
 	 (<SAMP
 CLASS="PROMPT"
 >-f</SAMP
->). With this option you can make that script will execute 
-	 with system date (in format YYYY/MM/DD) other that current, eg. 
+>). With this option you can make that script will execute
+	 with system date (in format YYYY/MM/DD) other that current, eg.
 	 <SAMP
 CLASS="PROMPT"
 >--fakedate=2004/10/10</SAMP
@@ -2223,7 +2223,7 @@ system_filter_pipe_transport = address_pipe
 # system_filter.txt file:
 
 if $recipients is "queue_email@domena.pl"
-then 
+then
      pipe "/path/to/lms-rtparser -q queue id"
 endif</PRE
 ></P
@@ -2331,7 +2331,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_subject</P
 ><P
->Confirmation subject. You can use replacement variables here: %tid - 
+>Confirmation subject. You can use replacement variables here: %tid -
 		    ticket id and %subject - request subject.
 		    Default: "[RT#%tid] Receipt of request '%subject'".</P
 ><P
@@ -2344,7 +2344,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_body</P
 ><P
->Confirmation body. You can use replacement variables here; %tid - 
+>Confirmation body. You can use replacement variables here; %tid -
 		    ticket id and %subject - request subject.
 		    Default: 'Your request was registered in our system.\nTicket identifier RT#%tid has been assigned to this request.\nPlease, place string [RT#%tid] in subject field of any\nfurther mail relating to this request.\n.'</P
 ><P
@@ -2368,7 +2368,7 @@ CLASS="PROMPT"
 ><P
 >smtp_auth</P
 ><P
->SMTP authorization type. Allowed values: 
+>SMTP authorization type. Allowed values:
 	    	    LOGIN, PLAIN, CRAM-MD5, NTLM. Default: none</P
 ><P
 >Example:	<SAMP
@@ -2455,7 +2455,7 @@ CLASS="PROMPT"
 ><P
 >lms_url</P
 ><P
->This link, pointing to corresponding ticket page in UI is appended 
+>This link, pointing to corresponding ticket page in UI is appended
 		    to the notification about new ticket. Default: http://localhost/lms/.</P
 ><P
 >Example:	<SAMP

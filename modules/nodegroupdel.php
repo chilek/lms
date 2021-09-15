@@ -27,7 +27,7 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-    if (!$DB->GetOne('SELECT 1 FROM nodegroupassignments WHERE nodegroupid = ? 
+    if (!$DB->GetOne('SELECT 1 FROM nodegroupassignments WHERE nodegroupid = ?
 		LIMIT 1', array($id))) {
         $DB->BeginTrans();
         $DB->Execute('DELETE FROM nodegroups WHERE id = ?', array($id));

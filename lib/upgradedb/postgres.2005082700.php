@@ -31,7 +31,7 @@ $this->Execute("
 	UPDATE documents SET closed=0;
 	ALTER TABLE documents ALTER closed SET NOT NULL;
 	ALTER TABLE documents ALTER closed SET DEFAULT 0;
-	
+
 	ALTER TABLE cash DROP reference;
 ");
 

@@ -27,8 +27,8 @@
 $this->BeginTrans();
 $this->Execute("CREATE TABLE usergroups (
 	id int(11) NOT NULL auto_increment,
-	name varchar(255) DEFAULT '' NOT NULL UNIQUE, 
-	description text DEFAULT '' NOT NULL, 
+	name varchar(255) DEFAULT '' NOT NULL UNIQUE,
+	description text DEFAULT '' NOT NULL,
 	PRIMARY KEY (id));");
 $this->Execute("CREATE TABLE userassignments (
 	id int(11) NOT NULL auto_increment,

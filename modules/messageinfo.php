@@ -85,7 +85,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
 			SELECT DISTINCT a.customerid FROM vcustomerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user()
-		) e ON (e.customerid = c.id) 
+		) e ON (e.customerid = c.id)
 		WHERE e.customerid IS NULL AND i.messageid = '.intval($id)
         .(!empty($where) ? $where : '')
         .$sqlord.' '.$direction);

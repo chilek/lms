@@ -52,7 +52,7 @@ $this->Execute("CREATE INDEX records_domain_id_idx ON records (domain_id)");
 $this->Execute("
 	CREATE SEQUENCE supermasters_id_seq;
 	CREATE TABLE supermasters (
-		id integer		DEFAULT nextval('supermasters_id_seq'::text) NOT NULL,		
+		id integer		DEFAULT nextval('supermasters_id_seq'::text) NOT NULL,
 		ip varchar(25)		NOT NULL,
 		nameserver varchar(255)	NOT NULL,
 		account varchar(40)	DEFAULT NULL,

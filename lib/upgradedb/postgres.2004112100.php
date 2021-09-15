@@ -26,7 +26,7 @@
 
 $this->BeginTrans();
 $this->Execute("
-    
+
     ALTER TABLE passwd ADD type SMALLINT;
     UPDATE passwd SET type = 32767;
     ALTER TABLE passwd ALTER type SET DEFAULT 0;
@@ -43,7 +43,7 @@ $this->Execute("
     ALTER TABLE passwd ALTER domain SET NOT NULL;
 
     ALTER TABLE passwd ADD UNIQUE (login);
-    
+
     UPDATE dbinfo SET keyvalue = '2004112100' WHERE keytype = 'dbversion';
 ");
 $this->CommitTrans();

@@ -28,8 +28,8 @@ $this->BeginTrans();
 
 $this->Execute("
 CREATE TABLE imessengers (
-    id int(11) NOT NULL auto_increment, 
-    customerid int(11) NOT NULL DEFAULT '0', 
+    id int(11) NOT NULL auto_increment,
+    customerid int(11) NOT NULL DEFAULT '0',
     uid varchar(32) NOT NULL DEFAULT '',
     type tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
@@ -39,9 +39,9 @@ CREATE TABLE imessengers (
 
 $this->Execute("INSERT INTO imessengers (customerid, uid)
         SELECT id, im FROM customers WHERE im > 0");
-    
+
 $this->Execute("ALTER TABLE customers DROP im");
-    
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007033100', 'dbversion'));
 
 $this->CommitTrans();

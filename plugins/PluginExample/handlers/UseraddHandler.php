@@ -45,7 +45,7 @@ class UseraddHandler
         }
         return $hook_data;
     }
-    
+
     /**
      * Example of additional logging
      *

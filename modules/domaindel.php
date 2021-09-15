@@ -36,7 +36,7 @@ if ($id) {
 			SELECT id FROM passwd WHERE domainid = ?)', array($id));
         $DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
         // ...aliases and orphaned aliases
-            $DB->Execute('DELETE FROM aliases WHERE domainid = ? 
+            $DB->Execute('DELETE FROM aliases WHERE domainid = ?
 			OR NOT EXISTS (SELECT 1 FROM aliasassignments
 			        WHERE aliasid = aliases.id)', array($id));
     }

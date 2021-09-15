@@ -59,13 +59,13 @@ $this->Execute("
             )) AS location
         FROM addresses a
         LEFT JOIN countries c ON c.id = a.country_id;
-    
+
     CREATE VIEW vdivisions AS
         SELECT d.*,
             a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address
         FROM divisions d
             JOIN vaddresses a ON a.id = d.address_id;
-    
+
     CREATE VIEW vnetworks AS
         SELECT h.name AS hostname, ne.*, no.ownerid, a.ccode, a.city_id as location_city,
             a.street_id as location_street, a.house as location_house, a.flat as location_flat,
@@ -129,7 +129,7 @@ $this->Execute("
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = c.id)
             AND c.type < 2;
-    
+
     CREATE VIEW customeraddressview AS
         SELECT c.*,
             cc.consentdate AS consentdate,
@@ -164,7 +164,7 @@ $this->Execute("
             LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
             LEFT JOIN vaddresses a ON n.address_id = a.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-    
+
     CREATE VIEW vmacs AS
         SELECT n.*, m.mac, m.id AS macid,
             a.ccode,
@@ -175,7 +175,7 @@ $this->Execute("
             JOIN macs m ON (n.id = m.nodeid)
             LEFT JOIN vaddresses a ON n.address_id = a.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-    
+
     CREATE VIEW vnodetariffs AS
         SELECT n.*,
             t.downrate, t.downceil,
@@ -230,7 +230,7 @@ $this->Execute("
             GROUP BY n.id
         ) t ON t.nodeid = n.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-    
+
     CREATE VIEW vnodealltariffs AS
         SELECT n.*,
             COALESCE(t1.downrate, t2.downrate, 0) AS downrate,

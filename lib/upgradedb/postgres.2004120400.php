@@ -34,7 +34,7 @@ $this->Execute("
 	PRIMARY KEY (id),
 	UNIQUE (login)
     );
-    
+
     UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'
 ");
 $this->CommitTrans();

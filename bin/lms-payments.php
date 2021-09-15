@@ -382,9 +382,9 @@ $plans = array();
 $periods = array(
     0 => YEARLY,
 );
-$query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault 
-		FROM numberplans n 
-		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
+$query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault
+		FROM numberplans n
+		LEFT JOIN numberplanassignments a ON (a.planid = n.id)
 		WHERE doctype IN (?, ?, ?)";
 $results = $DB->GetAll($query, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE));
 if (!empty($results)) {
@@ -1536,7 +1536,7 @@ foreach ($assigns as $assign) {
                     && $exported_telecom_service;
 
                 $DB->Execute(
-                    "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
+                    "INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
@@ -1644,7 +1644,7 @@ foreach ($assigns as $assign) {
                 if ($tmp_itemid != 0) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $DB->Execute(
-                            "UPDATE debitnotecontents SET value = value + ? 
+                            "UPDATE debitnotecontents SET value = value + ?
                             WHERE docid = ? AND itemid = ?",
                             array($grossvalue, $invoices[$cid], $tmp_itemid)
                         );
@@ -1657,7 +1657,7 @@ foreach ($assigns as $assign) {
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "UPDATE cash SET value = value + ? 
+                            "UPDATE cash SET value = value + ?
                             WHERE docid = ? AND itemid = ?",
                             array(-$grossvalue, $invoices[$cid], $tmp_itemid)
                         );
@@ -1667,7 +1667,7 @@ foreach ($assigns as $assign) {
 
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $DB->Execute(
-                            "INSERT INTO debitnotecontents (docid, value, description, itemid) 
+                            "INSERT INTO debitnotecontents (docid, value, description, itemid)
                             VALUES (?, ?, ?, ?)",
                             array($invoices[$cid], $grossvalue, $desc, $itemid)
                         );
@@ -1887,7 +1887,7 @@ foreach ($assigns as $assign) {
 
                         if ($assign['invoice'] == DOC_DNOTE) {
                             $DB->Execute(
-                                "INSERT INTO debitnotecontents (docid, value, description, itemid) 
+                                "INSERT INTO debitnotecontents (docid, value, description, itemid)
 								VALUES (?, ?, ?, ?)",
                                 array($invoices[$cid], $partial_grossvalue, $desc, $itemid)
                             );

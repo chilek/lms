@@ -35,17 +35,17 @@ class ConfigVariable
      * @var string Variable name
      */
     protected $name;
-    
+
     /**
      * @var string Variable value
      */
     protected $value;
-    
+
     /**
      * @var string Variable comment
      */
     protected $comment;
-    
+
     /**
      * Constructs config variable
      *
@@ -59,7 +59,7 @@ class ConfigVariable
         $this->value = $value;
         $this->comment = $comment;
     }
-    
+
     /**
      * Returns variable name
      *

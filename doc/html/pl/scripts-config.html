@@ -87,9 +87,9 @@ NAME="LMS-NOTIFY"
 >4.3.1. lms-notify</A
 ></H2
 ><P
->lms-notify jest dobrym sposobem przypominania ludziom o tym że do pracy sieci 
-		i łącz konieczne są ich pieniążki. Pozwala on na napisanie kilku[-nastu] plików 
-		tekstowych i traktowania ich jako szablonów do mailingu. Skrypt jest 
+>lms-notify jest dobrym sposobem przypominania ludziom o tym że do pracy sieci
+		i łącz konieczne są ich pieniążki. Pozwala on na napisanie kilku[-nastu] plików
+		tekstowych i traktowania ich jako szablonów do mailingu. Skrypt jest
 		wielofunkcyjny, włączenie określonego zadania następuje poprzez
 		zdefiniowanie lokalizacji pliku z szablonem wiadomości. Do wysyłania poczty
 		został zastosowany moduł Mail::Sender.</P
@@ -122,7 +122,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%abonament - zostanie zastąpione kwotą abonamentu jaka 
+>%abonament - zostanie zastąpione kwotą abonamentu jaka
 					jest do danego klienta przypisana, np. 107</P
 ></LI
 ><LI
@@ -229,7 +229,7 @@ NAME="LMS-NOTIFY-CONFIG"
 >4.3.1.2. Konfiguracja</A
 ></H3
 ><P
->Konfigurację dla lms-notify można ustalić w pliku 
+>Konfigurację dla lms-notify można ustalić w pliku
 			<TT
 CLASS="FILENAME"
 >lms.ini</TT
@@ -239,7 +239,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[notify]</I
 ></SPAN
->. 
+>.
 			Możesz tam ustawić następujące parametry, które mają zastosowanie
 			również dla skryptów <A
 HREF="scripts-config.html#LMS-NOTIFY-SMS"
@@ -253,7 +253,7 @@ HREF="scripts-config.html#LMS-NOTIFY-MESSAGES"
 ><P
 >debtors_template (opcjonalny)</P
 ><P
->Lokalizacja pliku z szablonem wiadomości wysyłanej do 
+>Lokalizacja pliku z szablonem wiadomości wysyłanej do
 				zadłużonych klientów. Pozostawienie tej opcji pustej wyłączy
 				powiadomienia o zadłużeniu. Domyślnie: pusta</P
 ><P
@@ -277,9 +277,9 @@ CLASS="PROMPT"
 ><P
 >invoices_template (opcjonalny)</P
 ><P
->Lokalizacja pliku z szablonem wiadomości z informacją o 
+>Lokalizacja pliku z szablonem wiadomości z informacją o
 				wystawieniu faktury. Pod uwagę brane są faktury wystawione
-				w ciągu ostatnich 24 godzin od uruchomienia skryptu.	
+				w ciągu ostatnich 24 godzin od uruchomienia skryptu.
 				Pozostawienie tej opcji pustej wyłączy
 				powiadomienia o nowych fakturach. Domyślnie: pusta</P
 ><P
@@ -303,9 +303,9 @@ CLASS="PROMPT"
 ><P
 >notes_template (opcjonalny)</P
 ><P
->Lokalizacja pliku z szablonem wiadomości z informacją o 
+>Lokalizacja pliku z szablonem wiadomości z informacją o
 				wystawieniu noty obciążeniowej. Pod uwagę brane są noty wystawione
-				w ciągu ostatnich 24 godzin od uruchomienia skryptu.	
+				w ciągu ostatnich 24 godzin od uruchomienia skryptu.
 				Pozostawienie tej opcji pustej wyłączy
 				powiadomienia o nowych notach. Domyślnie: pusta</P
 ><P
@@ -329,8 +329,8 @@ CLASS="PROMPT"
 ><P
 >deadline_template (opcjonalny)</P
 ><P
->Lokalizacja pliku z szablonem wiadomości wysyłanej do 
-				zadłużonych klientów, posiadających przeterminowane 
+>Lokalizacja pliku z szablonem wiadomości wysyłanej do
+				zadłużonych klientów, posiadających przeterminowane
 				(nierozliczone) faktury. Pozostawienie tej opcji pustej wyłączy
 				powiadomienia. Domyślnie: pusta</P
 ><P
@@ -354,7 +354,7 @@ CLASS="PROMPT"
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu poniżej którego do klienta 
+>Pozwala na ustalenie limitu bilansu poniżej którego do klienta
 				zostanie wysłana wiadomość z informacją o zadłużeniu. Domyślnie: 0</P
 ><P
 >Przykład:	<SAMP
@@ -437,9 +437,9 @@ CLASS="PROMPT"
 ><P
 >debug_email (opcjonalny)</P
 ><P
->Adres e-mail do debugowania. Gdy ustawiony, cała poczta 
-				zostaje wysłana na dany email zamiast do klientów. Przydatne do 
-				debugowania i sprawdzania czy wszystko działa OK. Domyślnie: 
+>Adres e-mail do debugowania. Gdy ustawiony, cała poczta
+				zostaje wysłana na dany email zamiast do klientów. Przydatne do
+				debugowania i sprawdzania czy wszystko działa OK. Domyślnie:
 				nie ustawiony.</P
 ><P
 >Przykład:	<SAMP
@@ -470,15 +470,15 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[sms]</I
 ></SPAN
->. Skrypt jest 
+>. Skrypt jest
 		wielofunkcyjny, włączenie określonego zadania następuje poprzez
 		zdefiniowanie lokalizacji pliku z szablonem wiadomości.</P
 ><P
->Konfigurację dla lms-notify-sms można ustalić w pliku 
+>Konfigurację dla lms-notify-sms można ustalić w pliku
 		<TT
 CLASS="FILENAME"
 >lms.ini</TT
-> 
+>
 		w sekcji <SPAN
 CLASS="emphasis"
 ><I
@@ -527,11 +527,11 @@ HREF="scripts-config.html#LMS-NOTIFY"
 >lms-notify</A
 >,
 		służący do ustawiania powiadomień, które będą pojawiać się
-		w przeglądarkach internetowych klientów. Skrypt jest 
+		w przeglądarkach internetowych klientów. Skrypt jest
 		wielofunkcyjny, włączenie określonego zadania następuje poprzez
 		zdefiniowanie lokalizacji pliku z szablonem wiadomości.</P
 ><P
->Konfigurację dla lms-notify-messages przeprowadza się w pliku 
+>Konfigurację dla lms-notify-messages przeprowadza się w pliku
 		<TT
 CLASS="FILENAME"
 >lms.ini</TT
@@ -581,7 +581,7 @@ CLASS="PROMPT"
 ><P
 >message (optional)</P
 ><P
->Jeśli nie jest pusta, wiadomość ta po dołączeniu użytkownika zostanie 
+>Jeśli nie jest pusta, wiadomość ta po dołączeniu użytkownika zostanie
 	   zapisana do jego rekordu w polu wiadomości administracyjnej. W treści wiadomości
 	   można użyć zmiennej %now, która zostanie zamieniona na bieżącą datę oraz
 	   zmiennych %b i %B tak jak w skrypcie lms-notify.
@@ -691,7 +691,7 @@ CLASS="PROMPT"
 ><P
 >suspension_description (opcjonalny)</P
 ><P
->Tekst dodawany na końcu opisu operacji dla obciążeń zawieszonych. 
+>Tekst dodawany na końcu opisu operacji dla obciążeń zawieszonych.
 	   Domyślnie: ''</P
 ><P
 >Przykład:	<SAMP
@@ -704,7 +704,7 @@ CLASS="PROMPT"
 >saledate_next_month (opcjonalny)</P
 ><P
 >Włączenie tej opcji spowoduje, że data sprzedaży na fakturze zostanie ustawiona
-	   na pierwszy dzień następnego miesiąca. 
+	   na pierwszy dzień następnego miesiąca.
 	   Domyślnie: 0</P
 ><P
 >Przykład:	<SAMP
@@ -723,7 +723,7 @@ CLASS="PROMPT"
 > (<SAMP
 CLASS="PROMPT"
 >-f</SAMP
->). Przy jego użyciu można 
+>). Przy jego użyciu można
 	 sprawić, aby skrypt działał z podmienioną datą systemową (w formacie YYYY/MM/DD),
 	 na przykład <SAMP
 CLASS="PROMPT"
@@ -742,7 +742,7 @@ NAME="LMS-TRAFFIC"
 ><P
 >Skrypt służy do logowania informacji o ilości danych pobranych i wysłanych
 	przez każdy komputer w sieci lokalnej. W bazie danych zapisywana jest ilość
-	danych w bajtach, numer komputera z bazy lms i znacznik czasu. 
+	danych w bajtach, numer komputera z bazy lms i znacznik czasu.
 	Od klienta zależy w jakich odstępach dane będą odczytywane.
 	Ponieważ dane odczytywane są z pliku utworzonego przez klienta, nie ma
 	znaczenia z jakiego źródła pochodzą, może to być iptables, ipchains lub
@@ -769,7 +769,7 @@ CLASS="SCREEN"
 &lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
 ...</PRE
 ><P
->Skrypt tworzący statystyki należy uruchamiać z taką samą częstotliwością 
+>Skrypt tworzący statystyki należy uruchamiać z taką samą częstotliwością
 	    co lms-traffic.</P
 ><P
 ><DIV
@@ -791,7 +791,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Przykład takiego skryptu dla iptables znajduje się w 
+>Przykład takiego skryptu dla iptables znajduje się w
 	    pliku <TT
 CLASS="FILENAME"
 >/sample/traffic_ipt.pl</TT
@@ -850,9 +850,9 @@ NAME="LMS-TRAFFIC-LOGIPTABLES"
 ></H2
 ><P
 >Skrypt służy do logowania informacji o ilości danych pobranych i wysłanych
-	przez każdy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
-	sczytuje z firewalla, tworząc jednocześnie odpowiednie reguły. Zatem, nie jest 
-	konieczne ręczne tworzenie reguł iptables, ani wywoływanie skryptu  
+	przez każdy komputer z sieci lokalnej, na podstawie liczników iptables. Dane
+	sczytuje z firewalla, tworząc jednocześnie odpowiednie reguły. Zatem, nie jest
+	konieczne ręczne tworzenie reguł iptables, ani wywoływanie skryptu
 	<TT
 CLASS="FILENAME"
 >lms-traffic</TT
@@ -1205,7 +1205,7 @@ CLASS="PROMPT"
 ><P
 >pre_script</P
 ><P
->Plik wykonywany PO wyczyszczeniu regułek, ale PRZED ustawieniem nowych. 
+>Plik wykonywany PO wyczyszczeniu regułek, ale PRZED ustawieniem nowych.
 		    Domyślnie: niezdefiniowany.</P
 ><P
 >Przykład:	<SAMP
@@ -1228,8 +1228,8 @@ CLASS="PROMPT"
 ><P
 >forward_to</P
 ><P
->Lista sieci, dla których włączamy forwarding. Możliwe wartości: "" - pełny forward, 
-		    "dowolny ciąg" - wyłącz forward, "siec1 siec2" - lista sieci z włączonym forwardingiem.  
+>Lista sieci, dla których włączamy forwarding. Możliwe wartości: "" - pełny forward,
+		    "dowolny ciąg" - wyłącz forward, "siec1 siec2" - lista sieci z włączonym forwardingiem.
 		    Domyślnie: pełny forward.</P
 ><P
 >Przykład:	<SAMP
@@ -1482,7 +1482,7 @@ CLASS="PROMPT"
 ><P
 >mail_subject</P
 ><P
->Temat wiadomości. Można użyć zmiennej %invoice zastępowanej numerem faktury. 
+>Temat wiadomości. Można użyć zmiennej %invoice zastępowanej numerem faktury.
 		    Domyślnie: 'Invoice No. %invoice'.</P
 ><P
 >Przykład:	<SAMP
@@ -1494,7 +1494,7 @@ CLASS="PROMPT"
 ><P
 >mail_body</P
 ><P
->Treść wiadomości. Można użyć zmiennej %invoice, która zostanie zastąpiona numerem faktury. 
+>Treść wiadomości. Można użyć zmiennej %invoice, która zostanie zastąpiona numerem faktury.
 		    Domyślnie: 'Attached file with Invoice No. %invoice'.</P
 ><P
 >Przykład:	<SAMP
@@ -1506,7 +1506,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup (oddzielonych spacjami), które mają być uwzględnione 
+>Lista nazw grup (oddzielonych spacjami), które mają być uwzględnione
 		podczas wysyłki. Domyślnie: nie ustawiona - wszystkie grupy.</P
 ><P
 >Przykład:	<SAMP
@@ -1567,7 +1567,7 @@ CLASS="PROMPT"
 > (<SAMP
 CLASS="PROMPT"
 >-f</SAMP
->). Przy jego użyciu można 
+>). Przy jego użyciu można
 	 sprawić, aby skrypt działał z podmienioną datą systemową (w formacie YYYY/MM/DD),
 	 na przykład <SAMP
 CLASS="PROMPT"
@@ -1591,7 +1591,7 @@ NAME="LMS-MAKEMACS"
 	    za pomocą decyzji RETURN. Na końcu listy reguł dodawane są 2 reguły przekierowujące ruch http
 	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
 	    Przekierowanie może odbywać się na wirtualny host www z zawiadomieniem klienta
-	    o zaległościach finansowych bez możliwości wyłączenia zawiadomienia. Na końcu dodawana jest 
+	    o zaległościach finansowych bez możliwości wyłączenia zawiadomienia. Na końcu dodawana jest
 	    reguła blokująca jakikolwiek inny ruch.
 	    </P
 ><P
@@ -2105,10 +2105,10 @@ NAME="LMS-FPING"
 >4.3.16. lms-fping</A
 ></H2
 ><P
->Skrypt zapisuje do bazy informacje o aktywności komputerów. 
-	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1). 
-	    Najpierw tworzona jest lista hostów, a następnie, po wywołaniu fping'a, 
-	    komputerom włączonym zostaje przypisana data i czas skanowania. Dzięki temu 
+>Skrypt zapisuje do bazy informacje o aktywności komputerów.
+	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1).
+	    Najpierw tworzona jest lista hostów, a następnie, po wywołaniu fping'a,
+	    komputerom włączonym zostaje przypisana data i czas skanowania. Dzięki temu
 	    mamy w bazie informacje kiedy dany komputer był ostatnio włączony.</P
 ><P
 >Konfigurację tego skryptu zawiera sekcja <SPAN
@@ -2169,14 +2169,14 @@ NAME="LMS-REMINDER"
 >4.3.17. lms-reminder</A
 ></H2
 ><P
->Skrypt służy do przypominania klientom o zaplanowanych na dany dzień 
+>Skrypt służy do przypominania klientom o zaplanowanych na dany dzień
 	  zadaniach. Lista zdarzeń przypisanych w Terminarzu danemu klientowi w bieżącym
 	  dniu zostaje wysłana na jego adres e-mail.</P
 ><P
 >Konfigurację dla lms-reminder umieszcza się w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> 
+>
 	  w sekcji <SPAN
 CLASS="emphasis"
 ><I
@@ -2200,8 +2200,8 @@ CLASS="PROMPT"
 ><P
 >mailfrom (wymagany)</P
 ><P
->Adres e-mail z którego zostanie wysłany e-mail. Proszę pamiętać, że na 
-	    	    niektórych MTA (np. exim) konto to musi istnieć w systemie. 
+>Adres e-mail z którego zostanie wysłany e-mail. Proszę pamiętać, że na
+	    	    niektórych MTA (np. exim) konto to musi istnieć w systemie.
 	    	    Domyślnie nieustawione.</P
 ><P
 >Przykład:	<SAMP
@@ -2269,8 +2269,8 @@ CLASS="PROMPT"
 ><P
 >debug_email (opcjonalny)</P
 ><P
->Adres e-mail do debugowania. Gdy ustawiony, cała poczta zostaje 
-	    	    wysłana na dany email zamiast do klientów. Przydatne do debugowania 
+>Adres e-mail do debugowania. Gdy ustawiony, cała poczta zostaje
+	    	    wysłana na dany email zamiast do klientów. Przydatne do debugowania
 	    	    i sprawdzania czy wszystko działa OK. Domyślnie: nie ustawiony.</P
 ><P
 >Przykład:	<SAMP
@@ -2294,7 +2294,7 @@ NAME="LMS-RTPARSER"
 	    adresy Helpdesk'a. Skrypt pobiera z wejścia wiadomość pocztową, parsuje zawartość
 	    i umieszcza zgłoszenie w kolejce, wysyłając do zgłaszających
 	    potwierdzenie przyjęcia wiadomości. W temacie potwierdzenia znajduje się symbol
-	    zgłoszenia. Podczas parsowania wiadomości następuje, na 
+	    zgłoszenia. Podczas parsowania wiadomości następuje, na
 	    podstawie tematu wiadomości, próba rozpoznania czy wiadomość nie jest odpowiedzią na inną wiadomość z już
 	    przypisanym numerem zgłoszenia. Od wiadomości zostają odłączone załączniki
 	    i umieszczone w katalogu zdefiniowanym w opcji <TT
@@ -2302,14 +2302,14 @@ CLASS="FILENAME"
 >mail_dir</TT
 >.</P
 ><P
->Oprócz modułów Perla standardowo wymaganych przez resztę skryptów, należy 
+>Oprócz modułów Perla standardowo wymaganych przez resztę skryptów, należy
 	    zainstalować także moduły <TT
 CLASS="FILENAME"
 >MIME::Parser</TT
 > i <TT
 CLASS="FILENAME"
 >MIME::Words</TT
-> z 
+> z
 	    pakietu MIME-Tools oraz <TT
 CLASS="FILENAME"
 >Mail::Sender</TT
@@ -2356,7 +2356,7 @@ mailbox_command = /usr/bin/procmail
 $DEFAULT</PRE
 ></P
 ><P
->Kolejny listing to przykład podłączenia parsera do Exima 
+>Kolejny listing to przykład podłączenia parsera do Exima
 	    przy użyciu filtrów systemowych:
 <PRE
 CLASS="SCREEN"
@@ -2367,7 +2367,7 @@ system_filter_pipe_transport = address_pipe
 # plik system_filter.txt
 
 if $recipients is "adres_kolejki@domena.pl"
-then 
+then
      pipe "/sciezka/do/lms-rtparser -q id_kolejki"
 endif</PRE
 ></P
@@ -2469,7 +2469,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_subject</P
 ><P
->Temat potwierdzenia. Tu można korzystać ze zmiennych %tid - 
+>Temat potwierdzenia. Tu można korzystać ze zmiennych %tid -
 		    identyfikator zgłoszenia i %subject - temat zgłoszenia.
 		    Domyślnie: "[RT#%tid] Receipt of request '%subject'".</P
 ><P
@@ -2482,7 +2482,7 @@ CLASS="PROMPT"
 ><P
 >autoreply_body</P
 ><P
->Treść potwierdzenia. Tu można korzystać ze zmiennych: %tid - 
+>Treść potwierdzenia. Tu można korzystać ze zmiennych: %tid -
 		    identyfikator zgłoszenia i %subject - temat zgłoszenia.
 		    Domyślnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</P
 ><P
@@ -2541,7 +2541,7 @@ CLASS="PROMPT"
 >mail_dir</P
 ><P
 >Katalog w którym zostaną zapisane załączniki. Katalog ten powinien być
-		    dostępny dla apache'a i klienta uruchamiającego lms-rtparser. Gdy nie ustawiono, 
+		    dostępny dla apache'a i klienta uruchamiającego lms-rtparser. Gdy nie ustawiono,
 		    załączniki zostaną utracone. Domyślnie: niezdefiniowany.</P
 ><P
 >Przykład:	<SAMP
@@ -2553,7 +2553,7 @@ CLASS="PROMPT"
 ><P
 >tmp_dir</P
 ><P
->Katalog tymczasowy. Domyślnie zostanie użyty katalog 
+>Katalog tymczasowy. Domyślnie zostanie użyty katalog
 		    zdefiniowany w zmiennej systemowej lub <TT
 CLASS="FILENAME"
 >/tmp</TT
@@ -2594,7 +2594,7 @@ CLASS="PROMPT"
 ><P
 >lms_url</P
 ><P
->Do powiadomienia o nowym zgłoszeniu zostaje załączony link 
+>Do powiadomienia o nowym zgłoszeniu zostaje załączony link
 		    do tego zgłoszenia w LMS-UI, aby użytkownik mógł szybko przejść do
 		    tego zgłoszenia. Domyślnie: http://localhost/lms/.</P
 ><P
@@ -2607,8 +2607,8 @@ CLASS="PROMPT"
 ><P
 >include_customerinfo</P
 ><P
->Do powiadomienia o nowym zgłoszeniu zostają załączone podstawowe 
-			dane klienta, jeżeli został on rozpoznany po adresie mailowym. 
+>Do powiadomienia o nowym zgłoszeniu zostają załączone podstawowe
+			dane klienta, jeżeli został on rozpoznany po adresie mailowym.
 			Domyślnie: włączona.</P
 ><P
 >Przykład:	<SAMP

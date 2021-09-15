@@ -27,7 +27,7 @@ $this->Execute("
     DROP VIEW customeraddressview;
     DROP VIEW contractorview;
     DROP VIEW customerview;
-    
+
     CREATE SEQUENCE customerkarmalastchanges_id_seq;
     CREATE TABLE customerkarmalastchanges (
         id integer NOT NULL DEFAULT nextval('customerkarmalastchanges_id_seq'::text),
@@ -75,7 +75,7 @@ $this->Execute("
                 FROM userdivisions ud
                 WHERE ud.userid = lms_current_user()))
             AND c.type < 2;
-    
+
     CREATE VIEW contractorview AS
         SELECT c.*,
             cc.consentdate AS consentdate,
@@ -100,7 +100,7 @@ $this->Execute("
             LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
             LEFT JOIN customerconsentview cc ON cc.customerid = c.id
         WHERE c.type = 2;
-    
+
     CREATE VIEW customeraddressview AS
         SELECT c.*,
             cc.consentdate AS consentdate,

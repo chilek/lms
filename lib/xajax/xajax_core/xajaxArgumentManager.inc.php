@@ -46,7 +46,7 @@ final class xajaxArgumentManager
         xjxargs.
     */
     private $aArgs;
-    
+
     /*
         Boolean: bDecodeUTF8Input
 
@@ -54,14 +54,14 @@ final class xajaxArgumentManager
         UTF8 decoded automatically.
     */
     private $bDecodeUTF8Input;
-    
+
     /*
         String: sCharacterEncoding
 
         The character encoding in which the input data will be received.
     */
     private $sCharacterEncoding;
-    
+
     /*
         Integer: nMethod
 
@@ -69,14 +69,14 @@ final class xajaxArgumentManager
         be one of: XAJAX_METHOD_UNKNOWN, XAJAX_METHOD_GET, XAJAX_METHOD_POST
     */
     private $nMethod;
-    
+
     /*
         Array: aSequence
 
         Stores the decoding sequence table.
     */
     private $aSequence;
-    
+
     /*
         Function: __convertStringToBool
 
@@ -89,7 +89,7 @@ final class xajaxArgumentManager
             (bool) : true / false
 
     */
-    
+
     private function __convertStringToBool($sValue)
     {
         if (0 == strcasecmp($sValue, 'true')) {
@@ -106,16 +106,16 @@ final class xajaxArgumentManager
         }
         return false;
     }
-    
+
     private function __argumentStripSlashes(&$sArg)
     {
         if (false == is_string($sArg)) {
             return;
         }
-        
+
         $sArg = stripslashes($sArg);
     }
-    
+
     private function __convertValue($value)
     {
         $cType = substr($value, 0, 1);
@@ -179,60 +179,60 @@ final class xajaxArgumentManager
             foreach (array_keys($mArg) as $sKey) {
                 $sNewKey = $sKey;
                 $this->__argumentDecodeUTF8_iconv($sNewKey);
-                
+
                 if ($sNewKey != $sKey) {
                     $mArg[$sNewKey] = $mArg[$sKey];
                     unset($mArg[$sKey]);
                     $sKey = $sNewKey;
                 }
-                
+
                 $this->__argumentDecodeUTF8_iconv($mArg[$sKey]);
             }
         } else if (is_string($mArg)) {
             $mArg = iconv("UTF-8", $this->sCharacterEncoding.'//TRANSLIT', $mArg);
         }
     }
-    
+
     private function __argumentDecodeUTF8_mb_convert_encoding(&$mArg)
     {
         if (is_array($mArg)) {
             foreach (array_keys($mArg) as $sKey) {
                 $sNewKey = $sKey;
                 $this->__argumentDecodeUTF8_mb_convert_encoding($sNewKey);
-                
+
                 if ($sNewKey != $sKey) {
                     $mArg[$sNewKey] = $mArg[$sKey];
                     unset($mArg[$sKey]);
                     $sKey = $sNewKey;
                 }
-                
+
                 $this->__argumentDecodeUTF8_mb_convert_encoding($mArg[$sKey]);
             }
         } else if (is_string($mArg)) {
             $mArg = mb_convert_encoding($mArg, $this->sCharacterEncoding, "UTF-8");
         }
     }
-    
+
     private function __argumentDecodeUTF8_utf8_decode(&$mArg)
     {
         if (is_array($mArg)) {
             foreach (array_keys($mArg) as $sKey) {
                 $sNewKey = $sKey;
                 $this->__argumentDecodeUTF8_utf8_decode($sNewKey);
-                
+
                 if ($sNewKey != $sKey) {
                     $mArg[$sNewKey] = $mArg[$sKey];
                     unset($mArg[$sKey]);
                     $sKey = $sNewKey;
                 }
-                
+
                 $this->__argumentDecodeUTF8_utf8_decode($mArg[$sKey]);
             }
         } else if (is_string($mArg)) {
             $mArg = utf8_decode($mArg);
         }
     }
-    
+
     /*
         Constructor: xajaxArgumentManager
 
@@ -246,7 +246,7 @@ final class xajaxArgumentManager
         $this->bDecodeUTF8Input = false;
         $this->sCharacterEncoding = 'UTF-8';
         $this->nMethod = XAJAX_METHOD_UNKNOWN;
-        
+
         if (isset($_POST['xjxargs'])) {
             $this->nMethod = XAJAX_METHOD_POST;
             $this->aArgs = $_POST['xjxargs'];
@@ -259,11 +259,11 @@ final class xajaxArgumentManager
             array_walk($this->aArgs, array($this, '__argumentStripSlashes'));
         }
 */
-            
+
 
         array_walk($this->aArgs, array($this, '__argumentDecode'));
     }
-    
+
     /*
         Function: getInstance
 
@@ -280,7 +280,7 @@ final class xajaxArgumentManager
         }
         return $obj;
     }
-    
+
     /*
         Function: configure
 
@@ -304,7 +304,7 @@ final class xajaxArgumentManager
             $this->sCharacterEncoding = $mValue;
         }
     }
-    
+
     /*
         Function: getRequestMethod
 
@@ -314,7 +314,7 @@ final class xajaxArgumentManager
     {
         return $this->nMethod;
     }
-    
+
     /*
         Function: process
 
@@ -325,7 +325,7 @@ final class xajaxArgumentManager
     {
         if ($this->bDecodeUTF8Input) {
             $sFunction = '';
-            
+
             if (function_exists('iconv')) {
                 $sFunction = "iconv";
             } else if (function_exists('mb_convert_encoding')) {
@@ -339,13 +339,13 @@ final class xajaxArgumentManager
                     E_USER_NOTICE
                 );
             }
-            
+
             $mFunction = array($this, '__argumentDecodeUTF8_' . $sFunction);
-            
+
             array_walk($this->aArgs, $mFunction);
             $this->bDecodeUTF8Input = false;
         }
-        
+
         return $this->aArgs;
     }
 }

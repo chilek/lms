@@ -250,7 +250,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $list = $this->db->GetAll(
             'SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
-				u.name AS username, u.lastname, fromdate, todate, description, 
+				u.name AS username, u.lastname, fromdate, todate, description,
 				numberplans.template, d.closed, d.confirmdate, d.senddate,
 				d.archived, d.adate, d.auserid, u3.name AS ausername,
 				d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
@@ -427,7 +427,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
             foreach ($list as &$item) {
                 $max = $this->db->GetOne(
-                    'SELECT MAX(number) AS max 
+                    'SELECT MAX(number) AS max
 					FROM documents
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					WHERE numberplanid = ? AND ' . (!preg_match('/%[0-9]*C/', $item['template']) || empty($customerid)
@@ -1185,8 +1185,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $number = $this->db->GetOne(
             '
-				SELECT MAX(number) 
-				FROM documents 
+				SELECT MAX(number)
+				FROM documents
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
                 . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                     ? '' : ' AND customerid = ' . intval($customerid)),

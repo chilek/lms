@@ -53,7 +53,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
         the client script generation phase.
     */
     private $sXajaxPrefix;
-    
+
     /*
         String: sDefer
 
@@ -61,7 +61,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
         javascript file is loaded after the page has been fully loaded.
     */
     private $sDefer;
-    
+
     private $bDeferScriptGeneration;
 
     /*
@@ -92,7 +92,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
         $this->bDeferScriptGeneration = false;
 
         $this->sRequestedFunction = null;
-        
+
         if (isset($_GET['xjxfun'])) {
             $this->sRequestedFunction = $_GET['xjxfun'];
         }

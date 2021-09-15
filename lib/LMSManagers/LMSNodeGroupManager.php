@@ -31,7 +31,7 @@
  */
 class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInterface
 {
-    
+
     public function GetNodeGroupNames()
     {
         return $this->db->GetAllByKey('SELECT id, name, description FROM nodegroups
@@ -64,10 +64,10 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
         return $this->db->GetAll('SELECT n.id AS id, n.name AS nodename, a.nodeid
 			FROM nodes n
 			JOIN customerview c ON (n.ownerid = c.id)
-			LEFT JOIN nodegroupassignments a ON (n.id = a.nodeid AND a.nodegroupid = ?) 
+			LEFT JOIN nodegroupassignments a ON (n.id = a.nodeid AND a.nodegroupid = ?)
 			WHERE a.nodeid IS NULL '
                         . ($network ?
-                                ' AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') 
+                                ' AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 					OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                         . ' ORDER BY nodename', array($groupid));
     }
@@ -82,10 +82,10 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
         return $this->db->GetAll('SELECT n.id AS id, n.name AS nodename, a.nodeid
 			FROM nodes n
 			JOIN customerview c ON (n.ownerid = c.id)
-			JOIN nodegroupassignments a ON (n.id = a.nodeid) 
+			JOIN nodegroupassignments a ON (n.id = a.nodeid)
 			WHERE a.nodegroupid = ?'
                         . ($network ?
-                                ' AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') 
+                                ' AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 					OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                         . ' ORDER BY nodename', array($groupid));
     }
@@ -93,7 +93,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
     public function GetNodeGroup($id, $network = null)
     {
         $result = $this->db->GetRow('SELECT id, name, description, prio,
-				(SELECT COUNT(*) FROM nodegroupassignments 
+				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodegroupid = nodegroups.id) AS count
 				FROM nodegroups WHERE id = ?', array($id));
 

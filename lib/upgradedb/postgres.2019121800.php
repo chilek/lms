@@ -44,7 +44,7 @@ $this->Execute("
             BEGIN
                 IF (TG_OP = 'TRUNCATE') THEN
                     DELETE FROM customerbalances;
-                    RETURN NULL;                
+                    RETURN NULL;
                 ELSEIF (TG_OP = 'DELETE') THEN
                     IF NOT EXISTS (SELECT 1 FROM cash WHERE customerid = OLD.customerid) THEN
                         DELETE FROM customerbalances WHERE customerid = OLD.customerid;
@@ -62,7 +62,7 @@ $this->Execute("
                     ELSE
                         INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
                     END IF;
-                    RETURN NEW;                
+                    RETURN NEW;
                 ELSE
                     IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
                         UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid) WHERE customerid = NEW.customerid;
@@ -72,12 +72,12 @@ $this->Execute("
                     RETURN NEW;
                 END IF;
             END;
-        $$; 
+        $$;
     CREATE TRIGGER cash_customerbalances_update_trigger AFTER INSERT OR UPDATE OR DELETE ON cash
         FOR EACH ROW
-        EXECUTE PROCEDURE customerbalances_update(); 
+        EXECUTE PROCEDURE customerbalances_update();
     CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
-        EXECUTE PROCEDURE customerbalances_update() 
+        EXECUTE PROCEDURE customerbalances_update()
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019121800', 'dbversion'));

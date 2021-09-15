@@ -47,7 +47,7 @@ unset($voipaccountlist['direction']);
 if ($SESSION->is_set('valp') && !isset($_GET['page'])) {
     $SESSION->restore('valp', $_GET['page']);
 }
-    
+
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.voipaccountlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;

@@ -30,7 +30,7 @@ $this->Execute("CREATE VIEW customersview AS
 		WHERE NOT EXISTS (
 			SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id)
 			AND c.type < ?", array(2));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013110500', 'dbversion'));

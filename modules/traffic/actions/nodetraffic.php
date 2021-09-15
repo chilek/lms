@@ -28,7 +28,7 @@ function NodeStats($id, $dt)
 {
     global $DB;
     if ($stats = $DB->GetRow(
-        'SELECT SUM(download) AS download, SUM(upload) AS upload 
+        'SELECT SUM(download) AS download, SUM(upload) AS upload
 			    FROM stats WHERE nodeid=? AND dt>?',
         array($id, time()-$dt)
     )) {

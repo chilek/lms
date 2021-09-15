@@ -119,7 +119,7 @@ klientem...
 jedna z lepszych adnotacji z dzialu DH:
  \"Klient ma problem egzystencjonalny, prawdopodobnie pomylil dzien z
  noca, albo butelke wody mineralnej z inna woda przezroczysta
- 
+
  ... nie potrafil wypelnic formularza rejestracji domeny\"
 
 Pozdrawiam,

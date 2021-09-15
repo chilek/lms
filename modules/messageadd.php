@@ -153,7 +153,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         divisions.account,
         COALESCE(b.value, 0) AS totalbalance,
         b2.balance AS balance
-		FROM customerview c 
+		FROM customerview c
 		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (
 			SELECT SUM(value * currencyvalue) AS value, customerid
@@ -195,11 +195,11 @@ function GetRecipients($filter, $type = MSG_MAIL)
 					WHEN ' . QUARTERLY . ' THEN 1/3.0
 					ELSE 0 END)
 				END)
-			) AS value 
+			) AS value
 			FROM assignments a
 			LEFT JOIN tariffs t ON (t.id = a.tariffid)
 			LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
-			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0) 
+			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
 			GROUP BY a.customerid
 		) t ON (t.customerid = c.id) '
         . (isset($netdevtable) ? $netdevtable : '')
@@ -210,7 +210,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
         .($group!=0 ? ' AND c.status = '.$group : '')
-        .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
+        .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
         .($customergroup ? ' AND c.id IN (SELECT customerid FROM vcustomerassignments

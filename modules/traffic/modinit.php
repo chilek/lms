@@ -26,7 +26,7 @@
 function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 {
     global $DB, $LMS;
-    
+
     // period
     if (is_array($from)) {
         $fromdate = mktime($from['Hour'], $from['Minute'], 0, $from['Month'], $from['Day'], $from['Year']);
@@ -78,11 +78,11 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
     } else {
         $limit = '';
     }
-        
+
     // join query from parts
-    $query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download 
-		    FROM stats 
-		    LEFT JOIN nodes ON stats.nodeid=nodes.id 
+    $query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download
+		    FROM stats
+		    LEFT JOIN nodes ON stats.nodeid=nodes.id
 		    WHERE '.$dt.' '.$net.
             'GROUP BY nodeid, name, ipaddr '.$order.' '.$limit;
 
@@ -90,7 +90,7 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
     if ($traffic = $DB->GetAll($query)) {
         $downloadsum = 0;
         $uploadsum = 0;
-        
+
         foreach ($traffic as $idx => $row) {
             $traffic['upload']['data'][] = $row['upload'];
             $traffic['download']['data'][] = $row['download'];

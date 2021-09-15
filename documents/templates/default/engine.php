@@ -45,7 +45,7 @@ if ($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
 				FROM passwd LEFT JOIN domains ON (domainid = domains.id)
 				WHERE passwd.ownerid = ? ORDER BY login', array($cid))) {
     foreach ($customeraccounts as $idx => $account) {
-        $customeraccounts[$idx]['aliases'] = $DB->GetCol('SELECT login FROM aliases a 
+        $customeraccounts[$idx]['aliases'] = $DB->GetCol('SELECT login FROM aliases a
 			LEFT JOIN aliasassignments aa ON a.id = aa.aliasid WHERE aa.accountid=?', array($account['id']));
         /*// create random password
         $pass = '';

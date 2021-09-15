@@ -60,15 +60,15 @@
 			{if $nrows > $pagelimit}
 			<TR class="dark">
 				<TD width="100%" colspan="{math equation="x+1" x=$ncols}">
-					<B>{t}Page:{/t} 
-					{if $page > 1} 
+					<B>{t}Page:{/t}
+					{if $page > 1}
 						<A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;
-					{/if} 
+					{/if}
 					{section name=pcnt loop=$nrows  step=$pagelimit}
 						{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}
 						{$smarty.section.pcnt.rownum}
 						{if $page eq $smarty.section.pcnt.rownum}]{else}</A>{/if}
-					{/section} 
+					{/section}
 					{if $page < $smarty.section.pcnt.rownum}
 						<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;
 					{/if}
@@ -84,7 +84,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FLEFTU" WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
+			<IMG SRC="img/producer.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE">
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="99%" COLSPAN="2"NOWRAP>
 			<B>{t}SQL query{/t}</B>
@@ -92,7 +92,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" WIDTH="1%">
-			<IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
+			<IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{t}Query contents:{/t}</B>

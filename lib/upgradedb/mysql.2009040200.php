@@ -39,11 +39,11 @@ $this->Execute("ALTER TABLE netdevices ADD clients int(11) NOT NULL DEFAULT '0'"
 $this->Execute("ALTER TABLE netdevices ADD secret varchar(60) NOT NULL DEFAULT ''");
 $this->Execute("ALTER TABLE netdevices ADD community varchar(50) NOT NULL DEFAULT ''");
 
-$this->Execute("CREATE VIEW nas AS 
+$this->Execute("CREATE VIEW nas AS
         SELECT no.id, inet_ntoa(no.ipaddr) nasname, nd.shortname, nd.nastype type,
-	nd.clients ports, nd.secret, nd.community, nd.description 
-        FROM nodes no 
-        JOIN netdevices nd ON (no.netdev = nd.id) 
+	nd.clients ports, nd.secret, nd.community, nd.description
+        FROM nodes no
+        JOIN netdevices nd ON (no.netdev = nd.id)
         WHERE no.nas = 1");
 
 $this->Execute("INSERT INTO nastypes (name) VALUES ('mikrotik_snmp')");

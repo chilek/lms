@@ -44,7 +44,7 @@ if (!$this->ResourceExists('nodes.login', LMSDB::RESOURCE_TYPE_COLUMN)) {
                 LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
                 LEFT JOIN vaddresses a ON n.address_id = a.id
             WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-        
+
         CREATE VIEW vmacs AS
             SELECT n.*, m.mac, m.id AS macid,
                 a.ccode,
@@ -55,7 +55,7 @@ if (!$this->ResourceExists('nodes.login', LMSDB::RESOURCE_TYPE_COLUMN)) {
                 JOIN macs m ON (n.id = m.nodeid)
                 LEFT JOIN vaddresses a ON n.address_id = a.id
             WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-    
+
         CREATE VIEW vnodetariffs AS
             SELECT n.*,
                 t.downrate, t.downceil,
@@ -112,7 +112,7 @@ if (!$this->ResourceExists('nodes.login', LMSDB::RESOURCE_TYPE_COLUMN)) {
                 GROUP BY n.id
             ) t ON t.nodeid = n.id
             WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-        
+
         CREATE VIEW vnodealltariffs AS
             SELECT n.*,
                 COALESCE(t1.downrate, t2.downrate, 0) AS downrate,

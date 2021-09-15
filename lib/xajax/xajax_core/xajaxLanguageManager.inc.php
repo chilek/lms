@@ -35,14 +35,14 @@ final class xajaxLanguageManager
         An array of the currently registered languages.
     */
     private $aMessages;
-    
+
     /*
         String: sLanguage
 
         The currently configured language.
     */
     private $sLanguage;
-    
+
     /*
         Function: xajaxLanguageManager
 
@@ -51,7 +51,7 @@ final class xajaxLanguageManager
     private function __construct()
     {
         $this->aMessages = array();
-        
+
         $this->aMessages['en'] = array(
             'LOGHDR:01' => '** xajax Error Log - ',
             'LOGHDR:02' => " **\n",
@@ -111,10 +111,10 @@ final class xajaxLanguageManager
             'XJXRM:IRERR' => 'An invalid response was returned while processing this request.',
             'XJXRM:MXRTERR' => 'Error:  You cannot mix response types while processing a single request: '
             );
-            
+
         $this->sLanguage = 'en';
     }
-    
+
     /*
         Function: getInstance
 
@@ -129,7 +129,7 @@ final class xajaxLanguageManager
         }
         return $obj;
     }
-    
+
     /*
         Function: configure
 
@@ -151,7 +151,7 @@ final class xajaxLanguageManager
             }
         }
     }
-    
+
     /*
         Function: register
 
@@ -166,7 +166,7 @@ final class xajaxLanguageManager
     {
         $this->aMessages[$sLanguage] = $aMessages;
     }
-    
+
     /*
         Function: getText
 
@@ -182,7 +182,7 @@ final class xajaxLanguageManager
                 return $this->aMessages[$this->sLanguage][$sMessage];
             }
         }
-                
+
         return '(Unknown language or message identifier)'
             . $this->sLanguage
             . '::'

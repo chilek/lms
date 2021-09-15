@@ -70,8 +70,8 @@ $this->Execute("
 CREATE VIEW contractorview AS
     SELECT c.*,
         a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
-        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid, 
-        a2.zip as post_zip, a2.city as post_city, a2.street as post_street, 
+        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.location as address, a2.location as post_address
     FROM customers c
@@ -116,7 +116,7 @@ $this->Execute("
 CREATE VIEW vnetworks AS
     SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
         a.street_id as location_street, a.house as location_house, a.flat as location_flat,
-        no.chkmac, inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, 
+        no.chkmac, inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip,
         no.id AS nodeid, a.location
     FROM nodes no
         LEFT JOIN networks ne ON (ne.id = no.netid)

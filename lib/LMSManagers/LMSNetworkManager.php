@@ -200,12 +200,12 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function GetNetworks($with_disabled = true)
     {
         if ($with_disabled == false) {
-            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address,
 				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
 				pubnetid
 				FROM networks WHERE disabled=0 ORDER BY name');
         } else {
-            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
+            return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address,
 				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
 				pubnetid
 				FROM networks ORDER BY name');
@@ -214,7 +214,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetNetIDByIP($ipaddr)
     {
-        return $this->db->GetOne('SELECT id FROM networks 
+        return $this->db->GetOne('SELECT id FROM networks
 				WHERE address = (inet_aton(?) & inet_aton(mask))', array($ipaddr));
     }
 
@@ -228,7 +228,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetNetDevIPs($id)
     {
-        $result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
+        $result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip,
 			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname, n.authtype,
 			n.lastonline
 			FROM vnodes n
@@ -368,22 +368,22 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         }
 
         $networks = $this->db->GetAll(
-            'SELECT 
-				n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, interface, gateway, dns, dns2, 
+            'SELECT
+				n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address,
+				address AS addresslong, mask, interface, gateway, dns, dns2,
 				domain, wins, dhcpstart, dhcpend, inet_ntoa(snat) AS snat,
 				mask2prefix(inet_aton(mask)) AS prefix,
 				broadcast(address, inet_aton(mask)) AS broadcastlong, vl.vlanid AS vlanid,
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
 				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
-				(SELECT COUNT(*) 
-					FROM nodes 
-					WHERE netid = n.id AND ipaddr <> 0 AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+				(SELECT COUNT(*)
+					FROM nodes
+					WHERE netid = n.id AND ipaddr <> 0 AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask)))
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
 				) AS assigned,
-				(SELECT COUNT(*) 
-					FROM nodes 
-					WHERE netid = n.id AND ipaddr <> 0 AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+				(SELECT COUNT(*)
+					FROM nodes
+					WHERE netid = n.id AND ipaddr <> 0 AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask)))
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
 						AND (?NOW? - lastonline < ?)
 				) AS online
@@ -448,8 +448,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         return $this->db->GetOne('SELECT 1 FROM networks
 			WHERE id != ? AND hostid = ? AND (
 				address = ? OR broadcast(address, inet_aton(mask)) = ?
-				OR (address > ? AND broadcast(address, inet_aton(mask)) < ?) 
-				OR (address < ? AND broadcast(address, inet_aton(mask)) > ?) 
+				OR (address > ? AND broadcast(address, inet_aton(mask)) < ?)
+				OR (address < ? AND broadcast(address, inet_aton(mask)) > ?)
 			)', array(
                     intval($ignorenet),
                     intval($hostid),
@@ -484,7 +484,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 }
             }
         }
-        return ($this->db->Execute('UPDATE nodes SET ipaddr = ipaddr + ? 
+        return ($this->db->Execute('UPDATE nodes SET ipaddr = ipaddr + ?
 				WHERE netid = ? AND ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $netid, $network, getbraddr($network, $mask)))
             + $this->db->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ?
 				WHERE netid = ? AND ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $netid, $network, getbraddr($network, $mask))));
@@ -513,7 +513,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             SYSLOG::RES_NETWORK => $networkdata['id']
         );
 
-        $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
+        $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?),
             mask=?, interface=?, vlanid=?, gateway=?, dns=?, dns2=?, domain=?, wins=?,
             dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=?, snat=?, pubnetid=? WHERE id=?', array_values($args));
 

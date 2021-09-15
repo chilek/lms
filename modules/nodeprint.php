@@ -89,20 +89,20 @@ switch ($type) {
 
                 $group = intval($_POST['customergroup']);
 
-                $nodelist = $DB->GetAll('SELECT vnodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
-					    vnodes.name AS name, vnodes.info AS info, 
+                $nodelist = $DB->GetAll('SELECT vnodes.id AS id, inet_ntoa(ipaddr) AS ip, mac,
+					    vnodes.name AS name, vnodes.info AS info,
 					    COALESCE(SUM(value), 0.00)/(CASE COUNT(DISTINCT vnodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT vnodes.id) END) AS balance, '
                         .$DB->Concat('UPPER(lastname)', "' '", 'customers.name').' AS owner
-					    FROM vnodes 
+					    FROM vnodes
 					    LEFT JOIN customers ON (ownerid = customers.id)
-					    LEFT JOIN cash ON (cash.customerid = customers.id) 
+					    LEFT JOIN cash ON (cash.customerid = customers.id)
 					    WHERE 1=1 '
                         .($net ? ' AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
                         .($group ? ' AND EXISTS (SELECT 1 FROM vcustomerassignments WHERE customerid = ownerid)' : '')
                         .' GROUP BY vnodes.id, ipaddr, mac, vnodes.name, vnodes.info, customers.lastname, customers.name
 					    HAVING SUM(value) < 0'
                         .($sqlord != '' ? $sqlord.' '.$direction : ''));
-                
+
                 $SMARTY->assign('nodelist', $nodelist);
                 if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
                     $output = $SMARTY->fetch('print/printindebtnodelist.html');
@@ -120,7 +120,7 @@ switch ($type) {
         unset($nodelist['direction']);
         unset($nodelist['totalon']);
         unset($nodelist['totaloff']);
-        
+
         $SMARTY->assign('nodelist', $nodelist);
         if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
             $output = $SMARTY->fetch('print/printnodelist.html');
@@ -132,7 +132,7 @@ switch ($type) {
 
     default:
         $layout['pagetitle'] = trans('Reports');
-        
+
         $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
         $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('printmenu', 'node');

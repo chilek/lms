@@ -30,7 +30,7 @@
  */
 class LMSPaginationFactory
 {
-    
+
     /**
      * Returns pagination
      *

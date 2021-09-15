@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("
-    INSERT INTO uiconfig (section, var, value, description, disabled) VALUES 
+    INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
         ('userpanel', 'signed_document_scan_operator_notification_mail_sender', '', '', 0),
         ('userpanel', 'signed_document_scan_operator_notification_mail_recipient', '', '', 0),
         ('userpanel', 'signed_document_scan_operator_notification_mail_format', 'text', '', 0),

@@ -269,7 +269,7 @@ VALIGN="TOP"
 >Start-up module (filename from <TT
 CLASS="FILENAME"
 >/modules</TT
-> without .php). 
+> without .php).
 		Default: welcome.</P
 ><P
 >Example:     <SAMP
@@ -484,7 +484,7 @@ CLASS="EMPHASIS"
 ></SPAN
 >. You can use '%TIME%'
         	template in your query which will be substituted with current UNIX timestamp and '%host'
-		for host name. WARNING!	Semicolon is handled as query separator, which means 
+		for host name. WARNING!	Semicolon is handled as query separator, which means
 		that you can enter couple of SQL queries separated by semicolon sign.</P
 ><P
 >Example:     <SAMP
@@ -749,7 +749,7 @@ CLASS="PROMPT"
 ><P
 >default_taxrate</P
 ><P
->Specify value (not label) of tax rate which will be selected 
+>Specify value (not label) of tax rate which will be selected
 		on drop-down lists by default. Default: 22.</P
 ><P
 >Example:     <SAMP
@@ -761,7 +761,7 @@ CLASS="PROMPT"
 ><P
 >big_networks</P
 ><P
->Support for big ISPs e.g. hidding long selection dropdowns. 
+>Support for big ISPs e.g. hidding long selection dropdowns.
 		Default: false.</P
 ><P
 >Example:     <SAMP
@@ -788,7 +788,7 @@ CLASS="PROMPT"
 HREF="http://etherwerx.com"
 TARGET="_top"
 >EtherWerX</A
-> devices. 
+> devices.
 		Default: false.</P
 ><P
 >Example:     <SAMP
@@ -802,13 +802,13 @@ CLASS="PROMPT"
 ><P
 >Default period value for assignment.
 			    Possible values:
-			    
+
 			    disposable - 0
 			    daily      - 1
 			    weekly     - 2
-			    monthly    - 3 
+			    monthly    - 3
 			    quarterly  - 4
-			    yearly     - 5			
+			    yearly     - 5
 			    Default: 0</P
 ><P
 >Example:     <SAMP
@@ -831,22 +831,22 @@ NAME="CONFIG-TAXES"
 ></H2
 ><P
 >Before you have to begin with financial system you will need
-		to define tax rates which you will use. On the list are place all 
+		to define tax rates which you will use. On the list are place all
 		rates data. It's possible to edit tax rate, but system will not
 		allow to change value of rate that was used in the past. Also isn't
 		possible to delete that rate.</P
 ><P
->Link 'Add tax rate' moves you to the form, where you can define 
+>Link 'Add tax rate' moves you to the form, where you can define
 		a new rate. Tax rate label is displayed on select lists and invoice
-		printout. Value of tax rate is a number from 0 to 100 with two 
-		decimal places precision. Taxing status is used for tax-free rate, that 
+		printout. Value of tax rate is a number from 0 to 100 with two
+		decimal places precision. Taxing status is used for tax-free rate, that
 		means the rest of defined tax rates should have taxing enabled.</P
 ><P
 >Tax rate which will be selected by default on lists is defined
 		by <TT
 CLASS="FILENAME"
 >default_taxrate</TT
-> option in section 
+> option in section
 		<SPAN
 CLASS="emphasis"
 ><I
@@ -866,7 +866,7 @@ NAME="CONFIG-NUMBERPLANS"
 ><P
 >This feature allows you to add unique numbering plan
 	        (numbering sequence) for each type of documents created in LMS.
-		It's also possible to define different sequences within one type of 
+		It's also possible to define different sequences within one type of
 		documents. For each document type you might define default
 		sequence (important, ie. when you're issuing invoices
 		automatically, as perl scripts or daemon will use this default
@@ -875,13 +875,13 @@ NAME="CONFIG-NUMBERPLANS"
 >For each sequence you should also define time span, that is
 		period in which sequence numbers will be unique. When time span
 		selected will reach its end, sequence will be zeroed. You are able
-		to set period to one of: daily, weekly (Monday to Sunday), monthly, 
+		to set period to one of: daily, weekly (Monday to Sunday), monthly,
 		quarterly or annually.</P
 ><P
 >Numbering plans list consist of all its identifying
 		information included, followed by example number generated using
 		this plan plus number of documents created with this plan. You
-		might select 'Add plan' to enter new sequence. Editing is possible by 
+		might select 'Add plan' to enter new sequence. Editing is possible by
 		clicking the field that you want to change. Deletion of plan is
 		only possible when no documents has been created with that
 		yet.</P
@@ -949,7 +949,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->If you have no numbering plans defined, each document will 
+>If you have no numbering plans defined, each document will
 		take default number as of '%N/LMS/%Y' with annual time span.</P
 ></TD
 ></TR
@@ -981,23 +981,23 @@ NAME="CONFIG-HOSTS"
 >3.15.5. Hosts</A
 ></H2
 ><P
->This section defines host names of those machines 
-	    (routers, servers) that read its configuration from LMS database 
+>This section defines host names of those machines
+	    (routers, servers) that read its configuration from LMS database
 	    and where scripts or <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
-> daemon will be 
+> daemon will be
 	    setup. </P
 ><P
->Each host name should be unique and it's recommended to 
-	    be machine's real name, which could be obtained by running 
+>Each host name should be unique and it's recommended to
+	    be machine's real name, which could be obtained by running
 	    <SAMP
 CLASS="PROMPT"
 >hostname</SAMP
-> command on each of them 
+> command on each of them
 	    (assuming they're all u*ix hosts).</P
 ></DIV
 ><DIV

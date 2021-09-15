@@ -35,7 +35,7 @@ if (!empty($all_streets)) {
 				FROM addresses a
 				JOIN customer_addresses ca ON ca.address_id = a.id
 				JOIN location_streets lst ON lst.id = a.street_id
-				WHERE a.street_id IS NOT NULL AND lst.name2 IS NOT NULL 
+				WHERE a.street_id IS NOT NULL AND lst.name2 IS NOT NULL
 		) UNION (
 			SELECT a.id, a.street, a.street_id
 				FROM addresses a

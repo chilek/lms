@@ -46,7 +46,7 @@ try {
     $DB_MAIL = LMSDB::getDB($_MAILDBTYPE, $_MAILDBHOST, $_MAILDBUSER, $_MAILDBPASS, $_MAILDBNAME);
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    
+
     // can't working without database
     die("Fatal error: cannot connect to database!\n");
 }
@@ -56,13 +56,13 @@ if (defined('USERPANEL_SETUPMODE')) {
     function module_setup()
     {
         global $SMARTY, $LMS;
-    
+
         $SMARTY->assign('mail_limit', ConfigHelper::getConfig('userpanel.mail_limit'));
         $SMARTY->assign('mail_allowed_domains', ConfigHelper::getConfig('userpanel.mail_allowed_domains'));
 
         $SMARTY->display('module:accounts:setup.html');
     }
-        
+
     function module_submit_setup()
     {
         global $DB;
@@ -155,7 +155,7 @@ function module_mailsave()
     CheckMail($_POST['account']['account'], $domain, $mail);
     CheckPass($password1, $password2);
 
- 
+
     $pw_crypted = md5crypt($password1);
 
         $query = 'INSERT INTO mailbox (username,password,name,maildir,quota,domain,created,modified,customerid)

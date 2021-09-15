@@ -157,7 +157,7 @@ NAME="MENU-HOSTING-NEW-ALIAS"
 ></H2
 ><P
 >Creating alias you have to define login, domain and destination account(s).
-	    Destination accounts must exists in LMS. If you need alias for external account, 
+	    Destination accounts must exists in LMS. If you need alias for external account,
 	    you should create an account with redirect address.</P
 ></DIV
 ><DIV
@@ -172,9 +172,9 @@ NAME="MENU-HOSTING-DOMAINS"
 >Currently LMS can directly manage PowerDNS server with mysql/pqsql backend.
 	    LMS now has full support for most of the features of PowerDNS server.
 	    It has full support for zone types: master,  native and  slave.
-	    You're able to see basic information about domains on the list such as: name, type, owner. 
-	    It's possible to sort this list by any highlighted column name and to filter 
-	    list for given criteria and by first letter of domain name. You can edit domain 
+	    You're able to see basic information about domains on the list such as: name, type, owner.
+	    It's possible to sort this list by any highlighted column name and to filter
+	    list for given criteria and by first letter of domain name. You can edit domain
 	    data by clicking 'Edit' icon. Add new domain at the bottom and at the top of the list.</P
 ></DIV
 ><DIV
@@ -187,8 +187,8 @@ NAME="MENU-HOSTING-NEW-DOMAIN"
 ></H2
 ><P
 >Domain data consists of name, description, type (master,slave,native), IP address of webserver,
-	    IP address of mailserver, IP address of master NS (when type slave is selected) and other 
-	    parameter which have default values stored in "zones" section. 
+	    IP address of mailserver, IP address of master NS (when type slave is selected) and other
+	    parameter which have default values stored in "zones" section.
 	    Domain can be assigned to customer. </P
 ></DIV
 ><DIV
@@ -227,27 +227,27 @@ NAME="HOSTING-E1"
 ><PRE
 CLASS="SCREEN"
 >  ServerName	"LMS FTP Server"
-  
+
   #dbname@host:port dbuser dbpass
   SQLConnectInfo lms@localhost:5432 lms mypassword
-  
+
   SQLAuthTypes Crypt Plaintext
   SQLUserInfo passwd login password uid NULL home NULL
   RequireValidShell off
   SQLAuthenticate users
-  
+
   # create user home directory if it doesn't exists yet
   SQLHomedirOnDemand on
-  
+
   # login message
   SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
   SQLLog PASS setlastlogin
-  
+
   # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
-  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd 
+  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd
   SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE lastlogin::abstime::timestamp::text END FROM passwd WHERE login='%u'"
   SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
-  
+
   # We limit access to valid (not expired) accounts with ftp type
   # SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
   SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"</PRE
@@ -284,10 +284,10 @@ sql_passwd: dbpass
 sql_hostnames: localhost
 sql_database: lms
 #sql_select: SELECT p.password FROM passwd p, domains d WHERE p.domainid = d.id
-#   AND p.login='%u' AND d.name ='%r' AND p.type &#38; 2 = 2 
+#   AND p.login='%u' AND d.name ='%r' AND p.type &#38; 2 = 2
 #	AND (p.expdate = 0 OR p.expdate &gt; UNIX_TIMESTAMP())
 sql_select: SELECT p.password FROM passwd p, domains d WHERE p.domainid = d.id
-	AND p.login='%u' AND d.name ='%r' AND p.type &#38; 2 = 2 
+	AND p.login='%u' AND d.name ='%r' AND p.type &#38; 2 = 2
 	AND (p.expdate = 0 OR p.expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 password_format: crypt
 mech_list: login plain
@@ -317,7 +317,7 @@ PGSQL_DATABASE		lms
 PGSQL_SELECT_CLAUSE SELECT p.login, \
         p.password, '', 104, 104, '/var/spool/mail/virtual', \
         d.name || '/' || p.login ||'/', '', p.login, '' \
-        FROM passwd p, domains d WHERE p.domainid = d.id 
+        FROM passwd p, domains d WHERE p.domainid = d.id
         AND p.login = '$(local_part)' AND d.name = '$(domain)' \
         AND p.type &#38; 2 = 2 \
         AND (p.expdate = 0 OR p.expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
@@ -345,16 +345,16 @@ password = dbpass
 hosts = localhost
 dbname = lms
 # MySQL
-#query = SELECT CONCAT(d.name, '/', p.login, '/') 
+#query = SELECT CONCAT(d.name, '/', p.login, '/')
 #	FROM passwd p, domains d WHERE p.domainid = d.id
-#       AND p.login = '%u' AND d.name = '%d' 
-#       AND p.type &#38; 2 = 2 
+#       AND p.login = '%u' AND d.name = '%d'
+#       AND p.type &#38; 2 = 2
 #       AND (p.expdate = 0 OR p.expdate &gt; UNIX_TIMESTAMP())
 # PostgreSQL
-query = SELECT d.name || '/' || p.login || '/' 
+query = SELECT d.name || '/' || p.login || '/'
 	FROM passwd p, domains d WHERE p.domainid = d.id
-        AND p.login = '%u' AND d.name = '%d' 
-        AND p.type &#38; 2 = 2 
+        AND p.login = '%u' AND d.name = '%d'
+        AND p.type &#38; 2 = 2
         AND (p.expdate = 0 OR p.expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
 # virtual_alias_maps.cf (Postfix):
@@ -380,7 +380,7 @@ dbname = lms
 #	LEFT JOIN domains pd ON (p.domainid = pd.id)
 #	WHERE a.login = '%u' AND ad.name = '%d'
 #		AND (aa.mail_forward != '' OR p.id IS NOT NULL)
-# PostgreSQL	
+# PostgreSQL
 query = SELECT p.mail_forward
 	FROM passwd p
 	JOIN domains d ON (p.domainid = d.id)

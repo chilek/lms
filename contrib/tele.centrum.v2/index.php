@@ -43,7 +43,7 @@ if (!empty($phone)) {
     $result     = $DB->GetAll("SELECT c.id, cc.contact AS phone, address, city, deleted,
                 ".$DB->Concat('UPPER(lastname)', "' '", 'c.name')." AS username
                 FROM customerview c
-                LEFT JOIN customercontacts cc ON cc.customerid = c.id 
+                LEFT JOIN customercontacts cc ON cc.customerid = c.id
                 WHERE REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? ? AND DELETED != 1
                 ORDER by deleted, username, cc.contact, address", array($phone));
     // prepare result to put in js

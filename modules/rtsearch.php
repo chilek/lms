@@ -202,7 +202,7 @@ function RTSearch($search, $order = 'createtime,desc')
 		END AS requestor, t.requestor AS req, t.createtime,
 		(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
 		t.priority, t.verifierid, t.deadline,
-        eventcountopened, eventcountclosed, 
+        eventcountopened, eventcountclosed,
 		m3.messageid, COUNT(m2.id) AS delcount,
 		ti.imagecount
 		FROM rttickets t

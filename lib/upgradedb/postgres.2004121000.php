@@ -43,7 +43,7 @@ $this->Execute("
     ALTER TABLE uiconfig DROP var1;
     ALTER TABLE uiconfig ALTER var SET NOT NULL;
     ALTER TABLE uiconfig ALTER var SET DEFAULT '';
-    
+
     UPDATE dbinfo SET keyvalue = '2004121000' WHERE keytype = 'dbversion'
 ");
 $this->CommitTrans();

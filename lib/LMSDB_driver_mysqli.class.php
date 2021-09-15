@@ -287,7 +287,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_listtables()
     {
-        return $this->GetCol('SELECT table_name FROM information_schema.tables 
+        return $this->GetCol('SELECT table_name FROM information_schema.tables
 				WHERE table_type = ? AND table_schema = ?', array('BASE TABLE', $this->_dbname));
     }
 

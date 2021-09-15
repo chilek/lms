@@ -51,7 +51,7 @@ $this->Execute("
 	UPDATE passwd SET realname = '';
 	ALTER TABLE passwd ALTER realname SET NOT NULL;
 	ALTER TABLE passwd ALTER realname SET DEFAULT '';
-	
+
 	ALTER TABLE passwd ADD createtime integer;
 	UPDATE passwd SET createtime = 0;
 	ALTER TABLE passwd ALTER createtime SET NOT NULL;

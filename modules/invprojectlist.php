@@ -36,7 +36,7 @@ if ($SESSION->is_set('ciplp') && !isset($_GET['page'])) {
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.invprojectlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
-   
+
 $SESSION->save('ciplp', $page);
 
 $layout['pagetitle'] = trans('Investment projects list');

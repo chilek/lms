@@ -71,7 +71,7 @@ if (isset($_POST['alias'])) {
             $error['login'] = trans('Account with that login name already exists in that domain!');
         }
     }
-        
+
     if (!empty($_GET['delaccount'])) {
         unset($alias['accounts'][intval($_GET['delaccount'])]);
     }
@@ -98,11 +98,11 @@ if (isset($_POST['alias'])) {
         $error['accountid'] = trans('You have to select destination account!');
         $error['mailforward'] = trans('You have to specify forward e-mail!');
     }
-    
+
     if (!$error && empty($_GET['addaccount']) && empty($_GET['delaccount'])
         && empty($_GET['addmailforward']) && empty($_GET['delmailforward'])) {
         $DB->BeginTrans();
-        
+
         $DB->Execute(
             'UPDATE aliases SET login = ?, domainid = ?
 				WHERE id = ?',
@@ -110,12 +110,12 @@ if (isset($_POST['alias'])) {
                     $alias['domainid'],
                     $alias['id'])
         );
-        
+
         $DB->Execute(
             'DELETE FROM aliasassignments WHERE aliasid = ?',
             array($alias['id'])
         );
-        
+
         if (count($alias['accounts'])) {
             foreach ($alias['accounts'] as $account) {
                 $DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
@@ -129,7 +129,7 @@ if (isset($_POST['alias'])) {
 					VALUES(?,?)', array($alias['id'], $mailforward));
             }
         }
-        
+
         $DB->CommitTrans();
 
         $SESSION->remove('aliasaccounts');
@@ -144,7 +144,7 @@ if (isset($_POST['alias'])) {
 				WHERE aliasid = ? AND mail_forward=\'\')', 'id', array($alias['id']));
     $mailforwards = $DB->GetAllByKey(
         'SELECT mail_forward
-			FROM aliasassignments WHERE aliasid = ? AND accountid IS NULL AND mail_forward <> \'\' 
+			FROM aliasassignments WHERE aliasid = ? AND accountid IS NULL AND mail_forward <> \'\'
 			ORDER BY mail_forward',
         'mail_forward',
         array($alias['id'])
@@ -164,8 +164,8 @@ if (isset($alias['accounts']) && count($alias['accounts'])) {
     $where = 'AND passwd.id NOT IN ('.implode(',', array_keys($alias['accounts'])).')';
 }
 
-$accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain 
-			FROM passwd, domains 
+$accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain
+			FROM passwd, domains
 			WHERE domainid = domains.id '
             .(isset($where) ? $where : '')
             .' ORDER BY login, domains.name');

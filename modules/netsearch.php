@@ -78,7 +78,7 @@ if (isset($_GET['ajax'])) {
 												ORDER BY
 													entries DESC, item ASC
 												LIMIT 15');
-    
+
             $candidates2 = $DB->GetAll('SELECT
 													dns2 as item,
 													count(id) AS entries
@@ -95,7 +95,7 @@ if (isset($_GET['ajax'])) {
             if (empty($candidates)) {
                 $candidates = array();
             }
-            
+
             if (empty($candidates2)) {
                 $candidates2 = array();
             }
@@ -106,7 +106,7 @@ if (isset($_GET['ajax'])) {
         default:
             exit;
     }
-                                        
+
     $result = array();
 
     if ($candidates) {

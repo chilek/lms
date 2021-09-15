@@ -70,7 +70,7 @@ $this->Execute("
     ALTER TABLE documents ALTER numberplanid SET DEFAULT 0;
     UPDATE documents SET numberplanid = 1 WHERE type = 1;
     UPDATE documents SET numberplanid = 2 WHERE type = 2;
-    
+
     CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 ");
 

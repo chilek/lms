@@ -34,7 +34,7 @@ ALTER TABLE customers ALTER lastname TYPE varchar(128);
 ALTER TABLE customers ALTER name TYPE varchar(128);
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
 
-CREATE VIEW customersview AS 
+CREATE VIEW customersview AS
 SELECT c.* FROM customers c
 	WHERE NOT EXISTS (
 		SELECT 1 FROM customerassignments a

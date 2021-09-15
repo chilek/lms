@@ -100,7 +100,7 @@ function parseNetworkSpeed($s)
     if ($s <= 40000) {
         return 40000;
     }
-    
+
     return 100000;
 }
 

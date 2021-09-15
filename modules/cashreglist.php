@@ -34,13 +34,13 @@ if ($allowed) {
     $args = array(Auth::GetCurrentUser());
 }
 
-$reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, 
+$reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name,
 			cashregs.description AS description, disabled,
-			(SELECT SUM(value) FROM receiptcontents 
+			(SELECT SUM(value) FROM receiptcontents
 				WHERE cashregs.id = regid) AS balance,
-			(SELECT template FROM numberplans 
+			(SELECT template FROM numberplans
 				WHERE in_numberplanid = numberplans.id ) AS in_template,
-			(SELECT template FROM numberplans 
+			(SELECT template FROM numberplans
 				WHERE out_numberplanid = numberplans.id) AS out_template
 		FROM cashregs
 		' . ($allowed ? '' : 'JOIN cashrights r ON r.regid = cashregs.id AND (r.rights & 1) > 0 AND r.userid = ?') . '

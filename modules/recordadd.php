@@ -34,7 +34,7 @@ if (isset($_POST['record'])) {
     foreach ($rec as $idx => $val) {
                 $rec[$idx] = trim(strip_tags($val));
     }
-    
+
     $record = array_merge($record, $rec);
 
     if ($record['type'] == 'SOA') {
@@ -42,11 +42,11 @@ if (isset($_POST['record'])) {
             $error['type'] = trans('SOA record already exists');
         }
     }
-    
+
     if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl'])) {
         $error['ttl'] = trans('Wrong TTL');
     }
-    
+
     // call validate... after all checks
     if (!$error) {
             validate_dns_record($record, $error);

@@ -37,7 +37,7 @@ final class xajaxEvent
         The name of the event.
     */
     private $sName;
-    
+
     /*
         Array: aConfiguration
 
@@ -45,7 +45,7 @@ final class xajaxEvent
         to trigger this event.
     */
     private $aConfiguration;
-    
+
     /*
         Array: aHandlers
 
@@ -53,7 +53,7 @@ final class xajaxEvent
         event.  Each of these functions will be called when the event is triggered.
     */
     private $aHandlers;
-    
+
     /*
         Function: xajaxEvent
 
@@ -65,7 +65,7 @@ final class xajaxEvent
         $this->aConfiguration = array();
         $this->aHandlers = array();
     }
-    
+
     /*
         Function: getName
 
@@ -79,7 +79,7 @@ final class xajaxEvent
     {
         return $this->sName;
     }
-    
+
     /*
         Function: configure
 
@@ -90,7 +90,7 @@ final class xajaxEvent
     {
         $this->aConfiguration[$sName] = $mValue;
     }
-    
+
     /*
         Function: addHandler
 
@@ -101,7 +101,7 @@ final class xajaxEvent
     {
         $this->aHandlers[] = $xuf;
     }
-    
+
     /*
         Function: generateRequest
 
@@ -132,27 +132,27 @@ final class xajaxEvent
     {
         $sMode = '';
         $sMethod = '';
-        
+
         if (isset($this->aConfiguration['mode'])) {
             $sMode = $this->aConfiguration['mode'];
         }
-            
+
         if (isset($this->aConfiguration['method'])) {
             $sMethod = $this->aConfiguration['method'];
         }
-            
+
         if (0 < strlen($sMode)) {
             $sMode = ", mode: '{$sMode}'";
         }
-        
+
         if (0 < strlen($sMethod)) {
             $sMethod = ", method: '{$sMethod}'";
         }
-        
+
         $sEvent = $this->sName;
         echo "{$sXajaxPrefix}{$sEventPrefix}{$sEvent} = function() { return xajax.request( { xjxevt: '{$sEvent}' }, { parameters: arguments{$sMode}{$sMethod} } ); };\n";
     }
-    
+
     /*
         Function: fire
 
@@ -161,7 +161,7 @@ final class xajaxEvent
     public function fire($aArgs)
     {
         $objResponseManager = xajaxResponseManager::getInstance();
-        
+
         foreach (array_keys($this->aHandlers) as $sKey) {
             $this->aHandlers[$sKey]->call($aArgs);
         }

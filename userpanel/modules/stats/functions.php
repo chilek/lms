@@ -44,7 +44,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         header('Location: ?m=userpanel&module=stats');
     }
 }
-                                    
+
 function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
 {
     global $LMS, $DB;
@@ -70,7 +70,7 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
     if ($from || $to) {
         $dt = " AND ( dt >= $fromdate AND dt <= $todate )";
     }
-    
+
     // order
     switch ($order) {
         case 'nodeid':
@@ -91,9 +91,9 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
     }
 
     // join query from parts
-    $query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download 
-		    FROM stats 
-		    LEFT JOIN nodes ON stats.nodeid=nodes.id 
+    $query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download
+		    FROM stats
+		    LEFT JOIN nodes ON stats.nodeid=nodes.id
 		    WHERE 1=1 '
             .($dt ? $dt : '')
             .($owner ? $owner : '')
@@ -103,7 +103,7 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
     if ($traffic = $LMS->DB->GetAll($query)) {
         $downloadsum = 0;
         $uploadsum = 0;
-        
+
         foreach ($traffic as $idx => $row) {
             $traffic['upload']['data'][] = $row['upload'];
             $traffic['download']['data'][] = $row['download'];
@@ -123,7 +123,7 @@ function Traffic($from = 0, $to = 0, $owner = 0, $order = '')
         $traffic['download']['sum']['data'] = $downloadsum;
         $traffic['upload']['avgsum'] = ($uploadsum*8)/($delta*1000);
         $traffic['download']['avgsum'] = ($downloadsum*8)/($delta*1000);
-        
+
         // get maximum data from array
 
         $maximum = max($traffic['download']['data']);

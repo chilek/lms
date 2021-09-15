@@ -38,7 +38,7 @@ $this->Execute("
         CONSTRAINT customerkarmalastchanges_customerid_fkey
             FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT customerkarmalastchanges_userid_fkey
-            FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE            
+            FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
     ) Engine=InnoDB
 ");
 

@@ -30,13 +30,13 @@ if (!$LMS->PaymentExists($_GET['id'])) {
 
 if (isset($_POST['payment'])) {
     $payment = $_POST['payment'];
-    
+
     foreach ($payment as $key => $value) {
         $payment[$key] = trim($value);
     }
 
     $payment['value'] = str_replace(',', '.', $payment['value']);
-    
+
     if ($payment['creditor'] == '') {
         $error['creditor'] = trans('Creditor name is required!');
     }
@@ -54,7 +54,7 @@ if (isset($_POST['payment'])) {
     }
 
     $period = sprintf('%d', $payment['period']);
-    
+
     switch ($period) {
         case DAILY:
             $at = 0;
@@ -66,7 +66,7 @@ if (isset($_POST['payment'])) {
                 $error['at'] = trans('Incorrect day of week (1-7)!');
             }
             break;
-        
+
         case QUARTERLY:
             if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', trim($payment['at']))) {
                 $error['at'] = trans('Incorrect date format!');
@@ -78,17 +78,17 @@ if (isset($_POST['payment'])) {
                 if ($m>3 || $m<1) {
                     $error['at'] = trans('Incorrect month number (max.3)!');
                 }
-                
+
                 $at = ($m-1) * 100 + $d;
             };
             break;
-        
+
         case HALFYEARLY:
             if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $payment['at']) && $payment['at']) {
                 $error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
             } else {
                 list($d,$m) = explode('/', $payment['at']);
-                    
+
                 if ($d>30 || $d<1 || ($d>28 && $m==2)) {
                     $error['at'] = trans('This month doesn\'t contain specified number of days');
                 }
@@ -98,7 +98,7 @@ if (isset($_POST['payment'])) {
                 $at = ($m-1) * 100 + $d;
             }
             break;
-        
+
         case YEARLY:
             if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', trim($payment['at']))) {
                 $error['at'] = trans('Incorrect date format!');
@@ -108,7 +108,7 @@ if (isset($_POST['payment'])) {
                 $at = date('z', $ttime) + 1;
             }
             break;
-        
+
         default: // MONTHLY
             $period = MONTHLY;
             $at = sprintf('%d', $payment['at']);
@@ -123,7 +123,7 @@ if (isset($_POST['payment'])) {
             }
             break;
     }
-    
+
     $payment['period'] = $period;
     $payment['id'] = $_GET['id'];
 
@@ -143,7 +143,7 @@ if (isset($_POST['payment'])) {
                 $payment['at'] = sprintf('%02d/%02d', $payment['at']%100, $payment['at']/100+1);
     }
 }
-    
+
 $layout['pagetitle'] = trans('Payment Edit: $a', $payment['name']);
 
 $SMARTY->assign('payment', $payment);

@@ -26,7 +26,7 @@
 
 // LEFT join with domains for bckward compat.
 $account = $DB->GetRow('SELECT p.*, d.name AS domain, '
-        .$DB->Concat('c.lastname', "' '", 'c.name').' AS customername 
+        .$DB->Concat('c.lastname', "' '", 'c.name').' AS customername
 		FROM passwd p
 		LEFT JOIN domains d ON (p.domainid = d.id)
 		LEFT JOIN customers c ON (c.id = p.ownerid)
@@ -36,13 +36,13 @@ if (!$account) {
     $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$account['aliases'] = $DB->GetAll('SELECT a.id, a.login, d.name AS domain 
+$account['aliases'] = $DB->GetAll('SELECT a.id, a.login, d.name AS domain
 		FROM aliases a JOIN domains d ON (a.domainid = d.id)
 		WHERE a.id IN (SELECT aliasid FROM aliasassignments
 			WHERE accountid = ?)', array($account['id']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-    
+
 $layout['pagetitle'] = trans('Account Info: $a', $account['login'].'@'.$account['domain']);
 
 $SMARTY->assign('account', $account);

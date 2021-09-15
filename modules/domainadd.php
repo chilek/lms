@@ -62,10 +62,10 @@ if (isset($_POST['domainadd'])) {
     } else if (GetDomainIdByName($domainadd['name'])) {
         $error['name'] = trans('Domain with specified name exists!');
     }
-    
+
     if ($domainadd['ownerid']) {
         $limits = $LMS->GetHostingLimits($domainadd['ownerid']);
-        
+
         if ($limits['domain_limit'] !== null) {
             if ($limits['domain_limit'] > 0) {
                 $cnt = $DB->GetOne(
@@ -79,10 +79,10 @@ if (isset($_POST['domainadd'])) {
             }
         }
     }
-    
+
     if (!$error) {
         $DB->BeginTrans();
-    
+
         $DB->Execute(
             'INSERT INTO domains (name, ownerid, type, master, description, mxbackup) VALUES (?,?,?,?,?,?)',
             array($domainadd['name'],
@@ -121,7 +121,7 @@ if (isset($_POST['domainadd'])) {
                 array($lid, $domainadd['name'], ConfigHelper::getConfig('zones.default_ttl'),
                     ConfigHelper::getConfig('zones.slave_dns'))
             );
-        
+
             if ($tlds[count($tlds)-2].$tlds[count($tlds)-1] != 'in-addrarpa') {
                 $DB->Execute(
                     'INSERT INTO records(domain_id,name,ttl,type,prio,content)
@@ -157,13 +157,13 @@ if (isset($_POST['domainadd'])) {
                 }
             }
         }
-        
+
         $DB->CommitTrans();
-        
+
         if (!isset($domainadd['reuse'])) {
             $SESSION->redirect('?m=domainlist');
         }
-        
+
         unset($domainadd['name']);
         unset($domainadd['description']);
     }

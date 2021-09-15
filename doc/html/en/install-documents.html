@@ -81,7 +81,7 @@ NAME="INSTALL-DOCUMENTS"
 ><P
 >LMS makes possible to generate and to store various documents
 	    i.e. invoices, receipts and non-financial documents i.e. contracts,
-	    protocols and others. Documents can be numbered with numbering plans 
+	    protocols and others. Documents can be numbered with numbering plans
 	    (patterns) defined in menu Configuration - Numbering Plans.</P
 ><DIV
 CLASS="SECT2"
@@ -158,7 +158,7 @@ CLASS="EMPHASIS"
 > daemon.</P
 ><P
 >For proper work of printouts you need to define division's invoices data
-		(e.g. header, footer, default expositor, place, bank account) and configure some options 
+		(e.g. header, footer, default expositor, place, bank account) and configure some options
 		in configuration section <SPAN
 CLASS="emphasis"
 ><I
@@ -183,7 +183,7 @@ CLASS="PROMPT"
 ><P
 >print_balance_history_limit</P
 ><P
->Records number on customer balance list on invoice. Specify 
+>Records number on customer balance list on invoice. Specify
 		last x records.	Default: 10.</P
 ><P
 >Example: <SAMP
@@ -194,7 +194,7 @@ CLASS="PROMPT"
 ></UL
 >
           Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
-          or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
+          or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to
           filter invoices for printing.</P
 ><P
 >When printing by default are displayed original and copy pages, it can be changed:
@@ -203,7 +203,7 @@ CLASS="PROMPT"
 ><P
 >default_printpage</P
 ><P
->Coma-separated list of default invoice printout pages. You can use 
+>Coma-separated list of default invoice printout pages. You can use
 	       "original", "copy", "duplicate". Default: "original,copy".</P
 ><P
 >Example: <SAMP
@@ -237,7 +237,7 @@ CLASS="EMPHASIS"
 ><P
 >template_file</P
 ><P
->Invoice template, which should be placed in 
+>Invoice template, which should be placed in
                <TT
 CLASS="FILENAME"
 >templates</TT
@@ -266,8 +266,8 @@ CLASS="PROMPT"
 ><P
 >attachment_name</P
 ><P
->File name for saving finished invoice printout. WARNING: Setting attachment_name 
-               with default content_type will (in case of MSIE) print invoice + prompt for save on 
+>File name for saving finished invoice printout. WARNING: Setting attachment_name
+               with default content_type will (in case of MSIE) print invoice + prompt for save on
                disk + bonus browser crash (6.0SP1 on WInXP).
                Default: empty.</P
 ><P
@@ -279,7 +279,7 @@ CLASS="PROMPT"
 ></UL
 >
           Generated invoice in HTML format consist of originals and copies, which are separated
-          by CSS page-break markups, so every modern browser that supports CSS 
+          by CSS page-break markups, so every modern browser that supports CSS
           should print many-page invoices correctly. This behavior was tested on
           Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</P
 ><P
@@ -302,8 +302,8 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Almost every internet browser has printing 
-               configuration, where functions like header and footer or URL 
+>Almost every internet browser has printing
+               configuration, where functions like header and footer or URL
                printing can be disabled.</P
 ></TD
 ></TR
@@ -358,8 +358,8 @@ NAME="INSTALL-INVOICES-IBAN"
 >2.9.2.3. Automatic iban account number generation</A
 ></H3
 ><P
->LMS allows for automatic IBAN number generation. As of now it supports fixed lenght of 26 digits 
-	  and  2 letters (letters are set fixed to PL -- POLAND). 
+>LMS allows for automatic IBAN number generation. As of now it supports fixed lenght of 26 digits
+	  and  2 letters (letters are set fixed to PL -- POLAND).
 	  You need to specify 8 to 20 digits, the rest is taken as as-many-leading-zeros-as-needed plus Customer-ID
 	  Be aware that for example Cyprus and Hungary also use 26 digits.
 	  More on: <A
@@ -378,7 +378,7 @@ NAME="INSTALL-INVOICES-CNOTE"
 >2.9.2.4. Credit Notes</A
 ></H3
 ><P
->Credit notes uses invoices settings from 
+>Credit notes uses invoices settings from
 	  <SPAN
 CLASS="emphasis"
 ><I
@@ -394,7 +394,7 @@ CLASS="EMPHASIS"
 ><P
 >cnote_template_file</P
 ><P
->Credit note template, which should be placed in 
+>Credit note template, which should be placed in
                <TT
 CLASS="FILENAME"
 >templates</TT
@@ -419,7 +419,7 @@ NAME="INSTALL-TRANSFERFORMS"
 >2.9.3. Transfer forms</A
 ></H2
 ><P
->Transfer forms it's Polish specific feature. Data for payment form printouts 
+>Transfer forms it's Polish specific feature. Data for payment form printouts
 		is get from customer's division info. The title of payment can be set using 'pay_title' option
 		in <SPAN
 CLASS="emphasis"
@@ -463,7 +463,7 @@ CLASS="EMPHASIS"
 ><P
 >template_file</P
 ><P
->Cash receipt template, which should be placed in 
+>Cash receipt template, which should be placed in
                <TT
 CLASS="FILENAME"
 >templates</TT
@@ -492,8 +492,8 @@ CLASS="PROMPT"
 ><P
 >attachment_name</P
 ><P
->File name for saving receipt printout. WARNING: Setting attachment_name 
-               with default content_type will (in case of MSIE) print document + prompt for save on 
+>File name for saving receipt printout. WARNING: Setting attachment_name
+               with default content_type will (in case of MSIE) print document + prompt for save on
                disk + bonus browser crash (6.0SP1 on WinXP).
                Default: empty.</P
 ><P
@@ -548,11 +548,11 @@ NAME="INSTALL-DOCUMENTS-OTHER"
 >2.9.5. Other documents</A
 ></H2
 ><P
->Documents support is not limited to invoices. You might store 
-	    virtually any documents you want in LMS, such as contracts, protocols, 
-	    annexes and others. You can assign any number of documents to each 
-	    customer in 'Customer documents' tab in 'Customer information' panel. 
-	    Each document should have defined title, type and additionally you 
+>Documents support is not limited to invoices. You might store
+	    virtually any documents you want in LMS, such as contracts, protocols,
+	    annexes and others. You can assign any number of documents to each
+	    customer in 'Customer documents' tab in 'Customer information' panel.
+	    Each document should have defined title, type and additionally you
 	    might define it's time span (time until when it's valid) and description.
 	    Document files are being stored outside of database (which should be kept
 	    in mind while doing backups!) in directory defined with <TT
@@ -567,15 +567,15 @@ CLASS="EMPHASIS"
 ></SPAN
 > section of config file.</P
 ><P
->Documents can be uploaded to system as prepared files, but also 
+>Documents can be uploaded to system as prepared files, but also
 		generated from templates with use of defined wizards. Here system gives
-		great configuration possibilities. In directory 
+		great configuration possibilities. In directory
 		<TT
 CLASS="FILENAME"
 >documents/templates/default</TT
 > you can find
-		default document wizard (template and engine). You can create unlimited 
-		number of own documents wizards, which must be placed in  
+		default document wizard (template and engine). You can create unlimited
+		number of own documents wizards, which must be placed in
 		<TT
 CLASS="FILENAME"
 >documents/templates/</TT
@@ -608,7 +608,7 @@ CLASS="FILENAME"
 		To generate document is needed engine (file with name <TT
 CLASS="FILENAME"
 >engine.php</TT
->). 
+>).
 		You can create own engine or use other by setting 'engine' variable to
 		appropriate wizard name. So, there is no need to create engine for
 		each new wizard. Is enough to make 'template' template and file
@@ -623,7 +623,7 @@ CLASS="FILENAME"
 > specify name of php file used
 		for printing additional fields on document creation form.
 		Plugin can also consist errors handlers for those fields.
-		After document creation will be executed PHP script which name (without extension) 
+		After document creation will be executed PHP script which name (without extension)
 		should be specified in <TT
 CLASS="FILENAME"
 >post-action</TT

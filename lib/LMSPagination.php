@@ -34,13 +34,13 @@ abstract class LMSPagination
 {
     /** @var int Current page */
     protected $page;
-    
+
     /** @var int Total records */
     protected $total;
-    
+
     /** @var int Records per page */
     protected $per_page;
-    
+
     /** @var int Total pages */
     protected $pages;
 
@@ -137,7 +137,7 @@ abstract class LMSPagination
         }
         return $recordnr;
     }
-    
+
     /**
      * Returns previous page number
      *
@@ -151,7 +151,7 @@ abstract class LMSPagination
             return 1;
         }
     }
-    
+
     /**
      * Returns next page number
      *
@@ -238,14 +238,14 @@ abstract class LMSPagination
     {
         $this->pages = intval(ceil($this->total / $this->per_page));
     }
-    
+
     /**
      * Determines if "go to" should be displayed
      *
      * @return boolean True if "go to" should be displated, false otherwise
      */
     abstract public function displayGoTo();
-    
+
     /**
      * Determines if link to given page should be displayed
      *

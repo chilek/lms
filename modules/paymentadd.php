@@ -52,7 +52,7 @@ if ($payment) {
     }
 
     $period = sprintf('%d', $payment['period']);
-    
+
     switch ($period) {
         case DAILY:
             $at = 0;
@@ -74,7 +74,7 @@ if ($payment) {
                 if ($m>3 || $m<1) {
                     $error['at'] = trans('Incorrect month number (max.3)!');
                 }
-                
+
                 $at = ($m-1) * 100 + $d;
             };
             break;
@@ -115,9 +115,9 @@ if ($payment) {
             }
             break;
     }
-    
+
     $payment['period'] = $period;
-    
+
     if (!$error) {
         $payment['at'] = $at;
         if (isset($payment['reuse'])) {
@@ -125,7 +125,7 @@ if ($payment) {
         } else {
             $LMS->PaymentAdd($payment);
         }
-            
+
         unset($payment);
         $payment['reuse'] = '1';
     }

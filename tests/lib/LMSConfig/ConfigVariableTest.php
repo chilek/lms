@@ -35,9 +35,9 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
         $variable_name = 'some_variable';
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
-        
+
         $config_variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $this->assertEquals($config_variable->getVariable(), $variable_name);
     }
 
@@ -50,9 +50,9 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
         $variable_name = 'some_variable';
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
-        
+
         $config_variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $this->assertEquals($config_variable->getValue(), $variable_value);
     }
 
@@ -65,9 +65,9 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
         $variable_name = 'some_variable';
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
-        
+
         $config_variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $this->assertEquals($config_variable->getComment(), $variable_comment);
     }
 }

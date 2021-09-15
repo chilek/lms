@@ -73,7 +73,7 @@ if (is_array($taxrateedit) && count($taxrateedit)) {
     if (!$taxrateedit['taxed']) {
         $taxrateedit['taxed'] = 0;
     }
-        
+
     if (!$taxrateedit['taxed'] && $taxrateedit['value']!=0) {
         $error['value'] = trans('Incorrect tax rate percentage value (non-zero value and taxing not checked)!');
     }

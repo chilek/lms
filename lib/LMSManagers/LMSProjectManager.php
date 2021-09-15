@@ -46,7 +46,7 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 
     public function GetProjects()
     {
-        return $this->db->GetAllByKey('SELECT ip.id, ip.name, ip.divisionid, 
+        return $this->db->GetAllByKey('SELECT ip.id, ip.name, ip.divisionid,
 				n.ncount AS nodes, nn.ncount AS netnodes
 			FROM invprojects ip
 			LEFT JOIN (

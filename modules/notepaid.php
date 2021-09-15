@@ -41,7 +41,7 @@ if (count($ilm)) {
 
 if (count($ids)) {
     foreach ($ids as $noteid) {
-        list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid, 
+        list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid,
 			(SELECT SUM(value) FROM debitnotecontents
 				WHERE docid = d.id) AS value, closed
 			FROM documents d
@@ -67,7 +67,7 @@ if (count($ids)) {
             );
             $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
         }
-        $DB->Execute('UPDATE documents SET closed = 
+        $DB->Execute('UPDATE documents SET closed =
 			(CASE closed WHEN 0 THEN 1 ELSE 0 END)
 			WHERE id = ?', array($noteid));
     }

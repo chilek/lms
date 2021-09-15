@@ -38,7 +38,7 @@ if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', arra
 
 if (isset($_POST['reglog'])) {
     $reglog = $_POST['reglog'];
-    
+
     foreach ($reglog as $key => $value) {
             $reglog[$key] = trim($value);
     }

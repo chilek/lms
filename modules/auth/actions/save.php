@@ -48,7 +48,7 @@ if (!$error && isset($_POST['rights'])) {
                 }
             }
         }
-    
+
         $DB->Execute(
             'INSERT INTO rights (userid, data) VALUES (?, ?)',
             array($id, serialize($rights))

@@ -30,25 +30,25 @@ if ($instance) {
     foreach ($instance as $idx => $key) {
         $instance[$idx] = trim($key);
     }
-    
+
     if ($instance['name']=='' && $instance['description']=='' && $instance['module']=='' & $instance['crontab']=='') {
         $SESSION->redirect('?m=hostlist');
     }
-    
+
     if ($instance['name'] == '') {
         $error['name'] = trans('Instance name is required!');
     } elseif ($DB->GetOne('SELECT id FROM daemoninstances WHERE name=? AND hostid=?', array($instance['name'], $instance['hostid']))) {
         $error['name'] = trans('Instance with specified name exists on that host!');
     }
-    
+
     if ($instance['module'] == '') {
         $error['module'] = trans('Instance module is required!');
     }
-        
+
     if (!$instance['hostid']) {
         $error['hostid'] = trans('Instance host is required!');
     }
-    
+
     if ($instance['crontab'] != '' && !preg_match('/^[0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+$/', $instance['crontab'])) {
         $error['crontab'] = trans('Incorrect crontab format!');
     }

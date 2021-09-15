@@ -46,7 +46,7 @@ if ($alias) {
     if ($alias['login']=='' && !$alias['domainid'] && !$alias['accountid']) {
         $SESSION->redirect('?m=aliaslist');
     }
-    
+
     if (!isset($alias['domainalias'])) {
         if ($alias['login'] == '') {
             $error['login'] = trans('You have to specify alias name!');
@@ -63,7 +63,7 @@ if ($alias) {
     } elseif (AccountExists($alias['login'], $alias['domainid'])) {
         $error['login'] = trans('Account with that login name already exists in that domain!');
     }
-    
+
     if (!empty($_GET['delaccount'])) {
         unset($alias['accounts'][intval($_GET['delaccount'])]);
     }
@@ -75,7 +75,7 @@ if ($alias) {
             $alias['accounts'][$account['id']] = $account;
         }
     }
-    
+
     if (!empty($_GET['delmailforward'])) {
         unset($alias['mailforwards'][array_search($_GET['delmailforward'], $alias['mailforwards'])]);
     }
@@ -83,24 +83,24 @@ if ($alias) {
     if ($alias['mailforward'] && (!is_array($alias['mailforwards']) || !in_array($alias['mailforward'], $alias['mailforwards']))) {
         $alias['mailforwards'][] = $alias['mailforward'];
     }
-    
+
     if (empty($_GET['addaccount']) && empty($_GET['delaccount'])
         && empty($_GET['addmailforward']) && empty($_GET['delmailforward'])) {
         if (!count($alias['accounts']) && !count($alias['mailforwards'])) {
             $error['accountid'] = trans('You have to select destination account!');
             $error['mailforward'] = trans('You have to specify forward e-mail!');
         }
-        
+
         if ($alias['domainid']) {
             if ($ownerid = $DB->GetOne('SELECT ownerid FROM domains WHERE id = ?', array($alias['domainid']))) {
                 $limits = $LMS->GetHostingLimits($ownerid);
-        
+
                 if ($limits['alias_limit'] !== null) {
                     if ($limits['alias_limit'] > 0) {
                         $cnt = $DB->GetOne('SELECT COUNT(*) FROM aliases WHERE domainid IN (
 							SELECT id FROM domains WHERE ownerid = ?)', array($ownerid));
                     }
-                
+
                     if ($limits['alias_limit'] == 0 || $limits['alias_limit'] <= $cnt) {
                         $error['domainid'] = trans('Exceeded aliases limit of selected customer ($a)!', $limits['alias_limit']);
                     }
@@ -108,18 +108,18 @@ if ($alias) {
             }
         }
     }
-    
+
     if (!$error && empty($_GET['addaccount']) && empty($_GET['delaccount'])
         && empty($_GET['addmailforward']) && empty($_GET['delmailforward'])) {
         $DB->BeginTrans();
-        
+
         $DB->Execute(
             'INSERT INTO aliases (login, domainid) VALUES (?,?)',
             array($alias['login'], $alias['domainid'])
         );
-        
+
         $id = $DB->GetLastInsertId('aliases');
-        
+
         if (count($alias['accounts'])) {
             foreach ($alias['accounts'] as $account) {
                 $DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
@@ -132,12 +132,12 @@ if ($alias) {
 					VALUES(?,?)', array($id, $mailforward));
             }
         }
-        
+
         $DB->CommitTrans();
 
         $SESSION->remove('aliasaccounts');
         $SESSION->remove('aliasmailforwards');
-        
+
         if (!isset($alias['reuse'])) {
             $SESSION->redirect('?m=aliaslist');
         }
@@ -160,8 +160,8 @@ if (isset($alias['accounts']) && count($alias['accounts'])) {
     $where = 'AND passwd.id NOT IN ('.implode(',', array_keys($alias['accounts'])).')';
 }
 
-$accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain 
-			FROM passwd, domains 
+$accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain
+			FROM passwd, domains
 			WHERE domainid = domains.id '
             .(isset($where) ? $where : '')
             .' ORDER BY login, domains.name');

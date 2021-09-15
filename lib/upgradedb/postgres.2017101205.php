@@ -49,7 +49,7 @@ $this->Execute("
 		FOREIGN KEY (regid) REFERENCES cashregs (id) ON DELETE SET NULL ON UPDATE CASCADE;
 	ALTER TABLE tariffs ADD CONSTRAINT tariffs_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE;
-	ALTER TABLE liabilities ADD CONSTRAINT liabilities_taxid_fkey 
+	ALTER TABLE liabilities ADD CONSTRAINT liabilities_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE;
 	ALTER TABLE assignments ADD CONSTRAINT assignments_tariffid_fkey
 		FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE;

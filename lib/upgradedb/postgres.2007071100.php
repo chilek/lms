@@ -35,7 +35,7 @@ $this->Execute("
 	    phone varchar(255) NOT NULL DEFAULT '',
 	    PRIMARY KEY (id)
     );
-    
+
     CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
     CREATE INDEX customercontacts_phone_idx ON customercontacts (phone);
 ");

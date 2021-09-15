@@ -64,7 +64,7 @@ if (isset($_POST['event'])) {
     if ($event['custid']) {
         $event['customerid'] = $event['custid'];
     }
-        
+
     $eventlist = $LMS->EventSearch($event);
     $daylist = array();
 
@@ -75,7 +75,7 @@ if (isset($_POST['event'])) {
             }
         }
     }
-        
+
     $SMARTY->assign('eventlist', $eventlist);
     $SMARTY->assign('daylist', $daylist);
     $SMARTY->assign('getHolidays', getHolidays($year));

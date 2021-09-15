@@ -95,7 +95,7 @@ class xajaxRequest
         The name of the function.
     */
     private $sName;
-    
+
     /*
         String: sQuoteCharacter
 
@@ -104,7 +104,7 @@ class xajaxRequest
         this function.  This can be set prior to calling <xajaxRequest->printScript>
     */
     private $sQuoteCharacter;
-    
+
     /*
         Array: aParameters
 
@@ -112,14 +112,14 @@ class xajaxRequest
         for this function when the javascript is output in <xajaxRequest->printScript>
     */
     private $aParameters;
-    
+
     /*
         Integer: nPageNumberIndex
 
         The index of the XAJAX_PAGE_NUMBER parameter in the array.
     */
     private $nPageNumberIndex;
-    
+
     /*
         Function: xajaxRequest
 
@@ -134,7 +134,7 @@ class xajaxRequest
         $this->sQuoteCharacter = '"';
         $this->sName = $sName;
     }
-    
+
     /*
         Function: useSingleQuote
 
@@ -145,7 +145,7 @@ class xajaxRequest
     {
         $this->sQuoteCharacter = "'";
     }
-    
+
     /*
         Function: useDoubleQuote
 
@@ -156,7 +156,7 @@ class xajaxRequest
     {
         $this->sQuoteCharacter = '"';
     }
-    
+
     /*
         Function: clearParameters
 
@@ -166,7 +166,7 @@ class xajaxRequest
     {
         $this->aParameters = array();
     }
-    
+
     /*
         Function: hasPageNumber
 
@@ -176,7 +176,7 @@ class xajaxRequest
     {
         return ($this->nPageNumberIndex >= 0);
     }
-    
+
     /*
         Function: setPageNumber
 
@@ -191,7 +191,7 @@ class xajaxRequest
         }
         return $this;
     }
-    
+
     /*
         Function: addParameter
 
@@ -207,7 +207,7 @@ class xajaxRequest
     {
         $this->setParameter(count($this->aParameters), $sType, $sValue);
     }
-    
+
     /*
         Function: setParameter
 
@@ -301,7 +301,7 @@ class xajaxRequest
     {
         return $this->sName . '(' . implode(', ', $this->aParameters) . ')';
     }
-        
+
     /*
         Function: printScript
 
@@ -332,12 +332,12 @@ class xajaxCustomRequest extends xajaxRequest
         Array: aVariables;
     */
     private $aVariables;
-    
+
     /*
         String: sScript;
     */
     private $sScript;
-    
+
     /*
         Function: __construct
 
@@ -355,7 +355,7 @@ class xajaxCustomRequest extends xajaxRequest
         $this->aVariables = array();
         $this->sScript = $sScript;
     }
-    
+
     /*
         Function: clearVariables
 
@@ -366,7 +366,7 @@ class xajaxCustomRequest extends xajaxRequest
     {
         $this->aVariables = array();
     }
-    
+
     /*
         Function: setVariable
 
@@ -383,7 +383,7 @@ class xajaxCustomRequest extends xajaxRequest
     {
         $this->aVariables[$sName] = $sValue;
     }
-    
+
     /*
         Function: printScript
     */

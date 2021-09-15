@@ -66,7 +66,7 @@ switch ($action) {
         }
 
         if (!$error) {
-            $links1 = $DB->GetAll('(SELECT type, 
+            $links1 = $DB->GetAll('(SELECT type,
 				(CASE src WHEN ? THEN dst ELSE src END) AS id,
 				speed, technology,
 				(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,

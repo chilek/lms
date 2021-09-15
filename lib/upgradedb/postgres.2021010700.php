@@ -27,7 +27,7 @@ $this->Execute("
     DROP VIEW customeraddressview;
     DROP VIEW contractorview;
     DROP VIEW customerview;
-    
+
     ALTER TABLE customers ADD COLUMN ict smallint NOT NULL DEFAULT 0;
 
     CREATE VIEW customerview AS
@@ -63,7 +63,7 @@ $this->Execute("
                 FROM userdivisions ud
                 WHERE ud.userid = lms_current_user()))
             AND c.type < 2;
-    
+
     CREATE VIEW contractorview AS
         SELECT c.*,
             cc.consentdate AS consentdate,
@@ -88,7 +88,7 @@ $this->Execute("
             LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
             LEFT JOIN customerconsentview cc ON cc.customerid = c.id
         WHERE c.type = 2;
-    
+
     CREATE VIEW customeraddressview AS
         SELECT c.*,
             cc.consentdate AS consentdate,

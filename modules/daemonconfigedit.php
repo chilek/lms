@@ -34,7 +34,7 @@ if (isset($_POST['config'])) {
     foreach ($configedit as $idx => $key) {
         $configedit[$idx] = trim($key);
     }
-    
+
     if ($configedit['var'] == '') {
         $error['var'] = trans('Option name is required!');
     } elseif ($config['var']!=$configedit['var']) {
@@ -42,7 +42,7 @@ if (isset($_POST['config'])) {
             $error['var'] = trans('Option with specified name exists in that instance!');
         }
     }
-    
+
     if (!isset($configedit['disabled'])) {
         $configedit['disabled'] = 0;
     }

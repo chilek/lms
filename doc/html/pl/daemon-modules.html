@@ -79,8 +79,8 @@ NAME="DAEMON-MODULES"
 >6.2. Moduły</A
 ></H1
 ><P
->Sam demon potrafi tylko uruchamiać moduły i to one odwalają całą robotę. 
-	Większość modułów jest przeznaczona do określonego zastosowania, jedynie 'hostfile' 
+>Sam demon potrafi tylko uruchamiać moduły i to one odwalają całą robotę.
+	Większość modułów jest przeznaczona do określonego zastosowania, jedynie 'hostfile'
 	można używać do różnych konfigów (usług), np. różnych typów firewalli.
 	Parametry konfiguracyjne modułów umieszcza się w sekcjach instancji je wywołujących.</P
 ><DIV
@@ -300,8 +300,8 @@ NAME="SYSTEM-DESC"
 ></H3
 ><P
 >Jedyne co robi ten moduł to wykonanie zadanego polecenia (listy poleceń)
-		    powłoki i/lub komendy SQL. Może się przydać gdy chcesz podczas przeładowania konfiguracji 
-		    wykonać jakąś komendę lub uruchomić zewnętrzny skrypt, na przykład jeden 
+		    powłoki i/lub komendy SQL. Może się przydać gdy chcesz podczas przeładowania konfiguracji
+		    wykonać jakąś komendę lub uruchomić zewnętrzny skrypt, na przykład jeden
 		    z tych, które możesz znaleźć w katalogu <TT
 CLASS="FILENAME"
 >/bin</TT
@@ -318,7 +318,7 @@ NAME="SYSTEM-CONFIG"
 ></H3
 ><P
 >W związku z powyższym możesz zdefiniować jedynie treść polecenia SQL lub
-		    shella. Powłoka powinna sobie także poradzić z listą poleceń oddzielonych 
+		    shella. Powłoka powinna sobie także poradzić z listą poleceń oddzielonych
 		    średnikami:</P
 ><UL
 ><LI
@@ -363,7 +363,7 @@ NAME="PAYMENTS-DESC"
 >6.2.3.1. Opis</A
 ></H3
 ><P
->Moduł nalicza opłaty abonamentowe klientów oraz opłaty stałe. Należy go uruchamiać 
+>Moduł nalicza opłaty abonamentowe klientów oraz opłaty stałe. Należy go uruchamiać
 		    codziennie. Opłaty naliczane na podstawie przypisanych klientowi
 		    taryf zapisywane są do bazy wraz z komentarzem określonym zmienną 'comment'.
 		    Po naliczeniu opłat tworzone są faktury. Komentarz do opłaty stałej to zlepek
@@ -385,10 +385,10 @@ NAME="PAYMENTS-CONFIG"
 ><P
 >comment</P
 ><P
->Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
+>Komentarz do operacji. '%period' zostanie zamienione na daty od-do
 			    należnego abonamentu, np. '2003/10/10 - 2003/11/09', '%tariff' na nazwę
 			    odpowiedniej taryfy/zobowiązania, %month na pełną nazwę bieżącego
-			    miesiąca, %year na bieżący rok, a %next_mon na następny miesiąc w formacie RRRR/MM. 
+			    miesiąca, %year na bieżący rok, a %next_mon na następny miesiąc w formacie RRRR/MM.
 			    Domyślnie: 'Subscription: '%tariff' for period: %period'.</P
 ><P
 >Przykład: <SAMP
@@ -400,7 +400,7 @@ CLASS="PROMPT"
 ><P
 >settlement_comment</P
 ><P
->Komentarz do operacji wyrównania. '%period' zostanie zamienione na daty od-do 
+>Komentarz do operacji wyrównania. '%period' zostanie zamienione na daty od-do
 			    okresu wyrównania, np. '2003/10/20 - 2003/11/09', a '%tariff' na nazwę
 			    odpowiedniej taryfy. Domyślnie odpowiada opcji <SAMP
 CLASS="PROMPT"
@@ -416,7 +416,7 @@ CLASS="PROMPT"
 ><P
 >up_payments</P
 ><P
->"Naliczanie z góry", czyli czy okres w komentarzu ma być liczony do 
+>"Naliczanie z góry", czyli czy okres w komentarzu ma być liczony do
 			    przodu, czy do tyłu w stosunku do daty naliczenia opłaty. Domyślnie: yes.</P
 ><P
 >Przykład: <SAMP
@@ -428,7 +428,7 @@ CLASS="PROMPT"
 ><P
 >expiry_days</P
 ><P
->Określa liczbę dni od daty wygaśnięcia przypisanych klientowi zobowiązań, 
+>Określa liczbę dni od daty wygaśnięcia przypisanych klientowi zobowiązań,
 			    po której dane tego zobowiązania zostaną usunięte z bazy. Przy ustawieniu na '0' dane
 			    zostaną usunięte natychmiast po dacie, do której obowiązywało zobowiązanie. Domyślnie: 30.</P
 ><P
@@ -464,7 +464,7 @@ CLASS="PROMPT"
 ><P
 >numberplan</P
 ><P
->ID planu numeracyjnego faktur. 
+>ID planu numeracyjnego faktur.
 				Domyślnie: 0 (plan domyślny).</P
 ><P
 >Przykład: <SAMP
@@ -513,7 +513,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 				Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -525,7 +525,7 @@ CLASS="PROMPT"
 ><P
 >excluded_customergroups</P
 ><P
->Lista nazw grup klientów, które mają być pominięte. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być pominięte. Wielkość liter nie ma znaczenia.
 					Domyślnie: pusta (żadna).</P
 ><P
 >Przykład: <SAMP
@@ -556,7 +556,7 @@ NAME="NOTIFY-DESC"
 >Moduł 'notify' służy do informowania klientów o zaległościach
 		    w opłatach za pomocą poczty elektronicznej. Aktualne saldo klienta
 		    porównywane jest ze zmienną 'limit', jeśli jest niższe - wiadomość
-		    zostaje wysłana. Treść wiadomości pobierana jest z przygotowanego szablonu, 
+		    zostaje wysłana. Treść wiadomości pobierana jest z przygotowanego szablonu,
 		    w którym można stosować następujące zmienne:
 		    <UL
 ><LI
@@ -635,7 +635,7 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Wiadomość o zaległościach zostaje wysłana jeśli saldo klienta 
+>Wiadomość o zaległościach zostaje wysłana jeśli saldo klienta
 			    spadnie poniżej kwoty określonej zmienną limit. Domyślnie: 0</P
 ><P
 >Przykład: <SAMP
@@ -676,9 +676,9 @@ NAME="GGNOTIFY-DESC"
 ></H3
 ><P
 >Odpowiednik modułu 'notify' służący do wysyłania wiadomości gadu-gadu.
-		    Aktualne saldo klienta porównywane jest ze zmienną 'limit', jeśli jest niższe 
-		    - wiadomość zostaje wysłana. Treść wiadomości pobierana jest z przygotowanego szablonu, 
-		    w którym można stosować zmienne takie jak dla modułu 'notify' (może to być też ten sam 
+		    Aktualne saldo klienta porównywane jest ze zmienną 'limit', jeśli jest niższe
+		    - wiadomość zostaje wysłana. Treść wiadomości pobierana jest z przygotowanego szablonu,
+		    w którym można stosować zmienne takie jak dla modułu 'notify' (może to być też ten sam
 		    szablon).</P
 ><P
 >Moduł wymaga zainstalowanej biblioteki <TT
@@ -720,7 +720,7 @@ CLASS="PROMPT"
 ><P
 >uin</P
 ><P
->Identyfikator gadu-gadu użytkownika wysyłającego wiadomości. 
+>Identyfikator gadu-gadu użytkownika wysyłającego wiadomości.
 			    Domyślnie: pusty.</P
 ><P
 >Przykład: <SAMP
@@ -743,7 +743,7 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Wiadomość o zaległościach zostaje wysłana jeśli saldo klienta 
+>Wiadomość o zaległościach zostaje wysłana jeśli saldo klienta
 			    spadnie poniżej kwoty określonej zmienną limit. Domyślnie: 0</P
 ><P
 >Przykład: <SAMP
@@ -784,7 +784,7 @@ NAME="CUTOFF-DESC"
 ></H3
 ><P
 >Cutoff zmienia status komputerów na 'odłączony' i/lub włącza ostrzeżenia
-		    klientom, którzy mają na koncie zaległości większe niż określony limit. 
+		    klientom, którzy mają na koncie zaległości większe niż określony limit.
 		    Ponadto odłącza komputery klientów, którym wygasły wszystkie zobowiązania
 		    lub są one zawieszone. Ten moduł nie zajmuje się fizycznym blokowaniem
 		    dostępu do sieci.</P
@@ -818,7 +818,7 @@ CLASS="PROMPT"
 >command</P
 ><P
 >Określa komendę systemową, która zostanie wywołana jeżeli co najmniej
-			    jeden klient zostanie odłączony lub zostanie włączone ostrzeżenie. 
+			    jeden klient zostanie odłączony lub zostanie włączone ostrzeżenie.
 			    Domyślnie: nieustawiona.</P
 ><P
 >Przykład: <SAMP
@@ -830,7 +830,7 @@ CLASS="PROMPT"
 ><P
 >warning</P
 ><P
->Włącza ostrzeżenie dla odłączanego klienta i przypisuje mu 
+>Włącza ostrzeżenie dla odłączanego klienta i przypisuje mu
 			    określoną w tej opcji treść. Jeżeli pusta, ostrzeżenie nie będzie włączane.
 			    Data w ostrzeżeniu ukryta jest pod zmienną '%time'. Możesz także użyć
 			    zmiennych: %B dla rzeczywistego salda klienta oraz %b dla salda bez znaku.
@@ -847,7 +847,7 @@ CLASS="PROMPT"
 ><P
 >expired_warning</P
 ><P
->Włącza ostrzeżenie dla odłączanego klienta i przypisuje mu 
+>Włącza ostrzeżenie dla odłączanego klienta i przypisuje mu
 				określoną w tej opcji treść. Jeżeli pusta, ostrzeżenie nie będzie włączane.
 				Dotyczy klientów, którym wygasły zobowiązania.
 				Data w ostrzeżeniu ukryta jest pod zmienną '%time'.
@@ -862,10 +862,10 @@ CLASS="PROMPT"
 ><P
 >warnings_only</P
 ><P
->Ta opcja pozwala zdecydować, czy chcemy użyć naszego 
-			    modułu wyłącznie do włączania ostrzeżeń. Działa tylko w stosunku do 
-			    klientów, którzy posiadają aktywne zobowiązania. Klienci, którym 
-			    wygasły zobowiązania, zostaną odłączeni mimo włączenia tej opcji. 
+>Ta opcja pozwala zdecydować, czy chcemy użyć naszego
+			    modułu wyłącznie do włączania ostrzeżeń. Działa tylko w stosunku do
+			    klientów, którzy posiadają aktywne zobowiązania. Klienci, którym
+			    wygasły zobowiązania, zostaną odłączeni mimo włączenia tej opcji.
 			    Domyślnie: wyłączona.</P
 ><P
 >Przykład: <SAMP
@@ -877,10 +877,10 @@ CLASS="PROMPT"
 ><P
 >setnodegroup_only</P
 ><P
->Ta opcja pozwala zdecydować, czy chemy przypisać do wybranej grupy 
-			komputery klienta, zamiast zmieniać jego status lub włączać ostrzeżenie. Do grupa 
+>Ta opcja pozwala zdecydować, czy chemy przypisać do wybranej grupy
+			komputery klienta, zamiast zmieniać jego status lub włączać ostrzeżenie. Do grupa
 			o podanej nazwie zostaną przypisane wszystkie komputery klienta, który przekroczył
-			limit zadłużenia, albo posiada nierozliczone faktury (jeśli włączono 
+			limit zadłużenia, albo posiada nierozliczone faktury (jeśli włączono
 			check_invoices).
 			Domyślnie: pusta.</P
 ><P
@@ -906,7 +906,7 @@ CLASS="PROMPT"
 ><P
 >use_customerassignments</P
 ><P
->Jeśli chciałbyś pominąć sprawdzanie zobowiązań klientów 
+>Jeśli chciałbyś pominąć sprawdzanie zobowiązań klientów
 				powinieneś włączyć tą opcję. Domyślnie: włączona.</P
 ><P
 >Przykład: <SAMP
@@ -919,7 +919,7 @@ CLASS="PROMPT"
 >disable_suspended</P
 ><P
 >Włączenie tej opcji spowoduje odłaczenie także klientów,
-				których wszystkie obowiązujące zobowiązania są zawieszone. 
+				których wszystkie obowiązujące zobowiązania są zawieszone.
 				Domyślnie: wyłączona.</P
 ><P
 >Przykład: <SAMP
@@ -944,7 +944,7 @@ CLASS="PROMPT"
 ><P
 >deadline</P
 ><P
->Określa okres w dniach (licząc od terminu płatności faktury), 
+>Określa okres w dniach (licząc od terminu płatności faktury),
 				po którym nierozliczona faktura jest brana pod uwagę przy zastosowaniu
 				opcji 'check_invoices'. Domyślnie, klient zostanie zablokowany od razu
 				po terminie płatności. Domyślnie: 0.</P
@@ -958,7 +958,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 					Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -970,7 +970,7 @@ CLASS="PROMPT"
 ><P
 >excluded_customergroups</P
 ><P
->Lista nazw grup klientów, które mają być pominięte. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być pominięte. Wielkość liter nie ma znaczenia.
 					Domyślnie: pusta (żadna).</P
 ><P
 >Przykład: <SAMP
@@ -1023,7 +1023,7 @@ NAME="DHCP-DESC"
 ></H3
 ><P
 >Moduł zarządzający serwerem DHCP, tworzy plik konfiguracyjny oraz
-		    restartuje usługę. Zmienna 'command' umożliwia również wykonywanie innych 
+		    restartuje usługę. Zmienna 'command' umożliwia również wykonywanie innych
 		    czynności (programów).</P
 ></DIV
 ><DIV
@@ -1035,7 +1035,7 @@ NAME="DHCP-CONFIG"
 >6.2.7.2. Konfiguracja</A
 ></H3
 ><P
->Większość parametrów konfiguracyjnych odpowiada fragmentom 
+>Większość parametrów konfiguracyjnych odpowiada fragmentom
 		    pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
 		    nie wymagają zmiany:</P
 ><UL
@@ -1043,7 +1043,7 @@ NAME="DHCP-CONFIG"
 ><P
 >file</P
 ><P
->Określa lokalizację pliku konfiguracyjnego serwera dhcp. 
+>Określa lokalizację pliku konfiguracyjnego serwera dhcp.
 			    Domyślnie: /etc/dhcpd.conf.</P
 ><P
 >Przykład: <SAMP
@@ -1055,7 +1055,7 @@ CLASS="PROMPT"
 ><P
 >command</P
 ><P
->Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
+>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego.
 			    Domyślnie: 'killall dhcpd; /usr/sbin/dhcpd'.</P
 ><P
 >Przykład: <SAMP
@@ -1089,7 +1089,7 @@ CLASS="PROMPT"
 ><P
 >subnet_start</P
 ><P
->Nagłówek podsieci. '%a' - nazwa, '%m' - maska, %b - broadcast. 
+>Nagłówek podsieci. '%a' - nazwa, '%m' - maska, %b - broadcast.
 			    Domyślnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
 ><P
 >Przykład: <SAMP
@@ -1167,7 +1167,7 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
+>Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip.
 			    Domyślnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</P
 ><P
 >Przykład: <SAMP
@@ -1191,7 +1191,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 			    Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -1219,13 +1219,13 @@ NAME="HOSTFILE-DESC"
 >6.2.8.1. Opis</A
 ></H3
 ><P
->Moduł 'hostfile' jest dość uniwersalnym narzędziem. Ponieważ 
+>Moduł 'hostfile' jest dość uniwersalnym narzędziem. Ponieważ
 		    wykonuje pętlę po wszystkich komputerach (oraz adresach urządzeń sieciowych)
-			w bazie rozróżniając ich status podłączenia i ostrzeżenia, adresy prywatne 
-			i publiczne, a ponadto sieć do której są podłączone oraz grupy do których 
-			należą ich właściciele. 
+			w bazie rozróżniając ich status podłączenia i ostrzeżenia, adresy prywatne
+			i publiczne, a ponadto sieć do której są podłączone oraz grupy do których
+			należą ich właściciele.
 			Dzięki temu możliwe jest tworzenie np. reguł
-		    dowolnego firewalla, czy też pliku /etc/hosts. Dane zapisuje do pliku 
+		    dowolnego firewalla, czy też pliku /etc/hosts. Dane zapisuje do pliku
 		    i następnie wykonuje określone polecenie powłoki.</P
 ></DIV
 ><DIV
@@ -1237,8 +1237,8 @@ NAME="HOSTFILE-CONFIG"
 >6.2.8.2. Konfiguracja</A
 ></H3
 ><P
->W opcjach zawierających reguły hosta można stosować specjalne 
-			zmienne, które podczas zapisu do pliku zostaną 
+>W opcjach zawierających reguły hosta można stosować specjalne
+			zmienne, które podczas zapisu do pliku zostaną
 		    zastąpione odpowiednimi dla danego komputera danymi:
 		    <TABLE
 BORDER="0"
@@ -1481,7 +1481,7 @@ CLASS="PROMPT"
 ><P
 >public_grantedhost</P
 ><P
->Reguła dla hosta podłączonego, który posiada adres publiczny. 
+>Reguła dla hosta podłączonego, który posiada adres publiczny.
 				Domyślnie reguła określona opcją 'grantedhost'.</P
 ><P
 >Przykład: <SAMP
@@ -1493,7 +1493,7 @@ CLASS="PROMPT"
 ><P
 >public_deniedhost</P
 ><P
->Reguła dla hosta odłączonego, który posiada adres publiczny. 
+>Reguła dla hosta odłączonego, który posiada adres publiczny.
 				Domyślnie reguła określona opcją 'deniedhost'.</P
 ><P
 >Przykład: <SAMP
@@ -1564,7 +1564,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 			    Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -1576,7 +1576,7 @@ CLASS="PROMPT"
 ><P
 >nodegroups</P
 ><P
->Lista nazw grup komputerów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup komputerów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 				Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -1600,7 +1600,7 @@ CLASS="PROMPT"
 ><P
 >excluded_customergroups</P
 ><P
->Lista nazw grup klientów, które nie mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które nie mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 					Domyślnie: pusta.</P
 ><P
 >Przykład: <SAMP
@@ -1612,7 +1612,7 @@ CLASS="PROMPT"
 ><P
 >excluded_nodegroups</P
 ><P
->Lista nazw grup komputerów, które nie mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup komputerów, które nie mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 					Domyślnie: pusta.</P
 ><P
 >Przykład: <SAMP
@@ -1661,8 +1661,8 @@ CLASS="PROMPT"
 >share_netdev_pubip</P
 ><P
 >Włączenie tej opcji (yes, true, 1) spowoduje, że wszystkim
-				adresom urządzenia sieciowego, które nie posiadają zdefiniowanego 
-				adresu publicznego zostanie przypisany jeden (ten sam) ze zdefiniowanych 
+				adresom urządzenia sieciowego, które nie posiadają zdefiniowanego
+				adresu publicznego zostanie przypisany jeden (ten sam) ze zdefiniowanych
 				dla danego urządzenia adresów publicznych. Domyślnie: nie</P
 ><P
 >Przykład: <SAMP
@@ -1691,7 +1691,7 @@ NAME="TRAFFIC-DESC"
 ></H3
 ><P
 >'Traffic' to odpowiednik perlowego lms-traffic, zapisujący do bazy statystyki
-		    wykorzystania łącza z pliku utworzonego przez użytkownika. Plik taki powinien mieć 
+		    wykorzystania łącza z pliku utworzonego przez użytkownika. Plik taki powinien mieć
 		    format: ip_hosta upload download . Więcej informacji (w tym jak utworzyć taki plik)
 		    można znaleźć w rozdziale dotyczącym lms-traffic.</P
 ></DIV
@@ -1760,8 +1760,8 @@ NAME="TC-DESC"
 ></H3
 ><P
 >Moduł generujący skrypt zawierający polecenia iptables i tc służące
-		    do ograniczania przepływności i limitowania połączeń klientom. Regułki dla 
-		    komputerów można dowolnie zdefiniować i wykorzystać nie tylko do "traffic 
+		    do ograniczania przepływności i limitowania połączeń klientom. Regułki dla
+		    komputerów można dowolnie zdefiniować i wykorzystać nie tylko do "traffic
 		    control". Zasada działania skryptu przedstawia się następująco: Najpierw z bazy
 		    pobierane są dane dla wszystkich klientów. Obliczane są sumy ograniczeń
 		    (uprate, downrate, upceil, downceil, limity połączeń) dla każdego klienta
@@ -1942,7 +1942,7 @@ CLASS="PROMPT"
 ><P
 >Określa politykę tworzenia klas htb. W ustawieniu domyślnym
 			    wszystkie komputery klienta zostaną wrzucone do jednej klasy.
-			    Ustawienie tej opcji na 'true' spowoduje, że reguły określone w 
+			    Ustawienie tej opcji na 'true' spowoduje, że reguły określone w
 			    host_htb_up i host_htb_down zostaną wygenerowane dla wszystkich
 			    komputerów klienta (z inną wartością '%x'). Reguły z host_mark_down,
 			    host_mark_up, host_plimit i host_climit generowane są dla każdego
@@ -1959,7 +1959,7 @@ CLASS="PROMPT"
 ><P
 >Określa politykę tworzenia limitów połączeń/pakietów dla komputerów. W ustawieniu domyślnym
 			    limit połączeń/pakietów jest dzielony przez ilość komputerów klienta.
-			    Włączenie tej opcji spowoduje, że reguły określone w 
+			    Włączenie tej opcji spowoduje, że reguły określone w
 			    host_climit i host_plimit zostaną wygenerowane dla wszystkich
 			    komputerów klienta z wartością $climit i %plimit zdefiniowaną w taryfie (nie podzieloną przez ilość komputerów).
 				 Domyślnie: false</P
@@ -2091,7 +2091,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 			    Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -2123,10 +2123,10 @@ NAME="TC-NEW-DESC"
 				do ograniczania przepływności i limitowania połączeń klientom. Działa podobnie
 				do modułu 'tc', lecz obsługuje funkcjonalność pozwalającą na powiązywanie
 				taryf z komputerami. Skrypt tworzy tzw. kanały dla komputerów klienta
-				przypisanych do tej samej taryfy. Przykładowo: dla klienta z dwoma 
+				przypisanych do tej samej taryfy. Przykładowo: dla klienta z dwoma
 				komputerami przypisanymi do tej samej taryfy zostaną utworzone dwie
-				klasy (upload i download) oraz po dwa filtry dla każdego komputera. 
-				W przypadku gdy klient ma dwie taryfy i do każdej po jednym komputerze 
+				klasy (upload i download) oraz po dwa filtry dla każdego komputera.
+				W przypadku gdy klient ma dwie taryfy i do każdej po jednym komputerze
 				powstaną po dwie klasy dla każdej taryfy i odpowiednia ilość filtrów.
 				Wartość początkowa liczników (%x i %h w regułach) wynosi 100.</P
 ></DIV
@@ -2193,9 +2193,9 @@ CLASS="PROMPT"
 ><P
 >class_up</P
 ><P
->Definicja klasy dla uploadu, w której możemy użyć następujących 
-					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu 
-					klasy %uprate, %upceil. Domyślnie: 
+>Definicja klasy dla uploadu, w której możemy użyć następujących
+					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu
+					klasy %uprate, %upceil. Domyślnie:
 					<PRE
 CLASS="SCREEN"
 ># %cname (ID:%cid)
@@ -2212,9 +2212,9 @@ CLASS="PROMPT"
 ><P
 >class_down</P
 ><P
->Definicja klasy dla downloadu, w której możemy użyć następujących 
-					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu 
-					klasy, %downrate, %downceil. Domyślnie: 
+>Definicja klasy dla downloadu, w której możemy użyć następujących
+					zmiennych: %cid - ID klienta, %cname - nazwa klienta, %h - numer uchwytu
+					klasy, %downrate, %downceil. Domyślnie:
 					<PRE
 CLASS="SCREEN"
 >$TC class add dev $LAN parent 1:2 classid 1:%h htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
@@ -2253,12 +2253,12 @@ CLASS="PROMPT"
 >filter_down</P
 ><P
 >Definicja filtrów dla ruchu w kierunku do hosta. Dozwolone zmienne:
-					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i - adres, %m - mac, 
+					%n - nazwa hosta, %if - nazwa interfejsu sieci, %i - adres, %m - mac,
 					%ms - lista adresów MAC hosta (oddzielonych przecinkiem),
 					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie,
 					%h1, %h2, %h3, %h4 - oktety adresu w zapisie szesnastkowym,
 					%h - uchwyt klasy, %x - uchwyt
-					filtra (unikalny numer reguły). Domyślnie: 
+					filtra (unikalny numer reguły). Domyślnie:
 					<PRE
 CLASS="SCREEN"
 >$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
@@ -2274,8 +2274,8 @@ CLASS="PROMPT"
 ><P
 >climit</P
 ><P
->Definicja reguły dla limitu połączeń hosta. Dozwolone 
-					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
+>Definicja reguły dla limitu połączeń hosta. Dozwolone
+					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci,
 					%i - adres, %m - mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
 					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie,
 					%h1, %h2, %h3, %h4 - oktety adresu w zapisie szesnastkowym,
@@ -2295,8 +2295,8 @@ CLASS="PROMPT"
 ><P
 >plimit</P
 ><P
->Definicja reguły dla limitu pakietów dla hosta. Dozwolone 
-					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci, 
+>Definicja reguły dla limitu pakietów dla hosta. Dozwolone
+					zmienne: %n - nazwa hosta, %if - nazwa interfejsu sieci,
 				    %i - adres, %m - mac, %ms - lista adresów MAC hosta (oddzielonych przecinkiem),
 					%o1, %o2, %o3, %o4 - oktety adresu dziesiętnie,
 					%h1, %h2, %h3, %h4 - oktety adresu w zapisie szesnastkowym,
@@ -2328,7 +2328,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 					Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -2340,7 +2340,7 @@ CLASS="PROMPT"
 ><P
 >night_hours</P
 ><P
->Zakres godzin nocnych w formacie 24-godzinnym. Np. "22-5" 
+>Zakres godzin nocnych w formacie 24-godzinnym. Np. "22-5"
 					oznacza, że podczas uruchomienia modułu w godzinach od 22:00 do 4:59
 					brane będą wartości taryf dla godzin nocnych. Obowiązują
 					następujące ograniczenia dla formatu zakresu: nie może zawierać spacji,
@@ -2602,7 +2602,7 @@ CLASS="PROMPT"
 ><P
 >custmergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 			    Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -2631,7 +2631,7 @@ NAME="ETHERS-DESC"
 ></H3
 ><P
 >Moduł tworzący konfigurację tablicy ARP systemu. Ustawiając opcję
-		    'dummy_macs' można sprawić, aby komputerom odłączonym został przypisany 
+		    'dummy_macs' można sprawić, aby komputerom odłączonym został przypisany
 		    mac-adres 00:00:00:00:00:00.</P
 ></DIV
 ><DIV
@@ -2695,7 +2695,7 @@ CLASS="PROMPT"
 ><P
 >customergroups</P
 ><P
->Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia. 
+>Lista nazw grup klientów, które mają być brane pod uwagę. Wielkość liter nie ma znaczenia.
 			    Domyślnie: pusta (wszystkie grupy).</P
 ><P
 >Przykład: <SAMP
@@ -2826,7 +2826,7 @@ NAME="PINGER-DESC"
 >Moduł pinger to odpowiednik perlowego skryptu lms-fping. Różnice są jednak
 		    zasadnicze. Nie potrzebuje zewnętrznego programu i działa przy wykorzystaniu
 		    protokołu ARP. Powodem tego jest mniej więcej dwukrotnie szybsze wykonanie
-		    skanowania sieci. Nie ma także problemów z komputerami mającymi wyłączone 
+		    skanowania sieci. Nie ma także problemów z komputerami mającymi wyłączone
 		    odpowiadanie na pingi. Po skanowaniu, wszystkim włączonym komputerom jest
 		    ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
 		    aktywności komputerów np. na mapie sieci.</P
@@ -2851,11 +2851,11 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Pinger rozpoznaje interfejsy sieciowe na podstawie
-		    nazwy, dlatego (np. gdy do zakładania interfejsów wirtualnych/aliasów 
+		    nazwy, dlatego (np. gdy do zakładania interfejsów wirtualnych/aliasów
 		    wykorzystujesz program <TT
 CLASS="FILENAME"
 >ip</TT
->) musisz nadawać interfejsom etykiety 
+>) musisz nadawać interfejsom etykiety
 		    (ip addr add ... label ...). Pamiętaj także, żeby nie używać w nazwach
 		    kropek, ani myślników (mimo, że <TT
 CLASS="FILENAME"
@@ -2927,7 +2927,7 @@ CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 >.
-				W przyszłości moduł parser może zastąpić większość modułów 
+				W przyszłości moduł parser może zastąpić większość modułów
 				demona.</P
 ><P
 >Opis języka T-Script znajduje się w rozdziale <A
@@ -2939,7 +2939,7 @@ HREF="tscript.html"
 				pakiety <TT
 CLASS="FILENAME"
 >bison</TT
-> (co najmniej w wersji 1.875) oraz 
+> (co najmniej w wersji 1.875) oraz
 				<TT
 CLASS="FILENAME"
 >flex</TT
@@ -3018,7 +3018,7 @@ TARGET="_top"
 				Komunikacja odbywa się z wykorzystaniem protokołu SNMP.</P
 ><P
 >Moduł podczas pracy tworzy własną kopię konfiguracji urządzenia.
-				Konfiguracja urządzenia nie jest w żaden sposób weryfikowana, dlatego 
+				Konfiguracja urządzenia nie jest w żaden sposób weryfikowana, dlatego
 				korzystając z modułu ewx-pt nie można dokonywać zmian bezpośrednio na
 				urządzeniu. W celu rekonfiguracji urządzenia należy wyczyścić konfigurację
 				na urządzeniu oraz usunąć zawartość tabeli ewx_pt_config w bazie LMSa.
@@ -3119,7 +3119,7 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które mają być brane pod uwagę. 
+>Lista nazw sieci, które mają być brane pod uwagę.
 						Uwaga: po zmianie wartości tej opcji zalecana jest rekonfiguracja urządzenia.
 						Domyślnie: pusta (wszystkie sieci).</P
 ><P
@@ -3200,7 +3200,7 @@ TARGET="_top"
 				pracy wymagany jest firmware w wersji 1.4.x lub nowszej.</P
 ><P
 >Moduł podczas pracy tworzy własną kopię konfiguracji urządzenia.
-				Konfiguracja urządzenia nie jest w żaden sposób weryfikowana, dlatego 
+				Konfiguracja urządzenia nie jest w żaden sposób weryfikowana, dlatego
 				korzystając z modułu ewx-stm nie można dokonywać zmian bezpośrednio na
 				urządzeniu. W celu rekonfiguracji urządzenia należy wyczyścić konfigurację
 				na urządzeniu oraz usunąć zawartość tabel ewx_stm_channels oraz
@@ -3240,7 +3240,7 @@ CLASS="EMPHASIS"
 ></TABLE
 ></DIV
 >
-				Należy także zwrócić uwagę na to, iż moduł uwzględnia ustawienia opcji 
+				Należy także zwrócić uwagę na to, iż moduł uwzględnia ustawienia opcji
 				'Sprawdzanie MACa' oraz 'Half duplex' w danych komputera.
 				</P
 ></DIV
@@ -3318,7 +3318,7 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które mają być brane pod uwagę. 
+>Lista nazw sieci, które mają być brane pod uwagę.
 						Uwaga: po zmianie wartości tej opcji zalecana jest rekonfiguracja urządzenia.
 						Domyślnie: pusta (wszystkie sieci).</P
 ><P
@@ -3331,7 +3331,7 @@ CLASS="PROMPT"
 ><P
 >excluded_networks</P
 ><P
->Lista nazw sieci, które mają zostać pominięte. 
+>Lista nazw sieci, które mają zostać pominięte.
 						Uwaga: po zmianie wartości tej opcji zalecana jest rekonfiguracja urządzenia.
 						Domyślnie: pusta.</P
 ><P
@@ -3345,7 +3345,7 @@ CLASS="PROMPT"
 >dummy_ip_networks</P
 ><P
 >Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres IP 0.0.0.0. Wartość tej opcji może zawierać 
+						przypisany adres IP 0.0.0.0. Wartość tej opcji może zawierać
 						specjalny znak '*', oznaczający wszystkie sieci. Uwaga: po zmianie
 						wartości tej opcji zalecana jest rekonfiguracja urządzenia.
 						Domyślnie: pusta (żadna sieć).</P
@@ -3360,7 +3360,7 @@ CLASS="PROMPT"
 >dummy_mac_networks</P
 ><P
 >Lista nazw sieci, dla których komputerom zostanie
-						przypisany adres MAC 00:00:00:00:00:00. Wartość tej opcji może 
+						przypisany adres MAC 00:00:00:00:00:00. Wartość tej opcji może
 						zawierać specjalny znak '*', oznaczający wszystkie sieci.
 						Uwaga: po zmianie wartości tej opcji zalecana jest rekonfiguracja
 						urządzenia. Domyślnie: pusta (żadna sieć).</P
@@ -3374,7 +3374,7 @@ CLASS="PROMPT"
 ><P
 >excluded_dummy_ip_networks</P
 ><P
->Lista nazw sieci, które zostaną wyłączone z działania 
+>Lista nazw sieci, które zostaną wyłączone z działania
 						opcji dummy_ip_networks, w przypadku użycia w niej znaku '*'.
 						Domyślnie: pusta (żadna sieć).</P
 ><P
@@ -3387,7 +3387,7 @@ CLASS="PROMPT"
 ><P
 >excluded_dummy_mac_networks</P
 ><P
->Lista nazw sieci, które zostaną wyłączone z działania 
+>Lista nazw sieci, które zostaną wyłączone z działania
 						opcji dummy_mac_networks, w przypadku użycia w niej znaku '*'. Domyślnie: pusta (żadna sieć).</P
 ><P
 >Przykład: <SAMP
@@ -3411,7 +3411,7 @@ CLASS="PROMPT"
 ><P
 >night_hours</P
 ><P
->Zakres godzin nocnych w formacie 24-godzinnym. Np. "22-5" 
+>Zakres godzin nocnych w formacie 24-godzinnym. Np. "22-5"
 						oznacza, że podczas uruchomienia modułu w godzinach od 22:00 do 4:59
 						brane będą wartości taryf dla godzin nocnych. Obowiązują
 						następujące ograniczenia dla formatu zakresu: nie może zawierać spacji,

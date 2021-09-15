@@ -27,10 +27,10 @@
 $this->BeginTrans();
 
 $this->Execute("
-CREATE VIEW vnodes AS 
-SELECT n.*, m.mac 
-	FROM nodes n 
-	LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac 
+CREATE VIEW vnodes AS
+SELECT n.*, m.mac
+	FROM nodes n
+	LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
 		FROM (SELECT * FROM macs ORDER BY id) macs GROUP BY nodeid) m ON (n.id = m.nodeid);
 ");
 

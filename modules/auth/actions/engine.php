@@ -51,7 +51,7 @@ function authorize($module, $action)
         if (isset($ExecStack->_BINDTABLE['pre/'.$module.':'.$action])) {
             foreach ($ExecStack->_BINDTABLE['pre/'.$module.':'.$action] as $binding) {
                 list($mod, $act) = explode(':', $binding);
-                
+
                 // we can remove action only if isn't binded to other action
                 if (isset($bindtable[$mod.':'.$act]) && $bindtable[$mod.':'.$act]['count'] > 1) {
                     $bindtable[$mod.':'.$act]['count'] --;
@@ -61,7 +61,7 @@ function authorize($module, $action)
                 }
             }
         }
-            
+
         if (isset($ExecStack->_BINDTABLE['post/'.$module.':'.$action])) {
             foreach ($ExecStack->_BINDTABLE['post/'.$module.':'.$action] as $binding) {
                 list($mod, $act) = explode(':', $binding);
@@ -154,7 +154,7 @@ while (list($mod_name, $mod_info) = each($ExecStack->_MODINFO)) {
                     }
                 }
             }
-            
+
             // delete menu if any related action wasn't found
             unset($ExecStack->_MODINFO[$mod_name]['menus'][$menu_idx]);
         }

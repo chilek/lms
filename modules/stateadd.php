@@ -32,7 +32,7 @@ if (count($stateadd)) {
     if ($stateadd['name']=='' && $stateadd['description']=='') {
         $SESSION->redirect('?m=statelist');
     }
-    
+
     if ($stateadd['name'] == '') {
         $error['name'] = trans('State name is required!');
     }

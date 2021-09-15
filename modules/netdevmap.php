@@ -36,7 +36,7 @@ function drawtext($x, $y, $text, $r, $g, $b)
     // or something else. I don't know why, but we have a problem with
     // that characters on flash map.
     $text = clear_utf($text);
-    
+
     $t = new SWFTextField(SWFTEXTFIELD_NOEDIT | SWFTEXTFIELD_NOSELECT);
     $t->setFont($font);
     $t->setHeight(8);
@@ -63,9 +63,9 @@ function getnodearray($size)
     $x = 1;
     $result = array();
     $arr = array();
-    
+
     $exceptions = array('00', '01', '11', '10', '0-1', '-10');
-    
+
     while ($size > 0) {
         for ($i=-$x; $i<=$x; $i++) {
             for ($j=-$x; $j<=$x; $j++) {
@@ -80,7 +80,7 @@ function getnodearray($size)
         }
         $x++;
     }
-    
+
     return $result;
 }
 
@@ -92,7 +92,7 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
     // x2, y2 - wspolrz. badanego urzadzenia
 
     $in = array();
-    
+
     $minx = min($x1, $x2);
     $maxx = max($x1, $x2);
     $miny = min($y1, $y2);
@@ -104,14 +104,14 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
                 if ((isset($seen[$d2]) || $d2 == $devid) && !isset($in[$d2.'-'.$d1])) {
                     $a1 = $d1 != $devid ? $seen[$d1] : array('x' => $x2, 'y' => $y2);
                     $a2 = $d2 != $devid ? $seen[$d2] : array('x' => $x2, 'y' => $y2);
-                
+
                     // zapamietujemy odcinek, aby nie przetwarzac tego samego odcinka
                     // dwukrotnie ($devicelinks zawiera odcinki zdublowane)
                     $in[$d1.'-'.$d2] = true;
 
                     // sprawdzamy czy na badanym odcinku lezy inne urzadzenie
                     // Det(a,b,c) = 0 - wyznacznik maciezy metoda Sarrusa
-                
+
                     // urzadzenie $a1 lezy na odcinku |(x1,y1),(x2,y2)|
                     if (($x1*$y2 + $y1*$a1['x'] + $x2*$a1['y'] - $y2*$a1['x'] - $x1*$a1['y'] - $y1*$x2)==0) {
                         // rzut punktu zawiera sie w rzucie odcinka
@@ -134,7 +134,7 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
                             return true;
                         }
                     }
-    
+
                     $pminx = min($a1['x'], $a2['x']);
                     $pmaxx = max($a1['x'], $a2['x']);
                     $pminy = min($a1['y'], $a2['y']);
@@ -165,7 +165,7 @@ function overlaps(&$seen, $devid, $x1, $y1, $x2, $y2)
             }
         }
     }
-    
+
     return false;
 }
 
@@ -178,7 +178,7 @@ function makemap(&$map, &$seen, $device = 0, $x = 500, $y = 500, $parent = 0)
     } else {
         $in = array(0,5,-5,10,-10,20,-20,25,-25,30,-30,35,-35,40,-40);
     }
-    
+
     // net size: count($in)^2 - 1
     foreach ($in as $ii => $i) {
         foreach ($in as $ij => $j) {
@@ -196,10 +196,10 @@ function makemap(&$map, &$seen, $device = 0, $x = 500, $y = 500, $parent = 0)
     } else {
         // remember that current device was processed
         $seen[$device] = array('x' => $x, 'y' => $y);
-        
+
         // place device in space ...
         $map[$x][$y] = $device;
-        
+
         // ... and connected nodes (if they wasn't processed before)
         if (isset($nodelist[$device])) {
             $nodefields = getnodearray(count($nodelist[$device]));
@@ -224,7 +224,7 @@ function makemap(&$map, &$seen, $device = 0, $x = 500, $y = 500, $parent = 0)
                     if (isset($nodelist[$deviceid])) {
                         $nodefields = getnodearray(count($nodelist[$deviceid]));
                     }
-        
+
                     foreach ($fields as $devfield) {
                         $tx = $x + $devfield['x'];
                         $ty = $y + $devfield['y'];
@@ -253,7 +253,7 @@ function makemap(&$map, &$seen, $device = 0, $x = 500, $y = 500, $parent = 0)
                                 if ($cnt < count($nodelist[$deviceid])) {
                                     continue;
                                 }
-                            
+
                                 $map = $map2;
                                 unset($nodelist[$deviceid]);
                                 unset($nodefields);
@@ -331,7 +331,7 @@ if ($type == 'openlayers') {
             } elseif ($idx < $minx) {
                 $minx = $idx;
             }
-        
+
             if ($idx > $maxx) {
                 $maxx = $idx;
             }
@@ -376,13 +376,13 @@ if ($type == 'openlayers') {
             }
             unset($map[$idx]);
         }
-        
+
         sort($nodemap);
         sort($devicemap);
     }
-    
+
     $deviceslist = $DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC');
-    
+
     $SMARTY->assign('devicemap', isset($devicemap) ? $devicemap : null);
     $SMARTY->assign('nodemap', $nodemap);
     $SMARTY->assign('deviceslist', $deviceslist);
@@ -401,7 +401,7 @@ if ($type == 'openlayers') {
         } elseif ($idx < $minx) {
             $minx = $idx;
         }
-        
+
         if ($idx > $maxx) {
             $maxx = $idx;
         }
@@ -508,7 +508,7 @@ if ($type == 'openlayers') {
     $im_d_unk = new SWFBitmap(fopen("img/netdev_unk.jpg", "rb"));
     $im_d_off = new SWFBitmap(fopen("img/netdev_off.jpg", "rb"));
     $im_d_on  = new SWFBitmap(fopen("img/netdev_on.jpg", "rb"));
-    
+
     $nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM vnodes', 'id');
 
     if ($nodemap) {
@@ -521,7 +521,7 @@ if ($type == 'openlayers') {
             $py = (($cely * ($cellh)) + $celltmargin);
 
             $n = $nodes[$nodeid];
-        
+
             if ($n['lastonline']) {
                 if ((time()-$n['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
                     $myfill = $squareshape->addFill($im_n_off, SWFFILL_TILED_BITMAP);
@@ -547,7 +547,7 @@ if ($type == 'openlayers') {
         }
     }
 
-    $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline 
+    $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline
                     FROM netdevices n
                     LEFT JOIN vaddresses a ON a.id = n.address_id
                     LEFT JOIN vnodes ON (n.id = netdev)
@@ -560,9 +560,9 @@ if ($type == 'openlayers') {
         $cely = $device['y'];
         $px = (($celx * ($cellw)) + $celllmargin);
         $py = (($cely * ($cellh)) + $celltmargin);
-        
+
         $d = $devices[$deviceid];
-        
+
         if ($d['lastonline']) {
             if ((time()-$d['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
                 $myfill = $squareshape->addFill($im_d_off, SWFFILL_TILED_BITMAP);
@@ -572,7 +572,7 @@ if ($type == 'openlayers') {
         } else {
             $myfill = $squareshape->addFill($im_d_unk, SWFFILL_TILED_BITMAP);
         }
-        
+
         $myfill->scaleto(9, 9);
         $squareshape->setRightFill($myfill);
         $squareshape->drawLine(15, 0);
@@ -584,8 +584,8 @@ if ($type == 'openlayers') {
         $i=$m->add($button);
         $i->moveTo($px, $py);
 
-        if ($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) 
-				    FROM vnodes WHERE ownerid IS NULL AND netdev = ? 
+        if ($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr)
+				    FROM vnodes WHERE ownerid IS NULL AND netdev = ?
 				    ORDER BY ipaddr LIMIT 4', array($deviceid))) {
             if (isset($devip[0])) {
                 drawtext($px + 16, $py - (isset($devip[1])?16:8), $devip[0], 0, 0, 255);
@@ -600,11 +600,11 @@ if ($type == 'openlayers') {
                 drawtext($px + 16, $py + 24, $devip[3], 0, 0, 255);
             }
         }
-        
+
         drawtext($px + 16, $py + 0, $d['name'], 0, 0, 0);
         drawtext($px + 16, $py + 8, $d['location'], 0, 128, 0);
     }
-        
+
     header("Content-type: application/x-shockwave-flash");
     // Note: this line avoids a bug in InternetExplorer that won't allow
     // downloads over https
@@ -620,7 +620,7 @@ if ($type == 'openlayers') {
         } elseif ($idx < $minx) {
             $minx = $idx;
         }
-        
+
         if ($idx > $maxx) {
             $maxx = $idx;
         }
@@ -678,7 +678,7 @@ if ($type == 'openlayers') {
     }
 
     imagesetthickness($im, 2);
-    
+
     $links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
     if ($links) {
         foreach ($links as $link) {
@@ -690,14 +690,14 @@ if ($type == 'openlayers') {
             $src_py = (($src_cely * $cellh) + $celltmargin);
             $dst_px = (($dst_celx * $cellw) + $celllmargin);
             $dst_py = (($dst_cely * $cellh) + $celltmargin);
-    
+
             $color = $link['type'] ? $lightblue : $green;
             imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $color);
         }
     }
 
     imagesetthickness($im, 1);
-    
+
     if ($nodemap) {
         foreach ($nodemap as $node) {
             $src_celx = $node['x'];
@@ -741,13 +741,13 @@ if ($type == 'openlayers') {
             } else {
                 imagecopy($im, $im_n_unk, $px, $py, 0, 0, 16, 16);
             }
-        
+
             pngdrawtext($im, 1, $px + 15, $py - 8, $n['ip'], $blue, $lightbrown);
             pngdrawtext($im, 1, $px + 15, $py + 2, $n['name'], $black, $lightbrown);
         }
     }
 
-    $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline 
+    $devices = $DB->GetAllByKey('SELECT n.id, n.name, a.location, MAX(lastonline) AS lastonline
                     FROM netdevices n
                     LEFT JOIN vaddresses a ON a.id = n.address_id
                     LEFT JOIN vnodes ON (n.id = netdev)
@@ -760,7 +760,7 @@ if ($type == 'openlayers') {
         $py = (($cely * ($cellh)) + $celltmargin);
 
         $d = $devices[$deviceid];
-        
+
         if ($d['lastonline']) {
             if ((time()-$d['lastonline'])>ConfigHelper::getConfig('phpui.lastonline_limit')) {
                 imagecopy($im, $im_d_off, $px, $py, 0, 0, 16, 16);
@@ -770,7 +770,7 @@ if ($type == 'openlayers') {
         } else {
             imagecopy($im, $im_d_unk, $px, $py, 0, 0, 16, 16);
         }
-        
+
         if ($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM vnodes
 				    WHERE ownerid IS NULL AND netdev = ?
 				    ORDER BY ipaddr LIMIT 4', array($deviceid))) {
@@ -787,10 +787,10 @@ if ($type == 'openlayers') {
                 pngdrawtext($im, 1, $px + 20, $py + 26, $devip[3], $blue, $lightbrown);
             }
         }
-        
+
         pngdrawtext($im, 3, $px + 20, $py + 2, $d['name'], $black, $lightbrown);
         pngdrawtext($im, 2, $px + 20, $py + 18, $d['location'], $green, $lightbrown);
     }
-        
+
     imagepng($im);
 }

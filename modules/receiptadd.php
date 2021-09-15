@@ -385,7 +385,7 @@ switch ($action) {
                 $row = $DB->GetRow('SELECT SUM(value) AS value, cash.currency, cash.currencyvalue,
                             number, cdate, numberplans.template, documents.type AS type, documents.customerid,
 						    (SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
-						    FROM cash 
+						    FROM cash
 						    LEFT JOIN documents ON (docid = documents.id)
 						    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						    WHERE docid = ?
@@ -519,7 +519,7 @@ switch ($action) {
         }
 
         if ($receipt['cdate'] && !isset($receipt['cdatewarning'])) {
-            $maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents 
+            $maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents
 						WHERE type = ? AND numberplanid = ?', array(DOC_RECEIPT, $receipt['numberplanid']));
 
             if ($receipt['cdate'] < $maxdate) {

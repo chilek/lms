@@ -40,7 +40,7 @@ $this->Execute("
 $this->Execute("
     CREATE SEQUENCE \"rttickets_id_seq\";
     CREATE TABLE rttickets (
-	id integer default nextval('rttickets_id_seq'::text) NOT NULL,  
+	id integer default nextval('rttickets_id_seq'::text) NOT NULL,
 	queueid integer DEFAULT 0 NOT NULL,
 	requestor varchar(255) DEFAULT '' NOT NULL,
 	subject varchar(255) DEFAULT '' NOT NULL,

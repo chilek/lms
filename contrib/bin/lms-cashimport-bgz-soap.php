@@ -146,7 +146,7 @@ function insertCashImport($wplaty_parser, $sourceid = '', $sourcefileid = '')
             echo 'Wpłata '.$wplata[customer].',hash:'.$wplata[hash] .' jest już w bazie.'."\n";
         } else { //dodac do bazy
             echo 'Dodaje wpłate '.$wplata[customer].',hash:'.$wplata[hash] .' do bazy.'."\n";
-            $query = "Insert into cashimport (Date,Value,Customer,Description,CustomerId,Hash,sourceid, sourcefileid) 
+            $query = "Insert into cashimport (Date,Value,Customer,Description,CustomerId,Hash,sourceid, sourcefileid)
 				values (UNIX_TIMESTAMP('$wplata[date]'),'$wplata[value]','$wplata[customer]','$wplata[discription]',
 				'$wplata[customerid]','$wplata[hash]','$sourceid','$sourcefileid')";
             echo $query;
@@ -157,7 +157,7 @@ function insertCashImport($wplaty_parser, $sourceid = '', $sourcefileid = '')
     return $i;
 }
 
-        
+
 // dzialania:
 
 //probranie cashsourcesid

@@ -302,9 +302,9 @@ if (($fh = fopen($message_file, "r")) != null) {
     if (!empty($phone)) {
         $phone = preg_replace('/^' . $prefix . '/', '', $phone);
         $customer = $DB->GetRow(
-            "SELECT customerid AS cid, ".$DB->Concat('lastname', "' '", 'c.name')." AS name 
-				FROM customercontacts cc 
-				LEFT JOIN customers c ON c.id = cc.customerid 
+            "SELECT customerid AS cid, ".$DB->Concat('lastname', "' '", 'c.name')." AS name
+				FROM customercontacts cc
+				LEFT JOIN customers c ON c.id = cc.customerid
 				WHERE c.deleted = 0 AND (cc.type & ?) > 0 AND REPLACE(REPLACE(contact, ' ', ''), '-', '') ?LIKE? ?",
             array(CONTACT_MOBILE | CONTACT_LANDLINE, "%" . $phone)
         );

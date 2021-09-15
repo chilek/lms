@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("
-    DROP TRIGGER cash_customerbalances_truncate_trigger ON cash; 
+    DROP TRIGGER cash_customerbalances_truncate_trigger ON cash;
     DROP TRIGGER cash_customerbalances_update_trigger ON cash;
     DROP FUNCTION customerbalances_update()
 ");
@@ -37,7 +37,7 @@ $this->Execute("
             BEGIN
                 IF (TG_OP = 'TRUNCATE') THEN
                     DELETE FROM customerbalances;
-                    RETURN NULL;                
+                    RETURN NULL;
                 ELSEIF (TG_OP = 'DELETE') THEN
                     IF OLD.customerid IS NULL THEN
                         RETURN NULL;
@@ -58,7 +58,7 @@ $this->Execute("
                             UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid) WHERE customerid = OLD.customerid;
                         ELSE
                             INSERT INTO customerbalances (customerid, balance) VALUES (OLD.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid));
-                        END IF;                    
+                        END IF;
                     END IF;
                     IF NEW.customerid IS NULL THEN
                         RETURN NEW;
@@ -68,7 +68,7 @@ $this->Execute("
                     ELSE
                         INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
                     END IF;
-                    RETURN NEW;                
+                    RETURN NEW;
                 ELSE
                     IF NEW.customerid IS NULL THEN
                         RETURN NEW;
@@ -81,12 +81,12 @@ $this->Execute("
                     RETURN NEW;
                 END IF;
             END;
-        $$; 
+        $$;
     CREATE TRIGGER cash_customerbalances_update_trigger AFTER INSERT OR UPDATE OR DELETE ON cash
         FOR EACH ROW
-        EXECUTE PROCEDURE customerbalances_update(); 
+        EXECUTE PROCEDURE customerbalances_update();
     CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
-        EXECUTE PROCEDURE customerbalances_update() 
+        EXECUTE PROCEDURE customerbalances_update()
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020011000', 'dbversion'));

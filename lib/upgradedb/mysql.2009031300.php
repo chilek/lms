@@ -46,7 +46,7 @@ $this->Execute("CREATE TABLE messageitems (
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	int(11)		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT 0 NOT NULL,
-	error 		text		DEFAULT NULL, 
+	error 		text		DEFAULT NULL,
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
 	INDEX customerid (customerid)

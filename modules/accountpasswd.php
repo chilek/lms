@@ -27,7 +27,7 @@
 $id = intval($_GET['id']);
 
 // LEFT join with domains for backward compat.
-$account = $DB->GetRow('SELECT p.id, p.login, d.name AS domain 
+$account = $DB->GetRow('SELECT p.id, p.login, d.name AS domain
 		FROM passwd p
 		LEFT JOIN domains d ON (p.domainid = d.id)
 		WHERE p.id = ?', array($id));

@@ -45,7 +45,7 @@ class xajaxResponse
         Stores the commands that will be sent to the browser in the response.
     */
     public $aCommands;
-    
+
     /*
         String: sCharacterEncoding
 
@@ -53,7 +53,7 @@ class xajaxResponse
         special characters.  See <xajax->setEncoding> for more information.
     */
     private $sCharacterEncoding;
-    
+
     /*
         Boolean: bOutputEntities
 
@@ -61,7 +61,7 @@ class xajaxResponse
         <xajax->bOutputEntities> and <xajax->configure>.
     */
     private $bOutputEntities;
-    
+
     /*
         Mixed: returnValue
 
@@ -69,17 +69,17 @@ class xajaxResponse
         using 'synchronous' mode requests.  See <xajax->setMode> for details.
     */
     private $returnValue;
-    
+
     /*
         Object: objPluginManager
 
         A reference to the global plugin manager.
     */
     private $objPluginManager;
-    
+
     // sorry but this config is static atm
     private $sContentType = 'application/json'; //'text/xml';
-    
+
     /*
         Constructor: __construct
 
@@ -96,18 +96,18 @@ class xajaxResponse
             );
         }
         //EndSkipDebug
-        
+
         $this->aCommands = array();
-        
+
         $objResponseManager = xajaxResponseManager::getInstance();
-        
+
         $this->sCharacterEncoding = $objResponseManager->getCharacterEncoding();
         $this->bOutputEntities = $objResponseManager->getOutputEntities();
         $this->setResponseType($objResponseManager->getConfiguration('responseType'));
-        
+
         $this->objPluginManager = xajaxPluginManager::getInstance();
     }
-    
+
     public function getResponseType()
     {
         return $this->sResponseType;
@@ -115,21 +115,21 @@ class xajaxResponse
 
     public function setResponseType($sResponseType)
     {
-        
+
         if (null == $sResponseType) {
             return;
         }
-        
+
         $this->sResponseType = $sResponseType ;
-        
+
         if ('XML' == $sResponseType) {
             $this->setContentType('text/xml');
         } elseif ('JSON' == $sResponseType) {
             $this->setContentType('application/json');
         }
     }
-    
-    
+
+
     /*
         Function: setCharacterEncoding
 
@@ -156,7 +156,7 @@ class xajaxResponse
     {
         return $this->sCharacterEncoding;
     }
-    
+
 
     /*
         Function: setOutputEntities
@@ -177,7 +177,7 @@ class xajaxResponse
         $this->bOutputEntities = (boolean)$bOutputEntities;
         return $this;
     }
-    
+
     /*
         Function: plugin
 
@@ -205,7 +205,7 @@ class xajaxResponse
     {
         $aArgs = func_get_args();
         $nArgs = func_num_args();
-        
+
         //SkipDebug
         if (false == (0 < $nArgs)) {
             $objLanguageManager = xajaxLanguageManager::getInstance();
@@ -215,28 +215,28 @@ class xajaxResponse
             );
         }
         //EndSkipDebug
-        
+
         $sName = array_shift($aArgs);
-        
+
         $objPlugin = $this->objPluginManager->getResponsePlugin($sName);
-        
+
         if (false === $objPlugin) {
             $bReturn = false;
             return $bReturn;
         }
-        
+
         $objPlugin->setResponse($this);
-        
+
         if (0 < count($aArgs)) {
             $sMethod = array_shift($aArgs);
-            
+
             $aFunction = array($objPlugin, $sMethod);
             call_user_func_array($aFunction, $aArgs);
         }
-        
+
         return $objPlugin;
     }
-    
+
     /*
         Function: __get
 
@@ -256,7 +256,7 @@ class xajaxResponse
         $objPlugin = $this->plugin($sPluginName);
         return $objPlugin;
     }
-    
+
     /*
         Function: confirmCommands
 
@@ -284,7 +284,7 @@ class xajaxResponse
             (string)$sMessage
         );
     }
-    
+
     /*
         Function: assign
 
@@ -313,7 +313,7 @@ class xajaxResponse
             (string)$sData
         );
     }
-    
+
     /*
         Function: append
 
@@ -341,7 +341,7 @@ class xajaxResponse
             (string)$sData
         );
     }
-    
+
     /*
         Function: prepend
 
@@ -369,7 +369,7 @@ class xajaxResponse
             (string)$sData
         );
     }
-    
+
     /*
         Function: replace
 
@@ -397,7 +397,7 @@ class xajaxResponse
                     )
         );
     }
-    
+
     /*
         Function: clear
 
@@ -421,7 +421,7 @@ class xajaxResponse
             ''
         );
     }
-    
+
     /*
         Function: contextAssign
 
@@ -449,7 +449,7 @@ class xajaxResponse
             (string)$sData
         );
     }
-    
+
     /*
         Function: contextAppend
 
@@ -477,7 +477,7 @@ class xajaxResponse
             (string)$sData
         );
     }
-    
+
     /*
         Function: contextPrepend
 
@@ -505,7 +505,7 @@ class xajaxResponse
             (string)$sData
         );
     }
-    
+
     /*
         Function: contextClear
 
@@ -529,7 +529,7 @@ class xajaxResponse
             ''
         );
     }
-    
+
     /*
         Function: alert
 
@@ -552,7 +552,7 @@ class xajaxResponse
             (string)$sMsg
         );
     }
-    
+
     public function debug($sMessage)
     {
         return $this->addCommand(
@@ -562,7 +562,7 @@ class xajaxResponse
             (string)$sMessage
         );
     }
-    
+
     /*
         Function: redirect
 
@@ -629,7 +629,7 @@ class xajaxResponse
         }
         return $this;
     }
-    
+
     /*
         Function: script
 
@@ -656,7 +656,7 @@ class xajaxResponse
             (string)$sJS
         );
     }
-    
+
     /*
         Function: call
 
@@ -684,7 +684,7 @@ class xajaxResponse
             $aArgs
         );
     }
-    
+
     /*
         Function: remove
 
@@ -707,7 +707,7 @@ class xajaxResponse
             ''
         );
     }
-    
+
     /*
         Function: create
 
@@ -724,11 +724,11 @@ class xajaxResponse
 
         object : The <xajaxResponse> object.
     */
-    
+
     public function create($sParent, $sTag, $sId)
     {
- 
-        
+
+
         return $this->addCommand(
             array(
                     'cmd'=>'ce',
@@ -738,7 +738,7 @@ class xajaxResponse
             (string)$sTag
         );
     }
-    
+
     /*
         Function: insert
 
@@ -767,7 +767,7 @@ class xajaxResponse
             (string)$sTag
         );
     }
-    
+
     /*
         Function: insertAfter
 
@@ -796,7 +796,7 @@ class xajaxResponse
             (string)$sTag
         );
     }
-    
+
     /*
         Function: createInput
 
@@ -825,7 +825,7 @@ class xajaxResponse
             (string)$sName
         );
     }
-    
+
     /*
         Function: insertInput
 
@@ -856,7 +856,7 @@ class xajaxResponse
             (string)$sName
         );
     }
-    
+
     /*
         Function: insertInputAfter
 
@@ -887,7 +887,7 @@ class xajaxResponse
             (string)$sName
         );
     }
-    
+
     /*
         Function: setEvent
 
@@ -914,7 +914,7 @@ class xajaxResponse
             (string)$sScript
         );
     }
-    
+
 
     /*
         Function: addEvent
@@ -944,7 +944,7 @@ class xajaxResponse
             (string)$sScript
         );
     }
-    
+
     /*
         Function: addHandler
 
@@ -973,7 +973,7 @@ class xajaxResponse
             (string)$sHandler
         );
     }
-    
+
     /*
         Function: removeHandler
 
@@ -1001,7 +1001,7 @@ class xajaxResponse
             (string)$sHandler
         );
     }
-    
+
     /*
         Function: setFunction
 
@@ -1029,7 +1029,7 @@ class xajaxResponse
             (string)$sScript
         );
     }
-    
+
     /*
         Function: wrapFunction
 
@@ -1063,7 +1063,7 @@ class xajaxResponse
             $aScripts
         );
     }
-    
+
     /*
         Function: includeScript
 
@@ -1084,11 +1084,11 @@ class xajaxResponse
     public function includeScript($sFileName, $sType = null, $sId = null)
     {
         $command = array('cmd' => 'in');
-        
+
         if (false === (null === $sType)) {
             $command['type'] = (string)$sType;
         }
-        
+
         if (false === (null === $sId)) {
             $command['elm_id'] = (string)$sId;
         }
@@ -1098,7 +1098,7 @@ class xajaxResponse
             (string)$sFileName
         );
     }
-    
+
     /*
         Function: includeScriptOnce
 
@@ -1119,21 +1119,21 @@ class xajaxResponse
     public function includeScriptOnce($sFileName, $sType = null, $sId = null)
     {
         $command = array('cmd' => 'ino');
-        
+
         if (false === (null === $sType)) {
             $command['type'] = (string)$sType;
         }
-        
+
         if (false === (null === $sId)) {
             $command['elm_id'] = (string)$sId;
         }
-            
+
         return $this->addCommand(
             $command,
             (string)$sFileName
         );
     }
-    
+
     /*
         Function: removeScript
 
@@ -1163,7 +1163,7 @@ class xajaxResponse
         );
         return $this;
     }
-    
+
     /*
         Function: includeCSS
 
@@ -1185,17 +1185,17 @@ class xajaxResponse
     public function includeCSS($sFileName, $sMedia = null)
     {
         $command = array('cmd' => 'css');
-        
+
         if (false === (null === $sMedia)) {
             $command['media'] = (string)$sMedia;
         }
-        
+
         return $this->addCommand(
             $command,
             (string)$sFileName
         );
     }
-    
+
     /*
         Function: removeCSS
 
@@ -1216,17 +1216,17 @@ class xajaxResponse
     public function removeCSS($sFileName, $sMedia = null)
     {
         $command = array('cmd'=>'rcss');
-        
+
         if (false === (null === $sMedia)) {
             $command['media'] = (string)$sMedia;
         }
-        
+
         return $this->addCommand(
             $command,
             (string)$sFileName
         );
     }
-    
+
     /*
         Function: waitForCSS
 
@@ -1262,7 +1262,7 @@ class xajaxResponse
         );
         return $this;
     }
-    
+
     /*
         Function: waitFor
 
@@ -1294,7 +1294,7 @@ class xajaxResponse
             (string)$script
         );
     }
-    
+
     /*
         Function: sleep
 
@@ -1324,12 +1324,12 @@ class xajaxResponse
         );
         return $this;
     }
-    
+
     public function domStartResponse()
     {
         $this->script('xjxElm = []');
     }
-    
+
     public function domCreateElement($variable, $tag)
     {
         return $this->addCommand(
@@ -1340,7 +1340,7 @@ class xajaxResponse
             $tag
         );
     }
-    
+
     public function domSetAttribute($variable, $key, $value)
     {
         return $this->addCommand(
@@ -1372,7 +1372,7 @@ class xajaxResponse
             $parent
         );
     }
-    
+
     public function domAppendChild($parent, $variable)
     {
         return $this->addCommand(
@@ -1405,7 +1405,7 @@ class xajaxResponse
             $variable
         );
     }
-    
+
     public function domAppendText($parent, $text)
     {
         return $this->addCommand(
@@ -1416,12 +1416,12 @@ class xajaxResponse
             $text
         );
     }
-    
+
     public function domEndResponse()
     {
         $this->script('xjxElm = []');
     }
-    
+
     /*
         Function: setReturnValue
 
@@ -1440,12 +1440,12 @@ class xajaxResponse
     */
     public function setReturnValue($value)
     {
-        
+
 
         $this->returnValue = 'JSON' == $this->sResponseType ? $value : $this->_encodeArray($value)  ;
         return $this;
     }
-    
+
     /*
         Function: getContentType
 
@@ -1465,7 +1465,7 @@ class xajaxResponse
     {
         $this->sContentType = $sContentType ;
     }
-    
+
     /*
         Function: getOutput
     */
@@ -1482,7 +1482,7 @@ class xajaxResponse
         };
         return ob_get_clean();
     }
-    
+
     /*
         Function: printOutput
 
@@ -1505,7 +1505,7 @@ class xajaxResponse
             //todo: trigger Error
         }
     }
-    
+
     /*
         Function: _sendHeaders
 
@@ -1520,17 +1520,17 @@ class xajaxResponse
             header("Cache-Control: no-cache, must-revalidate");
             header("Pragma: no-cache");
         }
-        
+
         $sCharacterSet = '';
         if ($this->sCharacterEncoding && 0 < strlen(trim($this->sCharacterEncoding))) {
             $sCharacterSet = '; charset="' . trim($this->sCharacterEncoding) . '"';
         }
-        
+
         $sContentType = $this->getContentType();
-        
+
         header('content-type: ' . $sContentType . ' ' . $sCharacterSet);
     }
-    
+
     /*
         Function: getCommandCount
 
@@ -1542,7 +1542,7 @@ class xajaxResponse
     {
         return count($this->aCommands);
     }
-    
+
     /*
         Function: appendResponse
 
@@ -1560,7 +1560,7 @@ class xajaxResponse
     {
         if ($mCommands instanceof xajaxResponse) {
             $this->returnValue = $mCommands->returnValue;
-            
+
             if ($bBefore) {
                 $this->aCommands = array_merge($mCommands->aCommands, $this->aCommands);
             } else {
@@ -1584,7 +1584,7 @@ class xajaxResponse
             //EndSkipDebug
         }
     }
-    
+
     /*
         Function: addPluginCommand
 
@@ -1606,7 +1606,7 @@ class xajaxResponse
         $aAttributes['plg'] = $objPlugin->getName();
         return $this->addCommand($aAttributes, $mData);
     }
-    
+
     /*
         Function: addCommand
 
@@ -1628,7 +1628,7 @@ class xajaxResponse
         if ('text/xml' == $this->getContentType()) {
             $mData = $this->_encodeArray($mData);
         };
-        
+
         /* merge commands if possible */
         if (in_array($aAttributes['cmd'], array('js','ap'))) {
             if ($aLastCommand = array_pop($this->aCommands)) {
@@ -1650,7 +1650,7 @@ class xajaxResponse
 
         return $this;
     }
-    
+
     /*
         Function: clearCommands
 
@@ -1666,12 +1666,12 @@ class xajaxResponse
 
         return $this;
     }
-    
-    
+
+
     private function _printResponse_JSON()
     {
         $response = array();
-        
+
         if (null !== $this->returnValue) {
             $response['xjxrv'] = $this->returnValue;
         }
@@ -1684,7 +1684,7 @@ class xajaxResponse
 
         print json_encode($response);
     }
-    
+
     /*
         Function: _printHeader_XML
 
@@ -1695,18 +1695,18 @@ class xajaxResponse
         echo '<';
         echo '?';
         echo 'xml version="1.0"';
-        
+
         $sEncoding = trim($this->sCharacterEncoding);
         if ($this->sCharacterEncoding && 0 < strlen($sEncoding)) {
             echo ' encoding="';
             echo $sEncoding;
             echo '"';
         }
-        
+
         echo ' ?';
         echo '>';
     }
-    
+
     /*
         Function: _printResponse_XML
 
@@ -1716,25 +1716,25 @@ class xajaxResponse
     {
         echo '<';
         echo 'xjx>';
-        
+
         if (null !== $this->returnValue) {
             echo '<';
             echo 'xjxrv>';
-            
+
             $this->_printArray_XML($this->returnValue);
-            
+
             echo '<';
             echo '/xjxrv>';
         }
-        
+
         foreach (array_keys($this->aCommands) as $sKey) {
             $this->_printCommand_XML($this->aCommands[$sKey]);
         }
-        
+
         echo '<';
         echo '/xjx>';
     }
-    
+
     /*
         Function: _printCommand_XML
 
@@ -1749,9 +1749,9 @@ class xajaxResponse
     {
         echo '<';
         echo 'cmd';
-        
+
         $mData = '';
-        
+
         foreach (array_keys($aAttributes) as $sKey) {
             if ($sKey) {
                 if ('data' != $sKey) {
@@ -1765,15 +1765,15 @@ class xajaxResponse
                 }
             }
         }
-        
+
         echo '>';
-        
+
         $this->_printArray_XML($mData);
-        
+
         echo '<';
         echo '/cmd>';
     }
-    
+
     /*
         Function: _printArray_XML
 
@@ -1791,20 +1791,20 @@ class xajaxResponse
         if ('object' == gettype($mArray)) {
             $mArray = get_object_vars($mArray);
         }
-        
+
         if (false == is_array($mArray)) {
             $this->_printEscapedString_XML($mArray);
             return;
         }
-        
+
         echo '<';
         echo 'xjxobj>';
-        
+
         foreach (array_keys($mArray) as $sKey) {
             if (is_array($mArray[$sKey])) {
                 echo '<';
                 echo 'e>';
-                
+
                 foreach (array_keys($mArray[$sKey]) as $sInnerKey) {
                     //SkipDebug
                     if (htmlspecialchars($sInnerKey, ENT_COMPAT, 'UTF-8') != $sInnerKey) {
@@ -1815,7 +1815,7 @@ class xajaxResponse
                         );
                     }
                     //EndSkipDebug
-                    
+
                     if ('k' == $sInnerKey || 'v' == $sInnerKey) {
                         echo '<';
                         echo $sInnerKey;
@@ -1835,7 +1835,7 @@ class xajaxResponse
                         //EndSkipDebug
                     }
                 }
-                
+
                 echo '<';
                 echo '/e>';
             } else {
@@ -1848,11 +1848,11 @@ class xajaxResponse
                 //EndSkipDebug
             }
         }
-        
+
         echo '<';
         echo '/xjxobj>';
     }
-    
+
     /*
         Function: _printEscapedString_XML
 
@@ -1876,7 +1876,7 @@ class xajaxResponse
             echo '*';
             return;
         }
-        
+
         if ($this->bOutputEntities) {
             //SkipDebug
             if (false === function_exists('mb_convert_encoding')) {
@@ -1887,16 +1887,16 @@ class xajaxResponse
                 );
             }
             //EndSkipDebug
-            
+
             echo call_user_func_array(
                 'mb_convert_encoding',
                 array($sData, 'HTML-ENTITIES', $this->sCharacterEncoding)
             );
             return;
         }
-        
+
         $nCDATA = 0;
-        
+
         $bNoOpenCDATA = (false === strpos($sData, '<'.'![CDATA['));
         if ($bNoOpenCDATA) {
             $bNoCloseCDATA = (false === strpos($sData, ']]>'));
@@ -1911,11 +1911,11 @@ class xajaxResponse
         } else {
             $nCDATA = 2;
         }
-        
+
         if (0 < $nCDATA) {
             echo '<';
             echo '![CDATA[';
-            
+
             // PHP defines numeric values as integer or float (double and real are aliases of float)
             if (is_string($sData)) {
                 echo 'S';
@@ -1924,7 +1924,7 @@ class xajaxResponse
             } else if (is_bool($sData)) {
                 echo 'B';
             }
-            
+
             if (1 < $nCDATA) {
                 $aSegments = explode('<'.'![CDATA[', $sData);
                 $aOutput = array();
@@ -1952,7 +1952,7 @@ class xajaxResponse
             } else {
                 echo $sData;
             }
-            
+
             echo ']]>';
         } else {
             if (is_string($sData)) {
@@ -1965,7 +1965,7 @@ class xajaxResponse
             echo $sData;
         }
     }
-    
+
     /*
         Function: _encodeArray
 
@@ -1986,11 +1986,11 @@ class xajaxResponse
         if ('object' === gettype($mData)) {
             $mData = get_object_vars($mData);
         }
-        
+
         if (false === is_array($mData)) {
             return $mData;
         }
-        
+
         $aData = array();
         foreach (array_keys($mData) as $sKey) {
             $aData[] = array(
@@ -2007,41 +2007,41 @@ class xajaxCustomResponse
 {
     protected $sOutput;
     protected $sContentType;
-    
+
     protected $sCharacterEncoding;
     protected $bOutputEntities;
-    
+
     public function __construct($sContentType)
     {
         $this->sOutput = '';
         $this->sContentType = $sContentType;
-        
+
         $objResponseManager = xajaxResponseManager::getInstance();
-        
+
         $this->sCharacterEncoding = $objResponseManager->getCharacterEncoding();
         $this->bOutputEntities = $objResponseManager->getOutputEntities();
     }
-    
+
     public function setCharacterEncoding($sCharacterEncoding)
     {
         $this->sCharacterEncoding = $sCharacterEncoding;
     }
-    
+
     public function setOutputEntities($bOutputEntities)
     {
         $this->bOutputEntities = $bOutputEntities;
     }
-    
+
     public function clear()
     {
         $this->sOutput = '';
     }
-    
+
     public function append($sOutput)
     {
         $this->sOutput .= $sOutput;
     }
-    
+
     public function appendResponse($objResponse)
     {
         //SkipDebug
@@ -2052,7 +2052,7 @@ class xajaxCustomResponse
                 E_USER_ERROR
             );
         }
-        
+
         if ($objResponse->getContentType() != $this->getContentType()) {
             $objLanguageManager = xajaxLanguageManager::getInstance();
             trigger_error(
@@ -2060,7 +2060,7 @@ class xajaxCustomResponse
                 E_USER_ERROR
             );
         }
-        
+
         if ($objResponse->getCharacterEncoding() != $this->getCharacterEncoding()) {
             $objLanguageManager = xajaxLanguageManager::getInstance();
             trigger_error(
@@ -2068,7 +2068,7 @@ class xajaxCustomResponse
                 E_USER_ERROR
             );
         }
-        
+
         if ($objResponse->getOutputEntities() != $this->getOutputEntities()) {
             $objLanguageManager = xajaxLanguageManager::getInstance();
             trigger_error(
@@ -2077,37 +2077,37 @@ class xajaxCustomResponse
             );
         }
         //EndSkipDebug
-        
+
         $this->sOutput .= $objResponse->getOutput();
     }
-    
+
     public function getContentType()
     {
         return $this->sContentType;
     }
-    
+
     public function getCharacterEncoding()
     {
         return $this->sCharacterEncoding;
     }
-    
+
     public function getOutputEntities()
     {
         return $this->bOutputEntities;
     }
-    
+
     public function getOutput()
     {
         return $this->sOutput;
     }
-    
+
     public function printOutput()
     {
         $sContentType = $this->sContentType;
         $sCharacterSet = $this->sCharacterEncoding;
-        
+
         header("content-type: {$sContentType}; charset={$sCharacterSet}");
-        
+
         echo $this->sOutput;
     }
 }

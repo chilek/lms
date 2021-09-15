@@ -35,7 +35,7 @@ class ConfigContainer
      * @var ConfigSection[] Config sections
      */
     private $config_sections;
-    
+
     /**
      * Constructs config sections container
      */
@@ -43,7 +43,7 @@ class ConfigContainer
     {
         $this->config_sections = array();
     }
-    
+
     /**
      * Adds config section to sections container
      *
@@ -53,7 +53,7 @@ class ConfigContainer
     {
         $this->config_sections[$section->getSectionName()] = $section;
     }
-    
+
     /**
      * Adds multiple config sections to sections container
      *
@@ -65,7 +65,7 @@ class ConfigContainer
             $this->addSection($section);
         }
     }
-    
+
     /**
      * Returns config section
      *
@@ -81,7 +81,7 @@ class ConfigContainer
             throw new Exception('Unknown config section!');
         }
     }
-    
+
     /**
      * Return config sections
      *
@@ -91,7 +91,7 @@ class ConfigContainer
     {
         return $this->config_sections;
     }
-    
+
     /**
      * Checks if section exists
      *

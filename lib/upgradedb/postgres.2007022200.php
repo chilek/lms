@@ -38,7 +38,7 @@ $this->Execute("
 	createtime integer    DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
     );
-			  
+
     CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
 ");
 

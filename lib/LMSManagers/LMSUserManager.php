@@ -440,7 +440,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         return $this->db->Execute(
             'SELECT 1
-            FROM users 
+            FROM users
             WHERE id = ?
             AND deleted = 0
             AND access = 1

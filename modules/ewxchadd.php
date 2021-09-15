@@ -26,7 +26,7 @@
 
 if (isset($_POST['channel'])) {
     $channel = $_POST['channel'];
-    
+
     foreach ($channel as $key => $value) {
         $channel[$key] = trim($value);
     }
@@ -42,7 +42,7 @@ if (isset($_POST['channel'])) {
     } else if (mb_strlen($channel['name']) > 32) {
         $error['name'] = trans('Channel name too long!');
     }
-    
+
     if ($channel['upceil'] == '') {
         $channel['upceil'] = trans('This field must contain number greater than 8!');
     } else if (!preg_match('/^[0-9]+$/', $channel['upceil'])) {

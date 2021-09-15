@@ -40,7 +40,7 @@ if (isset($_POST['hostedit'])) {
     $hostedit = $_POST['hostedit'];
     $hostedit['name'] = trim($hostedit['name']);
     $hostedit['description'] = trim($hostedit['description']);
-    
+
     if ($hostedit['name'] == '') {
         $error['name'] = trans('Host name is required!');
     } elseif ($host['name']!=$hostedit['name']) {

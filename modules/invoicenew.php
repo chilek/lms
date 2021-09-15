@@ -35,7 +35,7 @@ function GetCustomerCovenants($customerid, $currency)
         return null;
     }
 
-    return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.currency, c.comment, c.taxid, 
+    return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.currency, c.comment, c.taxid,
 			taxes.label AS tax, c.id AS cashid,
 			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net,
             c.servicetype
@@ -158,7 +158,7 @@ switch ($action) {
         } else {
             if (isset($customer) && $customer['paytime'] != -1) {
                 $paytime = $customer['paytime'];
-            } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+            } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
 				WHERE id = ?', array($customer['divisionid']))) === null) {
                 $paytime = ConfigHelper::getConfig('invoices.paytime');
             }
@@ -512,7 +512,7 @@ switch ($action) {
             $invoice['paytime'] = round(($deadline - $cdate) / 86400);
         } elseif ($customer['paytime'] != -1) {
             $invoice['paytime'] = $customer['paytime'];
-        } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+        } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
 			WHERE id = ?', array($customer['divisionid']))) !== null) {
             $invoice['paytime'] = $paytime;
         } else {
@@ -523,7 +523,7 @@ switch ($action) {
         if (empty($invoice['paytype'])) {
             if ($customer['paytype']) {
                 $invoice['paytype'] = $customer['paytype'];
-            } elseif ($paytype = $DB->GetOne('SELECT inv_paytype FROM divisions 
+            } elseif ($paytype = $DB->GetOne('SELECT inv_paytype FROM divisions
 				WHERE id = ?', array($customer['divisionid']))) {
                 $invoice['paytype'] = $paytype;
             } else if (($paytype = intval(ConfigHelper::getConfig('invoices.paytype'))) && isset($PAYTYPES[$paytype])) {

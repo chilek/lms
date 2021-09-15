@@ -605,7 +605,7 @@ function parse_customer_data($data, $format, $row)
                 AND NOT EXISTS (
                     SELECT COUNT(id) FROM assignments
                     WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
-                        AND datefrom <= ? AND (dateto > ? OR dateto = 0                
+                        AND datefrom <= ? AND (dateto > ? OR dateto = 0
                 )
             GROUP BY tariffs.currency',
             array(

@@ -33,8 +33,8 @@ $this->Execute("
 
 $this->Execute("
     CREATE TABLE rtattachments (
-	messageid integer DEFAULT 0 NOT NULL, 
-	filename VARCHAR(255) NOT NULL, 
+	messageid integer DEFAULT 0 NOT NULL,
+	filename VARCHAR(255) NOT NULL,
 	contenttype VARCHAR(255) NOT NULL)
 ");
 

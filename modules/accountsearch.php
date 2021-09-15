@@ -88,7 +88,7 @@ function GetAccountList($search, $customer = null, $type = null, $kind = null, $
     }
     $list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin,
 			p.expdate, d.name AS domain, p.type, ' . implode(', ', $quota_fields) . ', '
-            .$DB->Concat('c.lastname', "' '", 'c.name').' AS customername 
+            .$DB->Concat('c.lastname', "' '", 'c.name').' AS customername
 		FROM passwd p
 		LEFT JOIN customers c ON (c.id = p.ownerid)
 		LEFT JOIN domains d ON (d.id = p.domainid) '

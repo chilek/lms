@@ -26,8 +26,8 @@ $this->BeginTrans();
 $this->Execute("
     CREATE TABLE invprojects (
         id int(11) NOT NULL auto_increment,
-	name varchar(255) NOT NULL, 
-	type tinyint DEFAULT 0, 
+	name varchar(255) NOT NULL,
+	type tinyint DEFAULT 0,
 	PRIMARY KEY (id)
 ) ENGINE=INNODB");
 
@@ -36,7 +36,7 @@ $this->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited',1)");
 $this->Execute("
     CREATE TABLE netnodes (
         id int(11) NOT NULL auto_increment,
-	name varchar(255) NOT NULL, 
+	name varchar(255) NOT NULL,
 	type tinyint DEFAULT 0,
 	invprojectid int(11),
 	status tinyint DEFAULT 0,

@@ -120,7 +120,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             a.at, a.suspended, a.invoice, a.settlement, a.recipient_address_id,
             a.datefrom, a.dateto, a.pdiscount,
             a.vdiscount AS unitary_vdiscount,
-            (a.vdiscount * a.count) AS vdiscount,                                                                                        
+            (a.vdiscount * a.count) AS vdiscount,
             a.attribute, a.liabilityid, a.separatedocument,
             (CASE WHEN t.flags IS NULL
                 THEN
@@ -635,7 +635,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         } else {
                             if ($tariff['period'] !== null) {
                                 $tariffid = $this->db->GetOne(
-                                    'SELECT id 
+                                    'SELECT id
                                     FROM tariffs
                                     WHERE name = ?
                                     AND value = ?
@@ -671,16 +671,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $args = $this->db->GetRow(
                                 'SELECT name, value, taxcategory, currency, period, taxid, type,
                                 upceil, downceil, uprate, downrate,
-                                up_burst_time, up_burst_threshold, up_burst_limit, 
-                                down_burst_time, down_burst_threshold, down_burst_limit, 
+                                up_burst_time, up_burst_threshold, up_burst_limit,
+                                down_burst_time, down_burst_threshold, down_burst_limit,
                                 prodid, plimit, climit, dlimit,
                                 upceil_n, downceil_n, uprate_n, downrate_n,
-                                up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
-                                down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+                                up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
+                                down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
                                 domain_limit, alias_limit, sh_limit,
                                 www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
                                 quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype, flags, netvalue
-                                FROM tariffs 
+                                FROM tariffs
                                 WHERE id = ?',
                                 array($tariff['id'])
                             );
@@ -699,12 +699,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $this->db->Execute(
                                 'INSERT INTO tariffs (name, value, taxcategory, currency, period, type,
                                 upceil, downceil, uprate, downrate,
-                                up_burst_time, up_burst_threshold, up_burst_limit, 
-                                down_burst_time, down_burst_threshold, down_burst_limit, 
+                                up_burst_time, up_burst_threshold, up_burst_limit,
+                                down_burst_time, down_burst_threshold, down_burst_limit,
                                 prodid, plimit, climit, dlimit,
                                 upceil_n, downceil_n, uprate_n, downrate_n,
-                                up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
-                                down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+                                up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
+                                down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
                                 domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
                                 quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
                                 authtype, flags, netvalue, taxid)
@@ -1782,7 +1782,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $doc = $this->db->GetRow('SELECT d.id, d.number, d.cdate, d.customerid, d.type AS doctype, n.template
 			FROM documents d
-			LEFT JOIN numberplans n ON n.id = d.numberplanid 
+			LEFT JOIN numberplans n ON n.id = d.numberplanid
 			WHERE d.id = ?', array($id));
         if (empty($doc)) {
             return null;
@@ -2834,7 +2834,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.currency, d.currencyvalue
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
-				LEFT JOIN vusers u ON u.id = d.userid 
+				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -3093,7 +3093,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             upceil_n = ?, up_burst_time_n = ?, up_burst_threshold_n = ?, up_burst_limit_n = ?,
             downceil_n = ?, down_burst_time_n = ?, down_burst_threshold_n = ?, down_burst_limit_n = ?,
             climit_n = ?, plimit_n = ?,
-            dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, 
+            dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?,
             authtype = ?, flags = ?, netvalue = ?, '
             . implode(' = ?, ', $fields) . ' = ? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
@@ -3506,8 +3506,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($count) {
             $summary = $this->db->GetRow('SELECT COUNT(cash.id) AS total,
 					SUM(CASE WHEN cash.customerid IS NOT NULL AND cash.type = 0 THEN -value * cash.currencyvalue ELSE 0 END) AS liability,
-					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN value * cash.currencyvalue ELSE 0 END) AS income, 
-					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -value * cash.currencyvalue ELSE 0 END) AS expense 
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN value * cash.currencyvalue ELSE 0 END) AS income,
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -value * cash.currencyvalue ELSE 0 END) AS expense
 				FROM cash
 				LEFT JOIN customerview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid)
@@ -3525,7 +3525,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value,
-                cash.currency, cash.currencyvalue, 
+                cash.currency, cash.currencyvalue,
 				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed,
 				documents.published, documents.archived, '
@@ -3896,7 +3896,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             FROM assignments a
             JOIN tariffs t ON t.id = a.tariffid
             WHERE customerid = ?
-                AND t.type NOT IN (?, ?, ?) 
+                AND t.type NOT IN (?, ?, ?)
                 AND commited = 1
                 AND (a.dateto = 0 OR a.dateto > ?NOW?)
                 AND a.datefrom < ?NOW?', array($customerid, SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV))) {
@@ -4091,7 +4091,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				JOIN (
 					SELECT documents.id AS id,
 						(CASE WHEN SUM(value * documents.currencyvalue) > 0 THEN SUM(value * documents.currencyvalue) ELSE 0 END) AS income,
-						(CASE WHEN SUM(value * documents.currencyvalue) < 0 THEN -SUM(value * documents.currencyvalue) ELSE 0 END) AS expense 
+						(CASE WHEN SUM(value * documents.currencyvalue) < 0 THEN -SUM(value * documents.currencyvalue) ELSE 0 END) AS expense
 					FROM documents
 					JOIN receiptcontents ON documents.id = docid
 					WHERE regid = ?
@@ -4240,7 +4240,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
         );
         $this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid,
-			name, address, zip, city, countryid, 
+			name, address, zip, city, countryid,
 			divisionid, div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace,
 			closed, fullnumber, currency, currencyvalue)

@@ -27,7 +27,7 @@
 $layout['pagetitle'] = trans('Copyrights');
 
 $authors = array(
-        
+
         'alec' => array(
             'realname' => 'Aleksander Machniak',
             'www' => 'www.alec.pl',
@@ -55,7 +55,7 @@ $authors = array(
             'www' => 'www.lexx.w.pl',
             'realname' => 'Marcin Król',
              ),
-    
+
         );
 
 $others = array(
@@ -64,7 +64,7 @@ $others = array(
             'info' => 'Perl',
             'realname' => 'Maciej Pijanka',
             ),
-        
+
         'kflis' => array(
             'info' => 'Betatesting, images',
             'www' => 'www.kflis.net',
@@ -115,6 +115,6 @@ $others = array(
             'info' => 'Logo project',
             ),
         );
-                
+
 $SMARTY->assign('authors', $authors);
 $SMARTY->assign('others', $others);

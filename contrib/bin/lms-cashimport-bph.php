@@ -25,7 +25,7 @@ $params="uzytkownik=loginzbanku&haslo=haslozbanku";
 $user_agent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
 
 // wpisz wpisz tutaj login hasło nazwę bazy danych oraz adres serwera bazy danych
- 
+
 $db_user='lms';
 $db_pass='password';
 $db_name='lms';
@@ -44,7 +44,7 @@ function explodeX($row, $sep, $ign)
         if (substr($row, $i, 1)==$ign) {
             $openCite=!$openCite;
         }
-    
+
         if (substr($row, $i, 1)==$sep && !$openCite) {
             $rows[]=substr($row, $cFieldPos, $i-$cFieldPos);
             $cFieldPos=$i+1;

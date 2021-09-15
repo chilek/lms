@@ -214,10 +214,10 @@ switch ($type) {
         $id = $_POST['customer'];
 
         if ($tslist = $DB->GetAll('SELECT cash.id AS id, time, cash.value AS value,
-			taxes.label AS taxlabel, customerid, comment, name AS username 
-				    FROM cash 
+			taxes.label AS taxlabel, customerid, comment, name AS username
+				    FROM cash
 				    LEFT JOIN taxes ON (taxid = taxes.id)
-				    LEFT JOIN users ON users.id=userid 
+				    LEFT JOIN users ON users.id=userid
 				    WHERE customerid=? ORDER BY time', array($id))
         ) {
             foreach ($tslist as $row) {

@@ -31,7 +31,7 @@ $oldinv = $LMS->GetProject($id);
 if (!empty($_POST['invprojectedit'])) {
     $invproject = $_POST['invprojectedit'];
     $invproject['id'] = $oldinv['id'];
-            
+
     if ($invproject['name']=='') {
         $error['name'] = trans('Investment project name is required!');
     } elseif ($oldinv['name'] != $invproject['name'] && $LMS->ProjectByNameExists($invproject['name'])) {

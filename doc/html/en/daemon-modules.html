@@ -79,9 +79,9 @@ NAME="DAEMON-MODULES"
 >6.2. Modules</A
 ></H1
 ><P
->As we stated before daemon can only run modules and they are doing all the job. 
-     Most modules are designed to specific application, only 'hostfile' 
-     can be used to create many different configs (and manage numerous services), ie. various firewall types. 
+>As we stated before daemon can only run modules and they are doing all the job.
+     Most modules are designed to specific application, only 'hostfile'
+     can be used to create many different configs (and manage numerous services), ie. various firewall types.
      Module configuration parameters MUST be placed in appropriate instance section.</P
 ><DIV
 CLASS="SECT2"
@@ -263,13 +263,13 @@ NAME="SYSTEM-DESC"
 >6.2.2.1. Description</A
 ></H3
 ><P
->This module does only one thing: it runs given 
-	      Linux shell command or/and SQL query. It can be useful if you want to 
-	      execute some command or run external script while configuration is 
+>This module does only one thing: it runs given
+	      Linux shell command or/and SQL query. It can be useful if you want to
+	      execute some command or run external script while configuration is
 	      being reload, eg. one of scripts in LMS <TT
 CLASS="FILENAME"
 >/bin</TT
-> 
+>
 	      directory. SQL command is executed first.</P
 ></DIV
 ><DIV
@@ -349,8 +349,8 @@ NAME="PAYMENTS-CONFIG"
 ><P
 >Description of operation. '%period' will be replaced by start and end
                    date of subscription, e.g. '2003/10/10 - 2003/11/09', '%tariff' by name of
-                   liability, %month by full name of current month and %year by current year, 
-		   %next_mon by next month in YYYY/MM format. 
+                   liability, %month by full name of current month and %year by current year,
+		   %next_mon by next month in YYYY/MM format.
 		   Default: 'Subscription: '%tariff' for period: %period'.</P
 ><P
 >Example: <SAMP
@@ -390,7 +390,7 @@ CLASS="PROMPT"
 ><P
 >expiry_days</P
 ><P
->Defines number of days from date of liability expiration, after which 
+>Defines number of days from date of liability expiration, after which
                    that liability will be removed from database. When you set '0' data will be
                    removed immediately after date of the write out. Default: 30.</P
 ><P
@@ -426,7 +426,7 @@ CLASS="PROMPT"
 ><P
 >numberplan</P
 ><P
->ID of invoices numbering plan defined in Configuration -&#62; Numbering Plans. 
+>ID of invoices numbering plan defined in Configuration -&#62; Numbering Plans.
                    Default: 0 (default plan).</P
 ><P
 >Example: <SAMP
@@ -678,7 +678,7 @@ CLASS="PROMPT"
 ><P
 >uin</P
 ><P
->Gadu-gadu identifier number of message sender. 
+>Gadu-gadu identifier number of message sender.
                    Default: empty.</P
 ><P
 >Example: <SAMP
@@ -741,7 +741,7 @@ NAME="CUTOFF-DESC"
 ></H3
 ><P
 >Cutoff do change nodes status to 'disconnected' and/or enable warnings for
-              customers, which have debts greater than specified limit. Also, disables computers 
+              customers, which have debts greater than specified limit. Also, disables computers
 	      due to assignments expiration. This module does not doing
               actual blocking of network access.</P
 ></DIV
@@ -760,9 +760,9 @@ NAME="CUTOFF-CONFIG"
 ><P
 >limit</P
 ><P
->Disconnection occurs when customer balance decreases 
+>Disconnection occurs when customer balance decreases
 		   below specified limit as numeric value or as percentage of
-		   sum of customer's monthly assignments (with '%' sign). 
+		   sum of customer's monthly assignments (with '%' sign).
                    Default: 0.</P
 ><P
 >Example: <SAMP
@@ -802,8 +802,8 @@ CLASS="PROMPT"
 ><P
 >expired_warning</P
 ><P
->Sets the message to customer when disabling his computers access 
-		   due to all assignments expiration. If empty, warning will be not set. 
+>Sets the message to customer when disabling his computers access
+		   due to all assignments expiration. If empty, warning will be not set.
 		   Date in message is substituted providing '%time' variable.
 		   Default: 'Blocked automatically due to tariff(s) expiration at %time'.</P
 ><P
@@ -890,8 +890,8 @@ CLASS="PROMPT"
 ><P
 >deadline</P
 ><P
->Sets period in days (from invoice deadline date), after which 
-			unpayed invoice is considered for 'check_invoices' check. By default, 
+>Sets period in days (from invoice deadline date), after which
+			unpayed invoice is considered for 'check_invoices' check. By default,
 			customer would be blocked just after deadline. Default: 0.</P
 ><P
 >Example: <SAMP
@@ -915,7 +915,7 @@ CLASS="PROMPT"
 ><P
 >excluded_customergroups</P
 ><P
->List of excluded customers groups to restrict customers for 
+>List of excluded customers groups to restrict customers for
 			accounting. Default: empty (none).</P
 ><P
 >Example: <SAMP
@@ -985,7 +985,7 @@ NAME="DHCP-CONFIG"
 ><P
 >file</P
 ><P
->Location of DHCP server configuration file. 
+>Location of DHCP server configuration file.
                    Default: /etc/dhcpd.conf.</P
 ><P
 >Example: <SAMP
@@ -997,7 +997,7 @@ CLASS="PROMPT"
 ><P
 >command</P
 ><P
->Shell command executed after config file creation. 
+>Shell command executed after config file creation.
                    Default: 'killall dhcpd; /usr/sbin/dhcpd'.</P
 ><P
 >Example: <SAMP
@@ -1031,7 +1031,7 @@ CLASS="PROMPT"
 ><P
 >subnet_start</P
 ><P
->Subnet header. '%a' - name, '%m' - mask, %b - broadcast address. 
+>Subnet header. '%a' - name, '%m' - mask, %b - broadcast address.
 		   Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
 ><P
 >Example: <SAMP
@@ -1109,7 +1109,7 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Hosts parameters, where '%n' - host name, '%m' - MAC, '%i' - IP address. 
+>Hosts parameters, where '%n' - host name, '%m' - MAC, '%i' - IP address.
                    Default: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</P
 ><P
 >Example: <SAMP
@@ -1162,11 +1162,11 @@ NAME="HOSTFILE-DESC"
 ></H3
 ><P
 >Module 'hostfile' is a multipurpose tool. It performs loop on all hosts
-			(nodes and network devices addresses) from database fetching their 
+			(nodes and network devices addresses) from database fetching their
 			connection and warnings status, private and public addresses, network
-			that they are connected to and groups of they owners. Because of that it 
-			is possible to create any set of firewall rules, or /etc/hosts file. Data is 
-			written to file and after that specified shell command can be 
+			that they are connected to and groups of they owners. Because of that it
+			is possible to create any set of firewall rules, or /etc/hosts file. Data is
+			written to file and after that specified shell command can be
 			executed.</P
 ></DIV
 ><DIV
@@ -1454,7 +1454,7 @@ CLASS="PROMPT"
 ><P
 >public_warnedhost</P
 ><P
->Line with rule(s) for node with set warnings flag and specified 
+>Line with rule(s) for node with set warnings flag and specified
 				public IP. By default rule specified in 'warnedhost' option.</P
 ><P
 >Example: <SAMP
@@ -1478,7 +1478,7 @@ CLASS="PROMPT"
 ><P
 >warn_replace</P
 ><P
->Specify that rules for nodes with warnings would replace main rules 
+>Specify that rules for nodes with warnings would replace main rules
 				or be added to them. Default: disabled.</P
 ><P
 >Przyk³ad: <SAMP
@@ -2436,7 +2436,7 @@ VALIGN="TOP"
 	      using <TT
 CLASS="FILENAME"
 >ip</TT
-> command) you'll need to label interfaces in your system (ip addr add ... label ...). 
+> command) you'll need to label interfaces in your system (ip addr add ... label ...).
 	      Also remember, don't use a dots or dashes in interface names (<TT
 CLASS="FILENAME"
 >ip</TT
@@ -2495,9 +2495,9 @@ NAME="DAEMON-PARSER-INTRO"
 HREF="http://silvercoders.com/index.php?page=T_Script"
 TARGET="_top"
 >T-Script</A
-> which 
+> which
 		primary purpose is to generate text files. It can be useful for processing
-		templates with some additional data retrieved from data sources 
+		templates with some additional data retrieved from data sources
 		like SQL databases or text files. In lmsd's module contents of scripts
 		are stored in database, so they can be edited via <SPAN
 CLASS="emphasis"

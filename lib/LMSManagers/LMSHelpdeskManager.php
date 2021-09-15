@@ -499,7 +499,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid, rq.name AS requestor_name,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				t.modtime AS lastmodified, vi.name AS verifiername, vi.id AS verifierid, tw.userid,
-				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, 
+				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid,
 				nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type, t.resolvetime,
 				(CASE WHEN t.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < t.modtime) THEN 1 ELSE 0 END) AS unread,
 				(CASE WHEN t.state <> ' . RT_RESOLVED . ' THEN m3.firstunread ELSE 0 END) as firstunread,

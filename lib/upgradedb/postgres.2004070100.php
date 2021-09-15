@@ -28,7 +28,7 @@ $this->Execute("
     BEGIN;
     CREATE SEQUENCE rtrights_id_seq;
     CREATE TABLE rtrights (
-    id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
+    id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL,
     adminid integer DEFAULT 0 NOT NULL,
     queueid integer DEFAULT 0 NOT NULL,
     rights integer DEFAULT 0 NOT NULL,

@@ -34,9 +34,9 @@ $this->Execute("
 		PRIMARY KEY (id)
 	) ENGINE=INNODB");
 $this->Execute("
-	INSERT INTO nodelocks (nodeid, days, fromsec, tosec) 
-		(SELECT na.nodeid, days, fromsec, tosec FROM assignmentlocks al 
-			LEFT JOIN assignments a ON a.id = al.assignmentid 
+	INSERT INTO nodelocks (nodeid, days, fromsec, tosec)
+		(SELECT na.nodeid, days, fromsec, tosec FROM assignmentlocks al
+			LEFT JOIN assignments a ON a.id = al.assignmentid
 			LEFT JOIN nodeassignments na ON na.assignmentid = a.id)");
 $this->Execute("DROP TABLE assignmentlocks");
 

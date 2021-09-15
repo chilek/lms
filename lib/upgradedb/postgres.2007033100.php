@@ -29,15 +29,15 @@ $this->BeginTrans();
 $this->Execute("
 CREATE SEQUENCE imessengers_id_seq;
 CREATE TABLE imessengers (
-  id integer 		DEFAULT nextval('imessengers_id_seq'::text) NOT NULL, 
-  customerid integer	DEFAULT 0 NOT NULL, 
+  id integer 		DEFAULT nextval('imessengers_id_seq'::text) NOT NULL,
+  customerid integer	DEFAULT 0 NOT NULL,
   uid varchar(32) 	DEFAULT '' NOT NULL,
   type smallint		DEFAULT 0 NOT NULL,
-  PRIMARY KEY (id) 
+  PRIMARY KEY (id)
   );
 ");
 
-$this->Execute("INSERT INTO imessengers (customerid, uid) 
+$this->Execute("INSERT INTO imessengers (customerid, uid)
 	SELECT id, im::text FROM customers WHERE im > 0");
 
 $this->Execute("CREATE INDEX imessengers_customerid_idx ON imessengers (customerid)");

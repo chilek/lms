@@ -53,7 +53,7 @@ function get_save_file($file_url, $filename)
 
 function inc_to_lms($data_rows)
 {
- 
+
     $lines=explode("\n", $data_rows);
     $KKSGW=explode("|", $lines[0]);
     for ($i=1; $i<count($lines)-2; $i++) {
@@ -62,7 +62,7 @@ function inc_to_lms($data_rows)
  //wpis do lmsa
 
         $data=mktime(0, 0, 0, substr($line[1], 2, 2), substr($line[1], 0, 2), substr($line[1], -4));
-        
+
         $kto=$line[3];
         $kwota=$line[2];
         $opis=substr($line[6], 0, -2);
@@ -79,7 +79,7 @@ function inc_to_lms($data_rows)
             echo "Pomijam wpis, bo juz taki istnieje.\n";
         }
 
-     
+
  //koniec wpisu do lmsa;
     }
 }

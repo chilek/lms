@@ -33,7 +33,7 @@
 function smarty_function_handle($params, $template)
 {
     global $PLUGINS;  // or maybe $SMARTY->_tpl_vars['PLUGINS'] assigned by ref.
-    
+
     $result = '';
     if (isset($PLUGINS[$params['name']])) {
         foreach ($PLUGINS[$params['name']] as $plugin) {

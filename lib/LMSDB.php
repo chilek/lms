@@ -43,7 +43,7 @@ class LMSDB
     const RESOURCE_TYPE_CONSTRAINT = 4;
 
     private static $db;
-    
+
     /**
      * Returns singleton database handler.
      *
@@ -63,7 +63,7 @@ class LMSDB
             }
             self::$db = self::getDB($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME, $_DBDEBUG);
         }
-        
+
         return self::$db;
     }
 
@@ -115,7 +115,7 @@ class LMSDB
 
         return $db;
     }
-    
+
     /**
      * Destroys database handler and singleton instance.
      *
@@ -130,7 +130,7 @@ class LMSDB
         }
         return self::$db;
     }
-    
+
     /**
      * Checks if database connection exists
      *

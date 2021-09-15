@@ -44,7 +44,7 @@ function ip_in_range($ip, $range)
     if (strpos($range, '/') == false) {
         $range .= '/32';
     }
-    
+
     list( $range, $netmask ) = explode('/', $range, 2);
     $range_decimal = ip2long($range);
     $ip_decimal = ip2long($ip);

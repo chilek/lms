@@ -41,7 +41,7 @@ $this->Execute("
 	ALTER TABLE customerassignments ADD UNIQUE (customergroupid, customerid);
 	DROP TABLE userassignments;
 
-	ALTER TABLE usergroups DROP CONSTRAINT usergroups_name_key;	
+	ALTER TABLE usergroups DROP CONSTRAINT usergroups_name_key;
 	CREATE SEQUENCE customergroups_id_seq;
 	CREATE TABLE customergroups AS SELECT * FROM usergroups;
 	SELECT setval('customergroups_id_seq', nextval('usergroups_id_seq'));

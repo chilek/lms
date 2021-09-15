@@ -33,7 +33,7 @@ $this->Execute("DROP VIEW vnodes;
 		    SELECT n.*, m.mac
 		    FROM nodes n
 		    LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
-		    FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);		
+		    FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
 	");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015042700', 'dbversion'));

@@ -104,7 +104,7 @@ class USERPANEL
     {
         $result = null;
 
-        $rights = $this->DB->GetAll('SELECT name, module 
+        $rights = $this->DB->GetAll('SELECT name, module
 					FROM up_rights
 					LEFT JOIN up_rights_assignments ON up_rights.id=up_rights_assignments.rightid
 					WHERE customerid=?', array($id));

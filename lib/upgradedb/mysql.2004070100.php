@@ -25,7 +25,7 @@
  */
 
 $this->Execute("CREATE TABLE rtrights (
-    id INT(11) NOT NULL auto_increment, 
+    id INT(11) NOT NULL auto_increment,
     adminid INT(11) DEFAULT 0 NOT NULL,
     queueid INT(11) DEFAULT 0 NOT NULL,
     rights INT(11) DEFAULT 0 NOT NULL,

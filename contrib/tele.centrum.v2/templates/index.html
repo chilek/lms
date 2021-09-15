@@ -37,7 +37,7 @@
     </tr>
     <tr id="zgloszenieawarii" style="display:;">
 	<td valign="top">Wybierz usługę która uległa awarii</td>
-	<td align="center">	
+	<td align="center">
 			<label><input type="checkbox" name="internet" {if $ticket.internet} checked {/if} value="Internet">&nbsp;Internet</label>
 			<label><input type="checkbox" name="tv" {if $ticket.tv} checked {/if} value="TV">&nbsp;Telewizja</label>
 			<label><input type="checkbox" name="telefon" {if $ticket.telefon} checked {/if} value="telefon">&nbsp;Telefon</label>
@@ -158,7 +158,7 @@
 {if $js_result}
     var data = {$js_result};
     var key =  0;
-	{if !empty($ticket.customer)} key = {$ticket.customer};  {/if} 
+	{if !empty($ticket.customer)} key = {$ticket.customer};  {/if}
     document.getElementsByName("name")[0].value  	= data[key]['username'];
     document.getElementsByName("address")[0].value  = data[key]['city'] + ' ' + data[key]['address'];
     document.getElementsByName("name")[0].readOnly  	= true;

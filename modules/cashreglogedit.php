@@ -32,7 +32,7 @@ $reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
 if (!$regid) {
         $SESSION->redirect('?m=cashreglist');
 }
-    
+
 if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<256) {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
@@ -41,7 +41,7 @@ if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', arra
 
 if (isset($_POST['reglog'])) {
     $reglog = $_POST['reglog'];
-    
+
     foreach ($reglog as $key => $value) {
             $reglog[$key] = trim($value);
     }

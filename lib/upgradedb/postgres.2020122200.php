@@ -31,7 +31,7 @@ $this->Execute("
 	    vlanid smallint NOT NULL,
 	    description varchar(254) DEFAULT NULL,
 	    customerid smallint DEFAULT NULL
-            CONSTRAINT vlans_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,   
+            CONSTRAINT vlans_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	    PRIMARY KEY (id),
         CONSTRAINT vlans_ukey UNIQUE (vlanid, customerid)
     );

@@ -54,12 +54,12 @@ $this->Execute("CREATE TABLE rtticketcategories (
 $this->Execute("INSERT INTO rtcategories (name, description) VALUES(?, ?)", array('default', 'default category'));
 $default_catid = $this->GetLastInsertID('rtcategories');
 $this->Execute(
-    "INSERT INTO rtcategoryusers (userid, categoryid) 
+    "INSERT INTO rtcategoryusers (userid, categoryid)
 		SELECT id, ? FROM users WHERE deleted = 0",
     array($default_catid)
 );
 $this->Execute(
-    "INSERT INTO rtticketcategories (ticketid, categoryid) 
+    "INSERT INTO rtticketcategories (ticketid, categoryid)
 		SELECT id, ? FROM rttickets",
     array($default_catid)
 );

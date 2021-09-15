@@ -44,21 +44,21 @@ function GetAliasList($order = 'login,asc', $customer = null, $domain = '')
             break;
     }
 
-    $list = $DB->GetAll('SELECT a.id, a.login, d.name AS domain, domainid, s.accounts, s.forwards, s.cnt 
+    $list = $DB->GetAll('SELECT a.id, a.login, d.name AS domain, domainid, s.accounts, s.forwards, s.cnt
 		FROM aliases a
 		JOIN domains d ON (d.id = a.domainid)
-		JOIN (SELECT COUNT(*) AS cnt, '.$DB->GroupConcat('(SELECT '.$DB->Concat('p.login', "'@'", 'pd.name').' 
-			FROM passwd p 
-			JOIN domains pd ON (p.domainid = pd.id) 
+		JOIN (SELECT COUNT(*) AS cnt, '.$DB->GroupConcat('(SELECT '.$DB->Concat('p.login', "'@'", 'pd.name').'
+			FROM passwd p
+			JOIN domains pd ON (p.domainid = pd.id)
 			WHERE p.id = aliasassignments.accountid)').' AS accounts, '
-            .$DB->GroupConcat('CASE WHEN mail_forward <> \'\' THEN mail_forward ELSE NULL END').' AS forwards, 
-			aliasid 
+            .$DB->GroupConcat('CASE WHEN mail_forward <> \'\' THEN mail_forward ELSE NULL END').' AS forwards,
+			aliasid
 			FROM aliasassignments GROUP BY aliasid) s ON (a.id = s.aliasid)
 		WHERE 1=1'
         .($customer != '' ? ' AND d.ownerid = '.intval($customer) : '')
         .($domain != '' ? ' AND a.domainid = '.intval($domain) : '')
         .($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['customer'] = $customer;
@@ -109,7 +109,7 @@ unset($aliaslist['kind']);
 unset($aliaslist['customer']);
 unset($aliaslist['domain']);
 unset($aliaslist['direction']);
-        
+
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.aliaslist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;

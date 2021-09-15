@@ -42,7 +42,7 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
 
     $DB->Execute(
         'INSERT INTO customerassignments (customergroupid, customerid)
-			SELECT ?, customerid 
+			SELECT ?, customerid
 			FROM vcustomerassignments a, customerview c
 			WHERE a.customerid = c.id AND a.customergroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM vcustomerassignments ca

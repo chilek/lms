@@ -30,7 +30,7 @@ $this->Execute("
     ALTER TABLE assignments ALTER suspended SET DEFAULT 0;
     UPDATE assignments SET suspended=0;
     ALTER TABLE assignments ALTER suspended SET NOT NULL;
-    
+
     UPDATE dbinfo SET keyvalue = '2004081800' WHERE keytype = 'dbversion';
     COMMIT;
 ");

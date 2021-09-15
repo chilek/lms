@@ -458,7 +458,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 		LEFT JOIN customeraddressview c ON c.id = d.customerid"
         . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
-        . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
+        . " LEFT JOIN numberplans n ON n.id = d.numberplanid
 		WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
             . $customer_status_condition
             . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')

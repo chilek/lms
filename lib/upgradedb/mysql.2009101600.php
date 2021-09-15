@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-                    
+
 $this->Execute("ALTER TABLE tariffs ADD uprate_n int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE tariffs ADD upceil_n int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE tariffs ADD downrate_n int(11) DEFAULT NULL");

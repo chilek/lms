@@ -77,7 +77,7 @@ function update_netlink_properties($id, $devid, $link)
 
     $speed_content = $LINKSPEEDS[$link['speed']];
 
-    $port_content = '<i class="' . $icon . '" 
+    $port_content = '<i class="' . $icon . '"
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
             . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
                 : ($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')

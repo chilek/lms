@@ -191,7 +191,7 @@ class VoipDbBuffor
             foreach ($rule_list as $r) {
                 $exists = $DB->GetOne(
                     'SELECT 1
-                                       FROM 
+                                       FROM
                                           voip_rule_states
                                         WHERE
                                              voip_account_id = ? AND

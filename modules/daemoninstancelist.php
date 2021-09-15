@@ -29,8 +29,8 @@ function GetInstanceList($hostid)
     global $DB;
 
     $where = $hostid ? 'WHERE hostid = '.intval($hostid) : '';
-        
-    return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description, 
+
+    return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description,
 			module, crontab, priority, disabled, hosts.name AS hostname
 			FROM daemoninstances LEFT JOIN hosts ON hosts.id = hostid '
             .$where.
@@ -45,7 +45,7 @@ if (!isset($_GET['id'])) {
     $hostid = $_GET['id'];
 }
 $SESSION->save('dilh', $hostid);
-        
+
 $instancelist = GetInstanceList($hostid);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

@@ -557,7 +557,7 @@ switch ($mode) {
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name FROM netnodes
                                 WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
-				LOWER(name) ?LIKE? LOWER($sql_search) 
+				LOWER(name) ?LIKE? LOWER($sql_search)
                                 ORDER by name
                                 LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
@@ -939,8 +939,8 @@ switch ($mode) {
 					JOIN domains d ON (p.domainid = d.id)
 					WHERE p.login ?LIKE? LOWER($username)
 					".($domain ? "AND d.name ?LIKE? LOWER($domain)" : '').")
-					UNION 
-					(SELECT a.id, a.login, d.name AS domain, 1 AS type 
+					UNION
+					(SELECT a.id, a.login, d.name AS domain, 1 AS type
 					FROM aliases a
 					JOIN domains d ON (a.domainid = d.id)
 					WHERE a.login ?LIKE? LOWER($username)

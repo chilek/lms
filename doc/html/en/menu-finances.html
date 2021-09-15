@@ -268,18 +268,18 @@ NAME="MENU-RECEIPTS-LIST"
 ><P
 >Each registry can have own numbering of cash-in and cash-out
 		documents and access rights for users. "Write" privilage is assigned for
-		common cashiers and dismiss receipts read and addition. 
+		common cashiers and dismiss receipts read and addition.
 		"Advanced" users can edit and delete documents and change number or date
 		when create new document.</P
 ><P
 >Cash receipts are a proofs of payment in and out cash.
-		Receipts list, which you'll find by clicking on selected registry on registries 
+		Receipts list, which you'll find by clicking on selected registry on registries
 		list, can be sorted in any order and filtered like the
 		invoices list. You've got also print selected receipts.</P
 ><P
 >From list you can go to receipt edition. Making changes in
 		created documents needs special care, because submitting changes
-		will delete old receipt and linked operations and insert 
+		will delete old receipt and linked operations and insert
 		new ones.</P
 ></DIV
 ><DIV
@@ -292,10 +292,10 @@ NAME="MENU-RECEIPTS-NEW"
 ></H2
 ><P
 >To create new cash document in first place you must specify registry
-		and operation type (pay in/pay out), select customer from list or search 
+		and operation type (pay in/pay out), select customer from list or search
 		them using filter. You can select other operation type i.e. assets move or
-		operation not associated with customer. Also you can set date and number 
-		(better to leave values proposed by system). Then click 'Select' to affirm 
+		operation not associated with customer. Also you can set date and number
+		(better to leave values proposed by system). Then click 'Select' to affirm
 		your choice. After that you can add any number of positions with value and
 		description or select them from list of not closed invoices/credit notes.
 		'Save and Print' will finish and save receipt
@@ -347,7 +347,7 @@ CLASS="EMPHASIS"
 CLASS="FILENAME"
 >modules/cashimportcfg.php</TT
 >.
-		Default configuration assumes that input data will be in 
+		Default configuration assumes that input data will be in
 		the following format (tab separated):
 <PRE
 CLASS="SCREEN"
@@ -379,29 +379,29 @@ NAME="MENU-EXPORT"
 ><P
 >Financial data export to external systems rely on generation
 		of text files with data fetched according to defined filters.
-		For each document is created one record in text file. Record's 
+		For each document is created one record in text file. Record's
 		format sets user using variables.</P
 ><P
 >Export configuration is placed in file, which localization
 		is set in <TT
 CLASS="FILENAME"
 >export_config</TT
-> option of section 
+> option of section
 		<SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[phpui]</I
 ></SPAN
->. Example values with variables description 
+>. Example values with variables description
 		you can find in <TT
 CLASS="FILENAME"
 >modules/exportcfg.php</TT
->. 
+>.
 		The bast way is to copy that file and there making needed changes.</P
 ><P
 >For each position of Sale Registry (each invoice)
-		we have one record in result file. When exporting Cash Report one record is 
+		we have one record in result file. When exporting Cash Report one record is
 		for each position of cash document.</P
 ></DIV
 ><DIV

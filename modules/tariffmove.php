@@ -33,7 +33,7 @@ if ($LMS->TariffExists($from) && $LMS->TariffExists($to) && $_GET['is_sure'] == 
     if ($network) {
             $net = $LMS->GetNetworkParams($network);
     }
-    
+
     if ($ids = $DB->GetCol('SELECT assignments.id AS id FROM assignments, customerview c '
             .($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
             .'WHERE customerid = c.id AND deleted = 0 AND tariffid = '.$from

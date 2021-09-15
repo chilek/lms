@@ -45,7 +45,7 @@ $this->Execute("
 	CREATE INDEX comments_domain_id_idx ON comments (domain_id);
 	CREATE INDEX comments_name_type_idx ON comments (name, type);
 	CREATE INDEX comments_domain_id_modified_at_idx ON comments (domain_id, modified_at);
-	
+
 	CREATE SEQUENCE cryptokeys_id_seq;
 	CREATE TABLE cryptokeys (
 		id						integer DEFAULT nextval('cryptokeys_id_seq'::text) NOT NULL,
@@ -57,7 +57,7 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 	CREATE INDEX cryptokeys_domain_id_idx ON cryptokeys (domain_id);
-	
+
 	CREATE SEQUENCE tsigkeys_id_seq;
 	CREATE TABLE tsigkeys (
 		id						integer DEFAULT nextval('tsigkeys_id_seq'::text) NOT NULL,

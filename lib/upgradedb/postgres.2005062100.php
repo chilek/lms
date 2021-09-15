@@ -32,7 +32,7 @@ $this->Execute("
 	ALTER TABLE tariffs ALTER prodid SET NOT NULL;
 	ALTER TABLE tariffs ALTER prodid SET DEFAULT '';
 	ALTER TABLE tariffs DROP pkwiu;
-	
+
 	ALTER TABLE invoicecontents ADD prodid VARCHAR(255);
 	UPDATE invoicecontents SET prodid = pkwiu;
 	ALTER TABLE invoicecontents ALTER prodid SET NOT NULL;

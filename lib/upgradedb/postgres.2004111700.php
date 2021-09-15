@@ -26,7 +26,7 @@
 
 $this->BeginTrans();
 $this->Execute("
-    
+
     ALTER TABLE passwd ADD ll integer;
     UPDATE passwd SET ll=EXTRACT(EPOCH FROM lastlogin);
     ALTER TABLE passwd DROP lastlogin;

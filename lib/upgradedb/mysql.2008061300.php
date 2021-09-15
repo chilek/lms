@@ -92,7 +92,7 @@ CREATE TABLE up_info_changes (
 }
 
 if (empty($versions['up_module_finances']) || $versions['up_module_finances'] < 2005081901) {
-    $this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) 
+    $this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'disable_transferform', '0', '', 0)");
     $this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'disable_invoices', '0', '', 0)");

@@ -46,14 +46,14 @@ if (isset($_GET['id'])) {
         $SESSION->redirect('?'.$SESSION->get('backto'));
     }
 
-    $record['value'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents 
+    $record['value'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
 			    WHERE docid = ?', array($record['id']));
 
     if (strpos($record['template'], '%I') !== false) {
         $receipt['out_extended'] = true;
     }
 
-    if (strpos($DB->GetOne('SELECT template FROM numberplans 
+    if (strpos($DB->GetOne('SELECT template FROM numberplans
 			    WHERE id IN (SELECT in_numberplanid FROM cashregs WHERE id = ?)', array($regid)), '%I') !== false) {
         $receipt['in_extended'] = true;
     }

@@ -211,7 +211,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				HAVING COUNT(tt2.templateid) = 0
 			) t5 ON t5.templateid = t.id
 			WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)
-				AND (tt.templateid IS NOT NULL OR t.id = t5.templateid)  
+				AND (tt.templateid IS NOT NULL OR t.id = t5.templateid)
 			GROUP BY t.id, t.name, t.subject, t.message',
             array(is_array($queueid) ? $queueid : intval($queueid), $type, TMPL_HELPDESK)
         );

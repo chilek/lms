@@ -29,9 +29,9 @@ if (!$this->ResourceExists('customers.flags', LMSDB::RESOURCE_TYPE_COLUMN)) {
         DROP VIEW contractorview;
         DROP VIEW customerview;
         DROP VIEW customerconsentview;
-    
+
         ALTER TABLE customers ADD COLUMN flags smallint NOT NULL DEFAULT 0;
-    
+
         CREATE VIEW customerconsentview AS
             SELECT c.id AS customerid,
                 SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::integer AS consentdate,
@@ -42,7 +42,7 @@ if (!$this->ResourceExists('customers.flags', LMSDB::RESOURCE_TYPE_COLUMN)) {
             FROM customers c
                 LEFT JOIN customerconsents cc ON cc.customerid = c.id
             GROUP BY c.id;
-    
+
         CREATE VIEW customerview AS
             SELECT c.*,
                 cc.consentdate AS consentdate,
@@ -76,7 +76,7 @@ if (!$this->ResourceExists('customers.flags', LMSDB::RESOURCE_TYPE_COLUMN)) {
                     FROM userdivisions ud
                     WHERE ud.userid = lms_current_user()))
                 AND c.type < 2;
-    
+
         CREATE VIEW contractorview AS
             SELECT c.*,
                 cc.consentdate AS consentdate,
@@ -101,7 +101,7 @@ if (!$this->ResourceExists('customers.flags', LMSDB::RESOURCE_TYPE_COLUMN)) {
                 LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
                 LEFT JOIN customerconsentview cc ON cc.customerid = c.id
             WHERE c.type = 2;
-    
+
         CREATE VIEW customeraddressview AS
             SELECT c.*,
                 cc.consentdate AS consentdate,

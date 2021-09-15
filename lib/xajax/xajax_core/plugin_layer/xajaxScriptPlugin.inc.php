@@ -32,27 +32,27 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
         String: sRequest
     */
     private $sRequest;
-    
+
     /*
         String: sHash
     */
     private $sHash;
-    
+
     /*
         String: sRequestURI
     */
     private $sRequestURI;
-    
+
     /*
         Boolean: bDeferScriptGeneration
     */
     private $bDeferScriptGeneration;
-    
+
     /*
         Boolean: bValidateHash
     */
     private $bValidateHash;
-    
+
     /*
         Boolean: bWorking
     */
@@ -73,12 +73,12 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
         $this->sRequestURI = '';
         $this->bDeferScriptGeneration = false;
         $this->bValidateHash = true;
-        
+
         $this->bWorking = false;
 
         $this->sRequest = '';
         $this->sHash = null;
-        
+
 /*      if (isset($_GET['xjxGenerateJavascript'])) {
             $this->sRequest = 'script';
             $this->sHash = $_GET['xjxGenerateJavascript'];
@@ -122,7 +122,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
             }
         }
     }
-    
+
     /*
         Function: generateClientScript
 
@@ -136,7 +136,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
     public function generateClientScript()
     {
     }
-    
+
     /*
         Function: canProcessRequest
 
@@ -188,7 +188,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 
         return $aSections;*/
     }
-    
+
     /*
         Function: processRequest
 
@@ -202,9 +202,9 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
     {
         if ($this->canProcessRequest()) {
             $aSections = $this->_getSections($this->sRequest);
-            
+
 //          echo "<!--" . print_r($aSections, true) . "-->";
-            
+
             // validate the hash
             $sHash = md5(implode($aSections));
             if (false == $this->bValidateHash || $sHash == $this->sHash) {
@@ -212,21 +212,21 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
                 if ('style' == $this->sRequest) {
                     $sType = 'text/css';
                 }
-                    
+
                 $objResponse = new xajaxCustomResponse($sType);
-                
+
                 foreach ($aSections as $sSection) {
                     $objResponse->append($sSection . "\n");
                 }
-                
+
                 $objResponseManager = xajaxResponseManager::getInstance();
                 $objResponseManager->append($objResponse);
-                
+
                 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (60*60*24)) . ' GMT');
 
                 return true;
             }
-            
+
             return 'Invalid script or style request.';
             trigger_error('Hash mismatch: ' . $this->sRequest . ': ' . $sHash . ' <==> ' . $this->sHash, E_USER_ERROR);
         }

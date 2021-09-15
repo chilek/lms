@@ -319,7 +319,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         $result['sendinvoices'] = ($this->db->GetOne('SELECT 1 FROM customercontacts cc
-			JOIN customeraddressview c ON c.id = cc.customerid 
+			JOIN customeraddressview c ON c.id = cc.customerid
 			WHERE c.id = ? AND invoicenotice = 1 AND cc.type & ? = ?
 			LIMIT 1', array($id, CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES)) > 0);
 

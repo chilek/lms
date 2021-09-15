@@ -31,7 +31,7 @@ $this->Execute("
 	UPDATE cash SET reference = 0;
 	ALTER TABLE cash ALTER reference SET NOT NULL;
 	ALTER TABLE cash ALTER reference SET DEFAULT 0;
-	CREATE INDEX cash_reference_idx ON cash(reference); 
+	CREATE INDEX cash_reference_idx ON cash(reference);
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005060400', 'dbversion'));

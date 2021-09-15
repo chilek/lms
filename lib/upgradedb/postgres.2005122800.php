@@ -34,7 +34,7 @@ $this->Execute("
     UPDATE receiptcontents SET regid = ?;
     ALTER TABLE receiptcontents ALTER regid SET NOT NULL;
     ALTER TABLE receiptcontents ALTER regid SET DEFAULT 0;
-    
+
     CREATE INDEX receiptcontents_regid_idx ON receiptcontents (regid);
 
     CREATE SEQUENCE \"cashrights_id_seq\";

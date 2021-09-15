@@ -37,12 +37,12 @@ $this->Execute("
 	);
 
 	ALTER TABLE aliases ADD domainid integer NOT NULL DEFAULT 0;
-	
+
 	UPDATE aliases SET domainid = (SELECT domainid FROM passwd WHERE id = accountid);
 
-	INSERT INTO aliasassignments (aliasid, accountid) 
+	INSERT INTO aliasassignments (aliasid, accountid)
 		SELECT id, accountid FROM aliases;
-	
+
 	ALTER TABLE aliases DROP accountid;
 	ALTER TABLE aliases ADD CONSTRAINT aliases_login_key UNIQUE (login, domainid);
 ");

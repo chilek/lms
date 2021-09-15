@@ -16,7 +16,7 @@
                                 {foreach $queuelist as $queue}
                                 <OPTION value="{$queue.id}"{if in_array($queue.id, $queues)} SELECTED{/if}>{$queue.name}</OPTION>
                                 {/foreach}
-                            </SELECT> 
+                            </SELECT>
                         </TD>
                     </TR>
                     <TR>
@@ -48,7 +48,7 @@
                             {trans("Default user:")}
                         </TD>
                         <TD WIDTH="99%" NOWRAP>
-                            <SELECT NAME="default_userid" {tip text="Sender of new request notifications and his email. If not specified notifications goes from queue address."}> 
+                            <SELECT NAME="default_userid" {tip text="Sender of new request notifications and his email. If not specified notifications goes from queue address."}>
                                 <OPTION value="0" SELECTED>{trans("- select user -")}</OPTION>
                                 {foreach $userlist as $user}
                                 <OPTION value="{$user.id}"{if $user.id == $default_userid} SELECTED{/if}>{$user.name|escape}</OPTION>
@@ -61,7 +61,7 @@
                             {trans("LMS url:")}
                         </TD>
                         <TD WIDTH="99%" NOWRAP>
-                            <INPUT TYPE="TEXT" NAME="lms_url" VALUE="{$lms_url}" SIZE="50" {tip text="LMS address needed to build link to new ticket in notification message"}> 
+                            <INPUT TYPE="TEXT" NAME="lms_url" VALUE="{$lms_url}" SIZE="50" {tip text="LMS address needed to build link to new ticket in notification message"}>
                         </TD>
                     </TR>
                     <TR>

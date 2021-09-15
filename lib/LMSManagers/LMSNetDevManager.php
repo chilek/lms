@@ -804,7 +804,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			        SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
 			        FROM nodes
 			        WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
-			            AND lastonline > 0 
+			            AND lastonline > 0
 			        GROUP BY netdev
 			    ) no ON no.netdevid = d.id ') . '
 			    LEFT JOIN vaddresses addr       ON d.address_id = addr.id
@@ -842,7 +842,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			        SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
 			        FROM nodes
 			        WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
-			            AND lastonline > 0 
+			            AND lastonline > 0
 			        GROUP BY netdev
 			    ) no ON no.netdevid = d.id ') . '
 				LEFT JOIN vaddresses addr       ON d.address_id = addr.id

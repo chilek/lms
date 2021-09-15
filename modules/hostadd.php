@@ -35,11 +35,11 @@ $hostadd = isset($_POST['hostadd']) ? $_POST['hostadd'] : null;
 if ($hostadd) {
     $hostadd['name'] = trim($hostadd['name']);
     $hostadd['description'] = trim($hostadd['description']);
-    
+
     if ($hostadd['name']=='' && $hostadd['description']=='') {
         $SESSION->redirect('?m=hostlist');
     }
-    
+
     if ($hostadd['name'] == '') {
         $error['name'] = trans('Host name is required!');
     } elseif (GetHostIdByName($hostadd['name'])) {

@@ -32,7 +32,7 @@
 class IniConfigParser implements ConfigParserInterface
 {
     const NAME = 'INI_CONFIG_PARSER';
-    
+
     /**
      * Converts raw ini config into it's object representation
      *
@@ -43,7 +43,7 @@ class IniConfigParser implements ConfigParserInterface
     public function objectify(array $raw_config = array(), array $options = array())
     {
         $config = new ConfigContainer();
-        
+
         foreach ($raw_config as $section_name => $section_variables) {
             $section = new ConfigSection($section_name);
             foreach ($section_variables as $variable_name => $variable_value) {
@@ -51,7 +51,7 @@ class IniConfigParser implements ConfigParserInterface
             }
             $config->addSection($section);
         }
-        
+
         return $config;
     }
 }

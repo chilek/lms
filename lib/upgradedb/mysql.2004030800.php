@@ -28,9 +28,9 @@
 
 $this->Execute("
     CREATE TABLE rtqueues (
-	id int(11) NOT NULL auto_increment, 
-	name varchar(255) NOT NULL default '', 
-	email varchar(255) NOT NULL default '', 
+	id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL default '',
+	email varchar(255) NOT NULL default '',
 	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
@@ -38,13 +38,13 @@ $this->Execute("
 
 $this->Execute("
     CREATE TABLE rttickets (
-	id int(11) NOT NULL auto_increment, 
-	queueid int(11) NOT NULL default '0', 
-	requestor varchar(255) NOT NULL default '', 
-	subject varchar(255) NOT NULL default '', 
-	state tinyint(4) NOT NULL default '0', 
-	owner int(11) NOT NULL default '0', 
-	createtime int(11) NOT NULL default '0', 
+	id int(11) NOT NULL auto_increment,
+	queueid int(11) NOT NULL default '0',
+	requestor varchar(255) NOT NULL default '',
+	subject varchar(255) NOT NULL default '',
+	state tinyint(4) NOT NULL default '0',
+	owner int(11) NOT NULL default '0',
+	createtime int(11) NOT NULL default '0',
 	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
@@ -53,15 +53,15 @@ $this->Execute("
 $this->Execute("
     CREATE TABLE rtmessages (
 	id int(11) NOT NULL auto_increment,
-	ticketid int(11) NOT NULL default '0', 
-	sender int(11) NOT NULL default '0', 
-	mailfrom varchar(255) NOT NULL default '', 
-	subject varchar(255) NOT NULL default '', 
-	messageid varchar(255) NOT NULL default '', 
-	inreplyto int(11) NOT NULL default '0', 
-	replyto text NOT NULL default '', 
-	headers text NOT NULL default '', 
-	body mediumtext NOT NULL default '', 
+	ticketid int(11) NOT NULL default '0',
+	sender int(11) NOT NULL default '0',
+	mailfrom varchar(255) NOT NULL default '',
+	subject varchar(255) NOT NULL default '',
+	messageid varchar(255) NOT NULL default '',
+	inreplyto int(11) NOT NULL default '0',
+	replyto text NOT NULL default '',
+	headers text NOT NULL default '',
+	body mediumtext NOT NULL default '',
 	PRIMARY KEY  (id) ) ENGINE=MyISAM
 ");
 

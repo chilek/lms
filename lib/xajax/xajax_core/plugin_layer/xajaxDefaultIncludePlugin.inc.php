@@ -73,7 +73,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
         $this->printJavascriptConfig();
         return ob_get_clean();
     }
-    
+
     /*
         Function: printJavascriptConfig
 
@@ -104,7 +104,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
         $this->printJavascriptInclude();
         return ob_get_clean();
     }
-    
+
     /*
         Function: printJavascriptInclude
 

@@ -106,7 +106,7 @@ SELECT c.* FROM customers c
 ");
 
 $this->Execute(
-    "INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
+    "INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name,
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
         !empty($header) ? str_replace("\\n", "\n", $header) : '',

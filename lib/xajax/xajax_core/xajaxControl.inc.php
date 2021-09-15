@@ -65,7 +65,7 @@ class xajaxControl
         String: sTag
     */
     protected $sTag;
-    
+
     /*
         Boolean: sEndTag
 
@@ -74,7 +74,7 @@ class xajaxControl
         'forbidden' - The control must have an abbr. begin tag and no end tag
     */
     protected $sEndTag;
-    
+
     /*
         Array: aAttributes
 
@@ -82,7 +82,7 @@ class xajaxControl
         of the HMTL code for this control.
     */
     protected $aAttributes;
-    
+
     /*
         Array: aEvents
 
@@ -92,7 +92,7 @@ class xajaxControl
         <xajaxRequest->getScript>.
     */
     protected $aEvents;
-    
+
     /*
         String: sClass
 
@@ -123,7 +123,7 @@ class xajaxControl
         $this->sTag = $sTag;
 
         $this->clearAttributes();
-                
+
         if (isset($aConfiguration['attributes'])) {
             if (is_array($aConfiguration['attributes'])) {
                 foreach ($aConfiguration['attributes'] as $sKey => $sValue) {
@@ -133,7 +133,7 @@ class xajaxControl
         }
 
         $this->clearEvents();
-        
+
         if (isset($aConfiguration['event'])) {
             call_user_func_array(
                 array($this, 'setEvent'),
@@ -149,11 +149,11 @@ class xajaxControl
                 }
             }
         }
-        
+
         $this->sClass = '%block';
         $this->sEndTag = 'forbidden';
     }
-    
+
     /*
         Function: getClass
 
@@ -206,7 +206,7 @@ class xajaxControl
 
         $this->aAttributes[$sName] = $sValue;
     }
-    
+
     /*
         Function: getAttribute
 
@@ -226,10 +226,10 @@ class xajaxControl
         if (false == isset($this->aAttributes[$sName])) {
             return null;
         }
-        
+
         return $this->aAttributes[$sName];
     }
-    
+
     /*
         Function: clearEvents
 
@@ -318,7 +318,7 @@ class xajaxControl
         }
         return ob_get_clean();
     }
-    
+
     /*
         Function: printHTML
 
@@ -350,45 +350,45 @@ class xajaxControl
 //EndSkipDebug
 
         $sClass = $this->getClass();
-        
+
         if ('%inline' != $sClass) {
             // this odd syntax is necessary to detect request for no formatting
             if (false === (false === $sIndent)) {
                 echo $sIndent;
             }
         }
-            
+
         echo '<';
         echo $this->sTag;
         echo ' ';
         $this->_printAttributes();
         $this->_printEvents();
-        
+
         if ('forbidden' == $this->sEndTag) {
             if ('HTML' == XAJAX_HTML_CONTROL_DOCTYPE_FORMAT) {
                 echo '>';
             } else if ('XHTML' == XAJAX_HTML_CONTROL_DOCTYPE_FORMAT) {
                 echo '/>';
             }
-            
+
             if ('%inline' != $sClass) {
                 // this odd syntax is necessary to detect request for no formatting
                 if (false === (false === $sIndent)) {
                     echo "\n";
                 }
             }
-                
+
             return;
         } else if ('optional' == $this->sEndTag) {
             echo '/>';
-            
+
             if ('%inline' == $sClass) {
                 // this odd syntax is necessary to detect request for no formatting
                 if (false === (false === $sIndent)) {
                     echo "\n";
                 }
             }
-                
+
             return;
         }
 //SkipDebug
@@ -568,16 +568,16 @@ class xajaxControlContainer extends xajaxControl
         parent::__construct($sTag, $aConfiguration);
 
         $this->clearChildren();
-        
+
         if (isset($aConfiguration['child'])) {
             $this->addChild($aConfiguration['child']);
         } else if (isset($aConfiguration['children'])) {
             $this->addChildren($aConfiguration['children']);
         }
-        
+
         $this->sEndTag = 'required';
     }
-    
+
     /*
         Function: getClass
 
@@ -586,13 +586,13 @@ class xajaxControlContainer extends xajaxControl
     public function getClass()
     {
         $sClass = xajaxControl::getClass();
-        
+
         if (0 < count($this->aChildren) && '%flow' == $sClass) {
             return $this->getContentClass();
         } else if (0 == count($this->aChildren) || '%inline' == $sClass || '%block' == $sClass) {
             return $sClass;
         }
-        
+
         $objLanguageManager = xajaxLanguageManager::getInstance();
         trigger_error(
             $objLanguageManager->getText('XJXCTL:ICERR:01')
@@ -600,7 +600,7 @@ class xajaxControlContainer extends xajaxControl
             E_USER_ERROR
         );
     }
-    
+
     /*
         Function: getContentClass
 
@@ -609,7 +609,7 @@ class xajaxControlContainer extends xajaxControl
     public function getContentClass()
     {
         $sClass = '';
-        
+
         foreach (array_keys($this->aChildren) as $sKey) {
             if ('' == $sClass) {
                 $sClass = $this->aChildren[$sKey]->getClass();
@@ -617,14 +617,14 @@ class xajaxControlContainer extends xajaxControl
                 return '%flow';
             }
         }
-        
+
         if ('' == $sClass) {
             return '%inline';
         }
-            
+
         return $sClass;
     }
-    
+
     /*
         Function: clearChildren
 
@@ -673,7 +673,7 @@ class xajaxControlContainer extends xajaxControl
 
         $this->aChildren[] = $objControl;
     }
-    
+
     public function addChildren($aChildren)
     {
 //SkipDebug
@@ -686,7 +686,7 @@ class xajaxControlContainer extends xajaxControl
             );
         }
 //EndSkipDebug
-                
+
         foreach (array_keys($aChildren) as $sKey) {
             $this->addChild($aChildren[$sKey]);
         }
@@ -713,31 +713,31 @@ class xajaxControlContainer extends xajaxControl
 //EndSkipDebug
 
         $sClass = $this->getClass();
-        
+
         if ('%inline' != $sClass) {
             // this odd syntax is necessary to detect request for no formatting
             if (false === (false === $sIndent)) {
                 echo $sIndent;
             }
         }
-            
+
         echo '<';
         echo $this->sTag;
         echo ' ';
         $this->_printAttributes();
         $this->_printEvents();
-        
+
         if (0 == count($this->aChildren)) {
             if ('optional' == $this->sEndTag) {
                 echo '/>';
-                
+
                 if ('%inline' != $sClass) {
                     // this odd syntax is necessary to detect request for no formatting
                     if (false === (false === $sIndent)) {
                         echo "\n";
                     }
                 }
-                    
+
                 return;
             }
 //SkipDebug
@@ -750,11 +750,11 @@ class xajaxControlContainer extends xajaxControl
             }
 //EndSkipDebug
         }
-        
+
         echo '>';
-        
+
         $sContentClass = $this->getContentClass();
-        
+
         if ('%inline' != $sContentClass) {
             // this odd syntax is necessary to detect request for no formatting
             if (false === (false === $sIndent)) {
@@ -763,18 +763,18 @@ class xajaxControlContainer extends xajaxControl
         }
 
         $this->_printChildren($sIndent);
-        
+
         if ('%inline' != $sContentClass) {
             // this odd syntax is necessary to detect request for no formatting
             if (false === (false === $sIndent)) {
                 echo $sIndent;
             }
         }
-        
+
         echo '<' . '/';
         echo $this->sTag;
         echo '>';
-        
+
         if ('%inline' != $sClass) {
             // this odd syntax is necessary to detect request for no formatting
             if (false === (false === $sIndent)) {

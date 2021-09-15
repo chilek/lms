@@ -102,7 +102,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Opcje przechowywane 
+>. Opcje przechowywane
         	są w bazie danych i należy je przenieść z pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
@@ -140,7 +140,7 @@ CLASS="EMPHASIS"
 CLASS="FILENAME"
 >lms.ini</TT
 >, co
-    		oznacza, że plik konfiguracyjny jest także odczytywany, ale wartości 
+    		oznacza, że plik konfiguracyjny jest także odczytywany, ale wartości
     		zmiennych z tego pliku nadpisywane są wartościami zapisanymi
     		w bazie danych.</P
 ></TD
@@ -168,7 +168,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Demon odczytuje niektóre opcje konfiguracyjne UI tylko z bazy
-    		danych, dlatego zaleca się przechowywanie konfiguracji w bazie zamiast w pliku 
+    		danych, dlatego zaleca się przechowywanie konfiguracji w bazie zamiast w pliku
     		ini.</P
 ></TD
 ></TR
@@ -177,7 +177,7 @@ VALIGN="TOP"
 ></P
 ><P
 >Aby dodać nową opcję kliknij link 'Dodaj opcję'.
-    		Aby wyedytować parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
+    		Aby wyedytować parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony
     		do formularza edycyjnego. Zmiana statusu
     		opcji oznacza włączenie/wyłączenie jej działania, co polega na przypisaniu
     		jej wartości domyślnej (jeżeli taką posiada).</P
@@ -217,8 +217,8 @@ CLASS="PROMPT"
 ><P
 >allow_from</P
 ><P
->Lista sieci i adresów IP które mają dostęp do LMS. Jeżeli puste, każdy adres IP ma dostęp do LMS'a, 
-            jeżeli wpiszemy tutaj listę adresów bądź pul adresowych, LMS odrzuci błędem HTTP 403 każdego 
+>Lista sieci i adresów IP które mają dostęp do LMS. Jeżeli puste, każdy adres IP ma dostęp do LMS'a,
+            jeżeli wpiszemy tutaj listę adresów bądź pul adresowych, LMS odrzuci błędem HTTP 403 każdego
             niechcianego użytkownika.</P
 ><P
 >Przykład:          <SAMP
@@ -230,7 +230,7 @@ CLASS="PROMPT"
 ><P
 >timeout</P
 ><P
->Timeout sesji www. Po tym czasie (w sekundach) użytkownik zostanie wylogowany jeżeli nie 
+>Timeout sesji www. Po tym czasie (w sekundach) użytkownik zostanie wylogowany jeżeli nie
             podejmie żadnej akcji. Domyślnie 600 sekund.</P
 ><P
 >Przykład:     <SAMP
@@ -257,7 +257,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Nie ma możliwości ustawienia braku timeoutu. Jeżeli ustawisz tą wartość na zero, nie 
+>Nie ma możliwości ustawienia braku timeoutu. Jeżeli ustawisz tą wartość na zero, nie
             będziesz mógł korzystać z LMS!</P
 ></TD
 ></TR
@@ -339,7 +339,7 @@ CLASS="PROMPT"
 ><P
 >networkhosts_pagelimit</P
 ><P
->Ilość komputerów wyświetlanych na jednej stronie w informacjach 
+>Ilość komputerów wyświetlanych na jednej stronie w informacjach
             o sieci. Domyślnie: 256.</P
 ><P
 >Przykład:     <SAMP
@@ -461,8 +461,8 @@ CLASS="PROMPT"
             <TT
 CLASS="FILENAME"
 >/bin/true</TT
->. String ten puszczany do komendy system() więc proponuję rozwagę 
-            i pomyślenie co się robi i jak :) Generalnie średniki powinny być parsowane przez bash'a, ale z paru 
+>. String ten puszczany do komendy system() więc proponuję rozwagę
+            i pomyślenie co się robi i jak :) Generalnie średniki powinny być parsowane przez bash'a, ale z paru
             względów LMS sam dzieli poniższy ciąg pod względem średników i wykonuje komendy pojedynczo.
 	    W poleceniach można używać zmiennej '%host', która zostanie zamieniona na nazwę
 	    zdefiniowanego hosta (Konfiguracja -&#62; Hosty).</P
@@ -479,7 +479,7 @@ CLASS="PROMPT"
 >Zapytanie SQL wykonywane podczas reloadu, jeśli <SAMP
 CLASS="PROMPT"
 >reload_type = sql</SAMP
->.  
+>.
             Domyślnie zapytanie ustawia w bazie polecenie przeładowania dla demona
 	    <SPAN
 CLASS="emphasis"
@@ -488,7 +488,7 @@ CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
 >. W zapytaniu można użyć zmiennej '%host' oraz
-            '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak średnika jest 
+            '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak średnika jest
             traktowany jako separator kwerend, tzn. oddzielając znakiem średnika możesz wpisać kilka zapytań SQL.</P
 ><P
 >Przykład:     <SAMP
@@ -500,8 +500,8 @@ CLASS="PROMPT"
 ><P
 >force_ssl</P
 ><P
->Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje że LMS będzie wymuszał połączenie 
-            SSL powodując redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy każdej 
+>Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje że LMS będzie wymuszał połączenie
+            SSL powodując redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy każdej
             próbie dostępu bez SSL. Domyślnie wyłączone.</P
 ><P
 >Przykład:     <SAMP
@@ -513,7 +513,7 @@ CLASS="PROMPT"
 ><P
 >allow_mac_sharing</P
 ><P
->Przyzwolenie na dodawanie rekordów komputerów z adresami MAC już istniejącymi (nie sprawdza 
+>Przyzwolenie na dodawanie rekordów komputerów z adresami MAC już istniejącymi (nie sprawdza
             czy jakiś inny komputer posiada taki adres MAC). Domyślnie wyłączone</P
 ><P
 >Przykład:     <SAMP
@@ -525,7 +525,7 @@ CLASS="PROMPT"
 ><P
 >smarty_debug</P
 ><P
->Włączenie konsoli debugowej Smarty-ego, przydatne do śledzenia wartości przekazywanych z PHP 
+>Włączenie konsoli debugowej Smarty-ego, przydatne do śledzenia wartości przekazywanych z PHP
             do Smarty-ego. Domyślnie wyłączone.</P
 ><P
 >Przykład:     <SAMP
@@ -597,7 +597,7 @@ CLASS="PROMPT"
 ><P
 >timetable_days_forward</P
 ><P
->Określa ilość dni (łącznie z bieżącym) jaka ma być wyświetlana 
+>Określa ilość dni (łącznie z bieżącym) jaka ma być wyświetlana
             w terminarzu. Domyślnie: 7.</P
 ><P
 >Przykład:     <SAMP
@@ -622,8 +622,8 @@ CLASS="PROMPT"
 ><P
 >helpdesk_backend_mode</P
 ><P
->Włączenie tej opcji spowoduje, że wszystkie wiadomości w systemie 
-            helpdesk (oprócz tych skierowanych do zgłaszającego) 
+>Włączenie tej opcji spowoduje, że wszystkie wiadomości w systemie
+            helpdesk (oprócz tych skierowanych do zgłaszającego)
             będą wysyłane do serwera pocztowego na adres odpowiedniej kolejki.
             Na serwerze tym powinien być uruchomiony skrypt lms-rtparser, który zajmie
             się zapisem wiadomości do bazy danych. Domyślnie: wyłączona.</P
@@ -722,7 +722,7 @@ CLASS="PROMPT"
 ><P
 >nodepassword_length</P
 ><P
->Domyślna długość hasła (generowanego automatycznie) dla komputera. 
+>Domyślna długość hasła (generowanego automatycznie) dla komputera.
             Maksymalnie 32. Domyślnie: 16.</P
 ><P
 >Przykład:     <SAMP
@@ -768,7 +768,7 @@ CLASS="PROMPT"
 ><P
 >big_networks</P
 ><P
->Wsparcie dla dużych ISPów, np. ukrywanie list wyboru klientów. 
+>Wsparcie dla dużych ISPów, np. ukrywanie list wyboru klientów.
 		Domyślnie: wyłączona</P
 ><P
 >Przykład:     <SAMP
@@ -780,7 +780,7 @@ CLASS="PROMPT"
 ><P
 >short_pagescroller</P
 ><P
->Zmienia wygląd pól wyboru strony, ułatwiając nawigację na listach z 
+>Zmienia wygląd pól wyboru strony, ułatwiając nawigację na listach z
 		bardzo dużą liczbą stron. Domyślnie: wyłączona</P
 ><P
 >Przykład:     <SAMP
@@ -827,13 +827,13 @@ CLASS="PROMPT"
 ><P
 >Domyślnie wybrana z listy rozwijanej wartość okresu obciążenia, przy dodawaniu zobowiązania dla klienta.
 			Możliwe wartości:
-			
+
 			jednorazowo - 0
 			codziennie  - 1
 			co tydzień  - 2
-			co miesiąc  - 3 
+			co miesiąc  - 3
 			co kwartał  - 4
-			co rok	    - 5			
+			co rok	    - 5
 			Domyślnie: 0</P
 ><P
 >Przykład:     <SAMP
@@ -900,13 +900,13 @@ NAME="CONFIG-NUMBERPLANS"
 >Do każdego planu należy przypisać także okres numeracyjny, czyli
 		przedział czasowy w jakim zachowywana jest ciągłość numeracji. Przy
 		przejściu do nowego okresu numeracja zostanie wyzerowana. Można zdefiniować
-		numerację jednodniową, tygodniową (od poniedziałku do niedzieli), miesięczną, 
+		numerację jednodniową, tygodniową (od poniedziałku do niedzieli), miesięczną,
 		kwartalną oraz roczną.</P
 ><P
->Na liście planów numeracyjnych znajdują się wszystkie niezbędne 
+>Na liście planów numeracyjnych znajdują się wszystkie niezbędne
 		informacje o planach wraz z przykładowym numerem oraz liczbą dokumentów
-		utworzonych przy ich użyciu. Poprzez link 'Dodaj plan' przechodzi się 
-		do interfejsu dodawania planu. Edycji można dokonać klikając na wybrany 
+		utworzonych przy ich użyciu. Poprzez link 'Dodaj plan' przechodzi się
+		do interfejsu dodawania planu. Edycji można dokonać klikając na wybrany
 		rekord na liście. Usunięcie planu numeracyjnego jest możliwe tylko
 		wtedy gdy nie dotyczy on żadnego istniejącego dokumentu.</P
 ><P
@@ -991,9 +991,9 @@ NAME="CONFIG-DIVISIONS"
 ><P
 >Firmy (Oddziały) służą do grupowania klientów. Powinieneś zdefiniować
 		przynajmniej jedną firmę. Masz możliwość podania nazwy skróconej i pełnej
-		firmy, jej adresu, konta bankowego (lub prefiksu konta płatności masowych) 
+		firmy, jej adresu, konta bankowego (lub prefiksu konta płatności masowych)
 		oraz danych do fakturowania. Zablokowanie firmy uniemożliwia jej przypisanie
-		do klienta. 
+		do klienta.
 		</P
 ></DIV
 ><DIV
@@ -1006,7 +1006,7 @@ NAME="CONFIG-HOSTS"
 ></H2
 ><P
 >Tutaj definiuje się hosty które będą współpracowały
-		z LMSem, czyli komputery (routery, serwery) pobierające 
+		z LMSem, czyli komputery (routery, serwery) pobierające
 		konfigurację z bazy LMSa, na których będą uruchamiane
 		skrypty lub demon <SPAN
 CLASS="emphasis"

@@ -75,10 +75,10 @@ foreach (array_keys($consent_name_to_type_map) as $field_name) {
 $this->Execute("
     CREATE VIEW customerview AS
         SELECT c.*,
-            (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate, 
-            (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice, 
-            (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice, 
-            (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice, 
+            (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
+            (CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS invoicenotice,
+            (CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS mailingnotice,
+            (CASE WHEN cc4.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
             a1.country_id as countryid, a1.zip as zip, a1.city as city,
             a1.street as street,a1.house as building, a1.flat as apartment,
             a2.country_id as post_countryid, a2.zip as post_zip,
@@ -102,7 +102,7 @@ $this->Execute("
             JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
             WHERE e.userid = lms_current_user() AND a.customerid = c.id)
             AND c.type < 2;
-    
+
     CREATE VIEW contractorview AS
         SELECT c.*,
             (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,
@@ -127,7 +127,7 @@ $this->Execute("
             LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = 3
             LEFT JOIN customerconsents cc4 ON cc4.customerid = c.id AND cc4.type = 4
         WHERE c.type = 2;
-    
+
     CREATE VIEW customeraddressview AS
         SELECT c.*,
             (CASE WHEN cc1.type IS NULL THEN 0 ELSE cc1.cdate END) AS consentdate,

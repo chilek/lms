@@ -71,7 +71,7 @@ if (count($ids)) {
             );
             $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
         }
-        $DB->Execute('UPDATE documents SET closed = 
+        $DB->Execute('UPDATE documents SET closed =
 			(CASE closed WHEN 0 THEN 1 ELSE 0 END)
 			WHERE id = ?', array($invoiceid));
     }

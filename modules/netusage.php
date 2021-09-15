@@ -135,8 +135,8 @@ function getNetworks($ip, $br, $host = null)
 
     $networks = LMSDB::GetInstance()->GetAll('
         SELECT
-            n.address as ip_long, n.mask as mask_ip, 
-            h.name as host, h.id as host_id, n.name as net_name                  
+            n.address as ip_long, n.mask as mask_ip,
+            h.name as host, h.id as host_id, n.name as net_name
         FROM networks n
             LEFT JOIN hosts h ON n.hostid = h.id
         WHERE address >= ? AND address < ? ' . $sql . '

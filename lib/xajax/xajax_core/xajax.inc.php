@@ -109,7 +109,7 @@ final class xajax
         a response processor on the client side could be designed to handle this condition.
     */
     private $bExitAllowed;
-    
+
     /*
         Boolean: bCleanBuffer
 
@@ -118,7 +118,7 @@ final class xajax
         <xajaxResponse> is (virtually) the only output when handling a request.
     */
     private $bCleanBuffer;
-    
+
     /*
         String: sLogFile
 
@@ -135,28 +135,28 @@ final class xajax
         core components.  This is useful for debugging core updates.
     */
     private $sCoreIncludeOutput;
-    
+
     /*
         Object: objPluginManager
 
         This stores a reference to the global <xajaxPluginManager>
     */
     private $objPluginManager;
-    
+
     /*
         Object: objArgumentManager
 
         Stores a reference to the global <xajaxArgumentManager>
     */
     private $objArgumentManager;
-    
+
     /*
         Object: objResponseManager
 
         Stores a reference to the global <xajaxResponseManager>
     */
     private $objResponseManager;
-    
+
     /*
         Object: objLanguageManager
 
@@ -184,9 +184,9 @@ final class xajax
         $this->bExitAllowed = true;
         $this->bCleanBuffer = true;
         $this->sLogFile = '';
-        
+
         $this->__wakeup();
-        
+
         // The default configuration settings.
         $this->configureMany(
             array(
@@ -220,7 +220,7 @@ final class xajax
         } else {
             $this->configure('requestURI', $this->_detectURI());
         }
-        
+
         if (null !== $sLanguage) {
             $this->configure('language', $sLanguage);
         }
@@ -229,37 +229,37 @@ final class xajax
             $this->configure("decodeUTF8Input", true);
         }
     }
-    
+
     /*
         Function: __sleep
     */
     public function __sleep()
     {
         $aMembers = get_class_vars(get_class($this));
-        
+
         if (isset($aMembers['objLanguageManager'])) {
             unset($aMembers['objLanguageManager']);
         }
-        
+
         if (isset($aMembers['objPluginManager'])) {
             unset($aMembers['objPluginManager']);
         }
-            
+
         if (isset($aMembers['objArgumentManager'])) {
             unset($aMembers['objArgumentManager']);
         }
-            
+
         if (isset($aMembers['objResponseManager'])) {
             unset($aMembers['objResponseManager']);
         }
-            
+
         if (isset($aMembers['sCoreIncludeOutput'])) {
             unset($aMembers['sCoreIncludeOutput']);
         }
-        
+
         return array_keys($aMembers);
     }
-    
+
     /*
         Function: __wakeup
     */
@@ -267,7 +267,7 @@ final class xajax
     {
 
         $sLocalFolder = dirname(__FILE__);
-        
+
 //SkipAIO
         require $sLocalFolder . '/xajaxPluginManager.inc.php';
         require $sLocalFolder . '/xajaxLanguageManager.inc.php';
@@ -281,11 +281,11 @@ final class xajax
         // that will be automatically included at startup.
         $aPluginFolders = array();
         $aPluginFolders[] = dirname($sLocalFolder) . '/xajax_plugins';
-        
+
 //SkipAIO
         $aPluginFolders[] = $sLocalFolder . '/plugin_layer';
 //EndSkipAIO
-        
+
         // Setup plugin manager
         $this->objPluginManager = xajaxPluginManager::getInstance();
         $this->objPluginManager->loadPlugins($aPluginFolders);
@@ -293,7 +293,7 @@ final class xajax
         $this->objLanguageManager = xajaxLanguageManager::getInstance();
         $this->objArgumentManager = xajaxArgumentManager::getInstance();
         $this->objResponseManager = xajaxResponseManager::getInstance();
-        
+
         $this->configureMany($this->aSettings);
     }
 
@@ -378,7 +378,7 @@ final class xajax
                 return true;
             }
         }
-        
+
         return $this->objPluginManager->register($aArgs);
     }
 
@@ -608,7 +608,7 @@ final class xajax
                 $GLOBALS['xajaxErrorHandlerText'] = "";
                 set_error_handler("xajaxErrorHandler");
             }
-            
+
             $mResult = true;
 
             // handle beforeProcessing event
@@ -775,7 +775,7 @@ final class xajax
                     E_USER_ERROR
                 );
             }
-            
+
             require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
             $javaScript = implode('', file($srcFile));
             $compressedScript = xajaxCompressFile($javaScript);
@@ -793,13 +793,13 @@ final class xajax
             }
         }
     }
-    
+
     private function _compressSelf($sFolder = null)
     {
         if (null == $sFolder) {
             $sFolder = dirname(dirname(__FILE__));
         }
-            
+
         require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
 
         if ($handle = opendir($sFolder)) {
@@ -824,9 +824,9 @@ final class xajax
                                 }
                             }
                             unset($aFile);
-                            
+
                             $compressedScript = xajaxCompressFile(implode('', $aParsed));
-                            
+
                             $sNewPath = $sPath;
                             $fH = @fopen($sNewPath, 'w');
                             if (!$fH) {
@@ -844,19 +844,19 @@ final class xajax
                     }
                 }
             }
-            
+
             closedir($handle);
         }
     }
-    
+
     public function _compile($sFolder = null, $bWriteFile = true)
     {
         if (null == $sFolder) {
             $sFolder = dirname(__FILE__);
         }
-            
+
         require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
-        
+
         $aOutput = array();
 
         if ($handle = opendir($sFolder)) {
@@ -890,17 +890,17 @@ final class xajax
                                     }
                                 }
                                 unset($aFile);
-                                
+
                                 $aOutput[] = xajaxCompressFile(implode('', $aParsed));
                             }
                         }
                     }
                 }
             }
-            
+
             closedir($handle);
         }
-        
+
         if ($bWriteFile) {
             $fH = @fopen($sFolder . '/xajaxAIO.inc.php', 'w');
             if (!$fH) {
@@ -916,7 +916,7 @@ final class xajax
                 fclose($fH);
             }
         }
-        
+
         return implode('', $aOutput);
     }
 
@@ -940,7 +940,7 @@ final class xajax
                 array('%22','%27','%3C','%3E'),
                 $_SERVER['REQUEST_URI']
             );
-                
+
             $aURL = parse_url($_SERVER['REQUEST_URI']);
         }
 
@@ -987,7 +987,7 @@ final class xajax
                 unset($aURL['path']);
             }
         }
-        
+
         if (empty($aURL['path'])) {
             $sPath = array();
             if (!empty($_SERVER['PATH_INFO'])) {
@@ -1034,9 +1034,9 @@ final class xajax
 
         // Clean up
         unset($aURL);
-        
+
         $aURL = explode("?", $sURL);
-        
+
         if (1 < count($aURL)) {
             $aQueries = explode("&", $aURL[1]);
 
@@ -1045,11 +1045,11 @@ final class xajax
                     unset($aQueries[$sKey]);
                 }
             }
-            
+
             $sQueries = implode("&", $aQueries);
-            
+
             $aURL[1] = $sQueries;
-            
+
             $sURL = implode("?", $aURL);
         }
 
@@ -1075,7 +1075,7 @@ function xajaxErrorHandler($errno, $errstr, $errfile, $errline)
     if (($errno & $errorReporting) == 0) {
         return;
     }
-    
+
     if ($errno == E_NOTICE) {
         $errTypeStr = 'NOTICE';
     } else if ($errno == E_WARNING) {
@@ -1091,9 +1091,9 @@ function xajaxErrorHandler($errno, $errstr, $errfile, $errline)
     } else {
         $errTypeStr = 'UNKNOWN: ' . $errno;
     }
-    
+
     $sCrLf = "\n";
-    
+
     ob_start();
     echo $GLOBALS['xajaxErrorHandlerText'];
     echo $sCrLf;

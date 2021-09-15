@@ -41,7 +41,7 @@ final class xajaxCallableObject
         The reflection class of the callable object.
     */
     private $reflectionClass;
-    
+
     /*
         Array: aExcludedMethods
 
@@ -49,14 +49,14 @@ final class xajaxCallableObject
         export to javascript code.
     */
     private $aExcludedMethods;
-    
+
     /*
         String: classpath
 
         The path to the file where the callable object class is defined.
     */
     private $classpath = '';
-    
+
     /*
         Array: aConfiguration
 
@@ -66,7 +66,7 @@ final class xajaxCallableObject
         passed to the client browser when the function stubs are generated.
     */
     private $aConfiguration;
-    
+
     /*
         Function: xajaxCallableObject
 
@@ -141,11 +141,11 @@ final class xajaxCallableObject
             return;
         }
         $sMethod = strtolower($sMethod);
-        
+
         if (!isset($this->aConfiguration[$sMethod])) {
             $this->aConfiguration[$sMethod] = array();
         }
-            
+
         $this->aConfiguration[$sMethod][$sName] = $sValue;
     }
 
@@ -163,9 +163,9 @@ final class xajaxCallableObject
     public function generateRequests($sXajaxPrefix)
     {
         $aRequests = array();
-        
+
         $sClass = $this->getClassName();
-        
+
         foreach ($this->reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $xMethod) {
             $sMethodName = $xMethod->getShortName();
             // Exclude magic __call, __construct, __destruct methods
@@ -182,7 +182,7 @@ final class xajaxCallableObject
 
         return $aRequests;
     }
-    
+
     /*
         Function: generateClientScript
 
@@ -198,9 +198,9 @@ final class xajaxCallableObject
 
         // Add the classpath to the prefix
         $sXajaxPrefix .= $this->classpath;
-        
+
         echo "{$sXajaxPrefix}{$sClass} = {};\n";
-        
+
         foreach ($this->reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $xMethod) {
             $sMethodName = $xMethod->getShortName();
             // Exclude magic __call, __construct, __destruct methods
@@ -216,7 +216,7 @@ final class xajaxCallableObject
             echo "return xajax.request( ";
             echo "{ xjxcls: '{$this->classpath}{$sClass}', xjxmthd: '{$sMethodName}' }, ";
             echo "{ parameters: arguments";
-            
+
             $sSeparator = ", ";
             if (isset($this->aConfiguration['*'])) {
                 foreach ($this->aConfiguration['*'] as $sKey => $sValue) {
@@ -233,7 +233,7 @@ final class xajaxCallableObject
             echo "};\n";
         }
     }
-    
+
     /*
         Function: isClass
 
@@ -254,7 +254,7 @@ final class xajaxCallableObject
         }
         return false;
     }
-    
+
     /*
         Function: hasMethod
 
@@ -272,7 +272,7 @@ final class xajaxCallableObject
     {
         return $this->reflectionClass->hasMethod($sMethod) || $this->reflectionClass->hasMethod('__call');
     }
-    
+
     /*
         Function: call
 

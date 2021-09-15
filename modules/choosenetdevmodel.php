@@ -30,7 +30,7 @@ function select_producer($id)
     $models = LMSDB::getInstance()->GetAll(
         '
         SELECT id, name
-        FROM netdevicemodels 
+        FROM netdevicemodels
         WHERE netdeviceproducerid = ?
         ORDER BY name',
         array($id)
@@ -83,7 +83,7 @@ $model = isset($_GET['model']) ? $_GET['model'] : null;
 
 $producers = $DB->GetAll('
     SELECT id, name
-    FROM netdeviceproducers 
+    FROM netdeviceproducers
     ORDER BY name');
 
 $data = array();

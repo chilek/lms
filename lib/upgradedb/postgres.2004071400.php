@@ -36,7 +36,7 @@ $this->Execute("
     ALTER TABLE stats DROP download;
     ALTER TABLE stats RENAME up TO upload;
     ALTER TABLE stats RENAME down TO download;
-    
+
     UPDATE dbinfo SET keyvalue = '2004071400' WHERE keytype = 'dbversion';
     COMMIT;
 ");

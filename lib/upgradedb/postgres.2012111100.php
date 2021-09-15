@@ -30,7 +30,7 @@ $this->Execute("CREATE VIEW customersview AS
     		WHERE NOT EXISTS (
 			SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id)
 			AND c.type IN (?,?) ;", array(0,1));
 
 $this->Execute("CREATE VIEW contractorview AS

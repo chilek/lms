@@ -57,12 +57,12 @@ function GetAccountList($order = 'login,asc', $customer = null, $type = null, $k
     foreach ($ACCOUNTTYPES as $typeidx => $atype) {
         $quota_fields[] = 'p.quota_' . $atype['alias'];
     }
-    $list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin, 
+    $list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin,
 			p.expdate, d.name AS domain, p.type, '
             . implode(', ', $quota_fields) . ', '
-            .$DB->Concat('c.lastname', "' '", 'c.name').' AS customername 
+            .$DB->Concat('c.lastname', "' '", 'c.name').' AS customername
 		FROM passwd p
-		LEFT JOIN customers c ON c.id = p.ownerid 
+		LEFT JOIN customers c ON c.id = p.ownerid
 		LEFT JOIN domains d ON d.id = p.domainid WHERE 1=1'
         .($customer != '' ? ' AND p.ownerid = '.intval($customer) : '')
         .($type ? ' AND p.type & '.$type.' = '.intval($type) : '')
@@ -70,7 +70,7 @@ function GetAccountList($order = 'login,asc', $customer = null, $type = null, $k
         .($kind == 2 ? ' AND (p.expdate=0 OR p.expdate > ?NOW?)' : '')
         .($domain != '' ? ' AND p.domainid = '.intval($domain) : '')
         .($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['type'] = $type;
@@ -120,7 +120,7 @@ $SESSION->save('ald', $d);
 if ($SESSION->is_set('alp') && !isset($_GET['page'])) {
     $SESSION->restore('alp', $_GET['page']);
 }
-        
+
 $layout['pagetitle'] = trans('Accounts List');
 
 $accountlist = GetAccountList($o, $u, $t, $k, $d);

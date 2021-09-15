@@ -66,9 +66,9 @@ function GetDomainList($order = 'name,asc', $customer = '', $filtr = '')
 
     $where = !empty($where) ? ' WHERE ' . implode(' AND ', $where) : '';
 
-    $list = $DB->GetAll('SELECT d.id AS id, d.name AS name, d.description, 
+    $list = $DB->GetAll('SELECT d.id AS id, d.name AS name, d.description,
 		d.ownerid, d.type, (SELECT COUNT(*) FROM passwd WHERE domainid = d.id) AS cnt, '
-            . $DB->Concat('lastname', "' '", 'c.name') . ' AS customername 
+            . $DB->Concat('lastname', "' '", 'c.name') . ' AS customername
 		FROM domains d
 		LEFT JOIN customers c ON (d.ownerid = c.id)'
             . $where

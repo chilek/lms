@@ -70,16 +70,16 @@ if (isset($where_node) || isset($where_cust)) {
                 .'WHERE deleted = 0 '
                 .(isset($where_cust) ? $where_cust : '')
                 .(isset($where_node) ? $where_node : '')
-                . (isset($where_cust) ? 'UNION 
-					SELECT DISTINCT c.id, address, zip, city, cc.email, ssn, 
+                . (isset($where_cust) ? 'UNION
+					SELECT DISTINCT c.id, address, zip, city, cc.email, ssn,
 					' . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
-					(SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance 
+					(SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance
 					FROM customerview c
-					JOIN customermailsview cc ON cc.customerid = c.id 
+					JOIN customermailsview cc ON cc.customerid = c.id
 					WHERE deleted = 0 AND UPPER(cc.email) LIKE UPPER(' . $DB->Escape('%' . $search . '%') . ')' : '')
                 .'ORDER BY customername LIMIT 15')) {
         foreach ($customerlist as $idx => $row) {
-            $customerlist[$idx]['nodes'] = $DB->GetAll('SELECT id, name, mac, inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub FROM vnodes 
+            $customerlist[$idx]['nodes'] = $DB->GetAll('SELECT id, name, mac, inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub FROM vnodes
 									WHERE ownerid=? ORDER BY name', array($row['id']));
         }
     }

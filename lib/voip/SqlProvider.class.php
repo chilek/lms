@@ -57,7 +57,7 @@ class SqlProvider extends VoipDataProvider
                             vpg.unitsize as unit_size
                           FROM
                             voip_prefixes vp
-                            LEFT JOIN voip_price_groups vpg 
+                            LEFT JOIN voip_price_groups vpg
                             on vp.groupid = vpg.prefix_group_id
                           WHERE
                             vp.prefix = ? AND
@@ -121,7 +121,7 @@ class SqlProvider extends VoipDataProvider
                             voip_prefixes vp
                             LEFT JOIN voip_price_groups vpg on
                             vp.groupid = vpg.prefix_group_id
-                          WHERE 
+                          WHERE
                             ? ?LIKE? (" . $DB->Concat('vp.prefix', "'%'") . ") AND
                             vpg.voip_tariff_id = ?
                           ORDER BY
@@ -217,7 +217,7 @@ class SqlProvider extends VoipDataProvider
             'SELECT
                              vpg.name
                           FROM
-                             voip_prefixes vp 
+                             voip_prefixes vp
                              LEFT JOIN voip_prefix_groups vpg ON vp.groupid = vpg.id
                           WHERE
                               prefix ?LIKE? ?',

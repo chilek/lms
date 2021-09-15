@@ -50,19 +50,19 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
         String: sXajaxPrefix
     */
     private $sXajaxPrefix;
-    
+
     /*
         String: sDefer
     */
     private $sDefer;
-    
+
     private $bDeferScriptGeneration;
 
     /*
         String: sRequestedClass
     */
     private $sRequestedClass;
-    
+
     /*
         String: sRequestedMethod
     */

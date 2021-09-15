@@ -45,7 +45,7 @@ if ($handle = opendir($ExecStack->modules_dir)) {
             foreach ($_MODINFO as $module_name => $module_info) {
                 if (isset($module_info['actions'])) {
                     $AUTH_MODINFO[$module_name]['count'] = 0;
-                    
+
                     if (isset($module_info['description'])) {
                         $AUTH_MODINFO[$module_name]['description'] = $module_info['description'];
                     }
@@ -55,7 +55,7 @@ if ($handle = opendir($ExecStack->modules_dir)) {
                     if (isset($module_info['summary'])) {
                         $AUTH_MODINFO[$module_name]['description'] = $module_info['summary'];
                     }
-                        
+
                     foreach ($module_info['actions'] as $action_name => $action_info) {
                         if ((!isset($action_info['hidden']) ||  $action_info['hidden'] !== true)
                             && (!isset($action_info['notpublic']) || $action_info['notpublic'] !== true)) {

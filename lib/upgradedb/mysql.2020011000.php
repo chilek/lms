@@ -50,7 +50,7 @@ $this->Execute("
                     UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid) WHERE customerid = OLD.customerid;
                 ELSE
                     INSERT INTO customerbalances (customerid, balance) VALUES (OLD.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid));
-                END IF;                    
+                END IF;
             END IF;
             IF NEW.customerid IS NOT NULL THEN
                 IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN

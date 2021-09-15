@@ -235,8 +235,8 @@ NAME="DAEMON-INTRO"
 ></H1
 ><P
 >This C daemon was developed to aid management of your services. It's responsible for
-     starting appropriate modules, each performing specific task. Each module makes configuration 
-     files based on its template and data from LMS database and manages (restarting) selected services 
+     starting appropriate modules, each performing specific task. Each module makes configuration
+     files based on its template and data from LMS database and manages (restarting) selected services
      on a server. Modules can also collect statistics, check hosts activity, account payments or
      notify debtors about their charges.
      </P
@@ -335,7 +335,7 @@ CLASS="SCREEN"
   --incdir=DIR          location of database header files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration</PRE
 >
-               It's required to choose one database which you will use (--with-mysql or --with-pgsql) 
+               It's required to choose one database which you will use (--with-mysql or --with-pgsql)
 	       and location of libraries supplied with database (--incdir,
                --libdir). You can use only one database. If you change database, you have to
                recompile your daemon. It's also possible to force daemon to use
@@ -421,7 +421,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->List of instances should contain instance names separated with 
+>List of instances should contain instance names separated with
 	       spaces. Spaces in instance name should be replaced by '\s' sequence, i.e.
 	       <SAMP
 CLASS="PROMPT"
@@ -431,11 +431,11 @@ CLASS="PROMPT"
 ></TR
 ></TABLE
 ></DIV
-> 
+>
 	       </P
 ><P
 >Daemon configuration is divided into hosts (which makes possible to configure
-	       and reload several different daemons installed on numerous hosts/routers) and 
+	       and reload several different daemons installed on numerous hosts/routers) and
                configuration sections called as instances.</P
 ><P
 >Instance configuration, besides config modules params, have to contain the following primary options:
@@ -471,8 +471,8 @@ CLASS="PROMPT"
 >Crontab</P
 ><P
 >Module execution time specified in crontab style. All data must be numeric.
-			Following example executes instance each 5 minutes between 8 and 18 
-			hour every day. If crontab is empty, instance will be reloaded only with UI reload. 
+			Following example executes instance each 5 minutes between 8 and 18
+			hour every day. If crontab is empty, instance will be reloaded only with UI reload.
 			Default: empty.</P
 ><P
 >Example: */5 8-18 * * *</P
@@ -501,8 +501,8 @@ CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 >. Reload order and configuration
-	       checks (especially instances list and configuration of them) is done each minute. 
-	       When daemon detects reload order, it runs all enabled instances. Instances with 
+	       checks (especially instances list and configuration of them) is done each minute.
+	       When daemon detects reload order, it runs all enabled instances. Instances with
 	       crontab specified will be executed at scheduled time.</P
 ><P
 >Other way to run daemon is disposable reload using '-q' command line option.

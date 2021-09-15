@@ -100,7 +100,7 @@ TARGET="_top"
 		pakiety <TT
 CLASS="FILENAME"
 >bison</TT
-> (co najmniej w wersji 1.875) oraz 
+> (co najmniej w wersji 1.875) oraz
 		<TT
 CLASS="FILENAME"
 >flex</TT
@@ -117,7 +117,7 @@ NAME="TSCRIPT-SYNTAX"
 ><P
 >Składnia języka T-Script jest podobna do składni innych popularnych
 		języków takich jak C czy JavaScript, ale dokonano pewnych zmian
-		mających na celu ułatwienie tworzenia szablonów. 
+		mających na celu ułatwienie tworzenia szablonów.
 		Wszystkie podane polecenia powinny być zapisywane wewnątrz klamer { }.
 		Dane poza klamrami zostaną zapisane do pliku wyjściowego (lub jeśli go
 		nie zdefiniowano, pominięte). Wielkość liter ma znaczenie. Do oddzielenia
@@ -200,7 +200,7 @@ CLASS="PROMPT"
 ><P
 >Porównania. Zwraca wynik logiczny porównania.</P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >wyrażenie1 == wyrażenie2;
@@ -246,7 +246,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Łączenie ciągów znaków. Gdy oba wyrażenia nie są liczbami 
+>Łączenie ciągów znaków. Gdy oba wyrażenia nie są liczbami
 				traktuje je jako ciągi znaków i dokonuje ich połączenia.</P
 ><P
 >Przykład: <SAMP
@@ -258,7 +258,7 @@ CLASS="PROMPT"
 ><P
 >Operatory arytmetyczne. Zwraca wynik operacji arytmetycznej na dwóch wyrażeniach.</P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >wyrażenie1 + wyrażenie2;
@@ -361,7 +361,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Wyrażenie warunkowe. Wykonanie polecenia tylko wtedy gry wyrażenie jest prawdą. 
+>Wyrażenie warunkowe. Wykonanie polecenia tylko wtedy gry wyrażenie jest prawdą.
 					Druga forma wykonuje polecenie1 gdy wyrażenie jest prawdą lub polecenie2
 					gdy jest fałszem.</P
 ><P
@@ -375,9 +375,9 @@ if ( wyrażenie ) polecenie1 else polecenie2 /if</PRE
 				    	dlatego następujący przykład jest prawidłowy: <PRE
 CLASS="SCREEN"
 >Jakiś tekst
-{if (a==1)} 
+{if (a==1)}
 a równe jest 1
-{else} 
+{else}
 a nie jest równe 1
 {/if} </PRE
 >
@@ -386,10 +386,10 @@ a nie jest równe 1
 					przepływ tekstu. Na przykład: <PRE
 CLASS="SCREEN"
 >Jakiś tekst
-{if (a==1)}\ 
-a równa się 1 
-{else}\ 
-a nie równa się 1 
+{if (a==1)}\
+a równa się 1
+{else}\
+a nie równa się 1
 {/if}\</PRE
 ></P
 ></LI
@@ -399,14 +399,14 @@ a nie równa się 1
 CLASS="PROMPT"
 >wyrażenie1</SAMP
 > jako
-					polecenie inicjalizujące pętlę. Następnie wykonywane jest 
+					polecenie inicjalizujące pętlę. Następnie wykonywane jest
 					<SAMP
 CLASS="PROMPT"
 >wyrażenie3</SAMP
 > i <SAMP
 CLASS="PROMPT"
 >polecenie</SAMP
-> dopóki 
+> dopóki
 					<SAMP
 CLASS="PROMPT"
 >wyrażenie2</SAMP
@@ -426,8 +426,8 @@ CLASS="PROMPT"
 					elementach danej tablicy. Wykunuje <SAMP
 CLASS="PROMPT"
 >polecenia</SAMP
-> tyle razy ile 
-					jest w tablicy elementów podstawiając za każdym razem wartość odpowiedniego 
+> tyle razy ile
+					jest w tablicy elementów podstawiając za każdym razem wartość odpowiedniego
 					elementu tablicy pod <SAMP
 CLASS="PROMPT"
 >element</SAMP
@@ -451,8 +451,8 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >wyrażenie</SAMP
 >  jest prawdziwe. Wartość wyrażenia
-					jest sprawdzana za każdym razem na początku pętli, więc nawet gdy wartość 
-					ta zmieni się podczas wykonywania poleceń, wykonywanie pętli nie zostanie 
+					jest sprawdzana za każdym razem na początku pętli, więc nawet gdy wartość
+					ta zmieni się podczas wykonywania poleceń, wykonywanie pętli nie zostanie
 					przerwane aż do jej zakończenia.</P
 ><P
 >Przykład: <PRE
@@ -468,7 +468,7 @@ CLASS="PROMPT"
 >. Polecenie to kończy wykonywanie
 					aktualnej instrukcji pętli.</P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >{for (i = 0; i &lt; 10; i++)}\
@@ -489,7 +489,7 @@ CLASS="PROMPT"
 					używane jest wewnątrz instrukcji pętli do przerwania wykonania
 					danej iteracji pętli i rozpoczęcia kolejnej iteracji.</P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >{for (i = 0; i &lt; 10; i++)}\
@@ -506,7 +506,7 @@ CLASS="PROMPT"
 >. Polecenie to służy po prostu do
 					przerwania wykonywania skryptu.</P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >{if (zmienna &gt; 0)
@@ -529,7 +529,7 @@ NAME="FUNCTIONS"
 			(<SAMP
 CLASS="PROMPT"
 >{funkcja(zmienna)}</SAMP
->) jak i bez nawiasu 
+>) jak i bez nawiasu
 			(<SAMP
 CLASS="PROMPT"
 >{funkcja {zmienna}}</SAMP
@@ -570,7 +570,7 @@ CLASS="PROMPT"
 >typeof(zmienna)</SAMP
 ></P
 ><P
->Sprawdzenie typu. Zwraca nazwę typu zmiennej np.string, 
+>Sprawdzenie typu. Zwraca nazwę typu zmiennej np.string,
 					number, array, null.</P
 ><P
 >Przykład: <SAMP
@@ -608,7 +608,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >tscript</I
 ></SPAN
->. Są to funkcje i predefiniowane 
+>. Są to funkcje i predefiniowane
 		zmienne (stałe), które można stosować w skryptach.</P
 ><DIV
 CLASS="SECT3"
@@ -619,7 +619,7 @@ NAME="EXEC"
 >6.3.3.1. Exec</A
 ></H3
 ><P
->Wykonywanie poleceń powłoki umożliwia funkcja 
+>Wykonywanie poleceń powłoki umożliwia funkcja
 			<SAMP
 CLASS="PROMPT"
 >exec()</SAMP
@@ -665,7 +665,7 @@ CLASS="PROMPT"
 >trim(ciąg_znaków)</SAMP
 ></P
 ><P
->Usunięcie "białych" znaków z początku i końca 
+>Usunięcie "białych" znaków z początku i końca
 					ciągu znaków.</P
 ><P
 >Przykład: <SAMP
@@ -743,7 +743,7 @@ NAME="SYSINFO"
 >Rozszerzenie o nazwie <SAMP
 CLASS="PROMPT"
 >Sysinfo</SAMP
-> zawiera 
+> zawiera
 			funkcje pobierające dane z systemu.</P
 ><UL
 ><LI
@@ -754,7 +754,7 @@ CLASS="PROMPT"
 ></P
 ><P
 >Bieżąca data i czas wg zadanego formatu.
-					Domyślnie funkcja zwraca datę w formacie %Y/%m/%d. 
+					Domyślnie funkcja zwraca datę w formacie %Y/%m/%d.
 					Znaczenie poszczególnych specyfikatorów konwersji można
 					znaleźć w <SAMP
 CLASS="PROMPT"
@@ -771,7 +771,7 @@ CLASS="PROMPT"
 >, <SAMP
 CLASS="PROMPT"
 >day</SAMP
->, 
+>,
 					<SAMP
 CLASS="PROMPT"
 >hour</SAMP
@@ -783,7 +783,7 @@ CLASS="PROMPT"
 >second</SAMP
 ></P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >{date("%s") / zwraca bieżący czas w formacie unix timestamp */}
@@ -798,10 +798,10 @@ CLASS="PROMPT"
 >systype</SAMP
 ></P
 ><P
->Typ systemu. Stała zwracająca "unix" lub "win32" 
+>Typ systemu. Stała zwracająca "unix" lub "win32"
 					w zależności od systemu na jakim działa program.</P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >{if (systype == "unix")}\
@@ -950,7 +950,7 @@ NAME="SYSLOG"
 >Rozszerzenie o nazwie <SAMP
 CLASS="PROMPT"
 >Syslog</SAMP
-> zawiera 
+> zawiera
 			funkcję pozwalającą na zapisywanie komunikatów do logów systemowych.
 			Wprowadza róznież definicje poziomów ważności komunikatów.</P
 ><UL
@@ -965,9 +965,9 @@ CLASS="PROMPT"
 					określony przez argument <SAMP
 CLASS="PROMPT"
 >ciąg</SAMP
->. Drugi 
+>. Drugi
 					argument funkcji jest opcjonalny i definiuje poziom
-					ważności komunikatu, który domyślnie ustawiony jest 
+					ważności komunikatu, który domyślnie ustawiony jest
 					na <SAMP
 CLASS="PROMPT"
 >LOG_INFO</SAMP
@@ -977,7 +977,7 @@ CLASS="PROMPT"
 >man 3 syslog</SAMP
 >).</P
 ><P
->Przykład: 
+>Przykład:
 <PRE
 CLASS="SCREEN"
 >syslog("Komunikat", LOG_ERR);
@@ -1091,7 +1091,7 @@ CLASS="PROMPT"
 >, <SAMP
 CLASS="PROMPT"
 >CREATE</SAMP
->, 
+>,
 					<SAMP
 CLASS="PROMPT"
 >DROP</SAMP
@@ -1129,7 +1129,7 @@ CLASS="PROMPT"
 ></P
 ><P
 >Zabezpieczenie znaków specjalnych w celu użycia
-					w zapytaniu SQL. W szczególności chodzi o apostrofy 
+					w zapytaniu SQL. W szczególności chodzi o apostrofy
 					i backslashe. Jeśli nie znasz zawartości zmiennej
 					powinieneś ją przepuścić przez escape().</P
 ><P
@@ -1407,7 +1407,7 @@ NAME="EXAMPLES"
 		<TT
 CLASS="FILENAME"
 >/etc/hosts</TT
-> z listą adresów i nazw komputerów 
+> z listą adresów i nazw komputerów
 		(oraz urządzeń).
 		<DIV
 CLASS="EXAMPLE"
@@ -1493,7 +1493,7 @@ CLASS="SCREEN"
 >{if (number(NODES))
        if (fileexists("/etc/ethers"))
                deletefile("/etc/ethers");
-       /if; 
+       /if;
        for (i=0; i&lt;number(NODES); i++)
                if (number(NODES[i].access))
                       }{NODES[i].mac}{"\t"}{NODES[i].ip}{"\n"}{
@@ -1537,7 +1537,7 @@ customers = SELECT customers.id AS id, email, pin, name, lastname,
 
     {exec echo "UWAGA: Niniejsza wiadomość została wygenerowana automatycznie.
 
-Uprzejmie informujemy, iż na Pani/Pana koncie figuruje zaległość w opłatach za 
+Uprzejmie informujemy, iż na Pani/Pana koncie figuruje zaległość w opłatach za
 Internet w kwocie {customers[i].balance*-1} zł.
 
 Jeżeli należność za bieżący miesiąc, to jest {dt.month}-{dt.year}, została już
@@ -1564,11 +1564,11 @@ PS. Poniżej załączamy ostatnie 10 operacji na Państwa koncie.
     {last10 = SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value
             FROM cash WHERE customerid = {customers[i].id}
             ORDER BY time DESC LIMIT 10}
-    
+
     {for(j=0; j&lt;number(last10); j++)}
-    
+
         {exec echo "{last10[j].time}|{"\t"}{last10[j].value}|{"\t"}{last10[j].comment}" &gt;&gt; /tmp/mail}
-    
+
     {/for}
 
     {exec mail -s "Powiadomienie o zaleglosciach" -r lms@domain.tld {customers[i].email} &lt; /tmp/mail}

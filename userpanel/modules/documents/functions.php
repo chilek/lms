@@ -297,7 +297,7 @@ function module_main()
         $allowed_document_types = Utils::filterIntegers(explode(',', $allowed_document_types));
     }
 
-    $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
+    $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate,
 		    c.description, n.template, d.closed, d.cdate, d.confirmdate
 		FROM documentcontents c
 		JOIN documents d ON (c.docid = d.id)

@@ -40,7 +40,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     public function CustomergroupWithCustomerGet($id)
     {
         return $this->db->GetOne(
-            'SELECT COUNT(*) 
+            'SELECT COUNT(*)
             FROM vcustomerassignments
             WHERE customergroupid = ?',
             array($id)
@@ -87,7 +87,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         if ($this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_CUSTGROUP, SYSLOG::OPER_UPDATE, $args);
         }
-        return $this->db->Execute('UPDATE customergroups SET name=?, description=? 
+        return $this->db->Execute('UPDATE customergroups SET name=?, description=?
 				WHERE id=?', array_values($args));
     }
 
@@ -163,12 +163,12 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     public function CustomergroupGetAll()
     {
         return $this->db->GetAll(
-            'SELECT g.id, g.name, g.description 
+            'SELECT g.id, g.name, g.description
             FROM customergroups g
             WHERE NOT EXISTS (
-                SELECT 1 
-                FROM excludedgroups 
-                WHERE userid = lms_current_user() AND customergroupid = g.id) 
+                SELECT 1
+                FROM excludedgroups
+                WHERE userid = lms_current_user() AND customergroupid = g.id)
                 ORDER BY g.name ASC'
         );
     }
@@ -187,11 +187,11 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             $net = $network_manager->GetNetworkParams($network);
         }
 
-        $result = $this->db->GetRow('SELECT id, name, description 
+        $result = $this->db->GetRow('SELECT id, name, description
 			FROM customergroups WHERE id=?', array($id));
 
         $result['customers'] = $this->db->GetAll('SELECT c.id AS id,'
-                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername 
+                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
             FROM vcustomerassignments, customers c '
                 . ($network ? 'LEFT JOIN nodes n ON c.id = n.ownerid
                     LEFT JOIN netdevices nd ON nd.ownerid = c.id
@@ -267,9 +267,9 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         return $this->db->GetAll(
             'SELECT customergroups.id AS id, name, customerid
-            FROM customergroups 
+            FROM customergroups
             LEFT JOIN vcustomerassignments ON (customergroups.id=customergroupid AND customerid = ?)
-            GROUP BY customergroups.id, name, customerid 
+            GROUP BY customergroups.id, name, customerid
             HAVING customerid IS NULL ORDER BY name',
             array($customerid)
         );

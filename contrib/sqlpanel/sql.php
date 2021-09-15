@@ -25,7 +25,7 @@
  */
 
 include('sqllang.php');
- 
+
 $layout['pagetitle'] = trans('SQL');
 
 if ($query = $_POST['query']) {
@@ -45,7 +45,7 @@ if ($query = $_POST['query']) {
         $SMARTY->display('sql.html');
         die;
     }
-        
+
     list($firstword) = explode(' ', trim($query));
 
     if (! in_array(strtoupper($firstword), $words)) {
@@ -75,7 +75,7 @@ if ($query = $_POST['query']) {
                 }
                 break;
         }
-        
+
         if ($_GET['print']) {
             $classes = array(0 => 'grey', 1 => 'white');
         } else {

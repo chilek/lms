@@ -91,9 +91,9 @@ NAME="TSCRIPT-INTRO"
 HREF="http://silvercoders.com/index.php?page=T_Script"
 TARGET="_top"
 >T-Script</A
-> 
-	    is a scripting language which primary purpose is to generate text files. It can be 
-	    useful for processing templates with some additional data retrieved from data 
+>
+	    is a scripting language which primary purpose is to generate text files. It can be
+	    useful for processing templates with some additional data retrieved from data
 	    sources like SQL databases or text files.</P
 ><P
 >Before compilation ensure that you have in your system packages
@@ -115,12 +115,12 @@ NAME="TSCRIPT-SYNTAX"
 >6.3.2. Syntax</A
 ></H2
 ><P
->T-Script language syntax is based on other popular languages like C 
-	    or JavaScript with little changes made to make writting templates simpler. 
+>T-Script language syntax is based on other popular languages like C
+	    or JavaScript with little changes made to make writting templates simpler.
 	    Additional commands should be written inside { } parenthesis. Data
-	    outside curly brackets will be writed to output file (or ommited if file 
+	    outside curly brackets will be writed to output file (or ommited if file
 	    was not specified). All expressions, variables, commands, function names are
-	    case-sensitive. To separate expressions inside parenthesis use semicolon 
+	    case-sensitive. To separate expressions inside parenthesis use semicolon
 	    sign.</P
 ><DIV
 CLASS="SECT3"
@@ -200,7 +200,7 @@ CLASS="PROMPT"
 >Comparisions. Returns logical result of expressions
 		    comparision.</P
 ><P
->Example: 
+>Example:
 <PRE
 CLASS="SCREEN"
 >expression1 == expression2;
@@ -246,7 +246,7 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->Strings concatenation. When both expression values haven't numeric type 
+>Strings concatenation. When both expression values haven't numeric type
 			treats expressions as strings and performs string concatenation.</P
 ><P
 >Example: <SAMP
@@ -258,7 +258,7 @@ CLASS="PROMPT"
 ><P
 >Arithmetic operators. Evaluates to result of arithmetic operation on two expression values.</P
 ><P
->Example: 
+>Example:
 <PRE
 CLASS="SCREEN"
 >expression1 + expression2;
@@ -311,7 +311,7 @@ CLASS="PROMPT"
 >String comparision with regular expression. Evaluates to 1 if expression <SAMP
 CLASS="PROMPT"
 >expr1</SAMP
-> 
+>
 		    value match with regular expression <SAMP
 CLASS="PROMPT"
 >expr2</SAMP
@@ -367,18 +367,18 @@ CLASS="PROMPT"
 >Conditional statement. Executes <SAMP
 CLASS="PROMPT"
 >statement</SAMP
-> only if 
+> only if
 		    <SAMP
 CLASS="PROMPT"
 >expression</SAMP
-> is true. Second form executes 
+> is true. Second form executes
 		    <SAMP
 CLASS="PROMPT"
 >statement1</SAMP
 > if <SAMP
 CLASS="PROMPT"
 >expression</SAMP
-> is true or 
+> is true or
 		    <SAMP
 CLASS="PROMPT"
 >statement2</SAMP
@@ -397,22 +397,22 @@ if ( expression ) statement1 else statement2 /if</PRE
 >Text between command blocks is treated as a command so the following example is correct:
 <PRE
 CLASS="SCREEN"
->Some text 
-{if (a==1)} 
-a equals 1 
-{else} 
-a doesn't equal 1 
+>Some text
+{if (a==1)}
+a equals 1
+{else}
+a doesn't equal 1
 {/if} </PRE
 >
-You can put backslash between command block and end of line to eat \n 
-symbol and keep normal text flow. For example: 
+You can put backslash between command block and end of line to eat \n
+symbol and keep normal text flow. For example:
 <PRE
 CLASS="SCREEN"
->Some text 
-{if (a==1)}\ 
-a equals 1 
-{else}\ 
-a doesn't equal 1 
+>Some text
+{if (a==1)}\
+a equals 1
+{else}\
+a doesn't equal 1
 {/if}\</PRE
 ></P
 ></LI
@@ -421,14 +421,14 @@ a doesn't equal 1
 >Iterative loop. Executes first <SAMP
 CLASS="PROMPT"
 >expr1</SAMP
-> as loop initialization 
+> as loop initialization
 		    command. Then executes <SAMP
 CLASS="PROMPT"
 >statement</SAMP
 > while <SAMP
 CLASS="PROMPT"
 >expr2</SAMP
-> is true. 
+> is true.
 		    At the end of each iteration <SAMP
 CLASS="PROMPT"
 >expr2</SAMP
@@ -444,21 +444,21 @@ CLASS="PROMPT"
 >Construct <SAMP
 CLASS="PROMPT"
 >foreach</SAMP
->. This simply gives an easy way to 
+>. This simply gives an easy way to
 		    iterate over arrays. <SAMP
 CLASS="PROMPT"
 >foreach</SAMP
-> works only on arrays, and 
-		    will issue an error when you try to use it on a variable with a different 
+> works only on arrays, and
+		    will issue an error when you try to use it on a variable with a different
 		    data type. It loops over the array given by <SAMP
 CLASS="PROMPT"
 >array</SAMP
->. 
-		    On each loop, the value of the current element is assigned to 
+>.
+		    On each loop, the value of the current element is assigned to
 		    <SAMP
 CLASS="PROMPT"
 >value</SAMP
-> and the internal array pointer is advanced by 
+> and the internal array pointer is advanced by
 		    one (so on the next loop, you'll be looking at the next element).</P
 ><P
 >Example: <SAMP
@@ -471,12 +471,12 @@ CLASS="PROMPT"
 ><SAMP
 CLASS="PROMPT"
 >While</SAMP
-> loop. Executes statement(s) repeatedly, as long as the 
+> loop. Executes statement(s) repeatedly, as long as the
 		    <SAMP
 CLASS="PROMPT"
 >expression</SAMP
-> evaluates to true. The value of the expression is checked each 
-		    time at the beginning of the loop, so even if this value changes during the execution of 
+> evaluates to true. The value of the expression is checked each
+		    time at the beginning of the loop, so even if this value changes during the execution of
 		    the nested statement(s), execution will not stop until the end of the iteration.</P
 ><P
 >Example: <SAMP
@@ -489,7 +489,7 @@ CLASS="PROMPT"
 ><SAMP
 CLASS="PROMPT"
 >break</SAMP
->. This command ends execution of the current 
+>. This command ends execution of the current
 		    loop structure.</P
 ><P
 >Example:
@@ -510,8 +510,8 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >continue</SAMP
 > is used
-		    within looping structures to skip the rest of the current loop 
-		    iteration and continue execution at the condition evaluation and 
+		    within looping structures to skip the rest of the current loop
+		    iteration and continue execution at the condition evaluation and
 		    then the beginning of the next iteration.</P
 ><P
 >Example:
@@ -595,7 +595,7 @@ CLASS="PROMPT"
 >typeof(variable)</SAMP
 ></P
 ><P
->Type checking. Returns type name of variable, e.g. string, 
+>Type checking. Returns type name of variable, e.g. string,
 			number, array, null.</P
 ><P
 >Example: <SAMP
@@ -633,8 +633,8 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >tscript</I
 ></SPAN
-> library supplements. 
-		That are functions and predefined variables (constants), wich can be used 
+> library supplements.
+		That are functions and predefined variables (constants), wich can be used
 		in scripts.</P
 ><DIV
 CLASS="SECT3"
@@ -648,8 +648,8 @@ NAME="EXEC"
 >Shell commands execution is possible with <SAMP
 CLASS="PROMPT"
 >exec()</SAMP
->. 
-		    You can run many commands separated by semicolons in one function 
+>.
+		    You can run many commands separated by semicolons in one function
 		    call.</P
 ><UL
 ><LI
@@ -689,7 +689,7 @@ CLASS="PROMPT"
 >trim(string)</SAMP
 ></P
 ><P
->Deleting of whitespace signs from the beginning and the end 
+>Deleting of whitespace signs from the beginning and the end
 			    of string.</P
 ><P
 >Example: <SAMP
@@ -718,7 +718,7 @@ CLASS="PROMPT"
 >replace(pattern, replacement, string)</SAMP
 ></P
 ><P
->This function scans string for matches to pattern, then replaces 
+>This function scans string for matches to pattern, then replaces
 				the matched text with replacement. Pattern can be a regular expression.
 				</P
 ><P
@@ -740,7 +740,7 @@ CLASS="PROMPT"
 ></P
 ><P
 >Returns an array of strings, each of which is a substring
-				of string formed by splitting it on boundaries formed by 
+				of string formed by splitting it on boundaries formed by
 				separator. Separator can be a string or POSIX's regural expression.</P
 ><P
 >Example: <SAMP
@@ -767,7 +767,7 @@ NAME="SYSINFO"
 >Extension with name <SAMP
 CLASS="PROMPT"
 >Sysinfo</SAMP
-> consist functions 
+> consist functions
 			for retriving data from system.</P
 ><UL
 ><LI
@@ -778,11 +778,11 @@ CLASS="PROMPT"
 ></P
 ><P
 >Current date and time formated according to
-					the format specification. Default format is '%Y/%m/%d'. 
-					Conversion specifiers are introduced by a '%' character 
+					the format specification. Default format is '%Y/%m/%d'.
+					Conversion specifiers are introduced by a '%' character
 					You can read about all of them in <SAMP
 CLASS="PROMPT"
->`man 
+>`man
 					strftime`</SAMP
 >.</P
 ><P
@@ -808,7 +808,7 @@ CLASS="PROMPT"
 >second</SAMP
 >.</P
 ><P
->Example: 
+>Example:
 <PRE
 CLASS="SCREEN"
 >{date("%s") /* returns current unix timestamp */}
@@ -856,7 +856,7 @@ CLASS="PROMPT"
 >file(filename)</SAMP
 ></P
 ><P
->Script output redirection. Redirects script output 
+>Script output redirection. Redirects script output
 						to file. Data will be appended to specified file.</P
 ><P
 >Example: <SAMP
@@ -928,7 +928,7 @@ CLASS="PROMPT"
 >listdir(directory)</SAMP
 ></P
 ><P
->Returns list of files (and subdirectories) 
+>Returns list of files (and subdirectories)
 						in array. Every element contains subvariable 'size'
 						with file size in bytes.</P
 ><P
@@ -990,13 +990,13 @@ CLASS="PROMPT"
 					Default priority is <SAMP
 CLASS="PROMPT"
 >LOG_INFO</SAMP
-> (see 
+> (see
 					<SAMP
 CLASS="PROMPT"
 >man 3 syslog</SAMP
 >).</P
 ><P
->Example: 
+>Example:
 <PRE
 CLASS="SCREEN"
 >syslog("message", LOG_ERR);
@@ -1093,21 +1093,21 @@ NAME="SQL"
 >SQL commands: <SAMP
 CLASS="PROMPT"
 >SELECT</SAMP
->, 
+>,
 				<SAMP
 CLASS="PROMPT"
 >INSERT</SAMP
 >, <SAMP
 CLASS="PROMPT"
 >DELETE</SAMP
->, 
+>,
 				<SAMP
 CLASS="PROMPT"
 >UPDATE</SAMP
 >, <SAMP
 CLASS="PROMPT"
 >CREATE</SAMP
->, 
+>,
 				<SAMP
 CLASS="PROMPT"
 >DROP</SAMP
@@ -1420,7 +1420,7 @@ NAME="EXAMPLES"
 CLASS="FILENAME"
 >/etc/hosts</TT
 >
-		with list of computers (and devices) IPs and names list. 
+		with list of computers (and devices) IPs and names list.
 		<DIV
 CLASS="EXAMPLE"
 ><A
@@ -1440,7 +1440,7 @@ CLASS="SCREEN"
 ></DIV
 ></P
 ><P
->How to create debtors list? It's easy with use of predefined 
+>How to create debtors list? It's easy with use of predefined
 		constants.
 		<DIV
 CLASS="EXAMPLE"
@@ -1485,7 +1485,7 @@ CLASS="SCREEN"
 ></DIV
 ></P
 ><P
->In next example we're create file with hosts ethernet hardware addresses to 
+>In next example we're create file with hosts ethernet hardware addresses to
 		IP addresses mappings, used by <TT
 CLASS="FILENAME"
 >arp</TT
@@ -1505,7 +1505,7 @@ CLASS="SCREEN"
 >{if(number(NODES))}\
 {       if(fileexists("/etc/ethers"))}\
 {               deletefile("/etc/ethers")}\
-{       /if}\ 
+{       /if}\
 {       for (i=0; i&lt;number(NODES); i++)}\
 {               if (number(NODES[i].access))}\
 {                       nodes[i].mac}{"\t"}{NODES[i].ip}
@@ -1519,7 +1519,7 @@ CLASS="SCREEN"
 		</P
 ><P
 >Next example is longer. Here we are using especially 'exec'.
-		Script sends e-mails to customers with balance less than specified limit.	    
+		Script sends e-mails to customers with balance less than specified limit.
 		<DIV
 CLASS="EXAMPLE"
 ><A
@@ -1572,11 +1572,11 @@ convenience.
     {last10 = SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value
             FROM cash WHERE customerid = {customers[i].id}
             ORDER BY time DESC LIMIT 10}
-    
+
     {for(j=0; j&lt;number(last10); j++)}
-    
+
         {exec echo "{last10[j].time}|{"\t"}{last10[j].value}|{"\t"}{last10[j].comment}" &gt;&gt; /tmp/mail}
-    
+
     {/for}
 
     {exec mail -s "Liabilities information" -r lms@domain.tld {customers[i].email} &lt; /tmp/mail}

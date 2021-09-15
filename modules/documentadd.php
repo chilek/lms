@@ -270,7 +270,7 @@ if (isset($_POST['document'])) {
 
         $DB->Execute(
             'INSERT INTO documents (type, number, numberplanid, cdate, sdate, cuserid, confirmdate,
-			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
+			customerid, userid, name, address, zip, city, ten, ssn, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed, fullnumber,
 			reference, template, commitflags)

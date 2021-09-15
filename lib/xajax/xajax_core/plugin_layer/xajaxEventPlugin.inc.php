@@ -55,7 +55,7 @@ class xajaxEventPlugin extends xajaxRequestPlugin
         String: sXajaxPrefix
     */
     private $sXajaxPrefix;
-    
+
     /*
         String: sEventPrefix
     */
@@ -65,7 +65,7 @@ class xajaxEventPlugin extends xajaxRequestPlugin
         String: sDefer
     */
     private $sDefer;
-    
+
     private $bDeferScriptGeneration;
 
     /*
@@ -220,7 +220,7 @@ class xajaxEventPlugin extends xajaxRequestPlugin
 
         $objArgumentManager = xajaxArgumentManager::getInstance();
         $aArgs = $objArgumentManager->process();
-        
+
 
 
         foreach (array_keys($this->aEvents) as $sKey) {

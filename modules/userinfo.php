@@ -91,7 +91,7 @@ $customercalls = $LMS->getCustomerCalls(array(
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('customercalls', $customercalls);
 $SMARTY->assign('accesslist', $accesslist);
-$SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups 
+$SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customergroups g, excludedgroups
 					    WHERE customergroupid = g.id AND userid = ?
 					    ORDER BY name', array($userinfo['id'])));
 $SMARTY->assign('user_divisions', $LMS->GetDivisions(array('userid' => $userinfo['id'])));

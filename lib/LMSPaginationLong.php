@@ -31,7 +31,7 @@
  */
 class LMSPaginationLong extends LMSPagination
 {
-    
+
     /**
      * Determines if "go to" should be displayed
      *
@@ -41,7 +41,7 @@ class LMSPaginationLong extends LMSPagination
     {
         return false;
     }
-    
+
     /**
      * Determines if link to given page should be displayed
      *

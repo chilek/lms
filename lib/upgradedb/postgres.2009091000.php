@@ -31,11 +31,11 @@ DROP VIEW nas;
 
 ALTER TABLE netdevices ALTER description TYPE text;
 
-CREATE VIEW nas AS 
+CREATE VIEW nas AS
 SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
-	d.clients AS ports, d.secret, d.community, d.description 
-	FROM nodes n 
-	JOIN netdevices d ON (n.netdev = d.id) 
+	d.clients AS ports, d.secret, d.community, d.description
+	FROM nodes n
+	JOIN netdevices d ON (n.netdev = d.id)
 	WHERE n.nas = 1;
 ");
 

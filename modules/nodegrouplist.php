@@ -27,7 +27,7 @@
 function GroupList()
 {
     global $DB;
-    
+
     if ($nodegrouplist = $DB->GetAll('SELECT id, name, description, prio,
 	    	        (SELECT COUNT(*)
 	                FROM nodegroupassignments
@@ -36,7 +36,7 @@ function GroupList()
 	                FROM nodegroups ORDER BY prio ASC, name ASC')) {
             $nodegrouplist['total'] = count($nodegrouplist);
             $nodegrouplist['nodestotal'] = 0;
-        
+
         foreach ($nodegrouplist as $idx => $row) {
             $nodegrouplist['nodestotal'] += $row['nodescount'];
         }

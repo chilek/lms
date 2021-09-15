@@ -126,7 +126,7 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 			        SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
 			        FROM nodes
 			        WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
-			            AND lastonline > 0 
+			            AND lastonline > 0
 			        GROUP BY netdev
 			    ) no ON no.netdevid = d.id
 			    LEFT JOIN vaddresses a ON d.address_id = a.id

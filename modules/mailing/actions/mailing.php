@@ -50,7 +50,7 @@ function GetEmails($group, $network = null, $customergroup = null)
     if ($emails = $DB->GetAll('SELECT customers.id AS id, cc.contact AS email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, pin, '
         .'COALESCE(SUM(value), 0.00) AS balance '
         .'FROM customers
-		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND ((cc.type & '.CONTACT_EMAIL | CONTACT_DISABLED.') = ' .CONTACT_EMAIL. ' ) 
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND ((cc.type & '.CONTACT_EMAIL | CONTACT_DISABLED.') = ' .CONTACT_EMAIL. ' )
 		LEFT JOIN cash ON (customers.id=cash.customerid) '
         .($network ? 'LEFT JOIN vnodes ON (customers.id=ownerid) ' : '')
         .($customergroup ? 'LEFT JOIN vcustomerassignments ON (customers.id = vcustomerassignments.customerid) ' : '')
@@ -182,7 +182,7 @@ if (isset($_POST['mailing'])) {
 
                 if (!(strpos($body, '%last_10_in_a_table') === false)) {
                     $last10 = '';
-                    if ($last10_array = $DB->GetAll('SELECT comment, time, value 
+                    if ($last10_array = $DB->GetAll('SELECT comment, time, value
 						FROM cash WHERE customerid = ?
 						ORDER BY time DESC LIMIT 10', array($row['id']))) {
                         foreach ($last10_array as $r) {

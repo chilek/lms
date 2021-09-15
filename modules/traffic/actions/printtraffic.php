@@ -29,7 +29,7 @@ $year = $_POST['year'] ? $_POST['year'] : date('Y');
 $customer = $_POST['customer'] ? $_POST['customer'] : $_GET['customer'];
 
 $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)));
-    
+
 $from = mktime(0, 0, 0, $month, 1, $year);
 $to = mktime(0, 0, 0, $month+1, 1, $year);
 
@@ -43,23 +43,23 @@ if ($list = $DB->GetAll(
     for ($i=1; $i<=date('t', $from); $i++) {
         $stats[$i]['date'] = mktime(0, 0, 0, $month, $i, $year);
     }
-        
+
     foreach ($list as $row) {
         $day = date('j', $row['dt']);
-        
+
         $stats[$day]['download'] += $row['download'];
         $stats[$day]['upload'] += $row['upload'];
     }
-            
+
     for ($i=1; $i<=date('t', $from); $i++) {
         $stats[$i]['upavg'] = $stats[$i]['upload']*8/1000/86400; //kbit/s
         $stats[$i]['downavg'] = $stats[$i]['download']*8/1000/86400; //kbit/s
-        
+
         $listdata['upload'] += $stats[$i]['upload'];
         $listdata['download'] += $stats[$i]['download'];
         $listdata['upavg'] += $stats[$i]['upavg'];
         $listdata['downavg'] += $stats[$i]['downavg'];
-                
+
         list($stats[$i]['upload'], $stats[$i]['uploadunit']) = setunits($stats[$i]['upload']);
         list($stats[$i]['download'], $stats[$i]['downloadunit']) = setunits($stats[$i]['download']);
     }

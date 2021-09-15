@@ -32,11 +32,11 @@ $record = $DB->GetRow('SELECT d.name AS domainname, r.*
 
 if (isset($_POST['record'])) {
     $rec = $_POST['record'];
-    
+
     foreach ($rec as $idx => $val) {
         $rec[$idx] = trim(strip_tags($val));
     }
-    
+
     $record = array_merge($record, $rec);
 
     if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl'])) {
@@ -70,7 +70,7 @@ if (isset($_POST['record'])) {
 
         $SESSION->redirect('?m=recordlist&d='.$record['domain_id']);
     }
-    
+
     $SMARTY->assign('error', $error);
 } else {
     parse_dns_record($record);

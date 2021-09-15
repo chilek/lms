@@ -33,7 +33,7 @@ $this->Execute("
 	ALTER TABLE cash DROP invoiceid;
 	ALTER TABLE cash ALTER docid SET NOT NULL;
 	ALTER TABLE cash ALTER docid SET DEFAULT 0;
-	CREATE INDEX cash_docid_idx ON cash(docid); 
+	CREATE INDEX cash_docid_idx ON cash(docid);
 
 	-- by the way change polish column names
 
@@ -54,8 +54,8 @@ $this->Execute("
 	ALTER TABLE invoicecontents DROP invoiceid;
 	ALTER TABLE invoicecontents ALTER docid SET NOT NULL;
 	ALTER TABLE invoicecontents ALTER docid SET DEFAULT 0;
-	CREATE INDEX invoicecontents_docid_idx ON invoicecontents(docid); 
-	
+	CREATE INDEX invoicecontents_docid_idx ON invoicecontents(docid);
+
 	CREATE SEQUENCE documents_id_seq;
 	CREATE TABLE documents (
 		id integer DEFAULT nextval('documents_id_seq'::text) NOT NULL,
@@ -63,7 +63,7 @@ $this->Execute("
     		number integer 		DEFAULT 0 NOT NULL,
     		cdate integer 		DEFAULT 0 NOT NULL,
 	        customerid integer 	DEFAULT 0 NOT NULL,
-		userid integer		DEFAULT 0 NOT NULL,  --new		
+		userid integer		DEFAULT 0 NOT NULL,  --new
     		name varchar(255) 	DEFAULT '' NOT NULL,
     		address varchar(255) 	DEFAULT '' NOT NULL,
 		zip varchar(10)		DEFAULT '' NOT NULL,
@@ -83,7 +83,7 @@ $this->Execute("
 	DROP SEQUENCE invoices_id_seq;
 	CREATE INDEX documents_cdate_idx ON documents(cdate);
 	SELECT setval('documents_id_seq', MAX(id)) FROM documents;
-	
+
 	CREATE TABLE receiptcontents (
 		docid integer		DEFAULT 0 NOT NULL,
     		itemid smallint		DEFAULT 0 NOT NULL,

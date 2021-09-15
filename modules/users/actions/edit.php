@@ -32,7 +32,7 @@ $userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
 
 if ($userinfo) {
     $userinfo['id'] = $_GET['id'];
-    
+
     foreach ($userinfo as $key => $value) {
         $userinfo[$key] = trim($value);
     }
@@ -52,7 +52,7 @@ if ($userinfo) {
     if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
-                
+
     $userinfo['rights'] = '';
 
     if (!$error) {

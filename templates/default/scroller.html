@@ -12,7 +12,7 @@
             <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}&id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$cnt}">{$cnt}</A>
         {/if}
     {/section}
-    ... 
+    ...
     {if $lastpage != $page}
         <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}&id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$lastpage}">[{$lastpage}]</A>
     {/if}
@@ -52,7 +52,7 @@
         {/if}
     {/section}
     {if $page < $smarty.section.pcnt.rownum} <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}&id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else} &raquo;&raquo;&raquo;{/if}
-    </B> 
+    </B>
     {math equation="x + 1" x=$start assign=startx}
     {if $start + $pagelimit > $listdata.total}{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}{/if}
     ({t a=$startx b=$endx c=$listdata.total}records $a - $b of $c{/t})

@@ -32,7 +32,7 @@
 class IniConfigProvider implements ConfigProviderInterface
 {
     const NAME = 'INI_CONFIG_PROVIDER';
-    
+
     /**
      * Loads ini file and returns it as raw config
      *
@@ -48,15 +48,15 @@ class IniConfigProvider implements ConfigProviderInterface
     public function load(array $options = array())
     {
         $ini_file_path = CONFIG_FILE;
-        
+
         if (isset($options['ini_file_path'])) {
             $ini_file_path = $options['ini_file_path'];
         }
-        
+
         if (!is_readable($ini_file_path)) {
             throw new Exception('Unable to read ini file!');
         }
-        
+
         return parse_ini_file($ini_file_path, true);
     }
 }

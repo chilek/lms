@@ -40,9 +40,9 @@ if ($LMS->CustomerExists($customerid)) {
                 $customerid,
                 trans('Accounted'))
         );
-    
+
         $DB->Execute(
-            'UPDATE documents SET closed = 1 
+            'UPDATE documents SET closed = 1
 			WHERE customerid = ? AND type IN (?, ?) AND closed = 0',
             array($customerid, DOC_INVOICE, DOC_CNOTE)
         );

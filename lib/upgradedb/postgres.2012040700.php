@@ -34,9 +34,9 @@ $this->Execute("
 		tosec integer		DEFAULT 0 NOT NULL,
 		PRIMARY KEY (id)
 	);
-	INSERT INTO nodelocks (nodeid, days, fromsec, tosec) 
-		(SELECT na.nodeid, days, fromsec, tosec FROM assignmentlocks al 
-			LEFT JOIN assignments a ON a.id = al.assignmentid 
+	INSERT INTO nodelocks (nodeid, days, fromsec, tosec)
+		(SELECT na.nodeid, days, fromsec, tosec FROM assignmentlocks al
+			LEFT JOIN assignments a ON a.id = al.assignmentid
 			LEFT JOIN nodeassignments na ON na.assignmentid = a.id);
 	DROP TABLE assignmentlocks;
 ");

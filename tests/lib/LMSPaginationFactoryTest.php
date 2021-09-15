@@ -32,13 +32,13 @@ namespace LMS\Tests;
  */
 class LMSPaginationFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    
+
     public function testIfShortFactoryFlagWorks()
     {
         $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, true, null);
         $this->assertInstanceOf('LMSPaginationShort', $pagination);
     }
-    
+
     public function testIfLongFactoryFlagWorks()
     {
         $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, false, null);

@@ -51,9 +51,9 @@ CREATE TABLE messageitems (
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	integer		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT 0 NOT NULL,
-	error 		text		DEFAULT NULL, 
+	error 		text		DEFAULT NULL,
         PRIMARY KEY (id)
-); 
+);
 
 CREATE INDEX messageitems_messageid_idx ON messageitems (messageid);
 CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);

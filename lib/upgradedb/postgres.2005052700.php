@@ -45,7 +45,7 @@ $this->Execute("
 	ALTER TABLE events ALTER userid SET NOT NULL;
 	ALTER TABLE events ALTER userid SET DEFAULT 0;
 
-	ALTER TABLE rtrights DROP CONSTRAINT rtrights_adminid_key;	
+	ALTER TABLE rtrights DROP CONSTRAINT rtrights_adminid_key;
 	ALTER TABLE rtrights ADD userid integer;
 	UPDATE rtrights SET userid = adminid;
 	ALTER TABLE rtrights DROP adminid;
@@ -53,7 +53,7 @@ $this->Execute("
 	ALTER TABLE rtrights ALTER userid SET DEFAULT 0;
 	ALTER TABLE rtrights ADD UNIQUE (userid, queueid);
 
-	ALTER TABLE eventassignments DROP CONSTRAINT eventassignments_eventid_key;	
+	ALTER TABLE eventassignments DROP CONSTRAINT eventassignments_eventid_key;
 	ALTER TABLE eventassignments ADD userid integer;
 	UPDATE eventassignments SET userid = adminid;
 	ALTER TABLE eventassignments DROP adminid;
@@ -61,7 +61,7 @@ $this->Execute("
 	ALTER TABLE eventassignments ALTER userid SET DEFAULT 0;
 	ALTER TABLE eventassignments ADD UNIQUE (eventid, userid);
 
-	ALTER TABLE admins DROP CONSTRAINT admins_login_key;	
+	ALTER TABLE admins DROP CONSTRAINT admins_login_key;
 	CREATE SEQUENCE users_id_seq;
 	CREATE TABLE users AS SELECT * FROM admins;
 	SELECT setval('users_id_seq', nextval('admins_id_seq'));

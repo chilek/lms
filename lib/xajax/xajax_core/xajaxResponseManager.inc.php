@@ -35,22 +35,22 @@ final class xajaxResponseManager
         once the request processing phase is complete.
     */
     private $objResponse;
-    
+
     /*
         String: sCharacterEncoding
     */
     private $sCharacterEncoding;
-    
+
     /*
         Boolean: bOutputEntities
     */
     private $bOutputEntities;
-    
+
     /*
         Array: aDebugMessages
     */
     private $aDebugMessages;
-    
+
     /*
         Function: xajaxResponseManager
 
@@ -61,7 +61,7 @@ final class xajaxResponseManager
         $this->objResponse = null;
         $this->aDebugMessages = array();
     }
-    
+
     /*
         Function: getInstance
 
@@ -76,7 +76,7 @@ final class xajaxResponseManager
         }
         return $obj;
     }
-    
+
     /*
         Function: configure
 
@@ -92,7 +92,7 @@ final class xajaxResponseManager
     {
         if ('characterEncoding' == $sName) {
             $this->sCharacterEncoding = $mValue;
-            
+
             if (isset($this->objResponse)) {
                 $this->objResponse->setCharacterEncoding($this->sCharacterEncoding);
             }
@@ -103,7 +103,7 @@ final class xajaxResponseManager
         } else if ('outputEntities' == $sName) {
             if (true === $mValue || false === $mValue) {
                 $this->bOutputEntities = $mValue;
-                
+
                 if (isset($this->objResponse)) {
                     $this->objResponse->setOutputEntities($this->bOutputEntities);
                 }
@@ -128,7 +128,7 @@ final class xajaxResponseManager
 
         $mValue : (mixed):  The value of the setting if set, null otherwise.
     */
-    
+
     public function getConfiguration($sName)
     {
         if (isset($this->aSettings[$sName])) {
@@ -136,7 +136,7 @@ final class xajaxResponseManager
         }
         return null;
     }
-    
+
     /*
         Function: clear
 
@@ -147,7 +147,7 @@ final class xajaxResponseManager
     {
         $this->objResponse = null;
     }
-    
+
     /*
         Function: append
 
@@ -201,7 +201,7 @@ final class xajaxResponseManager
             $this->debug($objLanguageManager->getText('XJXRM:IRERR'));
         }
     }
-    
+
     /*
         Function: debug
 
@@ -217,7 +217,7 @@ final class xajaxResponseManager
     {
         $this->aDebugMessages[] = $sMessage;
     }
-    
+
     /*
         Function: send
 
@@ -233,7 +233,7 @@ final class xajaxResponseManager
             $this->objResponse->printOutput();
         }
     }
-    
+
     /*
         Function: getCharacterEncoding
 
@@ -246,7 +246,7 @@ final class xajaxResponseManager
     {
         return $this->sCharacterEncoding;
     }
-    
+
     /*
         Function: getOutputEntities
 

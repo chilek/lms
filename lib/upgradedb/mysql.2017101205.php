@@ -48,7 +48,7 @@ $this->Execute("ALTER TABLE receiptcontents ADD CONSTRAINT receiptcontents_regid
 	FOREIGN KEY (regid) REFERENCES cashregs (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE tariffs ADD CONSTRAINT tariffs_taxid_fkey
 	FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$this->Execute("ALTER TABLE liabilities ADD CONSTRAINT liabilities_taxid_fkey 
+$this->Execute("ALTER TABLE liabilities ADD CONSTRAINT liabilities_taxid_fkey
 	FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE assignments ADD CONSTRAINT assignments_tariffid_fkey
 	FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE");

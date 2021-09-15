@@ -26,7 +26,7 @@
 
 if (!empty($_POST['invprojectadd'])) {
     $invproject = $_POST['invprojectadd'];
-            
+
     if ($invproject['project']=='') {
         $SESSION->redirect('?m=invprojectadd');
     }
@@ -34,7 +34,7 @@ if (!empty($_POST['invprojectadd'])) {
     if ($LMS->ProjectByNameExists($invproject['project'])) {
         $error['project'] = trans('Investment project with specified name already exists!');
     }
-        
+
     if (!$error) {
         $LMS->AddProject(array(
             'project' => $invproject['project'],

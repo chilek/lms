@@ -41,7 +41,7 @@ switch ($type) {
         $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
         $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
         $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
-        
+
         if ($queue) {
             $where[] = 'queueid = '.$queue;
         }
@@ -66,7 +66,7 @@ switch ($type) {
                 }
             }
         }
-    
+
         if (!empty($datefrom)) {
             $datefrom=date_to_timestamp($datefrom);
             $where[] = 'rttickets.createtime >= '.$datefrom;
@@ -92,18 +92,18 @@ switch ($type) {
                     .($times ? ' HAVING COUNT(*) > '.$times : '')
                     .' ORDER BY total DESC')) {
             $customer = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
-		               	    FROM rttickets 
+		               	    FROM rttickets
 		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    WHERE cause = 1'
                 .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
                 .' GROUP BY customerid', 'customerid');
             $company = $DB->GetAllByKey('SELECT COUNT(*) AS total, customerid
-		               	    FROM rttickets 
+		               	    FROM rttickets
 		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    WHERE cause = 2'
                 .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
                 .' GROUP BY customerid', 'customerid');
-            
+
             foreach ($list as $idx => $row) {
                 $list[$idx]['customer'] = isset($customer[$row['customerid']]) ? $customer[$row['customerid']]['total'] : null;
                 $list[$idx]['company'] = isset($company[$row['customerid']]) ? $company[$row['customerid']]['total'] : 0;

@@ -36,12 +36,12 @@ $patterns[] = array(
     'pvalue' => 3,      // value position
     'pcomment' => 10,   // operation comment position
     'pdate' => 2,       // date position
-                                                                                                                                                                                                                   
+
     'date_regexp' => '/([0-9]{4})([0-9]{2})([0-9]{2})/', // date format CHANGED (yyyymmdd)
     'pday' => 3,
     'pmonth' => 2,
     'pyear' => 1,
-                                                                                                                                                                                                                   
+
     'pid_regexp' => '/","\d*(\d{4})"/',         // if 'pid' is not specified
                                                         // try to find it by regexp
                                                                 // Komentarz takze wyzej. Jesli all good to pid = cztery ostatnie cyfry nr nadawcy

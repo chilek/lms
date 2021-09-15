@@ -35,7 +35,7 @@ $this->Execute("
     UPDATE netlinks SET type=0;
     ALTER TABLE netlinks ALTER type SET DEFAULT 0;
     ALTER TABLE netlinks ALTER type SET NOT NULL;
-    
+
     UPDATE dbinfo SET keyvalue = '2004101800' WHERE keytype = 'dbversion';
 ");
 $this->CommitTrans();

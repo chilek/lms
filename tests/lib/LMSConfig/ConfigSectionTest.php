@@ -43,13 +43,13 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
         $variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $this->addSomeVariablesToSection($variable, 1, false);
-        
+
         $returning_variable = $this->object->getVariable($variable_name);
-        
+
         $this->assertInstanceOf('ConfigVariable', $returning_variable);
-        
+
         $this->assertEquals($variable->getVariable(), $returning_variable->getVariable());
         $this->assertEquals($variable->getValue(), $returning_variable->getValue());
         $this->assertEquals($variable->getComment(), $returning_variable->getComment());
@@ -64,18 +64,18 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
         $variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $amount = 3;
-        
+
         $mutable = true;
-        
+
         $this->addSomeVariablesToSection($variable, $amount, $mutable);
-        
+
         $returning_variables = $this->object->getVariables();
-        
+
         $this->assertCount($amount, $returning_variables);
     }
-    
+
     /**
      * @covers ConfigSection::addVariables
      */
@@ -85,15 +85,15 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
         $variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $amount = 3;
-        
+
         $mutable = false;
-        
+
         $this->addSomeVariablesToSection($variable, $amount, $mutable);
-        
+
         $returning_variables = $this->object->getVariables();
-        
+
         $this->assertCount(1, $returning_variables);
     }
 
@@ -106,13 +106,13 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
         $variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $this->addSomeVariablesToSection($variable, 1, false);
-        
+
         $returning_variable = $this->object->getVariable($variable_name);
-        
+
         $this->assertInstanceOf('ConfigVariable', $returning_variable);
-        
+
         $this->assertEquals($variable->getVariable(), $returning_variable->getVariable());
         $this->assertEquals($variable->getValue(), $returning_variable->getValue());
         $this->assertEquals($variable->getComment(), $returning_variable->getComment());
@@ -127,30 +127,30 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
         $variable_value = 'some_value';
         $variable_comment = 'some_comment';
         $variable = new \ConfigVariable($variable_name, $variable_value, $variable_comment);
-        
+
         $amount = 3;
-        
+
         $this->addSomeVariablesToSection($variable, $amount, true);
-        
+
         $variables = $this->object->getVariables();
-        
+
         $this->assertCount($amount, $variables);
-        
+
         foreach ($variables as $variable) {
             $this->assertInstanceOf('ConfigVariable', $variable);
         }
     }
-    
+
     /**
      * @covers ConfigSection::getVariables
      */
     public function testGetVariablesReturnsEmptyArrayWhenNoVariableWasAddedToSection()
     {
         $variables = $this->object->getVariables();
-        
+
         $this->assertEquals(array(), $variables);
     }
-    
+
     /**
      * @expectedException Exception
      * @covers ConfigSection::getVariable
@@ -159,20 +159,20 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->getVariable('non-existent');
     }
-    
+
     public function testHasVariable()
     {
         $variable_name = 'non-existent';
-        
+
         $this->assertFalse($this->object->hasVariable($variable_name));
-        
+
         $variable = new \ConfigVariable($variable_name, 'some_value', 'some_comment');
-        
+
         $this->object->addVariable($variable);
-        
+
         $this->assertTrue($this->object->hasVariable($variable_name));
     }
-    
+
     private function addSomeVariablesToSection(\ConfigVariable $variable, $amount = 0, $mutable = false)
     {
         for ($i = 0; $i < $amount; $i++) {

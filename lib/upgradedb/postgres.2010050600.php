@@ -37,7 +37,7 @@ $this->Execute("
 		CONSTRAINT macs_mac_key UNIQUE (mac, nodeid)
 	);
 
-	INSERT INTO macs (mac, nodeid) 
+	INSERT INTO macs (mac, nodeid)
 		SELECT mac, id FROM nodes;
 
 	ALTER TABLE nodes DROP mac;

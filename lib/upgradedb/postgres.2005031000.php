@@ -28,12 +28,12 @@ $this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE sessions (
-	id varchar(50) NOT NULL default '', 
-	ctime integer NOT NULL default 0, 
-	mtime integer NOT NULL default 0, 
-	atime integer NOT NULL default 0, 
-	vdata text NOT NULL, 
-	content text NOT NULL, 
+	id varchar(50) NOT NULL default '',
+	ctime integer NOT NULL default 0,
+	mtime integer NOT NULL default 0,
+	atime integer NOT NULL default 0,
+	vdata text NOT NULL,
+	content text NOT NULL,
 	PRIMARY KEY (id))
 ");
 

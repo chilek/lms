@@ -33,8 +33,8 @@ if ($id) {
         // alias-account assignments...
         $DB->Execute('DELETE FROM aliasassignments WHERE accountid = ?', array($id));
         // ...and orphaned aliases
-        $DB->Execute('DELETE FROM aliases 
-			WHERE NOT EXISTS (SELECT 1 FROM aliasassignments 
+        $DB->Execute('DELETE FROM aliases
+			WHERE NOT EXISTS (SELECT 1 FROM aliasassignments
 				WHERE aliasid = aliases.id)');
     }
 

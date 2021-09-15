@@ -256,7 +256,7 @@ NAME="DAEMON-INTRO"
 ><P
 >Napisany w języku C program ma ułatwiać zarządzanie usługami. Sam demon odpowiada
 	za uruchamianie odpowiednich modułów na żądanie użytkownika. Moduły
-	natomiast, służą do tworzenia plików konfiguracyjnych na podstawie 
+	natomiast, służą do tworzenia plików konfiguracyjnych na podstawie
 	danych z bazy LMS'a oraz restartowania odpowiednich usług na serwerze.
 	Spełniają także inne funkcje np. zbieranie statystyk, badanie aktywności
 	hostów, naliczanie opłat, powiadamianie o zaległościach.</P
@@ -292,7 +292,7 @@ CLASS="EMPHASIS"
 ><TT
 CLASS="FILENAME"
 >libmysqlclient</TT
-> (tj. pełnej instalacji MySQL'a lub odpowiedniego 
+> (tj. pełnej instalacji MySQL'a lub odpowiedniego
 				pakietu) lub <TT
 CLASS="FILENAME"
 >libpq</TT
@@ -325,7 +325,7 @@ CLASS="FILENAME"
 >moduł <TT
 CLASS="FILENAME"
 >parser</TT
-> wymaga pakietu bison w wersji 1.875 lub nowszej 
+> wymaga pakietu bison w wersji 1.875 lub nowszej
 				oraz pakietu flex</P
 ></LI
 ><LI
@@ -368,8 +368,8 @@ CLASS="SCREEN"
   --incdir=DIR          lokalizacja plików nagłówkowych bazy danych (/usr/include)
   --inifile=FILE        plik konfiguracyjny - wyłącza konfigurację przez UI</PRE
 >
-			Zatem wymagane jest określenie bazy z jakiej będziemy korzystać (-with-mysql 
-			lub -with-pgsql) oraz położenia bibliotek dostarczanych wraz z bazą (--incdir, 
+			Zatem wymagane jest określenie bazy z jakiej będziemy korzystać (-with-mysql
+			lub -with-pgsql) oraz położenia bibliotek dostarczanych wraz z bazą (--incdir,
 			--libdir). Możliwe jest zmuszenie demona do korzystania
 			z plików konfiguracyjnych zamiast bazy danych. Nie jest
 			możliwe używanie obu sposobów przechowywania konfiguracji,
@@ -391,7 +391,7 @@ CLASS="FILENAME"
 			znajdujące się w katalogu <TT
 CLASS="FILENAME"
 >modules/nazwa_modułu</TT
-> zostają 
+> zostają
 			umieszczone w katalogu PREFIX/lms/lib, a główny program (lmsd) w katalogu
 			PREFIX/lms/bin.
 			</P
@@ -427,14 +427,14 @@ CLASS="SCREEN"
                            ta musi zgadzać się z nazwą hosta podaną w konfiguracji hostów
 --pidfile -P pid_file      pidfile where daemon write pid (default: none)
 --ssl -s                   wymusza bezpieczne połączenie z bazą danych (domyślnie: wyłączone)
---command -c polecenie     polecenie powłoki do wykonania przed każdym połączeniem z bazą 
+--command -c polecenie     polecenie powłoki do wykonania przed każdym połączeniem z bazą
                            tzn. co minutę (domyślnie: puste)
---instance -i "instancja[ ...]" lista instancji (modułów) do przeładowania. Wszystkie pozostałe 
+--instance -i "instancja[ ...]" lista instancji (modułów) do przeładowania. Wszystkie pozostałe
                            zostaną pominięte
 --reload -q                wykonuje przeładowanie i kończy pracę
 --reload-all -r            wykonuje przeładowanie wszystkich instancji (także tych, które mają
                            zdefiniowany crontab) i kończy pracę
---foreground -f            działa na pierwszym planie (nie forkuje się) 
+--foreground -f            działa na pierwszym planie (nie forkuje się)
 --version -v               wyświetla wersję i prawa licencyjne</PRE
 >
 			Opcje dostępu do bazy są także odczytywane ze zmiennych powłoki:
@@ -458,7 +458,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Lista instancji składa się z nazw instancji oddzielonych 
+>Lista instancji składa się z nazw instancji oddzielonych
 			spacją. W nazwach instancji zawierających spacje należy zamienić je
 			na znaki '\s', np. <SAMP
 CLASS="PROMPT"
@@ -474,7 +474,7 @@ CLASS="PROMPT"
 ><P
 >Konfiguracja demona jest podzielona na hosty (umożliwiając
 			osobne konfigurowanie i przeładowywanie demonów zainstalowanych
-			na różnych komputerach/routerach) oraz sekcje konfiguracyjne 
+			na różnych komputerach/routerach) oraz sekcje konfiguracyjne
 			nazwane instancjami.</P
 ><P
 >Instancja oprócz parametrów konfiguracyjnych wybranego modułu
@@ -511,7 +511,7 @@ CLASS="PROMPT"
 >Crontab</P
 ><P
 >Czas wykonania modułu określany w sposób podobny do używanego w programie crontab. Wszystkie dane muszą być numeryczne.
-				Podany przykład spowoduje wykonywanie wybranej instancji co 5 minut, w godzinach od 8 do 18. Gdy opcja ta jest pusta instancja 
+				Podany przykład spowoduje wykonywanie wybranej instancji co 5 minut, w godzinach od 8 do 18. Gdy opcja ta jest pusta instancja
 				zostanie wykonana wyłącznie podczas przeładowania. Domyślnie: pusta.</P
 ><P
 >Przykład: */5 8-18 * * *</P
@@ -531,8 +531,8 @@ NAME="DAEMON-RUN"
 >6.1.4. Uruchomienie</A
 ></H2
 ><P
->Program domyślnie działa w trybie demona. Wtedy 
-			przeładowanie konfiguracji i usług jest dokonywane na żądanie, przy użyciu menu 
+>Program domyślnie działa w trybie demona. Wtedy
+			przeładowanie konfiguracji i usług jest dokonywane na żądanie, przy użyciu menu
 			'Przeładowanie' w <SPAN
 CLASS="emphasis"
 ><I
@@ -541,14 +541,14 @@ CLASS="EMPHASIS"
 ></SPAN
 >. Sprawdzenie żądania przeładowania
 			oraz odczyt konfiguracji (w szczególności listy instancji i ich konfiguracji)
-			następuje co minutę. Gdy demon wykryje żądanie wykonania reloadu, wywoła 
+			następuje co minutę. Gdy demon wykryje żądanie wykonania reloadu, wywoła
 			wszystkie włączone instancje. Instancje z podaną opcją 'crontab' zostaną
 			wykonane o określonym tą opcją czasie.</P
 ><P
 >Innym sposobem uruchomienia jest jednorazowy reload z wykorzystaniem
 			opcji -q. Ten sposób najczęściej używany jest w celach testowych, a w połączeniu
 			z opcją -i pozwala na wykonanie dowolnych instancji z pominięciem pozostałych
-			zapisanych w bazie oraz bez względu na wartość opcji 'crontab' tych 
+			zapisanych w bazie oraz bez względu na wartość opcji 'crontab' tych
 			instancji.</P
 ></DIV
 ></DIV

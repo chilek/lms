@@ -41,7 +41,7 @@ $this->Execute("ALTER TABLE tariffs ADD quota_ftp_limit int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE tariffs ADD domain_limit int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE tariffs ADD alias_limit int(11) DEFAULT NULL");
 
-$this->Execute("UPDATE tariffs SET domain_limit=0, alias_limit=0, sh_limit=0, www_limit=0, 
+$this->Execute("UPDATE tariffs SET domain_limit=0, alias_limit=0, sh_limit=0, www_limit=0,
 		ftp_limit=0, mail_limit=0, sql_limit=0, quota_sh_limit=0, quota_www_limit=0,
 		quota_ftp_limit=0, quota_mail_limit=0, quota_sql_limit=0");
 

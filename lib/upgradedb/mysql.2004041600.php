@@ -26,18 +26,18 @@
 
 $this->Execute("
     CREATE TABLE usergroups (
-	id int(11) NOT NULL auto_increment, 
-	name varchar(255) NOT NULL default '', 
-	description text NOT NULL, 
-	PRIMARY KEY (id), 
+	id int(11) NOT NULL auto_increment,
+	name varchar(255) NOT NULL default '',
+	description text NOT NULL,
+	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
     )
 ");
 $this->Execute("
     CREATE TABLE userassignments (
-	id int(11) NOT NULL auto_increment, 
-	usergroupid int(11) NOT NULL default '0', 
-	userid int(11) NOT NULL default '0', 
+	id int(11) NOT NULL auto_increment,
+	usergroupid int(11) NOT NULL default '0',
+	userid int(11) NOT NULL default '0',
 	PRIMARY KEY (id),
 	UNIQUE KEY userassignment (usergroupid, userid)
     )

@@ -183,7 +183,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
         $this->notifyObservers();
         return $this->hook_data;
     }
-    
+
     /**
      * Returns hook name
      *
@@ -193,7 +193,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
     {
         return $this->hook_name;
     }
-    
+
     /**
      * Returns hook data
      *
@@ -203,7 +203,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
     {
         return $this->hook_data;
     }
-    
+
     /**
      * Sets hook data
      *

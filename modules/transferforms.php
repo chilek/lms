@@ -30,7 +30,7 @@ if ($kind == 2) {
 		d.name AS d_name, d.shortname AS d_shortname, d.address AS d_address, d.zip AS d_zip, d.city AS d_city, '
         . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
 		COALESCE(SUM(cash.value), 0.00) AS balance
-		FROM customerview c 
+		FROM customerview c
 		LEFT JOIN cash ON (c.id = cash.customerid)
 		LEFT JOIN vdivisions d ON (d.id = c.divisionid)
 		WHERE deleted = 0'

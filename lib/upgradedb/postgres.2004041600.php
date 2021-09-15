@@ -27,17 +27,17 @@ $this->Execute("
     BEGIN;
     CREATE SEQUENCE usergroups_id_seq;
     CREATE TABLE usergroups (
-	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
-	name varchar(255) DEFAULT '' NOT NULL, 
-	description text DEFAULT '' NOT NULL, 
-	PRIMARY KEY (id), 
+	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL,
+	name varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
 	UNIQUE (name)
     );
     CREATE SEQUENCE userassignments_id_seq;
     CREATE TABLE userassignments (
-	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL, 
-	usergroupid integer DEFAULT 0 NOT NULL, 
-	userid integer DEFAULT 0 NOT NULL, 
+	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
+	usergroupid integer DEFAULT 0 NOT NULL,
+	userid integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (usergroupid, userid)
     );

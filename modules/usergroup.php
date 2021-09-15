@@ -16,7 +16,7 @@ if ($action == 'delete') {
 } elseif (!empty($_POST['userassignments']) && $LMS->UserGroupExists($_GET['id'])) {
     $oper = $_POST['oper'];
     $userassignments = $_POST['userassignments'];
-    
+
     if (isset($userassignments['gmuserid']) && $oper=='0') {
         $assignment['usergroupid'] = $_GET['id'];
         foreach ($userassignments['gmuserid'] as $value) {

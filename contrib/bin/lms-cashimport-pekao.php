@@ -14,7 +14,7 @@
   *  GNU General Public License for more details.
   *
 */
-            
+
 //skrypt wymaga dodatkowego katalogu o nazwie "files" do którego będzie zapisywać raporty
 <?php
 
@@ -39,7 +39,7 @@ function explodeX($row, $sep, $ign)
         if (substr($row, $i, 1)==$ign) {
             $openCite=!$openCite;
         }
-    
+
         if (substr($row, $i, 1)==$sep && !$openCite) {
             $rows[]=substr($row, $cFieldPos, $i-$cFieldPos);
             $cFieldPos=$i+1;
@@ -95,9 +95,9 @@ while ($start!==false) {
     }
 
     $start=strpos($files, "isor/wns", $ofs);
-   
+
     echo "Odczytuje ".$fn."\n";
-    
+
 
     $ch=curl_init();
 

@@ -141,7 +141,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination->setPerPage($new_per_page);
         $this->assertEquals($new_per_page, $pagination->getPerPage());
     }
-    
+
     public function testGetPagesReturnsDivisionOfTotalAndPerPageRoundedUp()
     {
         $page = 1;
@@ -156,7 +156,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination->setTotal(35);
         $this->assertEquals(4, $pagination->getPages());
     }
-    
+
     public function testFirstOnPage()
     {
         $page = 1;
@@ -169,7 +169,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination->setPage(12);
         $this->assertEquals(111, $pagination->getFirstOnPage());
     }
-    
+
     public function testLastOnPage()
     {
         $page = 1;

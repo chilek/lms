@@ -85,7 +85,7 @@ $this->Execute("
             GROUP BY n.id
         ) t ON t.nodeid = n.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-    
+
     CREATE VIEW vnodealltariffs AS
         SELECT n.*,
             COALESCE(t1.downrate, t2.downrate, 0) AS downrate,

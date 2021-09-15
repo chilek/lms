@@ -45,7 +45,7 @@ function GetTaxRateList($order = 'name,asc')
     }
 
     $list = $DB->GetAll('SELECT * FROM taxes'.($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['direction'] = $direction;

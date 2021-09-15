@@ -72,10 +72,10 @@ function Traffic($from = 0, $to = 0, $net = 0, $customerid = 0, $order = '', $li
     }
 
     // join query from parts
-    $query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, 
-			    sum(upload) as upload, sum(download) as download 
-		    FROM stats 
-		    LEFT JOIN nodes ON stats.nodeid = nodes.id 
+    $query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip,
+			    sum(upload) as upload, sum(download) as download
+		    FROM stats
+		    LEFT JOIN nodes ON stats.nodeid = nodes.id
 		    WHERE '
             .$dt
             .$net

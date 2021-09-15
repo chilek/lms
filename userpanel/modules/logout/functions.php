@@ -27,7 +27,7 @@
 function module_main()
 {
     global $SESSION, $LMS;
-    
+
     $SESSION->LogOut();
 
     if (ConfigHelper::getConfig('userpanel.logout_url')!='') {

@@ -82,7 +82,7 @@ NAME="DEVEL-INI"
 >Configuration file default location is <TT
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
->. 
+>.
           It's intended to be central configuration for <SPAN
 CLASS="emphasis"
 ><I
@@ -102,7 +102,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >lmsd</I
 ></SPAN
-> daemon).  
+> daemon).
 	  However variable format for Perl scripts is more restricted than for PHP.</P
 ><DIV
 CLASS="SECT2"
@@ -113,8 +113,8 @@ NAME="INI-COMMENTS"
 >7.3.1. Comments</A
 ></H2
 ><P
->Configuration file parsers skip all lines that begin with '#' or ';' sign. 
-               You can also append comments to the end of the lines containing valid variables 
+>Configuration file parsers skip all lines that begin with '#' or ';' sign.
+               You can also append comments to the end of the lines containing valid variables
                and sections , followed by that signs. </P
 ></DIV
 ><DIV
@@ -126,14 +126,14 @@ NAME="INI-PARAMS"
 >7.3.2. Sections, variables, values</A
 ></H2
 ><P
->Configuration options are grouped in sections. Name of the section, which is 
-               build with alphanumerical signs must be enclosed in square brackets. Their name 
+>Configuration options are grouped in sections. Name of the section, which is
+               build with alphanumerical signs must be enclosed in square brackets. Their name
                should be unique in the span of configuration file.</P
 ><P
->Sections and parameters should be placed one per line. Parameter consists 
-               of key (variable name) and value (variable content). Key is name of configuration 
-               parameter, built from alphanumerical signs. Value should be placed in the same line, 
-               after equality sign. If it contains any special characters it should be placed into 
+>Sections and parameters should be placed one per line. Parameter consists
+               of key (variable name) and value (variable content). Key is name of configuration
+               parameter, built from alphanumerical signs. Value should be placed in the same line,
+               after equality sign. If it contains any special characters it should be placed into
                quotes or apostrophes.</P
 ><DIV
 CLASS="EXAMPLE"
@@ -167,10 +167,10 @@ NAME="INI-PERL"
 >7.3.3. Perl scripts variables</A
 ></H2
 ><P
->Configuration for use by Perl scripts is someway restricted, 
-	       due to restrictions of Config::IniFiles module which parses 
-	       configuration file. Comments must be placed in new lines only. 
-	       Values shouldn't be enclosed into apostrophes or quotes and are 
+>Configuration for use by Perl scripts is someway restricted,
+	       due to restrictions of Config::IniFiles module which parses
+	       configuration file. Comments must be placed in new lines only.
+	       Values shouldn't be enclosed into apostrophes or quotes and are
 	       being read from equality sign since the end of line.</P
 ></DIV
 ></DIV

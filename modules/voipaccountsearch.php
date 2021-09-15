@@ -62,23 +62,23 @@ if (isset($_GET['search'])) {
     unset($voipaccountlist['total']);
     unset($voipaccountlist['order']);
     unset($voipaccountlist['direction']);
-    
+
     if ($SESSION->is_set('vaslp') && !isset($_GET['page'])) {
         $SESSION->restore('vaslp', $_GET['page']);
     }
-        
+
     $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-    
+
     $pagelimit = ConfigHelper::getConfig('phpui.voipaccountlist_pagelimit', $listdata['total']);
     $start = ($page - 1) * $pagelimit;
     $SESSION->save('vaslp', $page);
-    
+
     $SMARTY->assign('page', $page);
     $SMARTY->assign('pagelimit', $pagelimit);
     $SMARTY->assign('start', $start);
     $SMARTY->assign('voipaccountlist', $voipaccountlist);
     $SMARTY->assign('listdata', $listdata);
-    
+
     if (isset($_GET['print'])) {
         $SMARTY->display('print/printvoipaccountlist.html');
     } elseif ($listdata['total']==1) {

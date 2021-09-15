@@ -37,7 +37,7 @@ $this->Execute("
 	    validto integer DEFAULT 0 NOT NULL,
 	    PRIMARY KEY (id)
 	);
-	
+
 	ALTER TABLE cash ADD taxid integer;
 	ALTER TABLE tariffs ADD taxid integer;
 	ALTER TABLE invoicecontents ADD taxid integer;
@@ -66,7 +66,7 @@ if ($taxes = $this->GetCol("SELECT taxvalue FROM cash GROUP BY taxvalue
         }
     }
 }
-    
+
 $this->Execute("
 	UPDATE cash SET taxid = 0 WHERE taxid IS NULL;
 	UPDATE tariffs SET taxid = 0 WHERE taxid IS NULL;

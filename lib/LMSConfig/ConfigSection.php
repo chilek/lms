@@ -35,12 +35,12 @@ class ConfigSection
      * @var string Section name
      */
     private $section_name;
-    
+
     /**
      * @var ConfigVariable[] Section variables
      */
     private $section_variables;
-    
+
     /**
      * Constructs config section variables container
      *
@@ -51,7 +51,7 @@ class ConfigSection
         $this->section_name = $section_name;
         $this->section_variables = array();
     }
-    
+
     /**
      * Returns section name
      *
@@ -61,7 +61,7 @@ class ConfigSection
     {
         return $this->section_name;
     }
-    
+
     /**
      * Appends config variable to section variables container
      *
@@ -71,7 +71,7 @@ class ConfigSection
     {
         $this->section_variables[$config_variable->getVariable()] = $config_variable;
     }
-    
+
     /**
      * Appends multiple config variables to section variables container
      *
@@ -85,7 +85,7 @@ class ConfigSection
             }
         }
     }
-    
+
     /**
      * Returns config variable if in section
      *
@@ -101,7 +101,7 @@ class ConfigSection
             throw new Exception('Unknown config variable "'.$variable_name.'" in section "'.$this->section_name.'"!');
         }
     }
-    
+
     /**
      * Returns all config variables in section
      *
@@ -111,7 +111,7 @@ class ConfigSection
     {
         return $this->section_variables;
     }
-    
+
     /**
      * Checks if variable exists
      *

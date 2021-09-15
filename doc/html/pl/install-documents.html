@@ -93,7 +93,7 @@ NAME="TAX-CALCULATION"
 >2.9.1. Sposób wyliczania podatku VAT</A
 ></H2
 ><P
->Poniżej przedstawiono sposób w jaki wyliczany jest podatek w LMS. Wartości wszystkich działań 
+>Poniżej przedstawiono sposób w jaki wyliczany jest podatek w LMS. Wartości wszystkich działań
 	    są zaokrąglane do dwóch miejsc po przecinku.</P
 ><P
 >W bazie LMS cena jednostkowa pozycji fakturowej jest przechowywana jako wartość brutto (z podatkiem).
@@ -144,7 +144,7 @@ NAME="INSTALL-INVOICES"
 ></H2
 ><P
 >LMS umożliwia wystawianie faktur automatycznie i ręcznie. Ręczne wystawienie
-          faktury jest możliwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
+          faktury jest możliwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur
           wymaga włączenia tej opcji podczas przypisywania taryf użytkownikom. W takim wypadku
           zapisem faktur do bazy zajmuje się skrypt lms-payments lub demon <SPAN
 CLASS="emphasis"
@@ -168,7 +168,7 @@ CLASS="EMPHASIS"
 ><P
 >print_balance_history</P
 ><P
->Określa czy na fakturze (html) drukować listę operacji finansowych 
+>Określa czy na fakturze (html) drukować listę operacji finansowych
 		na koncie klienta. Domyślnie: nie ustawiona.</P
 ><P
 >Przykład: <SAMP
@@ -190,9 +190,9 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-          Wygenerowane faktury można obejrzeć w dwojaki sposób: albo poprzez ikonkę drukarki 
-          na wykazie bilansu finansowego (ogólnego bądź pojedynczego użytkownika), albo 
-          poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, możliwe jest 
+          Wygenerowane faktury można obejrzeć w dwojaki sposób: albo poprzez ikonkę drukarki
+          na wykazie bilansu finansowego (ogólnego bądź pojedynczego użytkownika), albo
+          poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, możliwe jest
           także filtrowanie faktur do wydruku.</P
 ><P
 >Podczas wydruku faktury domyślnie wyświetlany jest oryginał i kopia, można to zmienić:
@@ -267,10 +267,10 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-          Wynikowy dokument HTML zawiera oryginały 
-          i kopie, które są oddzielone znacznikami podziału strony poprzez CSS. 
-          Tak więc każda nowoczesna przeglądarka zgodna z CSS powinna bezproblemowo drukować 
-          faktury ładnie podzielone na strony. Funkcja ta była testowana na przeglądarkach 
+          Wynikowy dokument HTML zawiera oryginały
+          i kopie, które są oddzielone znacznikami podziału strony poprzez CSS.
+          Tak więc każda nowoczesna przeglądarka zgodna z CSS powinna bezproblemowo drukować
+          faktury ładnie podzielone na strony. Funkcja ta była testowana na przeglądarkach
           Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
 ><P
 >               <DIV
@@ -292,7 +292,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Praktycznie każda przeglądarka internetowa ma możliwość 
+>Praktycznie każda przeglądarka internetowa ma możliwość
                konfiguracji wydruku, gdzie można wyłączyć funkcje takie jak drukowanie
                stopki i nagłówka, czy też adresu na wydruku.</P
 ></TD
@@ -321,25 +321,25 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
-> 
-          wartości 'pdf' spowoduje, że faktury zamiast w html'u będą tworzone jako pliki 
+>
+          wartości 'pdf' spowoduje, że faktury zamiast w html'u będą tworzone jako pliki
           "portable data format". Opcja <TT
 CLASS="FILENAME"
 >template_file</TT
 > spełnia podobną rolę jak dla faktur html'owych,
-          z tym, że posiada predefiniowane wartości: 'standard' - faktura podstawowa 
+          z tym, że posiada predefiniowane wartości: 'standard' - faktura podstawowa
           (odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
           na drukach <A
 HREF="http://www.polarnet.org/produkty/ft-0100/"
 TARGET="_top"
 >FT-0100</A
-> 
+>
 	  zawierających druk polecenia przelewu. W opcji <TT
 CLASS="FILENAME"
 >template_file</TT
 >
           można także wstawić nazwę pliku php, jednak ta możliwość jest przeznaczona dla
-          zaawansowanych użytkowników, gdyż wymaga utworzenia pliku php, a nie tak jak w 
+          zaawansowanych użytkowników, gdyż wymaga utworzenia pliku php, a nie tak jak w
           przypadku faktur html'owych szablonu Smarty.</P
 ></DIV
 ><DIV
@@ -405,7 +405,7 @@ NAME="INSTALL-INVOICES-IBAN"
 ></UL
 >
 	  Gdy mamy potrzebne dane, definiujemy konto bankowe w
-	  konfiguracji firmy (oddziału). System sam rozpozna (na podstawie długości), 
+	  konfiguracji firmy (oddziału). System sam rozpozna (na podstawie długości),
 	  czy wprowadzono cały numer rachunku firmy czy prefiks do płatności masowych.
 	  Prefix powinien składać się z 8 do 20 cyfr bez spacji i innych znaków.</P
 ><P
@@ -439,7 +439,7 @@ CLASS="EMPHASIS"
 >[finances]</I
 ></SPAN
 >.
-		Dotyczy to zarówno wydruków poleceń przelewu dostępnych w Finanse -&#62; Wydruki 
+		Dotyczy to zarówno wydruków poleceń przelewu dostępnych w Finanse -&#62; Wydruki
 		jak i wydruków faktur typu FT-0100.</P
 ></DIV
 ><DIV
@@ -451,7 +451,7 @@ NAME="INSTALL-RECEIPTS"
 >2.9.4. Dokumenty kasowe (KP/KW)</A
 ></H2
 ><P
->Dokumenty kasowe, ze względu na swoją specyfikę, posiadają podobne 
+>Dokumenty kasowe, ze względu na swoją specyfikę, posiadają podobne
 	  opcje konfiguracyjne jak faktury.</P
 ><DIV
 CLASS="SECT3"
@@ -537,19 +537,19 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[receipts]</I
 ></SPAN
-> 
-        	wartości 'pdf' spowoduje, że dowody zamiast w html'u będą tworzone jako pliki 
+>
+        	wartości 'pdf' spowoduje, że dowody zamiast w html'u będą tworzone jako pliki
         	"portable data format". Opcja <TT
 CLASS="FILENAME"
 >template_file</TT
-> spełnia podobną 
-		rolę jak dla wydruków html'owych z tym, że posiada predefiniowaną wartość: 
+> spełnia podobną
+		rolę jak dla wydruków html'owych z tym, że posiada predefiniowaną wartość:
 		'standard' - wydruk podstawowy (odpowiednik receipt.html).
 		W opcji <TT
 CLASS="FILENAME"
 >template_file</TT
-> można także wstawić nazwę pliku php, 
-		jednak ta możliwość jest przeznaczona dla zaawansowanych użytkowników, gdyż 
+> można także wstawić nazwę pliku php,
+		jednak ta możliwość jest przeznaczona dla zaawansowanych użytkowników, gdyż
 		wymaga utworzenia pliku php, a nie tak jak w przypadku html'a szablonu Smarty.</P
 ></DIV
 ></DIV
@@ -638,9 +638,9 @@ NAME="INSTALL-DOCUMENTS-OTHER"
 >Oprócz dokumentów finansowych w LMSie można przechowywać
 	    	dokumenty takie jak umowy, protokoły, aneksy i inne. Każemu klientowi
 	    	można przypisać dowolną liczbę dokumentów na zakładce 'Dokumenty klienta'
-	    	w panelu 'Informacje o kliencie' lub poprzez menu 'Dokumenty'. 
-	    	Pliki z dokumentami przechowywane są poza bazą danych 
-	    	(o czym należy pamiętać robiąc backupy) w katalogu 
+	    	w panelu 'Informacje o kliencie' lub poprzez menu 'Dokumenty'.
+	    	Pliki z dokumentami przechowywane są poza bazą danych
+	    	(o czym należy pamiętać robiąc backupy) w katalogu
 	    	określonym zmienną 'doc_dir' w sekcji
 	    	<SPAN
 CLASS="emphasis"
@@ -651,15 +651,15 @@ CLASS="EMPHASIS"
 > pliku konfiguracyjnego.
 	    	</P
 ><P
->Dokumenty mogą być importowane do systemu jako gotowe pliki, ale 
-		także tworzone według szablonów przy użyciu zdefiniowanych kreatorów. Tutaj 
-		system daje duże możliwości konfiguracji. W katalogu 
+>Dokumenty mogą być importowane do systemu jako gotowe pliki, ale
+		także tworzone według szablonów przy użyciu zdefiniowanych kreatorów. Tutaj
+		system daje duże możliwości konfiguracji. W katalogu
 		<TT
 CLASS="FILENAME"
 >documents/templates/default</TT
 >
 		znajduje się domyślny kreator dokumentu (szablon i silnik). Użytkownik może utworzyć
-		dowolną liczbę własnych kreatorów dokumentów, które należy 
+		dowolną liczbę własnych kreatorów dokumentów, które należy
 		umieścić w katalogu <TT
 CLASS="FILENAME"
 >documents/templates/</TT
@@ -709,12 +709,12 @@ CLASS="FILENAME"
 > określa nazwę pliku php
 		odpowiedzialnego za wyświetlenie dodatkowych pól w formularzu tworzenia
 		nowego dokumentu. Plugin może ponadto zawierać obsługę błędów dla
-		tych pól. Po dodaniu dokumentu wykonywany jest skrypt PHP określony w 
+		tych pól. Po dodaniu dokumentu wykonywany jest skrypt PHP określony w
 		zmiennej <TT
 CLASS="FILENAME"
 >post-action</TT
 >.
-		Prosty przykład pluginu i post-akcji przedstawiono w przykładowym 
+		Prosty przykład pluginu i post-akcji przedstawiono w przykładowym
 		domyślnym dokumencie.</P
 ></DIV
 ></DIV

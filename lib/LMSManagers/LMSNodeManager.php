@@ -399,16 +399,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                             break;
                         case 'state':
                             if (!empty($value)) {
-                                $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
-									JOIN location_boroughs lb ON lb.id = lc.boroughid 
-									JOIN location_districts ld ON ld.id = lb.districtid 
+                                $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc
+									JOIN location_boroughs lb ON lb.id = lc.boroughid
+									JOIN location_districts ld ON ld.id = lb.districtid
 									JOIN location_states ls ON ls.id = ld.stateid WHERE ls.id = ' . $this->db->Escape($value) . ')';
                             }
                             break;
                         case 'district':
                             if (!empty($value)) {
-                                $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
-									JOIN location_boroughs lb ON lb.id = lc.boroughid 
+                                $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc
+									JOIN location_boroughs lb ON lb.id = lc.boroughid
 									JOIN location_districts ld ON ld.id = lb.districtid WHERE ld.id = ' . $this->db->Escape($value) . ')';
                             }
                             break;
@@ -508,7 +508,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         AND ' . $daysecond . ' <= tosec AND nodeid = n.id
                 ) THEN 1 ELSE 0 END) AS locked ';
         }
-        $sql .= 'FROM vnodes n 
+        $sql .= 'FROM vnodes n
 				JOIN customerview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid
 				LEFT JOIN netdevices nd ON nd.id = n.netdev
@@ -601,7 +601,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
                     }
                     return $this->db->Execute('UPDATE nodes SET access = 1 WHERE id = ?
-						AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+						AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid
 							AND status = 3)', array($id));
                 }
                 return 0;
@@ -625,7 +625,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                     $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
                 }
                 return $this->db->Execute('UPDATE nodes SET access = 1 WHERE id = ?
-						AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid 
+						AND EXISTS (SELECT 1 FROM customers WHERE id = ownerid
 							AND status = 3)', array($id));
             }
             return 0;
@@ -700,7 +700,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             );
             $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
         }
-        return $this->db->Execute('UPDATE nodes 
+        return $this->db->Execute('UPDATE nodes
 			SET warning = (CASE warning WHEN 0 THEN 1 ELSE 0 END)
 			WHERE id = ?', array($id));
     }
@@ -793,7 +793,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 $this->db->BeginTrans();
                 $this->db->LockTables('nodes');
 
-                if ($newid = $this->db->GetOne('SELECT n.id + 1 FROM vnodes n 
+                if ($newid = $this->db->GetOne('SELECT n.id + 1 FROM vnodes n
 						LEFT OUTER JOIN vnodes n2 ON n.id + 1 = n2.id
 						WHERE n2.id IS NULL AND n.id <= 99999
 						ORDER BY n.id ASC LIMIT 1')) {
@@ -849,7 +849,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeStats()
     {
-        $result = $this->db->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected, 
+        $result = $this->db->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected,
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
 				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
 				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutterryt,

@@ -30,7 +30,7 @@ $this->Execute("
     ALTER TABLE rtmessages ALTER userid SET DEFAULT 0;
     UPDATE rtmessages SET userid=0;
     ALTER TABLE rtmessages ALTER userid SET NOT NULL;
-    
+
     ALTER TABLE rtmessages ADD adminid integer;
     ALTER TABLE rtmessages ALTER adminid SET DEFAULT 0;
     UPDATE rtmessages SET adminid=sender;

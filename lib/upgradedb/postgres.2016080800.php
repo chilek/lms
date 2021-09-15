@@ -25,10 +25,10 @@ $this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_rules RENAME TO voip_rule_groups;
                 ALTER SEQUENCE voip_rules_id_seq RENAME TO voip_rule_groups_id_seq;
-                  
+
                 ALTER TABLE voip_group_rule_assignments RENAME TO voip_rules;
-                ALTER SEQUENCE voip_group_rule_assignments_id_seq RENAME TO voip_rules_id_seq;                   
-                   
+                ALTER SEQUENCE voip_group_rule_assignments_id_seq RENAME TO voip_rules_id_seq;
+
                 ALTER TABLE voip_rules RENAME ruleid        TO rule_group_id;
                 ALTER TABLE voip_rules RENAME groupid       TO prefix_group_id;
                 ALTER TABLE voip_rules RENAME rule_settings TO settings;

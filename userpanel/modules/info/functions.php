@@ -417,7 +417,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $layout['pagetitle'] = trans('Changes affirmation');
 
         $userchanges = $DB->GetAll('SELECT up_info_changes.id AS changeid, customerid, fieldname, fieldvalue AS newvalue, '.
-                    $DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, c.* 
+                    $DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, c.*
 					FROM up_info_changes
 					JOIN customerview c ON (c.id = up_info_changes.customerid)');
 

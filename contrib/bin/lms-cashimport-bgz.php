@@ -394,7 +394,7 @@ function parse_file($filename, $contents)
                     $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
                     $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
                     $id = $DB->GetOne(
-                        'SELECT customerid FROM documents 
+                        'SELECT customerid FROM documents
 							WHERE number=? AND cdate>? AND cdate<? AND type IN (?,?)',
                         array($invid, $from, $to, DOC_INVOICE, DOC_CNOTE)
                     );
@@ -543,7 +543,7 @@ function commit_cashimport()
                                         SELECT d.id,
                                             (SELECT SUM(value*count) FROM invoicecontents WHERE docid = d.id) +
                                             COALESCE((
-                                                SELECT SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count) 
+                                                SELECT SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
                                                 FROM documents dd
                                                 JOIN invoicecontents a ON (a.docid = dd.id)
                                                 JOIN invoicecontents b ON (dd.reference = b.docid AND a.itemid = b.itemid)
@@ -555,8 +555,8 @@ function commit_cashimport()
                                         GROUP BY d.id, d.cdate
                                         UNION
                                         SELECT d.id, dn.value, d.cdate
-                                        FROM documents d 
-                                        JOIN debitnotecontents dn ON dn.docid = d.id 
+                                        FROM documents d
+                                        JOIN debitnotecontents dn ON dn.docid = d.id
                                         WHERE d.customerid = ?
                                     ) x ORDER BY x.cdate',
                     array($balance['customerid'], DOC_INVOICE, $balance['customerid'])

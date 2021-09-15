@@ -91,8 +91,8 @@ if ($devices) {
     }
 }
 
-$nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude AS lat, n.longitude AS lon 
-				FROM vnodes n 
+$nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude AS lat, n.longitude AS lon
+				FROM vnodes n
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL', 'id');
 
 if ($nodes) {

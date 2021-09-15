@@ -31,32 +31,32 @@ final class xajaxPluginManager
         Array: aRequestPlugins
     */
     private $aRequestPlugins;
-    
+
     /*
         Array: aResponsePlugins
     */
     private $aResponsePlugins;
-    
+
     /*
         Array: aConfigurable
     */
     private $aConfigurable;
-    
+
     /*
         Array: aRegistrars
     */
     private $aRegistrars;
-    
+
     /*
         Array: aProcessors
     */
     private $aProcessors;
-    
+
     /*
         Array: aClientScriptGenerators
     */
     private $aClientScriptGenerators;
-    
+
     /*
         Function: xajaxPluginManager
 
@@ -88,7 +88,7 @@ final class xajaxPluginManager
     {
         $this->aRequestPlugins = array();
         $this->aResponsePlugins = array();
-        
+
         $this->aConfigurable = array();
         $this->aRegistrars = array();
         $this->aProcessors = array();
@@ -114,7 +114,7 @@ final class xajaxPluginManager
         $this->nResponseQueueSize = null;
         $this->sDebugOutputID = null;
     }
-    
+
     /*
         Function: getInstance
 
@@ -134,7 +134,7 @@ final class xajaxPluginManager
         }
         return $obj;
     }
-    
+
     /*
         Function: loadPlugins
 
@@ -158,13 +158,13 @@ final class xajaxPluginManager
                             }
                         }
                     }
-                
+
                     closedir($handle);
                 }
             }
         }
     }
-    
+
     /*
         Function: _insertIntoArray
 
@@ -186,10 +186,10 @@ final class xajaxPluginManager
         while (isset($aPlugins[$nPriority])) {
             $nPriority++;
         }
-        
+
         $aPlugins[$nPriority] = $objPlugin;
     }
-    
+
     /*
         Function: registerPlugin
 
@@ -209,11 +209,11 @@ final class xajaxPluginManager
     {
         if ($objPlugin instanceof xajaxRequestPlugin) {
             $this->_insertIntoArray($this->aRequestPlugins, $objPlugin, $nPriority);
-            
+
             if (method_exists($objPlugin, 'register')) {
                 $this->_insertIntoArray($this->aRegistrars, $objPlugin, $nPriority);
             }
-            
+
             if (method_exists($objPlugin, 'canProcessRequest')) {
                 if (method_exists($objPlugin, 'processRequest')) {
                     $this->_insertIntoArray($this->aProcessors, $objPlugin, $nPriority);
@@ -233,7 +233,7 @@ final class xajaxPluginManager
             );
 //EndSkipDebug
         }
-        
+
         if (method_exists($objPlugin, 'configure')) {
             $this->_insertIntoArray($this->aConfigurable, $objPlugin, $nPriority);
         }
@@ -278,7 +278,7 @@ final class xajaxPluginManager
     public function processRequest()
     {
         $bHandled = false;
-        
+
         $aKeys = array_keys($this->aProcessors);
         sort($aKeys);
         foreach ($aKeys as $sKey) {
@@ -292,7 +292,7 @@ final class xajaxPluginManager
 
         return $bHandled;
     }
-    
+
     /*
         Function: configure
 
@@ -382,7 +382,7 @@ final class xajaxPluginManager
             $this->sResponseType = $mValue;
         }
     }
-    
+
     /*
         Function: register
 

@@ -44,7 +44,7 @@ if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 
     $DB->Execute(
         'INSERT INTO nodegroupassignments (nodegroupid, nodeid)
-			SELECT ?, nodeid 
+			SELECT ?, nodeid
 			FROM nodegroupassignments a
 			JOIN nodes n ON (a.nodeid = n.id)
 			JOIN customerview c ON (n.ownerid = c.id)

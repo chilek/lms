@@ -33,7 +33,7 @@ namespace LMS\Tests;
  */
 class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
 {
-    
+
     public function testDisplayGoToReturnsFalseIfNumberOfPagesIsLessThanOrEqualNine()
     {
         $pagination = new \LMSPaginationShort(1, 1, 1);
@@ -43,7 +43,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(false, $pagination->displayGoTo(), "Fails when i == $i");
         }
     }
-    
+
     public function testDisplayGoToReturnsFalseIfNumberOfPagesIsGreaterThanNine()
     {
         $pagination = new \LMSPaginationShort(1, 1, 1);
@@ -52,7 +52,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(true, $pagination->displayGoTo(), "Fails when i == $i");
         }
     }
-    
+
     public function testDisplayLinkReturnsTrueIfLinkPageIsInRangeOf2FromCurrentPage()
     {
         $pagination = new \LMSPaginationShort(10, 100, 1);
@@ -60,7 +60,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(true, $pagination->displayLink($i), "Fails when i == $i");
         }
     }
-    
+
     public function testDisplayLinkReturnsTrueIfLinkPageIsInRangeOf1FromFirstPage()
     {
         $pagination = new \LMSPaginationShort(10, 100, 1);
@@ -68,7 +68,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(true, $pagination->displayLink($i), "Fails when i == $i");
         }
     }
-    
+
     public function testDisplayLinkReturnsTrueIfLinkPageIsInRangeOf1FromLastPage()
     {
         $pagination = new \LMSPaginationShort(10, 100, 1);
@@ -76,7 +76,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(true, $pagination->displayLink($i), "Fails when i == $i");
         }
     }
-    
+
     public function testDisplayLinkReturnsFalseIfLinkPageIsNotInRangeOf3FromFirstOrLastOrCurrentPage()
     {
         $pagination = new \LMSPaginationShort(10, 100, 1);

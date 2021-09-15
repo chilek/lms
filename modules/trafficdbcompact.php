@@ -83,7 +83,7 @@ if (isset($_GET['level'])) {
 
             $data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
                     COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime, nodesessionid
-                FROM stats WHERE nodeid = ? AND dt >= ? AND dt < ? 
+                FROM stats WHERE nodeid = ? AND dt >= ? AND dt < ?
                 GROUP BY nodeid, nodesessionid, '.$dtdivider.'
                 ORDER BY mintime', array($node['id'], $mintime, $maxtime));
 

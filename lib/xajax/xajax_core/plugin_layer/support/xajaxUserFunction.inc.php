@@ -38,21 +38,21 @@ final class xajaxUserFunction
         call options from what was already registered.
     */
     private $sAlias;
-    
+
     /*
         Object: uf
 
         A string or array which defines the function to be registered.
     */
     private $uf;
-    
+
     /*
         String: sInclude
 
         The path and file name of the include file that contains the function.
     */
     private $sInclude;
-    
+
     /*
         Array: aConfiguration
 
@@ -60,7 +60,7 @@ final class xajaxUserFunction
         browser curing client script generation.
     */
     private $aConfiguration;
-    
+
     /*
         Function: __construct
 
@@ -116,7 +116,7 @@ final class xajaxUserFunction
 //      $this->sInclude = $sInclude;
 //      foreach ($aConfiguration as $sKey => $sValue)
 //          $this->configure($sKey, $sValue);
-        
+
         if (is_array($this->uf) && 2 < count($this->uf)) {
             $this->sAlias = $this->uf[0];
             $this->uf = array_slice($this->uf, 1);
@@ -131,7 +131,7 @@ final class xajaxUserFunction
         }
 //EndSkipDebug
     }
-    
+
     /*
         Function: getName
 
@@ -149,7 +149,7 @@ final class xajaxUserFunction
         }
         return $this->uf;
     }
-    
+
     /*
         Function: configure
 
@@ -166,7 +166,7 @@ final class xajaxUserFunction
             $this->aConfiguration[$sName] = $sValue;
         }
     }
-    
+
     /*
         Function: generateRequest
 
@@ -182,7 +182,7 @@ final class xajaxUserFunction
         }
         return new xajaxRequest("{$sXajaxPrefix}{$sAlias}");
     }
-    
+
     /*
         Function: generateClientScript
 
@@ -223,12 +223,12 @@ final class xajaxUserFunction
     public function call($aArgs = array())
     {
         $objResponseManager = xajaxResponseManager::getInstance();
-        
+
         if (null != $this->sInclude) {
             ob_start();
             require_once $this->sInclude;
             $sOutput = ob_get_clean();
-            
+
 //SkipDebug
             if (0 < strlen($sOutput)) {
                 $sOutput = 'From include file: ' . $this->sInclude . ' => ' . $sOutput;
@@ -236,7 +236,7 @@ final class xajaxUserFunction
             }
 //EndSkipDebug
         }
-        
+
         $mFunction = $this->uf;
         $objResponseManager->append(call_user_func_array($mFunction, $aArgs));
     }

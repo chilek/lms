@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-              
+
 function module_main()
 {
     global $SMARTY;

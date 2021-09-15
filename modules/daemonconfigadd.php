@@ -30,13 +30,13 @@ if ($config) {
     foreach ($config as $idx => $key) {
         $config[$idx] = trim($key);
     }
-    
+
     $config['instanceid'] = $_GET['id'];
-    
+
     if ($config['var']=='' && $config['description']=='' && $config['value']=='') {
         $SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
     }
-    
+
     if ($config['var'] == '') {
         $error['var'] = trans('Option name is required!');
     } elseif ($DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid']))) {

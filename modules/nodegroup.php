@@ -97,7 +97,7 @@ if ($action == 'delete') {
                 SYSLOG::RES_NODEGROUP => intval($_GET['groupid']),
                 SYSLOG::RES_NODE => $mark
                 );
-                $DB->Execute('INSERT INTO nodegroupassignments 
+                $DB->Execute('INSERT INTO nodegroupassignments
 					(nodegroupid, nodeid) VALUES (?, ?)', array_values($params));
                 if ($SYSLOG) {
                     $id = $DB->GetLastInsertID('nodegroupassignments');
@@ -111,7 +111,7 @@ if ($action == 'delete') {
 } elseif (isset($_POST['nodeassignments']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($_GET['id']))) {
     $oper = $_POST['oper'];
     $nodeassignments = $_POST['nodeassignments'];
-    
+
     if (isset($nodeassignments['gmnodeid']) && $oper=='0') {
         foreach ($nodeassignments['gmnodeid'] as $nodeid) {
             $params = array(

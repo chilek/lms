@@ -36,12 +36,12 @@ $this->Execute("
 	)
 ");
 $this->Execute("ALTER TABLE aliases ADD domainid integer NOT NULL DEFAULT '0'");
-    
+
 $this->Execute("UPDATE aliases SET domainid = (SELECT domainid FROM passwd WHERE id = accountid)");
 
-$this->Execute("INSERT INTO aliasassignments (aliasid, accountid) 
+$this->Execute("INSERT INTO aliasassignments (aliasid, accountid)
 		SELECT id, accountid FROM aliases");
-    
+
 $this->Execute("ALTER TABLE aliases DROP accountid");
 $this->Execute("ALTER TABLE aliases ADD UNIQUE KEY (login, domainid)");
 

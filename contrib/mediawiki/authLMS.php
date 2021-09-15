@@ -48,7 +48,7 @@ class authLMS extends AuthPlugin
             $this->ip = $_SERVER['REMOTE_ADDR'];
         }
     }
-    
+
     public function userExists($username)
     {
         $username = strtolower($username);

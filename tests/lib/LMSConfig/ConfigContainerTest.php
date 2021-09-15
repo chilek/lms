@@ -35,11 +35,11 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
-        
+
         $this->addSomeSectionsToConfig($section, 1, false);
-        
+
         $returning_section = $this->object->getSection($section_name);
-        
+
         $this->assertInstanceOf('ConfigSection', $returning_section);
     }
 
@@ -50,16 +50,16 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
-        
+
         $amount = 3;
-        
+
         $this->addSomeSectionsToConfig($section, $amount, true);
-        
+
         $sections = $this->object->getSections();
-        
+
         $this->assertCount($amount, $sections);
     }
-    
+
     /**
      * @covers ConfigContainer::addSections
      */
@@ -67,13 +67,13 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
-        
+
         $amount = 3;
-        
+
         $this->addSomeSectionsToConfig($section, $amount, false);
-        
+
         $sections = $this->object->getSections();
-        
+
         $this->assertCount(1, $sections);
     }
 
@@ -85,11 +85,11 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
-        
+
         $this->addSomeSectionsToConfig($section, 1, false);
-        
+
         $returning_section = $this->object->getSection($section_name);
-        
+
         $this->assertInstanceOf('ConfigSection', $returning_section);
     }
 
@@ -101,30 +101,30 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
-        
+
         $amount = 3;
-        
+
         $this->addSomeSectionsToConfig($section, $amount, true);
-        
+
         $sections = $this->object->getSections();
-        
+
         $this->assertCount($amount, $sections);
-        
+
         foreach ($sections as $section) {
             $this->assertInstanceOf('ConfigSection', $section);
         }
     }
-    
+
     /**
      * @covers ConfigContainer::getSections
      */
     public function testGetSectionsReturnsEmptyArrayWhenNoSectionWasAddedToConfig()
     {
         $sections = $this->object->getSections();
-        
+
         $this->assertEquals(array(), $sections);
     }
-    
+
     /**
      * @expectedException Exception
      * @covers ConfigContainer::getSection
@@ -140,13 +140,13 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     public function testHasSection()
     {
         $section_name = 'non-existent';
-        
+
         $this->assertFalse($this->object->hasSection($section_name));
-        
+
         $section = new \ConfigSection($section_name);
-        
+
         $this->object->addSection($section);
-        
+
         $this->assertTrue($this->object->hasSection($section_name));
     }
 

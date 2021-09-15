@@ -7,7 +7,7 @@
 <!--
 	function SelectAllCustomers()
 	{
-		if (document.setwarnings.customers.checked) 
+		if (document.setwarnings.customers.checked)
 			for (var i = 0; i < document.getElementById('customerslist').length; i++)
 				document.getElementById('customerslist').options[i].selected = true;
 		else
@@ -20,12 +20,12 @@
 		document.setwarnings.customers.checked = !document.setwarnings.customers.checked;
 		SelectAllCustomers();
 	}
-	
+
 	function switchbox(id)
 	{
-		if ((id.name == 'setwarnings[warnon]') && id.checked ) 
+		if ((id.name == 'setwarnings[warnon]') && id.checked )
 			document.setwarnings.elements['setwarnings[warnoff]'].checked = false;
-		if ((id.name == 'setwarnings[warnoff]') && id.checked ) 
+		if ((id.name == 'setwarnings[warnoff]') && id.checked )
 			document.setwarnings.elements['setwarnings[warnon]'].checked = false;
 	}
 

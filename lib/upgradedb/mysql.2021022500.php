@@ -31,7 +31,7 @@ if (!$this->ResourceExists('netdevicemacs', LMSDB::RESOURCE_TYPE_TABLE)) {
             label varchar(30) NOT NULL,
             mac varchar(17) NOT NULL,
             main tinyint DEFAULT '0' NOT NULL,
-            PRIMARY KEY (id),       
+            PRIMARY KEY (id),
             CONSTRAINT netdevicemacs_netdevid_fkey
                 FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
             UNIQUE KEY netdevicemacs_mac_ukey (mac),

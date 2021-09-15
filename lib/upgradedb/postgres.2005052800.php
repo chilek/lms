@@ -47,13 +47,13 @@ $this->Execute("
 	UNIQUE (login)
 	);
 	INSERT INTO users (id, login, name, email, rights, hosts, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted)
-	    SELECT id, login, name, email, rights, hosts, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted 
+	    SELECT id, login, name, email, rights, hosts, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted
 	    FROM users_t;
-	DROP TABLE users_t; 
+	DROP TABLE users_t;
 
 	CREATE TEMP TABLE customers_t AS SELECT * FROM customers;
 	DROP TABLE customers;
-	CREATE TABLE customers (	
+	CREATE TABLE customers (
 	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
 	lastname varchar(255)	DEFAULT '' NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
@@ -81,34 +81,34 @@ $this->Execute("
 	INSERT INTO customers (id, lastname, name, status, email, phone1, phone2, phone3, gguin, address, zip, city, nip, pesel, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin)
 	    SELECT id, lastname, name, status, email, phone1, phone2, phone3, gguin, address, zip, city, nip, pesel, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message, pin
 	    FROM customers_t;
-	DROP TABLE customers_t; 
+	DROP TABLE customers_t;
 
 	CREATE TEMP TABLE groups_t AS SELECT * FROM customergroups;
 	DROP TABLE customergroups;
 	CREATE TABLE customergroups (
-	id integer DEFAULT nextval('customergroups_id_seq'::text) NOT NULL, 
-	name varchar(255) DEFAULT '' NOT NULL, 
-	description text DEFAULT '' NOT NULL, 
-	PRIMARY KEY (id), 
+	id integer DEFAULT nextval('customergroups_id_seq'::text) NOT NULL,
+	name varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
 	UNIQUE (name));
-	INSERT INTO customergroups (id, name, description) 
-	    SELECT id, name, description 
+	INSERT INTO customergroups (id, name, description)
+	    SELECT id, name, description
 	    FROM groups_t;
-	DROP TABLE groups_t; 
+	DROP TABLE groups_t;
 
 	CREATE TEMP TABLE a_t AS SELECT * FROM customerassignments;
 	DROP TABLE customerassignments;
 	CREATE TABLE customerassignments (
-	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL, 
-	customergroupid integer DEFAULT 0 NOT NULL, 
-	customerid integer DEFAULT 0 NOT NULL, 
+	id integer DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
+	customergroupid integer DEFAULT 0 NOT NULL,
+	customerid integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (customergroupid, customerid));
 	INSERT INTO customerassignments (id, customergroupid, customerid)
-	    SELECT id, customergroupid, customerid 
+	    SELECT id, customergroupid, customerid
 	    FROM a_t;
-	DROP TABLE a_t; 
-	
+	DROP TABLE a_t;
+
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052800', 'dbversion'));
