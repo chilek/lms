@@ -1483,7 +1483,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 
         $userid = Auth::GetCurrentUser();
-        $ticket = $LMS->GetTicketContents($ticketid);
+        $ticket = $this->GetTicketContents($ticketid);
 
         $type = 0;
         $notes = array();
