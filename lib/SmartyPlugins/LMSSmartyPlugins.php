@@ -753,7 +753,7 @@ class LMSSmartyPlugins
             $result .= '<tr id="mac' . $key . '" class="mac">
 			<td style="width: 100%;">
 				<input type="text" name="' . $form . '[macs][' . $key . ']" value="' . $mac . '" '
-                . 'id="mec-input-' . $key . '" ' . (!$i ? 'required ' : '')
+                . 'id="mac-input-' . $key . '" ' . (!$i ? 'required ' : '')
                 . ' placeholder="' . trans('MAC address') . '" '  . self::tipFunction(array(
                     'trigger' => 'mac-input-' . $key,
                 ), $template) . '>
