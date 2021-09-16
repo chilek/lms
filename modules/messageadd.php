@@ -573,7 +573,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $error['sender'] = trans('Specified e-mail is not correct!');
             }
         }
-        $message['sender'] = ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']);
+        $message['sender'] = empty($message['sender']) ? ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']) : $message['sender'];
         if ($message['from'] == '') {
             $error['from'] = trans('Sender name is required!');
         }
