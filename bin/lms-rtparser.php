@@ -197,7 +197,7 @@ if (preg_match('/^[0-9]+$/', $queue)) {
 }
 $categories = ConfigHelper::getConfig('rt.default_categories', 'default');
 $categories = preg_split('/\s*,\s*/', trim($categories));
-$auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', '0'));
+$auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', true));
 //$tmp_dir = ConfigHelper::getConfig('rt.tmp_dir', '', true);
 $notify = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.newticket_notify', true));
 $customerinfo = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.include_customerinfo', '1'));
