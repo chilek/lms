@@ -460,12 +460,12 @@ switch ($action) {
             if (check_mac($value)) {
                 if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                     if ($LMS->GetNodeIDByMAC($value)) {
-                        $error['mac' . $key] = trans('MAC address is in use!');
+                        $error['mac-input-' . $key] = trans('MAC address is in use!');
                     }
                 }
                 $macs[] = $value;
             } elseif ($value != '') {
-                $error['mac' . $key] = trans('Incorrect MAC address!');
+                $error['mac-input-' . $key] = trans('Incorrect MAC address!');
             }
         }
         $nodeipdata['macs'] = $macs;
@@ -581,12 +581,12 @@ switch ($action) {
             if (check_mac($value)) {
                 if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                     if (($nodeid = $LMS->GetNodeIDByMAC($value)) != null && $nodeid != $_GET['ip']) {
-                        $error['mac' . $key] = trans('MAC address is in use!');
+                        $error['mac-input-' . $key] = trans('MAC address is in use!');
                     }
                 }
                 $macs[] = $value;
             } elseif ($value != '') {
-                $error['mac' . $key] = trans('Incorrect MAC address!');
+                $error['mac-input-' . $key] = trans('Incorrect MAC address!');
             }
         }
         $nodeipdata['macs'] = $macs;
