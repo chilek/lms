@@ -1719,7 +1719,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if (isset($props['categories'])) {
-            $ticket['categories'] = empty($ticket['categories']) ? array() : explode(',', $ticket['categories']);
+            $ticket['categories'] = empty($ticket['categories']) ? array() : array_keys($ticket['categories']);
             $categories = $this->db->GetAllByKey('SELECT id, name, description
 				FROM rtcategories', 'id');
 
