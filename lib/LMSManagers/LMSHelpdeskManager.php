@@ -1287,7 +1287,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticket['requestor_name'] = $ticket['requestor'];
         if (empty($ticket['requestor_userid']) && (!empty($ticket['requestor']) || !empty($ticket['requestor_mail']) || !empty($ticket['requestor_phone']))) {
-            $ticket['requestor_userid'] = 0;
+            $ticket['requestor_userid'] = null;
         }
 
         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id, c.name, c.style
