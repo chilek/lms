@@ -432,7 +432,7 @@ if (isset($_POST['ticket'])) {
 
     $ticketedit['customerid'] = ($ticketedit['custid'] ? $ticketedit['custid'] : 0);
 
-    if ($ticketedit['requestor_userid'] == '0') {
+    if (empty($ticketedit['requestor_userid'])) {
         if (empty($ticketedit['requestor_name']) && empty($ticketedit['requestor_mail']) && empty($ticketedit['requestor_phone'])) {
             $error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
                 trans('At least requestor name, mail or phone should be filled!');
