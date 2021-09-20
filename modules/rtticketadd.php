@@ -116,7 +116,7 @@ if (isset($_POST['ticket'])) {
         }
     }
 
-    if (empty($ticket['requestor_userid'])) {
+    if ($ticket['requestor_userid'] == '0') {
         if (empty($ticket['requestor_name']) && empty($ticket['requestor_mail']) && empty($ticket['requestor_phone'])) {
             $error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
                 trans('At least requestor name, mail or phone should be filled!');
