@@ -213,9 +213,13 @@ if (isset($_POST['document'])) {
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
             array(  $documentedit['type'],
-                    $closed == 1 && !$document['closed'] ? 0 : $closed,
-                    $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
-                    $documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
+                    ($document['docrights'] & DOCRIGHT_CONFIRM) && $closed == 1 && !$document['closed'] ? 0 : $closed,
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0
+                        : $document['closed'],
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? ($documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null)
+                        : $document['cuserid'],
                     !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
                     $allowed_archiving ? $documentedit['archived'] : $document['archived'],
                     $allowed_archiving
