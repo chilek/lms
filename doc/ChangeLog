@@ -10,6 +10,8 @@ version 28-git (????-??-??):
   - enhancement: allow to search nodes by creation date period [chilan]
   - improvement: show total debt value for customers with debt collection status [chilan]
   - improvement: changed default value of variable rt.auto_open to true [interduo]
+  - enhancement: 'get_supported_actions' hook used in lms-notify.php allows plugins to inform core
+    about correct custom action syntax [chilan]
 
 version 27.0 (2021-08-20):
 
