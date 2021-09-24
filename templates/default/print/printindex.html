@@ -271,7 +271,8 @@
 </form>
 {/if}
 {if $printmenu=="finances"}
-<FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist">
+<FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
+<input type="hidden" name="disposition" value="print">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -432,14 +433,30 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR>
-		<TD style="width: 100%;" colspan="2" align="right">
-			<A href="javascript:document.printbalancelist.target='_blank';document.printbalancelist.submit();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-		</TD>
-	</TR>
+	<tr>
+		<td class="lms-ui-box-buttons" colspan="2">
+			{button icon="csv" label="CSV" id="printbalancelist-csv"}
+			{button icon="print" label="Print" id="printbalancelist-print"}
+		</td>
+	</tr>
     </TBODY>
 </TABLE>
 </FORM>
+<script>
+
+	$(function() {
+		$('#printbalancelist-csv').click(function() {
+			$('#printbalancelist [name="disposition"]').val('csv');
+			$('#printbalancelist').submit();
+		});
+
+		$('#printbalancelist-print').click(function() {
+			$('#printbalancelist [name="disposition"]').val('print');
+			$('#printbalancelist').submit();
+		});
+	});
+
+</script>
 {/if}
 {if ($printmenu=="customer" || $printmenu=="finances") && (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances'))}
 <form method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance">

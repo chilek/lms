@@ -1,0 +1,35 @@
+{strip}
+{trans("No.")}
+|
+{trans("Date")}
+|
+{trans("Liability")}
+|
+{trans("Income")}
+|
+{trans("Expense")}
+|
+{trans("After")}
+|
+{trans("Customer")}
+|
+{trans("Description")}
+{/strip}
+{foreach $balancelist as $item}{strip}
+{counter}
+|
+{$item.time|date_format:"%d.%m.%Y"}
+|
+{if $item.covenant}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
+|
+{if !$item.covenant && $item.value > 0}{moneyf($item.value, $item.currency)}{else}-{/if}
+|
+{if !$item.covenant && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
+|
+{if $item.covenant}-{else}{moneyf($item.after)}{/if}
+|
+{$item.customername|truncate:25:"..."}
+|
+{$item.comment}
+{/strip}
+{/foreach}

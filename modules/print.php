@@ -319,7 +319,15 @@ switch ($type) {
             $output = $SMARTY->fetch('print/printbalancelist.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
-            $SMARTY->display('print/printbalancelist.html');
+            if (isset($_POST['disposition']) && $_POST['disposition'] == 'csv') {
+                $filename = 'history-' . date('YmdHis') . '.csv';
+                header('Content-Type: text/plain; charset=utf-8');
+                header('Content-Disposition: attachment; filename=' . $filename);
+                header('Pragma: public');
+                $SMARTY->display('print/printbalancelist-csv.html');
+            } else {
+                $SMARTY->display('print/printbalancelist.html');
+            }
         }
         break;
 
