@@ -159,6 +159,89 @@ if (empty($channels)) {
     $channels[] = 'mail';
 }
 
+$current_month = intval(strftime('%m'));
+$current_year = intval(strftime('%Y'));
+
+$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section'] : 'notify');
+
+$timeoffset = date('Z');
+
+if (array_key_exists('config-file', $options)) {
+    $CONFIG_FILE = $options['config-file'];
+} else {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+}
+
+if (!$quiet) {
+    echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
+}
+
+if (!is_readable($CONFIG_FILE)) {
+    die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
+}
+
+define('CONFIG_FILE', $CONFIG_FILE);
+
+$CONFIG = (array)parse_ini_file($CONFIG_FILE, true);
+
+// Check for configuration vars and set default values
+$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
+$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
+
+define('SYS_DIR', $CONFIG['directories']['sys_dir']);
+define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
+define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
+
+// Load autoloader
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
+}
+
+// Init database
+
+$DB = null;
+
+try {
+    $DB = LMSDB::getInstance();
+} catch (Exception $ex) {
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't work without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
+}
+
+// Include required files (including sequence is important)
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+
+if (empty($fakedate)) {
+    $currtime = time();
+} else {
+    $currtime = strtotime($fakedate);
+}
+list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+$daystart = mktime(0, 0, 0, $month, $day, $year);
+$dayend = mktime(23, 59, 59, $month, $day, $year);
+
+$SYSLOG = SYSLOG::getInstance();
+
+// Initialize Session, Auth and LMS classes
+
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+$LMS->executeHook('lms_initialized', $LMS);
+
 define('ACTION_PARAM_NONE', 0);
 define('ACTION_PARAM_REQUIRED', 1);
 define('ACTION_PARAM_OPTIONAL', -1);
@@ -229,68 +312,8 @@ $supported_actions = array(
     ),
 );
 
-$current_month = intval(strftime('%m'));
-$current_year = intval(strftime('%Y'));
-
-$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
-    ? $options['section'] : 'notify');
-
-$timeoffset = date('Z');
-
-if (array_key_exists('config-file', $options)) {
-    $CONFIG_FILE = $options['config-file'];
-} else {
-    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
-}
-
-if (!$quiet) {
-    echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
-}
-
-if (!is_readable($CONFIG_FILE)) {
-    die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
-}
-
-define('CONFIG_FILE', $CONFIG_FILE);
-
-$CONFIG = (array)parse_ini_file($CONFIG_FILE, true);
-
-// Check for configuration vars and set default values
-$CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
-$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
-
-define('SYS_DIR', $CONFIG['directories']['sys_dir']);
-define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
-define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
-
-// Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
-}
-
-// Init database
-
-$DB = null;
-
-try {
-    $DB = LMSDB::getInstance();
-} catch (Exception $ex) {
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't work without database
-    die("Fatal error: cannot connect to database!" . PHP_EOL);
-}
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+$hook_data = $LMS->executeHook('get_supported_actions', array('supported_actions' => $supported_actions));
+$supported_actions = $hook_data['supported_actions'];
 
 $actions = array();
 if (isset($options['actions'])) {
@@ -383,27 +406,6 @@ if (isset($options['unblock-prechecks'])) {
 } else {
     $unblock_prechecks = $actions;
 }
-
-
-if (empty($fakedate)) {
-    $currtime = time();
-} else {
-    $currtime = strtotime($fakedate);
-}
-list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
-$daystart = mktime(0, 0, 0, $month, $day, $year);
-$dayend = mktime(23, 59, 59, $month, $day, $year);
-
-$SYSLOG = SYSLOG::getInstance();
-
-// Initialize Session, Auth and LMS classes
-
-$AUTH = null;
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-
-$plugin_manager = new LMSPluginManager();
-$LMS->setPluginManager($plugin_manager);
-$plugin_manager->executeHook('lms_initialized', $LMS);
 
 $divisionid = isset($options['division']) ? $LMS->getDivisionIdByShortName($options['division']) : null;
 if (!empty($divisionid)) {
