@@ -1718,8 +1718,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['customerid'] = null;
         }
 
-        if (isset($props['categories'])) {
-            $ticket['categories'] = empty($ticket['categories']) ? array() : array_keys($ticket['categories']);
+        $ticket['categories'] = is_array($ticket['categories']) ? Utils::array_column($ticket['categories'], 'id') : null;
+        $props['categories'] = is_array($props['categories']) ? array_values($props['categories']) : null;
+        $diff1 = (empty(array_diff($props['categories'], $ticket['categories']) ? true : false));
+        $diff2 = (empty(array_diff($props['categories'], $ticket['categories']) ? true : false));
+
+        if ($diff1 && $diff2) {
+            $ticket['categories'] = empty($ticket['categories']) ? array() : $ticket['categories'];
+            $props['categories'] = empty($props['categories']) ? array() : $props['categories'];
+
             $categories = $this->db->GetAllByKey('SELECT id, name, description
 				FROM rtcategories', 'id');
 

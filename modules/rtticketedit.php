@@ -450,9 +450,7 @@ if (isset($_POST['ticket'])) {
     $ticketedit = $hook_data['ticketedit'];
     $error = $hook_data['error'];
 
-    if (!empty($ticketedit['categories'])) {
-        $ticketedit['categories'] = array_flip($ticketedit['categories']);
-    }
+    $ticketedit['categories'] = !empty($ticketedit['categories']) ? array_flip($ticketedit['categories']) : null;
 
     if (!$error) {
         // setting status and the ticket owner
