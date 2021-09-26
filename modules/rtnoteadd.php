@@ -139,7 +139,7 @@ if (isset($_GET['ticketid'])) {
             'cause' => $note['cause'],
             'state' => $note['state'],
             'source' => $note['source'],
-            'priority' => $note['priority'],
+            'priority' => isset($note['priority']) ? $note['priority'] : null,
             'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
             'deadline' => empty($note['deadline']) ? null : $deadline,
         );
@@ -267,7 +267,7 @@ $layout['pagetitle'] = trans('New Note');
 $SMARTY->assign('ticket', $ticket);
 if (!isset($_POST['note'])) {
     $note['source'] = $ticket['source'];
-    $note['priority'] = $ticket['priority'];
+    $note['priority'] = isset($ticket['priority']) ? $ticket['priority'] : null;
     $note['verifierid'] = $ticket['verifierid'];
     $note['deadline'] = $ticket['deadline'];
     $notechangestateafter = ConfigHelper::getConfig('rt.change_ticket_state_to_open_after_note_add_interval', 0);
