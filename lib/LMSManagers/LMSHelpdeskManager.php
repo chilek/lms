@@ -1124,7 +1124,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['requestor']) ? $ticket['requestor'] : null,
             isset($ticket['requestor_mail']) ? $ticket['requestor_mail'] : null,
             isset($ticket['requestor_phone']) ? $ticket['requestor_phone'] : null,
-            isset($ticket['requestor_userid']) ? $ticket['requestor_userid'] : null,
+            empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'],
             $ticket['subject'],
             isset($ticket['state']) && !empty($ticket['state']) ? $ticket['state'] : RT_NEW,
             isset($ticket['owner']) && !empty($ticket['owner']) ? $ticket['owner'] : null,
