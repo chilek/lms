@@ -28,6 +28,11 @@ class LMSEzpdfBackend extends Cezpdf
 {
     private $margin;
 
+    private $margin_top;
+    private $margin_bottom;
+    private $margin_left;
+    private $margin_right;
+
     public function __construct($pagesize, $orientation, $title)
     {
         global $layout;
@@ -77,7 +82,11 @@ class LMSEzpdfBackend extends Cezpdf
         $this->setPreferences('FitWindow', '1');
         list ($margin_top, $margin_right, $margin_bottom, $margin_left) =
             explode(',', ConfigHelper::getConfig('invoices.ezpdf_margins', '40,30,40,30'));
-        $this->ezSetMargins(trim($margin_top), trim($margin_bottom), trim($margin_left), trim($margin_right));
+        $this->margin_top = trim($margin_top);
+        $this->margin_bottom = trim($margin_bottom);
+        $this->margin_left = trim($margin_left);
+        $this->margin_right = trim($margin_right);
+        $this->ezSetMargins($this->margin_top, $this->margin_bottom, $this->margin_left, $this->margin_right);
         $this->setLineStyle(0.5);
         $this->setFontFamily('arial', array('b' => 'arialbd'));
         $this->selectFont(
@@ -162,9 +171,9 @@ class LMSEzpdfBackend extends Cezpdf
     // page break checking
     public function check_page_length(&$y, $len = 0)
     {
-        if ($y - $len < PDF_MARGIN_BOTTOM) {
+        if ($y - $len < $this->margin_bottom) {
             $this->ezNewPage();
-            $y = $this->ez['pageHeight'] - PDF_MARGIN_TOP;
+            $y = $this->ez['pageHeight'] - $this->margin_top;
         }
     }
 }
