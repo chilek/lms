@@ -1828,7 +1828,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $props['requestor_userid'] = null;
             }
         } else {
-            $props['requestor_userid'] = $ticket['requestor_userid'];
+            $props['requestor_userid'] = empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'];
         }
 
         if (array_key_exists('requestor_phone', $props)) {
