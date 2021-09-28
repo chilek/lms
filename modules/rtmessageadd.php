@@ -315,7 +315,7 @@ if (isset($_POST['message'])) {
                     'cause' => $message['cause'],
                     'state' => $message['state'],
                     'source' => $message['source'],
-                    'priority' => $message['priority'],
+                    'priority' => isset($message['priority']) ? $message['priority'] : null,
                     'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
                     'deadline' => empty($message['deadline']) ? null : $deadline,
                 );

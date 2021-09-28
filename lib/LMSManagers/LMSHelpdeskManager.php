@@ -1529,7 +1529,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['source'] = $ticket['source'];
         }
 
-        if ($ticket['priority'] != $props['priority']) {
+        if ($ticket['priority'] != $props['priority'] && array_key_exists('priority', $props)) {
             $a = isset($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : trans("undefined");
             $b = ($props['priority'] == '') ? trans("undefined") : $RT_PRIORITIES[$props['priority']];
             $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $a, $b);
