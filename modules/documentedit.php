@@ -214,7 +214,7 @@ if (isset($_POST['document'])) {
 				WHERE id=?',
             array(  $documentedit['type'],
                     ($document['docrights'] & DOCRIGHT_CONFIRM)
-                        ? ($closed == DOC_OPEN && !$document['closed'] ? DOC_CLOSED : $closed)
+                        ? ($closed == DOC_OPEN && !$document['closed'] ? DOC_OPEN : $closed)
                         : $document['closed'],
                     ($document['docrights'] & DOCRIGHT_CONFIRM)
                         ? $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0
