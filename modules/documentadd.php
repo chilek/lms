@@ -304,7 +304,7 @@ if (isset($_POST['document'])) {
                 ($division['inv_footer'] ? $division['inv_footer'] : ''),
                 ($division['inv_author'] ? $division['inv_author'] : ''),
                 ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-                isset($document['closed']) ? 1 : 0,
+                isset($document['closed']) ? DOC_CLOSED : DOC_OPEN,
                 $fullnumber,
                 !isset($document['reference']) || empty($document['reference']) ? null : $document['reference']['id'],
                 empty($document['templ']) ? null : $document['templ'],

@@ -190,22 +190,22 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         switch ($status) {
             case 0:
-                $status_sql = ' AND d.closed = 0 AND d.confirmdate >= 0 AND (d.confirmdate = 0 OR d.confirmdate < ?NOW?)';
+                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate >= 0 AND (d.confirmdate = 0 OR d.confirmdate < ?NOW?)';
                 break;
             case 1:
-                $status_sql = ' AND d.closed > 0';
+                $status_sql = ' AND d.closed > ' . DOC_OPEN;
                 break;
             case 2:
-                $status_sql = ' AND d.closed = 0 AND d.confirmdate = -1';
+                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate = -1';
                 break;
             case 3:
-                $status_sql = ' AND d.closed = 0 AND d.confirmdate > 0 AND d.confirmdate > ?NOW?';
+                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate > 0 AND d.confirmdate > ?NOW?';
                 break;
             case 4:
-                $status_sql = ' AND d.closed = 2';
+                $status_sql = ' AND d.closed = ' . DOC_CLOSED_AFTER_CUSTOMER_SMS;
                 break;
             case 5:
-                $status_sql = ' AND d.closed = 3';
+                $status_sql = ' AND d.closed = ' . DOC_CLOSED_AFTER_CUSTOMER_SCAN;
                 break;
             default:
                 $status_sql = '';
@@ -1357,7 +1357,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     WHERE da.type = -1
                     GROUP BY da.docid
 				) a ON a.docid = d.id
-				WHERE d.closed = 0 AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
+				WHERE d.closed = ' . DOC_OPEN . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
             'id'
         );
         if (empty($docs)) {
@@ -1395,9 +1395,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
  				adate = ?, auserid = ? WHERE id = ?',
                 array(
                     $userid,
-                    empty($doc['customerawaits']) ? ($userpanel ? 3 : 1) : 2,
+                    empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SCAN : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SMS,
                     $doc['customerawaits'] ? 0 : $doc['confirmdate'],
-                    0,
+                    DOC_OPEN,
                     null,
                     $docid
                 )
@@ -1773,7 +1773,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             'SELECT d.id
 				FROM documents d
 				' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
-				WHERE d.closed > 0 AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
+				WHERE d.closed > ' . DOC_OPEN . ' AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
 					' . ($userid ? ' AND r.userid = ' . $userid . ' AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0' : '')
         );
         if (empty($docs)) {
