@@ -125,7 +125,8 @@
         "galleriajs/galleria": "^1",
         "rzani/zbar-qrdecoder": "^2",
         "dragonbe/vies": "*",
-        "ezyang/htmlpurifier": "^4.13"
+        "ezyang/htmlpurifier": "^4.13",
+        "phpoffice/phpspreadsheet": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
