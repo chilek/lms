@@ -1725,12 +1725,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
             switch ($props['category_change']) {
                 case 2:
-                    $categories_added = $props['categories'];
+                    $categories_added = array_diff($props['categories'], $ticket['categories']);
                     $categories_removed = array();
                     break;
                 case 3:
                     $categories_added = array();
-                    $categories_removed = $props['categories'];
+                    $categories_removed = array_intersect($ticket['categories'], $props['categories']);
                     break;
                 default:
                     $categories_added = array_diff($props['categories'], $ticket['categories']);
