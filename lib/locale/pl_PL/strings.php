@@ -1068,6 +1068,7 @@ $_LANG['Gross Price:'] = 'Cena brutto:';
 $_LANG['Gross value'] = 'Wartość brutto';
 $_LANG['Gross Value:'] = 'Wartość brutto:';
 $_LANG['Group:'] = 'Grupa:';
+$_LANG['Group'] = 'Grupa';
 $_LANG['(Group: $a)'] = '(Grupa: $a)';
 $_LANG['Group Edit: $a'] = 'Edycja grupy: $a';
 $_LANG['Group Info: $a'] = 'Informacje o grupie: $a';
