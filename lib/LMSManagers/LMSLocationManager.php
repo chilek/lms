@@ -468,7 +468,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             LEFT JOIN location_street_types t ON t.id = lst.typeid
             WHERE lc.id = ?',
             array(
-                $address['location_street'],
+                empty($address['location_street']) ? 0 : $address['location_street'],
                 $address['location_city'],
             )
         );
