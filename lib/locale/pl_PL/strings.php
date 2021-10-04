@@ -3723,6 +3723,7 @@ $_LANG['postal'] = 'korespondencyjny';
 
 $_LANG['visual editor'] = 'edytor wizualny';
 $_LANG['Message template'] = 'Szablon wiadomości';
+$_LANG['Message template:'] = 'Szablon wiadomości:';
 $_LANG['Note template'] = 'Szablon notatki';
 $_LANG['Message template operation:'] = 'Czynność na szablonie wiadomości:';
 $_LANG['message template update'] = 'aktualizacja szablonu wiadomości';
