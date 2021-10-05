@@ -51,6 +51,16 @@ class Utils
         });
     }
 
+    /*
+    * compare_arrays - compares two arrays
+    * got the same elements (order of elements are not important, duplicates also)
+    * returns true if arrays are equal
+    */
+    public static function arrays_equal($array1, $array2)
+    {
+        return !array_diff($array1, $array2) && !array_diff($array2, $array1);
+    }
+
     public static function filterArrayByKeys(array $array, array $keys, $reverse = false)
     {
         $result = array();
