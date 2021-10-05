@@ -23,7 +23,7 @@
 	<div class="lms-ui-tab-table-wrapper col-2">
 		<div class="lms-ui-tab-table-column label">
 			<span id="label_{$macid}"{if $edit} style="display: none;"{/if} class="mac-info-field">
-				{$mac.label}
+				{$mac.label|escape}
 			</span>
 		</div>
 		<div class="lms-ui-tab-table-column mac">
