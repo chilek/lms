@@ -210,7 +210,7 @@ if (isset($_POST['document'])) {
         $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
 
         if (($document['docrights'] & DOCRIGHT_CONFIRM) && !$document['closed'] && $closed > DOC_OPEN) {
-            $LMS->CommitDocuments($documentedit['id']);
+            $LMS->CommitDocuments(array($documentedit['id']));
         }
 
         $DB->Execute(
