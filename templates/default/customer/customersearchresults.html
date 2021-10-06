@@ -308,6 +308,13 @@
 						alertDialog($t("<!customersearch>Customer group with specified name already exists!"), $('#newcustomergroup'));
 						return false;
 					}
+					{literal}
+					if (!newgroup.match(/^[\._\-0-9\p{L}]+$/iu)) {
+						alertDialog($t("Invalid chars in group name!"), $('#newcustomergroup'));
+						return false;
+					}
+					{/literal}
+
 					action = '?m=customergroup&oper=addtogroups';
 					break;
 			}
