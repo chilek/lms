@@ -1397,7 +1397,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $userid,
                     empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SCAN : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SMS,
                     $doc['customerawaits'] ? 0 : $doc['confirmdate'],
-                    DOC_OPEN,
+                    0,
                     null,
                     $docid
                 )
