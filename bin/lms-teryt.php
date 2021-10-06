@@ -585,7 +585,13 @@ if (isset($options['fetch'])) {
         }
     }
 
-    $ctx = stream_context_create();
+    $ctx = stream_context_create(
+        array(
+            'ssl'  => array(
+                'verify_peer' => false,
+            ),
+        )
+    );
 
     if (!$quiet) {
         echo 'Downloading ' . BUILDING_BASE_ZIP_URL . ' file...' . PHP_EOL;
