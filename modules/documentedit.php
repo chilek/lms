@@ -265,7 +265,7 @@ if (isset($_POST['document'])) {
         $DB->CommitTrans();
 
         if ($closed > DOC_OPEN && !$document['closed']) {
-            $LMS->CommitDocuments(array($documentedit['id']));
+            $LMS->CommitDocuments(array($documentedit['id']), false, false);
         }
 
         $SESSION->redirect('?'.$SESSION->get('backto'));

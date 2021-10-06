@@ -3320,10 +3320,10 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
-    public function CommitDocuments(array $ids, $userpanel = false)
+    public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
         $manager = $this->getDocumentManager();
-        return $manager->CommitDocuments($ids, $userpanel);
+        return $manager->CommitDocuments($ids, $userpanel, $check_close_flag);
     }
 
     public function NewDocumentCustomerNotifications(array $document)
