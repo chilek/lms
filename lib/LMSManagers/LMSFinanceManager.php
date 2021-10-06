@@ -2234,7 +2234,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'value' => empty($invoice['invoice']['netflag']) ? $item['valuebrutto'] : $item['valuenetto'],
                 SYSLOG::RES_TAX => $item['taxid'],
                 'taxcategory' => isset($item['taxcategory']) && !empty($item['taxcategory']) ? $item['taxcategory'] : 0,
-                'prodid' => $item['prodid'],
+                'prodid' => empty($item['prodid'] ? null : $item['prodid']),
                 'content' => $item['jm'],
                 'count' => $item['count'],
                 'pdiscount' => $item['pdiscount'],
