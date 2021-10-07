@@ -218,8 +218,13 @@ $SMARTY->assign('assignment', $a);
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
-$defaultTaxId = $defaultTaxId[0]['id'];
+$defaultTaxIds = $LMS->GetTaxes(null, null, true);
+if (is_array($defaultTaxIds)) {
+    $defaultTaxId = reset($defaultTaxIds);
+    $defaultTaxId = $defaultTaxId['id'];
+} else {
+    $defaultTaxId = 0;
+}
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
 $SMARTY->assign('customerinfo', $customer);

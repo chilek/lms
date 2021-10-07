@@ -503,8 +503,13 @@ if (isset($document['customerid'])) {
 
 $SMARTY->assign('promotions', $promotions);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
-$defaultTaxId = $defaultTaxId[0]['id'];
+$defaultTaxIds = $LMS->GetTaxes(null, null, true);
+if (is_array($defaultTaxIds)) {
+    $defaultTaxId = reset($defaultTaxIds);
+    $defaultTaxId = $defaultTaxId['id'];
+} else {
+    $defaultTaxId = 0;
+}
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
 $SMARTY->assign('numberplanlist', $numberplans);
 // --- promotion support
