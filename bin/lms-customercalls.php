@@ -418,22 +418,24 @@ foreach ($dirs as $dir) {
             }
         }
 
-        if ($duration == -1 && !empty($duration_command)) {
-            $cmd = str_replace(
-                array('%i', '%o'),
-                array($src_file, $dst_file),
-                $duration_command
-            );
-            $ret = 0;
-            $output = array();
-            $res = exec($cmd, $output, $ret);
-            if (!empty($ret) || $res === false) {
-                echo 'Warning: error during duration determination for file ' . $src_file . '!' . PHP_EOL;
+        if ($duration == -1) {
+            if (empty($duration_command)) {
+                echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
+            } else {
+                $cmd = str_replace(
+                    array('%i', '%o'),
+                    array($src_file, $dst_file),
+                    $duration_command
+                );
+                $ret = 0;
+                $output = array();
+                $res = exec($cmd, $output, $ret);
+                if (!empty($ret) || $res === false) {
+                    echo 'Warning: error during duration determination for file ' . $src_file . '!' . PHP_EOL;
+                } else {
+                    $duration = str_replace(',', '.', round(floatval($res)));
+                }
             }
-
-            $duration = str_replace(',', '.', round(floatval($res)));
-        } else {
-            echo 'Warning: cannot find duration field for file \'' . $src_file_name . '\'!' . PHP_EOL;
         }
 
         chmod($dst_file, $storage_dir_permission);
