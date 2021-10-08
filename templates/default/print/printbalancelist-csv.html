@@ -3,6 +3,8 @@
 |
 {trans("Date")}
 |
+{trans("Source")}
+|
 {trans("Liability")}
 |
 {trans("Income")}
@@ -19,6 +21,8 @@
 {counter}
 |
 {$item.time|date_format:"%d.%m.%Y"}
+|
+{$item.sourcename}
 |
 {if $item.covenant}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
 |

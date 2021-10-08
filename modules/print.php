@@ -230,8 +230,10 @@ switch ($type) {
 
         if ($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid,
                     c.value AS value, c.currency, c.currencyvalue,
-					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
+					taxes.label AS taxlabel, c.customerid, comment, c.type AS type,
+                    cs.name AS sourcename
 					FROM cash c
+					LEFT JOIN cashsources cs ON cs.id = c.sourceid
 					LEFT JOIN taxes ON (taxid = taxes.id) '
                     .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid)  ' : '')
                     .'WHERE time <= ? '
