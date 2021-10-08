@@ -566,32 +566,67 @@ function parse_customer_data($data, $format, $row)
     $totalamount = -$row['totalbalance'];
     $hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'customer' => $row));
     $data = $hook_data['data'];
-    $data = preg_replace(
-        "/\%bankaccount/",
-        format_bankaccount(bankaccount($row['id'], $row['account'])),
-        $data
-    );
-    $data = preg_replace('/%name/', $row['name'], $data);
-    $data = preg_replace('/%age/', $row['age'], $data);
-    $data = preg_replace("/\%b/", sprintf('%01.2f', $amount), $data);
-    $data = preg_replace("/\%totalb/", sprintf('%01.2f', $totalamount), $data);
-    $data = preg_replace("/\%date-y/", strftime("%Y"), $data);
-    $data = preg_replace("/\%date-m/", strftime("%m"), $data);
-    $data = preg_replace("/\%date_month_name/", strftime("%B"), $data);
+
     if (isset($row['deadline'])) {
         $deadline = $row['deadline'];
     } else {
         $deadline = $row['cdate'] + $row['paytime'] * 86400;
     }
-    $data = preg_replace("/\%deadline-y/", strftime("%Y", $deadline), $data);
-    $data = preg_replace("/\%deadline-m/", strftime("%m", $deadline), $data);
-    $data = preg_replace("/\%deadline-d/", strftime("%d", $deadline), $data);
-    $data = preg_replace("/\%B/", sprintf('%01.2f', $row['balance']), $data);
-    $data = preg_replace("/\%totalB/", sprintf('%01.2f', $row['totalbalance']), $data);
-    $data = preg_replace("/\%saldo/", moneyf($row['balance']), $data);
-    $data = preg_replace("/\%totalsaldo/", moneyf($row['totalbalance']), $data);
-    $data = preg_replace("/\%pin/", $row['pin'], $data);
-    $data = preg_replace("/\%cid/", $row['id'], $data);
+
+    list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+
+    if ($row['totalbalnce'] < 0) {
+        $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$row['totalbalance']));
+    } elseif ($row['totalbalance'] > 0) {
+        $commented_balance = trans('Billing status: %a (excess payment or to repay)', moneyf($row['totalbalance']));
+    } else {
+        $commented_balance = trans('Billing status: $a', moneyf($row['totalbalance']));
+    }
+
+    $data = str_replace(
+        array(
+            '%bankaccount',
+            '%commented_balance',
+            '%name',
+            '%age',
+            '%b',
+            '%totalb',
+            '%date-y',
+            '%date-m',
+            '%date_month_name',
+            '%deadline-y',
+            '%deadline-m',
+            '%deadline-d',
+            '%B',
+            '%totalB',
+            '%saldo',
+            '%totalsaldo',
+            '%pin',
+            '%cid',
+
+        ),
+        array(
+            format_bankaccount(bankaccount($row['id'], $row['account'])),
+            $commented_balance,
+            $row['name'],
+            $row['age'],
+            sprintf('%01.2f', $amount),
+            sprintf('%01.2f', $totalamount),
+            strftime('%Y'),
+            strftime('%m'),
+            strftime("%B"),
+            strftime("%Y", $deadline),
+            strftime("%m", $deadline),
+            strftime("%d", $deadline),
+            sprintf('%01.2f', $row['balance']),
+            sprintf('%01.2f', $row['totalbalance']),
+            moneyf($row['balance']),
+            moneyf($row['totalbalance']),
+            $row['pin'],
+            $row['id'],
+        ),
+        $data
+    )
     if (preg_match("/\%abonament/", $data)) {
         $assignments = $DB->GetAll(
             'SELECT ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
@@ -631,15 +666,27 @@ function parse_customer_data($data, $format, $row)
     $data = $LMS->getLastNInTable($data, $row['id'], $format, $row['aggregate_documents']);
 
     // invoices, debit notes, documents
-    $data = preg_replace("/\%invoice/", $row['doc_number'], $data);
-    $data = preg_replace("/\%number/", $row['doc_number'], $data);
-    $data = preg_replace("/\%value/", moneyf($row['value'], $row['currency']), $data);
-    $data = preg_replace("/\%cdate-y/", strftime("%Y", $row['cdate']), $data);
-    $data = preg_replace("/\%cdate-m/", strftime("%m", $row['cdate']), $data);
-    $data = preg_replace("/\%cdate-d/", strftime("%d", $row['cdate']), $data);
-
-    list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
-    $data = preg_replace("/\%lastday/", strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $data);
+    $data = str_replace(
+        array(
+            '%invoice',
+            '%number',
+            '%value',
+            '%cdate-y',
+            '%cdate-m',
+            '%cdate-d',
+            '%lastday',
+        ),
+        array(
+            $row['doc_number'],
+            $row['doc_number'],
+            moneyf($row['value'], $row['currency']),
+            strftime('%Y', $row['cdate']),
+            strftime('%m', $row['cdate']),
+            strftime('%d', $row['cdate']),
+            strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+        ),
+        $data
+    );
 
     return $data;
 }

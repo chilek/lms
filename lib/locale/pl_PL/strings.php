@@ -5386,3 +5386,7 @@ $_LANG[
     . 'Despite this you want to make customer modification which you had made in form?'
 ] = "Użytkownik '\$a' w międzyczasie (\$b) zmienił dane edytowanego przez Ciebie klienta.\n"
     . 'Czy mimo tego chcesz zmienić dane klienta na te przez Ciebie wprowadzone w formularzu?';
+
+$_LANG['Billing status: $a (to pay)'] = 'Stan rozliczeń: $a (do zapłaty)';
+$_LANG['Billing status: %a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
+$_LANG['Billing status: $a'] = 'Stan rozliczeń: $a';
