@@ -626,7 +626,7 @@ function parse_customer_data($data, $format, $row)
             $row['id'],
         ),
         $data
-    )
+    );
     if (preg_match("/\%abonament/", $data)) {
         $assignments = $DB->GetAll(
             'SELECT ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
