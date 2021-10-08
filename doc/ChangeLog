@@ -13,6 +13,8 @@ version 28-git (????-??-??):
   - enhancement: 'get_supported_actions' hook used in lms-notify.php allows plugins to inform core
     about correct custom action syntax [chilan]
   - enhancement: added csv export of operation history report [chilan]
+  - enhancement: new '%commented_balance' symbol support added in lms-notify.php backend script and
+    send invoice process [chilan]
 
 version 27.0 (2021-08-20):
 
