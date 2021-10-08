@@ -270,6 +270,7 @@ switch ($type) {
                 $list[$x]['currencyvalue'] = $row['currencyvalue'];
                 $list[$x]['taxlabel'] = $row['taxlabel'];
                 $list[$x]['time'] = $row['time'];
+                $list[$x]['sourcename'] = $row['sourcename'];
                 $list[$x]['comment'] = $row['comment'];
                 $list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
