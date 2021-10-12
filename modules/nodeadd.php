@@ -431,7 +431,7 @@ if (!empty($nodedata['ownerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('networks', $LMS->GetNetworks(true));
+$SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodedata', $nodedata);
 $SMARTY->display('node/nodeadd.html');
