@@ -76,7 +76,7 @@ if ($payment) {
                 }
                 
                 $at = ($m-1) * 100 + $d;
-            };
+            }
             break;
         case HALFYEARLY:
             if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $payment['at']) && $payment['at']) {

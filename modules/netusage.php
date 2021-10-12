@@ -162,7 +162,6 @@ function getNetworks($ip, $br, $host = null)
     }
 
     return $nc->fetchNetworks();
-    ;
 }
 
 if (isset($_GET['ajax'])) {
