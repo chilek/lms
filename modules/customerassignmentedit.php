@@ -498,7 +498,6 @@ if (isset($_POST['assignment'])) {
 
     $a['pdiscount'] = floatval($a['pdiscount']);
     $a['vdiscount'] = floatval($a['vdiscount']);
-    $a['attribute'] = $a['attribute'];
     if (!empty($a['pdiscount'])) {
         $a['discount'] = $a['pdiscount'];
         $a['discount_type'] = DISCOUNT_PERCENTAGE;
