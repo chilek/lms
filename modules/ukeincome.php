@@ -155,13 +155,6 @@ if ($bandwidths) {
             'private' => 0,
             'bussiness' => 0,
         ),
-        '>= 10 Mbit/s < 30 Mbit/s' => array(
-            'min' => 10000,
-            'max' => 30000,
-            'total' => 0,
-            'private' => 0,
-            'bussiness' => 0,
-        ),
         '>= 30 Mbit/s < 100 Mbit/s' => array(
             'min' => 30000,
             'max' => 100000,
