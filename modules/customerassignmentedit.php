@@ -508,10 +508,8 @@ if (isset($_POST['assignment'])) {
     }
 
     switch ($a['period']) {
-        case QUARTERLY:
-            $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
-            break;
         case HALFYEARLY:
+        case QUARTERLY:
             $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
             break;
         case YEARLY:

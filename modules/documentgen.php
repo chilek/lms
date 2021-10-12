@@ -92,6 +92,9 @@ if (isset($_POST['document'])) {
     $network = $_POST['network'];
     $customergroup = $_POST['customergroup'];
     switch ($state) {
+        case CSTATUS_DISCONNECTED:
+        case 51:
+        case 52:
         case 0:
             $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
@@ -100,13 +103,6 @@ if (isset($_POST['document'])) {
             $customerlist = $LMS->GetCustomerList(compact("state"));
             break;
         case CSTATUS_CONNECTED:
-        case CSTATUS_DISCONNECTED:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
-            break;
-        case 51:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
-            break;
-        case 52:
             $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
         case -1:
