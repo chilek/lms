@@ -1239,6 +1239,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 'AND (a.dateto > ?NOW? OR a.dateto = 0)')) . '
 							AND (tariffid IN (' . $value . ')))';
                             break;
+                        case 'balance_date':
                         case 'addresstype':
                             break;
                         case 'tarifftype':
@@ -1255,8 +1256,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 $balance_relation = intval($search['balance_relation']);
                                 $searchargs[] = 'b.balance' . ($balance_relation == -1 ? '<=' : '>=') . ' ' . str_replace(',', '.', floatval($value));
                             }
-                            break;
-                        case 'balance_date':
                             break;
                         case 'ten':
                             if ($value == '*') {

@@ -37,9 +37,6 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             case 'id':
                 $ostr = 'ORDER BY n.id';
                 break;
-            case 'name':
-                $ostr = 'ORDER BY n.name';
-                break;
             case 'type':
                 $ostr = 'ORDER BY n.type';
                 break;
@@ -49,6 +46,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             case 'lastinspectiontime':
                 $ostr = 'ORDER BY n.lastinspectiontime';
                 break;
+            case 'name':
             default:
                 $ostr = 'ORDER BY n.name';
                 break;

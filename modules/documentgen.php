@@ -95,15 +95,13 @@ if (isset($_POST['document'])) {
         case CSTATUS_DISCONNECTED:
         case 51:
         case 52:
+        case CSTATUS_CONNECTED:
         case 0:
             $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
         case CSTATUS_INTERESTED:
         case CSTATUS_WAITING:
             $customerlist = $LMS->GetCustomerList(compact("state"));
-            break;
-        case CSTATUS_CONNECTED:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
         case -1:
             if ($customerlist = $LMS->GetCustomerList(compact("customergroup"))) {

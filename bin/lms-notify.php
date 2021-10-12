@@ -3113,12 +3113,10 @@ if (!empty($intersect)) {
                                     case 'proforma':
                                         $target_doctype = DOC_INVOICE_PRO;
                                         break;
-                                    case 'invoice':
-                                        $target_doctype = DOC_INVOICE;
-                                        break;
                                     case 'note':
                                         $target_doctype = DOC_DNOTE;
                                         break;
+                                    case 'invoice':
                                     default:
                                         $target_doctype = DOC_INVOICE;
                                         break;
@@ -3379,12 +3377,10 @@ if (!empty($intersect)) {
                                     case 'proforma':
                                         $target_doctype = DOC_INVOICE_PRO;
                                         break;
-                                    case 'invoice':
-                                        $target_doctype = DOC_INVOICE;
-                                        break;
                                     case 'note':
                                         $target_doctype = DOC_DNOTE;
                                         break;
+                                    case 'invoice':
                                     default:
                                         $target_doctype = DOC_INVOICE;
                                         break;
