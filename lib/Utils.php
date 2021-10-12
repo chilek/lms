@@ -58,6 +58,12 @@ class Utils
     */
     public static function arrays_equal($array1, $array2)
     {
+        if (!is_array($array1)) {
+            $array1 = array($array1);
+        }
+        if (!is_array($array2)) {
+            $array2 = array($array2);
+        }
         return !array_diff($array1, $array2) && !array_diff($array2, $array1);
     }
 
