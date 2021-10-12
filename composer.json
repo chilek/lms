@@ -88,7 +88,6 @@
         "ext-mbstring": "*",
         "ext-xml": "*",
         "ext-json": "*",
-        "ext-fileinfo": "*",
         "ext-bcmath": "*",
         "ext-soap": "*",
         "ext-openssl": "*",

@@ -407,8 +407,8 @@ if (isset($_POST['document'])) {
         }
     }
 } else {
-    $document['customerid'] = isset($_GET['cid']) ? intval($_GET['cid']) : '';
-    $document['type'] = isset($_GET['type']) ? intval($_GET['type']) : '';
+    $document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
+    $document['type'] = isset($_GET['type']) ? $_GET['type'] : '';
 
     $default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
     if (!empty($default_assignment_invoice)) {
