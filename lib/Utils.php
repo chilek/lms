@@ -521,10 +521,8 @@ class Utils
                 case self::GUS_REGON_API_SEARCH_TYPE_TEN:
                     $gusReports = $gus->getByNip(preg_replace('/[^a-z0-9]/i', '', $id));
                     break;
-                case self::GUS_REGON_API_SEARCH_TYPE_REGON:
-                    $gusReports = $gus->getByRegon($id);
-                    break;
                 case self::GUS_REGON_API_SEARCH_TYPE_RBE:
+                case self::GUS_REGON_API_SEARCH_TYPE_REGON:
                     $gusReports = $gus->getByRegon($id);
                     break;
                 default:

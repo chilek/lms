@@ -300,8 +300,6 @@ do {
                     unset($usereventlistgrid[$guserid]['events'][$gdekey]);
                 }
             }
-        } else {
-            continue;
         }
     }
     $column += 1;

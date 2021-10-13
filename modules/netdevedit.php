@@ -909,7 +909,7 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevedit.html');
         break;
     case 'ip':
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
+        $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevvipedit_sortable_order', $SESSION->get_persistent_setting('netdevipedit-sortable-order'));
 
@@ -920,7 +920,7 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevipedit.html');
         break;
     case 'addip':
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
+        $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('netdevvipadd_sortable_order', $SESSION->get_persistent_setting('netdevipadd-sortable-order'));
         $SMARTY->display('netdev/netdevipadd.html');
         break;
