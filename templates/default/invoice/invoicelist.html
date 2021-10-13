@@ -340,7 +340,7 @@
 				<td colspan="3" class="text-right valign-top">
 					<strong>{trans("Total:")}</strong>
 				</td>
-				<td>
+				<td class="text-right">
 					{foreach $value_by_currencies as $currency => $value}
 						<strong class="nobr">{moneyf($value, $currency)}</strong>
 						{if !$value@last}<br>{/if}
