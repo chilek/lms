@@ -425,26 +425,10 @@
 				<td class="text-right nobr">
 					{if $item.deleted}
 						<input type="hidden" name="discount[{$itemid}]"
-							   value="
-									{if $item.pdiscount != 0}
-										{$item.pdiscount|string_format:"%.2f"}
-									{else}
-										{if $item.vdiscount != 0}
-											{$item.vdiscount|string_format:"%.2f"}
-										{/if}
-									{/if}
-								"
+							value="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}"
 						>
 						<input type="hidden" name="discount_type[{$itemid}]"
-							   value="
-									{if $item.pdiscount != 0}
-										{$smarty.const.DISCOUNT_PERCENTAGE}
-									{else}
-										{if $item.vdiscount != 0}
-											{$smarty.const.DISCOUNT_AMOUNT}
-										{/if}
-									{/if}
-								"
+							value="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}"
 						>
 						{if $item.pdiscount != 0}
 							{$item.pdiscount|string_format:"%.2f%%"}
@@ -455,16 +439,8 @@
 						{/if}
 					{else}
 						<input type="text" name="discount[{$itemid}]"
-							   value="
-									{if $item.pdiscount != 0}
-										{$item.pdiscount|string_format:"%.2f"}
-									{else}
-										{if $item.vdiscount != 0}
-											{$item.vdiscount|string_format:"%.2f"}
-										{/if}
-									{/if}
-								"
-							   size="6" {tip text="Enter discount percentage or value"}
+							value="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}"
+							size="6" {tip text="Enter discount percentage or value"}
 						>
 						<br>
 						<select name="discount_type[{$itemid}]">
