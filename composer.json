@@ -94,6 +94,7 @@
         "ext-openssl": "*",
         "ext-zip": "*",
         "ext-iconv": "*",
+        "ext-imagick": "*",
         "ext-gd": "*",
         "ext-gmp": "*",
         "ext-curl": "*",
@@ -128,7 +129,8 @@
         "rzani/zbar-qrdecoder": "^2",
         "dragonbe/vies": "*",
         "ezyang/htmlpurifier": "^4.13",
-        "phpoffice/phpspreadsheet": "*"
+        "phpoffice/phpspreadsheet": "*",
+        "robbiep/zbar-qrdecoder": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
