@@ -172,6 +172,7 @@
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
+	{$value_by_currencies = array()}
 	{foreach $invoicelist as $invoice}
 	{assign var=invoiceid value=$invoice.id}
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
@@ -189,6 +190,11 @@
 		</TD>
 		<TD class="text-right nobr">
 			{moneyf($invoice.value, $invoice.currency)}
+			{if isset($value_by_currencies[$invoice.currency])}
+				{$value_by_currencies[$invoice.currency] = $value_by_currencies[$invoice.currency] + $invoice.value}
+			{else}
+				{$value_by_currencies[$invoice.currency] = $invoice.value}
+			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.count}
@@ -329,6 +335,21 @@
 	{/foreach}
     </TBODY>
     <TFOOT>
+		{if !empty($value_by_currencies)}
+			<tr>
+				<td colspan="3" class="text-right valign-top">
+					<strong>{trans("Total:")}</strong>
+				</td>
+				<td>
+					{foreach $value_by_currencies as $currency => $value}
+						<strong class="nobr">{moneyf($value, $currency)}</strong>
+						{if !$value@last}<br>{/if}
+					{/foreach}
+				</td>
+				<td colspan="4">
+				</td>
+			</tr>
+		{/if}
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="8">
