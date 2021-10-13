@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -37,6 +37,7 @@ $parameters = array(
     'update-netnodes' => 'N',
     'sources:' => 's:',
     'debug' => 'd',
+    'force' => 'f',
 );
 
 $long_to_shorts = array();
@@ -73,7 +74,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-gps.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
     exit(0);
@@ -82,7 +83,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-gps.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -u, --update                    update nodes GPS coordinates
@@ -94,6 +95,7 @@ lms-gps.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-f, --force                     force update GPS coordinates even if they are non-empty;
 
 EOF;
     exit(0);
@@ -103,7 +105,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-gps.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
 }
@@ -149,7 +151,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -212,7 +214,7 @@ foreach ($types as $label => $type) {
 		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 		LEFT JOIN location_districts ld ON ld.id = lb.districtid
 		LEFT JOIN location_states ls ON ls.id = ld.stateid
-		WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL
+		WHERE location IS NOT NULL " . (isset($options['force']) ? '' : 'AND longitude IS NULL AND latitude IS NULL') . "
 			AND location_house IS NOT NULL AND location <> '' AND location_house <> ''");
     if (!empty($locations)) {
         foreach ($locations as $row) {
