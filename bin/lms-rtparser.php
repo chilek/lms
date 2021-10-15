@@ -392,7 +392,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $part = mailparse_msg_get_part($mail, $partid);
                 $partdata = mailparse_msg_get_part_data($part);
                 $html = strpos($partdata['content-type'], 'html') !== false;
-                if ((!isset($partdata['content-disposition']) || $partdata['content-disposition'] != 'attachment')
+                $isAttachment = isset($partdata['content-disposition']) && $partdata['content-disposition'] == 'attachment';
+                if (!$isAttachment
                     && preg_match('/text/', $partdata['content-type'])
                     && ($mail_body == '' || ($html && $prefer_html) || (!$html && !$use_html))) {
                     $mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
@@ -453,7 +454,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                             }
                         }
                     }
-                } elseif ((isset($partdata['content-disposition']) && ($partdata['content-disposition'] == 'attachment'
+                } elseif ((isset($partdata['content-disposition']) && ($isAttachment
                             || $partdata['content-disposition'] == 'inline')) || isset($partdata['content-id'])) {
                     $file_content = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
                     $transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
@@ -495,13 +496,13 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                         'name' => $file_name,
                         'type' => $partdata['content-type'],
                         'content' => &$file_content,
-                        'content-id' => isset($partdata['content-id']) ? $partdata['content-id'] : null,
+                        'content-id' => !$isAttachment && isset($partdata['content-id']) ? $partdata['content-id'] : null,
                     );
                     $attachments[] = array(
                         'content_type' => $partdata['content-type'],
                         'filename' => $file_name,
                         'data' => &$file_content,
-                        'content-id' => isset($partdata['content-id']) ? $partdata['content-id'] : null,
+                        'content-id' => !$isAttachment && isset($partdata['content-id']) ? $partdata['content-id'] : null,
                     );
                     unset($file_content);
                 }
