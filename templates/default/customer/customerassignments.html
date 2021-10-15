@@ -164,11 +164,15 @@
 			{foreach $assignments as $a}
 			{block name=$tab_id|cat:"-list-row"}
 			<div class="lms-ui-tab-table-row
-				{if ($a.dateto < $today && $a.dateto && $a.periodvalue != $smarty.const.DISPOSABLE) || ($a.at < $today && $a.at > 365 && $a.periodvalue == $smarty.const.DISPOSABLE)}
+				{if ($a.dateto < $today && $a.dateto && ($a.periodvalue != $smarty.const.DISPOSABLE
+						|| (empty($a.tariffid) && empty($a.liabilityid))))
+					|| ($a.at < $today && $a.at > 365 && $a.periodvalue == $smarty.const.DISPOSABLE)}
 					blend
 				{elseif $a.suspended}
 					suspended
-				{elseif ($a.datefrom > $today && $a.datefrom && $a.periodvalue != $smarty.const.DISPOSABLE) || ($a.periodvalue == $smarty.const.DISPOSABLE && $a.at > $today)}
+				{elseif ($a.datefrom > $today && $a.datefrom && ($a.periodvalue != $smarty.const.DISPOSABLE
+						|| (empty($a.tariffid) && empty($a.liabilityid))))
+					|| ($a.periodvalue == $smarty.const.DISPOSABLE && $a.at > $today)}
 					alertblend
 				{/if}
 				{if !$a.commited}
