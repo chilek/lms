@@ -454,6 +454,34 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     private function fixTerritAddress(array $address)
     {
+        // exceptional query for cities with subcities
+        $v = $this->db->GetRow(
+            'SELECT lb.name AS location_city_name,
+                lb.name AS location_borough_name,
+                ld.name AS location_district_name,
+                lst.name AS location_street_name,
+                (' . $this->db->Concat('t.name', "' '", '(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . ') AS location_street_name
+            FROM location_cities lc
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            JOIN location_states ls ON ls.id = ld.stateid
+            JOIN location_boroughs lb2 ON lb2.districtid = lb.districtid AND lb2.type IN (8, 9)
+            JOIN location_cities lc2 ON lc2.boroughid = lb2.id
+            JOIN location_streets lst ON lst.cityid = lc2.id AND lst.id = ?
+            JOIN location_street_types t ON t.id = lst.typeid
+            WHERE lc.id = ?
+                AND lb.type = 1',
+            array(
+                empty($address['location_street']) ? 0 : $address['location_street'],
+                $address['location_city'],
+            )
+        );
+
+        if (!empty($v)) {
+            $v = array_merge($address, $v);
+            return $v;
+        }
+
         $v = $this->db->GetRow(
             'SELECT lc.name AS location_city_name,
                 lb.name AS location_borough_name,
