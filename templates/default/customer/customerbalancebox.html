@@ -123,9 +123,9 @@
 					{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"&hellip;":true}</TD>
-					<TD class="text-right nobr">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}" data-order="{$item.value}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
 					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
 					<TD class="comment"
