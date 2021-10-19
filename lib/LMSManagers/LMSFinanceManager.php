@@ -1537,7 +1537,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     unset($a['schemaid'], $a['sassignmentid']);
             }
         } else {
-            if ($a['discount_type'] == 2 && $a['discount']
+            if ($a['discount_type'] == DISCOUNT_AMOUNT && $a['discount']
                 && $this->db->GetOne('SELECT value FROM tariffs WHERE id = ?', array($a['tariffid'])) - $a['discount'] < 0) {
                 $error['value'] = trans('Value less than discount are not allowed!');
                 $error['discount'] = trans('Value less than discount are not allowed!');
