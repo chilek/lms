@@ -1908,11 +1908,11 @@ table.dataTable {
 		}
 	}
 	thead {
-		.sorting_asc {
-			background-image: url('@{lms-img-path}/asc_order.gif');
+		.sorting_asc::before {
+			.lms-ui-icon-ascending;
 		}
-		.sorting_desc {
-			background-image: url('@{lms-img-path}/desc_order.gif');
+		.sorting_desc::before {
+			.lms-ui-icon-descending;
 		}
 		.sorting {
 			background-image: none;
