@@ -4451,7 +4451,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetPromotions()
     {
-        $promotions = $this->db->GetAllByKey('SELECT id, name, description,
+        $promotions = $this->db->GetAllByKey('SELECT id, name, description, datefrom, dateto,
 				(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
 			FROM promotions WHERE disabled <> 1 AND deleted = 0 ORDER BY name', 'id');
 
@@ -4465,7 +4465,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         unset($promotion);
 
         $promotion_schemas = $this->db->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name,
-			s.id, s.data AS sdata, s.description,
+			s.id, s.data AS sdata, s.description, s.datefrom,
+			(CASE WHEN s.datefrom < ?NOW? AND (s.dateto = 0 OR s.dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
 			(SELECT ' . $this->db->GroupConcat('tariffid', ',') . '
 				FROM promotionassignments WHERE promotionschemaid = s.id
 			) AS tariffs
@@ -4498,6 +4499,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 array(
                     'id' => $promotion_schema['id'],
                     'name' => $promotion_schema['name'],
+                    'valid' => $promotion_schema['valid'],
+                    'datefrom' => $promotion_schema['datefrom'],
+                    'dateto' => $promotion_schema['dateto'],
                     'description' => $promotion_schema['description'],
                     'tariffs' => $promotion_schema['tariffs'],
                     'period_labels' => $period_labels,

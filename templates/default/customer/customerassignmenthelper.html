@@ -145,25 +145,28 @@
 									{trans("Schema")}:
 								</TD>
 								<TD style="width: 98%;">
-									<SELECT size="1" name="{$variable_prefix}[schemaid]" id="promotion-select" {tip text="Select promotion schema" trigger="promotion-select"}>
+									<select size="1" name="{$variable_prefix}[schemaid]" id="promotion-select"
+										{tip text="Select promotion schema" trigger="promotion-select"}>
 										{if $promotion_only}
-										<option value="0">{trans("<!promotionschema>- none -")}</option>
+											<option value="0">{trans("<!promotionschema>- none -")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
-										<optgroup title="{$promotion.description|trunescape:512}"
-											label="{$promotion.name}" data-valid="{$promotion.valid}"
-											{if !$promotion.valid} class="blend"
-											{if !$variables.alltariffs} style="display: none;"{/if}{/if}
-										>
-										{foreach $promotion.schemas as $schemaid => $schema}
-										<OPTION title="{$schema.description|trunescape:512}"
-											value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
-											data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
-										>{$schema.name|truncate:40:"&hellip;":true}</OPTION>
+											<optgroup title="{$promotion.description|trunescape:512}"
+												label="{$promotion.name}{if !$promotion.valid && $promotion.datefrom > $smarty.now} ({trans("from")} {$promotion.datefrom|date_format:"%Y/%m/%d"}){/if}"
+												data-valid="{$promotion.valid}"
+												{if !$promotion.valid} class="blend" disabled
+												{if !$variables.alltariffs && $promotion.datefrom < $smarty.now} style="display: none;"{/if}{/if}
+											>
+												{foreach $promotion.schemas as $schemaid => $schema}
+													<option title="{$schema.description|trunescape:512}"
+														value="{$schemaid}"{if $variables.schemaid == $schemaid} selected{/if}
+														data-valid="{if $promotion.valid && $schema.valid}1{else}0{/if}"
+														{if !$promotion.valid || !$schema.valid} class="blend" disabled{/if}
+													>{$schema.name|truncate:40:"&hellip;":true}{if !$schema.valid && $schema.datefrom > $smarty.now} ({trans("from")} {$schema.datefrom|date_format:"%Y/%m/%d"}){/if}</option>
+												{/foreach}
+											</optgroup>
 										{/foreach}
-										</optgroup>
-										{/foreach}
-									</SELECT>
+									</select>
 									<i id="promotion-schema-info" class="lms-ui-icon-info"></i>
 								</TD>
 							</TR>
