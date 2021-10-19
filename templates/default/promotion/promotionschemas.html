@@ -42,7 +42,7 @@
 					</thead>
 					<tbody>
 						{foreach $promotion.schemas as $schema}
-							<TR class="highlight{if $schema.disabled} blend{/if}{if $schema.deleted} lms-ui-resource-deleted{/if}" data-name="{$schema.name}">
+							<TR class="highlight{if $schema.disabled} blend{/if}{if $schema.deleted} lms-ui-resource-deleted{/if}" data-name="{$schema.name|escape}">
 								<td data-target-url="?m=promotionschemainfo&id={$schema.id}" class="nobr">
 									<strong>{$schema.name|escape}</strong>
 									{if $schema.datefrom || $schema.dateto}
