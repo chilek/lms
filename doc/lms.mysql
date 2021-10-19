@@ -1124,6 +1124,8 @@ CREATE TABLE promotionschemas (
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     deleted tinyint(1)  DEFAULT 0 NOT NULL,
     length tinyint(1)   DEFAULT NULL,
+    datefrom int(11)    DEFAULT 0 NOT NULL,
+    dateto   int(11)    DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY promotionid (promotionid, name),
     FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -4145,4 +4147,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021100500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021101900');

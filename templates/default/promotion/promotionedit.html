@@ -2,59 +2,80 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="post" name="promotionedit" action="?m=promotionedit&amp;id={$promotion.id}">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
+<h1>{$layout.pagetitle}</h1>
+
+<form method="post" name="promotionedit" id="promotionedit" action="?m=promotionedit&id={$promotion.id}">
+</form>
+
+<table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 		<col style="width: 98%;">
 	</colgroup>
-	<THEAD>
-	<TR>
-		<TD>
-			{icon name="money"}
-		</TD>
-		<TD class="bold">
-			{trans("Name:")}
-		</TD>
-		<TD>
-			<INPUT type="TEXT" name="promotion[name]" value="{$promotion.name}" size="40"
-				{if !empty($promotion.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
-					readonly {tip text="Promotion is indirectly assigned to liabilities, so name change is disabled!" trigger="name" bold=1}
-				{else}
-					{tip text="Enter promotion name" trigger="name" bold=1}
-				{/if}>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD>
-			{icon name="optional-info"}
-		</TD>
-		<TD class="bold">
-			{trans("Description:")}
-		</TD>
-		<TD>
-			<TEXTAREA name="promotion[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$promotion.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="lms-ui-box-buttons" colspan="3">
-			{button icon="save" label="Submit" onclick="document.promotionedit.submit();"}
-			{button icon="cancel" label="Cancel" href="?m=promotionlist"}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
+	<thead>
+		<tr>
+			<td>
+				{icon name="money"}
+			</td>
+			<td>
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td>
+				<input type="text" name="promotion[name]" value="{$promotion.name|escape}" size="40" form="promotionedit"
+					{if !empty($promotion.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
+						readonly {tip text="Promotion is indirectly assigned to liabilities, so name change is disabled!" trigger="name" bold=1}
+					{else}
+						{tip text="Enter promotion name" trigger="name" bold=1}
+					{/if} required>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="period"}
+			</td>
+			<td>
+				<strong>{trans("Period")}</strong>
+			</td>
+			<td>
+				{trans("from")}
+				<input type="text" name="promotion[datefrom]" form="promotionedit"
+					value="{if $promotion.datefrom}{$promotion.datefrom}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}>
+				{trans("to")}
+				<input type="text" name="promotion[dateto]" form="promotionedit"
+					value="{if $promotion.dateto}{$promotion.dateto}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="optional-info"}
+			</td>
+			<td>
+				<strong>{trans("Description")}</strong>
+			</td>
+			<td>
+				<textarea name="promotion[description]" cols="50" rows="5" form="promotionedit"
+					{tip text="Enter additional information (optional)"}>{$promotion.description|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button type="submit" icon="save" label="Submit" form="promotionedit"}
+				{button icon="cancel" label="Cancel" href="?m=promotionlist"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
 <script>
 
-	document.forms['promotionedit'].elements['promotion[name]'].focus();
+	$('[name="promotion[name]"]').focus();
 
 </script>
 {/block}

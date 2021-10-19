@@ -3301,6 +3301,7 @@ $_LANG['Months $a-'] = 'mies. $a-';
 $_LANG['New Promotion'] = 'Nowa promocja';
 $_LANG['New Schema'] = 'Nowy schemat';
 $_LANG['Periods:'] = 'Okresy:';
+$_LANG['Periods'] = 'Okresy';
 $_LANG['Promotion:'] = 'Promocja:';
 $_LANG['Promotions'] = 'Promocje';
 $_LANG['Promotions:'] = 'Promocje:';

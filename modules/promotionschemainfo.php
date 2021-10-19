@@ -26,7 +26,7 @@
 
 $schema = $DB->GetRow(
     'SELECT
-        s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length,
+        s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length, s.datefrom, s.dateto,
         p.id AS pid, p.name AS promotion,
         COUNT(a.id) AS assignments
     FROM promotionschemas s

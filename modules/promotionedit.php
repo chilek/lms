@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -88,25 +88,7 @@ if ($promotion) {
         $promotion['name'] = $oldpromotion['name'];
     }
 
-    if (empty($promotion['datefrom'])) {
-        $promotion['from'] = 0;
-    } else {
-        $from = date_to_timestamp($promotion['datefrom']);
-        if (empty($from)) {
-            $error['datefrom'] = trans('Incorrect effective start time!');
-        }
-    }
-
-    if (empty($promotion['dateto'])) {
-            $promotion['to'] = 0;
-    } else {
-        $to = date_to_timestamp($promotion['dateto']);
-        if (empty($to)) {
-            $error['dateto'] = trans('Incorrect effective start time!');
-        }
-    }
-
-    if ($promotion['to'] != 0 && $promotion['from'] != 0 && $to < $from) {
+    if (!empty($promotion['dateto']) && !empty($promotion['datefrom']) && $promotion['dateto'] < $promotion['datefrom']) {
         $error['dateto'] = trans('Incorrect date range!');
     }
 
@@ -114,12 +96,16 @@ if ($promotion) {
         $args = array(
             'name' => $promotion['name'],
             'description' => $promotion['description'],
-            'datefrom' => $promotion['from'],
-            'dateto' => $promotion['to'],
+            'datefrom' => $promotion['datefrom'] ?: 0,
+            'dateto' => $promotion['dateto'] ? strtotime('tomorrow', $promotion['dateto']) - 1 : 0,
             SYSLOG::RES_PROMO => $promotion['id']
         );
-        $DB->Execute('UPDATE promotions SET name = ?, description = ?, datefrom = ?, dateto = ?
-			WHERE id = ?', array_values($args));
+        $DB->Execute(
+            'UPDATE promotions
+            SET name = ?, description = ?, datefrom = ?, dateto = ?
+            WHERE id = ?',
+            array_values($args)
+        );
 
         if ($SYSLOG) {
             $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
@@ -129,14 +115,6 @@ if ($promotion) {
     }
 } else {
     $promotion = $LMS->getPromotion($promotionid);
-
-    if ($promotion['datefrom']) {
-        $promotion['datefrom'] = date('Y/m/d', $promotion['datefrom']);
-    }
-
-    if ($promotion['dateto']) {
-        $promotion['dateto'] = date('Y/m/d', $promotion['dateto']);
-    }
 }
 
 $layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);

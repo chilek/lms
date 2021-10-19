@@ -42,7 +42,7 @@ if (!$promotion) {
 
 $promotion['schemas'] = $DB->GetAllByKey(
     'SELECT
-        s.name, s.disabled, s.description, s.id, s.deleted,
+        s.name, s.disabled, s.description, s.id, s.deleted, s.datefrom, s.dateto,
         COUNT(a.id) AS assignments
     FROM promotionschemas s
     LEFT JOIN assignments a ON a.promotionschemaid = s.id
