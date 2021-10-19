@@ -59,7 +59,7 @@
 				{icon name="money"}
 			</td>
 			<td class="nobr" colspan="2">
-				<A href="?m=promotioninfo&id={$schema.pid}">{$schema.promotion}</A>
+				<A href="?m=promotioninfo&id={$schema.pid}">{$schema.promotion|escape}</A>
 			</td>
 		</tr>
 		{if $schema.description}
