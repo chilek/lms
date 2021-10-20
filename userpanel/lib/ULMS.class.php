@@ -51,7 +51,19 @@ class ULMS extends LMS
             if (!$short) {
                 $result['balance'] = $this->GetCustomerBalance($result['id']);
 
-                if (ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+                if (ConfigHelper::checkConfig('invoices.show_all_accounts')
+                    || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+                    $result['accounts'] = $this->DB->GetAllByKey(
+                        'SELECT id, contact AS account, name
+                        FROM customercontacts WHERE customerid = ? AND (type & ?) = ? ORDER BY id',
+                        'id',
+                        array($id, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_BANKACCOUNT | CONTACT_INVOICES)
+                    );
+                } else {
+                    $result['accounts'] = array();
+                }
+
+                if (ConfigHelper::checkConfig('invoices.show_only_alternative_accounts') && !empty($result['accounts'])) {
                     $result['bankaccount'] = null;
                 } else {
                     $result['bankaccount'] = bankaccount($result['id']);
@@ -78,18 +90,6 @@ class ULMS extends LMS
                     'id',
                     array($id, CONTACT_IM | CONTACT_DISABLED, CONTACT_DISABLED)
                 );
-
-                if (ConfigHelper::checkConfig('invoices.show_all_accounts')
-                    || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
-                    $result['accounts'] = $this->DB->GetAllByKey(
-                        'SELECT id, contact AS account, name
-                        FROM customercontacts WHERE customerid = ? AND (type & ?) = ? ORDER BY id',
-                        'id',
-                        array($id, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_BANKACCOUNT | CONTACT_INVOICES)
-                    );
-                } else {
-                    $result['accounts'] = array();
-                }
 
                 $result['consents'] = $this->getCustomerConsents($id);
                 $result['addresses'] = $this->getCustomerAddresses($id);
