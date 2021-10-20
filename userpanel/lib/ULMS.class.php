@@ -50,7 +50,12 @@ class ULMS extends LMS
 			FROM customeraddressview c WHERE c.id = ?', array($id)))) {
             if (!$short) {
                 $result['balance'] = $this->GetCustomerBalance($result['id']);
-                $result['bankaccount'] = bankaccount($result['id']);
+
+                if (ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+                    $result['bankaccount'] = null;
+                } else {
+                    $result['bankaccount'] = bankaccount($result['id']);
+                }
 
                 $result['contacts'] = $this->DB->GetAllByKey(
                     'SELECT id, contact AS phone, name
