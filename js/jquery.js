@@ -1274,8 +1274,8 @@ $(function() {
 			$(from).val(sprintf("%04d/%02d/%02d %02d:%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate(), 0, 0));
 			$(to).val(sprintf("%04d/%02d/%02d %02d:%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate(), 23, 59));
 		} else {
-			$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
-			$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+			$(from).datepicker("setDate", new Date(fromdate.getFullYear(), fromdate.getMonth(), fromdate.getDate()));
+			$(to).datepicker("setDate", new Date(todate.getFullYear(), todate.getMonth(), todate.getDate()));
 		}
 
 		$(from).trigger('change');

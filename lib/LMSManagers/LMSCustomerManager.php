@@ -1158,6 +1158,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             }
                             $state_conditions[] = 'c.deleted = 1';
                             break;
+                        case 'cutoffstopfrom':
+                            if ($search['cutoffstopto']) {
+                                $searchargs['cutoffstopfrom'] = '(cutoffstop >= ' . intval($value)
+                                    . ' AND cutoffstop <= ' . intval($search['cutoffstopto']) . ')';
+                                unset($search['cutoffstopto']);
+                            } else {
+                                $searchargs[] = 'cutoffstop >= ' . intval($value);
+                            }
+                            break;
+                        case 'cutoffstopto':
+                            if (!isset($searchargs['cutoffstopfrom'])) {
+                                $searchargs[] = 'cutoffstop <= ' . intval($value);
+                            }
+                            break;
                         case 'type':
                             $searchargs[] = 'type = ' . intval($value);
                             break;

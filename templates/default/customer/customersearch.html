@@ -424,12 +424,14 @@
 		</TD>
 		<TD>
 			<span class="lms-ui-date-period-container">
-				{date_period_preset from="#customersearch [name=\"search[createdfrom]\"]" to="#customersearch [name=\"search[createdto]\"]"}
+				{date_period_preset from="#createdfrom" to="#createdto"}
 				<span>{trans("from")}</span>
-				<input type="text" class="lms-ui-date" value="" name="search[createdfrom]" size="10"
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="createdfrom" name="search[createdfrom]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 				<span>{trans("to")}</span>
-				<input type="text" class="lms-ui-date" value="" name="search[createdto]" size="10"
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="createdto" name="search[createdto]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 			</span>
 		</TD>
@@ -440,16 +442,37 @@
 		</TD>
 		<TD>
 			<span class="lms-ui-date-period-container">
-				{date_period_preset from="#customersearch [name=\"search[deletedfrom]\"]" to="#customersearch [name=\"search[deletedto]\"]"}
+				{date_period_preset from="#deletedfrom" to="#deletedto"}
 				<span>{trans("from")}</span>
-				<input type="text" class="lms-ui-date" value="" name="search[deletedfrom]" size="10"
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="deletedfrom" name="search[deletedfrom]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 				<span>{trans("to")}</span>
-				<input type="text" class="lms-ui-date" value="" name="search[deletedto]" size="10"
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="deletedto" name="search[deletedto]" size="10"
 					placeholder="{trans("yyyy/mm/dd")}">
 			</span>
 		</TD>
 	</TR>
+	<tr>
+		<td class="nobr">
+			{icon name="paytype"}
+			<strong>{trans("Cutoff suspending")}</strong>
+		</td>
+		<td>
+			<span class="lms-ui-date-period-container">
+				{date_period_preset from="#cutoffstopfrom" to="#cutoffstopto"}
+				<span>{trans("from")}</span>
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="cutoffstopfrom" name="search[cutoffstopfrom]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+				<span>{trans("to")}</span>
+				<input type="text" class="lms-ui-date lms-ui-date-unix" value=""
+					id="cutoffstopto" name="search[cutoffstopto]" size="10"
+					placeholder="{trans("yyyy/mm/dd")}">
+			</span>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="spacer"} {trans("Qualification operator:")}

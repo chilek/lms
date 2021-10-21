@@ -33,22 +33,6 @@ if (isset($_POST['search'])) {
         $search['tariffs'] = implode(",", $search['tariffs']);
     }
 
-    if ($search['createdfrom']) {
-        list($year, $month, $day) = explode('/', $search['createdfrom']);
-        $search['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
-    }
-    if ($search['createdto']) {
-        list($year, $month, $day) = explode('/', $search['createdto']);
-        $search['createdto'] = mktime(23, 59, 59, $month, $day, $year);
-    }
-    if ($search['deletedfrom']) {
-        list($year, $month, $day) = explode('/', $search['deletedfrom']);
-        $search['deletedfrom'] = mktime(0, 0, 0, $month, $day, $year);
-    }
-    if ($search['deletedto']) {
-        list($year, $month, $day) = explode('/', $search['deletedto']);
-        $search['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
-    }
     if ($search['balance_date']) {
         list ($year, $month, $day) = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
