@@ -18,6 +18,7 @@ version 28-git (????-??-??):
   - improvement: --force parameter of lms-gps.php script allows to determine gps coordinates
     for network resources event if they already have non-empty coords [chilan]
   - enhancement: implemented validity period support for promotions and promotion schemas [chilan]
+  - enhancement: new customer search filter - cutoffstop date interval [chilan]
 
 version 27.0 (2021-08-20):
 
