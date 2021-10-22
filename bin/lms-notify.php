@@ -907,7 +907,7 @@ if (empty($types) || in_array('timetable', $types)) {
     );
     $time = intval(strtotime('now') - strtotime('today'));
     $subject = $notifications['timetable']['subject'];
-    $today = date("Y/m/d");
+    $today = date('Y/m/d', $daystart);
     foreach ($users as $user) {
         if (empty($user['email']) && empty($user['phone'])) {
             continue;
