@@ -225,7 +225,13 @@
 								<TD></TD>
 								<TD colspan="2">
 									{foreach $promotions as $promotionid => $promotion}
+										{if !$promotion.valid}
+											{continue}
+										{/if}
 										{foreach $promotion.schemas as $schemaid => $schema}
+											{if !$schema.valid}
+												{continue}
+											{/if}
 										<table class="promotion-table" id="schema{$schemaid}">
 											{foreach $schema.items as $label => $item}
 											<tr>
