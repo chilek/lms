@@ -63,6 +63,9 @@
             .form-signin .form-control:focus {
                 z-index: 2;
             }
+            .form-signin input {
+                margin-left: 10px;
+            }
             .form-signin input[type="email"] {
                 margin-bottom: -1px;
                 border-bottom-right-radius: 0;
@@ -77,6 +80,9 @@
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+            }
+            .form-signin fieldset {
+                display: flex;
             }
         </style>
     </head>
@@ -116,12 +122,14 @@
                     {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         <fieldset class="form-group">
-                            <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
-                            <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
+                            {icon name="login"}
+                            <input type="text" name="loginform[login]" id="inputLogin" class="form-control"
+                                placeholder="{$_USERPANEL_AUTH_TYPES[$auth_type].label}" required autofocus>
                         </fieldset>
                         <fieldset class="form-group">
-                            <label for="inputPassword">{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}</label>
-                            <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
+                                {icon name="password"}
+                                <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control"
+                                    placeholder="{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}" required>
                         </fieldset>
                         {if $google_recaptcha_sitekey}
                         <div id="login-recaptcha" class="g-recaptcha"></div>
@@ -151,16 +159,16 @@
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <fieldset id="email" class="form-group">
-                                    <label>{trans('E-Mail:')} <input type="text" name="remindform[email]" class="form-control"></label>
+                                    {icon name="mail"} <input type="text" name="remindform[email]" class="form-control" placeholder="{trans('E-Mail')}">
                                 </fieldset>
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
                                 <fieldset id="phone" class="form-group" style="{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}display:none;{/if}">
-                                    <label>{trans('Phone:')} <input type="text" name="remindform[phone]"  class="form-control"></label>
+                                    {icon name="phone"} <input type="text" name="remindform[phone]" class="form-control" placeholder="{trans('Phone')}">
                                 </fieldset>
                             {/if}
-                            <fieldset class="form-group">
-                                <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
+                            <fieldset class="form-group" id="inputSsnOrTen">
+                                {icon name="user-id-number"} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control" placeholder="{trans('SSN or TEN:')}">
                             </fieldset>
                             {if $google_recaptcha_sitekey}
                                 <div id="remind-recaptcha" class="g-recaptcha"></div>
