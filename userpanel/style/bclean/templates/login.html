@@ -57,14 +57,14 @@
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
                 box-sizing: border-box;
-                padding: 10px;
-                font-size: 16px;
+                padding: 0.8em;
+                font-size: 1em;
             }
             .form-signin .form-control:focus {
                 z-index: 2;
             }
             .form-signin input {
-                margin-left: 10px;
+                margin-left: 1em;
             }
             .form-signin input[type="email"] {
                 margin-bottom: -1px;
@@ -79,6 +79,19 @@
             }
             .form-signin fieldset {
                 display: flex;
+            }
+            fieldset.form-group {
+                margin-bottom: 2em;
+                margin-top: 2em;
+            }
+            button.btn-login {
+                width: 60%;
+                box-shadow: 0 0.1em 0.1em #888;
+                margin-bottom: 20px;
+            }
+            .icons-signin {
+                font-size: 1.8em;
+                font-weight: light;
             }
         </style>
     </head>
@@ -118,22 +131,24 @@
                     {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         <fieldset class="form-group">
-                            {icon name="login"}
+                            {icon name="login" class="icons-signin"}
                             <input type="text" name="loginform[login]" id="inputLogin" class="form-control"
                                 placeholder="{$_USERPANEL_AUTH_TYPES[$auth_type].label}" required autofocus>
                         </fieldset>
                         <fieldset class="form-group">
-                                {icon name="password"}
+                                {icon name="password" class="icons-signin"}
                                 <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control"
                                     placeholder="{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}" required>
                         </fieldset>
                         {if $google_recaptcha_sitekey}
                         <div id="login-recaptcha" class="g-recaptcha"></div>
                         {/if}
-                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
+                        <button class="btn btn-lg btn-primary btn-block btn-login
+                            center-block{if $google_recaptcha_sitekey} disabled{/if}"
+                            name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans("Login")}</button>
                         {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                             || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
-                            <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+                            <p class="text-center"><a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a></p>
                         {/if}
                     </form>
                     {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
@@ -155,22 +170,22 @@
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <fieldset id="email" class="form-group">
-                                    {icon name="mail"} <input type="text" name="remindform[email]" class="form-control" placeholder="{trans('E-Mail')}">
+                                    {icon name="mail" class="icons-signin"} <input type="text" name="remindform[email]" class="form-control" placeholder="{trans('E-Mail')}">
                                 </fieldset>
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
                                 <fieldset id="phone" class="form-group" style="{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}display:none;{/if}">
-                                    {icon name="phone"} <input type="text" name="remindform[phone]" class="form-control" placeholder="{trans('Phone')}">
+                                    {icon name="phone" class="icons-signin"} <input type="text" name="remindform[phone]" class="form-control" placeholder="{trans('Phone')}">
                                 </fieldset>
                             {/if}
                             <fieldset class="form-group" id="inputSsnOrTen">
-                                {icon name="user-id-number"} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control" placeholder="{trans('SSN or TEN:')}">
+                                {icon name="user-id-number" class="icons-signin"} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control" placeholder="{trans('SSN or TEN:')}">
                             </fieldset>
                             {if $google_recaptcha_sitekey}
                                 <div id="remind-recaptcha" class="g-recaptcha"></div>
                             {/if}
-                            <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
-                            <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
+                            <button class="btn btn-lg btn-primary btn-block center-block btn-login{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
+                            <p class="text-center"><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                         </form>
                     {/if}
                 </div>
