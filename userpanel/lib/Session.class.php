@@ -102,20 +102,25 @@ class Session
                 default:
                     return;
             }
+
+            $allowed_customer_status = $this->getAllowedCustomerStatus();
+
             $customer = $this->db->GetRow(
                 'SELECT c.id, pin
                 FROM customers c
-                ' . $join . '
+                ' . $join . "
                 WHERE c.deleted = 0
-                    AND ((ten <> \'\' AND REPLACE(REPLACE(ten, \'-\', \'\'), \' \', \'\') = ?)
-                        OR (ssn <> \'\' AND ssn = ?))'
-                . $where,
+                    AND ((ten <> '' AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?)
+                        OR (ssn <> '' AND ssn = ?))
+                    " . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '')
+                    . $where,
                 $params
             );
             if (!$customer) {
                 $this->error = trans('Credential reminder couldn\'t be sent!');
                 return;
             }
+
             if ($remindform['type'] == 1) {
                 $subject = ConfigHelper::getConfig('userpanel.reminder_mail_subject');
                 $body = ConfigHelper::getConfig('userpanel.reminder_mail_body');
@@ -310,16 +315,35 @@ class Session
         return !strlen($string);
     }
 
+    private function getAllowedCustomerStatus()
+    {
+        $allowed_customer_status =
+            Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig('userpanel.allowed_customer_status', ''), -1);
+        if ($allowed_customer_status === -1) {
+            $allowed_customer_status = null;
+        }
+        return $allowed_customer_status;
+    }
+
     private function GetCustomerIDByPhoneAndPIN()
     {
         if (!$this->validPIN()) {
             return null;
         }
 
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
         $authinfo['id'] = $this->db->GetOne(
             'SELECT c.id FROM customers c, customercontacts cc
-			WHERE customerid = c.id AND contact = ? AND cc.type < ? AND deleted = 0 LIMIT 1',
-            array($this->login, CONTACT_EMAIL)
+            WHERE customerid = c.id
+                AND contact = ? AND cc.type < ?
+                AND deleted = 0
+                ' . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '') . '
+                LIMIT 1',
+            array(
+                $this->login,
+                CONTACT_EMAIL,
+            )
         );
 
         if (empty($authinfo['id'])) {
@@ -338,8 +362,17 @@ class Session
             return null;
         }
 
-        $authinfo['id'] = $this->db->GetOne('SELECT id FROM customers
-			WHERE id = ? AND deleted = 0', array($this->login));
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
+        $authinfo['id'] = $this->db->GetOne(
+            'SELECT id FROM customers
+            WHERE id = ?
+                AND deleted = 0
+                ' . (isset($allowed_customer_status) ? ' AND status IN (' . implode(', ', $allowed_customer_status) . ')' : ''),
+            array(
+                $this->login,
+            )
+        );
 
         if (empty($authinfo['id'])) {
             return null;
@@ -357,10 +390,14 @@ class Session
             return null;
         }
 
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
         $authinfo['id'] = $this->db->GetOne(
             'SELECT c.id FROM customers c
-			JOIN documents d ON d.customerid = c.id
-			WHERE fullnumber = ? AND deleted = 0',
+            JOIN documents d ON d.customerid = c.id
+            WHERE fullnumber = ?
+                AND deleted = 0
+                ' . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : ''),
             array($this->login)
         );
 
@@ -380,10 +417,20 @@ class Session
             return null;
         }
 
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
         $authinfo['id'] = $this->db->GetOne(
             'SELECT c.id FROM customers c, customercontacts cc
-			WHERE cc.customerid = c.id AND contact = ? AND cc.type & ? > 0 AND deleted = 0 LIMIT 1',
-            array($this->login, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS))
+            WHERE cc.customerid = c.id
+                AND contact = ?
+                    AND cc.type & ? > 0
+                    AND deleted = 0
+                    ' . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : '') . '
+                LIMIT 1',
+            array(
+                $this->login,
+                CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
+            )
         );
 
         if (empty($authinfo['id'])) {
@@ -402,8 +449,17 @@ class Session
             return null;
         }
 
-        $authinfo['id'] = $this->db->GetOne('SELECT ownerid FROM nodes
-			WHERE name = ?', array($this->login));
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
+        $authinfo['id'] = $this->db->GetOne(
+            'SELECT n.ownerid FROM nodes n
+            JOIN customers c ON c.id = n.ownerid
+            WHERE n.name = ?
+                ' . (isset($allowed_customer_status) ? ' AND c.status IN (' . implode(', ', $allowed_customer_status) . ')' : ''),
+            array(
+                $this->login,
+            )
+        );
 
         if (empty($authinfo['id'])) {
             return null;
@@ -428,10 +484,14 @@ class Session
             return null;
         }
 
+        $allowed_customer_status = $this->getAllowedCustomerStatus();
+
         $authinfo['id'] = $this->db->GetOne(
             "SELECT id FROM customers
-		    WHERE deleted = 0 AND (REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ? OR REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?)
-		    LIMIT 1",
+            WHERE deleted = 0
+                AND (REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ? OR REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?)
+                " . (isset($allowed_customer_status) ? ' AND status IN (' . implode(', ', $allowed_customer_status) . ')' : '') . "
+            LIMIT 1",
             array($ssnten, $ssnten)
         );
 

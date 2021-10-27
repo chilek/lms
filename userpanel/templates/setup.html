@@ -36,22 +36,22 @@
     </thead>
     <tbody>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="timeout">
                     {trans("Session timeout:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="number" size="20" name="timeout" id="timeout" value="{$timeout}" form="general-settings-form">
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="page_header">
                     {trans("Page header")}:
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="text" size="50" name="page_header" id="page_header" value="{$page_header}" form="general-settings-form">
             </td>
         </tr>
@@ -78,10 +78,10 @@
             </td>
         </tr>
         <tr>
-            <td scope="col" class="text-left nobr">
+            <td class="text-left nobr">
                 {trans("Userpanel style:")}
             </td>
-            <td scope="col">
+            <td>
                 <select name="style" SIZE="1" {tip text="Userpanel design style" } form="general-settings-form">
                     {foreach $stylelist as $styleitem}
                         <option value="{$styleitem}"{if ($styleitem== $style) || ($styleitem=="default" && $style=="")} selected{/if}>{$styleitem}</option>
@@ -90,10 +90,10 @@
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 {trans("Hint style:")}
             </td>
-            <td scope="col">
+            <td>
                 <select name="hint" size="1"{tip text="Userpanel hints style. Chose modern for animated assistant, classic for tips in LMS style, or none to disable hints displaying"}
                     form="general-settings-form">
                     <option value="modern"{if $hint=='modern'} selected{/if}>{trans("modern")}</option>
@@ -103,10 +103,10 @@
             </td>
         </tr>
         <tr>
-            <td scope="col" class="text-left nobr">
+            <td class="text-left nobr">
                 {trans("Startup module:")}
             </td>
-            <td scope="col">
+            <td>
                 <select name="startupmodule" size="1" form="general-settings-form">
                     {$menu2 = $menu}
                     {array_multisort(Utils::array_column($menu2, 'name'), SORT_LOCALE_STRING, $menu2)}
@@ -119,89 +119,89 @@
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="hide_nodes_modules">
                     {trans("Disabling modules:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1" form="general-settings-form"
                     {if $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes"}>
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="mail_credential_reminders">
                     {trans("Mail credential reminders:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="checkbox" id="mail_credential_reminders" name="mail_credential_reminders" {tip text="Mail credential reminders" }
                     form="general-settings-form" value="1"{if $mail_credential_reminders} checked{/if}>
             </td>
         </tr>
         <tr class="mail-credential-reminders">
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="reminder_mail_sender">
                     {trans("Reminder mail sender:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="text" size="50" name="reminder_mail_sender" id="reminder_mail_sender" form="general-settings-form"
                     value="{$reminder_mail_sender}" {tip text="Enter reminder mail sender" }>
             </td>
         </tr>
         <tr class="mail-credential-reminders">
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="reminder_mail_subject">
                     {trans("Reminder mail subject:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="text" size="50" name="reminder_mail_subject" id="reminder_mail_subject" form="general-settings-form"
                     value="{$reminder_mail_subject}" {tip text="Enter reminder mail subject" }>
             </td>
         </tr>
         <tr class="mail-credential-reminders">
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="reminder_mail_body">
                     {trans("Reminder mail body:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <textarea name="reminder_mail_body" id="reminder_mail_body" cols="60" rows="7" {tip text="Enter reminder mail body" }
                     form="general-settings-form">{$reminder_mail_body}</textarea>
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="sms_credential_reminders">
                     {trans("SMS credential reminders:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="checkbox" id="sms_credential_reminders" name="sms_credential_reminders" {tip text="SMS credential reminders"}
                     form="general-settings-form" value="1"{if $sms_credential_reminders} checked{/if}>
             </td>
         </tr>
         <tr class="sms-credential-reminders">
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="reminder_sms_body">
                     {trans("Reminder sms body:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <textarea name="reminder_sms_body" id="reminder_sms_body" cols="60" rows="7" {tip text="Enter reminder sms body" }
                     form="general-settings-form">{$reminder_sms_body}</textarea>
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="auth_type">
                     {trans("Authentication type:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <select name="auth_type" {tip text="Userpanel authentication type" } form="general-settings-form">
                     {foreach $_USERPANEL_AUTH_TYPES as $typeidx => $type}
                         <option value="{$typeidx}"{if $auth_type == $typeidx} selected{/if}>{$type.selection}</option>
@@ -210,24 +210,41 @@
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
+                <label for="allowed_customer_status">
+                    {trans("Allowed customer status")}
+                </label>
+            </td>
+            <td>
+                <select name="allowed_customer_status[]" class="lms-ui-multiselect" multiple
+                    required data-default-value="{trans("- all -")}" form="general-settings-form">
+                    {foreach Localisation::arraySort($_CSTATUSES, 'singularlabel') as $statusidx => $status}
+                        <option value="{$statusidx}"
+                            {if empty($allowed_customer_status) || in_array($statusidx, $allowed_customer_status)} selected{/if}
+                        >{$status.singularlabel}</option>
+                    {/foreach}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="nobr">
                 <label for="pin_validation">
                     {trans("PIN validation")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="checkbox" name="pin_validation" id="pin_validation" form="general-settings-form"
                     {if !empty($pin_validation)} checked{/if}
                     {tip text="Userpanel PIN validation"}>
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="force_ssl">
                     {trans("Force SSL:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="checkbox" name="force_ssl" id="force_ssl" value="1"{if $force_ssl} checked{/if}
                     form="general-settings-form"
                     {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off)."}>
@@ -235,23 +252,23 @@
         </tr>
 
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="google_recaptcha_sitekey">
                     {trans("Google reCAPTCHA site key:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="text" size="50" name="google_recaptcha_sitekey" id="google_recaptcha_sitekey"
                     form="general-settings-form" value="{$google_recaptcha_sitekey}" {tip text="Enter Google reCAPTCHA site key"}>
             </td>
         </tr>
         <tr>
-            <td scope="col" class="nobr">
+            <td class="nobr">
                 <label for="google_recaptcha_secret">
                     {trans("Google reCAPTCHA secret:")}
                 </label>
             </td>
-            <td scope="col">
+            <td>
                 <input type="text" size="50" name="google_recaptcha_secret" id="google_recaptcha_secret"
                     form="general-settings-form" value="{$google_recaptcha_secret}" {tip text="Enter Google reCAPTCHA secret"}>
             </td>

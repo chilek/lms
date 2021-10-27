@@ -132,3 +132,5 @@ $_LANG['Update'] = 'Uaktualnij';
 $_LANG['<!userpanel>Confirm'] = 'Zapoznałem się';
 
 $_LANG['Access is temporarily blocked. Please try again in 10 minutes.'] = 'Dostęp został tymczasowo zablokowany. Spróbuj ponownie za 10 minut.';
+
+$_LANG['Allowed customer status'] = 'Dozwolony status klienta';
