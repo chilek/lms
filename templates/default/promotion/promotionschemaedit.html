@@ -56,7 +56,7 @@
 			</td>
 			<td id="periodcont">
 				{foreach $schema.periods as $key => $period}
-					<select name="schema[periods][]" form="schemaedit"
+					<select name="schema[periods][{$key}]" form="schemaedit"
 							{if !empty($schema.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
 								data-options='{ "disabled": true }'
 								{tip class="lms-ui-combobox" text="Schema is assigned to liabilities, so periods change is disabled!" bold=1}
@@ -139,7 +139,7 @@
 			}
 
 			comboboxes = $('#periodcont').children('.scombobox');
-			var select = $(comboboxes[comboboxes.length - 1]).find('select').clone();
+			var select = $(comboboxes[comboboxes.length - 1]).find('select').clone().attr('name', 'schema[periods][' + comboboxes.length + ']');
 			var del = $('#perioddel');
 			select.insertBefore(del);
 

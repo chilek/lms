@@ -108,7 +108,7 @@
 				this.find(cp + cdisplay).attr('tabindex', opts.tabindex);
 			}
 			if (this.find(cp + cvalue).length == 0) {
-				this.append('<input class="' + pname + cvalue + '" type="hidden" />');
+				this.append('<input class="' + pname + cvalue + '" type="hidden"' + ($select.attr('form') ? ' form="' + $select.attr('form') + '"' : '') + ' />');
 			}
 			if (this.find(cp + cdisplay).is(':disabled') || opts.disabled) {
 				this.find(cp + cddback + ', ' + cp + cddarr).hide();
