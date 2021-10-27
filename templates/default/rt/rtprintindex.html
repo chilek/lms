@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<form method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&type=ticketslist" target="_blank">
+<form method="post" name="ticketlist" id="ticketlist" action="?m=rtprint&type=ticketlist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -73,7 +73,7 @@
 						{trans("Customer")}
 					</TD>
 					<TD style="width: 1%;" class="nobr" colspan="2">
-						{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer"
+						{customerlist form="ticketlist" customers=$customers selectname="cust" inputname="customer"
 							version=2
 							firstoption="- all customers -" selecttip="You can select customer to limit results"
 							inputtip="Enter customer ID or leave empty for all customers"}
@@ -158,7 +158,7 @@
 			<INPUT TYPE="checkbox" NAME="extended" VALUE="1" id="extended"><label for="extended">{trans("extended format")}</label>&nbsp;
 			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" id="contacts" CHECKED><label for="contacts">{trans("include contact info")}</label>
 			&nbsp; &nbsp; &nbsp;
-			{button onclick="document.ticketslist.submit()" icon="print" label="Print"}
+			{button onclick="document.ticketlist.submit()" icon="print" label="Print"}
 		</TD>
 	</TR>
     </TBODY>

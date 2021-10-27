@@ -1,5 +1,22 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
+<style>
+
+	.no-page-break {
+		break-inside: avoid;
+	}
+
+	.auto-width {
+		width: 70%;
+	}
+
+	@media print {
+		.auto-width {
+			width: 100%;
+		}
+	}
+
+</style>
 <TABLE WIDTH="100%">
 	<TR>
 		<TD WIDTH="99%" VALIGN="TOP">
@@ -13,7 +30,7 @@
 	</TR>
 </TABLE>
 {foreach $list as $ticket}
-<TABLE WIDTH="640" CELLPADDING="3" ALIGN="CENTER">
+<TABLE class="auto-width" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="grey bb fleftu" ALIGN="CENTER" WIDTH="1%" NOWRAP>
 			{icon name="helpdesk"}
@@ -28,54 +45,97 @@
 			#{counter}
 		</TD>
 	</TR>
-	<TR>
-		<TD COLSPAN="4" CLASS="flr bb">
-			<TABLE WIDTH="100%">
-			    <TR>
-				<TD WIDTH="1%">{trans("Date:")}</TD>
-				<TD WIDTH="99%">
-				    {$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
-				</TD>
-			    </TR>
-			    <TR>
-				<TD WIDTH="1%">{trans("Requestor:")}</TD>
-				<TD WIDTH="99%">
-				    {if $ticket.customerid}
-				    {$ticket.customername} ({$ticket.customerid|string_format:"%04d"})
-				    {else}
-				    {$ticket.requestor}
-				    {/if}
-				</TD>
-			    </TR>
-			    {if $ticket.address}
-			    <TR>
-				<TD WIDTH="1%">{trans("Address:")}</TD>
-				<TD WIDTH="99%">
-				    {$ticket.city}{if $ticket.address}, {$ticket.address}{/if}
-				    {if $ticket.phones}({trans("phone:")} {$ticket.phones}){/if}
-				    {if $ticket.emails}({trans("email:")} {$ticket.emails}){/if}
-				</TD>
-			    </TR>
-			    {/if}
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" CLASS="fbottomu bb">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-			    {foreach $ticket.content as $item}
-			    <TR>
-				<TD WIDTH="100%" CLASS="ftop{if $item.note} blend{/if}">
-				    {$item.body|escape|replace:"\n":"<BR>"}
-				</TD>
-			    </TR>
-			    {/foreach}
-			</TABLE>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="4" class="flr bb">
+			<table style="width: 100%;">
+				<colgroup>
+					<col style="width: %1;">
+					<col style="width: %99;">
+				</colgroup>
+				<tr>
+					<td>
+						{trans("Date:")}
+					</td>
+					<td>
+						{$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
+					</td>
+				</tr>
+				{if $ticket.deadline}
+					<tr>
+						<td>
+							{trans("<!rt>Deadline:")}
+						</td>
+						<td>
+							{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}
+						</td>
+					</tr>
+				{/if}
+				{if $ticket.resolvetime}
+					<tr>
+						<td class="nobr">
+							{trans("Resolve time:")}
+						</td>
+						<td>
+							{$ticket.resolvetime|date_format:"%Y/%m/%d %H:%M"}
+						</td>
+					</tr>
+				{/if}
+				{if $ticcket.customerid || $ticket.requestor}
+					<tr>
+						<td>
+							{trans("Requestor:")}
+						</td>
+						<td>
+							{if $ticket.customerid}
+								{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})
+							{else}
+								{$ticket.requestor|escape}
+							{/if}
+						</td>
+					</tr>
+				{/if}
+				{if $ticket.address}
+					<tr>
+						<td>
+							{trans("Address:")}
+						</td>
+						<td>
+							{$ticket.city}{if $ticket.address}, {$ticket.address}{/if}
+							{if $ticket.phones}
+								({trans("phone:")} {$ticket.phones})
+							{/if}
+							{if $ticket.emails}
+								({trans("email:")} {$ticket.emails})
+							{/if}
+						</td>
+					</tr>
+				{/if}
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" class="fbottomu bb">
+			<table style="width: 100%;" cellpadding="3" class="no-page-break">
+				<colgroup>
+					<col style="width: 100%;">
+				</colgroup>
+				{foreach $ticket.content as $item}
+					<tr>
+						<td class="ftop{if $item.note} blend{/if}">
+							{if $message.contenttype == 'text/plain'}
+								{$item.body|trim|escape|regex_replace:"/\r?\n/":'<br>'|message_quote}
+							{else}
+								{$item.body|message_quote}
+							{/if}
+						</td>
+					</tr>
+				{/foreach}
+			</table>
+		</td>
+	</tr>
 </TABLE><BR>
 {foreachelse}
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<TABLE class="auto-width" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<tr>
     	<td class="empty-table">
 			{trans("No such requests in database.")}
