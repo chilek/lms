@@ -36,10 +36,20 @@
         <script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit" async defer></script>
         {/if}
         <style>
-            .form-signin {
+            .background-grey {
+                background: #ECEFF1;
+            }
+            .login-form {
+                margin-top: 2em;
+                margin-left: 1em;
+                margin-right: 1em;
+            }
+            .bordered {
+                border: 1px grey solid;
                 max-width: 400px;
                 padding: 15px;
                 margin: 0 auto;
+                background: white;
             }
             .form-signin-header {
                 max-width: initial;
@@ -66,12 +76,6 @@
             .form-signin input {
                 margin-left: 1em;
             }
-            .form-signin input[type="email"] {
-                margin-bottom: -1px;
-            }
-            .form-signin input[type="password"] {
-                margin-bottom: 10px;
-            }
             .center-block {
                 display: block;
                 margin-left: auto;
@@ -91,29 +95,27 @@
             }
             .icons-signin {
                 font-size: 1.8em;
+                max-width: 1em;
                 font-weight: light;
             }
         </style>
     </head>
-    <body class="login-form">
+    <body class="login-form background-grey">
         <div class="container-fluid">
             <div class="row">
-                <div class="col">
+                <div class="col bordered">
+                    {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <h2 class="form-signin-header text-center">
-						{if $company_logo}
-							<img src="{$company_logo}">
-						{/if}
-						{if $page_header}
-							<br><small class="text-muted">{$page_header}</small>
-						{/if}
-						{if !$company_logo && !$page_header}
-							<br><small class="text-muted">{trans('Virtual Customer Service')}</small>
-						{/if}
+                        {if $company_logo}
+                            <img src="{$company_logo}">
+                        {/if}
+                        {if $page_header}
+                            <br><small class="text-muted">{$page_header}</small>
+                        {/if}
+                        {if !$company_logo && !$page_header}
+                            <br><small class="text-muted">{trans('Virtual Customer Service')}</small>
+                        {/if}
                     </h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
                     {if $error}
                         <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center">
                             <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
@@ -128,7 +130,6 @@
                             </div>
                         </div>
                     {/if}
-                    {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         <fieldset class="form-group">
                             {icon name="login" class="icons-signin"}
@@ -170,16 +171,21 @@
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                                 <fieldset id="email" class="form-group">
-                                    {icon name="mail" class="icons-signin"} <input type="text" name="remindform[email]" class="form-control" placeholder="{trans('E-Mail')}">
+                                    {icon name="mail" class="icons-signin"} <input type="text" name="remindform[email]"
+                                        class="form-control" placeholder="{trans('E-Mail')}" required>
                                 </fieldset>
                             {/if}
                             {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')}
                                 <fieldset id="phone" class="form-group" style="{if ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}display:none;{/if}">
-                                    {icon name="phone" class="icons-signin"} <input type="text" name="remindform[phone]" class="form-control" placeholder="{trans('Phone')}">
+                                    {icon name="phone" class="icons-signin"}
+                                    <input type="text" name="remindform[phone]"
+                                        class="form-control" placeholder="{trans('Phone')}" required>
                                 </fieldset>
                             {/if}
                             <fieldset class="form-group" id="inputSsnOrTen">
-                                {icon name="user-id-number" class="icons-signin"} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control" placeholder="{trans('SSN or TEN:')}">
+                                {icon name="user-id-number" class="icons-signin"}
+                                <input type="text" name="remindform[ten]" id="inputSsnOrTen"
+                                    class="form-control" placeholder="{trans('SSN or TEN:')}" required>
                             </fieldset>
                             {if $google_recaptcha_sitekey}
                                 <div id="remind-recaptcha" class="g-recaptcha"></div>
