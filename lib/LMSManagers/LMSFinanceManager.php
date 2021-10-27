@@ -1735,6 +1735,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
+    public function toggleAssignmentSuspension($id)
+    {
+        if ($this->syslog) {
+            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid, suspend FROM assignments WHERE id = ?', array($id));
+            $args = array(
+                SYSLOG::RES_ASSIGN => $assign['id'],
+                SYSLOG::RES_TARIFF => $assign['tariffid'],
+                SYSLOG::RES_LIAB => $assign['liabilityid'],
+                SYSLOG::RES_CUST => $assign['customerid'],
+                'suspend' => empty($assign['suspend']) ? 1 : 0,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+        }
+        return $this->db->Execute('UPDATE assignments SET suspended = (suspended + 1) % 2 WHERE id = ?', array($id));
+    }
+
     public function GetTradeDocumentArchiveStats($ids)
     {
         $archive_stats = $this->db->GetRow(

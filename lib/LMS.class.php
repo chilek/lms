@@ -1389,6 +1389,12 @@ class LMS
         return $manager->SuspendAssignment($id, $suspend);
     }
 
+    public function toggleAssignmentSuspension($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->toggleAssignmentSuspension($id);
+    }
+
     public function GetInvoiceList(array $params)
     {
         $manager = $this->getFinanceManager();

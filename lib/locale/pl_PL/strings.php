@@ -326,6 +326,9 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
+
+$_LANG['billing'] = 'billing';
+
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -479,7 +482,7 @@ $_LANG['Are you sure, you want to delete tariff \'$a\'?'] = 'Jesteś pewien, że
 $_LANG['Are you sure, you want to delete this database backup?'] = 'Jesteś pewien, że chcesz usunąć tę kopię bazy danych?';
 $_LANG['Are you sure, you want to delete this liability?'] = 'Jesteś pewien, że chcesz usunąć to zobowiązanie?';
 $_LANG['Are you sure, you want to delete selected liabilities?'] = 'Jesteś pewien, że chcesz usunąć wybrane zobowiązania?';
-$_LANG['Are you sure, you want to suspend selected liabilities?'] = 'Jesteś pewien, że chcesz zawiesić wybrane zobowiązania?';
+$_LANG['Are you sure, you want to change suspension state of selected liabilities?'] = 'Jesteś pewien, że chcesz zmienić stan zawieszenia wybranych zobowiązań?';
 $_LANG['Are you sure, you want to drop user $a from that event?'] = 'Jesteś pewien, że chcesz usunąć użytkownika $a z tego zdarzenia?';
 $_LANG['Are you sure, you want to generate new password?'] = 'Jesteś pewien, że chcesz wygenerować nowe hasło?';
 $_LANG['Are you sure, you want to generate new PIN?'] = 'Jesteś pewien, że chcesz wygenerować nowy PIN?';
@@ -1872,6 +1875,7 @@ $_LANG['Submitter:'] = 'Zgłaszający:';
 $_LANG['Subscription'] = 'Abonament';
 $_LANG['Subscription:'] = 'Abonament:';
 $_LANG['Suspend'] = 'Zawieś';
+$_LANG['Suspend/Enable'] = 'Zawieś/Włącz';
 $_LANG['Suspending of all liabilities'] = 'Zawieszenie wszystkich zobowiązań';
 $_LANG['SYSTEM ACCOUNT'] = 'KONTO SYSTEMOWE';
 $_LANG['System information and management'] = 'Informacje o systemie i administracja';

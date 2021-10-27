@@ -439,7 +439,7 @@
 					{/if}
 
 					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
+						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}"
 							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
 					{/if}
 					{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
@@ -526,7 +526,7 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
-				{button class="suspend-assignments" icon="wait" label="Suspend"}
+				{button class="suspend-assignments" icon="wait" label="Suspend/Enable"}
 				{button class="delete-assignments" icon="delete" label="Delete"}
 				<label>
 					{trans("Check All")}
@@ -799,8 +799,8 @@
 		});
 
 		tab_elem.find('.suspend-assignments').click(function() {
-			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').closest('.lms-ui-tab-table-row:not(.suspended)').length) {
-				confirmDialog($t("Are you sure, you want to suspend selected liabilities?"), this).done(function () {
+			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
+				confirmDialog($t("Are you sure, you want to change suspension state of selected liabilities?"), this).done(function () {
 					$('#{$tab_id}-form').attr('action', '?m=customerassignmentedit&action=suspend&cid={$customerinfo.id}').submit();
 				});
 			}
