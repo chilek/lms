@@ -57,9 +57,8 @@ if (count($aids) == 1) {
 }
 
 if ($_GET['action'] == 'suspend') {
-    $suspend = isset($_POST['customerassignments']) ? 1 : intval($_GET['suspend']);
     foreach ($aids as $aid) {
-        $LMS->SuspendAssignment($aid, $suspend);
+        $LMS->toggleAssignmentSuspension($aid);
     }
     $SESSION->redirect('?' . $SESSION->get('backto'));
 }
