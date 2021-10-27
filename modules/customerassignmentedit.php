@@ -25,19 +25,43 @@
  */
 
 // get customer name and check privileges using customerview
-$customer = $DB->GetRow('SELECT a.customerid AS id, c.divisionid, '
-    .$DB->Concat('c.lastname', "' '", 'c.name').' AS name
-    FROM assignments a
-    JOIN customerview c ON (c.id = a.customerid)
-    WHERE a.id = ?', array($_GET['id']));
-
-if (!$customer) {
+$aids = isset($_POST['customerassignments']) ? $_POST['customerassignments'] : array($_GET['id']);
+$aids = Utils::filterIntegers($aids);
+if (empty($aids)) {
     $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+if (count($aids) == 1) {
+    $aid = reset($aids);
+    $customer = $DB->GetRow(
+        'SELECT a.customerid AS id, c.divisionid, '
+        . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS name
+        FROM assignments a
+        JOIN customerview c ON (c.id = a.customerid)
+        WHERE a.id = ?',
+        array($aid)
+    );
+    if (!$customer) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
+} else {
+    if ($DB->GetOne(
+        'SELECT COUNT(a.id)
+        FROM assignments a
+        JOIN customerview c ON c.id = a.customerid
+        WHERE a.id IN ?',
+        array($aids)
+    ) != count($aids)) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
+}
+
 if ($_GET['action'] == 'suspend') {
-    $LMS->SuspendAssignment($_GET['id'], $_GET['suspend']);
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $suspend = isset($_POST['customerassignments']) ? 1 : intval($_GET['suspend']);
+    foreach ($aids as $aid) {
+        $LMS->SuspendAssignment($aid, $suspend);
+    }
+    $SESSION->redirect('?' . $SESSION->get('backto'));
 }
 
 if (isset($_POST['assignment'])) {

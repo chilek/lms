@@ -526,6 +526,7 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
+				{button class="suspend-assignments" icon="wait" label="Suspend"}
 				{button class="delete-assignments" icon="delete" label="Delete"}
 				<label>
 					{trans("Check All")}
@@ -538,7 +539,7 @@
 	{/tab_contents}
 {/tab_container}
 
-<SCRIPT>
+<script>
 
 	if (typeof(tariff_types) === 'undefined') {
 		var tariff_types = [];
@@ -784,7 +785,7 @@
 		tab_elem.find('.delete-assignments').click(function() {
 			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
 				confirmDialog($t("Are you sure, you want to delete selected liabilities?"), this).done(function () {
-					$('form[name=customerassignments]').submit();
+					$('#{$tab_id}-form').attr('action', '?m=customerassignmentdel').submit();
 				});
 			}
 		});
@@ -795,6 +796,14 @@
 						location.href = '?m=customerassignmentdel&cid=' + $(this).prev().val();
 					});
 			return false;
+		});
+
+		tab_elem.find('.suspend-assignments').click(function() {
+			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').closest('.lms-ui-tab-table-row:not(.suspended)').length) {
+				confirmDialog($t("Are you sure, you want to suspend selected liabilities?"), this).done(function () {
+					$('#{$tab_id}-form').attr('action', '?m=customerassignmentedit&action=suspend&cid={$customerinfo.id}').submit();
+				});
+			}
 		});
 
 		function updateDataset (datasetFilter) {
@@ -832,4 +841,4 @@
 		});
 	});
 
-</SCRIPT>
+</script>

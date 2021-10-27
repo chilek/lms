@@ -28,6 +28,8 @@ $_LANG['Enter document number. WARNING! Changing this number can be DANGEROUS! (
 $_LANG['Previous balance: $a $b'] = 'Dotychczasowe saldo: $a $b';
 $_LANG['Total to pay: $a'] = 'Razem do zapłaty: $a';
 $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
+$_LANG['Invoice value: $a (to pay)'] = 'Wartość faktury: $a (do zapłaty)';
+$_LANG['Invoice value: $a (to repay)'] = 'Wartość faktury: $a (do zwrotu)';
 
 $_LANG['Select tariff'] = 'Wybierz taryfę';
 $_LANG['Document flags'] = 'Flagi dokumentu';
@@ -276,6 +278,7 @@ $_LANG['Ticket deadline could not be set in past!'] = 'Termin ostateczny nie mo�
 $_LANG['Ticket owner could not be the same as verifier!'] = 'Właściciel zgłoszenia nie może być weryfikatorem!';
 $_LANG['Ticket verifier could not be the same as owner!'] = 'Weryfikator zgłoszenia nie może być właścicielem!';
 $_LANG['<!rt>Deadline'] = 'Termin ostateczny';
+$_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired'] = 'Zgłoszenie z przeterminowanym terminem ostatecznym';
 $_LANG['Ticket deadline has been removed.'] = 'Termin ostateczny zgłoszenia został usunięty.';
 $_LANG['Ticket deadline has been set to $a.'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a.';
@@ -287,6 +290,7 @@ $_LANG['<!rt>Verifier'] = 'Weryfikator';
 $_LANG['Unassigned'] = 'Nieprzypisany';
 $_LANG['Assigned'] = 'Przypisany';
 $_LANG['Requestor'] = 'Zgłaszający';
+$_LANG['Requestor:'] = 'Zgłaszający:';
 $_LANG['documents'] = 'dokumenty';
 $_LANG['Administrative contact:'] = 'Kontakt administracyjny:';
 $_LANG['Administrative contact'] = 'Kontakt administracyjny';
@@ -305,7 +309,7 @@ $_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
 $_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego (opcjonalnie)';
 $_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
-$_LANG['Notify customer:'] = 'Powiadom klienta:';
+$_LANG['Notify customer'] = 'Powiadom klienta';
 $_LANG['Notify customer via e-mail'] = 'Powiadom klienta e-mailem';
 $_LANG['Notify customer via SMS'] = 'Powiadom klienta SMS-em';
 
@@ -321,6 +325,9 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
+
+$_LANG['billing'] = 'billing';
+
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -436,6 +443,7 @@ $_LANG['Allows you to find customer'] = 'Wyszukiwanie klientów';
 $_LANG['Allows you to manage database backups'] = 'Zarządzanie kopiami zapasowymi';
 $_LANG['Allows you to search node'] = 'Wyszukiwanie komputerów';
 $_LANG['All ports in that device are in use.'] = 'Wszystkie porty w tym urządzeniu są już zajęte.';
+$_LANG['all suspended'] = 'zawieszenie wszystkich';
 $_LANG['All tickets and messages in queue will be lost.'] = 'Wszystkie zgłoszenia i wiadomości w tej kolejce zostaną utracone.';
 $_LANG['All customer data and computers bound to this customer will be lost!'] = 'Wszystkie dane klienta i komputery przypisane do tego klienta zostaną utracone!';
 $_LANG['- all users -'] = '- wszyscy -';
@@ -473,6 +481,7 @@ $_LANG['Are you sure, you want to delete tariff \'$a\'?'] = 'Jesteś pewien, że
 $_LANG['Are you sure, you want to delete this database backup?'] = 'Jesteś pewien, że chcesz usunąć tę kopię bazy danych?';
 $_LANG['Are you sure, you want to delete this liability?'] = 'Jesteś pewien, że chcesz usunąć to zobowiązanie?';
 $_LANG['Are you sure, you want to delete selected liabilities?'] = 'Jesteś pewien, że chcesz usunąć wybrane zobowiązania?';
+$_LANG['Are you sure, you want to suspend selected liabilities?'] = 'Jesteś pewien, że chcesz zawiesić wybrane zobowiązania?';
 $_LANG['Are you sure, you want to drop user $a from that event?'] = 'Jesteś pewien, że chcesz usunąć użytkownika $a z tego zdarzenia?';
 $_LANG['Are you sure, you want to generate new password?'] = 'Jesteś pewien, że chcesz wygenerować nowe hasło?';
 $_LANG['Are you sure, you want to generate new PIN?'] = 'Jesteś pewien, że chcesz wygenerować nowy PIN?';
@@ -1064,6 +1073,7 @@ $_LANG['Gross Price:'] = 'Cena brutto:';
 $_LANG['Gross value'] = 'Wartość brutto';
 $_LANG['Gross Value:'] = 'Wartość brutto:';
 $_LANG['Group:'] = 'Grupa:';
+$_LANG['Group'] = 'Grupa';
 $_LANG['(Group: $a)'] = '(Grupa: $a)';
 $_LANG['Group Edit: $a'] = 'Edycja grupy: $a';
 $_LANG['Group Info: $a'] = 'Informacje o grupie: $a';
@@ -1696,9 +1706,11 @@ $_LANG['Remove queue ID: $a'] = 'Usuń kolejkę ID: $a';
 $_LANG['Remove this item from list'] = 'Usuń tę pozycję z listy';
 $_LANG['Removing network $a'] = 'Usuń sieć $a';
 $_LANG['Repeat password'] = 'Powtórz hasło';
+$_LANG['Repeat password:'] = 'Powtórz hasło:';
 $_LANG['Reply'] = 'Odpowiedź';
 $_LANG['Requests Tracking'] = 'System Obsługi Zgłoszeń';
 $_LANG['Resolve'] = 'Rozwiąż';
+$_LANG['Resolve time:'] = 'Czas rozwiązania:';
 $_LANG['resolved'] = 'rozwiązany';
 $_LANG['expand'] = 'rozwiń';
 $_LANG['Resolved:'] = 'Rozwiązane:';
@@ -3295,6 +3307,7 @@ $_LANG['Months $a-'] = 'mies. $a-';
 $_LANG['New Promotion'] = 'Nowa promocja';
 $_LANG['New Schema'] = 'Nowy schemat';
 $_LANG['Periods:'] = 'Okresy:';
+$_LANG['Periods'] = 'Okresy';
 $_LANG['Promotion:'] = 'Promocja:';
 $_LANG['Promotions'] = 'Promocje';
 $_LANG['Promotions:'] = 'Promocje:';
@@ -3601,8 +3614,9 @@ $_LANG['Uploaded:'] = 'Wysłano:';
 $_LANG['That are no sessions for this node.'] = 'Brak sesji dla tego komputera.';
 $_LANG['change of contract'] = 'zmiana umowy';
 
-$_LANG['(underpayment)'] = '(niedopłata)';
+$_LANG['(to pay)'] = '(do zapłaty)';
 $_LANG['(excess payment)'] = '(nadpłata)';
+$_LANG['Excess payment: $a'] = 'Nadpłata: $a';
 
 $_LANG['Transaction Log:'] = 'Dziennik transakcji:';
 $_LANG['Transaction Log'] = 'Dziennik transakcji';
@@ -3717,6 +3731,7 @@ $_LANG['postal'] = 'korespondencyjny';
 
 $_LANG['visual editor'] = 'edytor wizualny';
 $_LANG['Message template'] = 'Szablon wiadomości';
+$_LANG['Message template:'] = 'Szablon wiadomości:';
 $_LANG['Note template'] = 'Szablon notatki';
 $_LANG['Message template operation:'] = 'Czynność na szablonie wiadomości:';
 $_LANG['message template update'] = 'aktualizacja szablonu wiadomości';
@@ -4249,6 +4264,7 @@ $_LANG['Debit Note No. $a for $b'] = 'Nota obciążeniowa nr $a dla $b';
 $_LANG['Credit Note No. $a for $b'] = 'Faktura korygująca nr $a dla $b';
 $_LANG['Invoice No. $a for $b'] = 'Faktura nr $a dla $b';
 $_LANG['Error sending mail: $a'] = 'Błąd wysyłki maila: $a';
+$_LANG['Error sending SMS: $a'] = 'Błąd wysyłki SMS-a: $a';
 $_LANG['Fatal error: sender_email unset! Can\'t continue, exiting.'] = 'Błąd krytyczny: nie ustawiono sender_email! Próba wysyłki zakończona.';
 $_LANG['Fatal error: smtp_auth value not supported! Can\'t continue, exiting.'] = 'Błąd krytyczny: nieobsługiwana wartość smtp_auth! Próba wysyłki zakończona.';
 $_LANG['Send invoices'] = 'Wyślij faktury';
@@ -5134,6 +5150,10 @@ $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
 
 $_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';
+$_LANG['Ticket watching'] = 'Obserwowanie zgłoszeń';
+$_LANG['Start watching'] = 'Obserwuj';
+$_LANG['Stop watching'] = 'Nie obserwuj';
+$_LANG['Watched tickets'] = 'Obserwowane zgłoszenia';
 
 $_LANG['Sent by customer at $a'] = 'Przesłane przez klienta $a';
 
@@ -5373,3 +5393,7 @@ $_LANG[
     + 'Despite this you want to make customer modification which you had made in form?'
 ] = "Użytkownik '\$a' w międzyczasie (\$b) zmienił dane edytowanego przez Ciebie klienta.\n"
     + 'Czy mimo tego chcesz zmienić dane klienta na te przez Ciebie wprowadzone w formularzu?';
+
+$_LANG['Billing status: $a (to pay)'] = 'Stan rozliczeń: $a (do zapłaty)';
+$_LANG['Billing status: %a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
+$_LANG['Billing status: $a'] = 'Stan rozliczeń: $a';
