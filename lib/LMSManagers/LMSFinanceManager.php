@@ -1738,7 +1738,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function toggleAssignmentSuspension($id)
     {
         if ($this->syslog) {
-            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid, suspend FROM assignments WHERE id = ?', array($id));
+            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid, suspended FROM assignments WHERE id = ?', array($id));
             $args = array(
                 SYSLOG::RES_ASSIGN => $assign['id'],
                 SYSLOG::RES_TARIFF => $assign['tariffid'],
