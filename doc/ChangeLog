@@ -20,6 +20,8 @@ version 28-git (????-??-??):
   - enhancement: implemented validity period support for promotions and promotion schemas [chilan]
   - enhancement: new customer search filter - cutoffstop date interval [chilan]
   - enhancement: userpanel: added status selection of customers allowed to login [chilan]
+  - enhancement: 'suspend' button in customer assignment box allows to suspend all assignment
+    with single operation [chilan]
 
 version 27.0 (2021-08-20):
 
