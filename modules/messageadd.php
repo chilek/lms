@@ -180,21 +180,23 @@ function GetRecipients($filter, $type = MSG_MAIL)
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT a.customerid,
-			SUM((CASE a.suspended
-				WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-				ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
-			* (CASE t.period
-				WHEN ' . MONTHLY . ' THEN 1
-				WHEN ' . YEARLY . ' THEN 1/12.0
-				WHEN ' . HALFYEARLY . ' THEN 1/6.0
-				WHEN ' . QUARTERLY . ' THEN 1/3.0
-				ELSE (CASE a.period
+			SUM(
+				(CASE a.suspended
+					WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+					ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+				* (CASE t.period
 					WHEN ' . MONTHLY . ' THEN 1
 					WHEN ' . YEARLY . ' THEN 1/12.0
 					WHEN ' . HALFYEARLY . ' THEN 1/6.0
 					WHEN ' . QUARTERLY . ' THEN 1/3.0
-					ELSE 0 END)
-				END)
+					ELSE (CASE a.period
+						WHEN ' . MONTHLY . ' THEN 1
+						WHEN ' . YEARLY . ' THEN 1/12.0
+						WHEN ' . HALFYEARLY . ' THEN 1/6.0
+						WHEN ' . QUARTERLY . ' THEN 1/3.0
+						ELSE 0 END)
+					END)
+				* a.count
 			) AS value 
 			FROM assignments a
 			LEFT JOIN tariffs t ON (t.id = a.tariffid)
