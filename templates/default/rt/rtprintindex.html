@@ -199,13 +199,23 @@
 					{trans("include contact info")}
 				</label>
 				<label>
-					<input type="checkbox" name="comment-details" value="1" form="ticketlist" checked>
-					{trans("comment details")}
+					<input type="checkbox" name="comment-details" value="1" form="ticketlist" disabled checked>
+					<span class="lms-ui-label">{trans("comment details")}</span>
 				</label>
 			</td>
 		</tr>
 	</tbody>
 </table>
+
+<script>
+
+	$(function() {
+		$('[form="ticketlist"][name="extended"]').change(function() {
+			$('[form="ticketlist"][name="comment-details"]').prop('disabled', !$(this).prop('checked'));
+		});
+	});
+
+</script>
 
 <form method="post" name="stats" id="stats" action="?m=rtprint&type=stats" target="_blank">
 	<input type="submit" class="hiddenbtn">
