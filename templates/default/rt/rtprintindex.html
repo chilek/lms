@@ -2,265 +2,324 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<form method="post" name="ticketlist" id="ticketlist" action="?m=rtprint&type=ticketlist" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD width="1%">
-			{icon name="helpdesk"}
-		</TD>
-		<TD width="99%">
-			<B>{trans("List of Requests")}</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD width="100%" colspan="2">
-			<TABLE width="100%">
-				<TR>
-					<TD style="width: 1%;">
-						{icon name="timetable"}
-					</TD>
-					<TD width="1%" nowrap>
-						<span class="bold">{trans("Period")} </span>
-					</TD>
-					<TD class="nobr" colspan="8">
-                                                <label>
-                                                    {trans("From")}
-                                                    <input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-                                                </label>
-                                                <label>
-                                                    {trans("To")}
-                                                    <input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
-                                                </label>
-                                        </TD>
-				</TR>
-				<TR>
-					<TD class="bold nobr">
-						{icon name="home"}
-					</TD>
-					<TD class="bold nobr">
-						{trans("Address")}
-					</TD>
-					<TD class="nobr" colspan="8">
-						<INPUT type="text" name="address">
-						<span class="bold">{trans("City")}</span> <INPUT type="text" name="city" VALUE="">
-						<span class="bold">{trans("Postcode")}</span> <INPUT type="text" name="zip" VALUE="" SIZE="10">
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						{icon name="queue"}
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Queue")}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
-							<OPTION value="0">{trans("- all queues -")}</OPTION>
-							{section name=queues loop=$queues}
-							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"&hellip;":true}</OPTION>
-							{/section}
-						</SELECT>
-					</TD>
-					<TD style="width: 1%;">
-						{icon name="customer"}
-					</TD>
-					<TD style="width: 1%;" class="bold nobr">
-						{trans("Customer")}
-					</TD>
-					<TD style="width: 1%;" class="nobr" colspan="2">
-						{customerlist form="ticketlist" customers=$customers selectname="cust" inputname="customer"
-							version=2
-							firstoption="- all customers -" selecttip="You can select customer to limit results"
-							inputtip="Enter customer ID or leave empty for all customers"}
-					</TD>
-					<TD width="1%" nowrap>
-						{icon name="subject"}
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Subject")}</B>
-					</TD>
-					<TD width="92%" nowrap>
-						<INPUT type="text" name="subject" value="" size="30" {tip text="Enter subject"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						{icon name="status"}
-					</TD>
-					<TD width="1%">
-						<B>{trans("Status")}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT size="1" name="status" {tip text="You can select status to limit results"}>
-							<OPTION value="">- {trans("all")} -</OPTION>
-							<OPTION value="-1">{trans("not resolved")}</OPTION>
-							{foreach $_RT_STATES as $key => $item}
-							<OPTION value="{$key}">{$item.label}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-					<TD width="1%">
-						{icon name="uptime"}
-					</TD>
-					<TD width="1%">
-						<B>{trans("Uptime")}</B>
-					</TD>
-					<TD width="1%" nowrap>
-						<INPUT TYPE="text" NAME="days" SIZE="3"> {trans("days")}
-					</TD>
-					<TD width="10%" nowrap>
-					</TD>
-				</TR>
-				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
-				<TR>
-					<TD style="width: 1%;">
-						{icon name="delete"}
-					</TD>
-					<TD style="width: 1%;">
-						<B>{trans("<!rt>Removed")}</B>
-					</TD>
-					<TD style="width: 1%;">
-						<SELECT size="1" name="removed" {tip text="You can select status to limit results"}>
-							<OPTION value="">- {trans("all")} -</OPTION>
-							<OPTION value="-1">{trans("Not removed")}</OPTION>
-							<OPTION value="1">{trans("Removed")}</OPTION>
-						</SELECT>
-					</TD>
-				</TR>
-				{/if}
-				<tr>
-					<td>
-						{icon name="helpdesk"}
-					</td>
-					<td class="bold nobr">
-					    {trans("Categories")}
-					</td>
-					<td>
-						<input type="hidden" name="categories" value="all">
-						<select size="1" name="categories[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-							<option value="-1" data-exclusive>{trans('- no categories -')}</option>
-							{foreach $categories as $c}
-								<option value="{$c.id}">{$c.name}</option>
-							{/foreach}
-						</select>
-					</td>
-				</tr>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD width="100%" colspan="2" align="right">
-			<INPUT TYPE="checkbox" NAME="extended" VALUE="1" id="extended"><label for="extended">{trans("extended format")}</label>&nbsp;
-			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" id="contacts" CHECKED><label for="contacts">{trans("include contact info")}</label>
-			&nbsp; &nbsp; &nbsp;
-			{button onclick="document.ticketlist.submit()" icon="print" label="Print"}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</form>
-<FORM method="post" name="stats" id="stats" action="?m=rtprint&amp;type=stats" target="_blank">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD width="1%">
-			{icon name="helpdesk"}
-		</TD>
-		<TD width="99%">
-			<B>{trans("Requests Stats")}</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD width="100%" colspan="2">
-			<TABLE width="100%">
-				<TR>
-					<TD style="width: 1%;">
-						{icon name="timetable"}
-					</TD>
-					<TD width="1%" nowrap>
-						<span class="bold">{trans("Period")} </span>
-					</TD>
-					<TD class="nobr" colspan="8">
-                                                <label>
-                                                    {trans("From")}
-                                                    <input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-                                                </label>
-						<label>
-                                                    {trans("To")}
-                                                    <input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
-                                                </label>
-                                        </TD>
-				</TR>
-				<TR>
-					<TD width="1%">
-						{icon name="queue"}
-					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Queue")}</B>
-					</TD>
-					<TD width="1%">
-						<SELECT size="1" name="queue" {tip text="You can select queue to limit results"}>
-							<OPTION value="0">{trans("- all queues -")}</OPTION>
-							{section name=queues loop=$queues}
-							<OPTION value="{$queues[queues].id}">{$queues[queues].name|truncate:40:"&hellip;":true}</OPTION>
-							{/section}
-						</SELECT>
-					</TD>
-					<TD width="1%">
-						{icon name="customer"}
-					</TD>
-					<TD width="96%" nowrap>
-						<B>{t a="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" b="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $a times in last $b days{/t}</B>
-					</TD>
-				</TR>
-				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
-				<TR>
-					<TD style="width: 1%;">
-						{icon name="delete"}
-					</TD>
-					<TD style="width: 1%;">
-						<B>{trans("<!rt>Removed")}</B>
-					</TD>
-					<TD style="width: 1%;">
-						<SELECT size="1" name="removed" {tip text="You can select status to limit results"}>
-							<OPTION value="">- {trans("all")} -</OPTION>
-							<OPTION value="-1">{trans("Not removed")}</OPTION>
-							<OPTION value="1">{trans("Removed")}</OPTION>
-						</SELECT>
-					</TD>
+<h1>{$layout.pagetitle}</h1>
 
-				</TR>
-				{/if}
-				<tr>
-					<td>{icon name="helpdesk"}</td>
-					<td class="bold">{trans("Categories")}</td>
-					<td>
-						<input type="hidden" name="categories" value="all">
-						<select size="1" name="categories[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-							<option value="-1" data-exclusive>{trans('- no categories -')}</option>
-							{foreach $categories as $c}
-								<option value="{$c.id}">{$c.name}</option>
-							{/foreach}
-						</select>
-					</td>
-				</tr>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD width="100%" colspan="2" align="right">
-			{button onclick="document.stats.submit()" icon="print" label="Print"}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
+<form method="post" name="ticketlist" id="ticketlist" action="?m=rtprint&type=ticketlist" target="_blank">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="helpdesk"}
+			</td>
+			<td>
+				<strong>{trans("List of Requests")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td colspan="2">
+				<table style="width: 100%;">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 92%;">
+					</colgroup>
+					<tr>
+						<td>
+							{icon name="timetable"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Period")}</strong>
+						</td>
+						<td class="nobr" colspan="8">
+							<label>
+								{trans("From")}
+								<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}"
+									form="ticketlist"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+							</label>
+							<label>
+								{trans("To")}
+								<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}"
+									form="ticketlist"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{icon name="home"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Address")}</strong>
+						</td>
+						<td class="nobr" colspan="8">
+							<input type="text" name="address" form="ticketlist">
+							<strong>{trans("City")}</strong>
+							<input type="text" name="city" value="" form="ticketlist">
+							<strong>{trans("Postcode")}</strong>
+							<input type="text" name="zip" value="" size="10" form="ticketlist">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{icon name="queue"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Queue")}</strong>
+						</td>
+						<td>
+							<select size="1" name="queue" {tip text="You can select queue to limit results"}
+								form="ticketlist">
+								<option value="0">{trans("- all queues -")}</option>
+								{foreach $queues as $queue}
+									<option value="{$queue.id}">{$queue.name|trunescape:40}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td>
+							{icon name="customer"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Customer")}</strong>
+						</td>
+						<td class="nobr">
+							{customerlist form="ticketlist" customers=$customers selectname="cust" inputname="customer"
+								version=2
+								firstoption="- all customers -" selecttip="You can select customer to limit results"
+								inputtip="Enter customer ID or leave empty for all customers"}
+						</td>
+						<td>
+							{icon name="subject"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Subject")}</strong>
+						</td>
+						<td>
+							<input type="text" name="subject" value="" size="30"
+								form="ticketlist" {tip text="Enter subject"}>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{icon name="status"}
+						</td>
+						<td>
+							<strong>{trans("Status")}</strong>
+						</td>
+						<td>
+							<select size="1" name="status" {tip text="You can select status to limit results"}
+								form="ticketlist">
+								<option value="">- {trans("all")} -</option>
+								<option value="-1">{trans("not resolved")}</option>
+								{foreach $_RT_STATES as $key => $item}
+									<option value="{$key}">{$item.label}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td>
+							{icon name="uptime"}
+						</td>
+						<td>
+							<strong>{trans("Uptime")}</strong>
+						</td>
+						<td>
+							<label>
+								<input type="text" name="days" size="3" form="ticketlist">
+								{trans("days")}
+							</label>
+						</td>
+						<td>
+						</td>
+					</tr>
+					{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+						<tr>
+							<td>
+								{icon name="delete"}
+							</td>
+							<td>
+								<strong>{trans("<!rt>Removed")}</strong>
+							</td>
+							<td>
+								<select size="1" name="removed" {tip text="You can select status to limit results"}
+									form="ticketlist">
+									<option value="">- {trans("all")} -</option>
+									<option value="-1">{trans("Not removed")}</option>
+									<option value="1">{trans("Removed")}</option>
+								</select>
+							</td>
+						</tr>
+					{/if}
+					<tr>
+						<td>
+							{icon name="helpdesk"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Categories")}</strong>
+						</td>
+						<td>
+							<input type="hidden" name="categories" value="all" form="ticketlist">
+							<select size="1" name="categories[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter"
+								form="ticketlist" data-default-value="{trans("- all -")}">
+								<option value="-1" data-exclusive>{trans('- no categories -')}</option>
+								{foreach $categories as $c}
+									<option value="{$c.id}">{$c.name}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{button onclick="document.ticketlist.submit()" icon="print" label="Print" form="ticketlist"}
+				<label>
+					<input type="checkbox" name="extended" value="1" form="ticketlist">
+					{trans("extended format")}
+				</label>&nbsp;
+				<label>
+					<input type="checkbox" name="contacts" value="1" form="ticketlist" checked>
+					{trans("include contact info")}
+				</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<form method="post" name="stats" id="stats" action="?m=rtprint&type=stats" target="_blank">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="helpdesk"}
+			</td>
+			<td>
+				<strong>{trans("Requests Stats")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td colspan="2">
+				<table style="width: 100%;">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 96%;">
+					</colgroup>
+					<tr>
+						<td>
+							{icon name="timetable"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Period")}</strong>
+						</td>
+						<td class="nobr" colspan="3">
+							<label>
+								{trans("From")}
+								<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}"
+									form="stats"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+							</label>
+							<label>
+								{trans("To")}
+								<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}"
+									form="stats"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{icon name="queue"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Queue")}</strong>
+						</td>
+						<td>
+							<select size="1" name="queue" {tip text="You can select queue to limit results"}
+								form="stats">
+								<option value="0">{trans("- all queues -")}</option>
+								{foreach $queues as $queue}
+									<option value="{$queue.id}">{$queue.name|trunescape:40}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td>
+							{icon name="customer"}
+						</td>
+						<td class="nobr">
+							<strong>{t a="<input type=\"text\" name=\"times\" size=\"3\" form=\"stats\">" b="<input type=\"text\" name=\"days\" size=\"3\" form=\"stats\">"}Customers requesting more than $a times in last $b days{/t}</strong>
+						</td>
+					</tr>
+					{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+						<tr>
+							<td>
+								{icon name="delete"}
+							</td>
+							<td>
+								<strong>{trans("<!rt>Removed")}</strong>
+							</td>
+							<td colspan="3">
+								<select size="1" name="removed" {tip text="You can select status to limit results"}
+									form="stats">
+									<option value="">- {trans("all")} -</option>
+									<option value="-1">{trans("Not removed")}</option>
+									<option value="1">{trans("Removed")}</option>
+								</select>
+							</td>
+						</tr>
+					{/if}
+					<tr>
+						<td>
+							{icon name="helpdesk"}
+						</td>
+						<td>
+							<strong>{trans("Categories")}</strong>
+						</td>
+						<td colspan="3">
+							<input type="hidden" name="categories" value="all" form="stats">
+							<select size="1" name="categories[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter"
+								form="stats" data-default-value="{trans("- all -")}">
+								<option value="-1" data-exclusive>{trans('- no categories -')}</option>
+								{foreach $categories as $c}
+									<option value="{$c.id}">{$c.name}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{button onclick="document.stats.submit()" icon="print" label="Print"}
+			</td>
+		</tr>
+	</tbody>
+</table>
 {/block}
