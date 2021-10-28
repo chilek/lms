@@ -267,6 +267,7 @@ $_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
 $_LANG['Ticket have open assigned events!'] = 'Zgłoszenie posiada otwarte zdarzenia!';
 $_LANG['Comment:'] = 'Komentarz:';
+$_LANG['comment details'] = 'szczegóły komentarzy';
 $_LANG['Enter invoice comment'] = 'Wprowadź komentarz do faktury';
 $_LANG['<!rt>Expired'] = 'Przeterminowany';
 $_LANG['<!rt>Not expired'] = 'Nieprzeterminowany';

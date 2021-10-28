@@ -127,6 +127,7 @@ switch ($type) {
         $removed  = isset($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
         $subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
         $extended = !empty($_GET['extended']) ? true : (!empty($_POST['extended']) ? true : false);
+        $comment_details = !empty($_GET['comment-details']) || !empty($_POST['comment-details']);
         $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
         $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
         $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
@@ -217,7 +218,8 @@ switch ($type) {
                 . ')';
         }
 
-        $list = $DB->GetAllByKey('SELECT t.id, t.createtime, t.resolvetime, t.deadline, t.customerid, t.subject, t.requestor, '
+        $list = $DB->GetAllByKey('SELECT t.id, t.createtime, t.resolvetime, t.deadline, t.customerid, t.subject,
+            t.requestor, t.requestor_mail, '
             .$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername '
             .(!empty($_POST['contacts']) || !empty($_GET['contacts'])
                 ? ', COALESCE(va.city, c.city) AS city, COALESCE(va.address, c.address) AS address,
@@ -240,18 +242,43 @@ switch ($type) {
 
         if ($list && $extended) {
             $tickets = implode(',', array_keys($list));
-            if ($content = $DB->GetAll('SELECT id, body, ticketid, createtime, rtmessages.type AS note, contenttype
-				FROM rtmessages
-				WHERE ticketid in (' . $tickets . ')
-			        ORDER BY createtime')) {
+            if ($content = $DB->GetAll('SELECT m.id, subject, body, ticketid, createtime,
+                    m.type, m.type AS note,
+                    contenttype, '
+                    . $DB->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
+                    userid, vusers.name AS username, customerid, mailfrom, phonefrom
+                FROM rtmessages m
+                LEFT JOIN customers ON customers.id = customerid
+                LEFT JOIN vusers ON vusers.id = userid
+                WHERE ticketid in (' . $tickets . ')
+                ORDER BY createtime')) {
                 foreach ($content as $idx => $row) {
                     $body = $row['body'];
-                    $list[$row['ticketid']]['content'][$row['id']] = array(
-                        'body' => $body,
-                        'note' => $row['note'],
-                        'contenttype' => $row['contenttype'],
-                        'attachments' => array(),
-                    );
+                    if ($comment_details) {
+                        $list[$row['ticketid']]['content'][$row['id']] = array(
+                            'subject' => $row['subject'],
+                            'body' => $body,
+                            'note' => $row['note'],
+                            'createtime' => $row['createtime'],
+                            'type' => $row['type'],
+                            'contenttype' => $row['contenttype'],
+                            'userid' => $row['userid'],
+                            'username' => $row['username'],
+                            'customerid' => $row['customerid'],
+                            'customername' => $row['customername'],
+                            'mailfrom' => $row['mailfrom'],
+                            'phonefrom' => $row['phonefrom'],
+                            'attachments' => array(),
+                        );
+                    } else {
+                        $list[$row['ticketid']]['content'][$row['id']] = array(
+                            'subject' => $row['subject'],
+                            'body' => $body,
+                            'note' => $row['note'],
+                            'contenttype' => $row['contenttype'],
+                            'attachments' => array(),
+                        );
+                    }
                     unset($content[$idx]);
                 }
                 $attachments = $DB->GetAll(
@@ -288,6 +315,8 @@ switch ($type) {
         $layout['pagetitle'] = trans('List of Requests');
 
         $SMARTY->assign('list', $list);
+        $SMARTY->assign('comment_details', $comment_details);
+
         $SMARTY->display($extended ? 'rt/rtprinttickets-ext.html' : 'rt/rtprinttickets.html');
         break;
 
