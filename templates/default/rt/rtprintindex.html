@@ -46,6 +46,8 @@
 							<strong>{trans("Period")}</strong>
 						</td>
 						<td class="nobr" colspan="8">
+							{date_period_preset from='#ticketlist [name="datefrom"]' to='#ticketlist [name="dateto"]'
+								periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
 							<label>
 								{trans("From")}
 								<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}"
@@ -243,6 +245,8 @@
 							<strong>{trans("Period")}</strong>
 						</td>
 						<td class="nobr" colspan="3">
+							{date_period_preset from='#stats [name="datefrom"]' to='#stats [name="dateto"]'
+								periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
 							<label>
 								{trans("From")}
 								<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}"
