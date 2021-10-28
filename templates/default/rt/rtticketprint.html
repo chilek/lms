@@ -163,8 +163,8 @@
 					{$message.mailfrom|escape}
 				{else}
 					{$ticket.requestor|escape}
-					{if $ticket.requestoremail}
-						&lt;{$ticket.requestoremail|escape}&gt;
+					{if $ticket.requestor_mail}
+						&lt;{$ticket.requestor_mail|escape}&gt;
 					{/if}
 				{/if}
 			<BR>
