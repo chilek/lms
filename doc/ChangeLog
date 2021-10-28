@@ -22,6 +22,7 @@ version 28-git (????-??-??):
   - enhancement: userpanel: added status selection of customers allowed to login [chilan]
   - enhancement: 'suspend' button in customer assignment box allows to suspend all assignment
     with single operation [chilan]
+  - enhancement: optional ticket comment details inclusion in extended ticket list report [chilan]
 
 version 27.0 (2021-08-20):
 
