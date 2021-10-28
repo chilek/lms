@@ -46,7 +46,7 @@
 							<strong>{trans("Period")}</strong>
 						</td>
 						<td class="nobr" colspan="8">
-							{date_period_preset from='#ticketlist [name="datefrom"]' to='#ticketlist [name="dateto"]'
+							{date_period_preset from='[form="ticketlist"][name="datefrom"]' to='[form="ticketlist"][name="dateto"]'
 								periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
 							<label>
 								{trans("From")}
@@ -245,7 +245,7 @@
 							<strong>{trans("Period")}</strong>
 						</td>
 						<td class="nobr" colspan="3">
-							{date_period_preset from='#stats [name="datefrom"]' to='#stats [name="dateto"]'
+							{date_period_preset from='[form="stats"][name="datefrom"]' to='[form="stats"][name="dateto"]'
 								periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
 							<label>
 								{trans("From")}
