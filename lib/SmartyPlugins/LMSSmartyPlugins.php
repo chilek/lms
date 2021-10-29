@@ -1274,4 +1274,32 @@ class LMSSmartyPlugins
 
         return $result;
     }
+
+    public static function daySelectionFunction(array $params, Smarty_Internal_Template $template)
+    {
+        static $loaded = false;
+
+        $elem_selector = isset($params['elem']) ? $params['elem'] : null;
+        $days = isset($params['days']) ? $params['days'] : '7,14,21,30';
+
+        if (!isset($elem_selector)) {
+            return;
+        }
+
+        $days = preg_split('/\s*[ ,|]\s*/', $days);
+
+        $result = $script = '';
+        if (!$loaded) {
+            $script = '<script src="js/lms-ui-day-selection.js"></script>';
+            $loaded = true;
+        }
+
+        foreach ($days as $day) {
+            $result .= '<button type="button" class="lms-ui-button lms-ui-button-day-selection" data-elem="'
+                . htmlspecialchars($elem_selector) . '" data-days="' . $day . '"><span class="lms-ui-label">+'
+                . $day . '</span></button>&nbsp;';
+        }
+
+        return $script . '<div class="lms-ui-day-selection-wrapper">' . $result . '</div>';
+    }
 }
