@@ -91,6 +91,15 @@ $customeradd = array();
 if (isset($_POST['customeradd'])) {
     $customeradd = $_POST['customeradd'];
 
+    $required_properties = ConfigHelper::getConfig(
+        $customeradd['type'] == CTYPES_COMPANY
+            ? 'phpui.legal_person_required_properties'
+            : 'phpui.natural_person_required_properties',
+        '',
+        true
+    );
+    $required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $required_properties));
+
     $contacttypes = array_keys($CUSTOMERCONTACTTYPES);
     foreach ($contacttypes as &$contacttype) {
         $contacttype .= 's';
@@ -169,7 +178,7 @@ if (isset($_POST['customeradd'])) {
         }
     }
 
-    if ($customeradd['ten'] !='') {
+    if ($customeradd['ten'] != '') {
         if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
             $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
             $customeradd['tenwarning'] = 1;
@@ -197,6 +206,8 @@ if (isset($_POST['customeradd'])) {
                 }
                 break;
         }
+    } elseif (isset($required_properties['ten'])) {
+        $error['ten'] = trans('Missed required TEN identifier!');
     }
 
     if ($customeradd['ssn'] != '') {
@@ -227,11 +238,15 @@ if (isset($_POST['customeradd'])) {
                 }
                 break;
         }
+    } elseif (isset($required_properties['ssn'])) {
+        $error['ssn'] = trans('Missed required SSN identifier!');
     }
 
     if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
         $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
         $icnwarning = 1;
+    } elseif ($customeradd['icn'] == '' && isset($required_properties['icn'])) {
+        $error['icn'] = trans('Missed required Identity Card Number!');
     }
 
     if ($customeradd['regon'] != '' && !check_regon($customeradd['regon'])) {
