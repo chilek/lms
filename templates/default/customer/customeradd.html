@@ -392,7 +392,8 @@
 														<input type="hidden" name="customeradd[icnwarning]" value="1">
 													{/if}
 													<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-															{tip trigger="icn"}>
+														{tip trigger="icn"}
+														{if isset($required_properties.icn)} required{/if}>
 												</label>
 												<label class="identity-document-property">
 													<span>{trans("Expires")}</span>
@@ -417,7 +418,8 @@
 									<TD>{trans("SSN")}</TD>
 									<TD>
 										<input type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]"
-											{tip trigger="ssn"}>
+											{tip trigger="ssn"}
+											{if isset($required_properties.ssn)} required{/if}>
 										{if $customeradd.ssnwarning}
 											<input type="hidden" name="customeradd[ssnwarning]" value="1">
 										{/if}
@@ -430,7 +432,8 @@
 									<TD>{trans("TEN")}</TD>
 									<TD>
 										<input type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]"
-											{tip trigger="ten"}>
+											{tip trigger="ten"}
+											{if isset($required_properties.ten)} required{/if}>
 										{if $customeradd.tenwarning}
 											<input type="hidden" name="customeradd[tenwarning]" value="1">
 										{/if}

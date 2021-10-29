@@ -396,6 +396,9 @@ if (isset($_POST['customeradd'])) {
     $customeradd['documentmemo'] = ConfigHelper::getConfig('phpui.default_customer_document_memo', '', true);
 
     $customeradd['consents'] = Utils::getDefaultCustomerConsents();
+
+    $required_properties = ConfigHelper::getConfig('phpui.natural_person_required_properties', '', true);
+    $required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $required_properties));
 }
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {
@@ -417,6 +420,7 @@ $customeradd = $hook_data['customeradd'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
+$SMARTY->assign('required_properties', $required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
