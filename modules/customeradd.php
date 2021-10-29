@@ -88,17 +88,15 @@ $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters'
 
 $customeradd = array();
 
+$natural_person_required_properties = ConfigHelper::getConfig('phpui.natural_person_required_properties', '', true);
+$natural_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $natural_person_required_properties));
+$legal_person_required_properties = ConfigHelper::getConfig('phpui.legal_person_required_properties', '', true);
+$legal_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $legal_person_required_properties));
+
 if (isset($_POST['customeradd'])) {
     $customeradd = $_POST['customeradd'];
 
-    $required_properties = ConfigHelper::getConfig(
-        $customeradd['type'] == CTYPES_COMPANY
-            ? 'phpui.legal_person_required_properties'
-            : 'phpui.natural_person_required_properties',
-        '',
-        true
-    );
-    $required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $required_properties));
+    $required_properties = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_properties : $natural_person_required_properties;
 
     $contacttypes = array_keys($CUSTOMERCONTACTTYPES);
     foreach ($contacttypes as &$contacttype) {
@@ -396,9 +394,6 @@ if (isset($_POST['customeradd'])) {
     $customeradd['documentmemo'] = ConfigHelper::getConfig('phpui.default_customer_document_memo', '', true);
 
     $customeradd['consents'] = Utils::getDefaultCustomerConsents();
-
-    $required_properties = ConfigHelper::getConfig('phpui.natural_person_required_properties', '', true);
-    $required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $required_properties));
 }
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {
@@ -420,7 +415,8 @@ $customeradd = $hook_data['customeradd'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
-$SMARTY->assign('required_properties', $required_properties);
+$SMARTY->assign('legal_person_required_properties', $legal_person_required_properties);
+$SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
