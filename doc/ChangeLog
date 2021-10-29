@@ -23,6 +23,8 @@ version 28-git (????-??-??):
   - enhancement: 'suspend' button in customer assignment box allows to suspend all assignment
     with single operation [chilan]
   - enhancement: optional ticket comment details inclusion in extended ticket list report [chilan]
+  - improvement: 'phpui.legal_person_required_properties' and 'phpui.natural_person_required_properties'
+    control which customer identifiers are required in add customer form [chilan]
 
 version 27.0 (2021-08-20):
 
