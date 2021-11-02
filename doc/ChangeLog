@@ -25,8 +25,8 @@ version 28-git (????-??-??):
   - enhancement: optional ticket comment details inclusion in extended ticket list report [chilan]
   - improvement: 'phpui.legal_person_required_properties' and 'phpui.natural_person_required_properties'
     control which customer identifiers are required in add customer form [chilan]
-  - gitc "enhancement: added smarty '{day_selection ...}' functions which allows to easily set
-    now + X days date into controlled form elements [chilan]
+  - enhancement: added smarty '{day_selection ...}' functions which allows to easily set
+    now +X days date into controlled form elements [chilan]
 
 version 27.0 (2021-08-20):
 
