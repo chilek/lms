@@ -27,6 +27,7 @@ version 28-git (????-??-??):
     control which customer identifiers are required in add customer form [chilan]
   - gitc "enhancement: added smarty '{day_selection ...}' functions which allows to easily set
     now + X days date into controlled form elements [chilan]
+  - improvement: don't require ticket category by default [interduo]
 
 version 27.0 (2021-08-20):
 

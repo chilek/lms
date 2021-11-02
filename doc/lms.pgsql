@@ -3577,8 +3577,6 @@ CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
 /* ---------------------------------------------------
  Data records
 ------------------------------------------------------*/
-INSERT INTO rtcategories (name, description, style) VALUES ('default', 'default category', 'background-color:#ffffff;color:#000000');
-
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment');
 INSERT INTO up_rights(module, name, description)
@@ -3662,6 +3660,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'allow_mac_sharing', 'false', '', 0),
 ('phpui', 'big_networks', 'true', '', 0),
 ('phpui', 'short_pagescroller', 'true', '', 0),
+('phpui', 'helpdesk_allow_empty_categories', 'true', '', 0),
+('phpui', 'show_ticket_categories', 'true', '', 0),
 ('phpui', 'helpdesk_stats', 'true', '', 0),
 ('phpui', 'helpdesk_customerinfo', 'true', '', 0),
 ('phpui', 'helpdesk_customerinfo_mail_body', '--
