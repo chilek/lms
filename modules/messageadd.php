@@ -850,6 +850,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if ($html_format) {
                 $headers['X-LMS-Format'] = 'html';
             }
+
+            $interval = intval(ConfigHelper::getConfig('phpui.message_send_interval', 0));
         } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
@@ -947,6 +949,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                             $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
                         }
                         $result = $LMS->SendMail($destination, $headers, $body, $attachments);
+
+                        if (!empty($interval)) {
+                            if ($interval == -1) {
+                                $delay = mt_rand(500, 5000);
+                            } else {
+                                $delay = $interval;
+                            }
+                            usleep($delay * 1000);
+                        }
+
                         break;
                     case MSG_SMS:
                     case MSG_ANYSMS:
