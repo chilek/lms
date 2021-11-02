@@ -3688,6 +3688,7 @@ URL: %url
 ('phpui', 'passwordhistory', 6, '', 0),
 ('phpui', 'event_usergroup_selection_type', 'update', '', 0),
 ('phpui', 'force_global_division_context', 'false', '', 0),
+('privileges', 'hide_voip_passwords', 'true', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('voip', 'default_cost_limit', '200','', 2),
