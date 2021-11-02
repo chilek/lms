@@ -27,6 +27,8 @@ version 28-git (????-??-??):
     control which customer identifiers are required in add customer form [chilan]
   - enhancement: added smarty '{day_selection ...}' functions which allows to easily set
     now +X days date into controlled form elements [chilan]
+  - enhancement: 'phpui.message_send_interval' controls interval between sent mails measured
+    in milliseconds [chilan]
 
 version 27.0 (2021-08-20):
 
