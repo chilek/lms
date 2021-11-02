@@ -1794,7 +1794,7 @@ foreach ($assigns as $assign) {
 
             $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 2);
 
-            if (floatval($price)) {
+            if (floatval($partial_price)) {
                 //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
 
                 if (empty($assign['backwardperiod'])) {
