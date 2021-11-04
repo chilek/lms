@@ -2,7 +2,9 @@
 
 namespace LMS\Tests;
 
-class ConfigVariableTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ConfigVariableTest extends TestCase
 {
 
     /**
@@ -14,7 +16,7 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp() : void
     {
     }
 
@@ -22,7 +24,7 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown() : void
     {
     }
 
@@ -30,7 +32,7 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
      * @covers ConfigVariable::getVariable
      * @todo   Implement testGetVariable().
      */
-    public function testGetVariable()
+    public function testGetVariable() : void
     {
         $variable_name = 'some_variable';
         $variable_value = 'some_value';
@@ -45,7 +47,7 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
      * @covers ConfigVariable::getValue
      * @todo   Implement testGetValue().
      */
-    public function testGetValue()
+    public function testGetValue() : void
     {
         $variable_name = 'some_variable';
         $variable_value = 'some_value';
@@ -60,7 +62,7 @@ class ConfigVariableTest extends \PHPUnit_Framework_TestCase
      * @covers ConfigVariable::getComment
      * @todo   Implement testGetComment().
      */
-    public function testGetComment()
+    public function testGetComment() : void
     {
         $variable_name = 'some_variable';
         $variable_value = 'some_value';

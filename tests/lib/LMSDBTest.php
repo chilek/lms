@@ -2,7 +2,9 @@
 
 namespace LMS\Tests;
 
-class LMSDBTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class LMSDBTest extends TestCase
 {
 
     /**
@@ -14,7 +16,7 @@ class LMSDBTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!defined('CONFIG_FILE')) {
             define('CONFIG_FILE', '../lms.ini');
@@ -37,7 +39,7 @@ class LMSDBTest extends \PHPUnit_Framework_TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown() : void
     {
         \LMSDB::destroyInstance();
     }
@@ -45,7 +47,7 @@ class LMSDBTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers LMSDB::getInstance
      */
-    public function testGetInstance()
+    public function testGetInstance() : void
     {
         $this->assertInstanceOf('LMSDBInterface', \LMSDB::getInstance());
     }
@@ -53,7 +55,7 @@ class LMSDBTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers LMSDB::getDB
      */
-    public function testGetDB()
+    public function testGetDB() : void
     {
         $this->assertInstanceOf('LMSDBInterface', \LMSDB::getInstance());
     }
@@ -61,7 +63,7 @@ class LMSDBTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers LMSDB::destroyInstance
      */
-    public function testDestroyInstance()
+    public function testDestroyInstance() : void
     {
         \LMSDB::getInstance();
         $db = \LMSDB::destroyInstance();

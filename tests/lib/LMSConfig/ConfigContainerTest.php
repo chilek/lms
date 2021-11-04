@@ -2,7 +2,9 @@
 
 namespace LMS\Tests;
 
-class ConfigContainerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ConfigContainerTest extends TestCase
 {
 
     /**
@@ -14,7 +16,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->object = new \ConfigContainer;
     }
@@ -23,7 +25,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown() : void
     {
     }
 
@@ -31,7 +33,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
      * @covers ConfigContainer::addSection
      * @todo   Implement testAddSection().
      */
-    public function testAddSection()
+    public function testAddSection() : void
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
@@ -46,7 +48,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigContainer::addSections
      */
-    public function testAddSections()
+    public function testAddSections() : void
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
@@ -63,7 +65,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigContainer::addSections
      */
-    public function testAddSectionsOverridesExistingSections()
+    public function testAddSectionsOverridesExistingSections() : void
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
@@ -81,7 +83,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
      * @covers ConfigContainer::getSection
      * @todo   Implement testGetSection().
      */
-    public function testGetSection()
+    public function testGetSection() : void
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
@@ -97,7 +99,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
      * @covers ConfigContainer::getSections
      * @todo   Implement testGetSections().
      */
-    public function testGetSections()
+    public function testGetSections() : void
     {
         $section_name = 'some_name';
         $section = new \ConfigSection($section_name);
@@ -118,7 +120,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigContainer::getSections
      */
-    public function testGetSectionsReturnsEmptyArrayWhenNoSectionWasAddedToConfig()
+    public function testGetSectionsReturnsEmptyArrayWhenNoSectionWasAddedToConfig() : void
     {
         $sections = $this->object->getSections();
         
@@ -129,7 +131,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
      * @expectedException Exception
      * @covers ConfigContainer::getSection
      */
-    public function testGetSectionThrowsExceptionWhenSectionIsNotInConfig()
+    public function testGetSectionThrowsExceptionWhenSectionIsNotInConfig() : void
     {
         $this->object->getSection('non-existent');
     }
@@ -137,7 +139,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigContainer::hasSection
      */
-    public function testHasSection()
+    public function testHasSection() : void
     {
         $section_name = 'non-existent';
         
@@ -150,7 +152,7 @@ class ConfigContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->hasSection($section_name));
     }
 
-    private function addSomeSectionsToConfig(\ConfigSection $section, $amount = 0, $mutable = false)
+    private function addSomeSectionsToConfig(\ConfigSection $section, $amount = 0, $mutable = false) : void
     {
         for ($i = 0; $i < $amount; $i++) {
             if ($mutable) {

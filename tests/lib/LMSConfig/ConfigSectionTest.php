@@ -2,7 +2,9 @@
 
 namespace LMS\Tests;
 
-class ConfigSectionTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ConfigSectionTest extends TestCase
 {
 
     /**
@@ -20,7 +22,7 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->section_name = 'some_section';
         $this->object = new \ConfigSection($this->section_name);
@@ -30,14 +32,14 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown() : void
     {
     }
 
     /**
      * @covers ConfigSection::addVariable
      */
-    public function testAddVariable()
+    public function testAddVariable() : void
     {
         $variable_name = 'some_name';
         $variable_value = 'some_value';
@@ -58,7 +60,7 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigSection::addVariables
      */
-    public function testAddVariables()
+    public function testAddVariables() : void
     {
         $variable_name = 'some_name';
         $variable_value = 'some_value';
@@ -79,7 +81,7 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigSection::addVariables
      */
-    public function testAddVariablesOverridesExistingVariables()
+    public function testAddVariablesOverridesExistingVariables() : void
     {
         $variable_name = 'some_name';
         $variable_value = 'some_value';
@@ -100,7 +102,7 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigSection::getVariable
      */
-    public function testGetVariable()
+    public function testGetVariable() : void
     {
         $variable_name = 'some_name';
         $variable_value = 'some_value';
@@ -121,7 +123,7 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigSection::getVariables
      */
-    public function testGetVariables()
+    public function testGetVariables() : void
     {
         $variable_name = 'some_name';
         $variable_value = 'some_value';
@@ -144,7 +146,7 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ConfigSection::getVariables
      */
-    public function testGetVariablesReturnsEmptyArrayWhenNoVariableWasAddedToSection()
+    public function testGetVariablesReturnsEmptyArrayWhenNoVariableWasAddedToSection() : void
     {
         $variables = $this->object->getVariables();
         
@@ -155,12 +157,12 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
      * @expectedException Exception
      * @covers ConfigSection::getVariable
      */
-    public function testGetVariableThrowsExceptionWhenVariableIsNotInSection()
+    public function testGetVariableThrowsExceptionWhenVariableIsNotInSection() : void
     {
         $this->object->getVariable('non-existent');
     }
     
-    public function testHasVariable()
+    public function testHasVariable() : void
     {
         $variable_name = 'non-existent';
         
@@ -173,7 +175,7 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->hasVariable($variable_name));
     }
     
-    private function addSomeVariablesToSection(\ConfigVariable $variable, $amount = 0, $mutable = false)
+    private function addSomeVariablesToSection(\ConfigVariable $variable, $amount = 0, $mutable = false) : void
     {
         for ($i = 0; $i < $amount; $i++) {
             if ($mutable) {

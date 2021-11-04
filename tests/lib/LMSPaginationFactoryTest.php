@@ -26,20 +26,22 @@
 
 namespace LMS\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * LMSPaginationFactoryTest
  *
  */
-class LMSPaginationFactoryTest extends \PHPUnit_Framework_TestCase
+class LMSPaginationFactoryTest extends TestCase
 {
     
-    public function testIfShortFactoryFlagWorks()
+    public function testIfShortFactoryFlagWorks() : void
     {
         $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, true, null);
         $this->assertInstanceOf('LMSPaginationShort', $pagination);
     }
     
-    public function testIfLongFactoryFlagWorks()
+    public function testIfLongFactoryFlagWorks() : void
     {
         $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, false, null);
         $this->assertInstanceOf('LMSPaginationLong', $pagination);

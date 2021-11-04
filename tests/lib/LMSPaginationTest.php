@@ -26,15 +26,17 @@
 
 namespace LMS\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * LMSPaginationTest
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSPaginationTest extends \PHPUnit_Framework_TestCase
+class LMSPaginationTest extends TestCase
 {
 
-    public function testConstructorThowsDomainExceptionIfPageIsNotAnInteger()
+    public function testConstructorThowsDomainExceptionIfPageIsNotAnInteger() : void
     {
         $this->setExpectedException('DomainException', 'Page must be integer!');
         $page = 'not an integer';
@@ -43,7 +45,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testConstructorThowsDomainExceptionIfPageIsZero()
+    public function testConstructorThowsDomainExceptionIfPageIsZero() : void
     {
         $this->setExpectedException('DomainException', 'Page must be greater than 0!');
         $page = 0;
@@ -52,7 +54,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testConstructorThowsDomainExceptionIfPageIsNegative()
+    public function testConstructorThowsDomainExceptionIfPageIsNegative() : void
     {
         $this->setExpectedException('DomainException', 'Page must be greater than 0!');
         $page = -1;
@@ -61,7 +63,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testConstructorThowsDomainExceptionIfTotalIsNotAnInteger()
+    public function testConstructorThowsDomainExceptionIfTotalIsNotAnInteger() : void
     {
         $this->setExpectedException('DomainException', 'Total must be integer!');
         $page = 1;
@@ -70,7 +72,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testConstructorThowsDomainExceptionIfTotalNegative()
+    public function testConstructorThowsDomainExceptionIfTotalNegative() : void
     {
         $this->setExpectedException('DomainException', 'Total must be greater than or equal to 0!');
         $page = 1;
@@ -79,7 +81,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testConstructorThowsDomainExceptionIfPerPageIsNotAnInteger()
+    public function testConstructorThowsDomainExceptionIfPerPageIsNotAnInteger() : void
     {
         $this->setExpectedException('DomainException', 'Per page must be integer!');
         $page = 1;
@@ -88,7 +90,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testConstructorThowsDomainExceptionIfPerPageIsZero()
+    public function testConstructorThowsDomainExceptionIfPerPageIsZero() : void
     {
         $this->setExpectedException('DomainException', 'Per page must be greater than 0!');
         $page = 1;
@@ -97,7 +99,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testConstructorThowsDomainExceptionIfPerPageIsNegative()
+    public function testConstructorThowsDomainExceptionIfPerPageIsNegative() : void
     {
         $this->setExpectedException('DomainException', 'Per page must be greater than 0!');
         $page = 1;
@@ -106,7 +108,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination($page, $total, $per_page);
     }
 
-    public function testGetPageReturnsValueThatHasBeenSet()
+    public function testGetPageReturnsValueThatHasBeenSet() : void
     {
         $page = 1;
         $total = 1;
@@ -118,7 +120,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($new_page, $pagination->getPage());
     }
 
-    public function testGetTotalReturnsValueThatHasBeenSet()
+    public function testGetTotalReturnsValueThatHasBeenSet() : void
     {
         $page = 1;
         $total = 1;
@@ -130,7 +132,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($new_total, $pagination->getTotal());
     }
 
-    public function testGetPerPageReturnsValueThatHasBeenSet()
+    public function testGetPerPageReturnsValueThatHasBeenSet() : void
     {
         $page = 1;
         $total = 1;
@@ -142,7 +144,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($new_per_page, $pagination->getPerPage());
     }
     
-    public function testGetPagesReturnsDivisionOfTotalAndPerPageRoundedUp()
+    public function testGetPagesReturnsDivisionOfTotalAndPerPageRoundedUp() : void
     {
         $page = 1;
         $total = 1;
@@ -157,7 +159,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(4, $pagination->getPages());
     }
     
-    public function testFirstOnPage()
+    public function testFirstOnPage() : void
     {
         $page = 1;
         $total = 111;
@@ -170,7 +172,7 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(111, $pagination->getFirstOnPage());
     }
     
-    public function testLastOnPage()
+    public function testLastOnPage() : void
     {
         $page = 1;
         $total = 111;

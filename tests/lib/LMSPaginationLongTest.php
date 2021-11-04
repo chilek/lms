@@ -26,15 +26,17 @@
 
 namespace LMS\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * LMSPaginationLongTest
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSPaginationLongTest extends \PHPUnit_Framework_TestCase
+class LMSPaginationLongTest extends TestCase
 {
     
-    public function testDisplayGoToAlwaysReturnsFalse()
+    public function testDisplayGoToAlwaysReturnsFalse() : void
     {
         $pagination = new \LMSPaginationLong(1, 1, 1);
         $this->assertEquals($pagination->displayGoTo(), false);
@@ -42,7 +44,7 @@ class LMSPaginationLongTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($pagination->displayGoTo(), false);
     }
     
-    public function testDisplayLinkAlwaysReturnsTrue()
+    public function testDisplayLinkAlwaysReturnsTrue() : void
     {
         $pagination = new \LMSPaginationLong(1, 100, 1);
         for ($i = 1; $i <= 100; $i++) {
