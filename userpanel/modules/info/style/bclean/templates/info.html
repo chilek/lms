@@ -4,7 +4,7 @@
 {/if}
 <ul class="nav nav-tabs mb-1" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link active" data-toggle="tab" href="#userinfobox" role="tab">{trans("Information about the subscriber")}</a>
+		<a class="nav-link{if !isset($passwd_change_required)} active{/if}" data-toggle="tab" href="#userinfobox" role="tab">{trans("Information about the subscriber")}</a>
 	</li>
 	{if (is_array($usernodes) && count($usernodes)) && !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 		<li class="nav-item">
@@ -12,12 +12,12 @@
 		</li>
 	{/if}
 	<li class="nav-item">
-		<a class="nav-link" data-toggle="tab" href="#userloginbox" role="tab">{trans("Login data")}</a>
+		<a class="nav-link{if isset($passwd_change_required)} active{/if}" data-toggle="tab" href="#userloginbox" role="tab">{trans("Login data")}</a>
 	</li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane active" id="userinfobox" role="tabpanel">
+	<div class="tab-pane{if !isset($passwd_change_required)} active{/if}" id="userinfobox" role="tabpanel">
 		{include file="module:userinfobox.html"}
 	</div>
 	{if (is_array($usernodes) && count($usernodes)) && !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
@@ -25,7 +25,7 @@
 			{include file="module:usernodesbox.html"}
 		</div>
 	{/if}
-	<div class="tab-pane" id="userloginbox" role="tabpanel">
+	<div class="tab-pane{if isset($passwd_change_required)} active{/if}" id="userloginbox" role="tabpanel">
 		{include file="module:userloginbox.html"}
 	</div>
 </div>

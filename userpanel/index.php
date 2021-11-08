@@ -242,6 +242,13 @@ $plugin_manager->executeHook('userpanel_smarty_initialized', $SMARTY);
 
 if ($SESSION->islogged) {
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
+    if ($SESSION->isPasswdChangeRequired) {
+        if ($module != 'info' && $_GET['f'] != 'updatepinform') {
+            header('Location: ?m=info&f=updatepinform');
+            die;
+        }
+        $SMARTY->assign('passwd_change_required', true);
+    }
 
     if (isset($USERPANEL->MODULES[$module])) {
         $USERPANEL->MODULES[$module]['selected'] = true;

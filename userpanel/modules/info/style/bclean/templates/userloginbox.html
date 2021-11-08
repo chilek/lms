@@ -10,7 +10,7 @@
 		</li>
 		<li class="list-group-item">
 			<strong>{trans("PIN")}:</strong>******
-			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
+			{if ConfigHelper::checkConfig('userpanel.pin_changes') || isset($passwd_change_required)}
 				{button id="updatepinbtn" class="btn btn-primary btn-sm" data_toggle="modal" data_target="#updatepinbox" accesskey="P" icon="modify" label="Change"}
 			{/if}
 		</li>
@@ -57,16 +57,19 @@
 		</div>
 	</div>
 </div>
+
 <script>
+
 	$(function() {
 		$('#updatepinbtn').click(function() {
 			$($(this).attr('data-target')).find('.alert').remove();
 		});
 
-		{if $error.oldpin || $error.pin || $error.pin2}
-		$('#updatepinbox').modal('show');
+		{if $error.oldpin || $error.pin || $error.pin2 || isset($passwd_change_required)}
+			$('#updatepinbox').modal('show');
 		{elseif isset($error) && !isset($error.files)}
-		$('#updateuserinfobox').modal('show');
+			$('#updateuserinfobox').modal('show');
 		{/if}
-		});
+	});
+
 </script>

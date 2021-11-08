@@ -357,7 +357,7 @@ function module_updatepin()
 {
     global $LMS, $SMARTY, $SESSION;
 
-    if (!ConfigHelper::checkConfig('userpanel.pin_changes') || !isset($_POST['userdata'])) {
+    if (!ConfigHelper::checkConfig('userpanel.pin_changes') && !$SESSION->isPasswdChangeRequired || !isset($_POST['userdata'])) {
         header('Location: ?m=info');
     }
 
@@ -366,8 +366,14 @@ function module_updatepin()
     $userdata = $_POST['userdata'];
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
-    if ($userinfo['pin'] != $userdata['oldpin']) {
-        $error['oldpin'] = trans('Incorrect current PIN!');
+    if (preg_match('/\$[0-9]+\$/', $userinfo['pin'])) {
+        if (crypt($userdata['oldpin'], $userinfo['pin']) != $userinfo['pin']) {
+            $error['oldpin'] = trans('Incorrect current PIN!');
+        }
+    } else {
+        if ($userinfo['pin'] != $userdata['oldpin']) {
+            $error['oldpin'] = trans('Incorrect current PIN!');
+        }
     }
 
     if (!strlen($userdata['pin']) || !strlen($userdata['pin2'])) {
