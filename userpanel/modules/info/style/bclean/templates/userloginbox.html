@@ -29,6 +29,9 @@
 				{button class="close" data_dismiss="modal" icon="cancel"}
 			</div>
 			<div class="modal-body">
+				{if isset($passwd_change_required)}
+					<div class="alert alert-danger">{trans("PIN change required!")}</div>
+				{/if}
 				{if $error.oldpin}
 				<div class="alert alert-danger">{$error.oldpin}</div>
 				{/if}
