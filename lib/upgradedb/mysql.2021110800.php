@@ -62,7 +62,7 @@ $this->Execute("
                 FROM userdivisions ud
                 WHERE ud.userid = lms_current_user()))
             AND c.type < 2
-")
+");
 
 $this->Execute("
     CREATE VIEW contractorview AS
