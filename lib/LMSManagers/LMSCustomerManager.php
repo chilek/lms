@@ -641,10 +641,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result = $this->db->Execute(
             'INSERT INTO customers (extid, name, lastname, type,
             ten, ssn, status, creationdate,
-            creatorid, info, notes, message, documentmemo, pin, regon, rbename, rbe,
+            creatorid, info, notes, message, documentmemo, pin, pinlastchange, regon, rbename, rbe,
             ict, icn, icexpires, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
             VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
+                    ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
             array_values($args)
         );
 
@@ -1871,6 +1871,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
+        $passwd = $this->db->GetRow('SELECT pin, pinlastchange FROM customers WHERE id = ?', array($customerdata['id']));
+
+        $unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
+        if (empty($unsecure_pin_validity)) {
+            $pinlastchange = $passwd['pin'] == $customerdata['pin'] ? $passwd['pinlastchange'] : time();
+            $pin = $customerdata['pin'];
+        } else {
+            if (strlen($customerdata['pin'])) {
+                $pinlastchange = time();
+                $pin = $customerdata['pin'];
+            } else {
+                $pinlastchange = $passwd['pinlastchange'];
+                $pin = $passwd['pin'];
+            }
+        }
+
         $args = array(
             'extid'          => $customerdata['extid'],
             'status'         => $customerdata['status'],
@@ -1884,7 +1900,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'name'           => $customerdata['name'],
             'message'        => Utils::removeInsecureHtml($customerdata['message']),
             'documentmemo'   => empty($customerdata['documentmemo']) ? null : Utils::removeInsecureHtml($customerdata['documentmemo']),
-            'pin'            => $customerdata['pin'],
+            'pin'            => $pin,
+            'pinlastchange'  => $pinlastchange,
             'regon'          => $customerdata['regon'],
             'ict'            => $customerdata['ict'],
             'icn'            => $customerdata['icn'],
@@ -1939,7 +1956,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'UPDATE customers SET extid=?, status=?, type=?,
             ten=?, ssn=?, moddate=?NOW?, modid=?,
             info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
-            deleted=0, message=?, documentmemo=?, pin=?, regon=?, ict=?, icn=?, icexpires = ?, rbename=?, rbe=?,
+            deleted=0, message=?, documentmemo=?, pin=?, pinlastchange = ?, regon=?, ict=?, icn=?, icexpires = ?, rbename=?, rbe=?,
             cutoffstop=?, divisionid=?, paytime=?, paytype=?, flags = ?
             WHERE id=?',
             array_values($args)
