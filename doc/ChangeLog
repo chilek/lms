@@ -29,6 +29,9 @@ version 28-git (????-??-??):
     now +X days date into controlled form elements [chilan]
   - enhancement: 'phpui.message_send_interval' controls interval between sent mails measured
     in milliseconds [chilan]
+  - new 'phpui.unsecure_pin_validty' configuration variable controls secure pin storage and time validity
+    for temporary pins [chilan]
+  - enhancement: secure customer pin storage support - pins are hashed with crypt() function [chilan]
 
 version 27.0 (2021-08-20):
 
