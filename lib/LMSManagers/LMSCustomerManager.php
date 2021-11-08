@@ -1767,6 +1767,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $result['balance'] = $this->getCustomerBalance($result['id']);
             $result['bankaccount'] = bankaccount($result['id'], $result['account']);
 
+            $result['secure_pin'] = preg_match('/^\$[0-9]+\$/', $result['pin']);
+
             $flags = $result['flags'];
             $result['flags'] = array();
             foreach ($CUSTOMERFLAGS as $cflag => $flag) {
