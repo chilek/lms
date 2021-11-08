@@ -5401,5 +5401,5 @@ $_LANG[
     . 'Czy mimo tego chcesz zmienić dane klienta na te przez Ciebie wprowadzone w formularzu?';
 
 $_LANG['Billing status: $a (to pay)'] = 'Stan rozliczeń: $a (do zapłaty)';
-$_LANG['Billing status: %a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
+$_LANG['Billing status: $a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
 $_LANG['Billing status: $a'] = 'Stan rozliczeń: $a';
