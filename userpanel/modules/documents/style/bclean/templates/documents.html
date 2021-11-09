@@ -60,7 +60,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
+					<form method="post" action="?m=documents" id="newscan-form" name="newscan" enctype="multipart/form-data">
 						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
 						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button type="submit" class="btn btn-danger" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
+				{button type="submit" class="btn btn-danger" form="newscan-form" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
