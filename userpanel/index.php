@@ -28,7 +28,6 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('session.name', 'LMSSESSIONID');
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
@@ -244,6 +243,7 @@ if ($SESSION->islogged) {
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     if ($SESSION->isPasswdChangeRequired) {
         if ($module != 'info' && $_GET['f'] != 'updatepinform') {
+            $SESSION->close();
             header('Location: ?m=info&f=updatepinform');
             die;
         }
@@ -308,13 +308,15 @@ if ($SESSION->islogged) {
         $SMARTY->display('error.html');
     }
 
-    if (!isset($_SESSION['lastmodule']) || $_SESSION['lastmodule'] != $module) {
-        $_SESSION['lastmodule'] = $module;
+    if (!$SESSION->is_set('lastmodule') || $SESSION->get('lastmodule') != $module) {
+        $SESSION->save('lastmodule', $module);
     }
 } else {
-        $SMARTY->assign('error', $SESSION->error);
-        $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
-        $SMARTY->display('login.html');
+    $SMARTY->assign('error', $SESSION->error);
+    $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
+    $SMARTY->display('login.html');
 }
+
+$SESSION->close();
 
 $DB->Destroy();

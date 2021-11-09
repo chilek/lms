@@ -2974,6 +2974,22 @@ CREATE TABLE up_info_changes (
 );
 
 /* ---------------------------------------------------
+ Structure of table "up_sessions"
+------------------------------------------------------*/
+DROP TABLE IF EXISTS up_sessions CASCADE;
+CREATE TABLE up_sessions (
+	id		varchar(50) 	NOT NULL DEFAULT '',
+	customerid  integer NOT NULL
+		CONSTRAINT up_sessions_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
+	ctime	integer 	NOT NULL DEFAULT 0,
+	mtime	integer 	NOT NULL DEFAULT 0,
+	atime 	integer		NOT NULL DEFAULT 0,
+	vdata	text		NOT NULL,
+	content 	text		NOT NULL,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Functions and Views
 ------------------------------------------------------*/
 CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
@@ -4166,6 +4182,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021110800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021110900');
 
 COMMIT;

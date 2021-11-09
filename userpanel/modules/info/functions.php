@@ -411,6 +411,8 @@ function module_updatepin()
     } else {
         $LMS->UpdateCustomerPIN($SESSION->id, $userdata['pin']);
 
+        $SESSION->remove('passwd_change_required');
+
         header('Location: ?m=info');
     }
 }

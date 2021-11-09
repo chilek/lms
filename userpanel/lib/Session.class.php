@@ -37,17 +37,27 @@ class Session
     public $isPasswdChangeRequired = false;
     public $error;
 
-    public $_content = array();     // session content array
+    private $SID = null;            // session unique ID
+    private $_vdata = array();
+    private $_content = array();    // session content array
+    private $_updated = false;      // indicates that content has
+                                    // been altered
+    private $autoupdate = false;    // do automatic update on each
+                                    // save() or save_by_ref() ?
+    private $GCprob = 10;           // probality (in percent) of
+                                    // garbage collector procedure
+    private $atime = 0;
+    private $timeout;
 
     public function __construct(&$DB, $timeout = 600)
     {
         global $LMS;
 
-        session_start();
         $this->db = &$DB;
         $this->pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
         $this->unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
         $this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
+        $this->timeout = $timeout;
 
         if (isset($_GET['override'])) {
             $loginform = $_GET['loginform'];
@@ -176,67 +186,60 @@ class Session
         if (isset($loginform)) {
             $this->login = trim($loginform['login']);
             $this->passwd = trim($loginform['pwd']);
-            $_SESSION['session_timestamp'] = time();
-        } else {
-            $this->login = isset($_SESSION['session_login']) ? $_SESSION['session_login'] : null;
-            $this->passwd = isset($_SESSION['session_passwd']) ? $_SESSION['session_passwd'] : null;
-            $this->id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : 0;
-            if (isset($_SESSION['session_ip']) && $_SESSION['session_ip'] != $this->ip) {
-                $this->islogged = false;
-                writesyslog(
-                    "Session ip address does not match to web browser ip address. Customer ID: " . $this->login,
-                    LOG_WARNING
-                );
-                $this->LogOut();
+            $this->atime = time();
 
-                return;
-            }
-            $this->ip = isset($_SESSION['session_ip']) ? $_SESSION['session_ip'] : null;
-        }
-
-        $authdata = null;
-        if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
-            if ($this->passwd && $this->ValidateRecaptchaResponse()) {
+            $authdata = null;
+            if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
+                if ($this->passwd && $this->ValidateRecaptchaResponse()) {
+                    $authdata = $this->VerifyPassword();
+                }
+            } elseif ($this->passwd) {
                 $authdata = $this->VerifyPassword();
             }
-        } elseif ($this->passwd) {
-            $authdata = $this->VerifyPassword();
-        }
 
-        if ($authdata != null) {
-            $authinfo = $this->GetCustomerAuthInfo($authdata['id']);
-            if ($authinfo != null && isset($authinfo['enabled'])
-                && $authinfo['enabled'] == 0
-                && time() - $authinfo['failedlogindate'] < 600) {
-                $authdata['passwd'] = null;
-                $this->error = trans('Access is temporarily blocked. Please try again in 10 minutes.');
-            }
-        }
+            if ($authdata != null) {
+                $authinfo = $this->GetCustomerAuthInfo($authdata['id']);
+                if ($authinfo != null && isset($authinfo['enabled'])
+                    && $authinfo['enabled'] == 0
+                    && time() - $authinfo['failedlogindate'] < 600) {
+                    $authdata['passwd'] = null;
+                    $this->error = trans('Access is temporarily blocked. Please try again in 10 minutes.');
+                } else {
+                    if ($authdata != null && $authdata['passwd'] != null) {
+                        $this->islogged = true;
+                        $this->isPasswdChangeRequired = !preg_match('/^\$[0-9]+\$/', $authdata['passwd']);
+                        $this->id = $authdata['id'];
 
-        if ($authdata != null && $authdata['passwd'] != null && $this->TimeOut($timeout)) {
-            $this->islogged = true;
-            $this->isPasswdChangeRequired = !preg_match('/^\$[0-9]+\$/', $authdata['passwd']);
-            $this->id = $authdata['id'];
-            $_SESSION['session_login'] = $this->login;
-            $_SESSION['session_passwd'] = $this->passwd;
-            $_SESSION['session_id'] = $this->id;
-            $_SESSION['session_ip'] = $this->ip;
+                        if ($this->id) {
+                            if (isset($_COOKIE['LMS_USERPANEL_SID'])) {
+                                $this->_restoreSession();
+                            }
+                            if (empty($this->_vdata)) {
+                                $this->_createSession();
+                            }
 
-            if ($this->id) {
-                $authinfo = $this->GetCustomerAuthInfo($this->id);
-                if ($authinfo == null || $authinfo['failedlogindate'] == null) {
-                    $authinfo['failedlogindate'] = 0;
-                    $authinfo['failedloginip'] = '';
+                            if (rand(1, 100) <= $this->GCprob) {
+                                $this->_garbageCollector();
+                            }
+
+                            $this->save('passwd_change_required', $this->isPasswdChangeRequired);
+
+                            $authinfo = $this->GetCustomerAuthInfo($this->id);
+                            if ($authinfo == null || $authinfo['failedlogindate'] == null) {
+                                $authinfo['failedlogindate'] = 0;
+                                $authinfo['failedloginip'] = '';
+                            }
+                            $authinfo['id'] = $this->id;
+                            $authinfo['lastlogindate'] = time();
+                            $authinfo['lastloginip'] = $this->ip;
+                            $authinfo['enabled'] = 3;
+                            $this->SetCustomerAuthInfo($authinfo);
+                        }
+                    }
                 }
-                $authinfo['id'] = $this->id;
-                $authinfo['lastlogindate'] = time();
-                $authinfo['lastloginip'] = $this->ip;
-                $authinfo['enabled'] = 3;
-                $this->SetCustomerAuthInfo($authinfo);
-            }
-        } else {
-            $this->islogged = false;
-            if (isset($loginform)) {
+            } else {
+                $this->islogged = false;
+
                 writesyslog("Bad password for customer ID:".$this->login, LOG_WARNING);
 
                 if ($authdata != null && $authdata['passwd'] == null) {
@@ -265,9 +268,191 @@ class Session
                     $this->error = trans('Access denied!');
                 }
             }
+        } else {
+            if (isset($_COOKIE['LMS_USERPANEL_SID'])) {
+                $this->_restoreSession();
+                if (!isset($this->_vdata['REMOTE_ADDR']) || $this->_vdata['REMOTE_ADDR'] != $this->ip) {
+                    $this->islogged = false;
+                    writesyslog(
+                        "Session ip address does not match to web browser ip address. Customer ID: " . $this->login,
+                        LOG_WARNING
+                    );
+                    $this->LogOut();
 
-            $this->LogOut();
+                    return;
+                } else {
+                    $this->islogged = true;
+                    $this->isPasswdChangeRequired = $this->get('passwd_change_required');
+                }
+            }
         }
+    }
+
+    public function save($variable, $content)
+    {
+        $this->_content[$variable] = $content;
+
+        if ($this->autoupdate) {
+            $this->_saveSession();
+        } else {
+            $this->_updated = true;
+        }
+    }
+
+    public function save_by_ref($variable, &$content)
+    {
+        $this->_content[$variable] =& $content;
+
+        if ($this->autoupdate) {
+            $this->_saveSession();
+        } else {
+            $this->_updated = true;
+        }
+    }
+
+    public function restore($variable, &$content)
+    {
+        if (isset($this->_content[$variable])) {
+            $content = $this->_content[$variable];
+        } else {
+            $content = null;
+        }
+    }
+
+    public function get($variable)
+    {
+        if (isset($this->_content[$variable])) {
+            return $this->_content[$variable];
+        } else {
+            return null;
+        }
+    }
+
+    public function remove($variable)
+    {
+        if (isset($this->_content[$variable])) {
+            unset($this->_content[$variable]);
+        } else {
+            return false;
+        }
+        if ($this->autoupdate) {
+            $this->_saveSession();
+        } else {
+            $this->_updated = true;
+        }
+        return true;
+    }
+
+    public function is_set($variable)
+    {
+        return isset($this->_content[$variable]);
+    }
+
+    private function _garbageCollector()
+    {
+        // deleting sessions with timeout exceeded
+        $this->db->Execute('DELETE FROM up_sessions WHERE atime < ?NOW? - ? AND mtime < ?NOW? - ?', array($this->timeout, $this->timeout));
+
+        return true;
+    }
+
+    private function makeVData()
+    {
+        foreach (array('REMOTE_ADDR', 'REMOTE_HOST', 'HTTP_USER_AGENT', 'HTTP_VIA', 'HTTP_X_FORWARDED_FOR', 'SERVER_NAME', 'SERVER_PORT') as $vkey) {
+            if (isset($_SERVER[$vkey])) {
+                $vdata[$vkey] = $_SERVER[$vkey];
+            }
+        }
+        if (isset($vdata)) {
+            return $vdata;
+        } else {
+            return null;
+        }
+    }
+
+    public function close()
+    {
+        $this->_saveSession();
+        $this->SID = null;
+        $this->_content = array();
+    }
+
+    public function finish()
+    {
+        $this->_destroySession();
+    }
+
+    private function makeSID()
+    {
+        list($usec, $sec) = explode(' ', microtime());
+        return md5(uniqid(rand(), true)) . sprintf('%09x', $sec) . sprintf('%07x', ($usec * 10000000));
+    }
+
+    private function _createSession()
+    {
+        $this->SID = $this->makeSID();
+        $this->_vdata = $this->makeVData();
+        $this->_content = array();
+        $this->atime = $now = time();
+        $this->db->Execute(
+            'INSERT INTO up_sessions (id, customerid, ctime, mtime, atime, vdata, content) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            array(
+                $this->SID,
+                $this->id,
+                $now,
+                $now,
+                $now,
+                serialize($this->_vdata),
+                serialize($this->_content),
+            )
+        );
+        setcookie('LMS_USERPANEL_SID', $this->SID);
+    }
+
+    private function _restoreSession()
+    {
+        $this->SID = $_COOKIE['LMS_USERPANEL_SID'];
+
+        $row = $this->db->GetRow('SELECT * FROM up_sessions WHERE id = ?', array($this->SID));
+
+        $now = time();
+
+        $vdata = $this->makeVData();
+
+        if ($row && serialize($vdata) == $row['vdata']) {
+            if (($row['mtime'] < $now - $this->timeout) && ($row['atime'] < $now - $this->timeout)) {
+                $this->_destroySession();
+            } else {
+                $this->db->Execute('UPDATE up_sessions SET atime = ? WHERE id = ?', array($now, $this->SID));
+                $this->id = $row['customerid'];
+                $this->_vdata = $vdata;
+                $this->_content = unserialize($row['content']);
+                $this->atime = $now;
+            }
+        } elseif ($row) {
+            $this->_destroySession();
+        }
+    }
+
+    private function _saveSession()
+    {
+        if ($this->SID && ($this->autoupdate || $this->_updated)) {
+            $this->db->Execute(
+                'UPDATE up_sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
+                array(
+                    serialize($this->_content),
+                    $this->SID,
+                )
+            );
+        }
+    }
+
+    private function _destroySession()
+    {
+        $this->db->Execute('DELETE FROM up_sessions WHERE id = ?', array($this->SID));
+        $this->_content = array();
+        $this->SID = null;
+        setcookie('LMS_USERPANEL_SID', false);
     }
 
     private function ValidateRecaptchaResponse()
@@ -313,21 +498,17 @@ class Session
     public function LogOut()
     {
         if ($this->islogged) {
-            session_destroy();
+            $this->_destroySession();
         }
-        unset($this->login);
-        unset($this->password);
         unset($this->id);
-        unset($_SESSION);
     }
 
     public function TimeOut($timeout = 600)
     {
-        if ((time()-$_SESSION['session_timestamp']) > $timeout) {
+        if (time() - $this->atime > $timeout) {
             $this->error = trans('Idle time limit exceeded ($a sec.)', $timeout);
             return false;
         } else {
-            $_SESSION['session_timestamp'] = time();
             return true;
         }
     }

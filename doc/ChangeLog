@@ -32,6 +32,7 @@ version 28-git (????-??-??):
   - new 'phpui.unsecure_pin_validty' configuration variable controls secure pin storage and time validity
     for temporary pins [chilan]
   - enhancement: secure customer pin storage support - pins are hashed with crypt() function [chilan]
+  - improvement: moved userpanel session storage from file to database [chilan]
 
 version 27.0 (2021-08-20):
 

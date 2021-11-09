@@ -35,6 +35,7 @@ DROP VIEW IF EXISTS vnodealltariffs;
 DROP VIEW IF EXISTS customerconsentview;
 DROP VIEW IF EXISTS vcustomerassignments;
 
+DROP TABLE IF EXISTS up_sessions;
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
@@ -3048,6 +3049,23 @@ CREATE TABLE up_info_changes (
 
 # --------------------------------------------------------
 #
+# Structure of table up_sessions
+#
+CREATE TABLE up_sessions (
+	id varchar(50) NOT NULL DEFAULT '',
+	customerid int(11) NOT NULL,
+	ctime int(11) NOT NULL DEFAULT 0,
+	mtime int(11) NOT NULL DEFAULT 0,
+	atime int(11) NOT NULL DEFAULT 0,
+	vdata text NOT NULL,
+	content mediumtext NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT up_sessions_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Functions and Views
 #
 CREATE VIEW vcustomerassignments AS
@@ -4149,4 +4167,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021110800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021110900');
