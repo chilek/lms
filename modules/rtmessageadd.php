@@ -281,7 +281,9 @@ if (isset($_POST['message'])) {
                 $props = array();
                 if ($message['owner'] == -100) {
                     if (!$owner) {
-                        $message['owner'] = Auth::GetCurrentUser();
+                        if (!ConfigHelper::checkConfig('rt.new_message_preserve_no_owner')) {
+                            $message['owner'] = Auth::GetCurrentUser();
+                        }
                         $props['owner'] = empty($message['owner']) ? null : $message['owner'];
                     }
                 } else {
@@ -306,7 +308,7 @@ if (isset($_POST['message'])) {
                     $props['deadline'] = empty($message['deadline']) ? null : $deadline;
                 }
             } else {
-                if (!$owner && empty($message['owner'])) {
+                if (!ConfigHelper::checkConfig('rt.new_message_preserve_no_owner') && !$owner && empty($message['owner'])) {
                     $message['owner'] = Auth::GetCurrentUser();
                 }
                 $props = array(
