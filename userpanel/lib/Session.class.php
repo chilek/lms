@@ -207,7 +207,7 @@ class Session
                 } else {
                     if ($authdata != null && $authdata['passwd'] != null) {
                         $this->islogged = true;
-                        $this->isPasswdChangeRequired = !preg_match('/^\$[0-9]+\$/', $authdata['passwd']);
+                        $this->isPasswdChangeRequired = $this->unsecure_pin_validity && !preg_match('/^\$[0-9]+\$/', $authdata['passwd']);
                         $this->id = $authdata['id'];
 
                         if ($this->id) {
