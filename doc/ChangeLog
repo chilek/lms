@@ -35,6 +35,12 @@ version 28-git (????-??-??):
   - improvement: moved userpanel session storage from file to database [chilan]
   - enhancement: allow to select payment expiration by days used for 'overdue receivable'
     customer status selection [chilan]
+  - enhancement: added 'phpui.timetable_distant_event_day_trigger' counted in days ('0' by default
+    which means no trigger) specifies restriction trigger for newly created events with
+    too distant begin date [chilan]
+  - enhancement: added 'phpui.timetable_distant_event_restriction' with selection from 'none' (default),
+    'error' and 'warning' values allows to choose restriction type for newly created events with
+    too distant begin date [chilan]
 
 version 27.0 (2021-08-20):
 
