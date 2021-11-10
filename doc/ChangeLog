@@ -33,6 +33,8 @@ version 28-git (????-??-??):
     for temporary pins [chilan]
   - enhancement: secure customer pin storage support - pins are hashed with crypt() function [chilan]
   - improvement: moved userpanel session storage from file to database [chilan]
+  - enhancement: allow to select payment expiration by days used for 'overdue receivable'
+    customer status selection [chilan]
 
 version 27.0 (2021-08-20):
 
