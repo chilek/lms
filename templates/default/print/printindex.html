@@ -1899,7 +1899,7 @@
 			</td>
 			<td>
 				<span class="lms-ui-date-period-container">
-					{date_period_preset from="#uke-income [name=\"from\"]" to="#uke-income [name=\"to\"]" periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
+					{date_period_preset from="[form=\"uke-income-form\"][name=\"from\"]" to="[form=\"uke-income-form\"][name=\"to\"]" periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
 					<span>{trans("From")}</span>
 					<input type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
 						form="uke-income-form" required
