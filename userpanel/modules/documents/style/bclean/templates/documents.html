@@ -32,7 +32,7 @@
 				<div class="alert" role="alert" style="display: none;">
 				</div>
 				<div class="form-group">
-					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode" form="authcode-form">
 						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
 						<input type=text" name="authcode" id="authcode" autocomplete="off"
 							   placeholder="{trans("... which you received on your mobile phone")}"
@@ -42,7 +42,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" formnovalidate=true}
+				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" form="authcode-form" formnovalidate=true}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
