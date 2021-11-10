@@ -95,6 +95,21 @@ if (isset($_POST['event'])) {
             if (!$allow_past_events && $date + $begintime < time()) {
                 $error['begin'] = trans('Events which begin in the past are not allowed!');
             }
+
+            $distant_event_day_trigger = intval(ConfigHelper::getConfig('phpui.timetable_distant_event_day_trigger', 0, true));
+            $distant_event_restriction = ConfigHelper::getConfig('phpui.timetable_distant_event_restriction', 'none', true);
+            if ($distant_event_restriction != 'none' && $distant_event_day_trigger && $date >= time() + $distant_event_day_trigger * 86400) {
+                switch ($distant_event_restriction) {
+                    case 'error':
+                        $error['begin'] = trans('Event too distant in time!');
+                        break;
+                    case 'warning':
+                        if (!isset($warnings['event-begin-'])) {
+                            $warning['begin'] = trans('Event too distant in time!');
+                        }
+                        break;
+                }
+            }
         }
     }
 
@@ -206,7 +221,7 @@ if (isset($_POST['event'])) {
     $ticket = $hook_data['ticket'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
         $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
