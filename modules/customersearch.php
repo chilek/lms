@@ -49,6 +49,14 @@ if (isset($search['balance_date']) && !empty($search['balance_date'])) {
     $time = intval($search['balance_date']);
 }
 
+if (isset($search['balance_days'])) {
+    if (strlen($search['balance_days'])) {
+        $days = intval($search['balance_days']);
+    } else {
+        $days = -1;
+    }
+}
+
 if (!isset($_GET['o'])) {
     $SESSION->restore('cslo', $order);
 } else {
@@ -161,6 +169,7 @@ if (isset($_GET['search'])) {
         "customergroup",
         "search",
         "time",
+        "days",
         "sqlskey",
         "nodegroup",
         "division"

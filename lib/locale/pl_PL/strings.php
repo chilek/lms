@@ -1690,6 +1690,7 @@ $_LANG['Receipt have no items. Use form below for items addition.'] = 'Brak pozy
 $_LANG['Receipt number:'] = 'Numer potwierdzenia:';
 $_LANG['Receipt number $a already exists!'] = 'Potwierdzenie nr $a już istnieje!';
 $_LANG['Receipt number must be integer!'] = 'Numer potwierdzenia musi być liczbą całkowitą!';
+$_LANG['receivables overdue by days'] = 'dni po przeterminowaniu należności';
 $_LANG['Recipients:'] = 'Odbiorcy:';
 $_LANG['Recipients'] = 'Odbiorcy';
 $_LANG['Recipient\'s e-mail:'] = 'E-mail odbiorcy:';
