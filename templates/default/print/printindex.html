@@ -1797,49 +1797,55 @@
 	}
 
 </style>
-<form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income&module-filter=print" target="_blank">
+
+<form method="post" name="uke-income" id="uke-income-form" action="?m=netdevprint&type=uke-income&module-filter=print" target="_blank">
 	<input type="submit" class="hiddenbtn">
-	<table class="lmsbox">
-		<colgroup>
-			<col style="width: 1%;">
-			<col style="width: 1%;">
-			<col style="width: 99%;">
-		</colgroup>
-		<thead>
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
 		<tr>
-			<th scope="col" colspan="3" class="bold nobr">
-				<img src="img/money.gif" alt=""> {trans("UKE income report")}
-			</th>
+			<td colspan="3" class="nobr">
+				<img src="img/money.gif">
+				<strong>{trans("UKE income report")}</strong>
+			</td>
 		</tr>
-		</thead>
-		<tbody>
+	</thead>
+	<tbody>
 		<tr>
 			<td>
-				<img src="img/docum.gif" alt="">
+				{icon name="document" class="fa-fw"}
 			</td>
-			<td class="bold nobr">
-				{trans("Type:")}
+			<td class="nobr">
+				<strong>{trans("Type:")}</strong>
 			</td>
 			<td class="nobr">
 				<label>
-					<input type="radio" name="type" value="linktechnologies"{if !isset($filter['uke-income']['type']) || $filter['uke-income']['type'] == 'linktechnologies'} checked{/if}>
+					<input type="radio" name="type" value="linktechnologies" form="uke-income-form"
+						{if !isset($filter['uke-income']['type']) || $filter['uke-income']['type'] == 'linktechnologies'} checked{/if}>
 					{trans("link technologies")}
 				</label>
 				<label>
-					<input type="radio" name="type" value="servicetypes"{if isset($filter['uke-income']['type']) && $filter['uke-income']['type'] == 'servicetypes'} checked{/if}>
+					<input type="radio" name="type" value="servicetypes" form="uke-income-form"
+						{if isset($filter['uke-income']['type']) && $filter['uke-income']['type'] == 'servicetypes'} checked{/if}>
 					{trans("service types")}
 				</label>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<img src="img/division.gif" alt="">
+				{icon name="division" class="fa-fw"}
 			</td>
-			<td class="bold nobr">
-				{trans("Division:")}
+			<td class="nobr">
+				<strong>{trans("Division:")}</strong>
 			</td>
 			<td>
-				<select name="division"	{tip text="Select division"}>
+				<select name="division"	form="uke-income-form" {tip text="Select division"}>
 					<option value="">{trans("- all -")}</option>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($filter['uke-income']['division']) && $filter['uke-income']['division'] == $division.id} selected{/if}
@@ -1857,7 +1863,7 @@
 			</td>
 			<td>
 				<div id="uke-income-customergroup-selection">
-					<select name="customergroup">
+					<select name="customergroup" form="uke-income-form">
 						<option value="">{trans("- any -")}</option>
 						{foreach $customergroups as $group}
 							<option value="{$group.id}"{if isset($filter['uke-income']['customergroup']) && $filter['uke-income']['customergroup'] == $group.id} selected{/if}
@@ -1866,17 +1872,17 @@
 					</select>
 					<span>
 						<label {tip text="current customer group assignments"}>
-							<input type="radio" name="customergroup-intersection" value="current"
+							<input type="radio" name="customergroup-intersection" value="current" form="uke-income-form"
 								{if !isset($filter['uke-income']['customergroup-intersection']) || $filter['uke-income']['customergroup-intersection'] == 'current'} checked{/if}>
 							{trans("<!uke>current")}
 						</label>
 						<label {tip text="customer group assignment full time intersection with selected period"}>
-							<input type="radio" name="customergroup-intersection" value="fully"
+							<input type="radio" name="customergroup-intersection" value="fully" form="uke-income-form"
 								{if isset($filter['uke-income']['customergroup-intersection']) && $filter['uke-income']['customergroup-intersection'] == 'fully'} checked{/if}>
 							{trans("<!uke>fully")}
 						</label>
 						<label {tip text="customer group assignment partial time intersection with selected period"}>
-							<input type="radio" name="customergroup-intersection-type" value="partially"
+							<input type="radio" name="customergroup-intersection-type" value="partially" form="uke-income-form"
 								{if isset($filter['uke-income']['customergroup-intersection']) && $filter['uke-income']['customergroup-intersection'] == 'partially'} checked{/if}>
 							{trans("<!uke>partially")}
 						</label>
@@ -1885,64 +1891,70 @@
 			</td>
 		</tr>
 		<tr>
-			<TD>
-				<IMG src="img/calendar.gif" alt="">
-			</TD>
-			<TD class="bold nobr">
-				{trans("Period:")}
-			</TD>
-			<TD>
+			<td>
+				{icon name="calendar" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Period:")}</strong>
+			</td>
+			<td>
 				<span class="lms-ui-date-period-container">
 					{date_period_preset from="#uke-income [name=\"from\"]" to="#uke-income [name=\"to\"]" periods="previous-year,previous-month,current-year,current-month,next-month,next-year"}
 					<span>{trans("From")}</span>
 					<input type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+						form="uke-income-form" required
 						{tip class="lms-ui-date no-persistent-filter-field" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 					<span>{trans("To")}</span>
 					<input type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+						form="uke-income-form" required
 						{tip class="lms-ui-date no-persistent-filter-field" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 				</span>
-			</TD>
+			</td>
 		</tr>
 		<tr>
 			<td>
 				<img src="img/downrate.gif" alt="">
 			</td>
-			<td class="bold nobr">
+			<td class="nobr">
 				<label for="bandwidths">
-					{trans("Bandwidth distribution:")}
+					<strong>{trans("Bandwidth distribution:")}</strong>
 				</label>
 			</td>
 			<td>
-				<input type="checkbox" name="bandwidths" id="bandwidths" value="1"{if isset($filter['uke-income']['bandwidths'])} checked{/if}>
+				<input type="checkbox" name="bandwidths" id="bandwidths" value="1"
+					form="uke-income-form"
+					{if isset($filter['uke-income']['bandwidths'])} checked{/if}>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<img src="img/tax.gif" alt="">
+				{icon name="tax" class="fa-fw"}
 			</td>
-			<td class="bold nobr">
+			<td class="nobr">
 				<label for="brutto">
-					{trans("Brutto:")}
+					<strong>{trans("Brutto:")}</strong>
 				</label>
 			</td>
 			<td>
-				<input type="checkbox" name="brutto" id="brutto" value="1"{if isset($filter['uke-income']['brutto'])} checked{/if}>
+				<input type="checkbox" name="brutto" id="brutto" value="1"
+					form="uke-income-form"
+					{if isset($filter['uke-income']['brutto'])} checked{/if}>
 			</td>
 		</tr>
 		<tr>
-			<TD colspan="3" class="lms-ui-box-buttons">
+			<td colspan="3" class="lms-ui-box-buttons">
 				<div class="print-menu">
-					{button icon="print" label="Print" onclick="javascript:document.forms['uke-income'].submit();"}
+					{button type="submit" form="uke-income-form" icon="print" label="Print"}
 					<div class="print-filter">
 						<strong>{trans("Filter:")}</strong>
-						{persistent_filter id="uke-income"}
+						{persistent_filter id="uke-income" form="uke-income-form"}
 					</div>
 				<div>
 			</td>
 		</tr>
-		</tbody>
-	</table>
-</FORM>
+	</tbody>
+</table>
+
 {/if}
 
 {/block}
