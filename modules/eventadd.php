@@ -105,7 +105,7 @@ if (isset($_POST['event'])) {
                         break;
                     case 'warning':
                         if (!isset($warnings['event-begin-'])) {
-                            $warning['begin'] = trans('Event too distant in time!');
+                            $warning['event[begin]'] = trans('Event too distant in time!');
                         }
                         break;
                 }
