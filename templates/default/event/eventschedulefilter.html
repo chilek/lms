@@ -36,12 +36,18 @@
 							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
 									data-exclusive>- {trans("unassigned")} -</OPTION>
 							{foreach $userlist as $user}
-								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
-									<OPTION value="{$user.id}"
+								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
+									&& !ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')
+									|| (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access)
+									|| (ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users') && !$user.deleted)
+									|| is_array($filter.owner) && in_array($user.id, $filter.owner)}
+									<option value="{$user.id}"
 										{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
-										{if !$user.access} data-crossed{/if}>
-											{$user.rname|trunescape:40} ({$user.login})
-									</OPTION>
+										{if !$user.access} data-blend{/if}
+										{if $user.deleted} data-crossed{/if}
+									>{strip}
+										{$user.rname|trunescape:40} ({$user.login})
+									{/strip}</option>
 								{/if}
 							{/foreach}
 						</SELECT>
