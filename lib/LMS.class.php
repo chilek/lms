@@ -4790,7 +4790,7 @@ class LMS
             if ($balance < 0) {
                 $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$balance, $currency));
             } elseif ($balance > 0) {
-                $commented_balance = trans('Billing status: %a (excess payment or to repay)', moneyf($balance, $currency));
+                $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($balance, $currency));
             } else {
                 $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
             }

@@ -103,11 +103,22 @@ class ULMS extends LMS
 
     public function UpdateCustomerPIN($id, $pin)
     {
+        $unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
+
+        $newpin = $unsecure_pin_validity ? crypt($pin) : $pin;
+
         $res = $this->DB->Execute(
-            'UPDATE customers SET pin = ? WHERE id = ?',
-            array($pin, $id)
+            'UPDATE customers
+                SET pin = ?, pinlastchange = ?NOW?
+            WHERE id = ?',
+            array(
+                $newpin,
+                $id,
+            )
         );
+
         $_SESSION['session_passwd'] = $pin;
+
         return $res;
     }
 

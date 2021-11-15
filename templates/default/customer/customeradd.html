@@ -671,14 +671,14 @@
 		var natural_person_required_properties = [];
 
 		{if !empty($legal_person_required_properties)}
-			{foreach $legal_person_required_properties as $property}
-				legal_person_required_properties.push('{$property}');
+			{foreach $legal_person_required_properties as $index => $property}
+				legal_person_required_properties.push('{$index}');
 			{/foreach}
 		{/if}
 
 		{if !empty($natural_person_required_properties)}
-			{foreach $natural_person_required_properties as $property}
-				natural_person_required_properties.push('{$property}');
+			{foreach $natural_person_required_properties as $index => $property}
+				natural_person_required_properties.push('{$index}');
 			{/foreach}
 		{/if}
 

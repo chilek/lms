@@ -640,6 +640,9 @@ input[type="button"] {
 input[type="text"][disabled] {
 	border: @form-disabled-element-borrder;
 	background-color: transparent;
+	& + label {
+		color: @blend;
+	}
 }
 
 input[type="radio"] {

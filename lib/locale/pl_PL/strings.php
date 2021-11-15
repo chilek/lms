@@ -1690,6 +1690,7 @@ $_LANG['Receipt have no items. Use form below for items addition.'] = 'Brak pozy
 $_LANG['Receipt number:'] = 'Numer potwierdzenia:';
 $_LANG['Receipt number $a already exists!'] = 'Potwierdzenie nr $a już istnieje!';
 $_LANG['Receipt number must be integer!'] = 'Numer potwierdzenia musi być liczbą całkowitą!';
+$_LANG['receivables overdue by days'] = 'dni po przeterminowaniu należności';
 $_LANG['Recipients:'] = 'Odbiorcy:';
 $_LANG['Recipients'] = 'Odbiorcy';
 $_LANG['Recipient\'s e-mail:'] = 'E-mail odbiorcy:';
@@ -1988,6 +1989,7 @@ $_LANG['Enter message body.<br><br>'
     . 'Supported substitutions/variables:<br>'
     . '<strong>%customer</strong> - customer first name and last name or name,<br>'
     . '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>'
+    . '<strong>%commented_balance</strong> - customer total balance as absolute value with text comment explaining customer billing status,<br>'
     . '<strong>%b</strong> - customer expired liability balance amount to pay,<br>'
     . '<strong>%totalb</strong> - customer total balance amount to pay,<br>'
     . '<strong>%B</strong>, <strong>%saldo</strong> - customer expired liability balance,<br>'
@@ -2009,6 +2011,7 @@ $_LANG['Enter message body.<br><br>'
     . 'Obsługiwane podstawienia/zmienne:<br>'
     . '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
     . '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - całkowite saldo klienta,<br>'
+    . '<strong>%commented_balance</strong> - całkowite saldo klienta jako wartość bezwzględna z komentarzem tekstowym wyjaśniającym stan rozliczeń klienta,<br>'
     . '<strong>%b</strong> - kwota do zapłaty wynikająca z salda należności przeterminowanych klienta,<br>'
     . '<strong>%totalb</strong> - kwota do zapłaty wynikająca z salda klienta,<br>'
     . '<strong>%B</strong>, <strong>%saldo</strong> - saldo należności przeterminowanych klienta,<br>'
@@ -5401,5 +5404,11 @@ $_LANG[
     . 'Czy mimo tego chcesz zmienić dane klienta na te przez Ciebie wprowadzone w formularzu?';
 
 $_LANG['Billing status: $a (to pay)'] = 'Stan rozliczeń: $a (do zapłaty)';
-$_LANG['Billing status: %a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
+$_LANG['Billing status: $a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
 $_LANG['Billing status: $a'] = 'Stan rozliczeń: $a';
+
+$_LANG['<!pin>(hashed)'] = '(zahaszowany)';
+$_LANG['<!pin>(expired)'] = '(przeterminowany)';
+$_LANG['If you leave this field empty, then PIN will not change!'] = 'Jeśli to pole pozostawisz puste, PIN nie zostanie zmieniony!';
+
+$_LANG['Event too distant in time!'] = 'Zdarzenie zbyt odległe w czasie!';

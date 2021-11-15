@@ -18,6 +18,18 @@
 		border: 0;
 	}
 
+	#balance-days-container {
+		margin-top: 0.5em;
+	}
+
+	#balance-days-container > label {
+		float: left;
+	}
+
+	#balance-days-container > *:not(:last-child) {
+		margin-left: 0.5em;
+	}
+
 </style>
 
 <script>
@@ -500,7 +512,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
+		<TD class="bold nobr valign-top">
 			{icon name="filter"} {trans("Status:")}
 		</TD>
 		<TD>
@@ -545,6 +557,12 @@
 				<INPUT class="radio" type="radio" value="OR" name="sk"{if $sk=='OR'} checked{/if}>
 				{trans("or")}
 			</label>
+			<div id="balance-days-container">
+				<input type="text" name="search[balance_days]" id="balance-days" size="7" disabled>
+				<label for="balance-days">
+					{trans("receivables overdue by days")}
+				</label>
+			</div>
 		</TD>
 	</TR>
 	<TR>
@@ -663,6 +681,11 @@
 						break;
 				}
 			}
+		});
+
+		$('[name="s[]"]').change(function() {
+			var disabled = $(this).val().indexOf('71') === -1;
+			$('[name="search[balance_days]"]').prop('disabled', disabled).closest('label').toggleClass('lms-ui-disabled', disabled);
 		});
 	});
 

@@ -13,8 +13,8 @@ version 28-git (????-??-??):
   - enhancement: 'get_supported_actions' hook used in lms-notify.php allows plugins to inform core
     about correct custom action syntax [chilan]
   - enhancement: added csv export of operation history report [chilan]
-  - enhancement: new '%commented_balance' symbol support added in lms-notify.php backend script and
-    send invoice process [chilan]
+  - enhancement: new '%commented_balance' symbol support added in lms-notify.php backend script,
+    send invoice process and messageadd form [chilan]
   - improvement: --force parameter of lms-gps.php script allows to determine gps coordinates
     for network resources event if they already have non-empty coords [chilan]
   - enhancement: implemented validity period support for promotions and promotion schemas [chilan]
@@ -25,8 +25,22 @@ version 28-git (????-??-??):
   - enhancement: optional ticket comment details inclusion in extended ticket list report [chilan]
   - improvement: 'phpui.legal_person_required_properties' and 'phpui.natural_person_required_properties'
     control which customer identifiers are required in add customer form [chilan]
-  - gitc "enhancement: added smarty '{day_selection ...}' functions which allows to easily set
-    now + X days date into controlled form elements [chilan]
+  - enhancement: added smarty '{day_selection ...}' functions which allows to easily set
+    now +X days date into controlled form elements [chilan]
+  - enhancement: 'phpui.message_send_interval' controls interval between sent mails measured
+    in milliseconds [chilan]
+  - new 'phpui.unsecure_pin_validty' configuration variable controls secure pin storage and time validity
+    for temporary pins [chilan]
+  - enhancement: secure customer pin storage support - pins are hashed with crypt() function [chilan]
+  - improvement: moved userpanel session storage from file to database [chilan]
+  - enhancement: allow to select payment expiration by days used for 'overdue receivable'
+    customer status selection [chilan]
+  - enhancement: added 'phpui.timetable_distant_event_day_trigger' counted in days ('0' by default
+    which means no trigger) specifies restriction trigger for newly created events with
+    too distant begin date [chilan]
+  - enhancement: added 'phpui.timetable_distant_event_restriction' with selection from 'none' (default),
+    'error' and 'warning' values allows to choose restriction type for newly created events with
+    too distant begin date [chilan]
   - improvement: don't require ticket category by default [interduo]
 
 version 27.0 (2021-08-20):

@@ -32,7 +32,7 @@
 				<div class="alert" role="alert" style="display: none;">
 				</div>
 				<div class="form-group">
-					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode" id="authcode-form">
 						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
 						<input type=text" name="authcode" id="authcode" autocomplete="off"
 							   placeholder="{trans("... which you received on your mobile phone")}"
@@ -42,7 +42,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" formnovalidate=true}
+				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" form="authcode-form" formnovalidate=true}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
@@ -60,7 +60,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
+					<form method="post" action="?m=documents" id="newscan-form" name="newscan" enctype="multipart/form-data">
 						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
 						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button type="submit" class="btn btn-danger" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
+				{button type="submit" class="btn btn-danger" form="newscan-form" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>

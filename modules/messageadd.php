@@ -324,12 +324,23 @@ function BodyVars(&$body, $data, $format)
 
     list ($now_year, $now_month, $now_day) = explode('/', date('Y/m/d'));
 
+    $currency = Localisation::getCurrentCurrency();
+
+    if ($data['totalbalance'] < 0) {
+        $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$data['totalbalance'], $currency));
+    } elseif ($data['totalbalance'] > 0) {
+        $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($data['totalbalance'], $currency));
+    } else {
+        $commented_balance = trans('Billing status: $a', moneyf($data['totalbalance'], $currency));
+    }
+
     $body = str_replace(
         array(
             '%date-y',
             '%date-m',
             '%date-d',
             '%balance',
+            '%commented_balance',
             '%b',
             '%totalb',
             '%totalB',
@@ -344,13 +355,14 @@ function BodyVars(&$body, $data, $format)
             $now_year,
             $now_month,
             $now_day,
-            moneyf($data['totalbalance']),
+            moneyf($data['totalbalance'], $currency),
+            $commented_balance,
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
             sprintf('%01.2f', $data['totalbalance']),
-            moneyf($data['totalbalance']),
+            moneyf($data['totalbalance'], $currency),
             sprintf('%01.2f', $data['balance']),
-            moneyf($data['balance']),
+            moneyf($data['balance'], $currency),
             $data['customername'],
             $data['id'],
             $data['pin'],
@@ -396,12 +408,12 @@ function BodyVars(&$body, $data, $format)
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
-            $lN .= strtoupper(trans("Total:"))  . " " . moneyf($services['total_value'], Localisation::getCurrentCurrency())
+            $lN .= strtoupper(trans("Total:"))  . " " . moneyf($services['total_value'], $currency)
                 . ($format == 'html' ? '<br>' : PHP_EOL);
             unset($services['total_value']);
             foreach ($services as $row) {
                 $lN .= strtoupper($row['tarifftypename']) .": ";
-                $lN .= moneyf($row['sumvalue'], Localisation::getCurrentCurrency()) . ($format == 'html' ? '<br>' : PHP_EOL);
+                $lN .= moneyf($row['sumvalue'], $currency) . ($format == 'html' ? '<br>' : PHP_EOL);
             }
         }
         $body = str_replace('%services', $lN, $body);
@@ -850,6 +862,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if ($html_format) {
                 $headers['X-LMS-Format'] = 'html';
             }
+
+            $interval = intval(ConfigHelper::getConfig('phpui.message_send_interval', 0));
         } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
@@ -947,6 +961,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                             $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
                         }
                         $result = $LMS->SendMail($destination, $headers, $body, $attachments);
+
+                        if (!empty($interval)) {
+                            if ($interval == -1) {
+                                $delay = mt_rand(500, 5000);
+                            } else {
+                                $delay = $interval;
+                            }
+                            usleep($delay * 1000);
+                        }
+
                         break;
                     case MSG_SMS:
                     case MSG_ANYSMS:

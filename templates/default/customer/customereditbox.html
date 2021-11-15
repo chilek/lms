@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+{$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
 {$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
 {if !$pin_tip}
 	{if $pin_min_size == $pin_max_size}
@@ -6,6 +7,13 @@
 	{else}
 		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
 	{/if}
+{/if}
+{if !empty($unsecure_pin_validity)}
+	{capture assign="pin_tip"}{strip}
+		{$pin_tip}
+		<br><br>
+		<strong>{trans("If you leave this field empty, then PIN will not change!")}</strong>
+	{/strip}{/capture}
 {/if}
 <script type="text/javascript" src="js/location_box_expandable.js"></script>
 <style>
@@ -320,8 +328,9 @@
 						</TD>
 						<TD>
 							<div class="valign-middle">
-								<input type="text" required name="customerdata[pin]" size="{$pin_max_size}"
-									value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip trigger="pin"}>
+								<input type="text" {if empty($unsecure_pin_validity)} required{/if}
+									name="customerdata[pin]" size="{$pin_max_size}"
+									value="{if $customerinfo.pin && (empty($unsecure_pin_validity) || !$customerinfo.secure_pin)}{$customerinfo.pin}{/if}" {tip trigger="pin"}>
 								{button type="link" icon="next" id="randomize" tip="Generate PIN"}
 								{hint text=$pin_tip}
 							</div>
