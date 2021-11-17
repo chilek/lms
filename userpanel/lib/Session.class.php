@@ -533,6 +533,10 @@ class Session
             return crypt($this->passwd, $passwd) == $passwd;
         }
 
+        if (preg_match('/^[0-9a-f]{32}$/i', $passwd)) {
+            return md5($this->passwd) == $passwd;
+        }
+
         if ($this->unsecure_pin_validity && time() - $passwdlastchange >= $this->unsecure_pin_validity) {
             return false;
         }
