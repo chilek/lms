@@ -125,8 +125,7 @@
 										|| (ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users') && !$user.deleted)
 										|| is_array($event.userlist) && in_array($user.id, $event.userlist)}
 										<option value="{$user.id}"
-											{if !$user.access} data-blend{/if}
-											{if $user.deleted} data-crossed{/if}
+											class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
 											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
 												{$user.rname|trunescape:40} ({$user.login})
 										</option>
@@ -138,8 +137,7 @@
 										|| (ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users') && !$user.deleted)
 										|| is_array($event.userlist) && in_array($user.id, $event.userlist)}
 										<option value="{$user.id}"
-											{if !$user.access} data-blend{/if}
-											{if $user.deleted} data-crossed{/if}
+											class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
 											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
 												{$user.rname|trunescape:40} ({$user.login})
 										</option>
