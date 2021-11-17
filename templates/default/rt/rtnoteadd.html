@@ -162,10 +162,16 @@
 				<option value="0">- {trans("select user")} -</option>
 				{foreach $userlist as $user}
 					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+						&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
 						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
 						|| $user.id == $note.owner}
-						<option value="{$user.id}"{if !$user.access} class="blend"{/if}
-							{if $user.id == $note.owner}selected{/if}>{$user.name|escape} ({$user.login})</option>
+						<option value="{$user.id}"
+							class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+							{if $user.id == $note.owner}selected{/if}
+						>{strip}
+							{$user.name|trunescape:40} ({$user.login})
+						{/strip}</option>
 					{/if}
 				{/foreach}
 			</select>
@@ -188,10 +194,16 @@
 					<option value="0">- {trans("select user")} -</option>
 					{foreach $userlist as $user}
 						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+							&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
 							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
 							|| $user.id == $note.verifierid}
-							<option value="{$user.id}"{if !$user.access} class="blend"{/if}
-								{if $user.id == $note.verifierid} selected{/if}>{$user.name|escape} ({$user.login})</option>
+							<option value="{$user.id}"
+								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+								{if $user.id == $note.verifierid} selected{/if}
+							>{strip}
+								{$user.name|trunescape:40} ({$user.login})
+							{/strip}</option>
 						{/if}
 					{/foreach}
 				</select>

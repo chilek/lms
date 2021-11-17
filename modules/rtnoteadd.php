@@ -284,7 +284,7 @@ unset($category);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('note', $note);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $note['queueid']));
 $SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($note['queueid'], RTMESSAGE_NOTE));
 $SMARTY->assign('error', $error);

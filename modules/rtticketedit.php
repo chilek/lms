@@ -727,6 +727,6 @@ $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('invprojectlist', $invprojectlist);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtticketedit.html');

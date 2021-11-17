@@ -425,6 +425,6 @@ $SMARTY->assign('projects', $projects);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('users', $LMS->GetUserNames(array('withDeleted' => 1)));
 
 $SMARTY->display('rt/rtqueueview.html');

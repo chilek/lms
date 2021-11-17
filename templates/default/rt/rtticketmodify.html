@@ -59,17 +59,24 @@
 
 			{box_row icon="user" label="Requestor" field_id="requestor" icon_class="fa-fw"}
 				<div class="lms-ui-box-row">
-					<SELECT name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select" text="Select requestor from list" trigger="requestor_userid"}>
+					<select name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select" text="Select requestor from list" trigger="requestor_userid"}>
 						<option value="">{trans("<!person>- none -")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
 							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+								&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
 								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
 								|| $user.id == $ticket.requestor_userid}
-								<option value="{$user.id}"{if !$user.access} class="blend"{/if}{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
+								<option value="{$user.id}"
+									class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+									{if $ticket.requestor_userid == $user.id} selected{/if}
+								>{strip}
+									{$user.rname|trunescape:40} ({$user.login})
+								{/strip}</option>
 							{/if}
 						{/foreach}
-					</SELECT>
+					</select>
 					<label>
 						<input type="checkbox" class="assign-to-me" data-userid="{$layout.logid}"
 							data-target='[name="ticket[requestor_userid]"]'>
@@ -156,16 +163,23 @@
 		{box_panel}
 			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="owner" label="Owner" icon_class="fa-fw"}
-				<SELECT size="1" name="ticket[owner]" {tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
-					<OPTION value="0">- {trans("select user")} -</OPTION>
+				<select size="1" name="ticket[owner]" {tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
+					<option value="0">- {trans("select user")} -</option>
 					{foreach $userlist as $user}
 						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-						|| $user.id == $ticket.owner}
-							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.rname|escape} ({$user.login})</OPTION>
+							&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
+							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
+							|| $user.id == $ticket.owner}
+							<option value="{$user.id}"
+								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+								{if $user.id == $ticket.owner} selected{/if}
+							>{strip}
+								{$user.rname|trunescape:40} ({$user.login})
+							{/strip}</option>
 						{/if}
 					{/foreach}
-				</SELECT>
+				</select>
 				&nbsp;
 				<label>
 					<input type="checkbox" class="assign-to-me" data-userid="{$layout.logid}"
@@ -180,11 +194,16 @@
 						<option value="">- {trans("select user")} -</option>
 						{foreach $userlist as $user}
 							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-							|| $user.id == $ticket.verifierid}
-								<option value="{$user.id}"{if !$user.access} class="blend"{/if}
-									{if $user.id == $ticket.verifierid}selected{/if}
-									>{$user.rname|escape} ({$user.login})</option>
+								&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
+								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
+								|| $user.id == $ticket.verifierid}
+								<option value="{$user.id}"
+									class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+									{if $user.id == $ticket.verifierid} selected{/if}
+								>{strip}
+									{$user.rname|trunescape:40} ({$user.login})
+								{/strip}</option>
 							{/if}
 						{/foreach}
 					</select>
