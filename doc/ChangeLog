@@ -45,6 +45,8 @@ version 28-git (????-??-??):
     deleted users in user selection list element of event list boxes [chilan]
   - improvement: lms-ui-multiselect: 'data-blend' attribute of option element causes presentation
     of corresponding multi select option with blend color [chilan]
+  - enhancement: 'phpui.helpdesk_hide_deleted_users' controls visibility of deleted users in helpdesk
+    forms (default value 'false' means they are visible) [chilan]
 
 version 27.0 (2021-08-20):
 
