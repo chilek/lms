@@ -1,6 +1,8 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$hide_disabled_users = ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')}
 	<!--// $Id$ //-->
 	{$xajax}
 	{if empty($event.ticketid)}
@@ -118,30 +120,23 @@
 						<select name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple
 								{if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
+								{if (!is_array($event.userlist) || !in_array($user.id, $event.userlist))
+									&& ($hide_disabled_users && !$user.access
+										|| $hide_deleted_users && $user.deleted)}
+									{continue}
+								{/if}
 								{if $layout.module == 'eventadd'}
-									{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
-										&& !ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')
-										|| (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access)
-										|| (ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users') && !$user.deleted)
-										|| is_array($event.userlist) && in_array($user.id, $event.userlist)}
-										<option value="{$user.id}"
-											class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
-												{$user.rname|trunescape:40} ({$user.login})
-										</option>
-									{/if}
+									<option value="{$user.id}"
+										class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+										{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+											{$user.rname|trunescape:40} ({$user.login})
+									</option>
 								{else}
-									{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
-										&& !ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')
-										|| (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access)
-										|| (ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users') && !$user.deleted)
-										|| is_array($event.userlist) && in_array($user.id, $event.userlist)}
-										<option value="{$user.id}"
-											class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
-												{$user.rname|trunescape:40} ({$user.login})
-										</option>
-									{/if}
+									<option value="{$user.id}"
+										class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+										{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+											{$user.rname|trunescape:40} ({$user.login})
+									</option>
 								{/if}
 							{/foreach}
 						</select>
