@@ -1,3 +1,6 @@
+{$hide_disabled_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')}
+
 <style>
 
 	#ticket.lms-ui-box-container .lms-ui-box-row-label {
@@ -63,18 +66,17 @@
 						<option value="">{trans("<!person>- none -")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
-							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-								&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
-								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
-								|| $user.id == $ticket.requestor_userid}
-								<option value="{$user.id}"
-									class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-									{if $ticket.requestor_userid == $user.id} selected{/if}
-								>{strip}
-									{$user.rname|trunescape:40} ({$user.login})
-								{/strip}</option>
+							{if $user.id != $ticket.requestor_userid
+								&& ($hide_disabled_users && !$user.access
+									|| $hide_deleted_users && $user.deleted)}
+								{continue}
 							{/if}
+							<option value="{$user.id}"
+								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+								{if $ticket.requestor_userid == $user.id} selected{/if}
+							>{strip}
+								{$user.rname|trunescape:40} ({$user.login})
+							{/strip}</option>
 						{/foreach}
 					</select>
 					<label>
@@ -166,18 +168,17 @@
 				<select size="1" name="ticket[owner]" {tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
 					<option value="0">- {trans("select user")} -</option>
 					{foreach $userlist as $user}
-						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-							&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
-							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
-							|| $user.id == $ticket.owner}
-							<option value="{$user.id}"
-								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-								{if $user.id == $ticket.owner} selected{/if}
-							>{strip}
-								{$user.rname|trunescape:40} ({$user.login})
-							{/strip}</option>
+						{if $user.id != $ticket.owner
+							&& ($hide_disabled_users && !$user.access
+								|| $hide_deleted_users && $user.deleted)}
+							{continue}
 						{/if}
+						<option value="{$user.id}"
+							class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+							{if $user.id == $ticket.owner} selected{/if}
+						>{strip}
+							{$user.rname|trunescape:40} ({$user.login})
+						{/strip}</option>
 					{/foreach}
 				</select>
 				&nbsp;
@@ -193,18 +194,17 @@
 					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
 						<option value="">- {trans("select user")} -</option>
 						{foreach $userlist as $user}
-							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-								&& !ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')
-								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users') && !$user.deleted)
-								|| $user.id == $ticket.verifierid}
-								<option value="{$user.id}"
-									class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-									{if $user.id == $ticket.verifierid} selected{/if}
-								>{strip}
-									{$user.rname|trunescape:40} ({$user.login})
-								{/strip}</option>
+							{if $user.id != $ticket.verifierid
+								&& ($hide_disabled_users && !$user.access
+									|| $hide_deleted_users && $user.deleted)}
+								{continue}
 							{/if}
+							<option value="{$user.id}"
+								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+								{if $user.id == $ticket.verifierid} selected{/if}
+							>{strip}
+								{$user.rname|trunescape:40} ({$user.login})
+							{/strip}</option>
 						{/foreach}
 					</select>
 				{else}
