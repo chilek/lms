@@ -184,7 +184,7 @@ $script_plimit = ConfigHelper::getConfig('tcnew.plimit', '', true);
 $script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
 $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
 $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
-$ignore_all_suspended = ConfigHelper::checkConfig('tcnew.ignore_all_suspended');
+$ignore_assignment_suspensions = ConfigHelper::checkConfig('tcnew.ignore_assignment_suspensions');
 
 $host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
 
@@ -250,7 +250,7 @@ $query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
 	TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
 	FROM nodeassignments na
 	JOIN assignments a ON (na.assignmentid = a.id)
-	" . ($ignore_all_suspended
+	" . ($ignore_assignment_suspensions
 		? ''
 		: "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
@@ -261,7 +261,7 @@ $query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
 	JOIN tariffs t ON (a.tariffid = t.id)
 	JOIN vnodes n ON (na.nodeid = n.id)
 	JOIN customers c ON (a.customerid = c.id)
-	WHERE " . ($ignore_all_suspended ? '' : "s.allsuspended IS NULL AND ") . "a.suspended = 0 AND a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
 		AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -284,7 +284,7 @@ if ($all_assignments) {
 		a.id AS assignmentid, a.customerid,
 		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
 	FROM assignments a
-	" . ($ignore_all_suspended
+	" . ($ignore_assignment_suspensions
 		? ''
 		: "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
@@ -302,7 +302,7 @@ if ($all_assignments) {
 		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
 			OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
 	) n ON n.ownerid = c.id
-	WHERE " . ($ignore_all_suspended ? '' : "s.allsuspended IS NULL AND ") . "a.suspended = 0 AND a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
 		AND n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
 		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
 		AND a.datefrom <= ?NOW?
