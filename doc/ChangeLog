@@ -47,6 +47,8 @@ version 28-git (????-??-??):
     of corresponding multi select option with blend color [chilan]
   - enhancement: 'phpui.helpdesk_hide_deleted_users' controls visibility of deleted users in helpdesk
     forms (default value 'false' means they are visible) [chilan]
+  - improvement: 'tcnew.ignore_all_suspended' with default 'false' value allows to disable all assignment
+    suspension for customer whom we generate traffic shaper configuration [chilan]
 
 version 27.0 (2021-08-20):
 
