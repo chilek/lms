@@ -68,9 +68,10 @@ function module_main()
             if (isset($_GET['smsauth'])) {
                 if ($sms_active) {
                     if (isset($_GET['send'])) {
-                        if (!isset($_SESSION['session_smsauthcode']) || time() - $_SESSION['session_smsauthcode_timestamp'] > 60) {
-                            $_SESSION['session_smsauthcode'] = $sms_authcode = strval(rand(10000000, 99999999));
-                            $_SESSION['session_smsauthcode_timestamp'] = time();
+                        if (!$SESSION->is_set('smsauthcode') || time() - $SESSION->get('smsauthcode_timestamp') > 60) {
+                            $sms_authcode = strval(rand(10000000, 99999999));
+                            $SESSION->save('smsauthcode', $sms_authcode);
+                            $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
                             $error = array();
                             foreach ($sms_recipients as $sms_recipient) {
@@ -83,16 +84,18 @@ function module_main()
                                 echo implode('<br>', $error);
                             }
                         } else {
-                            if (isset($_SESSION['session_smsauthcode'])) {
+                            if ($SESSION->is_set('smsauthcode')) {
                                 echo trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
                             } else {
-                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+                                $SESSION->remove('smsauthcode');
+                                $SESSION->remove('smsauthcode_timestamp');
                             }
                         }
                     } elseif (isset($_GET['check'])) {
-                        if (isset($_SESSION['session_smsauthcode']) && time() - $_SESSION['session_smsauthcode_timestamp'] < 5 * 60) {
-                            if ($_POST['code'] == $_SESSION['session_smsauthcode']) {
-                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+                        if ($SESSION->is_set('smsauthcode') && time() - $SESSION->get('smsauthcode_timestamp') < 5 * 60) {
+                            if (trim($_POST['code']) == $SESSION->get('smsauthcode')) {
+                                $SESSION->remove('smsauthcode');
+                                $SESSION->remove('smsauthcode_timestamp');
 
                                 // commit customer document only if it's owned by this customer
                                 // and is prepared for customer action
@@ -105,6 +108,7 @@ function module_main()
                         }
                     }
                 }
+                $SESSION->close();
                 die;
             } elseif ($scan_active) {
                 $files = array();
