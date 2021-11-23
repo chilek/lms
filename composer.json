@@ -86,9 +86,9 @@
             "type": "package",
             "package": {
                 "name": "phine/exception",
-                "version": "1.0",
+                "version": "1.0.0",
                 "dist": {
-                    "url": "https://chilan.com/lms-plus/phine-exception-1.0.zip",
+                    "url": "https://chilan.com/lms-plus/phine-exception-1.0.0.zip",
                     "type": "zip"
                 }
             }
