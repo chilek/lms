@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 if (!$this->ResourceExists('customers.pinlastchange', LMSDB::RESOURCE_TYPE_TABLE)) {
-    $this->Exeucte("
+    $this->Execute("
         CREATE TABLE up_sessions (
             id varchar(50) NOT NULL DEFAULT '',
             customerid int(11) NOT NULL,

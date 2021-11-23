@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 if (!$this->ResourceExists('customers.pinlastchange', LMSDB::RESOURCE_TYPE_COLUMN)) {
-    $this->Exeucte("DROP VIEW customeraddressview");
+    $this->Execute("DROP VIEW customeraddressview");
     $this->Execute("DROP VIEW contractorview");
     $this->Execute("DROP VIEW customerview");
 
