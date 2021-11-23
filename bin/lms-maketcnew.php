@@ -251,8 +251,8 @@ $query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
 	FROM nodeassignments na
 	JOIN assignments a ON (na.assignmentid = a.id)
 	" . ($ignore_assignment_suspensions
-		? ''
-		: "LEFT JOIN (
+        ? ''
+        : "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
 		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
@@ -285,8 +285,8 @@ if ($all_assignments) {
 		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
 	FROM assignments a
 	" . ($ignore_assignment_suspensions
-		? ''
-		: "LEFT JOIN (
+        ? ''
+        : "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
 		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
