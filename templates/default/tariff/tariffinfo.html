@@ -3,11 +3,11 @@
 {block name=module_content}
 <!--// $Id$ //-->
     <script>
-        function getText(index) {
+        /*function getText(index) {
             {section name=lt loop=$tariffs}
             if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({moneyf($tariffs[lt].value, $tariffs[lt].currency)})';
             {/section}
-        }
+        }*/
 
         function changeNetwork() {
             document.tinfo.submit();
