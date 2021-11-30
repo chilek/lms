@@ -107,6 +107,8 @@ if (!empty($params['ftype'])) {
         case CALL_INCOMING:
             $listdata['ftype'] = $params['ftype'];
             break;
+        default:
+            break;
     }
 }
 
