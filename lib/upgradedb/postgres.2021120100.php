@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE dbinfo ADD CONSTRAINT UNIQUE KEY dbinfo_keytype_ukey (keytype)");
+$this->Execute("ALTER TABLE dbinfo ADD CONSTRAINT dbinfo_keytype_ukey UNIQUE (keytype)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021120100', 'dbversion'));
 
 $this->CommitTrans();
