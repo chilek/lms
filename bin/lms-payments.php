@@ -1960,7 +1960,7 @@ foreach ($assigns as $assign) {
                 }
 
                 if (!$quiet) {
-                    echo 'CID : ' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                    echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                 }
             }
 
