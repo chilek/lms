@@ -50,6 +50,8 @@ version 28-git (????-??-??):
   - improvement: 'tcnew.ignore_assignment_suspensions' with default 'false' value allows to enable/disable
     all assignment suspension and dedicated suspension assignment flag to be ignored in traffic shaper
     configuration generator [chilan]
+  - improvement: 'phpui.promotion_schema_name_limit' with default value of '40' allows to control how
+    long schema name can be in schema selection list [chilan]
 
 version 27.0 (2021-08-20):
 
