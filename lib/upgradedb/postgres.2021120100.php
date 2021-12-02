@@ -23,7 +23,10 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE dbinfo ADD CONSTRAINT dbinfo_keytype_ukey UNIQUE (keytype)");
+if (!$this->ResourceExists('dbinfo_keytype_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE dbinfo ADD CONSTRAINT dbinfo_keytype_ukey UNIQUE (keytype)");
+}
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021120100', 'dbversion'));
 
 $this->CommitTrans();
