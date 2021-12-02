@@ -65,8 +65,8 @@ function lmsFileUpload(elemid, formid) {
 					$.each(data.files, function(key, file) {
 						var size = get_size_unit(file.size);
 						var fileListItem = $('<div>' +
-							'<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>&nbsp;' +
-							file.name + ' (' + size.size + ' ' + size.unit + ')</a>' +
+							'<a href="#" class="fileupload-file"><i class="fas fa-trash"></i></a>&nbsp;' +
+							file.name + ' (' + size.size + ' ' + size.unit + ')' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
 								' value="' + file.name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" class="fileupload-file-size" name="fileupload[' + elemid + '][' + (count + key) + '][size]"' +

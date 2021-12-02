@@ -396,9 +396,7 @@ class LMSSmartyPlugins
         if (!empty($fileupload) && isset($fileupload[$id])) {
             foreach ($fileupload[$id] as $fileidx => $file) {
                 $result .= '<div>
-					<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>
-						' . $file['name'] . ' (' . $file['sizestr'] . ')
-					</a>
+					<a href="#" class="fileupload-file"></a><i class="fas fa-trash"></i> ' . $file['name'] . ' (' . $file['sizestr'] . ')
 					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 					<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
