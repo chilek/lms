@@ -789,16 +789,17 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 								var nodeids = features[i].data.nodeid.split(',');
 								for (j in nodeids)
 									content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\'' +
-										featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;' +
+										featurepopup.id + '\', \'' + ips[j] + '\')"><i class="lms-ui-icon-routed"></i>&nbsp;' +
 										ips[j] + '</a></div>';
 							}
 						} else
-							content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\'' +
-								featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;' +
+							content += '<div class="lmsInfoPopupAddress"><i class="lms-ui-icon-routed"></i>&nbsp;<a href="#" onclick="ping_host(\'' +
+								featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')">' +
 								features[i].data.ipaddr + '</a></div>';
-						content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">' +
-							'<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
-						if (features[i].data.url) {
+							content += '<div class="lmsInfoPopupDetails">' +
+							'<i class="lms-ui-icon-location"></i><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">&nbsp;Info</a></div>';
+							content += '<div class="lmsInfoPopupDetails"><i class="lms-ui-icon-location"></i>&nbsp;' + features[i].data.location + '</div>';
+							if (features[i].data.url) {
 							var urls = features[i].data.url.split(',');
 							var comments = features[i].data.comment.split(',');
 							for (j in urls) {
