@@ -1929,7 +1929,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetInvoiceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'notsent', 'page') as $var) {
+        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'notsent', 'page', 'customer') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -1994,9 +1994,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 case 'ten':
                     $where = ' AND d.ten = ' . $this->db->Escape($search);
                     break;
-                case 'customerid':
-                    $where = ' AND d.customerid = '.intval($search);
-                    break;
                 case 'name':
                     $where = ' AND UPPER(d.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
                     break;
@@ -2012,6 +2009,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($hideclosed) {
             $where .= ' AND d.closed = 0';
+        }
+
+        if (!empty($customer)) {
+            $where .= ' AND d.customerid = ' . intval($customer);
         }
 
         if (!empty($group)) {
@@ -2037,8 +2038,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 WHERE e.customerid IS NULL AND '
                 . ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
                     : '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
-                .$where
-                .(!empty($group) ?
+                . $where
+                . (!empty($group) ?
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 				SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
@@ -2086,8 +2087,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			WHERE e.customerid IS NULL AND '
             . ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
                 : '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
-            .$where
-            .(!empty($group) ?
+            . $where
+            . (!empty($group) ?
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 			SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
@@ -2098,11 +2099,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (!empty($relatedentity) ? ' AND d.flags & ' . DOC_FLAG_RELATED_ENTITY . ' > 0' : '')
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
             . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
-            .' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
+            . ' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
 			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
 			d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue '
             . (isset($having) ? $having : '')
-            .$sqlord.' '.$direction
+            . $sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
