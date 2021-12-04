@@ -2011,8 +2011,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $where .= ' AND d.closed = 0';
         }
 
-	if ($customer) {
-            $where .= ' AND d.customerid = ' . $customer;
+	if (!empty($customer)) {
+            $where .= ' AND d.customerid = ' . intval($customer);
         }
 
         if (!empty($group)) {
