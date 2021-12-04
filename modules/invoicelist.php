@@ -30,6 +30,7 @@ $layout['pagetitle'] = $proforma ? trans('Pro Forma Invoice List') : trans('Invo
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SESSION->restore('ilm', $marks);
+
 if (isset($_POST['marks'])) {
     foreach ($_POST['marks'] as $id => $mark) {
         $marks[$id] = $mark;
@@ -61,6 +62,19 @@ if (isset($_POST['cat'])) {
 } else {
     $SESSION->restore('ilc', $c);
 }
+
+if (isset($_POST['customer'])) {
+    $cid = intval($_POST['customer']);
+} else {
+    if (!empty($_GET['customer'])) {
+        $cid = intval($_GET['customer']);
+    } else {
+        $SESSION->restore('ilcu', $cid);
+    }
+}
+
+$SESSION->save('ilcu', $cid);
+
 if (!isset($c)) {
     $c="month";
 }
@@ -155,7 +169,8 @@ if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
 
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma,
-    'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re, 'count' => true)));
+    'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re, 'count' => true,
+    'customer' => $cid)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
@@ -168,7 +183,7 @@ $offset = ($page - 1) * $limit;
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset,
     'proforma' => $proforma, 'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re,
-    'notsent' => $ns, 'count' => false));
+    'notsent' => $ns, 'count' => false, 'customer' => $cid));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -184,6 +199,7 @@ $SESSION->restore('ilsp', $listdata['splitpayment']);
 $SESSION->restore('ilwr', $listdata['withreceipt']);
 $SESSION->restore('ilts', $listdata['telecomservice']);
 $SESSION->restore('ilre', $listdata['relatedentity']);
+$SESSION->restore('ilcu', $listdata['customer']);
 
 $listdata['total'] = $total;
 $listdata['order'] = $invoicelist['order'];
