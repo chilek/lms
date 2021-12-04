@@ -110,12 +110,13 @@
                 {/if}
             </th>
 
-            <th colspan="2" nowrap>
+            <th class="nowrap">
                 <a href="?m=voipaccountbillinglist&amp;o=caller_name{order_check category="caller_name"}">{trans("Customer:")}</a>
                 {if $listdata.order == "caller_name"}
 					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
-
+            </th>
+            <th>
 				<a href="?m=voipaccountbillinglist&amp;o=callee_name{order_check category="callee_name"}">{trans("Customer:")}</a>
                 {if $listdata.order == "callee_name"}
 					<img src="img/{$direction_check}_order.gif" alt="">
@@ -190,6 +191,8 @@
 							data-url="?m=customerinfoshort&id={$record.callerownerid}">
 							{$record.caller_lastname|lower|ucfirst} {$record.caller_name|ucfirst}
 						</a>
+					{else}
+					-
 					{/if}
 				</td>
 
@@ -200,6 +203,8 @@
 							data-url="?m=customerinfoshort&id={$record.calleeownerid}">
 							{$record.callee_lastname|lower|ucfirst} {$record.callee_name|ucfirst}
 						</a>
+					{else}
+					-
 					{/if}
 				</td>
 
