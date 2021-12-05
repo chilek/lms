@@ -52,6 +52,7 @@ version 28-git (????-??-??):
     configuration generator [chilan]
   - improvement: 'phpui.promotion_schema_name_limit' with default value of '40' allows to control how
     long schema name can be in schema selection list [chilan]
+  - improvement: use {customerlist} smarty element in invoice list form [interduo]
 
 version 27.0 (2021-08-20):
 
