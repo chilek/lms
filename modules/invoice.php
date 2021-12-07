@@ -371,7 +371,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            $jpk_vat_version = ($dateto < mktime(0, 0, 0, 10, 1, 2020) ? 3 : 4);
+            if ($dateo < mktime(0, 0, 0, 10, 1, 2020)) {
+                $jpk_vat_version = 3;
+            } elseif ($dateto < mktime(0, 0, 0, 1, 1, 2022)) {
+                $jpk_vat_version = 4;
+            } else {
+                $jpk_vat_version = 5;
+            }
         } else {
             // if date from for report is earlier than 2 XII 2019
             //$jpk_fa_version = $datefrom < mktime(0, 0, 0, 12, 2, 2019) ? 2 : 3;
@@ -384,12 +390,19 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "<JPK xmlns=\"" . ($jpk_fa_version == 2 ? 'http://jpk.mf.gov.pl/wzor/2019/03/21/03211/' : 'http://jpk.mf.gov.pl/wzor/2019/09/27/09271/')
                 . "\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
         } else {
-            if ($jpk_vat_version == 3) {
-                $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2017/11/13/1113/\""
-                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
-            } else {
-                $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/05/08/9393/\""
-                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2020/03/11/eD/DefinicjeTypy/\">\n";
+            switch ($jpk_vat_version) {
+                case 3:
+                    $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2017/11/13/1113/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
+                    break;
+                case 4:
+                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/05/08/9393/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2020/03/11/eD/DefinicjeTypy/\">\n";
+                    break;
+                case 5:
+                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2021/07/08/07081/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/\">\n";
+                    break;
             }
         }
 
@@ -430,8 +443,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
             } else {
-                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
-                $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
+                if ($jpk_vat_version == 4) {
+                    $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
+                    $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
+                } else {
+                    $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (2)\" wersjaSchemy=\"1-0E\">JPK_VAT</KodFormularza>\n";
+                    $jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+                }
                 $jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
                 $jpk_data .= "\t\t<CelZlozenia poz=\"P_7\">1</CelZlozenia>\n";
@@ -1270,11 +1288,16 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     if ($jpk) {
         if ($jpk_type == 'vat') {
-            if ($jpk_vat_version == 4) {
+            if ($jpk_vat_version >= 4) {
                 $declaration .= "\t<Deklaracja>\n";
                 $declaration .= "\t\t<Naglowek>\n";
-                $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (21)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-2E\">VAT-7</KodFormularzaDekl>\n";
-                $declaration .= "\t\t\t<WariantFormularzaDekl>21</WariantFormularzaDekl>\n";
+                if ($jpk_vat_version == 4) {
+                    $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (21)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-2E\">VAT-7</KodFormularzaDekl>\n";
+                    $declaration .= "\t\t\t<WariantFormularzaDekl>21</WariantFormularzaDekl>\n";
+                } else {
+                    $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (22)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-0E\">VAT-7</KodFormularzaDekl>\n";
+                    $declaration .= "\t\t\t<WariantFormularzaDekl>22</WariantFormularzaDekl>\n";
+                }
                 $declaration .= "\t\t</Naglowek>\n";
                 $declaration .= "\t\t<PozycjeSzczegolowe>\n";
                 $p_38 = 0;
@@ -1296,7 +1319,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t<LiczbaWierszySprzedazy>" . count($ids) . "</LiczbaWierszySprzedazy>\n";
             $jpk_data .= "\t\t<PodatekNalezny>" . str_replace(',', '.', sprintf('%.2f', $totaltax)) . "</PodatekNalezny>\n";
             $jpk_data .= "\t</SprzedazCtrl>\n";
-            if ($jpk_vat_version == 4) {
+            if ($jpk_vat_version >= 4) {
                 $jpk_data .= "\t<ZakupCtrl>\n";
                 $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
                 $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
