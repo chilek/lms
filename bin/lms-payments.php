@@ -546,7 +546,7 @@ $services = $DB->GetAll(
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
 $query = "SELECT
-			a.id, a.tariffid, a.customerid,
+			a.id, a.tariffid, a.customerid, a.recipient_address_id,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
