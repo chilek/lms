@@ -631,16 +631,22 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     }
 
                     if (!empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE])) {
-                        $jpk_data .= "\t\t<EE>1</EE>\n";
+                        if ($jpk_vat_version == 4) {
+                            $jpk_data .= "\t\t<EE>1</EE>\n";
+                        } else {
+                            $jpk_data .= "\t\t<WSTO_EE>1</WSTO_EE>\n";
+                        }
                     }
 
                     if (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY])) {
                         $jpk_data .= "\t\t<TP>1</TP>\n";
                     }
 
-                    $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
-                    if ($splitpayment) {
-                        $jpk_data .= "\t\t<MPP>1</MPP>\n";
+                    if ($jpk_vat_version == 4) {
+                        $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                        if ($splitpayment) {
+                            $jpk_data .= "\t\t<MPP>1</MPP>\n";
+                        }
                     }
                 }
 
