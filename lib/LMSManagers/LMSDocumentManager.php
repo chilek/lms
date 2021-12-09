@@ -2024,8 +2024,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             );
 
             $document['attachments'] = $this->db->GetAllByKey(
-                'SELECT *, type AS main FROM documentattachments WHERE docid = ?
-                ORDER BY type DESC',
+                'SELECT a.*, a.type AS main, c.pin
+                FROM documentattachments a
+                JOIN documents d ON d.id = a.docid
+                JOIN customers c ON c.id = d.customerid
+                WHERE a.docid = ?
+                ORDER BY a.type DESC',
                 'id',
                 array($id)
             );
@@ -2093,9 +2097,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $password = str_replace(
                             array(
                                 '%ssn',
+                                '%pin',
                             ),
                             array(
                                 $document['ssn'],
+                                $document['pin'],
                             ),
                             $document_password
                         );
