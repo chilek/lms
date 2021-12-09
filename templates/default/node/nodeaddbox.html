@@ -542,7 +542,7 @@
 		$('#netdev').change(function() {
 			if (parseInt($('#linktype').val()) == {$smarty.const.LINKTYPE_WIRELESS}) {
 				$('#linktype,#radiosector,#linktechnology,#linkspeed').prop('disabled', true);
-				xajax_getRadioSectors(id, $('#linktechnology').val());
+				xajax_getRadioSectors($(this).val(), $('#linktechnology').val());
 			}
 		});
 
