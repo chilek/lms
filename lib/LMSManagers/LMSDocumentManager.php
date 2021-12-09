@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+/*
+use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;
+use setasign\FpdiProtection\FpdiProtection;
+*/
+
 /**
  * LMSDocumentManager
  *
@@ -1998,7 +2004,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         global $DOCTYPES;
 
         if ($document = $this->db->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-				d.fullnumber, n.template
+				d.fullnumber, n.template, d.ssn
 			FROM documents d
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 			JOIN docrights r ON (r.doctype = d.type)
@@ -2023,11 +2029,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             foreach ($document['attachments'] as &$attachment) {
                 $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2)
                     . DIRECTORY_SEPARATOR . $attachment['md5sum'];
+                $pdf = false;
                 if (file_exists($filename . '.pdf')) {
                     // try to get file from pdf document cache
                     $contents = file_get_contents($filename . '.pdf');
                     $contenttype = 'application/pdf';
                     $contentname = str_replace('.html', '.pdf', $attachment['filename']);
+                    $pdf = true;
                 } else {
                     $contents = file_get_contents($filename);
                     if (preg_match('/html/i', $attachment['contenttype'])
@@ -2058,13 +2066,68 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                 'S'
                             );
                         }
+                        $pdf = true;
                         $contenttype = 'application/pdf';
                         $contentname = str_replace('.html', '.pdf', $attachment['filename']);
                     } else {
                         $contenttype = $attachment['contenttype'];
                         $contentname = $attachment['filename'];
+                        if ($contenttype == 'application/pdf') {
+                            $pdf = true;
+                        }
                     }
                 }
+
+                if ($pdf) {
+                    $password = ConfigHelper::getConfig('phpui.document_password', '', true);
+                    if (!empty($password)) {
+                        $password = str_replace(
+                            array(
+                                '%ssn',
+                            ),
+                            array(
+                                $document['ssn'],
+                            ),
+                            $password
+                        );
+
+/*
+                        $pdf = new FpdiProtection();
+                        $pdf->setPrintHeader(false);
+                        $pdf->setPrintFooter(false);
+                        $pageCount = $pdf->setSourceFile(StreamReader::createByString($contents));
+                        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                            // import a page
+                            $templateId = $pdf->importPage($pageNo);
+                            // get the size of the imported page
+                            $size = $pdf->getTemplateSize($templateId);
+
+                            // create a page (landscape or portrait depending on the imported page size)
+                            if ($size['w'] > $size['h']) {
+                                $pdf->AddPage('L', array($size['w'], $size['h']));
+                            } else {
+                                $pdf->AddPage('P', array($size['w'], $size['h']));
+                            }
+                            //$pdf->AddPage($size['orientation'], $size);
+
+                            // use the imported page
+                            $pdf->useTemplate($templateId);
+                        }
+                        $pdf->setProtection(
+                            FpdiProtection::PERM_PRINT
+                                | FpdiProtection::PERM_MODIFY
+                                | FpdiProtection::PERM_COPY
+                                | FpdiProtection::PERM_ANNOT
+                                | FpdiProtection::PERM_FILL_FORM
+                                | FpdiProtection::PERM_ASSEMBLE
+                                | FpdiProtection::PERM_DIGITAL_PRINT,
+                            $password
+                        );
+                        $contents = $pdf->Output(null, 'S');
+*/
+                    }
+                }
+
                 $attachment['contents'] = $contents;
                 $attachment['contenttype'] = $contenttype;
                 $attachment['filename'] = $contentname;

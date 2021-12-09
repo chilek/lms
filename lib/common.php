@@ -996,20 +996,6 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
             }
         }
 
-        $password = ConfigHelper::getConfig('phpui.document_password', '', true);
-        if (!empty($password)) {
-            $password = str_replace(
-                array(
-                    '%ssn',
-                ),
-                array(
-                    $info['ssn'],
-                ),
-                $password
-            );
-            $html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', $password, '1');
-        }
-
         // cache pdf file
         if ($md5sum) {
             $html2pdf->Output(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf', 'F');
