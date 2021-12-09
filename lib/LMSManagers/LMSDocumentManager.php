@@ -2023,8 +2023,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 date('Y/m/d', $document['cdate'])
             );
 
-            $document['attachments'] = $this->db->GetAllByKey('SELECT *, type AS main FROM documentattachments WHERE docid = ?
-				ORDER BY type DESC', 'id', array($id));
+            $document['attachments'] = $this->db->GetAllByKey(
+                'SELECT *, type AS main FROM documentattachments WHERE docid = ?
+                ORDER BY type DESC',
+                'id',
+                array($id)
+            );
+
+            $document_password = ConfigHelper::getConfig('phpui.document_password', '', true);
+            $document_protection_command = ConfigHelper::getConfig(
+                'phpui.document_protection_command',
+                'qpdf --encrypt %password %password 256 -- %in-file -'
+            );
 
             foreach ($document['attachments'] as &$attachment) {
                 $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2)
@@ -2079,8 +2089,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if ($pdf) {
-                    $password = ConfigHelper::getConfig('phpui.document_password', '', true);
-                    if (!empty($password)) {
+                    if (!empty($document_password) && !empty($document_protection_command)) {
                         $password = str_replace(
                             array(
                                 '%ssn',
@@ -2088,43 +2097,48 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             array(
                                 $document['ssn'],
                             ),
-                            $password
+                            $document_password
                         );
 
-/*
-                        $pdf = new FpdiProtection();
-                        $pdf->setPrintHeader(false);
-                        $pdf->setPrintFooter(false);
-                        $pageCount = $pdf->setSourceFile(StreamReader::createByString($contents));
-                        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                            // import a page
-                            $templateId = $pdf->importPage($pageNo);
-                            // get the size of the imported page
-                            $size = $pdf->getTemplateSize($templateId);
+                        if (!empty($password)) {
+                            $pdf_file_name = tempnam('/tmp', 'lms-document-attachment-');
+                            file_put_contents($pdf_file_name, $contents);
+                            $protection_command = str_replace(
+                                array(
+                                    '%in-file',
+                                    '%password'
+                                ),
+                                array(
+                                    $pdf_file_name,
+                                    $password,
+                                ),
+                                $document_protection_command
+                            );
+                            $pipes = null;
+                            $process = proc_open(
+                                $protection_command,
+                                array(
+                                    0 => array('pipe', 'r'),
+                                    1 => array('pipe', 'w'),
+                                    2 => array('pipe', 'w'),
+                                ),
+                                $pipes
+                            );
+                            if (is_resource($process)) {
+                                $output = stream_get_contents($pipes[1]);
+                                fclose($pipes[1]);
 
-                            // create a page (landscape or portrait depending on the imported page size)
-                            if ($size['w'] > $size['h']) {
-                                $pdf->AddPage('L', array($size['w'], $size['h']));
-                            } else {
-                                $pdf->AddPage('P', array($size['w'], $size['h']));
+                                $error = stream_get_contents($pipes[2]);
+                                fclose($pipes[2]);
+
+                                $result = proc_close($process);
+
+                                if (empty($result)) {
+                                    $contents = $output;
+                                }
                             }
-                            //$pdf->AddPage($size['orientation'], $size);
-
-                            // use the imported page
-                            $pdf->useTemplate($templateId);
+                            @unlink($pdf_file_name);
                         }
-                        $pdf->setProtection(
-                            FpdiProtection::PERM_PRINT
-                                | FpdiProtection::PERM_MODIFY
-                                | FpdiProtection::PERM_COPY
-                                | FpdiProtection::PERM_ANNOT
-                                | FpdiProtection::PERM_FILL_FORM
-                                | FpdiProtection::PERM_ASSEMBLE
-                                | FpdiProtection::PERM_DIGITAL_PRINT,
-                            $password
-                        );
-                        $contents = $pdf->Output(null, 'S');
-*/
                     }
                 }
 
