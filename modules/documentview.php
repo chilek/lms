@@ -38,7 +38,7 @@ if (!empty($_POST['marks'])) {
 		JOIN docrights r ON (r.doctype = d.type)
 		WHERE c.docid IN ('.implode(',', $marks).')
 			AND r.userid = ? AND (r.rights & 1) = 1', array(Auth::GetCurrentUser()))) {
-        $list = $DB->GetAll('SELECT filename, contenttype, md5sum FROM documentattachments
+        $list = $DB->GetAll('SELECT docid, filename, contenttype, md5sum, type FROM documentattachments
 			WHERE docid IN (' . implode(',', $list) . ')');
 
         $html = $pdf = $other = false;
@@ -65,6 +65,8 @@ if (!empty($_POST['marks'])) {
         }
 
         $ctype = $list[0]['contenttype'];
+        $attachmenttype = $list[0]['type'];
+        $docid = $list[0]['docid'];
 
         if (!$html) {
             header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename='.$list[0]['filename']);
@@ -132,7 +134,15 @@ if (!empty($_POST['marks'])) {
         }
         if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
             $margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
-            html2pdf($htmlbuffer, trans('Document'), null, null, null, 'P', $margins);
+            html2pdf(
+                $htmlbuffer,
+                trans('Document'),
+                null,
+                null,
+                $attachmenttype == 1 ? $docid : null,
+                'P',
+                $margins
+            );
         } elseif ($pdf) {
             // Output the new PDF
             $pdf->Output();

@@ -906,7 +906,7 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
         $html2pdf->pdf->setFontSubsetting(false);
 
         if ($id) {
-            $info = $DB->GetRow('SELECT di.name, di.description FROM divisions di
+            $info = $DB->GetRow('SELECT di.name, di.description, d.ssn FROM divisions di
 				LEFT JOIN documents d ON (d.divisionid = di.id)
 				WHERE d.id = ?', array($id));
         }
@@ -998,6 +998,15 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
 
         $password = ConfigHelper::getConfig('phpui.document_password', '', true);
         if (!empty($password)) {
+            $password = str_replace(
+                array(
+                    '%ssn',
+                ),
+                array(
+                    $info['ssn'],
+                ),
+                $password
+            );
             $html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', $password, '1');
         }
 
