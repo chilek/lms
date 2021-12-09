@@ -1063,14 +1063,14 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
                     );
                 }
 
+                if (function_exists('mb_convert_encoding')) {
+                    $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+                } else {
+                    $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
+                }
+
                 switch ($dest) {
                     case 'D':
-                        if (function_exists('mb_convert_encoding')) {
-                            $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
-                        } else {
-                            $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
-                        }
-
                         header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
                         //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
                         header('Pragma: public');
@@ -1079,7 +1079,7 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
                         // force download dialog
                         header('Content-Type: application/pdf');
                         // use the Content-Disposition header to supply a recommended filename
-                        header('Content-Disposition: attachment; filename="' . basename($name) . '"');
+                        header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
                         header('Content-Transfer-Encoding: binary');
 
                         echo $content;
@@ -1096,7 +1096,7 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
                         header('Pragma: public');
                         header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
                         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-                        header('Content-Disposition: inline; filename="' . basename($name) . '"');
+                        header('Content-Disposition: inline; filename="' . basename($filename) . '"');
 
                         echo $content;
 
