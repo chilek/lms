@@ -55,6 +55,9 @@ version 28-git (????-??-??):
   - improvement: use {customerlist} smarty element in invoice list form [interduo]
   - enhancement: 'phpui.document_password' supports substitution symbol %ssn which is replaced
     by customer SSN [chilan]
+  - enhancement: 'phpui.document_protection_command' with default value of
+    'qpdf --encrypt %password %password 256 -- %in-file -' allows to specify system command which handles
+    pdf file encryption with password defined in 'phpui.document_password' configuration variable [chilan]
 
 version 27.0 (2021-08-20):
 
