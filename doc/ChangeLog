@@ -53,6 +53,8 @@ version 28-git (????-??-??):
   - improvement: 'phpui.promotion_schema_name_limit' with default value of '40' allows to control how
     long schema name can be in schema selection list [chilan]
   - improvement: use {customerlist} smarty element in invoice list form [interduo]
+  - enhancement: 'phpui.document_password' supports substitution symbol %ssn which is replaced
+    by customer SSN [chilan]
 
 version 27.0 (2021-08-20):
 
