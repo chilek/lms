@@ -58,6 +58,8 @@ version 28-git (????-??-??):
   - enhancement: 'phpui.document_protection_command' with default value of
     'qpdf --encrypt %password %password 256 -- %in-file -' allows to specify system command which handles
     pdf file encryption with password defined in 'phpui.document_password' configuration variable [chilan]
+  - enhancement: optional possibility of sending documents to customers after he confirmed document
+    in userpanel [chilan]
 
 version 27.0 (2021-08-20):
 
