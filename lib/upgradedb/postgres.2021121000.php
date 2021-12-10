@@ -23,10 +23,15 @@
 
 $this->BeginTrans();
 
-$this->Execute(
-    "INSERT INTO uiconfig (section, var, value, description, type) VALUES (?, ?, ?, ?, ?)",
-    array('userpanel', 'document_approval_customer_notification_attachments', '0', '', 0)
-);
+if (!$this->Execute(
+    "SELECT 1 FROM uiconfig WHERE section = ? AND var = ?",
+    array('userpanel', 'document_approval_customer_notification_attachments')
+)) {
+    $this->Execute(
+        "INSERT INTO uiconfig (section, var, value, description, type) VALUES (?, ?, ?, ?, ?)",
+        array('userpanel', 'document_approval_customer_notification_attachments', '0', '', 0)
+    );
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021121000', 'dbversion'));
 
