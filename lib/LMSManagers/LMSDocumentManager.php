@@ -2272,7 +2272,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
             $body = str_replace('\n', "\n", $body);
 
-            $subject = preg_replace('/%document/', $document['title'], $subject);
+            $subject = preg_replace('/%document/', $document['fullnumber'], $subject);
 
             $doc['name'] = '"' . $doc['name'] . '"';
 
