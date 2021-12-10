@@ -2076,12 +2076,31 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     {
         global $DOCTYPES;
 
-        if ($document = $this->db->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-				d.fullnumber, n.template, d.ssn
-			FROM documents d
-			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-			JOIN docrights r ON (r.doctype = d.type)
-			WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1', array($id, Auth::GetCurrentUser()))) {
+        $userid = Auth::GetCurrentUser();
+
+        if ($userid) {
+            $document = $this->db->GetRow(
+                'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
+                    d.fullnumber, n.template, d.ssn
+                FROM documents d
+                LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+                JOIN docrights r ON (r.doctype = d.type)
+                WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1',
+                array($id, $userid)
+            );
+        } else {
+            $document = $this->db->GetRow(
+                'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
+                    d.fullnumber, n.template, d.ssn
+                FROM documents d
+                LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+                JOIN docrights r ON (r.doctype = d.type)
+                WHERE d.id = ?',
+                array($id)
+            );
+        }
+
+        if ($document) {
             $document['fullnumber'] = docnumber(array(
                 'number' => $document['number'],
                 'template' => $document['template'],
