@@ -421,6 +421,8 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject', '', true),
                 'document_approval_customer_notification_mail_body' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body', '', true),
+                'document_approval_customer_notification_attachments' =>
+                    ConfigHelper::checkConfig('userpanel.document_approval_customer_notification_attachments'),
                 'document_approval_customer_onetime_password_sms_body' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_onetime_password_sms_body', '', true),
             )
@@ -465,6 +467,7 @@ if (defined('USERPANEL_SETUPMODE')) {
             'document_approval_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'document_approval_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_customer_notification_attachments' => CONFIG_TYPE_BOOLEAN,
             'document_approval_customer_onetime_password_sms_body' => CONFIG_TYPE_RICHTEXT,
         );
 

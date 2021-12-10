@@ -3820,6 +3820,7 @@ URL: %url
 ('userpanel', 'document_approval_customer_notification_mail_format', 'text', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_subject', '', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_body', '', '', 0),
+('userpanel', 'document_approval_customer_notification_attachments', '0', '', 0),
 ('userpanel', 'document_approval_customer_onetime_password_sms_body', '', '', 0),
 ('userpanel', 'google_recaptcha_sitekey', '', '', 0),
 ('userpanel', 'google_recaptcha_secret', '', '', 0),
@@ -4183,6 +4184,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021120100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021121000');
 
 COMMIT;
