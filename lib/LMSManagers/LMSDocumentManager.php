@@ -2094,17 +2094,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                 if ($pdf) {
                     if (!empty($document_password) && !empty($document_protection_command)) {
-                        $password = str_replace(
+                        $password = trim(str_replace(
                             array(
                                 '%ssn',
                                 '%pin',
                             ),
                             array(
                                 $document['ssn'],
-                                $document['pin'],
+                                preg_match('/^\$[0-9]+\$/', $document['pin'])
+                                    ? ''
+                                    : $document['pin'],
                             ),
                             $document_password
-                        );
+                        ));
 
                         if (!empty($password)) {
                             $pdf_file_name = tempnam('/tmp', 'lms-document-attachment-');
