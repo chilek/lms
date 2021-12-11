@@ -69,12 +69,14 @@
 				$.ajax({
 					method: "POST",
 					url: '?m=documents&smsauth=1&send=1',
+					dataType: "json",
 					data: {
 						documentid: parseInt($('#authcode-dialog .documentid').val())
 					},
-					success: function (data) {
-						if (data.length) {
-							$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error').html(data).show();
+					success: function(result) {
+						if (result.errors.length) {
+							$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error')
+								.html(result.errors.join('<br>')).show();
 						} else {
 							$('#authcode-status').removeClass('authcode-error').addClass('authcode-alert')
 								.html("{trans("Authorization code has been sent to you mobile phone.")}").show();
@@ -88,16 +90,19 @@
 					$.ajax({
 						method: "POST",
 						url: $(this).attr('action'),
+						dataType: "json",
 						data: {
 							code: $('#authcode').val(),
 							documentid: parseInt($('#authcode-dialog .documentid').val())
 						},
-						success: function(data) {
-							if (data.length) {
-								$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error').html(data).show();
+						success: function(result) {
+							if (result.errors.length) {
+								$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error')
+									.html(result.errors.join('<br>')).show();
 							} else {
+								result.info.shift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
 								$('#authcode-status').removeClass('authcode-error').addClass('authcode-alert')
-									.html("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}").show();
+									.html(result.info.join('<br>')).show();
 								$('#authcode').remove();
 								$('[for="authcode"]').remove();
 								$('#authcode-dialog .submit-button').remove();

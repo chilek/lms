@@ -1397,6 +1397,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $customerinfos = array();
         $mail_contacts = array();
 
+        $errors = array();
+        $info = array();
+
         foreach ($docs as $docid => $doc) {
             $this->db->Execute(
                 'UPDATE documents SET sdate = ?NOW?, cuserid = ?, closed = ?, confirmdate = ?,
@@ -1516,12 +1519,22 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         $mdn_email = ConfigHelper::getConfig('documents.mdn_email', '', true);
 
                         if (empty($sender_email)) {
-                            echo '<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
+                            if ($userpanel) {
+                                $errors[] = trans("Fatal error: sender_email unset! Can't continue, exiting.");
+                            } else {
+                                echo '<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
+                            }
+                            return;
                         }
 
                         $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
                         if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
-                            echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
+                            if ($userpanel) {
+                                $errors[] = trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.");
+                            } else {
+                                echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
+                            }
+                            return;
                         }
 
                         $docs = $this->db->GetAll(
@@ -1543,22 +1556,33 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             if (!isset($lms)) {
                                 $lms = LMS::getInstance();
                             }
-                            $lms->SendDocuments($docs, 'frontend', compact(
-                                'debug_email',
-                                'mail_body',
-                                'mail_subject',
-                                'mail_format',
-                                'currtime',
-                                'sender_email',
-                                'sender_name',
-                                'dsn_email',
-                                'reply_email',
-                                'mdn_email',
-                                'notify_email',
-                                'add_message',
-                                'message_attachments',
-                                'smtp_options'
-                            ));
+                            $result = $lms->SendDocuments(
+                                $docs,
+                                $userpanel ? 'userpanel' : 'frontend',
+                                compact(
+                                    'debug_email',
+                                    'mail_body',
+                                    'mail_subject',
+                                    'mail_format',
+                                    'currtime',
+                                    'sender_email',
+                                    'sender_name',
+                                    'dsn_email',
+                                    'reply_email',
+                                    'mdn_email',
+                                    'notify_email',
+                                    'add_message',
+                                    'message_attachments',
+                                    'smtp_options'
+                                )
+                            );
+                            if ($userpanel) {
+                                $info = array_merge($info, $result['info']);
+                                $errors = array_merge($errors, $result['errors']);
+                                if (!empty($errors)) {
+                                    return compact('info', 'errors');
+                                }
+                            }
                         }
                     }
 
@@ -2257,10 +2281,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         extract($params);
 
-        if ($type == 'frontend') {
-            $eol = '<br>';
-        } else {
-            $eol = PHP_EOL;
+        $errors = array();
+        $info = array();
+
+        switch ($type) {
+            case 'frontend':
+                $eol = '<br>';
+                break;
+            default:
+                $eol = PHP_EOL;
+                break;
         }
 
         $month = sprintf('%02d', intval(date('m', $currtime)));
@@ -2306,12 +2336,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
             if (!$quiet || $test) {
                 $msg = $document['title'] . ': ' . $mailto ;
-                if ($type == 'frontend') {
-                    echo htmlspecialchars($msg) . $eol;
-                    flush();
-                    ob_flush();
-                } else {
-                    echo $msg . $eol;
+                switch ($type) {
+                    case 'frontend':
+                        echo htmlspecialchars($msg) . $eol;
+                        flush();
+                        ob_flush();
+                        break;
+                    case 'backend':
+                        echo $msg . $eol;
+                        break;
+                    case 'userpanel':
+                        $info[] = $msg;
+                        break;
                 }
             }
 
@@ -2416,11 +2452,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                     if (is_string($res)) {
                         $msg = trans('Error sending mail: $a', $res);
-                        if ($type == 'backend') {
-                            fprintf(STDERR, $msg . $eol);
-                        } else {
-                            echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
-                            flush();
+                        switch ($type) {
+                            case 'backend':
+                                fprintf(STDERR, $msg . $eol);
+                                break;
+                            case 'frontend':
+                                echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
+                                flush();
+                                break;
+                            case 'userpanel':
+                                $errors[] = htmlspecialchars($msg);
+                                break;
                         }
                         $status = MSG_ERROR;
                     } else {
@@ -2430,7 +2472,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                     if ($status == MSG_SENT) {
                         $this->db->Execute('UPDATE documents SET published = 1, senddate = ?NOW? WHERE id = ?', array($doc['id']));
-                        $published = true;
                     }
 
                     if ($add_message) {
@@ -2439,6 +2480,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                 }
             }
+        }
+
+        if ($type == 'userpanel') {
+            return compact('info', 'errors');
         }
     }
 

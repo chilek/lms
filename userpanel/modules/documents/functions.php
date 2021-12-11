@@ -67,25 +67,26 @@ function module_main()
         )) {
             if (isset($_GET['smsauth'])) {
                 if ($sms_active) {
+                    $errors = array();
+                    $info = array();
+
+                    header('Content-Type: application/json');
+
                     if (isset($_GET['send'])) {
                         if (!$SESSION->is_set('smsauthcode') || time() - $SESSION->get('smsauthcode_timestamp') > 60) {
                             $sms_authcode = strval(rand(10000000, 99999999));
                             $SESSION->save('smsauthcode', $sms_authcode);
                             $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
-                            $error = array();
                             foreach ($sms_recipients as $sms_recipient) {
                                 $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
                                 if (is_string($res)) {
-                                    $error[] = $res;
+                                    $errors[] = $res;
                                 }
-                            }
-                            if ($error) {
-                                echo implode('<br>', $error);
                             }
                         } else {
                             if ($SESSION->is_set('smsauthcode')) {
-                                echo trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
+                                $errors[] = trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
                             } else {
                                 $SESSION->remove('smsauthcode');
                                 $SESSION->remove('smsauthcode_timestamp');
@@ -99,17 +100,19 @@ function module_main()
 
                                 // commit customer document only if it's owned by this customer
                                 // and is prepared for customer action
-                                $LMS->CommitDocuments(array($documentid), true);
+                                $result = $LMS->CommitDocuments(array($documentid), true);
+                                $errors = array_merge($errors, $result['errors']);
+                                $info = array_merge($info, $result['info']);
                             } else {
-                                echo trans('Authorization code you entered is invalid!');
+                                $errors[] = trans('Authorization code you entered is invalid!');
                             }
                         } else {
-                            echo trans('Your authorization code has expired! Try again in a moment.');
+                            $errors[] = trans('Your authorization code has expired! Try again in a moment.');
                         }
                     }
                 }
                 $SESSION->close();
-                die;
+                die(json_encode(compact('errors', 'info')));
             } elseif ($scan_active) {
                 $files = array();
                 $error = null;
