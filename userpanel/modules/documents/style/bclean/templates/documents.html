@@ -270,7 +270,7 @@
 						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger')
 							.html(result.errors.join('<br>')).show();
 					} else {
-						result.info.shift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
+						result.info.unshift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
 						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
 							.html(result.info.join('<br>')).show();
 						$('#authcode-dialog').find('.documentid').siblings().hide().end().end().find('.submit-button').remove();

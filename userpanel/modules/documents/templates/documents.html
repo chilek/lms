@@ -100,7 +100,7 @@
 								$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error')
 									.html(result.errors.join('<br>')).show();
 							} else {
-								result.info.shift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
+								result.info.unshift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
 								$('#authcode-status').removeClass('authcode-error').addClass('authcode-alert')
 									.html(result.info.join('<br>')).show();
 								$('#authcode').remove();
