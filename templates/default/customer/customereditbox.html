@@ -77,6 +77,8 @@
 
 </style>
 
+{include file="customer/customercompanyselectiondialog.html"}
+
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
 <INPUT type="hidden" name="customerdata[id]" value="{$customerinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
