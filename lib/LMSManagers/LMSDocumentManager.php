@@ -1521,20 +1521,22 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         if (empty($sender_email)) {
                             if ($userpanel) {
                                 $errors[] = trans("Fatal error: sender_email unset! Can't continue, exiting.");
+                                return compact('info', 'errors');
                             } else {
                                 echo '<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
+                                return;
                             }
-                            return;
                         }
 
                         $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
                         if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
                             if ($userpanel) {
                                 $errors[] = trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.");
+                                return compact('info', 'errors');
                             } else {
                                 echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
+                                return;
                             }
-                            return;
                         }
 
                         $docs = $this->db->GetAll(
@@ -1667,6 +1669,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $this->db->CommitTrans();
+
+        if ($userpanel) {
+            return compact('info', 'errors');
+        }
     }
 
     public function NewDocumentCustomerNotifications(array $document)
