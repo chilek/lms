@@ -78,8 +78,8 @@ if (isset($_POST['networkdata'])) {
             if ($LMS->NetworkOverlaps($networkdata['address'], prefix2mask($networkdata['prefix']), $networkdata['hostid'], $networkdata['id'])) {
                 $error['address'] = trans('Specified IP address overlaps with other network!');
             } else {
-                if (($networkdata['perfix'] < 31 && $network['assigned'] > $networkdata['size'] - 2)
-                    || ($networkdata['perfix'] == 31 && $network['assigned'] > $networkdata['size'])) {
+                if (($networkdata['prefix'] < 31 && $network['assigned'] > $networkdata['size'] - 2)
+                    || ($networkdata['prefix'] == 31 && $network['assigned'] > $networkdata['size'])) {
                     $error['address'] = trans('New network is too small!');
                 } else {
                     $node = $DB->GetRow(
