@@ -1076,6 +1076,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             'paytype' => $this->data['paytype'],
             'pdate' => $this->data['pdate'],
             'barcode' => $payment_barcode,
+            'division_shortname' => $this->data['division_shortname'],
+            'division_name' => $this->data['division_name'],
+            'division_address' => $this->data['division_address'],
+            'division_zip' => $this->data['division_zip'],
+            'division_city' => $this->data['division_city'],
+            'division_countryid' => $this->data['division_countryid'],
+            'division_ten' => $this->data['division_ten'],
         );
         $tranferform_data = $transferform->SetCustomData($tranferform_common_data, $tranferform_custom_data);
 
