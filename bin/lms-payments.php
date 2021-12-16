@@ -559,6 +559,7 @@ $query = "SELECT
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
 			voipcost.value,
+			voipcost.value AS unitary_value,
 			(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
             (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
                 THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
