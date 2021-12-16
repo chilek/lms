@@ -59,7 +59,7 @@ if (empty($params['frangefrom'])) {
     $params['frangefrom'] = date('Y/m/01');
 }
 $params['fownerid'] = sessionHandler('fownerid', 'vblfownerid');
-$params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+$params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
