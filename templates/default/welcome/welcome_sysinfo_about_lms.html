@@ -12,7 +12,7 @@
         </tr>
     </thead>
     <tbody id="welcome_sysinfo_about_lms-{$layout.module}" style="display:none;">
-        <tr>
+        <tr data-clipboard-text="{t a=LMS::SOFTWARE_NAME}$a version:{/t} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}">
             <td class="text-right bold">
                 <a href="{LMS::SOFTWARE_URL}" rel="external">{t a=LMS::SOFTWARE_NAME}$a version:{/t}</a>
             </td>
@@ -20,7 +20,7 @@
                 {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}
             </td>
         </tr>
-        <tr>
+        <tr data-clipboard-text="{trans("LMSDB version:")} {$layout.lmsdbv}">
             <td class="text-right bold">
                 <a href="{LMS::SOFTWARE_URL}" rel="external">{trans("LMSDB version:")}</a>
             </td>
@@ -28,7 +28,7 @@
                 {$layout.lmsdbv}
             </td>
         </tr>
-        <tr>
+        <tr data-clipboard-text="{if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}{trans("MySQL version:")}{elseif $layout.dbtype == "postgres"}{trans("PostgreSQL version:")}{/if} {$layout.dbversion}">
             <td class="text-right bold">
                 {if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
                 <a href="http://www.mysql.com" rel="external">{trans("MySQL version:")}</a>
@@ -40,7 +40,7 @@
                 {$layout.dbversion}
             </td>
         </tr>
-        <tr>
+        <tr data-clipboard-text="{trans("PHP version:")} {$sysinfo.phpversion}">
             <td class="text-right bold">
                 <a href="http://www.php.net/" rel="external">{trans("PHP version:")}</a>
             </td>
@@ -71,7 +71,7 @@
                         {if $plugin.description}{$plugin.description}{else}-{/if}
                     </td>
                 </tr>
-                <tr>
+                <tr data-clipboard-text="{$plugin_name}SoftwareVersion: {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}">
                     <td class="text-right">
                         {$plugin_name}SoftwareVersion:
                     </td>
@@ -79,7 +79,7 @@
                         {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}
                     </td>
                 </tr>
-                <tr>
+                <tr data-clipboard-text="{$plugin_name}DB:{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}">
                     <td class="text-right">
                         {$plugin_name}DB:
                     </td>
@@ -89,14 +89,31 @@
                 </tr>
             {/if}
         {/foreach}
+        <tr>
+            <td class="lms-ui-box-buttons" colspan="2">
+                {button icon="url" label="Copy" id="copy-sysinfo" class="lms-ui-button-clipboard" data_clipboard_text=""}
+            </td>
+        </tr>
     </tbody>
 </table>
 
 <script type="text/javascript">
 
-    if (getCookie('welcome_sysinfo_about_lms-{$layout.module}') == '1'){
+if (getCookie('welcome_sysinfo_about_lms-{$layout.module}') == '1'){
     document.getElementById('welcome_sysinfo_about_lms-{$layout.module}').style.display = '';
 }
+
+new ClipboardJS('#copy-sysinfo', {
+    text: function(trigger) {
+        let data = $('#welcome_sysinfo_about_lms-' + '{$layout.module}').find('[data-clipboard-text]');
+        let ClipboardText = '';
+        data.each(function() {
+            ClipboardText += $(this).attr('data-clipboard-text') + '\n';
+        });
+        $(trigger).attr('data-clipboard-text', ClipboardText);
+        return $(trigger).attr('data-clipboard-text');
+    }
+});
 
 </script>
 {/if}
