@@ -266,6 +266,7 @@ $_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
 $_LANG['Ticket have open assigned events!'] = 'Zgłoszenie posiada otwarte zdarzenia!';
 $_LANG['Comment:'] = 'Komentarz:';
+$_LANG['comment details'] = 'szczegóły komentarzy';
 $_LANG['Enter invoice comment'] = 'Wprowadź komentarz do faktury';
 $_LANG['<!rt>Expired'] = 'Przeterminowany';
 $_LANG['<!rt>Not expired'] = 'Nieprzeterminowany';
@@ -713,6 +714,7 @@ $_LANG['daily'] = 'codziennie';
 $_LANG['Database Backup Recovery'] = 'Odtworzenie bazy danych z kopii zapasowej';
 $_LANG['Database Backups'] = 'Kopie zapasowe bazy danych';
 $_LANG['Database backups currently not found.'] = 'Nie odnaleziono żadnych kopii bazy danych.';
+$_LANG['Database version:'] = 'Wersja bazy danych:';
 $_LANG['Compacting Database'] = 'Kompaktowanie bazy danych';
 $_LANG['Database errors occurred!'] = 'Napotkano błędy w bazie danych!';
 $_LANG['Data older than one day will be combined into one day'] = 'Dane starsze niż jeden dzień zostaną uśrednione do jednego dnia';
@@ -1688,6 +1690,7 @@ $_LANG['Receipt have no items. Use form below for items addition.'] = 'Brak pozy
 $_LANG['Receipt number:'] = 'Numer potwierdzenia:';
 $_LANG['Receipt number $a already exists!'] = 'Potwierdzenie nr $a już istnieje!';
 $_LANG['Receipt number must be integer!'] = 'Numer potwierdzenia musi być liczbą całkowitą!';
+$_LANG['receivables overdue by days'] = 'dni po przeterminowaniu należności';
 $_LANG['Recipients:'] = 'Odbiorcy:';
 $_LANG['Recipients'] = 'Odbiorcy';
 $_LANG['Recipient\'s e-mail:'] = 'E-mail odbiorcy:';
@@ -1837,6 +1840,7 @@ $_LANG['Czech'] = 'Czechy';
 $_LANG['Small font text appearing in selected (in template) place of the invoice, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123'] = 'Tekst napisany małą czcionką pojawiająca się w wybranym (w szablonie) miejscu na fakturze. np. Nasz bank: SNETISP, 828823917293871928371\nNumer telefonu 555 123 123';
 $_LANG['Smarty version:'] = 'Wersja Smarty:';
 $_LANG['SMTP settings.'] = 'Ustawienia SMTP.';
+$_LANG['Software version:'] = 'Wersja oprogramowania:';
 $_LANG['Sorting:'] = 'Sortowanie:';
 $_LANG['Specified address does not belong to any network!'] = 'Wybrany adres nie należy do żadnej sieci!';
 $_LANG['Specified address is not a network address, setting $a'] = 'Wybrany adres nie jest adresem sieci, ustawiam $a';
@@ -1894,6 +1898,9 @@ $_LANG['Tax Rate:'] = 'St. PTU:';
 $_LANG['Tax value'] = 'Kwota PTU';
 $_LANG['Tax Value:'] = 'Kwota PTU:';
 $_LANG['TEN'] = 'NIP';
+$_LANG['Missed required TEN identifier!'] = 'Brak identyfikatora NIP!';
+$_LANG['Missed required SSN identifier!'] = 'Brak identyfikatora PESEL!';
+$_LANG['Missed required Identity Card Number!'] = 'Brak identyfikatora dokumentu tożsamości!';
 $_LANG['TEN $a'] = 'NIP $a';
 $_LANG['TEN:'] = 'NIP:';
 $_LANG['TEN/SSN'] = 'NIP/PESEL';
@@ -1983,6 +1990,7 @@ $_LANG['Enter message body.<br><br>'
     + 'Supported substitutions/variables:<br>'
     + '<strong>%customer</strong> - customer first name and last name or name,<br>'
     + '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>'
+    + '<strong>%commented_balance</strong> - customer total balance as absolute value with text comment explaining customer billing status,<br>'
     + '<strong>%b</strong> - customer expired liability balance amount to pay,<br>'
     + '<strong>%totalb</strong> - customer total balance amount to pay,<br>'
     + '<strong>%B</strong>, <strong>%saldo</strong> - customer expired liability balance,<br>'
@@ -2004,6 +2012,7 @@ $_LANG['Enter message body.<br><br>'
     + 'Obsługiwane podstawienia/zmienne:<br>'
     + '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
     + '<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - całkowite saldo klienta,<br>'
+    + '<strong>%commented_balance</strong> - całkowite saldo klienta jako wartość bezwzględna z komentarzem tekstowym wyjaśniającym stan rozliczeń klienta,<br>'
     + '<strong>%b</strong> - kwota do zapłaty wynikająca z salda należności przeterminowanych klienta,<br>'
     + '<strong>%totalb</strong> - kwota do zapłaty wynikająca z salda klienta,<br>'
     + '<strong>%B</strong>, <strong>%saldo</strong> - saldo należności przeterminowanych klienta,<br>'
@@ -5396,5 +5405,11 @@ $_LANG[
     + 'Czy mimo tego chcesz zmienić dane klienta na te przez Ciebie wprowadzone w formularzu?';
 
 $_LANG['Billing status: $a (to pay)'] = 'Stan rozliczeń: $a (do zapłaty)';
-$_LANG['Billing status: %a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
+$_LANG['Billing status: $a (excess payment or to repay)'] = 'Stan rozliczeń: $a (nadpłata lub do zwrotu)';
 $_LANG['Billing status: $a'] = 'Stan rozliczeń: $a';
+
+$_LANG['<!pin>(hashed)'] = '(zahaszowany)';
+$_LANG['<!pin>(expired)'] = '(przeterminowany)';
+$_LANG['If you leave this field empty, then PIN will not change!'] = 'Jeśli to pole pozostawisz puste, PIN nie zostanie zmieniony!';
+
+$_LANG['Event too distant in time!'] = 'Zdarzenie zbyt odległe w czasie!';
