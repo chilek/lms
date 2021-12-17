@@ -27,7 +27,7 @@
             <td>
                 {$layout.lmsdbv}
             </td>
-	</tr>
+        </tr>
         <tr>
             <td class="text-right bold">
                 {if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
@@ -56,23 +56,47 @@
                 {$layout.smarty_version}
             </td>
         </tr>
-	{foreach $layout.plugins as $plugin_name => $plugin}
-	{if $plugin.enabled}
-	<tr>
-		<td class="text-right bold">
-			{$plugin_name}DB:
-		</td>
-		<td>
-			{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}
-		</td>
-	</tr>
-	{/if}
-	{/foreach}
+        {foreach $layout.plugins as $plugin_name => $plugin}
+            {if $plugin.enabled}
+                <tr>
+                    <td class="text-center bold" colspan="2">
+                        {$plugin_name}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">
+                        {$plugin_name}Description:
+                    </td>
+                    <td>
+                        {if $plugin.description}{$plugin.description}{else}-{/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">
+                        {$plugin_name}SoftwareVersion:
+                    </td>
+                    <td>
+                        {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">
+                        {$plugin_name}DB:
+                    </td>
+                    <td>
+                        {if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}
+                    </td>
+                </tr>
+            {/if}
+        {/foreach}
     </tbody>
 </table>
+
 <script type="text/javascript">
-if (getCookie('welcome_sysinfo_about_lms-{$layout.module}') == '1'){
+
+    if (getCookie('welcome_sysinfo_about_lms-{$layout.module}') == '1'){
     document.getElementById('welcome_sysinfo_about_lms-{$layout.module}').style.display = '';
 }
+
 </script>
 {/if}
