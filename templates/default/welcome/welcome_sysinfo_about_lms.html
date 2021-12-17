@@ -65,7 +65,7 @@
                 </tr>
                 <tr>
                     <td class="text-right">
-                        {$plugin_name}Description:
+                        {trans('Description:')}
                     </td>
                     <td>
                         {if $plugin.description}{$plugin.description}{else}-{/if}
@@ -73,7 +73,7 @@
                 </tr>
                 <tr data-clipboard-text="{$plugin_name}SoftwareVersion: {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}">
                     <td class="text-right">
-                        {$plugin_name}SoftwareVersion:
+                        {trans('Software version:')}
                     </td>
                     <td>
                         {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}
@@ -81,7 +81,7 @@
                 </tr>
                 <tr data-clipboard-text="{$plugin_name}DB:{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}">
                     <td class="text-right">
-                        {$plugin_name}DB:
+                        {trans('Database version:')}
                     </td>
                     <td>
                         {if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}
