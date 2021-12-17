@@ -1185,8 +1185,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $SMARTY->assign('autoload_template', true);
 }
 
-$SMARTY->assign('message', $message);
-
 if (isset($message['type'])) {
     switch ($message['type']) {
         case MSG_MAIL:
@@ -1219,6 +1217,7 @@ if (empty($message['sender'])) {
     $message['sender'] = ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']);
 }
 
+$SMARTY->assign('message', $message);
 $SMARTY->assign('userinfo', $userinfo);
 
 $SMARTY->assign('users', $DB->GetAllByKey('SELECT id, rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', 'id', array('')));
