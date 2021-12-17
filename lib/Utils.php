@@ -762,7 +762,6 @@ class Utils
                             }
                         }
                     }
-
                 }
             }
 
