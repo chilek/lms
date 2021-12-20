@@ -39,7 +39,7 @@ class LMSHTML2PDF_parsingCss extends \Spipu\Html2Pdf\Parsing\Css
         // font style
         $style = $b.$i;
 
-        if ($this->_defaultFont) {
+        if ($this->defaultFont) {
             if ($family == 'helvetica') {
                 $family = 'liberationsans';
             } elseif ($family == 'symbol' || $family == 'zapfdingbats') {
