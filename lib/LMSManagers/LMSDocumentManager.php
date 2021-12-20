@@ -2223,9 +2223,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             ),
                             array(
                                 $document['ssn'],
-                                preg_match('/^\$[0-9]+\$/', $document['pin'])
+                                preg_match('/^\$[0-9]+\$/', $attachment['pin'])
                                     ? ''
-                                    : $document['pin'],
+                                    : $attachment['pin'],
                             ),
                             $document_password
                         ));
