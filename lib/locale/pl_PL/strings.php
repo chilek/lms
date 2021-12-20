@@ -1712,6 +1712,7 @@ $_LANG['Removing network $a'] = 'Usuń sieć $a';
 $_LANG['Repeat password'] = 'Powtórz hasło';
 $_LANG['Repeat password:'] = 'Powtórz hasło:';
 $_LANG['Reply'] = 'Odpowiedź';
+$_LANG['Repository:'] = 'Repozytorium:';
 $_LANG['Requests Tracking'] = 'System Obsługi Zgłoszeń';
 $_LANG['Resolve'] = 'Rozwiąż';
 $_LANG['Resolve time:'] = 'Czas rozwiązania:';
