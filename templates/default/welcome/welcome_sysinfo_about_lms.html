@@ -91,7 +91,7 @@
                         </td>
                     </tr>
                 {/if}
-                <tr data-clipboard-text="{trans('Software version:')}{if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}">
+                <tr data-clipboard-text="{trans('Software version:')} {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}">
                     <td class="text-right">
                         {trans('Software version:')}
                     </td>
@@ -99,7 +99,7 @@
                         {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}
                     </td>
                 </tr>
-                <tr data-clipboard-text="{trans('Database version:')}{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}">
+                <tr data-clipboard-text="{trans('Database version:')} {if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}">
                     <td class="text-right">
                         {trans('Database version:')}
                     </td>
