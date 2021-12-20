@@ -153,7 +153,7 @@
     },
     "scripts": {
         "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF", "@repairEZPDF" ],
-        "repairHTML2PDF": "sed -i -e 's/class MyPdf extends \\TCPDF/class MyPdf extends \\LMSTCPDF/' vendor/spipu/html2pdf/src/MyPdf.php",
+        "repairHTML2PDF": "sed -i -e 's/class MyPdf extends \\\\TCPDF/class MyPdf extends \\\\LMSTCPDF/' vendor/spipu/html2pdf/src/MyPdf.php",
         "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php",
         "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts"
     }
