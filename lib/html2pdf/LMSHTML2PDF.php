@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-class LMSHTML2PDF extends HTML2PDF
+class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
 {
     /**
      * class constructor
@@ -52,13 +52,16 @@ class LMSHTML2PDF extends HTML2PDF
         $this->_encoding     = $encoding;
 
         // load the Local
-        HTML2PDF_locale::load($this->_langue);
+        \Spipu\Html2Pdf\Locale::load($this->_langue);
 
         // create the LMSTML2PDF_myPdf object
-        $this->pdf = new HTML2PDF_myPdf($orientation, 'mm', $format, $unicode, $encoding);
+        $this->pdf = new \Spipu\Html2Pdf\MyPdf($orientation, 'mm', $format, $unicode, $encoding);
 
         // init the CSS parsing object
-        $this->parsingCss = new LMSHTML2PDF_parsingCss($this->pdf);
+        $textParser = new \Spipu\Html2Pdf\Parsing\TextParser();
+        $tagParser = new \Spipu\Html2Pdf\Parsing\TagParser($textParser);
+        $cssConverter = new \Spipu\Html2Pdf\CssConverter();
+        $this->parsingCss = new LMSHTML2PDF_parsingCss($this->pdf, $tagParser, $cssConverter);
         $this->parsingCss->fontSet();
         $this->_defList = array();
 
@@ -71,7 +74,7 @@ class LMSHTML2PDF extends HTML2PDF
         $this->setDefaultFont(null);
 
         // init the HTML parsing object
-        $this->parsingHtml = new HTML2PDF_parsingHtml($this->_encoding);
+        $this->parsingHtml = new \Spipu\Html2Pdf\Parsing\Html($this->_encoding);
         $this->_subHtml = null;
         $this->_subPart = false;
 

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss
+class LMSHTML2PDF_parsingCss extends \Spipu\Html2Pdf\Parsing\Css
 {
     public function fontSet()
     {
@@ -47,7 +47,7 @@ class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss
             }
 
             $fontkey = $family.$style;
-            if (!$this->_pdf->isLoadedFont($fontkey)) {
+            if (!$this->pdf->isLoadedFont($fontkey)) {
                 $family = $this->_defaultFont;
             }
         }
@@ -66,12 +66,12 @@ class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss
         $size = 72 * $size / 25.4;
 
         // apply the font
-        $this->_pdf->SetFont($family, $style, $this->value['mini-size']*$size);
-        $this->_pdf->setTextColorArray($this->value['color']);
+        $this->pdf->SetFont($family, $style, $this->value['mini-size']*$size);
+        $this->pdf->setTextColorArray($this->value['color']);
         if ($this->value['background']['color']) {
-            $this->_pdf->setFillColorArray($this->value['background']['color']);
+            $this->pdf->setFillColorArray($this->value['background']['color']);
         } else {
-            $this->_pdf->setFillColor(255);
+            $this->pdf->setFillColor(255);
         }
     }
 }
