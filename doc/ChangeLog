@@ -60,6 +60,9 @@ version 28-git (????-??-??):
     pdf file encryption with password defined in 'phpui.document_password' configuration variable [chilan]
   - enhancement: optional possibility of sending documents to customers after he confirmed document
     in userpanel [chilan]
+  - improvement: pagination support for netnodelist [chilan]
+  - improvement: 'phpui.netnodelist_pagelimit' controls how many network nodes are displayed on single
+    page (unlimited by default) [chilan]
 
 version 27.0 (2021-08-20):
 
