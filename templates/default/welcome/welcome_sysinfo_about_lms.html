@@ -71,22 +71,26 @@
                         {if $plugin.description}{$plugin.description}{else}-{/if}
                     </td>
                 </tr>
-                <tr>
-                    <td class="text-right">
-                        {trans('Documentation:')}
-                    </td>
-                    <td class="bold">
-                        {if $plugin.docurl}<a href="{$plugin.docurl}" rel="external">{trans('Documentation')}</a>{else}-{/if}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-right">
-                        {trans('Repository:')}
-                    </td>
-                    <td class="bold">
-                        {if $plugin.repourl}<a href="{$plugin.repourl}" rel="external">{trans('GIT Repository')}</a>{else}-{/if}
-                    </td>
-                </tr>
+                {if $plugin.docurl}
+                    <tr>
+                        <td class="text-right">
+                            {trans('Documentation:')}
+                        </td>
+                        <td class="bold">
+                            <a href="{$plugin.docurl}" rel="external">{trans('Documentation')}</a>
+                        </td>
+                    </tr>
+                {/if}
+                {if $plugin.repourl}
+                    <tr>
+                        <td class="text-right">
+                            {trans('Repository:')}
+                        </td>
+                        <td class="bold">
+                            <a href="{$plugin.repourl}" rel="external">{trans('GIT Repository')}</a>
+                        </td>
+                    </tr>
+                {/if}
                 <tr data-clipboard-text="{trans('Software version:')}{if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}">
                     <td class="text-right">
                         {trans('Software version:')}
