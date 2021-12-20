@@ -58,7 +58,7 @@
         </tr>
         {foreach $layout.plugins as $plugin_name => $plugin}
             {if $plugin.enabled}
-                <tr>
+                <tr data-clipboard-text="{"\n"}{$plugin_name}">
                     <td class="text-center bold" colspan="2">
                         {$plugin_name}
                     </td>
@@ -87,7 +87,7 @@
                         {if $plugin.repourl}<a href="{$plugin.repourl}" rel="external">{trans('GIT Repository')}</a>{else}-{/if}
                     </td>
                 </tr>
-                <tr data-clipboard-text="{$plugin_name}SoftwareVersion: {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}">
+                <tr data-clipboard-text="{trans('Software version:')}{if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}">
                     <td class="text-right">
                         {trans('Software version:')}
                     </td>
@@ -95,7 +95,7 @@
                         {if $plugin.softwareversion}{$plugin.softwareversion}{else}-{/if}
                     </td>
                 </tr>
-                <tr data-clipboard-text="{$plugin_name}DB:{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}">
+                <tr data-clipboard-text="{trans('Database version:')}{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}">
                     <td class="text-right">
                         {trans('Database version:')}
                     </td>
