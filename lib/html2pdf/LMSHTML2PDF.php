@@ -68,7 +68,6 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
         // init some tests
         $this->setTestTdInOnePage(false);
         $this->setTestIsImage(true);
-        $this->setTestIsDeprecated(true);
 
         // init the default font
         $this->setDefaultFont(null);
@@ -82,8 +81,8 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
         if (!is_array($marges)) {
             $marges = array($marges, $marges, $marges, $marges);
         }
-        $this->_setDefaultMargins($marges[0], $marges[1], $marges[2], $marges[3]);
-        $this->_setMargins();
+        $this->setDefaultMargins($marges[0], $marges[1], $marges[2], $marges[3]);
+        $this->setMargins();
         $this->_marges = array();
 
         // init the form's fields

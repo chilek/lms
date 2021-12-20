@@ -48,7 +48,7 @@ class LMSHTML2PDF_parsingCss extends \Spipu\Html2Pdf\Parsing\Css
 
             $fontkey = $family.$style;
             if (!$this->pdf->isLoadedFont($fontkey)) {
-                $family = $this->_defaultFont;
+                $family = $this->defaultFont;
             }
         }
 
