@@ -38,8 +38,15 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
      * @param  array       $marges      Default margins (left, top, right, bottom)
      * @return LMSHTML2PDF $this
      */
-    public function __construct($orientation = 'P', $format = 'A4', $langue = 'fr', $unicode = true, $encoding = 'UTF-8', $marges = array(5, 5, 5, 8))
-    {
+    public function __construct(
+        $orientation = 'P',
+        $format = 'A4',
+        $langue = 'fr',
+        $unicode = true,
+        $encoding = 'UTF-8',
+        $margins = array(5, 5, 5, 8),
+        $pdfa = false
+    ) {
         // init the page number
         $this->_page         = 0;
         $this->_firstPage    = true;
@@ -50,18 +57,19 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
         $this->_langue       = strtolower($langue);
         $this->_unicode      = $unicode;
         $this->_encoding     = $encoding;
+        $this->_pdfa         = $pdfa;
 
         // load the Local
         \Spipu\Html2Pdf\Locale::load($this->_langue);
 
         // create the LMSTML2PDF_myPdf object
-        $this->pdf = new \Spipu\Html2Pdf\MyPdf($orientation, 'mm', $format, $unicode, $encoding);
+        $this->pdf = new \Spipu\Html2Pdf\MyPdf($orientation, 'mm', $format, $unicode, $encoding, false, $pdfa);
 
         // init the CSS parsing object
+        $this->cssConverter = new \Spipu\Html2Pdf\CssConverter();
         $textParser = new \Spipu\Html2Pdf\Parsing\TextParser($encoding);
         $tagParser = new \Spipu\Html2Pdf\Parsing\TagParser($textParser);
-        $cssConverter = new \Spipu\Html2Pdf\CssConverter();
-        $this->parsingCss = new LMSHTML2PDF_parsingCss($this->pdf, $tagParser, $cssConverter);
+        $this->parsingCss = new LMSHTML2PDF_parsingCss($this->pdf, $tagParser, $this->cssConverter);
         $this->parsingCss->fontSet();
         $this->_defList = array();
 
@@ -78,15 +86,22 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
         $this->_subPart = false;
 
         // init the marges of the page
-        if (!is_array($marges)) {
-            $marges = array($marges, $marges, $marges, $marges);
+        if (!is_array($margins)) {
+            $margins = array($margins, $margins, $margins, $margins);
         }
-        $this->setDefaultMargins($marges[0], $marges[1], $marges[2], $marges[3]);
+        $this->setDefaultMargins($margins);
         $this->setMargins();
         $this->_marges = array();
 
         // init the form's fields
         $this->_lstField = array();
+
+        $this->svgDrawer = new \Spipu\Html2Pdf\SvgDrawer($this->pdf, $this->cssConverter);
+
+        $htmlExtension = new \Spipu\Html2Pdf\Extension\Core\HtmlExtension();
+        $this->addExtension($htmlExtension);
+        $svgExtension = new \Spipu\Html2Pdf\Extension\Core\SvgExtension($this->svgDrawer)
+        $this->addExtension($svgExtension);
 
         return $this;
     }
