@@ -100,7 +100,7 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
 
         $htmlExtension = new \Spipu\Html2Pdf\Extension\Core\HtmlExtension();
         $this->addExtension($htmlExtension);
-        $svgExtension = new \Spipu\Html2Pdf\Extension\Core\SvgExtension($this->svgDrawer)
+        $svgExtension = new \Spipu\Html2Pdf\Extension\Core\SvgExtension($this->svgDrawer);
         $this->addExtension($svgExtension);
 
         return $this;
