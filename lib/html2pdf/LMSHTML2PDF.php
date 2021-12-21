@@ -58,7 +58,7 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
         $this->pdf = new \Spipu\Html2Pdf\MyPdf($orientation, 'mm', $format, $unicode, $encoding);
 
         // init the CSS parsing object
-        $textParser = new \Spipu\Html2Pdf\Parsing\TextParser();
+        $textParser = new \Spipu\Html2Pdf\Parsing\TextParser($encoding);
         $tagParser = new \Spipu\Html2Pdf\Parsing\TagParser($textParser);
         $cssConverter = new \Spipu\Html2Pdf\CssConverter();
         $this->parsingCss = new LMSHTML2PDF_parsingCss($this->pdf, $tagParser, $cssConverter);
@@ -73,7 +73,7 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
         $this->setDefaultFont(null);
 
         // init the HTML parsing object
-        $this->parsingHtml = new \Spipu\Html2Pdf\Parsing\Html($this->_encoding);
+        $this->parsingHtml = new \Spipu\Html2Pdf\Parsing\Html($textParser);
         $this->_subHtml = null;
         $this->_subPart = false;
 
