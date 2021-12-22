@@ -1304,4 +1304,30 @@ class LMSSmartyPlugins
 
         return $script . '<div class="lms-ui-day-selection-wrapper">' . $result . '</div>';
     }
+
+    public static function resetToDefaultsFunction(array $params, Smarty_Internal_Template $template)
+    {
+        static $loaded = false;
+
+        $icon = isset($params['icon']) ? $params['icon'] : 'lms-ui-icon-clear';
+        $tip = isset($params['tip']) ? trans($params['tip']) : null;
+        $target = isset($params['target']) ? $params['target'] : '[data-default-value]';
+
+        $result = $script = '';
+        if (!$loaded) {
+            $script = '<script src="js/lms-ui-reset-to-defaults.js"></script>';
+            $loaded = true;
+        }
+
+        return $script . self::buttonFunction(
+            array(
+                'type' => 'link',
+                'class' => 'lms-ui-reset-to-defaults',
+                'icon' => $icon,
+                'tip' => $tip,
+                'data_target' => $target,
+            ),
+            $template
+        );
+    }
 }
