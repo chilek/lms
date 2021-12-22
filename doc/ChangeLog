@@ -64,6 +64,8 @@ version 28-git (????-??-??):
   - improvement: 'phpui.netnodelist_pagelimit' controls how many network nodes are displayed on single
     page (unlimited by default) [chilan]
   - enhancement: added 'node-group' action support in lms-notify.php backend script [chilan]
+  - enhancement: implemented smarty function '{reset_to_defaults}' which corresponds to button clearing
+    value of all elements pointed by target parameter [chilan]
 
 version 27.0 (2021-08-20):
 
