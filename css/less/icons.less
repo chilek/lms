@@ -1150,12 +1150,13 @@
   }
 }
 
-.lms-ui-icon-reload {
+.lms-ui-icon-reload,
+.lms-ui-icon-factory-reset {
   .fa-icon;
   .fas;
   .lms-ui-icon;
   &:before {
-    content: @fa-var-sync;
+    content: @fa-var-sync-alt;
   }
 }
 
@@ -2022,4 +2023,24 @@
 
 .fa-beat {
   animation:fa-beat 5s ease infinite;
+}
+
+.lms-ui-icon-barcode {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-barcode;
+  }
+}
+
+.lms-ui-icon-fiberoptic,
+.lms-ui-icon-fiber-optic,
+.lms-ui-icon-fibre-optic {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-lightbulb;
+  }
 }
