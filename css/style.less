@@ -684,14 +684,21 @@ input {
 			outline: none;
 		}
 	}
-	&.lms-ui-warning,
-	&.lms-ui-distinguished {
+	&.lms-ui-warning {
 		border: @warning-outline;
 		background-color: @warning-background;
 		box-shadow: @warning-box-shadow;
 		&:focus {
 			border: @warning-outline-focus;
 			background-color: @warning-background;
+			box-shadow: @warning-box-shadow-focus;
+		}
+	}
+	&.lms-ui-distinguished {
+		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
+		&:focus {
+			border: @warning-outline-focus;
 			box-shadow: @warning-box-shadow-focus;
 		}
 	}
@@ -821,11 +828,19 @@ select {
 		}
 	}
 
-	&.lms-ui-warning,
-	&.lms-ui-distinguished {
+	&.lms-ui-warning {
 		border: @warning-outline;
 		box-shadow: @warning-box-shadow;
 		background-color: @warning-background;
+		&:focus {
+			border: @warning-outline-focus;
+			box-shadow: @warning-box-shadow-focus;
+			outline: none;
+		}
+	}
+	&.lms-ui-distinguished {
+		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
 		&:focus {
 			border: @warning-outline-focus;
 			box-shadow: @warning-box-shadow-focus;
@@ -2018,14 +2033,21 @@ table.dataTable {
 			outline: none;
 		}
 	}
-	&.lms-ui-warning,
-	&.lms-ui-distinguished {
+	&.lms-ui-warning {
 		border: @warning-outline !important;
 		background-color: @warning-background !important;
 		box-shadow: @warning-box-shadow !important;
 		&:focus {
 			border: @warning-outline-focus !important;
 			background-color: @warning-background !important;
+			box-shadow: @warning-box-shadow-focus !important;
+		}
+	}
+	&.lms-ui-distinguished {
+		border: @warning-outline !important;
+		box-shadow: @warning-box-shadow !important;
+		&:focus {
+			border: @warning-outline-focus !important;
 			box-shadow: @warning-box-shadow-focus !important;
 		}
 	}
