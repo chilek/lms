@@ -32,11 +32,13 @@ $(function() {
         if (!elems.length) {
             return;
         }
-        elems.each(function(index, elem) {
-            var jqElem = $(elem);
-            var defaultValue = jqElem.attr('[data-default-value') || '';
+        elems.each(function() {
+            var jqElem = $(this);
+            var defaultValue = jqElem.attr('data-default-value') || '';
             jqElem.val(defaultValue);
         });
+        updateAdvancedSelects(elems.filter('.lms-ui-advanced-select'));
+        updateComboBoxes(elems.filter('.scombobox'));
     }).on('mouseenter mouseleave', function(e) {
         var target = $($(this).attr('data-target'));
         if (!target) {
@@ -47,12 +49,12 @@ $(function() {
             return;
         }
         elems.toggleClass('lms-ui-distinguished', e.type == 'mouseenter');
-        elems.filter('.lms-ui-advanced-select').each(function(index, elem) {
-            var jqElem = $(elem);
+        elems.filter('.lms-ui-advanced-select').each(function() {
+            var jqElem = $(this);
             jqElem.next().toggleClass('lms-ui-distinguished', jqElem.hasClass('lms-ui-distinguished'));
         });
-        elems.filter('.scombobox').each(function(index, elem) {
-            var jqElem = $(elem);
+        elems.filter('.scombobox').each(function() {
+            var jqElem = $(this);
             jqElem.find('.scombobox-display').toggleClass('lms-ui-distinguished', jqElem.hasClass('lms-ui-distinguished'));
         });
     });

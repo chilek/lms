@@ -375,6 +375,12 @@ function init_comboboxes(selector) {
 	}
 }
 
+function updateComboBoxes(selector) {
+	$(selector).each(function() {
+		$(this).scombobox('val', $(this).val());
+	});
+}
+
 function init_datatables(selector) {
 	$(selector).each(function() {
 		var elem = this;
