@@ -47,5 +47,13 @@ $(function() {
             return;
         }
         elems.toggleClass('lms-ui-distinguished', e.type == 'mouseenter');
+        elems.filter('.lms-ui-advanced-select').each(function(index, elem) {
+            var jqElem = $(elem);
+            jqElem.next().toggleClass('lms-ui-distinguished', jqElem.hasClass('lms-ui-distinguished'));
+        });
+        elems.filter('.scombobox').each(function(index, elem) {
+            var jqElem = $(elem);
+            jqElem.find('.scombobox-display').toggleClass('lms-ui-distinguished', jqElem.hasClass('lms-ui-distinguished'));
+        });
     });
 });
