@@ -1,4 +1,10 @@
 {
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true
+        }
+    },
     "name": "lmsgit/lms",
     "description": "Lan Management System (LMS)",
     "homepage": "http://lms.org.pl/",
