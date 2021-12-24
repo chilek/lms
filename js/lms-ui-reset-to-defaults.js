@@ -36,6 +36,9 @@ $(function() {
             var jqElem = $(this);
             var defaultValue = jqElem.attr('data-default-value') || '';
             jqElem.val(defaultValue);
+            if (jqElem.closest('.lms-ui-multiselect-container').length) {
+                jqElem.trigger('lms:multiselect:change');
+            }
         });
         updateAdvancedSelects(elems.filter('.lms-ui-advanced-select'));
         updateComboBoxes(elems.filter('.scombobox'));
@@ -48,14 +51,17 @@ $(function() {
         if (!elems.length) {
             return;
         }
-        elems.toggleClass('lms-ui-distinguished', e.type == 'mouseenter');
-        elems.filter('.lms-ui-advanced-select').each(function() {
-            var jqElem = $(this);
-            jqElem.next().toggleClass('lms-ui-distinguished', jqElem.hasClass('lms-ui-distinguished'));
-        });
-        elems.filter('.scombobox').each(function() {
-            var jqElem = $(this);
-            jqElem.find('.scombobox-display').toggleClass('lms-ui-distinguished', jqElem.hasClass('lms-ui-distinguished'));
-        });
+        elems.toggleClass('lms-ui-distinguished', e.type == 'mouseenter')
+            .each(function() {
+                var jqElem = $(this);
+                var distinguished = jqElem.hasClass('lms-ui-distinguished')
+                if (jqElem.hasClass('lms-ui-advanced-select')) {
+                    jqElem.next().toggleClass('lms-ui-distinguished', distinguished);
+                } else if (jqElem.hasClass('scombobox')) {
+                    jqElem.find('.scombobox-display').toggleClass('lms-ui-distinguished', distinguished);
+                } else if (jqElem.closest('.lms-ui-multiselect-container').length) {
+                    jqElem.closest('.lms-ui-multiselect-container').toggleClass('lms-ui-distinguished', distinguished);
+                }
+            });
     });
 });

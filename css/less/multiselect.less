@@ -46,6 +46,21 @@
     }
   }
 
+  &.lms-ui-warning,
+  &.lms-ui-distinguished {
+    color: unset !important;
+
+    .lms-ui-multiselect-launcher {
+      border: @warning-outline;
+      box-shadow: @warning-box-shadow;
+      &:focus {
+        border: @warning-outline-focus;
+        box-shadow: @warning-box-shadow-focus;
+        outline: none;
+      }
+    }
+  }
+
   .lms-ui-multiselect-launcher {
     vertical-align: middle;
     background-color: @lucid;
