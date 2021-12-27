@@ -1027,13 +1027,14 @@ class LMSSmartyPlugins
         $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
         $tip = isset($params['tip']) ? $params['tip'] : trans('Select payment type');
         $trigger = isset($params['trigger']) ? $params['trigger'] : 'paytype';
+        $onchange = isset($params['onchange']) ? $params['onchange'] : '';
 
         $options = '';
         foreach ($paytypes as $key => $item) {
             $item = trans($item);
             $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
         }
-        return '<select' . (isset($id) ? ' id="' . $id . '"' : '')
+        return '<select' . (isset($id) ? ' id="' . $id . '"' : '') . (isset($onchange) ? ' onChange="' . $onchange . '"' : '')
             . ' name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
 			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
             . $options
