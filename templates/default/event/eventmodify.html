@@ -42,8 +42,13 @@
 					{block name="eventmodify_left_panel"}
 
 					{box_row icon="uptime" label="Time:" icon_class="fa-fw"}
+						{if $layout.module == 'eventadd'}
+							{$allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
+						{else}
+							{$allow_past_date = true}
+						{/if}
 						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays
-							allow_past_date=ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
+							allow_past_date=$allow_past_date}
 					{/box_row}
 
 					{box_row icon="description" label="Description:" icon_class="fa-fw"}
