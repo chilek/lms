@@ -1078,7 +1078,7 @@ class LMSSmartyPlugins
                         $template
                     ) . '>
                 ' . trans('days') . '
-                <select class="lms-ui-deadline-selection-days" lms-ui-combobox">
+                <select class="lms-ui-deadline-selection-days lms-ui-combobox">
                     <option value="7">7</option>
                     <option value="14">14</option>
                     <option value="21">21</option>
@@ -1298,8 +1298,8 @@ class LMSSmartyPlugins
 
         foreach ($days as $day) {
             $result .= '<button type="button" class="lms-ui-button lms-ui-button-day-selection" data-elem="'
-                . htmlspecialchars($elem_selector) . '" data-days="' . $day . '"><span class="lms-ui-label">+'
-                . $day . '</span></button>&nbsp;';
+                . htmlspecialchars($elem_selector) . '" data-days="' . $day . '"><span class="lms-ui-label">'
+                . (($day>0) ? '+' : '') . $day . '</span></button>&nbsp;';
         }
 
         return $script . '<div class="lms-ui-day-selection-wrapper">' . $result . '</div>';
