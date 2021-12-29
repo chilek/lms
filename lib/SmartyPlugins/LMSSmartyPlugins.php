@@ -1299,7 +1299,7 @@ class LMSSmartyPlugins
         foreach ($days as $day) {
             $result .= '<button type="button" class="lms-ui-button lms-ui-button-day-selection" data-elem="'
                 . htmlspecialchars($elem_selector) . '" data-days="' . $day . '"><span class="lms-ui-label">'
-                . ($day > 0 ? '+' : '') . $day . '</span></button>&nbsp;';
+                . ($day > 0 ? '+' : '') . ($day == 0 ? trans("Today") : $day) . '</span></button>&nbsp;';
         }
 
         return $script . '<div class="lms-ui-day-selection-wrapper">' . $result . '</div>';
