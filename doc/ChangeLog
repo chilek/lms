@@ -66,6 +66,8 @@ version 28-git (????-??-??):
   - enhancement: added 'node-group' action support in lms-notify.php backend script [chilan]
   - enhancement: implemented smarty function '{reset_to_defaults}' which corresponds to button clearing
     value of all elements pointed by target parameter [chilan]
+  - enhancement: allow plugins to attach specific contents in rtticketview module
+    ('rtticketview_before_display' plugin hook introduced) [chilan]
 
 version 27.0 (2021-08-20):
 
