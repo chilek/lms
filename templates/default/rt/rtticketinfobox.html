@@ -409,71 +409,85 @@
 	</TBODY>
 </TABLE>
 
-{if $stats}
-<TABLE class="lmsbox lms-ui-tab-container">
-	<TBODY>
-	<TR>
-		<TD style="width: 1%;" class="dark bold nobr">
-			{icon name="helpdesk" label="Requests causes (last year)"}
-		</TD>
-		<TD style="width: 99%;" class="dark">
-			{trans("company's side")}: <span class="bold">{$stats.2.num|default:0}</span>,
-			{trans("customer's side")}: <span class="bold">{$stats.1.num|default:0}</span>,
-			{trans("unknown/other<!plural>")}: <span class="bold">{$stats.0.num|default:0}</span>,
-			{trans("all")}: <span class="bold">{$stats.0.num+$stats.1.num+$stats.2.num}</span>,
-			{button href="?m=rtsearch&amp;id={$customerinfo.id}" icon="helpdesk" label="Show tickets"}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-{/if}
+{block name="rtticketstats"}
+	{if $stats}
+	<TABLE class="lmsbox lms-ui-tab-container">
+		<TBODY>
+		<TR>
+			<TD style="width: 1%;" class="dark bold nobr">
+				{icon name="helpdesk" label="Requests causes (last year)"}
+			</TD>
+			<TD style="width: 99%;" class="dark">
+				{trans("company's side")}: <span class="bold">{$stats.2.num|default:0}</span>,
+				{trans("customer's side")}: <span class="bold">{$stats.1.num|default:0}</span>,
+				{trans("unknown/other<!plural>")}: <span class="bold">{$stats.0.num|default:0}</span>,
+				{trans("all")}: <span class="bold">{$stats.0.num+$stats.1.num+$stats.2.num}</span>,
+				{button href="?m=rtsearch&amp;id={$customerinfo.id}" icon="helpdesk" label="Show tickets"}
+			</TD>
+		</TR>
+		</TBODY>
+	</TABLE>
+	{/if}
 
-{if $customerinfo}
-<TABLE class="lmsbox lms-ui-tab-container">
-	<TBODY>
-	<TR>
-		<TD style="width: 1%;" class="dark bold nobr">
-			{icon name="customer" label="Customer"}
-		</TD>
-		<TD style="width: 1%;" class="dark nobr">
-			<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
-			{icon name="home"} {$customerinfo.address} &nbsp;{$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.phone}
-				<a class="phone_number" href="tel:{$customerinfo.phone|escape}">
-					{icon name="phone"}
-					{$customerinfo.phone|escape}
-				</a>
-				{Utils::createCallPhoneUrl($customerinfo.phone)}
-			{/if}
-			{icon name="money"} {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
-		</TD>
-		<TD style="width: 98%;" class="dark text-right red bold">
-			{if $customerinfo.groups}
-			({foreach from=$customerinfo.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customerinfo.groups)}, {/if}{/foreach})
-			{/if}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-{/if}
+{/block}
+{block name="rtticketcustomer"}
+	{if $customerinfo}
+	<TABLE class="lmsbox lms-ui-tab-container">
+		<TBODY>
+		<TR>
+			<TD style="width: 1%;" class="dark bold nobr">
+				{icon name="customer" label="Customer"}
+			</TD>
+			<TD style="width: 1%;" class="dark nobr">
+				<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
+				{icon name="home"} {$customerinfo.address} &nbsp;{$customerinfo.zip} {$customerinfo.city}
+				{if $customerinfo.phone}
+					<a class="phone_number" href="tel:{$customerinfo.phone|escape}">
+						{icon name="phone"}
+						{$customerinfo.phone|escape}
+					</a>
+					{Utils::createCallPhoneUrl($customerinfo.phone)}
+				{/if}
+				{icon name="money"} {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
+			</TD>
+			<TD style="width: 98%;" class="dark text-right red bold">
+				{if $customerinfo.groups}
+				({foreach from=$customerinfo.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customerinfo.groups)}, {/if}{/foreach})
+				{/if}
+			</TD>
+		</TR>
+		</TBODY>
+	</TABLE>
+	{/if}
+{/block}
 
-{if $customernodes}
-	{include file="customer/customernodesbox.html"}
-{/if}
+{block name="rtticketnodes"}
+	{if $customernodes}
+		{include file="customer/customernodesbox.html"}
+	{/if}
+{/block}
 
-{include file="rt/rtticketeventlist.html"}
+{block name="rtticketeventlist"}
+	{include file="rt/rtticketeventlist.html"}
+{/block}
 
-{if $ticket.parentid}
-	{include file="rt/rtticketparentinfo.html"}
-{/if}
+{block name="rtticketparentinfo"}
+	{if $ticket.parentid}
+		{include file="rt/rtticketparentinfo.html"}
+	{/if}
+{/block}
 
-{if $ticket.childtickets}
-	{include file="rt/rtticketchildren.html"}
-{/if}
+{block name="rtticketchildren"}
+	{if $ticket.childtickets}
+		{include file="rt/rtticketchildren.html"}
+	{/if}
+{/block}
 
-{if $ticket.relatedtickets}
-	{include file="rt/rtticketrelatedlist.html"}
-{/if}
+{block name="rtticketrelated"}
+	{if $ticket.relatedtickets}
+		{include file="rt/rtticketrelatedlist.html"}
+	{/if}
+{/block}
 
 <script>
 
