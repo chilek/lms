@@ -56,7 +56,7 @@ function GenerateAttachmentHTML($template_dir, $engine, $selected)
             }
             if (is_readable($file)) {
                 $output[] = '<label>'
-                . '<input type="checkbox" value="1" name="document[attachments][' . $label . ']"'
+                . '<input type="checkbox" value="1" name="document[attachments][' . htmlspecialchars($label) . ']"'
                     . (isset($selected[$label]) ? ' checked' : '') . '>'
                 . $label
                 . '</label>';
