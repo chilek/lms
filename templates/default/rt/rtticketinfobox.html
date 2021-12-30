@@ -409,13 +409,15 @@
 	</TBODY>
 </TABLE>
 
+<div id="rtticketview-sortable" class="lms-ui-sortable-persistent">
+
 {block name="rtticketstats"}
 	{if $stats}
-	<TABLE class="lmsbox lms-ui-tab-container">
+	<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="rtticketstats">
 		<TBODY>
 		<TR>
 			<TD style="width: 1%;" class="dark bold nobr">
-				{icon name="helpdesk" label="Requests causes (last year)"}
+				{icon name="helpdesk" label="Requests causes (last year)" class="lms-ui-sortable-handle"}
 			</TD>
 			<TD style="width: 99%;" class="dark">
 				{trans("company's side")}: <span class="bold">{$stats.2.num|default:0}</span>,
@@ -432,11 +434,11 @@
 {/block}
 {block name="rtticketcustomer"}
 	{if $customerinfo}
-	<TABLE class="lmsbox lms-ui-tab-container">
+	<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="rtticketcustomer">
 		<TBODY>
 		<TR>
 			<TD style="width: 1%;" class="dark bold nobr">
-				{icon name="customer" label="Customer"}
+				{icon name="customer" label="Customer" class="lms-ui-sortable-handle"}
 			</TD>
 			<TD style="width: 1%;" class="dark nobr">
 				<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
@@ -489,7 +491,11 @@
 	{/if}
 {/block}
 
+</div>
+
 <script>
+
+	restoreSortable('rtticketview-sortable', '{$rtticketview_sortable_order}');
 
 	$(function() {
 		$('#print-anchor').click(function() {
@@ -547,4 +553,3 @@
 	});
 
 </script>
-

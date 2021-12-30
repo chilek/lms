@@ -185,4 +185,7 @@ $SMARTY->assign('parentticketcontent', $parentticketcontent);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);
+
+$SMARTY->assign('rtticketview_sortable_order', $SESSION->get_persistent_setting('rtticketview-sortable-order'));
+
 $SMARTY->display('rt/rtticketview.html');
