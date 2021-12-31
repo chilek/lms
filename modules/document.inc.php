@@ -171,7 +171,16 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     global $SMARTY;
 
     $DB = LMSDB::getInstance();
-    $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
+    $rights = $DB->GetCol(
+        'SELECT doctype
+        FROM docrights
+        WHERE userid = ?
+            AND (rights & ?) > 0',
+        array(
+            Auth::GetCurrentUser(),
+            DOCRIGHT_CREATE,
+        )
+    );
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
     $SMARTY->assign('docengines', $docengines);
