@@ -155,7 +155,12 @@ function GetDocumentTemplates($rights, $type = null)
     ob_end_clean();
 
     if (!empty($docengines)) {
-        ksort($docengines);
+        usort($docengines, function($a, $b) {
+            if ($a['title'] == $b['title']) {
+                return 0;
+            }
+            return $a['title'] < $b['title'] ? -1 : 1;
+        });
     }
 
     return $docengines;
