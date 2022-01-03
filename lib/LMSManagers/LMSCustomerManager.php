@@ -272,7 +272,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
             UNION
             (SELECT ic.itemid AS id, d.cdate AS time, 0 AS type,
-                    (-ic.value * ic.count) AS value, d.currency, d.currencyvalue, NULL AS tax, d.customerid,
+                    -ic.grossvalue AS value,
+                    d.currency, d.currencyvalue, NULL AS tax, d.customerid,
                     d.comment AS documentcomment, d.reference,
                     ic.description AS comment, d.id AS docid, vusers.name AS username,
                     d.type AS doctype, d.closed AS closed,
@@ -280,7 +281,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     (CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
                     d.cdate, d.number, numberplans.template
                 FROM documents d
-                JOIN invoicecontents ic ON ic.docid = d.id
+                JOIN vinvoicecontents ic ON ic.docid = d.id
                 LEFT JOIN (
                     SELECT DISTINCT reference FROM documents
                 ) d3 ON d3.reference = d.id
