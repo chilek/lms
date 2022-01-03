@@ -143,21 +143,21 @@
                             {tax_category_selection class="invoice-contents-field-edit" elementname="invoice-contents["|cat:$posuid|cat:"][taxcategory]"
                                 selected=$row.taxcategory visible=false tip="Select tax category" data_old_value=$item.taxcategory}
 
-                            <span class="invoice-contents-field-value">
+                            <span class="invoice-contents-field-value">{strip}
                                 {if isset($_SERVICETYPES[$item.servicetype])}
                                     {$_SERVICETYPES[$item.servicetype]}
                                 {else}
                                     {trans("- none -")}
                                 {/if}
-                            </span>
+                            {/strip}</span>
 
-                            <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>
+                            <span class="invoice-contents-field-value"{if $item.taxcategory} title="{$_TAX_CATEGORIES[$item.taxcategory].description}"{/if}>{strip}
                                 {if $item.taxcategory}
                                     ({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
                                 {else}
                                     {trans("- none -")}
                                 {/if}
-                            </span>
+                            {/strip}</span>
                         </div>
                     </td>
                     <td class="nobr">
@@ -176,14 +176,14 @@
                         <input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][jm]" size="3"
                                value="{$row.jm}" data-old-value="{$item.jm}" style="display: none;"
                         >
-                        <span class="invoice-contents-field-value nobr">
+                        <span class="invoice-contents-field-value nobr">{strip}
                             {$item.count|string_format:"%.3f"}<br>
                             {$item.jm}
-                        </span>
+                        {/strip}</span>
                     </td>
                     <td class="text-right">
                         <input type="text" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][discount]"
-                                value="
+                                value="{strip}
                                     {if $row.pdiscount != 0}
                                         {$row.pdiscount}
                                     {else}
@@ -191,8 +191,8 @@
                                             {$row.vdiscount}
                                         {/if}
                                     {/if}
-                                "
-                                data-old-value="
+                                {/strip}"
+                                data-old-value="{strip}
                                     {if $item.pdiscount != 0}
                                         {$item.pdiscount}
                                     {else}
@@ -201,11 +201,11 @@
 
                                         {/if}
                                     {/if}
-                                "
+                                {/strip}"
                                 size="6" {tip text="Enter discount percentage or amount"} style="display: none;"
                         >
                         <select class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][discount_type]"
-                                data-old-value="
+                                data-old-value="{strip}
                                     {if $item.pdiscount != 0}
                                         {$smarty.const.DISCOUNT_PERCENTAGE}
                                     {else}
@@ -213,17 +213,13 @@
                                             {$smarty.const.DISCOUNT_AMOUNT}
                                         {/if}
                                     {/if}
-                                "
+                                {/strip}"
                                 style="display: none"
                         >
-                            <option value="{$smarty.const.DISCOUNT_PERCENTAGE}"{if $row.pdiscount != 0} selected{/if}>
-                                {$_DISCOUNTTYPES[$smarty.const.DISCOUNT_PERCENTAGE]}
-                            </option>
-                            <option value="{$smarty.const.DISCOUNT_AMOUNT}"{if $row.vdiscount != 0} selected{/if}>
-                                {$_DISCOUNTTYPES[$smarty.const.DISCOUNT_AMOUNT]}
-                            </option>
+                            <option value="{$smarty.const.DISCOUNT_PERCENTAGE}"{if $row.pdiscount != 0} selected{/if}>{$_DISCOUNTTYPES[$smarty.const.DISCOUNT_PERCENTAGE]}</option>
+                            <option value="{$smarty.const.DISCOUNT_AMOUNT}"{if $row.vdiscount != 0} selected{/if}>{$_DISCOUNTTYPES[$smarty.const.DISCOUNT_AMOUNT]}</option>
                         </select>
-                        <span class="invoice-contents-field-value nobr">
+                        <span class="invoice-contents-field-value nobr">{strip}
                             {if $item.pdiscount != 0}
                                 {$item.pdiscount|string_format:"%01.2f %%"}
                             {else}
@@ -231,59 +227,60 @@
                                     {$item.vdiscount|string_format:"%01.2f"}
                                 {/if}
                             {/if}
-                        </span>
+                        {/strip}</span>
                     </td>
                     <td class="text-right">
                         <input type="text" class="invoice-contents-field-edit invoice-contents-field-netprice" name="invoice-contents[{$posuid}][valuenetto]"
                             value="{$valuenetto}" data-old-value="{$valuenetto}" size="6"
-                               onchange="claculatePositionPriceFromNet({$posuid}, this)"
-                                {tip text="Enter unitary value without discount"} style="display: none;"
-                                {if !$invoice.netflag} disabled{/if}>
-                        <span class="invoice-contents-field-value nobr">
-                            {$item.valuenetto|string_format:"%01.2f"}
-                        </span>
+                            onchange="claculatePositionPriceFromNet({$posuid}, this)"
+                            {tip text="Enter unitary value without discount"} style="display: none;"
+                            {if !$invoice.netflag} disabled{/if}
+                        >
+
+                        <span class="invoice-contents-field-value nobr">{$item.valuenetto|string_format:"%01.2f"}</span>
+
                         {if isset($item.valuenetto_custom_contents)}
                             {$item.valuenetto_custom_contents}
                         {/if}
-                        <span class="invoice-contents-field-value nobr">
-                            <br>
-                            {$item.s_valuenetto|string_format:"%01.2f"}
-                        </span>
+
+                        <span class="invoice-contents-field-value nobr"><br>{$item.s_valuenetto|string_format:"%01.2f"}</span>
+
                         {if isset($item.s_valuenetto_custom_contents)}
                             {$item.s_valuenetto_custom_contents}
                         {/if}
                     </td>
                     <td class="text-right nobr">
                         <select size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]" id="invoice-contents-field-tax-{$posuid}"
-                                data-old-value="{$item.taxid}" {tip text="Select Tax rate"} style="display: none;"
-                                onchange="claculatePositionPriceOnTaxChange({$posuid})">
+                            data-old-value="{$item.taxid}" {tip text="Select Tax rate"} style="display: none;"
+                            onchange="claculatePositionPriceOnTaxChange({$posuid})"
+                        >
                             {foreach $taxeslist as $tax}
                                 <option value="{$tax.id}"{if $tax.id == $row.taxid} selected{/if}>{$tax.label}</option>
                             {/foreach}
                         </select>
+
                         {foreach $taxeslist as $tax}
                             <input type="hidden" id="contents-tax-{$posuid}-{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
                         {/foreach}
-                        <span class="invoice-contents-field-value">
-                            {$item.tax}
-                        </span>
+
+                        <span class="invoice-contents-field-value">{$item.tax}</span>
                     </td>
                     <td class="text-right">
                         <input type="text" class="invoice-contents-field-edit invoice-contents-field-grossprice" name="invoice-contents[{$posuid}][valuebrutto]"
                             value="{$valuebrutto}" data-old-value="{$valuebrutto}" size="6"
-                               onchange="claculatePositionPriceFromGross({$posuid}, this)"
-                                {tip text="Enter unitary value without discount"} style="display: none;"
-                                {if $invoice.netflag} disabled{/if}>
-                        <span class="invoice-contents-field-value nobr">
-                        {$item.valuebrutto|string_format:"%01.2f"}
-                        </span>
+                            onchange="claculatePositionPriceFromGross({$posuid}, this)"
+                            {tip text="Enter unitary value without discount"} style="display: none;"
+                            {if $invoice.netflag} disabled{/if}
+                        >
+
+                        <span class="invoice-contents-field-value nobr">{$item.valuebrutto|string_format:"%01.2f"}</span>
+
                         {if isset($item.valuebrutto_custom_contents)}
                             {$item.valuebrutto_custom_contents}
                         {/if}
-                        <span class="invoice-contents-field-value nobr">
-                        <br>
-                        {$item.s_valuebrutto|string_format:"%01.2f"}
-                        </span>
+
+                        <span class="invoice-contents-field-value nobr"><br>{$item.s_valuebrutto|string_format:"%01.2f"}</span>
+
                         {if isset($item.s_valuebrutto_custom_contents)}
                             {$item.s_valuebrutto_custom_contents}
                         {/if}
@@ -372,13 +369,14 @@
                                         <option value="{$servicetype}">{$label}</option>
                                     {/foreach}
                                 </select>
+
                                 {if isset($itemdata) && !isset($error.posuid)}
                                     {$taxcategory = $itemdata.taxcategory}
                                 {else}
                                     {$taxcategory = 0}
                                 {/if}
-                                {tax_category_selection elementname="taxcategory" tip="Select tax category"
-                                    selected=$taxcategory}
+
+                                {tax_category_selection elementname="taxcategory" tip="Select tax category" selected=$taxcategory}
                             </div>
                         </td>
                         <td class="text-right">
@@ -400,8 +398,9 @@
                         </td>
                         <td class="text-right nobr">
                             <input type="text" id="netprice" name="valuenetto" size="6" {tip text="Enter unitary value without discount"}
-                                   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuenetto}{/if}"
-                                    {if !$invoice.netflag} disabled{/if}>
+                                value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuenetto}{/if}"
+                                {if !$invoice.netflag} disabled{/if}
+                            >
                         </td>
                         <td class="text-right nobr">
                             <select size="1" id="tax" name="taxid" {tip text="Select Tax rate"}>
@@ -409,6 +408,7 @@
                                     <option value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</option>
                                 {/foreach}
                             </select>
+
                             {foreach $taxeslist as $tax}
                                 <input type="hidden" id="tax{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
                             {/foreach}
@@ -416,8 +416,8 @@
                         </td>
                         <td class="text-right nobr">
                             <input type="text" id="grossprice" name="valuebrutto" size="6" {tip text="Enter unitary value without discount"}
-                                   value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}"
-                                    {if $invoice.netflag} disabled{/if}
+                                value="{if isset($itemdata) && !isset($error.posuid)}{$itemdata.valuebrutto}{/if}"
+                                {if $invoice.netflag} disabled{/if}
                             >
                         </td>
                         <td>

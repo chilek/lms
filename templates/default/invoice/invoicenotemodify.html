@@ -191,24 +191,24 @@
 				</td>
 				<td class="nobr">
 					<label id="splitpayment" {tip text="translates into JPK MPP flag"}
-							{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}
+						{if empty($suggested_flags.splitpayment)} style="display: none;"{/if}
 					>
 						<input type="checkbox" name="cnote[splitpayment]" value="1"
-								{if !empty($suggested_flags.splitpayment) && $cnote.splitpayment} checked{/if}
+							{if !empty($suggested_flags.splitpayment) && $cnote.splitpayment} checked{/if}
 						>
 						{trans("split payment")}
 					</label>
 					<label {tip text="translates into JPK FP flag"}>
 						<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_RECEIPT}]" value="1"
-								{if $cnote.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
+							{if $cnote.flags[$smarty.const.DOC_FLAG_RECEIPT]} checked{/if}
 						>
 						{trans("<!invoice>receipt")}
 					</label>
 					<label id="telecomservice" {tip text="translates into JPK EE flag"}
-							{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}
+						{if empty($suggested_flags.telecomservice)} style="display: none;"{/if}
 					>
 						<input type="checkbox" name="cnote[flags][{$smarty.const.DOC_FLAG_TELECOM_SERVICE}]" value="1"
-								{if $cnote.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}
+							{if $cnote.flags[$smarty.const.DOC_FLAG_TELECOM_SERVICE]} checked{/if}
 						>
 						{trans("<!invoice>telecommunication service")}
 					</label>
@@ -221,13 +221,13 @@
 				<td class="nobr">
 					<label>
 						<input type="radio" id="ingross" name="cnote[netflag]" value="0"
-								{if !$cnote.netflag} checked{/if} disabled
+							{if !$cnote.netflag} checked{/if} disabled
 						>
 						{trans("gross")}
 					</label>
 					<label>
 						<input type="radio" id="innet" name="cnote[netflag]" value="1"
-								{if $cnote.netflag} checked{/if} disabled
+							{if $cnote.netflag} checked{/if} disabled
 						>
 						{trans("net")}
 					</label>
@@ -240,8 +240,8 @@
 					</td>
 					<td class="nobr">
 						<input type="checkbox" name="cnote[use_current_division]" value="1"
-								{if $cnote.use_current_division} checked{/if}
-								{tip text="Seller data change"}
+							{if $cnote.use_current_division} checked{/if}
+							{tip text="Seller data change"}
 						>
 					</td>
 				</tr>
@@ -252,8 +252,8 @@
 				</td>
 				<td class="nobr">
 					<input type="checkbox" id="use_current_customer_data" name="cnote[use_current_customer_data]" value="1"
-							{if $cnote.use_current_customer_data} checked{/if}
-							{tip text="Check it if you want to use current customer data"}
+						{if $cnote.use_current_customer_data} checked{/if}
+						{tip text="Check it if you want to use current customer data"}
 					>
 				</td>
 			</tr>
@@ -377,17 +377,17 @@
 						{if $item.deleted}
 							<input type="hidden" value="{$item.servicetype}" name="servicetype[{$itemid}]">
 							{if isset($_SERVICETYPES[$item.servicetype])}
-								<span class="invoice-contents-field-value">
-									{$_SERVICETYPES[$item.servicetype]}
-								</span>
+								<span class="invoice-contents-field-value">{$_SERVICETYPES[$item.servicetype]}</span>
 							{else}
 								{trans("- none -")}
 							{/if}
+
 							<input type="hidden" value="{$item.taxcategory}" name="taxcategory[{$itemid}]">
+
 							{if $item.taxcategory}
-								<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>
+								<span {tip text=$_TAX_CATEGORIES[$item.taxcategory].description}>{strip}
 									({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
-								</span>
+								{/strip}</span>
 							{else}
 								{trans("- none -")}
 							{/if}
@@ -469,9 +469,7 @@
 						<br>
 						<select name="discount_type[{$itemid}]">
 							{foreach from=$_DISCOUNTTYPES item=item2 key=key}
-								<option value="{$key}"{if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>
-									{$item2}
-								</option>
+								<option value="{$key}" {if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>{$item2}</option>
 							{/foreach}
 						</select>
 					{/if}
@@ -482,12 +480,13 @@
 						{$item.valuenetto|money_format}
 					{else}
 						<input type="text" class="invoice-contents-field-netprice" name="valuenetto[{$itemid}]" size="6"
-							   value="{$item.valuenetto|string_format:"%.2f"}"
-							   onchange="claculatePositionPriceFromNet({$itemid}, this)"
-								{tip text="Enter unitary value without discount"}
-								{if !$cnote.netflag} disabled{/if}
+							value="{$item.valuenetto|string_format:"%.2f"}"
+							onchange="claculatePositionPriceFromNet({$itemid}, this)"
+							{tip text="Enter unitary value without discount"}
+							{if !$cnote.netflag} disabled{/if}
 						>
 					{/if}
+
 					{if isset($item.valuenetto_custom_contents)}
 						{$item.valuenetto_custom_contents}
 					{/if}
@@ -504,6 +503,7 @@
 								<option value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</option>
 							{/foreach}
 						</select>
+
 						{foreach $taxeslist as $tax}
 							<input type="hidden" id="contents-tax-{$itemid}-{$tax.id}" name="tax{$tax.id}" value="{$tax.value}" disabled>
 						{/foreach}
@@ -517,10 +517,10 @@
 						{/if}
 					{else}
 						<input type="text" class="invoice-contents-field-grossprice" name="valuebrutto[{$itemid}]" size="6"
-							   value="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}"
-							   onchange="claculatePositionPriceFromGross({$itemid}, this)"
-								{tip text="Enter unitary value without discount"}
-								{if $cnote.netflag} disabled{/if}
+							value="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}"
+							onchange="claculatePositionPriceFromGross({$itemid}, this)"
+							{tip text="Enter unitary value without discount"}
+							{if $cnote.netflag} disabled{/if}
 						>
 						<br>
 					{/if}
@@ -565,15 +565,15 @@
 				{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 				<label>
 					<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
-							value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
-							{if preg_match('/original/i', $default_printpage)} checked{/if}
+						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+						{if preg_match('/original/i', $default_printpage)} checked{/if}
 					>
 					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
 				</label>
 				<label>
 					<input type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
-							value="{$smarty.const.DOC_ENTITY_COPY}"
-							{if preg_match('/copy/i', $default_printpage)} checked{/if}
+						value="{$smarty.const.DOC_ENTITY_COPY}"
+						{if preg_match('/copy/i', $default_printpage)} checked{/if}
 					>
 					{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 				</label>&nbsp;
