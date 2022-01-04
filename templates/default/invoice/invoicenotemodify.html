@@ -43,6 +43,9 @@
 	}
 
 	function printInvoice() {
+		$('.invoice-contents-field-grossprice').prop('disabled', false);
+		$('.invoice-contents-field-netprice').prop('disabled', false);
+
 		var which = 0;
 		$('form[name="save"] [name^="which"]:checked').each(function() {
 			which += parseInt($(this).val());

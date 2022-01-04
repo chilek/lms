@@ -460,15 +460,15 @@ switch ($action) {
                 foreach ($invoicecontents as $item) {
                     $idx = $item['itemid'];
 
-                    $itemContentDiff = ($invoicecontents[$idx]['deleteed'] != $contents[$idx]['deleteed']
+                    $itemContentDiff = ($invoicecontents[$idx]['deleted'] != $contents[$idx]['deleted']
                         || f_round($invoicecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
-                        || f_round($invoicecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
+                        || f_round($invoicecontents[$idx]['s_valuenetto']) !== f_round($contents[$idx]['s_valuenetto'])
                         || f_round($invoicecontents[$idx]['valuebrutto']) !== f_round($contents[$idx]['valuebrutto'])
+                        || f_round($invoicecontents[$idx]['valuenetto']) !== f_round($contents[$idx]['valuenetto'])
                         || f_round($invoicecontents[$idx]['count'], 3) !== f_round($contents[$idx]['count'], 3)
                         || $invoicecontents[$idx]['content'] != $contents[$idx]['content']
                         || f_round($invoicecontents[$idx]['pdiscount']) !== f_round($contents[$idx]['pdiscount'])
                         || f_round($invoicecontents[$idx]['vdiscount']) !== f_round($contents[$idx]['vdiscount'])
-                        || $invoicecontents[$idx]['deleted'] !== $contents[$idx]['deleted']
                         || intval($invoicecontents[$idx]['taxid']) !== intval($contents[$idx]['taxid'])
                         || intval($invoicecontents[$idx]['taxcategory']) !== intval($contents[$idx]['taxcategory'])
                         || intval($invoicecontents[$idx]['servicetype']) !== intval($contents[$idx]['servicetype'])
@@ -484,7 +484,7 @@ switch ($action) {
                 }
             }
             $cnote['content_diff'] = $contentDiff ? 1 : 0;
-            if (empty($contentDiff)) {
+            if (empty($cnote['content_diff'])) {
                 break;
             }
         }
