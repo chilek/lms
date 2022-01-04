@@ -107,6 +107,19 @@ if (isset($_GET['id']) && $action == 'edit') {
     $cnote['oldcurrency'] = $cnote['currency'];
     $cnote['oldcurrencyvalue'] = $cnote['currencyvalue'];
 
+    //old header values
+    $cnote['oldheader'] = array(
+        'sdate' => date("Y/m/d", $cnote['sdate']),
+        'flags' => serialize($cnote['flags']),
+        'netflag' => $cnote['netflag'],
+        'paytype' => $cnote['paytype'],
+        'deadline' => date("Y/m/d", intval($cnote['deadline'])),
+        'recipient_address_id' => $cnote['recipient_address_id'],
+        'use_current_customer_data' => isset($cnote['use_current_customer_data']),
+        'reason' => $cnote['reason'],
+    );
+    $cnote['content_diff'] = 1;
+
     $hook_data = array(
         'contents' => $cnotecontents,
         'cnote' => $cnote,
@@ -156,6 +169,7 @@ switch ($action) {
         $oldflags = $cnote['oldflags'];
         $oldcurrency = $cnote['oldcurrency'];
         $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
+        $oldHeader = $cnote['oldheader'];
 
         $oldcnote = $cnote;
         $cnote = null;
@@ -261,6 +275,26 @@ switch ($action) {
             $customer = $LMS->GetCustomer($cnote['customerid'], true);
         }
 
+        //new header values
+        $cnote['newheader'] = array(
+            'sdate' => date("Y/m/d", $cnote['sdate']),
+            'flags' => serialize(array(
+                DOC_FLAG_RECEIPT => empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : 1,
+                DOC_FLAG_TELECOM_SERVICE => empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : 1,
+                DOC_FLAG_RELATED_ENTITY => empty($cnote['flags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : 1,
+            )),
+            'netflag' => $cnote['netflag'],
+            'paytype' => $cnote['paytype'],
+            'deadline' => date("Y/m/d", $cnote['deadline']),
+            'recipient_address_id' => $_POST['cnote[recipient_address_id]'],
+            'use_current_customer_data' => isset($cnote['use_current_customer_data']),
+            'reason' => $cnote['reason'],
+        );
+        $cnote['content_diff'] = 1;
+
+        //old header values
+        $cnote['oldheader'] = $oldHeader;
+
         $divisionid = $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'];
 
         $args = array(
@@ -333,6 +367,7 @@ switch ($action) {
 
         $invoicecontents = $cnote['invoice']['content'];
         $cnotecontents = $cnote['content'];
+        $oldcnotecontents = $contents;
         $newcontents = r_trim($_POST);
 
         foreach ($contents as $idx => $item) {
@@ -468,6 +503,39 @@ switch ($action) {
             $contents[$idx]['valuebrutto'] = str_replace(',', '.', $contents[$idx]['valuebrutto']);
             $contents[$idx]['valuenetto'] = str_replace(',', '.', $contents[$idx]['valuenetto']);
             $contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
+        }
+
+        if (!isset($cnote['newheader'])
+            || (isset($cnote['newheader']) && empty(array_diff_assoc($cnote['oldheader'], $cnote['newheader'])))
+        ) {
+            $contentDiff = false;
+            foreach ($oldcnotecontents as $item) {
+                $idx = $item['itemid'];
+
+                $itemContentDiff = ($oldcnotecontents[$idx]['deleted'] != $contents[$idx]['deleted']
+                    || f_round($oldcnotecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
+                    || f_round($oldcnotecontents[$idx]['s_valuenetto']) !== f_round($contents[$idx]['s_valuenetto'])
+                    || f_round($oldcnotecontents[$idx]['count'], 3) !== f_round($contents[$idx]['count'], 3)
+                    || $oldcnotecontents[$idx]['content'] != $contents[$idx]['content']
+                    || f_round($oldcnotecontents[$idx]['discount']) !== f_round($contents[$idx]['discount'])
+                    || f_round($oldcnotecontents[$idx]['discount_type']) !== f_round($contents[$idx]['discount_type'])
+                    || intval($oldcnotecontents[$idx]['taxid']) !== intval($contents[$idx]['taxid'])
+                    || intval($oldcnotecontents[$idx]['taxcategory']) !== intval($contents[$idx]['taxcategory'])
+                    || intval($oldcnotecontents[$idx]['servicetype']) !== intval($contents[$idx]['servicetype'])
+                    || $oldcnotecontents[$idx]['prodid'] != $contents[$idx]['prodid']
+                    || $oldcnotecontents[$idx]['name'] != $contents[$idx]['name']
+                    || intval($oldcnotecontents[$idx]['tariffid']) !== intval($contents[$idx]['tariffid'])
+                );
+
+                if ($itemContentDiff) {
+                    $contentDiff = true;
+                    break;
+                }
+            }
+            $cnote['content_diff'] = $contentDiff ? 1 : 0;
+            if (empty($cnote['content_diff'])) {
+                break;
+            }
         }
 
         if (($cnote['numberplanid'] && !$LMS->checkNumberPlanAccess($cnote['numberplanid']))
