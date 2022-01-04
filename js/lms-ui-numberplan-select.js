@@ -63,6 +63,8 @@ $(function () {
                 getNumberPlans(planElem, documentType, customerId, cdate);
             });
         }
+
+        getNumberPlans(planElem, $(doctypeElemId).val(), $(customerElemId).val(), $(cdateElemId).val());
     });
 
     function getNumberPlans(planElem, documentType, customerId, cdate) {

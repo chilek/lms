@@ -1269,7 +1269,7 @@ class LMSSmartyPlugins
         $result .= '</div>' . PHP_EOL;
         //</editor-fold>
 
-        if (isset($numberplan_js) && empty($numberplan_js)) {
+        if (empty($numberplan_js)) {
             $result .= '<script src="js/lms-ui-numberplan-select.js"></script>';
             $numberplan_js = 1;
         }
