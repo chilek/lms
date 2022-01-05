@@ -1661,12 +1661,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $netdevs = $this->db->GetAllByKey('SELECT
                                               nd.id, nd.name, va.city AS location_city, va.city_id AS location_city_id, va.street AS location_street,
                                               va.street_id AS location_street_id, va.zip AS location_zip, va.location_house, va.location_flat,
-                                              nd.description, nd.producer,
-                                              nd.model, nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
+                                              nd.description,
+                                              nd.producer,
+                                              nd.model,
+                                              t.id AS devicetypeid,
+                                              t.name AS devicetypename,
+                                              nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
                                               nd.clients, nd.community, nd.channelid, nd.longitude, nd.latitude, nd.netnodeid, nd.invprojectid,
                                               nd.status, nd.netdevicemodelid, nd.ownerid, no.authtype, va.id as address_id
                                            FROM
                                               netdevices nd
+                                              LEFT JOIN netdevicemodels m ON m.id = nd.netdevicemodelid
+                                              LEFT JOIN netdevicetypes t ON t.id = m.type
                                               LEFT JOIN vaddresses va ON nd.address_id = va.id
                                               LEFT JOIN nodes no ON nd.id = no.netdev
                                            WHERE

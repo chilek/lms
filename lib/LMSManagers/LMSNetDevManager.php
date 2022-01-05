@@ -1326,6 +1326,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $list;
     }
 
+    public function getNetDevTypes()
+    {
+        return $this->db->GetAllByKey(
+            'SELECT t.id, t.name
+            FROM netdevicetypes t
+            ORDER BY t.name',
+            'id'
+        );
+    }
+
     public function GetRadioSectors($netdevid, $technology = 0)
     {
         $radiosectors = $this->db->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END) AS computers,
