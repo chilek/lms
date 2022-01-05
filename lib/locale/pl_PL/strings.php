@@ -288,6 +288,7 @@ $_LANG['Ticket type has been set to $a.'] = 'Rodzaj zgłoszenia został ustawion
 $_LANG['Ticket service has been set to $a.'] = 'Usługa, której dotyczy zgłoszenie to $a.';
 $_LANG['Verifier:'] = 'Weryfikator:';
 $_LANG['Verifier'] = 'Weryfikator';
+$_LANG['<!rt>Verifier:'] = 'Weryfikator:';
 $_LANG['<!rt>Verifier'] = 'Weryfikator';
 $_LANG['Unassigned'] = 'Nieprzypisany';
 $_LANG['Assigned'] = 'Przypisany';
