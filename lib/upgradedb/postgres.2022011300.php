@@ -25,6 +25,8 @@ define('DOC_FLAG_NET_ACCOUNT_2022011300', 16);
 
 $this->BeginTrans();
 
+$this->Execute("DROP VIEW vinvoicecontents");
+
 $this->Execute(
     "CREATE OR REPLACE FUNCTION get_invoice_contents(integer)
     RETURNS TABLE (
@@ -148,7 +150,6 @@ $this->Execute(
     )
 );
 
-$this->Execute("DROP VIEW vinvoicecontents");
 $this->Execute("CREATE VIEW vinvoicecontents AS SELECT * FROM get_invoice_contents(NULL)");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022011300', 'dbversion'));
