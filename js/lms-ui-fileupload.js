@@ -85,6 +85,9 @@ function lmsFileUpload(elemid, formid) {
 						elem.find(".fileupload-file").on("click", function() {
 							$(this).parent().remove();
 						});
+						if (typeof fileupload_complete_handler === "function") {
+							fileupload_complete_handler();
+						}
 					});
 				}
 			},
