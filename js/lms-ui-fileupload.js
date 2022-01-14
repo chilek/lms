@@ -85,9 +85,6 @@ function lmsFileUpload(elemid, formid) {
 						elem.find(".fileupload-file").on("click", function() {
 							$(this).parent().remove();
 						});
-						if (typeof fileupload_complete_handler === "function") {
-							fileupload_complete_handler();
-						}
 					});
 				}
 			},
@@ -99,6 +96,9 @@ function lmsFileUpload(elemid, formid) {
 				elem.find("input[type=file]").replaceWith(
 					elem.find("input[type=file]").clone(true));
 				$('#' + elemid + '-progress-dialog').dialog("close");
+				if (typeof fileupload_complete_handler === "function") {
+					fileupload_complete_handler();
+				}
 			}
 		});
 	}
