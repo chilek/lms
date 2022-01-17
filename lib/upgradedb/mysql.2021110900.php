@@ -23,20 +23,22 @@
 
 $this->BeginTrans();
 
-$this->Exeucte("
-    CREATE TABLE up_sessions (
-        id varchar(50) NOT NULL DEFAULT '',
-        customerid int(11) NOT NULL,
-        ctime int(11) NOT NULL DEFAULT 0,
-        mtime int(11) NOT NULL DEFAULT 0,
-        atime int(11) NOT NULL DEFAULT 0,
-        vdata text NOT NULL,
-        content mediumtext NOT NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT up_sessions_customerid_fkey
-            FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
-    ) ENGINE=InnoDB
-");
+if (!$this->ResourceExists('customers.pinlastchange', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE TABLE up_sessions (
+            id varchar(50) NOT NULL DEFAULT '',
+            customerid int(11) NOT NULL,
+            ctime int(11) NOT NULL DEFAULT 0,
+            mtime int(11) NOT NULL DEFAULT 0,
+            atime int(11) NOT NULL DEFAULT 0,
+            vdata text NOT NULL,
+            content mediumtext NOT NULL,
+            PRIMARY KEY (id),
+            CONSTRAINT up_sessions_customerid_fkey
+                FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021110900', 'dbversion'));
 

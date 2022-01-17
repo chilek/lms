@@ -673,15 +673,24 @@
 			});
 		}
 
-		$('#checkall').click(function() {
+		$('#checkall').change(function() {
 			$('#categories option').attr('selected', $(this).prop('checked')).trigger('chosen:updated');
+			$('.category-checkbox').prop('checked', $(this).prop('checked'));
 		});
 
 		var categories = $('#categories option');
-		$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
-		$('#categories').change(function() {
+		if (categories.length) {
 			$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
-		});
+			$('#categories').change(function() {
+				$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
+			});
+		} else {
+			categories = $('.category-checkbox')
+			$('#checkall').prop('checked', categories.length == categories.filter(':checked').length);
+			categories.change(function() {
+				$('#checkall').prop('checked', categories.length == categories.filter(':checked').length);
+			});
+		}
 
 		$('#delete-rtqueue').click(function() {
 			var name = $(this).attr('data-name');

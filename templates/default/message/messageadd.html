@@ -772,9 +772,7 @@
 			).done(function (data) {
 				var confirmThreshold = {intval(ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50))};
 				if (data.recipients <= confirmThreshold) {
-					if (data.recipients > 0) {
-						$('#message').submit();
-					}
+					$('#message').submit();
 				} else {
 					var violationType = '{ConfigHelper::getConfig('phpui.send_message_limit_violation_type', 'warning')}';
 					switch (violationType) {

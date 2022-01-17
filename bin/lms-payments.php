@@ -546,7 +546,7 @@ $services = $DB->GetAll(
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
 $query = "SELECT
-			a.id, a.tariffid, a.customerid,
+			a.id, a.tariffid, a.customerid, a.recipient_address_id,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
@@ -559,6 +559,7 @@ $query = "SELECT
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
 			voipcost.value,
+			voipcost.value AS unitary_value,
 			(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
             (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
                 THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
@@ -1576,7 +1577,7 @@ foreach ($assigns as $assign) {
                         ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
                         $fullnumber,
                         $recipient_address_id,
-                        $LMS->CopyAddress($assign['post_address_id']),
+                        empty($assign['post_address_id']) ? null : $LMS->CopyAddress($assign['post_address_id']),
                         $currency,
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],
@@ -1960,7 +1961,7 @@ foreach ($assigns as $assign) {
                 }
 
                 if (!$quiet) {
-                    echo 'CID : ' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                    echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                 }
             }
 
@@ -2022,5 +2023,3 @@ if ($test) {
 } else {
     $DB->CommitTrans();
 }
-
-$DB->Destroy();

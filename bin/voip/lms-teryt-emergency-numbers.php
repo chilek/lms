@@ -283,7 +283,3 @@ foreach ($result as $record) {
 if (!$test) {
     $DB->CommitTrans();
 }
-
-$DB->Destroy();
-
-?>

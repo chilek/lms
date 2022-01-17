@@ -14,6 +14,7 @@
 <h1>{$layout.pagetitle}</h1>
 
 <style>
+
 	.billing-table tr td,th {
 		padding-right: 15px;
 	}
@@ -21,7 +22,25 @@
 	.billing-table tr td:last-child, th:last-child {
 		padding-right: 0px;
 	}
+
+	#voip-billing-filter {
+		display: flex;
+		align-items: center;
+	}
+
+	#voip-billing-filter > :not(:first-child) {
+		margin-left: 0.4em;
+	}
+
+	#choosefilter .lms-ui-customer-select-container {
+		display: inline-flex;
+	}
+
 </style>
+
+<form method="post" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
+	<input type="hidden" name="m" value="voipaccountbillinglist">
+<form>
 
 <table class="lmsbox billing-table lms-ui-background-cycle">
     <colgroup>
@@ -103,21 +122,20 @@
                 {t a=$total}Total: $a{/t}
             </th>
         </tr>
-		<tr VALIGN="MIDDLE">
+		<tr>
 			<td colspan="{$number_of_table_columns}">
-				<FORM method="post" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
-					<INPUT type="hidden" NAME="m" VALUE="voipaccountbillinglist">
+				<div id="voip-billing-filter">
 					{customerlist
 						form="choosefilter"
 						customers=$voipownerlist.name
-						selected=$listdata.fvownerid
+						selected=$listdata.fownerid
 						version=2
-						selectname="fvownerid"
+						inputname="fownerid"
 						customOnChange="CustomerChanged($(this).val());"
 					}
 
-					{trans("Voip account")}
-					{include file="voipaccount/voipaccounts.html"}
+					<span>{trans("Voip account")}</span>
+					{include file="voipaccount/voipaccounts.html" form="choosefilter"}
 
 					<span class="lms-ui-date-period-container">
 						<span>{trans("Period")}</span>
@@ -127,6 +145,7 @@
 							type="text"
 							name="frangefrom"
 							id="frangefrom"
+							form="choosefilter"
 							size="10"
 							maxlength="20"
 							value="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
@@ -136,29 +155,34 @@
 							type="text"
 							name="frangeto"
 							id="frangeto"
+							form="choosefilter"
 							size="10"
 							maxlength="20"
 							value="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 					</span>
 
-					{trans("Connection type:")}
-					<SELECT SIZE="1" NAME="ftype">
-						<OPTION VALUE="">{trans("- all -")}</OPTION>
-						<OPTION VALUE="{CALL_INCOMING}" {if $listdata.ftype == $smarty.const.CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
-						<OPTION VALUE="{CALL_OUTGOING}" {if $listdata.ftype == $smarty.const.CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
-					</SELECT>
+					<span>{trans("Connection type:")}</span>
+					<select size="1" name="ftype" form="choosefilter">
+						<option value="">{trans("- all -")}</option>
+						<option value="{$smarty.const.CALL_INCOMING}" {if $listdata.ftype == $smarty.const.CALL_INCOMING} selected{/if}>{trans("incoming")}</option>
+						<option value="{$smarty.const.CALL_OUTGOING}" {if $listdata.ftype == $smarty.const.CALL_OUTGOING} selected{/if}>{trans("outgoing")}</option>
+					</select>
 
-					{trans("Status:")}
-					<SELECT SIZE="1" NAME="fstatus">
-						<OPTION VALUE="">{trans("- all -")}</OPTION>
-						<OPTION VALUE="{CALL_ANSWERED}" {if $listdata.fstatus == $smarty.const.CALL_ANSWERED} SELECTED{/if}>{trans("answered")}</OPTION>
-						<OPTION VALUE="{CALL_NO_ANSWER}" {if $listdata.fstatus == $smarty.const.CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
-						<OPTION VALUE="{CALL_BUSY}" {if $listdata.fstatus == $smarty.const.CALL_BUSY} SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
-						<OPTION VALUE="{CALL_SERVER_FAILED}" {if $listdata.fstatus == $smarty.const.CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
-					</SELECT>
-					{button type="submit" icon="submit"}
-				</FORM>
+					<span>{trans("Status:")}</span>
+					<select size="1" name="fstatus"	form="choosefilter">
+						<option value="">{trans("- all -")}</option>
+						<option value="{$smarty.const.CALL_ANSWERED}"
+							{if $listdata.fstatus == $smarty.const.CALL_ANSWERED}selected{/if}>{trans("answered")}</option>
+						<option value="{$smarty.const.CALL_NO_ANSWER}"
+							{if $listdata.fstatus == $smarty.const.CALL_NO_ANSWER}selected{/if}>{trans("no answer")}</option>
+						<option value="{$smarty.const.CALL_BUSY}"
+							{if $listdata.fstatus == $smarty.const.CALL_BUSY}selected{/if}>{trans("busy<!voip>")}</option>
+						<option value="{$smarty.const.CALL_SERVER_FAILED}"
+							{if $listdata.fstatus == $smarty.const.CALL_SERVER_FAILED}selected{/if}>{trans("server error")}</option>
+					</select>
+					{button type="link" icon="next" onclick="$('#choosefilter').submit()"}
+				</div>
 			</td>
 		</tr>
         {if $pagination->getTotal() != 0}

@@ -363,6 +363,9 @@ class LMSSmartyPlugins
         }
 
         $form = isset($params['form']) ? $params['form'] : null;
+        $accept = !empty($params['accept']) ? $params['accept'] : null;
+        $multiple = isset($params['multiple']) ? ConfigHelper::checkValue($params['multiple']) : true;
+
         $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
         // special treatment of file upload errors marked in error associative array
@@ -387,8 +390,11 @@ class LMSSmartyPlugins
 			<div class="lms-ui-button-fileupload-container">
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
             . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-upload"></i><span class="lms-ui-label">' . trans("Select files") . '</span></button>
-				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
-				' . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0) && $image_resize
+                <input name="' . $id . '[]" type="file" class="fileupload-select-btn" style="display: none;" '
+                  . ($multiple ? ' multiple' : '')
+                  . ($form ? ' form="' . $form . '"' : '')
+                  . ($accept ? ' accept="' . $accept . '"' : '') . '>'
+                  . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0) && $image_resize
                     ? '<label><input type="checkbox" class="dont-scale-images" value="1">' . trans("don't scale images") . '</label>'
                     : '') . '
 			</div>
@@ -1023,6 +1029,7 @@ class LMSSmartyPlugins
         }
 
         $elemname = $params['elemname'];
+        $id = isset($params['id']) && !empty($params['id']) ? $params['id'] : null;
         $selected = isset($params['selected']) && !empty($params['selected']) ? $params['selected'] : 0;
         $tip = isset($params['tip']) ? $params['tip'] : trans('Select payment type');
         $trigger = isset($params['trigger']) ? $params['trigger'] : 'paytype';
@@ -1032,7 +1039,8 @@ class LMSSmartyPlugins
             $item = trans($item);
             $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $item . '</option>';
         }
-        return '<select name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
+        return '<select' . (isset($id) ? ' id="' . $id . '"' : '')
+            . ' name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
 			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
             . $options
             . '</select>';
@@ -1076,7 +1084,7 @@ class LMSSmartyPlugins
                         $template
                     ) . '>
                 ' . trans('days') . '
-                <select class="lms-ui-deadline-selection-days" lms-ui-combobox">
+                <select class="lms-ui-deadline-selection-days lms-ui-combobox">
                     <option value="7">7</option>
                     <option value="14">14</option>
                     <option value="21">21</option>
@@ -1267,7 +1275,7 @@ class LMSSmartyPlugins
         $result .= '</div>' . PHP_EOL;
         //</editor-fold>
 
-        if (isset($numberplan_js) && empty($numberplan_js)) {
+        if (empty($numberplan_js)) {
             $result .= '<script src="js/lms-ui-numberplan-select.js"></script>';
             $numberplan_js = 1;
         }
@@ -1296,10 +1304,36 @@ class LMSSmartyPlugins
 
         foreach ($days as $day) {
             $result .= '<button type="button" class="lms-ui-button lms-ui-button-day-selection" data-elem="'
-                . htmlspecialchars($elem_selector) . '" data-days="' . $day . '"><span class="lms-ui-label">+'
-                . $day . '</span></button>&nbsp;';
+                . htmlspecialchars($elem_selector) . '" data-days="' . $day . '"><span class="lms-ui-label">'
+                . ($day > 0 ? '+' : '') . ($day == 0 ? trans("Today") : $day) . '</span></button>&nbsp;';
         }
 
         return $script . '<div class="lms-ui-day-selection-wrapper">' . $result . '</div>';
+    }
+
+    public static function resetToDefaultsFunction(array $params, Smarty_Internal_Template $template)
+    {
+        static $loaded = false;
+
+        $icon = isset($params['icon']) ? $params['icon'] : 'lms-ui-icon-clear';
+        $tip = isset($params['tip']) ? trans($params['tip']) : null;
+        $target = isset($params['target']) ? $params['target'] : '[data-default-value]';
+
+        $result = $script = '';
+        if (!$loaded) {
+            $script = '<script src="js/lms-ui-reset-to-defaults.js"></script>';
+            $loaded = true;
+        }
+
+        return $script . self::buttonFunction(
+            array(
+                'type' => 'link',
+                'class' => 'lms-ui-reset-to-defaults',
+                'icon' => $icon,
+                'tip' => $tip,
+                'data_target' => $target,
+            ),
+            $template
+        );
     }
 }

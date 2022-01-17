@@ -490,5 +490,3 @@ if (($fh = fopen($message_file, "r")) != null) {
 if ($http_mode) {
     @unlink($message_file);
 }
-
-$DB->Destroy();

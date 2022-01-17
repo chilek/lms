@@ -1,4 +1,10 @@
 {
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true
+        }
+    },
     "name": "lmsgit/lms",
     "description": "Lan Management System (LMS)",
     "homepage": "http://lms.org.pl/",
@@ -81,6 +87,17 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "phine/exception",
+                "version": "1.0.0",
+                "dist": {
+                    "url": "https://chilan.com/lms-plus/phine-exception-1.0.0.zip",
+                    "type": "zip"
+                }
+            }
         }
     ],
     "require": {
@@ -103,7 +120,7 @@
         "tecnickcom/tcpdf": "^6",
         "spipu/html2pdf": "^5",
         "components/normalize.css": "^3.0",
-        "smarty/smarty": "3.1.40",
+        "smarty/smarty": "3.1.41",
         "rospdf/pdf-php": "^0.12",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
@@ -142,7 +159,7 @@
     },
     "scripts": {
         "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF", "@repairEZPDF" ],
-        "repairHTML2PDF": "sed -i -e 's/class MyPdf extends \\TCPDF/class MyPdf extends \\LMSTCPDF/' vendor/spipu/html2pdf/src/MyPdf.php",
+        "repairHTML2PDF": "sed -i -e 's/class MyPdf extends \\\\TCPDF/class MyPdf extends \\\\LMSTCPDF/' vendor/spipu/html2pdf/src/MyPdf.php",
         "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php",
         "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts"
     }

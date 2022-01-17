@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-class LMSHTML2PDF extends HTML2PDF
+class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
 {
     /**
      * class constructor
@@ -38,53 +38,31 @@ class LMSHTML2PDF extends HTML2PDF
      * @param  array       $marges      Default margins (left, top, right, bottom)
      * @return LMSHTML2PDF $this
      */
-    public function __construct($orientation = 'P', $format = 'A4', $langue = 'fr', $unicode = true, $encoding = 'UTF-8', $marges = array(5, 5, 5, 8))
-    {
-        // init the page number
-        $this->_page         = 0;
-        $this->_firstPage    = true;
-
-        // save the parameters
-        $this->_orientation  = $orientation;
-        $this->_format       = $format;
-        $this->_langue       = strtolower($langue);
-        $this->_unicode      = $unicode;
-        $this->_encoding     = $encoding;
-
-        // load the Local
-        HTML2PDF_locale::load($this->_langue);
-
-        // create the LMSTML2PDF_myPdf object
-        $this->pdf = new HTML2PDF_myPdf($orientation, 'mm', $format, $unicode, $encoding);
+    public function __construct(
+        $orientation = 'P',
+        $format = 'A4',
+        $langue = 'fr',
+        $unicode = true,
+        $encoding = 'UTF-8',
+        $margins = array(5, 5, 5, 8),
+        $pdfa = false
+    ) {
+        parent::__construct(
+            $orientation,
+            $format,
+            $langue,
+            $unicode,
+            $encoding,
+            $margins,
+            $pdfa
+        );
 
         // init the CSS parsing object
-        $this->parsingCss = new LMSHTML2PDF_parsingCss($this->pdf);
+        $cssConverter = new \Spipu\Html2Pdf\CssConverter();
+        $textParser = new \Spipu\Html2Pdf\Parsing\TextParser($encoding);
+        $tagParser = new \Spipu\Html2Pdf\Parsing\TagParser($textParser);
+        $this->parsingCss = new LMSHTML2PDF_parsingCss($this->pdf, $tagParser, $cssConverter);
         $this->parsingCss->fontSet();
-        $this->_defList = array();
-
-        // init some tests
-        $this->setTestTdInOnePage(false);
-        $this->setTestIsImage(true);
-        $this->setTestIsDeprecated(true);
-
-        // init the default font
-        $this->setDefaultFont(null);
-
-        // init the HTML parsing object
-        $this->parsingHtml = new HTML2PDF_parsingHtml($this->_encoding);
-        $this->_subHtml = null;
-        $this->_subPart = false;
-
-        // init the marges of the page
-        if (!is_array($marges)) {
-            $marges = array($marges, $marges, $marges, $marges);
-        }
-        $this->_setDefaultMargins($marges[0], $marges[1], $marges[2], $marges[3]);
-        $this->_setMargins();
-        $this->_marges = array();
-
-        // init the form's fields
-        $this->_lstField = array();
 
         return $this;
     }

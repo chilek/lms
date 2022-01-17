@@ -23,19 +23,21 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-    CREATE TABLE up_sessions (
-        id		varchar(50) 	NOT NULL DEFAULT '',
-        customerid  integer NOT NULL
-            CONSTRAINT up_sessions_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
-        ctime	integer 	NOT NULL DEFAULT 0,
-        mtime	integer 	NOT NULL DEFAULT 0,
-        atime 	integer		NOT NULL DEFAULT 0,
-        vdata	text		NOT NULL,
-        content 	text		NOT NULL,
-        PRIMARY KEY (id)
-    )
-");
+if (!$this->ResourceExists('customers.pinlastchange', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE TABLE up_sessions (
+            id		varchar(50) 	NOT NULL DEFAULT '',
+            customerid  integer NOT NULL
+                CONSTRAINT up_sessions_customerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE CASCADE,
+            ctime	integer 	NOT NULL DEFAULT 0,
+            mtime	integer 	NOT NULL DEFAULT 0,
+            atime 	integer		NOT NULL DEFAULT 0,
+            vdata	text		NOT NULL,
+            content 	text		NOT NULL,
+            PRIMARY KEY (id)
+        )
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021110900', 'dbversion'));
 

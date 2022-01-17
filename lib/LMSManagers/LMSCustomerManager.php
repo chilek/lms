@@ -272,7 +272,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
             UNION
             (SELECT ic.itemid AS id, d.cdate AS time, 0 AS type,
-                    (-ic.value * ic.count) AS value, d.currency, d.currencyvalue, NULL AS tax, d.customerid,
+                    -ic.grossvalue AS value,
+                    d.currency, d.currencyvalue, NULL AS tax, d.customerid,
                     d.comment AS documentcomment, d.reference,
                     ic.description AS comment, d.id AS docid, vusers.name AS username,
                     d.type AS doctype, d.closed AS closed,
@@ -280,7 +281,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     (CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
                     d.cdate, d.number, numberplans.template
                 FROM documents d
-                JOIN invoicecontents ic ON ic.docid = d.id
+                JOIN ' . (ConfigHelper::getConfig('database.type') == 'postgres' ? 'get_invoice_contents(' . intval($id) . ')' : 'vinvoicecontents') . ' ic ON ic.docid = d.id
                 LEFT JOIN (
                     SELECT DISTINCT reference FROM documents
                 ) d3 ON d3.reference = d.id
@@ -319,7 +320,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         $result['sendinvoices'] = ($this->db->GetOne('SELECT 1 FROM customercontacts cc
-			JOIN customeraddressview c ON c.id = cc.customerid 
+			JOIN customeraddressview c ON c.id = cc.customerid
 			WHERE c.id = ? AND invoicenotice = 1 AND cc.type & ? = ?
 			LIMIT 1', array($id, CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES)) > 0);
 
@@ -1660,12 +1661,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $netdevs = $this->db->GetAllByKey('SELECT
                                               nd.id, nd.name, va.city AS location_city, va.city_id AS location_city_id, va.street AS location_street,
                                               va.street_id AS location_street_id, va.zip AS location_zip, va.location_house, va.location_flat,
-                                              nd.description, nd.producer,
-                                              nd.model, nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
+                                              nd.description,
+                                              nd.producer,
+                                              nd.model,
+                                              t.id AS devicetypeid,
+                                              t.name AS devicetypename,
+                                              nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
                                               nd.clients, nd.community, nd.channelid, nd.longitude, nd.latitude, nd.netnodeid, nd.invprojectid,
                                               nd.status, nd.netdevicemodelid, nd.ownerid, no.authtype, va.id as address_id
                                            FROM
                                               netdevices nd
+                                              LEFT JOIN netdevicemodels m ON m.id = nd.netdevicemodelid
+                                              LEFT JOIN netdevicetypes t ON t.id = m.type
                                               LEFT JOIN vaddresses va ON nd.address_id = va.id
                                               LEFT JOIN nodes no ON nd.id = no.netdev
                                            WHERE

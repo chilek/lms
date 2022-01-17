@@ -310,6 +310,9 @@ $supported_actions = array(
     'customer-group' => array(
         'params' => ACTION_PARAM_REQUIRED,
     ),
+    'node-group' => array(
+        'params' => ACTION_PARAM_REQUIRED,
+    ),
 );
 
 $hook_data = $LMS->executeHook('get_supported_actions', array('supported_actions' => $supported_actions));
@@ -1428,7 +1431,7 @@ if (empty($types) || in_array('debtors', $types)) {
                     $start_idx = 0;
                     $end_idx = $count;
                 } else {
-                    $part_size = floor(($percent * $count) / 100);
+                    $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
                         $start_idx = $part_offset;
@@ -1667,7 +1670,7 @@ if (empty($types) || in_array('reminder', $types)) {
                     $start_idx = 0;
                     $end_idx = $count;
                 } else {
-                    $part_size = floor(($percent * $count) / 100);
+                    $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
                         $start_idx = $part_offset;
@@ -2075,7 +2078,7 @@ if (empty($types) || in_array('invoices', $types)) {
                     $start_idx = 0;
                     $end_idx = $count;
                 } else {
-                    $part_size = floor(($percent * $count) / 100);
+                    $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
                         $start_idx = $part_offset;
@@ -2283,7 +2286,7 @@ if (empty($types) || in_array('notes', $types)) {
                     $start_idx = 0;
                     $end_idx = $count;
                 } else {
-                    $part_size = floor(($percent * $count) / 100);
+                    $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
                         $start_idx = $part_offset;
@@ -2473,7 +2476,7 @@ if (empty($types) || in_array('birthday', $types)) {
                     $start_idx = 0;
                     $end_idx = $count;
                 } else {
-                    $part_size = floor(($percent * $count) / 100);
+                    $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
                         $start_idx = $part_offset;
@@ -2668,7 +2671,7 @@ if (empty($types) || in_array('warnings', $types)) {
                     $start_idx = 0;
                     $end_idx = $count;
                 } else {
-                    $part_size = floor(($percent * $count) / 100);
+                    $part_size = ceil(($percent * $count) / 100);
                     $part_offset = $part_number * $part_size;
                     if ((!$part_offset && $part_number) || $part_offset >= $count) {
                         $start_idx = $part_offset;
@@ -3193,6 +3196,13 @@ if (!empty($intersect)) {
                                     JOIN customergroups g ON g.id = ca.customergroupid
                                     WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
                                 break;
+                            case 'node-group':
+                                $where[] = 'NOT EXISTS (
+                                    SELECT nga.id FROM nodegroupassignments nga
+                                    JOIN nodegroups g ON g.id = nga.nodegroupid
+                                    JOIN nodes n ON n.id = nga.nodeid
+                                    WHERE n.ownerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
+                                break;
                         }
                     }
 
@@ -3402,6 +3412,41 @@ if (!empty($intersect)) {
                                     }
                                 }
                                 break;
+                            case 'node-group':
+                                $nodegroupid = $LMS->GetNodeGroupIdByName(reset($action_params));
+                                if ($nodegroupid) {
+                                    $nodes = $DB->GetAll(
+                                        "SELECT n.id, n.ownerid
+                                        FROM nodes n
+                                        WHERE NOT EXISTS (
+                                                SELECT 1 FROM nodegroupassignments nga
+                                                WHERE nga.noderid = n.id
+                                                    AND nga.nodegroupid = ?
+                                            )
+                                            AND n.ownerid IN (" . implode(',', $customers) . ")",
+                                        array(
+                                            $nodegroupid,
+                                        )
+                                    );
+                                    if (!empty($nodes)) {
+                                        foreach ($nodes as $node) {
+                                            if (!$quiet) {
+                                                printf("[block/node-group] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            }
+
+                                            if (!$debug) {
+                                                if ($SYSLOG) {
+                                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                                }
+                                                $LMS->addNodeGroupAssignment(array(
+                                                    'nodeid' => $node['id'],
+                                                    'nodegroupid' => $nodegroupid,
+                                                ));
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
                         }
                     }
 
@@ -3456,6 +3501,13 @@ if (!empty($intersect)) {
                                     SELECT ca.id FROM vcustomerassignments ca
                                     JOIN customergroups g ON g.id = ca.customergroupid
                                     WHERE ca.customerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
+                                break;
+                            case 'node-group':
+                                $where[] = 'EXISTS (
+                                    SELECT nga.id FROM nodegroupassignments nga
+                                    JOIN nodegroups g ON g.id = nga.nodegroupid
+                                    JOIN nodes n ON n.id = nga.nodeid
+                                    WHERE n.ownerid = c.id AND LOWER(g.name) = LOWER(\'' . reset($precheck_params) . '\'))';
                                 break;
                         }
                     }
@@ -3687,6 +3739,41 @@ if (!empty($intersect)) {
                                     }
                                 }
                                 break;
+                            case 'node-group':
+                                $nodegroupid = $LMS->GetNodeGroupIdByName(reset($action_params));
+                                if ($nodegroupid) {
+                                    $nodes = $DB->GetAll(
+                                        "SELECT n.id, n.ownerid
+                                        FROM nodes n
+                                        WHERE EXISTS (
+                                                SELECT 1 FROM nodegroupassignments nga
+                                                WHERE nga.noderid = n.id
+                                                    AND nga.nodegroupid = ?
+                                            )
+                                            AND n.ownerid IN (" . implode(',', $customers) . ")",
+                                        array(
+                                            $nodegroupid,
+                                        )
+                                    );
+                                    if (!empty($nodes)) {
+                                        foreach ($nodes as $node) {
+                                            if (!$quiet) {
+                                                printf("[unblock/node-group] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            }
+
+                                            if (!$debug) {
+                                                if ($SYSLOG) {
+                                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                                }
+                                                $LMS->deleteNodeGroupAssignment(array(
+                                                    'nodeid' => $node['id'],
+                                                    'nodegroupid' => $nodegroupid,
+                                                ));
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
                         }
                     }
 
@@ -3700,5 +3787,3 @@ if (!empty($intersect)) {
         }
     }
 }
-
-$DB->Destroy();

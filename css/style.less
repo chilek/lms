@@ -694,6 +694,14 @@ input {
 			box-shadow: @warning-box-shadow-focus;
 		}
 	}
+	&.lms-ui-distinguished {
+		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
+		&:focus {
+			border: @warning-outline-focus;
+			box-shadow: @warning-box-shadow-focus;
+		}
+	}
 	&[type="checkbox"],
 	&[type="radio"] {
 		&.alert,
@@ -705,7 +713,8 @@ input {
 				box-shadow: @error-radiocheckbox-box-shadow-focus;
 			}
 		}
-		&.lms-ui-warning {
+		&.lms-ui-warning,
+		&.lms-ui-distinguished {
 			outline: none;
 			box-shadow: @warning-radiocheckbox-box-shadow;
 			&:focus {
@@ -768,7 +777,8 @@ textarea {
 		}
 	}
 
-	&.lms-ui-warning {
+	&.lms-ui-warning,
+	&.lms-ui-distinguished {
 		border: @warning-outline;
 		box-shadow: @warning-box-shadow;
 		background-color: @warning-background;
@@ -822,6 +832,15 @@ select {
 		border: @warning-outline;
 		box-shadow: @warning-box-shadow;
 		background-color: @warning-background;
+		&:focus {
+			border: @warning-outline-focus;
+			box-shadow: @warning-box-shadow-focus;
+			outline: none;
+		}
+	}
+	&.lms-ui-distinguished {
+		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
 		&:focus {
 			border: @warning-outline-focus;
 			box-shadow: @warning-box-shadow-focus;
@@ -2024,6 +2043,14 @@ table.dataTable {
 			box-shadow: @warning-box-shadow-focus !important;
 		}
 	}
+	&.lms-ui-distinguished {
+		border: @warning-outline !important;
+		box-shadow: @warning-box-shadow !important;
+		&:focus {
+			border: @warning-outline-focus !important;
+			box-shadow: @warning-box-shadow-focus !important;
+		}
+	}
 }
 
 .lms-ui-menu-item-icon {
@@ -2065,6 +2092,7 @@ div.lms-ui-filter-container {
 	div.lms-ui-filter-definition {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
 		white-space: normal;
 		max-width: 80%;
 		& > *,

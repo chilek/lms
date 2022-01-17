@@ -477,5 +477,3 @@ foreach ($calls as $call) {
         }
     }
 }
-
-$DB->Destroy();

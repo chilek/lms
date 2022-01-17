@@ -30,7 +30,12 @@ function customerCompanySelectionDialog(companies, context) {
     var message = '<table id="company-selection-table" class="lmsbox lms-ui-background-cycle">';
     $.each(companies, function(index, company) {
         message += '<tr>';
-        message += '<td>' + escapeHtml(company.lastname) + '</td>';
+        var address = company.addresses[0];
+        message += '<td><span class="company-selection-name">' + escapeHtml(company.lastname) + '</span>' +
+            '<br><span class="company-selection-address">' +
+                escapeHtml(address.location_state_name + ', ' + address.location_city_name +
+                    ', ' + address.location_street_name + ' ' + address.location_house + (address.location_flat.length ? '/' + address.location_flat : '')) +
+            '</span></td>';
         message += '<td><input type="radio" name="company" value="' + index + '"' + (index ? '' : 'checked') + '></td>';
         message += '</tr>'
     });

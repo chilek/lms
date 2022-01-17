@@ -554,6 +554,38 @@ class Utils
                         'addresses' => array(),
                     );
 
+                    $addresses = array();
+
+                    $terc = $report['praw_adSiedzWojewodztwo_Symbol']
+                        . $report['praw_adSiedzPowiat_Symbol']
+                        . $report['praw_adSiedzGmina_Symbol'];
+                    $simc = $report['praw_adSiedzMiejscowosc_Symbol'];
+                    $ulic = $report['praw_adSiedzUlica_Symbol'];
+                    $location = $LMS->TerytToLocation($terc, $simc, $ulic);
+
+                    $addresses[] = array(
+                        'location_state_name' => mb_strtolower($report['praw_adSiedzWojewodztwo_Nazwa']),
+                        'location_city_name' => $report['praw_adSiedzMiejscowosc_Nazwa'],
+                        'location_street_name' => $report['praw_adSiedzUlica_Nazwa'],
+                        'location_house' => $report['praw_adSiedzNumerNieruchomosci'],
+                        'location_flat' => $report['praw_adSiedzNumerLokalu'],
+                        'location_zip' => preg_replace(
+                            '/^([0-9]{2})([0-9]{3})$/',
+                            '$1-$2',
+                            $report['praw_adSiedzKodPocztowy']
+                        ),
+                        'location_postoffice' => $report['praw_adSiedzMiejscowoscPoczty_Nazwa']
+                        == $report['praw_adSiedzMiejscowosc_Nazwa'] ? ''
+                            : $report['praw_adSiedzMiejscowoscPoczty_Nazwa'],
+                        'location_state' => empty($location) ? 0 : $location['location_state'],
+                        'location_city' => empty($location) ? 0 : $location['location_city'],
+                        'location_street' => empty($location) ? 0 : $location['location_street'],
+                    );
+
+                    $details['addresses'] = $addresses;
+
+                    $results[] = $details;
+
                     $locals = $gus->getFullReport(
                         $gusReport,
                         ReportTypes::REPORT_ORGANIZATION_LOCALS
@@ -603,41 +635,7 @@ class Utils
 
                             $results[] = $details;
                         }
-
-                        continue;
                     }
-
-                    $addresses = array();
-
-                    $terc = $report['praw_adSiedzWojewodztwo_Symbol']
-                        . $report['praw_adSiedzPowiat_Symbol']
-                        . $report['praw_adSiedzGmina_Symbol'];
-                    $simc = $report['praw_adSiedzMiejscowosc_Symbol'];
-                    $ulic = $report['praw_adSiedzUlica_Symbol'];
-                    $location = $LMS->TerytToLocation($terc, $simc, $ulic);
-
-                    $addresses[] = array(
-                        'location_state_name' => mb_strtolower($report['praw_adSiedzWojewodztwo_Nazwa']),
-                        'location_city_name' => $report['praw_adSiedzMiejscowosc_Nazwa'],
-                        'location_street_name' => $report['praw_adSiedzUlica_Nazwa'],
-                        'location_house' => $report['praw_adSiedzNumerNieruchomosci'],
-                        'location_flat' => $report['praw_adSiedzNumerLokalu'],
-                        'location_zip' => preg_replace(
-                            '/^([0-9]{2})([0-9]{3})$/',
-                            '$1-$2',
-                            $report['praw_adSiedzKodPocztowy']
-                        ),
-                        'location_postoffice' => $report['praw_adSiedzMiejscowoscPoczty_Nazwa']
-                            == $report['praw_adSiedzMiejscowosc_Nazwa'] ? ''
-                                : $report['praw_adSiedzMiejscowoscPoczty_Nazwa'],
-                        'location_state' => empty($location) ? 0 : $location['location_state'],
-                        'location_city' => empty($location) ? 0 : $location['location_city'],
-                        'location_street' => empty($location) ? 0 : $location['location_street'],
-                    );
-
-                    $details['addresses'] = $addresses;
-
-                    $results[] = $details;
                 } elseif ($personType == \GusApi\SearchReport::TYPE_NATURAL_PERSON) {
                     $silo = $gusReport->getSilo();
 
@@ -677,6 +675,38 @@ class Utils
 
                     $personReport = reset($personReports);
                     $details['ten'] = $personReport['fiz_nip'];
+
+                    $addresses = array();
+
+                    $terc = $report['fiz_adSiedzWojewodztwo_Symbol']
+                        . $report['fiz_adSiedzPowiat_Symbol']
+                        . $report['fiz_adSiedzGmina_Symbol'];
+                    $simc = $report['fiz_adSiedzMiejscowosc_Symbol'];
+                    $ulic = $report['fiz_adSiedzUlica_Symbol'];
+                    $location = strlen($terc) ? $LMS->TerytToLocation($terc, $simc, $ulic) : null;
+
+                    $addresses[] = array(
+                        'location_state_name' => mb_strtolower($report['fiz_adSiedzWojewodztwo_Nazwa']),
+                        'location_city_name' => $report['fiz_adSiedzMiejscowosc_Nazwa'],
+                        'location_street_name' => $report['fiz_adSiedzUlica_Nazwa'],
+                        'location_house' => $report['fiz_adSiedzNumerNieruchomosci'],
+                        'location_flat' => $report['fiz_adSiedzNumerLokalu'],
+                        'location_zip' => preg_replace(
+                            '/^([0-9]{2})([0-9]{3})$/',
+                            '$1-$2',
+                            $report['fiz_adSiedzKodPocztowy']
+                        ),
+                        'location_postoffice' => $report['fiz_adSiedzMiejscowoscPoczty_Nazwa']
+                        == $report->dane['adSiedzMiejscowosc_Nazwa'] ? ''
+                            : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
+                        'location_state' => empty($location) ? 0 : $location['location_state'],
+                        'location_city' => empty($location) ? 0 : $location['location_city'],
+                        'location_street' => empty($location) ? 0 : $location['location_street'],
+                    );
+
+                    $details['addresses'] = $addresses;
+
+                    $results[] = $details;
 
                     if ($silo < 4) {
                         $locals = $gus->getFullReport(
@@ -728,42 +758,8 @@ class Utils
 
                                 $results[] = $details;
                             }
-
-                            continue;
                         }
                     }
-
-                    $addresses = array();
-
-                    $terc = $report['fiz_adSiedzWojewodztwo_Symbol']
-                        . $report['fiz_adSiedzPowiat_Symbol']
-                        . $report['fiz_adSiedzGmina_Symbol'];
-                    $simc = $report['fiz_adSiedzMiejscowosc_Symbol'];
-                    $ulic = $report['fiz_adSiedzUlica_Symbol'];
-                    $location = strlen($terc) ? $LMS->TerytToLocation($terc, $simc, $ulic) : null;
-
-                    $addresses[] = array(
-                        'location_state_name' => mb_strtolower($report['fiz_adSiedzWojewodztwo_Nazwa']),
-                        'location_city_name' => $report['fiz_adSiedzMiejscowosc_Nazwa'],
-                        'location_street_name' => $report['fiz_adSiedzUlica_Nazwa'],
-                        'location_house' => $report['fiz_adSiedzNumerNieruchomosci'],
-                        'location_flat' => $report['fiz_adSiedzNumerLokalu'],
-                        'location_zip' => preg_replace(
-                            '/^([0-9]{2})([0-9]{3})$/',
-                            '$1-$2',
-                            $report['fiz_adSiedzKodPocztowy']
-                        ),
-                        'location_postoffice' => $report['fiz_adSiedzMiejscowoscPoczty_Nazwa']
-                        == $report->dane['adSiedzMiejscowosc_Nazwa'] ? ''
-                            : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
-                        'location_state' => empty($location) ? 0 : $location['location_state'],
-                        'location_city' => empty($location) ? 0 : $location['location_city'],
-                        'location_street' => empty($location) ? 0 : $location['location_street'],
-                    );
-
-                    $details['addresses'] = $addresses;
-
-                    $results[] = $details;
                 }
             }
 

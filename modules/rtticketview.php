@@ -164,6 +164,19 @@ if (isset($_GET['highlight'])) {
 
 $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
+$LMS->InitXajax();
+
+$hook_data = $LMS->executeHook(
+    'rtticketview_before_display',
+    array(
+        'ticket' => $ticket,
+        'smarty' => $SMARTY,
+    )
+);
+$ticket = $hook_data['ticket'];
+
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $SMARTY->assign('aet', $aet);
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('relatedticketscontent', $relatedticketscontent);
@@ -172,4 +185,7 @@ $SMARTY->assign('parentticketcontent', $parentticketcontent);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);
+
+$SMARTY->assign('rtticketview_sortable_order', $SESSION->get_persistent_setting('rtticketview-sortable-order'));
+
 $SMARTY->display('rt/rtticketview.html');

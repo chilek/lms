@@ -1,4 +1,5 @@
 {$promotion_show_period_values = ConfigHelper::checkConfig('phpui.promotion_show_period_values')}
+{$promotion_schema_name_limit = intval(ConfigHelper::getConfig('phpui.promotion_schema_name_limit', 40))}
 
 <style>
 
@@ -179,7 +180,7 @@
 																	class="blend" disabled
 																{/if}
 															>{strip}
-																{$schema.name|trunescape:40}
+																{$schema.name|trunescape:$promotion_schema_name_limit}
 																{if !$schema.valid && $schema.datefrom > $smarty.now}
 																	&nbsp;({trans("from")}&nbsp;{$schema.datefrom|date_format:"%Y/%m/%d"})
 																{/if}

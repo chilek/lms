@@ -581,7 +581,7 @@ $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('customerid', $ticket['customerid']);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR));
 $SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE));
 $SMARTY->display('rt/rtticketadd.html');

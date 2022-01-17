@@ -139,8 +139,5 @@ foreach ($ExecStack->_EXECSTACK['templates'] as $step => $execute) {
     $SMARTY->display($_LMSDIR . '/modules/' . $execute['module'] . '/templates/' . $execute['template'] . '.html');
 }
 
-$DB->Destroy();
-
-
 echo '<PRE>';
 print_r($ExecStack);

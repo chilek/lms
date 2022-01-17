@@ -368,10 +368,18 @@ if (empty($nodeinfo['macs'])) {
     $nodeinfo['macs'][] = '';
 }
 
-include(MODULES_DIR . '/customer.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
 
 if (!isset($resource_tabs['nodeassignments']) || $resource_tabs['nodeassignments']) {
-    $nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
+    $nodeassignments = array();
+    if (!empty($customernodes) && !empty($assignments)) {
+        foreach ($customernodes as $node) {
+            $assigns = $LMS->GetNodeCustomerAssignments($node['id'], $assignments);
+            if (!empty($assigns)) {
+                $nodeassignments[$node['id']] = $assigns[$node['id']];
+            }
+        }
+    }
     $SMARTY->assign('nodeassignments', $nodeassignments);
 }
 

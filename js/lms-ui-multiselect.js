@@ -283,6 +283,7 @@ function multiselect(options) {
 			var selected = $(this).is(':selected');
 			var disabled = $(this).is(':disabled');
 			var crossed = $(this).attr('data-crossed');
+			var blend = $(this).attr('data-blend');
 			var class_name = 'visible' + (exclusive === '' ? ' exclusive' : '');
 
 			var data = '';
@@ -294,10 +295,11 @@ function multiselect(options) {
 			});
 
 			list += '<li class="' + class_name + (selected ? ' selected' : '') +
-				(disabled ? ' blend disabled' : '') + '"' + data + '>';
+				(blend || disabled ? ' blend' : '') + (disabled ? ' disabled' : '') + '"' + data + '>';
 
 			list += '<input type="checkbox" value="' + $(this).val() + '" class="' + class_name +
-				'"' + (selected ? ' checked' : '') + (disabled ? ' disabled' : '') + '/>';
+				'"' + (selected ? ' checked' : '') +
+				(blend ? ' blend' : '') + (disabled ? ' disabled' : '') + '/>';
 
 			var text = $(this).attr('data-html-content');
 			if (!text) {
@@ -305,7 +307,8 @@ function multiselect(options) {
 			} else {
 				text = text.trim();
 			}
-			list += '<span '+ (crossed === '' ? ' class="lms-ui-crossed"' : '')+'>' + text + '</span>';
+			list += '<span class="'+ (blend === '' ? ' lms-ui-disabled' : '') +
+				(crossed === '' ? ' lms-ui-crossed' : '') + '">' + text + '</span>';
 
 			list += '</li>';
 		});

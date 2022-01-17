@@ -930,13 +930,25 @@ class LMSTcpdfInvoice extends LMSInvoice
             'customerid' => $this->data['customerid'],
         ));
 
+        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+            || empty($this->data['bankaccounts'])) {
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
+        } else {
+            $accounts = array();
+        }
+        if (ConfigHelper::checkConfig('invoices.show_all_accounts')
+            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+            $accounts = array_merge($accounts, $this->data['bankaccounts']);
+        }
+        $account = reset($accounts);
+
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
             . '|'
             . 'PL'
             . '|'
-            . bankaccount($this->data['customerid'], $this->data['account'])
+            . $account
             . '|'
             . str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT)
             . '|'
@@ -1076,6 +1088,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             'paytype' => $this->data['paytype'],
             'pdate' => $this->data['pdate'],
             'barcode' => $payment_barcode,
+            'division_shortname' => $this->data['division_shortname'],
+            'division_name' => $this->data['division_name'],
+            'division_address' => $this->data['division_address'],
+            'division_zip' => $this->data['division_zip'],
+            'division_city' => $this->data['division_city'],
+            'division_countryid' => $this->data['division_countryid'],
+            'division_ten' => $this->data['division_ten'],
         );
         $tranferform_data = $transferform->SetCustomData($tranferform_common_data, $tranferform_custom_data);
 

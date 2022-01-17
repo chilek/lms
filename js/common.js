@@ -879,10 +879,18 @@ function GusApiFinished(fieldPrefix, details) {
 }
 
 function osm_get_zip_code(search, on_success) {
+	var street;
+	if (search.street.length) {
+		var chunks = search.street.split(' ');
+		chunks.shift();
+		street = chunks.join(' ') + ' ';
+	} else {
+		street = '';
+	}
 	var data = {
 		format: 'json',
 		city: search.city,
-		street: search.house + (search.street.length ? ' ' + search.street : ''),
+		street: street + search.house,
 		addressdetails: 1
 	}
 	if (search.countryid.length) {

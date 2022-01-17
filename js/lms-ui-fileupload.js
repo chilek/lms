@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -65,8 +65,9 @@ function lmsFileUpload(elemid, formid) {
 					$.each(data.files, function(key, file) {
 						var size = get_size_unit(file.size);
 						var fileListItem = $('<div>' +
-							'<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>&nbsp;' +
-							file.name + ' (' + size.size + ' ' + size.unit + ')</a>' +
+							'<a href="#" class="fileupload-file"><i class="fas fa-trash"></i></a>&nbsp;' +
+							'<a href="#" class="fileupload-view"><i class="fas fa-search"></i></a>&nbsp;' +
+							file.name + ' (' + size.size + ' ' + size.unit + ')' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
 								' value="' + file.name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" class="fileupload-file-size" name="fileupload[' + elemid + '][' + (count + key) + '][size]"' +
@@ -74,13 +75,24 @@ function lmsFileUpload(elemid, formid) {
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
 								' value="' + file.type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 						'</div>').appendTo(fileupload_files);
-						fileListItem.find('.fileupload-file').tooltip({
+						fileListItem.find('.fileupload-view').tooltip({
 							items: 'a',
 							content: files[key].imgElem,
 							classes: {
 								'ui-tooltip' : 'documentview'
 							},
 							track: true
+						});
+						fileListItem.find(".fileupload-view").on("click", function() {
+							switch (file.type) {
+								case 'image/jpg':
+								case 'image/jpeg':
+								case 'image/png':
+									$( files[key].contentElem ).dialog( {height:'auto', width: 'auto', title: file.name, modal: true} );
+									break;
+								default:
+									alert($t("Cannot view this type of attachements"));
+							}
 						});
 						elem.find(".fileupload-file").on("click", function() {
 							$(this).parent().remove();
@@ -96,6 +108,7 @@ function lmsFileUpload(elemid, formid) {
 				elem.find("input[type=file]").replaceWith(
 					elem.find("input[type=file]").clone(true));
 				$('#' + elemid + '-progress-dialog').dialog("close");
+				elem.trigger('lms:fileupload:complete');
 			}
 		});
 	}
@@ -145,6 +158,7 @@ function lmsFileUpload(elemid, formid) {
 							canvas.height = height;
 							canvas.getContext('2d').drawImage(image, 0, 0, width, height);
 							file.imgElem = $('<img src="' + canvas.toDataURL(file.type) + '">');
+							file.contentElem = $(image);
 
 							width = imgWidth;
 							height = imgHeight;

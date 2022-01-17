@@ -1223,6 +1223,24 @@ class LMS
         return $manager->CompactNodeGroups();
     }
 
+    public function getNodeGroupIdByName($group_name)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->getNodeGroupIdByName($group_name);
+    }
+
+    public function addNodeGroupAssignment(array $params)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->addNodeGroupAssignment($params);
+    }
+
+    public function deleteNodeGroupAssignment(array $params)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->deleteNodeGroupAssignment($params);
+    }
+
     public function GetNetDevLinkedNodes($id)
     {
         $manager = $this->getNetDevManager();
@@ -1962,6 +1980,12 @@ class LMS
     {
         $manager = $this->getNetDevManager();
         return $manager->GetModelList($pid);
+    }
+
+    public function getNetDevTypes()
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevTypes();
     }
 
     public function GetRadioSectors($netdevid, $technology = 0)

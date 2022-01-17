@@ -95,7 +95,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="fleft fbt bold">{trans("IP Address:")}</td>
+			<td class="fbt bold">{trans("IP Address:")}</td>
 			<td class="fbt">{trans("Customer:")}</td>
 			<td class="fbt">{trans("MAC:")}</td>
 			<td class="fbt">{trans("Type:")}</td>
@@ -104,7 +104,7 @@
 			<td class="fbt bold">{trans("Time Duration:")}</td>
 			<td class="fbt bold">{trans("Terminate Cause:")}</td>
 			<td class="fbt">{trans("Downloaded:")}</td>
-			<td class="fright fbt">{trans("Uploaded:")}</td>
+			<td class="fbt">{trans("Uploaded:")}</td>
 		</tr>
 		{if $listdata.total != 0}
 		<TR>
@@ -126,8 +126,8 @@
 	<tbody>
 		{section name=nodesession loop=$nodesessions start=$start max=$pagelimit}
 		{assign var=session value=$nodesessions[nodesession]}
-		<tr>
-			<td class="fleft bold nobr">
+		<tr class="highlight">
+			<td class="bold nobr">
 				{if $session.nodeid}<a href="?m=nodeinfo&id={$session.nodeid}">{/if}
 				{long_ip($session.ipaddr)}
 				{if $session.nodeid}</a>{/if}
@@ -160,7 +160,7 @@
 			<TD class="bold nobr">{$session.duration}</TD>
 			<TD class="bold nobr">{$session.terminatecause}</TD>
 			<TD class="nobr">{$session.download}</TD>
-			<TD class="fright nobr">{$session.upload}</TD>
+			<TD class="nobr">{$session.upload}</TD>
 		</tr>
 		{sectionelse}
 		<tr>

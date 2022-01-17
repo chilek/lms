@@ -205,7 +205,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -304,7 +303,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -385,7 +383,6 @@ switch ($mode) {
                 echo json_encode(array_values($result));
             }
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -513,7 +510,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -590,7 +586,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -650,7 +645,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -779,7 +773,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -843,7 +836,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -904,7 +896,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -977,7 +968,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -1047,7 +1037,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -1121,7 +1110,6 @@ switch ($mode) {
             echo json_encode(array_values($result));
 
             $SESSION->close();
-            $DB->Destroy();
             die;
         }
 
