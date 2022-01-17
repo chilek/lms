@@ -364,7 +364,7 @@ class LMSSmartyPlugins
 
         $form = isset($params['form']) ? $params['form'] : null;
         $accept = !empty($params['accept']) ? $params['accept'] : null;
-        $multiple = (isset($params['multiple']) && $params['multiple'] == false ) ? false : true;
+        $multiple = isset($params['multiple']) ? ConfigHelper::checkValue($params['multiple']) : true;
 
         $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
 
@@ -391,7 +391,7 @@ class LMSSmartyPlugins
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
             . (isset($error_tip_params) ? self::tipFunction($error_tip_params, $template) : '') . '><i class="lms-ui-icon-upload"></i><span class="lms-ui-label">' . trans("Select files") . '</span></button>
                 <input name="' . $id . '[]" type="file" class="fileupload-select-btn" style="display: none;" '
-                  . ($multiple ? 'multiple ' : '')
+                  . ($multiple ? ' multiple' : '')
                   . ($form ? ' form="' . $form . '"' : '')
                   . ($accept ? ' accept="' . $accept . '"' : '') . '>'
                   . (ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0) && $image_resize
