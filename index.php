@@ -348,7 +348,6 @@ if ($AUTH->islogged) {
     $res = $LMS->ExecHook('module_load_before', array('module' => $module));
     if (array_key_exists('abort', $res) && $res['abort']) {
         $SESSION->close();
-        $DB->Destroy();
         die;
     }
     $module = $res['module'];

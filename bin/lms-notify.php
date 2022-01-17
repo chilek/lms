@@ -3787,5 +3787,3 @@ if (!empty($intersect)) {
         }
     }
 }
-
-$DB->Destroy();

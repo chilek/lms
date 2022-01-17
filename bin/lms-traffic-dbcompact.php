@@ -269,7 +269,3 @@ if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
 }
 
 printf('%d records after compacting' . PHP_EOL, $DB->GetOne('SELECT COUNT(*) FROM stats'));
-
-$DB->Destroy();
-
-?>

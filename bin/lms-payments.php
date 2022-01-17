@@ -2023,5 +2023,3 @@ if ($test) {
 } else {
     $DB->CommitTrans();
 }
-
-$DB->Destroy();
