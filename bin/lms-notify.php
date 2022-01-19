@@ -994,7 +994,7 @@ if (empty($types) || in_array('timetable', $types)) {
 
             if (!empty($user['email']) && in_array('mail', $channels)) {
                 if (!$quiet) {
-                    printf("[timetable/mail] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
+                    printf("[timetable/mail] %s (#%d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
                 }
                 if (!$debug) {
                     send_mail_to_user($user['email'], $user['name'], $subject, $mail_contents);
@@ -1002,7 +1002,7 @@ if (empty($types) || in_array('timetable', $types)) {
             }
             if (!empty($user['phone']) && in_array('sms', $channels)) {
                 if (!$quiet) {
-                    printf("[timetable/sms] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
+                    printf("[timetable/sms] %s (#%d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
                 }
                 if (!$debug) {
                     send_sms_to_user($user['phone'], $sms_contents);
@@ -1096,7 +1096,7 @@ if (empty($types) || in_array('documents', $types)) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
                     foreach ($recipient_mails as $recipient_mail) {
                         printf(
-                            "[mail/documents] %s (%04d): %s" . PHP_EOL,
+                            "[mail/documents] %s (#%d): %s" . PHP_EOL,
                             $recipient_name,
                             $row['id'],
                             $recipient_mail
@@ -1106,23 +1106,30 @@ if (empty($types) || in_array('documents', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/documents] %s (%04d): %s" . PHP_EOL,
+                            "[sms/documents] %s (#%d): %s" . PHP_EOL,
                             $recipient_name,
                             $row['id'],
                             $recipient_phone
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/documents] %s (#%d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/documents] %s (%04d)" . PHP_EOL,
+                        "[userpanel/documents] %s (#%d)" . PHP_EOL,
                         $recipient_name,
                         $row['id']
                     );
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/documents] %s (%04d)" . PHP_EOL,
+                        "[userpanel-urgent/documents] %s (#%d)" . PHP_EOL,
                         $recipient_name,
                         $row['id']
                     );
@@ -1267,7 +1274,7 @@ if (empty($types) || in_array('contracts', $types)) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
                     foreach ($recipient_mails as $recipient_mail) {
                         printf(
-                            "[mail/contracts] %s (%04d): %s" . PHP_EOL,
+                            "[mail/contracts] %s (#%d): %s" . PHP_EOL,
                             $recipient_name,
                             $row['id'],
                             $recipient_mail
@@ -1277,23 +1284,30 @@ if (empty($types) || in_array('contracts', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/contracts] %s (%04d): %s" . PHP_EOL,
+                            "[sms/contracts] %s (#%d): %s" . PHP_EOL,
                             $recipient_name,
                             $row['id'],
                             $recipient_phone
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/contracts] %s (#%d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/contracts] %s (%04d)" . PHP_EOL,
+                        "[userpanel/contracts] %s (#%d)" . PHP_EOL,
                         $recipient_name,
                         $row['id']
                     );
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/contracts] %s (%04d)" . PHP_EOL,
+                        "[userpanel-urgent/contracts] %s (#%d)" . PHP_EOL,
                         $recipient_name,
                         $row['id']
                     );
@@ -1483,7 +1497,7 @@ if (empty($types) || in_array('debtors', $types)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
-                                "[mail/debtors] %s (%04d): %s" . PHP_EOL,
+                                "[mail/debtors] %s (#%d): %s" . PHP_EOL,
                                 $recipient_name,
                                 $row['id'],
                                 $recipient_mail
@@ -1494,7 +1508,7 @@ if (empty($types) || in_array('debtors', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/debtors] %s (%04d): %s" . PHP_EOL,
+                            "[sms/debtors] %s (#%d): %s" . PHP_EOL,
                             $recipient_name,
                             $row['id'],
                             $recipient_phone
@@ -1503,21 +1517,21 @@ if (empty($types) || in_array('debtors', $types)) {
                 }
                 if (in_array('backend', $channels)) {
                     printf(
-                        "[backend/debtors] %s (%04d)" . PHP_EOL,
+                        "[backend/debtors] %s (#%d)" . PHP_EOL,
                         $recipient_name,
                         $row['id']
                     );
                 }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/debtors] %s (%04d)" . PHP_EOL,
+                        "[userpanel/debtors] %s (#%d)" . PHP_EOL,
                         $recipient_name,
                         $row['id']
                     );
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/debtors] %s (%04d)" . PHP_EOL,
+                        "[userpanel-urgent/debtors] %s (#%d)" . PHP_EOL,
                         $recipient_name,
                         $row['id']
                     );
@@ -1727,7 +1741,7 @@ if (empty($types) || in_array('reminder', $types)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
-                                "[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
+                                "[mail/reminder] %s (#%d) document %s: %s" . PHP_EOL,
                                 $row['name'],
                                 $row['id'],
                                 $row['doc_number'],
@@ -1739,7 +1753,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/reminder] %s (%04d) %s: %s" . PHP_EOL,
+                            "[sms/reminder] %s (#%d) document %s: %s" . PHP_EOL,
                             $row['name'],
                             $row['id'],
                             $row['doc_number'],
@@ -1749,7 +1763,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 }
                 if (in_array('backend', $channels)) {
                     printf(
-                        "[backend/reminder] %s (%04d)" . PHP_EOL,
+                        "[backend/reminder] %s (#%d) document %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
@@ -1757,7 +1771,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/reminder] %s (%04d) %s" . PHP_EOL,
+                        "[userpanel/reminder] %s (#%d) document %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
@@ -1765,7 +1779,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/reminder] %s (%04d) %s" . PHP_EOL,
+                        "[userpanel-urgent/reminder] %s (#%d) document %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
@@ -1929,7 +1943,7 @@ if (empty($types) || in_array('income', $types)) {
                 if (in_array('mail', $channels) && !empty($recipient_mails)) {
                     foreach ($recipient_mails as $recipient_mail) {
                         printf(
-                            "[mail/income] %s (%04d) - %s: %s" . PHP_EOL,
+                            "[mail/income] %s (#%d) %s: %s" . PHP_EOL,
                             $row['name'],
                             $row['id'],
                             moneyf($row['value']),
@@ -1940,7 +1954,7 @@ if (empty($types) || in_array('income', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/income] %s (%04d) - %s: %s" . PHP_EOL,
+                            "[sms/income] %s (#%d) %s: %s" . PHP_EOL,
                             $row['name'],
                             $row['id'],
                             moneyf($row['value']),
@@ -1948,9 +1962,17 @@ if (empty($types) || in_array('income', $types)) {
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/income] %s (#%d) %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        moneyf($row['value'])
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/income] %s (%04d) - %s" . PHP_EOL,
+                        "[userpanel/income] %s (#%d) %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         moneyf($row['value'])
@@ -1958,7 +1980,7 @@ if (empty($types) || in_array('income', $types)) {
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/income] %s (%04d) - %s" . PHP_EOL,
+                        "[userpanel-urgent/income] %s (#%d) %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         moneyf($row['value'])
@@ -2135,7 +2157,7 @@ if (empty($types) || in_array('invoices', $types)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
-                                "[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
+                                "[mail/invoices] %s (#%d) document %s: %s" . PHP_EOL,
                                 $row['name'],
                                 $row['id'],
                                 $row['doc_number'],
@@ -2147,7 +2169,7 @@ if (empty($types) || in_array('invoices', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/invoices] %s (%04d): %s: %s" . PHP_EOL,
+                            "[sms/invoices] %s (#%d) document %s: %s" . PHP_EOL,
                             $row['name'],
                             $row['id'],
                             $row['doc_number'],
@@ -2155,9 +2177,17 @@ if (empty($types) || in_array('invoices', $types)) {
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/invoices] %s (#%d) document %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/invoices] %s (%04d): %s" . PHP_EOL,
+                        "[userpanel/invoices] %s (#%d) document %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
@@ -2165,7 +2195,7 @@ if (empty($types) || in_array('invoices', $types)) {
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/invoices] %s (%04d): %s" . PHP_EOL,
+                        "[userpanel-urgent/invoices] %s (#%d) document %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
@@ -2342,7 +2372,7 @@ if (empty($types) || in_array('notes', $types)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
-                                "[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
+                                "[mail/notes] %s (#%d) document %s: %s" . PHP_EOL,
                                 $row['name'],
                                 $row['id'],
                                 $row['doc_number'],
@@ -2354,7 +2384,7 @@ if (empty($types) || in_array('notes', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/notes] %s (%04d) %s: %s" . PHP_EOL,
+                            "[sms/notes] %s (#%d) document %s: %s" . PHP_EOL,
                             $row['name'],
                             $row['id'],
                             $row['doc_number'],
@@ -2362,9 +2392,17 @@ if (empty($types) || in_array('notes', $types)) {
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/notes] %s (#%d) document %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/notes] %s (%04d): %s" . PHP_EOL,
+                        "[userpanel/notes] %s (#%d) document %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
@@ -2372,7 +2410,7 @@ if (empty($types) || in_array('notes', $types)) {
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/notes] %s (%04d): %s" . PHP_EOL,
+                        "[userpanel-urgent/notes] %s (#%d) document %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['doc_number']
@@ -2530,7 +2568,7 @@ if (empty($types) || in_array('birthday', $types)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
-                                "[mail/birthday] %s (%04d) age %s: %s" . PHP_EOL,
+                                "[mail/birthday] %s (#%d) age %s: %s" . PHP_EOL,
                                 $row['name'],
                                 $row['id'],
                                 $row['age'],
@@ -2542,7 +2580,7 @@ if (empty($types) || in_array('birthday', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/birthday] %s (%04d) age %s: %s" . PHP_EOL,
+                            "[sms/birthday] %s (#%d) age %s: %s" . PHP_EOL,
                             $row['name'],
                             $row['id'],
                             $row['age'],
@@ -2550,9 +2588,17 @@ if (empty($types) || in_array('birthday', $types)) {
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/birthday] %s (#%d) age %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['age']
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/birthday] %s (%04d): age %s" . PHP_EOL,
+                        "[userpanel/birthday] %s (#%d) age %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['age']
@@ -2560,7 +2606,7 @@ if (empty($types) || in_array('birthday', $types)) {
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/birthday] %s (%04d): age %s" . PHP_EOL,
+                        "[userpanel-urgent/birthday] %s (#%d) age %s" . PHP_EOL,
                         $row['name'],
                         $row['id'],
                         $row['age']
@@ -2721,7 +2767,7 @@ if (empty($types) || in_array('warnings', $types)) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
-                                "[mail/warnings] %s (%04d): %s" . PHP_EOL,
+                                "[mail/warnings] %s (#%d): %s" . PHP_EOL,
                                 $row['name'],
                                 $row['id'],
                                 $recipient_mail
@@ -2732,23 +2778,30 @@ if (empty($types) || in_array('warnings', $types)) {
                 if (in_array('sms', $channels) && !empty($recipient_phones)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         printf(
-                            "[sms/warnings] %s (%04d): %s" . PHP_EOL,
+                            "[sms/warnings] %s (#%d): %s" . PHP_EOL,
                             $row['name'],
                             $row['id'],
                             $recipient_phone
                         );
                     }
                 }
+                if (in_array('backend', $channels)) {
+                    printf(
+                        "[backend/warnings] %s (#%d)" . PHP_EOL,
+                        $row['name'],
+                        $row['id']
+                    );
+                }
                 if (in_array('userpanel', $channels)) {
                     printf(
-                        "[userpanel/warnings] %s (%04d)" . PHP_EOL,
+                        "[userpanel/warnings] %s (#%d)" . PHP_EOL,
                         $row['name'],
                         $row['id']
                     );
                 }
                 if (in_array('userpanel-urgent', $channels)) {
                     printf(
-                        "[userpanel-urgent/warnings] %s (%04d)" . PHP_EOL,
+                        "[userpanel-urgent/warnings] %s (#%d)" . PHP_EOL,
                         $row['name'],
                         $row['id']
                     );
@@ -3227,7 +3280,7 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[block/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf("[block/node-access] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
                                         }
 
                                         if (!$debug) {
@@ -3258,7 +3311,7 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[block/node-warning] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf("[block/node-warning] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
                                         }
 
                                         if (!$debug) {
@@ -3291,7 +3344,7 @@ if (!empty($intersect)) {
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
                                         if (!$quiet) {
-                                            printf("[block/assignment-invoice] CustomerID: %04d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                            printf("[block/assignment-invoice] CustomerID: #%d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
                                         }
 
                                         if (empty($action_params)) {
@@ -3343,7 +3396,7 @@ if (!empty($intersect)) {
 
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
-                                            printf("[block/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
+                                            printf("[block/customer-status] CustomerID: #%d" . PHP_EOL, $custid);
                                         }
 
                                         if (!$debug) {
@@ -3377,7 +3430,7 @@ if (!empty($intersect)) {
                                         array($cid)
                                     )) {
                                         if (!$quiet) {
-                                            printf("[block/all-assignment-suspension] CustomerID: %04d" . PHP_EOL, $cid);
+                                            printf("[block/all-assignment-suspension] CustomerID: #%d" . PHP_EOL, $cid);
                                         }
 
                                         if (!$debug) {
@@ -3398,7 +3451,7 @@ if (!empty($intersect)) {
                                 if ($customergroupid) {
                                     foreach ($customers as $cid) {
                                         if (!$quiet) {
-                                            printf("[block/customer-group] CustomerID: %04d, CustomerGroupID: %04d" . PHP_EOL, $cid, $customergroupid);
+                                            printf("[block/customer-group] Customer: #%d, CustomerGroup: #%d" . PHP_EOL, $cid, $customergroupid);
                                         }
 
                                         if (!$debug) {
@@ -3431,7 +3484,7 @@ if (!empty($intersect)) {
                                     if (!empty($nodes)) {
                                         foreach ($nodes as $node) {
                                             if (!$quiet) {
-                                                printf("[block/node-group] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                                printf("[block/node-group] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
                                             }
 
                                             if (!$debug) {
@@ -3535,7 +3588,7 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[unblock/node-access] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf("[unblock/node-access] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
                                         }
 
                                         if (!$debug) {
@@ -3566,7 +3619,7 @@ if (!empty($intersect)) {
                                 if (!empty($nodes)) {
                                     foreach ($nodes as $node) {
                                         if (!$quiet) {
-                                            printf("[unblock/node-warning] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                            printf("[unblock/node-warning] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
                                         }
 
                                         if (!$debug) {
@@ -3599,7 +3652,7 @@ if (!empty($intersect)) {
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
                                         if (!$quiet) {
-                                            printf("[unblock/assignment-invoice] CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                            printf("[unblock/assignment-invoice] Customer: #%d, Assignment: #%d" . PHP_EOL, $assign['customerid'], $assign['id']);
                                         }
 
                                         if (!$debug) {
@@ -3635,7 +3688,7 @@ if (!empty($intersect)) {
 
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
-                                            printf("[unblock/customer-status] CustomerID: %04d" . PHP_EOL, $custid);
+                                            printf("[unblock/customer-status] CustomerID: #%d" . PHP_EOL, $custid);
                                         }
 
                                         if (!$debug) {
@@ -3682,7 +3735,7 @@ if (!empty($intersect)) {
                                             if (!empty($aids)) {
                                                 foreach ($aids as $aid) {
                                                     if (!$quiet) {
-                                                        printf("[unblock/all-assignment-suspension] assignment update: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
+                                                        printf("[unblock/all-assignment-suspension] assignment update: Customer: #%d, Assignment: #%d" . PHP_EOL, $cid, $aid);
                                                     }
 
                                                     if (!$debug) {
@@ -3703,7 +3756,7 @@ if (!empty($intersect)) {
                                     if (!empty($aids)) {
                                         foreach ($aids as $aid) {
                                             if (!$quiet) {
-                                                printf("[unblock/all-assignment-suspension] assignment deletion: CustomerID: %04d, AssignmentID: %04d" . PHP_EOL, $cid, $aid);
+                                                printf("[unblock/all-assignment-suspension] assignment deletion: Customer: #%d, Assignment: #%d" . PHP_EOL, $cid, $aid);
                                             }
 
                                             if (!$debug) {
@@ -3725,7 +3778,7 @@ if (!empty($intersect)) {
                                 if ($customergroupid) {
                                     foreach ($customers as $cid) {
                                         if (!$quiet) {
-                                            printf("[unblock/customer-group] CustomerID: %04d, CustomerGroupID: %04d" . PHP_EOL, $cid, $customergroupid);
+                                            printf("[unblock/customer-group] Customer: #%d, CustomerGroup: #%d" . PHP_EOL, $cid, $customergroupid);
                                         }
 
                                         if (!$debug) {
@@ -3758,7 +3811,7 @@ if (!empty($intersect)) {
                                     if (!empty($nodes)) {
                                         foreach ($nodes as $node) {
                                             if (!$quiet) {
-                                                printf("[unblock/node-group] CustomerID: %04d, NodeID: %04d" . PHP_EOL, $node['ownerid'], $node['id']);
+                                                printf("[unblock/node-group] Customer: #%d, Node: #%d" . PHP_EOL, $node['ownerid'], $node['id']);
                                             }
 
                                             if (!$debug) {
