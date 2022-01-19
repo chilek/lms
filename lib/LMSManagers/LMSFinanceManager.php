@@ -1081,6 +1081,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'value' => str_replace(',', '.', $data['value']),
                             'flags' => (isset($data['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
                                 + (isset($data['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
+                            'taxcategory' => $data['taxcategory'],
                             'currency' => $data['currency'],
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid'],
@@ -1088,9 +1089,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'netvalue' => str_replace(',', '.', $data['netvalue']),
                         );
                         $this->db->Execute(
-                            'INSERT INTO liabilities (name, value, flags, currency,
+                            'INSERT INTO liabilities (name, value, flags, taxcategory, currency,
                             taxid, prodid, type, netvalue)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             array_values($args)
                         );
 
