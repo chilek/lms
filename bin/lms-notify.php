@@ -3420,7 +3420,7 @@ if (!empty($intersect)) {
                                         FROM nodes n
                                         WHERE NOT EXISTS (
                                                 SELECT 1 FROM nodegroupassignments nga
-                                                WHERE nga.noderid = n.id
+                                                WHERE nga.nodeid = n.id
                                                     AND nga.nodegroupid = ?
                                             )
                                             AND n.ownerid IN (" . implode(',', $customers) . ")",
@@ -3747,7 +3747,7 @@ if (!empty($intersect)) {
                                         FROM nodes n
                                         WHERE EXISTS (
                                                 SELECT 1 FROM nodegroupassignments nga
-                                                WHERE nga.noderid = n.id
+                                                WHERE nga.nodeid = n.id
                                                     AND nga.nodegroupid = ?
                                             )
                                             AND n.ownerid IN (" . implode(',', $customers) . ")",
