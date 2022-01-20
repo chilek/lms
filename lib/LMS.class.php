@@ -3117,11 +3117,20 @@ class LMS
                 if (is_string($data['result'])) {
                     $errors[] = $data['result'];
                     continue;
+                } elseif (isset($data['result']['status'])) {
+                    if ($data['result']['status'] == MSG_ERROR) {
+                        $errors = array_merge($errors, $data['result']['errors']);
+                        continue;
+                    } else {
+                        return $data['result'];
+                    }
                 } elseif (is_array($data['result'])) {
                     $errors = array_merge($errors, $data['result']);
                     continue;
                 } else {
-                    return $data['result'];
+                    return array(
+                        'status' => $data['result'],
+                    );
                 }
             }
 
