@@ -984,9 +984,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         $result = MSG_NEW;
                 }
 
-                switch ($result['status']) {
+                if (is_int($result)) {
+                    $status = $result;
+                    $errors = array();
+                } elseif (is_string($result)) {
+                    $status = MSG_ERROR;
+                    $errors = array($result);
+                } else {
+                    $status = $result['status'];
+                    $errors = $result['errors'];
+                }
+                switch ($status) {
                     case MSG_ERROR:
-                        echo ' <span class="red">' . implode(', ', $result['errors']) . '</span>';
+                        echo ' <span class="red">' . implode(', ', $errors) . '</span>';
                         break;
                     case MSG_SENT:
                         echo ' [' . trans('sent') . ']';
@@ -998,16 +1008,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
                 echo "<BR>\n";
 
-                if ((is_int($result) && $result == MSG_SENT) || $result['status'] == MSG_SENT || !empty($result['errors'])) {
+                if ($status == MSG_SENT || !empty($errors)) {
                     $DB->Execute(
                         'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
                             error = ?, externalmsgid = ? WHERE messageid = ? AND '
                             . (empty($customerid) ? 'customerid IS NULL' : 'customerid = ' . intval($customerid)) . '
                             AND destination = ?',
                         array(
-                            is_int($result) ? $result : $result['status'],
-                            is_int($result) || empty($result['errors']) ? null : implode(', ', $result['errors']),
-                            is_int($result) || empty($result['id']) ? null : $result['id'],
+                            $status,
+                            empty($errors) ? null : implode(', ', $errors),
+                            !is_array($result) || empty($result['id']) ? null : $result['id'],
                             $msgid,
                             $orig_destination,
                         )
