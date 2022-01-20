@@ -984,25 +984,30 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         $result = MSG_NEW;
                 }
 
-                if (is_string($result)) {
-                    echo ' <span class="red">' . $result . '</span>';
-                } else if ($result == MSG_SENT) {
-                    echo ' ['.trans('sent').']';
-                } else {
-                    echo ' ['.trans('added').']';
+                switch ($result['status']) {
+                    case MSG_ERROR:
+                        echo ' <span class="red">' . implode(', ', $result['errors']) . '</span>';
+                        break;
+                    case MSG_SENT:
+                        echo ' [' . trans('sent') . ']';
+                        break;
+                    default:
+                        echo ' [' . trans('added') . ']';
+                        break;
                 }
 
                 echo "<BR>\n";
 
-                if (!is_int($result) || $result == MSG_SENT) {
+                if ((is_int($result) && $result == MSG_SENT) || $result['status'] == MSG_SENT || !empty($result['errors'])) {
                     $DB->Execute(
                         'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
-						error = ? WHERE messageid = ? AND '
+                            error = ?, externalmsgid = ? WHERE messageid = ? AND '
                             . (empty($customerid) ? 'customerid IS NULL' : 'customerid = ' . intval($customerid)) . '
-							AND destination = ?',
+                            AND destination = ?',
                         array(
-                            is_int($result) ? $result : MSG_ERROR,
-                            is_int($result) ? null : $result,
+                            is_int($result) ? $result : $result['status'],
+                            is_int($result) || empty($result['errors']) ? null : implode(', ', $result['errors']),
+                            is_int($result) || empty($result['id']) ? null : $result['id'],
                             $msgid,
                             $orig_destination,
                         )

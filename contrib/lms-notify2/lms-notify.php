@@ -247,30 +247,35 @@ function send_email($msgid, $cid, $rmail, $rname, $subject, $body)
     }
     return($result);
 }
+
 function send_sms($msgid, $cid, $phone, $data)
 {
-        global $LMS, $DB;
-        $DB->Execute(
-            "INSERT INTO messageitems
-                (messageid, customerid, destination, status)
-                VALUES (?, ?, ?, ?)",
-            array($msgid, $cid, $phone, 1)
-        );
+    global $LMS, $DB;
 
-        $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
-        $query = "UPDATE messageitems
-                SET status = ?, lastdate = ?NOW?, error = ?
-                WHERE messageid = ? AND customerid = ?";
+    $DB->Execute(
+        "INSERT INTO messageitems
+            (messageid, customerid, destination, status)
+            VALUES (?, ?, ?, ?)",
+        array($msgid, $cid, $phone, 1)
+    );
 
-    if (preg_match("/[^0-9]/", $result)) {
-            $DB->Execute($query, array(3, $result, $msgid, $cid));
-    } elseif ($result == 2) { // MSG_SENT
-            $DB->Execute($query, array($result, null, $msgid, $cid));
-    }
-    return($result);
+    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
+
+    $DB->Execute(
+        "UPDATE messageitems
+        SET status = ?, externalmsgid = ?, lastdate = ?NOW?, error = ?
+        WHERE messageid = ? AND customerid = ?",
+        array(
+            $result['status'],
+            empty($result['id']) ? null : $result['id'],
+            empty($result['errors']) ? null : implode(', ', $result['errors']),
+            $msgid,
+            $cid,
+        )
+    );
+
+    return $result;
 }
-
-
 
 function send_message($mode, $id, $message, $msgid, $oplata = 0)
 {

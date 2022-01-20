@@ -3033,7 +3033,10 @@ class LMS
         $msg_len = mb_strlen($message);
 
         if (!$msg_len) {
-            return trans('SMS message is empty!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('SMS message is empty!')),
+            );
         }
 
         $debug_phone = isset($sms_options['debug_phone']) ? $sms_options['debug_phone'] : ConfigHelper::getConfig('sms.debug_phone');
@@ -3049,7 +3052,10 @@ class LMS
             ? $sms_options['phone_number_validation_pattern']
             : ConfigHelper::getConfig('sms.phone_number_validation_pattern', '', true);
         if (!empty($phone_number_validation_pattern) && !preg_match('/' . $phone_number_validation_pattern . '/', $number)) {
-            return trans('Phone number validation failed!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('Phone number validation failed!')),
+            );
         }
 
         // add prefix to the number if needed
@@ -3086,7 +3092,10 @@ class LMS
 
         $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
         if (empty($service)) {
-            return trans('SMS "service" not set!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('SMS "service" not set!')),
+            );
         }
 
         $errors = array();
@@ -3173,13 +3182,19 @@ class LMS
                         continue 2;
                     }
 
-                    return MSG_NEW;
+                    return array(
+                        'status' => MSG_NEW,
+                    );
                 default:
                     $errors[] = trans('Unknown SMS service!');
                     continue 2;
             }
         }
-        return implode(', ', $errors);
+
+        return array(
+            'status' => MSG_ERROR,
+            'errors' => $errors,
+        );
     }
 
     public function GetMessages($customerid, $limit = null)

@@ -80,8 +80,8 @@ function module_main()
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
                             foreach ($sms_recipients as $sms_recipient) {
                                 $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
-                                if (is_string($res)) {
-                                    $errors[] = $res;
+                                if ($res['status'] == MSG_ERROR) {
+                                    $errors = array_merge($errors, $res['errors']);
                                 }
                             }
                         } else {

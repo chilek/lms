@@ -803,15 +803,19 @@ function send_sms($msgid, $cid, $phone, $data)
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
     $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgitemid, $sms_options);
-    $query = "UPDATE messageitems
-        SET status = ?, lastdate = ?NOW?, error = ?
-        WHERE messageid = ? AND customerid = ? AND id = ?";
-
-    if (preg_match("/[^0-9]/", $result)) {
-        $DB->Execute($query, array(3, $result, $msgid, $cid, $msgitemid));
-    } elseif ($result == 2) { // MSG_SENT
-        $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
-    }
+    $DB->Execute(
+        "UPDATE messageitems
+        SET status = ?, externalmsgid = ?, lastdate = ?NOW?, error = ?
+        WHERE messageid = ? AND customerid = ? AND id = ?",
+        array(
+            $result['status'],
+            empty($result['id']) ? null : $result['id'],
+            empty($result['errors']) ? null : implode(', ', $result['errors']),
+            $msgid,
+            $cid,
+            $msgitemid,
+        )
+    );
 }
 
 function send_to_userpanel($msgid, $cid, $destination)
@@ -848,8 +852,8 @@ function send_sms_to_user($phone, $data)
 
     $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data);
 
-    if (is_string($result)) {
-        fprintf(STDERR, trans('Error sending SMS: $a', $result) . PHP_EOL);
+    if ($result['status'] == MSG_ERROR) {
+        fprintf(STDERR, trans('Error sending SMS: $a', implode(', ', $result['errors'])) . PHP_EOL);
     }
 }
 
