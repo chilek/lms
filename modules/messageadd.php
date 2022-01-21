@@ -1008,7 +1008,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
                 echo "<BR>\n";
 
-                if ($status == MSG_SENT || !empty($errors)) {
+                if ($status == MSG_SENT || isset($result['id']) || !empty($errors)) {
                     $DB->Execute(
                         'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
                             error = ?, externalmsgid = ? WHERE messageid = ? AND '
