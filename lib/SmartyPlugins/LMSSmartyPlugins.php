@@ -367,6 +367,7 @@ class LMSSmartyPlugins
         $multiple = isset($params['multiple']) ? ConfigHelper::checkValue($params['multiple']) : true;
 
         $image_resize = !isset($params['image_resize']) || !empty($params['image_resize']);
+        $view_containerid = isset($params['view_containerid']) ? $params['view_containerid'] : '';
 
         // special treatment of file upload errors marked in error associative array
         $tmpl = $template->getTemplateVars('error');
@@ -401,10 +402,11 @@ class LMSSmartyPlugins
 			<div class="fileupload-files">';
         if (!empty($fileupload) && isset($fileupload[$id])) {
             foreach ($fileupload[$id] as $fileidx => $file) {
-                $result .= '<div>
-					<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>
+                $result .= '<div class="fileupload-file">
+					<a href="#" class="file-delete"><i class="fas fa-trash"></i></a>
+					<a href="#" class="file-preview"><i class="fas fa-search"></i></a>
+					<a href="#" class="file-view"><i class="fas fa-eye"></i></a>
 						' . $file['name'] . ' (' . $file['sizestr'] . ')
-					</a>
 					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 					<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
@@ -418,7 +420,7 @@ class LMSSmartyPlugins
 		</div>';
         $result .= '<script>
 			$(function() {
-				new lmsFileUpload("' . $id . '"' . ($form ? ', "' . $form . '"' : '') . ');
+				new lmsFileUpload("' . $id . '"' . ($form ? ', "' . $form . '"' : '') . ($view_containerid ? ', "' . $view_containerid . '"' : '') . ');
 			});
 		</script>';
 
