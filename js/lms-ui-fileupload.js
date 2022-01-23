@@ -65,7 +65,7 @@ function lmsFileUpload(elemid, formid, view_containerid) {
 
 					$.each(data.files, function(key, file) {
 						var size = get_size_unit(file.size);
-						let preview_avaiable;
+						let preview_avaiable = '';
 
 						if (files[key].imgElem) {
 							preview_avaiable = '<a href="#" class="file-preview"><i class="fas fa-search"></i></a>&nbsp;';

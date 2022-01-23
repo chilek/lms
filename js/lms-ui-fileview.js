@@ -29,9 +29,9 @@ function lmsFileView(file, view_containerid) {
     }
 
     var objUrl = (window.URL ? URL : webkitURL).createObjectURL(file);
-    var content = '';
-    var window_height_size = '';
-    var window_width_size = '';
+    let content = '';
+    let window_height_size = '';
+    let window_width_size = '';
 
     ///put file in object if not image
     switch (file.type) {
