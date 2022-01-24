@@ -9,7 +9,12 @@
 
 	{tab_header content_id="routednetworkspanel-`$layout.module`"}
 		{tab_header_cell icon="lms-ui-icon-routing"}
-			<strong>{t a=$routednetworks|@count|default:"0"}Routed Networks ($a):{/t}</strong>
+			{if is_array($routednetworks)}
+				{$count = count($routednetworks)}
+			{else}
+				{$count = 0}
+			{/if}
+			<strong>{t a=$count}Routed Networks ($a):{/t}</strong>
 		{/tab_header_cell}
 	{/tab_header}
 
