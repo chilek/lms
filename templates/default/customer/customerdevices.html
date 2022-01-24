@@ -6,12 +6,7 @@
 
 	{tab_header content_id="devicespanel"}
 		{tab_header_cell icon="lms-ui-icon-netdev"}
-			{if is_array($customerdevices)}
-				{$count = count($customerdevices)}
-			{else}
-				{$count = 0}
-			{/if}
-			<strong>{t a=$count}Network Devices ($a):{/t}</strong>
+			<strong>{t a=$customerdevices|size}Network Devices ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A href="?m=netdevadd&customerid={$customerinfo.id}">{trans("New device")} &raquo;</A>
