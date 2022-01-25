@@ -69,6 +69,7 @@ version 28-git (????-??-??):
   - enhancement: allow plugins to attach specific contents in rtticketview module
     ('rtticketview_before_display' plugin hook introduced) [chilan]
   - improvement: more flexible result returned by SendSMS() function [chilan]
+  - enhancement: customer ten filter in invoice report box [chilan]
 
 version 27.0 (2021-08-20):
 
