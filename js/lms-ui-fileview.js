@@ -32,13 +32,19 @@ function lmsFileView(file) {
     var objUrl = url.createObjectURL(file);
     var content;
     var object;
+    var dialogOptions = {
+        dialogClass: "lms-ui-fileview-dialog",
+        width: $(window).width() * 0.8,
+        title: file.name,
+        modal: true
+    }
 
     ///put file in object if not image
     switch (file.type) {
         case 'image/png':
         case 'image/jpg':
         case 'image/jpeg':
-            content = file.contentElem;
+            content = $('<div/>').append(file.contentElem);
             break;
         default:
             object = $('<object/>').attr({
@@ -46,16 +52,11 @@ function lmsFileView(file) {
                 type: file.type
             });
             content = $('<div/>').append(object);
+            dialogOptions.height = $(window).height() * 0.8;
             break;
     }
 
-    $(content).dialog({
-        dialogClass: "lms-ui-fileview-dialog",
-        width: $(window).width() * 0.8,
-        height: $(window).height() * 0.8,
-        title: file.name,
-        modal: true
-    });
+    $(content).dialog(dialogOptions);
 
     url.revokeObjectURL(objUrl);
 }
