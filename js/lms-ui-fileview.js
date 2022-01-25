@@ -64,13 +64,13 @@ function lmsFileView(file, view_selector) {
         case 'image/jpeg':
             break;
         default:
-            content.attr({
+            $( content ).attr({
                 'data': objUrl,
                 'type': file.type
             });
             break;
     }
-    URL.revokeObjectURL(objUrl);
+    window.URL ? URL.revokeObjectURL(objUrl) : webkitURL.revokeObjectURL(objUrl);
 
     return content;
 }
