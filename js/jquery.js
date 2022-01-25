@@ -2058,12 +2058,12 @@ $(function() {
 		var button = $(this);
 		form.submit(function() {
 			if (!$(this).attr('data-form-validation-failed')) {
-				button.attr('disabled', 'disabled');
+				button.prop('disabled', !form.is('[target="_blank"]'));
 			}
 			$(this).removeAttr('data-form-validation-failed');
 		}).on('lms:form_validation_failed', function() {
 			$(this).attr('data-form-validation-failed', true);
-			button.removeAttr('disabled');
+			button.prop('disabled', false);
 		});
 	});
 
