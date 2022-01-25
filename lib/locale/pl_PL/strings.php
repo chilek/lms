@@ -5421,3 +5421,4 @@ $_LANG['Event too distant in time!'] = 'Zdarzenie zbyt odległe w czasie!';
 $_LANG['- ignore -'] = '- ignoruj -';
 $_LANG['with TEN'] = 'z NIP';
 $_LANG['without TEN'] = 'bez NIP';
+$_LANG['uses TEN from invoice'] = 'używa NIP z faktury';
