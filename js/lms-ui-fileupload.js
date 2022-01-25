@@ -22,7 +22,7 @@
  *  $Id$
  */
 
-function lmsFileUpload(elemid, formid, view_containerid) {
+function lmsFileUpload(elemid, formid, view_selector) {
 	var elem = $("#" + elemid);
 	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
 	var formdata = new FormData(formelem.get(0));
@@ -91,8 +91,8 @@ function lmsFileUpload(elemid, formid, view_containerid) {
 							},
 							track: true
 						});
-						document.getElementById('fileview-' + (key + count)).addEventListener('click',
-							function() { lmsFileView(files[key], view_containerid); }
+						fileListItem.find('.file-view').on('click',
+							function() { lmsFileView(files[key], view_selector); }
 						);
 						fileListItem.find('.file-delete').on('click',
 							function() {

@@ -22,12 +22,7 @@
  *  $Id$
  */
 
-function lmsFileView(file, view_containerid) {
-    if (typeof (file) == 'undefined') {
-        alert("404, Error: no file to view");
-        return;
-    }
-
+function lmsFileView(file, view_selector) {
     var objUrl = (window.URL ? URL : webkitURL).createObjectURL(file);
     let content = '';
     let window_height_size = '';
@@ -50,7 +45,7 @@ function lmsFileView(file, view_containerid) {
     }
 
     ///show in popup or use inline container
-    if (typeof (view_containerid) == 'undefined') {
+    if (typeof (view_selector)=='undefined') {
         $(content).dialog(
             {
                 width: window_width_size,
@@ -60,8 +55,7 @@ function lmsFileView(file, view_containerid) {
             }
         );
     } else {
-        $("#" + view_containerid).html(content);
-        document.getElementById(view_containerid).style.display = 'inline';
+        $("#" + view_selector).html(content).show();
     }
 
     switch (file.type) {
@@ -70,9 +64,13 @@ function lmsFileView(file, view_containerid) {
         case 'image/jpeg':
             break;
         default:
-            content.setAttribute('data', objUrl);
-            content.setAttribute('type', file.type);
+            content.attr({
+                'data': objUrl,
+                'type': file.type
+            });
             break;
     }
     URL.revokeObjectURL(objUrl);
+
+    return content;
 }
