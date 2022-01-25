@@ -1338,4 +1338,14 @@ class LMSSmartyPlugins
             $template
         );
     }
+
+    public static function sizeModifier($array, $default = 0)
+    {
+        if (is_array($array)) {
+            $count = count($array);
+            return $count ?: $default;
+        } else {
+            return $default;
+        }
+    }
 }

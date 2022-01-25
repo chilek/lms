@@ -539,215 +539,261 @@
 </form>
 {/if}
 {if $printmenu=="finances"}
-<FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 99%;">
-    </COLGROUP>
-    <THEAD>
-	<TR>
-		<TH scope="col">
-			<IMG src="img/money.gif" alt="">
-		</TH>
-		<TH scope="col" class="bold nobr">
-			{trans("Sale Registry")}
-		</TH>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD class="container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD style="width: 1%;">
-					    <TABLE width="100%">
-							<colgrou>
-								<col style="width: 1%;">
-								<col style="width: 1%;">
-								<col style="width: 98%;">
-							</colgrou>
-							<TR>
-								<TD>
-									<IMG src="img/division.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Division")}:
-								</TD>
-								<TD colspan="2" class="nobr">
-									<SELECT size="1" name="division" {tip text="Select division"}>
-										<OPTION value="0">- {trans("all")} -</OPTION>
-										{foreach $divisions as $item}
-											<OPTION value="{$item.id}">{$item.label|escape}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							<tr>
-								<td><img src="img/customer.gif" alt=""></td>
-								<td class="bold">{trans("Customers")}:</td>
-								<td>
-									<select name="customer_type">
-										<option value="-1">{trans("- all customers -")}</option>
-										<option value="{$smarty.const.CTYPES_PRIVATE}">{trans("private person")}</option>
-										<option value="{$smarty.const.CTYPES_COMPANY}">{trans("legal entity")}</option>
-									</select>
-								</td>
-							</tr>
-							<TR>
-								<TD>
-									<IMG src="img/group.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Group:")}
-								</TD>
-								<TD class="multiselect nobr">
-									<SELECT size="4" name="group[]" class="lms-ui-multiselect"
-											multiple {tip text="Select group"}
-											data-default-value="{trans("- all groups -")}">
-										{foreach $customergroups as $customergroup}
-											<OPTION value="{$customergroup.id}">{$customergroup.name|truncate:30:"&hellip;":true}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-								<TD class="nobr">
-									<INPUT type="checkbox" name="groupexclude"
-										   id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label
-											for="invoicereport-groupexclude">{trans("exclude group")}</label>
-								</TD>
-							</TR>
-							<TR>
-								<TD>
-									<IMG src="img/queue.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Plan:")}
-								</TD>
-								<TD colspan="2" class="multiselect nobr">
-									<SELECT name="numberplanid[]" class="lms-ui-multiselect"
-											style="min-width: 200px;" {tip text="Select numbering plan"} multiple
+<form method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
+	<input type="submit" class="hiddenbtn">
+</form>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<th scope="col">
+				{icon nmae="money"}
+			</th>
+			<th scope="col" class="nobr">
+				<strong>{trans("Sale Registry")}</strong>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="container" style="width: 100%;" colspan="2">
+				<table style="width: 100%;" cellpadding="3">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 98%;">
+					</colgroup>
+					<tr>
+						<td>
+							<table style="width 100%;">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								<tr>
+									<td>
+										{icon name="division"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Division")}</strong>
+									</td>
+									<td colspan="2">
+										<select size="1" name="division" {tip text="Select division"} form="invoicereport">
+											<option value="0">- {trans("all")} -</option>
+											{foreach $divisions as $item}
+												<option value="{$item.id}">{$item.label|escape}</option>
+											{/foreach}
+										</>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="customer"}
+									</td>
+									<td>
+										<strong>{trans("Customers")}</strong>
+									</td>
+									<td>
+										<select name="customer_type" form="invoicereport">
+											<option value="-1">{trans("- all customers -")}</option>
+											<option value="{$smarty.const.CTYPES_PRIVATE}">{trans("private person")}</option>
+											<option value="{$smarty.const.CTYPES_COMPANY}">{trans("legal entity")}</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="user-id-number"}
+									</td>
+									<td>
+										<strong>{trans("TEN")}</strong>
+									</td>
+									<td>
+										<select name="customer_ten" form="invoicereport">
+											<option value="0">{trans("- ignore -")}</option>
+											<option value="1">{trans("with TEN")}</option>
+											<option value="2">{trans("without TEN")}</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="customergroup"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Group")}</strong>
+									</td>
+									<td class="multiselect nobr">
+										<select size="4" name="group[]" class="lms-ui-multiselect"
+												multiple {tip text="Select group"}
+												form="invoicereport"
+												data-default-value="{trans("- all groups -")}">
+											{foreach $customergroups as $customergroup}
+												<option value="{$customergroup.id}">{$customergroup.name|truncate:30:"&hellip;":true}</option>
+											{/foreach}
+										</>
+									</td>
+									<td>
+										<label>
+											<input type="checkbox" name="groupexclude" form="invoicereport"
+												{if $listdata.groupexclude} checked{/if}>
+											{trans("exclude group")}
+										</label>
+									</>
+								</tr>
+								<tr>
+									<td>
+										{icon name="id"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Plan")}</strong>
+									</td>
+									<td colspan="2" class="multiselect">
+										<select name="numberplanid[]" class="lms-ui-multiselect"
+												form="invoicereport"
+												style="min-width: 200px;" {tip text="Select numbering plan"} multiple
+												data-default-value="{trans("- all -")}">
+											{foreach $numberplans as $plan}
+												{$period = $plan.period}
+												<option value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate}
+													({$_NUM_PERIODS.$period})
+												</option>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="money"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Service types")}</strong>
+									</td>
+									<td colspan="2" class="nobr">
+										<select name="servicetypes[]" class="lms-ui-multiselect" multiple
+											form="invoicereport"
+											data-default-value="{trans("- any -")}" data-shorten-to-default-value="false">
+											{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
+												<option value="{$type}">{$label}</option>
+											{/foreach}
+										</select>
+										<label>
+											<input type="radio" name="servicetypeoper" value="or"
+												form="invoicereport" checked>
+											{trans("or<!operator>")}
+										</label>
+										<label>
+											<input type="radio" name="servicetypeoper" value="and"
+												form="invoicereport">
+											{trans("and<!operator>")}
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="configuration"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Adjust the print")}</strong>
+									</td>
+									<td colspan="2" class="nobr">
+										<label>
+											<input type="checkbox" name="printcustomerid" value="1"
+												form="invoicereport" >
+											{trans("hide customer ID")}
+										</label>
+										<label>
+											<input type="checkbox" name="printonlysummary" value="1"
+												form="invoicereport" >
+											{trans("only summary")}
+										</label>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table style="width: 100%;">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 97%;">
+								</colgroup>
+								<tr>
+									<td>
+										{icon name="calendar"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Period")}</strong>
+									</td>
+									<td colspan="2">
+										<span class="lms-ui-date-period-container">
+											{date_period_preset from="[form=\"invoicereport\"][name=\"from\"]" to="[form=\"invoicereport\"][name=\"to\"]"}
+											<span>{trans("From")}</span>
+											<input type="text" name="from" size="10" maxlength="10"
+												form="invoicereport"
+												placeholder="{trans("yyyy/mm/dd")}"
+												{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+											<span>{trans("To")}</span>
+											<input type="text" name="to" size="10" maxlength="10"
+												form="invoicereport"
+												placeholder="{trans("yyyy/mm/dd")}"
+												{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2"></td>
+									<td colspan="2" class="nobr">
+										{trans("Sorting")}
+										<select name="sorttype" form="invoicereport" {tip text="Select sort cryterion"}>
+											<option value="cdate">{trans("Draw-up date")}</option>
+											<option value="sdate">{trans("Sale date")}</option>
+											<option value="pdate">{trans("Deadline")}</option>
+											<option value="number">{trans("Document number")}</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="document"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Type")}</strong>
+									</td>
+									<TD colspan="2">
+										<select name="doctype[]" {tip class="lms-ui-multiselect" text="Select document type"}
+											multiple form="invoicereport"
 											data-default-value="{trans("- all -")}">
-										{foreach $numberplans as $plan}
-											{$period = $plan.period}
-											<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate}
-												({$_NUM_PERIODS.$period})
-											</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD>
-									<IMG src="img/money.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Service types")}
-								</TD>
-								<TD colspan="2" class="nobr">
-									<select name="servicetypes[]" class="lms-ui-multiselect" multiple
-										data-default-value="{trans("- any -")}" data-shorten-to-default-value="false">
-										{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
-											<option value="{$type}">{$label}</option>
-										{/foreach}
-									</select>
-									<label>
-										<input type="radio" name="servicetypeoper" value="or" checked>
-										{trans("or<!operator>")}
-									</label>
-									<label>
-										<input type="radio" name="servicetypeoper" value="and">
-										{trans("and<!operator>")}
-									</label>
-								</TD>
-							</TR>
-							<TR>
-								<TD>
-									<IMG src="img/settings.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Adjust the print")}:
-								</TD>
-								<TD colspan="2" class="nobr">
-									<label>
-										<input type="checkbox" name="printcustomerid" value="1">
-										{trans("hide customer ID")}
-									</label>
-									<label>
-										<input type="checkbox" name="printonlysummary" value="1">
-										{trans("only summary")}
-									</label>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-					<TD style="width: 1%;">
-					    <TABLE width="100%">
-						    <TR>
-						        <TD style="width: 1%;">
-						            <IMG src="img/calendar.gif" alt="">
-					            </TD>
-					            <TD style="width: 1%;" class="bold nobr">
-						            {trans("Period:")}
-					            </TD>
-					            <TD style="width: 98%;" colspan="2">
-									<span class="lms-ui-date-period-container">
-										{date_period_preset from="#invoicereport [name=\"from\"]" to="#invoicereport [name=\"to\"]"}
-										<span>{trans("From")}</span>
-										<input type="text" name="from" size="10" maxlength="10"
-											placeholder="{trans("yyyy/mm/dd")}"
-											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-										<span>{trans("To")}</span>
-										<input type="text" name="to" size="10" maxlength="10"
-											placeholder="{trans("yyyy/mm/dd")}"
-											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									</span>
-					            </TD>
-					        </TR>
-						    <TR>
-						        <TD colspan="2"></TD>
-					            <TD colspan="2" class="nobr">
-					                {trans("Sorting:")}
-					                <SELECT name="sorttype" {tip text="Select sort cryterion"}>
-					                    <OPTION value="cdate">{trans("Draw-up date")}</OPTION>
-					                    <OPTION value="sdate">{trans("Sale date")}</OPTION>
-					                    <OPTION value="pdate">{trans("Deadline")}</OPTION>
-					                    <option value="number">{trans("Document number")}</option>
-					                </SELECT>
-					            </TD>
-					        </TR>
-					        <TR>
-								<TD>
-									<IMG src="img/docum.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Type:")}
-								</TD>
-								<TD colspan="2">
-									<SELECT name="doctype[]" {tip class="lms-ui-multiselect" text="Select document type"} multiple data-default-value="{trans("- all -")}">
-										<OPTION value="invoices">{trans("invoices")}</OPTION>
-										<OPTION value="cnotes">{trans("credit notes")}</OPTION>
-										<OPTION value="dnotes" data-exclusive>{trans("debit notes")}</OPTION>
-									</SELECT>
-								</TD>
-					        </TR>
-					    </TABLE>
-					</TD>
-					<TD style="width: 98%;" class="nobr">
-						<input type="checkbox" name="extended" value="1" id="invoicereport-extended"><label for="invoicereport-extended">{trans("extended format")}</label>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;" colspan="2" align="right">
-			<A href="javascript:document.invoicereport.target='_blank';document.invoicereport.submit();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
+											<option value="invoices">{trans("invoices")}</option>
+											<option value="cnotes">{trans("credit notes")}</option>
+											<option value="dnotes" data-exclusive>{trans("debit notes")}</option>
+										</select>
+									</TD>
+								</tr>
+							</table>
+						</td>
+						<td class="nobr">
+							<label>
+								<input type="checkbox" name="extended" value="1" form="invoicereport">
+								{trans("extended format")}
+							</label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="2">
+				{button type="submit" icon="print" label="Print" form="invoicereport"}
+			</td>
+		</tr>
+	</tbody>
+</table>
 {/if}
 {if $printmenu=="finances"}
 <FORM method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist">
