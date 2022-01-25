@@ -85,7 +85,6 @@ function lmsFileUpload(elemid, formid) {
 							track: true
 						});
 						fileListItem.find('.file-view').click(function() {
-							console.log(files[key]);
 							lmsFileView(files[key]);
 						});
 						fileListItem.find('.file-delete').click(function() {
