@@ -2447,6 +2447,7 @@ $_LANG['Documents Management'] = 'Zarządzanie dokumentami';
 $_LANG['List of documents'] = 'Lista dokumentów';
 $_LANG['No such documents matching search criteria or list is empty.'] = 'Brak dokumentów spełniających kryteria wyszukiwania lub lista jest pusta.';
 $_LANG['Plan:'] = 'Plan:';
+$_LANG['Pla:'] = 'Plan';
 $_LANG['Additional information:'] = 'Informacje dodatkowe:';
 $_LANG['extended format'] = 'format rozszerzony';
 $_LANG['Page $a from $b'] = 'Strona $a z $b';
@@ -5416,3 +5417,7 @@ $_LANG['<!pin>(expired)'] = '(przeterminowany)';
 $_LANG['If you leave this field empty, then PIN will not change!'] = 'Jeśli to pole pozostawisz puste, PIN nie zostanie zmieniony!';
 
 $_LANG['Event too distant in time!'] = 'Zdarzenie zbyt odległe w czasie!';
+
+$_LANG['- ignore -'] = '- ignoruj -';
+$_LANG['with TEN'] = 'z NIP';
+$_LANG['without TEN'] = 'bez NIP';
