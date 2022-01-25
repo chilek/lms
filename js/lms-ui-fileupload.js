@@ -76,7 +76,7 @@ function lmsFileUpload(elemid, formid) {
 								' value="' + file.size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
 								' value="' + file.type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
-						'</div>').appendTo(fileupload_files);
+						'</div>').appendTo(fileupload_files).data('file', files[key]);
 						fileListItem.find('.file-preview').tooltip({
 							items: 'a',
 							content: files[key].imgElem,
@@ -86,7 +86,7 @@ function lmsFileUpload(elemid, formid) {
 							track: true
 						});
 						fileListItem.find('.file-view').click(function() {
-							lmsFileView(files[key]);
+							lmsFileView($(this).closest('.fileupload-file').data('file'));
 						});
 						fileListItem.find('.file-delete').click(function() {
 							$(this).parent().remove();
