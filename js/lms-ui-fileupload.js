@@ -64,9 +64,11 @@ function lmsFileUpload(elemid, formid) {
 					var count = fileupload_files.find(".fileupload-file").length;
 					$.each(data.files, function(key, file) {
 						var size = get_size_unit(file.size);
-						var fileListItem = $('<div>' +
-							'<a href="#" class="fileupload-file"><i class="fas fa-trash"></i></a>&nbsp;' +
-							'<a href="#" class="fileupload-view"><i class="fas fa-search"></i></a>&nbsp;' +
+
+						var fileListItem = $('<div class="fileupload-file">' +
+							'<a href="#" class="file-delete"><i class="fas fa-trash"></i></a>&nbsp;' +
+							(files[key].imgElem ? '<a href="#" class="file-preview"><i class="fas fa-search"></i></a>&nbsp;' : '') +
+							'<a href="#" class="file-view"><i class="fas fa-eye"></i></a>&nbsp;' +
 							file.name + ' (' + size.size + ' ' + size.unit + ')' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
 								' value="' + file.name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
@@ -75,7 +77,7 @@ function lmsFileUpload(elemid, formid) {
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
 								' value="' + file.type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 						'</div>').appendTo(fileupload_files);
-						fileListItem.find('.fileupload-view').tooltip({
+						fileListItem.find('.file-preview').tooltip({
 							items: 'a',
 							content: files[key].imgElem,
 							classes: {
@@ -83,18 +85,10 @@ function lmsFileUpload(elemid, formid) {
 							},
 							track: true
 						});
-						fileListItem.find(".fileupload-view").on("click", function() {
-							switch (file.type) {
-								case 'image/jpg':
-								case 'image/jpeg':
-								case 'image/png':
-									$( files[key].contentElem ).dialog( {height:'auto', width: 'auto', title: file.name, modal: true} );
-									break;
-								default:
-									alert($t("Cannot view this type of attachements"));
-							}
+						fileListItem.find('.file-view').click(function() {
+							lmsFileView(files[key]);
 						});
-						elem.find(".fileupload-file").on("click", function() {
+						fileListItem.find('.file-delete').click(function() {
 							$(this).parent().remove();
 						});
 					});
@@ -157,7 +151,7 @@ function lmsFileUpload(elemid, formid) {
 							canvas.width = width;
 							canvas.height = height;
 							canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-							file.imgElem = $('<img src="' + canvas.toDataURL(file.type) + '">');
+							file.imgElem = $('<img src="' + canvas.toDataURL(file.type) + '" alt="">');
 							file.contentElem = $(image);
 
 							width = imgWidth;
@@ -248,12 +242,12 @@ function lmsFileUpload(elemid, formid) {
 	progressbar.progressbar({
 		value: false
 	});
-	elem.find("input[type=file]").on("change", function() {
+	elem.find("input[type=file]").change(function() {
 		files = $(this).get(0).files;
 		prepare_files();
 		formdata.delete(elemid + '[]');
 	});
-	elem.find(".fileupload-file").on("click", function() {
+	elem.find(".file-delete").click(function() {
 		$(this).parent().remove();
 	});
 }
