@@ -1341,7 +1341,7 @@ class LMSSmartyPlugins
     {
         if (is_array($array)) {
             $count = count($array);
-            return ($count != 0 ? $count : $default);
+            return $count ?: $default;
         } else {
             return $default;
         }
