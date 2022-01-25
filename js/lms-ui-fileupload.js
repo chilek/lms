@@ -56,27 +56,26 @@ function lmsFileUpload(elemid, formid) {
 					}, false);
 				return myXhr;
 			},
-			success: function(data, textStatus, jqXHR) {
+			success: function(data) {
 				elem.find(".fileupload-status").html(data.error);
 				if (typeof(data) == "object" && !data.error.length) {
 					elem.find(".fileupload-tmpdir").val(data.tmpdir);
 					var fileupload_files = elem.find(".fileupload-files");
 					var count = fileupload_files.find(".fileupload-file").length;
-					$.each(data.files, function(key, file) {
-						var size = get_size_unit(file.size);
-
+					$.each(data.files, function(key) {
+						var size = get_size_unit(files[key].size);
 						var fileListItem = $('<div class="fileupload-file">' +
 							'<a href="#" class="file-delete"><i class="fas fa-trash"></i></a>&nbsp;' +
 							(files[key].imgElem ? '<a href="#" class="file-preview"><i class="fas fa-search"></i></a>&nbsp;' : '') +
 							'<a href="#" class="file-view"><i class="fas fa-eye"></i></a>&nbsp;' +
-							file.name + ' (' + size.size + ' ' + size.unit + ')' +
+							files[key].name + ' (' + size.size + ' ' + size.unit + ')' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
-								' value="' + file.name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+								' value="' + files[key].name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" class="fileupload-file-size" name="fileupload[' + elemid + '][' + (count + key) + '][size]"' +
-								' value="' + file.size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+								' value="' + files[key].size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
-								' value="' + file.type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
-						'</div>').appendTo(fileupload_files).data('file', files[key]);
+								' value="' + files[key].type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+						'</div>').appendTo(fileupload_files);
 						fileListItem.find('.file-preview').tooltip({
 							items: 'a',
 							content: files[key].imgElem,
@@ -86,7 +85,8 @@ function lmsFileUpload(elemid, formid) {
 							track: true
 						});
 						fileListItem.find('.file-view').click(function() {
-							lmsFileView($(this).closest('.fileupload-file').data('file'));
+							console.log(files[key]);
+							lmsFileView(files[key]);
 						});
 						fileListItem.find('.file-delete').click(function() {
 							$(this).parent().remove();
