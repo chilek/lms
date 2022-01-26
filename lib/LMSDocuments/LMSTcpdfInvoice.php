@@ -1074,6 +1074,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
             $payment_value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
+            $payment_barcode = trans('Customer ID: $a', $customerid);
         } else {
             $payment_value = $this->data['value'];
             $payment_barcode = $payment_docnumber;
