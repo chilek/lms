@@ -30,10 +30,10 @@
     <tbody>
         {foreach $vlanlist as $v}
         <tr class="highlight" data-template-id="{$v.id}">
-            <td>
+            <td data-order="{$v.id}">
                 {$v.id}
             </td>
-            <td data-template-vlanid="{$v.vlanid}">
+            <td data-template-vlanid="{$v.vlanid}" data-order="{$v.vlanid}">
                 {$v.vlanid}
             </td>
             <td data-template-description="{$v.description}" {tip text=$v.description}>
