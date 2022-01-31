@@ -353,8 +353,8 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2020.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2020.zip');
+define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2021.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2021.zip');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -411,7 +411,7 @@ if (empty($teryt_dir)) {
     die;
 }
 
-$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2020.csv';
+$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2021.csv';
 
 //==============================================================================
 // Download required files

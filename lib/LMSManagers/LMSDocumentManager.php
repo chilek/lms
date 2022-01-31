@@ -1861,8 +1861,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $error = array();
                     foreach ($destinations as $destination) {
                         $res = $LMS->SendSMS($destination, $sms_body, $message['items'][$document['customerid']][$destination], $sms_options);
-                        if (is_string($res)) {
-                            $error[] = $res;
+                        if ($res['status'] == MSG_ERROR) {
+                            $error[] = array_merge($error, $res['errors']);
                         }
                     }
                 }

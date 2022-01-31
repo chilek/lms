@@ -3,10 +3,10 @@
     <THEAD>
 	<TR>
 		<td class="bold nobr">
-		    {if $layout.module == 'ewxnodelist'}
-		    	{t a=$customernodes|@count|default:"0"}Channel Nodes ($a):{/t}
-		    {else}
-				{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
+			{if $layout.module == 'ewxnodelist'}
+				{t a=$customernodes|size}Channel Nodes ($a):{/t}
+			{else}
+				{t a=$customernodes|size}Customer Nodes ($a):{/t}
 			{/if}
 		</td>
 	</TR>

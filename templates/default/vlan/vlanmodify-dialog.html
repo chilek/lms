@@ -27,7 +27,7 @@
                         {icon name="vlan" label="VLAN ID"}
                     </td>
                     <td>
-                        <input type="text" id="dialog-vlanid" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
+                        <input type="number" min="0" max="4096" step="1" id="dialog-vlanid" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
                     </td>
                 </tr>
                 <tr>
