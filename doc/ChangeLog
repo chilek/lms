@@ -71,6 +71,8 @@ version 28-git (????-??-??):
   - improvement: more flexible result returned by SendSMS() function [chilan]
   - enhancement: customer ten filter in invoice report box [chilan]
   - enhancement: allow to view uploaded files different than image in modal dialog [chilan/interduo]
+  - enhancement: lms-payments.php can generate financial charges basing on tariff which have assigned
+    specified tariff tags [chilan]
 
 version 27.0 (2021-08-20):
 
