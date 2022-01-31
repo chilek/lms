@@ -44,16 +44,14 @@ if (defined('USERPANEL_SETUPMODE')) {
         $SMARTY->assign('queues', explode(';', ConfigHelper::getConfig('userpanel.queues')));
         $SMARTY->assign('sources', explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources')));
         $SMARTY->assign('tickets_from_selected_queues', ConfigHelper::getConfig('userpanel.tickets_from_selected_queues'));
-        $SMARTY->assign('allow_message_add_to_closed_tickets', ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'));
+        $SMARTY->assign('allow_message_add_to_closed_tickets', intval(ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets', 1)));
         $SMARTY->assign('limit_ticket_movements_to_selected_queues', ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues'));
         $SMARTY->assign('default_userid', ConfigHelper::getConfig('userpanel.default_userid'));
         $SMARTY->assign('lms_url', ConfigHelper::getConfig('userpanel.lms_url'));
         $SMARTY->assign('categories', $categories);
 
-        $allow_reopen_tickets_newer_than = ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than');
-        if (empty($allow_reopen_tickets_newer_than)) {
-            $allow_reopen_tickets_newer_than = '';
-        }
+        $allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than', 0));
+
         $SMARTY->assign('allow_reopen_tickets_newer_than', $allow_reopen_tickets_newer_than);
 
         $SMARTY->display('module:helpdesk:setup.html');
@@ -340,7 +338,7 @@ function module_main()
         }
     } elseif ($id && isset($_POST['helpdesk'])
         && ($DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($id)) != RT_RESOLVED
-        || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
+        || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets', 1))
         && $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($id)) == $SESSION->id) {
         $ticket = $_POST['helpdesk'];
 
@@ -348,7 +346,7 @@ function module_main()
             'SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?',
             array($id)
         );
-        $allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'));
+        $allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than', 0));
         if ($allow_reopen_tickets_newer_than && time() - $allow_reopen_tickets_newer_than > $ticket['lastmod']) {
             header('Location: ?m=helpdesk&op=view&id=' . $id);
             die;
