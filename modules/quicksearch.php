@@ -160,7 +160,8 @@ switch ($mode) {
                             }
                         }
                     } else if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
-                        $description = trans('Id:') . ' ' . $row['id'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
+                        //$description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['customername'])) {
                         $description = '';
                     } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
