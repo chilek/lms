@@ -740,13 +740,11 @@ if ($billings) {
             $billing_idx++;
         }
 
-        if ($billing_idx == $billing_count || $billings[$billing_idx]['customerid'] != $service_customerid) {
-            $billing_idx = $old_billing_idx;
-            continue;
-        } else {
+        if ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
             $assigns[] = $billings[$billing_idx];
-            $billing_idx++;
+            $billing_idx = $old_billing_idx;
         }
+        $billing_idx = $old_billing_idx;
     }
     unset($service);
 } else {
