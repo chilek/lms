@@ -1,4 +1,7 @@
 {include file="header.html"}
+{$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than', 0))}
+{$allow_message_add_to_closed_tickets = intval(ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets', 1))}
+
 <style>
 
 	.card > .card-block {
@@ -8,7 +11,7 @@
 </style>
 <h3>{button class="btn btn-secondary mb-2" href="?m=helpdesk" icon="cancel" label="Back"}</h3>
 <h5><span class="badge" style="color: white; background-color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</span><strong> {trans($title)}</strong></h5>
-{$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
+
 {foreach $ticket.messages as $message}
 <div class="card">
 	<div class="card-header">
@@ -50,7 +53,7 @@
 					</ul>
 				{/if}
 
-				{if ($ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
+				{if ($ticket.state != $smarty.const.RT_RESOLVED || $allow_message_add_to_closed_tickets)
 					&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
 					{button class="btn btn-success float-right" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}" icon="message" label="Reply"}
 				{/if}
