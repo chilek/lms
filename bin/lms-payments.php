@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,6 +45,7 @@ $parameters = array(
     'division:' => null,
     'customergroups:' => 'g:',
     'customer-status:' => null,
+    'tariff-tags:' => null,
 );
 
 $long_to_shorts = array();
@@ -81,7 +82,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -90,7 +91,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -108,6 +109,9 @@ lms-payments.php
                                 should be assigned
     --customer-status=<status1,status2,...>
                                 take assignment of customers with specified status only
+    --tariff-tags=<tariff-tag1,tariff-tag-2,...>
+                                create financial charges using only tariffs which have
+                                assigned specified tariff tags
 
 EOF;
     exit(0);
@@ -117,7 +121,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
@@ -208,6 +212,7 @@ $delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.de
 $prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_only');
 $prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
 $customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
+$tariff_tags = ConfigHelper::getConfig('payments.tariff_tags', '', true);
 
 $reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig('payments.reward_penalty_deadline_grace_days'));
 
@@ -430,6 +435,40 @@ if (!empty($customergroups)) {
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
+// prepare tariff tags in sql query
+if (isset($options['tariff-tags'])) {
+    $tariff_tags = $options['tariff-tags'];
+}
+if (!empty($tariff_tags)) {
+    $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($tariff_tags), -1, PREG_SPLIT_NO_EMPTY);
+    $tariff_tags_ORs = array();
+    foreach ($ORs as $OR) {
+        $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+        $tariff_tag_ANDs_regular = array();
+        $tariff_tag_ANDs_inversed = array();
+        foreach ($ANDs as $AND) {
+            if (strpos($AND, '!') === false) {
+                $tariff_tag_ANDs_regular[] = $AND;
+            } else {
+                $tariff_tag_ANDs_inversed[] = substr($AND, 1);
+            }
+        }
+        $tariff_tag_ORs[] = '('
+            . (empty($tariff_tag_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM tarifftags
+                JOIN tariffrassignments ON tariffassignments.tarifftagid = tarifftags.id
+                WHERE tariffassignments.tariffid = t.id
+                AND UPPER(tarifftags.name) IN ('" . implode("', '", $tariff_tag_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($tariff_tag_ANDs_regular) . ')')
+            . (empty($tariff_tag_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM tarifftags
+                JOIN tariffassignments ON tariffassignments.tarifftagid = tarifftags.id
+                WHERE tariffassignments.tariffid = t.id
+                AND UPPER(tarifftags.name) IN ('" . implode("', '", $tariff_tag_ANDs_inversed) . "')
+                HAVING COUNT(*) > 0)")
+            . ')';
+    }
+    $tariff_tags = ' AND (a.tariffid IS NULL OR (' . implode(' OR ', $tariff_tag_ORs) . '))';
+}
+
 $test = array_key_exists('test', $options);
 if ($test) {
     echo "WARNING! You are using test mode." . PHP_EOL;
@@ -523,6 +562,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
+        . ($tarifftags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
@@ -652,6 +692,7 @@ $query = "SELECT
 			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
         . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
+        . ($tarifftags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
@@ -699,13 +740,11 @@ if ($billings) {
             $billing_idx++;
         }
 
-        if ($billing_idx == $billing_count || $billings[$billing_idx]['customerid'] != $service_customerid) {
-            $billing_idx = $old_billing_idx;
-            continue;
-        } else {
+        if ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
             $assigns[] = $billings[$billing_idx];
-            $billing_idx++;
+            $billing_idx = $old_billing_idx;
         }
+        $billing_idx = $old_billing_idx;
     }
     unset($service);
 } else {
