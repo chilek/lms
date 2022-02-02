@@ -46,19 +46,28 @@ if (isset($_GET['template'])) {
     die;
 }
 
-function GenerateAttachmentHTML($template_dir, $engine, $selected)
+function GenerateAttachmentHTML($template_dir, $engine, $selected = null)
 {
     $output = array();
     if (isset($engine['attachments']) && !empty($engine['attachments']) && is_array($engine['attachments'])) {
-        foreach ($engine['attachments'] as $label => $file) {
-            if ($file[0] != DIRECTORY_SEPARATOR) {
-                $file = $template_dir . DIRECTORY_SEPARATOR . $file;
+        foreach ($engine['attachments'] as $idx => $file) {
+            if (is_array($file)) {
+                $file['checked'] = isset($selected) ? isset($selected[$file['label']]) : $file['checked'];
+            } else {
+                $file = array(
+                    'name' => $file,
+                    'label' => $idx,
+                    'checked' => isset($selected[$idx]),
+                );
             }
-            if (is_readable($file)) {
+            if ($file['name'] != DIRECTORY_SEPARATOR) {
+                $file['name'] = $template_dir . DIRECTORY_SEPARATOR . $file['name'];
+            }
+            if (is_readable($file['name'])) {
                 $output[] = '<label>'
-                . '<input type="checkbox" value="1" name="document[attachments][' . htmlspecialchars($label) . ']"'
-                    . (isset($selected[$label]) ? ' checked' : '') . '>'
-                . $label
+                . '<input type="checkbox" value="1" name="document[attachments][' . htmlspecialchars($file['label']) . ']"'
+                    . ($file['checked'] ? ' checked' : '') . '>'
+                . $file['label']
                 . '</label>';
             }
         }
@@ -98,7 +107,7 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
         }
     }
 
-    $attachment_content = GenerateAttachmentHTML($template_dir, $engine, array());
+    $attachment_content = GenerateAttachmentHTML($template_dir, $engine);
     $JSResponse->assign('attachment-cell', 'innerHTML', $attachment_content);
     if (empty($attachment_content)) {
         $JSResponse->script('$("#attachment-row").hide()');
