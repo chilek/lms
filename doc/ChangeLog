@@ -73,6 +73,8 @@ version 28-git (????-??-??):
   - enhancement: allow to view uploaded files different than image in modal dialog [chilan/interduo]
   - enhancement: lms-payments.php can generate financial charges basing on tariff which have assigned
     specified tariff tags [chilan]
+  - enhancement: optional document template file attachments can have initial checkbox state
+    specified [chilan]
 
 version 27.0 (2021-08-20):
 
