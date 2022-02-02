@@ -25,19 +25,42 @@
  */
 
 // get customer name and check privileges using customerview
-$customer = $DB->GetRow('SELECT a.customerid AS id, c.divisionid, '
-    .$DB->Concat('c.lastname', "' '", 'c.name').' AS name
-    FROM assignments a
-    JOIN customerview c ON (c.id = a.customerid)
-    WHERE a.id = ?', array($_GET['id']));
-
-if (!$customer) {
+$aids = isset($_POST['customerassignments']) ? $_POST['customerassignments'] : array($_GET['id']);
+$aids = Utils::filterIntegers($aids);
+if (empty($aids)) {
     $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+if (count($aids) == 1) {
+    $aid = reset($aids);
+    $customer = $DB->GetRow(
+        'SELECT a.customerid AS id, c.divisionid, '
+        . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS name
+        FROM assignments a
+        JOIN customerview c ON (c.id = a.customerid)
+        WHERE a.id = ?',
+        array($aid)
+    );
+    if (!$customer) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
+} else {
+    if ($DB->GetOne(
+        'SELECT COUNT(a.id)
+        FROM assignments a
+        JOIN customerview c ON c.id = a.customerid
+        WHERE a.id IN ?',
+        array($aids)
+    ) != count($aids)) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
+}
+
 if ($_GET['action'] == 'suspend') {
-    $LMS->SuspendAssignment($_GET['id'], $_GET['suspend']);
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    foreach ($aids as $aid) {
+        $LMS->toggleAssignmentSuspension($aid);
+    }
+    $SESSION->redirect('?' . $SESSION->get('backto'));
 }
 
 if (isset($_POST['assignment'])) {
@@ -498,7 +521,6 @@ if (isset($_POST['assignment'])) {
 
     $a['pdiscount'] = floatval($a['pdiscount']);
     $a['vdiscount'] = floatval($a['vdiscount']);
-    $a['attribute'] = $a['attribute'];
     if (!empty($a['pdiscount'])) {
         $a['discount'] = $a['pdiscount'];
         $a['discount_type'] = DISCOUNT_PERCENTAGE;
@@ -508,10 +530,8 @@ if (isset($_POST['assignment'])) {
     }
 
     switch ($a['period']) {
-        case QUARTERLY:
-            $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
-            break;
         case HALFYEARLY:
+        case QUARTERLY:
             $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
             break;
         case YEARLY:
@@ -575,8 +595,13 @@ $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
-$defaultTaxId = $defaultTaxId[0]['id'];
+$defaultTaxIds = $LMS->GetTaxes(null, null, true);
+if (is_array($defaultTaxIds)) {
+    $defaultTaxId = reset($defaultTaxIds);
+    $defaultTaxId = $defaultTaxId['id'];
+} else {
+    $defaultTaxId = 0;
+}
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
 if (is_array($a['nodes'])) {
     $a['nodes'] = array_flip($a['nodes']);

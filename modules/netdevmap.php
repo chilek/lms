@@ -302,7 +302,7 @@ if ($links = $DB->GetAll('SELECT src, dst FROM netlinks')) {
     }
 }
 
-$type = strtolower(ConfigHelper::getConfig('phpui.map_type', ''));
+$type = strtolower(ConfigHelper::getConfig('phpui.map_type', 'openlayers'));
 
 if ($type == 'openlayers') {
     include(MODULES_DIR.'/map.inc.php');

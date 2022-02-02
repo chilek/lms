@@ -180,21 +180,23 @@ function GetRecipients($filter, $type = MSG_MAIL)
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT a.customerid,
-			SUM((CASE a.suspended
-				WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-				ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
-			* (CASE t.period
-				WHEN ' . MONTHLY . ' THEN 1
-				WHEN ' . YEARLY . ' THEN 1/12.0
-				WHEN ' . HALFYEARLY . ' THEN 1/6.0
-				WHEN ' . QUARTERLY . ' THEN 1/3.0
-				ELSE (CASE a.period
+			SUM(
+				(CASE a.suspended
+					WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+					ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+				* (CASE t.period
 					WHEN ' . MONTHLY . ' THEN 1
 					WHEN ' . YEARLY . ' THEN 1/12.0
 					WHEN ' . HALFYEARLY . ' THEN 1/6.0
 					WHEN ' . QUARTERLY . ' THEN 1/3.0
-					ELSE 0 END)
-				END)
+					ELSE (CASE a.period
+						WHEN ' . MONTHLY . ' THEN 1
+						WHEN ' . YEARLY . ' THEN 1/12.0
+						WHEN ' . HALFYEARLY . ' THEN 1/6.0
+						WHEN ' . QUARTERLY . ' THEN 1/3.0
+						ELSE 0 END)
+					END)
+				* a.count
 			) AS value 
 			FROM assignments a
 			LEFT JOIN tariffs t ON (t.id = a.tariffid)
@@ -322,12 +324,23 @@ function BodyVars(&$body, $data, $format)
 
     list ($now_year, $now_month, $now_day) = explode('/', date('Y/m/d'));
 
+    $currency = Localisation::getCurrentCurrency();
+
+    if ($data['totalbalance'] < 0) {
+        $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$data['totalbalance'], $currency));
+    } elseif ($data['totalbalance'] > 0) {
+        $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($data['totalbalance'], $currency));
+    } else {
+        $commented_balance = trans('Billing status: $a', moneyf($data['totalbalance'], $currency));
+    }
+
     $body = str_replace(
         array(
             '%date-y',
             '%date-m',
             '%date-d',
             '%balance',
+            '%commented_balance',
             '%b',
             '%totalb',
             '%totalB',
@@ -342,13 +355,14 @@ function BodyVars(&$body, $data, $format)
             $now_year,
             $now_month,
             $now_day,
-            moneyf($data['totalbalance']),
+            moneyf($data['totalbalance'], $currency),
+            $commented_balance,
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
             sprintf('%01.2f', $data['totalbalance']),
-            moneyf($data['totalbalance']),
+            moneyf($data['totalbalance'], $currency),
             sprintf('%01.2f', $data['balance']),
-            moneyf($data['balance']),
+            moneyf($data['balance'], $currency),
             $data['customername'],
             $data['id'],
             $data['pin'],
@@ -394,12 +408,12 @@ function BodyVars(&$body, $data, $format)
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
-            $lN .= strtoupper(trans("Total:"))  . " " . moneyf($services['total_value'], Localisation::getCurrentCurrency())
+            $lN .= strtoupper(trans("Total:"))  . " " . moneyf($services['total_value'], $currency)
                 . ($format == 'html' ? '<br>' : PHP_EOL);
             unset($services['total_value']);
             foreach ($services as $row) {
                 $lN .= strtoupper($row['tarifftypename']) .": ";
-                $lN .= moneyf($row['sumvalue'], Localisation::getCurrentCurrency()) . ($format == 'html' ? '<br>' : PHP_EOL);
+                $lN .= moneyf($row['sumvalue'], $currency) . ($format == 'html' ? '<br>' : PHP_EOL);
             }
         }
         $body = str_replace('%services', $lN, $body);
@@ -573,7 +587,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $error['sender'] = trans('Specified e-mail is not correct!');
             }
         }
-        $message['sender'] = ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']);
+        $message['sender'] = empty($message['sender']) ? ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']) : $message['sender'];
         if ($message['from'] == '') {
             $error['from'] = trans('Sender name is required!');
         }
@@ -848,6 +862,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if ($html_format) {
                 $headers['X-LMS-Format'] = 'html';
             }
+
+            $interval = intval(ConfigHelper::getConfig('phpui.message_send_interval', 0));
         } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
@@ -945,6 +961,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                             $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
                         }
                         $result = $LMS->SendMail($destination, $headers, $body, $attachments);
+
+                        if (!empty($interval)) {
+                            if ($interval == -1) {
+                                $delay = mt_rand(500, 5000);
+                            } else {
+                                $delay = $interval;
+                            }
+                            usleep($delay * 1000);
+                        }
+
                         break;
                     case MSG_SMS:
                     case MSG_ANYSMS:
@@ -958,25 +984,40 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         $result = MSG_NEW;
                 }
 
-                if (is_string($result)) {
-                    echo ' <span class="red">' . $result . '</span>';
-                } else if ($result == MSG_SENT) {
-                    echo ' ['.trans('sent').']';
+                if (is_int($result)) {
+                    $status = $result;
+                    $errors = array();
+                } elseif (is_string($result)) {
+                    $status = MSG_ERROR;
+                    $errors = array($result);
                 } else {
-                    echo ' ['.trans('added').']';
+                    $status = $result['status'];
+                    $errors = $result['errors'];
+                }
+                switch ($status) {
+                    case MSG_ERROR:
+                        echo ' <span class="red">' . implode(', ', $errors) . '</span>';
+                        break;
+                    case MSG_SENT:
+                        echo ' [' . trans('sent') . ']';
+                        break;
+                    default:
+                        echo ' [' . trans('added') . ']';
+                        break;
                 }
 
                 echo "<BR>\n";
 
-                if (!is_int($result) || $result == MSG_SENT) {
+                if ($status == MSG_SENT || isset($result['id']) || !empty($errors)) {
                     $DB->Execute(
                         'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
-						error = ? WHERE messageid = ? AND '
+                            error = ?, externalmsgid = ? WHERE messageid = ? AND '
                             . (empty($customerid) ? 'customerid IS NULL' : 'customerid = ' . intval($customerid)) . '
-							AND destination = ?',
+                            AND destination = ?',
                         array(
-                            is_int($result) ? $result : MSG_ERROR,
-                            is_int($result) ? null : $result,
+                            $status,
+                            empty($errors) ? null : implode(', ', $errors),
+                            !is_array($result) || empty($result['id']) ? null : $result['id'],
                             $msgid,
                             $orig_destination,
                         )
@@ -1159,8 +1200,6 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $SMARTY->assign('autoload_template', true);
 }
 
-$SMARTY->assign('message', $message);
-
 if (isset($message['type'])) {
     switch ($message['type']) {
         case MSG_MAIL:
@@ -1193,6 +1232,7 @@ if (empty($message['sender'])) {
     $message['sender'] = ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']);
 }
 
+$SMARTY->assign('message', $message);
 $SMARTY->assign('userinfo', $userinfo);
 
 $SMARTY->assign('users', $DB->GetAllByKey('SELECT id, rname AS name, phone FROM vusers WHERE phone <> ? ORDER BY rname', 'id', array('')));

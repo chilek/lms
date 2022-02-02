@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+{$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
 <style>
 
 	.customer-header {
@@ -220,13 +221,27 @@
 									{if $customerinfo.pin}
 										<tr>
 											<td>
-												{icon name="customer-pin-code" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.pin}
+												{if $customerinfo.secure_pin || $unsecure_pin_validity && $smarty.now - $customerinfo.pinlastchange > $unsecure_pin_validity}
+													{icon name="customer-pin-code" tip="PIN"}
+												{else}
+													{icon name="customer-pin-code" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.pin}
+												{/if}
 											</td>
 											<td>
-												{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-													{button icon="clipboard" class="lms-ui-button-clipboard" label="Copy" data_clipboard_text=$customerinfo.pin}
+												{if $customerinfo.secure_pin}
+													{trans("<!pin>(hashed)")}
 												{else}
-													{$customerinfo.pin}
+													{if $unsecure_pin_validity && $smarty.now - $customerinfo.pinlastchange > $unsecure_pin_validity}
+														<span class="lms-ui-alert">
+															<strong>{trans("<!pin>(expired)")}</strong>
+														</span>
+													{else}
+														{if ConfigHelper::checkConfig('phpui.protect_passwords')}
+															{button icon="clipboard" class="lms-ui-button-clipboard" label="Copy" data_clipboard_text=$customerinfo.pin}
+														{else}
+															{$customerinfo.pin}
+														{/if}
+													{/if}
 												{/if}
 											</td>
 										</tr>

@@ -132,7 +132,15 @@ if (!empty($_POST['marks'])) {
         }
         if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
             $margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
-            html2pdf($htmlbuffer, trans('Document'), null, null, null, 'P', $margins);
+            html2pdf(
+                $htmlbuffer,
+                trans('Document'),
+                null,
+                null,
+                null,
+                'P',
+                $margins
+            );
         } elseif ($pdf) {
             // Output the new PDF
             $pdf->Output();

@@ -44,4 +44,10 @@ interface LMSNodeGroupManagerInterface
     public function GetNodeGroup($id, $network = null);
 
     public function CompactNodeGroups();
+
+    public function getNodeGroupIdByName($group_name);
+
+    public function addNodeGroupAssignment(array $params);
+
+    public function deleteNodeGroupAssignment(array $params);
 }

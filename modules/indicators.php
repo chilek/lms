@@ -140,6 +140,18 @@ switch ($action) {
             }
         }
         break;
+    case 'watching':
+        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+            $count = $LMS->GetQueueContents(array('watching' => 1, 'count' => true));
+            if ($count == 1) {
+                $ticket = $LMS->GetQueueContents(array('watching' => 1, 'count' => false));
+                $ticket = reset($ticket);
+                $redirect = '?m=rtticketview&id=' . $ticket['id'];
+            } else {
+                $redirect = '?m=rtqueueview&persistent-filter=-1&watching=1';
+            }
+        }
+        break;
 }
 
 if (!empty($redirect)) {

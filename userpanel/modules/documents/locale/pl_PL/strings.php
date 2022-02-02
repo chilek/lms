@@ -139,3 +139,5 @@ $_LANG[
 ] =
     'Obsługiwane symbole specjalne:<br><br>'
     . '<strong>%password%</strong> - zastępowany jest hasłem jednorazowym SMS-em wysyłanym do klienta.';
+
+$_LANG['Send document to customer'] = 'Wyślij dokument do klienta';

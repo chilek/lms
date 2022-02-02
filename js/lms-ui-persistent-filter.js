@@ -36,7 +36,7 @@ $(function() {
 		var filterId = div.attr('data-filter-id');
 		var formData;
 		if (filterId) {
-			var form = div.closest('form');
+			var form = div.is('[form]') ? $('#' + div.attr('form')) : div.closest('form');
 			formData = new FormData(form.get(0));
 			form.find('.no-persistent-filter-field').each(function() {
 				formData.delete($(this).attr('name'));

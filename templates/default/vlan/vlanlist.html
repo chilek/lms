@@ -4,7 +4,7 @@
 
 <h1>{$pagetitle|escape}</h1>
 
-<table class="lmsbox lms-ui-background-cycle">
+<table class="lmsbox lms-ui-background-cycle lms-ui-datatable">
     <thead>
         <tr class="bold">
             <td>
@@ -22,15 +22,7 @@
             <td>
                 {icon name="netnode" label="Assigned Network node"}
             </td>
-            <td class="text-right" class="lms-ui-box-buttons" data-popup-menu-title="{trans('Sort by')}">
-                {buttons label="Sort by" type="button" icon="sorting"}
-                    {button type='link' icon="id" tip="ID" href="?m=vlanlist"}
-                    {button type='link' icon="vlan" tip="VLAN ID" href="?m=vlanlist&orderby=vlanid"}
-                    {button type='link' icon="description" tip="VLAN Description" href="?m=vlanlist&orderby=description"}
-                    {button type='link' icon="customer" tip="Customer ID" href="?m=vlanlist&orderby=customerid"}
-                    {button type='link' icon="netnode" tip="Network Node ID" href="?m=vlanlist&orderby=netnodeid"}
-                {/buttons}
-
+            <td class="text-right" class="lms-ui-box-buttons">
                 {button name="addvlan" id="addvlanbtn" icon="add" accesskey="v" label="Add" onclick="open_add_dialog()"}
             </td>
         </tr>
@@ -38,10 +30,10 @@
     <tbody>
         {foreach $vlanlist as $v}
         <tr class="highlight" data-template-id="{$v.id}">
-            <td>
+            <td data-order="{$v.id}">
                 {$v.id}
             </td>
-            <td data-template-vlanid="{$v.vlanid}">
+            <td data-template-vlanid="{$v.vlanid}" data-order="{$v.vlanid}">
                 {$v.vlanid}
             </td>
             <td data-template-description="{$v.description}" {tip text=$v.description}>

@@ -62,7 +62,7 @@ if (isset($_POST['ticket'])) {
         && !empty($ticket['verifierid']) && $ticket['verifierid'] == $ticket['owner']) {
         $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
         $error['owner'] = trans('Ticket verifier could not be the same as owner!');
-    };
+    }
 
     $deadline = datetime_to_timestamp($ticket['deadline']);
     if ($deadline && $deadline < time()) {
@@ -581,7 +581,7 @@ $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('customerid', $ticket['customerid']);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR));
 $SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE));
 $SMARTY->display('rt/rtticketadd.html');

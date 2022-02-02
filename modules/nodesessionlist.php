@@ -104,7 +104,7 @@ $where = array();
 if (!empty($type)) {
     $where[] = '(s.type & ' . intval($type) . ') > 0';
 }
-$where[] = 's.start > ' . $datefrom . ' AND s.stop < ' . $dateto;
+$where[] = 's.start > ' . $datefrom . ' AND s.start <= ' . $dateto . ' AND s.stop < ' . $dateto;
 
 if (!empty($filtertype)) {
     switch ($filtertype) {

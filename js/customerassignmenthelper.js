@@ -531,6 +531,9 @@ function tariffSelectionHandler() {
 
 	$('#a_promotions,#a_align_periods').toggle(val == -2);
 
+	$('#last-settlement').prop('disabled', $('#align-periods').prop('checked') && val == -2)
+		.closest('label').toggleClass('lms-ui-disabled', $('#align-periods').prop('checked') && val == -2);
+
 	$('#netflag, #tax, #taxcategory, #splitpayment').prop('disabled', false);
 	$('#a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
 
@@ -655,59 +658,62 @@ function tariffSelectionHandler() {
 
 $('#tariff-select').change(tariffSelectionHandler);
 
-var netFlagElem = $("#netflag");
-var netPriceElem = $("#netprice");
-var grossPriceElem = $("#grossprice");
-var invoiceElem = $("#invoice");
+const netFlagElem = $("#netflag");
+const netPriceElem = $("#netprice");
+const grossPriceElem = $("#grossprice");
+const invoiceElem = $("#invoice");
 
 function claculatePriceFromGross() {
-	var grossPriceElemVal = grossPriceElem.val();
-	if (grossPriceElem.val().length) {
-		var selectedTaxId = $("#tax").find('option:selected').val();
-		var tax = $('#tax' + selectedTaxId).val();
+	let grossPriceElemVal = grossPriceElem.val();
+	grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
 
-		var grossPrice = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
-		grossPrice = Math.round((grossPrice + Number.EPSILON) * 100) / 100;
+	if (!isNaN(grossPriceElemVal)) {
+		let selectedTaxId = $("#tax").find('option:selected').val();
+		let tax = $('#tax' + selectedTaxId).val();
 
-		var netPriceVal = Math.round(((grossPrice / (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
-		netPriceVal = netPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
-		netPriceElem.val(netPriceVal);
+		let grossPrice = financeDecimals.round(grossPriceElemVal);
+		let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
 
-		grossPrice = grossPrice.toFixed(2).toString().replace(/[\.]+/, ',');
+		netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+		netPriceElem.val(netPrice);
+
+		grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
 		grossPriceElem.val(grossPrice);
 	} else {
 		netPriceElem.val('');
-	}
-}
-
-function claculatePriceFromNet() {
-	var netPriceElemVal = netPriceElem.val();
-	if (netPriceElem.val().length) {
-		var selectedTaxId = $("#tax").find('option:selected').val();
-		var tax = $('#tax' + selectedTaxId).val();
-
-		var netPrice = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'));
-		netPrice = Math.round((netPrice + Number.EPSILON) * 100) / 100;
-
-		var grossPriceVal = Math.round(((netPrice * (tax / 100 + 1)) + Number.EPSILON) * 100) / 100;
-		grossPriceVal = grossPriceVal.toFixed(2).toString().replace(/[\.]+/, ',');
-		grossPriceElem.val(grossPriceVal);
-
-		netPrice = netPrice.toFixed(2).toString().replace(/[\.]+/, ',');
-		netPriceElem.val(netPrice);
-	} else {
 		grossPriceElem.val('');
 	}
 }
 
+function claculatePriceFromNet() {
+	let netPriceElemVal = netPriceElem.val();
+	netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
+
+	if (!isNaN(netPriceElemVal)) {
+		let selectedTaxId = $("#tax").find('option:selected').val();
+		let tax = $('#tax' + selectedTaxId).val();
+
+		let netPrice = financeDecimals.round(netPriceElemVal);
+		let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
+
+		grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+		grossPriceElem.val(grossPrice);
+
+		netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+		netPriceElem.val(netPrice);
+	} else {
+		grossPriceElem.val('');
+		netPriceElem.val('');
+	}
+}
+
 $('#netflag').on('change', function () {
-	var netFlagChecked = netFlagElem.is(':checked');
-	if (netFlagChecked) {
+	if (netFlagElem.is(':checked')) {
 		grossPriceElem.prop('disabled', true);
 		netPriceElem.prop('disabled', false);
 		claculatePriceFromNet();
 		invoiceElem.prop('required', true);
-		if (invoiceElem.val() == assignment_settings.DOC_DNOTE) {
+		if (invoiceElem.val() === assignment_settings.DOC_DNOTE) {
 			invoiceElem.val('');
 		}
 		invoiceElem.find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
@@ -721,8 +727,7 @@ $('#netflag').on('change', function () {
 });
 
 $("#tax").on('change', function () {
-	var netFlagChecked = netFlagElem.is(':checked');
-	if (netFlagChecked) {
+	if (netFlagElem.is(':checked')) {
 		claculatePriceFromNet();
 	} else {
 		claculatePriceFromGross();
@@ -760,3 +765,10 @@ $('#invoice').on('change', function () {
 		}
 	}
 });
+
+$('#align-periods').change(function() {
+	$('#last-settlement').prop({
+		"disabled": $(this).prop('checked'),
+		"checked": $(this).prop('checked') ? false : $('#last-settlement').prop('checked')
+	}).closest('label').toggleClass('lms-ui-disabled', $(this).prop('checked'));
+}).change();

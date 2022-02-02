@@ -277,6 +277,10 @@ $RT_RIGHTS = array(
     RT_RIGHT_INDICATOR => trans("Indicator (+R)"),
 );
 
+// helpdesk new message/note notification recipients
+define('RT_NOTIFICATION_USER', 1);
+define('RT_NOTIFICATION_VERIFIER', 2);
+
 //Helpdesk ticket source
 define('RT_SOURCE_UNKNOWN', 0);
 define('RT_SOURCE_PHONE', 1);
@@ -648,6 +652,13 @@ $DOCTYPES = array(
     DOC_COMPLAINT   =>  trans('complaint'),
     DOC_OTHER       =>  trans('other'),
 );
+
+// for all document types
+define('DOC_OPEN', 0);
+define('DOC_CLOSED', 1);
+// for document types < 0
+define('DOC_CLOSED_AFTER_CUSTOMER_SMS', 2);
+define('DOC_CLOSED_AFTER_CUSTOMER_SCAN', 3);
 
 define('DOC_FLAG_RECEIPT', 1);
 define('DOC_FLAG_TELECOM_SERVICE', 2);

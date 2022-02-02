@@ -146,7 +146,7 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    $documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
+    $documentedit['closed'] = isset($documentedit['closed']) ? DOC_CLOSED : DOC_OPEN;
     $documentedit['archived'] = isset($documentedit['archived']) ? 1 : 0;
     if ($documentedit['archived'] && !$documentedit['closed']) {
         $error['closed'] = trans('Cannot undo document confirmation while it is archived!');
@@ -196,15 +196,15 @@ if (isset($_POST['document'])) {
         ));
 
         if ($documentedit['closed']) {
-            if ($document['confirmdate'] == -1 && $document['closed'] < 2) {
-                $closed = 2;
-            } elseif ($document['closed'] == 3) {
-                $closed = 3;
+            if ($document['confirmdate'] == -1 && $document['closed'] < DOC_CLOSED_AFTER_CUSTOMER_SMS) {
+                $closed = DOC_CLOSED_AFTER_CUSTOMER_SMS;
+            } elseif ($document['closed'] == DOC_CLOSED_AFTER_CUSTOMER_SCAN) {
+                $closed = DOC_CLOSED_AFTER_CUSTOMER_SCAN;
             } else {
-                $closed = 1;
+                $closed = DOC_CLOSED;
             }
         } else {
-            $closed = 0;
+            $closed = DOC_OPEN;
         }
 
         $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
@@ -213,9 +213,15 @@ if (isset($_POST['document'])) {
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
             array(  $documentedit['type'],
-                    $closed == 1 && !$document['closed'] ? 0 : $closed,
-                    $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
-                    $documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? ($closed == DOC_OPEN && !$document['closed'] ? DOC_OPEN : $closed)
+                        : $document['closed'],
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0
+                        : $document['sdate'],
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? ($documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null)
+                        : $document['cuserid'],
                     !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
                     $allowed_archiving ? $documentedit['archived'] : $document['archived'],
                     $allowed_archiving
@@ -258,8 +264,8 @@ if (isset($_POST['document'])) {
 
         $DB->CommitTrans();
 
-        if ($closed == 1 && !$document['closed']) {
-            $LMS->CommitDocuments(array($documentedit['id']));
+        if ($closed > DOC_OPEN && !$document['closed']) {
+            $LMS->CommitDocuments(array($documentedit['id']), false, false);
         }
 
         $SESSION->redirect('?'.$SESSION->get('backto'));

@@ -141,12 +141,8 @@ class Sysinfo
                 $result = uptimef($sys_ticks);
                 break;
             case 'Darwin':
-            case 'NetBSD':
-                $a = $this->bsd_grab_key('kern.boottime');
-                $sys_ticks = time() - $a;
-                $result = uptimef($sys_ticks);
-                break;
             case 'OpenBSD':
+            case 'NetBSD':
                 $a = $this->bsd_grab_key('kern.boottime');
                 $sys_ticks = time() - $a;
                 $result = uptimef($sys_ticks);

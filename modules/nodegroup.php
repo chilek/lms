@@ -75,37 +75,15 @@ if ($action == 'delete') {
 } elseif (!empty($_POST['marks']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($_GET['groupid'])))) {
     foreach ($_POST['marks'] as $mark) {
         if ($action == 'unsetgroup') {
-            $params = array(
-            SYSLOG::RES_NODEGROUP => intval($_GET['groupid']),
-            SYSLOG::RES_NODE => $mark
-            );
-            if ($SYSLOG) {
-                $id = $DB->GetOne('SELECT id FROM nodegroupassignments WHERE nodegroupid=? AND nodeid=?', array_values($params));
-                $args = $params;
-                $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
-            }
-            $DB->Execute('DELETE FROM nodegroupassignments
-					WHERE nodegroupid = ? AND nodeid = ?', $params);
+            $LMS->deleteNodeGroupAssignment(array(
+                'nodeid' => $mark,
+                'nodegroupid' => intval($_GET['groupid']),
+            ));
         } elseif ($action == 'setgroup') {
-            if (!$DB->GetOne(
-                'SELECT 1 FROM nodegroupassignments
-					WHERE nodegroupid = ? AND nodeid = ?',
-                array(intval($_GET['groupid']), $mark)
-            )) {
-                $params = array(
-                SYSLOG::RES_NODEGROUP => intval($_GET['groupid']),
-                SYSLOG::RES_NODE => $mark
-                );
-                $DB->Execute('INSERT INTO nodegroupassignments 
-					(nodegroupid, nodeid) VALUES (?, ?)', array_values($params));
-                if ($SYSLOG) {
-                    $id = $DB->GetLastInsertID('nodegroupassignments');
-                    $args = $params;
-                    $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                    $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
-                }
-            }
+            $LMS->addNodeGroupAssignment(array(
+                'nodeid' => $mark,
+                'nodegroupid' => intval($_GET['groupid']),
+            ));
         }
     }
 } elseif (isset($_POST['nodeassignments']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($_GET['id']))) {

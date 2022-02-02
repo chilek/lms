@@ -231,8 +231,7 @@
 														onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);"}
 
 													<select size="1" name="nodeedit[netdev]" id="netdev" {tip trigger="netdev" class="lms-ui-advanced-select"}
-															{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}
-															onchange="change_netdevice(this.options[this.selectedIndex].value);">
+															{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}>
 														<option value="0"{if !$nodeinfo.netdev} selected{/if}>- {trans("no device")} -</option>
 														{foreach $netdevices as $netdev}
 															<option value="{$netdev.id}"
@@ -424,6 +423,8 @@
 											<span class="lms-ui-button" id="set_gps">
 												{trans("Determine GPS coordinates automatically")}
 											</span>
+											&nbsp;
+											{reset_to_defaults target="#longitude,#latitude"}
 										</td>
 									</tr>
 
@@ -604,7 +605,7 @@
 		$('#netdev').change(function() {
 			if (parseInt($('#linktype').val()) == {$smarty.const.LINKTYPE_WIRELESS}) {
 				$('#linktype,#radiosector,#linktechnology,#linkspeed').prop('disabled', true);
-				xajax_getRadioSectors(id, $('#linktechnology').val());
+				xajax_getRadioSectors($(this).val(), $('#linktechnology').val());
 			}
 		});
 

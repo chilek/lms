@@ -163,6 +163,21 @@
 	</TR>
 	<TR>
 		<td class="bold nobr">
+			<img src="img/calendar.gif">
+			{trans("Created:")}
+		</td>
+		<td>
+			{date_period_preset from="#createdfrom" to="#createdto" time=true}
+			{trans("from")}
+			<input type="text" name="search[createdfrom]" id="createdfrom" value="{$nodesearch.createdfrom}"
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+			{trans("to")}
+			<input type="text" name="search[createdto]" id="createdto" value="{$nodesearch.createdto}"
+				{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+		</td>
+	</TR>
+	<TR>
+		<td class="bold nobr">
 			<img src="img/calendar.gif"> {trans("Last online earlier than:")}
 		</td>
 		<td>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -291,6 +291,10 @@ if (isset($_POST['schema'])) {
         }
     }
 
+    if (!empty($schema['dateto']) && !empty($schema['datefrom']) && $schema['dateto'] < $schema['datefrom']) {
+        $error['dateto'] = trans('Incorrect date range!');
+    }
+
     if (!$error && !$warning) {
         $DB->BeginTrans();
 
@@ -299,10 +303,16 @@ if (isset($_POST['schema'])) {
             'description' => $schema['description'],
             'data' => empty($oldschema['assignmentcount']) || ConfigHelper::checkPrivilege('superuser') ? implode(';', $data) : $oldschema['data'],
             'length' => $length,
+            'datefrom' => $schema['datefrom'] ?: 0,
+            'dateto' => $schema['dateto'] ? strtotime('tomorrow', $schema['dateto']) - 1 : 0,
             SYSLOG::RES_PROMOSCHEMA => $schema['id'],
         );
-        $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?, length = ?
-			WHERE id = ?', array_values($args));
+        $DB->Execute(
+            'UPDATE promotionschemas
+            SET name = ?, description = ?, data = ?, length = ?, datefrom = ?, dateto = ?
+            WHERE id = ?',
+            array_values($args)
+        );
 
         if ($SYSLOG) {
             $args[SYSLOG::RES_PROMO] = $oldschema['promotionid'];

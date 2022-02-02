@@ -16,86 +16,108 @@
 
 </style>
 
-<H1>{$layout.pagetitle}</H1>
-<H3>{trans("Promotion:")} {$schema.promotionname}</H3>
-<FORM method="post" name="schemaadd" action="?m=promotionschemaadd&amp;id={$schema.promotionid}">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
+<h1>{$layout.pagetitle}</h1>
+<h3>{trans("Promotion:")} {$schema.promotionname}</h3>
+
+<form method="post" name="schemaadd" id="schemaadd" action="?m=promotionschemaadd&id={$schema.promotionid}">
+</form>
+
+<table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 		<col style="width: 98%;">
 	</colgroup>
-	<THEAD>
-	<TR>
-		<TD>
-			{icon name="money"}
-		</TD>
-		<TD class="bold">
-			{trans("Name:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="schema[name]" value="{$schema.name}" size="40" {tip text="Enter schema name" trigger="name" bold=1}>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD>
-			{icon name="calendar"}
-		</TD>
-		<TD class="bold">
-			{trans("Periods:")}
-		</TD>
-		<TD id="periodcont">
-			{foreach $schema.periods as $key => $period}
-				<SELECT name="schema[periods][]" {tip class="lms-ui-combobox" text="Select length of the period (in months)"}
-					data-value="{$period}">
-					{if !$key && count($schema.periods) == 1}
-						<OPTION value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</OPTION>
-					{/if}
-					{foreach $schema.selection as $item}
-						<OPTION value="{$item}"{if $period == $item} selected{/if}>{$item}</OPTION>
-					{/foreach}
-				</SELECT>
-			{/foreach}
-			{if count($schema.periods) < 2}
-				{$visible = false}
-			{else}
-				{$visible = true}
-			{/if}
-			{button type="link" icon="delete" tip="Delete" id="perioddel" visible=$visible}
-			{button type="link" icon="add" tip="Add" id="periodadd"}
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="info"}
-		</TD>
-		<TD class="bold">
-			{trans("Description:")}
-		</TD>
-		<TD>
-			<TEXTAREA name="schema[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="lms-ui-box-buttons" colspan="3">
-			<div class="lms-ui-box-button-container">
-				{button type="submit" iocn="save" label="Submit"}
-				{button icon="cancel" label="Cancel" href="?m=promotioninfo&amp;id={$schema.promotionid}"}
-				<label>
-					<INPUT type="checkbox" name="schema[reuse]" value="ON"{if $schema.reuse} checked{/if}>
-					{trans("Display this form again, when this schema is saved")}
-				</label>
-			</div>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
+	<thead>
+		<tr>
+			<td>
+				{icon name="money"}
+			</td>
+			<td>
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td>
+				<input type="text" name="schema[name]" value="{$schema.name|escape}" size="40" form="schemaadd"
+					{tip text="Enter schema name" trigger="name" bold=1} required>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td>
+				<strong>{trans("Periods")}</strong>
+			</td>
+			<td id="periodcont">
+				{foreach $schema.periods as $key => $period}
+					<select name="schema[periods][{$key}]" {tip class="lms-ui-combobox" text="Select length of the period (in months)"}
+						data-value="{$period}" form="schemaadd">
+						{if !$key && count($schema.periods) == 1}
+							<option value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</option>
+						{/if}
+						{foreach $schema.selection as $item}
+							<option value="{$item}"{if $period == $item} selected{/if}>{$item}</option>
+						{/foreach}
+					</select>
+				{/foreach}
+				{if count($schema.periods) < 2}
+					{$visible = false}
+				{else}
+					{$visible = true}
+				{/if}
+				{button type="link" icon="delete" tip="Delete" id="perioddel" visible=$visible}
+				{button type="link" icon="add" tip="Add" id="periodadd"}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="period"}
+			</td>
+			<td>
+				<strong>{trans("Period")}</strong>
+			</td>
+			<td>
+				{trans("from")}
+				<input type="text" name="schema[datefrom]" form="schemaadd"
+					value="{if $schema.datefrom}{$schema.datefrom}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}>
+				{trans("to")}
+				<input type="text" name="schema[dateto]" form="schemaadd"
+					value="{if $schema.dateto}{$schema.dateto}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="info"}
+			</td>
+			<td>
+				<strong>{trans("Description")}</strong>
+			</td>
+			<td>
+				<textarea name="schema[description]" cols="50" rows="5" form="schemaadd"
+					{tip text="Enter additional information (optional)"}>{$schema.description|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				<div class="lms-ui-box-button-container">
+					{button type="submit" icon="save" label="Submit" form="schemaadd"}
+					{button icon="cancel" label="Cancel" href="?m=promotioninfo&amp;id={$schema.promotionid}"}
+					<label>
+						<input type="checkbox" name="schema[reuse]" form="schemaadd"
+							value="ON"{if $schema.reuse} checked{/if}>
+						{trans("Display this form again, when this schema is saved")}
+					</label>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 <script>
 
@@ -112,7 +134,7 @@
 			}
 
 			comboboxes = $('#periodcont').children('.scombobox');
-			var select = $(comboboxes[comboboxes.length - 1]).find('select').clone();
+			var select = $(comboboxes[comboboxes.length - 1]).find('select').clone().attr('name', 'schema[periods][' + comboboxes.length + ']');
 			var del = $('#perioddel');
 			select.insertBefore(del);
 

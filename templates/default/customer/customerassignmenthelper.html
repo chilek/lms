@@ -1,4 +1,5 @@
 {$promotion_show_period_values = ConfigHelper::checkConfig('phpui.promotion_show_period_values')}
+{$promotion_schema_name_limit = intval(ConfigHelper::getConfig('phpui.promotion_schema_name_limit', 40))}
 
 <style>
 
@@ -145,25 +146,51 @@
 									{trans("Schema")}:
 								</TD>
 								<TD style="width: 98%;">
-									<SELECT size="1" name="{$variable_prefix}[schemaid]" id="promotion-select" {tip text="Select promotion schema" trigger="promotion-select"}>
+									<select size="1" name="{$variable_prefix}[schemaid]" id="promotion-select"
+										{tip text="Select promotion schema" trigger="promotion-select" class="lms-ui-advanced-select"}>
 										{if $promotion_only}
-										<option value="0">{trans("<!promotionschema>- none -")}</option>
+											<option value="0">{trans("<!promotionschema>- none -")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
-										<optgroup title="{$promotion.description|trunescape:512}"
-											label="{$promotion.name}" data-valid="{$promotion.valid}"
-											{if !$promotion.valid} class="blend"
-											{if !$variables.alltariffs} style="display: none;"{/if}{/if}
-										>
-										{foreach $promotion.schemas as $schemaid => $schema}
-										<OPTION title="{$schema.description|trunescape:512}"
-											value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if}
-											data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}
-										>{$schema.name|truncate:40:"&hellip;":true}</OPTION>
+											{if $promotion.valid || $promotion.datefrom > $smarty.now}
+												<optgroup title="{$promotion.description|trunescape:512}"
+													label="{strip}
+															{$promotion.name|escape}
+															{if !$promotion.valid && $promotion.datefrom > $smarty.now}
+																&nbsp;({trans("from")}&nbsp;{$promotion.datefrom|date_format:"%Y/%m/%d"})
+															{/if}
+														{/strip}"
+													data-valid="{$promotion.valid}"
+													{if !$promotion.valid}
+														class="blend" disabled
+														{if !$variables.alltariffs && $promotion.datefrom < $smarty.now}
+															style="display: none;"
+														{/if}
+													{/if}
+												>
+													{foreach $promotion.schemas as $schemaid => $schema}
+														{if $schema.valid || $schema.datefrom > $smarty.now}
+															<option title="{$schema.description|trunescape:512}"
+																value="{$schemaid}"
+																{if $variables.schemaid == $schemaid}
+																	selected
+																{/if}
+																data-valid="{if $promotion.valid && $schema.valid}1{else}0{/if}"
+																{if !$promotion.valid || !$schema.valid}
+																	class="blend" disabled
+																{/if}
+															>{strip}
+																{$schema.name|trunescape:$promotion_schema_name_limit}
+																{if !$schema.valid && $schema.datefrom > $smarty.now}
+																	&nbsp;({trans("from")}&nbsp;{$schema.datefrom|date_format:"%Y/%m/%d"})
+																{/if}
+															{/strip}</option>
+														{/if}
+													{/foreach}
+												</optgroup>
+											{/if}
 										{/foreach}
-										</optgroup>
-										{/foreach}
-									</SELECT>
+									</select>
 									<i id="promotion-schema-info" class="lms-ui-icon-info"></i>
 								</TD>
 							</TR>
@@ -199,7 +226,13 @@
 								<TD></TD>
 								<TD colspan="2">
 									{foreach $promotions as $promotionid => $promotion}
+										{if !$promotion.valid}
+											{continue}
+										{/if}
 										{foreach $promotion.schemas as $schemaid => $schema}
+											{if !$schema.valid}
+												{continue}
+											{/if}
 										<table class="promotion-table" id="schema{$schemaid}">
 											{foreach $schema.items as $label => $item}
 											<tr>
@@ -707,13 +740,15 @@
 						{if !$variables.id}
 						<br>
 						<label>
-							<INPUT type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"{if $variables['last-settlement']} checked{/if}>
+							<input type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"
+								id="last-settlement" {if $variables['last-settlement']} checked{/if}>
 							{trans("with settlement of last deficient period")}
 						</label>
 						<span id="a_align_periods">
 							<br>
 							<label>
-								<INPUT type="checkbox" name="{$variable_prefix}[align-periods]" value="1"{if $variables['align-periods']} checked{/if}>
+								<input type="checkbox" name="{$variable_prefix}[align-periods]" value="1"
+									id="align-periods" {if $variables['align-periods']} checked{/if}>
 								{trans("full calendar periods")}
 							</label>
 						</span>

@@ -385,6 +385,11 @@
 				{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
 					{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" tip="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 				{/if}
+				{if $ticket.watching}
+				    {button icon="unwatch" label="Stop watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=0"}
+				{else}
+				    {button icon="watch" label="Start watching" href="?m=rtqueueview&ticketid={$ticket.ticketid}&ticketwatching=1"}
+				{/if}
 				{button type="link-button" icon="clone" label="Clone" tip="Clone" href="?m=rtticketadd&ticketid={$ticket.ticketid}"}
 				{if $ticket.state != $smarty.const.RT_RESOLVED}
 					{button type="link-button" icon="childticket" label="Create secondary ticket" tip="Create secondary ticket" href="?m=rtticketadd&parentid={$ticket.ticketid}"}
@@ -404,73 +409,93 @@
 	</TBODY>
 </TABLE>
 
-{if $stats}
-<TABLE class="lmsbox lms-ui-tab-container">
-	<TBODY>
-	<TR>
-		<TD style="width: 1%;" class="dark bold nobr">
-			{icon name="helpdesk" label="Requests causes (last year)"}
-		</TD>
-		<TD style="width: 99%;" class="dark">
-			{trans("company's side")}: <span class="bold">{$stats.2.num|default:0}</span>,
-			{trans("customer's side")}: <span class="bold">{$stats.1.num|default:0}</span>,
-			{trans("unknown/other<!plural>")}: <span class="bold">{$stats.0.num|default:0}</span>,
-			{trans("all")}: <span class="bold">{$stats.0.num+$stats.1.num+$stats.2.num}</span>,
-			{button href="?m=rtsearch&amp;id={$customerinfo.id}" icon="helpdesk" label="Show tickets"}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-{/if}
+<div id="rtticketview-sortable" class="lms-ui-sortable-persistent">
 
-{if $customerinfo}
-<TABLE class="lmsbox lms-ui-tab-container">
-	<TBODY>
-	<TR>
-		<TD style="width: 1%;" class="dark bold nobr">
-			{icon name="customer" label="Customer"}
-		</TD>
-		<TD style="width: 1%;" class="dark nobr">
-			<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
-			{icon name="home"} {$customerinfo.address} &nbsp;{$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.phone}
-				<a class="phone_number" href="tel:{$customerinfo.phone|escape}">
-					{icon name="phone"}
-					{$customerinfo.phone|escape}
-				</a>
-				{Utils::createCallPhoneUrl($customerinfo.phone)}
-			{/if}
-			{icon name="money"} {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
-		</TD>
-		<TD style="width: 98%;" class="dark text-right red bold">
-			{if $customerinfo.groups}
-			({foreach from=$customerinfo.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customerinfo.groups)}, {/if}{/foreach})
-			{/if}
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-{/if}
+{block name="rtticketstats"}
+	{if $stats}
+	<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="rtticketstats">
+		<TBODY>
+		<TR>
+			<TD style="width: 1%;" class="dark bold nobr">
+				{icon name="helpdesk" label="Requests causes (last year)" class="lms-ui-sortable-handle"}
+			</TD>
+			<TD style="width: 99%;" class="dark">
+				{trans("company's side")}: <span class="bold">{$stats.2.num|default:0}</span>,
+				{trans("customer's side")}: <span class="bold">{$stats.1.num|default:0}</span>,
+				{trans("unknown/other<!plural>")}: <span class="bold">{$stats.0.num|default:0}</span>,
+				{trans("all")}: <span class="bold">{$stats.0.num+$stats.1.num+$stats.2.num}</span>,
+				{button href="?m=rtsearch&amp;id={$customerinfo.id}" icon="helpdesk" label="Show tickets"}
+			</TD>
+		</TR>
+		</TBODY>
+	</TABLE>
+	{/if}
 
-{if $customernodes}
-	{include file="customer/customernodesbox.html"}
-{/if}
+{/block}
+{block name="rtticketcustomer"}
+	{if $customerinfo}
+	<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="rtticketcustomer">
+		<TBODY>
+		<TR>
+			<TD style="width: 1%;" class="dark bold nobr">
+				{icon name="customer" label="Customer" class="lms-ui-sortable-handle"}
+			</TD>
+			<TD style="width: 1%;" class="dark nobr">
+				<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
+				{icon name="home"} {$customerinfo.address} &nbsp;{$customerinfo.zip} {$customerinfo.city}
+				{if $customerinfo.phone}
+					<a class="phone_number" href="tel:{$customerinfo.phone|escape}">
+						{icon name="phone"}
+						{$customerinfo.phone|escape}
+					</a>
+					{Utils::createCallPhoneUrl($customerinfo.phone)}
+				{/if}
+				{icon name="money"} {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
+			</TD>
+			<TD style="width: 98%;" class="dark text-right red bold">
+				{if $customerinfo.groups}
+				({foreach from=$customerinfo.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customerinfo.groups)}, {/if}{/foreach})
+				{/if}
+			</TD>
+		</TR>
+		</TBODY>
+	</TABLE>
+	{/if}
+{/block}
 
-{include file="rt/rtticketeventlist.html"}
+{block name="rtticketnodes"}
+	{if $customernodes}
+		{include file="customer/customernodesbox.html"}
+	{/if}
+{/block}
 
-{if $ticket.parentid}
-	{include file="rt/rtticketparentinfo.html"}
-{/if}
+{block name="rtticketeventlist"}
+	{include file="rt/rtticketeventlist.html"}
+{/block}
 
-{if $ticket.childtickets}
-	{include file="rt/rtticketchildren.html"}
-{/if}
+{block name="rtticketparentinfo"}
+	{if $ticket.parentid}
+		{include file="rt/rtticketparentinfo.html"}
+	{/if}
+{/block}
 
-{if $ticket.relatedtickets}
-	{include file="rt/rtticketrelatedlist.html"}
-{/if}
+{block name="rtticketchildren"}
+	{if $ticket.childtickets}
+		{include file="rt/rtticketchildren.html"}
+	{/if}
+{/block}
+
+{block name="rtticketrelated"}
+	{if $ticket.relatedtickets}
+		{include file="rt/rtticketrelatedlist.html"}
+	{/if}
+{/block}
+
+</div>
 
 <script>
+
+	restoreSortable('rtticketview-sortable', '{$rtticketview_sortable_order}');
 
 	$(function() {
 		$('#print-anchor').click(function() {
@@ -528,4 +553,3 @@
 	});
 
 </script>
-

@@ -1223,6 +1223,24 @@ class LMS
         return $manager->CompactNodeGroups();
     }
 
+    public function getNodeGroupIdByName($group_name)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->getNodeGroupIdByName($group_name);
+    }
+
+    public function addNodeGroupAssignment(array $params)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->addNodeGroupAssignment($params);
+    }
+
+    public function deleteNodeGroupAssignment(array $params)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->deleteNodeGroupAssignment($params);
+    }
+
     public function GetNetDevLinkedNodes($id)
     {
         $manager = $this->getNetDevManager();
@@ -1387,6 +1405,12 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->SuspendAssignment($id, $suspend);
+    }
+
+    public function toggleAssignmentSuspension($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->toggleAssignmentSuspension($id);
     }
 
     public function GetInvoiceList(array $params)
@@ -1958,6 +1982,12 @@ class LMS
         return $manager->GetModelList($pid);
     }
 
+    public function getNetDevTypes()
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevTypes();
+    }
+
     public function GetRadioSectors($netdevid, $technology = 0)
     {
         $manager = $this->getNetDevManager();
@@ -2273,6 +2303,12 @@ class LMS
     {
         $manager = $this->getHelpdeskManager();
         return $manager->TicketChange($ticketid, $props);
+    }
+
+    public function changeTicketWatching($ticketid, $watching)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->changeTicketWatching($ticketid, $watching);
     }
 
     public function GetQueueCategories($queueid)
@@ -2997,7 +3033,10 @@ class LMS
         $msg_len = mb_strlen($message);
 
         if (!$msg_len) {
-            return trans('SMS message is empty!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('SMS message is empty!')),
+            );
         }
 
         $debug_phone = isset($sms_options['debug_phone']) ? $sms_options['debug_phone'] : ConfigHelper::getConfig('sms.debug_phone');
@@ -3013,7 +3052,10 @@ class LMS
             ? $sms_options['phone_number_validation_pattern']
             : ConfigHelper::getConfig('sms.phone_number_validation_pattern', '', true);
         if (!empty($phone_number_validation_pattern) && !preg_match('/' . $phone_number_validation_pattern . '/', $number)) {
-            return trans('Phone number validation failed!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('Phone number validation failed!')),
+            );
         }
 
         // add prefix to the number if needed
@@ -3050,7 +3092,10 @@ class LMS
 
         $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
         if (empty($service)) {
-            return trans('SMS "service" not set!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('SMS "service" not set!')),
+            );
         }
 
         $errors = array();
@@ -3072,11 +3117,20 @@ class LMS
                 if (is_string($data['result'])) {
                     $errors[] = $data['result'];
                     continue;
+                } elseif (isset($data['result']['status'])) {
+                    if ($data['result']['status'] == MSG_ERROR) {
+                        $errors = array_merge($errors, $data['result']['errors']);
+                        continue;
+                    } else {
+                        return $data['result'];
+                    }
                 } elseif (is_array($data['result'])) {
                     $errors = array_merge($errors, $data['result']);
                     continue;
                 } else {
-                    return $data['result'];
+                    return array(
+                        'status' => $data['result'],
+                    );
                 }
             }
 
@@ -3137,13 +3191,19 @@ class LMS
                         continue 2;
                     }
 
-                    return MSG_NEW;
+                    return array(
+                        'status' => MSG_NEW,
+                    );
                 default:
                     $errors[] = trans('Unknown SMS service!');
                     continue 2;
             }
         }
-        return implode(', ', $errors);
+
+        return array(
+            'status' => MSG_ERROR,
+            'errors' => $errors,
+        );
     }
 
     public function GetMessages($customerid, $limit = null)
@@ -3314,10 +3374,10 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
-    public function CommitDocuments(array $ids, $userpanel = false)
+    public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
         $manager = $this->getDocumentManager();
-        return $manager->CommitDocuments($ids, $userpanel);
+        return $manager->CommitDocuments($ids, $userpanel, $check_close_flag);
     }
 
     public function NewDocumentCustomerNotifications(array $document)
@@ -4769,32 +4829,68 @@ class LMS
                 'cdate' => $doc['cdate'] + date('Z'),
                 'customerid' => $doc['customerid'],
             ));
-            $body = preg_replace('/%invoice/', $invoice_number, $body);
-            $body = preg_replace('/%balance/', moneyf($this->GetCustomerBalance($doc['customerid']), Localisation::getCurrentCurrency()), $body);
-            $body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
-            $body = str_replace('\n', "\n", $body);
-            $subject = preg_replace('/%invoice/', $invoice_number, $subject);
-            $doc['name'] = '"' . $doc['name'] . '"';
 
-            $body = preg_replace(
-                '/%bankaccount/',
-                format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
+            $deadline = $doc['cdate'] + $document['document']['paytime'] * 86400;
+
+            $balance = $this->GetCustomerBalance($doc['customerid']);
+            $currency = Localisation::getCurrentCurrency();
+
+            if ($balance < 0) {
+                $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$balance, $currency));
+            } elseif ($balance > 0) {
+                $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($balance, $currency));
+            } else {
+                $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
+            }
+
+            list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+
+            $body = str_replace(
+                array(
+                    '%invoice',
+                    '%balance',
+                    '%commented_balance',
+                    '%today',
+                    '\n',
+                    '%bankaccount',
+                    '%deadline-y',
+                    '%deadline-m',
+                    '%deadline-d',
+                    '%deadline_month_name',
+                    '%pin',
+                    '%cid',
+                    '%lastday',
+                    // invoices, debit notes
+                    '%value',
+                    '%cdate-y',
+                    '%cdate-m',
+                    '%cdate-d',
+
+                ),
+                array(
+                    $invoice_number,
+                    moneyf($balance, $currency),
+                    $commented_balance,
+                    $year . '-' . $month . '-' . $day,
+                    "\n",
+                    format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
+                    strftime("%Y", $deadline),
+                    strftime("%m", $deadline),
+                    strftime("%d", $deadline),
+                    strftime("%B", $deadline),
+                    $document['document']['customerpin'],
+                    $doc['customerid'],
+                    strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+                    moneyf($document['document']['total'], $document['document']['currency']),
+                    strftime("%Y", $document['document']['cdate']),
+                    strftime("%m", $document['document']['cdate']),
+                    strftime("%d", $document['document']['cdate']),
+                ),
                 $body
             );
-            $deadline = $doc['cdate'] + $document['document']['paytime'] * 86400;
-            $body = preg_replace('/%deadline-y/', strftime("%Y", $deadline), $body);
-            $body = preg_replace('/%deadline-m/', strftime("%m", $deadline), $body);
-            $body = preg_replace('/%deadline-d/', strftime("%d", $deadline), $body);
-            $body = preg_replace('/%deadline_month_name/', strftime("%B", $deadline), $body);
-            $body = preg_replace('/%pin/', $document['document']['customerpin'], $body);
-            $body = preg_replace('/%cid/', $doc['customerid'], $body);
-            // invoices, debit notes
-            $body = preg_replace('/%value/', moneyf($document['document']['total'], $document['document']['currency']), $body);
-            $body = preg_replace('/%cdate-y/', strftime("%Y", $document['document']['cdate']), $body);
-            $body = preg_replace('/%cdate-m/', strftime("%m", $document['document']['cdate']), $body);
-            $body = preg_replace('/%cdate-d/', strftime("%d", $document['document']['cdate']), $body);
-            list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
-            $body = preg_replace('/%lastday/', strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $body);
+
+            $subject = preg_replace('/%invoice/', $invoice_number, $subject);
+            $doc['name'] = '"' . $doc['name'] . '"';
 
             $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents);
 

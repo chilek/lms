@@ -444,6 +444,18 @@
 												</div>
 											</td>
 										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_customer_notification_attachments">
+													{trans("Send document to customer")}
+												</label>
+											</td>
+											<td>
+												<input type="checkbox" name="moduleconfig[document_approval_customer_notification_attachments]"
+													id="document_approval_customer_notification_attachments"
+													{if !empty($moduleconfig.document_approval_customer_notification_attachments)} checked{/if}>
+											</td>
+										</tr>
 									</table>
 								</fieldset>
 							</td>

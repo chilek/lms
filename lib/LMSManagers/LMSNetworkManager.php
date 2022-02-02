@@ -288,7 +288,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 $sqlord = ' ORDER BY online';
                 break;
             case 'vlanid':
-                $sqlord = ' ORDER BY vlanid';
+                $sqlord = ' ORDER BY vl.vlanid';
                 break;
         }
 
@@ -327,7 +327,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         break;
 
                     case 'vlanid':
-                        $sqlwhere .= " vlanid = " . $v . " " . $search['operatorType'];
+                        $sqlwhere .= " vl.vlanid = " . $v . " " . $search['operatorType'];
                         break;
 
                     case 'gateway':

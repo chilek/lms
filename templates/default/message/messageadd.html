@@ -540,6 +540,7 @@
 			Supported substitutions/variables:<br>
 			<strong>%customer</strong> - customer first name and last name or name,<br>
 			<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>
+			<strong>%commented_balance</strong> - customer total balance as absolute value with text comment explaining customer billing status,<br>
 			<strong>%b</strong> - customer expired liability balance amount to pay,<br>
 			<strong>%totalb</strong> - customer total balance amount to pay,<br>
 			<strong>%B</strong>, <strong>%saldo</strong> - customer expired liability balance,<br>
@@ -771,9 +772,7 @@
 			).done(function (data) {
 				var confirmThreshold = {intval(ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50))};
 				if (data.recipients <= confirmThreshold) {
-					if (data.recipients > 0) {
-						$('#message').submit();
-					}
+					$('#message').submit();
 				} else {
 					var violationType = '{ConfigHelper::getConfig('phpui.send_message_limit_violation_type', 'warning')}';
 					switch (violationType) {

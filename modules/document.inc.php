@@ -56,7 +56,7 @@ function GenerateAttachmentHTML($template_dir, $engine, $selected)
             }
             if (is_readable($file)) {
                 $output[] = '<label>'
-                . '<input type="checkbox" value="1" name="document[attachments][' . $label . ']"'
+                . '<input type="checkbox" value="1" name="document[attachments][' . htmlspecialchars($label) . ']"'
                     . (isset($selected[$label]) ? ' checked' : '') . '>'
                 . $label
                 . '</label>';
@@ -155,7 +155,12 @@ function GetDocumentTemplates($rights, $type = null)
     ob_end_clean();
 
     if (!empty($docengines)) {
-        ksort($docengines);
+        uasort($docengines, function ($a, $b) {
+            if ($a['title'] == $b['title']) {
+                return 0;
+            }
+            return $a['title'] < $b['title'] ? -1 : 1;
+        });
     }
 
     return $docengines;
@@ -166,7 +171,16 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     global $SMARTY;
 
     $DB = LMSDB::getInstance();
-    $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
+    $rights = $DB->GetCol(
+        'SELECT doctype
+        FROM docrights
+        WHERE userid = ?
+            AND (rights & ?) > 0',
+        array(
+            Auth::GetCurrentUser(),
+            DOCRIGHT_CREATE,
+        )
+    );
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
     $SMARTY->assign('docengines', $docengines);

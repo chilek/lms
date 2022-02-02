@@ -230,8 +230,10 @@ switch ($type) {
 
         if ($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid,
                     c.value AS value, c.currency, c.currencyvalue,
-					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
+					taxes.label AS taxlabel, c.customerid, comment, c.type AS type,
+                    cs.name AS sourcename
 					FROM cash c
+					LEFT JOIN cashsources cs ON cs.id = c.sourceid
 					LEFT JOIN taxes ON (taxid = taxes.id) '
                     .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid)  ' : '')
                     .'WHERE time <= ? '
@@ -268,6 +270,7 @@ switch ($type) {
                 $list[$x]['currencyvalue'] = $row['currencyvalue'];
                 $list[$x]['taxlabel'] = $row['taxlabel'];
                 $list[$x]['time'] = $row['time'];
+                $list[$x]['sourcename'] = $row['sourcename'];
                 $list[$x]['comment'] = $row['comment'];
                 $list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
@@ -319,7 +322,15 @@ switch ($type) {
             $output = $SMARTY->fetch('print/printbalancelist.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
-            $SMARTY->display('print/printbalancelist.html');
+            if (isset($_POST['disposition']) && $_POST['disposition'] == 'csv') {
+                $filename = 'history-' . date('YmdHis') . '.csv';
+                header('Content-Type: text/plain; charset=utf-8');
+                header('Content-Disposition: attachment; filename=' . $filename);
+                header('Pragma: public');
+                $SMARTY->display('print/printbalancelist-csv.html');
+            } else {
+                $SMARTY->display('print/printbalancelist.html');
+            }
         }
         break;
 

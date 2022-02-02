@@ -1,4 +1,6 @@
 {block name=eventlistfilter}
+{$hide_disabled_users = ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')}
 	<TR>
 		<TD colspan="6" class="text-center nobr no-print">
 			<A href="?m=eventlist&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
@@ -37,13 +39,18 @@
 									data-exclusive>- {trans("unassigned")} -
 							</OPTION>
 							{foreach $userlist as $user}
-								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') || (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access) || is_array($filter.owner) && in_array($user.id, $filter.owner)}
-									<OPTION value="{$user.id}"
-										{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
-										{if !$user.access} data-crossed{/if}>
-											{$user.rname|trunescape:40} ({$user.login})
-									</OPTION>
+								{if (!is_array($filter.owner) || !in_array($user.id, $filter.owner))
+									&& ($hide_disabled_users && !$user.access
+										|| $hide_deleted_users && $user.deleted)}
+									{continue}
 								{/if}
+								<option value="{$user.id}"
+									{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
+									{if !$user.access} data-blend{/if}
+									{if $user.deleted} data-crossed{/if}
+								>{strip}
+									{$user.rname|trunescape:40} ({$user.login})
+								{/strip}</option>
 							{/foreach}
 						</SELECT>
 						{trans("Privacy:")}

@@ -879,10 +879,18 @@ function GusApiFinished(fieldPrefix, details) {
 }
 
 function osm_get_zip_code(search, on_success) {
+	var street;
+	if (search.street.length) {
+		var chunks = search.street.split(' ');
+		chunks.shift();
+		street = chunks.join(' ') + ' ';
+	} else {
+		street = '';
+	}
 	var data = {
 		format: 'json',
 		city: search.city,
-		street: search.house + (search.street.length ? ' ' + search.street : ''),
+		street: street + search.house,
 		addressdetails: 1
 	}
 	if (search.countryid.length) {
@@ -984,3 +992,38 @@ function unescapeHtml(text) {
 
 	return text.replace(/&(amp|lt|gt|quot|#039);/g, function(m) { return map[m]; });
 }
+
+// dedicated to financial calculations on decimals
+var financeDecimals = {
+	isRound: function(n,p){
+		let l = n.toFixed(20).replace(/\.?0+$/,"").split('.')[1].length;
+		return (p >= l);
+	},
+	round: function(n, p=2) {
+		if (Number.isInteger(n) || this.isRound(n,p)) {
+			return n;
+		}
+		let r = 0.5 * Number.EPSILON * n;
+		let o = 1; while(p-- > 0) o *= 10;
+		if (n<0) {
+			o *= -1;
+		}
+		return Math.round((n + r) * o) / o;
+	},
+	ceil: function(n, p=2) {
+		if(Number.isInteger(n) || this.isRound(n,p)) {
+			return n;
+		}
+		let r = 0.5 * Number.EPSILON * n;
+		let o = 1; while(p-- > 0) o *= 10;
+		return Math.ceil((n + r) * o) / o;
+	},
+	floor: function(n, p=2) {
+		if(Number.isInteger(n) || this.isRound(n,p)) {
+			return n;
+		}
+		let r = 0.5 * Number.EPSILON * n;
+		let o = 1; while(p-- > 0) o *= 10;
+		return Math.floor((n + r) * o) / o;
+	}
+};

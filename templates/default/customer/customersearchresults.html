@@ -95,7 +95,7 @@
 			{if $customerlist[customerlist].account}
 				<img src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt=""
 					class="lms-ui-hint-rollover"
-					data-url="?m=customerinfoshort&id={$customerlist[customerlist].id}">
+					data-url="?m=nodelistshort&id={$customerlist[customerlist].id}">
 			{/if}
 		</TD>
 		<TD class="text-right valign-top nobr">
@@ -308,6 +308,13 @@
 						alertDialog($t("<!customersearch>Customer group with specified name already exists!"), $('#newcustomergroup'));
 						return false;
 					}
+					{literal}
+					if (!newgroup.match(/^[\._\-0-9\p{L}]+$/iu)) {
+						alertDialog($t("Invalid chars in group name!"), $('#newcustomergroup'));
+						return false;
+					}
+					{/literal}
+
 					action = '?m=customergroup&oper=addtogroups';
 					break;
 			}

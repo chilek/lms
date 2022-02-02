@@ -73,7 +73,7 @@
 				<br>
 				<span class='blend'><strong>{trans("Expired assignment")}</strong></span>
 				<br>
-				<span class='lms-ui-assignment-not-commited'><strong>{trans("Assignment from not approved document")}</strong></span>"
+				<span class='lms-ui-assignment-not-commited'><strong>{trans("Assignment from not approved document")}</strong></span>
 			{/capture}
 			{hint text=$assignment_hint}
 		{/tab_header_cell}
@@ -164,11 +164,15 @@
 			{foreach $assignments as $a}
 			{block name=$tab_id|cat:"-list-row"}
 			<div class="lms-ui-tab-table-row
-				{if ($a.dateto < $today && $a.dateto && $a.periodvalue != $smarty.const.DISPOSABLE) || ($a.at < $today && $a.at > 365 && $a.periodvalue == $smarty.const.DISPOSABLE)}
+				{if ($a.dateto < $today && $a.dateto && ($a.periodvalue != $smarty.const.DISPOSABLE
+						|| (empty($a.tariffid) && empty($a.liabilityid))))
+					|| ($a.at < $today && $a.at > 365 && $a.periodvalue == $smarty.const.DISPOSABLE)}
 					blend
 				{elseif $a.suspended}
 					suspended
-				{elseif ($a.datefrom > $today && $a.datefrom && $a.periodvalue != $smarty.const.DISPOSABLE) || ($a.periodvalue == $smarty.const.DISPOSABLE && $a.at > $today)}
+				{elseif ($a.datefrom > $today && $a.datefrom && ($a.periodvalue != $smarty.const.DISPOSABLE
+						|| (empty($a.tariffid) && empty($a.liabilityid))))
+					|| ($a.periodvalue == $smarty.const.DISPOSABLE && $a.at > $today)}
 					alertblend
 				{/if}
 				{if !$a.commited}
@@ -435,7 +439,7 @@
 					{/if}
 
 					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
+						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}"
 							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
 					{/if}
 					{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
@@ -522,6 +526,7 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
+				{button class="suspend-assignments" icon="wait" label="Suspend/Enable"}
 				{button class="delete-assignments" icon="delete" label="Delete"}
 				<label>
 					{trans("Check All")}
@@ -534,7 +539,7 @@
 	{/tab_contents}
 {/tab_container}
 
-<SCRIPT>
+<script>
 
 	if (typeof(tariff_types) === 'undefined') {
 		var tariff_types = [];
@@ -780,7 +785,7 @@
 		tab_elem.find('.delete-assignments').click(function() {
 			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
 				confirmDialog($t("Are you sure, you want to delete selected liabilities?"), this).done(function () {
-					$('form[name=customerassignments]').submit();
+					$('#{$tab_id}-form').attr('action', '?m=customerassignmentdel').submit();
 				});
 			}
 		});
@@ -791,6 +796,14 @@
 						location.href = '?m=customerassignmentdel&cid=' + $(this).prev().val();
 					});
 			return false;
+		});
+
+		tab_elem.find('.suspend-assignments').click(function() {
+			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
+				confirmDialog($t("Are you sure, you want to change suspension state of selected liabilities?"), this).done(function () {
+					$('#{$tab_id}-form').attr('action', '?m=customerassignmentedit&action=suspend&cid={$customerinfo.id}').submit();
+				});
+			}
 		});
 
 		function updateDataset (datasetFilter) {
@@ -828,4 +841,4 @@
 		});
 	});
 
-</SCRIPT>
+</script>

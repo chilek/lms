@@ -17,6 +17,10 @@
 				<i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}priority{else}search{/if}"></i>
 			</a>
 		{/if}
+
+		{if $ticket.watching}
+			{icon name="watch"}
+		{/if}
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">
 		<span class="lms-ui-hint-toggle" data-url="?m=rtticketinfo&id={$ticket.id}">

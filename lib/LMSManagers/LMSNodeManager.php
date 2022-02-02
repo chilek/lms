@@ -316,6 +316,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *              project - project id (default: null = any), special values are supported:
      *                  -2 = without project,
      *                  -1 = project id is ignored,
+     *              createdfrom - node created after this date (default: null = ignore),
+     *              createdto - node created before this date (default: null = ignore),
      *              lastonlinebefore - last online earlier than (default: null = ignore), single integer value,
      *              lastonlineafter - last online later than (default: null = ignore), single integer value,
      *      sqlskey - sql field operator (default: 'AND') - text value; used on some fields (not all);
@@ -444,6 +446,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 										WHERE LOWER(nd.name) ?LIKE? ' . $this->db->Escape("%$value%") . '
 									)';
                             }
+                            break;
+                        case 'createdfrom':
+                            $searchargs[] = 'n.creationdate >= ' . intval($value);
+                            break;
+                        case 'createdto':
+                            $searchargs[] = 'n.creationdate <= ' . intval($value);
                             break;
                         case 'lastonlinebefore':
                             $searchargs[] = 'n.lastonline <= ' . intval($value);

@@ -128,7 +128,7 @@ if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets
         $alltickets = !empty($_GET['alltickets']);
     } else {
         $alltickets = ConfigHelper::checkConfig('phpui.default_show_closed_tickets');
-    };
+    }
     if (empty($alltickets)) {
         $params['state'] = -1;
     }

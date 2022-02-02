@@ -88,8 +88,15 @@ $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters'
 
 $customeradd = array();
 
+$natural_person_required_properties = ConfigHelper::getConfig('phpui.natural_person_required_properties', '', true);
+$natural_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $natural_person_required_properties));
+$legal_person_required_properties = ConfigHelper::getConfig('phpui.legal_person_required_properties', '', true);
+$legal_person_required_properties = array_flip(preg_split('/([\s]+|[\s]*,[\s]*)/', $legal_person_required_properties));
+
 if (isset($_POST['customeradd'])) {
     $customeradd = $_POST['customeradd'];
+
+    $required_properties = $customeradd['type'] == CTYPES_COMPANY ? $legal_person_required_properties : $natural_person_required_properties;
 
     $contacttypes = array_keys($CUSTOMERCONTACTTYPES);
     foreach ($contacttypes as &$contacttype) {
@@ -169,7 +176,7 @@ if (isset($_POST['customeradd'])) {
         }
     }
 
-    if ($customeradd['ten'] !='') {
+    if ($customeradd['ten'] != '') {
         if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
             $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
             $customeradd['tenwarning'] = 1;
@@ -197,6 +204,8 @@ if (isset($_POST['customeradd'])) {
                 }
                 break;
         }
+    } elseif (isset($required_properties['ten'])) {
+        $error['ten'] = trans('Missed required TEN identifier!');
     }
 
     if ($customeradd['ssn'] != '') {
@@ -227,11 +236,15 @@ if (isset($_POST['customeradd'])) {
                 }
                 break;
         }
+    } elseif (isset($required_properties['ssn'])) {
+        $error['ssn'] = trans('Missed required SSN identifier!');
     }
 
     if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
         $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
         $icnwarning = 1;
+    } elseif ($customeradd['icn'] == '' && isset($required_properties['icn'])) {
+        $error['icn'] = trans('Missed required Identity Card Number!');
     }
 
     if ($customeradd['regon'] != '' && !check_regon($customeradd['regon'])) {
@@ -402,6 +415,8 @@ $customeradd = $hook_data['customeradd'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
+$SMARTY->assign('legal_person_required_properties', $legal_person_required_properties);
+$SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {

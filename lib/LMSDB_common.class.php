@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2021072900'); // here should be always the newest version of database!
+define('DBVERSION', '2022012000'); // here should be always the newest version of database!
 
 /**
  *
@@ -561,9 +561,9 @@ abstract class LMSDB_common implements LMSDBInterface
                 $inputarray[$k] = $this->_quote_value($v);
             }
 
-            $query = str_replace('%', '%%', $query); //escape params like %some_value%
+            $query = str_replace('%', '[lms_percentage_placeholder]', $query); //escape params like %some_value%
             $query = vsprintf(str_replace('?', '%s', $query), $inputarray);
-            $query = str_replace('%%', '%', $query);
+            $query = str_replace('[lms_percentage_placeholder]', '%', $query);
         }
 
         return $query;

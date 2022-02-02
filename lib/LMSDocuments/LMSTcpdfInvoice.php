@@ -612,7 +612,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $show_balance_summary ? 'Invoice value: $a' : 'To repay: $a',
+                    'Invoice value: $a (to repay)',
                     moneyf($this->data['value'], $this->data['currency'])
                 ),
                 0,
@@ -631,7 +631,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $show_balance_summary ? 'Invoice value: $a' : 'To pay: $a',
+                    'Invoice value: $a (to pay)',
                     moneyf($this->data['value'], $this->data['currency'])
                 ),
                 0,
@@ -651,30 +651,30 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
     }
 
-    protected function invoice_balance($expired = false)
+    protected function invoice_balance()
     {
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
 
         $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
 
-        if ($expired || $show_balance_summary) {
-            $lms = LMS::getInstance();
-            $expired_balance = $balance = $lms->getCustomerBalance($this->data['customerid'], $this->data['cdate'] + 1, true);
-        }
-
-        if (!$expired || $show_balance_summary) {
-            $total_balance = $balance = $this->data['customerbalance'];
-        }
-
-        if ($balance > 0) {
-            $comment = trans('(excess payment)');
-        } elseif ($expired_balance < 0) {
-            $comment = trans('(underpayment)');
-        } else {
-            $comment = '';
-        }
+        $balance = $this->data['customerbalance'];
 
         if ($show_balance_summary) {
+            if (isset($this->data['invoice']) && $this->data['doctype'] == DOC_CNOTE) {
+                $total = $this->data['total'] - $this->data['invoice']['total'];
+            } else {
+                $total = $this->data['total'];
+            }
+            $previous_balance = $balance + $total;
+
+            if ($previous_balance > 0) {
+                $comment = trans('(excess payment)');
+            } elseif ($previous_balance < 0) {
+                $comment = trans('(to pay)');
+            } else {
+                $comment = '';
+            }
+
             $this->backend->writeHTMLCell(
                 0,
                 0,
@@ -682,7 +682,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 trans(
                     'Previous balance: $a $b',
-                    moneyf(abs($expired_balance) / $this->data['currencyvalue'], $this->data['currency']),
+                    moneyf(abs($previous_balance) / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ),
                 0,
@@ -692,6 +692,14 @@ class LMSTcpdfInvoice extends LMSInvoice
                 'L'
             );
         } else {
+            if ($balance > 0) {
+                $comment = trans('(excess payment)');
+            } elseif ($balance < 0) {
+                $comment = trans('(to pay)');
+            } else {
+                $comment = '';
+            }
+
             if ($this->use_alert_color) {
                 $this->backend->SetTextColorArray(array(255, 0, 0));
             }
@@ -701,7 +709,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $expired ? 'Your balance without unexpired invoices: $a $b' : 'Your balance on date of invoice issue: $a $b',
+                    'Your balance on date of invoice issue: $a $b',
                     moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ),
@@ -714,6 +722,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             if ($this->use_alert_color) {
                 $this->backend->SetTextColor();
             }
+            $this->backend->writeHTMLCell(0, 0, '', '', trans('Balance includes current invoice'), 0, 1, 0, true, 'L');
         }
 
         if ($show_balance_summary) {
@@ -726,10 +735,15 @@ class LMSTcpdfInvoice extends LMSInvoice
                 0,
                 '',
                 '',
-                trans(
-                    'Total to pay: $a',
-                    moneyf($total_balance >= 0 ? 0 : (-$total_balance / $this->data['currencyvalue']), $this->data['currency'])
-                ),
+                $balance > 0
+                    ? trans(
+                        'Excess payment: $a',
+                        moneyf($balance / $this->data['currencyvalue'], $this->data['currency'])
+                    )
+                    : trans(
+                        'Total to pay: $a',
+                        moneyf(-$balance / $this->data['currencyvalue'], $this->data['currency'])
+                    ),
                 0,
                 1,
                 0,
@@ -739,8 +753,6 @@ class LMSTcpdfInvoice extends LMSInvoice
             if ($this->use_alert_color) {
                 $this->backend->SetTextColor();
             }
-        } elseif (!$expired) {
-            $this->backend->writeHTMLCell(0, 0, '', '', trans('Balance includes current invoice'), 0, 1, 0, true, 'L');
         }
     }
 
@@ -918,13 +930,25 @@ class LMSTcpdfInvoice extends LMSInvoice
             'customerid' => $this->data['customerid'],
         ));
 
+        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+            || empty($this->data['bankaccounts'])) {
+            $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
+        } else {
+            $accounts = array();
+        }
+        if (ConfigHelper::checkConfig('invoices.show_all_accounts')
+            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+            $accounts = array_merge($accounts, $this->data['bankaccounts']);
+        }
+        $account = reset($accounts);
+
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
             . '|'
             . 'PL'
             . '|'
-            . bankaccount($this->data['customerid'], $this->data['account'])
+            . $account
             . '|'
             . str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT)
             . '|'
@@ -962,11 +986,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $this->invoice_balance();
-        }
-        if (ConfigHelper::checkConfig('invoices.show_expired_balance')) {
-            $this->invoice_balance(true);
         }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
             $this->invoice_qr2pay_code();
@@ -1052,6 +1074,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
             $payment_value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
+            $payment_barcode = trans('Customer ID: $a', $customerid);
         } else {
             $payment_value = $this->data['value'];
             $payment_barcode = $payment_docnumber;
@@ -1066,6 +1089,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             'paytype' => $this->data['paytype'],
             'pdate' => $this->data['pdate'],
             'barcode' => $payment_barcode,
+            'division_shortname' => $this->data['division_shortname'],
+            'division_name' => $this->data['division_name'],
+            'division_address' => $this->data['division_address'],
+            'division_zip' => $this->data['division_zip'],
+            'division_city' => $this->data['division_city'],
+            'division_countryid' => $this->data['division_countryid'],
+            'division_ten' => $this->data['division_ten'],
         );
         $tranferform_data = $transferform->SetCustomData($tranferform_common_data, $tranferform_custom_data);
 
@@ -1097,11 +1127,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))) {
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $this->invoice_balance();
-        }
-        if (ConfigHelper::checkConfig('invoices.show_expired_balance')) {
-            $this->invoice_balance(true);
         }
         if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
             $this->invoice_qr2pay_code();

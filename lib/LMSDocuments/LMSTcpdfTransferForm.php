@@ -341,7 +341,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $division = $LMS->GetDivision($divisionid);
 
         $this->data['customerinfo'] = $customerinfo;
-        $this->data['$division'] = $division;
+        $this->data['division'] = $division;
 
         // division data
         $this->data['division_name'] = $division['name'];
@@ -385,7 +385,8 @@ class LMSTcpdfTransferForm extends LMSDocument
 
     public function Draw($data, $translateX = 0, $translateY = 0, $scale = 100, $scaleX = 0, $scaleY = 0)
     {
-        parent::Draw($data);
+        $this->data = $data;
+
         $this->backend->StartTransform();
         $this->backend->ScaleXY($scale, $scaleX, $scaleY);
         $this->backend->Translate($translateX, $translateY);

@@ -37,6 +37,17 @@ switch (intval($_POST['customer_type'])) {
         $ctype = -1; //all
 }
 
+switch (intval($_POST['customer_ten'])) {
+    case 1:
+        $ctenwhere = ' AND d.ten <> \'\'';
+        break;
+    case 2:
+        $ctenwhere = ' AND d.ten = \'\'';
+        break;
+    default:
+        $ctenwhere = '';
+}
+
 // date format 'yyyy/mm/dd'
 if ($from) {
     list($year, $month, $day) = explode('/', $from);
@@ -220,6 +231,7 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
         .(isset($divwhere) ? $divwhere : '')
         . (isset($servicetypewhere) ? $servicetypewhere : '')
         .(isset($groupwhere) ? $groupwhere : '')
+        . $ctenwhere
         .( $ctype != -1 ? ' AND cu.type = ' . $ctype : '')
         .' AND NOT EXISTS (
                 	    SELECT 1 FROM vcustomerassignments a

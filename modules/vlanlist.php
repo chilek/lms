@@ -46,6 +46,7 @@ switch ($action) {
         $vlaninfo = $LMS->GetVlanInfo($id);
         $SMARTY->assign('vlaninfo', $vlaninfo);
         if (!empty($id) && isset($addvlan)) {
+            $addvlan['id'] = $id;
             $LMS->UpdateVlan($addvlan);
             $SESSION->redirect('?m=vlanlist');
         }

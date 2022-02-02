@@ -304,7 +304,7 @@ if (isset($_POST['document'])) {
                 ($division['inv_footer'] ? $division['inv_footer'] : ''),
                 ($division['inv_author'] ? $division['inv_author'] : ''),
                 ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-                isset($document['closed']) ? 1 : 0,
+                isset($document['closed']) ? DOC_CLOSED : DOC_OPEN,
                 $fullnumber,
                 !isset($document['reference']) || empty($document['reference']) ? null : $document['reference']['id'],
                 empty($document['templ']) ? null : $document['templ'],
@@ -407,8 +407,8 @@ if (isset($_POST['document'])) {
         }
     }
 } else {
-    $document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
-    $document['type'] = isset($_GET['type']) ? $_GET['type'] : '';
+    $document['customerid'] = isset($_GET['cid']) ? intval($_GET['cid']) : '';
+    $document['type'] = isset($_GET['type']) ? intval($_GET['type']) : '';
 
     $default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
     if (!empty($default_assignment_invoice)) {
@@ -503,8 +503,13 @@ if (isset($document['customerid'])) {
 
 $SMARTY->assign('promotions', $promotions);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
-$defaultTaxId = $defaultTaxId[0]['id'];
+$defaultTaxIds = $LMS->GetTaxes(null, null, true);
+if (is_array($defaultTaxIds)) {
+    $defaultTaxId = reset($defaultTaxIds);
+    $defaultTaxId = $defaultTaxId['id'];
+} else {
+    $defaultTaxId = 0;
+}
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
 $SMARTY->assign('numberplanlist', $numberplans);
 // --- promotion support

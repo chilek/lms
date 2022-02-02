@@ -5,6 +5,8 @@
 {$xajax}
 
 {$group_action=is_array($message.ticketid)}
+{$hide_disabled_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')}
 
 <style>
 
@@ -175,6 +177,14 @@
 				</label>
 			{/box_row}
 
+			{box_row icon="watch" icon_class="fa-fw" label="Obserwowanie zgłoszeń"}
+				<SELECT size="1" name="message[watching]">
+					<option value="-100" selected>{trans("- no changes -")}</option>
+					<option value="1">{trans("Start watching")}</option>
+					<option value="0">{trans("Stop watching")}</option>
+				</SELECT>
+			{/box_row}
+
 			{box_row icon="cause" icon_class="fa-fw" label="Cause"}
 				<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
 					{if $group_action}
@@ -230,12 +240,17 @@
 						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("- no changes -")}</option>
 					{/if}
 					{foreach $userlist as $user}
-						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-							|| $user.id == $message.owner}
-							<option value="{$user.id}"{if !$user.access} class="blend"{/if}
-								{if $user.id == $message.owner}selected{/if}>{$user.rname|escape} ({$user.login})</option>
+						{if $user.id != $message.owner
+							&& ($hide_disabled_users && !$user.access
+								|| $hide_deleted_users && $user.deleted)}
+							{continue}
 						{/if}
+						<option value="{$user.id}"
+							class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+							{if $user.id == $message.owner} selected{/if}
+						>{strip}
+							{$user.rname|trunescape:40} ({$user.login})
+						{/strip}</option>
 					{/foreach}
 				</select>
 				&nbsp;
@@ -254,13 +269,17 @@
 							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
 						{/if}
 						{foreach $userlist as $user}
-							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-								|| $user.id == $message.verifierid}
-								<option value="{$user.id}"{if !$user.access} class="blend"{/if}
-									{if $user.id == $message.verifierid} selected{/if}
-									>{$user.rname|escape} ({$user.login})</option>
+							{if $user.id != $message.verifierid
+								&& ($hide_disabled_users && !$user.access
+									|| $hide_deleted_users && $user.deleted)}
+								{continue}
 							{/if}
+							<option value="{$user.id}"
+								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+								{if $user.id == $message.verifierid} selected{/if}
+							>{strip}
+								{$user.rname|trunescape:40} ({$user.login})
+							{/strip}</option>
 						{/foreach}
 					</select>
 				{else}

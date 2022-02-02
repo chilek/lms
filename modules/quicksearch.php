@@ -160,7 +160,8 @@ switch ($mode) {
                             }
                         }
                     } else if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
-                        $description = trans('Id:') . ' ' . $row['id'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
+                        //$description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['customername'])) {
                         $description = '';
                     } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
@@ -205,7 +206,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -304,7 +304,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -385,7 +384,6 @@ switch ($mode) {
                 echo json_encode(array_values($result));
             }
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -513,7 +511,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -590,7 +587,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -650,7 +646,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -779,7 +774,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -843,7 +837,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -904,7 +897,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -977,7 +969,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -1047,7 +1038,6 @@ switch ($mode) {
             header('Content-type: application/json');
             echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -1055,7 +1045,7 @@ switch ($mode) {
 			FROM documents d
 			JOIN customerview c ON c.id = d.customerid
 			WHERE LOWER(fullnumber) ?LIKE? LOWER($sql_search)");
-        if (count($docs) == 1) {
+        if (!empty($docs) && count($docs) == 1) {
             $cid = $docs[0]['cid'];
 /*
             $docid = $docs[0]['id'];
@@ -1121,7 +1111,6 @@ switch ($mode) {
             echo json_encode(array_values($result));
 
             $SESSION->close();
-            $DB->Destroy();
             die;
         }
 

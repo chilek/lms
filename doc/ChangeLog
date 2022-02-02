@@ -4,6 +4,75 @@ version 28-git (????-??-??):
 
   - improvement: 'phpui.call_phone_url' support in ticket view form [chilan]
   - improvement: implemented 'all suspended' for assignment filter [chilan]
+  - enhancement: ticket watching support [interduo]
+  - devel/cleanup: removed support for 'invoices.show_expired_balance' as it's logically replaced
+    by 'invoices.show_balance_summary' [chilan]
+  - enhancement: allow to search nodes by creation date period [chilan]
+  - improvement: show total debt value for customers with debt collection status [chilan]
+  - improvement: changed default value of variable rt.auto_open to true [interduo]
+  - enhancement: 'get_supported_actions' hook used in lms-notify.php allows plugins to inform core
+    about correct custom action syntax [chilan]
+  - enhancement: added csv export of operation history report [chilan]
+  - enhancement: new '%commented_balance' symbol support added in lms-notify.php backend script,
+    send invoice process and messageadd form [chilan]
+  - improvement: --force parameter of lms-gps.php script allows to determine gps coordinates
+    for network resources event if they already have non-empty coords [chilan]
+  - enhancement: implemented validity period support for promotions and promotion schemas [chilan]
+  - enhancement: new customer search filter - cutoffstop date interval [chilan]
+  - enhancement: userpanel: added status selection of customers allowed to login [chilan]
+  - enhancement: 'suspend' button in customer assignment box allows to suspend all assignment
+    with single operation [chilan]
+  - enhancement: optional ticket comment details inclusion in extended ticket list report [chilan]
+  - improvement: 'phpui.legal_person_required_properties' and 'phpui.natural_person_required_properties'
+    control which customer identifiers are required in add customer form [chilan]
+  - enhancement: added smarty '{day_selection ...}' functions which allows to easily set
+    now +X days date into controlled form elements [chilan]
+  - enhancement: 'phpui.message_send_interval' controls interval between sent mails measured
+    in milliseconds [chilan]
+  - new 'phpui.unsecure_pin_validty' configuration variable controls secure pin storage and time validity
+    for temporary pins [chilan]
+  - enhancement: secure customer pin storage support - pins are hashed with crypt() function [chilan]
+  - improvement: moved userpanel session storage from file to database [chilan]
+  - enhancement: allow to select payment expiration by days used for 'overdue receivable'
+    customer status selection [chilan]
+  - enhancement: added 'phpui.timetable_distant_event_day_trigger' counted in days ('0' by default
+    which means no trigger) specifies restriction trigger for newly created events with
+    too distant begin date [chilan]
+  - enhancement: added 'phpui.timetable_distant_event_restriction' with selection from 'none' (default),
+    'error' and 'warning' values allows to choose restriction type for newly created events with
+    too distant begin date [chilan]
+  - enhancement: 'phpui.timetable_hide_deleted_users' with default value of 'false' allow to hide
+    deleted users in user selection list element of event list boxes [chilan]
+  - improvement: lms-ui-multiselect: 'data-blend' attribute of option element causes presentation
+    of corresponding multi select option with blend color [chilan]
+  - enhancement: 'phpui.helpdesk_hide_deleted_users' controls visibility of deleted users in helpdesk
+    forms (default value 'false' means they are visible) [chilan]
+  - improvement: 'tcnew.ignore_assignment_suspensions' with default 'false' value allows to enable/disable
+    all assignment suspension and dedicated suspension assignment flag to be ignored in traffic shaper
+    configuration generator [chilan]
+  - improvement: 'phpui.promotion_schema_name_limit' with default value of '40' allows to control how
+    long schema name can be in schema selection list [chilan]
+  - improvement: use {customerlist} smarty element in invoice list form [interduo]
+  - enhancement: 'phpui.document_password' supports substitution symbols %ssn and %pin which is replaced
+    (respectively) by customer SSN and PIN [chilan]
+  - enhancement: 'phpui.document_protection_command' with default value of
+    'qpdf --encrypt %password %password 256 -- %in-file -' allows to specify system command which handles
+    pdf file encryption with password defined in 'phpui.document_password' configuration variable [chilan]
+  - enhancement: optional possibility of sending documents to customers after he confirmed document
+    in userpanel [chilan]
+  - improvement: pagination support for netnodelist [chilan]
+  - improvement: 'phpui.netnodelist_pagelimit' controls how many network nodes are displayed on single
+    page (unlimited by default) [chilan]
+  - enhancement: added 'node-group' action support in lms-notify.php backend script [chilan]
+  - enhancement: implemented smarty function '{reset_to_defaults}' which corresponds to button clearing
+    value of all elements pointed by target parameter [chilan]
+  - enhancement: allow plugins to attach specific contents in rtticketview module
+    ('rtticketview_before_display' plugin hook introduced) [chilan]
+  - improvement: more flexible result returned by SendSMS() function [chilan]
+  - enhancement: customer ten filter in invoice report box [chilan]
+  - enhancement: allow to view uploaded files different than image in modal dialog [chilan/interduo]
+  - enhancement: lms-payments.php can generate financial charges basing on tariff which have assigned
+    specified tariff tags [chilan]
 
 version 27.0 (2021-08-20):
 

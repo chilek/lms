@@ -392,7 +392,7 @@
 														<input type="hidden" name="customeradd[icnwarning]" value="1">
 													{/if}
 													<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-															{tip trigger="icn"}>
+														{tip trigger="icn"}>
 												</label>
 												<label class="identity-document-property">
 													<span>{trans("Expires")}</span>
@@ -667,6 +667,21 @@
 	$(function() {
 		$('form[name="customeradd"] [name="customeradd[lastname]"]').focus();
 
+		var legal_person_required_properties = [];
+		var natural_person_required_properties = [];
+
+		{if !empty($legal_person_required_properties)}
+			{foreach $legal_person_required_properties as $index => $property}
+				legal_person_required_properties.push('{$index}');
+			{/foreach}
+		{/if}
+
+		{if !empty($natural_person_required_properties)}
+			{foreach $natural_person_required_properties as $index => $property}
+				natural_person_required_properties.push('{$index}');
+			{/foreach}
+		{/if}
+
 		$('[name="customeradd[pin]"]').change(function() {
 			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
 				this.setCustomValidity('');
@@ -703,7 +718,12 @@
 		});
 
 		$('[name="customeradd[type]"]').change(function() {
-			$('[name="customeradd[name]"]').prop('required', $('#private').prop('checked'));
+			var isPrivate = $('#private').prop('checked');
+			$('[name="customeradd[name]"]').prop('required', isPrivate);
+			var required_properties = isPrivate ? natural_person_required_properties : legal_person_required_properties;
+			$.each(['ten', 'ssn', 'icn'], function(index, property) {
+				$('[name="customeradd[' + property + ']"]').prop('required', required_properties.indexOf(property) !== -1);
+			});
 		}).change();
 
 		$('#randomize').click(function() {

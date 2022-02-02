@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL & ~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -442,7 +442,7 @@ if ($backup || $archive) {
                 die;
             }
 
-            $part_size = floor(($percent * $count) / 100);
+            $part_size = ceil(($percent * $count) / 100);
             $part_offset = $part_number * $part_size;
             if ((!$part_offset && $part_number) || $part_offset >= $count) {
                 die;

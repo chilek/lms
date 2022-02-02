@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,39 +24,44 @@
  *  $Id$
  */
 
-$documentType = intval($_POST['documentType']);
-if (!empty($_POST['cdate'])) {
-    $cdate = strtotime($_POST['cdate']);
-} else {
-    $cdate = time();
-}
-$customerID = isset($_POST['customerID']) ? intval($_POST['customerID']) :  null;
+$documentType = !empty($_POST['documentType']) ? intval($_POST['documentType']) : null;
+$cdate = !empty($_POST['cdate']) ? strtotime($_POST['cdate']) : time();
+$customerID = !empty($_POST['customerID']) ? intval($_POST['customerID']) :  null;
+$numberplanlist = array();
 
 $lms = LMS::getInstance();
 $db = LMSDB::getInstance();
 
-$args = array(
-    'doctype' => $documentType,
-    'cdate' => date('Y/m', $cdate),
-);
-if (!empty($customerID)) {
-    $args['customerid'] = $customerID;
-    $args['division'] = $db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerID));
-}
-
-$numberplanlist = $lms->GetNumberPlans($args);
-if (!$numberplanlist) {
+if ($documentType) {
+    $args = array(
+        'doctype' => $documentType,
+        'cdate' => date('Y/m', $cdate),
+    );
+    if (!empty($customerID)) {
+        $args['customerid'] = $customerID;
+        $args['division'] = $db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerID));
+    }
+    $numberplanlist = $lms->GetNumberPlans($args);
+    if (!$numberplanlist) {
+        $numberplanlist = $lms->getSystemDefaultNumberPlan($args);
+    }
+} else {
+    $args = array(
+        'cdate' => date('Y/m', $cdate),
+    );
     $numberplanlist = $lms->getSystemDefaultNumberPlan($args);
 }
 
-foreach ($numberplanlist as &$item) {
-    $item['nextNumber'] = docnumber(array(
-        'number' => $item['next'],
-        'template' => $item['template'],
-        'cdate' => $cdate,
-        'customerid' => $customerID,
-    ));
-    $item['period_name'] = $NUM_PERIODS[$item['period']];
+if ($numberplanlist) {
+    foreach ($numberplanlist as &$item) {
+        $item['nextNumber'] = docnumber(array(
+            'number' => $item['next'],
+            'template' => $item['template'],
+            'cdate' => $cdate,
+            'customerid' => $customerID,
+        ));
+        $item['period_name'] = $NUM_PERIODS[$item['period']];
+    }
 }
 
 header('Content-Type: application/json');

@@ -31,7 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -285,7 +285,9 @@ foreach ($networks as $networkid => $net) {
         $lastif = $net['interface'];
         $line_prefix = "\t";
     } else {
-        $line_prefix = '';
+        if (!empty($net['interface']) && !empty($lastif) && strcmp($lastif, $net['interface'])) {
+            $line_prefix = '';
+        }
     }
 
     // TODO: lease time for network set by LMS-UI

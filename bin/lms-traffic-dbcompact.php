@@ -31,7 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -269,7 +269,3 @@ if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
 }
 
 printf('%d records after compacting' . PHP_EOL, $DB->GetOne('SELECT COUNT(*) FROM stats'));
-
-$DB->Destroy();
-
-?>

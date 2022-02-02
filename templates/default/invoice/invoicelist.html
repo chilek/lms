@@ -86,6 +86,12 @@
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
 					{icon name="filter"}
+					{customerlist
+						selectname="cid"
+						version="2"
+						inputname="customer"
+						selected=$listdata.customer
+					}
 					<input type="text" name="search" value="{$listdata.search}" size="15"
 						{tip text="Enter value of searching data and select category"}>
 					<select size="1" name="cat">
@@ -95,7 +101,6 @@
 						<option value="number"{if $listdata.cat == "number"} selected{/if}>{trans("number")}</option>
 						<option value="value"{if $listdata.cat == "value"} selected{/if}>{trans("value")}</option>
 						<option value="name"{if $listdata.cat == "name"} selected{/if}>{trans("customer name")}</option>
-						<option value="customerid"{if $listdata.cat == "customerid"} selected{/if}>{trans("customer ID")}</option>
 						<option value="ten"{if $listdata.cat == "ten"} selected{/if}>{trans("TEN")}</option>
 						<option value="address"{if $listdata.cat == "address"} selected{/if}>{trans("address")}</option>
 						<option value="cnotes"{if $listdata.cat == "cnotes"} selected{/if}>{trans("show only credit notes")}</option>
@@ -172,6 +177,7 @@
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
+	{$value_by_currencies = array()}
 	{foreach $invoicelist as $invoice}
 	{assign var=invoiceid value=$invoice.id}
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
@@ -189,6 +195,11 @@
 		</TD>
 		<TD class="text-right nobr">
 			{moneyf($invoice.value, $invoice.currency)}
+			{if isset($value_by_currencies[$invoice.currency])}
+				{$value_by_currencies[$invoice.currency] = $value_by_currencies[$invoice.currency] + $invoice.value}
+			{else}
+				{$value_by_currencies[$invoice.currency] = $invoice.value}
+			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.count}
@@ -329,6 +340,21 @@
 	{/foreach}
     </TBODY>
     <TFOOT>
+		{if !empty($value_by_currencies)}
+			<tr>
+				<td colspan="3" class="text-right valign-top">
+					<strong>{trans("Total:")}</strong>
+				</td>
+				<td class="text-right">
+					{foreach $value_by_currencies as $currency => $value}
+						<strong class="nobr">{moneyf($value, $currency)}</strong>
+						{if !$value@last}<br>{/if}
+					{/foreach}
+				</td>
+				<td colspan="4">
+				</td>
+			</tr>
+		{/if}
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="8">

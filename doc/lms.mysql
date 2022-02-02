@@ -35,11 +35,13 @@ DROP VIEW IF EXISTS vnodealltariffs;
 DROP VIEW IF EXISTS customerconsentview;
 DROP VIEW IF EXISTS vcustomerassignments;
 
+DROP TABLE IF EXISTS up_sessions;
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS rtticketwatchers;
 DROP TABLE IF EXISTS files;
 DROP TABLE IF EXISTS filecontainers;
 DROP TABLE IF EXISTS passwdhistory;
@@ -475,6 +477,7 @@ CREATE TABLE customers (
   deleted tinyint(1) 	NOT NULL DEFAULT '0',
   message text 		NOT NULL,
   pin varchar(255)	NOT NULL DEFAULT '0',
+  pinlastchange int(11) NOT NULL DEFAULT 0,
   cutoffstop int(11) 	NOT NULL DEFAULT '0',
   divisionid int(11)   	DEFAULT NULL,
   paytime smallint	NOT NULL DEFAULT '-1',
@@ -1123,6 +1126,8 @@ CREATE TABLE promotionschemas (
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     deleted tinyint(1)  DEFAULT 0 NOT NULL,
     length tinyint(1)   DEFAULT NULL,
+    datefrom int(11)    DEFAULT 0 NOT NULL,
+    dateto   int(11)    DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY promotionid (promotionid, name),
     FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -2631,7 +2636,8 @@ CREATE TABLE ewx_pt_config (
 CREATE TABLE dbinfo (
   keytype varchar(255) NOT NULL DEFAULT '',
   keyvalue varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY  (keytype)
+  PRIMARY KEY  (keytype),
+  UNIQUE KEY dbinfo_keytype_ukey (keytype)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2715,7 +2721,7 @@ CREATE TABLE messageitems (
 	status 		smallint	DEFAULT '0' NOT NULL,
 	error 		text		DEFAULT NULL,
 	lastreaddate 	int(11)		DEFAULT '0' NOT NULL,
-	externalmsgid	int(11)		DEFAULT '0' NOT NULL,
+	externalmsgid	varchar(64) DEFAULT NULL,
     body 		text		DEFAULT NULL,
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
@@ -2953,6 +2959,23 @@ CREATE TABLE files (
 	FOREIGN KEY (containerid) REFERENCES filecontainers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+
+# --------------------------------------------------------
+#
+# Structure of table rtticketwatchers
+#
+CREATE TABLE rtticketwatchers (
+	id int(11) NOT NULL auto_increment,
+	ticketid int(11) NOT NULL,
+	userid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT rtticketwatchers_rttickets_fkey
+	    FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT rtticketwatchers_users_fkey
+	    FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY rtticketwatchers_ticketid_ukey (ticketid, userid)
+) ENGINE=InnoDB;
+
 # --------------------------------------------------------
 #
 # Structure of table up_rights (Userpanel)
@@ -3023,6 +3046,23 @@ CREATE TABLE up_info_changes (
 	PRIMARY KEY (id),
 	CONSTRAINT up_info_changes_customerid_fkey
 	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table up_sessions
+#
+CREATE TABLE up_sessions (
+	id varchar(50) NOT NULL DEFAULT '',
+	customerid int(11) NOT NULL,
+	ctime int(11) NOT NULL DEFAULT 0,
+	mtime int(11) NOT NULL DEFAULT 0,
+	atime int(11) NOT NULL DEFAULT 0,
+	vdata text NOT NULL,
+	content mediumtext NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT up_sessions_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3299,64 +3339,75 @@ CREATE VIEW vallusers AS
 	FROM users;
 
 CREATE VIEW vinvoicecontents AS
-    (
-        SELECT ic.*,
-            1 AS netflag,
-            ROUND(ic.value, 2) AS netprice,
-            ROUND(ic.value * (1 + (t.value / 100)), 2) AS grossprice,
-            ROUND(ic.value * ABS(ic.count), 2) AS netvalue,
-            ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / 100, 2) AS taxvalue,
-            ROUND(ROUND(ic.value * ABS(ic.count), 2) * (1 + (t.value / 100)), 2) AS grossvalue,
-            (ic.count - ic2.count) AS diff_count,
-            (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
-            (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
-            (ROUND(ic.value, 2) - ROUND(ic2.value, 2)) AS diff_netprice,
-            (ROUND(ic.value * (1 + (t.value / 100)), 2) - ROUND(ic2.value * (1 + (t.value / 100)), 2)) AS diff_grossprice,
-            (ROUND(ic.value * ABS(ic.count), 2) - ROUND(ic2.value * ABS(ic2.count), 2)) AS diff_netvalue,
-            (ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / 100, 2)
-                - ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * t.value / 100, 2)) AS diff_taxvalue,
-            (ROUND(ROUND(ic.value * ABS(ic.count), 2) * (1 + (t.value / 100)), 2)
-                - ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * (1 + (t.value / 100)), 2)) AS diff_grossvalue,
-            (CASE WHEN t.reversecharge = 1 THEN -2 ELSE (
-                CASE WHEN t.taxed = 0 THEN -1 ELSE t.value END
-            ) END) AS taxrate
-        FROM invoicecontents ic
-        JOIN taxes t ON t.id = ic.taxid
-        JOIN documents d ON d.id = ic.docid
-        LEFT JOIN documents d2 ON d2.id = d.reference
-        LEFT JOIN invoicecontents ic2 ON ic2.docid = d2.id AND ic2.itemid = ic.itemid
-        WHERE (d.flags & 16) > 0
-    ) UNION (
-        SELECT ic.*,
-            0 AS netflag,
-            ROUND(ic.value / (1 + (t.value / 100)), 2) AS netprice,
-            ROUND(ic.value, 2) AS grossprice,
-            (ROUND(ic.value * ABS(ic.count), 2)
-                - ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)) AS netvalue,
-            ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2) AS taxvalue,
-            ROUND(ic.value * ABS(ic.count), 2) AS grossvalue,
-            (ic.count - ic2.count) AS diff_count,
-            (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
-            (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
-            (ROUND(ic.value / (1 + (t.value / 100)), 2) - ROUND(ic2.value / (1 + (t.value / 100)), 2)) AS diff_netprice,
-            (ROUND(ic.value, 2) - ROUND(ic2.value, 2)) AS diff_grossprice,
-            (ROUND(ic.value * ABS(ic.count), 2)
-                - ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
-                - ROUND(ic2.value * ABS(ic2.count), 2)
-                + ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * t.value / (100 + t.value), 2)) AS diff_netvalue,
-            (ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
-                - ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * t.value / (100 + t.value), 2)) AS diff_taxvalue,
-            (ROUND(ic.value * ABS(ic.count), 2) - ROUND(ic2.value * ABS(ic2.count), 2)) AS diff_grossvalue,
-            (CASE WHEN t.reversecharge = 1 THEN -2 ELSE (
-                CASE WHEN t.taxed = 0 THEN -1 ELSE t.value END
-            ) END) AS taxrate
-        FROM invoicecontents ic
-        JOIN taxes t ON t.id = ic.taxid
-        JOIN documents d ON d.id = ic.docid
-        LEFT JOIN documents d2 ON d2.id = d.reference
-        LEFT JOIN invoicecontents ic2 ON ic2.docid = d2.id AND ic2.itemid = ic.itemid
-        WHERE (d.flags & 16) = 0
-    );
+    SELECT ic.docid AS docid, ic.itemid AS itemid, ic.value AS value, ic.pdiscount AS pdiscount,
+        ic.taxid AS taxid, ic.prodid AS prodid, ic.content AS content, ic.count AS count, ic.description AS description,
+        ic.tariffid AS tariffid, ic.vdiscount AS vdiscount, ic.taxcategory AS taxcategory, ic.period AS period,
+        (CASE WHEN (d.flags & 16) > 0 THEN 1 ELSE 0 END) AS netflag,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(ic.value, 2)
+            ELSE
+                ROUND((ic.value / (1 + (t.value / 100))), 2)
+        END) AS netprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * (1 + (t.value / 100))), 2)
+            ELSE
+                ROUND(ic.value, 2)
+        END) AS grossprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * ABS(ic.count)), 2)
+            ELSE
+                (ROUND((ic.value * ABS(ic.count)), 2) - ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)), 2))
+        END) AS netvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / 100), 2)
+            ELSE
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)), 2)
+        END) AS taxvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ROUND((ic.value * ABS(ic.count)), 2) * (1 + (t.value / 100))), 2)
+            ELSE
+                ROUND((ic.value * ABS(ic.count)), 2)
+        END) AS grossvalue,
+        (ic.count - ic2.count) AS diff_count,
+        (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
+        (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+            ELSE
+                ROUND((ic.value / (1 + (t.value / 100))),2) - ROUND((ic2.value / (1 + (t.value / 100))), 2)
+        END) AS diff_netprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * (1 + (t.value / 100))),2) - ROUND((ic2.value * (1 + (t.value / 100))) ,2)
+            ELSE
+                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+        END) AS diff_grossprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
+            ELSE
+                ((ROUND((ic.value * ABS(ic.count)), 2) - ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)),2)) - ROUND((ic2.value * ABS(ic2.count)), 2)) + ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)) ,2)
+        END) AS diff_netvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / 100),2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / 100), 2)
+            ELSE
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)),2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)), 2)
+        END) AS diff_taxvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ROUND((ic.value * ABS(ic.count)), 2) * (1 + (t.value / 100))),2) - ROUND((ROUND((ic2.value * ABS(ic2.count)), 2) * (1 + (t.value / 100))), 2)
+            ELSE
+                ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
+        END) AS diff_grossvalue,
+        (CASE WHEN t.reversecharge = 1
+            THEN -2
+            ELSE (CASE WHEN t.taxed = 0
+                THEN -1
+                ELSE t.value
+            END)
+        END) AS taxrate
+    FROM invoicecontents ic
+    JOIN taxes t ON t.id = ic.taxid
+    JOIN documents d ON d.id = ic.docid
+    LEFT JOIN documents d2 ON d2.id = d.reference
+    LEFT JOIN invoicecontents ic2 ON ic2.docid = d2.id AND ic2.itemid = ic.itemid;
 
 CREATE VIEW contractorview AS
     SELECT c.*,
@@ -3765,6 +3816,7 @@ URL: %url
 ('userpanel', 'document_approval_customer_notification_mail_format', 'text', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_subject', '', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_body', '', '', 0),
+('userpanel', 'document_approval_customer_notification_attachments', '0', '', 0),
 ('userpanel', 'document_approval_customer_onetime_password_sms_body', '', '', 0),
 ('userpanel', 'google_recaptcha_sitekey', '', '', 0),
 ('userpanel', 'google_recaptcha_secret', '', '', 0),
@@ -3783,6 +3835,7 @@ URL: %url
 ('userpanel', 'pin_validation', 'true', '', 0),
 ('userpanel', 'show_all_assignments', 'false', '', 0),
 ('userpanel', 'allowed_document_types', '', '', 0),
+('userpanel', 'allowed_customer_status', '', '', 0),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -4127,4 +4180,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022012000');

@@ -1257,7 +1257,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         if (!empty($producerid)) {
             return $this->db->GetAll(
-                'SELECT m.id, m.name, m.type, t.name AS typename
+                'SELECT m.id, m.name, m.type, t.id AS typeid, t.name AS typename
                 FROM netdevicemodels m
                 LEFT JOIN netdevicetypes t ON t.id = m.type
                 ORDER BY m.name ASC',
@@ -1265,7 +1265,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             );
         }
 
-        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name, m.type, t.name AS typename
+        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name, m.type,
+                t.id AS typeid, t.name AS typename
 			FROM netdevicemodels m
 			JOIN netdeviceproducers p ON p.id = m.netdeviceproducerid
 			LEFT JOIN netdevicetypes t ON t.id = m.type
@@ -1324,6 +1325,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         return $list;
+    }
+
+    public function getNetDevTypes()
+    {
+        return $this->db->GetAllByKey(
+            'SELECT t.id, t.name
+            FROM netdevicetypes t
+            ORDER BY t.name',
+            'id'
+        );
     }
 
     public function GetRadioSectors($netdevid, $technology = 0)

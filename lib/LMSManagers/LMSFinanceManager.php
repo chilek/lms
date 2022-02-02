@@ -158,7 +158,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
             d.fullnumber,
             (CASE WHEN
-                    (a.period <> ' . DISPOSABLE . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
+                    ((a.period <> ' . DISPOSABLE . ' OR (a.tariffid IS NULL AND a.liabilityid IS NULL)) AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
                     OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . ')
                 THEN 0
                 ELSE 1
@@ -849,7 +849,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
                             $_dateto = $data['dateto'];
                         } else {
-                            list ($year, $nonth, $dom) = explode('/', date('Y/m/d', $dateto + 1));
+                            list ($year, $month, $dom) = explode('/', date('Y/m/d', $dateto + 1));
                             $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                             $diffdays = $cday - 1;
                             $_dateto = mktime(23, 59, 59, $month, $diffdays, $year);
@@ -1005,7 +1005,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'value' => str_replace(',', '.', $data['value']),
                             'flags' => (isset($data['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
                                 + (isset($data['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
-                            'taxcategory' => $data['taxcategory'],
+                            'taxcategory' => intval($data['taxcategory']),
                             'currency' => $data['currency'],
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid'],
@@ -1081,6 +1081,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'value' => str_replace(',', '.', $data['value']),
                             'flags' => (isset($data['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
                                 + (isset($data['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
+                            'taxcategory' => intval($data['taxcategory']),
                             'currency' => $data['currency'],
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid'],
@@ -1088,9 +1089,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'netvalue' => str_replace(',', '.', $data['netvalue']),
                         );
                         $this->db->Execute(
-                            'INSERT INTO liabilities (name, value, flags, currency,
+                            'INSERT INTO liabilities (name, value, flags, taxcategory, currency,
                             taxid, prodid, type, netvalue)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             array_values($args)
                         );
 
@@ -1144,7 +1145,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'value' => str_replace(',', '.', $data['value']),
                         'flags' => (isset($data['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
                             + (isset($data['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
-                        'taxcategory' => $data['taxcategory'],
+                        'taxcategory' => intval($data['taxcategory']),
                         'currency' => $data['currency'],
                         SYSLOG::RES_TAX => intval($data['taxid']),
                         'prodid' => $data['prodid'],
@@ -1537,7 +1538,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     unset($a['schemaid'], $a['sassignmentid']);
             }
         } else {
-            if ($a['discount_type'] == 2 && $a['discount']
+            if ($a['discount_type'] == DISCOUNT_AMOUNT && $a['discount']
                 && $this->db->GetOne('SELECT value FROM tariffs WHERE id = ?', array($a['tariffid'])) - $a['discount'] < 0) {
                 $error['value'] = trans('Value less than discount are not allowed!');
                 $error['discount'] = trans('Value less than discount are not allowed!');
@@ -1735,6 +1736,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
+    public function toggleAssignmentSuspension($id)
+    {
+        if ($this->syslog) {
+            $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid, suspended FROM assignments WHERE id = ?', array($id));
+            $args = array(
+                SYSLOG::RES_ASSIGN => $assign['id'],
+                SYSLOG::RES_TARIFF => $assign['tariffid'],
+                SYSLOG::RES_LIAB => $assign['liabilityid'],
+                SYSLOG::RES_CUST => $assign['customerid'],
+                'suspend' => empty($assign['suspend']) ? 1 : 0,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+        }
+        return $this->db->Execute('UPDATE assignments SET suspended = (suspended + 1) % 2 WHERE id = ?', array($id));
+    }
+
     public function GetTradeDocumentArchiveStats($ids)
     {
         $archive_stats = $this->db->GetRow(
@@ -1913,7 +1930,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetInvoiceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'notsent', 'page') as $var) {
+        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'notsent', 'page', 'customer') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -1978,9 +1995,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 case 'ten':
                     $where = ' AND d.ten = ' . $this->db->Escape($search);
                     break;
-                case 'customerid':
-                    $where = ' AND d.customerid = '.intval($search);
-                    break;
                 case 'name':
                     $where = ' AND UPPER(d.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
                     break;
@@ -1996,6 +2010,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($hideclosed) {
             $where .= ' AND d.closed = 0';
+        }
+
+        if (!empty($customer)) {
+            $where .= ' AND d.customerid = ' . intval($customer);
         }
 
         if (!empty($group)) {
@@ -2021,8 +2039,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 WHERE e.customerid IS NULL AND '
                 . ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
                     : '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
-                .$where
-                .(!empty($group) ?
+                . $where
+                . (!empty($group) ?
                     ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 				SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
@@ -2070,8 +2088,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			WHERE e.customerid IS NULL AND '
             . ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
                 : '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
-            .$where
-            .(!empty($group) ?
+            . $where
+            . (!empty($group) ?
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 			SELECT 1 FROM vcustomerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
@@ -2082,11 +2100,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (!empty($relatedentity) ? ' AND d.flags & ' . DOC_FLAG_RELATED_ENTITY . ' > 0' : '')
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
             . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
-            .' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
+            . ' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
 			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
 			d.cancelled, d.published, sendinvoices, d.archived, d.senddate, d.currency, d.currencyvalue '
             . (isset($having) ? $having : '')
-            .$sqlord.' '.$direction
+            . $sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
@@ -2234,7 +2252,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'value' => empty($invoice['invoice']['netflag']) ? $item['valuebrutto'] : $item['valuenetto'],
                 SYSLOG::RES_TAX => $item['taxid'],
                 'taxcategory' => isset($item['taxcategory']) && !empty($item['taxcategory']) ? $item['taxcategory'] : 0,
-                'prodid' => $item['prodid'],
+                'prodid' => (isset($item['prodid']) ? $item['prodid'] : ''),
                 'content' => $item['jm'],
                 'count' => $item['count'],
                 'pdiscount' => $item['pdiscount'],
@@ -4451,7 +4469,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetPromotions()
     {
-        $promotions = $this->db->GetAllByKey('SELECT id, name, description,
+        $promotions = $this->db->GetAllByKey('SELECT id, name, description, datefrom, dateto,
 				(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
 			FROM promotions WHERE disabled <> 1 AND deleted = 0 ORDER BY name', 'id');
 
@@ -4465,7 +4483,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         unset($promotion);
 
         $promotion_schemas = $this->db->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name,
-			s.id, s.data AS sdata, s.description,
+			s.id, s.data AS sdata, s.description, s.datefrom,
+			(CASE WHEN s.datefrom < ?NOW? AND (s.dateto = 0 OR s.dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
 			(SELECT ' . $this->db->GroupConcat('tariffid', ',') . '
 				FROM promotionassignments WHERE promotionschemaid = s.id
 			) AS tariffs
@@ -4498,6 +4517,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 array(
                     'id' => $promotion_schema['id'],
                     'name' => $promotion_schema['name'],
+                    'valid' => $promotion_schema['valid'],
+                    'datefrom' => $promotion_schema['datefrom'],
+                    'dateto' => $promotion_schema['dateto'],
                     'description' => $promotion_schema['description'],
                     'tariffs' => $promotion_schema['tariffs'],
                     'period_labels' => $period_labels,

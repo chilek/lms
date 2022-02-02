@@ -1,5 +1,5 @@
 <!-- $Id$ -->
-<TABLE class="lmsbox lms-ui-tab-container">
+<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="rtticketeventlist">
 	<COLGROUP>
 		<COL style="width: 99%;">
 		<COL style="width: 1%;">
@@ -7,7 +7,7 @@
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
 		<TD class="bold">
-			{icon name="timetable" label="Timetable assigned events"}
+			{icon name="timetable" label="Timetable assigned events" class="lms-ui-sortable-handle"}
 		</TD>
 		<TD class="text-right nobr">
 			{if $ticket.state != $smarty.const.RT_RESOLVED}

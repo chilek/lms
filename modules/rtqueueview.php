@@ -56,6 +56,21 @@ if (isset($_GET['action'])) {
 
 $LMS->CleanupTicketLastView();
 
+if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
+    if ($_GET['ticketwatching']) {
+        $LMS->changeTicketWatching($_GET['ticketid'], 1);
+    } else {
+        $LMS->changeTicketWatching($_GET['ticketid'], 0);
+    }
+
+    $backto = $SESSION->get('backto');
+    if (empty($backto)) {
+        $SESSION->redirect('?m=rtticketinfo&id=' . $_GET['ticketid']);
+    } else {
+        $SESSION->redirect('?' . $backto);
+    }
+}
+
 // queue id's
 if (isset($_GET['id'])) {
     if ($_GET['id'] == 'all') {
@@ -203,6 +218,13 @@ if (isset($_GET['todate'])) {
     $filter['todate'] = datetime_to_timestamp($_GET['todate']);
 } elseif (!isset($filter['todate'])) {
     $filter['todate'] = null;
+}
+
+// user watching tickets
+if ($_GET['watching'] == '1') {
+    $filter['watching'] = 1;
+} elseif (isset($_GET['watching'])) {
+    unset($filter['watching']);
 }
 
 // types
@@ -376,6 +398,7 @@ unset($queue['cid']);
 unset($queue['subject']);
 unset($queue['fromdate']);
 unset($queue['todate']);
+unset($queue['watching']);
 
 
 $queues = $LMS->GetQueueList(array('stats' => false));
@@ -402,6 +425,6 @@ $SMARTY->assign('projects', $projects);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('users', $LMS->GetUserNames(array('withDeleted' => 1)));
 
 $SMARTY->display('rt/rtqueueview.html');

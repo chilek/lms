@@ -538,8 +538,6 @@ class SYSLOG
             case 'type':
                 if ($data['resource'] == self::RES_CUST) {
                     $data['value'] = empty($data['value']) ? trans('private person') : trans('legal entity');
-                } else {
-                    $data['value'] = $data['value'];
                 }
                 break;
             case 'ipaddr':
@@ -562,8 +560,6 @@ class SYSLOG
             case 'status':
                 if ($data['resource'] == self::RES_CUST) {
                     $data['value'] = $CSTATUSES[$data['value']]['singularlabel'];
-                } else {
-                    $data['value'] = $data['value'];
                 }
                 break;
             case 'twofactorauthsecretkey':
@@ -572,8 +568,6 @@ class SYSLOG
             default:
                 if (strpos($data['name'], 'chkconsent') === 0) {
                     $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
-                } else {
-                    $data['value'] = $data['value'];
                 }
         }
         if ($data['resource'] != self::RES_USER && strlen($data['value']) > 50) {
