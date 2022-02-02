@@ -2050,8 +2050,9 @@ if (empty($types) || in_array('income', $types)) {
 if (empty($types) || in_array('invoices', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-        d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
-        COALESCE(ca.balance, 0) AS balance, v.value, v.currency
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            COALESCE(ca.balance, 0) AS balance, v.value, v.currency,
+            c.invoicenotice
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -2059,8 +2060,9 @@ if (empty($types) || in_array('invoices', $types)) {
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
-        ) m ON (m.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.mailingnotice = 1') . "
-        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+        ) m ON m.customerid = c.id"
+            . ($ignore_customer_consents ? '' : ' AND c.mailingnotice = 1')
+        . " LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
             FROM customercontacts
             WHERE (type & ?) = ?
             GROUP BY customerid
@@ -2075,7 +2077,7 @@ if (empty($types) || in_array('invoices', $types)) {
             GROUP BY customerid
         ) ca ON (ca.customerid = d.customerid)
         WHERE 1 = 1" . $customer_status_condition
-            . " AND (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
+            . " AND d.type IN (?, ?, ?)
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
@@ -2157,7 +2159,7 @@ if (empty($types) || in_array('invoices', $types)) {
             }
 
             if (!$quiet) {
-                if (in_array('mail', $channels) && !empty($recipient_mails)) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && empty($row['invoicenotice'])) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         foreach ($recipient_mails as $recipient_mail) {
                             printf(
@@ -2208,7 +2210,7 @@ if (empty($types) || in_array('invoices', $types)) {
             }
 
             if (!$debug) {
-                if (in_array('mail', $channels) && !empty($recipient_mails)) {
+                if (in_array('mail', $channels) && !empty($recipient_mails) && empty($row['invoicenotice'])) {
                     if ($idx >= $start_idx && $idx <= $end_idx) {
                         $msgid = create_message(
                             MSG_MAIL,
