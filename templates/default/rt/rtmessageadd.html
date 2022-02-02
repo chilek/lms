@@ -220,8 +220,7 @@
 
 			{box_row icon="queue" icon_class="fa-fw" label="Queue"}
 				<select size="1" name="message[queueid]"
-					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
-					onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
+					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}>
 					{if $group_action}
 						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
 					{/if}
@@ -231,61 +230,6 @@
 							{if $item.id == $message.queueid} selected{/if}>{$item.name}</option>
 					{/foreach}
 				</select>
-			{/box_row}
-
-			{box_row icon="owner" icon_class="fa-fw" label="Owner"}
-				<select size="1" name="message[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
-					<option value="0">- {trans("select user")} -</option>
-					{if $group_action}
-						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("- no changes -")}</option>
-					{/if}
-					{foreach $userlist as $user}
-						{if $user.id != $message.owner
-							&& ($hide_disabled_users && !$user.access
-								|| $hide_deleted_users && $user.deleted)}
-							{continue}
-						{/if}
-						<option value="{$user.id}"
-							class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-							{if $user.id == $message.owner} selected{/if}
-						>{strip}
-							{$user.rname|trunescape:40} ({$user.login})
-						{/strip}</option>
-					{/foreach}
-				</select>
-				&nbsp;
-				<label>
-					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
-					{trans("assign to me")}
-				</label>
-			{/box_row}
-
-			{box_row icon="verifier" icon_class="fa-fw" label="Verifier" field_id="rtverifiers"}
-				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-					<select size="1" name="message[verifierid]"
-						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
-						<option value="0">- {trans("select user")} -</option>
-						{if $group_action}
-							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
-						{/if}
-						{foreach $userlist as $user}
-							{if $user.id != $message.verifierid
-								&& ($hide_disabled_users && !$user.access
-									|| $hide_deleted_users && $user.deleted)}
-								{continue}
-							{/if}
-							<option value="{$user.id}"
-								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-								{if $user.id == $message.verifierid} selected{/if}
-							>{strip}
-								{$user.rname|trunescape:40} ({$user.login})
-							{/strip}</option>
-						{/foreach}
-					</select>
-				{else}
-					<input type="hidden" name="message[verifierid]" value="{$ticket.verifierid}">
-					<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>
-				{/if}
 			{/box_row}
 
 			{box_row icon="deadline" icon_class="fa-fw" label="<!rt>Deadline"}
@@ -376,20 +320,6 @@
 
 		$('#state').change(function() {
 			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
-		});
-
-		$('[name="message[owner]"]').change(function() {
-			$('#assign-to-me').prop('checked', false);
-		});
-
-		$('#assign-to-me').change(function() {
-			var select = $('[name="message[owner]"]');
-			if ($(this).prop('checked')) {
-				select.val($(this).attr('data-old-userid', select.val()).attr('data-userid'));
-			} else {
-				select.val($(this).attr('data-old-userid'));
-			}
-			updateAdvancedSelects(select);
 		});
 
 		$('body').on('change', '.template-selector', function() {

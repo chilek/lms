@@ -79,16 +79,10 @@ if (isset($_GET['ticketid'])) {
         $SESSION->redirect('?m=rtqueuelist');
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-        && !empty($note['verifierid']) && $note['verifierid'] == $note['owner']) {
-        $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
-        $error['owner'] = trans('Ticket verifier could not be the same as owner!');
-    }
-
     $deadline = datetime_to_timestamp($note['deadline']);
     if ($deadline != $ticket['deadline']) {
         if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
-            && !empty($note['verifierid']) && $note['verifierid'] != Auth::GetCurrentUser()) {
+            && !empty($ticket['verifierid']) && $ticket['verifierid'] != Auth::GetCurrentUser()) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $note['deadline'] = $ticket['deadline'];
         }
@@ -140,7 +134,6 @@ if (isset($_GET['ticketid'])) {
             'state' => $note['state'],
             'source' => $note['source'],
             'priority' => isset($note['priority']) ? $note['priority'] : null,
-            'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
             'deadline' => empty($note['deadline']) ? null : $deadline,
         );
 
@@ -151,7 +144,7 @@ if (isset($_GET['ticketid'])) {
 
         $LMS->TicketChange($note['ticketid'], $props);
 
-        if (isset($note['notify']) || !empty($note['verifierid'])) {
+        if (isset($note['notify']) || !empty($ticket['verifierid'])) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
             $queue = $LMS->GetQueueByTicketId($note['ticketid']);
             $mailfname = '';
@@ -234,13 +227,13 @@ if (isset($_GET['ticketid'])) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queue['id'],
-                'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
+                'verifierid' => empty($ticket['verifierid']) ? null : $ticket['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
                 'attachments' => &$attachments,
                 'recipients' => ($note['notify'] ? RT_NOTIFICATION_USER : 0)
-                    | (empty($note['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
+                    | (empty($ticket['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
             ));
         }
 
@@ -268,7 +261,6 @@ $SMARTY->assign('ticket', $ticket);
 if (!isset($_POST['note'])) {
     $note['source'] = $ticket['source'];
     $note['priority'] = isset($ticket['priority']) ? $ticket['priority'] : null;
-    $note['verifierid'] = $ticket['verifierid'];
     $note['deadline'] = $ticket['deadline'];
     $notechangestateafter = ConfigHelper::getConfig('rt.change_ticket_state_to_open_after_note_add_interval', 0);
 

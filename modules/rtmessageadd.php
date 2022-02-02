@@ -96,17 +96,11 @@ if (isset($_POST['message'])) {
         $error['body'] = trans('Message body not specified!');
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-        && !empty($message['verifierid']) && $message['verifierid'] == $message['owner']) {
-        $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
-        $error['owner'] = trans('Ticket verifier could not be the same as owner!');
-    }
-
     // TODO: verifierid/deadline validation for group reply
     $deadline = datetime_to_timestamp($message['deadline']);
     if (!$group_reply && $deadline != $ticket['deadline']) {
         if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
-            && !empty($message['verifierid']) && $message['verifierid'] != Auth::GetCurrentUser()) {
+            && !empty($ticket['verifierid']) && $ticket['verifierid'] != Auth::GetCurrentUser()) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $message['deadline'] = $ticket['deadline'];
         }
@@ -275,20 +269,8 @@ if (isset($_POST['message'])) {
                 $message['state'] = RT_RESOLVED;
             }
 
-            $owner = $DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($ticketid));
-
             if ($group_reply) {
                 $props = array();
-                if ($message['owner'] == -100) {
-                    if (!$owner) {
-                        if (!ConfigHelper::checkConfig('rt.new_message_preserve_no_owner')) {
-                            $message['owner'] = Auth::GetCurrentUser();
-                        }
-                        $props['owner'] = empty($message['owner']) ? null : $message['owner'];
-                    }
-                } else {
-                    $props['owner'] = empty($message['owner']) ? null : $message['owner'];
-                }
                 if ($message['cause'] != -1) {
                     $props['cause'] = $message['cause'];
                 }
@@ -301,24 +283,16 @@ if (isset($_POST['message'])) {
                 if ($message['queueid'] != -100) {
                     $props['queueid'] = $message['queueid'];
                 }
-                if ($message['verifierid'] != -1) {
-                    $props['verifierid'] = empty($message['verifierid']) ? null : $message['verifierid'];
-                }
                 if ($message['deadline']) {
                     $props['deadline'] = empty($message['deadline']) ? null : $deadline;
                 }
             } else {
-                if (!ConfigHelper::checkConfig('rt.new_message_preserve_no_owner') && !$owner && empty($message['owner'])) {
-                    $message['owner'] = Auth::GetCurrentUser();
-                }
                 $props = array(
                     'queueid' => $message['queueid'],
-                    'owner' => empty($message['owner']) ? null : $message['owner'],
                     'cause' => $message['cause'],
                     'state' => $message['state'],
                     'source' => $message['source'],
                     'priority' => isset($message['priority']) ? $message['priority'] : null,
-                    'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
                     'deadline' => empty($message['deadline']) ? null : $deadline,
                 );
             }
@@ -374,7 +348,7 @@ if (isset($_POST['message'])) {
             }
 
             // User notifications
-            if (isset($message['notify']) || isset($message['customernotify']) || !empty($message['verifierid'])) {
+            if (isset($message['notify']) || isset($message['customernotify']) || !empty($ticket['verifierid'])) {
                 $mailfname = '';
 
                 $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
@@ -414,7 +388,7 @@ if (isset($_POST['message'])) {
                         return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
                     });
 
-                    if ((isset($message['notify']) || !empty($message['verifierid'])) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                    if ((isset($message['notify']) || !empty($ticketdata['verifierid'])) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                         $params = array(
                             'id' => $ticketid,
                             'customerid' => $ticketdata['customerid'],
@@ -425,12 +399,12 @@ if (isset($_POST['message'])) {
                         $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
                         $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
                     }
-                } elseif ((isset($message['notify']) || !empty($message['verifierid'])) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                } elseif ((isset($message['notify']) || !empty($ticket['verifierid'])) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                     $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
                     $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
                 }
 
-                if (isset($message['notify']) || !empty($message['verifierid'])) {
+                if (isset($message['notify']) || !empty($ticket['verifierid'])) {
                     $params = array(
                         'id' => $ticketid,
                         'queue' => $queue['name'],
@@ -464,14 +438,14 @@ if (isset($_POST['message'])) {
 
                     $LMS->NotifyUsers(array(
                         'queue' => $queue['id'],
-                        'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
+                        'verifierid' => empty($ticket['verifierid']) ? null : $ticket['verifierid'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
                         'sms_body' => $sms_body,
                         'contenttype' => $message['contenttype'],
                         'attachments' => &$attachments,
                         'recipients' => ($message['notify'] ? RT_NOTIFICATION_USER : 0)
-                            | (empty($message['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
+                            | (empty($ticket['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
                     ));
                 }
             }
@@ -565,10 +539,8 @@ if (isset($_POST['message'])) {
             $message['state'] = -1;
             $message['cause'] = -1;
             $message['queueid'] = -100;
-            $message['owner'] = -100;
             $message['priority'] = -100;
             $message['deadline'] = 0;
-            $message['verifierid'] = -1;
         } else {
             if (!($LMS->CheckTicketAccess($_GET['ticketid']) & RT_RIGHT_WRITE)) {
                 access_denied();
@@ -703,7 +675,6 @@ if (!is_array($message['ticketid'])) {
     if (!isset($_POST['message'])) {
         $message['source'] = $ticket['source'];
         $message['priority'] = $ticket['priority'];
-        $message['verifierid'] = $ticket['verifierid'];
         $message['deadline'] = $ticket['deadline'];
         if ($message['state'] == RT_NEW) {
             $message['state'] = RT_OPEN;

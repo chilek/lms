@@ -145,8 +145,7 @@
 			{trans("Queue")}
 		</TD>
 		<td>
-			<select size="1" name="note[queueid]" {tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
-				onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
+			<select size="1" name="note[queueid]" {tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}>
 				{foreach $queuelist as $item}
 				<option value="{$item.id}"
 					{if $item.id == $note.queueid}selected{/if}>{$item.name}</option>
@@ -156,67 +155,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			{icon name="owner"}
-			{trans("Owner")}
-		</TD>
-		<td>
-			<select size="1" name="note[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
-				<option value="0">- {trans("select user")} -</option>
-				{foreach $userlist as $user}
-					{if $user.id != $note.owner
-						&& ($hide_disabled_users && !$user.access
-							|| $hide_deleted_users && $user.deleted)}
-						{continue}
-					{/if}
-					<option value="{$user.id}"
-						class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-						{if $user.id == $note.owner}selected{/if}
-					>{strip}
-						{$user.name|trunescape:40} ({$user.login})
-					{/strip}</option>
-				{/foreach}
-			</select>
-			&nbsp;
-			<label>
-				<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
-				{trans("assign to me")}
-			</label>
-		</td>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="verifier"}
-			{trans("Verifier")}
-		</TD>
-		<td id="rtverifiers">
-			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-				<select size="1" name="note[verifierid]"
-					{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
-					<option value="0">- {trans("select user")} -</option>
-					{foreach $userlist as $user}
-						{if $user.id != $note.verifierid
-							&& ($hide_disabled_users && !$user.access
-								|| $hide_deleted_users && $user.deleted)}
-							{continue}
-						{/if}
-						<option value="{$user.id}"
-							class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
-							{if $user.id == $note.verifierid} selected{/if}
-						>{strip}
-							{$user.name|trunescape:40} ({$user.login})
-						{/strip}</option>
-					{/foreach}
-				</select>
-			{else}
-				<input type="hidden" name="note[verifierid]" value="{$ticket.verifierid}">
-				<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>
-			{/if}
-		</td>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			{icon name="deadline"}
-			{trans("<!rt>Deadline")}
+			{icon name="deadline" label="<!rt>Deadline"}
 		</TD>
 		<TD>
 			{if ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}

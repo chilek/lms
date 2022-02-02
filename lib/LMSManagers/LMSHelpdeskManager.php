@@ -1113,6 +1113,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files);
 
+        if ($message['type'] == RTMESSAGE_REGULAR && !ConfigHelper::checkConfig('rt.new_message_preserve_no_owner')) {
+            $ticket = $this->GetTicketContents($message['ticketid']);
+            if (empty($ticket['owner'])) {
+                $props['owner'] = Auth::GetCurrentUser();
+                $this->TicketChange($message['ticketid'], $props);
+            }
+        }
         return $msgid;
     }
 
