@@ -223,7 +223,16 @@ if (isset($_POST['document'])) {
     }
     if (isset($document['attachments']) && !empty($document['attachments'])) {
         foreach ($document['attachments'] as $attachment => $value) {
-            $filename = $engine['attachments'][$attachment];
+            if (isset($engine['attachments'][$attachment])) {
+                $filename = $engine['attachments'][$attachment];
+            } else {
+                foreach ($engine['attachments'] as $idx => $file) {
+                    if ($file['label'] == $attachment) {
+                        break;
+                    }
+                }
+                $filename = $engine['attachments'][$idx]['name'];
+            }
             if ($filename[0] != DIRECTORY_SEPARATOR) {
                 $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
             }
