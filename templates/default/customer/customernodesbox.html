@@ -73,20 +73,24 @@
 			<div class="lms-ui-tab-table-row{if !$node.access} blend{/if}" data-target-url="?m=nodeinfo&id={$node.id}">
 				<div class="lms-ui-tab-table-wrapper col-7">
 					<div class="lms-ui-tab-table-wrapper col-3">
-						<div class="lms-ui-tab-table-column name lms-ui-ignore-target-url">
+						<div class="lms-ui-tab-table-column name">
 							{if $node.lastonline}
 								{if ($smarty.now-$node.lastonline) > $lastonline_limit}
-									{button icon="nodeoff" type="link" onclick="ping_popup('{$node.ip}')" label=$node.name tip="{trans("Last online:")} {$node.lastonline_date}"}
+									{button icon="nodeoff" type="link" class="lms-ui-ignore-target-url"
+										onclick="ping_popup('{$node.ip}')" label=$node.name
+										tip="{trans("Last online:")} {$node.lastonline_date}"}
 								{else}
-									{button icon="nodeon" type="link" onclick="ping_popup('{$node.ip}')" label=$node.name tip="online"}
+									{button icon="nodeon" type="link" class="lms-ui-ignore-target-url"
+										onclick="ping_popup('{$node.ip}')" label=$node.name tip="online"}
 								{/if}
 							{else}
-								{button icon="nodeunk" type="link" onclick="ping_popup('{$node.ip}')" label=$node.name tip="unknown"}
+								{button icon="nodeunk" type="link" class="lms-ui-ignore-target-url"
+									onclick="ping_popup('{$node.ip}')" label=$node.name tip="unknown"}
 							{/if}
 							{if $node.locked}{icon name="lock" tip="<!node>lock is active" class="node-lock-icon"}{/if}
 							{if isset($nodeassignments[$node.id])}
 								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}"><span
-										class="{if ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.liabilityid && $assignment.at < $smarty.now && $assignment.at > 365)} blend{elseif ($assignment.datefrom > $smarty.now && $assignment.datefrom && $assignment.period) && !($assignment.suspended)} alertblend{elseif ($assignment.suspended)}suspended{/if}
+										class="lms-ui-ignore-target-url{if ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.liabilityid && $assignment.at < $smarty.now && $assignment.at > 365)} blend{elseif ($assignment.datefrom > $smarty.now && $assignment.datefrom && $assignment.period) && !($assignment.suspended)} alertblend{elseif ($assignment.suspended)}suspended{/if}
 										{if !$assignment.commited} lms-ui-assignment-not-commited{/if}">{$assignment.name}</span></a>{if !$assignment@last}, {/if}{/foreach})
 							{/if}
 							{if $node.location}<BR>
@@ -99,7 +103,7 @@
 								</span>
 							{/if}
 							{if $node.info}<BR>
-								<span class="nobr">{$node.info|truncate:60:"&hellip;":true}</span>
+								<span class="nobr lms-ui-ignore-target-url">{$node.info|truncate:60:"&hellip;":true}</span>
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column id">
