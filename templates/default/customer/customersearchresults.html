@@ -290,12 +290,27 @@
 
 			switch (oper) {
 				case 1:
+					var selectedCustomerGroups = $('#customergroups').val();
+					if (!selectedCustomerGroups.length) {
+						alertDialog($t("<!customersearch>No customer groups were selected!"), $('#customergroups').closest('.lms-ui-multiselect-container'));
+						return false;
+					}
 					action = '?m=customergroup&oper=addtogroups';
 					break;
 				case 0:
+					var selectedCustomerGroups = $('#customergroups').val();
+					if (!selectedCustomerGroups.length) {
+						alertDialog($t("<!customersearch>No customer groups were selected!"), $('#customergroups').closest('.lms-ui-multiselect-container'));
+						return false;
+					}
 					action = '?m=customergroup&oper=removefromgroups';
 					break;
 				case 2:
+					var selectedCustomerGroups = $('#customergroups').val();
+					if (!selectedCustomerGroups.length) {
+						alertDialog($t("<!customersearch>No customer groups were selected!"), $('#customergroups').closest('.lms-ui-multiselect-container'));
+						return false;
+					}
 					action = '?m=customergroup&oper=changegroups';
 					break;
 				case 3:
