@@ -649,7 +649,7 @@ CREATE SEQUENCE voipaccounts_id_seq;
 DROP TABLE IF EXISTS voipaccounts CASCADE;
 CREATE TABLE voipaccounts (
 	id		integer		NOT NULL DEFAULT nextval('voipaccounts_id_seq'::text),
-	ownerid		integer		DEFAULT NULL
+	ownerid integer NOT NULL,
 		CONSTRAINT voipaccounts_ownerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	login		varchar(255)	NOT NULL DEFAULT '',
 	passwd		varchar(255)	NOT NULL DEFAULT '',
@@ -4234,6 +4234,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022012000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022020500');
 
 COMMIT;
