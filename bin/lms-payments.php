@@ -998,7 +998,7 @@ if (!empty($assigns)) {
             FROM cash c
             LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
             WHERE c.customerid = ?
-                AND c.time > ? AND c.time < ?
+                AND c.time >= ? AND c.time < ?
             ORDER BY time',
             array(
                 $reward_penalty_deadline_grace_days,
