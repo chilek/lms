@@ -285,11 +285,11 @@
 		</TD>
 		{/if}
 	</TR>
-	<TR>
-		<TD COLSPAN="{math equation="6+x" x=$taxescount}" class="empty-table">
-			<p>{trans("No such invoices in selected time period.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="{math equation="6+x" x=$taxescount}" class="empty-table">
+			{trans("No such invoices in selected time period.")}
+		</td>
+	</tr>
 </TABLE>
 {/foreach}
 {include file="clearfooter.html"}

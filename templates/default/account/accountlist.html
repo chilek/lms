@@ -48,7 +48,7 @@
                                                 <OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
                                                 <OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</OPTION>
                                                 {foreach from=$customerlist item=customer}
-                                                <OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:35:"...":true}</OPTION>
+                                                <OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:35:"&hellip;":true}</OPTION>
                                                 {/foreach}
                                         </SELECT>
                                         {trans("Type:")}
@@ -97,7 +97,7 @@
 			{if $accountlist[accountlist].ownerid}
 			<BR><IMG src="img/customer.gif" alt="">
 			<A href="?m=customerinfo&id={$accountlist[accountlist].ownerid}">
-			{$accountlist[accountlist].customername|truncate:40:"...":true} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
+			{$accountlist[accountlist].customername|truncate:40:"&hellip;":true} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
 			</A>
 			{/if}
 		</TD>
@@ -133,11 +133,11 @@
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>
-		<TD colspan="5" class="empty-table">
-			<p>{trans("No such accounts in database.")} {trans('Click $a to create.', '<a href="?m=accountadd">'|cat: trans("here")|cat: '</a>')}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="5" class="empty-table">
+			{trans("No such accounts in database.")} {trans('Click $a to create.', '<a href="?m=accountadd">'|cat: trans("here")|cat: '</a>')}
+		</td>
+	</tr>
 	{/section}
     </TBODY>
     <TFOOT>

@@ -34,10 +34,9 @@ class LMSHtmlInvoice extends LMSHtmlDocument
     public function Draw($data)
     {
         parent::Draw($data);
+        $template_file = ConfigHelper::getConfig('invoices.template_file');
         if (isset($this->data['invoice'])) {
-            $template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
-        } else {
-            $template_file = ConfigHelper::getConfig('invoices.template_file');
+            $template_file = ConfigHelper::getConfig('invoices.cnote_template_file', $template_file);
         }
         if (!$this->smarty->templateExists('file:' . $template_file)) {
             $template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;

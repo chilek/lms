@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,13 +31,14 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'customergroups:' => 'g:',
 );
 
 $long_to_shorts = array();
@@ -74,7 +75,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-makedhcpconf.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
     exit(0);
@@ -83,12 +84,15 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-makedhcpconf.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-g, --customergroups=<group1,group2,...>
+                                allow to specify customer groups to which customers
+                                should be assigned
 
 EOF;
     exit(0);
@@ -98,7 +102,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-makedhcpconf.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2021 LMS Developers
 
 EOF;
 }
@@ -133,7 +137,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -144,7 +148,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -166,6 +170,8 @@ $config_begin = ConfigHelper::getConfig(
     'dhcp.begin',
     "ddns-update-style none;\nlog-facility local6;\ndefault-lease-time $default_lease_time;\nmax-lease-time $max_lease_time;\n"
 );
+$network_begin = ConfigHelper::getConfig('dhcp.network_begin', '', true);
+$global_range_format = ConfigHelper::getConfig('dhcp.range_format', 'range %start% %end%;');
 
 // we're looking for dhcp-mac config sections
 $config_macs = array();
@@ -215,13 +221,39 @@ unset($network);
 
 // customer groups
 $customergroups = ConfigHelper::getConfig('dhcp.customergroups', '', true);
-$customergroups = preg_split('/(\s+|\s*,\s*)/', $customergroups, -1, PREG_SPLIT_NO_EMPTY);
-if (empty($customergroups)) {
-    $customerids = array();
-} else {
-    $customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM customerassignments a
-		JOIN customergroups g ON g.id = a.customergroupid
-		WHERE UPPER(g.name) IN ('" . implode("','", array_map('mb_strtoupper', $customergroups)) . "')");
+
+// prepare customergroups in sql query
+if (isset($options['customergroups'])) {
+    $customergroups = $options['customergroups'];
+}
+if (!empty($customergroups)) {
+    $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($customergroups), -1, PREG_SPLIT_NO_EMPTY);
+    $customergroup_ORs = array();
+    foreach ($ORs as $OR) {
+        $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+        $customergroup_ANDs_regular = array();
+        $customergroup_ANDs_inversed = array();
+        foreach ($ANDs as $AND) {
+            if (strpos($AND, '!') === false) {
+                $customergroup_ANDs_regular[] = $AND;
+            } else {
+                $customergroup_ANDs_inversed[] = substr($AND, 1);
+            }
+        }
+        $customergroup_ORs[] = '('
+            . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = %customerid_alias%
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
+            . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = %customerid_alias%
+                AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
+                HAVING COUNT(*) > 0)")
+            . ')';
+    }
+    $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
 $fh = fopen($config_file, "w");
@@ -237,7 +269,9 @@ if (!empty($CONFIG['dhcp']['options'])) {
         $prefix .= "option " . $name . " " . $value . ";\n";
     }
 }
-fwrite($fh, $prefix);
+fwrite($fh, $prefix . "\n");
+
+$host_content = '';
 
 foreach ($networks as $networkid => $net) {
     $net_prefix = "";
@@ -249,6 +283,11 @@ foreach ($networks as $networkid => $net) {
     if (!empty($net['interface']) && strcmp($lastif, $net['interface']) != 0) {
         $net_prefix .= "\nshared-network LMS-" . $net['interface'] . " {\n";
         $lastif = $net['interface'];
+        $line_prefix = "\t";
+    } else {
+        if (!empty($net['interface']) && !empty($lastif) && strcmp($lastif, $net['interface'])) {
+            $line_prefix = '';
+        }
     }
 
     // TODO: lease time for network set by LMS-UI
@@ -269,7 +308,12 @@ foreach ($networks as $networkid => $net) {
         $options['netbios-name-servers'] = $net['wins'];
     }
 
+    $range_format = $global_range_format;
+
     if (!empty($CONFIG['dhcp-' . $net['name']])) {
+        if (!empty($CONFIG['dhcp-' . $net['name']]['begin'])) {
+            $begin = $CONFIG['dhcp-' . $net['name']]['begin'];
+        }
         if (!empty($CONFIG['dhcp-' . $net['name']]['default_lease_time'])) {
             $default_lease = $CONFIG['dhcp-' . $net['name']]['default_lease_time'];
         }
@@ -279,32 +323,99 @@ foreach ($networks as $networkid => $net) {
         if (!empty($CONFIG['dhcp-' . $net['name']]['options'])) {
             $options = array_merge($options, $CONFIG['dhcp-' . $net['name']]['options']);
         }
+        if (!empty($CONFIG['dhcp-' . $net['name']]['range_format'])) {
+            $range_format = $CONFIG['dhcp-' . $net['name']]['range_format'];
+        }
+    } else {
+        $begin = '';
     }
 
-    $net_prefix .= "\n\tsubnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
-        . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n"
-        . (!empty($net['dhcpstart']) ? "\t\trange " . $net['dhcpstart'] . " " . $net['dhcpend'] . ";\n" : "");
+    $net_prefix .= $line_prefix . "subnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
+        . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n";
+
+    if (!empty($begin)) {
+        $begin = str_replace(
+            array(
+                '\\n',
+                '\\t',
+            ),
+            array(
+                "\n",
+                "\t",
+            ),
+            $begin
+        );
+    } elseif (!empty($network_begin)) {
+        $begin = str_replace(
+            array(
+                '\\n',
+                '\\t',
+            ),
+            array(
+                "\n",
+                "\t",
+            ),
+            $network_begin
+        );
+    }
+
+    if (!empty($begin)) {
+        foreach (explode("\n", $begin) as $line) {
+            if (!empty($line)) {
+                $net_prefix .= $line_prefix . "\t" . $line . "\n";
+            }
+        }
+    }
+
+    if (!empty($net['dhcpstart'])) {
+        $range = str_replace(
+            array(
+                '\\n',
+                '\\t',
+                '%start%',
+                '%end%',
+            ),
+            array(
+                "\n",
+                "\t",
+                $net['dhcpstart'],
+                $net['dhcpend'],
+            ),
+            $range_format
+        );
+        foreach (explode("\n", $range) as $line) {
+            if (!empty($line)) {
+                $net_prefix .= $line_prefix . "\t" . $line . "\n";
+            }
+        }
+    }
+
     if ($default_lease != $default_lease_time) {
-        $net_prefix .= "\t\tdefault-lease-time " . $default_lease . ";\n";
+        $net_prefix .= $line_prefix . "\tdefault-lease-time " . $default_lease . ";\n";
     }
     if ($max_lease != $max_lease_time) {
-        $net_prefix .= "\t\tmax-lease-time " . $max_lease . ";\n";
+        $net_prefix .= $line_prefix . "\ttmax-lease-time " . $max_lease . ";\n";
     }
     foreach ($options as $name => $value) {
-        $net_prefix .= "\t\toption " . $name . " " . $value . ";\n";
+        $net_prefix .= $line_prefix . "\toption " . $name . " " . $value . ";\n";
     }
-    $net_prefix .= "\n";
     fwrite($fh, $net_prefix);
 
     // get nodes for current network
-    $nodes = $DB->GetAll("SELECT n.id, n.name, mac, INET_NTOA(ipaddr) AS ip,
-			INET_NTOA(ipaddr_pub) AS ip_pub, ownerid FROM vnodes n
-		WHERE netid = ?
-		" . (empty($customerids) ? '' : " AND (n.ownerid IS NULL OR n.ownerid IN (" . implode(',', $customerids) . "))") . "
-		ORDER BY ipaddr", array($networkid));
+    $nodes = $DB->GetAll(
+        "SELECT n.id, n.name, mac, INET_NTOA(ipaddr) AS ip,
+            INET_NTOA(ipaddr_pub) AS ip_pub, ownerid FROM vnodes n
+        WHERE netid = ? AND (n.ownerid IS NULL OR 1 = 1"
+        . ($customergroups ? str_replace('%customerid_alias%', 'n.ownerid', $customergroups) : '')
+        . ')'
+        . ' ORDER BY ipaddr',
+        array(
+            $networkid,
+        )
+    );
 
     if (empty($nodes)) {
-        fwrite($fh, "\t}\n");
+        fwrite($fh, $line_prefix . "}\n");
         continue;
     }
 
@@ -399,12 +510,11 @@ foreach ($networks as $networkid => $net) {
             }
         }
 
-        $node_info = "";
         foreach ($hosts as $mac => $host) {
             if (empty($node['ownerid']) || !isset($netdevices[$mac])) {
-                $node_info .= "\t\thost " . $host['name'] . " { # ID: " . $host['id'] . "\n";
-                $node_info .= "\t\t\thardware ethernet " . $mac . ";\n";
-                $node_info .= "\t\t\tfixed-address " . $host['fixed_address'] . ";\n";
+                $host_content .= "host " . $host['name'] . " { # ID: " . $host['id'] . "\n";
+                $host_content .= "\thardware ethernet " . $mac . ";\n";
+                $host_content .= "\tfixed-address " . $host['fixed_address'] . ";\n";
                 $mac = preg_replace('/[^0-9a-fA-F]/', '', $mac);
                 foreach ($host['options'] as $name => $value) {
                     $value = str_replace(
@@ -412,15 +522,14 @@ foreach ($networks as $networkid => $net) {
                         array(strtolower($mac), strtoupper($mac)),
                         $value
                     );
-                    $node_info .= "\t\t\toption " . $name . " " . $value . ";\n";
+                    $host_content .= "\toption " . $name . " " . $value . ";\n";
                 }
-                $node_info .= "\t\t}\n";
+                $host_content .= "}\n";
             }
         }
-        fwrite($fh, $node_info);
     }
     // close subnet section
-    fwrite($fh, "\t}\n");
+    fwrite($fh, $line_prefix . "}\n");
 }
 
 // close shared-network section
@@ -428,10 +537,10 @@ if (!empty($lastif)) {
     fwrite($fh, "}\n");
 }
 
+fwrite($fh, $host_content);
+
 fclose($fh);
 
 chmod($config_file, intval($config_permission, 8));
 chown($config_file, $config_owneruid);
 chgrp($config_file, $config_ownergid);
-
-?>

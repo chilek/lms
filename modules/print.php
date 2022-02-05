@@ -73,7 +73,7 @@ switch ($type) {
         if ($tslist = $DB->GetAll('SELECT c.id AS id, time, c.type, c.value AS value,
                     c.currency, c.currencyvalue,
 				    taxes.label AS taxlabel, c.customerid, c.comment, vusers.name AS username,
-				    c.docid, d.number, d.cdate, d.type AS doctype, numberplans.template
+				    c.docid, d.number, d.fullnumber, d.cdate, d.type AS doctype, numberplans.template
 				    FROM cash c
 				    LEFT JOIN documents d ON d.id = c.docid
 				    LEFT JOIN numberplans ON numberplans.id = d.numberplanid
@@ -81,7 +81,7 @@ switch ($type) {
 				    LEFT JOIN vusers ON (vusers.id = c.userid)
 				    WHERE c.customerid = ?
 					    AND NOT EXISTS (
-				                    SELECT 1 FROM customerassignments a
+				                    SELECT 1 FROM vcustomerassignments a
 					            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					            WHERE e.userid = lms_current_user() AND a.customerid = ?)
 				    ORDER BY time', array($id, $id))
@@ -112,6 +112,7 @@ switch ($type) {
                     $list['value'][] = $saldolist['value'][$i];
                     $list['taxlabel'][] = $saldolist['taxlabel'][$i];
                     $list['date'][] = date('Y/m/d H:i', $saldolist['time'][$i]);
+                    $list['fullnumber'][] = $saldolist['fullnumber'][$i];
                     $list['username'][] = $saldolist['username'][$i];
                     $list['comment'][] = $saldolist['comment'][$i];
                     $list['currency'][] = $saldolist['currency'][$i];
@@ -209,7 +210,7 @@ switch ($type) {
             $lastafter = $DB->GetOne(
                 'SELECT SUM(CASE WHEN c.customerid IS NOT NULL AND type=0 THEN 0 ELSE value * c.currencyvalue END)
 					FROM cash c '
-                    .($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
+                    .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid) ' : '')
                     .'WHERE time<?'
                     .($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
                     .($source ? ' AND c.sourceid = '.intval($source) : '')
@@ -218,7 +219,7 @@ switch ($type) {
                     .($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
                     .($types ? $typewhere : '')
                     .' AND NOT EXISTS (
-			        		SELECT 1 FROM customerassignments a
+			        		SELECT 1 FROM vcustomerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)',
                 array($date['from'])
@@ -229,10 +230,12 @@ switch ($type) {
 
         if ($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid,
                     c.value AS value, c.currency, c.currencyvalue,
-					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
+					taxes.label AS taxlabel, c.customerid, comment, c.type AS type,
+                    cs.name AS sourcename
 					FROM cash c
+					LEFT JOIN cashsources cs ON cs.id = c.sourceid
 					LEFT JOIN taxes ON (taxid = taxes.id) '
-                    .($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
+                    .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid)  ' : '')
                     .'WHERE time <= ? '
                     .($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
                     .($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = '.intval($source)) : '')
@@ -242,7 +245,7 @@ switch ($type) {
                     .($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
                     .($types ? $typewhere : '')
                     .' AND NOT EXISTS (
-			        		SELECT 1 FROM customerassignments a
+			        		SELECT 1 FROM vcustomerassignments a
 						JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 						WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)'
                     .' ORDER BY time ASC', array($date['to']))) {
@@ -267,6 +270,7 @@ switch ($type) {
                 $list[$x]['currencyvalue'] = $row['currencyvalue'];
                 $list[$x]['taxlabel'] = $row['taxlabel'];
                 $list[$x]['time'] = $row['time'];
+                $list[$x]['sourcename'] = $row['sourcename'];
                 $list[$x]['comment'] = $row['comment'];
                 $list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
@@ -318,7 +322,15 @@ switch ($type) {
             $output = $SMARTY->fetch('print/printbalancelist.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
-            $SMARTY->display('print/printbalancelist.html');
+            if (isset($_POST['disposition']) && $_POST['disposition'] == 'csv') {
+                $filename = 'history-' . date('YmdHis') . '.csv';
+                header('Content-Type: text/plain; charset=utf-8');
+                header('Content-Disposition: attachment; filename=' . $filename);
+                header('Pragma: public');
+                $SMARTY->display('print/printbalancelist-csv.html');
+            } else {
+                $SMARTY->display('print/printbalancelist.html');
+            }
         }
         break;
 
@@ -351,7 +363,7 @@ switch ($type) {
 			FROM cash c
 			WHERE value>0 AND time>=? AND time<=? AND docid IS NULL
 				AND NOT EXISTS (
-			        	SELECT 1 FROM customerassignments a
+			        	SELECT 1 FROM vcustomerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = c.customerid)
 			GROUP BY date ORDER BY date ASC',
@@ -781,7 +793,7 @@ switch ($type) {
         }
         if ($group) {
                 $groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').'
-			            EXISTS (SELECT 1 FROM customerassignments a
+			            EXISTS (SELECT 1 FROM vcustomerassignments a
 				            WHERE a.customergroupid = '.$group.'
 					    AND a.customerid = d.customerid)';
             $where .= $groupwhere;
@@ -796,7 +808,7 @@ switch ($type) {
                         .($user ? ' AND userid='.$user : '')
                         .($group ? $groupwhere : '')
                         .' AND NOT EXISTS (
-						        SELECT 1 FROM customerassignments a
+						        SELECT 1 FROM vcustomerassignments a
 							JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 							WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)',
                 array(DOC_RECEIPT, $from)
@@ -817,7 +829,7 @@ switch ($type) {
 			WHERE d.type = ?'
             .$where.'
 				AND NOT EXISTS (
-					SELECT 1 FROM customerassignments a
+					SELECT 1 FROM vcustomerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 			GROUP BY d.id, number, cdate, customerid, d.name, address, zip, city, numberplans.template, extnumber, closed

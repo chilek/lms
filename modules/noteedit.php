@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,9 +44,10 @@ if (isset($_GET['id']) && $action=='edit') {
     $i = 0;
     foreach ($note['content'] as $item) {
         $i++;
-        $nitem['description']   = $item['description'];
-        $nitem['value']     = $item['value'];
-        $nitem['posuid']    = $i;
+        $nitem['description'] = $item['description'];
+        $nitem['servicetype'] = $item['servicetype'];
+        $nitem['value'] = $item['value'];
+        $nitem['posuid'] = $i;
         $SESSION->restore('notecontents', $notecontents);
         $notecontents[] = $nitem;
         $SESSION->save('notecontents', $notecontents);
@@ -83,12 +84,11 @@ switch ($action) {
     case 'additem':
         $itemdata = r_trim($_POST);
 
-                $itemdata['value'] = f_round($itemdata['value']);
-                $itemdata['description'] = $itemdata['description'];
+        $itemdata['value'] = f_round($itemdata['value']);
 
         if ($itemdata['value'] > 0 && $itemdata['description'] != '') {
-                $itemdata['posuid'] = (string) getmicrotime();
-                $contents[] = $itemdata;
+            $itemdata['posuid'] = (string) getmicrotime();
+            $contents[] = $itemdata;
         }
         break;
 
@@ -162,18 +162,43 @@ switch ($action) {
 
         $note['customerid'] = $_POST['customerid'];
 
+
+        if (($note['numberplanid'] && !$LMS->checkNumberPlanAccess($note['numberplanid']))
+            || ($note['oldnumberplanid'] && !$LMS->checkNumberPlanAccess($note['oldnumberplanid']))) {
+            $note['numberplanid'] = $note['oldnumberplanid'];
+            $error['numberplanid'] = trans('Persmission denied!');
+        }
+
+        $args = array(
+            'doctype' => DOC_DNOTE,
+            'customerid' => $note['customerid'],
+            'division' => $note['divisionid'],
+            'next' => false,
+        );
+        $numberplans = $LMS->GetNumberPlans($args);
+
+        if (count($numberplans) && empty($note['numberplanid']) && $note['numberplanid'] != 0) {
+            $error['numberplanid'] = trans('Select numbering plan');
+        }
+
         if ($note['number']) {
             if (!preg_match('/^[0-9]+$/', $note['number'])) {
                 $error['number'] = trans('Debit note number must be integer!');
-            } elseif (($note['oldcdate'] != $note['cdate'] || $note['oldnumber'] != $note['number']
-                    || ($note['oldnumber'] == $note['number'] && $note['oldcustomerid'] != $note['customerid'])
-                    || $note['oldnumberplanid'] != $note['numberplanid']) && ($docid = $LMS->DocumentExists(array(
+            } elseif ((
+                    $note['oldcdate'] != $note['cdate']
+                    || $note['oldnumber'] != $note['number']
+                    || $note['oldnumberplanid'] != intval($note['numberplanid'])
+                    || ($note['oldcustomerid'] != $note['customerid'] && preg_match('/%[0-9]*C/', $note['template']))
+                )
+                && ($docid = $LMS->DocumentExists(array(
                     'number' => $note['number'],
                     'doctype' => DOC_DNOTE,
                     'planid' => $note['numberplanid'],
                     'cdate' => $note['cdate'],
                     'customerid' => $note['customerid'],
-                    ))) > 0 && $docid != $note['id']) {
+                ))) > 0
+                && $docid != $note['id']
+            ) {
                 $error['number'] = trans('Debit note number $a already exists!', $note['number']);
             }
         }
@@ -198,6 +223,22 @@ switch ($action) {
             $note['currencyvalue'] = $LMS->getCurrencyValue($note['currency'], $note['cdate']);
             if (!isset($note['currencyvalue'])) {
                 die('Fatal error: couldn\'t get quote for ' . $note['currency'] . ' currency!<br>');
+            }
+
+            if (!empty($note['numberplanid']) && !$LMS->checkNumberPlanAccess($note['numberplanid'])) {
+                $error['numberplanid'] = trans('Permission denied!');
+            }
+
+            $args = array(
+                'doctype' => DOC_DNOTE,
+                'customerid' => $note['customerid'],
+                'division' => (empty($note['divisionid']) ? null : $note['divisionid']),
+                'next' => false,
+            );
+            $numberplans = $LMS->GetNumberPlans($args);
+
+            if (count($numberplans) && empty($note['numberplanid'])) {
+                $error['numberplanid'] = trans('Select numbering plan');
             }
 
             $SESSION->restore('noteid', $note['id']);
@@ -242,16 +283,14 @@ switch ($action) {
 
             $division = $LMS->GetDivision($customer['divisionid']);
 
-            if ($note['numberplanid']) {
-                $fullnumber = docnumber(array(
-                    'number' => $note['number'],
-                    'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-                    'cdate' => $cdate,
-                    'customerid' => $customer['id'],
-                ));
-            } else {
-                $fullnumber = null;
-            }
+            $fullnumber = docnumber(array(
+                'number' => $note['number'],
+                'template' => $note['numberplanid']
+                    ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid']))
+                    : null,
+                'cdate' => $cdate,
+                'customerid' => $customer['id'],
+            ));
 
             $args = array(
                 'number' => $note['number'],
@@ -286,13 +325,16 @@ switch ($action) {
                 'currencyvalue' => $note['currencyvalue'],
                 SYSLOG::RES_DOC => $note['id'],
             );
-            $DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
-				cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
-				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
-				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
-				div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?, currency = ?, currencyvalue = ?
-				WHERE id = ?', array_values($args));
+            $DB->Execute(
+                'UPDATE documents SET number = ?, numberplanid = ?,
+                cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
+                ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
+                div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
+                div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
+                div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?, currency = ?, currencyvalue = ?
+                WHERE id = ?',
+                array_values($args)
+            );
 
             $LMS->UpdateDocumentPostAddress($note['id'], $customer['id']);
 
@@ -336,8 +378,11 @@ switch ($action) {
                     'value' => $item['value'],
                     'description' => $item['description']
                 );
-                $DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
-					VALUES (?, ?, ?, ?)', array_values($args));
+                $DB->Execute(
+                    'INSERT INTO debitnotecontents (docid, itemid, value, description)
+                    VALUES (?, ?, ?, ?)',
+                    array_values($args)
+                );
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_DNOTECONT] = $DB->GetLastInsertID('debitnotecontents');
                     $args[SYSLOG::RES_CUST] = $customer['id'];
@@ -353,7 +398,8 @@ switch ($action) {
                     'customerid' => $customer['id'],
                     'comment' => $item['description'],
                     'docid' => $note['id'],
-                    'itemid'=> $itemid
+                    'itemid'=> $itemid,
+                    'servicetype' => $item['servicetype'],
                 ));
             }
 
@@ -379,7 +425,7 @@ $SESSION->save('notecontents', $contents);
 $SESSION->save('notecustomer', $customer);
 $SESSION->save('noteediterror', $error);
 
-if ($action != '') {
+if ($action && !$error) {
     // redirect needed because we don't want to destroy contents of note in order of page refresh
     $SESSION->redirect('?m=noteedit');
 }
@@ -387,6 +433,22 @@ if ($action != '') {
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
+
+$args = array(
+    'doctype' => DOC_DNOTE,
+    'cdate' => date('Y/m', $note['cdate']),
+);
+if (isset($note['customerid']) && !empty($note['customerid'])) {
+    $args['customerid'] = $note['customerid'];
+    $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($note['customerid']));
+}
+
+$numberplanlist = $LMS->GetNumberPlans($args);
+if (!$numberplanlist) {
+    $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
+}
+$SMARTY->assign('numberplanlist', $numberplanlist);
+$SMARTY->assign('planDocumentType', DOC_DNOTE);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

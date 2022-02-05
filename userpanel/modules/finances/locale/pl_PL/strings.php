@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,6 +25,8 @@
  */
 
 $_LANG['Show period column in assignment panel'] = 'Pokaż kolumnę okres w zakładce zobowiązań';
+$_LANG['Show discount column in assignment panel'] = 'Pokaż kolumnę rabat w zakładce zobowiązań';
+$_LANG['Show invoice column in assignment panel'] = 'Pokaż kolumnę faktura w zakładce zobowiązań';
 $_LANG['$a dollars $b cents'] = '$a zł $b gr';
 $_LANG['Accounting day'] = 'Dzień naliczania';
 $_LANG['Admin:'] = 'Administrator:';
@@ -112,3 +114,5 @@ $_LANG['Speed unit type'] = 'Typ jednostki szybkości';
 $_LANG['Speed unit aggregation threshold'] = 'Wyzwalacz agregacji jednostki szybkości';
 $_LANG['<!speed-unit>SI'] = 'SI';
 $_LANG['<!speed-unit>binary'] = 'binarny';
+
+$_LANG['Show all assignments'] = 'Pokaż wszystkie zobowiązania';

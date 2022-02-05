@@ -4,8 +4,17 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
-<script type="text/javascript">
-<!--
+
+<style>
+
+	table.lmsbox > thead >tr:not(:first-child) {
+		border-top: none;
+	}
+
+</style>
+
+<script>
+
 	function DocTemplateChanged() {
 		reset_login_timeout();
 		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
@@ -15,9 +24,16 @@
 
 	function DocTypeChanged() {
 		reset_login_timeout();
-		xajax_DocTypeChanged($('[name="document[type]"]').val(),
-			$('[name="document[numberplanid]"]').val(),
-			0);
+		xajax_DocTypeChanged($('[name="document[type]"]').val(), 0);
+	}
+
+	function enable_templates() {
+		$('#templ').prop('disabled', false);
+	}
+
+	function disable_templates() {
+		$('#templ').val(0);
+		$('#templ').prop('disabled', true);
 	}
 
 	function printdoc() {
@@ -25,189 +41,259 @@
 		document.documentgen.target = "_blank";
 		document.documentgen.submit();
 	}
-//-->
-</SCRIPT>
-<FORM name="documentgen" method="POST" id="documentgen-form" action="?m=documentgen" enctype="multipart/form-data">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 98%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD>
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Title:")}
-		</TD>
-		<TD class="nobr">
-			<INPUT type="text" id="title" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40" required>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD>
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("First number:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
-			{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate}
-			</DIV>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Period:")}
-		</TD>
-		<TD>
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Description:")}
-		</TD>
-		<TD>
-			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Type:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();"
-					{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
-				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
-				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
-				{/if}{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG src="img/class.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Template:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select document template" trigger="templ"} id="templ" onchange="DocTemplateChanged();">
-				<OPTION VALUE="0">... {trans("select template")} ...</OPTION>
-				{foreach $docengines as $docengine}
-				<OPTION VALUE="{$docengine.name}"{if $document.templ==$docengine.name} SELECTED{/if}>{$docengine.title}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR id="document-file-row"{if !$document.type} style="display: none;"{/if}>
-		<TD>
-			<IMG src="img/save.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Files:")}
-		</TD>
-		<TD>
-			{fileupload id="attachments" fileupload=$fileupload form="documentgen-form"}
-		</TD>
-	</TR>
-	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
-		<TD>
-			<img src="img/attach.gif">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Document attachments:")}
-		</TD>
-		<TD id="attachment-cell">
-			{$attachment_result}
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG src="img/confirm.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			<label for="closed">{trans("Confirmed:")}</label>
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<IMG src="img/customer.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Customers:")}
-		</TD>
-		<TD>
-			<TABLE width="100%">
-				<TR>
-					<TD width="1%" {tip text="Select customer's group"}>
-						{foreach $_CSTATUSES as $statusidx => $status}
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if (!isset($filter) && $statusidx == $smarty.const.CSTATUS_CONNECTED) || (isset($filter) && $statusidx == $filter)} checked{/if}>{$status.plurallabel}</label><BR>
-						{/foreach}
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="51"{if isset($filter) && $filter == 51} checked{/if}>{trans("with disconnected nodes")}</label><BR>
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="52"{if isset($filter) && $filter == 52} checked{/if}>{trans("in debt")}</label><BR>
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="-1"{if isset($filter) && $filter == -1} checked{/if}>{trans("without nodes")}</label><BR>
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="0"{if isset($filter) && $filter == 0} checked{/if}>{trans("all<!customers>")}</label>
-					</TD>
-					<TD width="5%">&nbsp;</TD>
-					<TD width="1%" class="nobr">
-						<IMG src="img/network.gif" alt=""> <B>{trans("Network:")}</B><BR><BR>
-						<IMG src="img/group.gif" alt=""> <B>{trans("Group:")}</B>
-					</TD>
-					<TD width="97%">
-						<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
-							<OPTION value="0">{trans("- all networks -")}</OPTION>
-							{foreach $networks as $net}
-							<OPTION value="{$net.id}"{if $network == $net.id} selected{/if}>{$net.name|truncate:40:"...":true}</OPTION>
-							{/foreach}
-						</SELECT>
-						<BR><BR>
-						<SELECT size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
-							<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
-							{foreach $customergroups as $group}
-							<OPTION value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"...":true}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD colspan="3" class="buttons">
-			<A href="javascript:document.documentgen.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
-		{*	<A href="?m=">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A> *}
-			<A href="javascript:printdoc();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<BR>
-<DIV id="plugin" name="plugin">{$plugin_result}</DIV>
+
+</script>
+<form name="documentgen" method="POST" id="documentgen-form" action="?m=documentgen" enctype="multipart/form-data">
+<input type="submit" class="hiddenbtn">
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="type"}
+			</td>
+			<td>
+				<strong>{trans("Type:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="document[type]" id="doctype" onChange="DocTypeChanged();"
+						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required
+				>
+					<option value="0">{trans("select type")}</option>
+					{foreach $_DOCTYPES as $key => $item}
+						{if $key < 0 && in_array($key, $docrights)}
+							<option value="{$key}"{if $document.type == $key} selected{/if}>{$item}</option>
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr style="display:table-row;">
+			<td>
+				{icon name="template"}
+			</td>
+			<td>
+				<strong>{trans("Template:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="document[templ]" id="templ" {if $document.type >= 0} disabled{/if}
+					onChange="DocTemplateChanged();"
+					{tip text="Select document template" trigger="templ"}
+				>
+					<option value="0">... {trans("select template")} ...</option>
+					{foreach $docengines as $docengine}
+						<option value="{$docengine.name}"{if $document.templ == $docengine.name} selected{/if}>{$docengine.title}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="document"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Title:")}</strong>
+			</td>
+			<td class="nobr">
+				<input type="text" id="title" name="document[title]" value="{$document.title}"
+					{tip text="Enter document title" trigger="title"} size="40" required>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="document"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("First number:")}</strong>
+			</td>
+			<td>
+				{numberplan_selection
+					doctype_selector  = "#doctype"
+					numberplanlist    = $numberplans
+					input_name        = "document[number]"
+					input_value       = $document.number
+					select_name       = "document[numberplanid]"
+					selected          = $document.numberplanid
+					number_trigger    = "number"
+					plan_trigger      = "numberplanid"
+					time              = $document.cdate
+					planDocumentType  = $planDocumentType
+				}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="period"}
+			</td>
+			<td>
+				<strong>{trans("Period:")}</strong>
+			</td>
+			<td>
+				{trans("from:")}
+				<input type="text" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">
+				{trans("to:")}
+				<input type="text" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="description"}
+			</td>
+			<td>
+				<strong>{trans("Description:")}</strong>
+			</td>
+			<td>
+				<textarea name="document[description]" rows="5" cols="50"
+					{tip text="Enter additional information (optional)"}>{$document.description}</textarea>
+			</td>
+		</tr>
+		<tr id="document-file-row"{if !$document.type} style="display: none;"{/if}>
+			<td>
+				{icon name="import"}
+			</td>
+			<td>
+				<strong>{trans("Files:")}</strong>
+			</td>
+			<td>
+				{fileupload id="attachments" fileupload=$fileupload form="documentgen-form"}
+			</td>
+		</tr>
+		<tr id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
+			<td>
+				{icon name="import"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Document attachments:")}</strong>
+			</td>
+			<td id="attachment-cell">
+				{$attachment_result}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="confirm"}
+			</td>
+			<td class="nobr">
+				<label for="closed">
+					<strong>{trans("Confirmed:")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="customer"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Customers:")}</strong>
+			</td>
+			<td>
+				<table width="100%">
+					<colgroup>
+						<col style="width: 1%;">
+					</colgroup>
+					<tbody>
+						<tr>
+							<td width="1%" {tip text="Select customer's group"}>
+								{foreach $_CSTATUSES as $statusidx => $status}
+									<label class="nobr">
+										<input type="radio" name="filter" value="{$statusidx}"
+											{if (!isset($filter) && $statusidx == $smarty.const.CSTATUS_CONNECTED) || (isset($filter) && $statusidx == $filter)} checked{/if}>
+										{$status.plurallabel}
+									</label>
+									<br>
+								{/foreach}
+								<label class="nobr">
+									<input type="radio" name="filter" value="51"
+										{if isset($filter) && $filter == 51} checked{/if}>
+									{trans("with disconnected nodes")}
+								</label>
+								<br>
+								<label class="nobr">
+									<input type="radio" name="filter" value="52"
+										{if isset($filter) && $filter == 52} checked{/if}>
+									{trans("in debt")}
+								</label>
+								<br>
+								<label class="nobr">
+									<input type="radio" name="filter" value="-1"
+										{if isset($filter) && $filter == -1} checked{/if}>
+									{trans("without nodes")}
+								</label>
+								<br>
+								<label class="nobr">
+									<input type="radio" name="filter" value="0"
+										{if isset($filter) && $filter == 0} checked{/if}>
+									{trans("all<!customers>")}
+								</label>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="ipnetwork"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Network:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="network" {tip text="Select network" trigger="customer"}>
+					<option value="0">{trans("- all networks -")}</option>
+					{foreach $networks as $net}
+						<option value="{$net.id}"{if $network == $net.id} selected{/if}
+							>{$net.name|truncate:40:"&hellip;":true}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="customergroup"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Group:")}</strong>
+			</td>
+			<td>
+				<select size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
+					<option value="0" selected>{trans("- all groups -")}</option>
+					{foreach $customergroups as $group}
+						<option value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"&hellip;":true}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				<div id="document-button-panel">
+					<div>
+						{button type="submit" icon="save" id="submit-button" label="Submit"}
+						{button type="submit" icon="print" label="Print" onclick="printdoc()"}
+						{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+					</div>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<br>
+<div id="plugin" name="plugin">{$plugin_result}</div>
 {$script_result}
-</FORM>
+</form>
 
 <script>
 

@@ -36,10 +36,20 @@ if ($id) {
     $LMS->EventDelete($id);
 }
 
-$backto = $SESSION->get('backto');
-if (!empty($backto) && preg_match('/^m=rtticketview/', $backto)) {
-    $SESSION->redirect('?' . $backto);
+
+if ($SESSION->is_set('backto', true)) {
+    $backto = '?' . $SESSION->get('backto', true);
+} else {
+    $backto = '?' . $SESSION->get('backto');
 }
 
-header('Location: ?m=eventlist'
-    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+if (!empty($backto)) {
+    if (strpos($backto, 'm=rtticketview') !== false) {
+        $SESSION->redirect($backto);
+    } elseif (strpos($backto, 'm=eventinfo') !== false) {
+        $SESSION->redirect('?m=eventlist');
+    }
+}
+
+$backid = $SESSION->get('backid');
+$SESSION->redirect($backto . (empty($backid) ? '' : '#' . $backid));

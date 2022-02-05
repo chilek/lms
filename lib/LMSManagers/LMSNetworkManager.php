@@ -93,7 +93,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetPrefixList()
     {
-        for ($i = 30; $i > 15; $i--) {
+        for ($i = 31; $i > 15; $i--) {
             $prefixlist['id'][] = $i;
             $prefixlist['value'][] = trans('$a ($b addresses)', $i, pow(2, 32 - $i));
         }
@@ -122,7 +122,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'dhcpstart' => $netadd['dhcpstart'],
             'dhcpend' => $netadd['dhcpend'],
             'notes' => $netadd['notes'],
-            'vlanid' => intval($netadd['vlanid']),
+            'vlanid' => empty($netadd['vlanid']) ? null : intval($netadd['vlanid']),
             SYSLOG::RES_HOST => $netadd['hostid'],
             'authtype' => $netadd['authtype'],
             'snat' => !empty($netadd['snat']) ? $netadd['snat'] : null,
@@ -288,7 +288,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 $sqlord = ' ORDER BY online';
                 break;
             case 'vlanid':
-                $sqlord = ' ORDER BY vlanid';
+                $sqlord = ' ORDER BY vl.vlanid';
                 break;
         }
 
@@ -327,7 +327,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         break;
 
                     case 'vlanid':
-                        $sqlwhere .= " vlanid = " . $v . " " . $search['operatorType'];
+                        $sqlwhere .= " vl.vlanid = " . $v . " " . $search['operatorType'];
                         break;
 
                     case 'gateway':
@@ -373,7 +373,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
 				domain, wins, dhcpstart, dhcpend, inet_ntoa(snat) AS snat,
 				mask2prefix(inet_aton(mask)) AS prefix,
-				broadcast(address, inet_aton(mask)) AS broadcastlong, vlanid,
+				broadcast(address, inet_aton(mask)) AS broadcastlong, vl.vlanid AS vlanid,
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
 				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
 				(SELECT COUNT(*) 
@@ -388,7 +388,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 						AND (?NOW? - lastonline < ?)
 				) AS online
 			FROM networks n
-			LEFT JOIN hosts h ON h.id = n.hostid'
+			LEFT JOIN hosts h ON h.id = n.hostid
+			LEFT JOIN vlans vl ON n.vlanid = vl.id'
             . ($sqlwhere != ' WHERE' ? $sqlwhere : '')
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
             . (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
@@ -420,9 +421,23 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0)
     {
         $ip = ip_long($ip);
-        return $this->db->GetOne('SELECT 1 FROM networks
-			WHERE id != ? AND address < ?
-			AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?', array(intval($ignoreid), $ip, $ip));
+        return $this->db->GetOne(
+            'SELECT 1 FROM networks
+			WHERE id <> ? AND ((mask = ? AND address <= ?) OR (mask <> ? AND address < ?))
+			AND ((mask <> ? AND broadcast(address, inet_aton(mask)) >' . ($checkbroadcast ? '=' : '') . ' ?)
+			    OR (mask = ? AND broadcast(address, inet_aton(mask)) >= ?))',
+            array(
+                intval($ignoreid),
+                '255.255.255.254',
+                $ip,
+                '255.255.255.254',
+                $ip,
+                '255.255.255.254',
+                $ip,
+                '255.255.255.254',
+                $ip,
+            )
+        );
     }
 
     public function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0)
@@ -482,7 +497,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'address' => $networkdata['address'],
             'mask' => $networkdata['mask'],
             'interface' => strtolower($networkdata['interface']),
-            'vlanid' => intval($networkdata['vlanid']),
+            'vlanid' => empty($networkdata['vlanid']) ? null : intval($networkdata['vlanid']),
             'gateway' => $networkdata['gateway'],
             'dns' => $networkdata['dns'],
             'dns2' => $networkdata['dns2'],
@@ -714,13 +729,16 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false)
     {
-        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, inet_ntoa(ne.address) AS address,
+        global $LMS;
+
+        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, vl.vlanid, inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
                 ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype, inet_ntoa(ne.snat) AS snat,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes, ne.pubnetid,
                 inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast
             FROM networks ne
             LEFT JOIN nodes no ON (no.netid = ne.id AND no.ipaddr = 0 AND no.ipaddr_pub = 0)
+            LEFT JOIN vlans vl ON (vl.id = ne.vlanid)
             WHERE ne.id = ?', array($id));
 
         if ($network['ownerid']) {
@@ -734,20 +752,56 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $network['pubnet']['prefix'] = mask2prefix($network['pubnet']['mask']);
         }
 
-        $nodes = $this->db->GetAllByKey('
-				SELECT id, name, ipaddr, ownerid, netdev 
-				FROM vnodes WHERE netid = ? AND ipaddr > ? AND ipaddr < ?
-				UNION ALL
-				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev
-				FROM vnodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($id, $network['addresslong'], ip_long($network['broadcast']),
-            $network['addresslong'], ip_long($network['broadcast'])));
+        $nodes = $this->db->GetAllByKey(
+            '(
+                SELECT vnodes.id, vnodes.name, ipaddr, ownerid, netdev
+                FROM vnodes
+                JOIN networks net ON net.id = vnodes.netid
+                WHERE netid = ?
+                    AND ((net.mask <> ? AND ipaddr > ? AND ipaddr < ?) OR (net.mask = ? AND ipaddr >= ? AND ipaddr <= ?))
+            )
+            UNION ALL
+            (
+                SELECT vnodes.id, vnodes.name, ipaddr_pub AS ipaddr, ownerid, netdev
+                FROM vnodes
+                JOIN networks net ON ipaddr_pub & INET_ATON(net.mask) = net.address
+                WHERE ((net.mask <> ? AND ipaddr_pub > ? AND ipaddr_pub < ?) OR (net.mask = ? AND ipaddr_pub >= ? AND ipaddr_pub <= ?))
+            )',
+            'ipaddr',
+            array(
+                $id,
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+                '255.255.255.254',
+                $network['addresslong'],
+                ip_long($network['broadcast']),
+            )
+        );
+
+        $hook_data = $LMS->executeHook(
+            'networkrecord_after_get',
+            compact("id", "network", "nodes")
+        );
+        extract($hook_data);
+
+        $prefix_31 = ($network['mask'] == '255.255.255.254');
 
         if ($network['hostid']) {
             $network['hostname'] = $this->db->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
         }
         $network['size'] = pow(2, 32 - $network['prefix']);
         $network['assigned'] = empty($nodes) ? 0 : count($nodes);
-        $network['free'] = $network['size'] - $network['assigned'] - 2;
+        $network['free'] = $network['size'] - $network['assigned'];
+        if (!$prefix_31) {
+            $network['free'] -= 2;
+        }
         if ($network['dhcpstart']) {
             $network['free'] = $network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1);
         }
@@ -786,9 +840,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 } else {
                     $network['nodes']['id'][$i] = 0;
 
-                    if ($longip == $network['addresslong']) {
+                    if (!$prefix_31 && $longip == $network['addresslong']) {
                         $network['nodes']['name'][$i] = '<b>NETWORK</b>';
-                    } elseif ($network['nodes']['address'][$i] == $network['broadcast']) {
+                    } elseif (!$prefix_31 && $network['nodes']['address'][$i] == $network['broadcast']) {
                         $network['nodes']['name'][$i] = '<b>BROADCAST</b>';
                     } elseif ($network['nodes']['address'][$i] == $network['gateway']) {
                         $network['nodes']['name'][$i] = '<b>GATEWAY</b>';
@@ -878,5 +932,124 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             }
         }
         return $ip;
+    }
+
+    public function GetVlanList($params = array())
+    {
+        if (!empty($params)) {
+            extract($params);
+        }
+
+        switch ($orderby) {
+            case 'id':
+                $orderby = ' ORDER BY vl.id';
+                break;
+            case 'vlanid':
+                $orderby = ' ORDER BY vlanid';
+                break;
+            case 'description':
+                $orderby = ' ORDER BY description';
+                break;
+            case 'customerid':
+                $orderby = ' ORDER BY customerid';
+                break;
+            case 'netnodeid':
+                $orderby = ' ORDER BY netnodeid';
+                break;
+            default:
+                $orderby = ' ORDER BY id';
+                break;
+        }
+
+        return $this->db->GetAllByKey(
+            'SELECT vl.id, vlanid, description, customerid, netnodeid, nn.name AS netnodename, '
+            . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
+            FROM vlans AS vl
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)
+            LEFT JOIN netnodes nn ON (vl.netnodeid = nn.id)'
+            . $orderby,
+            'id'
+        );
+    }
+
+    public function GetVlanInfo($id)
+    {
+        return $this->db->GetRow(
+            'SELECT vl.id, vlanid, description, customerid, netnodeid, nn.name AS netnodename, '
+            . $this->db->Concat('cv.lastname', "' '", 'cv.name') . ' AS customername
+            FROM vlans AS vl
+            LEFT JOIN customers cv ON (vl.customerid = cv.id)
+            LEFT JOIN netnodes nn ON (vl.netnodeid = nn.id)
+            WHERE vl.id = ?',
+            array($id)
+        );
+    }
+
+    public function AddVlan($args)
+    {
+        $args = array(
+            'vlanid' => $args['vlanid'],
+            'description' => !empty($args['description']) ? $args['description'] : null,
+            'customerid' => !empty($args['customerid']) ? $args['customerid'] : null,
+            'netnodeid' => !empty($args['netnodeid']) ? $args['netnodeid'] : null,
+        );
+
+        $result = $this->db->Execute(
+            'INSERT INTO vlans (vlanid, description, customerid, netnodeid) VALUES (?, ?, ?, ?)',
+            array($args['vlanid'], $args['description'], $args['customerid'], $args['netnodeid'])
+        );
+
+        $args['id'] = $this->db->GetLastInsertID('vlans');
+
+        if ($result && $this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_ADD, $args);
+        }
+        return $result;
+    }
+
+    public function DeleteVlan($id)
+    {
+        $vlaninfo = $this->GetVlanInfo($id);
+        $result = $this->db->Execute('DELETE FROM vlans WHERE id = ?', array($id));
+
+        if ($result && $this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_DELETE, $vlaninfo);
+        }
+
+        return $result;
+    }
+
+    public function UpdateVlan($props)
+    {
+        if (!empty($props['id'])) {
+            $props = array(
+                'id' => $props['id'],
+                'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
+                'description' => isset($props['description']) ? $props['description'] : null,
+                'customerid' => empty($props['customerid']) ? null : $props['customerid'],
+                'netnodeid' => empty($props['netnodeid']) ? null : $props['netnodeid'],
+            );
+
+            $vlaninfo = $this->GetVlanInfo($props['id']);
+            unset($vlaninfo['customername']);
+            unset($vlaninfo['netnodename']);
+
+            $diff = array_diff($vlaninfo, $props);
+            $diff2 = array_diff($props, $vlaninfo);
+            if (!empty($diff) || !empty($diff2)) {
+                $result = $this->db->Execute(
+                    'UPDATE vlans SET vlanid = ?, description = ?, customerid = ?, netnodeid = ? WHERE id = ?',
+                    array($props['vlanid'], $props['description'], $props['customerid'], $props['netnodeid'], $props['id'])
+                );
+                $diff = Utils::array_keys_add_prefix($diff);
+                $diff = array_merge($diff, $diff2);
+                $diff['id'] = $props['id'];
+                if ($result && $this->syslog) {
+                    $this->syslog->AddMessage(SYSLOG::RES_VLAN, SYSLOG::OPER_UPDATE, $diff);
+                }
+            }
+
+            return $result;
+        };
     }
 }

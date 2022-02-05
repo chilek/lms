@@ -2,277 +2,387 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+<style>
+
+	#accesslist {
+		column-width: 30vh;
+	}
+
+	#accesslist label {
+		display: block;
+		width: fit-content;
+		white-space: normal;
+		padding-left: 2.3em;
+		text-indent: -2.3em;
+		break-inside: avoid;
+	}
+
+	#copy-rights {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	#copy-rights *:not(:first-child) {
+		padding-left: 0.5em;
+	}
+
+	#copy-rights label {
+		white-space: normal;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
-<FORM name="useradd" method="post" action="?m=useradd">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 1%;" class="bold">
-			<IMG src="img/pass.gif" alt=""> {trans("Login:")}
-		</TD>
-		<TD style="width: 99%;">
-			<INPUT type="text" name="useradd[login]" value="{$useradd.login}" required {tip text="Enter user login" trigger="login" bold=1}>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("First name:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="useradd[firstname]" value="{$useradd.firstname}" size="40" required {tip text="Enter user first name" trigger="firstname"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("Last name:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="useradd[lastname]" value="{$useradd.lastname}" size="40" required {tip text="Enter user last name" trigger="lastname"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold">
-			<IMG src="img/info.gif" alt=""> {trans("Position:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="useradd[position]" value="{$useradd.position}" size="40" {tip text="Enter user position (optional)" trigger="position"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold">
-			<IMG src="img/mail.gif" alt=""> {trans("E-mail:")}
-		</TD>
-		<TD>
-			<INPUT type="email" name="useradd[email]" value="{$useradd.email}" size="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/sms.gif" alt=""> {trans("Phone:")}
-		</TD>
-		<TD>
-			<INPUT type="tel" name="useradd[phone]" value="{$useradd.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/options.gif" alt=""> {trans("Notification:")}
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="useradd[ntype][]" value="{$smarty.const.MSG_MAIL}" id="ntypemail"{if ($useradd.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
-			<INPUT type="checkbox" name="useradd[ntype][]" value="{$smarty.const.MSG_SMS}" id="ntypesms"{if ($useradd.ntype & $smarty.const.MSG_SMS)} checked{/if}><label for="ntypesms">{trans("sms")}</label>
-		</TD>
-	</TR>
-	<tr>
-		<td class="bold nobr">
-			<img src="img/access.gif" alt=""> {trans("Account active:")}
-		</td>
-		<td>
-			<input type="radio" name="useradd[access]" value="1" id="accessyes" {if !isset($useradd.access) || $useradd.access=='1'} checked{/if}><label for="accessyes">{trans("yes")}</label>
-			<input type="radio" name="useradd[access]" value="0" id="accessno" {if $useradd.access=='0'} checked{/if}><label for="accessno">{trans("no")}</label>
-		</td>
-	</tr>
-	<tr>
-		<td class="bold nobr">
-			<img src="img/calendar.gif" alt=""> {trans("Account active:")}
-		</td>
-		<td class="nobr">
-			{trans('from')}:<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"} autocomplete="off">
-			{trans('to')}:<input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" autocomplete="off" {tip class="lms-ui-date" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
-		</td>
-	</tr>
-	<TR>
-		<TD class="bold">
-			<IMG src="img/pass.gif" alt=""> {trans("Password:")}
-		</TD>
-		<TD>
-			<INPUT type="password" name="useradd[password]" required {tip text="Enter password" trigger="password"} autocomplete="off">
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/pass.gif" alt=""> {trans("Repeat password:")}
-		</TD>
-		<TD>
-			<INPUT type="password" name="useradd[confirm]" required {tip text="Confirm password" trigger="password"} autocomplete="off">
-		</TD>
-	</TR>
-	<TR>
-		<td class="bold nobr">
-			<label for="passwdforcechange">
-				<IMG src="img/pass.gif" alt=""> {trans("Force password change:")}
-			</label>
-		</td>
-		<TD>
-			<input type="checkbox" name="useradd[passwdforcechange]" value="1"
-					id="passwdforcechange"{if isset($useradd.passwdforcechange)} checked{/if}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold">
-			<IMG src="img/pass.gif" alt=""> {trans("Two factor authentication:")}
-		</TD>
-		<TD>
-			<label>
-				<INPUT type="radio" name="useradd[twofactorauth]" value="1"{if $useradd.twofactorauth == 1} checked{/if}>
-				{trans("yes")}
-			</label>
-			<label>
-				<INPUT type="radio" name="useradd[twofactorauth]" value="0"{if !$useradd.twofactorauth} checked{/if}>
-				{trans("no")}
-			</label>
-			<label>
-				<INPUT type="radio" name="useradd[twofactorauth]" value="-1"{if $useradd.twofactorauth == -1} checked{/if}>
-				{trans("generate secret key")}
-			</label>
-		</TD>
-	</TR>
-	<TR id="twofactorauthsecretkey"{if $useradd.twofactorauth != 1} style="display: none;"{/if}>
-		<TD class="bold">
-			<IMG src="img/pass.gif" alt=""> {trans("Secret key:")}
-		</TD>
-		<TD>
-			<input type="text" name="useradd[twofactorauthsecretkey]" value="{$useradd.twofactorauthsecretkey}"
-					maxlength="16" {tip trigger="twofactorauthsecretkey"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/ip.gif" alt=""> {trans("Allowed hosts:")}
-		</TD>
-		<TD class="nobr">
-			<INPUT type="text" size="40" name="useradd[hosts]" value="{$useradd.hosts}" {tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/passwd.gif" alt=""> {trans("Password expiration:")}
-		</TD>
-		<TD class="nobr">
-			<SELECT name="useradd[passwdexpiration]" {tip text="Select password expiration period" trigger="passwdexpiration"}>
-				{foreach from=$_PASSWDEXPIRATIONS item=item key=key}
-				<OPTION value="{$key}"{if $key == $useradd.passwdexpiration} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/pass.gif" alt=""> {trans("Access rights:")}
-		</TD>
-		<TD class="nobr">
-			<table style="width: 100%;">
-				<colgroup>
-					<col style="width: 50%;">
-					<col style="width: 50%;">
-				</colgroup>
-				<tbody>
-					<tr>
-						<td colspan="2">
-							{button icon="clone" id="copy-rights" label="Copy rights"}
-							&nbsp;{trans("of selected user:")}
-							&nbsp;
-							<select id="from-user" name="useradd[src_userid]">
-								<option value="">{trans("<!access-rights>- empty -")}</option>
-								{foreach $users as $user}
-									<option value="{$user.id}"
-											{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname} ({$user.login})</option>
-								{/foreach}
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							{include file="user/usercopypermissions.html" form_variable_prefix="useradd" variables=$useradd}
-						</td>
-					</tr>
-					<tr id="user-rights">
-						<td class="valign-top nobr">
-							{foreach $accesslist as $name => $access}
-								{if $access@index <= floor($access@total / 2) - 1}
-									{if !empty($access.name)}
-									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-									   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-									{/if}
-								{/if}
-							{/foreach}
-						</td>
-						<td class="valign-top nobr">
-							{foreach $accesslist as $name => $access}
-								{if $access@index > floor($access@total / 2) - 1}
-									{if !empty($access.name)}
-									<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
-										   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-									{/if}
-								{/if}
-							{/foreach}
-							{assign var="name" value=""}
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</TD>
-	</TR>
-
-	<TR>
-		<TD class="bold nobr">
-			{icon name="usergroup" class="fa-fw"} {trans("User groups:")}
-		</TD>
-		<TD class="nobr">
-			<select SIZE="4" NAME="useradd[usergroups][]" id="usergroups" multiple {tip text="Select user groups" class="lms-ui-multiselect" trigger="usergroups"}
-					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
-				{foreach $usergroups as $group}
-					<option value="{$group.id}"{if isset($selectedusergroups[$group.id])} selected{/if}>{$group.name}</option>
-				{/foreach}
-			</select>
-		</TD>
-	</TR>
-
-	<TR>
-		<TD class="bold nobr">
-			{icon name="customergroup" class="fa-fw"} {trans("Customer groups:")}
-		</TD>
-		<TD class="nobr">
-			<select SIZE="4" NAME="useradd[customergroups][]" id="customergroups" multiple {tip text="Select customer groups" class="lms-ui-multiselect" trigger="customergroups"}
-					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
-				{foreach $customergroups as $group}
-					<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
-				{/foreach}
-			</select>
-		</TD>
-	</TR>
-
-	{if is_array($divisions) && count($divisions)}
+<form name="useradd" method="post" action="?m=useradd">
+<input type="submit" class="hiddenbtn">
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
 		<tr>
-			<td class="bold nobr">
-				{icon name="division" class="fa-fw"} {trans("Divisions:")}
+			<td>
+				{icon name="login"}
+				<strong>{trans("Login:")}</strong>
 			</td>
 			<td>
-				<select SIZE="4" NAME="useradd[divisions][]" id="divisions" multiple {tip text="Select divisions" class="lms-ui-multiselect" trigger="division"} data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
-					{foreach $divisions as $division}
-						<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
-							{$division.shortname|truncate:30:"...":true}
-						</option>
+				<input type="text" name="useradd[login]" value="{$useradd.login}" required
+					{tip text="Enter user login" trigger="login" bold=1}>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="nobr">
+				{icon name="user"}
+				<strong>{trans("First name:")}</strong>
+			</td>
+			<td>
+				<input type="text" name="useradd[firstname]" value="{$useradd.firstname|escape}" size="40" required
+					{tip text="Enter user first name" trigger="firstname"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="user"}
+				<strong>{trans("Last name:")}</strong>
+			</td>
+			<td>
+				<input type="text" name="useradd[lastname]" value="{$useradd.lastname|escape}" size="40" required
+					{tip text="Enter user last name" trigger="lastname"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="document"}
+				<strong>{trans("Issuer")}</strong>
+			</td>
+			<td>
+				<input type="text" name="useradd[issuer]" value="{$useradd.issuer|escape}" size="40"
+					{tip text="Enter issuer name visible on documents" trigger="issuer"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="info"}
+				<strong>{trans("Position:")}</strong>
+			</td>
+			<td>
+				<input type="text" name="useradd[position]" value="{$useradd.position}" size="40"
+					{tip text="Enter user position (optional)" trigger="position"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="mail"}
+				<strong>{trans("E-mail:")}</strong>
+			</>
+			<td>
+				<input type="email" name="useradd[email]" value="{$useradd.email}" size="40"
+					{tip text="Enter e-mail address (optional)" trigger="email"} autocomplete="new-password">
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="sms"}
+				<strong>{trans("Phone:")}</strong>
+			</td>
+			<td>
+				<input type="tel" name="useradd[phone]" value="{$useradd.phone}" size="40"
+					{tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="options"}
+				<strong>{trans("Notification:")}</strong>
+			</td>
+			<td>
+				<label>
+					<input type="checkbox" name="useradd[ntype][]" value="{$smarty.const.MSG_MAIL}"
+						{if ($useradd.ntype & $smarty.const.MSG_MAIL)} checked{/if}>
+					{trans("e-mail")}
+				</label>
+				<label>
+					<input type="checkbox" name="useradd[ntype][]" value="{$smarty.const.MSG_SMS}"
+						{if ($useradd.ntype & $smarty.const.MSG_SMS)} checked{/if}>
+					{trans("sms")}
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="disconnected"}
+				<strong>{trans("Account active:")}</strong>
+			</td>
+			<td>
+				<label>
+					<input type="radio" name="useradd[access]" value="1"{if !isset($useradd.access) || $useradd.access=='1'} checked{/if}>
+					{trans("yes")}
+				</label>
+				<label>
+					<input type="radio" name="useradd[access]" value="0"{if $useradd.access=='0'} checked{/if}>
+					{trans("no")}
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="calendar"}
+				<strong>{trans("Account active:")}</strong>
+			</td>
+			<td class="nobr">
+				{trans('from')}:
+				<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}"
+					size="10" placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"} autocomplete="new-password">
+				{trans('to')}:
+				<input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}"
+					size="10" placeholder="{trans("yyyy/mm/dd")}" autocomplete="new-password"
+					{tip class="lms-ui-date" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+				<strong>{trans("Password:")}</strong>
+			</td>
+			<td>
+				<input type="password" name="useradd[password]" required {tip trigger="password"} autocomplete="new-password">
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="password"}
+				<strong>{trans("Repeat password:")}</strong>
+			</td>
+			<td>
+				<input type="password" name="useradd[confirm]" required {tip trigger="password"} autocomplete="new-password">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+				<strong>{trans("Network password")}</strong>
+			</td>
+			<td>
+				<input type="password" name="useradd[netpassword]" {tip trigger="netpassword"} autocomplete="new-password">
+				{hint mode="toggle" content="Network password can be used to authenticate users via Radius server."}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="password"}
+				<strong>{trans("Repeat network password")}</strong>
+			</td>
+			<td>
+				<input type="password" name="useradd[confirmnetpassword]" {tip trigger="netpassword"} autocomplete="new-password">
+				{hint mode="toggle" content="Network password can be used to authenticate users via Radius server."}
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				<label for="passwdforcechange">
+					{icon name="password"}
+					<strong>{trans("Force password change:")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="useradd[passwdforcechange]" value="1"
+					id="passwdforcechange"{if isset($useradd.passwdforcechange)} checked{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+				<strong>{trans("Two factor authentication:")}</strong>
+			</td>
+			<td>
+				<label>
+					<input type="radio" name="useradd[twofactorauth]" value="1"{if $useradd.twofactorauth == 1} checked{/if}>
+					{trans("yes")}
+				</label>
+				<label>
+					<input type="radio" name="useradd[twofactorauth]" value="0"{if !$useradd.twofactorauth} checked{/if}>
+					{trans("no")}
+				</label>
+				<label>
+					<input type="radio" name="useradd[twofactorauth]" value="-1"{if $useradd.twofactorauth == -1} checked{/if}>
+					{trans("generate secret key")}
+				</label>
+			</td>
+		</tr>
+		<tr id="twofactorauthsecretkey"{if $useradd.twofactorauth != 1} style="display: none;"{/if}>
+			<td>
+				{icon name="password"}
+				<strong>{trans("Secret key:")}</strong>
+			</td>
+			<td>
+				<input type="text" name="useradd[twofactorauthsecretkey]" value="{$useradd.twofactorauthsecretkey}"
+					maxlength="16" {tip trigger="twofactorauthsecretkey"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="ipnetwork"}
+				<strong>{trans("Allowed hosts:")}</strong>
+			</td>
+			<td>
+				<input type="text" size="40" name="useradd[hosts]" value="{$useradd.hosts}"
+					{tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
+			</td>
+		</tr>
+		<tr>
+			<td class="nobr">
+				{icon name="password"}
+				<strong>{trans("Password expiration:")}</strong>
+			</td>
+			<td>
+				<select name="useradd[passwdexpiration]" {tip text="Select password expiration period" trigger="passwdexpiration"}>
+					{foreach $_PASSWDEXPIRATIONS as $key => $item}
+						<option value="{$key}"{if $key == $useradd.passwdexpiration} selected{/if}>{$item}</option>
 					{/foreach}
 				</select>
 			</td>
 		</tr>
-	{/if}
+		<tr>
+			<td class="nobr">
+				{icon name="permissions"}
+				<strong>{trans("Access rights:")}</strong>
+			</td>
+			<td class="nobr">
+				<table style="width: 100%;">
+					<colgroup>
+						<col style="width: 50%;">
+						<col style="width: 50%;">
+					</colgroup>
+					<tbody>
+						<tr>
+							<td colspan="2">
+								<div id="copy-rights">
+									{button icon="clone" id="copy-rights" label="Copy rights"}
+									<label>
+										{trans("of selected user:")}
+										<select id="from-user" name="useradd[src_userid]">
+											<option value="">{trans("<!access-rights>- empty -")}</option>
+											{foreach $users as $user}
+												<option value="{$user.id}"
+														{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
+											{/foreach}
+										</select>
+									</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								{include file="user/usercopypermissions.html" form_variable_prefix="useradd" variables=$useradd}
+							</td>
+						</tr>
+						<tr id="user-rights">
+							<td class="valign-top" colspan="2">
+								<div id="accesslist">
+									{foreach $accesslist as $name => $access}
+										{if !empty($access.name)}
+											<label>
+												<input type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+													   name="acl[{$name}]" value="1"{if $access.enabled} checked{/if}>
+												{$access.name}
+											</label>
+										{/if}
+									{/foreach}
+									{$name = ""}
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</>
+		</tr>
 
-	<TR>
-		<TD colspan="2" class="lms-ui-box-buttons">
-			{button type="submit" icon="save" label="Submit"}
-			{button icon="cancel" icon="cancel" label="Cancel" onclick="location.href = '?m=userlist';"}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
+		<tr>
+			<td class="nobr">
+				{icon name="usergroup"}
+				<strong>{trans("User groups:")}</strong>
+			</td>
+			<td>
+				<select size="4" name="useradd[usergroups][]" id="usergroups" multiple
+					{tip text="Select user groups" class="lms-ui-multiselect" trigger="usergroups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $usergroups as $group}
+						<option value="{$group.id}"{if isset($selectedusergroups[$group.id])} selected{/if}>{$group.name}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="nobr">
+				{icon name="customergroup"}
+				<strong>{trans("Customer groups:")}</strong>
+			</td>
+			<td>
+				<select size="4" name="useradd[customergroups][]" id="customergroups" multiple
+					{tip text="Select customer groups" class="lms-ui-multiselect" trigger="customergroups"}
+					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					{foreach $customergroups as $group}
+						<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+
+		{if is_array($divisions) && count($divisions)}
+			<tr>
+				<td class="nobr">
+					{icon name="division"}
+					<strong>{trans("Divisions:")}</strong>
+				</td>
+				<td>
+					<select size="4" name="useradd[divisions][]" id="divisions" multiple
+						{tip text="Select divisions" class="lms-ui-multiselect" trigger="division"}
+						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false" required>
+						{foreach $divisions as $division}
+							<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
+								{$division.label|trunescape:30}
+							</option>
+						{/foreach}
+					</select>
+				</td>
+			</tr>
+		{/if}
+
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{button type="submit" icon="save" label="Submit"}
+				{button icon="cancel" icon="cancel" label="Cancel" onclick="location.href = '?m=userlist';"}
+			</td>
+		</tr>
+    </tbody>
+</table>
+</form>
 <script>
 
 	$(function() {

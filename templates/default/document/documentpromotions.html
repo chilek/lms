@@ -1,33 +1,40 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox" id="documentpromotions">
-	<COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="documentpromotionpanel">
-		<TD>
-			<IMG src="img/promoschema.gif" alt="">
-			<span class="bold">{trans("Promotion Schema:")}</span>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="documentpromotionpanel"  style="display: none;">
-		<TD>
-			<TABLE class="lmsbox-inner">
-				<TBODY>
-				<TR>
-					<TD>
-						{include file="customer/customerassignmenthelper.html" variable_prefix="document[assignment]" variables=$document.assignment promotion_only=1}
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT>
+<table class="lmsbox" id="documentpromotions" style="display: none;">
+	<colgroup>
+		<col style="width: 100%;">
+	</colgroup>
+	<thead>
+		<tr class="hand lmsbox-titlebar" data-lmsbox-content="documentpromotionpanel">
+			<td>
+				{icon name="money"}
+				<strong>{trans("Promotion Schema:")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="documentpromotionpanel"  style="display: none;">
+			<td>
+				<table class="lmsbox-inner">
+					<tbody>
+						<tr>
+							<td>
+								{include file="customer/customerassignmenthelper.html" variable_prefix="document[assignment]" variables=$document.assignment promotion_only=1}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+	var tariffDefaultTaxId = {$defaultTaxId};
+	var assignmentGrossvalue = '{$document.assignment.value}';
+	var assignmentNetvalue = '{$document.assignment.netvalue}';
+	var assignmentNetflag = '{$document.assignment.netflag}';
+	var assignmentTaxid = '{$document.assignment.taxid}';
+
 	var tariffTypes = [];
 	{foreach $tariffs as $tariff}
 	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
@@ -48,6 +55,7 @@
 		selected: selected,
 		internetTariffType: {$smarty.const.SERVICE_INTERNET},
 		phoneTariffType: {$smarty.const.SERVICE_PHONE},
+		DOC_DNOTE:{$smarty.const.DOC_DNOTE},
 		tariffTypes: tariffTypes,
 		variablePrefix: 'document[assignment]',
 		hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
@@ -58,8 +66,9 @@
 	$('#a_period').remove();
 
 	$(function() {
-		$('#submit-button').click(function (e) {
-			if (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e)) {
+		$('#submit-button,#print-button').click(function (e) {
+			if (!$(this)[0].form.checkValidity() || (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e))) {
+				$('#submit-button,#print-button').prop('disabled', false);
 				return;
 			}
 			document.documentadd.submit();
@@ -70,6 +79,8 @@
 		});
 	});
 
-	if (getCookie('documentpromotionpanel') == '1')
-		$('#documentpromotionpanel').show();
-</SCRIPT>
+	(function() {
+		$("#documentpromotionpanel").toggle(getStorageItem("documentpromotionpanel", "local") == "1");
+	})();
+
+</script>

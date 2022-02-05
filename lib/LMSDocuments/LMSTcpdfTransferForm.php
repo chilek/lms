@@ -273,7 +273,7 @@ class LMSTcpdfTransferForm extends LMSDocument
 
         /* account */
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
-        $this->backend->Text(67, 25, format_bankaccount($this->data['account']));
+        $this->backend->Text(67, 25, format_bankaccount($this->data['account'], isset($this->data['export']) ? $this->data['export'] : false));
 
         /* currency */
         $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
@@ -341,7 +341,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $division = $LMS->GetDivision($divisionid);
 
         $this->data['customerinfo'] = $customerinfo;
-        $this->data['$division'] = $division;
+        $this->data['division'] = $division;
 
         // division data
         $this->data['division_name'] = $division['name'];
@@ -351,10 +351,15 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->data['division_city'] = $division['city'];
 
         // customer data
-        if ($customerinfo['accounts']) {
+        if (!empty($customerinfo['accounts'])) {
+            $customerinfo['accounts'] = array_filter($customerinfo['accounts'], function ($account) {
+                return ($account['type'] & CONTACT_INVOICES) > 0;
+            });
+        }
+        if (!empty($customerinfo['accounts'])) {
             $account = $customerinfo['accounts'][0]['account'];
         } else {
-            $account = bankaccount($data['customerid'], $customerinfo['account']);
+            $account = bankaccount($data['customerid'], $customerinfo['account'], isset($data['export']) ? $data['export'] : false);
         }
         $this->data['account'] = $account;
         $this->data['name'] = $customerinfo['customername'];
@@ -380,7 +385,8 @@ class LMSTcpdfTransferForm extends LMSDocument
 
     public function Draw($data, $translateX = 0, $translateY = 0, $scale = 100, $scaleX = 0, $scaleY = 0)
     {
-        parent::Draw($data);
+        $this->data = $data;
+
         $this->backend->StartTransform();
         $this->backend->ScaleXY($scale, $scaleX, $scaleY);
         $this->backend->Translate($translateX, $translateY);

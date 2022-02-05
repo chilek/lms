@@ -30,6 +30,7 @@ $layout['pagetitle'] = $proforma ? trans('Pro Forma Invoice List') : trans('Invo
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SESSION->restore('ilm', $marks);
+
 if (isset($_POST['marks'])) {
     foreach ($_POST['marks'] as $id => $mark) {
         $marks[$id] = $mark;
@@ -61,6 +62,19 @@ if (isset($_POST['cat'])) {
 } else {
     $SESSION->restore('ilc', $c);
 }
+
+if (isset($_POST['customer'])) {
+    $cid = intval($_POST['customer']);
+} else {
+    if (!empty($_GET['customer'])) {
+        $cid = intval($_GET['customer']);
+    } else {
+        $SESSION->restore('ilcu', $cid);
+    }
+}
+
+$SESSION->save('ilcu', $cid);
+
 if (!isset($c)) {
     $c="month";
 }
@@ -110,25 +124,40 @@ $SESSION->save('ilg', $g);
 $SESSION->save('ilge', $ge);
 
 if (isset($_POST['search'])) {
-    $sp = isset($_POST['splitpayment']) ? true : false;
+    $ns = isset($_POST['notsent']);
+} else {
+    $SESSION->restore('ilns', $ns);
+}
+$SESSION->save('ilns', $ns);
+
+
+if (isset($_POST['search'])) {
+    $sp = isset($_POST['splitpayment']);
 } else {
     $SESSION->restore('ilsp', $sp);
 }
 $SESSION->save('ilsp', $sp);
 
 if (isset($_POST['search'])) {
-    $wr = isset($_POST['withreceipt']) ? true : false;
+    $wr = isset($_POST['withreceipt']);
 } else {
     $SESSION->restore('ilwr', $wr);
 }
 $SESSION->save('ilwr', $wr);
 
 if (isset($_POST['search'])) {
-    $ts = isset($_POST['telecomservice']) ? true : false;
+    $ts = isset($_POST['telecomservice']);
 } else {
     $SESSION->restore('ilts', $ts);
 }
 $SESSION->save('ilts', $ts);
+
+if (isset($_POST['search'])) {
+    $re = isset($_POST['relatedentity']);
+} else {
+    $SESSION->restore('ilre', $re);
+}
+$SESSION->save('ilre', $re);
 
 if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
     list($year, $month, $day) = explode('/', $s);
@@ -140,11 +169,12 @@ if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
 
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma,
-    'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'count' => true)));
+    'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re, 'count' => true,
+    'customer' => $cid)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
-if (empty($page)) {
+if (empty($page) || $page > ceil($total / $limit)) {
     $page = 1;
 }
 $page = intval($page);
@@ -152,8 +182,8 @@ $offset = ($page - 1) * $limit;
 
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset,
-    'proforma' => $proforma, 'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts,
-    'count' => false));
+    'proforma' => $proforma, 'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re,
+    'notsent' => $ns, 'count' => false, 'customer' => $cid));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -161,12 +191,15 @@ $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
+$SESSION->restore('ilns', $listdata['notsent']);
 $SESSION->restore('ilnp', $listdata['numberplanid']);
 $SESSION->restore('ildiv', $listdata['divisionid']);
 $SESSION->restore('ilh', $listdata['hideclosed']);
 $SESSION->restore('ilsp', $listdata['splitpayment']);
 $SESSION->restore('ilwr', $listdata['withreceipt']);
 $SESSION->restore('ilts', $listdata['telecomservice']);
+$SESSION->restore('ilre', $listdata['relatedentity']);
+$SESSION->restore('ilcu', $listdata['customer']);
 
 $listdata['total'] = $total;
 $listdata['order'] = $invoicelist['order'];

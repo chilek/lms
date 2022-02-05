@@ -101,7 +101,7 @@ if (isset($_POST['search'])) {
 }
 
 if (isset($_POST['datefrom'])) {
-    $datefrom = date_to_timestamp($_POST['datefrom']);
+    $datefrom = strtotime($_POST['datefrom']);
     if (empty($datefrom)) {
         $datefrom = 0;
     }
@@ -111,9 +111,11 @@ if (isset($_POST['datefrom'])) {
 $SESSION->save('arvdf', $datefrom);
 
 if (isset($_POST['dateto'])) {
-    $dateto = date_to_timestamp($_POST['dateto']);
+    $dateto = strtotime($_POST['dateto'] . ' + 1 day');
     if (empty($dateto)) {
         $dateto = 0;
+    } else {
+        $dateto--;
     }
 } else {
     $SESSION->restore('arvdt', $dateto);

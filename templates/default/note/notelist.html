@@ -81,7 +81,7 @@
 				<SELECT size="1" name="group">
 					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
 					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"&hellip;":true}</OPTION>
 					{/section}
 				</SELECT>
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
@@ -156,11 +156,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="7" class="empty-table">
-			<p>{trans("No such debit notes in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="7" class="empty-table">
+			{trans("No such debit notes in database.")}
+		</td>
+	</tr>
 	{/foreach}
     </TBODY>
     <TFOOT>

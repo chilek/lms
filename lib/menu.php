@@ -117,17 +117,23 @@ $menu = array(
                     'tip' => trans('Allows you to add new group'),
                     'prio' => 50,
                 ),
+                'customercalllist' => array(
+                    'name' => trans('<!customer-call>Calls'),
+                    'link' => '?m=customercalllist&reset=1',
+                    'tip' => trans('List of Customer Calls'),
+                    'prio' => 60,
+                ),
                 'customerwarn' => array(
                     'name' => trans('Notices'),
                     'link' =>'?m=customerwarn',
                     'tip' => trans('Allows you to send notices to customers'),
-                    'prio' => 60,
+                    'prio' => 70,
                 ),
                 'customerprint' => array(
                     'name' => trans('Reports'),
                     'link' =>'?m=customerprint',
                     'tip' => trans('Lists and reports printing'),
-                    'prio' => 70,
+                    'prio' => 80,
                 ),
             ),
         ),
@@ -171,7 +177,7 @@ $menu = array(
                     'prio' => 50,
                 ),
                 'nodesessionlist' => array(
-                    'name' => trans('Node Sessions'),
+                    'name' => trans('<!menu>Node Sessions'),
                     'link' => '?m=nodesessionlist',
                     'tip' => trans('Allows you to view node sessions'),
                     'prio' => 60,
@@ -304,6 +310,12 @@ $menu = array(
                     'link' => '?m=netdevprint',
                     'tip' => trans('Lists and reports printing'),
                     'prio' => 80,
+                ),
+                'vlanlist' => array(
+                    'name' => trans('VLAN List'),
+                    'link' => '?m=vlanlist',
+                    'tip' => trans('VLAN List'),
+                    'prio' => 90,
                 ),
             ),
         ),
@@ -488,6 +500,12 @@ $menu = array(
                     'tip' => trans('Allows you to add new document'),
                     'prio' => 20,
                 ),
+                'documentscanadd' => array(
+                    'name' => trans('Add Scans'),
+                    'link' => '?m=documentscanadd',
+                    'tip' => trans('Allow you to attach scan to existing document'),
+                    'prio' => 25,
+                ),
 //              'documentsearch' => array(
 //                  'name' => trans('Search'),
 //                  'link' => '?m=documentsearch',
@@ -503,7 +521,7 @@ $menu = array(
                 'documenttypes' => array(
                     'name' => trans('Access rights'),
                     'link' => '?m=documenttypes',
-                    'tip' => trans('Users access rights to documents by type'),
+                    'tip' => trans('Users access rights to document by type'),
                     'prio' => 50,
                 ),
             ),
@@ -761,6 +779,12 @@ $menu = array(
                     'tip' => trans('Allows you to change your password'),
                     'prio' => 10,
                 ),
+                'chnetpasswd' => array(
+                    'name' => trans('Network Password'),
+                    'link' => '?m=chpasswd&net=1',
+                    'tip' => trans('Change your network password'),
+                    'prio' => 10,
+                ),
                 'twofactorauthinfo' => array(
                     'name' => trans('Settings'),
                     'link' => '?m=twofactorauthinfo',
@@ -778,11 +802,17 @@ $menu = array(
             'accesskey' => 'o',
             'prio' => 60,
             'submenu' => array(
-                'configlist' => array(
-                    'name' => trans('User Interface'),
+                'settings' => array(
+                    'name' => trans('Settings'),
                     'link' => '?m=configlist',
-                    'tip' => trans('Allows you to configure UI'),
+                    'tip' => trans('Allows you to change settings'),
                     'prio' => 10,
+                ),
+                'configimport' => array(
+                    'name' => trans('Import settings'),
+                    'link' => '?m=configimport',
+                    'tip' => trans('Import settings from file'),
+                    'prio' => 11,
                 ),
                 'configadd' => array(
                     'name' => trans('New setting'),

@@ -31,7 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 define('XVALUE', 100);
 
@@ -40,6 +40,7 @@ $parameters = array(
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'host:' => 'H:',
 );
 
 $long_to_shorts = array();
@@ -91,6 +92,7 @@ lms-maketcnew.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-H, --host=<host-name>          allows to limit networks to those assigned to specified host
 
 EOF;
     exit(0);
@@ -135,7 +137,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -182,8 +184,18 @@ $script_plimit = ConfigHelper::getConfig('tcnew.plimit', '', true);
 $script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
 $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
 $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
+$ignore_assignment_suspensions = ConfigHelper::checkConfig('tcnew.ignore_assignment_suspensions');
 
-$existing_networks = $DB->GetCol("SELECT name FROM networks");
+$host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
+
+$existing_networks = $DB->GetCol(
+    "SELECT n.name FROM networks n"
+    . ($host ? " JOIN hosts h ON h.id = n.hostid WHERE UPPER(h.name) = '" . $host . "'" : '')
+);
+
+if ($host && empty($existing_networks)) {
+    die("No networks assigned to selected host '" . $host . "'!" . PHP_EOL);
+}
 
 // get selected networks from ini file
 $networks = ConfigHelper::getConfig('tcnew.networks', '', true);
@@ -211,7 +223,7 @@ $customergroups = preg_split('/(\s+|\s*,\s*)/', $customergroups, -1, PREG_SPLIT_
 if (empty($customergroups)) {
     $customerids = array();
 } else {
-    $customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM customerassignments a
+    $customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM vcustomerassignments a
 		JOIN customergroups g ON g.id = a.customergroupid
 		WHERE UPPER(g.name) IN ('" . implode("','", array_map('mb_strtoupper', $customergroups)) . "')");
 }
@@ -238,16 +250,18 @@ $query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
 	TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
 	FROM nodeassignments na
 	JOIN assignments a ON (na.assignmentid = a.id)
-	LEFT JOIN (
+	" . ($ignore_assignment_suspensions
+        ? ''
+        : "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
 		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
 		GROUP BY customerid
-	) s ON s.customerid = a.customerid
+	) s ON s.customerid = a.customerid") . "
 	JOIN tariffs t ON (a.tariffid = t.id)
 	JOIN vnodes n ON (na.nodeid = n.id)
 	JOIN customers c ON (a.customerid = c.id)
-	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
 		AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -270,12 +284,14 @@ if ($all_assignments) {
 		a.id AS assignmentid, a.customerid,
 		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
 	FROM assignments a
-	LEFT JOIN (
+	" . ($ignore_assignment_suspensions
+        ? ''
+        : "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
 		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
 		GROUP BY customerid
-	) s ON s.customerid = a.customerid
+	) s ON s.customerid = a.customerid") . "
 	JOIN tariffs t ON t.id = a.tariffid
 	JOIN customers c ON c.id = a.customerid
 	JOIN (
@@ -286,7 +302,7 @@ if ($all_assignments) {
 		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
 			OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
 	) n ON n.ownerid = c.id
-	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
 		AND n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
 		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
 		AND a.datefrom <= ?NOW?
@@ -455,24 +471,27 @@ foreach ($channels as $channel) {
     $upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
     $downrate_n = $channel['downrate_n'];
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
-    $from = array("/\\\\n/", "/\%cid/", "/\%cname/", "/\%h/", "/\%class/",
-        "/\%uprate/", "/\%upceil/", "/\%downrate/", "/\%downceil/");
+
+    $from = array('\\n', '%cid', '%cname', '%h', '%class',
+        '%uprate', '%upceil', '%downrate', '%downceil');
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate, $upceil, $downrate, $downceil);
-    $c_up = preg_replace($from, $to, $c_up);
-    $c_up_day = preg_replace($from, $to, $c_up_day);
+    $c_up = str_replace($from, $to, $c_up);
+    $c_up_day = str_replace($from, $to, $c_up_day);
+
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate_n, $upceil_n, $downrate_n, $downceil_n);
-    $c_up_night = preg_replace($from, $to, $c_up_night);
+    $c_up_night = str_replace($from, $to, $c_up_night);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate, $upceil, $downrate, $downceil);
-    $c_down = preg_replace($from, $to, $c_down);
-    $c_down_day = preg_replace($from, $to, $c_down_day);
+    $c_down = str_replace($from, $to, $c_down);
+    $c_down_day = str_replace($from, $to, $c_down_day);
+
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
         $uprate_n, $upceil_n, $downrate_n, $downceil_n);
-    $c_down_night = preg_replace($from, $to, $c_down_night);
+    $c_down_night = str_replace($from, $to, $c_down_night);
 
     // ... and write to file
     fwrite($fh, $c_down);
@@ -510,23 +529,25 @@ foreach ($channels as $channel) {
             $mac = array_shift($mac);
         }
 
-        $from = array("/\\\\n/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/", "/\%ms/",
-            "/\%m/", "/\%x/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-            "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/", "/\%h/", "/\%class/");
+        $from = array('\\n', '%n', '%if', '%i16', '%i', '%ms',
+            '%m', '%x', '%o1', '%o2', '%o3', '%o4',
+            '%h1', '%h2', '%h3', '%h4', '%h', '%class', '%nodeid');
 
         $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
             $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
-        $h_up = preg_replace($from, $to, $h_up);
-        $h_up_day = preg_replace($from, $to, $h_up_day);
-        $h_up_night = preg_replace($from, $to, $h_up_night);
+            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x), $host['id']);
+
+        $h_up = str_replace($from, $to, $h_up);
+        $h_up_day = str_replace($from, $to, $h_up_day);
+        $h_up_night = str_replace($from, $to, $h_up_night);
 
         $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
             $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
-        $h_down = preg_replace($from, $to, $h_down);
-        $h_down_day = preg_replace($from, $to, $h_down_day);
-        $h_down_night = preg_replace($from, $to, $h_down_night);
+            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x), $host['id']);
+
+        $h_down = str_replace($from, $to, $h_down);
+        $h_down_day = str_replace($from, $to, $h_down_day);
+        $h_down_night = str_replace($from, $to, $h_down_night);
 
         // ...write to file
         fwrite($fh, $h_down);
@@ -539,13 +560,13 @@ foreach ($channels as $channel) {
         if ($channel['climit']) {
             $cl = $script_climit;
 
-            $from = array("/\\\\n/", "/\%climit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
-                "/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-                "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
+            $from = array('\\n', '%climit', '%n', '%if', '%i16', '%i',
+                '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
+                '%h1', '%h2', '%h3', '%h4', '%nodeid');
             $to = array("\n", $channel['climit'], $host['name'],
                 $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
-            $cl = preg_replace($from, $to, $cl);
+                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4, $host['id']);
+            $cl = str_replace($from, $to, $cl);
 
             fwrite($fh, $cl);
         }
@@ -553,13 +574,13 @@ foreach ($channels as $channel) {
         if ($channel['plimit']) {
             $pl = $script_plimit;
 
-            $from = array("/\\\\n/", "/\%plimit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
-                "/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-                "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
+            $from = array('\\n', '%plimit', '%n', '%if', '%i16', '%i',
+                '%ms', '%m', '%o1', '%o2', '%o3', '%o4',
+                '%h1', '%h2', '%h3', '%h4', '%nodeid');
             $to = array("\n", $channel['plimit'], $host['name'],
                 $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
-            $pl = preg_replace($from, $to, $pl);
+                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4, $host['id']);
+            $pl = str_replace($from, $to, $pl);
 
             fwrite($fh, $pl);
         }

@@ -30,7 +30,7 @@
  */
 interface LMSUserManagerInterface
 {
-    public function setUserPassword($id, $passwd);
+    public function setUserPassword($id, $passwd, $net = false);
 
     public function forcePasswordChange($id);
 
@@ -38,7 +38,7 @@ interface LMSUserManagerInterface
 
     public function getUserName($id = null);
 
-    public function getUserNames();
+    public function getUserNames($params = array());
 
     public function getUserNamesIndexedById();
 
@@ -56,6 +56,8 @@ interface LMSUserManagerInterface
 
     public function userAccess($id, $access);
 
+    public function checkUserAccess($id);
+
     public function getUserInfo($id);
 
     public function userUpdate($user);
@@ -64,5 +66,7 @@ interface LMSUserManagerInterface
 
     public function PasswdExistsInHistory($id, $passwd);
 
-    public function checkPassword($password);
+    public function checkPassword($password, $net = false);
+
+    public function isUserNetworkPasswordSet($id);
 }

@@ -28,6 +28,7 @@
 
 	.contactbox-inner-row {
 		display: flex;
+		padding-bottom: 0.5em;
 	}
 
 	.contactbox-inner-row > input{
@@ -91,6 +92,8 @@
 </style>
 
 <script>
+	var propertyNumber = 100;
+
 	function newcontact(type) {
 		var table = $('table.contacts[data-type="' + type + '"]');
 		var innerHTML = '<tr class="contact"><td>';
@@ -108,30 +111,48 @@
 						{/foreach}
 						+ '</SELECT>&nbsp;';
 			{/if}
-				innerHTML += '<INPUT TYPE="text" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+				innerHTML += '<input type="text" value="" autocomplete="off" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][contact]"'
 						+ ' title="{$properties.ui.tip}">';
 				innerHTML += '</div>' +
 						'<div class="contactbox-inner-row-cell-checks">' +
 							'<div class="contactbox-inner-row-cell-checks-labels">';
-				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}{if $flagproperties@index && !($flagproperties@index % 3)}</div><div class="contactbox-inner-row-cell-checks-labels">{/if}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
-				innerHTML += '</div>' +
-						'<div>';
-				innerHTML += '</div>' +
-						'</div>' +
-						'</div>' +
-						'<div class="contactbox-inner-row">';
-				innerHTML += '<INPUT TYPE="text" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][name]"'
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}'
+								+ '{if $flagproperties@index && !($flagproperties@index % 3)}'
+									+ '</div><div class="contactbox-inner-row-cell-checks-labels">'
+								+ '{/if}'
+								+ '<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}>'
+									+ '<input type="checkbox" autocomplete="off" value="{$flagtype}"'
+										+ 'id="{$contacttype}-{$flagtype}-' + nr + '"'
+										+ 'name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}'
+								+ '</label>'
+							+ '{/foreach}';
+				innerHTML += '</div>'+
+						'</div>'+
+					'</div>';
+				innerHTML += '<div class="contactbox-inner-row">';
+				innerHTML += '<input type="text" value="" autocomplete="off" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][name]"'
 						+ ' title="{trans("Enter contact name/description (optional)")}">';
-				break;
-		{/foreach}
+				innerHTML += '</div>';
+
+				{if $contacttype == 'email'}
+					innerHTML += '<div class="addproperty"' +
+							'data-property="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][properties]">' +
+							'</div>';
+				{/if}
 				innerHTML += '</div>' +
 						'</div>' +
 					'</div>';
-
+				innerHTML += '</td>';
+				innerHTML += '<td>' + $('#contact-button-template').html();
+				{if $contacttype == 'email'}
+					innerHTML += $('#contact-button-properties').html();
+				{/if}
+				innerHTML += '</td>';
+				innerHTML += '</tr>';
+				break;
+			{/foreach}
 		}
-		innerHTML += '</td>';
-		innerHTML += '<td>' + $('#contact-button-template').html() + '</td>';
-		innerHTML += '</tr>';
+
 		table.append(innerHTML);
 		/*
                 // don't remember what it did
@@ -140,6 +161,21 @@
                 });
         */
 		table.append($('.newcontact', table));
+	}
+
+	function newContactProperty(elem) {
+		var row = $(elem).closest('tr').find('.addproperty');
+		var elemData = row.attr("data-property");
+		var propInnerHTML = '<div class="contactbox-inner-row">';
+		propInnerHTML += '<input type="text" value="" autocomplete="off" name="' + elemData + '[' + propertyNumber + '][name]"'
+				+ ' title="{trans("Property name")}"'
+				+ ' placeholder="{trans("Property name")}">&nbsp;&nbsp;';
+		propInnerHTML += '<input type="text" value=""  autocomplete="off" name="' + elemData + '[' + propertyNumber + '][value]"'
+				+ ' title="{trans("Property value")}"'
+				+ ' placeholder="{trans("Property value")}">';
+		propInnerHTML += '</div>';
+		propertyNumber += 1;
+		row.append(propInnerHTML,row);
 	}
 
 </script>
@@ -154,7 +190,7 @@
 		<span class="contacttype-hidden bold" data-type="{$type}"{if isset($customerinfo[$ctype]) && count($customerinfo[$ctype])} style="display: none;"{/if}>
 			<a class="contacttype-show" data-type="{$type}">{$properties.ui.legend.text} &raquo;&raquo;&raquo;</a>
 		</span>
-		<fieldset class="contacttype-visible" ata-type="{$type}" style="{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
+		<fieldset class="contacttype-visible" data-type="{$type}" style="{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
 			<legend class="bold">
 				<a class="contacttype-hide" data-type="{$type}">{$properties.ui.legend.text} &laquo;&laquo;&laquo;</a>
 			</legend>
@@ -172,7 +208,8 @@
                                             {/foreach}
                                         </SELECT>
                                     {/if}
-                                    <INPUT type="{$properties.ui.inputtype}"
+                                    <input type="{$properties.ui.inputtype}"
+                                           autocomplete="off"
                                            value="{$item.contact}"
                                            name="{$formelemprefix}[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
                                 </div>
@@ -181,7 +218,7 @@
                                     {foreach $properties.ui.flags as $flagtype => $flagproperties}
                                         {if $flagproperties@index && !($flagproperties@index % 3)}</div><div class="contactbox-inner-row-cell-checks-labels">{/if}
                                             <label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
-                                                <INPUT type="checkbox" value="{$flagtype}"
+                                                <input type="checkbox" value="{$flagtype}"  autocomplete="off"
                                                        name="{$formelemprefix}[{$type}s][{$key}][type][]"{if isset($item.type) && ($item.type & $flagtype)} checked{/if}>
                                                 {$flagproperties.label}
                                             </label>
@@ -190,14 +227,32 @@
                                 </div>
                             </div>
                             <div class="contactbox-inner-row">
-                                    <INPUT type="text" value="{$item.name}" name="{$formelemprefix}[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+                                    <input type="text" value="{$item.name}" autocomplete="off" name="{$formelemprefix}[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
                             </div>
-                        </div>
+
+							{if $type == 'email'}
+							<div class="addproperty" data-property="{$formelemprefix}[{$type}s][{$key}][properties]">
+								{foreach $item.properties as $pkey => $itemProperty}
+									<div class="contactbox-inner-row">
+										<input type="text" value="{$itemProperty.name}" autocomplete="off"
+											   name="{$formelemprefix}[{$type}s][{$key}][properties][{$pkey}][name]"
+												{tip text="Property name"}>&nbsp;&nbsp;
+										<input type="text" value="{$itemProperty.value}" autocomplete="off"
+											   name="{$formelemprefix}[{$type}s][{$key}][properties][{$pkey}][value]"
+												{tip text="Property value"}>
+									</div>
+								{/foreach}
+							</div>
+							{/if}
+						</div>
                     </TD>
 					<TD>
 						<div class="contact-buttons">
 							{button icon="trash" class="delete-contact" tip="Delete"}
 							{button icon="clear" class="clear-contact" tip="Clear"}
+							{if $type == 'email'}
+								{button icon="configuration" class="contact-addproperty" tip="Add property"}
+							{/if}
 						</div>
 					</TD>
 				</TR>
@@ -217,6 +272,11 @@
 	<div class="contact-buttons">
 		{button icon="trash" class="delete-contact" tip="Delete"}
 		{button icon="clear" class="clear-contact" tip="Clear"}
+	</div>
+</div>
+<div id="contact-button-properties" style="display: none;">
+	<div class="contact-buttons">
+		{button icon="configuration" class="contact-addproperty" tip="Add property"}
 	</div>
 </div>
 
@@ -245,6 +305,10 @@
 				$(this).val('');
 			}
 		});
+	});
+
+	$('.contacts').on('click', '.contact-addproperty', function() {
+		newContactProperty($(this));
 	});
 
 </script>

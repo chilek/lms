@@ -2,7 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>{$layout.pagetitle|escape}</H1>
 <style>
 
 	.lms-ui-button-fileupload {
@@ -19,33 +19,42 @@
     <THEAD>
 	<TR>
 		<TD>
-			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{elseif $message.type == $smarty.const.MSG_WWW}network{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}cms{else}email{/if}.gif" ALT="">
+			{if $message.type == $smarty.const.MSG_SMS}
+				{$icon = "sms"}
+			{elseif $message.type == $smarty.const.MSG_WWW}
+				{$icon = "www"}
+			{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}
+				{$icon = "userpanel"}
+			{else}
+				{$icon = "mail"}
+			{/if}
+			{icon name=$icon}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Subject:")}
 		</TD>
 		<TD>
-			{$message.subject}
+			{$message.subject|escape}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD>
-			<IMG SRC="img/users.gif" ALT="">
+			{icon name="user"}
 		</TD>
 		<TD class="bold">
 			{trans("User:")}
 		</TD>
 		<TD>
 			{if $message.userid}
-			<a href="?m=userinfo&id={$message.userid}">{$message.username}</a>
+			<a href="?m=userinfo&id={$message.userid}">{$message.username|escape}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<IMG SRC="img/time.gif" ALT="">
+			{icon name="calendar"}
 		</TD>
 		<TD class="bold">
 			{trans("Creation date:")}
@@ -57,7 +66,7 @@
 {if $message.sender}
 	<TR>
 		<TD>
-			<IMG SRC="img/mail.gif" ALT="">
+			{icon name="mail"}
 		</TD>
 		<TD class="bold">
 			{trans("Sender:")}
@@ -69,7 +78,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG SRC="img/edit.gif" ALT="">
+			{icon name="edit"}
 		</TD>
 		<TD class="bold nobr">
 			{trans("Message body:")}
@@ -93,7 +102,7 @@
 	{if $filecontainers}
 		<TR>
 			<TD class="valign-top">
-				<IMG SRC="img/mail.gif" ALT="">
+				{icon name="attachment"}
 			</TD>
 			<TD class="bold valign-top">
 				{trans("Attachments:")}
@@ -106,7 +115,7 @@
 								text="{$file.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$file.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)} xls{/if}\"></i>"}
 							<br>
 						{/foreach}
-					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="fileupload"}
+					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="download"}
 				{/foreach}
 			</TD>
 		</TR>
@@ -191,7 +200,7 @@
 	<TR class="{if $item.body}showitem{/if} {if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-itemid="{$item.id}">
 		<TD class="nobr valign-top">
 			{if $item.customerid}
-				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
+				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
 				{trans("none")}
 			{/if}
@@ -225,9 +234,7 @@
 			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD class="text-right">
-			{if $item.status == $smarty.const.MSG_DELIVERED
-				&& ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
-				&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD class="text-right nobr valign-top">
 			{if $item.body}
@@ -236,11 +243,11 @@
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>
-		<TD COLSPAN="6" class="empty-table">
-			<p>{trans("No such recipients in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("No such recipients in database.")}
+		</td>
+	</tr>
 	{/section}
     </TBODY>
     <TFOOT>

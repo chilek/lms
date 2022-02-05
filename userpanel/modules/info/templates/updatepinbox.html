@@ -8,6 +8,13 @@
 		<col style="width: 1%;">
 		<col style="width: 99%">
 	</colgroup>
+	{if isset($passwd_change_required)}
+		<tr>
+			<td colspan="2" class="text-center">
+				<span class="lms-ui-alert"><strong>{trans("PIN change required!")}</strong></span>
+			</td>
+		</tr>
+	{/if}
 	<tr>
 		<td class="nobr">
 			<label for="oldpin">{trans("Current PIN")}:</label>

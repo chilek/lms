@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,11 +46,17 @@ if ($schema) {
         $error['name'] = trans('Specified name is in use!');
     }
 
+    if (!empty($schema['dateto']) && !empty($schema['datefrom']) && $schema['dateto'] < $schema['datefrom']) {
+        $error['dateto'] = trans('Incorrect date range!');
+    }
+
     if (!$error) {
+        $length = 0;
         $data = array();
         foreach ($schema['periods'] as $period) {
             if ($period = intval($period)) {
                 $data[] = $period;
+                $length += intval($period);
             } else {
                 break;
             }
@@ -62,10 +68,13 @@ if ($schema) {
             'name' => $schema['name'],
             'description' => $schema['description'],
             'data' => $data,
+            'length' => $length,
+            'datefrom' => $schema['datefrom'] ?: 0,
+            'dateto' => $schema['dateto'] ? strtotime('tomorrow', $schema['dateto']) - 1 : 0,
         );
         $DB->Execute('INSERT INTO promotionschemas (promotionid, name,
-			description, data)
-			VALUES (?, ?, ?, ?)', array_values($args));
+			description, data, length, datefrom, dateto)
+			VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $sid = $DB->GetLastInsertId('promotionschemas');
 

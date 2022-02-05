@@ -81,7 +81,7 @@
 	<TR class="highlight{if $net.disabled == 1} blend{/if}" data-target-url="?m=netinfo&id={$net.id}" data-name="{$net.name}">
 		<TD>
 			<A name="{$net.id}" class="nobr">
-			<IMG src="img/network.gif" alt=""> <span class="bold">{$net.name|truncate:40:"...":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $net.hostname}{$net.hostname}{else}{trans("none")}{/if} / {$net.address} / {$net.prefix} {if $net.interface}({$net.interface}){/if} {if $net.vlanid}/ {$net.vlanid}{/if}
+			<IMG src="img/network.gif" alt=""> <span class="bold">{$net.name|truncate:40:"&hellip;":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $net.hostname}{$net.hostname}{else}{trans("none")}{/if} / {$net.address} / {$net.prefix} {if $net.interface}({$net.interface}){/if} {if $net.vlanid}/ {$net.vlanid}{/if}
 			</A>
 		</TD>
 		<TD class="valign-top text-right nobr">
@@ -106,11 +106,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>{trans("No IP networks found in database.")} <A HREF="?m=netadd">{trans("Click to add.")}</A></p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("No IP networks found in database.")} <A HREF="?m=netadd">{trans("Click to add.")}</A>
+		</td>
+	</tr>
 	{/foreach}
 	</TBODY>
 </table>

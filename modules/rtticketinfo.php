@@ -42,11 +42,14 @@ $ticket = $LMS->GetTicketContents($id);
 $ticket['relatedtickets'] = $LMS->GetRelatedTickets($id);
 $ticket['childtickets'] = $LMS->GetChildTickets($id);
 
-$ticket['message'] = $DB->GetOne(
-    'SELECT body FROM rtmessages
-		    WHERE ticketid = ?
-		    ORDER BY createtime DESC LIMIT 1',
-    array($id)
+$ticket = array_merge(
+    $ticket,
+    $DB->GetRow(
+        'SELECT contenttype, body AS message FROM rtmessages
+                WHERE ticketid = ?
+                ORDER BY createtime DESC LIMIT 1',
+        array($id)
+    )
 );
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);

@@ -26,15 +26,13 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Authorization")}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				{button class="close" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 			<div class="modal-body">
 				<div class="alert" role="alert" style="display: none;">
 				</div>
 				<div class="form-group">
-					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode" id="authcode-form">
 						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
 						<input type=text" name="authcode" id="authcode" autocomplete="off"
 							   placeholder="{trans("... which you received on your mobile phone")}"
@@ -44,8 +42,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" form="authcode-form" formnovalidate=true}
+				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
 	</div>
@@ -58,13 +56,11 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("Document submission")}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				{button class="close" data_dismiss="modal" icon="cancel"}
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
+					<form method="post" action="?m=documents" id="newscan-form" name="newscan" enctype="multipart/form-data">
 						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
 						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
@@ -85,8 +81,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("<!helpdesk>Submit")}</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+				{button type="submit" class="btn btn-danger" form="newscan-form" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
+				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
 	</div>
@@ -130,23 +126,17 @@
 							{foreach $doc.attachments as $docattach}
 								<div class="row document-attachment">
 									<div class="col-md-auto">
-										<a class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
 											{if $docattach.type == 1}
-												{trans("View")}
+												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="view" label="View"}
 											{else}
-												{$docattach.filename}
+												{button class="btn btn-primary" href="?m=documents&f=docview&id={$doc.id}&attachmentid={$docattach.id}" external=true icon="document" label="{$docattach.filename}"}
 											{/if}
-										</a>
 										{if !$doc.closed && $docattach.type == 1 && $doc.confirmdate != -1}
 											{if $scan_active}
-												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#newscan-dialog" data-document-id="{$doc.id}">
-													{trans("Submit scan")}
-												</a>
+												{button class="btn btn-primary" data_toggle="modal" data_target="#newscan-dialog" data_document_id="{$doc.id}" icon="upload" label="Submit scan"}
 											{/if}
 											{if $sms_active}
-												<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#authcode-dialog" data-document-id="{$doc.id}">
-													{trans("Confirm")}
-												</a>
+												{button class="btn btn-primary" data_toggle="modal" data_target="#authcode-dialog" data_document_id="{$doc.id}" icon="confirm" label="<!userpanel>Confirm"}
 											{/if}
 										{/if}
 									</div>
@@ -239,12 +229,14 @@
 			$.ajax({
 				method: "POST",
 				url: '?m=documents&smsauth=1&send=1',
+				dataType: 'json',
 				data: {
 					documentid: parseInt($('#authcode-dialog .documentid').val())
 				},
-				success: function (data) {
-					if (data.length) {
-						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+				success: function(result) {
+					if (result.errors.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger')
+							.html(result.errors.join('<br>')).show();
 					} else {
 						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
 							.html("{trans("Authorization code has been sent to you mobile phone.")}").show();
@@ -268,16 +260,19 @@
 			$.ajax({
 				method: "POST",
 				url: $(this).attr('action'),
+				dataType: "json",
 				data: {
 					code: $('#authcode').val(),
 					documentid: parseInt($('#authcode-dialog .documentid').val())
 				},
-				success: function(data) {
-					if (data.length) {
-						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+				success: function(result) {
+					if (result.errors.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger')
+							.html(result.errors.join('<br>')).show();
 					} else {
+						result.info.unshift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
 						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
-							.html("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}").show();
+							.html(result.info.join('<br>')).show();
 						$('#authcode-dialog').find('.documentid').siblings().hide().end().end().find('.submit-button').remove();
 					}
 					$('#authcode-dialog .submit-button').removeAttr('disabled');

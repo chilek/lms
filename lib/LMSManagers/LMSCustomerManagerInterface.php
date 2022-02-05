@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2017 LMS Developers
+ *  Copyright (C); 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,8 +27,6 @@
 /**
  * LMSCustomerManagerInterface
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 interface LMSCustomerManagerInterface
 {
@@ -56,7 +54,7 @@ interface LMSCustomerManagerInterface
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false);
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false);
 
     public function customerStats();
 
@@ -92,6 +90,8 @@ interface LMSCustomerManagerInterface
 
     public function getFullAddressForCustomerStuff($customer_id);
 
+    public function detectCustomerLocationAddress($customer_id);
+
     public function isTerritAddress($address_id);
 
     public function GetCustomerContacts($id, $mask = null);
@@ -103,6 +103,8 @@ interface LMSCustomerManagerInterface
     public function isTelecomServiceSuggested($customerid);
 
     public function getCustomerSMSOptions();
+
+    public function GetCustomerAddressesWithEndPoints($customerid);
 
     public function GetCustomerAddressesWithoutEndPoints($customerid);
 
@@ -129,4 +131,28 @@ interface LMSCustomerManagerInterface
     public function addCustomerNote($params);
 
     public function delCustomerNote($id);
+
+    public function raiseCustomerKarma($id);
+
+    public function lowerCustomerKarma($id);
+
+    public function getCustomerPin($id);
+
+    public function changeCustomerType($id, $tyoe);
+
+    public function getCustomerCalls(array $params);
+
+    public function deleteCustomerCall($id, $callid);
+
+    public function getCustomerCallContent($callid);
+
+    public function isCustomerCallExists(array $params);
+
+    public function addCustomerCall(array $params);
+
+    public function updateCustomerCall($callid, array $params);
+
+    public function addCustomerCallAssignment($customerid, $callid);
+
+    public function getCustomerModificationInfo($customerid);
 }

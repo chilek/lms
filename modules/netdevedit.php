@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -336,7 +336,9 @@ switch ($action) {
     case 'addip':
         $subtitle = trans('New IP address');
         $nodeipdata['access'] = 1;
-        $nodeipdata['macs'] = array(0 => '');
+        $mac = $LMS->getNetDevMacs($id, 1);
+        $macAddress = (!empty($mac) ? $mac[0]['mac'] : '');
+        $nodeipdata['macs'] = array(0 => $macAddress);
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -458,18 +460,18 @@ switch ($action) {
             if (check_mac($value)) {
                 if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                     if ($LMS->GetNodeIDByMAC($value)) {
-                        $error['mac' . $key] = trans('MAC address is in use!');
+                        $error['mac-input-' . $key] = trans('MAC address is in use!');
                     }
                 }
                 $macs[] = $value;
             } elseif ($value != '') {
-                $error['mac' . $key] = trans('Incorrect MAC address!');
+                $error['mac-input-' . $key] = trans('Incorrect MAC address!');
             }
         }
         $nodeipdata['macs'] = $macs;
 
         if (strlen($nodeipdata['passwd']) > 32) {
-            $error['passwd'] = trans('Password is too long (max.32 characters)!');
+            $error['passwd'] = trans('Password is too long (max. 32 characters)!');
         }
 
         if (!isset($nodeipdata['chkmac'])) {
@@ -579,18 +581,18 @@ switch ($action) {
             if (check_mac($value)) {
                 if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                     if (($nodeid = $LMS->GetNodeIDByMAC($value)) != null && $nodeid != $_GET['ip']) {
-                        $error['mac' . $key] = trans('MAC address is in use!');
+                        $error['mac-input-' . $key] = trans('MAC address is in use!');
                     }
                 }
                 $macs[] = $value;
             } elseif ($value != '') {
-                $error['mac' . $key] = trans('Incorrect MAC address!');
+                $error['mac-input-' . $key] = trans('Incorrect MAC address!');
             }
         }
         $nodeipdata['macs'] = $macs;
 
         if (strlen($nodeipdata['passwd']) > 32) {
-            $error['passwd'] = trans('Password is too long (max.32 characters)!');
+            $error['passwd'] = trans('Password is too long (max. 32 characters)!');
         }
 
         if (!isset($nodeipdata['chkmac'])) {
@@ -879,6 +881,8 @@ $SMARTY->assign('nodelinkradiosector', $SESSION->get('nodelinkradiosector'));
 $SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
 $SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 $SMARTY->assign('nastypes', $LMS->GetNAStypes());
+$SMARTY->assign('macs', $LMS->GetNetdevMacs($netdev['id']));
+$SMARTY->assign('maclabels', $LMS->GetNetdevsMacLabels());
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
@@ -905,7 +909,7 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevedit.html');
         break;
     case 'ip':
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
+        $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevvipedit_sortable_order', $SESSION->get_persistent_setting('netdevipedit-sortable-order'));
 
@@ -916,7 +920,7 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevipedit.html');
         break;
     case 'addip':
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
+        $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('netdevvipadd_sortable_order', $SESSION->get_persistent_setting('netdevipadd-sortable-order'));
         $SMARTY->display('netdev/netdevipadd.html');
         break;

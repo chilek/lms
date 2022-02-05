@@ -160,7 +160,7 @@ function multiselect(options) {
 
 	var container = $('<div class="lms-ui-multiselect-container' + (tiny ? ' tiny' : '') +
 		(bottom ? ' bottom' : '') +
-		(old_class && old_class.length ? ' ' + old_class : '') + '"/>');
+		(old_class && old_class.length ? ' ' + old_class : '') + '"' + (old_element.is('[required]') ? ' required' : '') + '/>');
 	var launcher = $('<div class="lms-ui-multiselect-launcher" title="' + old_element.attr('title') + '" tabindex="0"/>')
 		.attr('style', old_element.attr('style')).appendTo(container);
 
@@ -224,7 +224,8 @@ function multiselect(options) {
 			selected.push($(this).next().html());
 			old_element.find('option[value="' + $(this).val() + '"]').attr('selected', 'selected').prop('selected', true);
 		});
-		if (selected.length) {
+		var selectedCount = selected.length;
+		if (selectedCount) {
 			if (def && shorten_to_def && def.length && selected.length == $('input', ul).length) {
 				selected = [ def ];
 			}
@@ -264,6 +265,9 @@ function multiselect(options) {
 				}, 1);
 			}
 		}
+
+		container.toggleClass('lms-ui-error', !selectedCount && container.is('[required]'));
+
 		return selected_string;
 	}
 
@@ -278,6 +282,8 @@ function multiselect(options) {
 			var exclusive = $(this).attr('data-exclusive');
 			var selected = $(this).is(':selected');
 			var disabled = $(this).is(':disabled');
+			var crossed = $(this).attr('data-crossed');
+			var blend = $(this).attr('data-blend');
 			var class_name = 'visible' + (exclusive === '' ? ' exclusive' : '');
 
 			var data = '';
@@ -289,16 +295,20 @@ function multiselect(options) {
 			});
 
 			list += '<li class="' + class_name + (selected ? ' selected' : '') +
-				(disabled ? ' blend disabled' : '') + '"' + data + '>';
+				(blend || disabled ? ' blend' : '') + (disabled ? ' disabled' : '') + '"' + data + '>';
 
 			list += '<input type="checkbox" value="' + $(this).val() + '" class="' + class_name +
-				'"' + (selected ? ' checked' : '') + (disabled ? ' disabled' : '') + '/>';
+				'"' + (selected ? ' checked' : '') +
+				(blend ? ' blend' : '') + (disabled ? ' disabled' : '') + '/>';
 
 			var text = $(this).attr('data-html-content');
 			if (!text) {
-				text = $(this).text();
+				text = escapeHtml($(this).text().trim());
+			} else {
+				text = text.trim();
 			}
-			list += '<span>' + text.trim() + '</span>';
+			list += '<span class="'+ (blend === '' ? ' lms-ui-disabled' : '') +
+				(crossed === '' ? ' lms-ui-crossed' : '') + '">' + text + '</span>';
 
 			list += '</li>';
 		});

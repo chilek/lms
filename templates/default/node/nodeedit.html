@@ -12,7 +12,7 @@
 	{include file="node/nodesessions.html"}
 {/block}
 {block name="nodeassignments"}
-	{include file="customer/customerassignments.html" data_label="Node Liabilities" tab_label=trans("Node Liabilities:") assignments=$nodeassignments tab_id="nodeassignments" content_id="nodeassignmentpanel"}
+	{include file="customer/customerassignments.html" data_label="Node Liabilities" tab_label=trans("Node Liabilities:") assignments=$nodeassignments[$nodeinfo.id] tab_id="nodeassignments" content_id="nodeassignmentpanel"}
 {/block}
 {block name="managementurls"}
 	{include file="managementurl/managementurls.html"}
@@ -25,6 +25,9 @@
 {/block}
 {block name="customerinfobox"}
 	{include file="customer/customerinfobox.html" customerpanel=1}
+{/block}
+{block name="customernotes"}
+	{include file="customer/customernotes.html" limit=10}
 {/block}
 {block name="customernodesbox"}
 	{include file="customer/customernodesbox.html"}
@@ -46,6 +49,13 @@
 {block name="customerdevices"}
 	{include file="customer/customerdevices.html"}
 {/block}
+{block name="customercallbox"}
+	{if ConfigHelper::checkPrivilege('readonly')
+		|| ConfigHelper::checkPrivilege('customer_call_view')
+		|| ConfigHelper::checkPrivilege('customer_call_management')}
+		{include file="customer/customercallbox.html" limit=ConfigHelper::getConfig('phpui.customer_call_limit', 20)}
+	{/if}
+{/block}
 {block name="customerdocuments"}
 	{include file="customer/customerdocuments.html" limit=10}
 {/block}
@@ -53,7 +63,7 @@
 	{include file="customer/customermessages.html" limit=10}
 {/block}
 {block name="customerevents"}
-	{include file="customer/customerevents.html" limit=10}
+	{include file="customer/customerevents.html" limit=ConfigHelper::getConfig('phpui.customer_event_limit', 10)}
 {/block}
 {block name="customergroups"}
 	{include file="customer/customergroups.html"}
@@ -62,7 +72,9 @@
 	{include file="customer/customerassignments.html"}
 {/block}
 {block name="customerbalancebox"}
-	{include file="customer/customerbalancebox.html" limit=-10}
+	{if ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('finances_view') || ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+		{include file="customer/customerbalancebox.html" limit=-10}
+	{/if}
 {/block}
 </div>
 <script>

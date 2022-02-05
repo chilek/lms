@@ -35,7 +35,7 @@ $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, c
 		LEFT JOIN taxes ON (taxid = taxes.id)
 		LEFT JOIN cashsources s ON (cash.sourceid = s.id)
 		WHERE NOT EXISTS (
-			SELECT 1 FROM customerassignments a
+			SELECT 1 FROM vcustomerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = cash.customerid)
 		ORDER BY cash.id DESC LIMIT 1');
@@ -43,6 +43,7 @@ $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, c
 $SMARTY->assign('last', $last);
 $SMARTY->assign('currency', Localisation::getDefaultCurrency());
 $SMARTY->assign('operation', $SESSION->get('addtype'));
+$SMARTY->assign('servicetype', $SESSION->get('addbst'));
 $SMARTY->assign('sourceid', $SESSION->get('addsource'));
 $SMARTY->assign('comment', $SESSION->get('addbc'));
 $SMARTY->assign('taxid', $SESSION->get('addbtax'));

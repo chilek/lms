@@ -44,7 +44,7 @@
 								<OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
 			        				<OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
 								{foreach from=$customerlist item=customer}
-				    					<OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
+				    					<OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"&hellip;":true}</OPTION>
 								{/foreach}
 							</SELECT>
 							&nbsp;{trans("Name:")}
@@ -87,7 +87,7 @@
 		<TD align="left" NOWRAP onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
 			{if $domainlist[domainlist].ownerid}
 			<IMG src="img/customer.gif" alt="">
-			<A href="?m=customerinfo&amp;id={$domainlist[domainlist].ownerid}">{$domainlist[domainlist].customername|truncate:45:"...":true} ({$domainlist[domainlist].ownerid|string_format:"%04d"})</A>
+			<A href="?m=customerinfo&amp;id={$domainlist[domainlist].ownerid}">{$domainlist[domainlist].customername|truncate:45:"&hellip;":true} ({$domainlist[domainlist].ownerid|string_format:"%04d"})</A>
 			{/if}
 		</TD>
 		<TD align="right" onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
@@ -100,11 +100,11 @@
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>{trans("No such domains in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("No such domains in database.")}
+		</td>
+	</tr>
 	{/section}
     </TBODY>
     <TFOOT>

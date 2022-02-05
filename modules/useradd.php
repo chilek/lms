@@ -79,9 +79,17 @@ if (count($useradd)) {
     if ($useradd['password'] == '') {
         $error['password'] = trans('Empty passwords are not allowed!');
     } elseif ($useradd['password'] != $useradd['confirm']) {
-        $error['password'] = trans('Passwords does not match!');
+        $error['password'] = trans('Passwords do not match!');
     } elseif (!check_password_strength($useradd['password'])) {
         $error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
+    }
+
+    if ($useradd['netpassword'] != '') {
+        if ($useradd['netpassword'] != $useradd['confirmnetpassword']) {
+            $error['netpassword'] = trans('Passwords do not match!');
+        } elseif (!check_password_strength($useradd['netpassword'])) {
+            $error['netpassword'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
+        }
     }
 
     if (!empty($useradd['accessfrom'])) {

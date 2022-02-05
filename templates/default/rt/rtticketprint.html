@@ -26,7 +26,7 @@
 			{trans("Subject:")}
 		</TD>
 		<TD class="bold nobr">
-			{$ticket.subject|escape|truncate:50:"..."}
+			{$ticket.subject|trunescape:50}
 		</TD>
 	</TR>
 	<TR>
@@ -36,6 +36,10 @@
 		<TD class="nobr">
 			{if $ticket.customerid}
 			{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})
+			{if $ticket.location}
+				<br>
+				{$ticket.location}
+			{/if}
 			{if $ticket.requestor}<BR>{$ticket.requestor}{/if}
 			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
 			{if $ticket.requestor_mail}<BR>{$ticket.requestor_mail}{/if}
@@ -117,7 +121,7 @@
 	</COLGROUP>
 	<TR CLASS="dark">
 		<TD class="bold nobr">
-			{trans("Requests causes (last year):")}
+			{trans("Requests causes (last year)")}
 		</TD>
 		<TD>
 			{trans("company's side")}: <B>{$stats.2.num|default:0}</B>,
@@ -147,32 +151,32 @@
 			{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="HEAD text-right bold">
-			{trans("From:")}{if $message.type == $smarty.const.RTMESSAGE_REGULAR}<BR>{trans("Subject:")}{/if}
+			{trans("From:")}{if $message.type == $smarty.const.RTMESSAGE_REGULAR}<BR>{trans("Subject")}{/if}
 		</TD>
 		<TD class="HEAD nobr">
 			{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
 				{if $message.customerid}
 					{$message.customername}
 				{elseif $message.userid}
-					{$message.username}
+					{$message.username|escape}
 				{elseif $message.mailfrom}
 					{$message.mailfrom|escape}
 				{else}
 					{$ticket.requestor|escape}
-					{if $ticket.requestoremail}
-						&lt;{$ticket.requestoremail|escape}&gt;
+					{if $ticket.requestor_mail}
+						&lt;{$ticket.requestor_mail|escape}&gt;
 					{/if}
 				{/if}
 			<BR>
 			{$message.subject|escape}
 			{else}
-			{$message.username}
+			{$message.username|escape}
 			{/if}
 		</TD>
 		<TD class="HEAD text-right">
 			{if $message.attachments}
 				{foreach $message.attachments as $attachment}
-					{$attachment.filename} <IMG src="img/attach.gif" alt=""><br>
+					{$attachment.filename} {icon name="attachement"}<br>
 				{/foreach}
 			{/if}
 		</TD>
@@ -192,10 +196,10 @@
 				{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 			</td>
 			<td class="fbt text-right bold nobr valign-top">
-				{trans("From:")}
+				{trans("From")}
 			</td>
 			<td colspan="2" class="fbt">
-				{$message.username}<BR>
+				{$message.username|escape}<BR>
 				{$message.body}
 			</td>
 		</tr>
@@ -208,7 +212,7 @@
 <TABLE width="100%" cellpadding="3" align="CENTER">
 	<TR>
 		<TD width="100%" class="HEAD">
-		{trans("Notes:")}
+		{trans("Notes")}
 		</TD>
 	</TR>
 	<TR>

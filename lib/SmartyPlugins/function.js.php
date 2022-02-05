@@ -3,7 +3,7 @@
 /**
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,10 +26,18 @@
 
 function smarty_function_js(array $params, Smarty_Internal_Template $template)
 {
-    $js_file = preg_replace(
-        array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
-        array('', ''),
-        $template->template_resource
-    ) . '.js';
-    return '<script src="js/templates/' . $js_file . '"></script>';
+    if (isset($params['plugin']) && isset($params['filename'])) {
+        $filename = PLUGIN_DIR . DIRECTORY_SEPARATOR . $params['plugin'] . DIRECTORY_SEPARATOR
+            . 'js' . DIRECTORY_SEPARATOR . $params['filename'];
+        if (file_exists($filename)) {
+            return file_get_contents($filename);
+        }
+    } else {
+        $js_file = preg_replace(
+            array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
+            array('', ''),
+            $template->template_resource
+        ) . '.js';
+        return '<script src="js/templates/' . $js_file . '"></script>';
+    }
 }

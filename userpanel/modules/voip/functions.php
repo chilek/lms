@@ -130,10 +130,10 @@ if (isset($_GET['record'])) {
 
     define('VOIP_CALL_DIR', ConfigHelper::getConfig(
         'voip.call_recording_directory',
-        SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls' . DIRECTORY_SEPARATOR
+        STORAGE_DIR . DIRECTORY_SEPARATOR . 'voipcalls'
     ));
 
-    $filepath = VOIP_CALL_DIR . $uid;
+    $filepath = VOIP_CALL_DIR . DIRECTORY_SEPARATOR . $uid;
 
     if (is_readable($filepath . '.mp3')) {
         $filepath .= '.mp3';
@@ -163,7 +163,7 @@ function module_main()
 
     if ($user_acc_ids) {
         $tmp_phones = $LMS->DB->GetAll('SELECT phone FROM voip_numbers
-                                        WHERE voip_account_id IN ('.implode(',', $user_acc_ids).');');
+                                        WHERE voip_account_id IN ('.implode(',', $user_acc_ids).') ORDER BY phone');
 
         foreach ($tmp_phones as $v) {
             $phones[] = $v['phone'];
@@ -221,6 +221,11 @@ function module_main()
             $params['o'] = $_GET['o'];
         } else {
             $params['o'] = 'begintime,desc';
+        }
+
+        if ($_GET['mode'] == 'minibilling') {
+            require_once('minibilling.php');
+            die;
         }
 
         $billings = $LMS->getVoipBillings($params);

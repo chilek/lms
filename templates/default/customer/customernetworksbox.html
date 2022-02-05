@@ -5,7 +5,7 @@
 
 	{tab_header content_id="networkspanel-`$layout.module`"}
 		{tab_header_cell icon="lms-ui-icon-network"}
-			<strong>{t a=$customernetworks|@count|default:"0"}Customer Networks ($a):{/t}</strong>
+			<strong>{t a=$customernetworks|size}Customer Networks ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}
@@ -55,7 +55,7 @@
 							<div class="lms-ui-tab-table-column name">
 								<strong>{$network.name}</strong>
 								{if $network.location}<BR>
-									<br><strong>{$network.location|truncate:60:"...":true}</strong>
+									<br><strong>{$network.location|truncate:60:"&hellip;":true}</strong>
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column id">

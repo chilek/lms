@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -132,7 +132,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -238,20 +238,27 @@ foreach ($posts as $postid) {
                     }
                 } elseif (strtolower($part->subtype) == 'mixed' && isset($part->parts)) {
                     foreach ($part->parts as $subpartid => $subpart) {
-                        if ($subpart->type == 3 && $subpart->ifdisposition
-                            && in_array(strtolower($subpart->disposition), array('attachment', 'inline'))
-                            && $subpart->ifdparameters) {
-                            foreach ($subpart->dparameters as $dparameter) {
-                                if (strtolower($dparameter->attribute) == 'filename') {
-                                    if (preg_match('/^=\?/', $dparameter->value)) {
-                                        $elems = imap_mime_header_decode($dparameter->value);
+                        if ($subpart->type == 3
+                            && (($subpart->ifdisposition
+                                && in_array(strtolower($subpart->disposition), array('attachment', 'inline'))
+                                && $subpart->ifdparameters)
+                            || (!$subpart->ifdisposition && !$subpart->ifdparameters && $subpart->ifparameters))) {
+                            if ($subpart->ifdparameters) {
+                                $parameters = $subpart->dparameters;
+                            } else {
+                                $parameters = $subpart->parameters;
+                            }
+                            foreach ($parameters as $parameter) {
+                                if (strtolower($parameter->attribute) == 'filename' || strtolower($parameter->attribute) == 'name') {
+                                    if (preg_match('/^=\?/', $parameter->value)) {
+                                        $elems = imap_mime_header_decode($parameter->value);
                                         if ($elems[0]->charset != 'default') {
                                             $fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
                                         } else {
                                             $fname = $elems[0]->text;
                                         }
                                     } else {
-                                        $fname = $dparameter->value;
+                                        $fname = $parameter->value;
                                     }
                                     $body = imap_fetchbody($ih, $postid, ($partid + 1) . '.' . ($subpartid + 1));
                                     if ($subpart->encoding == 3) {

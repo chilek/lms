@@ -92,7 +92,10 @@
 							</div>
 							<div class="lms-ui-tab-table-column owner" data-target-url="?m=nodeinfo&id={$node.id}">
 								<i class="lms-ui-icon-customer"></i>
-								<A href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner}</A>
+								<A href="?m=customerinfo&id={$node.ownerid}"
+									class="lms-ui-hint-rollover"
+									data-url="?m=customerinfoshort&id={$node.ownerid}"
+									>{$node.owner}</A>
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper nodeid-ownerid col-2">
@@ -116,13 +119,16 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper taken-ports-network col-2">
 							<div class="lms-ui-tab-table-column taken-ports">
-								<span id="node-link-port-{$node.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$node.id}', false);">
+								<span id="node-link-port-{$node.id}" class="node-link-port"
+									onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$node.id}', false);">
 									<i class="{if $node.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $node.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
 											{tip trigger="node-link-port-{$node.id}"
 												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$node.linktype]}<br>{if $node.linktype == $smarty.const.LINKTYPE_WIRELESS && $node.radiosector}{trans("Radio sector:")} {$node.radiosector}<br>{/if}{if $node.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$node.linktype][$node.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$node.linkspeed]}</span>"}>
 									</i>
 								</span>
-								[{if $node.port}{$node.port}{else}-{/if}]
+								<span id="node-link-srcport-{$node.id}">
+									[{if $node.port}{$node.port}{else}-{/if}]
+								</span>
 							</div>
 							<div class="lms-ui-tab-table-column network" data-target-url="?m=nodeinfo&id={$node.id}">
 								<i class="lms-ui-icon-ipnetwork"></i> {$node.netname} / {$node.ip}

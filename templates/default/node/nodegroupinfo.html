@@ -2,60 +2,74 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/nodegroup.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2" NOWRAP>
-			<B>{$nodegroup.name} ({$nodegroup.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/node.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP><B>{trans("Members Count:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			{$nodegroup.count}
-		</TD>
-	</TR>
-	{if $nodegroup.description}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
-		</TD>
-		<TD WIDTH="98%" COLSPAN="2">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-			    <TR><TD CLASS="fall superlight">
-				    {$nodegroup.description|replace:"\n":"<BR>"}
-			    </TD></TR>
-			</TABLE>
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-	        <TD ALIGN="RIGHT" COLSPAN="3">
-			<A HREF="?m=nodegroupedit&amp;id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			{if !$nodegroup.count}
-			<A id="delete-nodegroup" HREF="?m=nodegroupdel&amp;id={$nodegroup.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
-			{/if}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE></P>
+<h1>{$layout.pagetitle}</h1>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="nodegroup"}
+			</TD>
+			<td colspan="2" class="nobr">
+				<strong>{$nodegroup.name|escape} (#{$nodegroup.id})</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="node"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Members Count")}</strong>
+			</td>
+			<td>
+				{$nodegroup.count}
+			</td>
+		</tr>
+		{if $nodegroup.description}
+			<tr>
+				<td>
+					{icon name="info"}
+				</td>
+				<td colspan="2">
+					<table style="width: 100%;" cellpadding="3">
+						<tr>
+							<td class="fall superlight">
+								{$nodegroup.description|escape|replace:"\n":"<BR>"}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		{/if}
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button icon="edit" label="Edit"
+					href="?m=nodegroupedit&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}"}
+				{if !$nodegroup.count}
+					{button icon="delete" label="Delete" id="delete-nodegroup" data_href="?m=nodegroupdel&id={$nodegroup.id}"}
+				{/if}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
 {include file="node/nodegroupassignments.html"}
-	<script>
-		$('#delete-nodegroup').click(function() {
-			confirmDialog($t("Are you sure, you want to delete that group?"), this).done(function() {
-				location.href = $(this).attr('href');
+
+<script>
+
+	$(function() {
+		$('#delete-nodegroup').click(function () {
+			confirmDialog($t("Are you sure, you want to delete that group?"), this).done(function () {
+				location.href = $(this).attr('data-href');
 			});
-			return false;
 		});
-	</script>
+	});
+
+</script>
 {/block}

@@ -50,102 +50,134 @@
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
-        <COL style="width: 1%" span="5">
-        <COL style="width: 94%">
+        <COL style="width: 1%" span="6">
+        <COL style="width: 93%">
         <COL style="width: 1%">
     </COLGROUP>
     <THEAD>
 	<TR>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=invoicelist&o=netflag{if $listdata.direction == "asc" && $listdata.order == "netflag"},desc{/if}">{trans("Accounting:")}</A> {if $listdata.order == "netflag"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
+		<TD class="nobr">
+			<A href="?m=invoicelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD>
 			&nbsp;
 		</TD>
 	</TR>
-	<TR>
-		<TD colspan="7">
-				<B>{trans("Filter:")} </B>
-				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
-				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
-					<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("day (YYYY/MM/DD)")}</OPTION>
-					<OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
-					<OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("number")}</OPTION>
-					<OPTION value="value"{if $listdata.cat == "value"} SELECTED{/if}>{trans("value")}</OPTION>
-					<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
-					<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
-					<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
-					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
-					<OPTION value="cnotes"{if $listdata.cat == "cnotes"} SELECTED{/if}>{trans("show only credit notes")}</OPTION>
-				</SELECT>&nbsp;
-				{trans("Plan:")}
-				<input type="hidden" name="numberplanid" value="all">
-				<SELECT name="numberplanid[]" class="lms-ui-multiselect" {tip text="Select numbering plan"} multiple data-default-value="{trans("- all -")}">
-					{foreach $numberplans as $plan}
-						{$period = $plan.period}
-						<OPTION value="{$plan.id}"{if !empty($listdata.numberplanid) && in_array($plan.id, $listdata.numberplanid)} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-					{/foreach}
-				</SELECT>
-				{trans("Division")}:
-				<select size="1" name="divisionid" {tip text="Select division"}>
-					<OPTION value="0">- {trans("all")} -</OPTION>
-					{foreach $divisions as $division}
-						<option value="{$division.id}"{if $division.id == $listdata.divisionid} selected{/if}>{$division.shortname}</option>
-					{/foreach}
-				</select>
-				{trans("Group:")}
-				<input type="hidden" name="group" value="all">
-				<SELECT size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
-					{foreach $grouplist as $group}
-					<OPTION value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}>{$group.name|truncate:30:"...":true}</OPTION>
-					{/foreach}
-				</SELECT>
-				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
-				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
-				<label {tip text="translates into JPK MPP flag"}>
-					<INPUT type="checkbox" name="splitpayment"{if $listdata.splitpayment} checked{/if}>
-					{trans("split payment")}
-				</label>
-				<label {tip text="translates into JPK FP flag"}>
-					<INPUT type="checkbox" name="withreceipt"{if $listdata.withreceipt} checked{/if}>
-					{trans("with receipt<!plural>")}
-				</label>
-				<label {tip text="translates into JPK EE flag"}>
-					<INPUT type="checkbox" name="telecomservice"{if $listdata.telecomservice} checked{/if}>
-					{trans("<!invoice>telecommunication service")}
-				</label>
-				&nbsp;
-				<A href="javascript:filter();">&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="8">
+			<div class="lms-ui-filter-container">
+				<div class="lms-ui-filter-definition">
+					{icon name="filter"}
+					{customerlist
+						selectname="cid"
+						version="2"
+						inputname="customer"
+						selected=$listdata.customer
+					}
+					<input type="text" name="search" value="{$listdata.search}" size="15"
+						{tip text="Enter value of searching data and select category"}>
+					<select size="1" name="cat">
+						<option value=""{if $listdata.cat == ""} selected{/if}>{trans("- select filter category -")}</option>
+						<option value="cdate"{if $listdata.cat == "cdate"} selected{/if}>{trans("day (YYYY/MM/DD)")}</option>
+						<option value="month"{if $listdata.cat == "month"} selected{/if}>{trans("month (YYYY/MM)")}</option>
+						<option value="number"{if $listdata.cat == "number"} selected{/if}>{trans("number")}</option>
+						<option value="value"{if $listdata.cat == "value"} selected{/if}>{trans("value")}</option>
+						<option value="name"{if $listdata.cat == "name"} selected{/if}>{trans("customer name")}</option>
+						<option value="ten"{if $listdata.cat == "ten"} selected{/if}>{trans("TEN")}</option>
+						<option value="address"{if $listdata.cat == "address"} selected{/if}>{trans("address")}</option>
+						<option value="cnotes"{if $listdata.cat == "cnotes"} selected{/if}>{trans("show only credit notes")}</option>
+					</select>&nbsp;
+					<label>
+						{trans("Plan:")}
+						<input type="hidden" name="numberplanid" value="all">
+						<select name="numberplanid[]" class="lms-ui-multiselect" {tip text="Select numbering plan"} multiple data-default-value="{trans("- all -")}">
+							{foreach $numberplans as $plan}
+								{$period = $plan.period}
+								<option value="{$plan.id}"{if !empty($listdata.numberplanid) && in_array($plan.id, $listdata.numberplanid)} selected{/if}
+									>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</option>
+							{/foreach}
+						</select>
+					</label>
+					<label>
+						{trans("Division")}
+						<select size="1" name="divisionid" {tip text="Select division"}>
+							<option value="0">- {trans("all")} -</option>
+							{foreach $divisions as $division}
+								<option value="{$division.id}"{if $division.id == $listdata.divisionid} selected{/if}>{$division.label|escape}</option>
+							{/foreach}
+						</select>
+					</label>
+					<label>
+						{trans("Group")}
+						<input type="hidden" name="group" value="all">
+						<select size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
+							{foreach $grouplist as $group}
+								<option value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}
+									>{$group.name|truncate:30:"&hellip;":true}</option>
+							{/foreach}
+						</select>
+					</label>
+					<label>
+						<input type="checkbox" name="groupexclude"{if $listdata.groupexclude} checked{/if}>
+						{trans("exclude group")}
+					</label>
+					<label>
+						<input type="checkbox" name="hideclosed"{if $listdata.hideclosed} checked{/if}>
+						{trans("hide accounted<!plural>")}
+					</label>
+					<label>
+						<input type="checkbox" name="notsent"{if $listdata.notsent} checked{/if}>
+						{trans("not sent to email")}
+					</label>
+					<label {tip text="translates into JPK MPP flag"}>
+						<input type="checkbox" name="splitpayment"{if $listdata.splitpayment} checked{/if}>
+						{trans("split payment")}
+					</label>
+					<label {tip text="translates into JPK FP flag"}>
+						<input type="checkbox" name="withreceipt"{if $listdata.withreceipt} checked{/if}>
+						{trans("with receipt<!plural>")}
+					</label>
+					<label {tip text="translates into JPK EE flag"}>
+						<input type="checkbox" name="telecomservice"{if $listdata.telecomservice} checked{/if}>
+						{trans("<!invoice>telecommunication service")}
+					</label>
+					<label {tip text="translates into JPK TP flag"}>
+						<input type="checkbox" name="relatedentity"{if $listdata.relatedentity} checked{/if}>
+						{trans("related entity")}
+					</label>
+					{button type="link" icon="next" onclick="filter();"}
+				</div>
+			</div>
+		</td>
+	</tr>
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="pagination.html"}
 		</TD>
-		<td class="lms-ui-pagination text-right">
-			{button icon="add" label="New invoice" onclick="location.href = '?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init';"}
-		</td>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
+	{$value_by_currencies = array()}
 	{foreach $invoicelist as $invoice}
 	{assign var=invoiceid value=$invoice.id}
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
@@ -163,9 +195,21 @@
 		</TD>
 		<TD class="text-right nobr">
 			{moneyf($invoice.value, $invoice.currency)}
+			{if isset($value_by_currencies[$invoice.currency])}
+				{$value_by_currencies[$invoice.currency] = $value_by_currencies[$invoice.currency] + $invoice.value}
+			{else}
+				{$value_by_currencies[$invoice.currency] = $invoice.value}
+			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.count}
+		</TD>
+		<TD class="text-right nobr">
+			{if $invoice.netflag}
+				{trans('net')}
+			{else}
+				{trans('gross')}
+			{/if}
 		</TD>
 		<TD>
 			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country != ""}, {t}{$invoice.country}{/t}{/if}</A>
@@ -175,8 +219,10 @@
 				<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}
-				{button type="link" icon="transform" href="?m=invoicenew&id={$invoice.id}&action=init"
-					tip="Convert to invoice"}
+				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+					{button type="link" icon="transform" href="?m=invoicenew&id={$invoice.id}&action=init"
+						tip="Convert to invoice"}
+				{/if}
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 				{textformat assign="tip" wrap=5000}
@@ -188,56 +234,74 @@
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || ($invoice.type == $smarty.const.DOC_CNOTE && !$invoice.referenced))}
-						{if $invoice.type == $smarty.const.DOC_INVOICE}
-							{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$invoice.id}&clone=1"
-								tip="Clone"}
+						{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+							{if $invoice.type == $smarty.const.DOC_INVOICE}
+								{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$invoice.id}&clone=1"
+									tip="Clone"}
+							{/if}
+							{button type="link" icon="correction" href="?m=invoicenote&id={$invoice.id}&action=init" tip="Revise"}
 						{/if}
-						{button type="link" icon="correction" href="?m=invoicenote&id={$invoice.id}&action=init" tip="Revise"}
 					{/if}
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}
 						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-							{button type="link" icon="delete" class="delete-invoice" tip="Delete"
-								href="?m=invoicedel&id={$invoice.id}"}
+							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+								{button type="link" icon="delete" class="delete-invoice" tip="Delete"
+									href="?m=invoicedel&id={$invoice.id}"}
+							{/if}
 						{/if}
 					{/if}
 				{else}
-					{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
+					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+						{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
+					{/if}
 				{/if}
 			{/if}
 			{if !$invoice.closed && !$invoice.archived}
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-						{button type="link" icon="delete" class="delete-invoice" tip="Delete"
-							href="?m=invoicedel&id={$invoice.id}"}
+						{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+							{button type="link" icon="delete" class="delete-invoice" tip="Delete"
+								href="?m=invoicedel&id={$invoice.id}"}
+						{/if}
 					{/if}
 				{/if}
 				{if !$invoice.cancelled}
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 						{if $invoice.type == $smarty.const.DOC_INVOICE}
 							{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-								{button type="link" icon="edit"
-									href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
+								{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+									{button type="link" icon="edit"
+										href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
+								{/if}
 							{/if}
 						{else}
-							{button type="link" icon="edit" tip="Edit"
-								href="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"}
+							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+								{button type="link" icon="edit" tip="Edit"
+									href="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"}
+							{/if}
 						{/if}
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-							{button type="link" icon="edit" tip="Edit" class="edit-invoice"
-								href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
+							{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+								{button type="link" icon="edit" tip="Edit" class="edit-invoice"
+									href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
+							{/if}
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-					{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
-						href="?m=invoicecancel&id={$invoice.id}"}
+					{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+						{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
+							href="?m=invoicecancel&id={$invoice.id}"}
+					{/if}
 				{/if}
 			{elseif $invoice.cancelled}
-				{button type="link" icon="back" tip="Recover" href="?m=invoicecancel&id={$invoice.id}&recover=1"
-					class="recover-invoice"}
+				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
+					{button type="link" icon="back" tip="Recover" href="?m=invoicecancel&id={$invoice.id}&recover=1"
+						class="recover-invoice"}
+				{/if}
 			{/if}
 			{if !$invoice.cancelled}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
@@ -268,31 +332,46 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD class="empty-table" COLSPAN="7">
-			<P>{trans("No such invoices in database.")}</P>
-		</TD>
-	</TR>
+	<tr>
+		<td class="empty-table" colspan="8">
+			{trans("No such invoices in database.")}
+		</td>
+	</tr>
 	{/foreach}
     </TBODY>
     <TFOOT>
+		{if !empty($value_by_currencies)}
+			<tr>
+				<td colspan="3" class="text-right valign-top">
+					<strong>{trans("Total:")}</strong>
+				</td>
+				<td class="text-right">
+					{foreach $value_by_currencies as $currency => $value}
+						<strong class="nobr">{moneyf($value, $currency)}</strong>
+						{if !$value@last}<br>{/if}
+					{/foreach}
+				</td>
+				<td colspan="4">
+				</td>
+			</tr>
+		{/if}
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="pagination.html"}
 		</TD>
-		<td class="lms-ui-pagination text-right">
-			{button icon="add" label="New invoice" onclick="location.href = '?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init';"}
-		</td>
 	</TR>
 	{/if}
 	<TR>
-		<TD COLSPAN="7">
+		<TD COLSPAN="8">
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="text-left" id="button-panel">
 						{if !$proforma}
 							{button icon="cash" label="Check/Uncheck as accounted" id="account-invoices"}
+							{button icon="add" label="New invoice" href="?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init"}
+						{else}
+							{button icon="add" label="New Pro Forma" href="?m=invoicenew{if $listdata.cat == 'customerid'}&customerid={$listdata.search}{/if}&action=init&proforma=1"}
 						{/if}
 						{button icon="mail" id="send-invoices" label="Send invoices"}
 						{button icon="delete" id="delete-invoices" label="Delete"}

@@ -37,18 +37,34 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      * @param int $id User id
      * @param string $passwd Password
      */
-    public function setUserPassword($id, $passwd)
+    public function setUserPassword($id, $passwd, $net = false)
     {
-        $args = array(
-            'passwd' => crypt($passwd),
-            'passwdforcechange' => 0,
-            SYSLOG::RES_USER => $id
-        );
-        $this->db->Execute('UPDATE users SET passwd = ?, passwdlastchange = ?NOW?, passwdforcechange = ?
-            WHERE id=?', array_values($args));
-        $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
-        if ($this->syslog) {
+        if ($net) {
+            $args = array(
+                'netpasswd' => empty($passwd) ? null : $passwd,
+                SYSLOG::RES_USER => $id
+            );
+            $result = $this->db->Execute(
+                'UPDATE users SET netpasswd = ?
+                WHERE id = ?',
+                array_values($args)
+            );
+        } else {
+            $args = array(
+                'passwd' => crypt($passwd),
+                'passwdforcechange' => 0,
+                SYSLOG::RES_USER => $id
+            );
+            $result = $this->db->Execute(
+                'UPDATE users SET passwd = ?, passwdlastchange = ?NOW?, passwdforcechange = ?
+                WHERE id = ?',
+                array_values($args)
+            );
+            $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
+        }
+        if ($result && $this->syslog) {
             unset($args['passwd']);
+            unset($args['netpasswd']);
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERPASSWDCHANGE, $args);
         }
     }
@@ -107,18 +123,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     /**
      * Returns active users names
      *
+     * @param array $params Parameters
      * @return array Users names
      */
-    public function getUserNames()
+    public function getUserNames($params = array())
     {
-        return $this->db->GetAll('SELECT id, login, name, rname,
-				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
-			FROM vusers WHERE deleted=0 ORDER BY rname ASC');
+        extract($params);
+
+        return $this->db->GetAll(
+            'SELECT id, login, name, rname, login, deleted,
+            (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
+            FROM vusers
+            WHERE deleted = 0'
+            . (isset($withDeleted) ? ' OR deleted = 1' : '' )
+            . ' ORDER BY rname ASC'
+        );
     }
 
     public function getUserNamesIndexedById()
     {
-        return $this->db->GetAllByKey('SELECT id, name, rname,
+        return $this->db->GetAllByKey('SELECT id, name, rname, login,
 				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC', 'id');
     }
@@ -132,6 +156,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
+        if (isset($order)) {
+            list ($column, $asc) = explode(',', $order);
+            $sqlord = $column . ' ' . ($asc == 'desc' ? 'DESC' : 'ASC');
+        } else {
+            $sqlord = 'login ASC';
+        }
+
         if (isset($superuser)) {
             $userlist = $this->db->GetAllByKey(
                 'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
@@ -143,7 +174,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     WHERE divisionid IN (' . $divisions . ')
                     )' : '')
                 . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
-                ' ORDER BY login ASC',
+                ' ORDER BY ' . $sqlord,
                 'id'
             );
         } else {
@@ -157,7 +188,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                         WHERE divisionid IN (' . $divisions . ')
                         )' : '')
                 . (isset($excludedUsers) && !empty($excludedUsers) ? ' AND id NOT IN (' . $excludedUsers . ')' : '') .
-                ' ORDER BY login ASC',
+                ' ORDER BY ' . $sqlord,
                 'id'
             );
         }
@@ -180,6 +211,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             FROM vallusers
             WHERE deleted = 0'
                 . (isset($overdueusers) ? 'AND id IN (SELECT userid FROM eventassignments WHERE eventid IN (SELECT id FROM events WHERE closed=0 AND (enddate+86400) > ?NOW? ))' : '')
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                     FROM userdivisions
                     WHERE divisionid IN (' . $divisions . ')
@@ -194,6 +226,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 FROM vusers
                 WHERE deleted = 0'
                 . (isset($overdueusers) && !empty($overdueuserse) ? ' AND id IN (SELECT userid FROM eventassignments WHERE eventid IN (SELECT id FROM events WHERE closed=0 AND (enddate+86400) > ?NOW? ))' : '')
+                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
                 . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
                         FROM userdivisions
                         WHERE divisionid IN (' . $divisions . ')
@@ -247,8 +280,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             }
             unset($row);
         }
-
-        if ($params['short'] != 1) {
+        if (empty($short)) {
             $userlist['total'] = empty($userlist) ? 0 : count($userlist);
         }
         return $userlist;
@@ -275,10 +307,12 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
+            'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
             'passwd' => crypt($user['password']),
+            'netpasswd' => empty($user['netpassword']) ? null : $user['netpassword'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
             'position' => $user['position'],
@@ -293,9 +327,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
         );
         $user_inserted = $this->db->Execute(
-            'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone,
+            'INSERT INTO users (login, firstname, lastname, issuer, email, passwd, netpasswd, rights, hosts, position, ntype, phone,
                 passwdforcechange, passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
@@ -399,6 +433,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     }
 
     /**
+     * Check user access
+     *
+     * @param int $id User id
+     * @return int
+     */
+    public function checkUserAccess($id)
+    {
+        return $this->db->Execute(
+            'SELECT 1
+            FROM users 
+            WHERE id = ?
+            AND deleted = 0
+            AND access = 1
+            AND accessfrom <= ?NOW?
+            AND (accessto >= ?NOW? OR accessto = 0)',
+            array($id)
+        );
+    }
+
+    /**
      * Returns user data
      *
      * @param int $id User id
@@ -486,8 +540,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'firstname' => $user['firstname'],
-            'lastname' => $user['lastname'],
+            'firstname' => Utils::removeInsecureHtml($user['firstname']),
+            'lastname' => Utils::removeInsecureHtml($user['lastname']),
+            'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
@@ -503,7 +558,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
             SYSLOG::RES_USER => $user['id']
         );
-        $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
+        $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, issuer = ?, email=?, rights=?,
 				hosts=?, position=?, ntype=?, phone=?, passwdforcechange=?, passwdexpiration=?, access=?,
 				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
 
@@ -640,12 +695,30 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         return false;
     }
 
-    public function checkPassword($password)
+    public function checkPassword($password, $net = false)
     {
-        $dbpasswd = $this->db->GetOne(
-            'SELECT passwd FROM users WHERE id = ?',
-            array(Auth::GetCurrentUser())
-        );
-        return crypt($password, $dbpasswd) == $dbpasswd;
+        if ($net) {
+            return $this->db->GetOne(
+                'SELECT netpasswd FROM users WHERE id = ?',
+                array(Auth::GetCurrentUser())
+            ) == $password;
+        } else {
+            $dbpasswd = $this->db->GetOne(
+                'SELECT passwd FROM users WHERE id = ?',
+                array(Auth::GetCurrentUser())
+            );
+            return crypt($password, $dbpasswd) == $dbpasswd;
+        }
+    }
+
+    public function isUserNetworkPasswordSet($id)
+    {
+        return $this->db->GetOne(
+            'SELECT 1 FROM users WHERE id = ? AND netpasswd <> ?',
+            array(
+                $id,
+                '',
+            )
+        ) == 1;
     }
 }

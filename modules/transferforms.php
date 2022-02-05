@@ -28,7 +28,7 @@ if ($kind == 2) {
     $list = $DB->GetAll(
         'SELECT c.id, c.address, c.zip, c.city, d.account,
 		d.name AS d_name, d.shortname AS d_shortname, d.address AS d_address, d.zip AS d_zip, d.city AS d_city, '
-        . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+        . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
 		COALESCE(SUM(cash.value), 0.00) AS balance
 		FROM customerview c 
 		LEFT JOIN cash ON (c.id = cash.customerid)
@@ -37,7 +37,7 @@ if ($kind == 2) {
         . ($customer ? ' AND c.id = '.$customer : '')
         . ($group ?
         ' AND '.($exclgroup ? 'NOT' : '').'
-			EXISTS (SELECT 1 FROM customerassignments a
+			EXISTS (SELECT 1 FROM vcustomerassignments a
 			WHERE a.customergroupid = '.$group.' AND a.customerid = c.id)' : '')
         .' GROUP BY c.id, c.lastname, c.name, c.address, c.zip, c.city, d.account, d.name,
 			d.shortname, d.address, d.zip, d.city
@@ -52,11 +52,11 @@ if ($kind == 2) {
         .(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
         .(!empty($_GET['groupid']) ?
         ' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
-			EXISTS (SELECT 1 FROM customerassignments a
+			EXISTS (SELECT 1 FROM vcustomerassignments a
 				WHERE a.customergroupid = '.intval($_GET['groupid']).'
 				AND a.customerid = d.customerid)' : '')
         .' AND NOT EXISTS (
-			SELECT 1 FROM customerassignments a
+			SELECT 1 FROM vcustomerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
         .' ORDER BY CEIL(cdate/86400), id',

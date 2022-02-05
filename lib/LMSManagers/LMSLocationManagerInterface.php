@@ -46,6 +46,8 @@ interface LMSLocationManagerInterface
 
     public function UpdateAddress($args);
 
+    public function SetAddress($args);
+
     public function UpdateCustomerAddress($customer_id, $args);
 
     public function ValidAddress($args);

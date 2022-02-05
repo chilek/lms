@@ -72,18 +72,18 @@
 			{/if}
 		</TD>
 		<TD ALIGN="LEFT" NOWRAP>
-			{$balancelist[balancelist].customername|truncate:25:"..."}
+			{$balancelist[balancelist].customername|truncate:25:"&hellip;"}
 		</TD>
 		<TD ALIGN="LEFT">
 			{$balancelist[balancelist].comment|wordwrap:42:"<br />\n"}
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>
-		<TD COLSPAN="8" class="empty-table">
-			<p>{trans("No such cash operations.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="8" class="empty-table">
+			{trans("No such cash operations.")}
+		</td>
+	</tr>
 	{/section}
 	<TR>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" COLSPAN="2">

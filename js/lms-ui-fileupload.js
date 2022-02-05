@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -56,25 +56,27 @@ function lmsFileUpload(elemid, formid) {
 					}, false);
 				return myXhr;
 			},
-			success: function(data, textStatus, jqXHR) {
+			success: function(data) {
 				elem.find(".fileupload-status").html(data.error);
 				if (typeof(data) == "object" && !data.error.length) {
 					elem.find(".fileupload-tmpdir").val(data.tmpdir);
 					var fileupload_files = elem.find(".fileupload-files");
 					var count = fileupload_files.find(".fileupload-file").length;
-					$.each(data.files, function(key, file) {
-						var size = get_size_unit(file.size);
-						var fileListItem = $('<div>' +
-							'<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>&nbsp;' +
-							file.name + ' (' + size.size + ' ' + size.unit + ')</a>' +
+					$.each(data.files, function(key) {
+						var size = get_size_unit(files[key].size);
+						var fileListItem = $('<div class="fileupload-file">' +
+							'<a href="#" class="file-delete"><i class="fas fa-trash"></i></a>&nbsp;' +
+							(files[key].imgElem ? '<a href="#" class="file-preview"><i class="fas fa-search"></i></a>&nbsp;' : '') +
+							'<a href="#" class="file-view"><i class="fas fa-eye"></i></a>&nbsp;' +
+							files[key].name + ' (' + size.size + ' ' + size.unit + ')' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
-								' value="' + file.name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+								' value="' + files[key].name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" class="fileupload-file-size" name="fileupload[' + elemid + '][' + (count + key) + '][size]"' +
-								' value="' + file.size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+								' value="' + files[key].size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
-								' value="' + file.type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+								' value="' + files[key].type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
 						'</div>').appendTo(fileupload_files);
-						fileListItem.find('.fileupload-file').tooltip({
+						fileListItem.find('.file-preview').tooltip({
 							items: 'a',
 							content: files[key].imgElem,
 							classes: {
@@ -82,7 +84,10 @@ function lmsFileUpload(elemid, formid) {
 							},
 							track: true
 						});
-						elem.find(".fileupload-file").on("click", function() {
+						fileListItem.find('.file-view').click(function() {
+							lmsFileView(files[key]);
+						});
+						fileListItem.find('.file-delete').click(function() {
 							$(this).parent().remove();
 						});
 					});
@@ -96,11 +101,14 @@ function lmsFileUpload(elemid, formid) {
 				elem.find("input[type=file]").replaceWith(
 					elem.find("input[type=file]").clone(true));
 				$('#' + elemid + '-progress-dialog').dialog("close");
+				elem.trigger('lms:fileupload:complete');
 			}
 		});
 	}
 
 	function prepare_files() {
+		formdata = new FormData(formelem.get(0));
+
 		var left = files.length;
 		$(files).each(function(index, file) {
 			var fileReader = new FileReader();
@@ -108,6 +116,13 @@ function lmsFileUpload(elemid, formid) {
 				if (file.type.match('^image/.*')) {
 					var image = new Image();
 					var imageUrl = readerEvent.target.result;
+					image.onerror = function() {
+						formdata.append(elemid + '[]', file);
+						left--;
+						if (!left) {
+							upload_files();
+						}
+					};
 					image.onload = function() {
 						// Resize the image
 						var canvas = document.createElement('canvas'),
@@ -135,7 +150,8 @@ function lmsFileUpload(elemid, formid) {
 							canvas.width = width;
 							canvas.height = height;
 							canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-							file.imgElem = $('<img src="' + canvas.toDataURL(file.type) + '">');
+							file.imgElem = $('<img src="' + canvas.toDataURL(file.type) + '" alt="">');
+							file.contentElem = $(image);
 
 							width = imgWidth;
 							height = imgHeight;
@@ -225,12 +241,12 @@ function lmsFileUpload(elemid, formid) {
 	progressbar.progressbar({
 		value: false
 	});
-	elem.find("input[type=file]").on("change", function() {
+	elem.find("input[type=file]").change(function() {
 		files = $(this).get(0).files;
 		prepare_files();
 		formdata.delete(elemid + '[]');
 	});
-	elem.find(".fileupload-file").on("click", function() {
+	elem.find(".file-delete").click(function() {
 		$(this).parent().remove();
 	});
 }

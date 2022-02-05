@@ -3,71 +3,112 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD width="1%" NOWRAP><IMG src="img/division.gif" alt=""> <B>{trans("Name:")}</B></TD>
-		<TD width="1%" align="right" NOWRAP>{trans("ID:")}</TD>
-		<TD width="96%" align="left" NOWRAP>{trans("Long name:")}</TD>
-		<TD width="1%" align="right" NOWRAP>{trans("Customers:")}</TD>
-		<TD width="1%" align="right" NOWRAP>
-			{button type="link-button" icon="add" label="Add division" href="?m=divisionadd"}
-		</TD>
-	</TR>
-	{if $pagination->getTotal() != 0}
-		<TR>
-			<TD class="lms-ui-pagination" COLSPAN="5">
-				{include file="pagination.html"}
-			</TD>
-		</TR>
-	{/if}
-    </THEAD>
-    <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=list loop=$divisionlist}
-	<TR class="highlight {cycle}{if $divisionlist[list].status} blend{/if}" data-name="{$divisionlist[list].shortname}">
-		<TD NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			<IMG src="img/division.gif" alt=""> <B>{$divisionlist[list].shortname}</B>
-		</TD>
-		<TD align="right" NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			({$divisionlist[list].id|string_format:"%04d"})
-		</TD>
-		<TD align="left" onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			{$divisionlist[list].name}
-		</TD>
-		<TD align="right" onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			{$divisionlist[list].cnt|default:0}
-		</TD>
-		<TD align="right" class="lms-ui-buttons text-right nobr">
-			{button type="link" icon="lock" tip="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$divisionlist[list].id}&amp;changestatus=1"}
-			{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$divisionlist[list].id}"}
-			{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$divisionlist[list].id}"}
-			{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$divisionlist[list].id}"}
-		</TD>
-	</TR>
-	{sectionelse}
-	<TR>
-		<TD colspan="5" class="empty-table">
-			<p>{trans("No such divisions in database.")}</p>
-		</TD>
-	</TR>
-	{/section}
-    </TBODY>
-    <TFOOT>
-	{if $pagination->getTotal() != 0}
-		<TR>
-			<TD class="lms-ui-pagination division-context" COLSPAN="5">
-				{include file="pagination.html"}
-			</TD>
-		</TR>
-	{/if}
-    </TFOOT>
-</TABLE>
-	<script>
-		$(function() {
-			$('.division-context').on( 'lms:division_selection', function() {
-				location.reload();
-			});
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 95%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="nobr">
+				{icon name="division"}
+				<strong>{trans("Name:")}</strong>
+			</td>
+			<td class="text-right">
+				<strong>{trans("ID:")}</strong>
+			</td>
+			<td class="text-left nobr">
+				{trans("Text label:")}
+			</td>
+			<td class="text-left nobr">
+				{trans("Long name:")}
+			</td>
+			<td class="text-right nobr">
+				{trans("Natural person")}
+			</td>
+			<td class="text-right nobr">
+				{trans("Customers:")}
+			</td>
+			<td class="text-right nobr">
+				{button type="link-button" icon="add" label="Add division" href="?m=divisionadd"}
+			</td>
+		</tr>
+		{if $pagination->getTotal() != 0}
+			<tr>
+				<td class="lms-ui-pagination" colspan="7">
+					{include file="pagination.html"}
+				</td>
+			</tr>
+		{/if}
+	</thead>
+	<tbody>
+		{foreach $divisionlist as $division}
+			<tr class="{if $division.status} blend{/if}" data-name="{$division.shortname|escape}">
+				<td class="nobr" data-target-url="?m=divisionedit&id={$division.id}">
+					{icon name="division"}
+					<strong>{$division.shortname|escape}</strong>
+				</td>
+				<td class="text-right nobr" data-target-url="?m=divisionedit&id={$division.id}">
+					({$division.id|string_format:"%04d"})
+				</td>
+				<td class="text-left">
+					{$division.label|escape|default:"-"}
+				</td>
+				<td class="text-left" data-target-url="?m=divisionedit&id={$division.id}">
+					{$division.name|escape}
+				</td>
+				<td class="text-center nobr">
+					{if $division.naturalperson}
+						{capture assign="fullname"}
+							{$division.firstname} {$division.lastname}
+							<br>
+							{t a=$division.birthdate|date_format:"%Y/%m/%d"}Birth date: $a{/t}
+						{/capture}
+						{icon name="checked" tip=$fullname}
+					{/if}
+				</td>
+				<td class="text-right" data-target-url="?m=divisionedit&id={$division.id}">
+					{$division.cnt|default:0}
+				</td>
+				<td class="lms-ui-buttons text-right nobr">
+					{button type="link" icon="lock" tip="{if $division.status}{trans("Unlock")}{else}{trans("Lock")}{/if}" href="?m=divisionedit&amp;id={$division.id}&amp;changestatus=1"}
+					{if isset($division.unblock_delete)}
+						{button type="link" icon="delete" tip="Delete" class="delete-division" href="?m=divisiondel&id={$division.id}"}
+					{else}
+						{button type="link" icon="delete" tip="Some users are assigned to this division!" disabled=true}
+					{/if}
+					{button type="link" icon="clone" tip="Clone" class="clone-division" href="?m=divisionclone&id={$division.id}"}
+					{button type="link" icon="edit" tip="Edit" href="?m=divisionedit&id={$division.id}"}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="7" class="empty-table">
+					{trans("No such divisions in database.")}
+				</td>
+			</tr>
+		{/foreach}
+	</tbody>
+	<tfoot>
+		{if $pagination->getTotal() != 0}
+			<tr>
+				<td class="lms-ui-pagination division-context" colspan="7">
+					{include file="pagination.html"}
+				</td>
+			</tr>
+		{/if}
+	</tfoot>
+</table>
+
+<script>
+
+	$(function() {
+		$('.division-context').on( 'lms:division_selection', function() {
+			location.reload();
 		});
 
 		$('.delete-division').click(function() {
@@ -84,5 +125,8 @@
 			});
 			return false;
 		});
-	</script>
+	});
+
+</script>
+
 {/block}

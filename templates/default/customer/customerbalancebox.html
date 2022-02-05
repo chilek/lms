@@ -33,13 +33,15 @@
 						{if $aggregate_documents} checked{/if}>
 			</label>
 
-			{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
-				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
-				form="printcustomerbalance">&nbsp;
-			{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
-				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}
-				form="printcustomerbalance">
-			<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
+			{if ConfigHelper::checkPrivilege('finances_management')}
+				{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
+					form="printcustomerbalance">&nbsp;
+				{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}
+					form="printcustomerbalance">
+				<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
+			{/if}
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSTcpdfTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
@@ -49,23 +51,26 @@
 				<OPTION value="{LMSTcpdfTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
 			</SELECT>
 			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;" form="addbalance-form">
-			<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
-			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)" form="addbalance-form">
-				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
-				<OPTION value="?m=invoicenew&action=init&proforma=1&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</OPTION>
-				<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
-				<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
-				<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
-			</SELECT>
-			<A href="javascript:show_list()">{trans("Show All:")}</A>
-			<INPUT type="hidden" name="cat" value="customerid" form="addbalance-form">
-			<INPUT type="hidden" name="search" value="{$balancelist.customerid}" form="addbalance-form">
-			<SELECT name="showlist" id="showlistselect" form="addbalance-form">
-				{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
-				<OPTION value="invoice">{trans("invoices")}</OPTION>
-				<OPTION value="invoicepro">{trans("pro forma invoices")}</OPTION>
-				<OPTION value="note">{trans("debit notes")}</OPTION>
-			</SELECT>
+			{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+				<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
+				<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)" form="addbalance-form">
+					<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
+					<OPTION value="?m=invoicenew&action=init&proforma=1&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</OPTION>
+					<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
+					<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
+					<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
+				</SELECT>
+			{/if}
+			{if  ConfigHelper::checkPrivilege('finances_management')}
+				<A href="javascript:show_list()">{trans("Show All:")}</A>
+				<input type="hidden" value="{$balancelist.customerid}" name="customer">
+				<SELECT name="showlist" id="showlistselect" form="addbalance-form">
+					{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
+					<OPTION value="invoice">{trans("invoices")}</OPTION>
+					<OPTION value="invoicepro">{trans("pro forma invoices")}</OPTION>
+					<OPTION value="note">{trans("debit notes")}</OPTION>
+				</SELECT>
+			{/if}
 		{/tab_header_cell}
 	{/tab_header}
 
@@ -116,15 +121,15 @@
 					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
 					{/if}>
 					<TD class="nobr">{$item.date}</TD>
-					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
-					<TD class="text-right nobr">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="nobr">{$item.username|truncate:16:"&hellip;":true}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}" data-order="{$item.value}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
 					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
 					<TD class="comment"
 						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
-						>{$item.comment}</TD>
+						>{$item.comment|escape}</TD>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
@@ -132,9 +137,11 @@
 						{/foreach}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-								{button type="link" icon="transform" external=true
-									href="?m=invoicenew&id={$item.docid}&action=init"
-									tip="Convert to invoice"}
+								{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+									{button type="link" icon="transform" external=true
+										href="?m=invoicenew&id={$item.docid}&action=init"
+										tip="Convert to invoice"}
+								{/if}
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
@@ -147,26 +154,32 @@
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.cancelled}
-									{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$item.docid}&clone=1"
-										tip="Clone"}
-									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
-										tip="Revise"}
+									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+										{button type="link" icon="clone" href="?m=invoicenew&action=init&id={$item.docid}&clone=1"
+											tip="Clone"}
+										{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+											tip="Revise"}
+									{/if}
 								{/if}
 								{if !$item.closed && !$item.cancelled && !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{textformat assign="onclick" wrap=5000}
-										{if $item.published}
-											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
-												.done(function() {
-													window.open($(this).attr('href'));
-												});
-										{else}
-											window.open($(this).attr('href'));
-										{/if}
-										return false;
-									{/textformat}
-									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-										href="?m=invoiceedit&id={$item.docid}&action=edit"
-										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+										{textformat assign="onclick" wrap=5000}
+											{if $item.published}
+												confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+													.done(function() {
+														window.open($(this).attr('href'));
+													});
+											{else}
+												window.open($(this).attr('href'));
+											{/if}
+											return false;
+										{/textformat}
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
+											href="?m=invoiceedit&id={$item.docid}&action=edit"
+											onclick=$onclick
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="Invoice"}
+									{/if}
 								{/if}
 								{if !$item.cancelled}
 									{if !$item.archived}
@@ -180,30 +193,34 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+									{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" icon_tip="View"}
+										data_url="?m=invoiceinfo&id={$item.docid}" icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+								{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" icon_tip="Invoice"}
+									data_url="?m=invoiceinfo&id={$item.docid}"
+									icon_tip="Invoice"}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{textformat assign="onclick" wrap=5000}
-										{if $item.published}
-											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
-												.done(function() {
-													window.open($(this).attr('href'));
-												});
-										{else}
-											window.open($(this).attr('href'));
-										{/if}
-										return false;
-									{/textformat}
-									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-										href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
-										onclick=$onclick
-										resourceid="{$item.docid}" icon_tip="pro forma invoice"}
+									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+										{textformat assign="onclick" wrap=5000}
+											{if $item.published}
+												confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+													.done(function() {
+														window.open($(this).attr('href'));
+													});
+											{else}
+												window.open($(this).attr('href'));
+											{/if}
+											return false;
+										{/textformat}
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
+											href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
+											onclick=$onclick
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="pro forma invoice"}
+									{/if}
 								{/if}
 								{if !$item.cancelled}
 									{if !$item.archived}
@@ -217,33 +234,41 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
+									{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" icon_tip="View"}
+										data_url="?m=invoiceinfo&id={$item.docid}"
+										icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
+								{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" icon_tip="pro forma invoice"}
+									data_url="?m=invoiceinfo&id={$item.docid}"
+									icon_tip="pro forma invoice"}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.cancelled && !$item.referenced}
-									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
-										tip="Revise"}
+									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+										{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+											tip="Revise"}
+									{/if}
 								{/if}
 								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{textformat assign="onclick" wrap=5000}
-										{if $item.published}
-											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
-											.done(function() {
-											window.open($(this).attr('href'));
-											});
-										{else}
-											window.open($(this).attr('href'));
-										{/if}
-										return false;
-									{/textformat}
-									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-									href="?m=invoicenoteedit&id={$item.docid}&action=edit"
-									onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+										{textformat assign="onclick" wrap=5000}
+											{if $item.published}
+												confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+												.done(function() {
+												window.open($(this).attr('href'));
+												});
+											{else}
+												window.open($(this).attr('href'));
+											{/if}
+											return false;
+										{/textformat}
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
+											href="?m=invoicenoteedit&id={$item.docid}&action=edit"
+											onclick=$onclick
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="Invoice"}
+									{/if}
 								{/if}
 								{if !$item.cancelled}
 									{if !$item.archived}
@@ -257,36 +282,48 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-docnumber"
+									{button type="link" icon="view" class="print-invoice lms-ui-hint-rollover"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" icon_tip="View"}
+										data_url="?m=number&id={$item.docid}"
+										icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-docnumber"
+								{button type="link" icon="print" class="print-invoice lms-ui-hint-rollover"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" icon_tip="Credit note"}
+									data_url="?m=number&id={$item.docid}"
+									icon_tip="Credit note"}
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
-								{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-									href="?m=receiptedit&id={$item.docid}"
-									resourceid="{$item.docid}" externa=true icon_tip="Cash receipt"}
-								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
-									href="?m=receipt&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Cash receipt"}
+								{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+									{button type="link" icon="edit" class="lms-ui-hint-rollover"
+										href="?m=receiptedit&id={$item.docid}"
+										data_url="?m=number&id={$item.docid}"
+										external=true
+										icon_tip="Cash receipt"}
+									{button type="link" icon="print" class="lms-ui-hint-rollover"
+										href="?m=receipt&id={$item.docid}"
+										data_url="?m=number&id={$item.docid}"
+										external=true
+										icon_tip="Cash receipt"}
+								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{textformat assign="onclick" wrap=5000}
-										{if $item.published}
-											confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
-												.done(function() {
-													window.open($(this).attr('href'));
-												});
-										{else}
-											window.open($(this).attr('href'));
-										{/if}
-										return false;
-									{/textformat}
-									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-									href="?m=noteedit&id={$item.docid}&action=edit"
-									onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+									{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+										{textformat assign="onclick" wrap=5000}
+											{if $item.published}
+												confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this)
+													.done(function() {
+														window.open($(this).attr('href'));
+													});
+											{else}
+												window.open($(this).attr('href'));
+											{/if}
+											return false;
+										{/textformat}
+										{button type="link" icon="edit" class="lms-ui-hint-rollover"
+											href="?m=noteedit&id={$item.docid}&action=edit"
+											onclick=$onclick
+											data_url="?m=number&id={$item.docid}"
+											icon_tip="Invoice"}
+									{/if}
 								{/if}
 								{if !$item.cancelled}
 									{if !$item.archived}
@@ -301,13 +338,17 @@
 
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+									{button type="link" icon="view" class="lms-ui-hint-rollover"
 										href="?m=note&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
+										data_url="?m=number&id={$item.docid}"
+										external=true
+										icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+								{button type="link" icon="print" class="lms-ui-hint-rollover"
 									href="?m=note&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Debit note"}
+									data_url="?m=number&id={$item.docid}"
+									external=true
+									icon_tip="Debit note"}
 							{/if}
 						{/if}
 						<INPUT type="checkbox" form="addbalance-form"
@@ -324,8 +365,10 @@
 		{tab_button_panel}
 
 			{tab_buttons}
-				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-					{button icon="delete" id="delete-invoices" label="Delete"}
+				{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+					{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
+						{button icon="delete" id="delete-invoices" label="Delete"}
+					{/if}
 				{/if}
 				{button icon="mail" id="send-invoices" label="Send invoices"}
 				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
@@ -372,66 +415,75 @@
 			{/tab_buttons}
 
 		{/tab_button_panel}
-		{tab_button_panel}
 
-			{tab_buttons}
-				<div class="addbalance-form-cell">
-					<INPUT type="hidden" form="addbalance-form" name="addbalance[customerid]" value="{$balancelist.customerid}">
-					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
-					{$layout.logname|truncate:16:"...":true}
-					<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
-					{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
-					<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
-						{foreach item=tax from=$taxeslist}
-						<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-
-				<div class="addbalance-form-cell">
-					<label>
-						<INPUT type="radio" form="addbalance-form" NAME="addbalance[type]" value="0" {tip text="Select type of operation"}>
-						{trans("liability")}
-					</label>
-					<label>
-						<INPUT type="radio" form="addbalance-form" NAME="addbalance[type]" value="1" {tip text="Select type of operation"} checked>
-						{trans("income/expense")}
-					</label>
-					{if $sourcelist}
-					<div class="isource">
-						<i class="lms-ui-icon-isource"></i>
-						<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-							<OPTION value="0">{trans("- none -")}</OPTION>
-							{foreach $sourcelist as $source}
-							<OPTION value="{$source.id}"{if $source.id == $sourceid} selected{/if}>{$source.name}</OPTION>
+		{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+			{tab_button_panel}
+				{tab_buttons}
+					<div class="addbalance-form-cell">
+						<INPUT type="hidden" form="addbalance-form" name="addbalance[customerid]" value="{$balancelist.customerid}">
+						<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
+						{$layout.logname|truncate:16:"&hellip;":true}
+						<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
+						{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
+						<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
+							{foreach item=tax from=$taxeslist}
+							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
 							{/foreach}
 						</SELECT>
 					</div>
+
+					<div class="addbalance-form-cell">
+						<label>
+							<INPUT type="radio" form="addbalance-form" NAME="addbalance[type]" value="0" {tip text="Select type of operation"}>
+							{trans("liability")}
+						</label>
+						<label>
+							<INPUT type="radio" form="addbalance-form" NAME="addbalance[type]" value="1" {tip text="Select type of operation"} checked>
+							{trans("income/expense")}
+						</label>
+						<div class="servicetype">
+							{icon name="money"}
+							<select id="servicetype" name="addbalance[servicetype]" form="addbalance-form" {tip text="Service type"}>
+								<option value="">{trans("- none -")}</option>
+								{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
+									<option value="{$type}"{if $servicetype == $type} selected{/if}>{$label}</option>
+								{/foreach}
+							</select>
+						</div>
+						{if $sourcelist}
+						<div class="isource">
+							<i class="lms-ui-icon-isource fa-fw"></i>
+							<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
+								<OPTION value="0">{trans("- none -")}</OPTION>
+								{foreach $sourcelist as $source}
+								<OPTION value="{$source.id}"{if $source.id == $sourceid} selected{/if}>{$source.name}</OPTION>
+								{/foreach}
+							</SELECT>
+						</div>
+						{/if}
+					</div>
+
+					<div class="addbalance-form-cell">
+						<input type="text" form="addbalance-form" size="30" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}>
+					</div>
+				{/tab_buttons}
+			{/tab_button_panel}
+			{tab_button_panel}
+				{tab_buttons}
+					{if $customerinfo.balance < 0}
+						{button icon="edit" id="clear-account" label="Clear Account"}
 					{/if}
-				</div>
+				{/tab_buttons}
 
-				<div class="addbalance-form-cell">
-					<input type="text" form="addbalance-form" size="30" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}>
-				</div>
-			{/tab_buttons}
+				{tab_buttons}
+					{if $instantpayment}
+						{button icon="cash" onclick="javascript:AddBalance(true);" label="Instant payment"}
+					{/if}
+					{button icon="save" onclick="javascript:AddBalance();" label="Submit"}
+				{/tab_buttons}
 
-		{/tab_button_panel}
-		{tab_button_panel}
-			{tab_buttons}
-				{if $customerinfo.balance < 0}
-					{button icon="edit" id="clear-account" label="Clear Account"}
-				{/if}
-			{/tab_buttons}
-
-			{tab_buttons}
-				{if $instantpayment}
-					{button icon="cash" onclick="javascript:AddBalance(true);" label="Instant payment"}
-				{/if}
-				{button icon="save" onclick="javascript:AddBalance();" label="Submit"}
-			{/tab_buttons}
-
-		{/tab_button_panel}
-
+			{/tab_button_panel}
+		{/if}
 	{/tab_contents}
 {/tab_container}
 
@@ -527,9 +579,9 @@
 		var type = document.getElementById('showlistselect').value;
 
 		if (type == 'invoice')
-			document.addbalance.action = '?m=invoicelist';
+			document.addbalance.action = '?m=invoicelist&customer={$balancelist.customerid}';
 		else if (type == 'invoicepro')
-			document.addbalance.action = '?m=invoicelist&proforma=1';
+			document.addbalance.action = '?m=invoicelist&proforma=1&customer={$balancelist.customerid}';
 		else if (type == 'note')
 			document.addbalance.action = '?m=notelist';
 		else
@@ -571,6 +623,13 @@
 			location.href = '?m={$layout.module}&id={$objectid}&aggregate_documents=' +
 				($(this).prop('checked') ? '1' : '0');
 		});
+
+		$('[name="addbalance[type]"]').change(function() {
+			var that = this;
+			$('#servicetype').prop('disabled', function() {
+				return $(that).val() == '1';
+			});
+		}).change();
 	});
 
 	{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}

@@ -1,5 +1,5 @@
 <!-- $Id$ -->
-<TABLE class="lmsbox lms-ui-tab-container">
+<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="rtticketeventlist">
 	<COLGROUP>
 		<COL style="width: 99%;">
 		<COL style="width: 1%;">
@@ -7,14 +7,16 @@
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
 		<TD class="bold">
-			<i class="lms-ui-icon-timetable"></i> {trans("Timetable assigned events:")}
+			{icon name="timetable" label="Timetable assigned events" class="lms-ui-sortable-handle"}
 		</TD>
 		<TD class="text-right nobr">
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{button icon="add" label="Add"
 					onclick="location.href='?m=eventadd&ticketid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
-				{button icon="close" label="Close all"
-					onclick="location.href='?m=eventedit&action=close&ticketid={$ticket.ticketid}';"}
+				{if $ticket.openeventcount}
+					{button icon="close" label="Close all"
+						onclick="location.href='?m=eventedit&action=close&ticketid={$ticket.ticketid}';"}
+				{/if}
 			{/if}
 		</TD>
 	</TR>
@@ -39,20 +41,25 @@
 				<TBODY>
 				{foreach $assignedevents as $event}
 					{$day=$event.date}
-					{include file="event/eventlistboxrow.html" overdue=1}
+					{include file="event/eventlistboxrow.html" overdue=1 backid=null}
 				{foreachelse}
-					<TR>
-						<TD class="empty-table" colspan="6">
-							<p>{trans("There are no events in timetable.")}</p>
-						</TD>
-					</TR>
+					<tr>
+						<td class="empty-table" colspan="6">
+							{trans("There are no events in timetable.")}
+						</td>
+					</tr>
 				{/foreach}
 				</TBODY>
 			</table>
 		</TD>
 	</TR>
 </TABLE>
-<SCRIPT type="text/javascript">
-	if (getCookie('eventpanel-{$layout.module}') == '1')
-		document.getElementById('eventpanel-{$layout.module}').style.display = '';
-</SCRIPT>
+
+<script>
+
+	if (getCookie('eventpanel-{$layout.module}') == '1') {
+		$('#eventpanel-{$layout.module}').show();
+	}
+
+</script>
+<script src="js/templates/event/eventlist.js"></script>

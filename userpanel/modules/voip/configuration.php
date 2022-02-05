@@ -31,5 +31,5 @@ $USERPANEL->AddModule(
     60,                                                      // Priority
     trans('This module shows billing list.'),       // Description
     '', //Submenu
-    'lms-ui-icon-phone' //icon
+    'lms-ui-icon-phone fa-fw' //icon
 );

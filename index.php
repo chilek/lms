@@ -30,7 +30,7 @@
 
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
-define('K_TCPDF_EXTERNAL_CONFIG', true);
+//define('K_TCPDF_EXTERNAL_CONFIG', true);
 define('K_TCPDF_CALLS_IN_HTML', true);
 ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
@@ -57,23 +57,27 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 $CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
 $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['backup_dir'] = (!isset($CONFIG['directories']['backup_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'backups' : $CONFIG['directories']['backup_dir']);
+$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
 $CONFIG['directories']['config_templates_dir'] = (!isset($CONFIG['directories']['config_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'config_templates' : $CONFIG['directories']['config_templates_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 $CONFIG['directories']['vendor_dir'] = (!isset($CONFIG['directories']['vendor_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor' : $CONFIG['directories']['vendor_dir']);
+$CONFIG['directories']['cache_dir'] = (!isset($CONFIG['directories']['cache_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'cache' : $CONFIG['directories']['cache_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
+define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
+define('CACHE_DIR', $CONFIG['directories']['cache_dir']);
 
 // Load autoloader
 $composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -210,6 +214,9 @@ $layout['lmsvr'] = LMS::getSoftwareRevision();
 $layout['dberrors'] = &$DB->GetErrors();
 $layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
+$layout['url'] = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+    . $_SERVER['HTTP_HOST']
+    . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
 if (!$api) {
     $SMARTY->assignByRef('layout', $layout);
@@ -325,7 +332,13 @@ if ($AUTH->islogged) {
         'user_id' => Auth::GetCurrentUser(),
     ));
 
-    ConfigHelper::setFilter(LMSDivisionManager::getCurrentDivision(), Auth::GetCurrentUser());
+    $divisionid = LMSDivisionManager::getCurrentDivision();
+    ConfigHelper::setFilter($divisionid, Auth::GetCurrentUser());
+
+    $LMS->executeHook('division_set_after', array(
+        'lms' => $LMS,
+        'divisionid' => $divisionid,
+    ));
 
     Localisation::initDefaultCurrency();
 
@@ -335,7 +348,6 @@ if ($AUTH->islogged) {
     $res = $LMS->ExecHook('module_load_before', array('module' => $module));
     if (array_key_exists('abort', $res) && $res['abort']) {
         $SESSION->close();
-        $DB->Destroy();
         die;
     }
     $module = $res['module'];

@@ -2,115 +2,121 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox lms-ui-background-cycle">
-	<COLSPAN>
-		<COL style="width: 30%;">
-		<COL style="width: 30%;">
-		<COL style="width: 36%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-	</COLSPAN>
-	<THEAD>
-	<TR>
-		<TD COLSPAN="2" class="nobr">
-			{icon name="queue"}
-			<B>{trans("Category")}:</B><BR>
-			{icon name="optional-info"}
-			{trans("Description")}:
-		</TD>
-		<TD class="bold text-center">
-			{trans("<!rt-category>Look:")}
-		</TD>
-		<TD class="nobr">
-			{icon name="owner"}
-			<B>{trans("Owners")}:</B>
-		</TD>
-		<TD class="text-center">
-			{trans("New:")}
-		</TD>
-		<TD class="text-center">
-			{trans("Opened:")}
-		</TD>
-		<TD class="text-center">
-			{trans("Last:")}
-		</TD>
-		<TD>
-			{button icon="add" label="New Category" onclick="location.href = '?m=rtcategoryadd'"}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	{foreach $categories as $category}
-	<TR class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}" data-name="{$category.name}">
-		<TD COLSPAN="2">
-			{icon name="queue"}
-			<B>{$category.name}</B><BR>
-			{if $category.description}
-				{icon name="optional-info"} {$category.description}
-			{/if}
-		</TD>
-		<TD class="bold text-center">
-			<div class="lms-ui-category-label" style="{$category.style}">
-				{$category.name}
-			</div>
-		</TD>
-		<TD class="lms-ui-buttons">
-			{foreach $category.owners as $key => $owner}
-				<A HREF="?m=userinfo&amp;id={$owner.id}">{$owner.name}</A>{if $key+1<count($category.owners)}, {/if}
-			{/foreach}
-		</TD>
-		<TD class="text-center">
-			{$category.new|default:0}
-		</TD>
-		<TD class="text-center">
-			{$category.open|default:0}
-		</TD>
-		<TD class="text-center nobr">
-			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
-		</TD>
-		<TD class="lms-ui-buttons text-right nobr">
-			{button type="link" href="?m=rtqueueview&catid={$category.id}" icon="view" tip="Browse"}
-			{button type="link" class="delete-rtcategory" href="?m=rtcategorydel&id={$category.id}" icon="delete" tip="Delete"}
-			{button type="link" href="?m=rtcategoryedit&id={$category.id}" icon="edit" tip="Edit"}
-			{button type="link" href="?m=rtcategoryinfo&id={$category.id}" icon="info" tip="Info"}
-		</TD>
-	</TR>
-	{foreachelse}
-	<TR>
-		<TD colspan="8" class="empty-table">
-			<p>{trans("There are no categories.")}</p>
-		</TD>
-	</TR>
-	{/foreach}
-        </TBODY>
-        <TFOOT>
-	<TR>
-		<TD COLSPAN="4" class="text-right bold">
-			{icon name="info"}
-			{trans("Total:")}
-		</TD>
-		<TD class="bold text-center">
-			{sum array=$categories column=new}
-		</TD>
-		<TD class="text-center bold">
-			{sum array=$categories column=open}
-		</TD>
-		<TD COLSPAN="2">
-			&nbsp;
-		</TD>
-	</TR>
-        </TFOOT>
-</TABLE>
-	<script>
-		$('.delete-rtcategory').click(function() {
+<h1>{$layout.pagetitle}</h1>
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 30%;">
+		<col style="width: 30%;">
+		<col style="width: 36%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+	</colgroup>
+	<thead>
+		<TR>
+			<TD COLSPAN="2" class="nobr">
+				{icon name="queue"}
+				<B>{trans("Category")}:</B><BR>
+				{icon name="optional-info"}
+				{trans("Description")}:
+			</TD>
+			<TD class="bold text-center">
+				{trans("<!rt-category>Look:")}
+			</TD>
+			<TD class="nobr">
+				{icon name="owner"}
+				<B>{trans("Owners")}:</B>
+			</TD>
+			<TD class="text-center">
+				{trans("New:")}
+			</TD>
+			<TD class="text-center">
+				{trans("Opened:")}
+			</TD>
+			<TD class="text-center">
+				{trans("Last:")}
+			</TD>
+			<TD class="text-right">
+				{button icon="add" label="New Category" onclick="location.href = '?m=rtcategoryadd'"}
+			</TD>
+		</TR>
+	</thead>
+	<tbody>
+		{foreach $categories as $category}
+			<tr class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}" data-name="{$category.name}">
+				<td colspan="2">
+					{icon name="queue"}
+					<strong>{$category.name}</strong>
+					<br>
+					{if $category.description}
+						{icon name="optional-info"} {$category.description}
+					{/if}
+				</td>
+				<td class="bold text-center">
+					<div class="lms-ui-category-label" style="{$category.style}">
+						{$category.name}
+					</div>
+				</td>
+				<td class="lms-ui-buttons">
+					{foreach $category.owners as $key => $owner}
+						<a href="?m=userinfo&id={$owner.id}">{$owner.name}</a>{if $key+1<count($category.owners)}, {/if}
+					{/foreach}
+				</td>
+				<td class="text-center">
+					{$category.new|default:0}
+				</td>
+				<td class="text-center">
+					{$category.open|default:0}
+				</td>
+				<td class="text-center nobr">
+					{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+				</td>
+				<td class="lms-ui-buttons text-right nobr">
+					{button type="link" href="?m=rtcategoryadd&id={$category.id}" icon="clone" tip="Clone"}
+					{button type="link" href="?m=rtqueueview&catid={$category.id}" icon="view" tip="Browse"}
+					{button type="link" class="delete-rtcategory" href="?m=rtcategorydel&id={$category.id}" icon="delete" tip="Delete"}
+					{button type="link" href="?m=rtcategoryedit&id={$category.id}" icon="edit" tip="Edit"}
+					{button type="link" href="?m=rtcategoryinfo&id={$category.id}" icon="info" tip="Info"}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="8" class="empty-table">
+					{trans("There are no categories.")}
+				</td>
+			</tr>
+		{/foreach}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="4" class="text-right">
+				{icon name="info"}
+				<strong>{trans("Total:")}</strong>
+			</td>
+			<td class="text-center">
+				<strong>{sum array=$categories column=new}</strong>
+			</td>
+			<td class="text-center">
+				<strong>{sum array=$categories column=open}</strong>
+			</td>
+			<td colspan="2">
+				&nbsp;
+			</td>
+		</tr>
+	</tfoot>
+</table>
+<script>
+
+	$(function() {
+		$('.delete-rtcategory').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function() {
+			confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function () {
 				location.href = $(this).attr('href');
 			});
 			return false;
 		});
-	</script>
+	});
+
+</script>
 {/block}

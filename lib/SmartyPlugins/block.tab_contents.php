@@ -36,9 +36,18 @@ function smarty_block_tab_contents($params, $content, $template, $repeat)
                 . $content . '
 			</div>
 			<script>
-				   if (getCookie("' . $id . '") == "1") {
-						   $("#' . $id . '").show();
-				   }
+		        (function() {
+		            var state = getStorageItem("' . $id . '", "local");
+		            if (state == "1") {
+		                $("#' . $id . '").show()
+		            } else {
+                        if (getCookie("' . $id . '") == "1") {
+                            $("#' . $id . '").show();
+                            setCookie("' . $id . '", "0", "0");
+                            setStorageItem("' . $id . '", "1", "local");
+                        }
+		            }
+		        })();
 			</script>';
     }
 }

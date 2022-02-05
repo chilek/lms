@@ -145,7 +145,6 @@ switch ($mode) {
                     if ($row['deleted']) {
                         $name_classes[] = 'blend';
                     }
-                    //$name_classes[] = 'lms-ui-suggestion-customer-status-' . $CSTATUSES[$row['status']]['alias'];
                     $name_class = implode(' ', $name_classes);
 
                     $description = '';
@@ -153,27 +152,28 @@ switch ($mode) {
                     $action = '?m=customerinfo&id=' . $row['id'];
 
                     if ((empty($properties) || isset($properties['name'])) && $customer_count[$row['customername']]) {
-                        $description = $row['address'];
+                        $description = htmlspecialchars($row['address']);
                         if (!empty($row['post_address'])) {
-                            $description .= '<BR>' . $row['post_address'];
+                            $description .= '<BR>' . htmlspecialchars($row['post_address']);
                             if (!empty($row['post_name'])) {
-                                $description .= '<BR>' . $row['post_name'];
+                                $description .= '<BR>' . htmlspecialchars($row['post_name']);
                             }
                         }
                     } else if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
-                        $description = trans('Id:') . ' ' . $row['id'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
+                        //$description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['customername'])) {
                         $description = '';
                     } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
-                        $description = trans('Address:') . ' ' . $row['address'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
                     } else if ((empty($properties) || isset($properties['post_name'])) && preg_match("~$search~i", $row['post_name'])) {
-                        $description = trans('Name:') . ' ' . $row['post_name'];
+                        $description = trans('Name:') . ' ' . htmlspecialchars($row['post_name']);
                     } else if ((empty($properties) || isset($properties['post_address'])) && preg_match("~$search~i", $row['post_address'])) {
-                        $description = trans('Address:') . ' ' . $row['post_address'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['post_address']);
                     } else if ((empty($properties) || isset($properties['location_name'])) && preg_match("~$search~i", $row['location_name'])) {
-                        $description = trans('Name:') . ' ' . $row['location_name'];
+                        $description = trans('Name:') . ' ' . htmlspecialchars($row['location_name']);
                     } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location_address'])) {
-                        $description = trans('Address:') . ' ' . $row['location_address'];
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['location_address']);
                     } else if ((empty($properties) || isset($properties['email'])) && preg_match("~$search~i", $row['email'])) {
                         $description = trans('E-mail:') . ' ' . $row['email'];
                     } else if ((empty($properties) || isset($properties['ten']))
@@ -188,7 +188,10 @@ switch ($mode) {
                         $description = trans('Notes:') . ' ' . $row['notes'];
                     }
 
-                    $result[$row['id']] = compact('icon', 'name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = array_merge(
+                        compact('name', 'icon', 'name_class', 'description', 'description_class', 'action'),
+                        array('id' => $row['id'])
+                    );
                 }
             }
             $hook_data = array(
@@ -201,11 +204,8 @@ switch ($mode) {
             $hook_data = $LMS->executeHook('quicksearch_ajax_customer', $hook_data);
             $result = $hook_data['result'];
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -302,11 +302,8 @@ switch ($mode) {
                 }
             }
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -324,11 +321,12 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $where = array();
+            $phone_number = preg_replace('/[^0-9]/', '', $search);
             if (empty($properties) || isset($properties['contact'])) {
-                $where[] = "REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? $sql_search";
+                $where[] = "REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? '%$phone_number%'";
             }
             if (empty($properties) || isset($properties['account'])) {
-                $where[] = "vn.phone ?LIKE? $sql_search" ;
+                $where[] = "vn.phone ?LIKE? '%$phone_number%'" ;
             }
 
             $candidates = $DB->GetAll("SELECT c.id, "
@@ -386,7 +384,6 @@ switch ($mode) {
                 echo json_encode(array_values($result));
             }
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -414,13 +411,13 @@ switch ($mode) {
         // Build different query for each database engine,
             // MySQL is slow here when vnodes view is used
             if (ConfigHelper::getConfig('database.type') == 'postgres') {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, location, access, lastonline
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             } else {
-                $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
+                $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, va.location, access, lastonline
 				    FROM nodes n
 				    JOIN (
@@ -436,13 +433,14 @@ switch ($mode) {
             $sql_where = '('
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? "n.id = " . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(n.name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['login']) ? " OR LOWER(n.login) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['ip']) ? " OR INET_NTOA(ipaddr) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['public_ip']) ? " OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '')
                 . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(location) ?LIKE? LOWER($sql_search)" : '') . "
 				)
 			    AND NOT EXISTS (
-                    SELECT 1 FROM customerassignments a
+                    SELECT 1 FROM vcustomerassignments a
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			        WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)";
 
@@ -478,12 +476,14 @@ switch ($mode) {
                         $description = trans('Id') . ': ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
                         $description = trans('Name') . ': ' . $row['name'];
+                    } else if ((empty($properties) || isset($properties['login'])) && preg_match("~$search~i", $row['login'])) {
+                        $description = trans('<!node>Login') . ': ' . $row['login'];
                     } else if ((empty($properties) || isset($properties['ip'])) && preg_match("~$search~i", $row['ip'])) {
                         $description = trans('IP') . ': ' . $row['ip'];
                     } else if ((empty($properties) || isset($properties['public_ip'])) && preg_match("~$search~i", $row['ip_pub'])) {
                         $description = trans('IP') . ': ' . $row['ip_pub'];
                     } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
-                        $description = trans('Address') . ': ' . $row['location'];
+                        $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
                     } else if ((empty($properties) || isset($properties['mac'])) && preg_match("~" . macformat($search) . "~i", $row['mac'])) {
                         $macs = explode(',', $row['mac']);
                         foreach ($macs as $mac) {
@@ -509,11 +509,8 @@ switch ($mode) {
             $hook_data = $LMS->executeHook('quicksearch_ajax_node', $hook_data);
             $result = $hook_data['result'];
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -587,13 +584,10 @@ switch ($mode) {
             );
             $hook_data = $LMS->executeHook('quicksearch_ajax_netnode', $hook_data);
             $result = $hook_data['result'];
-                    header('Content-type: application/json');
-            if (!empty($result)) {
-                    echo json_encode(array_values($result));
-            }
-                    $SESSION->close();
-                    $DB->Destroy();
-                    exit;
+            header('Content-type: application/json');
+            echo json_encode(array_values($result));
+            $SESSION->close();
+            exit;
         }
 
         if (is_numeric($search)) {
@@ -649,13 +643,10 @@ switch ($mode) {
             );
             $hook_data = $LMS->executeHook('quicksearch_ajax_netdevice', $hook_data);
             $result = $hook_data['result'];
-                header('Content-type: application/json');
-            if (!empty($result)) {
-                    echo json_encode(array_values($result));
-            }
-                $SESSION->close();
-                $DB->Destroy();
-                exit;
+            header('Content-type: application/json');
+            echo json_encode(array_values($result));
+            $SESSION->close();
+            exit;
         }
 
         if (is_numeric($search)) {
@@ -755,10 +746,10 @@ switch ($mode) {
                     if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
                         $description = trans('Id') . ': ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['subject'])) && preg_match("~$search~i", $row['subject'])) {
-                        $description = trans('Subject:') . ' ' . $row['subject'];
+                        $description = trans('Subject:') . ' ' . htmlspecialchars($row['subject']);
                     } else if ((empty($properties) || isset($properties['requestor'])) && preg_match("~$search~i", $row['requestor'])) {
                         $description = trans('First/last name') . ': '
-                        . preg_replace('/ <.*/', '', $row['requestor']);
+                        . htmlspecialchars(preg_replace('/ <.*/', '', $row['requestor']));
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['name'])) {
                         $description = trans('First/last name') . ': ' . $row['name'];
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['lastname'])) {
@@ -781,11 +772,8 @@ switch ($mode) {
             $hook_data = $LMS->executeHook('quicksearch_ajax_ticket', $hook_data);
             $result = $hook_data['result'];
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -847,11 +835,8 @@ switch ($mode) {
             $hook_data = $LMS->executeHook('quicksearch_ajax_wireless', $hook_data);
             $result = $hook_data['result'];
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -868,11 +853,13 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, address FROM networks
-                                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
-				LOWER(name) ?LIKE? LOWER($sql_search)
-                                ORDER by name
-                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+            $candidates = $DB->GetAll("SELECT id, name, INET_NTOA(address) AS address FROM networks
+                WHERE "
+                . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) : '1 = 0') : '1 = 0')
+                . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['address']) ? " OR INET_NTOA(address) ?LIKE? $sql_search" : '')
+                . " ORDER by name
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
             $result = array();
             if ($candidates) {
@@ -886,6 +873,13 @@ switch ($mode) {
 
                     if (preg_match("~^$search\$~i", $row['id'])) {
                         $description = trans('Id:') . ' ' . $row['id'];
+                    }
+                    if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
+                        $description = trans('Id:') . ' ' . $row['id'];
+                    } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
+                        $description = trans('Network name:') . ' ' . $row['name'];
+                    } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
+                        $description = trans('Network address:') . ' ' . $row['address'];
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
@@ -901,11 +895,8 @@ switch ($mode) {
             $hook_data = $LMS->executeHook('quicksearch_ajax_network', $hook_data);
             $result = $hook_data['result'];
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -976,11 +967,8 @@ switch ($mode) {
             $hook_data = $LMS->executeHook('quicksearch_ajax_account', $hook_data);
             $result = $hook_data['result'];
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -1048,11 +1036,8 @@ switch ($mode) {
             $hook_data = $LMS->executeHook('quicksearch_ajax_document', $hook_data);
             $result = $hook_data['result'];
             header('Content-type: application/json');
-            if (!empty($result)) {
-                echo json_encode(array_values($result));
-            }
+            echo json_encode(array_values($result));
             $SESSION->close();
-            $DB->Destroy();
             exit;
         }
 
@@ -1060,7 +1045,7 @@ switch ($mode) {
 			FROM documents d
 			JOIN customerview c ON c.id = d.customerid
 			WHERE LOWER(fullnumber) ?LIKE? LOWER($sql_search)");
-        if (count($docs) == 1) {
+        if (!empty($docs) && count($docs) == 1) {
             $cid = $docs[0]['cid'];
 /*
             $docid = $docs[0]['id'];
@@ -1122,11 +1107,10 @@ switch ($mode) {
 
             if (!empty($result)) {
                 ksort($result);
-                echo json_encode(array_values($result));
             }
+            echo json_encode(array_values($result));
 
             $SESSION->close();
-            $DB->Destroy();
             die;
         }
 

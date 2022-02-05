@@ -33,22 +33,6 @@ if (isset($_POST['search'])) {
         $search['tariffs'] = implode(",", $search['tariffs']);
     }
 
-    if ($search['createdfrom']) {
-        list($year, $month, $day) = explode('/', $search['createdfrom']);
-        $search['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
-    }
-    if ($search['createdto']) {
-        list($year, $month, $day) = explode('/', $search['createdto']);
-        $search['createdto'] = mktime(23, 59, 59, $month, $day, $year);
-    }
-    if ($search['deletedfrom']) {
-        list($year, $month, $day) = explode('/', $search['deletedfrom']);
-        $search['deletedfrom'] = mktime(0, 0, 0, $month, $day, $year);
-    }
-    if ($search['deletedto']) {
-        list($year, $month, $day) = explode('/', $search['deletedto']);
-        $search['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
-    }
     if ($search['balance_date']) {
         list ($year, $month, $day) = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
@@ -63,6 +47,14 @@ if (!isset($search)) {
 
 if (isset($search['balance_date']) && !empty($search['balance_date'])) {
     $time = intval($search['balance_date']);
+}
+
+if (isset($search['balance_days'])) {
+    if (strlen($search['balance_days'])) {
+        $days = intval($search['balance_days']);
+    } else {
+        $days = -1;
+    }
 }
 
 if (!isset($_GET['o'])) {
@@ -86,6 +78,34 @@ if (!isset($_POST['sk'])) {
 }
 $SESSION->save('cslsk', $statesqlskey);
 
+if (!isset($_POST['flags'])) {
+    $SESSION->restore('cslf', $flags);
+} else {
+    $flags = $_POST['flags'];
+}
+$SESSION->save('cslf', $flags);
+
+if (!isset($_POST['fk'])) {
+    $SESSION->restore('cslfk', $flagsqlskey);
+} else {
+    $flagsqlskey = $_POST['fk'];
+}
+$SESSION->save('cslfk', $flagsqlskey);
+
+if (!isset($_POST['consents'])) {
+    $SESSION->restore('csconsents', $consents);
+} else {
+    $consents = $_POST['consents'];
+}
+$SESSION->save('csconsents', $consents);
+
+if (!isset($_POST['karma'])) {
+    $SESSION->restore('cslkarma', $karma);
+} else {
+    $karma = $_POST['karma'];
+}
+$SESSION->save('cslkarma', $karma);
+
 if (!isset($_POST['n'])) {
     $SESSION->restore('csln', $network);
 } else if ($_POST['n'] == 'all') {
@@ -105,6 +125,13 @@ if (!isset($_POST['g'])) {
     }
 }
 $SESSION->save('cslg', $customergroup);
+
+if (!isset($_POST['cgk'])) {
+    $SESSION->restore('cslcgk', $customergroupsqlskey);
+} else {
+    $customergroupsqlskey = $_POST['cgk'];
+}
+$SESSION->save('cslcgk', $customergroupsqlskey);
 
 if (!isset($_POST['k'])) {
     $SESSION->restore('cslk', $sqlskey);
@@ -133,10 +160,16 @@ if (isset($_GET['search'])) {
         "order",
         "state",
         "statesqlskey",
+        "customergroupsqlskey",
+        "flags",
+        "flagsqlskey",
+        "consents",
+        "karma",
         "network",
         "customergroup",
         "search",
         "time",
+        "days",
         "sqlskey",
         "nodegroup",
         "division"
@@ -148,6 +181,8 @@ if (isset($_GET['search'])) {
     $listdata['below'] = $customerlist['below'];
     $listdata['over'] = $customerlist['over'];
     $listdata['state'] = $state;
+    $listdata['flags'] = $flags;
+    $listdata['karma'] = $karma;
     $listdata['network'] = $network;
     $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
     $listdata['nodegroup'] = $nodegroup;
@@ -155,6 +190,8 @@ if (isset($_GET['search'])) {
 
     unset($customerlist['total']);
     unset($customerlist['state']);
+    unset($customerlist['flags']);
+    unset($customerlist['karma']);
     unset($customerlist['direction']);
     unset($customerlist['order']);
     unset($customerlist['below']);
@@ -183,7 +220,7 @@ if (isset($_GET['search'])) {
             'SELECT customerid, (' . $DB->GroupConcat('contact') . ') AS phone
 			FROM customercontacts WHERE contact <> \'\' AND type & ? > 0 GROUP BY customerid',
             'customerid',
-            array(CONTACT_MOBILE | CONTACT_LANDLINE | CONTACT_LINE)
+            array(CONTACT_MOBILE | CONTACT_LANDLINE)
         ));
 
         $filename = 'customers-' . date('YmdHis') . '.csv';
@@ -201,6 +238,16 @@ if (isset($_GET['search'])) {
 } else {
     $layout['pagetitle'] = trans('Customer Search');
 
+    $listdata['state'] = $state;
+    $listdata['flags'] = $flags;
+    $listdata['karma'] = $karma;
+    $listdata['network'] = $network;
+    $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
+    $listdata['nodegroup'] = $nodegroup;
+    $listdata['division'] = $division;
+
+    $SMARTY->assign('listdata', $listdata);
+
     $SESSION->remove('cslp');
 
     $SMARTY->assign('networks', $LMS->GetNetworks());
@@ -211,5 +258,8 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('divisions', $LMS->GetDivisions());
     $SMARTY->assign('k', $sqlskey);
     $SMARTY->assign('sk', $statesqlskey);
+    $SMARTY->assign('cgk', $customergroupsqlskey);
+    $SMARTY->assign('fk', $flagsqlskey);
+    $SMARTY->assign('karma', $karma);
     $SMARTY->display('customer/customersearch.html');
 }

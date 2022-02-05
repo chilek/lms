@@ -37,6 +37,7 @@ $_LANG['not approved'] = 'niezatwierdzony';
 $_LANG['indefinitely'] = 'bezterminowo';
 $_LANG['Show confirmed documents only:'] = 'Pokaż wyłącznie dokumenty zatwierdzone:';
 $_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokumenty, które zostały zatwierdzone';
+$_LANG['Visible document types'] = 'Widoczne typy dokumentów';
 $_LANG['Hide archived documents:'] = 'Ukryj dokumenty zarchiwizowane:';
 $_LANG['Hide archived documents'] = 'Ukryj dokumenty zarchiwizowane';
 
@@ -58,8 +59,22 @@ $_LANG['Signed document scan customer notifications'] = 'Powiadomienia klienta o
 $_LANG['Enter signed document scan customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o skanie podpisanego dokumentu';
 $_LANG['Enter signed document scan customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';
 $_LANG['Document approval customer notifications'] = 'Powiadomienia klienta o zatwierdzeniu dokumentu';
-$_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o skanie podpisanego dokumentu';
-$_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o skanie podpisanego dokumentu';
+$_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
+$_LANG['Document approval operator notifications'] = 'Powiadomienia operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail recipient address'] = 'Wprowadź adres e-mail odbiorcy listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+
+$_LANG['Recipient e-mail address'] = 'Adres e-mail odbiorcy';
+$_LANG['Mail subject'] = 'Temat listu';
+$_LANG['Mail body'] = 'Treść listu';
+
+$_LANG['New document customer notifications'] = 'Powiadomienia klienta o nowym dokumencie';
+$_LANG['Enter new document customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o nowym dokumencie';
+$_LANG['Enter new document customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o nowym dokumencie';
+$_LANG['Enter new document customer notification sms body'] = 'Wprowadź treść SMS-a z powiadomieniem klienta o nowym dokumencie';
+$_LANG['SMS body'] = 'Treść SMS-a';
 
 $_LANG['Sender name:'] = 'Nazwa nadawcy:';
 $_LANG['Sender mail address:'] = 'Adres e-mail nadawcy:';
@@ -87,3 +102,42 @@ $_LANG['Enter document approval customer one-time password sms body'] = 'Wprowad
 $_LANG['One-time password SMS body:'] = 'Treść SMS-a z hasłem jednorazowym:';
 
 $_LANG['awaits for your approval'] = 'oczekuje na zatwierdzenie przez Ciebie';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%cid%</strong> - customer identifier,<br>'
+    . '<strong>%pin%</strong> - customer pin code,<br>'
+    . '<strong>%customername%</strong> - full customer name,<br>'
+    . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%date-y%</strong> - date to which we wait for customer action (year),<br>'
+    . '<strong>%date-m%</strong> - date to which we wait for customer action (month),<br>'
+    . '<strong>%date-d%</strong> - date to which we wait for customer action (day).'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%cid%</strong> - identyfikator klienta,<br>'
+    . '<strong>%pin%</strong> - kod PIN klienta,<br>'
+    . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%date-y%</strong> - data do której oczekujemy na decyzję klienta (rok),<br>'
+    . '<strong>%date-m%</strong> - data do której oczekujemy na decyzję klienta (miesiąc),<br>'
+    . '<strong>%date-d%</strong> - data do której oczekujemy na decyzję klienta (dzień).';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%cid%</strong> - customer identifier,<br>'
+    . '<strong>%customername%</strong> - full customer name,<br>'
+    . '<strong>%docid%</strong> - document identifier.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%cid%</strong> - identyfikator klienta,<br>'
+    . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%docid%</strong> - identyfikator dokumentu.';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%password%</strong> - replaced by one-time password sent to customer via SMS.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%password%</strong> - zastępowany jest hasłem jednorazowym SMS-em wysyłanym do klienta.';
+
+$_LANG['Send document to customer'] = 'Wyślij dokument do klienta';

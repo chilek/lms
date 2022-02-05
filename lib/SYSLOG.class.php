@@ -87,6 +87,11 @@ class SYSLOG
     const RES_CUSTCONSENT = 59;
     const RES_CUSTNOTE = 60;
     const RES_ROUTEDNET = 61;
+    const RES_VLAN = 62;
+    const RES_NUMPLANUSER = 63;
+    const RES_NETDEV_MAC = 64;
+    const RES_VOIP_ACCOUNT = 65;
+    const RES_VOIP_ACCOUNT_NUMBER = 66;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -161,6 +166,11 @@ class SYSLOG
         self::RES_CUSTCONSENT => 'customer consent<!syslog>',
         self::RES_CUSTNOTE => 'customer note<!syslog>',
         self::RES_ROUTEDNET => 'routed network<!syslog>',
+        self::RES_VLAN => 'vlan<!syslog>',
+        self::RES_NUMPLANUSER => 'number plan user<!syslog>',
+        self::RES_NETDEV_MAC => 'network device mac<!syslog>',
+        self::RES_VOIP_ACCOUNT => 'VoIP account<!syslog>',
+        self::RES_VOIP_ACCOUNT_NUMBER => 'VoIP account number<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -224,6 +234,11 @@ class SYSLOG
         self::RES_CUSTCONSENT => 'customerconsentid',
         self::RES_CUSTNOTE => 'customernoteid',
         self::RES_ROUTEDNET => 'routednetworkid',
+        self::RES_VLAN => 'vlanid',
+        self::RES_NUMPLANUSER => 'numberplanuserid',
+        self::RES_NETDEV_MAC => 'networkdevicemacid',
+        self::RES_VOIP_ACCOUNT => 'voipaccountid',
+        self::RES_VOIP_ACCOUNT_NUMBER => 'voipnumberid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
@@ -523,8 +538,6 @@ class SYSLOG
             case 'type':
                 if ($data['resource'] == self::RES_CUST) {
                     $data['value'] = empty($data['value']) ? trans('private person') : trans('legal entity');
-                } else {
-                    $data['value'] = $data['value'];
                 }
                 break;
             case 'ipaddr':
@@ -547,15 +560,14 @@ class SYSLOG
             case 'status':
                 if ($data['resource'] == self::RES_CUST) {
                     $data['value'] = $CSTATUSES[$data['value']]['singularlabel'];
-                } else {
-                    $data['value'] = $data['value'];
                 }
+                break;
+            case 'twofactorauthsecretkey':
+                $data['value'] = '***';
                 break;
             default:
                 if (strpos($data['name'], 'chkconsent') === 0) {
                     $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
-                } else {
-                    $data['value'] = $data['value'];
                 }
         }
         if ($data['resource'] != self::RES_USER && strlen($data['value']) > 50) {
@@ -737,6 +749,9 @@ class SYSLOG
         if ($keysArray != null && is_array($keysArray)) {
             foreach ($keysArray as $key => $value) {
                 self::$resource_keys[$key] = $value;
+                if (isset($value)) {
+                    self::$resourceKeyByName[$value] = $key;
+                }
             }
         }
     }

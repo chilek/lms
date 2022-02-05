@@ -134,15 +134,15 @@ if ($only_due) {
 }
 
 if ($excluded_customergroups ne '') {
-    $filter = $filter . " AND (SELECT count(*) FROM customerassignments
-                                WHERE customerassignments.customerid = customers.id
-                                  AND customerassignments.customergroupid IN ($excluded_customergroups)) = 0";
+    $filter = $filter . " AND (SELECT count(*) FROM vcustomerassignments
+                                WHERE vcustomerassignments.customerid = customers.id
+                                  AND vcustomerassignments.customergroupid IN ($excluded_customergroups)) = 0";
 }
 
 if ($customergroups ne '') {
-    $filter = $filter . " AND (SELECT count(*) FROM customerassignments
-                                WHERE customerassignments.customerid = customers.id
-                                  AND customerassignments.customergroupid IN ($customergroups)) > 0";
+    $filter = $filter . " AND (SELECT count(*) FROM vcustomerassignments
+                                WHERE vcustomerassignments.customerid = customers.id
+                                  AND vcustomerassignments.customergroupid IN ($customergroups)) > 0";
 }
 
 my $dbq = $dbase->prepare("
@@ -164,22 +164,22 @@ while (my $row = $dbq->fetchrow_hashref())
 	{
 		print STDOUT "$row->{'lastname'} $row->{'name'} ($row->{'id'})\t$row->{'balance'}\n";
 	}
-	
+
 	my $sdbq = $dbase->prepare("UPDATE nodes SET access=0, warning=1 WHERE ownerid='$row->{'id'}'");
 	$sdbq->execute();
-		
+
 	if($message)
 	{
 		$absolute = -1 * $row->{'balance'};
 		$message =~ s/%b/$absolute/g;
 		$message =~ s/%B/$row->{'balance'}/g;
-		
+
 		$sdbq = $dbase->prepare("UPDATE customers SET message=? WHERE id=?");
 		$sdbq->execute($message, $row->{'id'});
-		
+
 		$message = $keepmessage;
 	}
-	
+
 	$sdbq->finish();
 }
 

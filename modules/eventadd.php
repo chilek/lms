@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,13 +41,26 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 }
 
 $userlist = $LMS->GetUserNames();
-unset($userlist['total']);
+
+if ($SESSION->is_set('backto', true)) {
+    $backto = $SESSION->get('backto', true);
+} elseif ($SESSION->is_set('backto')) {
+    $backto = $SESSION->get('backto');
+} else {
+    $backto = 'm=eventlist';
+}
+if (preg_match('/m=rtticketview/', $backto)) {
+    $backid = '';
+} else {
+    $backid = $SESSION->get('backid');
+}
+$backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
     if (!isset($event['usergroup'])) {
-        $event['usergroup'] = 0;
+        $event['usergroup'] = -2;
     }
 //  $SESSION->save('eventgid', $event['usergroup']);
 
@@ -74,6 +87,28 @@ if (isset($_POST['event'])) {
                 $error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
             } else {
                 $begintime = datetime_to_timestamp($event['begin']) - $date;
+            }
+        }
+
+        if (!empty($date)) {
+            $allow_past_events = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'));
+            if (!$allow_past_events && $date + $begintime < time()) {
+                $error['begin'] = trans('Events which begin in the past are not allowed!');
+            }
+
+            $distant_event_day_trigger = intval(ConfigHelper::getConfig('phpui.timetable_distant_event_day_trigger', 0, true));
+            $distant_event_restriction = ConfigHelper::getConfig('phpui.timetable_distant_event_restriction', 'none', true);
+            if ($distant_event_restriction != 'none' && $distant_event_day_trigger && $date >= time() + $distant_event_day_trigger * 86400) {
+                switch ($distant_event_restriction) {
+                    case 'error':
+                        $error['begin'] = trans('Event too distant in time!');
+                        break;
+                    case 'warning':
+                        if (!isset($warnings['event-begin-'])) {
+                            $warning['event[begin]'] = trans('Event too distant in time!');
+                        }
+                        break;
+                }
             }
         }
     }
@@ -116,8 +151,9 @@ if (isset($_POST['event'])) {
             'endtime' => $endtime,
             'users' => $event['userlist'],
         )))) {
-        $users = array_map(function ($userid) use ($userlist) {
-                return $userlist[$userid]['rname'];
+        $users_by_id = Utils::array_column($userlist, 'rname', 'id');
+        $users = array_map(function ($userid) use ($users_by_id) {
+                return $users_by_id[$userid];
         }, $users);
         $error['begin'] = $error['end'] =
             trans(
@@ -185,7 +221,7 @@ if (isset($_POST['event'])) {
     $ticket = $hook_data['ticket'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
         $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
@@ -278,10 +314,22 @@ if (isset($_POST['event'])) {
                         if (isset($event['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
                             && !empty($emails)) {
                             $custmail_subject = $queuedata['newticketsubject'];
-                            $custmail_subject = str_replace('%tid', $id, $custmail_subject);
+                            $custmail_subject = preg_replace_callback(
+                                '/%(\\d*)tid/',
+                                function ($m) use ($id) {
+                                    return sprintf('%0' . $m[1] . 'd', $id);
+                                },
+                                $custmail_subject
+                            );
                             $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
                             $custmail_body = $queuedata['newticketbody'];
-                            $custmail_body = str_replace('%tid', $id, $custmail_body);
+                            $custmail_body = preg_replace_callback(
+                                '/%(\\d*)tid/',
+                                function ($m) use ($id) {
+                                    return sprintf('%0' . $m[1] . 'd', $id);
+                                },
+                                $custmail_body
+                            );
                             $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
                             $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                             $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
@@ -351,13 +399,7 @@ if (isset($_POST['event'])) {
         $ticket = $hook_data['ticket'];
 
         if (!isset($event['reuse'])) {
-            $backto = $SESSION->get('backto');
-            if (isset($backto) && preg_match('/m=rtticketview/', $backto)) {
-                $SESSION->redirect('?' . $backto);
-            } else {
-                $SESSION->redirect('?m=eventlist'
-                    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-            }
+            $SESSION->redirect($backurl);
         }
 
         unset($event['title']);
@@ -401,6 +443,8 @@ if (isset($_POST['event'])) {
     if (!isset($eventticketid)) {
         $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment') ? 'new' : 'none';
     }
+
+    $SMARTY->assign('backurl', $backurl);
 }
 
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
@@ -488,7 +532,7 @@ if (isset($eventticketid)) {
     $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
     $event['customername'] = $event['ticket']['customername'];
-    if (ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event', 'false')) {
+    if (ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event')) {
         $event['title'] = $event['ticket']['name'];
         $message = $LMS->GetFirstMessage($event['ticketid']);
         $event['description'] = $message['body'];

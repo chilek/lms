@@ -25,13 +25,14 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'section:' => 's:',
     'import-file:' => 'f:',
 );
 
@@ -84,6 +85,8 @@ lms-cashimport.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 -f, --import-file               cash import file name from which import contents is read
                                 (stdin if not specifed)
 
@@ -136,7 +139,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -163,6 +166,9 @@ $SYSLOG = SYSLOG::getInstance();
 
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section'] : 'cashimport';
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
@@ -195,7 +201,8 @@ $error = $LMS->CashImportParseFile(
     file_get_contents($import_file),
     $patterns,
     $quiet,
-    ConfigHelper::checkConfig('cashimport.use_file_date') ? $filemtime : null
+    ConfigHelper::checkConfig($config_section . '.use_file_date') ? $filemtime : null,
+    $config_section
 );
 
 if (!$quiet && !empty($error)) {
@@ -212,6 +219,6 @@ if (!$quiet && !empty($error)) {
     }
 }
 
-if (ConfigHelper::checkConfig('cashimport.autocommit')) {
+if (ConfigHelper::checkConfig($config_section . '.autocommit')) {
     $LMS->CashImportCommit();
 }

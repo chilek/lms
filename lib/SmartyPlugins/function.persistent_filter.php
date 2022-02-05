@@ -28,6 +28,7 @@ function smarty_function_persistent_filter($params, $template)
 {
     $layout = $template->getTemplateVars('layout');
     $filter_id = isset($params['id']) ? $params['id'] : null;
+    $form = isset($params['form']) ? $params['form'] : null;
 
     $persistent_filters = $template->getTemplateVars('persistent_filters');
     $persistent_filter = $template->getTemplateVars('persistent_filter');
@@ -38,21 +39,23 @@ function smarty_function_persistent_filter($params, $template)
         $persistent_filter = $filter[$filter_id]['persistent_filter'];
     }
 
+    $filters = '';
+
     if (!empty($persistent_filters) && is_array($persistent_filters)) {
         foreach ($persistent_filters as $key => $row) {
             $text[$key] = $row['text'];
         }
         array_multisort($text, SORT_ASC, $persistent_filters);
-    }
 
-    $filters = '';
-    foreach ($persistent_filters as $filter) {
-        $filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
-            . '>' . $filter['text'] . '</option >';
+        foreach ($persistent_filters as $filter) {
+            $filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
+                . '>' . $filter['text'] . '</option >';
+        }
     }
 
     return '
-		<div class="lms-ui-persistent-filter"' . (isset($filter_id) ? ' data-filter-id="' . $filter_id . '"' : '') . '>
+		<div class="lms-ui-persistent-filter"' . (isset($filter_id) ? ' data-filter-id="' . $filter_id . '"' : '')
+            . (isset($form) ? ' form="' . $form . '"' : '') . '>
 			<select class="lms-ui-filter-selection lms-ui-combobox" title="' . trans("<!filter>Select filter") . '">
 				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '

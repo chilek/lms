@@ -27,14 +27,15 @@ $maction = ($_GET['maction']);
 $taction = ($_GET['taction']);
 $qaction = ($_GET['qaction']);
 
+$rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+
 if ($maction == 'delperm') {
     $msg = intval($_GET['id']);
     $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
 
     if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $msg) {
-        $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-        if (!empty($mail_dir)) {
-            rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticket, $msg));
+        if (!empty($rt_dir)) {
+            rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticket, $msg));
         }
 
         $DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($msg));
@@ -49,10 +50,9 @@ if ($taction == 'delperm') {
     $queue = $LMS->GetQueueByTicketId($ticket);
     $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
     //HINT: We delete messages connected with deleted ticket in database (ON DELETE CASCADE mechanism)
-    
-    $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-    if (!empty($mail_dir)) {
-        rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
+
+    if (!empty($et_dir)) {
+        rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
     }
 
     $SESSION->redirect('?m=rtqueueview'
@@ -63,12 +63,11 @@ if ($qaction == 'delperm') {
     $queue = intval($_GET['id']);
     $ticket = $DB->GetOne('SELECT id FROM rttickets WHERE queueid = ?', array($queue));
 
-    $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-    if (!empty($mail_dir)) {
+    if (!empty($rt_dir)) {
         // remove attachment files
         if ($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue))) {
             foreach ($tickets as $ticket) {
-                rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
+                rrmdir($rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
             }
         }
     }

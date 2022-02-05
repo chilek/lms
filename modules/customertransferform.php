@@ -49,7 +49,7 @@ if ($type == LMSTcpdfTransferForm::VALUE_ASSIGNMENTS) {
     $form_translateY = 25;
     $currency_assignments_count = count($currency_assignments);
     foreach ($currency_assignments as $cakey => $currency_assignment) {
-        $tranferform_custom_data['value'] = trim($currency_assignment['sum']);
+        $tranferform_custom_data['value'] = f_round($currency_assignment['sum']);
         $tranferform_custom_data['currency'] = $cakey;
         $tranferform_data = $transferform->SetCustomData($tranferform_common_data, $tranferform_custom_data);
 
@@ -71,10 +71,10 @@ if ($type == LMSTcpdfTransferForm::VALUE_ASSIGNMENTS) {
 } else {
     switch ($type) {
         case LMSTcpdfTransferForm::VALUE_BALANCE:
-            $payment_value = trim($tranferform_common_data['customerinfo']['balance'] * -1);
+            $payment_value = f_round($tranferform_common_data['customerinfo']['balance'] * -1);
             break;
         case LMSTcpdfTransferForm::VALUE_CUSTOM:
-            $payment_value = isset($value) ? $value : 0;
+            $payment_value = isset($value) ? f_round($value) : 0;
             break;
         default:
             $payment_value = 0;

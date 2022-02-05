@@ -26,12 +26,11 @@
 
 function module_main()
 {
-    global $SESSION;
+    global $SESSION, $LMS;
 
     $op = isset($_GET['op']) ? $_GET['op'] : '';
 
     $DB = LMSDB::getInstance();
-    $LMS = LMS::getInstance();
     $SMARTY = LMSSmarty::getInstance();
 
     $sms_contacts = $LMS->GetCustomerContacts($SESSION->id, CONTACT_MOBILE);
@@ -68,45 +67,52 @@ function module_main()
         )) {
             if (isset($_GET['smsauth'])) {
                 if ($sms_active) {
+                    $errors = array();
+                    $info = array();
+
+                    header('Content-Type: application/json');
+
                     if (isset($_GET['send'])) {
-                        if (!isset($_SESSION['session_smsauthcode']) || time() - $_SESSION['session_smsauthcode_timestamp'] > 60) {
-                            $_SESSION['session_smsauthcode'] = $sms_authcode = strval(rand(10000000, 99999999));
-                            $_SESSION['session_smsauthcode_timestamp'] = time();
+                        if (!$SESSION->is_set('smsauthcode') || time() - $SESSION->get('smsauthcode_timestamp') > 60) {
+                            $sms_authcode = strval(rand(10000000, 99999999));
+                            $SESSION->save('smsauthcode', $sms_authcode);
+                            $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
-                            $error = array();
                             foreach ($sms_recipients as $sms_recipient) {
                                 $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
-                                if (is_string($res)) {
-                                    $error[] = $res;
+                                if ($res['status'] == MSG_ERROR) {
+                                    $errors = array_merge($errors, $res['errors']);
                                 }
                             }
-                            if ($error) {
-                                echo implode('<br>', $error);
-                            }
                         } else {
-                            if (isset($_SESSION['session_smsauthcode'])) {
-                                echo trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
+                            if ($SESSION->is_set('smsauthcode')) {
+                                $errors[] = trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
                             } else {
-                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+                                $SESSION->remove('smsauthcode');
+                                $SESSION->remove('smsauthcode_timestamp');
                             }
                         }
                     } elseif (isset($_GET['check'])) {
-                        if (isset($_SESSION['session_smsauthcode']) && time() - $_SESSION['session_smsauthcode_timestamp'] < 5 * 60) {
-                            if ($_POST['code'] == $_SESSION['session_smsauthcode']) {
-                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+                        if ($SESSION->is_set('smsauthcode') && time() - $SESSION->get('smsauthcode_timestamp') < 5 * 60) {
+                            if (trim($_POST['code']) == $SESSION->get('smsauthcode')) {
+                                $SESSION->remove('smsauthcode');
+                                $SESSION->remove('smsauthcode_timestamp');
 
                                 // commit customer document only if it's owned by this customer
                                 // and is prepared for customer action
-                                $LMS->CommitDocuments(array($documentid));
+                                $result = $LMS->CommitDocuments(array($documentid), true);
+                                $errors = array_merge($errors, $result['errors']);
+                                $info = array_merge($info, $result['info']);
                             } else {
-                                echo trans('Authorization code you entered is invalid!');
+                                $errors[] = trans('Authorization code you entered is invalid!');
                             }
                         } else {
-                            echo trans('Your authorization code has expired! Try again in a moment.');
+                            $errors[] = trans('Your authorization code has expired! Try again in a moment.');
                         }
                     }
                 }
-                die;
+                $SESSION->close();
+                die(json_encode(compact('errors', 'info')));
             } elseif ($scan_active) {
                 $files = array();
                 $error = null;
@@ -286,7 +292,16 @@ function module_main()
             }
         }
     } else {
-        $documentid = 0;
+        if (isset($_GET['documentid'])) {
+            $documentid = intval($_GET['documentid']);
+        } else {
+            $documentid = 0;
+        }
+    }
+
+    $allowed_document_types = ConfigHelper::getConfig('userpanel.allowed_document_types');
+    if (!empty($allowed_document_types)) {
+        $allowed_document_types = Utils::filterIntegers(explode(',', $allowed_document_types));
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
@@ -298,6 +313,7 @@ function module_main()
             . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only')
                 ? ' AND (d.closed > 0 OR d.confirmdate >= ?NOW? OR d.confirmdate = -1)': '')
             . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
+            . ($allowed_document_types ? ' AND d.type IN (' . implode(',', $allowed_document_types) . ')' : '')
             . ' ORDER BY cdate', array($SESSION->id));
 
     if (!empty($documents)) {
@@ -348,11 +364,19 @@ if (defined('USERPANEL_SETUPMODE')) {
     {
         $SMARTY = LMSSmarty::getInstance();
 
+        $allowed_document_types = ConfigHelper::getConfig('userpanel.allowed_document_types');
+        if (empty($allowed_document_types)) {
+            $allowed_document_types = array();
+        } else {
+            $allowed_document_types = explode(',', $allowed_document_types);
+            $allowed_document_types = array_combine($allowed_document_types, $allowed_document_types);
+        }
         $SMARTY->assign(
             'moduleconfig',
             array(
                 'hide_documentbox' => ConfigHelper::getConfig('userpanel.hide_documentbox'),
                 'show_confirmed_documents_only' => ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'),
+                'allowed_document_types' => $allowed_document_types,
                 'hide_archived_documents' => ConfigHelper::checkConfig('userpanel.hide_archived_documents'),
                 'document_notification_mail_dsn_address' =>
                     ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true),
@@ -364,6 +388,14 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', '', true),
                 'document_notification_mail_reply_address' =>
                     ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true),
+                'new_document_customer_notification_mail_format' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_format', 'text'),
+                'new_document_customer_notification_mail_subject' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_subject', '', true),
+                'new_document_customer_notification_mail_body' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_mail_body', '', true),
+                'new_document_customer_notification_sms_body' =>
+                    ConfigHelper::getConfig('userpanel.new_document_customer_notification_sms_body', '', true),
                 'signed_document_scan_operator_notification_mail_recipient' =>
                     ConfigHelper::getConfig('userpanel.signed_document_scan_operator_notification_mail_recipient', '', true),
                 'signed_document_scan_operator_notification_mail_format' =>
@@ -378,12 +410,22 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_subject', '', true),
                 'signed_document_scan_customer_notification_mail_body' =>
                     ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_body', '', true),
+                'document_approval_operator_notification_mail_recipient' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_recipient', '', true),
+                'document_approval_operator_notification_mail_format' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_format', 'text'),
+                'document_approval_operator_notification_mail_subject' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_subject', '', true),
+                'document_approval_operator_notification_mail_body' =>
+                    ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_body', '', true),
                 'document_approval_customer_notification_mail_format' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text'),
                 'document_approval_customer_notification_mail_subject' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject', '', true),
                 'document_approval_customer_notification_mail_body' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body', '', true),
+                'document_approval_customer_notification_attachments' =>
+                    ConfigHelper::checkConfig('userpanel.document_approval_customer_notification_attachments'),
                 'document_approval_customer_onetime_password_sms_body' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_onetime_password_sms_body', '', true),
             )
@@ -403,12 +445,17 @@ if (defined('USERPANEL_SETUPMODE')) {
         $variables = array(
             'hide_documentbox' => CONFIG_TYPE_BOOLEAN,
             'show_confirmed_documents_only' => CONFIG_TYPE_BOOLEAN,
+            'allowed_document_types' => CONFIG_TYPE_AUTO,
             'hide_archived_documents' => CONFIG_TYPE_BOOLEAN,
             'document_notification_mail_dsn_address' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_mdn_address' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_sender_name' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_sender_address' => CONFIG_TYPE_RICHTEXT,
             'document_notification_mail_reply_address' => CONFIG_TYPE_RICHTEXT,
+            'new_document_customer_notification_mail_format' => CONFIG_TYPE_NONE,
+            'new_document_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
+            'new_document_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'new_document_customer_notification_sms_body' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
@@ -416,9 +463,14 @@ if (defined('USERPANEL_SETUPMODE')) {
             'signed_document_scan_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_operator_notification_mail_recipient' => CONFIG_TYPE_EMAIL,
+            'document_approval_operator_notification_mail_format' => CONFIG_TYPE_NONE,
+            'document_approval_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_operator_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'document_approval_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_customer_notification_attachments' => CONFIG_TYPE_BOOLEAN,
             'document_approval_customer_onetime_password_sms_body' => CONFIG_TYPE_RICHTEXT,
         );
 
@@ -431,6 +483,16 @@ if (defined('USERPANEL_SETUPMODE')) {
                     break;
                 case CONFIG_TYPE_RICHTEXT:
                     $value = $moduleconfig[$variable];
+                    break;
+                case CONFIG_TYPE_AUTO:
+                    if (empty($moduleconfig['allowed_document_types'])) {
+                        $value = '';
+                    } else {
+                        $value = implode(',', $moduleconfig['allowed_document_types']);
+                    }
+                    break;
+                case CONFIG_TYPE_EMAIL:
+                    $value = check_email($moduleconfig[$variable]) ? $moduleconfig[$variable] : '';
                     break;
                 case CONFIG_TYPE_NONE:
                     $mail_format = str_replace('_mail_format', '_mail_body', $variable);

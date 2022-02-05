@@ -40,7 +40,7 @@
 						<SELECT size="1" name="customerassignments[membersnetid]" onchange="javascript:changeMembersNetwork();">
 						 	<OPTION value="0" {if !$membersnetid}selected{/if}>{trans("- all networks -")}</OPTION>
 							{section name=networks loop=$networks}
-							<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $membersnetid}selected{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+							<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $membersnetid}selected{/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 							{/section}
 						</SELECT>&nbsp;
 					</TD>
@@ -53,7 +53,7 @@
 						<SELECT size="20" name="customerassignments[gmcustomerid][]" multiple>
 							{section name=customer loop=$customergroup.customers}
 							<OPTION value="{$customergroup.customers[customer].id}">
-							{$customergroup.customers[customer].customername|truncate:40:"...":true} ({$customergroup.customers[customer].id|string_format:"%04d"})
+							{$customergroup.customers[customer].customername|truncate:40:"&hellip;":true} ({$customergroup.customers[customer].id|string_format:"%04d"})
 							</OPTION>
 							{/section}
 						</SELECT>
@@ -90,7 +90,7 @@
 						<SELECT size="1" name="customerassignments[othersnetid]" onchange="javascript:changeOthersNetwork();">
 							<OPTION value="0" {if !$othersnetid}selected{/if}>{trans("- all networks -")}</OPTION>
 							{section name=networks loop=$networks}
-							<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $othersnetid}selected{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+							<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $othersnetid}selected{/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 							{/section}
 						</SELECT>&nbsp;
 					</TD>
@@ -103,7 +103,7 @@
 						<SELECT size="20" name="customerassignments[mcustomerid][]" multiple>
 							{section name=customer loop=$customers}
 							<OPTION value="{$customers[customer].id}">
-							{$customers[customer].customername|truncate:40:"...":true} ({$customers[customer].id|string_format:"%04d"})
+							{$customers[customer].customername|truncate:40:"&hellip;":true} ({$customers[customer].id|string_format:"%04d"})
 							</OPTION>
 							{/section}
 						</SELECT>

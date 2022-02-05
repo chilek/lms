@@ -71,13 +71,13 @@
                 <div class="lms-ui-tab-table-column buttons">
                     {if count($container.images)}
                         {button type="link" icon="gallery" class="container-gallery" tip="Attachment gallery"
-                            data_gallery="{json_encode($container.images)}"}
+                            data_gallery="{base64_encode(json_encode($container.images))}"}
                     {/if}
                     {button type="link" href="#" class="container-edit" icon="edit" tip="Edit"}
                     {button type="link" href="#" class="container-save" icon="save" tip="Save"}
                     {button type="link" href="#" class="container-cancel" icon="cancel" tip="Cancel"}
                     {button type="link" href="?m=attachments&attachmentaction=downloadzippedcontainer&type={$attachmenttype}&id={$container.id}"
-                        icon="fileupload" tip="Download file container as zip archive"}
+                        icon="download" tip="Download file container as zip archive"}
                     {button class="container-del" type="link" href="?m=attachments&attachmentaction=deletecontainer&type={$attachmenttype}&id={$container.id}{if isset($restore)}&restore=1&resourceid={$attachmentresourceid}{/if}"
                         icon="delete" tip="Delete file container"}
                     <a href="#" class="toggle-file-list" data-container-id="{$container.id}" title="{trans("Show file list")}">
@@ -114,7 +114,7 @@
                 {if count($images)}
                     {tab_buttons}
                         {button icon="gallery" class="container-gallery" label="Attachment gallery"
-                            data_gallery="{json_encode($images)}"}
+                            data_gallery="{base64_encode(json_encode($images))}"}
                     {/tab_buttons}
                 {/if}
             {/tab_button_panel}

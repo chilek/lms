@@ -3,7 +3,7 @@
 /**
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,22 @@
  *  $Id$
  */
 
+use GusApi\GusApi;
+use GusApi\RegonConstantsInterface;
+use GusApi\Exception\InvalidUserKeyException;
+use GusApi\ReportTypes;
+use GusApi\ReportTypeMapper;
+
 class Utils
 {
+    const GUS_REGON_API_RESULT_BAD_KEY = 1;
+    const GUS_REGON_API_RESULT_NO_DATA = 2;
+    const GUS_REGON_API_RESULT_AMBIGUOUS = 3;
+
+    const GUS_REGON_API_SEARCH_TYPE_TEN = 1;
+    const GUS_REGON_API_SEARCH_TYPE_REGON = 2;
+    const GUS_REGON_API_SEARCH_TYPE_RBE = 3;
+
     public static function filterIntegers(array $params)
     {
         return array_filter($params, function ($value) {
@@ -55,17 +69,33 @@ class Utils
 
     public static function array_column(array $array, $column_key, $index_key = null)
     {
-        if (!is_array($array) || empty($column_key)) {
+        if (!is_array($array)) {
             return $array;
         }
         $result = array();
         foreach ($array as $idx => $item) {
             if (isset($index_key)) {
-                $result[$item[$index_key]] = $item[$column_key];
+                $result[$item[$index_key]] = empty($column_key) ? $item : $item[$column_key];
             } else {
-                $result[$idx] = $item[$column_key];
+                $result[$idx] = empty($column_key) ? $item : $item[$column_key];
             }
         }
+        return $result;
+    }
+
+    public static function array_keys_add_prefix(array $array)
+    {
+        if (!is_array($array)) {
+            return $array;
+        }
+        $result = array();
+
+        function addkeyprefix($k)
+        {
+            return 'old_'.$k;
+        }
+
+        $result = array_combine(array_map('addkeyprefix', array_keys($array)), $array);
         return $result;
     }
 
@@ -135,6 +165,9 @@ class Utils
             if ($mask == '') {
                 $mask = '255.255.255.255';
             } elseif (is_numeric($mask)) {
+                if ($mask == '0') {
+                    return true;
+                }
                 $mask = prefix2mask($mask);
             }
 
@@ -304,5 +337,455 @@ class Utils
             $date = strtotime('+1 day', $date);
             list ($year, $weekday) = explode('/', date('Y/N', $date));
         }
+    }
+
+    public static function validateVat($trader_country, $trader_id, $requester_country, $requester_id)
+    {
+        static $vies = null;
+
+        $trader_id = strpos($trader_id, $trader_country) == 0
+            ? preg_replace('/^' . $trader_country . '/', '', $trader_id) : $trader_id;
+        $requester_id = strpos($requester_id, $requester_country) == 0
+            ? preg_replace('/^' . $requester_country . '/', '', $requester_id) : $requester_id;
+
+        if (!isset($vies)) {
+            $vies = new \DragonBe\Vies\Vies();
+            if (!$vies->getHeartBeat()->isAlive()) {
+                throw new Exception('VIES service is not available at the moment, please try again later.');
+            }
+        }
+
+        $vatResult = $vies->validateVat(
+            $trader_country,    // Trader country code
+            $trader_id,         // Trader VAT ID
+            $requester_country, // Requester country code
+            $requester_id       // Requester VAT ID
+        );
+
+        return $vatResult->isValid();
+    }
+
+    public static function validatePlVat($trader_country, $trader_id)
+    {
+        static $curl = null;
+
+        if (!isset($curl)) {
+            if (!function_exists('curl_init')) {
+                throw new Exception(trans('Curl extension not loaded!'));
+            }
+            $curl = curl_init();
+        }
+
+        $trader_id = strpos($trader_id, $trader_country) == 0
+            ? preg_replace('/^' . $trader_country . '/', '', $trader_id) : $trader_id;
+
+        curl_setopt($curl, CURLOPT_URL, 'https://wl-api.mf.gov.pl/api/search/nip/' . $trader_id . '?date=' . date('Y-m-d'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json'));
+
+        $result = curl_exec($curl);
+        if (curl_error($curl)) {
+            throw new Exception('Communication error: ' . curl_error($curl));
+        }
+
+/*
+        $info = curl_getinfo($curl);
+        if ($info['http_code'] != '200') {
+            throw new Exception('Communication error. Http code: ' . $info['http_code']);
+        }
+*/
+
+        if (empty($result)) {
+            return false;
+        }
+
+        $result = json_decode($result, true);
+        if (empty($result) || !isset($result['result']['subject']['statusVat'])) {
+            return false;
+        }
+
+        return $result['result']['subject']['statusVat'] == 'Czynny';
+    }
+
+    public static function determineAllowedCustomerStatus($value, $default = null)
+    {
+        global $CSTATUSES;
+
+        if (!empty($value)) {
+            $value = preg_replace('/\s+/', ',', $value);
+            $value = preg_split('/\s*[,;]\s*/', $value, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if (empty($value)) {
+            if (empty($default) || !is_array($default)) {
+                if ($default === -1) {
+                    return null;
+                } else {
+                    return array(
+                        CSTATUS_CONNECTED,
+                        CSTATUS_DEBT_COLLECTION,
+                    );
+                }
+            } else {
+                return $default;
+            }
+        } else {
+            $all_statuses = self::array_column($CSTATUSES, 'alias');
+
+            $normal = array();
+            $negated = array();
+            foreach ($value as $status) {
+                if (strpos($status, '!') === 0) {
+                    $negated[] = substr($status, 1);
+                } else {
+                    $normal[] = $status;
+                }
+            }
+
+            if (empty($normal)) {
+                $statuses = array_diff($all_statuses, $negated);
+            } else {
+                $statuses = array_diff(array_intersect($all_statuses, $normal), $negated);
+            }
+            if (empty($statuses)) {
+                return array(
+                    CSTATUS_CONNECTED,
+                    CSTATUS_DEBT_COLLECTION,
+                );
+            }
+
+            return array_keys($statuses);
+        }
+    }
+
+    public static function removeInsecureHtml($html)
+    {
+        static $hm_purifier;
+        if (!isset($hm_purifier)) {
+            $hm_config = HTMLPurifier_Config::createDefault();
+            $hm_config->set('URI.AllowedSchemes', array(
+                'http' => true,
+                'https' => true,
+                'mailto' => true,
+                'ftp' => true,
+                'nntp' => true,
+                'news' => true,
+                'tel' => true,
+                'data' => true,
+            ));
+            $hm_config->set('CSS.MaxImgLength', null);
+            $hm_config->set('HTML.MaxImgLength', null);
+            if (defined('CACHE_DIR')) {
+                $hm_config->set('Cache.SerializerPath', CACHE_DIR . DIRECTORY_SEPARATOR . 'htmlpurifier');
+            }
+            $hm_purifier = new HTMLPurifier($hm_config);
+        }
+
+        return $hm_purifier->purify($html);
+    }
+
+    public static function getGusRegonData($type, $id)
+    {
+        global $LMS;
+
+        static $gus = null;
+
+        if (!isset($gus)) {
+            $apikey = ConfigHelper::getConfig('phpui.gusapi_key', 'abcde12345abcde12345');
+            if ($apikey == 'abcde12345abcde12345') {
+                $env = 'dev';
+            } else {
+                $env = 'prod';
+            }
+
+            $gus = new GusApi(
+                $apikey, // your user key / twój klucz użytkownika
+                $env
+            );
+
+            try {
+                if (!$gus->login()) {
+                    throw new Exception(trans('Bad REGON API user key'));
+                }
+            } catch (InvalidUserKeyException $e) {
+                return self::GUS_REGON_API_RESULT_BAD_KEY;
+            } catch (\GusApi\Exception\NotFoundException $e) {
+                return self::GUS_REGON_API_RESULT_NO_DATA;
+            } catch (Exception $e) {
+                return self::GUS_REGON_API_RESULT_UNKNOWN_ERROR;
+            }
+        }
+
+        try {
+            switch ($type) {
+                case self::GUS_REGON_API_SEARCH_TYPE_TEN:
+                    $gusReports = $gus->getByNip(preg_replace('/[^a-z0-9]/i', '', $id));
+                    break;
+                case self::GUS_REGON_API_SEARCH_TYPE_RBE:
+                case self::GUS_REGON_API_SEARCH_TYPE_REGON:
+                    $gusReports = $gus->getByRegon($id);
+                    break;
+                default:
+                    throw new Exception(trans('Unsupported resource type'));
+            }
+
+            $results = array();
+
+            foreach ($gusReports as $gusReport) {
+                $personType = $gusReport->getType();
+
+                if ($personType == \GusApi\SearchReport::TYPE_JURIDICAL_PERSON) {
+                    $fullReport = $gus->getFullReport(
+                        $gusReport,
+                        ReportTypes::REPORT_ORGANIZATION
+                    );
+
+                    $report = reset($fullReport);
+
+                    $details = array(
+                        'lastname' => $report['praw_nazwa'],
+                        'name' => '',
+                        'rbename' => $report['praw_organRejestrowy_Nazwa'],
+                        'rbe' => $report['praw_numerWRejestrzeEwidencji'],
+                        'regon' => array_key_exists('praw_regon9', $report)
+                            ? $report['praw_regon9']
+                            : $report['praw_regon14'],
+                        'ten' => $report['praw_nip'],
+                        'addresses' => array(),
+                    );
+
+                    $addresses = array();
+
+                    $terc = $report['praw_adSiedzWojewodztwo_Symbol']
+                        . $report['praw_adSiedzPowiat_Symbol']
+                        . $report['praw_adSiedzGmina_Symbol'];
+                    $simc = $report['praw_adSiedzMiejscowosc_Symbol'];
+                    $ulic = $report['praw_adSiedzUlica_Symbol'];
+                    $location = $LMS->TerytToLocation($terc, $simc, $ulic);
+
+                    $addresses[] = array(
+                        'location_state_name' => mb_strtolower($report['praw_adSiedzWojewodztwo_Nazwa']),
+                        'location_city_name' => $report['praw_adSiedzMiejscowosc_Nazwa'],
+                        'location_street_name' => $report['praw_adSiedzUlica_Nazwa'],
+                        'location_house' => $report['praw_adSiedzNumerNieruchomosci'],
+                        'location_flat' => $report['praw_adSiedzNumerLokalu'],
+                        'location_zip' => preg_replace(
+                            '/^([0-9]{2})([0-9]{3})$/',
+                            '$1-$2',
+                            $report['praw_adSiedzKodPocztowy']
+                        ),
+                        'location_postoffice' => $report['praw_adSiedzMiejscowoscPoczty_Nazwa']
+                        == $report['praw_adSiedzMiejscowosc_Nazwa'] ? ''
+                            : $report['praw_adSiedzMiejscowoscPoczty_Nazwa'],
+                        'location_state' => empty($location) ? 0 : $location['location_state'],
+                        'location_city' => empty($location) ? 0 : $location['location_city'],
+                        'location_street' => empty($location) ? 0 : $location['location_street'],
+                    );
+
+                    $details['addresses'] = $addresses;
+
+                    $results[] = $details;
+
+                    $locals = $gus->getFullReport(
+                        $gusReport,
+                        ReportTypes::REPORT_ORGANIZATION_LOCALS
+                    );
+                    if (count($locals) >= 1 && !isset($locals[0]['ErrorCode'])) {
+                        foreach ($locals as $local) {
+                            if (!empty($local['lokpraw_dataZakonczeniaDzialalnosci']) && strtotime($local['lokpraw_dataZakonczeniaDzialalnosci']) < time()
+                                || !empty($local['lokpraw_dataSkresleniaZRegon']) && strtotime($local['lokpraw_dataSkresleniaZRegon']) < time()) {
+                                continue;
+                            }
+
+                            $details['lastname'] = empty($local['lokpraw_nazwa']) ? $report['praw_nazwa'] : $local['lokpraw_nazwa'];
+                            $details['regon'] = empty($local['lokpraw_regon14'])
+                                ? (array_key_exists('praw_regon9', $report) ? $report['praw_regon9'] : $report['praw_regon14'])
+                                : $local['lokpraw_regon14'];
+
+                            $details['addresses'] = array();
+                            $addresses = array();
+
+                            $terc = $local['lokpraw_adSiedzWojewodztwo_Symbol']
+                                . $local['lokpraw_adSiedzPowiat_Symbol']
+                                . $local['lokpraw_adSiedzGmina_Symbol'];
+                            $simc = $local['lokpraw_adSiedzMiejscowosc_Symbol'];
+                            $ulic = $local['lokpraw_adSiedzUlica_Symbol'];
+                            $location = strlen($terc) ? $LMS->TerytToLocation($terc, $simc, $ulic) : null;
+
+                            $addresses[] = array(
+                                'location_state_name' => mb_strtolower($local['lokpraw_adSiedzWojewodztwo_Nazwa']),
+                                'location_city_name' => $local['lokpraw_adSiedzMiejscowosc_Nazwa'],
+                                'location_street_name' => $local['lokpraw_adSiedzUlica_Nazwa'],
+                                'location_house' => $local['lokpraw_adSiedzNumerNieruchomosci'],
+                                'location_flat' => $local['lokpraw_adSiedzNumerLokalu'],
+                                'location_zip' => preg_replace(
+                                    '/^([0-9]{2})([0-9]{3})$/',
+                                    '$1-$2',
+                                    $local['lokpraw_adSiedzKodPocztowy']
+                                ),
+                                'location_postoffice' => $local['lokpraw_adSiedzMiejscowoscPoczty_Nazwa']
+                                    == $local->dane['praw_adSiedzMiejscowosc_Nazwa'] ? ''
+                                        : $local['lokpraw_adSiedzMiejscowoscPoczty_Nazwa'],
+                                'location_state' => empty($location) ? 0 : $location['location_state'],
+                                'location_city' => empty($location) ? 0 : $location['location_city'],
+                                'location_street' => empty($location) ? 0 : $location['location_street'],
+                            );
+
+                            $details['addresses'] = $addresses;
+
+                            $results[] = $details;
+                        }
+                    }
+                } elseif ($personType == \GusApi\SearchReport::TYPE_NATURAL_PERSON) {
+                    $silo = $gusReport->getSilo();
+
+                    $siloMapper = array(
+                        1 => ReportTypes::REPORT_PERSON_CEIDG,
+                        2 => ReportTypes::REPORT_PERSON_AGRO,
+                        3 => ReportTypes::REPORT_PERSON_OTHER,
+                        4 => ReportTypes::REPORT_PERSON_DELETED_BEFORE_20141108,
+                    );
+
+                    if (!isset($siloMapper[$silo])) {
+                        die;
+                    }
+
+                    $fullReport = $gus->getFullReport(
+                        $gusReport,
+                        $siloMapper[$silo]
+                    );
+
+                    $report = reset($fullReport);
+
+                    $details = array(
+                        'lastname' => $report['fiz_nazwa'],
+                        'name' => '',
+                        'rbename' => $report['fizC_RodzajRejestru_Nazwa'],
+                        'rbe' => $report['fizC_numerwRejestrzeEwidencji'],
+                        'regon' => array_key_exists('fiz_regon9', $report)
+                            ? $report['fiz_regon9']
+                            : $report['fiz_regon14'],
+                        'addresses' => array(),
+                    );
+
+                    $personReports = $gus->getFullReport(
+                        $gusReport,
+                        \GusApi\ReportTypes::REPORT_PERSON
+                    );
+
+                    $personReport = reset($personReports);
+                    $details['ten'] = $personReport['fiz_nip'];
+
+                    $addresses = array();
+
+                    $terc = $report['fiz_adSiedzWojewodztwo_Symbol']
+                        . $report['fiz_adSiedzPowiat_Symbol']
+                        . $report['fiz_adSiedzGmina_Symbol'];
+                    $simc = $report['fiz_adSiedzMiejscowosc_Symbol'];
+                    $ulic = $report['fiz_adSiedzUlica_Symbol'];
+                    $location = strlen($terc) ? $LMS->TerytToLocation($terc, $simc, $ulic) : null;
+
+                    $addresses[] = array(
+                        'location_state_name' => mb_strtolower($report['fiz_adSiedzWojewodztwo_Nazwa']),
+                        'location_city_name' => $report['fiz_adSiedzMiejscowosc_Nazwa'],
+                        'location_street_name' => $report['fiz_adSiedzUlica_Nazwa'],
+                        'location_house' => $report['fiz_adSiedzNumerNieruchomosci'],
+                        'location_flat' => $report['fiz_adSiedzNumerLokalu'],
+                        'location_zip' => preg_replace(
+                            '/^([0-9]{2})([0-9]{3})$/',
+                            '$1-$2',
+                            $report['fiz_adSiedzKodPocztowy']
+                        ),
+                        'location_postoffice' => $report['fiz_adSiedzMiejscowoscPoczty_Nazwa']
+                        == $report->dane['adSiedzMiejscowosc_Nazwa'] ? ''
+                            : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
+                        'location_state' => empty($location) ? 0 : $location['location_state'],
+                        'location_city' => empty($location) ? 0 : $location['location_city'],
+                        'location_street' => empty($location) ? 0 : $location['location_street'],
+                    );
+
+                    $details['addresses'] = $addresses;
+
+                    $results[] = $details;
+
+                    if ($silo < 4) {
+                        $locals = $gus->getFullReport(
+                            $gusReport,
+                            ReportTypes::REPORT_PERSON_LOCALS
+                        );
+                        if (count($locals) >= 1 && !isset($locals[0]['ErrorCode'])) {
+                            foreach ($locals as $local) {
+                                if (!empty($local['lokfiz_dataZakonczeniaDzialalnosci']) && strtotime($local['lokfiz_dataZakonczeniaDzialalnosci']) < time()
+                                    || !empty($local['lokfiz_dataSkresleniaZRegon']) && strtotime($local['lokfiz_dataSkresleniaZRegon']) < time()) {
+                                    continue;
+                                }
+
+                                $details['lastname'] = empty($local['lokfiz_nazwa']) ? $report['fiz_nazwa'] : $local['lokfiz_nazwa'];
+                                $details['regon'] = empty($local['lokfiz_regon14'])
+                                    ? (array_key_exists('fiz_regon9', $report) ? $report['fiz_regon9'] : $report['fiz_regon14'])
+                                    : $local['lokfiz_regon14'];
+
+                                $details['addresses'] = array();
+                                $addresses = array();
+
+                                $terc = $local['lokfiz_adSiedzWojewodztwo_Symbol']
+                                    . $local['lokfiz_adSiedzPowiat_Symbol']
+                                    . $local['lokfiz_adSiedzGmina_Symbol'];
+                                $simc = $local['lokfiz_adSiedzMiejscowosc_Symbol'];
+                                $ulic = $local['lokfiz_adSiedzUlica_Symbol'];
+                                $location = strlen($terc) ? $LMS->TerytToLocation($terc, $simc, $ulic) : null;
+
+                                $addresses[] = array(
+                                    'location_state_name' => mb_strtolower($local['lokfiz_adSiedzWojewodztwo_Nazwa']),
+                                    'location_city_name' => $local['lokfiz_adSiedzMiejscowosc_Nazwa'],
+                                    'location_street_name' => $local['lokfiz_adSiedzUlica_Nazwa'],
+                                    'location_house' => $local['lokfiz_adSiedzNumerNieruchomosci'],
+                                    'location_flat' => $local['lokfiz_adSiedzNumerLokalu'],
+                                    'location_zip' => preg_replace(
+                                        '/^([0-9]{2})([0-9]{3})$/',
+                                        '$1-$2',
+                                        $local['lokfiz_adSiedzKodPocztowy']
+                                    ),
+                                    'location_postoffice' => $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa']
+                                        == $local->dane['fiz_adSiedzMiejscowosc_Nazwa'] ? ''
+                                            : $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa'],
+                                    'location_state' => empty($location) ? 0 : $location['location_state'],
+                                    'location_city' => empty($location) ? 0 : $location['location_city'],
+                                    'location_street' => empty($location) ? 0 : $location['location_street'],
+                                );
+
+                                $details['addresses'] = $addresses;
+
+                                $results[] = $details;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $results;
+        } catch (InvalidUserKeyException $e) {
+            return self::GUS_REGON_API_RESULT_BAD_KEY;
+        } catch (\GusApi\Exception\NotFoundException $e) {
+            return self::GUS_REGON_API_RESULT_NO_DATA;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public static function createCallPhoneUrl($phone)
+    {
+        static $call_phone_url = null;
+
+        if (!isset($call_phone_url)) {
+            $call_phone_url = ConfigHelper::getConfig('phpui.call_phone_url', '', true);
+        }
+
+        if (empty($call_phone_url)) {
+            return null;
+        }
+
+        $url = str_replace('%phone', $phone, $call_phone_url);
+        return '<a href="' . $url . '"><i class="lms-ui-icon-phone"></i></a>';
     }
 }

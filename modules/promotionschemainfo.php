@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,10 +25,16 @@
  */
 
 $schema = $DB->GetRow(
-    'SELECT s.*, p.id AS pid, p.name AS promotion
+    'SELECT
+        s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length, s.datefrom, s.dateto,
+        p.id AS pid, p.name AS promotion,
+        COUNT(a.id) AS assignments
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
-    WHERE s.id = ?',
+    LEFT JOIN assignments a ON a.promotionschemaid = s.id
+    WHERE s.id = ?
+    GROUP BY s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length,
+        p.id, p.name',
     array(intval($_GET['id']))
 );
 
@@ -58,12 +64,16 @@ $schema['periods'][] = trans('Months $a-', $mon);
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
-$schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
-    a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label
+$schema['tariffs'] = $DB->GetAll(
+    'SELECT t.name, t.value, t.type,
+        a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label,
+        t.flags
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)
     WHERE a.promotionschemaid = ?
-    ORDER BY a.orderid', array($schema['id']));
+    ORDER BY a.orderid',
+    array($schema['id'])
+);
 
 $users = $LMS->GetUserNamesIndexedById();
 
@@ -94,18 +104,21 @@ if (!empty($schema['tariffs'])) {
     $schema['selections'] = array_unique($schema['selections']);
 }
 
-$tariffs = $DB->GetAllByKey('SELECT t.id, t.name, t.value, t.currency, t.authtype,
-				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
-				uprate, downrate, upceil, downceil,
-				t.type AS tarifftype, ' . $DB->GroupConcat('ta.tarifftagid') . ' AS tags
-				FROM tariffs t
-				LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
-				WHERE t.disabled = 0' . (ConfigHelper::checkConfig('phpui.promotion_tariff_duplicates') ? '' : ' AND t.id NOT IN (
-                    SELECT tariffid FROM promotionassignments
-                    WHERE promotionschemaid = ' . $schema['id'] . ')') . '
-				GROUP BY t.id, t.name, t.value, t.splitpayment, t.authtype, datefrom, dateto, uprate, downrate, upceil, downceil,
-					t.type
-				ORDER BY t.name, t.value DESC', 'id');
+$tariffs = $DB->GetAllByKey(
+    'SELECT t.id, t.name, t.value, t.currency, t.authtype,
+    datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
+    uprate, downrate, upceil, downceil,
+    t.type AS tarifftype, ' . $DB->GroupConcat('ta.tarifftagid') . ' AS tags,
+    (CASE WHEN t.flags & ' . TARIFF_FLAG_SPLIT_PAYMENT . ' > 0 THEN 1 ELSE 0 END) AS splitpayment
+    FROM tariffs t
+    LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
+    WHERE t.disabled = 0 AND (t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ') = 0' . (ConfigHelper::checkConfig('phpui.promotion_tariff_duplicates') ? '' : ' AND t.id NOT IN (
+        SELECT tariffid FROM promotionassignments
+        WHERE promotionschemaid = ' . $schema['id'] . ')') . '
+    GROUP BY t.id, t.name, t.value, splitpayment, t.authtype, datefrom, dateto, uprate, downrate, upceil, downceil, t.type
+    ORDER BY t.name, t.value DESC',
+    'id'
+);
 
 $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
 

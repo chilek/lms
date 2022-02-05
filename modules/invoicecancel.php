@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -66,6 +66,13 @@ if ($id) {
         }
 
         if ($LMS->isArchiveDocument($id)) {
+            return;
+        }
+
+        $hook_data = $LMS->executeHook('invoicecancel_before_cancel', array(
+            'id' => $id,
+        ));
+        if (isset($hook_data['continue']) && empty($hook_data['continue'])) {
             return;
         }
 

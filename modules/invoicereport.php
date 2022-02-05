@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,6 +35,17 @@ switch (intval($_POST['customer_type'])) {
 
     default:
         $ctype = -1; //all
+}
+
+switch (intval($_POST['customer_ten'])) {
+    case 1:
+        $ctenwhere = ' AND d.ten <> \'\'';
+        break;
+    case 2:
+        $ctenwhere = ' AND d.ten = \'\'';
+        break;
+    default:
+        $ctenwhere = '';
 }
 
 // date format 'yyyy/mm/dd'
@@ -69,7 +80,7 @@ if (!empty($_POST['group'])) {
     }
 
     $groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').'
-		EXISTS (SELECT 1 FROM customerassignments a
+		EXISTS (SELECT 1 FROM vcustomerassignments a
 			WHERE a.customergroupid IN ('.$groups.')
 			AND a.customerid = d.customerid)';
 
@@ -87,6 +98,25 @@ if (!empty($_POST['group'])) {
     }
 }
 
+if (!empty($_POST['servicetypes'])) {
+    $servicetypes = Utils::filterIntegers($_POST['servicetypes']);
+
+    $servicetypeoper = $_POST['servicetypeoper'];
+
+    $labels = array_map(function ($servicetype) {
+        global $SERVICETYPES;
+        return $SERVICETYPES[$servicetype];
+    }, $servicetypes);
+
+    $layout['servicetypes'] = implode(' ' . ($servicetypeoper == 'and' ? trans('and<!operator>') : trans('or<!operator>')) . ' ', $labels);
+
+    $sql_servicetypes = array();
+    foreach ($servicetypes as $servicetype) {
+        $sql_servicetypes[] = 'EXISTS (SELECT 1 FROM cash WHERE servicetype = ' . $servicetype . ' AND cash.docid = d.id)';
+    }
+    $servicetypewhere = ' AND ( ' . implode($servicetypeoper == 'and' ? ' AND ' : ' OR ', $sql_servicetypes) . ')';
+}
+
 if (!empty($_POST['division'])) {
     $divwhere = ' AND d.divisionid '.(isset($_POST['divexclude']) ? '!=' : '=').' '.intval($_POST['division']);
 
@@ -96,6 +126,8 @@ if (!empty($_POST['division'])) {
     );
 
     $layout['division'] = $divname;
+} else {
+    unset($layout['division']);
 }
 
 // Sorting
@@ -197,10 +229,12 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
         . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
         .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
         .(isset($divwhere) ? $divwhere : '')
+        . (isset($servicetypewhere) ? $servicetypewhere : '')
         .(isset($groupwhere) ? $groupwhere : '')
+        . $ctenwhere
         .( $ctype != -1 ? ' AND cu.type = ' . $ctype : '')
         .' AND NOT EXISTS (
-                	    SELECT 1 FROM customerassignments a
+                	    SELECT 1 FROM vcustomerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 	    ORDER BY ' . $sortcol . ', d.id', $args);

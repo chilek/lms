@@ -50,7 +50,24 @@ class ULMS extends LMS
 			FROM customeraddressview c WHERE c.id = ?', array($id)))) {
             if (!$short) {
                 $result['balance'] = $this->GetCustomerBalance($result['id']);
-                $result['bankaccount'] = bankaccount($result['id']);
+
+                if (ConfigHelper::checkConfig('invoices.show_all_accounts')
+                    || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+                    $result['accounts'] = $this->DB->GetAllByKey(
+                        'SELECT id, contact AS account, name
+                        FROM customercontacts WHERE customerid = ? AND (type & ?) = ? ORDER BY id',
+                        'id',
+                        array($id, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_BANKACCOUNT | CONTACT_INVOICES)
+                    );
+                } else {
+                    $result['accounts'] = array();
+                }
+
+                if (ConfigHelper::checkConfig('invoices.show_only_alternative_accounts') && !empty($result['accounts'])) {
+                    $result['bankaccount'] = null;
+                } else {
+                    $result['bankaccount'] = bankaccount($result['id']);
+                }
 
                 $result['contacts'] = $this->DB->GetAllByKey(
                     'SELECT id, contact AS phone, name
@@ -73,12 +90,9 @@ class ULMS extends LMS
                     'id',
                     array($id, CONTACT_IM | CONTACT_DISABLED, CONTACT_DISABLED)
                 );
-                $result['accounts'] = $this->DB->GetAllByKey(
-                    'SELECT id, contact AS account, name
-					FROM customercontacts WHERE customerid = ? AND (type & ?) = ? ORDER BY id',
-                    'id',
-                    array($id, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_BANKACCOUNT | CONTACT_INVOICES)
-                );
+
+                $result['consents'] = $this->getCustomerConsents($id);
+                $result['addresses'] = $this->getCustomerAddresses($id);
             }
 
             return $result;
@@ -89,11 +103,22 @@ class ULMS extends LMS
 
     public function UpdateCustomerPIN($id, $pin)
     {
+        $unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
+
+        $newpin = $unsecure_pin_validity ? crypt($pin) : $pin;
+
         $res = $this->DB->Execute(
-            'UPDATE customers SET pin = ? WHERE id = ?',
-            array($pin, $id)
+            'UPDATE customers
+                SET pin = ?, pinlastchange = ?NOW?
+            WHERE id = ?',
+            array(
+                $newpin,
+                $id,
+            )
         );
+
         $_SESSION['session_passwd'] = $pin;
+
         return $res;
     }
 
@@ -151,7 +176,7 @@ class ULMS extends LMS
 
         $ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
                     .$this->DB->Concat('UPPER(customers.lastname)', "' '", 'customers.name').' AS customername,
-				    userid, vusers.name AS username, customerid
+				    userid, vusers.name AS username, customerid, contenttype
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN vusers ON (vusers.id = userid)
@@ -159,10 +184,29 @@ class ULMS extends LMS
 				ORDER BY createtime DESC', array($id, RTMESSAGE_REGULAR));
 
         foreach ($ticket['messages'] as &$message) {
-            $message['attachments'] = $this->DB->GetAll(
-                'SELECT filename, contenttype FROM rtattachments WHERE messageid = ?',
+            $message['attachments'] = array();
+            $attachments = $this->DB->GetAll(
+                'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ?',
                 array($message['id'])
             );
+            if ($attachments) {
+                if ($message['contenttype'] == 'text/html') {
+                    $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                        . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                }
+
+                foreach ($attachments as $attachment) {
+                    if (empty($attachment['cid'])) {
+                        $message['attachments'][] = $attachment;
+                    } elseif ($message['contenttype'] == 'text/html') {
+                        $message['body'] = str_ireplace(
+                            '"CID:' . $attachment['cid'] . '"',
+                            '"' . $url_prefix . '/?m=helpdesk&f=attachment&cid=' . $attachment['cid'] . '&tid=' . $id . '&msgid=' . $message['id'] . '"',
+                            $message['body']
+                        );
+                    }
+                }
+            }
         }
 
         $ticket['status'] = $RT_STATES[$ticket['state']];

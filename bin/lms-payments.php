@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,16 +31,21 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'test' => 't',
     'fakedate:' => 'f:',
+    'issue-date:' => null,
     'customerid:' => null,
+    'division:' => null,
     'customergroups:' => 'g:',
+    'customer-status:' => null,
+    'tariff-tags:' => null,
 );
 
 $long_to_shorts = array();
@@ -77,7 +82,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -86,17 +91,27 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-t, --test                      no changes are made to database;
 -f, --fakedate=YYYY/MM/DD       override system date;
-    --customerid=<id>           limit assignments to to specifed customer
+    --issue-date=YYYY/MM/DD     override system date for generated cash record issue date;
+    --customerid=<id>           limit assignments to specifed customer
+    --division=<shortname>
+                                limit assignments to customers which belong to specified
+                                division
 -g, --customergroups=<group1,group2,...>
-                                allow to specify customer groups to which notified customers
+                                allow to specify customer groups to which customers
                                 should be assigned
+    --customer-status=<status1,status2,...>
+                                take assignment of customers with specified status only
+    --tariff-tags=<tariff-tag1,tariff-tag-2,...>
+                                create financial charges using only tariffs which have
+                                assigned specified tariff tags
 
 EOF;
     exit(0);
@@ -106,7 +121,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
@@ -145,7 +160,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -176,6 +191,11 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
+$divisionid = isset($options['division']) ? $LMS->getDivisionIdByShortName($options['division']) : null;
+if (!empty($divisionid)) {
+    ConfigHelper::setFilter($divisionid);
+}
+
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
 $paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
@@ -188,43 +208,49 @@ $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage
 $unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 $check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
 $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
-$delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after_days', 30));
+$delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after_days', 0));
 $prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_only');
 $prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
 $customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
+$tariff_tags = ConfigHelper::getConfig('payments.tariff_tags', '', true);
+
+$reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig('payments.reward_penalty_deadline_grace_days'));
 
 $force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
+$check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
-function localtime2()
-{
-    global $fakedate;
-    if (!empty($fakedate)) {
-        $date = explode("/", $fakedate);
-        return mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-    } else {
-        return time();
-    }
+$allowed_customer_status =
+Utils::determineAllowedCustomerStatus(
+    isset($options['customer-status'])
+        ? $options['customer-status']
+        : ConfigHelper::getConfig('payments.allowed_customer_status', '')
+);
+
+if (empty($allowed_customer_status)) {
+    $customer_status_condition = '';
+} else {
+    $customer_status_condition = ' AND c.status IN (' . implode(',', $allowed_customer_status) . ')';
 }
 
 $fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+$issuedate = isset($options['issue-date']) ? $options['issue-date'] : null;
 $customerid = isset($options['customerid']) && intval($options['customerid']) ? $options['customerid'] : null;
 
-$currtime = strftime("%s", localtime2());
-$month = intval(strftime("%m", localtime2()));
-$dom = intval(strftime("%d", localtime2()));
-$year = strftime("%Y", localtime2());
-$weekday = strftime("%u", localtime2());
-$yearday = strftime("%j", localtime2());
+if (empty($fakedate)) {
+    $currtime = time();
+    $today = strtotime('today');
+} else {
+    $today = $currtime = strtotime($fakedate);
+}
+$issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
+list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
+list ($backward_year, $backward_month) = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
+$weekday = strftime('%u', $currtime);
+$yearday = strftime('%j', $currtime);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
 
 if (is_leap_year($year) && $yearday > 31 + 28) {
     $yearday -= 1;
-}
-
-if (!empty($fakedate)) {
-    $today = $currtime;
-} else {
-    $today = mktime(0, 0, 0, $month, $dom, $year);
 }
 
 if ($month == 1 || $month == 4 || $month == 7 || $month == 10) {
@@ -241,7 +267,8 @@ if ($month > 6) {
     $halfyear = $dom + ($month - 1) * 100;
 }
 
-$date_format = ConfigHelper::getConfig('payments.date_format');
+$date_format = ConfigHelper::getConfig('payments.date_format', '%Y/%m/%d');
+
 $forward_periods = array(
     DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
     WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom+6, $year)),
@@ -294,7 +321,7 @@ $next_period = strftime("%m/%Y", mktime(12, 0, 0, $month + 1, 1, $year));
 $prev_period = strftime("%m/%Y", mktime(12, 0, 0, $month - 1, 1, $year));
 
 // sale date setting
-$saledate = $currtime;
+$saledate = $issuetime;
 if ($sdate_next) {
     $saledate = strftime("%s", mktime(12, 0, 0, $month + 1, 1, $year));
 }
@@ -394,13 +421,13 @@ if (!empty($customergroups)) {
         }
         $customergroup_ORs[] = '('
             . (empty($customergroup_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = %customerid_alias%
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = %customerid_alias%
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_regular) . "')
                 HAVING COUNT(*) = " . count($customergroup_ANDs_regular) . ')')
             . (empty($customergroup_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM customergroups
-                JOIN customerassignments ON customerassignments.customergroupid = customergroups.id
-                WHERE customerassignments.customerid = %customerid_alias%
+                JOIN vcustomerassignments ON vcustomerassignments.customergroupid = customergroups.id
+                WHERE vcustomerassignments.customerid = %customerid_alias%
                 AND UPPER(customergroups.name) IN ('" . implode("', '", $customergroup_ANDs_inversed) . "')
                 HAVING COUNT(*) > 0)")
             . ')';
@@ -408,70 +435,84 @@ if (!empty($customergroups)) {
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
-// invoice auto-closes
-if ($check_invoices) {
-    $DB->Execute(
-        "UPDATE documents SET closed = 1
-		WHERE customerid IN (
-			SELECT c.customerid
-			FROM cash c
-			WHERE c.time <= ?NOW?
-				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
-			GROUP BY c.customerid
-			HAVING SUM(c.value * c.currencyvalue) >= 0
-		) AND type IN (?, ?, ?)
-			AND cdate <= ?NOW?
-			AND closed = 0",
-        array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE)
-    );
+// prepare tariff tags in sql query
+if (isset($options['tariff-tags'])) {
+    $tariff_tags = $options['tariff-tags'];
+}
+if (!empty($tariff_tags)) {
+    $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($tariff_tags), -1, PREG_SPLIT_NO_EMPTY);
+    $tariff_tags_ORs = array();
+    foreach ($ORs as $OR) {
+        $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+        $tariff_tag_ANDs_regular = array();
+        $tariff_tag_ANDs_inversed = array();
+        foreach ($ANDs as $AND) {
+            if (strpos($AND, '!') === false) {
+                $tariff_tag_ANDs_regular[] = $AND;
+            } else {
+                $tariff_tag_ANDs_inversed[] = substr($AND, 1);
+            }
+        }
+        $tariff_tag_ORs[] = '('
+            . (empty($tariff_tag_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM tarifftags
+                JOIN tariffrassignments ON tariffassignments.tarifftagid = tarifftags.id
+                WHERE tariffassignments.tariffid = t.id
+                AND UPPER(tarifftags.name) IN ('" . implode("', '", $tariff_tag_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($tariff_tag_ANDs_regular) . ')')
+            . (empty($tariff_tag_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM tarifftags
+                JOIN tariffassignments ON tariffassignments.tarifftagid = tarifftags.id
+                WHERE tariffassignments.tariffid = t.id
+                AND UPPER(tarifftags.name) IN ('" . implode("', '", $tariff_tag_ANDs_inversed) . "')
+                HAVING COUNT(*) > 0)")
+            . ')';
+    }
+    $tariff_tags = ' AND (a.tariffid IS NULL OR (' . implode(' OR ', $tariff_tag_ORs) . '))';
 }
 
-// solid payments
-$assigns = $DB->GetAll(
-    "SELECT * FROM payments WHERE value <> 0
-			AND (period = ? OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?))",
-    array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday)
-);
-if (!empty($assigns)) {
-    foreach ($assigns as $assign) {
-        $DB->Execute(
-            "INSERT INTO cash (time, type, value, customerid, comment) 
-			VALUES (?, ?, ?, ?, ?)",
-            array($currtime, 1, $assign['value'] * -1, null, $assign['name']."/".$assign['creditor'])
-        );
-        if (!$quiet) {
-            print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
-        }
-    }
+$test = array_key_exists('test', $options);
+if ($test) {
+    echo "WARNING! You are using test mode." . PHP_EOL;
 }
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
+        (CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 		a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
 		a.invoice, a.separatedocument, c.type AS customertype,
-		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL THEN t.splitpayment ELSE l.splitpayment END) END) AS splitpayment,
+		(CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
+			THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+			ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+		END) END) AS splitpayment,
+		(CASE WHEN a.liabilityid IS NULL
+			THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+			ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+		END) AS netflag,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
 		t.description AS description, a.id AS assignmentid,
-		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
+		c.divisionid, c.paytype, c.flags AS customerflags,
+		a.paytype AS a_paytype, a.numberplanid, a.attribute,
+		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
+		t.flags,
+		(CASE WHEN cc1.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
+		(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS mail_marketing,
+		(CASE WHEN cc3.type IS NULL THEN 0 ELSE 1 END) AS sms_marketing,
+		(CASE WHEN a.tariffid IS NULL THEN l.type ELSE t.type END) AS tarifftype,
 		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+		voipphones.phones,
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) AS unitary_value,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) * a.count AS value,
+		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
 		a.count AS count,
 		(SELECT COUNT(id) FROM assignments
@@ -480,37 +521,95 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			AND (dateto > $currtime OR dateto = 0)) AS allsuspended
 	FROM assignments a
 	JOIN customers c ON (a.customerid = c.id)
-	LEFT JOIN tariffs t ON (a.tariffid = t.id)
-	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+	LEFT JOIN customerconsents cc1 ON cc1.customerid = c.id AND cc1.type = " . CCONSENT_EINVOICE . "
+	LEFT JOIN customerconsents cc2 ON cc2.customerid = c.id AND cc2.type = " . CCONSENT_MAIL_MARKETING . "
+	LEFT JOIN customerconsents cc3 ON cc3.customerid = c.id AND cc3.type = " . CCONSENT_SMS_MARKETING . "
+	LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
+	LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
+	LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
+	LEFT JOIN promotions p ON p.id = ps.promotionid
+	LEFT JOIN (
+	    SELECT tariffs.*,
+	        taxes.value AS taxrate,
+	        (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+	    FROM tariffs
+	    JOIN taxes ON taxes.id = tariffs.taxid
+	) t ON a.tariffid = t.id
+	LEFT JOIN (
+	    SELECT liabilities.*,
+	        taxes.value AS taxrate,
+	        (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+	    FROM liabilities
+	    JOIN taxes ON taxes.id = liabilities.taxid
+	) l ON a.liabilityid = l.id
+	LEFT JOIN (
+		SELECT vna.assignment_id, " . $DB->GroupConcat('vn.phone', ',') . " AS phones
+		FROM voip_number_assignments vna
+		LEFT JOIN voip_numbers vn ON vn.id = vna.number_id
+		GROUP BY vna.assignment_id
+	) voipphones ON voipphones.assignment_id = a.id
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
-	WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "(c.status = ? OR c.status = ?)
-		AND a.commited = 1
+	WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+        . $customer_status_condition
+        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+        . " AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
 			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at IN ?)
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
-$services = $DB->GetAll($query, array(CTYPES_PRIVATE, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-    $currtime, $currtime));
+        . ($tarifftags ?: '')
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
+$doms = array($dom);
+if ($last_dom) {
+    $doms[] = 0;
+}
+$services = $DB->GetAll(
+    $query,
+    array(
+        CTYPES_PRIVATE,
+        TARIFF_FLAG_SPLIT_PAYMENT,
+        LIABILITY_FLAG_SPLIT_PAYMENT,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        $currtime, $currtime
+    )
+);
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
 $query = "SELECT
-			a.id, a.tariffid, a.customerid, a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
+			a.id, a.tariffid, a.customerid, a.recipient_address_id,
+			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
+			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
 			(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
-			(CASE WHEN c.type = ? THEN 0 ELSE t.splitpayment END) AS splitpayment,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
-			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
+			c.divisionid, c.paytype, c.flags AS customerflags,
+			a.paytype AS a_paytype, a.numberplanid, a.attribute,
+			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-			t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
+			t.taxid AS taxid, '' as prodid,
+			voipcost.value,
+			voipcost.value AS unitary_value,
+			(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
+            (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) END) AS splitpayment,
+            (CASE WHEN a.liabilityid IS NULL
+                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
+                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+            END) AS netflag,
+			t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
 			? AS count,
 			(SELECT COUNT(id)
@@ -522,7 +621,11 @@ $query = "SELECT
 					datefrom <= $currtime AND
 					(dateto > $currtime OR dateto = 0)) AS allsuspended
 			FROM assignments a
+            LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
+            LEFT JOIN promotions p ON p.id = ps.promotionid
 			JOIN customers c ON (a.customerid = c.id)
+            LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
+            LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 			JOIN (
 				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
 					a2.id AS assignmentid
@@ -554,28 +657,60 @@ $query = "SELECT
 				LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
-			LEFT JOIN tariffs t ON (a.tariffid = t.id)
-			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+            LEFT JOIN (
+                SELECT tariffs.*,
+                    taxes.value AS taxrate,
+                    (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
+                FROM tariffs
+                JOIN taxes ON taxes.id = tariffs.taxid
+            ) t ON a.tariffid = t.id
+            LEFT JOIN (
+                SELECT liabilities.*,
+                    taxes.value AS taxrate,
+                    (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
+                FROM liabilities
+                JOIN taxes ON taxes.id = liabilities.taxid
+            ) l ON a.liabilityid = l.id
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-	    WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "
-	      (c.status  = ? OR c.status = ?) AND
-	      t.type = ? AND
+	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+           . $customer_status_condition
+           . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+           . " AND t.type = ? AND
 	      a.commited = 1 AND
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
 		  (a.period  = ? AND at = ?) OR
-		  (a.period  = ? AND at = ?) OR
+		  (a.period  = ? AND at IN ?) OR
 		  (a.period  = ? AND at = ?) OR
 		  (a.period  = ? AND at = ?) OR
 		  (a.period  = ? AND at = ?)) AND
 		   a.datefrom <= ? AND
-		  (a.dateto > ? OR a.dateto = 0)))"
+		  (a.dateto = 0 OR a.dateto > (CASE a.period
+			WHEN " . YEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year - 1) . "
+			WHEN " . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month - 6, 1, $year)   . "
+			WHEN " . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month - 3, 1, $year)   . "
+			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
+        . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
+        . ($tarifftags ?: '')
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
 
-$billings = $DB->GetAll($query, array(CTYPES_PRIVATE, 1, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-    $currtime, $currtime));
+$billings = $DB->GetAll(
+    $query,
+    array(
+        CTYPES_PRIVATE,
+        TARIFF_FLAG_SPLIT_PAYMENT,
+        LIABILITY_FLAG_SPLIT_PAYMENT,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        1,
+        TARIFF_FLAG_NET_ACCOUNT,
+        LIABILITY_FLAG_NET_ACCOUT,
+        SERVICE_PHONE,
+        DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+        $currtime,
+    )
+);
 
 $assigns = array();
 
@@ -605,13 +740,11 @@ if ($billings) {
             $billing_idx++;
         }
 
-        if ($billing_idx == $billing_count || $billings[$billing_idx]['customerid'] != $service_customerid) {
-            $billing_idx = $old_billing_idx;
-            continue;
-        } else {
+        if ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
             $assigns[] = $billings[$billing_idx];
-            $billing_idx++;
+            $billing_idx = $old_billing_idx;
         }
+        $billing_idx = $old_billing_idx;
     }
     unset($service);
 } else {
@@ -619,31 +752,390 @@ if ($billings) {
 }
 unset($services);
 
+if (!empty($assigns)) {
+    // get dominating link technology per customer assignments when customer
+    // node are directly connected to operator network device
+    $assignment_linktechnologies = $DB->GetAllByKey("SELECT a.id, b.technology, MAX(b.technologycount) AS technologycount
+		FROM assignments a
+		JOIN (
+			SELECT a.id, n.linktechnology AS technology, COUNT(n.linktechnology) AS technologycount
+			FROM nodeassignments na
+				JOIN assignments a ON a.id = na.assignmentid
+				JOIN tariffs t ON t.id = a.tariffid
+				JOIN nodes n ON n.id = na.nodeid
+			WHERE n.linktechnology > 0 AND n.ownerid IS NOT NULL
+			GROUP BY a.id, n.linktechnology
+		) b ON b.id = a.id
+		GROUP BY a.id, b.technology
+		ORDER BY a.id", 'id');
+    if (empty($assignment_linktechnologies)) {
+        $assignment_linktechnologies = array();
+    }
+
+    // get dominating link technology per customer assignments when customer
+    // node or customer network devices nodes are connected to operator through customer subnetwork
+    // ************
+    // get assignments which match to nodes or network device nodes in customer subnetworks
+    $node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignmentid', ',', true) . " AS assignments,
+			na.nodeid
+		FROM nodeassignments na
+		JOIN nodes n ON n.id = na.nodeid
+		JOIN assignments a ON a.id = na.assignmentid
+		LEFT JOIN netdevices nd ON nd.id = n.netdev
+		WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
+			OR n.ownerid IS NOT NULL)
+			AND a.suspended = 0
+			AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
+			AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+			AND NOT EXISTS (
+				SELECT id FROM assignments aa
+				WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
+					AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+					AND aa.datefrom < ?NOW?
+					AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+			)
+		GROUP BY na.nodeid", 'nodeid');
+    if (empty($node_assignments)) {
+        $node_assignments = array();
+    } else {
+        foreach ($node_assignments as $nodeid => $assignments) {
+            $node_assignments[$nodeid] = explode(',', $assignments['assignments']);
+        }
+    }
+
+    if (!empty($node_assignments)) {
+        // search for links between operator network devices and customer network devices
+        $uni_links = $DB->GetAllByKey(
+            "SELECT nl.id AS netlinkid, nl.technology AS technology,
+					c.id AS customerid,
+					(CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
+					(CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.dst END) AS netdevid
+				FROM netlinks nl
+				JOIN netdevices ndsrc ON ndsrc.id = nl.src
+				JOIN netdevices nddst ON nddst.id = nl.dst
+				JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
+					OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
+				WHERE nl.technology > 0 AND ((ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
+					OR (nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL))
+				ORDER BY nl.id",
+            'netlinkid'
+        );
+        if (!empty($uni_links)) {
+            function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
+            {
+                if (isset($customer_nodes[$customerid . '_' . $netdevid])) {
+                    $nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
+                } else {
+                    $nodeids = array();
+                }
+
+                if (!empty($customer_netlinks)) {
+                    foreach ($customer_netlinks as &$customer_netlink) {
+                        if ($customer_netlink['src'] == $netdevid) {
+                            $next_netdevid = $customer_netlink['dst'];
+                        } else if ($customer_netlink['dst'] == $netdevid) {
+                            $next_netdevid = $customer_netlink['src'];
+                        } else {
+                            continue;
+                        }
+                        $nodeids = array_merge($nodeids, find_nodes_for_netdev(
+                            $customerid,
+                            $next_netdevid,
+                            $customer_nodes,
+                            $customer_netlinks
+                        ));
+                    }
+                    unset($customer_netlink);
+                }
+
+                return $nodeids;
+            }
+
+            $customer_netlinks = $DB->GetAllByKey(
+                "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
+					FROM netlinks nl
+					JOIN netdevices ndsrc ON ndsrc.id = nl.src
+					JOIN netdevices nddst ON nddst.id = nl.dst
+					WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
+						AND ndsrc.ownerid = nddst.ownerid",
+                'netlink'
+            );
+
+            $customer_nodes = $DB->GetAllByKey(
+                "SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
+						" . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
+					FROM nodes n
+					LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
+					WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
+						AND EXISTS (
+							SELECT na.id FROM nodeassignments na
+							JOIN assignments a ON a.id = na.assignmentid
+							WHERE na.nodeid = n.id AND a.suspended = 0
+								AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
+								AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+						)
+						AND NOT EXISTS (
+							SELECT id FROM assignments aa
+							WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
+								AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+								AND aa.datefrom < ?NOW?
+								AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+						)
+					GROUP BY customerid_netdev",
+                'customerid_netdev'
+            );
+
+            // collect customer node/node-netdev identifiers connected to customer subnetwork
+            // and then fill assignment linktechnologies relations
+            foreach ($uni_links as $netlinkid => &$netlink) {
+                $nodes = find_nodes_for_netdev(
+                    $netlink['customerid'],
+                    $netlink['netdevid'],
+                    $customer_nodes,
+                    $customer_netlinks
+                );
+                if (!empty($nodes)) {
+                    foreach ($nodes as $nodeid) {
+                        if (isset($node_assignments[$nodeid])) {
+                            foreach ($node_assignments[$nodeid] as $assignmentid) {
+                                $assignment_linktechnologies[$assignmentid] = array(
+                                    'id' => $assignmentid,
+                                    'technology' => $netlink['technology'],
+                                    'technologycount' => 1,
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            unset($netlink);
+            unset($uni_links);
+
+            unset($customer_netlinks);
+            unset($customer_nodes);
+        }
+    }
+}
+
+$suspended = 0;
+$numbers = array();
+$customernumbers = array();
+$numbertemplates = array();
+$invoices = array();
+$telecom_services = array();
+$currencies = array();
+$netflags = array();
+$doctypes = array();
+$paytypes = array();
+$addresses = array();
+$numberplans = array();
+$divisions = array();
+
+$old_locale = setlocale(LC_NUMERIC, '0');
+setlocale(LC_NUMERIC, 'C');
+
+$result = $LMS->ExecuteHook(
+    'payments_before_assignment_loop',
+    array(
+        'assignments' => $assigns,
+        'date' => sprintf('%04d/%02d/%02d', $year, $month, $dom),
+    )
+);
+if ($result['assignments']) {
+    $assigns = $result['assignments'];
+}
+
+setlocale(LC_NUMERIC, $old_locale);
+
+if ($prefer_netto) {
+    $taxeslist = $LMS->GetTaxes();
+}
+
+// find assignments with tariff reward/penalty flag
+// and check if customer applies to this
+$reward_to_check = array();
+$reward_period_to_check = array();
+if (!empty($assigns)) {
+    foreach ($assigns as $assign) {
+        $cid = $assign['customerid'];
+        if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)) {
+            $reward_to_check[$cid] = $cid;
+        }
+        if ($reward_to_check[$cid]) {
+            if (!isset($reward_period_to_check[$cid])) {
+                $reward_period_to_check[$cid] = DAILY;
+            }
+            if ($assign['period'] >= WEEKLY && $assign['period'] <= YEARLY) {
+                $reward_period_to_check[$cid] = max($reward_period_to_check[$cid], $assign['period']);
+            } elseif ($assign['period'] == HALFYEARLY && $reward_period_to_check[$cid] < YEARLY) {
+                $reward_period_to_check[$cid] = HALFYEARLY;
+            }
+        }
+    }
+
+    $period_end = mktime(0, 0, 0, date('m', $currtime), date('d', $currtime), date('Y', $currtime));
+    $period_starts = array(
+        DAILY => strtotime('yesterday', $period_end),
+        WEEKLY => strtotime('1 week ago', $period_end),
+        MONTHLY => strtotime('1 month ago', $period_end),
+        QUARTERLY => strtotime('3 months ago', $period_end),
+        HALFYEARLY => strtotime('6 months ago', $period_end),
+        YEARLY => strtotime('1 year ago', $period_end),
+    );
+
+    $rewards = array();
+    foreach ($reward_to_check as $cid) {
+        $period_start = $period_starts[$reward_period_to_check[$cid]];
+        $balance = $LMS->GetCustomerBalance($cid, $period_start);
+        if ($balance < 0) {
+            $rewards[$cid] = false;
+            continue;
+        }
+        $history = $DB->GetAll(
+            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS time,
+                d.id AS docid,
+                (c.value * c.currencyvalue) AS value
+            FROM cash c
+            LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
+            WHERE c.customerid = ?
+                AND c.time >= ? AND c.time < ?
+            ORDER BY time',
+            array(
+                $reward_penalty_deadline_grace_days,
+                array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
+                $cid,
+                $period_start,
+                $period_end,
+            )
+        );
+        $rewards[$cid] = true;
+        if (!empty($history)) {
+            foreach ($history as &$record) {
+                if (!empty($record['docid'])) {
+                    $record['time'] = mktime(
+                        23,
+                        59,
+                        59,
+                        date('m', $record['time']),
+                        date('d', $record['time']),
+                        date('Y', $record['time'])
+                    ) + 1;
+                }
+            }
+            unset($record);
+            usort($history, function ($a, $b) {
+                return $a['time'] - $b['time'];
+            });
+            foreach ($history as $record) {
+                $balance += $record['value'];
+                if (empty($record['docid'])) {
+                    continue;
+                }
+                if ($balance < 0) {
+                    $rewards[$cid] = false;
+                }
+            }
+        }
+    }
+}
+
 $currencyvalues = array();
+
+if (!empty($assigns)) {
+    // determine currency values for assignments with foreign currency
+    // if payments.prefer_netto = true, use value netto+tax
+    foreach ($assigns as &$assign) {
+        if ($prefer_netto) {
+            if (isset($assign['netvalue']) && !empty($assign['netvalue'])) {
+                $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
+            }
+        }
+
+        $currency = $assign['currency'];
+        if (empty($currency)) {
+            $assign['currency'] = Localisation::getCurrentCurrency();
+            continue;
+        }
+        if ($currency != Localisation::getCurrentCurrency()) {
+            if (!isset($currencyvalues[$currency])) {
+                $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencycurrtime);
+                if (!isset($currencyvalues[$currency])) {
+                    die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
+                }
+            }
+        }
+    }
+    unset($assign);
+}
+
+if (!empty($currencyvalues) && !$quiet) {
+    print "Currency quotes:" . PHP_EOL;
+    foreach ($currencyvalues as $currency => $value) {
+        print '1 ' . $currency . ' = ' . $value . ' ' . Localisation::getCurrentCurrency(). PHP_EOL;
+    }
+}
+$currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
 
 // correct currency values for foreign currency documents with today's cdate or sdate
 // which have estimated currency value earlier (in the moment of document issue)
 $daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
 $dayend = $daystart + 86399;
+$currencydaystart = strtotime('yesterday', $daystart);
+$currencycurrtime = strtotime('yesterday', $currtime);
+$currencydayend = strtotime('yesterday', $dayend);
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
-    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid . ' AND ' : '') . '((d.type IN (?, ?, ?) AND sdate >= ? AND sdate <= ?)
-        OR (d.type IN (?, ?) AND cdate >= ? AND cdate <= ?))
+    JOIN customers c ON c.id = d.customerid
+    WHERE ' . ($customerid ? 'd.customerid = ' . $customerid : '1 = 1')
+        . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+        . ' AND d.type IN (?, ?, ?, ?, ?) AND ((sdate = 0 AND cdate >= ? AND cdate <= ?)
+        OR (sdate > 0 AND ((sdate < cdate  AND sdate >= ? AND sdate <= ?) OR (sdate >= cdate AND cdate >= ? AND cdate <= ?))))
         AND currency <> ?',
     array(
         DOC_INVOICE,
         DOC_CNOTE,
         DOC_INVOICE_PRO,
-        $daystart,
-        $dayend,
         DOC_RECEIPT,
         DOC_DNOTE,
-        $daystart,
-        $dayend,
+        $currencydaystart,
+        $currencydayend,
+        $currencydaystart,
+        $currencydayend,
+        $currencydaystart,
+        $currencydayend,
         Localisation::getCurrentCurrency(),
     )
 );
+
+$cashes = $DB->GetAll(
+    'SELECT cash.id, cash.currency FROM cash
+    LEFT JOIN customers c ON c.id = cash.customerid
+    WHERE ' . ($customerid ? 'cash.customerid = ' . $customerid : '1 = 1')
+    . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+    . ' AND cash.docid IS NULL AND cash.currency <> ? AND cash.time >= ? AND cash.time <= ?',
+    array(
+        Localisation::getCurrentCurrency(),
+        $currencydaystart,
+        $currencydayend,
+    )
+);
+
+setlocale(LC_NUMERIC, 'C');
+
+// solid payments
+$payments = $DB->GetAll(
+    "SELECT * FROM payments WHERE value <> 0
+			AND (period = ? OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?))",
+    array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday)
+);
+
+$DB->BeginTrans();
+
 if (!empty($documents)) {
     foreach ($documents as &$document) {
         $currency = $document['currency'];
@@ -651,7 +1143,7 @@ if (!empty($documents)) {
             continue;
         }
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencydaystart);
             if (!isset($currencyvalues[$currency])) {
                 echo 'Unable to determine currency value for document ID ' . $document['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
                 continue;
@@ -680,15 +1172,6 @@ if (!empty($documents)) {
     unset($document);
 }
 
-$cashes = $DB->GetAll(
-    'SELECT id, currency FROM cash
-    WHERE ' . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . 'currency <> ? AND time >= ? AND time <= ?',
-    array(
-        Localisation::getCurrentCurrency(),
-        $daystart,
-        $dayend,
-    )
-);
 if (!empty($cashes)) {
     foreach ($cashes as &$cash) {
         $currency = $cash['currency'];
@@ -696,7 +1179,7 @@ if (!empty($cashes)) {
             continue;
         }
         if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currencydaystart);
             if (!isset($currencyvalues[$currency])) {
                 echo 'Unable to determine currency value for cash ID ' . $cash['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
                 continue;
@@ -716,240 +1199,73 @@ if (!empty($cashes)) {
     unset($cash);
 }
 
+if (!empty($payments)) {
+    foreach ($payments as $payment) {
+        $DB->Execute(
+            "INSERT INTO cash (time, type, value, customerid, comment)
+			VALUES (?, ?, ?, ?, ?)",
+            array($issuetime, 1, $payment['value'] * -1, null, $payment['name'] . '/' . $payment['creditor'])
+        );
+        if (!$quiet) {
+            echo 'CID:-' . "\tVAL:" . $payment['value'] . "\tDESC:" . $payment['name'] . '/' . $payment['creditor'] . PHP_EOL;
+        }
+    }
+}
+
+// invoice auto-closes
+if ($check_invoices) {
+    $DB->Execute(
+        "UPDATE documents SET closed = 1
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+			SELECT cash.customerid
+			FROM cash
+			JOIN customers c ON c.id = cash.customerid
+			WHERE cash.time <= ?NOW?"
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
+			GROUP BY cash.customerid
+			HAVING SUM(cash.value * cash.currencyvalue) >= 0
+		) AND type IN (?, ?, ?)
+			AND cdate <= ?NOW?
+			AND closed = 0",
+        array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE)
+    );
+}
+
 if (empty($assigns)) {
     die;
 }
-
-// get dominating link technology per customer assignments when customer
-// node are directly connected to operator network device
-$assignment_linktechnologies = $DB->GetAllByKey("SELECT a.id, b.technology, MAX(b.technologycount) AS technologycount
-	FROM assignments a
-	JOIN (
-		SELECT a.id, n.linktechnology AS technology, COUNT(n.linktechnology) AS technologycount
-		FROM nodeassignments na
-			JOIN assignments a ON a.id = na.assignmentid
-			JOIN tariffs t ON t.id = a.tariffid
-			JOIN nodes n ON n.id = na.nodeid
-		WHERE n.linktechnology > 0 AND n.ownerid IS NOT NULL
-		GROUP BY a.id, n.linktechnology
-	) b ON b.id = a.id
-	GROUP BY a.id, b.technology
-	ORDER BY a.id", 'id');
-if (empty($assignment_linktechnologies)) {
-    $assignment_linktechnologies = array();
-}
-
-// get dominating link technology per customer assignments when customer
-// node or customer network devices nodes are connected to operator through customer subnetwork
-// ************
-// get assignments which match to nodes or network device nodes in customer subnetworks
-$node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignmentid', ',', true) . " AS assignments,
-		na.nodeid
-	FROM nodeassignments na
-	JOIN nodes n ON n.id = na.nodeid
-	JOIN assignments a ON a.id = na.assignmentid
-	LEFT JOIN netdevices nd ON nd.id = n.netdev
-	WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
-		OR n.ownerid IS NOT NULL)
-		AND a.suspended = 0
-		AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
-		AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-		AND NOT EXISTS (
-			SELECT id FROM assignments aa
-			WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-				AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-				AND aa.datefrom < ?NOW?
-				AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-		)
-	GROUP BY na.nodeid", 'nodeid');
-if (empty($node_assignments)) {
-    $node_assignments = array();
-} else {
-    foreach ($node_assignments as $nodeid => $assignments) {
-        $node_assignments[$nodeid] = explode(',', $assignments['assignments']);
-    }
-}
-
-if (!empty($node_assignments)) {
-    // search for links between operator network devices and customer network devices
-    $uni_links = $DB->GetAllByKey(
-        "SELECT nl.id AS netlinkid, nl.technology AS technology,
-				c.id AS customerid,
-				(CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
-				(CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.dst END) AS netdevid
-			FROM netlinks nl
-			JOIN netdevices ndsrc ON ndsrc.id = nl.src
-			JOIN netdevices nddst ON nddst.id = nl.dst
-			JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
-				OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
-			WHERE nl.technology > 0 AND ((ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
-				OR (nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL))
-			ORDER BY nl.id",
-        'netlinkid'
-    );
-    if (!empty($uni_links)) {
-        function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
-        {
-            if (isset($customer_nodes[$customerid . '_' . $netdevid])) {
-                $nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
-            } else {
-                $nodeids = array();
-            }
-
-            if (!empty($customer_netlinks)) {
-                foreach ($customer_netlinks as &$customer_netlink) {
-                    if ($customer_netlink['src'] == $netdevid) {
-                        $next_netdevid = $customer_netlink['dst'];
-                    } else if ($customer_netlink['dst'] == $netdevid) {
-                        $next_netdevid = $customer_netlink['src'];
-                    } else {
-                        continue;
-                    }
-                    $nodeids = array_merge($nodeids, find_nodes_for_netdev(
-                        $customerid,
-                        $next_netdevid,
-                        $customer_nodes,
-                        $customer_netlinks
-                    ));
-                }
-                unset($customer_netlink);
-            }
-
-            return $nodeids;
-        }
-
-        $customer_netlinks = $DB->GetAllByKey(
-            "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
-				FROM netlinks nl
-				JOIN netdevices ndsrc ON ndsrc.id = nl.src
-				JOIN netdevices nddst ON nddst.id = nl.dst
-				WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
-					AND ndsrc.ownerid = nddst.ownerid",
-            'netlink'
-        );
-
-        $customer_nodes = $DB->GetAllByKey(
-            "SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
-					" . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
-				FROM nodes n
-				LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
-				WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
-					AND EXISTS (
-						SELECT na.id FROM nodeassignments na
-						JOIN assignments a ON a.id = na.assignmentid
-						WHERE na.nodeid = n.id AND a.suspended = 0
-							AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
-							AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-					)
-					AND NOT EXISTS (
-						SELECT id FROM assignments aa
-						WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-							AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-							AND aa.datefrom < ?NOW?
-							AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-					)
-				GROUP BY customerid_netdev",
-            'customerid_netdev'
-        );
-
-        // collect customer node/node-netdev identifiers connected to customer subnetwork
-        // and then fill assignment linktechnologies relations
-        foreach ($uni_links as $netlinkid => &$netlink) {
-            $nodes = find_nodes_for_netdev(
-                $netlink['customerid'],
-                $netlink['netdevid'],
-                $customer_nodes,
-                $customer_netlinks
-            );
-            if (!empty($nodes)) {
-                foreach ($nodes as $nodeid) {
-                    if (isset($node_assignments[$nodeid])) {
-                        foreach ($node_assignments[$nodeid] as $assignmentid) {
-                            $assignment_linktechnologies[$assignmentid] = array(
-                                'id' => $assignmentid,
-                                'technology' => $netlink['technology'],
-                                'technologycount' => 1,
-                            );
-                        }
-                    }
-                }
-            }
-        }
-        unset($netlink);
-        unset($uni_links);
-
-        unset($customer_netlinks);
-        unset($customer_nodes);
-    }
-}
-
-$suspended = 0;
-$numbers = array();
-$customernumbers = array();
-$numbertemplates = array();
-$invoices = array();
-$telecom_services = array();
-$currencies = array();
-$doctypes = array();
-$paytypes = array();
-$addresses = array();
-$numberplans = array();
-$divisions = array();
-
-$result = $LMS->ExecuteHook(
-    'payments_before_assignment_loop',
-    array(
-        'assignments' => $assigns,
-        'date' => sprintf('%04d/%02d/%02d', $year, $month, $dom),
-    )
-);
-if ($result['assignments']) {
-    $assigns = $result['assignments'];
-}
-
-if ($prefer_netto) {
-    $taxeslist = $LMS->GetTaxes();
-}
-
-// determine currency values for assignments with foreign currency
-// if payments.prefer_netto = true, use value netto+tax
-foreach ($assigns as &$assign) {
-    if ($prefer_netto) {
-        if (isset($assign['netvalue']) && !empty($assign['netvalue']) != 0) {
-            $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
-        }
-    }
-
-    $currency = $assign['currency'];
-    if (empty($currency)) {
-        $assign['currency'] = Localisation::getCurrentCurrency();
-        continue;
-    }
-    if ($currency != Localisation::getCurrentCurrency()) {
-        if (!isset($currencyvalues[$currency])) {
-            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currtime);
-            if (!isset($currencyvalues[$currency])) {
-                die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
-            }
-        }
-    }
-}
-unset($assign);
-
-if (!empty($currencyvalues) && !$quiet) {
-    print "Currency quotes:" . PHP_EOL;
-    foreach ($currencyvalues as $currency => $value) {
-        print '1 ' . $currency . ' = ' . $value . ' ' . Localisation::getCurrentCurrency(). PHP_EOL;
-    }
-}
-$currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
-    $assign['value'] = str_replace(',', '.', floatval($assign['value']));
+    $assign['value'] = floatval($assign['value']);
     if (empty($assign['value'])) {
+        continue;
+    }
+
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)
+        && ($assign['value'] < 0 && !$rewards[$cid]
+            || $assign['value'] > 0 && $rewards[$cid])) {
+        continue;
+    }
+
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_EINVOICE)
+        && ($assign['value'] < 0 && empty($assign['einvoice'])
+            || $assign['value'] > 0 && !empty($assign['einvoice']))) {
+        continue;
+    }
+
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING)
+        && ($assign['value'] < 0 && empty($assign['mail_marketing'])
+            || $assign['value'] > 0 && !empty($assign['mail_marketing']))) {
+        continue;
+    }
+
+    if (($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING)
+        && ($assign['value'] < 0 && empty($assign['sms_marketing'])
+            || $assign['value'] > 0 && !empty($assign['sms_marketing']))) {
         continue;
     }
 
@@ -962,6 +1278,9 @@ foreach ($assigns as $assign) {
     if (!$assign['suspended'] && $assign['allsuspended']) {
         $assign['value'] = $assign['value'] * $suspension_percentage / 100;
     }
+    if (empty($assign['value'])) {
+        continue;
+    }
 
     if ($assign['liabilityid']) {
         $desc = $assign['name'];
@@ -973,71 +1292,131 @@ foreach ($assigns as $assign) {
         }
     }
 
-    $desc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $desc);
-    $desc = preg_replace("/\%tariff/", $assign['name'], $desc);
-    $desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
-    $desc = preg_replace("/\%desc/", $assign['description'], $desc);
-    $desc = preg_replace("/\%current_month/", $current_month, $desc);
-    $desc = preg_replace("/\%current_period/", $current_period, $desc);
-    $desc = preg_replace("/\%next_period/", $next_period, $desc);
-    $desc = preg_replace("/\%prev_period/", $prev_period, $desc);
-
     $p = $assign['period'];
 
-    // better use this
-    $desc = preg_replace("/\%forward_periods/", $forward_periods[$p], $desc);
-    $desc = preg_replace("/\%forward_aligned_periods/", $forward_aligned_periods[$p], $desc);
-    $desc = preg_replace("/\%backward_periods/", $backward_periods[$p], $desc);
-    $desc = preg_replace("/\%backward_aligned_periods/", $backward_aligned_periods[$p], $desc);
+    $desc = str_replace(
+        array(
+            '%type',
+            '%tariff',
+            '%attribute',
+            '%desc',
+            '%promotion_name',
+            '%promotion_schema_name',
+            '%promotion_schema_length',
+            '%period',
+            '%current_month',
+            '%current_period',
+            '%next_period',
+            '%prev_period',
+            // better use this
+            '%forward_periods',
+            '%forward_aligned_periods',
+            '%backward_periods',
+            '%backward_aligned_periods',
+            // for backward references
+            '%forward_period',
+            '%forward_period_aligned',
+            '%aligned_period',
+        ),
+        array(
+            $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
+            $assign['name'],
+            $assign['attribute'],
+            $assign['description'],
+            $assign['promotion_name'],
+            $assign['promotion_schema_name'],
+            empty($assign['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $assign['promotion_schema_length']),
+            $forward_periods[$p],
+            $current_month,
+            $current_period,
+            $next_period,
+            $prev_period,
+            $forward_periods[$p],
+            $forward_aligned_periods[$p],
+            $backward_periods[$p],
+            $backward_aligned_periods[$p],
+            $forward_periods[$p],
+            $forward_aligned_periods[$p],
+            $forward_aligned_periods[$p],
+        ),
+        $desc
+    );
 
-    // for backward references
-    $desc = preg_replace("/\%forward_period/", $forward_periods[$p], $desc);
-    $desc = preg_replace("/\%forward_period_aligned/", $forward_aligned_periods[$p], $desc);
-    $desc = preg_replace("/\%period/", $forward_periods[$p], $desc);
-    $desc = preg_replace("/\%aligned_period/", $forward_aligned_periods[$p], $desc);
-
-    if (strpos($comment, "%aligned_partial_period") !== false) {
+    if (strpos($comment, '%aligned_partial_period') !== false) {
         if ($assign['datefrom']) {
-            $datefrom = explode("/", date(preg_replace("/\%/", "", $date_format), $assign['datefrom']));
+            $datefrom = explode('/', date('Y/m/d', $assign['datefrom']));
         }
         if ($assign['dateto']) {
-            $dateto = explode("/", date(preg_replace("/\%/", "", $date_format), $assign['dateto']));
-            $dateto_nextday = explode("/", date(preg_replace("/\%/", "", $date_format), $assign['dateto'] + 1));
+            $dateto = explode('/', date('Y/m/d', $assign['dateto']));
+            $dateto_nextday = explode('/', date('Y/m/d', $assign['dateto'] + 1));
         }
-        if (isset($datefrom) && intval($datefrom[2]) != 1 && intval($datefrom[1]) == intval($month) && intval($datefrom[0]) == intval($year)) {
-            $first_aligned_partial_period = array(
-                DAILY => $forward_periods[DAILY],
-                WEEKLY => $forward_periods[WEEKLY],
-                MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
-                QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
-                HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
-                YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
-                DISPOSABLE => $forward_periods[DISPOSABLE],
-            );
-            $desc = preg_replace("/\%aligned_partial_period/", $first_aligned_partial_period[$p], $desc);
-            unset($first_aligned_partial_period);
-        } else {
-            if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($month) && intval($dateto[0]) == intval($year)) {
-                $last_aligned_partial_period = array(
+        if (empty($assign['backwardperiod'])) {
+            if (isset($datefrom) && intval($datefrom[2]) != 1 && intval($datefrom[1]) == intval($month) && intval($datefrom[0]) == intval($year)) {
+                $first_aligned_partial_period = array(
                     DAILY => $forward_periods[DAILY],
                     WEEKLY => $forward_periods[WEEKLY],
-                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
-                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
-                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
-                    YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
+                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
+                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
+                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
+                    YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
                     DISPOSABLE => $forward_periods[DISPOSABLE],
                 );
-                $desc = preg_replace("/\%aligned_partial_period/", $last_aligned_partial_period[$p], $desc);
-                unset($last_aligned_partial_period);
+                $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
+                unset($first_aligned_partial_period);
             } else {
-                $desc = preg_replace("/\%aligned_partial_period/", $forward_aligned_periods[$p], $desc);
+                if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($month) && intval($dateto[0]) == intval($year)) {
+                    $last_aligned_partial_period = array(
+                        DAILY => $forward_periods[DAILY],
+                        WEEKLY => $forward_periods[WEEKLY],
+                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
+                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
+                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
+                        YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
+                        DISPOSABLE => $forward_periods[DISPOSABLE],
+                    );
+                    $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
+                    unset($last_aligned_partial_period);
+                } else {
+                    $desc = str_replace('%aligned_partial_period', $forward_aligned_periods[$p], $desc);
+                }
+            }
+        } else {
+            if (isset($datefrom) && intval($datefrom[2]) != 1 && intval($datefrom[1]) == intval($backward_month) && intval($datefrom[0]) == intval($backward_year)) {
+                $first_aligned_partial_period = array(
+                    DAILY => $forward_periods[DAILY],
+                    WEEKLY => $forward_periods[WEEKLY],
+                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 1, 0, $backward_year)),
+                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 3, 0, $backward_year)),
+                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 6, 0, $backward_year)),
+                    YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, 0, $backward_year + 1)),
+                    DISPOSABLE => $forward_periods[DISPOSABLE],
+                );
+                $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
+                unset($first_aligned_partial_period);
+            } else {
+                if (isset($dateto) && isset($dateto_nextday) && intval($dateto_nextday[2]) != 1 && intval($dateto[1]) == intval($backward_month) && intval($dateto[0]) == intval($backward_year)) {
+                    $last_aligned_partial_period = array(
+                        DAILY => $forward_periods[DAILY],
+                        WEEKLY => $forward_periods[WEEKLY],
+                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year)),
+                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 2, intval($dateto[2]), $backward_year)),
+                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 5, intval($dateto[2]), $backward_year)),
+                        YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year + 1)),
+                        DISPOSABLE => $forward_periods[DISPOSABLE],
+                    );
+                    $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
+                    unset($last_aligned_partial_period);
+                } else {
+                    $desc = str_replace('%aligned_partial_period', $backward_aligned_periods[$p], $desc);
+                }
             }
         }
+        unset($datefrom, $dateto);
     }
 
     // for phone calls
     if (isset($assign['phones'])) {
-        $desc = preg_replace('/\%phones/', $assign['phones'], $desc);
+        $desc = str_replace('%phones', $assign['phones'], $desc);
     }
 
     if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended'])) {
@@ -1057,36 +1436,46 @@ foreach ($assigns as $assign) {
         $numberplans[$cid] = 0;
     }
 
-    if ($assign['value'] != 0) {
-        $val = $assign['value'];
+    if ($assign['unitary_value'] != 0) {
+        $price = $assign['unitary_value'];
         $currency = $assign['currency'];
+        $netflag = intval($assign['netflag']);
         $splitpayment = $assign['splitpayment'];
         if ($assign['t_period'] && $assign['period'] != DISPOSABLE
             && $assign['t_period'] != $assign['period']) {
             if ($assign['t_period'] == YEARLY) {
-                $val = $val / 12.0;
+                $price = $price / 12.0;
             } elseif ($assign['t_period'] == HALFYEARLY) {
-                $val = $val / 6.0;
+                $price = $price / 6.0;
             } elseif ($assign['t_period'] == QUARTERLY) {
-                $val = $val / 3.0;
+                $price = $price / 3.0;
             }
 
             if ($assign['period'] == YEARLY) {
-                $val = $val * 12.0;
+                $price = $price * 12.0;
             } elseif ($assign['period'] == HALFYEARLY) {
-                $val = $val * 6.0;
+                $price = $price * 6.0;
             } elseif ($assign['period'] == QUARTERLY) {
-                $val = $val * 3.0;
+                $price = $price * 3.0;
             } elseif ($assign['period'] == WEEKLY) {
-                $val = $val / 4.0;
+                $price = $price / 4.0;
             } elseif ($assign['period'] == DAILY) {
-                $val = $val / 30.0;
+                $price = $price / 30.0;
             }
         }
 
-        $val = str_replace(',', '.', sprintf("%.2f", $val));
+        $price = round($price, 2);
+        $value = round($price * $assign['count'], 2);
 
-        $telecom_service = $force_telecom_service_flag && $assign['customertype'] == CTYPES_PRIVATE && $assign['tarifftype'] != SERVICE_OTHER;
+        $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
+            && ($assign['customertype'] == CTYPES_PRIVATE || ($check_customer_vat_payer_flag_for_telecom_service
+                && !($assign['customerflags'] & CUSTOMER_FLAG_VAT_PAYER))) && $issuetime < mktime(0, 0, 0, 7, 1, 2021);
+
+        if ($netflag) {
+            $grossvalue = $value + round($value * ($assign['taxrate'] / 100), 2);
+        } else {
+            $grossvalue = $value;
+        }
 
         if ($assign['invoice']) {
             if ($assign['a_paytype']) {
@@ -1109,7 +1498,7 @@ foreach ($assigns as $assign) {
 
             if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
-                || $currencies[$cid] != $currency) {
+                || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
                 if (!array_key_exists($plan, $numbertemplates)) {
                     $numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
                 }
@@ -1145,8 +1534,8 @@ foreach ($assigns as $assign) {
                 $itemid = 0;
 
                 $customer = $DB->GetRow("SELECT lastname, name, address, street, city, zip, postoffice, ssn, ten,
-                            countryid, divisionid, paytime, documentmemo
-						FROM customeraddressview WHERE id = $cid");
+                            countryid, divisionid, paytime, documentmemo, flags, type
+						FROM customeraddressview WHERE id = ?", array($cid));
 
                 if (!isset($divisions[$customer['divisionid']])) {
                     $divisions[$customer['divisionid']] = $LMS->GetDivision($customer['divisionid']);
@@ -1165,7 +1554,7 @@ foreach ($assigns as $assign) {
                 $fullnumber = docnumber(array(
                     'number' => $newnumber,
                     'template' => $numbertemplates[$plan],
-                    'cdate' => $currtime,
+                    'cdate' => $issuetime,
                     'customerid' => $cid,
                 ));
 
@@ -1181,25 +1570,36 @@ foreach ($assigns as $assign) {
                     $recipient_address_id = null;
                 }
 
+                $exported_telecom_service = !empty($customer['countryid']) && !empty($division['countryid']) && $customer['countryid'] != $division['countryid'];
+                $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
+                    && $assign['customertype'] == CTYPES_PRIVATE && $issuetime < mktime(0, 0, 0, 7, 1, 2021)
+                    && $exported_telecom_service;
+
                 $DB->Execute(
                     "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-					recipient_address_id, currency, currencyvalue, memo, flags)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					recipient_address_id, post_address_id, currency, currencyvalue, memo, flags)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $newnumber,
                         $plan ? $plan : null,
                         $assign['invoice'],
                         $customer['countryid'] ? $customer['countryid'] : null,
-                        $customer['divisionid'], $cid,
+                        $customer['divisionid'],
+                        $cid,
                         $customer['lastname']." ".$customer['name'],
                         ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
                             ? $customer['city'] . ', ' : '') . $customer['address'],
                         $customer['zip'] ? $customer['zip'] : null,
                         $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
-                        $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
+                        $customer['ten'],
+                        $customer['ssn'],
+                        $issuetime,
+                        $saledate,
+                        $paytime,
+                        $inv_paytype,
                         ($division['name'] ? $division['name'] : ''),
                         ($division['shortname'] ? $division['shortname'] : ''),
                         ($division['address'] ? $division['address'] : ''),
@@ -1216,10 +1616,13 @@ foreach ($assigns as $assign) {
                         ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
                         $fullnumber,
                         $recipient_address_id,
+                        empty($assign['post_address_id']) ? null : $LMS->CopyAddress($assign['post_address_id']),
                         $currency,
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],
-                        $telecom_service ? DOC_FLAG_TELECOM_SERVICE : 0,
+                        ($telecom_service ? DOC_FLAG_TELECOM_SERVICE : 0)
+                            + ($customer['flags'] & CUSTOMER_FLAG_RELATED_ENTITY ? DOC_FLAG_RELATED_ENTITY : 0)
+                            + (!$netflag || ($assign['invoice'] != DOC_INVOICE && $assign['invoice'] != DOC_INVOICE_PRO) ? 0 : DOC_FLAG_NET_ACCOUNT),
                     )
                 );
 
@@ -1228,8 +1631,9 @@ foreach ($assigns as $assign) {
                     $telecom_services[$invoices[$cid]] = $telecom_service;
                 }
                 $currencies[$cid] = $currency;
+                $netflags[$cid] = $netflag;
                 $doctypes[$cid] = $assign['invoice'];
-                $LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
+                //$LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
                 $paytypes[$cid] = $inv_paytype;
                 $addresses[$cid] = $assign['recipient_address_id'];
                 $numberplans[$cid] = $plan;
@@ -1237,8 +1641,11 @@ foreach ($assigns as $assign) {
 
             if ($splitpayment) {
                 $DB->Execute(
-                    "UPDATE documents SET splitpayment = ? WHERE id = ?",
-                    array(1, $invoices[$cid])
+                    "UPDATE documents SET flags = flags | ? WHERE id = ?",
+                    array(
+                        DOC_FLAG_SPLIT_PAYMENT,
+                        $invoices[$cid],
+                    )
                 );
             }
 
@@ -1246,18 +1653,32 @@ foreach ($assigns as $assign) {
                 if ($assign['invoice'] == DOC_DNOTE) {
                     $tmp_itemid = 0;
                 } else {
-                    $tmp_itemid = $DB->GetOne(
-                        "SELECT itemid FROM invoicecontents 
-                        WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-                        array(
-                            $assign['tariffid'],
-                            str_replace(',', '.', $val / $assign['count']),
-                            $invoices[$cid],
-                            $desc,
-                            $assign['pdiscount'],
-                            $assign['vdiscount']
-                        )
-                    );
+                    if (empty($assign['tariffid'])) {
+                        $tmp_itemid = $DB->GetOne(
+                            "SELECT itemid FROM invoicecontents
+                            WHERE tariffid IS NULL AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
+                            array(
+                                $price,
+                                $invoices[$cid],
+                                $desc,
+                                $assign['pdiscount'],
+                                $assign['vdiscount']
+                            )
+                        );
+                    } else {
+                        $tmp_itemid = $DB->GetOne(
+                            "SELECT itemid FROM invoicecontents
+                            WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
+                            array(
+                                $assign['tariffid'],
+                                $price,
+                                $invoices[$cid],
+                                $desc,
+                                $assign['pdiscount'],
+                                $assign['vdiscount']
+                            )
+                        );
+                    }
                 }
 
                 if ($tmp_itemid != 0) {
@@ -1265,7 +1686,7 @@ foreach ($assigns as $assign) {
                         $DB->Execute(
                             "UPDATE debitnotecontents SET value = value + ? 
                             WHERE docid = ? AND itemid = ?",
-                            array($val, $invoices[$cid], $tmp_itemid)
+                            array($grossvalue, $invoices[$cid], $tmp_itemid)
                         );
                     } else {
                         $DB->Execute(
@@ -1278,7 +1699,7 @@ foreach ($assigns as $assign) {
                         $DB->Execute(
                             "UPDATE cash SET value = value + ? 
                             WHERE docid = ? AND itemid = ?",
-                            array(str_replace(',', '.', $val * -1), $invoices[$cid], $tmp_itemid)
+                            array(-$grossvalue, $invoices[$cid], $tmp_itemid)
                         );
                     }
                 } else {
@@ -1288,16 +1709,16 @@ foreach ($assigns as $assign) {
                         $DB->Execute(
                             "INSERT INTO debitnotecontents (docid, value, description, itemid) 
                             VALUES (?, ?, ?, ?)",
-                            array($invoices[$cid], $val, $desc, $itemid)
+                            array($invoices[$cid], $grossvalue, $desc, $itemid)
                         );
                     } else {
                         $DB->Execute(
                             "INSERT INTO invoicecontents (docid, value, taxid, taxcategory, prodid,
-                            content, count, description, tariffid, itemid, pdiscount, vdiscount)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            content, count, description, tariffid, itemid, pdiscount, vdiscount, period)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
                                 $invoices[$cid],
-                                str_replace(',', '.', $val / $assign['count']),
+                                $price,
                                 $assign['taxid'],
                                 $assign['taxcategory'],
                                 $assign['prodid'],
@@ -1307,7 +1728,8 @@ foreach ($assigns as $assign) {
                                 empty($assign['tariffid']) ? null : $assign['tariffid'],
                                 $itemid,
                                 $assign['pdiscount'],
-                                $assign['vdiscount']
+                                $assign['vdiscount'],
+                                $assign['period'],
                             )
                         );
 
@@ -1321,11 +1743,11 @@ foreach ($assigns as $assign) {
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             array(
-                                $currtime,
-                                str_replace(',', '.', $val * -1),
+                                $issuetime,
+                                -$grossvalue,
                                 $currency,
                                 $currencyvalues[$currency],
                                 $assign['taxid'],
@@ -1333,7 +1755,8 @@ foreach ($assigns as $assign) {
                                 $desc,
                                 $invoices[$cid],
                                 $itemid,
-                                $linktechnology
+                                $linktechnology,
+                                $assign['tarifftype'],
                             )
                         );
                     }
@@ -1342,24 +1765,25 @@ foreach ($assigns as $assign) {
         } else {
             if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
                 $DB->Execute(
-                    "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
-                        $currtime,
-                        str_replace(',', '.', $val * -1),
+                        $issuetime,
+                        -$grossvalue,
                         $currency,
                         $currencyvalues[$currency],
                         $assign['taxid'],
                         $cid,
                         $desc,
-                        $linktechnology
+                        $linktechnology,
+                        $assign['tarifftype'],
                     )
                 );
             }
         }
 
         if (!$quiet && (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom'])) {
-            print "CID:$cid\tVAL:$val $currency\tDESC:$desc" . PHP_EOL;
+            echo  'CID:' . $cid . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
         }
 
         // settlement accounting
@@ -1380,14 +1804,14 @@ foreach ($assigns as $assign) {
                     $d = $dom;
                     $m = $month;
                     $y = $year;
-                    $value = 0;
+                    $partial_price = 0;
                     $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
                     while ($diffdays) {
                         if ($d - $diffdays <= 0) {
-                            $value += ($d - 1) * $val / $month_days;
+                            $partial_price += ($d - 1) * $price / $month_days;
                             $diffdays -= ($d - 1);
                         } else {
-                            $value += $diffdays * $val / $month_days;
+                            $partial_price += $diffdays * $price / $month_days;
                             $diffdays = 0;
                         }
                         $date = mktime(0, 0, 0, $m, 0, $y);
@@ -1408,35 +1832,81 @@ foreach ($assigns as $assign) {
                     break;
             }
 
-            $value = str_replace(',', '.', sprintf("%.2f", $alldays != 30 ? $diffdays * $val / $alldays : $value));
+            $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 2);
 
-            if (floatval($value)) {
-                //print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value" . PHP_EOL;
+            if (floatval($partial_price)) {
+                //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
 
                 if (empty($assign['backwardperiod'])) {
                     $sdesc = $s_comment;
                 } else {
                     $sdesc = $s_backward_comment;
                 }
-                $sdesc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $sdesc);
-                $sdesc = preg_replace("/\%tariff/", $assign['name'], $sdesc);
-                $sdesc = preg_replace("/\%attribute/", $assign['attribute'], $sdesc);
-                $sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);
-                $sdesc = preg_replace("/\%period/", $period, $sdesc);
-                $sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
-                $sdesc = preg_replace("/\%current_period/", $current_period, $sdesc);
-                $sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
-                $sdesc = preg_replace("/\%prev_period/", $prev_period, $sdesc);
+                $sdesc = str_replace(
+                    array(
+                        '%type',
+                        '%tariff',
+                        '%attribute',
+                        '%desc',
+                        '%period',
+                        '%promotion_name',
+                        '%promotion_schema_name',
+                        '%promotion_schema_length',
+                        '%current_month',
+                        '%current_period',
+                        '%next_period',
+                        '%prev_period',
+                    ),
+                    array(
+                        $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
+                        $assign['name'],
+                        $assign['attribute'],
+                        $assign['description'],
+                        $period,
+                        $assign['promotion_name'],
+                        $assign['promotion_schema_name'],
+                        empty($assign['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $assign['promotion_schema_length']),
+                        $current_month,
+                        $current_period,
+                        $next_period,
+                        $prev_period,
+                    ),
+                    $sdesc
+                );
 
                 if ($assign['invoice']) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $tmp_itemid = 0;
                     } else {
-                        $tmp_itemid = $DB->GetOne(
-                            "SELECT itemid FROM invoicecontents
-						WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
-                            array($assign['tariffid'], str_replace(',', '.', $value / $assign['count']), $invoices[$cid], $sdesc)
-                        );
+                        if (empty($assign['tariffid'])) {
+                            $tmp_itemid = $DB->GetOne(
+                                "SELECT itemid FROM invoicecontents
+                                WHERE tariffid IS NULL AND value = ? AND docid = ? AND description = ?",
+                                array(
+                                    $partial_price,
+                                    $invoices[$cid],
+                                    $sdesc
+                                )
+                            );
+                        } else {
+                            $tmp_itemid = $DB->GetOne(
+                                "SELECT itemid FROM invoicecontents
+                                WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
+                                array(
+                                    $assign['tariffid'],
+                                    $partial_price,
+                                    $invoices[$cid],
+                                    $sdesc
+                                )
+                            );
+                        }
+                    }
+
+                    $partial_value = round($partial_price * $assign['count'], 2);
+                    if ($netflag) {
+                        $partial_grossvalue = $partial_value + round($partial_value * ($assign['taxrate'] / 100), 2);
+                    } else {
+                        $partial_grossvalue = $partial_value;
                     }
 
                     if ($tmp_itemid != 0) {
@@ -1449,7 +1919,7 @@ foreach ($assigns as $assign) {
                             $DB->Execute(
                                 "UPDATE cash SET value = value + ?
 								WHERE docid = ? AND itemid = ?",
-                                array(str_replace(',', '.', $value * -1), $invoices[$cid], $tmp_itemid)
+                                array(-$partial_grossvalue, $invoices[$cid], $tmp_itemid)
                             );
                         }
                     } else {
@@ -1459,16 +1929,16 @@ foreach ($assigns as $assign) {
                             $DB->Execute(
                                 "INSERT INTO debitnotecontents (docid, value, description, itemid) 
 								VALUES (?, ?, ?, ?)",
-                                array($invoices[$cid], $value, $desc, $itemid)
+                                array($invoices[$cid], $partial_grossvalue, $desc, $itemid)
                             );
                         } else {
                             $DB->Execute(
                                 "INSERT INTO invoicecontents (docid, value, taxid, taxcategory, prodid,
-								content, count, description, tariffid, itemid, pdiscount, vdiscount)
-								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+								content, count, description, tariffid, itemid, pdiscount, vdiscount, period)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
                                     $invoices[$cid],
-                                    str_replace(',', '.', $value / $assign['count']),
+                                    $partial_price,
                                     $assign['taxid'],
                                     $assign['taxcategory'],
                                     $assign['prodid'],
@@ -1478,7 +1948,8 @@ foreach ($assigns as $assign) {
                                     empty($assign['tariffid']) ? null : $assign['tariffid'],
                                     $itemid,
                                     $assign['pdiscount'],
-                                    $assign['vdiscount']
+                                    $assign['vdiscount'],
+                                    $assign['period'],
                                 )
                             );
 
@@ -1492,11 +1963,11 @@ foreach ($assigns as $assign) {
                         }
                         if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                             $DB->Execute(
-                                "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology)
-								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 array(
-                                    $currtime,
-                                    str_replace(',', '.', $value * -1),
+                                    $issuetime,
+                                    -$partial_grossvalue,
                                     $currency,
                                     $currencyvalues[$currency],
                                     $assign['taxid'],
@@ -1504,30 +1975,32 @@ foreach ($assigns as $assign) {
                                     $sdesc,
                                     $invoices[$cid],
                                     $itemid,
-                                    $linktechnology
+                                    $linktechnology,
+                                    $assign['tarifftype'],
                                 )
                             );
                         }
                     }
                 } else {
                     $DB->Execute(
-                        "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology, servicetype)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         array(
-                            $currtime,
-                            str_replace(',', '.', $value * -1),
+                            $issuetime,
+                            -$partial_grossvalue,
                             $currency,
                             $currencyvalues[$currency],
                             $assign['taxid'],
                             $cid,
                             $sdesc,
-                            $linktechnology
+                            $linktechnology,
+                            $assign['tarifftype'],
                         )
                     );
                 }
 
                 if (!$quiet) {
-                    print "CID:$cid\tVAL:$value $currency\tDESC:$sdesc" . PHP_EOL;
+                    echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                 }
             }
 
@@ -1541,13 +2014,15 @@ foreach ($assigns as $assign) {
 if ($check_invoices) {
     $DB->Execute(
         "UPDATE documents SET closed = 1
-		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "customerid IN (
-			SELECT c.customerid
-			FROM cash c
-			WHERE c.time <= ?NOW?
-				" . ($customergroups ? str_replace('%customerid_alias%', 'c.customerid', $customergroups) : '') . "
-			GROUP BY c.customerid
-			HAVING SUM(c.value * c.currencyvalue) >= 0
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1') . " AND customerid IN (
+			SELECT cash.customerid
+			FROM cash
+			JOIN customers c ON c.id = cash.customerid
+			WHERE cash.time <= ?NOW?"
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . ($customergroups ? str_replace('%customerid_alias%', 'cash.customerid', $customergroups) : '') . "
+			GROUP BY cash.customerid
+			HAVING SUM(cash.value * cash.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)
 			AND cdate <= ?NOW?
 			AND closed = 0",
@@ -1559,16 +2034,21 @@ if ($delete_old_assignments_after_days) {
     // delete old assignments
     $DB->Execute(
         "DELETE FROM liabilities WHERE id IN (
-			SELECT liabilityid FROM assignments
-				WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400
-						OR (period = ? AND at < $today - ? * 86400))
-					AND liabilityid IS NOT NULL)
+			SELECT a.liabilityid FROM assignments a
+			JOIN customers c ON c.id = a.customerid
+            WHERE " . ($customerid ? 'a.customerid = ' . $customerid : '1 = 1')
+                . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
+                . " AND ((a.dateto <> 0 AND a.dateto < $today - ? * 86400
+                    OR (a.period = ? AND a.at < $today - ? * 86400))
+                AND a.liabilityid IS NOT NULL)
 		)",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );
     $DB->Execute(
         "DELETE FROM assignments
-		WHERE " . ($customerid ? 'customerid = ' . $customerid . ' AND ' : '') . "((dateto <> 0 AND dateto < $today - ? * 86400)
+		WHERE " . ($customerid ? 'customerid = ' . $customerid : '1 = 1')
+            . ($divisionid ? ' AND EXISTS (SELECT c.id FROM customers c WHERE c.divisionid = ' . $divisionid . ' AND c.id = customerid)' : '')
+            . " AND ((dateto <> 0 AND dateto < $today - ? * 86400)
 			OR (period = ? AND at < $today - ? * 86400))",
         array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days)
     );
@@ -1577,4 +2057,8 @@ if ($delete_old_assignments_after_days) {
 // clear voip tariff rule states
 $DB->Execute("DELETE FROM voip_rule_states");
 
-$DB->Destroy();
+if ($test) {
+    $DB->RollbackTrans();
+} else {
+    $DB->CommitTrans();
+}

@@ -71,13 +71,15 @@
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
 			{$channels[channels].devcnt|default:0}
 			{if $channels[channels].devcnt}
-			<IMG SRC="img/netdev.gif" ALT="" class="lms-ui-tooltip-netdevlist" data-resourceid="{$channels[channels].id}"></A>
+				<img src="img/netdev.gif" alt="" class="lms-ui-hint-rollover"
+					data-url="?m=ewxdevlist&id={$channels[channels].id}">
 			{/if}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
 			{$channels[channels].nodecnt|default:0}
 			{if $channels[channels].nodecnt}
-			<IMG SRC="img/node.gif" ALT="" class="lms-ui-tooltip-ewxnodelist" data-resourceid="{$channels[channels].id}"></A>
+				<img src="img/node.gif" alt="" class="lms-ui-hint-rollover"
+					data-url="?m=ewxnodelist&id={$channels[channels].id}">
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
@@ -89,11 +91,11 @@
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>
-		<TD COLSPAN="9" class="empty-table">
-			<p>{trans("No such channels in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="9" class="empty-table">
+			{trans("No such channels in database.")}
+		</td>
+	</tr>
 	{/section}
     </TBODY>
     <TFOOT>

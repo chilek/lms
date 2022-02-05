@@ -87,6 +87,7 @@ jQuery.fn.extend({
 function show_pagecontent() {
 	$('#lms-ui-spinner').hide();
 	$('#lms-ui-contents').show();
+	$(window).resize();
 	if (location.hash.length && $(location.hash).length) {
 		$(location.hash)[0].scrollIntoView();
 
@@ -247,11 +248,12 @@ function init_datepickers(selector) {
 
 	if (!lmsSettings.openCalendarOnInputClick) {
 		options.showOn = 'button';
-		options.buttonText = '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>';
+		options.buttonText = '<i class="lms-ui-icon-calendar" title="' + $t('Click here to open calendar') + '"></i>';
 	}
 
 	$(selector).each(function() {
 		var unix = $(this).hasClass('unix') || $(this).hasClass('lms-ui-date-unix');
+		var yearRange = $(this).attr('data-year-range');
 		var value = $(this).val();
 		var dt = null;
 		if (unix) {
@@ -259,7 +261,7 @@ function init_datepickers(selector) {
 				dt = new Date();
 				dt.setTime($(this).val() * 1000);
 			}
-			var tselem = $(this).clone(true).removeData().attr('type', 'hidden');
+			var tselem = $(this).clone(true).removeData().attr('type', 'hidden').removeAttr('id');
 			tselem.insertBefore($(this).removeAttr('name'));
 			if ($(this).val() == '0') {
 				$(this).val('');
@@ -270,6 +272,9 @@ function init_datepickers(selector) {
 					tselem.val('0');
 				}
 			});
+		}
+		if (yearRange) {
+			options.yearRange = yearRange;
 		}
 		$(this).wrap('<div class="lms-ui-date-container"/>');
 		$(this).datepicker(options).attr("autocomplete", 'off')
@@ -292,9 +297,19 @@ function initAdvancedSelects(selector) {
 		}
 		$(this).on('chosen:ready', function () {
 			if (typeof ($(this).attr('required')) !== 'undefined') {
-				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()));
+				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
 			}
 		});
+
+		$(this).on('chosen:showing_dropdown', function(e) {
+			var dropdown = $(this).next().find('.chosen-drop');
+			dropdown.position({
+				my: "left top",
+				at: "left bottom",
+				of: dropdown.prev()
+			});
+		});
+
 		$(this).chosen($.extend({
 			no_results_text: $t('No results match'),
 			placeholder_text_single: $t('Select an Option'),
@@ -330,7 +345,8 @@ function init_comboboxes(selector) {
 			$.grep($('select', scombobox).attr('class').split(' '), function(value) {
 				return value != 'lms-ui-combobox';
 			}));
-		if (typeof($(this).attr('data-value')) !== 'undefined') {
+		if (typeof($(this).attr('data-value')) === 'string' &&
+			$(this).attr('data-value').length) {
 			scombobox.scombobox('val', $(this).attr('data-value'));
 			$(this).removeAttr('data-value');
 		} else if ($(this).attr('data-id-value')) {
@@ -357,6 +373,12 @@ function init_comboboxes(selector) {
 			}
 		}, 'lms-ui');
 	}
+}
+
+function updateComboBoxes(selector) {
+	$(selector).each(function() {
+		$(this).scombobox('val', $(this).val());
+	});
 }
 
 function init_datatables(selector) {
@@ -442,7 +464,7 @@ function init_datatables(selector) {
 					.search(this.value.length ? this.value : '', true).draw();
 			});
 			$('thead .search-row select', elem).on('change', function () {
-				var value = this.value;
+				var value = this.value.replace(/([()])/g, '\\$1');
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
 					.search(value.length ? '^' + value + '$' : '', true).draw();
 			});
@@ -464,9 +486,9 @@ function init_datatables(selector) {
 						return;
 					}
 					if (typeof searchColumns[index].search === 'undefined') {
-						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
+						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$\\]/g, ''));
 					} else {
-						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
+						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$\\]/g, ''));
 						if (searchColumns[index].search.length) {
 							if ($(searchFields[i]).is('thead select')) {
 								searchValue = '^' + searchColumns[index].search + '$';
@@ -474,7 +496,6 @@ function init_datatables(selector) {
 								searchValue = searchColumns[index].search;
 							}
 						}
-						//console.log(searchValue);
 						api.column(index).search(searchValue, true).draw();
 					}
 					i++;
@@ -568,7 +589,7 @@ function init_datatables(selector) {
 			var i = 0;
 			api.columns().every(function (index) {
 				if (index == column) {
-					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
+					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$\\]/g, ''));
 				}
 				if (columnStates && !columnStates[index].visible) {
 					return;
@@ -647,7 +668,8 @@ function init_titlebars(selector) {
 		$(this).prop('onclick', null);
 		$(this).click(function () {
 			var elemid = $(this).attr('data-lmsbox-content');
-			showOrHide(elemid);
+			$('#' + elemid).toggle();
+			setStorageItem(elemid, $('#' + elemid).is(':visible') ? '1' : '0', 'local');
 			$('#' + elemid).find('.lms-ui-datatable').each(function () {
 				if (!$.fn.dataTable.isDataTable(this)) {
 					init_datatables(this);
@@ -763,7 +785,7 @@ function initAutoGrow(selector) {
 			$(this).autoHeight();
 		} else {
 			$(this).inputAutogrow({
-				minWidth: 200,
+				minWidth: 150,
 				maxWidth: 500
 			}).addClass('lms-ui-autogrow-initiated');
 		}
@@ -799,6 +821,7 @@ function initListQuickSearch(options) {
 		elem: list_suggestion[0],
 		uri: options.ajax,
 		suggestionContainer: '#lms-ui-list-suggestion-container',
+		autoSubmitForm: false,
 		onSubmit: function (data) {
 			list_suggestion.val('');
 			var html = '<li data-item-id="' + data.id + '">' +
@@ -835,6 +858,280 @@ function initListQuickSearch(options) {
 
 			return result;
 		}
+	});
+}
+
+function initMultiChecks(selector) {
+	var tbodies = $(selector);
+	$.each(tbodies, function(index, elem) {
+		var tbody = $(elem);
+		if (tbody.is('table')) {
+			tbody = tbody.find('tbody');
+		}
+		var checkboxes = tbody.parent().find('[type="checkbox"]');
+		var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
+
+		var checkall = checkboxes.filter('.lms-ui-multi-check-all');
+		if (!checkall.length) {
+			checkall = tbody.siblings('thead,tfoot').filter('.lms-ui-multi-check-all');
+		}
+		if (checkall.length) {
+			checkall.parent().addClass('lms-ui-multi-check-all');
+			$(checkall).click(function() {
+				var checked = $(this).prop('checked');
+				checkall.not(this).each(function() {
+					$(this).prop('checked', checked);
+				});
+				allcheckboxes.filter(':visible').each(function() {
+					this.checked = checked;
+				});
+			});
+		} else {
+			checkall = null;
+		}
+
+		elem.updateCheckAll = function() {
+			allcheckboxes.filter(':not(:visible)').prop('checked', false);
+			updateCheckAll();
+		}
+
+		function checkElements(checkbox) {
+			// reorder all checkboxes list when it is contained in lms-ui-datatable
+			if ($(checkbox).closest('.lms-ui-datatable').length) {
+				checkboxes = tbody.parent().find('[type="checkbox"]');
+				allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
+			}
+
+			var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]:visible')),
+				j = allcheckboxes.index(checkbox);
+			if (i > -1) {
+				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
+				var start = Math.min(i, j);
+				var stop = Math.max(i, j);
+				for (i = start; i <= stop; i++) {
+					allcheckboxes[i].checked = checked;
+				}
+				updateCheckAll();
+			}
+		}
+
+		function updateCheckAll() {
+			if (checkall) {
+				checkall.prop('checked', allcheckboxes.filter(':visible:checked').length == allcheckboxes.filter(':visible').length);
+			}
+		}
+
+		$.each(allcheckboxes, function(index, elem) {
+			var checkbox = $(elem)[0];
+			var row = $(checkbox).closest('tr,.lms-ui-tab-table-row');
+			row.click(function(e) {
+				if ($(e.target).closest('.lms-ui-button-clipboard').length ||
+					$(e.target).closest('.lms-ui-multi-check-ignore').length) {
+					return;
+				}
+				if (e.shiftKey) {
+					checkElements(checkbox);
+				} else {
+					checkbox.checked = !checkbox.checked;
+					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
+					$(checkbox).attr('data-prev-checked', checkbox.checked);
+					updateCheckAll();
+				}
+			});
+			row.find('[type="checkbox"]').click(function(e) {
+				if (e.shiftKey) {
+					checkElements(this);
+				} else {
+					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
+					$(this).attr('data-prev-checked', this.checked);
+					updateCheckAll();
+				}
+				e.stopPropagation();
+			});
+			row.find('a:not(.lms-ui-button-clipboard)').click(function(e) {
+				e.stopPropagation();
+			});
+		});
+	});
+}
+
+function initRolloverHints(selectors) {
+	if (!Array.isArray(selectors)) {
+		selectors = [ selectors ];
+	}
+
+	$.each(selectors, function(idx, selector) {
+		$(selector).each(function() {
+			var elem = $(this);
+			if (!elem.is('[data-init]')) {
+				var content = elem.attr('data-hint');
+				var url = elem.attr('data-url');
+
+				elem.attr('data-init', '1').removeAttr('data-hint');
+
+				if (url) {
+					content = function (callback) {
+						$.ajax(url, {
+							async: true,
+							success: function(data) {
+								callback('<div class="lms-ui-hint-titlebar">' +
+									'<div class="lms-ui-hint-title"></div>' +
+									'<i class="lms-ui-icon-hide close-button"></i>' +
+									'</div>' +
+									'<div class="lms-ui-hint-content">' +
+									data +
+									'</div>'
+								);
+							}
+						});
+					}
+				} else {
+					content = '<div class="lms-ui-hint-titlebar">' +
+						'<div class="lms-ui-hint-title"></div>' +
+						'<i class="lms-ui-icon-hide close-button"></i>' +
+						'</div>' +
+						'<div class="lms-ui-hint-content">' +
+						content +
+						'</div>';
+				}
+
+				elem.tooltip({
+					items: elem,
+					show: false,
+					//hide: false,
+					track: false,
+					position: {my: "left top", at: "left bottom", collision: "flipfit"},
+					open: function (e, ui) {
+						$(ui.tooltip).find('.close-button').click(function () {
+							elem.tooltip('close').removeClass('open');
+							if ($('body.lms-ui-mobile').length) {
+								disableFullScreenPopup();
+							}
+							$(ui.tooltip).remove();
+						});
+						elem.addClass('open');
+						if ($('body.lms-ui-mobile').length) {
+							enableFullScreenPopup();
+						}
+						if (typeof (e.originalEvent) === 'undefined') {
+							return false;
+						}
+						var id = $(ui.tooltip).attr('id');
+						$('div.ui-tooltip').not('#' + id).remove();
+					},
+					close: function (e, ui) {
+						$(ui.tooltip).mouseenter(function () {
+							$(this).stop(true);
+						}).mouseleave(function () {
+							elem.tooltip('close').toggleClass('open');
+							if ($('body.lms-ui-mobile').length) {
+								disableFullScreenPopup();
+							}
+							$(this).remove();
+						});
+					},
+					create: function() {
+						elem.tooltip('open');
+					},
+					tooltipClass: 'lms-ui-hint-rollover',
+					content: content
+				});
+			}
+		});
+	});
+}
+
+function initToggleHints(selectors) {
+	if (!Array.isArray(selectors)) {
+		selectors = [ selectors ];
+	}
+
+	$.each(selectors, function(idx, selector) {
+		$(selector).each(function() {
+			var elem = $(this);
+			if (!elem.is('[data-init]')) {
+				var content = elem.attr('data-hint');
+				var url = elem.attr('data-url');
+
+				elem.attr('data-init', '1').removeAttr('data-hint');
+
+				elem.on('mouseenter mouseover mouseleave', function(e) {
+					e.stopImmediatePropagation();
+				}).click(function() {
+					if (!elem.is('[data-init="2"]')) {
+						elem.attr('data-init', '2');
+
+						if (url) {
+							content = function (callback) {
+								$.ajax(url, {
+									async: true,
+									success: function(data) {
+										callback('<div class="lms-ui-hint-titlebar">' +
+											'<div class="lms-ui-hint-title"></div>' +
+											'<i class="lms-ui-icon-hide close-button"></i>' +
+											'</div>' +
+											'<div class="lms-ui-hint-content">' +
+											data +
+											'</div>'
+										);
+										elem.tooltip('open');
+									}
+								});
+							}
+						} else {
+							content = '<div class="lms-ui-hint-titlebar">' +
+								'<div class="lms-ui-hint-title"></div>' +
+								'<i class="lms-ui-icon-hide close-button"></i>' +
+								'</div>' +
+								'<div class="lms-ui-hint-content">' +
+								content +
+								'</div>';
+						}
+
+						elem.tooltip({
+							items: elem,
+							show: false,
+							hide: false,
+							track: false,
+							position: {my: "left top", at: "left bottom", collision: "flipfit"},
+							open: function (e, ui) {
+								$(ui.tooltip).find('.close-button').click(function () {
+									elem.tooltip('close').toggleClass('open');
+									if ($('body.lms-ui-mobile').length) {
+										disableFullScreenPopup();
+									}
+								});
+								if (typeof (e.originalEvent) === 'undefined') {
+									return false;
+								}
+								var id = $(ui.tooltip).attr('id');
+								$('div.ui-tooltip').not('#' + id).remove();
+							},
+							close: function (e, ui) {
+								$(ui.tooltip).mouseenter(function () {
+									$(this).stop(true);
+								}).mouseleave(function () {
+									$(this).remove();
+								});
+							},
+							tooltipClass: 'lms-ui-hint-toggle',
+							content: content
+						});
+					}
+					if (elem.is('.open')) {
+						if ($('body.lms-ui-mobile').length) {
+							disableFullScreenPopup();
+						}
+						elem.tooltip('close').toggleClass('open');
+					} else {
+						if ($('body.lms-ui-mobile').length) {
+							enableFullScreenPopup();
+						}
+						elem.tooltip('open').toggleClass('open');
+					}
+				});
+			}
+		});
 	});
 }
 
@@ -898,6 +1195,13 @@ $(function() {
 		$(this).unbind('click');
 	});
 
+	$('a.lms-ui-button').click(function(e) {
+		if ($(this).is('[disabled]')) {
+			e.stopImmediatePropagation();
+			e.preventDefault();
+		}
+	});
+
 	init_datepickers('div.calendar input,div.lms-ui-date,input.calendar,input.lms-ui-date');
 
 	$('.lms-ui-button-date-period').click(function() {
@@ -937,32 +1241,32 @@ $(function() {
 			}
 		}
 
-		if (period == 'previous-month' || typeof(period) === 'undefined') {
+		if (period === 'previous-month' || typeof(period) === 'undefined') {
 			fromdate.setDate(0);
 			fromdate.setDate(1);
 			todate.setDate(0);
-		} else if (period == 'current-month') {
+		} else if (period === 'current-month') {
 			fromdate = new Date();
 			todate = new Date();
 			fromdate.setDate(1);
-			todate.setMonth(todate.getMonth() + 1);
-			todate.setDate(0);
-		} else if (period == 'next-month') {
+			todate = new Date(todate.getFullYear(), todate.getMonth() + 1, 0);
+		} else if (period === 'next-month') {
 			fromdate.setMonth(fromdate.getMonth() + 1);
 			fromdate.setDate(1);
+			if (todate.getMonth() == 11) {
+				todate.setFullYear(todate.getFullYear() + 1);
+			}
 			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
-		} else if (period == 'current-year') {
-			fromdate = new Date();
-			todate = new Date();
+		} else if (period === 'current-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
 			todate.setMonth(11);
 			todate.setDate(31);
-		} else if (period == 'previous-year' || period == 'next-year') {
+		} else if (period === 'previous-year' || period === 'next-year') {
 			fromdate.setMonth(0);
 			fromdate.setDate(1);
-			if (period == 'previous-year') {
+			if (period === 'previous-year') {
 				fromdate.setFullYear(fromdate.getFullYear() - 1);
 			} else {
 				fromdate.setFullYear(fromdate.getFullYear() + 1);
@@ -976,8 +1280,8 @@ $(function() {
 			$(from).val(sprintf("%04d/%02d/%02d %02d:%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate(), 0, 0));
 			$(to).val(sprintf("%04d/%02d/%02d %02d:%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate(), 23, 59));
 		} else {
-			$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
-			$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+			$(from).datepicker("setDate", new Date(fromdate.getFullYear(), fromdate.getMonth(), fromdate.getDate()));
+			$(to).datepicker("setDate", new Date(todate.getFullYear(), todate.getMonth(), todate.getDate()));
 		}
 
 		$(from).trigger('change');
@@ -1048,7 +1352,8 @@ $(function() {
 				$(this).datetimepicker('toggle');
 			});
 		} else {
-			$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
+			$(this).wrap('<div class="lms-ui-datetime-container"/>');
+			$('<i class="lms-ui-icon-calendar ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
 				.insertAfter(this).click(function () {
 				$(this).prev().datetimepicker('toggle');
 			});
@@ -1057,10 +1362,22 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('mouseup', '[data-target-url]',
+	$(document).on('mousedown mouseup', '[data-target-url]',
 		function(e) {
 			var elem = $(this);
 			var target = $(e.target);
+			if (target.closest('.lms-ui-ignore-target-url').length) {
+				return;
+			}
+			if (e.type == 'mousedown') {
+				elem.data('mousedown', Date.now());
+				return;
+			} else {
+				if (Date.now() - parseInt(elem.data('mousedown')) >= 500) {
+					e.preventDefault();
+					return;
+				}
+			}
 			var url = $(this).attr('data-target-url');
 			var link = target.closest('a');
 			var ifLink = (link.length && elem.find(link).length > 0);
@@ -1086,12 +1403,20 @@ $(function() {
 		}
 	);
 
-	$('.lms-ui-button-clipboard').attr('title', $t('Click copies to clipboard'));
-	new ClipboardJS('.lms-ui-button-clipboard');
+	$('.lms-ui-button-clipboard:not([title])').attr('title', $t('Click copies to clipboard'));
+	new ClipboardJS('.lms-ui-button-clipboard:not([data-clipboard-handler])');
+	new ClipboardJS('.lms-ui-button-clipboard[data-clipboard-handler]', {
+		text: function(trigger) {
+			var e = $.Event('lms:clipboard:click');
+			$(trigger).trigger(e);
+			return e.result;
+		}
+	});
 
 	if (tooltipsEnabled) {
-		$(document).on('mouseenter', '[title]', function () {
-			if ($(this).is('[data-tooltip]')) {
+		$(document).on('mouseenter', '[title]:not(.lms-ui-hint-rollover,.lms-ui-hint-toggle)', function () {
+			if ($(this).is('[data-tooltip]') || $(this).closest('.tox-tinymce,.tox-tinymce-aux').length ||
+				$(this).prop('disabled') || $(this).is('[disabled]')) {
 				return;
 			}
 			tooltipClass = '';
@@ -1124,53 +1449,122 @@ $(function() {
 		});
 	}
 
-	[
-		{ class: 'lms-ui-tooltip-voipaccountinfo', url: '?m=voipaccountinfoshort&id='},
-		{ class: 'lms-ui-tooltip-invoiceinfo', url: '?m=invoiceinfo&id='},
-		{ class: 'lms-ui-tooltip-docnumber', url: '?m=number&id='},
-		{ class: 'lms-ui-tooltip-customerinfo', url: '?m=customerinfoshort&id='},
-		{ class: 'lms-ui-tooltip-nodelist', url: '?m=nodelistshort&id='},
-		{ class: 'lms-ui-tooltip-ewxnodelist', url: '?m=ewxnodelist&id='},
-		{ class: 'lms-ui-tooltip-rtticketinfo', url: '?m=rtticketinfo&id='},
-		{ class: 'lms-ui-tooltip-customerassignmentinfo', url: '?m=customerassignmentinfo&id='},
-		{ class: 'lms-ui-tooltip-nodegroupinfo', url: '?m=nodeinfo&nodegroups=1&id='},
-		{ class: 'lms-ui-tooltip-netdevlist', url: '?m=ewxdevlist&id='},
-		{ class: 'lms-ui-tooltip-eventinfoshort', url: '?m=eventinfoshort&id='}
-	].forEach(function(popup) {
-		$('.' + popup.class).tooltip({
-			items: '.' + popup.class,
-			show: false,
-			//hide: false,
-			track: false,
-			position: { my: "left top", at: "left bottom", collision: "flipfit" },
-			open: function(e, ui) {
-				if (typeof(e.originalEvent) === 'undefined') {
-					return false;
-				}
-				var id = $(ui.tooltip).attr('id');
-				$('div.ui-tooltip').not('#' + id).remove();
-			},
-			close: function(e, ui) {
-				$(ui.tooltip).mouseenter(function() {
-					$(this).stop(true);
-				}).mouseleave(function() {
-					$(this).remove();
-				});
-			},
-			tooltipClass: popup.class,
-			content: function(callback) {
-				var elem = $(this);
-				var resourceid = elem.attr('data-resourceid');
-				$.ajax(popup.url + resourceid, {
-					async: true,
-					success: function(data) {
-						callback(data);
-						// elem.tooltip('disable');
-						// elem.tooltip('enable');
+	$(document).keydown(function(e) {
+		if (e.key != 'Escape') {
+			return;
+		}
+		$(':ui-tooltip').tooltip('close').toggleClass('open');
+		disableFullScreenPopup();
+		var tooltip = $('.lms-ui-hint-rollover[data-init="1"]').data('uiTooltip');
+		if (tooltip && typeof(tooltip.tooltips) == 'object') {
+			$.each(tooltip.tooltips, function(index) {
+				$('#' + index).remove();
+			});
+		}
+	});
+
+	$(document).on('mouseenter', '.lms-ui-hint-rollover,.lms-ui-hint-toggle', function() {
+		if ($(this).is('.ui-tooltip') || $(this).is('[data-init]')) {
+			return;
+		}
+		if ($(this).is('.lms-ui-hint-rollover')) {
+			initRolloverHints(this);
+		} else {
+			initToggleHints(this);
+		}
+	});
+
+	var SpeechRecognition = window.hasOwnProperty('SpeechRecognition') ?
+		SpeechRecognition :
+		(window.hasOwnProperty('webkitSpeechRecognition') ? webkitSpeechRecognition : null);
+	var speechRecognitionTimeout = null;
+
+	if (SpeechRecognition) {
+		$('.lms-ui-button-speech-recognition').click(function () {
+			var button = $(this);
+			var input = $(button.attr('data-target'));
+			var inputId = input.attr('id');
+			button.toggleClass('active');
+			if (button.is('.active')) {
+				$('.lms-ui-button-speech-recognition.active').not(button).removeClass('active');
+				var recognition = new SpeechRecognition();
+				recognition.continuous = true;
+				recognition.lang = lmsSettings.uiLanguage.replace('_', '-');
+				recognition.interimResults = false;
+				recognition.maxAlternatives = 1;
+				recognition.onresult = function (e) {
+					var value = input.val();
+					if (e.results.length) {
+						var result = e.results[e.results.length - 1][0].transcript;
+						var editor = tinyMCE.get(inputId);
+						if (editor && !editor.isHidden()) {
+							editor.insertContent(result);
+						} else {
+							var beginSubString = value.substring(0, input.get(0).selectionStart);
+							beginSubString += beginSubString.length && beginSubString[beginSubString.length - 1] != ' ' ? ' ' : '';
+							var endSubString = value.substring(input.get(0).selectionEnd);
+							endSubString = (endSubString.length && endSubString[0] != ' ' ? ' ' : '') + endSubString;
+							input.val(beginSubString + result + endSubString);
+							input.get(0).selectionStart = input.get(0).selectionEnd = beginSubString.length + result.length;
+							if (editor) {
+								editor.setContent(input.val());
+							}
+						}
+						if (speechRecognitionTimeout) {
+							clearTimeout(speechRecognitionTimeout);
+						}
+						speechRecognitionTimeout = setTimeout(function () {
+							recognition.stop();
+							button.removeClass('active');
+						}, 5000);
 					}
-				});
+				}
+				recognition.onspeechstart = function() {
+					if (speechRecognitionTimeout) {
+						clearTimeout(speechRecognitionTimeout);
+						speechRecognitionTimeout = null;
+					}
+				}
+				recognition.onspeechend = function() {
+					if (speechRecognitionTimeout) {
+						clearTimeout(speechRecognitionTimeout);
+					}
+					speechRecognitionTimeout = setTimeout(function () {
+						recognition.stop();
+						button.removeClass('active');
+					}, 5000);
+				}
+				recognition.start();
+				speechRecognitionTimeout = setTimeout(function () {
+					recognition.stop();
+					button.removeClass('active');
+				}, 5000);
+			} else {
+				if (speechRecognitionTimeout) {
+					clearTimeout(speechRecognitionTimeout);
+					speechRecognitionTimeout = null;
+				}
 			}
 		});
+	} else {
+		$('.lms-ui-button-speech-recognition').hide();
+	}
+
+	$(document).mouseup(function(e) {
+		var hintPopups = $('.lms-ui-hint-toggle.ui-tooltip');
+		var hintTrigger = $(e.target).closest('.lms-ui-hint-toggle:not(.ui-tooltip)');
+		var hintTriggers = $('.lms-ui-hint-toggle:not(.ui-tooltip).open');
+		if ((!hintTrigger.length ||
+				!hintTriggers.is(hintTrigger)) &&
+			hintPopups.length &&
+			!hintPopups.is(e.target) &&
+			!hintPopups.has(e.target).length)
+		{
+			$('.lms-ui-hint-toggle[data-init="2"].open').filter(function() {
+				return hintTrigger.length && !$(this).is(hintTrigger) || !hintTrigger.length;
+			}).tooltip('close').toggleClass('open');
+			disableFullScreenPopup();
+		}
 	});
 
 	initAdvancedSelects('select.lms-ui-advanced-select');
@@ -1258,100 +1652,13 @@ $(function() {
 	})
 	.draggable();
 
-	$(document).on('keyup keydown', function(e) {
-		$('body').css('user-select', e.shiftKey ? 'none' : 'auto');
-	});
+	// we wanted to remove visual text selection effect earlier, but this caused
+	// some selection editing problems, so we commented it out and left it for better times
+//	$(document).on('keyup keydown', function(e) {
+//		$('body').css('user-select', e.shiftKey ? 'none' : 'auto');
+//	});
 
-	var tbodies = $('table.lms-ui-multi-check,tbody.lms-ui-multi-check,div.lms-ui-multi-check');
-	$.each(tbodies, function(index, elem) {
-		var tbody = $(elem);
-		if (tbody.is('table')) {
-			tbody = tbody.find('tbody');
-		}
-		var checkboxes = tbody.parent().find(':checkbox');
-		var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
-
-		var checkall = checkboxes.filter('.lms-ui-multi-check-all');
-		if (!checkall.length) {
-			checkall = tbody.siblings('thead,tfoot').filter('.lms-ui-multi-check-all');
-		}
-		if (checkall.length) {
-			checkall.parent().addClass('lms-ui-multi-check-all');
-			$(checkall).click(function() {
-				var checked = $(this).prop('checked');
-				checkall.not(this).each(function() {
-					$(this).prop('checked', checked);
-				});
-				allcheckboxes.filter(':visible').each(function() {
-					this.checked = checked;
-				});
-			});
-		} else {
-			checkall = null;
-		}
-
-		elem.updateCheckAll = function() {
-			allcheckboxes.filter(':not(:visible)').prop('checked', false);
-			updateCheckAll();
-		}
-
-		function checkElements(checkbox) {
-			// reorder all checkboxes list when it is contained in lms-ui-datatable
-			if ($(checkbox).closest('.lms-ui-datatable').length) {
-				checkboxes = tbody.parent().find(':checkbox');
-				allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
-			}
-
-			var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]:visible')),
-				j = allcheckboxes.index(checkbox);
-			if (i > -1) {
-				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
-				var start = Math.min(i, j);
-				var stop = Math.max(i, j);
-				for (i = start; i <= stop; i++) {
-					allcheckboxes[i].checked = checked;
-				}
-				updateCheckAll();
-			}
-		}
-
-		function updateCheckAll() {
-			if (checkall) {
-				checkall.prop('checked', allcheckboxes.filter(':visible:checked').length == allcheckboxes.filter(':visible').length);
-			}
-		}
-
-		$.each(allcheckboxes, function(index, elem) {
-			var checkbox = $(elem)[0];
-			var row = $(checkbox).closest('tr,.lms-ui-tab-table-row');
-			row.click(function(e) {
-				if ($(e.target).closest('.lms-ui-button-clipboard').length) {
-					return;
-				}
-				if (e.shiftKey) {
-					checkElements(checkbox);
-				} else {
-					checkbox.checked = !checkbox.checked;
-					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
-					$(checkbox).attr('data-prev-checked', checkbox.checked);
-					updateCheckAll();
-				}
-			});
-			row.find(':checkbox').click(function(e) {
-				if (e.shiftKey) {
-					checkElements(this);
-				} else {
-					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
-					$(this).attr('data-prev-checked', this.checked);
-					updateCheckAll();
-				}
-				e.stopPropagation();
-			});
-			row.find('a:not(.lms-ui-button-clipboard)').click(function(e) {
-				e.stopPropagation();
-			});
-		});
-	});
+	initMultiChecks('table.lms-ui-multi-check,tbody.lms-ui-multi-check,div.lms-ui-multi-check');
 
 	var dataTables = $('.lms-ui-datatable');
 	dataTables.each(function() {
@@ -1518,9 +1825,9 @@ $(function() {
 			init_instance_callback: function (ed) {
 				var textarea = $(ed.settings.selector);
 				if (textarea.hasClass('lms-ui-error') || textarea.hasClass('alert')) {
-					textarea.siblings('.mce-tinymce').addClass('lms-ui-error');
+					textarea.siblings('.tox-tinymce').addClass('lms-ui-error');
 				} else if (textarea.hasClass('lms-ui-warning')) {
-					textarea.siblings('.mce-tinymce').addClass('lms-ui-warning');
+					textarea.siblings('.tox-tinymce').addClass('lms-ui-warning');
 				}
 				if (elementsToInitiate > 0) {
 					elementsToInitiate--;
@@ -1532,12 +1839,15 @@ $(function() {
 			language: lmsSettings.language,
 			language_url: lmsSettings.language == 'en' ? null : 'js/tinymce5/langs/' + lmsSettings.language + '.js',
 			// TinyMCE 4
-			skin_url: 'css/tinymce4',
-			content_css: 'css/tinymce4/lms/content.css',
-			theme: "modern",
-			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
+			//skin_url: 'css/tinymce4',
+			//content_css: 'css/tinymce4/lms/content.css',
+			//theme: "modern",
+			//plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			// TinyMCE 5
-			//plugins: "preview,autoresize,fullscreen,searchreplace,table,image,link,anchor,autosave,paste",
+			skin_url: 'css/tinymce5',
+//			content_css: 'css/tinymce5/content.min.css',
+			plugins: "preview,autoresize,fullscreen,searchreplace,table,image,imagetools,link,anchor,autosave,paste",
+			//fullscreen_native: true,
 			// #########
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
 				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent ' +
@@ -1550,6 +1860,9 @@ $(function() {
 			paste_data_images: true,
 			relative_urls : false,
 			remove_script_host : false,
+			forced_root_block : false,
+			entity_encoding: 'raw',
+
 			file_picker_callback: function(callback, value, meta) {
 				if (meta.filetype == 'image') {
 					$('#tinymce-image-upload').trigger('click');
@@ -1564,6 +1877,19 @@ $(function() {
 						reader.readAsDataURL(file);
 					});
 				}
+			},
+			setup: function (ed) {
+				ed.on('BeforeSetContent', function(e) {
+					if (e.format == 'html') {
+						e.content = e.content.replace(/\r?\n/g, '<br class="lms-ui-line-break" />');
+					}
+				}).on('GetContent', function(e) {
+					if (e.format == 'html') {
+						e.content = e.content.replace(/<br class="lms-ui-line-break"[^>]*>/g, '\r\n');
+					}
+				}).on('FullscreenStateChanged', function(e) {
+					$('.lms-ui-main-document').css('overflow', e.state ? 'visible' : '');
+				});
 			}
 		});
 	}
@@ -1602,19 +1928,21 @@ $(function() {
 			var textareaid = $(this).uniqueId().attr('id');
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			var inputname;
-			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
+			var helpdesk = $(this).is('.lms-ui-helpdesk');
+			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined &&
+				((helpdesk && lmsSettings.helpdeskWysiwygEditor) || (!helpdesk && lmsSettings.wysiwygEditor)));
 			$(this).data('wysiwyg', wysiwyg);
 			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;
 			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
-			parent.append($('<div class="lms-ui-wysiwyg-editor"><label>' +
-				'<input type="hidden" name="' + inputname + '" value="false">' +
-				'<input type="checkbox" name="' + inputname +
-				'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
-				'</label></div')).find('div.lms-ui-wysiwyg-editor').append(this);
-
+			$(this).wrap('<div class="lms-ui-wysiwyg-editor"/>')
+				.parent().prepend('<label>' +
+					'<input type="hidden" name="' + inputname + '" value="false">' +
+					'<input type="checkbox" name="' + inputname +
+					'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
+					'</label>');
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {
 				var editor = tinymce.get(textareaid);
@@ -1730,12 +2058,12 @@ $(function() {
 		var button = $(this);
 		form.submit(function() {
 			if (!$(this).attr('data-form-validation-failed')) {
-				button.attr('disabled', 'disabled');
+				button.prop('disabled', !form.is('[target="_blank"]'));
 			}
 			$(this).removeAttr('data-form-validation-failed');
 		}).on('lms:form_validation_failed', function() {
 			$(this).attr('data-form-validation-failed', true);
-			button.removeAttr('disabled');
+			button.prop('disabled', false);
 		});
 	});
 

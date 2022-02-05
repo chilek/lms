@@ -28,14 +28,24 @@ function sessionHandler($item, $name)
 {
     global $SESSION;
 
-    if (!isset($_GET[$item])) {
-        $SESSION->restore($name, $o);
-    } else {
+    if (isset($_GET[$item])) {
         $o = $_GET[$item];
+    } elseif (isset($_POST[$item])) {
+        $o = $_POST[$item];
+    } else {
+        $SESSION->restore($name, $o);
     }
 
     $SESSION->save($name, $o);
     return $o;
+}
+
+if ($_POST['str']) {
+    $voipaccounts = $LMS->GetCustomerVoipAccounts($_POST['str']);
+    $SMARTY->assign('voipaccounts', $voipaccounts);
+    $content = $SMARTY->fetch('voipaccount/voipaccounts.html');
+    echo json_encode($content);
+    die();
 }
 
 $layout['pagetitle'] = trans('Billing list');
@@ -44,11 +54,12 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $params = array();
 $params['o']          = sessionHandler('o', 'vblo');
-$params['id']         = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 $params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
 if (empty($params['frangefrom'])) {
     $params['frangefrom'] = date('Y/m/01');
 }
+$params['fownerid'] = sessionHandler('fownerid', 'vblfownerid');
+$params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
@@ -98,10 +109,12 @@ if (!empty($params['ftype'])) {
     }
 }
 
-$voipaccountlist = $LMS->GetVoipAccountList('owner', null, null);
+$voipaccountlist = $LMS->GetVoipAccountList('owner', empty($params['fownerid']) ? null : array('ownerid' => $params['fownerid']), null);
 unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);
 unset($voipaccountlist['direction']);
+
+$voipownerlist = Utils::array_column($voipaccountlist, "owner", "ownerid");
 
 $order = explode(',', $params['o']);
 if (empty($order[1]) || $order[1] != 'desc') {
@@ -115,8 +128,12 @@ if (!empty($_GET['page'])) {
     $listdata['page'] = (int) $_GET['page'];
 }
 
-if ($params['id'] != null) {
-    $listdata['fvoipaccid'] = $params['id'];
+if (!empty($params['fownerid'])) {
+    $listdata['fownerid'] = $params['fownerid'];
+}
+
+if (!empty($params['fvoipaccid'])) {
+    $listdata['fvoipaccid'] = $params['fvoipaccid'];
 }
 
 if ($SESSION->is_set('valp') && !isset($_GET['page'])) {
@@ -134,6 +151,7 @@ $billing_stats = $DB->GetRow('SELECT
                                  voip_cdr');
 
 $SMARTY->assign('voipaccounts', $voipaccountlist);
+$SMARTY->assign('voipownerlist', $voipownerlist);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('billings', $bill_list);
 $SMARTY->assign('total', $total);

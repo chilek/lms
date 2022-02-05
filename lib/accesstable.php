@@ -25,7 +25,7 @@
  */
 
 // modules with access for everyone
-$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|twofactorauth(info|edit)|quicksearch|calendar|persistentsetting|currentdivision|zipcode|indicators|dns|configinfo)$';
+$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|twofactorauth(info|edit)|quicksearch|calendar|persistentsetting|currentdivision|zipcode|indicators|dns|configinfo|numberplanhelper)$';
 
 $access_table = array(
     'full_access' => array(
@@ -42,7 +42,7 @@ $access_table = array(
             'customers' => array('customerlist', 'customersearch', 'customergrouplist'),
             'nodes' => array('nodelist', 'nodesearch', 'nodegrouplist', 'nodesessionlist'),
             'VoIP' => array('voipaccountlist', 'voipaccountbillinglist', 'tarifflist', 'voippricelist', 'voippoolnumberlist', 'voipaccountsearch'),
-            'netdevices' => array('netdevlist', 'netdevsearch', 'netnodelist', 'netdevmap'),
+            'netdevices' => array('netdevlist', 'netdevsearch', 'netnodelist', 'netdevmap', 'vlanlist'),
             'networks' => array('netlist', 'netsearch'),
             'finances' => array('tarifflist', 'paymentlist', 'balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist', 'cashreglist', 'tarifftaglist'),
             'documents' => array('documentlist'),
@@ -51,7 +51,7 @@ $access_table = array(
             'helpdesk' => array('rtqueuelist', 'rtcategorylist', 'rtsearch'),
             'timetable' => array('eventlist', 'eventschedule', 'eventlist-overdue', 'eventsearch'),
             'auth' => array('chpasswd', 'twofactorauthinfo'),
-            'config' => array('configlist', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'daemoninstancelist', 'cashsourcelist', 'promotionlist', 'pluginlist', 'invprojectlist'),
+            'config' => array('settings', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'daemoninstancelist', 'cashsourcelist', 'promotionlist', 'pluginlist', 'invprojectlist'),
         ),
     ),
     'node_connections' => array(
@@ -60,16 +60,23 @@ $access_table = array(
     ),
     'financial_operations' => array(
         'label' => trans('financial operations'),
-        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|)|(cashreg(info))|(invoice|invoice(new|edit|del|note|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform)$',
+        'allow_regexp' => '^((customerassignment)(add|info|list|move|edit|del)|(balance|customerbalance)(new|add|ok|del|)|(cashreg(info))|(invoice|invoice(new|edit|del|note(|edit)|paid|info|send))|(note|note(add|edit|del|paid))|number|customertransferform)$',
         'allow_menu_items' => array(
             'finances' => array('balancenew', 'invoicenew', 'invoicenew-proforma', 'noteadd', 'receiptadd'),
         ),
     ),
     'finances_management' => array(
         'label' => trans('finances management'),
-        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform)$',
+        'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note(|edit)|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform)$',
         'allow_menu_items' => array(
             'finances' => Permission::MENU_ALL,
+        ),
+    ),
+    'finances_view' => array(
+        'label' => trans('finances view'),
+        'allow_regexp' => '^((balance|customerbalance|invoice|note)list|cashreginfo|invoice(|info|send)|note|number)$',
+        'allow_menu_items' => array(
+            'finances' => array('balancelist', 'invoicelist', 'invoicelist-proforma', 'notelist'),
         ),
     ),
     'used_tariff_edit' => array(
@@ -110,10 +117,24 @@ $access_table = array(
     ),
     'customer_management' => array(
         'label' => trans('customers management'),
-        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi|number|invoiceinfo)$',
+        'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|documentscanadd|customertransferform|customeraddresses|customernote|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choose(node|location)|gusapi|number|invoiceinfo)$',
         'allow_menu_items' => array(
             'customers' => Permission::MENU_ALL,
             'documents' => Permission::MENU_ALL,
+        ),
+    ),
+    'customer_call_view' => array(
+        'label' => trans('customer phone call view'),
+        'allow_regexp' => '^customercalllist$',
+        'allow_menu_items' => array(
+            'customers' => array('customercalllist'),
+        ),
+    ),
+    'customer_call_management' => array(
+        'label' => trans('customer phone call management'),
+        'allow_regexp' => '^customercall$',
+        'allow_menu_items' => array(
+            'customers' => array('customercalllist'),
         ),
     ),
     'customer_removal' => array(
@@ -140,7 +161,7 @@ $access_table = array(
     ),
     'messaging' => array(
         'label' => trans('messaging (email, sms)'),
-        'allow_regexp' => '^message(add|del|list|info|template(del|list))$',
+        'allow_regexp' => '^(message(add|del|list|info|template(del|list))|attachments)$',
         'allow_menu_items' => array(
             'messages' => Permission::MENU_ALL,
         ),
@@ -174,13 +195,13 @@ $access_table = array(
         'label' => trans('configuration'),
         'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone)))$',
         'allow_menu_items' => array(
-            'config' => array('configlist', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
+            'config' => array('settings', 'configimport', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
         ),
     ),
     'network_management' => array(
         'label' => trans('networks and devices management'),
-        'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
-            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks)$',
+        'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|mac|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
+            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,
             'netdevices' => Permission::MENU_ALL,

@@ -2,480 +2,641 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<script type="text/javascript">
-<!--
-    function getText(index) {
-        {section name=lt loop=$tariffs}
-        if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({moneyf($tariffs[lt].value, $tariffs[lt].currency)})';
-        {/section}
-    }
+    <script>
+        /*function getText(index) {
+            {section name=lt loop=$tariffs}
+            if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({moneyf($tariffs[lt].value, $tariffs[lt].currency)})';
+            {/section}
+        }*/
 
-    function changeNetwork() {
-        document.tinfo.submit();
-    }
-//-->
-</script>
+        function changeNetwork() {
+            document.tinfo.submit();
+        }
+    </script>
 
-{$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
-{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
+    {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
+    {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
-<STYLE>
-    .tariff_tab tr td {
-        white-space: nowrap;
-        padding: 2px;
-    }
+    <style>
+        .tariff_tab tr td {
+            white-space: nowrap;
+            padding: 2px;
+        }
 
-    .bold-first  tr td:nth-child(1),
-    .bold-second tr td:nth-child(2) {
-        font-weight: bold;
-    }
-</STYLE>
+        .bold-first  tr td:nth-child(1),
+        .bold-second tr td:nth-child(2) {
+            font-weight: bold;
+        }
 
-{function bitrate_restrictions}
-    {if $day}{convert_to_units($day * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("no limits")}{/if}
+        .tariff_innertab tr td {
+            white-space: nowrap;
+            padding: 2px;
+        }
+
+        .inner-bold-first  tr td:nth-child(1),
+        .inner-bold-second tr td:nth-child(2) {
+            font-weight: normal;
+        }
+
+        .reward-flags {
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
+            padding-inline-start: 1.5em;
+        }
+    </style>
+
+    {function bitrate_restrictions}
+        {if $day}{convert_to_units($day * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("no limits")}{/if}
+
+        ({trans("night:")}
+
+        {if $night}{convert_to_units($night * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("not defined")}{/if})
+    {/function}
+
+    {function restrictions}
+        {if $day}{$day}{else}{trans("no limits")}{/if}
+
+        ({trans("night:")}
+
+        {if $night}{$night|default:0}{else}{trans("not defined")}{/if})
+    {/function}
+
+    {function burst_time_restrictions}
+    {if $day}{$day} s{else}{trans("not defined")}{/if}
 
     ({trans("night:")}
 
-    {if $night}{convert_to_units($night * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("not defined")}{/if})
-{/function}
+    {if $night}{$night|default:"0"} s{else}{trans("not defined")}{/if})
+    {/function}
 
-{function restrictions}
-    {if $day}{$day}{else}{trans("no limits")}{/if}
+    {function burst_restrictions}
+        {if $day}{$day} kbit/s{else}{trans("not defined")}{/if}
 
-    ({trans("night:")}
+        ({trans("night:")}
 
-    {if $night}{$night|default:0}{else}{trans("not defined")}{/if})
-{/function}
+        {if $night}{$night|default:"0"} kbit/s{else}{trans("not defined")}{/if})
+    {/function}
 
-{function burst_time_restrictions}
-{if $day}{$day} s{else}{trans("not defined")}{/if}
+    {function user_restrictions}
+        {if !isset($limit) || !$limit}
+            {trans("no limit")}
+        {else}
+            {$limit}
+        {/if}
+    {/function}
 
-({trans("night:")}
+    <h1>{$layout.pagetitle}</h1>
 
-{if $night}{$night|default:"0"} s{else}{trans("not defined")}{/if})
-{/function}
-
-{function burst_restrictions}
-    {if $day}{$day} kbit/s{else}{trans("not defined")}{/if}
-
-    ({trans("night:")}
-
-    {if $night}{$night|default:"0"} kbit/s{else}{trans("not defined")}{/if})
-{/function}
-
-{function user_restrictions}
-    {if !isset($limit) || !$limit}
-        {trans("no limit")}
-    {else}
-        {$limit}
-    {/if}
-{/function}
-
-<TABLE class="lmsbox">
-    <THEAD>
-    <TR>
-        <TD COLSPAN="2">
-            <IMG SRC="img/money.gif" ALT=""> <B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
-        </TD>
-    </TR>
-    </THEAD>
-    <TBODY>
-    <TR>
-        <TD WIDTH="100%" CLASS="flr container" COLSPAN="2">
-            <TABLE WIDTH="100%" CELLPADDING="0">
-                <TR>
-                    <TD WIDTH="50%" CLASS="valign-top">
-                        <TABLE CLASS="tariff_tab bold-second">
-                            <TR>
-                                <TD><IMG SRC="img/value.gif" ALT=""></TD>
-                                <TD>{trans("Value:")}</TD>
-                                <TD>
-                                    {moneyf($tariff.value, $tariff.currency)}
-                                    {if $tariff.period}
-                                        {assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
-                                    {else}
-                                        <span class="blend">({trans("period undefined")})</span>
+    <table class="lmsbox">
+        <thead>
+            <tr>
+                <td class="bold" colspan="2">
+                    {icon name="money"} {$tariff.name} ({$tariff.id|string_format:"%04d"})
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="100%" class="flr container" colspan="2">
+                    <table width="100%" cellpadding="0">
+                        <tr>
+                            <td width="50%" class="valign-top">
+                                <table class="tariff_tab bold-second">
+                                    <colgroup>
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 98%;">
+                                    </colgroup>
+                                    <tr>
+                                        <td>
+                                            {icon name="money"}
+                                        </td>
+                                        <td>
+                                            {trans("Price")}
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td align="right">
+                                                        {trans("Net")}
+                                                    </td>
+                                                    <td align="right">
+                                                        {if $tariff.currency}
+                                                            {moneyf($tariff.netvalue, $tariff.currency)}
+                                                        {else}
+                                                            {$tariff.netvalue|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                        {/if}
+                                                    </td>
+                                                    <td rowspan="2">
+                                                        {if $tariff.netflag}
+                                                            ({trans("calculated from net")})
+                                                        {else}
+                                                            ({trans("calculated from gross")})
+                                                        {/if}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">
+                                                        {trans("Gross")}
+                                                    </td>
+                                                    <td align="right">
+                                                        {if $tariff.currency}
+                                                            {moneyf($tariff.value, $tariff.currency)}
+                                                        {else}
+                                                            {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                        {/if}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {icon name="period"}
+                                        </td>
+                                        <td>
+                                            {trans("Accounting")}
+                                        </td>
+                                        <td>
+                                            {if $tariff.period}
+                                                {assign var=tperiod value=$tariff.period}{$_PERIODS.$tperiod}
+                                            {else}
+                                                <span class="blend">({trans("period undefined")})</span>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    {if !empty($tariff.flags)}
+                                        <tr>
+                                            <td>
+                                                {if $tariff.value < 0}
+                                                    {icon name="reward" tip="reward"}
+                                                {else}
+                                                    {icon name="penalty" tip="penalty"}
+                                                {/if}
+                                            </td>
+                                            <td>
+                                                {if $tariff.value < 0}
+                                                    {trans("Reward for")}
+                                                {else}
+                                                    {trans("Penalty for")}
+                                                {/if}
+                                            </td>
+                                            <td>
+                                                <ul class="reward-flags">
+                                                    {foreach $_TARIFF_FLAGS as $flag => $label}
+                                                        {if isset($tariff.flags[$flag])}
+                                                            <li><strong>{$label}</strong></li>
+                                                        {/if}
+                                                    {/foreach}
+                                                </ul>
+                                            </td>
+                                        </tr>
                                     {/if}
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
-                                <TD>{trans("Split payment:")}</TD>
-                                <TD>
-                                    {if $tariff.splitpayment}{trans("yes")}{else}{trans("no")}{/if}
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
-                                <TD>{trans("Tax category:")}</TD>
-                                <TD>
-                                    {if $tariff.taxcategory}
-                                        <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>({sprintf('%02d', $tariff.taxcategory)}) {$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
-                                    {else}
-                                        {trans("- none -")}
+                                    <tr>
+                                        <td>
+                                            {icon name="value"}
+                                        </td>
+                                        <td>{trans("Split payment:")}</td>
+                                        <td>
+                                            {if $tariff.splitpayment}{icon name="checked" tip="yes"}{else}-{/if}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {icon name="tax"}
+                                        </td>
+                                        <td>
+                                            {trans("Tax category:")}
+                                        </td>
+                                        <td>
+                                            {if $tariff.taxcategory}
+                                                <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>({sprintf('%02d', $tariff.taxcategory)}) {$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
+                                            {else}
+                                                {trans("- none -")}
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {icon name="tax"}
+                                        </td>
+                                        <td>
+                                            {trans("Tax:")}
+                                        </td>
+                                        <td>
+                                            {$tariff.tax}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {icon name="type"}
+                                        </td>
+                                        <td>
+                                            {trans("Type:")}
+                                        </td>
+                                        <td>
+                                            {$_SERVICETYPES[$tariff.type]}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {icon name="tags"}
+                                        </td>
+                                        <td>
+                                            {trans("Tags:")}
+                                        </td>
+                                        <td>
+                                            {foreach $tariff.tags as $tarifftag}
+                                                <span class="dark tag-bar"><a href="?m=tarifftaginfo&id={$tarifftag.id}">{$tarifftag.name}</a></span>
+                                                {if !$tarifftag@last} / {/if}
+                                            {foreachelse}
+                                                -
+                                            {/foreach}
+                                        </td>
+                                    </tr>
+                                    {if isset($tariff.numberplan)}
+                                        <tr>
+                                            <td>
+                                                {icon name="id"}
+                                            </td>
+                                            <td>
+                                                {trans("Numbering Plan:")}
+                                            </td>
+                                            <td>
+                                                {$tariff.numberplan.template} ({$_NUM_PERIODS[$tariff.numberplan.period]})
+                                            </td>
+                                        </tr>
                                     {/if}
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
-                                <TD>{trans("Tax:")}</TD>
-                                <TD>{$tariff.tax}</TD>
-                            </TR>
-                            <TR>
-                                <TD><IMG SRC="img/money.gif" ALT=""></TD>
-                                <TD>{trans("Type:")}</TD>
-                                <TD>{$_SERVICETYPES[$tariff.type]}</TD>
-                            </TR>
-
-                            <TR>
-                                <TD><i class="lms-ui-icon-tags"></i></TD>
-                                <TD>{trans("Tags:")}</TD>
-                                <TD>
-                                    {foreach $tariff.tags as $tarifftag}
-                                        <span class="dark tag-bar"><a href="?m=tarifftaginfo&id={$tarifftag.id}">{$tarifftag.name}</a></span>
-                                        {if !$tarifftag@last} / {/if}
-                                    {foreachelse}
-                                        -
-                                    {/foreach}
-                                </TD>
-                            </TR>
-
-                            {if isset($tariff.numberplan)}
-                            <TR>
-                                <TD><IMG SRC="img/money.gif" ALT=""></TD>
-                                <TD>{trans("Numbering Plan:")}</TD>
-                                <TD>{$tariff.numberplan.template} ({$_NUM_PERIODS[$tariff.numberplan.period]})</TD>
-                            </TR>
-                            {/if}
-
-							{if $tariff.datefrom || $tariff.dateto}
-							<TR>
-								<TD><img src="img/calendar.gif" alt=""></td>
-								<td>{trans("Period:")}</td>
-								<td>
-									{if $tariff.datefrom}
-									{trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}
-									{/if}
-									{if $tariff.dateto}
-									{trans("to:")} {$tariff.dateto|date_format:"%Y/%m/%d"}
-									{/if}
-								</td>
-							</TR>
-							{/if}
-
-                            {if !empty($tariff.prodid)}
-                            <TR>
-                                <TD><IMG SRC="img/class.gif" ALT=""></TD>
-                                <TD>{trans("Product ID:")}</TD>
-                                <TD>{$tariff.prodid}</TD>
-                            </TR>
-                            {/if}
-
-                            {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-                            <TR>
-                                <TD><IMG SRC="img/customers.gif" ALT=""></TD>
-                                <TD>{trans("Number of customers:")}</TD>
-                                <TD>
-                                    <span title="<span class=&quot;bold&quot;</span>{trans("Customer count")}">{$tariff.customerscount|default:0}</span>
-                                    (<span title="<span class=&quot;bold&quot;</span>{trans("Assignment count")}">{$tariff.count|default:0}</span>,
-                                    <span title="<span class=&quot;bold&quot;>{trans("Active assignment count")}</span>">{$tariff.activecount|default:0}</span>)
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD><IMG SRC="img/values.gif" ALT=""></TD>
-                                <TD>{trans("Avg. monthly income:")}</TD>
-                                <td>
-                                    {foreach $tariff.totalval as $currency => $totalval}
-                                        {if !$totalval@first}<br>{/if}
-                                        {moneyf($totalval, $currency)}
-                                    {/foreach}
+                                    {if $tariff.datefrom || $tariff.dateto}
+                                        <tr>
+                                            <td>
+                                                {icon name="period"}
+                                            </td>
+                                            <td>
+                                                {trans("Period:")}
+                                            </td>
+                                            <td>
+                                                {if $tariff.datefrom}
+                                                    {trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}
+                                                {/if}
+                                                {if $tariff.dateto}
+                                                    {trans("to:")} {$tariff.dateto|date_format:"%Y/%m/%d"}
+                                                {/if}
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                    {if !empty($tariff.prodid)}
+                                        <tr>
+                                            <td>
+                                                {icon name="id"}
+                                            </td>
+                                            <td>
+                                                {trans("Product ID:")}
+                                            </td>
+                                            <td>
+                                                {$tariff.prodid}
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                    {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
+                                        <tr>
+                                            <td>
+                                                {icon name="customergroup"}
+                                            </td>
+                                            <td>
+                                                {trans("Number of customers:")}
+                                            </td>
+                                            <td>
+                                                <span title="<span class=&quot;bold&quot;</span>{trans("Customer count")}">{$tariff.customerscount|default:0}</span>
+                                                (<span title="<span class=&quot;bold&quot;</span>{trans("Assignment count")}">{$tariff.count|default:0}</span>,
+                                                <span title="<span class=&quot;bold&quot;>{trans("Active assignment count")}</span>">{$tariff.activecount|default:0}</span>)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="money"}
+                                            </td>
+                                            <td>
+                                                {trans("Avg. monthly income:")}
+                                            </td>
+                                            <td>
+                                                {foreach $tariff.totalval as $currency => $totalval}
+                                                    {if !$totalval@first}<br>{/if}
+                                                    {moneyf($totalval, $currency)}
+                                                {/foreach}
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                    {if $tariff.authtype}
+                                        <tr>
+                                            <td>
+                                                {icon name="netdev"}
+                                            </td>
+                                            <td class="bold">
+                                                {trans("Purpose:")}
+                                            </td>
+                                            <td>
+                                                <ol class="lms-inline-list">
+                                                    {foreach $_SESSIONTYPES as $idx => $sessiontype}
+                                                    {if $tariff.authtype & $idx}
+                                                    <li>{$sessiontype.label}</li>
+                                                    {/if}
+                                                    {/foreach}
+                                                </ol>
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                    {if $tariff.description}
+                                        <tr>
+                                            <td>
+                                                {icon name="description"}
+                                            </td>
+                                            <td>
+                                                {trans("Description:")}
+                                            </td>
+                                            <td class="fall superlight line-break">
+                                                {$tariff.description|replace:"\n":"<BR>"}
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                    {if $tariff.promotions}
+                                        <tr>
+                                            <td>
+                                                {icon name="money"}
+                                            </td>
+                                            <td>
+                                                {trans("Promotions:")}
+                                            </td>
+                                            <td>
+                                                {foreach from=$tariff.promotions item=promo}
+                                                    <a href="?m=promotioninfo&id={$promo.id}">{$promo.name}</a>&nbsp;
+                                                {/foreach}
+                                            </td>
+                                        </tr>
+                                    {/if}
+                                </table>
+                            </td>
+                            {if $tariff.type != $smarty.const.SERVICE_PHONE}
+                                <td width="50%" class="valign-top">
+                                    <table class="tariff_tab bold-second">
+                                        <tr>
+                                            <td>
+                                                {icon name="upload"}
+                                            </td>
+                                            <td>{trans("Upload rate:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.uprate night=$tariff.uprate_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload ceil:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst time:")}</td>
+                                            <td>{burst_time_restrictions day=$tariff.up_burst_time night=$tariff.up_burst_time_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst threshold:")}</td>
+                                            <td>{burst_restrictions day=$tariff.up_burst_threshold night=$tariff.up_burst_threshold_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Upload burst limit:")}</td>
+                                            <td>{burst_restrictions day=$tariff.up_burst_limit night=$tariff.up_burst_limit_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="download"}
+                                            </td>
+                                            <td>{trans("Download rate:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.downrate night=$tariff.downrate_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Download ceil:")}</td>
+                                            <td>{bitrate_restrictions day=$tariff.downceil night=$tariff.downceil_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Download burst time:")}</td>
+                                            <td>{burst_time_restrictions day=$tariff.down_burst_time night=$tariff.down_burst_time_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Download burst threshold:")}</td>
+                                            <td>{burst_restrictions day=$tariff.down_burst_threshold night=$tariff.down_burst_threshold_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Download burst limit:")}</td>
+                                            <td>{burst_restrictions day=$tariff.down_burst_limit night=$tariff.down_burst_limit_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {icon name="tariff-limit"}
+                                            </td>
+                                            <td>{trans("Connection limit:")}</td>
+                                            <td>{restrictions day=$tariff.climit night=$tariff.climit_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Packet limit:")}</td>
+                                            <td>{restrictions day=$tariff.plimit night=$tariff.plimit_n}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{trans("Data limit:")}</td>
+                                            <td>{if $tariff.dlimit}{$tariff.dlimit}{else}{trans("no limits")}{/if}</td>
+                                        </tr>
+                                    </table>
                                 </td>
-                            </TR>
                             {/if}
-
-                            {if $tariff.authtype}
-                            <TR>
-                                <TD>
-                                    <img src="img/netdev.gif">
-                                </TD>
-                                <TD class="bold">
-                                    {trans("Purpose:")}
-                                </TD>
-                                <TD>
-                                    <ol class="lms-inline-list">
-                                        {foreach $_SESSIONTYPES as $idx => $sessiontype}
-                                        {if $tariff.authtype & $idx}
-                                        <li>{$sessiontype.label}</li>
-                                        {/if}
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {if $tariff.type != $smarty.const.SERVICE_PHONE && $tariff.type != $smarty.const.SERVICE_TV && $tariff.type != $smarty.const.SERVICE_INTERNET}
+                <tr>
+                    <td colspan="2">
+                        <table class="tariff_tab bold-first">
+                            <colgroup>
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                                <col style="width: 98%;">
+                            </colgroup>
+                            <tr>
+                                <td>
+                                    {icon name="hosting"}
+                                </td>
+                                <td class="bold nobr">
+                                    {trans("Hosting:")}
+                                </td>
+                                <td>
+                                    <table width="100%" cellpadding="3">
+                                        <colgroup>
+                                            <col style="width: 1%;">
+                                            <col style="width: 99%;">
+                                        </colgroup>
+                                        <tr>
+                                            <td>{trans("Limit of domains:")}</td>
+                                            <td>{user_restrictions limit=$tariff.domain_limit}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{trans("Limit of account aliases:")}</td>
+                                            <td>{user_restrictions limit=$tariff.alias_limit}</td>
+                                        </tr>
+                                        {foreach $_ACCOUNTTYPES as $typeidx => $type}
+                                            <tr>
+                                                <td>{$type.accountlimitlabel}</td>
+                                                {$alias=$type.alias|cat:"_limit"}
+                                                <td>{user_restrictions limit=$tariff[$alias]}</td>
+                                            </tr>
                                         {/foreach}
-                                    </ol>
-                                </TD>
-                            </TR>
-                            {/if}
-
-                            {if $tariff.description}
-                            <TR>
-                                <TD><IMG SRC="img/info1.gif" ALT=""></TD>
-                                <TD>{trans("Description:")}
-                                <TD CLASS="fall superlight line-break">
-                                    {$tariff.description|replace:"\n":"<BR>"}
-                                </TD>
-                            </TR>
-                            {/if}
-
-                            {if $tariff.promotions}
-                            <TR>
-                                <TD><IMG SRC="img/promo.gif" ALT=""></TD>
-                                <TD>{trans("Promotions:")}</TD>
-                                <TD>
-                                {foreach from=$tariff.promotions item=promo}
-                                    <A href="?m=promotioninfo&id={$promo.id}">{$promo.name}</A>&nbsp;
-                                {/foreach}
-                                </TD>
-                            </TR>
-                            {/if}
-
-                        </TABLE>
-                    </TD>
-                    {if $tariff.type != $smarty.const.SERVICE_PHONE}
-                    <TD WIDTH="50%" CLASS="valign-top">
-                        <TABLE CLASS="tariff_tab bold-second">
-                            <TR>
-                                <TD><IMG SRC="img/uprate.gif" ALT=""></TD>
-                                <TD>{trans("Upload rate:")}</TD>
-                                <TD>{bitrate_restrictions day=$tariff.uprate night=$tariff.uprate_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Upload ceil:")}</TD>
-                                <TD>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Upload burst time:")}</TD>
-                                <TD>{burst_time_restrictions day=$tariff.up_burst_time night=$tariff.up_burst_time_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Upload burst threshold:")}</TD>
-                                <TD>{burst_restrictions day=$tariff.up_burst_threshold night=$tariff.up_burst_threshold_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Upload burst limit:")}</TD>
-                                <TD>{burst_restrictions day=$tariff.up_burst_limit night=$tariff.up_burst_limit_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD><IMG SRC="img/downrate.gif" ALT=""></TD>
-                                <TD>{trans("Download rate:")}</TD>
-                                <TD>{bitrate_restrictions day=$tariff.downrate night=$tariff.downrate_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Download ceil:")}</TD>
-                                <TD>{bitrate_restrictions day=$tariff.downceil night=$tariff.downceil_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Download burst time:")}</TD>
-                                <TD>{burst_time_restrictions day=$tariff.down_burst_time night=$tariff.down_burst_time_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Download burst threshold:")}</TD>
-                                <TD>{burst_restrictions day=$tariff.down_burst_threshold night=$tariff.down_burst_threshold_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Download burst limit:")}</TD>
-                                <TD>{burst_restrictions day=$tariff.down_burst_limit night=$tariff.down_burst_limit_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD><IMG SRC="img/options.gif" ALT=""></TD>
-                                <TD>{trans("Connection limit:")}</TD>
-                                <TD>{restrictions day=$tariff.climit night=$tariff.climit_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Packet limit:")}</TD>
-                                <TD>{restrictions day=$tariff.plimit night=$tariff.plimit_n}</TD>
-                            </TR>
-                            <TR>
-                                <TD></TD>
-                                <TD>{trans("Data limit:")}</TD>
-                                <TD>{if $tariff.dlimit}{$tariff.dlimit}{else}{trans("no limits")}{/if}</TD>
-                            </TR>
-                        </TABLE>
-                    </TD>
-                    {/if}
-                </TR>
-            </TABLE>
-        </TD>
-    </TR>
-    {if $tariff.type != $smarty.const.SERVICE_PHONE && $tariff.type != $smarty.const.SERVICE_TV && $tariff.type != $smarty.const.SERVICE_INTERNET}
-    <TR>
-        <TD COLSPAN="2">
-            <TABLE CLASS="tariff_tab bold-first">
-                <TR>
-                    <TD ROWSPAN="100%">
-                        <IMG SRC="img/account.gif" ALT="">
-                    </TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Limit of domains:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.domain_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Limit of account aliases:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.alias_limit}</TD>
-                </TR>
-                {foreach $_ACCOUNTTYPES as $typeidx => $type}
-                <TR>
-                    <TD>{$type.accountlimitlabel}</TD>
-                    {$alias=$type.alias|cat:"_limit"}
-                    <TD>{user_restrictions limit=$tariff[$alias]}</TD>
-                </TR>
-                {/foreach}
-                {foreach $_ACCOUNTTYPES as $typeidx => $type}
-                <TR>
-                    <TD>{$type.accountquotalabel}</TD>
-                    {$alias="quota_"|cat:$type.alias|cat:"_limit"}
-                    <TD>{user_restrictions limit=$tariff[$alias]}</TD>
-                </TR>
-                {/foreach}
-            </TABLE>
-        </TD>
-    </TR>
-    {else if $tariff.type == $smarty.const.SERVICE_PHONE}
-    <TR>
-        <TD COLSPAN="2">
-            <TABLE CLASS="tariff_tab bold-first">
-                <TR>
-                    <TD ROWSPAN="100%">
-                        <IMG SRC="img/voip.gif" ALT="">
-                    </TD>
-                </TR>
-                <TR>
-                    <TD>{trans("VoIP pricelist:")}</TD>
-                    <TD>
-                        {if $voip_fields.pricelist}
-                            <A HREF="?m=voippricelist&id={$voip_fields.pricelist_id}">{$voip_fields.pricelist}</A>
-                        {else}
-                            {trans("not defined<!voip>")}
-                        {/if}
-                    </TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Tariff rule:")}</TD>
-                    <TD>
-                        {if $voip_fields.rule_name}
-                            <A HREF="?m=voiptariffrules&id={$voip_fields.rule_name_id}">{$voip_fields.rule_name}</A>
-                        {else}
-                            {trans("not defined<!voip>")}
-                        {/if}
-                    </TD>
-                </TR>
-            </TABLE>
-        </TD>
-    </TR>
-    {/if}
-
-    <TR>
-        <TD colspan="2" class="lms-ui-box-buttons">
-            {if !$tariff.count || ConfigHelper::checkPrivilege('used_tariff_edit')}
-                {button type="link-button" label="Edit" icon="edit" href="?m=tariffedit&id={$tariff.id}"}
-            {/if}
-            {if $tariff.count == 0}
-                {button id="delete-tariff" label="Delete" icon="delete" onclick="location.href = '?m=tariffdel&id={$tariff.id}';"}
-            {/if}
-        </TD>
-    </TR>
-
-    <TR>
-        <TD WIDTH="100%" COLSPAN="2">
-            <TABLE CLASS="lmsbox-innerbox">
-                <THEAD>
-                <TR>
-                    <TD CLASS="bold">{trans("Customers in Subscription:")}</TD>
-                    <TD CLASS="text-center">
-                        {trans("Network:")}
-                        <FORM NAME="tinfo" METHOD="GET" ACTION="?m=tariffinfo">
-                            <INPUT type="submit" class="hiddenbtn">
-                            <INPUT TYPE="hidden" VALUE="tariffinfo" NAME="m">
-                            <INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="id">
-
-                            <SELECT SIZE="1" NAME="netid" ONCHANGE="javascript:changeNetwork();">
-                                <OPTION value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
-                                {section name=networks loop=$networks}
-                                    <OPTION value="{$networks[networks].id}" {if $networks[networks].id == $netid}SELECTED{/if}>
-                                    {$networks[networks].name|truncate:30:"...":true}
-                                    </OPTION>
-                                {/section}
-                            </SELECT>
-                        </FORM>
-                    </TD>
-                </TR>
-                </THEAD>
-                <TBODY>
-                {cycle values="light,lucid" print=false}
-                {section name=l1 loop=$tariff.customers max=$tariff.rows}
-                <TR>
-                    {section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
-                     <TD WIDTH="33%" class="highlight {cycle}" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
-                        <IMG SRC="img/customer.gif" ALT="">
-                        <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}"{if !$tariff.customers[l2].active} class="blend"{/if}>
-                            ({$tariff.customers[l2].id|string_format:"%04d"})
-                            {$tariff.customers[l2].customername|truncate:50:" ..."}
-                            {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}
-                        </A>
-                    </TD>
-                    {/section}{cycle print=false}
-                </TR>
-                {sectionelse}
-                <TR>
-                    <TD CLASS="empty-table" COLSPAN="100%">
-                        <P>{trans("No such customers with that subscription.")}</P>
-                    </TD>
-                </TR>
-                {/section}
-                </TBODY>
-                <TFOOT>
-                <TR>
-                    <TD WIDTH="100%" COLSPAN="2">
-                        <FORM NAME="tmove" METHOD="GET" ACTION="?m=tariffmove">
-                            <INPUT TYPE="submit" CLASS="hiddenbtn">
-                            <INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
-                            <INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
-                            <INPUT TYPE="hidden" VALUE="{if !$netid}0{else}{$netid}{/if}" NAME="netid">
-                            <INPUT TYPE="hidden" VALUE="0" NAME="is_sure">
-
-                            <A HREF="javascript:document.tmove.submit();"
-                               CLASS="bold"
-                               onClick="return confirmForm(document.tmove.elements['is_sure'],'{trans("Are you sure, you want to move customers to selected tariff?")}','1');">
-                                {trans("Move customers to subscription:")}
-                            </A>
-
-                            <SELECT SIZE="1" NAME="to">
-                                {foreach from=$tariffs item=v}
-                                    {if $v.id != $tariff.id}
-                                        <OPTION VALUE="{$v.id}">{$v.name} ({moneyf($v.value, $v.currency)})</OPTION>
+                                        {foreach $_ACCOUNTTYPES as $typeidx => $type}
+                                            <tr>
+                                                <td>{$type.accountquotalabel}</td>
+                                                {$alias="quota_"|cat:$type.alias|cat:"_limit"}
+                                                <td>{user_restrictions limit=$tariff[$alias]}</td>
+                                            </tr>
+                                        {/foreach}
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            {elseif $tariff.type == $smarty.const.SERVICE_PHONE}
+                <tr>
+                    <td colspan="2">
+                        <table class="tariff_tab bold-first">
+                            <tr>
+                                <td rowspan="100%">
+                                    {icon name="phone"}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{trans("VoIP pricelist:")}</td>
+                                <td>
+                                    {if $voip_fields.pricelist}
+                                        <a href="?m=voippricelist&id={$voip_fields.pricelist_id}">{$voip_fields.pricelist}</a>
+                                    {else}
+                                        {trans("not defined<!voip>")}
                                     {/if}
-                                {/foreach}
-                            </SELECT>
-                        </FORM>
-                    </TD>
-                </TR>
-                </TFOOT>
-            </TABLE>
-        </TD>
-    </TR>
-    </TBODY>
-</TABLE>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{trans("Tariff rule:")}</td>
+                                <td>
+                                    {if $voip_fields.rule_name}
+                                        <a href="?m=voiptariffrules&id={$voip_fields.rule_name_id}">{$voip_fields.rule_name}</a>
+                                    {else}
+                                        {trans("not defined<!voip>")}
+                                    {/if}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            {/if}
+            <tr>
+                <td colspan="2" class="lms-ui-box-buttons">
+                    {if !$tariff.count || ConfigHelper::checkPrivilege('used_tariff_edit')}
+                        {button type="link-button" label="Edit" icon="edit" href="?m=tariffedit&id={$tariff.id}"}
+                    {/if}
+                    {if $tariff.count == 0}
+                        {button id="delete-tariff" label="Delete" icon="delete"}
+                    {/if}
+                </td>
+            </tr>
+            <tr>
+                <td width="100%" colspan="2">
+                    <table class="lmsbox-innerbox">
+                        <thead>
+                            <tr>
+                                <td class="bold">
+                                    {trans("Customers in Subscription:")}
+                                </td>
+                                <td class="text-center">
+                                    {trans("Network:")}
+                                    <form name="tinfo" method="GET" action="?m=tariffinfo">
+                                        <input type="submit" class="hiddenbtn">
+                                        <input type="hidden" value="tariffinfo" name="m">
+                                        <input type="hidden" value="{$tariff.id}" name="id">
+
+                                        <select size="1" name="netid" onChange="javascript:changeNetwork();">
+                                            <option value="0" {if !$netid}selected{/if}>{trans("- all networks -")}</option>
+                                            {section name=networks loop=$networks}
+                                                <option value="{$networks[networks].id}" {if $networks[networks].id == $netid}selected{/if}>
+                                                    {$networks[networks].name|truncate:30:"&hellip;":true}
+                                                </option>
+                                            {/section}
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {cycle values="light,lucid" print=false}
+                            {section name=l1 loop=$tariff.customers max=$tariff.rows}
+                            <tr>
+                                {section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
+                                 <td width="33%" class="highlight {cycle}" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
+                                     {icon name="customer"}
+                                    <a href="?m=customerinfo&id={$tariff.customers[l2].id}"{if !$tariff.customers[l2].active} class="blend"{/if}>
+                                        ({$tariff.customers[l2].id|string_format:"%04d"})
+                                        {$tariff.customers[l2].customername|truncate:50:"&hellip;"}
+                                        {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}
+                                    </a>
+                                </td>
+                                {/section}{cycle print=false}
+                            </tr>
+                            {sectionelse}
+                            <tr>
+                                <td class="empty-table" colspan="100%">
+                                    <P>{trans("No such customers with that subscription.")}</P>
+                                </td>
+                            </tr>
+                            {/section}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td width="100%" colspan="2">
+                                    <form name="tmove" method="GET" action="?m=tariffmove">
+                                        <input type="submit" class="hiddenbtn">
+                                        <input type="hidden" value="tariffmove" name="m">
+                                        <input type="hidden" value="{$tariff.id}" name="from">
+                                        <input type="hidden" value="{if !$netid}0{else}{$netid}{/if}" name="netid">
+                                        <input type="hidden" value="0" name="is_sure">
+
+                                        <a href="javascript:document.tmove.submit();"
+                                           class="bold"
+                                           onClick="return confirmForm(document.tmove.elements['is_sure'],'{trans("Are you sure, you want to move customers to selected tariff?")}','1');">
+                                            {trans("Move customers to subscription:")}
+                                        </a>
+
+                                        <select size="1" name="to">
+                                            {foreach from=$tariffs item=v}
+                                                {if $v.id != $tariff.id}
+                                                    <option value="{$v.id}">{$v.name} ({moneyf($v.value, $v.currency)})</option>
+                                                {/if}
+                                            {/foreach}
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
     <script>
         $('#delete-tariff').click(function() {
             confirmDialog($t("Are you sure, you want to delete that tariff?"), this).done(function() {
-                location.href = $(this).attr('href');
+                location.href = '?m=tariffdel&id={$tariff.id}';
             });
             return false;
         });

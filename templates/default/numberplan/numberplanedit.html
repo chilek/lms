@@ -4,88 +4,148 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=numberplanedit&id={$numberplanedit.id}" name="numberplanedit">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/id.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Template:")}</B>
-		</TD>
-		<TD width="98%">
-			<INPUT type="text" name="numberplanedit[template]" value="{$numberplanedit.template|escape}"
-					{tip text="Enter number template<br><br>Supported substitution symbols:<br><strong>%N</strong> - document number,<br><strong>%m</strong> - month number (always two digits),<br><strong>%Y</strong> - year number (always four digits),<br><strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br><br>Other symbols can be used which are described in PHP <strong>strftime<strong> function documentation." trigger="template"}>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/docum.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Document type:")}</B>
-		</TD>
-		<TD width="98%">
-			<SELECT name="numberplanedit[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
-			{foreach from=$_DOCTYPES item=item key=key}
-				<OPTION value="{$key}"{if $key == $numberplanedit.doctype} SELECTED{/if}>{$item}</OPTION>
-			{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Period:")}</B>
-		</TD>
-		<TD width="98%">
-			<SELECT name="numberplanedit[period]" size="1" {tip text="Select numbering period" trigger="period"}>
-			{foreach from=$_NUM_PERIODS item=item key=key}
-				<OPTION value="{$key}"{if $key == $numberplanedit.period} SELECTED{/if}>{$item}</OPTION>
-			{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/division.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Division")}:</B>
-		</TD>
-		<TD width="98%">
-			{include file="multiselect.html" selected=$numberplanedit.selected available_tip="Available<!plural>:" selected_tip="Selected<!plural>:"}
-		</TD>
-	</TR>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/empty.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<label for="numberplanedit_isdefault"><B>{trans("Default:")}</B></label>
-		</TD>
-		<TD width="98%">
-			<INPUT type="checkbox" name="numberplanedit[isdefault]" id="numberplanedit_isdefault" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanedit.isdefault!="0"}CHECKED{/if}>
-		</TD>
-	</TR>
-	<TR>
-		<TD align="right" colspan="3">
-			<A href="javascript:document.numberplanedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=numberplanlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="numberplanedit"] [name="numberplanedit[template]"]').focus();
-});
-//-->
-</SCRIPT>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+    <thead>
+		<TR>
+			<TD>
+				{icon name="id"}
+			</TD>
+			<TD class="bold">
+				{trans("Template:")}
+			</TD>
+			<TD>
+				<input type="text" name="numberplanedit[template]" value="{$numberplanedit.template|escape}"
+					{tip trigger="template"}>
+				{capture assign="template_hint"}{strip}
+					Enter number template<br>
+					<br>
+					Supported substitution symbols:<br>
+					<strong>%N</strong> - document number,<br>
+					<strong>%m</strong> - month number (always two digits),<br>
+					<strong>%Y</strong> - year number (always four digits),<br>
+					<strong>%C</strong> - customer id; if this symbol is present then customer dedicated numbering applies.<br>
+					<br>
+					Other symbols can be used which are described in PHP <a href="https://php.net/strftime"><strong>strftime</strong></a> function documentation.
+				{/strip}{/capture}
+				{hint content=$template_hint}
+			</TD>
+		</TR>
+    </thead>
+    <tbody>
+		<TR>
+			<TD>
+				{icon name="document"}
+			</TD>
+			<TD class="bold nobr">
+				{trans("Document type:")}
+			</TD>
+			<TD>
+				<select name="numberplanedit[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
+					{foreach $_DOCTYPES as $doctype => $item}
+						<option value="{$doctype}"{if $doctype == $numberplanedit.doctype} selected{/if}>{$item}</option>
+					{/foreach}
+				</select>
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="calendar"}
+			</TD>
+			<TD class="bold">
+				{trans("Period:")}
+			</TD>
+			<TD>
+				<select name="numberplanedit[period]" size="1" {tip text="Select numbering period" trigger="period"}>
+					{foreach $_NUM_PERIODS as $key => $item}
+						<option value="{$key}"{if $key == $numberplanedit.period} selected{/if}>{$item}</option>
+					{/foreach}
+				</select>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="valign-top">
+				{icon name="division"}
+			</TD>
+			<TD class="bold nobr valign-top">
+				{trans("Division")}
+			</TD>
+			<TD>
+				<select name="numberplanedit[divisions][]" id="divisions" multiple
+					{tip text="Select division" class="lms-ui-multiselect" trigger="divisions"}>
+					{foreach $divisions as $division}
+						<option value="{$division.id}"{if isset($numberplanedit.divisions[$division.id])} selected{/if}
+							>{$division.label|escape}</option>
+					{/foreach}
+				</select>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="valign-top">
+				{icon name="user"}
+			</TD>
+			<TD class="bold nobr valign-top">
+				{trans("User")}
+			</TD>
+			<TD>
+				<select name="numberplanedit[users][]" id="users" multiple
+						{tip text="Select users" class="lms-ui-multiselect" trigger="users"}>
+					{foreach $users as $user}
+						<option value="{$user.id}"{if isset($numberplanedit.users[$user.id])} selected{/if}
+							>{$user.rname|escape} ({$user.login})</option>
+					{/foreach}
+				</select>
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				{icon name="option"}
+			</TD>
+			<TD class="bold nobr">
+				<label for="numberplanedit_isdefault">{trans("Default:")}</label>
+			</TD>
+			<TD>
+				<input type="checkbox" name="numberplanedit[isdefault]" id="numberplanedit_isdefault"
+					value="1" {tip text="Check box to make this plan a default for selected document type"}
+					{if $numberplanedit.isdefault} checked{/if}>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="lms-ui-box-buttons" colspan="3">
+				{button type="submit" icon="save" label="Submit"}
+				{button icon="cancel" label="Cancel" href="?m=numberplanlist"}
+			</TD>
+		</TR>
+    </tbody>
+</table>
+<script>
+
+	$(function() {
+		$('form[name="numberplanedit"] [name="numberplanedit[template]"]').focus();
+
+		$('#divisions').change(function() {
+			$.ajax('?m={$layout.module}&op=updateusers&api=1', {
+				method: "POST",
+				dataType: "json",
+				data: {
+					divisions: $(this).val()
+				}
+			}).done(function(data) {
+				var options = '';
+				var users = $('#users').val();
+				$.each(data, function(userid, user) {
+					options += '<option value="' + userid + '"' +
+						(users.indexOf(userid) == -1 ? '' : ' selected') +
+						'>' + user.rname + ' (' + user.login + ')</option>';
+				});
+				$('#users').html(options).trigger('lms:multiselect:updated');
+			});
+		});
+	});
+
+</script>
 {/block}

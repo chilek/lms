@@ -2,16 +2,20 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<SCRIPT>
-	function CountSelectedCustomers()
-	{
-		var j = 0;
-		for (var i = 0; i < document.getElementById('customerselect').length; i++) {
-			if (document.getElementById('customerselect').options[i].selected)
-				j++;
-			}
-		document.forms['addbalance'].selectededit.value = j;
-	}
+<script>
+
+	$(function() {
+		$('#customerselect').change(function() {
+			$('#selectededit').text($(this).find('option:selected').length);
+		});
+
+		$('[name="addbalance[type]"]').change(function() {
+			var that = this;
+			$('#servicetype').prop('disabled', function() {
+				return $(that).val() == '1';
+			});
+		}).change();
+	});
 
 	function del(id)
 	{
@@ -20,232 +24,294 @@
 		});
 		return false;
 	}
-</SCRIPT>
+
+</script>
+
+<style>
+
+	#selectededit {
+		background-color: transparent;
+		font-weight: bold;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
-<FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE width="100%" cellpadding="3">
-	<TR>
-		<TD WIDTH="1%" style="vertical-align: top;">
-			<TABLE class="lmsbox">
-                            <THEAD>
-				<TR>
-					<TD>
-						<IMG SRC="img/customer.gif" ALT="">&nbsp;<B>{trans("Customers:")}</B>
-					</TD>
-				</TR>
-                            </THEAD>
-                            <TBODY>
-				<TR>
-					<TD>
-						{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
-						<SELECT size="20" id="customerselect" name="addbalance[mcustomerid][]" onChange="javascript:CountSelectedCustomers();" multiple>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT><BR>
-						{trans("Selected:")} <INPUT TYPE="text" NAME="selectededit" VALUE="0" SIZE="5" class="light" style="border: 0" readonly>
-					</TD>
-				</TR>
-                            </TBODY>
-			</TABLE>
-		</TD>
-		<TD WIDTH="99%" VALIGN="TOP" style="vertical-align: top;">
-			<TABLE class="lmsbox">
-                            <THEAD>
-				<TR>
-					<TD COLSPAN="3">
-						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Value and description:")}</B>
-					</TD>
-				</TR>
-                            </THEAD>
-                            <TBODY>
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/value.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Value:")}</B>
-					</TD>
-					<TD WIDTH="98%" class="nobr">
-						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}>
-						{currency_selection selected=$currency elementname="addbalance[currency]"}
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/tax.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Tax:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						<SELECT size="1" name="addbalance[taxid]" {tip text="Select Tax rate"}>
-						{foreach item=tax from=$taxeslist}
-							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))}selected{/if}>{$tax.label}</OPTION>
-						{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/payment.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Type:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type0" VALUE="0" {tip text="Select type of operation"}><label for="type0">{trans("liability")}</label>
-						<INPUT TYPE="radio" NAME="addbalance[type]" ID="type1" VALUE="1" {tip text="Select type of operation"} checked><label for="type1">{trans("income/expense")}</label>
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/calendar.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Date:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" maxlength="15" {tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
-					</TD>
-				</TR>
-				{if $sourcelist}
-				<TR>
-					<TD width="1%">
-						<IMG src="img/isource.gif" alt="">
-					</TD>
-					<TD width="1%" NOWRAP>
-						<B>{trans("Source:")} </B>
-					</TD>
-					<TD width="98%" NOWRAP>
-						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-						<OPTION value="0">{trans("- none -")}</OPTION>
-						{foreach from=$sourcelist item=item}
-						<OPTION value="{$item.id}"{if $item.id == $sourceid} SELECTED{/if}>{$item.name}</OPTION>
-						{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-				{/if}
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/info1.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Description:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						<TEXTAREA NAME="addbalance[comment]" rows="5" cols="50" {tip text="Enter comment"}>{$comment|replace:"\n":"<BR>"}</TEXTAREA>
-					</TD>
-				</TR>
-				<TR>
-					<TD ALIGN="right" COLSPAN="3">
-						<A HREF="javascript:document.addbalance.submit();" ACCESSKEY="s" >{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-					</TD>
-				</TR>
-                            </TBODY>
-                        </TABLE>
+
+<form name="addbalance" id="addbalance" method="POST" action="?m=balanceadd">
+</form>
+
+<table width="100%" cellpadding="3">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<tr>
+		<td class="valign-top">
+			<table class="lmsbox">
+				<thead>
+					<tr>
+						<td class="bold">
+							{icon name="customer"}
+							{trans("Customers:")}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							{trans("Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.")}<BR><BR>
+							<select size="20" id="customerselect" name="addbalance[mcustomerid][]" multiple form="addbalance">
+								{foreach $customers as $customer}
+									<option value="{$customer.id}">{$customer.customername|trunescape:40} ({$customer.id|string_format:"%04d"})</option>
+								{/foreach}
+							</select>
+							<br>
+							{trans("Selected:")}
+							<span id="selectededit">0</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</td>
+		<td class="valign-top">
+			<table class="lmsbox">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 98%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<td colspan="3" class="bold">
+							{icon name="money"}
+							{trans("Value and description:")}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							{icon name="value"}
+						</td>
+						<td class="bold">
+							{trans("Value:")}
+						</td>
+						<td class="nobr">
+							<input type="text" name="addbalance[value]" value="{$value}" size="15"
+								{tip text="Enter value of operation"} form="addbalance">
+							{currency_selection selected=$currency elementname="addbalance[currency]" form="addbalance"}
+						</td>
+					</tr>
+					<TR>
+						<td>
+							{icon name="tax"}
+						</td>
+						<td class="bold">
+							{trans("Tax:")}
+						</td>
+						<td>
+							<select size="1" name="addbalance[taxid]" {tip text="Select Tax rate"}
+								form="addbalance">
+								{foreach $taxeslist as $tax}
+									<option value="{$tax.id}"{if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}
+										>{$tax.label}</option>
+								{/foreach}
+							</select>
+						</td>
+					</TR>
+					<TR>
+						<td>
+							{icon name="type"}
+						</td>
+						<td class="bold">
+							{trans("Type:")}
+						</td>
+						<TD class="nobr">
+							<label>
+								<input type="radio" name="addbalance[type]" value="0" {tip text="Select type of operation"}
+									form="addbalance">
+								{trans("liability")}
+							</label>
+							<label>
+								<input type="radio" name="addbalance[type]" value="1" {tip text="Select type of operation"}
+									form="addbalance" checked>
+								{trans("income/expense")}
+							</label>
+						</TD>
+					</TR>
+					<tr>
+						<td>
+							{icon name="money"}
+						</td>
+						<td class="bold nobr">
+							{trans("Service type")}
+						</td>
+						<td>
+							<select id="servicetype" name="addbalance[servicetype]" form="addbalance">
+								<option value="">{trans("- none -")}</option>
+								{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
+									<option value="{$type}"{if $servicetype == $type} selected{/if}>{$label}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{icon name="calendar"}
+						</td>
+						<td class="bold">
+							{trans("Date:")}
+						</td>
+						<td>
+							<input type="text" name="addbalance[time]" value="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}"
+								size="15" maxlength="15" form="addbalance"
+								{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						</td>
+					</tr>
+					{if $sourcelist}
+					<tr>
+						<td>
+							{icon name="cashsource"}
+						</td>
+						<td class="bold nobr">
+							{trans("Source:")}
+						</td>
+						<td>
+							<select name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}
+								form="addbalance">
+								<option value="0">{trans("- none -")}</option>
+								{foreach $sourcelist as $item}
+									<option value="{$item.id}"{if $item.id == $sourceid} selected{/if}>{$item.name}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td>
+							{icon name="info"}
+						</td>
+						<td class="bold">
+							{trans("Description:")}
+						</td>
+						<td>
+							<textarea name="addbalance[comment]" rows="5" cols="50" {tip text="Enter comment"}
+								form="addbalance">{$comment|escape|replace:"\n":"<BR>"}</textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="lms-ui-box-buttons" colspan="3">
+							{button icon="save" label="Submit" onclick="document.addbalance.submit();"}
+						</td>
+					</tr>
+				</tbody>
+			</table>
 			{if $last}
-                        <TABLE class="lmsbox" style="margin-top: 1em;">
-                            <THEAD>
-				<TR>
-					<TD COLSPAN="3">
-						<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{trans("Last operation:")}</B>
-					</TD>
-				</TR>
-                            </THEAD>
-                            <TBODY>
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/value.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Value:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						{moneyf($last.value, $last.currency)}
-					</TD>
-				</TR>
-				{if $last.tax}
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/tax.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Tax:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						{$last.tax}
-					</TD>
-				</TR>
-				{/if}
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/calendar.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Date:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						{$last.time|date_format:"%Y/%m/%d %H:%M"}
-					</TD>
-				</TR>
-				{if $last.customerid}
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/customer.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Customer:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						<A href="?m=customerinfo&id={$last.customerid}">{$last.customername}</A>
-					</TD>
-				</TR>
-				{/if}
-				{if $last.sourcename}
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/isource.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Source:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						{$last.sourcename}
-					</TD>
-				</TR>
-				{/if}
-				{if $last.comment}
-				<TR>
-					<TD WIDTH="1%">
-						<IMG SRC="img/info1.gif" ALT="">
-					</TD>
-					<TD WIDTH="1%">
-						<B>{trans("Description:")}</B>
-					</TD>
-					<TD WIDTH="98%">
-						<TABLE WIDTH="100%" CELLPADDING="5">
-					                <TR>
-							        <TD CLASS="fall superlight">
-							    		{$last.comment|replace:"\n":"<BR>"}
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-				{/if}
-				<TR>
-					<TD ALIGN="right" COLSPAN="3">
-						<A id="delete-lastoperation" HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
-					</TD>
-				</TR>
+			<table class="lmsbox" style="margin-top: 1em;">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 1%;">
+					<col style="width: 98%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<td colspan="3" class="bold">
+							{icon name="money"}
+							{trans("Last operation:")}
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							{icon name="value"}
+						</td>
+						<td class="bold">
+							{trans("Value:")}
+						</td>
+						<td>
+							{moneyf($last.value, $last.currency)}
+						</td>
+					</tr>
+					{if $last.tax}
+					<tr>
+						<td>
+							{icon name="tax"}
+						</td>
+						<td class="bold">
+							{trans("Tax:")}
+						</td>
+						<td>
+							{$last.tax}
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td>
+							{icon name="calendar"}
+						</td>
+						<td class="bold">
+							{trans("Date:")}
+						</td>
+						<td>
+							{$last.time|date_format:"%Y/%m/%d %H:%M"}
+						</td>
+					</tr>
+					{if $last.customerid}
+					<tr>
+						<td>
+							{icon name="customer"}
+						</td>
+						<td class="bold">
+							{trans("Customer:")}
+						</td>
+						<td>
+							<a href="?m=customerinfo&id={$last.customerid}">{$last.customername|escape}</a>
+						</td>
+					</tr>
+					{/if}
+					{if $last.sourcename}
+					<tr>
+						<td>
+							{icon name="cashsource"}
+						</td>
+						<td class="bold">
+							{trans("Source:")}
+						</td>
+						<td>
+							{$last.sourcename}
+						</td>
+					</tr>
+					{/if}
+					{if $last.comment}
+					<tr>
+						<td>
+							{icon name="info"}
+						</td>
+						<td class="bold">
+							{trans("Description:")}
+						</td>
+						<td>
+							<table width="100%" cellpadding="5">
+								<tr>
+									<td class="fall superlight">
+										{$last.comment|escape|replace:"\n":"<BR>"}
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td class="lms-ui-box-buttons" colspan="3">
+							{button icon="delete" label="Delete" id="delete-lastoperation" onclick="del({$last.id});"}
+						</td>
+					</tr>
+				</tbody>
+			</table>
 			{/if}
-                            </TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+		</td>
+	</tr>
+</table>
 {/block}

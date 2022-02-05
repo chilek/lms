@@ -16,72 +16,113 @@
 
 </style>
 
-<H1>{$layout.pagetitle}</H1>
-<H3>{trans("Promotion:")} {$schema['promotionname']}</H3>
-<FORM method="post" name="schemaedit" action="?m=promotionschemaedit&amp;id={$schema.id}">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
+<h1>{$layout.pagetitle}</h1>
+<h3>{trans("Promotion:")} {$schema['promotionname']}</h3>
 
+<form method="post" name="schemaedit" id="schemaedit" action="?m=promotionschemaedit&id={$schema.id}">
+</form>
 
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/promoschema.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">
-			{trans("Name:")}
-		</TD>
-		<TD style="width: 98%;">
-			<INPUT type="text" name="schema[name]" value="{$schema.name}" size="40" {tip text="Enter schema name" trigger="name" bold=1}>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">
-			{trans("Periods:")}
-		</TD>
-		<TD id="periodcont">
-			{foreach $schema.periods as $key => $period}
-				<SELECT name="schema[periods][]" {tip class="lms-ui-combobox" text="Select length of the period (in months)"}
-					data-value="{$period}">
-					{if !$key && count($schema.periods) == 1}
-						<OPTION value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</OPTION>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="money"}
+			</td>
+			<td>
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td>
+				<input type="text" name="schema[name]" value="{$schema.name|escape}" size="40" form="schemaedit"
+					{if !empty($schema.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
+						readonly {tip text="Schema is assigned to liabilities, so name change is disabled!" trigger="name" bold=1}
+					{else}
+						{tip text="Enter schema name" trigger="name" bold=1}
+					{/if} required>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="calendar"}
+			</td>
+			<td>
+				<strong>{trans("Periods")}</strong>
+			</td>
+			<td id="periodcont">
+				{foreach $schema.periods as $key => $period}
+					<select name="schema[periods][{$key}]" form="schemaedit"
+							{if !empty($schema.assignmentcount) && !ConfigHelper::checkPrivilege('superuser')}
+								data-options='{ "disabled": true }'
+								{tip class="lms-ui-combobox" text="Schema is assigned to liabilities, so periods change is disabled!" bold=1}
+							{else}
+								{tip class="lms-ui-combobox" text="Select length of the period (in months)"}
+							{/if}
+						data-value="{$period}">
+						{if !$key && count($schema.periods) == 1}
+							<option value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</option>
+						{/if}
+						{foreach $schema.selection as $item}
+							<option value="{$item}"{if $period == $item} selected{/if}>{$item}</option>
+						{/foreach}
+					</select>
+				{/foreach}
+				{if empty($schema.assignmentcount) || ConfigHelper::checkPrivilege('superuser')}
+					{if count($schema.periods) < 2}
+						{$visible = false}
+					{else}
+						{$visible = true}
 					{/if}
-					{foreach $schema.selection as $item}
-						<OPTION value="{$item}"{if $period == $item} selected{/if}>{$item}</OPTION>
-					{/foreach}
-				</SELECT>
-			{/foreach}
-			<A href="#" id="perioddel" {if count($schema.periods) < 2}style="display: none;"{/if}><IMG src="img/delete.gif" alt="" {tip text="Delete"}></A>
-			<A href="#" id="periodadd"><IMG src="img/add.gif" alt="" {tip text="Add"}></A>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/info1.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">
-			{trans("Description:")}
-		</TD>
-		<TD style="width: 98%;">
-			<TEXTAREA name="schema[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$schema.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="3">
-			<A href="javascript:document.schemaedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=promotionschemainfo&amp;id={$schema.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
+					{button type="link" icon="delete" tip="Delete" id="perioddel" visible=$visible}
+					{button type="link" icon="add" tip="Add" id="periodadd"}
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="period"}
+			</td>
+			<td>
+				<strong>{trans("Period")}</strong>
+			</td>
+			<td>
+				{trans("from")}
+				<input type="text" name="schema[datefrom]" form="schemaedit"
+					value="{if $schema.datefrom}{$schema.datefrom}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}>
+				{trans("to")}
+				<input type="text" name="schema[dateto]" form="schemaedit"
+					value="{if $schema.dateto}{$schema.dateto}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="info"}
+			</td>
+			<td>
+				<strong>{trans("Description")}</strong>
+			</td>
+			<td>
+				<textarea name="schema[description]" cols="50" rows="5" form="schemaedit"
+					{tip text="Enter additional information (optional)"}>{$schema.description|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button type="submit" icon="save" label="Submit" form="schemaedit"}
+				{button icon="cancel" label="Cancel" href="?m=promotionschemainfo&id={$schema.id}"}
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 <script>
 
@@ -98,7 +139,7 @@
 			}
 
 			comboboxes = $('#periodcont').children('.scombobox');
-			var select = $(comboboxes[comboboxes.length - 1]).find('select').clone();
+			var select = $(comboboxes[comboboxes.length - 1]).find('select').clone().attr('name', 'schema[periods][' + comboboxes.length + ']');
 			var del = $('#perioddel');
 			select.insertBefore(del);
 

@@ -3,7 +3,7 @@
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 {include file="language.html"}
-<title>::: LMS :::</title>
+<title>LMS</title>
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <SCRIPT TYPE="text/javascript" SRC="js/autoiframe.js"></SCRIPT>
 <SCRIPT TYPE="text/javascript" SRC="js/common.js"></SCRIPT>
@@ -33,7 +33,7 @@
 		<TD WIDTH="99%" onClick="parent.location.href='?m=nodegroupinfo&amp;id={$nodegroups[nodegroups].id}';" class="nobr">
 			<B>{$nodegroup.name}</B><BR>
 			{*
-			    {$nodegroup.description|truncate:50:"...":true}
+			    {$nodegroup.description|truncate:50:"&hellip;":true}
 			*}
 		</TD>
 	</TR>

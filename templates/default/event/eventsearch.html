@@ -14,14 +14,14 @@
     <THEAD>
 	<TR>
 		<TD colspan="3" class="bold">
-			{trans("Find events matching the following search criteria:")}
+			{icon name="search" label="Find events matching the following search criteria:"}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD>
-			<IMG src="img/calendar.gif" alt="">
+			{icon name="subject"}
 		</TD>
 		<TD class="bold">
 			{trans("Title:")}
@@ -32,7 +32,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			{icon name="timetable"}
 		</TD>
 		<TD class="bold">
 			{trans("Date:")}
@@ -44,7 +44,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/info.gif" alt="">
+			{icon name="description"}
 		</TD>
 		<TD class="bold">
 			{trans("Description:")}
@@ -55,7 +55,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/note.gif" alt="">
+			{icon name="note"}
 		</TD>
 		<TD class="bold">
 			{trans("Note:")}
@@ -66,9 +66,9 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/desc.gif" alt="">
+			{icon name="type"}
 		</TD>
-		<TD>
+		<TD class="bold">
 			{trans("Type:")}
 		</TD>
 		<TD>
@@ -82,7 +82,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/desc.gif" alt="">
+			{icon name="status"}
 		</TD>
 		<TD class="bold">
 			{trans("Status:")}
@@ -110,18 +110,19 @@
 *}
 	<TR>
 		<TD>
-			<IMG src="img/customer.gif" alt="">
+			{icon name="customer"}
 		</TD>
 		<TD class="bold">
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
+			{customerlist form="event" customers=$customerlist selected=$event.customerid version=2
+				selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
 		</TD>
 	</TR>
 	<TR>
 		<TD valign="top" class="bold">
-			<IMG src="img/users.gif" alt="">
+			{icon name="user"}
 		</TD>
 		<TD valign="top" class="bold">
 			{trans("User:")}
@@ -129,14 +130,14 @@
 		<TD class="multiselect nobr">
 			<SELECT name="event[userid][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}">{$user.name}</OPTION>
+				<OPTION value="{$user.id}">{$user.name|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
         <TR>
                 <TD>
-                        <IMG src="img/ticket.gif" alt="">
+                        {icon name="helpdesk"}
                 </TD>
                 <TD class="bold nobr">
                         {trans("Ticket ID:")}
@@ -147,8 +148,8 @@
         </TR>
 	<TR>
 		<TD align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Search")}</A>
-			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
+			{button onclick="document.event.submit()" accesskey="s" icon="save" label="Search"}
+			{button href="?m=eventlist" icon="cancel" label="Cancel"}
 		</TD>
 	</TR>
     </TBODY>

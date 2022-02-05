@@ -119,14 +119,14 @@
 	$( function() {
 		$('#{$operation}-template-type').change(function() {
 			var type = parseInt($(this).val());
-			if (type == {$smarty.const.TMPL_SMS} || type == {$smarty.const.TMPL_HELPDESK}) {
+			if (type == {$smarty.const.TMPL_SMS}) {
 				$('#{$operation}-html-message').hide();
 				$('#{$operation}-text-message').show();
-				$('.{$operation}-helpdesk-properties').toggle(type == {$smarty.const.TMPL_HELPDESK});
+				$('.{$operation}-helpdesk-properties').toggle();
 			} else {
 				$('#{$operation}-html-message').show();
 				$('#{$operation}-text-message').hide();
-				$('.{$operation}-helpdesk-properties').hide();
+				$('.{$operation}-helpdesk-properties').toggle(type == {$smarty.const.TMPL_HELPDESK});
 			}
 		}).change();
 

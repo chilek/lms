@@ -1,127 +1,191 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="dark">
-		<TD CLASS="fall bold">{trans("Module Configuration:")}</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD CLASS="fall">
-			<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=finances&f=submit_setup">
-				<table width="100%">
-					<colgroup>
-						<col style="width: 1%;">
-						<col style="width: 99%;">
-					</colgroup>
-					<tr>
-						<td class="nobr">
-							<label for="disable_tranferform">
-								{trans("Turn off access to transfer form")}
-							</label>
-						</td>
-						<td>
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="disable_transferform" id="disable_tranferform" VALUE="1"{if $disable_transferform == 1} checked{/if}>
-						</td>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="disable_invoices">
-								{trans("Turn off access to invoice printing")}
-							</label>
-						</td>
-						<td>
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="disable_invoices" id="disable_invoices" VALUE="1"{if $disable_invoices == 1} checked{/if}>
-						</td>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="invoice_duplicate">
-								{trans("Print invoice duplicate instead of original")}
-							</label>
-						</td>
-						<td>
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="invoice_duplicate" id="invoice_duplicate" VALUE="1"{if $invoice_duplicate == 1} checked{/if}>
-						</td>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="show_tariffname">
-								{trans("Show tariff's name")}
-							</label>
-						</td>
-						<td>
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="show_tariffname" id="show_tariffname" VALUE="1"{if $show_tariffname == 1} checked{/if}>
-						</td>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="show_speeds">
-								{trans("Show upload/download rates/ceils")}
-							</label>
-						</td>
-						<td>
-							<INPUT CLASS="box light" TYPE="checkbox" NAME="show_speeds" id="show_speeds" VALUE="1"{if $show_speeds == 1} checked{/if}>
-						</td>
-                                         <tr>
-                                                <td class="nobr"><label for="show_period">{trans("Show period column in assignment panel")}</label></td>
-                                                <td>
-                                                        <INPUT CLASS="box light" TYPE="checkbox" NAME="show_period" id="show_period" VALUE="1"{if $show_period == 1} checked{/if}>
-                                                </td>
-                                        </tr>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="speed_unit_type">
-								{trans("Speed unit type")}
-							</label>
-						</td>
-						<td>
-							<select name="speed_unit_type" id="speed_unit_type">
-								<option value="1000"{if $speed_unit_type == 1000} selected{/if}>{trans("<!speed-unit>SI")}</option>
-								<option value="1024"{if $speed_unit_type == 1024} selected{/if}>{trans("<!speed-unit>binary")}</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="speed_unit_aggregation_threshold">
-								{trans("Speed unit aggregation threshold")}
-							</label>
-						</td>
-						<td>
-							<input type="number" name="speed_unit_aggregation_threshold" id="speed_unit_aggregation_threshold"
+<table class="lmsbox" cellpadding="3">
+	<thead>
+		<tr>
+			<td class="bold">
+				{icon name="configuration"}
+				{trans("Module Configuration:")}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<form name="moduleconfig" method="POST" action="?m=userpanel&module=finances&f=submit_setup">
+					<table>
+						<colgroup>
+							<col style="width: 1%;">
+							<col style="width: 99%;">
+						</colgroup>
+						<tr>
+							<td class="nobr">
+								<label for="disable_tranferform">
+									{trans("Turn off access to transfer form")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="disable_transferform" id="disable_tranferform" value="1"
+									{if $disable_transferform == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="disable_invoices">
+									{trans("Turn off access to invoice printing")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="disable_invoices" id="disable_invoices" value="1"
+									{if $disable_invoices == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="invoice_duplicate">
+									{trans("Print invoice duplicate instead of original")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="invoice_duplicate" id="invoice_duplicate" value="1"
+									{if $invoice_duplicate == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_tariffname">
+									{trans("Show tariff's name")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_tariffname" id="show_tariffname" value="1"
+									{if $show_tariffname == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_speeds">
+									{trans("Show upload/download rates/ceils")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_speeds" id="show_speeds" value="1"
+									{if $show_speeds == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_period">
+									{trans("Show period column in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_period" id="show_period" value="1"
+									{if $show_period == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_discounted_value">
+									{trans("Value type in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<select name="show_discounted_value" id="show_discounted_value">
+									<option value="0"{if $show_discounted_value == 0} selected{/if}>{trans("Full value without discount")}</option>
+									<option value="1"{if $show_discounted_value == 1} selected{/if}>{trans("Pay value with discount included")}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_period">
+									{trans("Show discount column in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_discount" id="show_discount" value="1"
+									{if $show_discount == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_invoice_flag">
+									{trans("Show invoice column in assignment panel")}
+								</label>
+							</td>
+							<td>
+								<INPUT class="box light" type="checkbox" name="show_invoice_flag" id="show_invoice_flag" value="1"
+									{if $show_invoice_flag == 1} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="speed_unit_type">
+									{trans("Speed unit type")}
+								</label>
+							</td>
+							<td>
+								<select name="speed_unit_type" id="speed_unit_type">
+									<option value="1000"{if $speed_unit_type == 1000} selected{/if}>{trans("<!speed-unit>SI")}</option>
+									<option value="1024"{if $speed_unit_type == 1024} selected{/if}>{trans("<!speed-unit>binary")}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="speed_unit_aggregation_threshold">
+									{trans("Speed unit aggregation threshold")}
+								</label>
+							</td>
+							<td>
+								<input type="number" name="speed_unit_aggregation_threshold" id="speed_unit_aggregation_threshold"
 									value="{$speed_unit_aggregation_threshold}">
-						</td>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="show_last_years">
-								{trans("Show transactions from last selected years:")}
-							</label>
-						</td>
-						<td>
-							<input type="text" class="box light" name="show_last_years" id="show_last_years" value="{$show_last_years}">
-						</td>
-					</tr>
-					<tr>
-						<td class="nobr">
-							<label for="aggregate_documents">
-								{trans("Aggregate documents")}
-							</label>
-						</td>
-						<td>
-							<input type="checkbox" class="box light" name="aggregate_documents" id="aggregate_documents"
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_last_years">
+									{trans("Show transactions from last selected years:")}
+								</label>
+							</td>
+							<td>
+								<input type="text" class="box light" name="show_last_years" id="show_last_years" value="{$show_last_years}">
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="aggregate_documents">
+									{trans("Aggregate documents")}
+								</label>
+							</td>
+							<td>
+								<input type="checkbox" class="box light" name="aggregate_documents" id="aggregate_documents"
 									value="1"{if $aggregate_documents} checked{/if}>
-						</td>
-					</tr>
-				</table>
-				<p align="right">
-					<A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-					<A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")}
-						<IMG SRC="img/save.gif" ALT=""></A>
-				</p>
-			</FORM>
-		</TD>
-	</TR>
-</TABLE>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_all_assignments">
+									{trans("Show all assignments")}
+								</label>
+							</td>
+							<td>
+								<input type="checkbox" class="box light" name="show_all_assignments" id="show_all_assignments"
+									value="1"{if $show_all_assignments} checked{/if}>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="lms-ui-box-buttons">
+								{button icon="save" label="Submit" onclick="document.moduleconfig.submit()"}
+								{button icon="cancel" label="Cancel" href="?m=userpanel"}
+							</td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+	</tbody>
+</table>
 {include file="footer.html"}

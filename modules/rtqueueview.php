@@ -56,6 +56,21 @@ if (isset($_GET['action'])) {
 
 $LMS->CleanupTicketLastView();
 
+if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
+    if ($_GET['ticketwatching']) {
+        $LMS->changeTicketWatching($_GET['ticketid'], 1);
+    } else {
+        $LMS->changeTicketWatching($_GET['ticketid'], 0);
+    }
+
+    $backto = $SESSION->get('backto');
+    if (empty($backto)) {
+        $SESSION->redirect('?m=rtticketinfo&id=' . $_GET['ticketid']);
+    } else {
+        $SESSION->redirect('?' . $backto);
+    }
+}
+
 // queue id's
 if (isset($_GET['id'])) {
     if ($_GET['id'] == 'all') {
@@ -179,6 +194,39 @@ if (isset($_GET['pids'])) {
     }
 }
 
+// customerid
+if (isset($_GET['cid'])) {
+    $filter['cid'] = intval($_GET['cid']);
+} elseif (!isset($filter['cid'])) {
+    $filter['cid'] = null;
+}
+
+// subject
+if (isset($_GET['subject'])) {
+    $filter['subject'] = $_GET['subject'];
+} elseif (!isset($filter['subject'])) {
+    $filter['subject'] = null;
+}
+
+// created from and created to dates
+if (isset($_GET['fromdate'])) {
+    $filter['fromdate'] = datetime_to_timestamp($_GET['fromdate']);
+} elseif (!isset($filter['fromdate'])) {
+    $filter['fromdate'] = null;
+}
+if (isset($_GET['todate'])) {
+    $filter['todate'] = datetime_to_timestamp($_GET['todate']);
+} elseif (!isset($filter['todate'])) {
+    $filter['todate'] = null;
+}
+
+// user watching tickets
+if ($_GET['watching'] == '1') {
+    $filter['watching'] = 1;
+} elseif (isset($_GET['watching'])) {
+    unset($filter['watching']);
+}
+
 // types
 if (isset($_GET['tt'])) {
     if (is_array($_GET['tt'])) {
@@ -249,6 +297,13 @@ if (isset($_GET['priority'])) {
     if (strlen($filter['priority'])) {
         $filter['priority'] = explode(',', $filter['priority']);
     }
+}
+
+// source
+if (isset($_GET['source'])) {
+    $filter['source'] = intval($_GET['source']);
+} elseif (!isset($filter['source'])) {
+    $filter['source'] = -1;
 }
 
 // netnodeid's
@@ -325,6 +380,7 @@ $filter['order'] = $queue['order'];
 unset($queue['total']);
 unset($queue['state']);
 unset($queue['priority']);
+unset($queue['source']);
 unset($queue['order']);
 unset($queue['direction']);
 unset($queue['owner']);
@@ -337,6 +393,13 @@ unset($queue['parentids']);
 unset($queue['rights']);
 unset($queue['verifier']);
 unset($queue['netnode']);
+unset($queue['projectids']);
+unset($queue['cid']);
+unset($queue['subject']);
+unset($queue['fromdate']);
+unset($queue['todate']);
+unset($queue['watching']);
+
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
@@ -362,6 +425,6 @@ $SMARTY->assign('projects', $projects);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('users', $LMS->GetUserNames(array('withDeleted' => 1)));
 
 $SMARTY->display('rt/rtqueueview.html');

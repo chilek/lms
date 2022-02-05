@@ -29,7 +29,7 @@ $_MODINFO['sample'] = array(
             'pl' => 'To jest przykładowy moduł, który tak naprawdę zawiera tylko przykładowy modinfo.php',
             ),
         'author' => 'LMS-developers', // author information
-        'url' => 'http://www.lms.org.pl', // url of module homepage
+        'url' => LMS::SOFTWARE_URL, // url of module homepage
         'revision' => '$Revision$', // cvs revision, optiona
         'notpublic' => true, // notpublic - this means, that user can't access any actions of this module
                     // directly, ie. using modified URL

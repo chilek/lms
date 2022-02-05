@@ -31,5 +31,5 @@ $USERPANEL->AddModule(
     50,         // Priority
     trans('This module is for showing bandwidth utilization stats'), // Description
     '',
-    'lms-ui-icon-stats'
+    'lms-ui-icon-stats fa-fw'
 );

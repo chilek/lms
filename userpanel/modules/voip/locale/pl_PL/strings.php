@@ -38,3 +38,21 @@ $_LANG['Change indexes for phones assigned to your account.'] = 'Zmiana indeksó
 $_LANG['You don\'t have any VoIP account.'] = 'Nie posiadasz kont VoIP.';
 $_LANG['No such data for selected period.'] = 'Brak danych z wybranego okresu.';
 $_LANG['This module shows billing list.'] = 'Ten moduł pokazuje listy billingów telefonicznych.';
+
+$_LANG['Minibilling'] = 'Minibilling';
+
+$_LANG['Minibilling for number $a (period from $b to $c)'] = 'Minibiling dla numeru $a (okres od $b to $c)';
+$_LANG['Minibilling for number $a (period from $b)'] = 'Minibiling dla numeru $a (okres od $b)';
+$_LANG['Minibilling for number $a (period to $c)'] = 'Minibiling dla numeru $a (okres do $c)';
+$_LANG['Minibilling summary (period from $a to $b)'] = 'Minibiling razem (okres od $a do $b)';
+$_LANG['Minibilling summary (period from $a)'] = 'Minibiling razem (okres od $a)';
+$_LANG['Minibilling summary (period to $b)'] = 'Minibiling razem (okres do $b)';
+
+$_LANG['<!minibilling>Call type'] = 'Typ połączenia';
+$_LANG['<!minibilling>Call time'] = 'Czas połączeń';
+$_LANG['<!minibilling>Call count'] = 'Liczba połączeń';
+$_LANG['<!minibilling>Net value'] = 'Wartość netto';
+$_LANG['<!minibilling>Gross value'] = 'Wartość brutto';
+$_LANG['<!minibilling>Total'] = 'Razem';
+$_LANG['<!minibilling>$a seconds'] = '$a sekund';
+$_LANG['<!minibilling>$a pcs.'] = '$a szt.';

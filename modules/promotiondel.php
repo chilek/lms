@@ -27,17 +27,50 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-    $args = array(SYSLOG::RES_PROMO => $id);
+    $assignments = $DB->GetOne(
+        'SELECT COUNT(a.id) FROM assignments a
+        JOIN promotionschemas s ON s.id = a.promotionschemaid
+        WHERE s.promotionid = ?',
+        array($id)
+    );
+
+    if (empty($assignments)) {
+        if ($SYSLOG) {
+            $args = array(
+                SYSLOG::RES_PROMO => $id,
+            );
+            $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_DELETE, $args);
+        }
+    } elseif ($SYSLOG) {
+        $args = array(
+            SYSLOG::RES_PROMO => $id,
+            'deleted' => 1,
+        );
+        $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
+    }
     if ($SYSLOG) {
-        $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_DELETE, $args);
-        $schemas = $DB->GetCol('SELECT id FROM promotionschemas
-			WHERE promotionid = ?', array_values($args));
+        unset($args['deleted']);
+        $schemas = $DB->GetAll(
+            'SELECT s.id, COUNT(a.id) AS assignments
+            FROM promotionschemas s
+            LEFT JOIN assignments a ON a.promotionschemaid = s.id
+            WHERE s.promotionid = ?
+            GROUP BY s.id',
+            array_values($args)
+        );
         if (!empty($schemas)) {
-            foreach ($schemas as $schemaid) {
-                $args[SYSLOG::RES_PROMOSCHEMA] = $schemaid;
-                $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
-                $assigns = $DB->GetCol('SELECT id FROM promotionassignments
-					WHERE promotionschemaid = ?', array($schemaid));
+            foreach ($schemas as $schema) {
+                $args[SYSLOG::RES_PROMOSCHEMA] = $schema['id'];
+                if (empty($schema['assignments'])) {
+                    $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
+                } else {
+                    $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_UPDATE, $args);
+                }
+                $assigns = $DB->GetCol(
+                    'SELECT id FROM promotionassignments
+                    WHERE promotionschemaid = ?',
+                    array($schema['id'])
+                );
                 if (!empty($assigns)) {
                     foreach ($assigns as $assign) {
                         $args[SYSLOG::RES_PROMOASSIGN] = $assign;
@@ -47,7 +80,11 @@ if ($id) {
             }
         }
     }
-    $DB->Execute('DELETE FROM promotions WHERE id = ?', array($id));
+    if (empty($assignments)) {
+        $DB->Execute('DELETE FROM promotions WHERE id = ?', array($id));
+    } else {
+        $DB->Execute('UPDATE promotions SET deleted = 1 WHERE id = ?', array($id));
+    }
 }
 
 $SESSION->redirect('?m=promotionlist');

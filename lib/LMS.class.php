@@ -30,7 +30,8 @@
 class LMS
 {
     const SOFTWARE_NAME = 'LMS';
-    const SOFTWARE_VERSION = '26-git';
+    const SOFTWARE_VERSION = '28-git';
+    const SOFTWARE_URL = 'https://lms.org.pl';
     const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
@@ -377,10 +378,10 @@ class LMS
      * Users
      */
 
-    public function SetUserPassword($id, $passwd)
+    public function SetUserPassword($id, $passwd, $net = false)
     {
         $manager = $this->getUserManager();
-        return $manager->setUserPassword($id, $passwd);
+        return $manager->setUserPassword($id, $passwd, $net);
     }
 
     public function forcePasswordChange($id)
@@ -401,10 +402,10 @@ class LMS
         return $manager->getUserName($id);
     }
 
-    public function GetUserNames()
+    public function GetUserNames($params = array())
     {
         $manager = $this->getUserManager();
-        return $manager->getUserNames();
+        return $manager->getUserNames($params);
     }
 
     public function getUserNamesIndexedById()
@@ -455,6 +456,12 @@ class LMS
         return $manager->userAccess($id, $access);
     }
 
+    public function checkUserAccess($id)
+    {
+        $manager = $this->getUserManager();
+        return $manager->checkUserAccess($id);
+    }
+
     public function GetUserInfo($id)
     {
         $manager = $this->getUserManager();
@@ -479,10 +486,16 @@ class LMS
         return $manager->PasswdExistsInHistory($id, $passwd);
     }
 
-    public function checkPassword($password)
+    public function checkPassword($password, $net = false)
     {
         $manager = $this->getUserManager();
-        return $manager->checkPassword($password);
+        return $manager->checkPassword($password, $net);
+    }
+
+    public function isUserNetworkPasswordSet($id)
+    {
+        $manager = $this->getUserManager();
+        return $manager->isUserNetworkPasswordSet($id);
     }
 
     /*
@@ -549,10 +562,10 @@ class LMS
         return $manager->GetCashByID($id);
     }
 
-    public function CashImportParseFile($filename, $contents, $patterns, $quiet = true, $filemtime = null)
+    public function CashImportParseFile($filename, $contents, $patterns, $quiet = true, $filemtime = null, $config_section = 'cashimport')
     {
         $manager = $this->getCashManager();
-        return $manager->CashImportParseFile($filename, $contents, $patterns, $quiet, $filemtime);
+        return $manager->CashImportParseFile($filename, $contents, $patterns, $quiet, $filemtime, $config_section);
     }
 
     public function CashImportCommit()
@@ -645,10 +658,10 @@ class LMS
         return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
     }
 
-    public function getLastNInTable($body, $customerid, $eol, $aggregate_documents = false)
+    public function getLastNInTable($body, $customerid, $format, $aggregate_documents = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getLastNInTable($body, $customerid, $eol, $aggregate_documents);
+        return $manager->getLastNInTable($body, $customerid, $format, $aggregate_documents);
     }
 
     public function CustomerStats()
@@ -693,6 +706,12 @@ class LMS
         return $manager->getFullAddressForCustomerStuff($customer_id);
     }
 
+    public function detectCustomerLocationAddress($customer_id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->detectCustomerLocationAddress($customer_id);
+    }
+
     public function isTerritAddress($address_id)
     {
         $manager = $this->getCustomerManager();
@@ -727,6 +746,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerSMSOptions();
+    }
+
+    public function GetCustomerAddressesWithEndPoints($customerid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerAddressesWithEndPoints($customerid);
     }
 
     public function GetCustomerAddressesWithoutEndPoints($customerid)
@@ -805,6 +830,78 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->delCustomerNote($id);
+    }
+
+    public function raiseCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->raiseCustomerKarma($id);
+    }
+
+    public function lowerCustomerKarma($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->lowerCustomerKarma($id);
+    }
+
+    public function getCustomerPin($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerPin($id);
+    }
+
+    public function changeCustomerType($id, $type)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->changeCustomerType($id, $type);
+    }
+
+    public function getCustomerCalls(array $params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerCalls($params);
+    }
+
+    public function deleteCustomerCall($customerid, $callid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->deleteCustomerCall($customerid, $callid);
+    }
+
+    public function getCustomerCallContent($callid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerCallContent($callid);
+    }
+
+    public function isCustomerCallExists(array $params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->isCustomerCallExists($params);
+    }
+
+    public function addCustomerCall(array $params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerCall($params);
+    }
+
+    public function updateCustomerCall($callid, array $params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerCall($callid, $params);
+    }
+
+    public function addCustomerCallAssignment($customerid, $callid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerCallAssignment($customerid, $callid);
+    }
+
+    public function getCustomerModificationInfo($customerid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerModificationInfo($customerid);
     }
 
     /*
@@ -976,6 +1073,12 @@ class LMS
         return $manager->GetNodeIDByName($name);
     }
 
+    public function GetNodeIDByLogin($login)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeIDByLogin($login);
+    }
+
     public function GetNodeIDByNetName($name)
     {
         $manager = $this->getNodeManager();
@@ -1120,6 +1223,24 @@ class LMS
         return $manager->CompactNodeGroups();
     }
 
+    public function getNodeGroupIdByName($group_name)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->getNodeGroupIdByName($group_name);
+    }
+
+    public function addNodeGroupAssignment(array $params)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->addNodeGroupAssignment($params);
+    }
+
+    public function deleteNodeGroupAssignment(array $params)
+    {
+        $manager = $this->getNodeGroupManager();
+        return $manager->deleteNodeGroupAssignment($params);
+    }
+
     public function GetNetDevLinkedNodes($id)
     {
         $manager = $this->getNetDevManager();
@@ -1132,10 +1253,28 @@ class LMS
         return $manager->NetDevLinkNode($id, $devid, $link);
     }
 
-    public function SetNetDevLinkType($dev1, $dev2, $link)
+    public function ValidateNetDevLink($dev1, $dev2, $link = null)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->ValidateNetDevLink($dev1, $dev2, $link);
+    }
+
+    public function SetNetDevLinkType($dev1, $dev2, $link = null)
     {
         $manager = $this->getNetDevManager();
         return $manager->SetNetDevLinkType($dev1, $dev2, $link);
+    }
+
+    public function GetNodeLinkType($devid, $nodeid)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeLinkType($devid, $nodeid);
+    }
+
+    public function ValidateNodeLink($node, $link)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->ValidateNodeLink($node, $link);
     }
 
     public function SetNodeLinkType($node, $link)
@@ -1266,6 +1405,12 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->SuspendAssignment($id, $suspend);
+    }
+
+    public function toggleAssignmentSuspension($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->toggleAssignmentSuspension($id);
     }
 
     public function GetInvoiceList(array $params)
@@ -1629,6 +1774,36 @@ class LMS
         return $manager->getFirstFreeAddress($netid);
     }
 
+    public function GetVlanList($params = array())
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetVlanList($params);
+    }
+
+    public function GetVlanInfo($id)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetVlanInfo($id);
+    }
+
+    public function AddVlan($args)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->AddVlan($args);
+    }
+
+    public function DeleteVlan($id)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->DeleteVlan($id);
+    }
+
+    public function UpdateVlan($args)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->UpdateVlan($args);
+    }
+
     /*
      *   Network Devices
      */
@@ -1663,6 +1838,12 @@ class LMS
         return $manager->GetNetDevConnectedNames($id);
     }
 
+    public function getNetDevOwner($id)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevOwner($id);
+    }
+
     public function GetNetDevList($order = 'name,asc', $search = array())
     {
         $manager = $this->getNetDevManager();
@@ -1679,6 +1860,54 @@ class LMS
     {
         $manager = $this->getNetDevManager();
         return $manager->GetNetDevName($id);
+    }
+
+    public function addNetDevMac($params)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->addNetDevMac($params);
+    }
+
+    public function updateNetDevMac($params)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->updateNetDevMac($params);
+    }
+
+    public function delNetDevMac($macid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->delNetDevMac($macid);
+    }
+
+    public function getNetDevMac($macid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMac($macid);
+    }
+
+    public function getNetDevMacs($netdevid, $main = null)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMacs($netdevid, $main);
+    }
+
+    public function getNetDevByMac($mac)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevByMac($mac);
+    }
+
+    public function getNetDevsMacLabels()
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevsMacLabels();
+    }
+
+    public function getNetDevMacLabels($netdevid)
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevMacLabels($netdevid);
     }
 
     public function GetNotConnectedDevices($id)
@@ -1751,6 +1980,12 @@ class LMS
     {
         $manager = $this->getNetDevManager();
         return $manager->GetModelList($pid);
+    }
+
+    public function getNetDevTypes()
+    {
+        $manager = $this->getNetDevManager();
+        return $manager->getNetDevTypes();
     }
 
     public function GetRadioSectors($netdevid, $technology = 0)
@@ -2070,6 +2305,12 @@ class LMS
         return $manager->TicketChange($ticketid, $props);
     }
 
+    public function changeTicketWatching($ticketid, $watching)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->changeTicketWatching($ticketid, $watching);
+    }
+
     public function GetQueueCategories($queueid)
     {
         $manager = $this->getHelpdeskManager();
@@ -2148,6 +2389,12 @@ class LMS
         return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
     }
 
+    public function GetTicketRequestorMail($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetTicketRequestorMail($ticketid);
+    }
+
     public function GetTicketRequestorPhone($ticketid)
     {
         $manager = $this->getHelpdeskManager();
@@ -2218,6 +2465,12 @@ class LMS
     {
         $manager = $this->getHelpdeskManager();
         $manager->getTicketImageGalleries($ticket);
+    }
+
+    public function cleanupTicketSubject($subject)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->cleanupTicketSubject($subject);
     }
 
     /*
@@ -2488,10 +2741,9 @@ class LMS
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)
     {
         $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
-        $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', 2));
-        if (!$debug_level) {
-            $debug_level = 2;
-        }
+
+        $debug_email = ConfigHelper::getConfig('mail.debug_email');
+        $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', empty($debug_email) ? 0 : 2));
 
         if (ConfigHelper::getConfig('mail.backend') == 'pear') {
             if (!is_object($this->mail_object) || !$persist) {
@@ -2563,7 +2815,12 @@ class LMS
                         $buf .= "Content-Transfer-Encoding: base64\n";
                         $buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
                         $buf .= "Content-Description:\n";
-                        $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                            $buf .= "Content-ID: <" . $chunk['content-id'] . ">\n";
+                            $buf .= "Content-Disposition: inline; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        } else {
+                            $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+                        }
                         $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
                     }
                 }
@@ -2656,24 +2913,27 @@ class LMS
             $this->mail_object->dsn = isset($headers['Delivery-Status-Notification-To']) ? 'SUCCESS,FAILURE' : '';
 
             preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $headers['From'], $from);
+            $sender_email = $from['mail'];
             $this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
             $this->mail_object->addReplyTo($headers['Reply-To']);
             $this->mail_object->CharSet = 'UTF-8';
             $this->mail_object->Subject = $headers['Subject'];
 
-            $debug_email = ConfigHelper::getConfig('mail.debug_email');
+            $this->mail_object->SMTPDebug = $debug_level;
+
             if (!empty($debug_email)) {
-                $this->mail_object->SMTPDebug = $debug_level;
-                $recipients = ConfigHelper::getConfig('mail.debug_email');
+                $recipients = $debug_email;
             } else {
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
-                        $this->mail_object->addCC($cc);
+                        preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc, $m);
+                        $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
                     }
                 }
                 if (isset($headers['Bcc'])) {
                     foreach (explode(',', $headers['Bcc']) as $bcc) {
-                        $this->mail_object->addBCC($bcc);
+                        preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $bcc, $m);
+                        $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
                     }
                 }
             }
@@ -2684,7 +2944,22 @@ class LMS
 
             if ($files) {
                 foreach ($files as $chunk) {
-                    $this->mail_object->AddStringAttachment($chunk['data'], $chunk['filename'], 'base64', $chunk['content_type']);
+                    if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                        $this->mail_object->addStringEmbeddedImage(
+                            $chunk['data'],
+                            $chunk['content-id'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    } else {
+                        $this->mail_object->AddStringAttachment(
+                            $chunk['data'],
+                            $chunk['filename'],
+                            \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64,
+                            $chunk['content_type']
+                        );
+                    }
                 }
             }
 
@@ -2715,13 +2990,32 @@ class LMS
                 }
             }
 
-            // setup your cert & key file
-            $cert = LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert';
-            $key = LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key';
+
+            $smime = array(
+                'cert' => !isset($smtp_options['smime_certificate'])
+                    ? ConfigHelper::getConfig('mail.smime_certificate', LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert')
+                    : $smtp_options['smime_certificate'],
+                'key' => !isset($smtp_options['smime_key'])
+                    ? ConfigHelper::getConfig('mail.smime_key', LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key')
+                    : $smtp_options['smime_key'],
+                'ca_chain' => !isset($smtp_options['smime_ca_chain'])
+                    ? ConfigHelper::getConfig('mail.smime_ca_chain', '')
+                    : $smtp_options['smime_ca_chain'],
+                'sender_email' => !isset($smtp_options['smime_sender_email'])
+                    ? ConfigHelper::getConfig('mail.smime_sender_email', $sender_email)
+                    : $smtp_options['smime_sender_email'],
+            );
 
             // set email digital signature
-            if (file_exists($cert) && file_exists($key)) {
-                $this->mail_object->sign($cert, $key, null);
+            if (file_exists($smime['cert']) && file_exists($smime['key'])
+                && (empty($smime['ca_chain']) || file_exists($smime['ca_chain']))
+                && (!empty($smime['sender_email']) && $smime['sender_email'] == $sender_email)) {
+                $this->mail_object->sign(
+                    $smime['cert'],
+                    $smime['key'],
+                    '',
+                    $smime['ca_chain']
+                );
             }
 
             $this->executeHook('email_before_send', array('email' => $this->mail_object, 'backend' => 'phpmailer'));
@@ -2739,7 +3033,10 @@ class LMS
         $msg_len = mb_strlen($message);
 
         if (!$msg_len) {
-            return trans('SMS message is empty!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('SMS message is empty!')),
+            );
         }
 
         $debug_phone = isset($sms_options['debug_phone']) ? $sms_options['debug_phone'] : ConfigHelper::getConfig('sms.debug_phone');
@@ -2755,7 +3052,10 @@ class LMS
             ? $sms_options['phone_number_validation_pattern']
             : ConfigHelper::getConfig('sms.phone_number_validation_pattern', '', true);
         if (!empty($phone_number_validation_pattern) && !preg_match('/' . $phone_number_validation_pattern . '/', $number)) {
-            return trans('Phone number validation failed!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('Phone number validation failed!')),
+            );
         }
 
         // add prefix to the number if needed
@@ -2790,12 +3090,12 @@ class LMS
             $message = mb_substr($message, 0, $max_length - 6) . ' [...]';
         }
 
-        // recount message length after potential last changes made a few lines earlier
-        $msg_len = mb_strlen($message);
-
         $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
         if (empty($service)) {
-            return trans('SMS "service" not set!');
+            return array(
+                'status' => MSG_ERROR,
+                'errors' => array(trans('SMS "service" not set!')),
+            );
         }
 
         $errors = array();
@@ -2805,6 +3105,8 @@ class LMS
                 'message' => $message,
                 'messageid' => $messageid,
                 'service' => $service,
+                'transliterate_message' => $transliterate_message,
+                'sms_options' => $sms_options,
             );
 
             // call external SMS handler(s)
@@ -2815,8 +3117,20 @@ class LMS
                 if (is_string($data['result'])) {
                     $errors[] = $data['result'];
                     continue;
+                } elseif (isset($data['result']['status'])) {
+                    if ($data['result']['status'] == MSG_ERROR) {
+                        $errors = array_merge($errors, $data['result']['errors']);
+                        continue;
+                    } else {
+                        return $data['result'];
+                    }
+                } elseif (is_array($data['result'])) {
+                    $errors = array_merge($errors, $data['result']);
+                    continue;
                 } else {
-                    return $data['result'];
+                    return array(
+                        'status' => $data['result'],
+                    );
                 }
             }
 
@@ -2824,135 +3138,7 @@ class LMS
             $message = $data['message'];
             $messageid = $data['messageid'];
 
-            if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
-                if (!function_exists('curl_init')) {
-                    $errors[] = trans('Curl extension not loaded!');
-                    continue;
-                }
-                $username = isset($sms_options['username']) ? $sms_options['username'] : ConfigHelper::getConfig('sms.username');
-                if (empty($username)) {
-                    $errors[] = trans('SMSCenter username not set!');
-                    continue;
-                }
-                $password = isset($sms_options['password']) ? $sms_options['password'] : ConfigHelper::getConfig('sms.password');
-                if (empty($password)) {
-                    $errors[] = trans('SMSCenter username not set!');
-                    continue;
-                }
-                $from = isset($sms_options['from']) ? $sms_options['from'] : ConfigHelper::getConfig('sms.from');
-                if (empty($from)) {
-                    $errors[] = trans('SMS "from" not set!');
-                    continue;
-                }
-
-                if (strlen($number) > 16 || strlen($number) < 4) {
-                    $errors[] = trans('Wrong phone number format!');
-                    continue;
-                }
-            }
-
             switch ($service) {
-                case 'smscenter':
-                    if (ConfigHelper::checkValue($transliterate_message)) {
-                        if ($msg_len < 160) {
-                            $type_sms = 'sms';
-                        } else if ($msg_len <= 459) {
-                            $type_sms = 'concat';
-                        } else {
-                            $errors[] = trans('SMS Message too long!');
-                            continue 2;
-                        }
-                    } else {
-                        if ($msg_len <= 70) {
-                            $type_sms = 'unicode';
-                        } else if ($msg_len <= 201) {
-                            $type_sms = 'unicode_concat';
-                        } else {
-                            $errors[] = trans('SMS Message too long!');
-                            continue 2;
-                        }
-                    }
-
-                    $type = isset($sms_options['smscenter_type']) ? $sms_options['smscenter_type']
-                        : ConfigHelper::getConfig('sms.smscenter_type', 'dynamic');
-                    $message .= ($type == 'static') ? "\n\n" . $from : '';
-
-                    $args = array(
-                        'user' => $username,
-                        'pass' => $password,
-                        'type' => $type_sms,
-                        'number' => $number,
-                        'text' => $message,
-                        'from' => $from
-                    );
-
-                    $encodedargs = array();
-                    foreach (array_keys($args) as $thiskey) {
-                        array_push($encodedargs, urlencode($thiskey) . "=" . urlencode($args[$thiskey]));
-                    }
-                    $encodedargs = implode('&', $encodedargs);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'http://api.statsms.net/send.php');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $page = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-                    $smsc = explode(', ', $page);
-                    $smsc_result = array();
-
-                    foreach ($smsc as $element) {
-                        $tmp = explode(': ', $element);
-                        array_push($smsc_result, $tmp[1]);
-                    }
-
-                    switch ($smsc_result[0]) {
-                        case '002':
-                        case '003':
-                        case '004':
-                        case '008':
-                        case '011':
-                            return MSG_SENT;
-                        case '001':
-                            $errors[] = 'Smscenter error 001, Incorrect login or password';
-                            continue 3;
-                        case '009':
-                            $errors[] = 'Smscenter error 009, GSM network error (probably wrong prefix number)';
-                            continue 3;
-                        case '012':
-                            $errors[] = 'Smscenter error 012, System error please contact smscenter administrator';
-                            continue 3;
-                        case '104':
-                            $errors[] = 'Smscenter error 104, Incorrect sender field or field empty';
-                            continue 3;
-                        case '201':
-                            $errors[] = 'Smscenter error 201, System error please contact smscenter administrator';
-                            continue 3;
-                        case '202':
-                            $errors[] = 'Smscenter error 202, Unsufficient funds on account to send this text';
-                            continue 3;
-                        case '204':
-                            $errors[] = 'Smscenter error 204, Account blocked';
-                            continue 3;
-                        default:
-                            $errors[] = 'Smscenter error ' . $smsc_result[0] . '. Please contact smscenter administrator';
-                            continue 3;
-                    }
-                    break;
                 case 'smstools':
                     $dir = isset($sms_options['smstools_outdir']) ? $sms_options['smstools_outdir']
                         : ConfigHelper::getConfig('sms.smstools_outdir', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'spool' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'outgoing');
@@ -2983,6 +3169,12 @@ class LMS
                         $headers['Queue'] = $queue;
                     }
 
+                    $delivery_reports = isset($sms_options['delivery_reports']) ? $sms_options['delivery_reports']
+                        : ConfigHelper::getConfig('sms.delivery_reports', 'false');
+                    if (ConfigHelper::checkValue($delivery_reports)) {
+                        $headers['Report'] = 'yes';
+                    }
+
                     $header = '';
                     array_walk($headers, function ($value, $key) use (&$header) {
                         $header .= $key . ': ' . $value . "\n";
@@ -2999,126 +3191,19 @@ class LMS
                         continue 2;
                     }
 
-                    return MSG_NEW;
-                case 'serwersms':
-                    $args = array(
-                        'akcja' => 'wyslij_sms',
-                        'login' => $username,
-                        'haslo' => $password,
-                        'numer' => $number,
-                        'wiadomosc' => $message,
-                        'nadawca' => $from,
+                    return array(
+                        'status' => MSG_NEW,
                     );
-                    if (!ConfigHelper::checkValue($transliterate_message)) {
-                        $trans_message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
-                        if (strlen($message) != strlen($trans_message)) {
-                            $args['kodowanie'] = 'UTF-8';
-                        }
-                    }
-                    if ($messageid) {
-                        $args['usmsid'] = $messageid;
-                    }
-                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast', 'false');
-                    if (ConfigHelper::checkValue($fast)) {
-                        $args['speed'] = 1;
-                    }
-
-                    $encodedargs = http_build_query($args);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://api1.serwersms.pl/zdalnie/index.php');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $page = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-
-                    $lines = explode("\n", $page);
-                    foreach ($lines as $lineidx => $line) {
-                        $lines[$lineidx] = trim($line);
-                    }
-                    $page = implode('', $lines);
-
-                    if (preg_match('/<Blad>([^<]*)<\/Blad>/i', $page, $matches)) {
-                        $errors[] = 'Serwersms error: ' . $matches[1];
-                        continue 2;
-                    }
-
-                    if (!preg_match('/<Skolejkowane><SMS id="[^"]+" numer="[^"]+" godzina_skolejkowania="[^"]+"\/><\/Skolejkowane>/', $page)) {
-                        $errors[] = 'Serwersms error: message has not been sent!';
-                        continue 2;
-                    }
-
-                    return MSG_SENT;
-                case 'smsapi':
-                    $args = array(
-                        'username' => $username,
-                        'password' => md5($password),
-                        'to' => $number,
-                        'message' => $message,
-                        'from' => !empty($from) ? $from : 'ECO',
-                        'encoding' => 'utf-8',
-                    );
-                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast');
-                    if (ConfigHelper::checkValue($fast)) {
-                        $args['fast'] = 1;
-                    }
-                    if ($messageid) {
-                        $args['idx'] = $messageid;
-                    }
-
-                    $encodedargs = http_build_query($args);
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_URL, 'https://ssl.smsapi.pl/sms.do');
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($curl, CURLOPT_POST, 1);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedargs);
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-
-                    $page = curl_exec($curl);
-                    if (curl_error($curl)) {
-                        $errors[] = 'SMS communication error. ' . curl_error($curl);
-                        continue 2;
-                    }
-
-                    $info = curl_getinfo($curl);
-                    if ($info['http_code'] != '200') {
-                        $errors[] = 'SMS communication error. Http code: ' . $info['http_code'];
-                        continue 2;
-                    }
-
-                    curl_close($curl);
-
-                    if (preg_match('/^OK:/', $page)) {
-                        return MSG_SENT;
-                    }
-                    if (preg_match('/^ERROR:([0-9]+)/', $page, $matches)) {
-                        $errors[] = 'Smsapi error: ' . $matches[1];
-                        continue 2;
-                    }
-
-                    $errors[] = 'Smsapi error: message has not been sent!';
-                    continue 2;
                 default:
                     $errors[] = trans('Unknown SMS service!');
                     continue 2;
             }
         }
-        return implode(', ', $errors);
+
+        return array(
+            'status' => MSG_ERROR,
+            'errors' => $errors,
+        );
     }
 
     public function GetMessages($customerid, $limit = null)
@@ -3139,10 +3224,10 @@ class LMS
         return $manager->GetDocumentList($params);
     }
 
-    public function GetTaxes($from = null, $to = null)
+    public function GetTaxes($from = null, $to = null, $default = null)
     {
         $manager = $this->getFinanceManager();
-        return $manager->GetTaxes($from, $to);
+        return $manager->GetTaxes($from, $to, $default);
     }
 
     public function EventAdd($event)
@@ -3223,6 +3308,60 @@ class LMS
         return $manager->GetNumberPlans($properties);
     }
 
+    public function getSystemDefaultNumberPlan($properties)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getSystemDefaultNumberPlan($properties);
+    }
+
+    public function getDefaultNumberPlanID($doctype, $divisionid = null)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDefaultNumberPlanID($doctype, $divisionid);
+    }
+
+    public function checkNumberPlanAccess($id)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->checkNumberPlanAccess($id);
+    }
+
+    public function getNumberPlan($id)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getNumberPlan($id);
+    }
+
+    public function getNumberPlanList($params)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getNumberPlanList($params);
+    }
+
+    public function validateNumberPlan(array $numberplan)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->validateNumberPlan($numberplan);
+    }
+
+    public function addNumberPlan(array $numberplan)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->addNumberPlan($numberplan);
+    }
+
+    public function updateNumberPlan(array $numberplan)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->updateNumberPlan($numberplan);
+    }
+
+    public function deleteNumberPlan($id)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->deleteNumberPlan($id);
+    }
+
     public function GetNewDocumentNumber($properties)
     {
         $manager = $this->getDocumentManager();
@@ -3235,10 +3374,16 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
-    public function CommitDocuments(array $ids)
+    public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
         $manager = $this->getDocumentManager();
-        return $manager->CommitDocuments($ids);
+        return $manager->CommitDocuments($ids, $userpanel, $check_close_flag);
+    }
+
+    public function NewDocumentCustomerNotifications(array $document)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->NewDocumentCustomerNotifications($document);
     }
 
     public function ArchiveDocuments(array $ids)
@@ -3325,6 +3470,24 @@ class LMS
         return $manager->CopyDocumentPermissions($src_userid, $dst_userid);
     }
 
+    public function getDocumentsByFullNumber($full_number, $all_types = false)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentsByFullNumber($full_number, $all_types);
+    }
+
+    public function getDocumentsByChecksum($checksum, $all_types = false)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentsByChecksum($checksum, $all_types);
+    }
+
+    public function isDocumentAccessible($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->isDocumentAccessible($docid);
+    }
+
     /*
      *  Location
      */
@@ -3375,6 +3538,12 @@ class LMS
     {
         $manager = $this->getLocationManager();
         return $manager->UpdateAddress($args);
+    }
+
+    public function SetAddress($args)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->SetAddress($args);
     }
 
     public function UpdateCustomerAddress($customer_id, $args)
@@ -3560,6 +3729,18 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->isTariffEditable($id);
+    }
+
+    public function getPromotionSchema($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getPromotionSchema($id);
+    }
+
+    public function getPromotion($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getPromotion($id);
     }
 
     /**
@@ -4244,6 +4425,12 @@ class LMS
         return $manager->UsergroupGetList();
     }
 
+    public function UsergroupGetActiveUserid($groupid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetActiveUserid($groupid);
+    }
+
     public function UsergroupGet($id)
     {
         $manager = $this->getUserGroupManager();
@@ -4422,6 +4609,12 @@ class LMS
     {
         $manager = $this->getDivisionManager();
         return $manager->GetDivisionByName($name);
+    }
+
+    public function getDivisionIdByShortName($shortname)
+    {
+        $manager = $this->getDivisionManager();
+        return $manager->getDivisionIdByShortName($shortname);
     }
 
     public function GetDivisions($params = array())
@@ -4636,34 +4829,70 @@ class LMS
                 'cdate' => $doc['cdate'] + date('Z'),
                 'customerid' => $doc['customerid'],
             ));
-            $body = preg_replace('/%invoice/', $invoice_number, $body);
-            $body = preg_replace('/%balance/', moneyf($this->GetCustomerBalance($doc['customerid']), Localisation::getCurrentCurrency()), $body);
-            $body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
-            $body = str_replace('\n', "\n", $body);
+
+            $deadline = $doc['cdate'] + $document['document']['paytime'] * 86400;
+
+            $balance = $this->GetCustomerBalance($doc['customerid']);
+            $currency = Localisation::getCurrentCurrency();
+
+            if ($balance < 0) {
+                $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$balance, $currency));
+            } elseif ($balance > 0) {
+                $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($balance, $currency));
+            } else {
+                $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
+            }
+
+            list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+
+            $body = str_replace(
+                array(
+                    '%invoice',
+                    '%balance',
+                    '%commented_balance',
+                    '%today',
+                    '\n',
+                    '%bankaccount',
+                    '%deadline-y',
+                    '%deadline-m',
+                    '%deadline-d',
+                    '%deadline_month_name',
+                    '%pin',
+                    '%cid',
+                    '%lastday',
+                    // invoices, debit notes
+                    '%value',
+                    '%cdate-y',
+                    '%cdate-m',
+                    '%cdate-d',
+
+                ),
+                array(
+                    $invoice_number,
+                    moneyf($balance, $currency),
+                    $commented_balance,
+                    $year . '-' . $month . '-' . $day,
+                    "\n",
+                    format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
+                    strftime("%Y", $deadline),
+                    strftime("%m", $deadline),
+                    strftime("%d", $deadline),
+                    strftime("%B", $deadline),
+                    $document['document']['customerpin'],
+                    $doc['customerid'],
+                    strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+                    moneyf($document['document']['total'], $document['document']['currency']),
+                    strftime("%Y", $document['document']['cdate']),
+                    strftime("%m", $document['document']['cdate']),
+                    strftime("%d", $document['document']['cdate']),
+                ),
+                $body
+            );
+
             $subject = preg_replace('/%invoice/', $invoice_number, $subject);
             $doc['name'] = '"' . $doc['name'] . '"';
 
-            $body = preg_replace(
-                '/%bankaccount/',
-                format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
-                $body
-            );
-            $deadline = $doc['cdate'] + $document['document']['paytime'] * 86400;
-            $body = preg_replace('/%deadline-y/', strftime("%Y", $deadline), $body);
-            $body = preg_replace('/%deadline-m/', strftime("%m", $deadline), $body);
-            $body = preg_replace('/%deadline-d/', strftime("%d", $deadline), $body);
-            $body = preg_replace('/%deadline_month_name/', strftime("%B", $deadline), $body);
-            $body = preg_replace('/%pin/', $document['document']['customerpin'], $body);
-            $body = preg_replace('/%cid/', $doc['customerid'], $body);
-            // invoices, debit notes
-            $body = preg_replace('/%value/', moneyf($document['document']['total'], $document['document']['currency']), $body);
-            $body = preg_replace('/%cdate-y/', strftime("%Y", $document['document']['cdate']), $body);
-            $body = preg_replace('/%cdate-m/', strftime("%m", $document['document']['cdate']), $body);
-            $body = preg_replace('/%cdate-d/', strftime("%d", $document['document']['cdate']), $body);
-            list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
-            $body = preg_replace('/%lastday/', strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $body);
-
-            $body = $this->getLastNInTable($body, $doc['customerid'], '<eol>', $aggregate_documents);
+            $body = $this->getLastNInTable($body, $doc['customerid'], $mail_format, $aggregate_documents);
 
             $mailto = array();
             $mailto_qp_encoded = array();
@@ -4720,6 +4949,7 @@ class LMS
                 $headers = array(
                     'From' => empty($dsn_email) ? $from : $dsn_email,
                     'To' => $mailto_qp_encoded,
+                    'Recipient-Name' => $doc['name'],
                     'Subject' => $subject,
                     'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
                 );
@@ -4756,45 +4986,84 @@ class LMS
                 $body = $data['body'];
                 $headers = $data['headers'];
 
-                if ($add_message) {
-                    $this->DB->Execute(
-                        'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
-						VALUES (?, ?, ?NOW?, ?, ?, ?)',
-                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
-                    );
-                    $msgid = $this->DB->GetLastInsertID('messages');
-
-                    if ($message_attachments) {
-                        if (!empty($files)) {
-                            foreach ($files as &$file) {
-                                $file['name'] = $file['filename'];
-                                $file['type'] = $file['content_type'];
-                            }
-                            unset($file);
-                            $this->AddFileContainer(array(
-                                'description' => 'message-' . $msgid,
-                                'files' => $files,
-                                'type' => 'messageid',
-                                'resourceid' => $msgid,
-                            ));
-                        }
-                    }
-
-                    foreach (explode(',', $custemail) as $email) {
-                        $this->DB->Execute(
-                            'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
-							VALUES (?, ?, ?, ?NOW?, ?)',
-                            array($msgid, $doc['customerid'], $email, MSG_NEW)
-                        );
-                        $msgitemid = $this->DB->GetLastInsertID('messageitems');
-                        if (!isset($msgitems[$doc['customerid']])) {
-                            $msgitems[$doc['customerid']] = array();
-                        }
-                        $msgitems[$doc['customerid']][$email] = $msgitemid;
-                    }
-                }
-
+                $messages = array();
                 foreach (explode(',', $custemail) as $email) {
+                    $mailSubject = $subject;
+                    $headers['Subject'] = $mailSubject;
+
+                    // get email properties
+                    $emailProperties = $this->DB->GetAllByKey(
+                        'SELECT ccp.name AS name, ccp.value AS value
+                        FROM customercontacts cc
+                        LEFT JOIN customercontactproperties ccp ON cc.id = ccp.contactid
+                        WHERE cc.contact = ?',
+                        'name',
+                        array($email)
+                    );
+
+                    if ($emailProperties && isset($emailProperties['email-subject'])) {
+                        $customSubject = $emailProperties['email-subject']['value'];
+                        $customSubject = preg_replace('/%original/', $subject, $customSubject);
+                        $customSubject = preg_replace('/%invoice/', $invoice_number, $customSubject);
+                        $mailSubject = $customSubject;
+                        $headers['Subject'] = $mailSubject;
+                    }
+
+                    if ($add_message) {
+                        if (!isset($messages[$mailSubject])) {
+                            $this->DB->Execute(
+                                'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
+                                VALUES (?, ?, ?NOW?, ?, ?, ?)',
+                                array($mailSubject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
+                            );
+                            $msgid = $this->DB->GetLastInsertID('messages');
+
+                            $messages[$mailSubject]['msgid'] = $msgid;
+
+                            if ($message_attachments) {
+                                if (!empty($files)) {
+                                    foreach ($files as &$file) {
+                                        $file['name'] = $file['filename'];
+                                        $file['type'] = $file['content_type'];
+                                    }
+                                    unset($file);
+                                    $this->AddFileContainer(array(
+                                        'description' => 'message-' . $msgid,
+                                        'files' => $files,
+                                        'type' => 'messageid',
+                                        'resourceid' => $msgid,
+                                    ));
+                                }
+                            }
+
+                            $this->DB->Execute(
+                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                                VALUES (?, ?, ?, ?NOW?, ?)',
+                                array($msgid, $doc['customerid'], $email, MSG_NEW)
+                            );
+
+                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
+                            if (!isset($msgitems[$doc['customerid']])) {
+                                $msgitems[$doc['customerid']] = array();
+                            }
+                            $msgitems[$doc['customerid']][$email] = $msgitemid;
+                        } else {
+                            $msgid = $messages[$mailSubject]['msgid'];
+
+                            $this->DB->Execute(
+                                'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+                                VALUES (?, ?, ?, ?NOW?, ?)',
+                                array($msgid, $doc['customerid'], $email, MSG_NEW)
+                            );
+
+                            $msgitemid = $this->DB->GetLastInsertID('messageitems');
+                            if (!isset($msgitems[$doc['customerid']])) {
+                                $msgitems[$doc['customerid']] = array();
+                            }
+                            $msgitems[$doc['customerid']][$email] = $msgitemid;
+                        }
+                    }
+
                     if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
                         $headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
                         $headers['Message-ID'] = '<messageitem-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';
@@ -4838,9 +5107,9 @@ class LMS
                         if ($interval == -1) {
                             $delay = mt_rand(500, 5000);
                         } else {
-                            $delay = intval($interval) * 1000;
+                            $delay = intval($interval);
                         }
-                        usleep($delay);
+                        usleep($delay * 1000);
                     }
                 }
             }

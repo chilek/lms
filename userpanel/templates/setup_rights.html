@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS :{$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <script type="text/javascript">
@@ -62,11 +62,11 @@
 								</TD>
 							</TR>
 							{foreachelse}
-							<TR>
-								<TD class="empty-table" colspan="3">
-									<p>{trans("There are any userpanel rights.")}</p>
-								</TD>
-							</TR>
+							<tr>
+								<td class="empty-table" colspan="3">
+									{trans("There are any userpanel rights.")}
+								</td>
+							</tr>
 							{/foreach}
 							</TBODY>
 						</TABLE>
@@ -136,11 +136,11 @@
 								</TD>
 							</TR>
 							{foreachelse}
-							<TR>
-								<TD class="empty-table" colspan="3">
-									<p>{trans("There are any userpanel rights.")}</p>
-								</TD>
-							</TR>
+							<tr>
+								<td class="empty-table" colspan="3">
+									{trans("There are any userpanel rights.")}
+								</td>
+							</tr>
 							{/foreach}
 							</TBODY>
 						</TABLE>

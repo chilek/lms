@@ -58,7 +58,13 @@
                 <a class="bold" name="{$voipaccountlist[voipaccountlist].id}">
                     <img src="img/voip.gif" alt=""> {$voipaccountlist[voipaccountlist].login}
                 </a><br>
-                <img src="img/customer.gif" alt="">&nbsp;<a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">{$voipaccountlist[voipaccountlist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</a>
+                <img src="img/customer.gif" alt="">
+                <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}"
+                   class="lms-ui-hint-rollover"
+                   data-url="?m=customerinfoshort&id={$voipaccountlist[voipaccountlist].ownerid}"
+                    >{$voipaccountlist[voipaccountlist].owner|truncate:60:"&hellip;"|replace:" ":"&nbsp;"}
+                    ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
+                </a>
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';">
                 ({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})
@@ -82,7 +88,7 @@
         {sectionelse}
         <tr>
             <td class="empty-table" colspan="5">
-                <p>{trans("No such voip accounts matching search criteria.")}</p>
+                {trans("No such voip accounts matching search criteria.")}
             </td>
         </tr>
         {/section}

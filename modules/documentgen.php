@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -92,22 +92,16 @@ if (isset($_POST['document'])) {
     $network = $_POST['network'];
     $customergroup = $_POST['customergroup'];
     switch ($state) {
+        case CSTATUS_DISCONNECTED:
+        case 51:
+        case 52:
+        case CSTATUS_CONNECTED:
         case 0:
             $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
         case CSTATUS_INTERESTED:
         case CSTATUS_WAITING:
             $customerlist = $LMS->GetCustomerList(compact("state"));
-            break;
-        case CSTATUS_CONNECTED:
-        case CSTATUS_DISCONNECTED:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
-            break;
-        case 51:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
-            break;
-        case 52:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
         case -1:
             if ($customerlist = $LMS->GetCustomerList(compact("customergroup"))) {
@@ -157,7 +151,16 @@ if (isset($_POST['document'])) {
     }
     if (isset($document['attachments']) && !empty($document['attachments'])) {
         foreach ($document['attachments'] as $attachment => $value) {
-            $filename = $engine['attachments'][$attachment];
+            if (isset($engine['attachments'][$attachment])) {
+                $filename = $engine['attachments'][$attachment];
+            } else {
+                foreach ($engine['attachments'] as $idx => $file) {
+                    if ($file['label'] == $attachment) {
+                        break;
+                    }
+                }
+                $filename = $engine['attachments'][$idx]['name'];
+            }
             if ($filename[0] != DIRECTORY_SEPARATOR) {
                 $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
             }
@@ -216,6 +219,7 @@ if (isset($_POST['document'])) {
                 continue;
             }
 
+            $error = null;
             $document['customerid'] = $gencust['id'];
             $gencount++;
             $output = null; // delete output
@@ -224,7 +228,26 @@ if (isset($_POST['document'])) {
             $files = array();
             unset($docfile);
 
+            if ($customernumtemplate) {
+                $document['number'] = $LMS->GetNewDocumentNumber(array(
+                    'doctype' => $document['type'],
+                    'planid' => $document['numberplanid'],
+                    'customerid' => $document['customerid'],
+                ));
+            }
+
+            $fullnumber = docnumber(array(
+                'number' => $document['number'],
+                'template' => $numtemplate,
+                'cdate' => $time,
+                'customerid' => $document['customerid'],
+            ));
+
             if ($document['templ']) {
+                $barcode = new \Com\Tecnick\Barcode\Barcode();
+                $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+                $document['barcode'] = base64_encode($bobj->getPngData());
+
                 // run template engine
                 if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
@@ -283,20 +306,6 @@ if (isset($_POST['document'])) {
 
             $division = $LMS->GetDivision($gencust['divisionid']);
 
-            if ($customernumtemplate) {
-                $document['number'] = $LMS->GetNewDocumentNumber(array(
-                    'doctype' => $document['type'],
-                    'planid' => $document['numberplanid'],
-                    'customerid' => $document['customerid'],
-                ));
-            }
-
-            $fullnumber = docnumber(array(
-                'number' => $document['number'],
-                'template' => $numtemplate,
-                'cdate' => $time,
-                'customerid' => $document['customerid'],
-            ));
             $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber, template)
@@ -353,12 +362,7 @@ if (isset($_POST['document'])) {
 
             $DB->CommitTrans();
 
-            $genresult .= docnumber(array(
-                    'number' => $document['number'],
-                    'template' => $numtemplate,
-                    'cdate' => $time,
-                    'customerid' => $document['customerid'],
-                )) . '.<br>';
+            $genresult .= $fullnumber . '.<br>';
             if (!$customernumtemplate) {
                 $document['number']++;
             }
@@ -463,6 +467,7 @@ if (isset($document['type'])) {
 }
 
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('planDocumentType', isset($document['type']) ? $document['type'] : null);
 
 $docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : null);
 

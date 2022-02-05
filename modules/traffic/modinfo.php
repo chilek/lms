@@ -35,7 +35,7 @@ $_MODINFO['traffic'] = array(
             ),
         'version' => '1.11-git',
         'author' => 'LMS Developers',
-        'url' => 'http://www.lms.org.pl',
+        'url' => LMS::SOFTWARE_URL,
         'revision' => '$Revision$',
         'notpublic' => false,
         'priority' => 50,

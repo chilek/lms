@@ -20,7 +20,7 @@
 		{tab_table}
 			{if $customergroups}
 			<div class="lms-ui-tab-table-row header">
-				<div class="lms-ui-tab-table-wrapper col-3">
+				<div class="lms-ui-tab-table-wrapper col-4">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
 							<strong>{trans("Name:")}</strong>
@@ -30,8 +30,13 @@
 						</div>
 					</div>
 
-					<div class="lms-ui-tab-table-column id">
-						{trans("ID:")}
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
+						<div class="lms-ui-tab-table-column datefrom">
+							{trans("From")}
+						</div>
 					</div>
 				</div>
 
@@ -43,7 +48,7 @@
 
 			{foreach $customergroups as $customergroup}
 			<div class="lms-ui-tab-table-row">
-				<div class="lms-ui-tab-table-wrapper col-3">
+				<div class="lms-ui-tab-table-wrapper col-4">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
 							<strong>
@@ -54,12 +59,21 @@
 							</strong>
 						</div>
 						<div class="lms-ui-tab-table-column description">
-							{$customergroup.description|default:"-"}
+							{$customergroup.description|escape|default:"-"}
 						</div>
 					</div>
 
-					<div class="lms-ui-tab-table-column id">
-						({$customergroup.id|string_format:"%04d"})
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column id">
+							({$customergroup.id|string_format:"%04d"})
+						</div>
+						<div class="lms-ui-tab-table-column datefrom">
+							{if $customergroup.startdate}
+								{$customergroup.startdate|date_format:"%Y/%m/%d %H:%M"}
+							{else}
+								-
+							{/if}
+						</div>
 					</div>
 				</div>
 
@@ -83,14 +97,9 @@
 
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button" id="delete-groups">
-					<i class="lms-ui-icon-delete"></i> {trans("Delete")}
-				</button>
+				{button icon="delete" label="Delete" id="delete-groups"}
 {if !empty($othercustomergroups)}
-				<button type="button" class="lms-ui-button" id="add-groups"
-						{tip text="Add customer to groups"}>
-					<i class="lms-ui-icon-add"></i> {trans("Add")}
-				</button>
+				{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
 				<SELECT NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
 						form="customergroupassignment" multiple>
 					{foreach $othercustomergroups as $customergroup}

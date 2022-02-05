@@ -97,7 +97,11 @@ function RTSearch($search, $order = 'createtime,desc')
         }
     }
     if (!empty($search['priority'])) {
-        $where[] = 'priority = '.intval($search['priority']);
+        if ($search['priority'] == '-101') {
+            $where[] = 't.priority IS NULL';
+        } else {
+            $where[] = 'priority = ' . intval($search['priority']);
+        }
     }
     if (!empty($search['email'])) {
         $where[] = 'requestor ?LIKE? '.$DB->Escape('%'.$search['email'].'%');
@@ -238,9 +242,9 @@ function RTSearch($search, $order = 'createtime,desc')
     if ($result) {
         foreach ($result as &$ticket) {
             if (!$ticket['custid']) {
-                list ($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
+                list ($ticket['requestor'], $ticket['requestor_mail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
             } else {
-                list ($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
+                list ($ticket['requestor_mail']) = sscanf($ticket['req'], "<%[^>]");
             }
 
             if (!empty($ticket['deadline'])) {

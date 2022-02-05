@@ -18,7 +18,7 @@
 		z-index: 1;
 	}
 
-	#location-box-autosuggest .lms-ui-suggestion-item:not(:hover):nth-child(even) {
+	#location-box-autosuggest .lms-ui-suggestion-item:not(:hover):nth-child(even):not(.selected) {
 		background-color: #F4F0EC;
 	}
 
@@ -62,6 +62,7 @@
 		autosubmit: 0,
 		suggestionContainer: '#location-box-autosuggest',
 		suggestMaxLength: 0,
+		autoSubmitForm: false,
 		onSubmit: function(data) {
 			if (data.hasOwnProperty('action')) {
 				search_update(data.action.cityid, data.action.districtid, data.action.stateid);
@@ -119,7 +120,7 @@
 		<td>
 			<select id="street_sel" name="street" class="location-property-selection" {tip text="Select street"}>
 				{foreach $streets as $street}
-				<option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{htmlspecialchars($street.name1)}"{if $street.name2} data-street-name-2="{htmlspecialchars($street.name2)}"{/if}>{$street.name}</option>
+				<option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{$street.name1|escape}"{if $street.name2} data-street-name-2="{$street.name2|escape}"{/if}>{$street.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -282,6 +283,8 @@ function submit_location() {
 		if (street_parts[0].match(/^rynek$/i) &&
 			(street_parts[1].match(/^rynek/i) || (street_parts.length == 3 && street_parts[2].match(/^rynek/i)))) {
 			street_parts.shift();
+		} else if (street_parts.length == 2 && street_parts[1].match(/^[0-9]+(\.|-go)?$/)) {
+			street_parts.reverse();
 		}
     	location_box.find( "input[data-address='street']"        ).val( street_parts.join(' ') );
         location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );

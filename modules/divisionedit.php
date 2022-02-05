@@ -49,7 +49,7 @@ $olddiv = $DB->GetRow('SELECT d.*,
 		addr.zip as location_zip, addr.state as location_state_name,
 		addr.state_id as location_state, addr.country_id as location_country_id,
 		addr.postoffice AS location_postoffice
-	FROM divisions d
+	FROM vdivisions d
 		LEFT JOIN addresses addr           ON addr.id = d.address_id
 		LEFT JOIN location_cities lc       ON lc.id = addr.city_id
 		LEFT JOIN location_streets ls      ON ls.id = addr.street_id
@@ -88,17 +88,35 @@ if (!empty($_POST['division'])) {
         $error['shortname'] = trans('Division with specified name already exists!');
     }
 
+    if (!empty($division['naturalperson'])) {
+        if (empty($division['firstname'])) {
+            $error['firstname'] = trans('First name cannot be empty for natural person!');
+        }
+        if (empty($division['lastname'])) {
+            $error['lastname'] = trans('Last name cannot be empty for natural person!');
+        }
+        if (empty($division['birthdate'])) {
+            $error['birthdate'] = trans('Birth date cannot be empty for natural person!');
+        }
+    } else {
+        $division['firstname'] = $division['lastname'] = $division['birthdate'] = null;
+    }
+
     if ($division['location_city_name'] == '') {
         $error['division[location_city_name]'] = trans('City is required!');
     }
 
-    Localisation::setSystemLanguage($LMS->getCountryCodeById($division['location_country_id']));
+    if (!empty($division['location_country_id'])) {
+        Localisation::setSystemLanguage($LMS->getCountryCodeById($division['location_country_id']));
+    }
     if ($division['location_zip'] == '') {
         $error['division[location_zip]'] = trans('Zip code is required!');
     } else if (!check_zip($division['location_zip'])) {
         $error['division[location_zip]'] = trans('Incorrect ZIP code!');
     }
-    Localisation::resetSystemLanguage();
+    if (!empty($division['location_country_id'])) {
+        Localisation::resetSystemLanguage();
+    }
 
     if ($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning'])) {
         $error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
@@ -115,6 +133,10 @@ if (!empty($_POST['division'])) {
 
     if ($division['email'] != '' && !check_email($division['email'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
+    }
+
+    if ($division['phone'] != '' && preg_match('/[^0-9\s\-]/', $division['phone'])) {
+        $error['phone'] = trans('Incorrect phone number!');
     }
 
     if ($division['inv_paytime'] == '') {

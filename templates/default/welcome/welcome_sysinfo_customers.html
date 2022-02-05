@@ -18,8 +18,11 @@
                 <a href="?m=customerlist&amp;s={$statusidx}">{$status.summarylabel}</a>
             </td>
             <td>
-				{$alias=$status.alias}
+                {$alias = $status.alias}
                 {$customerstats.$alias}
+                {if $statusidx == $smarty.const.CSTATUS_DEBT_COLLECTION}
+                    ({trans("amount")} {moneyf($customerstats.debtcollectionvalue)})
+                {/if}
             </td>
         </tr>
         {/foreach}
@@ -37,7 +40,7 @@
                 <a href="?m=customerlist&amp;s=52">{trans("Total Dues:")}</a>
             </td>
             <td>
-                {$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
+                {$customerstats.debt} ({trans("amount")} {moneyf($customerstats.debtvalue)})
             </td>
         </tr>
         {/if}

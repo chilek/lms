@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,44 @@
  *  $Id$
  */
 
-$numberplan = $DB->GetRow('SELECT id, period, template, doctype, isdefault
-			    FROM numberplans WHERE id=?', array($_GET['id']));
+function getUsers($alldivisions, $selecteddivisions)
+{
+    $LMS = LMS::getInstance();
+
+    if (empty($selecteddivisions)) {
+        $divisions = $alldivisions;
+    } else {
+        $divisions = array_filter(
+            $alldivisions,
+            function ($division) use ($selecteddivisions) {
+                return isset($selecteddivisions[$division['id']]);
+            }
+        );
+    }
+
+    $users = $LMS->GetUsers(array(
+        'divisions' => implode(',', array_keys($divisions)),
+        'order' => 'rname,asc',
+    ));
+    if (empty($users)) {
+        $users = array();
+    }
+
+    return $users;
+}
+
+if (isset($_GET['op']) && $_GET['op'] == 'updateusers') {
+    header('Content-Type: application/json');
+    die(json_encode(getUsers(
+        $LMS->GetDivisions(),
+        empty($_POST['divisions']) ? array() : array_flip($_POST['divisions'])
+    )));
+}
+
+$numberplan = $LMS->getNumberPlan($_GET['id']);
+if (empty($numberplan)) {
+    access_denied();
+}
 
 $template = $numberplan['template'];
 
@@ -54,99 +90,29 @@ if (is_array($numberplanedit) && count($numberplanedit)) {
         $error['period'] = trans('Numbering period is required!');
     }
 
-    if ($numberplanedit['doctype'] && $numberplanedit['isdefault']) {
-        if ($DB->GetOne(
-            'SELECT 1 FROM numberplans n
-			WHERE doctype = ? AND isdefault = 1 AND n.id != ?'
-            .(!empty($_POST['selected']) ? ' AND EXISTS (
-				SELECT 1 FROM numberplanassignments WHERE planid = n.id
-				AND divisionid IN ('.implode(',', array_keys($_POST['selected'])).'))'
-            : ' AND NOT EXISTS (SELECT 1 FROM numberplanassignments
-			        WHERE planid = n.id)'),
-            array($numberplanedit['doctype'], $numberplanedit['id'])
-        )) {
-            $error['doctype'] = trans('Selected document type has already defined default plan!');
-        }
-    }
+    $result = $LMS->validateNumberPlan($numberplanedit);
+    $error = array_merge($error ?: array(), $result);
 
     if (!$error) {
-        $DB->BeginTrans();
-
-        $args = array(
-            'template' => $numberplanedit['template'],
-            'doctype' => $numberplanedit['doctype'],
-            'period' => $numberplanedit['period'],
-            'isdefault' => $numberplanedit['isdefault'],
-            SYSLOG::RES_NUMPLAN => $numberplanedit['id']
-        );
-        $DB->Execute(
-            'UPDATE numberplans SET template=?, doctype=?, period=?, isdefault=? WHERE id=?',
-            array_values($args)
-        );
-
-        if ($SYSLOG) {
-            $SYSLOG->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_UPDATE, $args);
-            $assigns = $DB->GetAll(
-                'SELECT * FROM numberplanassignments WHERE planid = ?',
-                array($numberplanedit['id'])
-            );
-            if (!empty($assigns)) {
-                foreach ($assigns as $assign) {
-                    $args = array(
-                    SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
-                    SYSLOG::RES_NUMPLAN => $assign['planid'],
-                    SYSLOG::RES_DIV => $assign['divisionid']
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
-                }
-            }
-        }
-
-        $DB->Execute('DELETE FROM numberplanassignments WHERE planid = ?', array($numberplanedit['id']));
-
-        if (!empty($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                $DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
-					VALUES (?, ?)', array($numberplanedit['id'], intval($idx)));
-                if ($SYSLOG) {
-                    $id = $DB->GetLastInsertID('numberplanassignments');
-                    $args = array(
-                        SYSLOG::RES_NUMPLANASSIGN => $id,
-                        SYSLOG::RES_NUMPLAN => $numberplanedit['id'],
-                        SYSLOG::RES_DIV => intval($idx)
-                    );
-                    $SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
-                }
-            }
-        }
-
-        $DB->CommitTrans();
+        $LMS->updateNumberPlan($numberplanedit);
 
         $SESSION->redirect('?m=numberplanlist');
     } else {
-        $numberplanedit['selected'] = array();
-        if (isset($_POST['selected'])) {
-            foreach ($_POST['selected'] as $idx => $name) {
-                    $numberplanedit['selected'][$idx]['id'] = $idx;
-                    $numberplanedit['selected'][$idx]['name'] = $name;
-            }
-        }
+        $numberplanedit['divisions'] = array_flip($numberplanedit['divisions'] ?: array());
+        $numberplanedit['users'] = array_flip($numberplanedit['users'] ?: array());
     }
     $numberplan = $numberplanedit;
-} else {
-    $numberplan['selected'] = $DB->GetAllByKey('SELECT d.id, d.shortname AS name
-		FROM numberplanassignments, divisions d
-		WHERE d.id = divisionid AND planid = ?', 'id', array($numberplan['id']));
 }
 
 $layout['pagetitle'] = trans('Numbering Plan Edit: $a', $template);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$divisions = $LMS->GetDivisions();
+$users = getUsers($divisions, $numberplan['divisions']);
+
 $SMARTY->assign('numberplanedit', $numberplan);
-$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name
-		FROM divisions WHERE status = 0'
-        . (!empty($numberplan['selected']) ? ' OR id IN ('.implode(',', array_keys($numberplan['selected'])).')' : '')
-        . ' ORDER BY shortname', 'id'));
+$SMARTY->assign('divisions', $divisions);
+$SMARTY->assign('users', $users);
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanedit.html');

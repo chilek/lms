@@ -32,7 +32,7 @@
 			{trans("Payment day:")}
 		</TD>
 		<TD class="bold text-right nobr">
-			{t a=$listdata.total}Total: $a{/t}
+			{button icon="add" label="New Payment" href="?m=paymentadd"}
 		</TD>
 	</TR>
     </THEAD>
@@ -62,7 +62,7 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
-			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="{trans("Account payment")}" title="{trans("Account payment")}"></A>
+			<A HREF="javascript:document.addbalance{$payment@index}.submit();"><IMG src="img/pay.gif" alt="{trans("Account payment")}" title="{trans("Account payment")}"></A>
 			<A class="delete-payment" HREF="?m=paymentdel&id={$payment.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=paymentedit&id={$payment.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=paymentinfo&id={$payment.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>&nbsp;
@@ -70,16 +70,16 @@
 		</FORM>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="6" class="empty-table">
-			<p>{trans("No such standing payments in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="6" class="empty-table">
+			{trans("No such standing payments in database.")}
+		</td>
+	</tr>
 	{/foreach}
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD COLSPAN="4">
+		<TD COLSPAN="3">
 			&nbsp;
 		</TD>
 		<TD class="bold text-right">
@@ -88,6 +88,9 @@
 		<TD class="bold text-left">
 			{$listdata.total}
 		</TD>
+		<td class="bold text-right">
+			{t a=$listdata.total}Total: $a{/t}
+		</td>
 	</TR>
     </TFOOT>
 </TABLE>

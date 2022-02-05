@@ -5,7 +5,7 @@
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 <meta http-equiv="Content-Language" content="{Localisation::getCurrentHtmlLanguage()}">
 <meta http-equiv="Content-Type" content="text/html; charset={Localisation::getCurrentHtmlCharset()}">
-<title>::: {t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv} :::</title>
+<title>{t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv}</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -57,7 +57,7 @@
 						<br>
 						<br>
 						<a href="doc/html/{Localisation::getCurrentUiLanguage()}/"><span class="blend">{t}Documentation{/t}</span></a><br>
-						<a href="http://www.lms.org.pl/"><span class="blend">{t}LMS Project Homepage{/t}</span></a>
+						<a href="{LMS::SOFTWARE_URL}"><span class="blend">{t}LMS Project Homepage{/t}</span></a>
 					</td>
 				</tr>
 				{if $layout.dberrors}

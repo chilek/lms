@@ -139,7 +139,7 @@ if (isset($_GET['ticketid'])) {
             'cause' => $note['cause'],
             'state' => $note['state'],
             'source' => $note['source'],
-            'priority' => $note['priority'],
+            'priority' => isset($note['priority']) ? $note['priority'] : null,
             'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
             'deadline' => empty($note['deadline']) ? null : $deadline,
         );
@@ -151,7 +151,7 @@ if (isset($_GET['ticketid'])) {
 
         $LMS->TicketChange($note['ticketid'], $props);
 
-        if (isset($note['notify'])) {
+        if (isset($note['notify']) || !empty($note['verifierid'])) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
             $queue = $LMS->GetQueueByTicketId($note['ticketid']);
             $mailfname = '';
@@ -223,7 +223,7 @@ if (isset($_GET['ticketid'])) {
             $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticket['priority']];
 
             if (ConfigHelper::checkConfig('rt.note_send_re_in_subject')) {
-                $params['subject'] = 'Re: '.$ticket['subject'];
+                $params['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($ticket['subject']);
             }
 
             $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
@@ -239,6 +239,8 @@ if (isset($_GET['ticketid'])) {
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
                 'attachments' => &$attachments,
+                'recipients' => ($note['notify'] ? RT_NOTIFICATION_USER : 0)
+                    | (empty($note['verifierid']) ? 0 : RT_NOTIFICATION_VERIFIER),
             ));
         }
 
@@ -265,7 +267,7 @@ $layout['pagetitle'] = trans('New Note');
 $SMARTY->assign('ticket', $ticket);
 if (!isset($_POST['note'])) {
     $note['source'] = $ticket['source'];
-    $note['priority'] = $ticket['priority'];
+    $note['priority'] = isset($ticket['priority']) ? $ticket['priority'] : null;
     $note['verifierid'] = $ticket['verifierid'];
     $note['deadline'] = $ticket['deadline'];
     $notechangestateafter = ConfigHelper::getConfig('rt.change_ticket_state_to_open_after_note_add_interval', 0);
@@ -282,7 +284,7 @@ unset($category);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('note', $note);
-$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $note['queueid']));
 $SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($note['queueid'], RTMESSAGE_NOTE));
 $SMARTY->assign('error', $error);

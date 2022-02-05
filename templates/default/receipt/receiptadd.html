@@ -37,7 +37,8 @@
 	}
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&amp;action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
+<form name="setcustomer" id="setcustomer" method="POST"
+	action="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
 <INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
@@ -123,9 +124,13 @@
 				</TD>
 				<TD style="width: 99%;" class="nobr">
 					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id version=2
+						selectname="customer" inputname="customerid"
+						customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
 					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid version=2
+						selectname="customer" inputname="customerid"
+						customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
 					{/if}
 				</TD>
 			</TR>
@@ -183,7 +188,7 @@
 	</TR>
     </TBODY>
 </TABLE>
-</FORM>
+</form>
 {if $error.nocash}<h2 align="center"><span class="lms-ui-error">{$error.nocash}</span></h2>{/if}
 {if $receipt.selected && $customer}
 <P>
@@ -303,7 +308,7 @@
 				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
 				{if $c.id != $receipt.regid}
-				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/if}
 				{/foreach}
 			</SELECT>
@@ -364,11 +369,11 @@
 								</TD>
 							</TR>
 							{foreachelse}
-							<TR>
-								<TD colspan="4" class="empty-table">
-									<p>{trans("That customer hasn't got not accounted invoices.")}</p>
-								</TD>
-							</TR>
+							<tr>
+								<td colspan="4" class="empty-table">
+									{trans("That customer hasn't got not accounted invoices.")}
+								</td>
+							</tr>
 							{/foreach}
 							<TR>
 								<TD colspan="2" nowrap>
@@ -420,11 +425,11 @@
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="4" class="empty-table">
-			<p>{trans("Receipt have no items. Use form below for items addition.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="4" class="empty-table">
+			{trans("Receipt have no items. Use form below for items addition.")}
+		</td>
+	</tr>
 	{/foreach}
 	{if $contents}
 	<TR>

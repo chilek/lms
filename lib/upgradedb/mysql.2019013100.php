@@ -51,7 +51,7 @@ if (!empty($schemas)) {
             }
             $this->Execute(
                 "INSERT INTO promotionassignments (promotionschemaid, tariffid, data)
-				VALUES (?, ?, ?, ?)",
+				VALUES (?, ?, ?)",
                 array(
                 $schema['id'],
                 $schema['ctariffid'],

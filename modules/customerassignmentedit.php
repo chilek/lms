@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,19 +25,42 @@
  */
 
 // get customer name and check privileges using customerview
-$customer = $DB->GetRow('SELECT a.customerid AS id, c.divisionid, '
-    .$DB->Concat('c.lastname', "' '", 'c.name').' AS name
-    FROM assignments a
-    JOIN customerview c ON (c.id = a.customerid)
-    WHERE a.id = ?', array($_GET['id']));
-
-if (!$customer) {
+$aids = isset($_POST['customerassignments']) ? $_POST['customerassignments'] : array($_GET['id']);
+$aids = Utils::filterIntegers($aids);
+if (empty($aids)) {
     $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+if (count($aids) == 1) {
+    $aid = reset($aids);
+    $customer = $DB->GetRow(
+        'SELECT a.customerid AS id, c.divisionid, '
+        . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS name
+        FROM assignments a
+        JOIN customerview c ON (c.id = a.customerid)
+        WHERE a.id = ?',
+        array($aid)
+    );
+    if (!$customer) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
+} else {
+    if ($DB->GetOne(
+        'SELECT COUNT(a.id)
+        FROM assignments a
+        JOIN customerview c ON c.id = a.customerid
+        WHERE a.id IN ?',
+        array($aids)
+    ) != count($aids)) {
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
+}
+
 if ($_GET['action'] == 'suspend') {
-    $LMS->SuspendAssignment($_GET['id'], $_GET['suspend']);
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    foreach ($aids as $aid) {
+        $LMS->toggleAssignmentSuspension($aid);
+    }
+    $SESSION->redirect('?' . $SESSION->get('backto'));
 }
 
 if (isset($_POST['assignment'])) {
@@ -194,30 +217,20 @@ if (isset($_POST['assignment'])) {
         }
     }
 
-    if ($a['datefrom'] == '') {
+    if (empty($a['datefrom'])) {
         $from = 0;
-    } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['datefrom'])) {
-        list($y, $m, $d) = explode('/', $a['datefrom']);
-        if (checkdate($m, $d, $y)) {
-            $from = mktime(0, 0, 0, $m, $d, $y);
-        } else {
-            $error['datefrom'] = trans('Incorrect charging start time!');
-        }
+    } elseif (!preg_match('/^[0-9]+$/', $a['datefrom'])) {
+        $error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
-        $error['datefrom'] = trans('Incorrect charging start time!');
+        $from = $a['datefrom'];
     }
 
-    if ($a['dateto'] == '') {
+    if (empty($a['dateto'])) {
         $to = 0;
-    } elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
-        list($y, $m, $d) = explode('/', $a['dateto']);
-        if (checkdate($m, $d, $y)) {
-            $to = mktime(23, 59, 59, $m, $d, $y);
-        } else {
-            $error['dateto'] = trans('Incorrect charging end time!');
-        }
+    } elseif (!preg_match('/^[0-9]+$/', $a['dateto'])) {
+        $error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } else {
-        $error['dateto'] = trans('Incorrect charging end time!');
+        $to = strtotime('+ 1 day', $a['dateto']) - 1;
     }
 
     if ($to < $from && $to != 0 && $from != 0) {
@@ -242,10 +255,14 @@ if (isset($_POST['assignment'])) {
         if ($a['name'] == '') {
             $error['name'] = trans('Liability name is required!');
         }
-        if (!$a['value']) {
+        if (!$a['value'] && !$a['netflag']) {
             $error['value'] = trans('Liability value is required!');
-        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value'])) {
+        } elseif (!$a['netvalue'] && $a['netflag']) {
+            $error['netvalue'] = trans('Liability value is required!');
+        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && !$a['netflag']) {
             $error['value'] = trans('Incorrect value!');
+        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && $a['netflag']) {
+            $error['netvalue'] = trans('Incorrect value!');
         } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
             $error['value'] = trans('Value less than discount are not allowed!');
             $error['discount'] = trans('Value less than discount are not allowed!');
@@ -319,16 +336,23 @@ if (isset($_POST['assignment'])) {
             } else {
                 $args = array(
                     'value' => str_replace(',', '.', $a['value']),
-                    'splitpayment' => isset($a['splitpayment']) ? 1 : 0,
+                    'flags' => (isset($a['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
+                        + (isset($a['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
                     'taxcategory' => $a['taxcategory'],
                     'currency' => $a['currency'],
                     'name' => $a['name'],
                     SYSLOG::RES_TAX => intval($a['taxid']),
                     'prodid' => $a['prodid'],
                     'type' => $a['type'],
+                    'netvalue' => str_replace(',', '.', $a['netvalue']),
                     SYSLOG::RES_LIAB => $a['liabilityid']
                 );
-                $DB->Execute('UPDATE liabilities SET value=?, splitpayment=?, taxcategory=?, currency=?, name=?, taxid=?, prodid=?, type = ? WHERE id=?', array_values($args));
+                $DB->Execute(
+                    'UPDATE liabilities SET value = ?, flags = ?, taxcategory = ?, currency = ?, name = ?,
+                    taxid = ?, prodid = ?, type = ?, netvalue = ?
+                    WHERE id = ?',
+                    array_values($args)
+                );
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $customer['id'];
                     $SYSLOG->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_UPDATE, $args);
@@ -338,15 +362,20 @@ if (isset($_POST['assignment'])) {
             $args = array(
                 'name' => $a['name'],
                 'value' => $a['value'],
-                'splitpayment' => isset($a['splitpayment']) ? 1 : 0,
+                'flags' => (isset($a['splitpayment']) ? LIABILITY_FLAG_SPLIT_PAYMENT : 0)
+                    + (isset($a['netflag']) ? LIABILITY_FLAG_NET_ACCOUT : 0),
                 'taxcategory' => $a['taxcategory'],
                 'currency' => $a['currency'],
                 SYSLOG::RES_TAX => intval($a['taxid']),
                 'prodid' => $a['prodid'],
                 'type' => $a['type'],
+                'netvalue' => str_replace(',', '.', $a['netvalue']),
             );
-            $DB->Execute('INSERT INTO liabilities (name, value, splitpayment, taxcategory, currency, taxid, prodid, type)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute(
+                'INSERT INTO liabilities (name, value, flags, taxcategory, currency, taxid, prodid, type, netvalue)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                array_values($args)
+            );
 
             $a['liabilityid'] = $DB->GetLastInsertID('liabilities');
 
@@ -374,7 +403,7 @@ if (isset($_POST['assignment'])) {
             'backwardperiod' => isset($a['backwardperiod']) ? 1 : 0,
             'at' => $at,
             'count' => $count,
-            'invoice' => isset($a['invoice']) ? $a['invoice'] : 0,
+            'invoice' => isset($a['invoice']) ? intval($a['invoice']) : 0,
             'separatedocument' => isset($a['separatedocument']) ? 1 : 0,
             'settlement' => !isset($a['settlement']) || empty($a['settlement']) ? 0 : 1,
             'datefrom' => $from,
@@ -457,25 +486,41 @@ if (isset($_POST['assignment'])) {
 
     $SMARTY->assign('error', $error);
 } else {
-    $a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
-				a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
-				a.invoice, a.separatedocument,
-				liabilities.type,
-				(CASE WHEN liabilityid IS NULL THEN tariffs.splitpayment ELSE liabilities.splitpayment END) AS splitpayment,
-				(CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
-				a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
-				(CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
-				liabilities.value AS value, liabilities.currency AS currency,
-				liabilities.prodid AS prodid, liabilities.taxid AS taxid,
-				recipient_address_id
-				FROM assignments a
-				LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
-				LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
-				WHERE a.id = ?', array($_GET['id']));
+    $a = $DB->GetRow(
+        'SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
+        a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
+        a.invoice, a.separatedocument,
+        liabilities.type,
+        (CASE WHEN liabilityid IS NULL
+            THEN (CASE WHEN tariffs.flags & ? > 0 THEN 1 ELSE 0 END)
+            ELSE (CASE WHEN liabilities.flags & ? > 0 THEN 1 ELSE 0 END)
+        END) AS splitpayment,
+        (CASE WHEN liabilityid IS NULL
+            THEN (CASE WHEN tariffs.flags & ? > 0 THEN 1 ELSE 0 END)
+            ELSE (CASE WHEN liabilities.flags & ? > 0 THEN 1 ELSE 0 END)
+        END) AS netflag,
+        (CASE WHEN liabilityid IS NULL THEN tariffs.taxcategory ELSE liabilities.taxcategory END) AS taxcategory,
+        a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
+        (CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
+        liabilities.value AS value, liabilities.currency AS currency,
+        liabilities.netvalue AS netvalue,
+        liabilities.prodid AS prodid, liabilities.taxid AS taxid,
+        recipient_address_id
+        FROM assignments a
+        LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
+        LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)
+        WHERE a.id = ?',
+        array(
+            TARIFF_FLAG_SPLIT_PAYMENT,
+            LIABILITY_FLAG_SPLIT_PAYMENT,
+            TARIFF_FLAG_NET_ACCOUNT,
+            LIABILITY_FLAG_NET_ACCOUT,
+            $_GET['id']
+        )
+    );
 
     $a['pdiscount'] = floatval($a['pdiscount']);
     $a['vdiscount'] = floatval($a['vdiscount']);
-        $a['attribute'] = $a['attribute'];
     if (!empty($a['pdiscount'])) {
         $a['discount'] = $a['pdiscount'];
         $a['discount_type'] = DISCOUNT_PERCENTAGE;
@@ -484,19 +529,9 @@ if (isset($_POST['assignment'])) {
         $a['discount_type'] = DISCOUNT_AMOUNT;
     }
 
-    if ($a['dateto']) {
-        $a['dateto'] = date('Y/m/d', $a['dateto']);
-    }
-
-    if ($a['datefrom']) {
-        $a['datefrom'] = date('Y/m/d', $a['datefrom']);
-    }
-
     switch ($a['period']) {
-        case QUARTERLY:
-            $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
-            break;
         case HALFYEARLY:
+        case QUARTERLY:
             $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
             break;
         case YEARLY:
@@ -523,6 +558,11 @@ if (isset($_POST['assignment'])) {
 
     if (empty($a['currency'])) {
         $a['currency'] = $_default_currency;
+    }
+
+    if (empty($a['pdiscount']) && empty($a['vdiscount'])) {
+        $default_assignment_discount_type = ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage');
+        $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
     }
 }
 
@@ -555,6 +595,14 @@ $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
+$defaultTaxIds = $LMS->GetTaxes(null, null, true);
+if (is_array($defaultTaxIds)) {
+    $defaultTaxId = reset($defaultTaxIds);
+    $defaultTaxId = $defaultTaxId['id'];
+} else {
+    $defaultTaxId = 0;
+}
+$SMARTY->assign('defaultTaxId', $defaultTaxId);
 if (is_array($a['nodes'])) {
     $a['nodes'] = array_flip($a['nodes']);
 }

@@ -214,7 +214,7 @@ abstract class LMSPagination
         if (is_integer($per_page) === false) {
             throw new DomainException('Per page must be integer!');
         } elseif ($per_page < 1) {
-            throw new DomainException('Per page must be greater than 0!');
+            $per_page = PHP_INT_MAX;
         }
         $this->per_page = $per_page;
         if ($recalculate_pages === true) {

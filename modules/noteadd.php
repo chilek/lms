@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,19 +45,12 @@ switch ($action) {
         $note['paytime'] = ConfigHelper::getConfig('notes.paytime');
         if (isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid'])) {
             $customer = $LMS->GetCustomer($_GET['customerid'], true);
-
-            $note['numberplanid'] = $DB->GetOne(
-                'SELECT n.id FROM numberplans n
-				JOIN numberplanassignments a ON (n.id = a.planid)
-				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
-                array(DOC_DNOTE, $customer['divisionid'])
-            );
         }
 
-        if (empty($note['numberplanid'])) {
-            $note['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
-				WHERE doctype = ? AND isdefault = 1', array(DOC_DNOTE));
-        }
+        $note['numberplanid'] = $LMS->getDefaultNumberPlanID(
+            DOC_DNOTE,
+            empty($customer) ? null : $customer['divisionid']
+        );
 
         $note['currency'] = Localisation::getDefaultCurrency();
 
@@ -67,7 +60,6 @@ switch ($action) {
         $itemdata = r_trim($_POST);
 
         $itemdata['value'] = f_round($itemdata['value']);
-        $itemdata['description'] = $itemdata['description'];
 
         if ($itemdata['value'] > 0 && $itemdata['description'] != '') {
             $itemdata['posuid'] = (string) getmicrotime();
@@ -171,7 +163,7 @@ switch ($action) {
             // finally check if selected customer can use selected numberplan
             if ($note['numberplanid'] && isset($customer)) {
                 if (!$DB->GetOne('SELECT 1 FROM numberplanassignments
-					WHERE planid = ? AND divisionid = ?', array($note['numberplanid'], $customer['divisionid']))) {
+                    WHERE planid = ? AND divisionid = ?', array($note['numberplanid'], $customer['divisionid']))) {
                     $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
                     unset($customer);
                 }
@@ -228,7 +220,7 @@ switch ($action) {
                 if ($customer['paytime'] != -1) {
                         $note['paytime'] = $customer['paytime'];
                 } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
-			                WHERE id = ?', array($customer['divisionid']))) !== null) {
+                            WHERE id = ?', array($customer['divisionid']))) !== null) {
                     $note['paytime'] = $paytime;
                 } else {
                     $note['paytime'] = ConfigHelper::getConfig('notes.paytime');
@@ -239,16 +231,14 @@ switch ($action) {
 
             $division = $LMS->GetDivision($customer['divisionid']);
 
-            if ($note['numberplanid']) {
-                $fullnumber = docnumber(array(
-                    'number' => $note['number'],
-                    'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-                    'cdate' => $cdate,
-                    'customerid' => $customer['id'],
-                ));
-            } else {
-                $fullnumber = null;
-            }
+            $fullnumber = docnumber(array(
+                'number' => $note['number'],
+                'template' => $note['numberplanid']
+                    ? $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid']))
+                    : null,
+                'cdate' => $cdate,
+                'customerid' => $customer['id'],
+            ));
 
             $args = array(
                 'number' => $note['number'],
@@ -285,14 +275,17 @@ switch ($action) {
                 'currency' => $note['currency'],
                 'currencyvalue' => $note['currencyvalue'],
             );
-            $DB->Execute('INSERT INTO documents (number, numberplanid, type,
-					cdate, userid, customerid, name, address, paytime,
-					ten, ssn, zip, city, countryid, divisionid,
-					div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
-					div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-					currency, currencyvalue)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-						?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute(
+                'INSERT INTO documents (number, numberplanid, type,
+                    cdate, userid, customerid, name, address, paytime,
+                    ten, ssn, zip, city, countryid, divisionid,
+                    div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
+                    div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+                    currency, currencyvalue)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                array_values($args)
+            );
 
             $nid = $DB->GetLastInsertID('documents');
 
@@ -320,8 +313,11 @@ switch ($action) {
                     'value' => $item['value'],
                     'description' => $item['description']
                 );
-                $DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
-					VALUES (?, ?, ?, ?)', array_values($args));
+                $DB->Execute(
+                    'INSERT INTO debitnotecontents (docid, itemid, value, description)
+                    VALUES (?, ?, ?, ?)',
+                    array_values($args)
+                );
 
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_DNOTECONT] = $DB->GetLastInsertID('debitnotecontents');
@@ -338,7 +334,8 @@ switch ($action) {
                     'customerid' => $customer['id'],
                     'comment' => $item['description'],
                     'docid' => $nid,
-                    'itemid'=> $itemid
+                    'itemid'=> $itemid,
+                    'servicetype' => $item['servicetype'],
                 ));
             }
 
@@ -384,9 +381,23 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('note', $note);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+
+$args = array(
     'doctype' => DOC_DNOTE,
     'cdate' => date('Y/m', $note['cdate']),
-)));
+);
+if (isset($customer)) {
+    $args['customerid'] = $customer['id'];
+    $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customer['id']));
+} else {
+    $args['customerid'] = null;
+}
+$numberplanlist = $LMS->GetNumberPlans($args);
+if (!$numberplanlist) {
+    $numberplanlist = $LMS->getSystemDefaultNumberPlan($args);
+}
+$SMARTY->assign('numberplanlist', $numberplanlist);
+$SMARTY->assign('planDocumentType', DOC_DNOTE);
+
 //$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('note/noteadd.html');

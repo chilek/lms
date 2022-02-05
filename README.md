@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/lmsgit/lms.svg?branch=master)](https://travis-ci.org/lmsgit/lms)
+[![Build Status](https://travis-ci.com/chilek/lms.svg?branch=master)](https://travis-ci.com/chilek/lms)
 
 # Lan Management System (LMS)
 LMS (LAN Management System) is a package of applications for managing LAN networks. 

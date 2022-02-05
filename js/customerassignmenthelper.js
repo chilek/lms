@@ -53,8 +53,10 @@ function CustomerAssignmentHelper(options) {
 	}
 
 	this.initEventHandlers = function() {
-		$('#submit-button').click(function () {
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+		$('#submit-button,#print-button').click(function () {
+			if ($(this)[0].form.checkValidity()) {
+				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
+			}
 		});
 
 		$('#promotion-select').change(this.promotionSelectionHandler);
@@ -104,7 +106,7 @@ function CustomerAssignmentHelper(options) {
 		});
 		if (cancelled) {
 			e.stopImmediatePropagation();
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').attr('disabled', true);
+			$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', true);
 			return false;
 		}
         return true;
@@ -277,8 +279,11 @@ function CustomerAssignmentHelper(options) {
 		$('.schema-tariff-checkbox').trigger('change');
 
 		var location_select = $('#location-select');
-		location_select.toggleClass('lms-ui-error', !location_select.val().length && $('option:not([value=""])', location_select).length > 1)
-			.attr('title', location_select.attr('data-tooltip')).removeAttr('data-tooltip');
+		var validationError = !location_select.val().length && $('option:not([value=""])', location_select).length > 1;
+		var errorMessage = location_select.attr('title');
+		location_select.toggleClass('lms-ui-error', validationError)
+			.next().toggleClass('lms-ui-error', validationError)
+			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
 	}
 
 	this.updateDevices = function() {
@@ -410,14 +415,22 @@ function CustomerAssignmentHelper(options) {
 					td.html(html).appendTo(this);
 				});
 
+				var location_type_icons = [
+					"lms-ui-icon-mail fa-fw",
+					"lms-ui-icon-home fa-fw",
+					"lms-ui-icon-customer-location fa-fw",
+					"lms-ui-icon-default-customer-location fa-fw"
+				];
+
 				var location_count = 0;
 				options = '<option value="">' + $t('- all -') + '</option>';
-				if (data.locations) {
+				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
-					$.each(data.locations, function(key, value) {
-						options += '<option value="' + value + '"' +
-							(("location" in selected) && selected.location == value ? ' selected' : '') + '>' +
-							value + '</option>';
+					$.each(data['with-end-points'], function(key, value) {
+						options += '<option value="' + value.location + '"' +
+							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+							' data-icon="' + location_type_icons[value.location_type] + '">' +
+							value.location + '</option>';
 						location_count++;
 					});
 					options += '</optgroup>';
@@ -426,7 +439,8 @@ function CustomerAssignmentHelper(options) {
 					options += '<optgroup label="' + $t("without end-points") + '">';
 					$.each(data['without-end-points'], function(key, value) {
 						options += '<option value="' + value.location + '"' +
-							(("location" in selected) && selected.location == value.location ? ' selected' : '') + '>' +
+							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+							' data-icon="' + location_type_icons[value.location_type] + '">' +
 							value.location + '</option>';
 						location_count++;
 					});
@@ -434,18 +448,21 @@ function CustomerAssignmentHelper(options) {
 				}
 
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
+				new LmsUiIconSelectMenu('#location-select', {
+					change: helper.locationSelectionHandler
+				}).init();
 
 				options = '<option value="-1">' + $t('none') + '</option>';
 				if (data.addresses) {
 					$.each(data.addresses, function(key, value) {
 						options += '<option value="' + value.address_id + '"' +
 							(("recipient_address_id" in selected) && selected.recipient_address_id == value.address_id ? ' selected' : '') + '>' +
-							(value.location_name ? value.location_name + ', ' : '') + value.location + '</option>';
+							(value.location_name ? escapeHtml(value.location_name) + ', ' : '') + (value.location ? escapeHtml(value.location) : '') + '</option>';
 					});
 				}
 				$('#recipient-select').html(options);
 
-				$('#a_promotions').show();
+				$('#a_promotions,#a_align_periods').show();
 
                 init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
@@ -512,19 +529,80 @@ function tariffSelectionHandler() {
 		$('#a_assignment_type_limit').hide();
 	}
 
-	if (val == -2) {
-		$('#a_promotions').show();
-	} else {
-		$('#a_promotions').hide();
-	}
+	$('#a_promotions,#a_align_periods').toggle(val == -2);
+
+	$('#last-settlement').prop('disabled', $('#align-periods').prop('checked') && val == -2)
+		.closest('label').toggleClass('lms-ui-disabled', $('#align-periods').prop('checked') && val == -2);
+
+	$('#netflag, #tax, #taxcategory, #splitpayment').prop('disabled', false);
+	$('#a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
 
 	if (val == '') {
-		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').show();
+		$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').show();
+		$('#a_price, #a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
+		if (assignmentNetflag && parseInt(assignmentNetflag) !== 0) {
+			$('#grossprice').val(assignmentGrossvalue).prop('disabled', true);
+			$('#netprice').val(assignmentNetvalue).prop('disabled', false);
+			$('#netflag').prop({checked: true, disabled: false});
+			$('#invoice').prop('required', true);
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
+		} else {
+			$('#grossprice').val(assignmentGrossvalue).prop('disabled', false);
+			$('#netprice').val(assignmentNetvalue).prop('disabled', true);
+			$('#netflag').prop({checked: false, disabled: false});
+			$('#invoice').prop('required', false);
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
+		}
+
+		if (assignmentTaxid) {
+			$('#tax').val(assignmentTaxid).prop('disabled', false);
+		} else {
+			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
+		}
+
 		$('#a_attribute').hide();
 	} else {
-		$('#a_tax,#a_type,#a_value,#a_taxcategory,#a_productid,#a_name').hide();
+		var tariffGrossPrice = selected.attr('data-tariffvalue');
+		var tariffNetPrice = selected.attr('data-tariffnetvalue');
+		var tariffNetFlag = selected.attr('data-tariffnetflag');
+		var tariffTaxId = selected.attr('data-tarifftaxid');
+
+		$('#a_tax,#a_price').show();
+		$('#a_type,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
+
+		$('#grossprice').val(tariffGrossPrice).prop('disabled', true);
+		$('#netprice').val(tariffNetPrice).prop('disabled', true);
+		$('#a_price, #a_tax').addClass('lms-ui-disabled');
+
+		if(parseInt(tariffNetFlag) === 1) {
+			$('#netflag').prop('checked', true);
+			$('#invoice').prop('required', true);
+			if ($('#invoice').val() == assignment_settings.DOC_DNOTE) {
+				$('#invoice').val('');
+			}
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
+		} else {
+			$('#netflag').prop('checked', false);
+			$('#invoice').prop('required', false).removeClass('lms-ui-error');
+			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
+		}
+		$('#netflag').prop('disabled', true);
+
+		assignmentGrossvalue = '';
+		assignmentNetvalue = '';
+		assignmentNetflag = false;
+
+		$('#tax').val(tariffTaxId).prop('disabled', true);
+
 		if (val == -1) {
-			$('#a_attribute').hide();
+			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
+
+			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name,#a_attribute').hide();
+		} else if (val == -2){
+			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
+
+			$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
+			$('#a_attribute').show();
 		} else {
 			$('#a_attribute').show();
 		}
@@ -579,3 +657,118 @@ function tariffSelectionHandler() {
 }
 
 $('#tariff-select').change(tariffSelectionHandler);
+
+const netFlagElem = $("#netflag");
+const netPriceElem = $("#netprice");
+const grossPriceElem = $("#grossprice");
+const invoiceElem = $("#invoice");
+
+function claculatePriceFromGross() {
+	let grossPriceElemVal = grossPriceElem.val();
+	grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
+
+	if (!isNaN(grossPriceElemVal)) {
+		let selectedTaxId = $("#tax").find('option:selected').val();
+		let tax = $('#tax' + selectedTaxId).val();
+
+		let grossPrice = financeDecimals.round(grossPriceElemVal);
+		let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
+
+		netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+		netPriceElem.val(netPrice);
+
+		grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+		grossPriceElem.val(grossPrice);
+	} else {
+		netPriceElem.val('');
+		grossPriceElem.val('');
+	}
+}
+
+function claculatePriceFromNet() {
+	let netPriceElemVal = netPriceElem.val();
+	netPriceElemVal = parseFloat(netPriceElemVal.replace(/[\,]+/, '.'))
+
+	if (!isNaN(netPriceElemVal)) {
+		let selectedTaxId = $("#tax").find('option:selected').val();
+		let tax = $('#tax' + selectedTaxId).val();
+
+		let netPrice = financeDecimals.round(netPriceElemVal);
+		let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
+
+		grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+		grossPriceElem.val(grossPrice);
+
+		netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+		netPriceElem.val(netPrice);
+	} else {
+		grossPriceElem.val('');
+		netPriceElem.val('');
+	}
+}
+
+$('#netflag').on('change', function () {
+	if (netFlagElem.is(':checked')) {
+		grossPriceElem.prop('disabled', true);
+		netPriceElem.prop('disabled', false);
+		claculatePriceFromNet();
+		invoiceElem.prop('required', true);
+		if (invoiceElem.val() === assignment_settings.DOC_DNOTE) {
+			invoiceElem.val('');
+		}
+		invoiceElem.find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
+	} else {
+		grossPriceElem.prop('disabled', false);
+		netPriceElem.prop('disabled', true);
+		claculatePriceFromGross();
+		invoiceElem.prop('required', false).removeClass('lms-ui-error');
+		invoiceElem.find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
+	}
+});
+
+$("#tax").on('change', function () {
+	if (netFlagElem.is(':checked')) {
+		claculatePriceFromNet();
+	} else {
+		claculatePriceFromGross();
+	}
+});
+
+$("#grossprice").on('change', function () {
+	claculatePriceFromGross();
+});
+
+$("#netprice").on('change', function () {
+	claculatePriceFromNet();
+});
+
+$('#invoice').on('change', function () {
+	var tariff_select_val = $('#tariff-select').val();
+	if ($(this).val() == assignment_settings.DOC_DNOTE) {
+		netFlagElem.prop({checked: false, disabled: true});
+		$('#tax, #taxcategory, #splitpayment').prop('disabled', true);
+		$('#a_tax, #a_taxcategory, #a_splitpayment').addClass('lms-ui-disabled');
+	} else {
+		netFlagElem.prop('checked', netFlagElem.is(':checked'));
+		netFlagElem.prop('disabled', netFlagElem.is(':disabled'));
+		$('#taxcategory, #splitpayment').prop('disabled', false);
+		$('#a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
+		if (tariff_select_val == '') {
+			if (invoiceElem.val() == '') {
+				netFlagElem.prop({checked: false, disabled: false});
+			}
+			$('#tax').prop('disabled', false);
+			$('#a_tax').removeClass('lms-ui-disabled');
+		} else {
+			$('#tax').prop('disabled', $('#tax').is(':disabled'));
+			$('#a_tax').toggleClass('lms-ui-disabled', $('#tax').is(':disabled'));
+		}
+	}
+});
+
+$('#align-periods').change(function() {
+	$('#last-settlement').prop({
+		"disabled": $(this).prop('checked'),
+		"checked": $(this).prop('checked') ? false : $('#last-settlement').prop('checked')
+	}).closest('label').toggleClass('lms-ui-disabled', $(this).prop('checked'));
+}).change();

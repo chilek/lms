@@ -80,7 +80,7 @@ if (isset($_POST['payment'])) {
                 }
                 
                 $at = ($m-1) * 100 + $d;
-            };
+            }
             break;
         
         case HALFYEARLY:

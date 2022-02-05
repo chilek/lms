@@ -26,6 +26,6 @@ $(function() {
 	init_attachment_lists();
 
 	$('.container-gallery').click(function() {
-		showGallery(JSON.parse($(this).attr('data-gallery')));
+		showGallery(JSON.parse(Base64.decode($(this).attr('data-gallery'))));
 	});
 });

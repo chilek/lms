@@ -192,14 +192,48 @@ function module_updateusersave()
                 $val = trim(htmlspecialchars($val, ENT_NOQUOTES));
             }
 
+            $billing_address_id = null;
+            foreach ($userinfo['addresses'] as $address_id => $address) {
+                if ($address['location_address_type'] == BILLING_ADDRESS) {
+                    $billing_address_id = $address_id;
+                    break;
+                }
+            }
+
+            static $customer_address_field_map = array(
+                'city' => 'location_city_name',
+                'zip' => 'location_zip',
+                'street' => 'location_street_name',
+                'building' => 'location_house',
+                'apartment' => 'location_flat',
+            );
+
             switch ($field) {
-                case 'name':
-                case 'lastname':
                 case 'street':
                 case 'building':
                 case 'apartment':
                 case 'zip':
                 case 'city':
+                    if (isset($right['edit_addr'])) {
+                        $userinfo['addresses'][$billing_address_id][$customer_address_field_map[$field]] = $val;
+                        if ($field == 'city') {
+                            $userinfo['addresses'][$billing_address_id]['location_city'] = null;
+                        } elseif ($field == 'street') {
+                            $userinfo['addresses'][$billing_address_id]['location_street'] = null;
+                        }
+                        $needupdate = 1;
+                    } elseif (isset($right['edit_addr_ack'])) {
+                        $LMS->DB->Execute(
+                            'DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+                            array($id, $field)
+                        );
+                        $LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
+					VALUES(?, ?, ?)', array($id, $field, $val));
+                        $need_change_notification = true;
+                    }
+                    break;
+                case 'name':
+                case 'lastname':
                     if (isset($right['edit_addr'])) {
                         $userinfo[$field] = $val;
                         $needupdate = 1;
@@ -323,7 +357,7 @@ function module_updatepin()
 {
     global $LMS, $SMARTY, $SESSION;
 
-    if (!ConfigHelper::checkConfig('userpanel.pin_changes') || !isset($_POST['userdata'])) {
+    if (!ConfigHelper::checkConfig('userpanel.pin_changes') && !$SESSION->isPasswdChangeRequired || !isset($_POST['userdata'])) {
         header('Location: ?m=info');
     }
 
@@ -332,8 +366,14 @@ function module_updatepin()
     $userdata = $_POST['userdata'];
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
-    if ($userinfo['pin'] != $userdata['oldpin']) {
-        $error['oldpin'] = trans('Incorrect current PIN!');
+    if (preg_match('/\$[0-9]+\$/', $userinfo['pin'])) {
+        if (crypt($userdata['oldpin'], $userinfo['pin']) != $userinfo['pin']) {
+            $error['oldpin'] = trans('Incorrect current PIN!');
+        }
+    } else {
+        if ($userinfo['pin'] != $userdata['oldpin']) {
+            $error['oldpin'] = trans('Incorrect current PIN!');
+        }
     }
 
     if (!strlen($userdata['pin']) || !strlen($userdata['pin2'])) {
@@ -370,6 +410,8 @@ function module_updatepin()
         $SMARTY->display('module:updatepin.html');
     } else {
         $LMS->UpdateCustomerPIN($SESSION->id, $userdata['pin']);
+
+        $SESSION->remove('passwd_change_required');
 
         header('Location: ?m=info');
     }

@@ -185,7 +185,8 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
+$SMARTY->assign('vlanlist', $LMS->GetVlanList());
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
-$SMARTY->assign('networks', $LMS->GetNetworks(true));
+$SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->display('net/netadd.html');

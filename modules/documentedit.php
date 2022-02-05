@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -67,6 +67,8 @@ if (empty($document)) {
     die;
 }
 
+$document['customer_name'] = $LMS->GetCustomerName($document['customerid']);
+
 $document['attachments'] = $DB->GetAllByKey('SELECT *, 0 AS deleted FROM documentattachments
 	WHERE docid = ? ORDER BY type DESC', 'id', array($_GET['id']));
 
@@ -82,30 +84,39 @@ if (isset($_POST['document'])) {
         $error['title'] = trans('Document title is required!');
     }
 
-    // check if selected customer can use selected numberplan
-    if ($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
-	        WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid']))) {
-        $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-    } elseif (!$documentedit['number']) {
-        if ($document['numberplanid'] != $documentedit['numberplanid']) {
-            $tmp = $LMS->GetNewDocumentNumber(array(
+    if (($documentedit['numberplanid'] && !$LMS->checkNumberPlanAccess($documentedit['numberplanid']))
+        || ($document['numberplanid'] && !$LMS->checkNumberPlanAccess($document['numberplanid']))) {
+        $documentedit['numberplanid'] = $document['numberplanid'];
+        $error['numberplanid'] = trans('Persmission denied!');
+    }
+
+    if (!isset($error['numberplanid'])) {
+        // check if selected customer can use selected numberplan
+        if ($documentedit['numberplanid'] && !$DB->GetOne('SELECT 1 FROM numberplanassignments
+                WHERE planid = ? AND divisionid = ?', array($documentedit['numberplanid'], $document['divisionid']))) {
+            $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
+        } elseif (!$documentedit['number']) {
+            if ($document['numberplanid'] != $documentedit['numberplanid']) {
+                $tmp = $LMS->GetNewDocumentNumber(array(
+                    'doctype' => $documentedit['type'],
+                    'planid' => $documentedit['numberplanid'],
+                    'customerid' => $document['customerid'],
+                ));
+                $documentedit['number'] = $tmp ? $tmp : 1;
+            } else {
+                $documentedit['number'] = $document['number'];
+            }
+        } elseif (!preg_match('/^[0-9]+$/', $documentedit['number'])) {
+            $error['number'] = trans('Document number must be an integer!');
+        } elseif ($document['number'] != $documentedit['number'] || $document['numberplanid'] != intval($documentedit['numberplanid'])) {
+            if (($docid = $LMS->DocumentExists(array(
+                'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
-                'customerid' => $document['customerid'],
-            ));
-            $documentedit['number'] = $tmp ? $tmp : 1;
-        } else {
-            $documentedit['number'] = $document['number'];
-        }
-    } elseif (!preg_match('/^[0-9]+$/', $documentedit['number'])) {
-        $error['number'] = trans('Document number must be an integer!');
-    } elseif ($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid']) {
-        if ($LMS->DocumentExists(array(
-            'number' => $documentedit['number'],
-            'doctype' => $documentedit['type'],
-            'planid' => $documentedit['numberplanid'],
-        ))) {
-            $error['number'] = trans('Document with specified number exists!');
+                'customerid' => $documentedit['customerid'],
+            ))) > 0 && $docid != $documentedit['id']) {
+                $error['number'] = trans('Document with specified number exists!');
+            }
         }
     }
 
@@ -135,7 +146,7 @@ if (isset($_POST['document'])) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
-    $documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
+    $documentedit['closed'] = isset($documentedit['closed']) ? DOC_CLOSED : DOC_OPEN;
     $documentedit['archived'] = isset($documentedit['archived']) ? 1 : 0;
     if ($documentedit['archived'] && !$documentedit['closed']) {
         $error['closed'] = trans('Cannot undo document confirmation while it is archived!');
@@ -184,20 +195,41 @@ if (isset($_POST['document'])) {
             'customerid' => $document['customerid'],
         ));
 
-        $closed = $documentedit['closed'] ? ($document['confirmdate'] == -1 && $document['closed'] != 2 ? 2 : 1) : 0;
+        if ($documentedit['closed']) {
+            if ($document['confirmdate'] == -1 && $document['closed'] < DOC_CLOSED_AFTER_CUSTOMER_SMS) {
+                $closed = DOC_CLOSED_AFTER_CUSTOMER_SMS;
+            } elseif ($document['closed'] == DOC_CLOSED_AFTER_CUSTOMER_SCAN) {
+                $closed = DOC_CLOSED_AFTER_CUSTOMER_SCAN;
+            } else {
+                $closed = DOC_CLOSED;
+            }
+        } else {
+            $closed = DOC_OPEN;
+        }
 
+        $allowed_archiving = ($document['docrights'] & DOCRIGHT_ARCHIVE) > 0;
         $DB->Execute(
             'UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, confirmdate = ?,
 			        archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
             array(  $documentedit['type'],
-                    $closed == 1 && !$document['closed'] ? 0 : $closed,
-                    $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
-                    $documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? ($closed == DOC_OPEN && !$document['closed'] ? DOC_OPEN : $closed)
+                        : $document['closed'],
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? $documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0
+                        : $document['sdate'],
+                    ($document['docrights'] & DOCRIGHT_CONFIRM)
+                        ? ($documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null)
+                        : $document['cuserid'],
                     !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
-                    $documentedit['archived'],
-                    $documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0,
-                    $documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null,
+                    $allowed_archiving ? $documentedit['archived'] : $document['archived'],
+                    $allowed_archiving
+                        ? ($documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0)
+                        : $document['adate'],
+                    $allowed_archiving
+                        ? ($documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null)
+                        : $document['auserid'],
                     $documentedit['number'],
                     empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
                     $fullnumber,
@@ -232,8 +264,8 @@ if (isset($_POST['document'])) {
 
         $DB->CommitTrans();
 
-        if ($closed == 1 && !$document['closed']) {
-            $LMS->CommitDocuments(array($documentedit['id']));
+        if ($closed > DOC_OPEN && !$document['closed']) {
+            $LMS->CommitDocuments(array($documentedit['id']), false, false);
         }
 
         $SESSION->redirect('?'.$SESSION->get('backto'));
@@ -282,9 +314,10 @@ if (!$rights || !$DB->GetOne(
 
 $numberplans = GetDocumentNumberPlans($document['type'], $document['customerid']);
 if (empty($numberplans)) {
-    $numberplans = array();
+    $numberplans = $LMS->getSystemDefaultNumberPlan(array('doctype' => $document['type']));
 }
 $SMARTY->assign('numberplans', $numberplans);
+$SMARTY->assign('planDocumentType', $document['type']);
 
 /*
 if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))

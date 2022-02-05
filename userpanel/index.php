@@ -28,8 +28,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('session.name', 'LMSSESSIONID');
-ini_set('error_reporting', E_ALL & ~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
@@ -56,11 +55,15 @@ $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ?
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
 $CONFIG['directories']['userpanel_dir'] = (!isset($CONFIG['directories']['userpanel_dir']) ? getcwd() : $CONFIG['directories']['userpanel_dir']);
 $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'modules' : $CONFIG['directories']['modules_dir']);
-$CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel_dir'] . DIRECTORY_SEPARATOR . 'templates_c';
+$CONFIG['directories']['storage_dir'] = (!isset($CONFIG['directories']['storage_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'storage' : $CONFIG['directories']['storage_dir']);
+$CONFIG['directories']['smarty_compile_dir'] = !isset($CONFIG['directories']['userpanel_smarty_compile_dir'])
+    ? $CONFIG['directories']['userpanel_dir'] . DIRECTORY_SEPARATOR . 'templates_c'
+    : $CONFIG['directories']['userpanel_smarty_compile_dir'];
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 $CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
 $CONFIG['directories']['vendor_dir'] = (!isset($CONFIG['directories']['vendor_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor' : $CONFIG['directories']['vendor_dir']);
+$CONFIG['directories']['cache_dir'] = (!isset($CONFIG['directories']['cache_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'cache' : $CONFIG['directories']['cache_dir']);
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_LIB_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR);
@@ -70,10 +73,12 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
+define('STORAGE_DIR', $CONFIG['directories']['storage_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
+define('CACHE_DIR', $CONFIG['directories']['cache_dir']);
 
 define('K_TCPDF_EXTERNAL_CONFIG', true);
 
@@ -97,7 +102,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!<BR>");
 }
 
@@ -236,6 +241,14 @@ $plugin_manager->executeHook('userpanel_smarty_initialized', $SMARTY);
 
 if ($SESSION->islogged) {
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
+    if ($SESSION->isPasswdChangeRequired) {
+        if ($module != 'info' && $_GET['f'] != 'updatepinform') {
+            $SESSION->close();
+            header('Location: ?m=info&f=updatepinform');
+            die;
+        }
+        $SMARTY->assign('passwd_change_required', true);
+    }
 
     if (isset($USERPANEL->MODULES[$module])) {
         $USERPANEL->MODULES[$module]['selected'] = true;
@@ -267,6 +280,8 @@ if ($SESSION->islogged) {
     }
 
     if ($module_dir !== null) {
+        $SMARTY->assign('customername', $LMS->GetCustomerName($SESSION->id));
+
         include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
 
         $function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';
@@ -293,13 +308,15 @@ if ($SESSION->islogged) {
         $SMARTY->display('error.html');
     }
 
-    if (!isset($_SESSION['lastmodule']) || $_SESSION['lastmodule'] != $module) {
-        $_SESSION['lastmodule'] = $module;
+    if (!$SESSION->is_set('lastmodule') || $SESSION->get('lastmodule') != $module) {
+        $SESSION->save('lastmodule', $module);
     }
 } else {
-        $SMARTY->assign('error', $SESSION->error);
-        $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
-        $SMARTY->display('login.html');
+    $SMARTY->assign('error', $SESSION->error);
+    $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
+    $SMARTY->display('login.html');
 }
+
+$SESSION->close();
 
 $DB->Destroy();

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2017 LMS Developers
+ *  Copyright (C); 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -51,6 +51,8 @@ interface LMSFinanceManagerInterface
     public function UpdateExistingAssignments($data);
 
     public function SuspendAssignment($id, $suspend = true);
+
+    public function toggleAssignmentSuspension($id);
 
     public function GetTradeDocumentArchiveStats($ids);
 
@@ -122,7 +124,7 @@ interface LMSFinanceManagerInterface
 
     public function GetHostingLimits($customerid);
 
-    public function GetTaxes($from = null, $to = null);
+    public function GetTaxes($from = null, $to = null, $default = null);
 
     public function CalcAt($period, $date);
 
@@ -163,4 +165,8 @@ interface LMSFinanceManagerInterface
     public function isInvoiceEditable($id);
 
     public function isTariffEditable($id);
+
+    public function getPromotionSchema($id);
+
+    public function getPromotion($id);
 }

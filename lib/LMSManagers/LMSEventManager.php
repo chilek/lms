@@ -34,7 +34,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
@@ -44,7 +44,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
-            SYSLOG::RES_ADDRESS => $event['address_id'],
+            SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
             SYSLOG::RES_NODE => $event['nodeid'],
             SYSLOG::RES_TICKET => empty($event['ticketid']) ? null : $event['ticketid'],
         );
@@ -80,6 +80,20 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
         }
 
+        if (!empty($event['ticketid'])) {
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $messagebody = trans('Assigned event ($a) was created.', $a = $id);
+
+            $helpdesk_manager->TicketMessageAdd(array(
+                'ticketid' => $event['ticketid'],
+                'messageid' => $messageid,
+                'body' => $messagebody,
+                'type' => RTMESSAGE_ASSIGNED_EVENT_ADD,
+            ));
+        };
+
         $this->db->CommitTrans();
 
         return $id;
@@ -89,7 +103,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         $args = array(
             'title' => $event['title'],
-            'description' => $event['description'],
+            'description' => Utils::removeInsecureHtml($event['description']),
             'date' => $event['date'],
             'begintime' => $event['begintime'],
             'enddate' => $event['enddate'],
@@ -99,9 +113,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             'closed' => isset($event['close']) ? 1 : 0,
             SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
             'type' => $event['type'],
-            SYSLOG::RES_ADDRESS => $event['address_id'],
-            SYSLOG::RES_NODE => $event['nodeid'],
-            SYSLOG::RES_TICKET => $event['helpdesk'],
+            SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
+            SYSLOG::RES_NODE => empty($event['nodeid']) ? null : $event['nodeid'],
+            SYSLOG::RES_TICKET => empty($event['helpdesk']) ? null : $event['helpdesk'],
             'moddate' => time(),
             'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::getCurrentUser(),
             SYSLOG::RES_EVENT => $event['id'],
@@ -151,6 +165,20 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
         }
 
+        if (!empty($event['helpdesk'])) {
+            $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketsqueue . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $messagebody = trans('Assigned event ($a) was modified.', $a = $event['id']);
+
+            $helpdesk_manager->TicketMessageAdd(array(
+                'ticketid' => $event['helpdesk'],
+                'messageid' => $messageid,
+                'body' => $messagebody,
+                'type' => RTMESSAGE_ASSIGNED_EVENT_CHANGE,
+            ));
+        };
+
         $this->db->CommitTrans();
     }
 
@@ -180,6 +208,20 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
             $this->db->Execute('DELETE FROM events WHERE id = ?', array($id));
             $this->db->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($id));
+
+            if (!empty($event['ticketid'])) {
+                $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
+                $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+                $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+                $messagebody = trans('Assigned event ($a) was deleted.', $a = $id);
+
+                $helpdesk_manager->TicketMessageAdd(array(
+                    'ticketid' => $event['ticketid'],
+                    'messageid' => $messageid,
+                    'body' => $messagebody,
+                    'type' => RTMESSAGE_ASSIGNED_EVENT_DELETE,
+                ));
+            };
         }
     }
 
@@ -204,9 +246,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
 			WHERE e.id = ?', array($id));
 
-        if (!empty($event['customerid']) && empty($event['node_location'])) {
+        if (!empty($event['customerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache);
-            $event['node_location'] = $customer_manager->getAddressForCustomerStuff($event['customerid']);
+            if (empty($event['node_location'])) {
+                $event['node_location'] = $customer_manager->getAddressForCustomerStuff($event['customerid']);
+            }
+            $event['phones'] = $customer_manager->GetCustomerContacts($event['customerid'], CONTACT_MOBILE | CONTACT_LANDLINE);
+            $event['phones'] = array_filter($event['phones'], function ($contact) {
+                return !($contact['type'] & CONTACT_DISABLED);
+            });
         }
 
         if (!empty($event['ticketid'])) {
@@ -215,6 +263,12 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
 
         $event['wholedays'] = $event['endtime'] == 86400;
+        $event['multiday'] = false;
+
+        if ($event['enddate'] && ($event['enddate'] - $event['date'])) {
+            $event['multiday'] = round(($event['enddate'] - $event['date']) / 86400) > 0;
+        }
+
         $event['helpdesk'] = !empty($event['ticketid']);
         $event['userlist'] = $this->db->GetCol('SELECT userid AS id
 			FROM vusers, eventassignments
@@ -410,9 +464,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 }
 
                 $row['userlist'] = $this->db->GetAll(
-                    'SELECT userid AS id, vusers.name
-					FROM eventassignments, vusers
-					WHERE userid = vusers.id AND eventid = ? ',
+                    'SELECT userid AS id, vusers.name,
+                    vusers.access, vusers.deleted, vusers.accessfrom, vusers.accessto
+                    FROM eventassignments, vusers
+                    WHERE userid = vusers.id AND eventid = ? ',
                     array($row['id'])
                 );
 
@@ -595,17 +650,18 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         extract($params);
         if (empty($enddate)) {
-            $enddate = $begindate;
+            $enddate = $date;
         }
         $users = Utils::filterIntegers($users);
 
         return $this->db->GetCol(
             'SELECT DISTINCT a.userid FROM events e
                         JOIN eventassignments a ON a.eventid = e.id
-                        WHERE a.userid IN (' . implode(',', $users) . ')
+                        WHERE ' . (isset($params['ignoredevent']) ? 'e.id <> ' . intval($params['ignoredevent']) . ' AND ' : '')
+                            . 'a.userid IN (' . implode(',', $users) . ')
                                 AND (date < ? OR (date = ? AND begintime < ?))
                                 AND (enddate > ? OR (enddate = ? AND endtime > ?))',
-            array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime)
+            array($enddate, $enddate, $endtime, $date, $date, $begintime)
         );
     }
 

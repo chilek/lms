@@ -1,258 +1,499 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="dark"><TD CLASS="fall"><strong>{trans("Module Configuration:")}</strong></TD></TR>
-    <TR CLASS="light"><TD CLASS="fall">
-	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=documents&f=submit_setup">
-	<TABLE WIDTH="100%">
-		<colgroup>
-			<col style="width: 1%;">
-			<col style="width: 99%;">
-		</colgroup>
-		<TR>
-			<TD class="nobr">
-				<label for="hide_documentbox">{trans("Hide customer document box")}</label>
-			</TD>
-			<TD class="nobr">
-				<INPUT type="checkbox" NAME="moduleconfig[hide_documentbox]" ID="hide_documentbox" value="1"
-						{if $moduleconfig.hide_documentbox} checked{/if} {tip text="Don't show customer document box"}>
-			</TD>
-		</TR>
-		<TR>
-			<TD class="nobr">
-				<label for="show_confirmed_documents_only">{trans("Show confirmed documents only:")}</label>
-			</TD>
-			<TD class="nobr">
-				<INPUT type="checkbox" NAME="moduleconfig[show_confirmed_documents_only]" ID="show_confirmed_documents_only" value="1"
-						{if $moduleconfig.show_confirmed_documents_only} checked{/if} {tip text="Show only documents which are confirmed"}>
-			</TD>
-		</TR>
-		<TR>
-			<TD class="nobr">
-				<label for="hide_archived_documents">{trans("Hide archived documents:")}</label>
-			</TD>
-			<TD class="nobr">
-				<INPUT type="checkbox" NAME="moduleconfig[hide_archived_documents]" ID="hide_archived_documents" value="1"
-						{if $moduleconfig.hide_archived_documents} checked{/if} {tip text="Hide archived documents"}>
-			</TD>
-		</TR>
-
-		<TR>
-			<TD class="nobr" colspan="2">
-				<fieldset>
-					<legend class="bold">
-						{trans("Document notification general parameters")}
-					</legend>
-					<table>
-						<TR>
-							<TD class="nobr">
-								<label for="document_notification_mail_dsn_address">{trans("DSN address:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-									   name="moduleconfig[document_notification_mail_dsn_address]"
-									   id="document_notification_mail_dsn_address"
-									   value="{$moduleconfig.document_notification_mail_dsn_address}"
-										{tip text="Enter document notification mail DSN (Delivery Status Notification) address"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="document_notification_mail_mdn_address">{trans("MDN address:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-									   name="moduleconfig[document_notification_mail_mdn_address]"
-									   id="document_notification_mail_mdn_address"
-									   value="{$moduleconfig.document_notification_mail_mdn_address}"
-										{tip text="Enter document notification mail MDN (Message Delivery Notification) address"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="document_notification_mail_sender_name">{trans("Sender name:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-									   name="moduleconfig[document_notification_mail_sender_name]"
-									   id="document_notification_mail_sender_name"
-									   value="{$moduleconfig.document_notification_mail_sender_name}"
-										{tip text="Enter document notification mail sender name"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="document_notification_mail_sender_address">{trans("Sender mail address:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-									   name="moduleconfig[document_notification_mail_sender_address]"
-									   id="document_notification_mail_sender_address"
-									   value="{$moduleconfig.document_notification_mail_sender_address}"
-										{tip text="Enter document notification mail sender name"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="document_notification_mail_reply_address">{trans("Reply address:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-									   name="moduleconfig[document_notification_mail_reply_address]"
-									   id="document_notification_mail_reply_address"
-									   value="{$moduleconfig.document_notification_mail_reply_address}"
-										{tip text="Enter document notification mail reply address"}>
-							</TD>
-						</TR>
-					</table>
-				</fieldset>
-			</TD>
-		</TR>
-
-		<TR>
-			<TD class="nobr" colspan="2">
-				<fieldset>
-					<legend class="bold">
-						{trans("Signed document scan operator notifications")}
-					</legend>
-					<table>
-						<TR>
-							<TD class="nobr">
-								<label for="signed_document_scan_operator_notification_mail_recipient">{trans("Mail recipient:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-										name="moduleconfig[signed_document_scan_operator_notification_mail_recipient]"
-										id="signed_document_scan_operator_notification_mail_recipient"
-										value="{$moduleconfig.signed_document_scan_operator_notification_mail_recipient}"
-									{tip text="Enter signed document scan operator notification mail recipient"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="signed_document_scan_operator_notification_mail_subject">{trans("Mail subject:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-										name="moduleconfig[signed_document_scan_operator_notification_mail_subject]"
-										id="signed_document_scan_operator_notification_mail_subject"
-										value="{$moduleconfig.signed_document_scan_operator_notification_mail_subject}"
-									{tip text="Enter signed document scan operator notification mail subject"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="signed_document_scan_operator_notification_mail_body">{trans("Mail body:")}</label>
-							</TD>
-							<TD>
-								<TEXTAREA name="moduleconfig[signed_document_scan_operator_notification_mail_body]"
-										id="signed_document_scan_operator_notification_mail_body"
-										class="lms-ui-wysiwyg-editor"
-										data-wysiwyg="{if $moduleconfig.signed_document_scan_operator_notification_mail_format == 'html'}true{else}false{/if}"
-										cols="60" rows="7" {tip text="Enter signed document scan operator notification mail body"}
-									>{$moduleconfig.signed_document_scan_operator_notification_mail_body}</TEXTAREA>
-							</TD>
-						</TR>
-					</table>
-				</fieldset>
-			</TD>
-		</TR>
-
-		<TR>
-			<TD class="nobr" colspan="2">
-				<fieldset>
-					<legend class="bold">
-						{trans("Signed document scan customer notifications")}
-					</legend>
-					<table>
-						<TR>
-							<TD class="nobr">
-								<label for="signed_document_scan_customer_notification_mail_subject">{trans("Mail subject:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-									   name="moduleconfig[signed_document_scan_customer_notification_mail_subject]"
-										id="signed_document_scan_customer_notification_mail_subject"
-										value="{$moduleconfig.signed_document_scan_customer_notification_mail_subject}"
-									{tip text="Enter signed document scan customer notification mail subject"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="signed_document_scan_customer_notification_mail_body">{trans("Mail body:")}</label>
-							</TD>
-							<TD>
-								<TEXTAREA name="moduleconfig[signed_document_scan_customer_notification_mail_body]"
-										id="signed_document_scan_customer_notification_mail_body"
-										class="lms-ui-wysiwyg-editor"
-										data-wysiwyg="{if $moduleconfig.signed_document_scan_customer_notification_mail_format == 'html'}true{else}false{/if}"
-										cols="60" rows="7" {tip text="Enter signed document scan customer notification mail body"}
-									>{$moduleconfig.signed_document_scan_customer_notification_mail_body}</TEXTAREA>
-							</TD>
-						</TR>
-					</table>
-				</fieldset>
-			</TD>
-		</TR>
-
-		<TR>
-			<TD class="nobr" colspan="2">
-				<fieldset>
-					<legend class="bold">
-						{trans("Document approval customer notifications")}
-					</legend>
-					<table>
-						<TR>
-							<TD class="nobr">
-								<label for="document_approval_customer_notification_mail_subject">{trans("Mail subject:")}</label>
-							</TD>
-							<TD>
-								<INPUT type="text" size="50"
-									   name="moduleconfig[document_approval_customer_notification_mail_subject]"
-									   id="document_approval_customer_notification_mail_subject"
-									   value="{$moduleconfig.document_approval_customer_notification_mail_subject}"
-										{tip text="Enter document approval customer notification mail subject"}>
-							</TD>
-						</TR>
-						<TR>
-							<TD class="nobr">
-								<label for="document_approval_customer_notification_mail_body">{trans("Mail body:")}</label>
-							</TD>
-							<TD>
-								<TEXTAREA name="moduleconfig[document_approval_customer_notification_mail_body]"
-										id="document_approval_customer_notification_mail_body"
-										class="lms-ui-wysiwyg-editor"
-										data-wysiwyg="{if $moduleconfig.document_approval_customer_notification_mail_format == 'html'}true{else}false{/if}"
-										cols="60" rows="7" {tip text="Enter document approval customer notification mail body"}
-									>{$moduleconfig.document_approval_customer_notification_mail_body}</TEXTAREA>
-							</TD>
-						</TR>
-					</table>
-				</fieldset>
-			</TD>
-		</TR>
-
-		<TR>
-			<TD class="nobr">
-				<label for="document_approval_customer_onetime_password_sms_body">{trans("One-time password SMS body:")}</label>
-			</TD>
-			<TD class="nobr">
-				<TEXTAREA name="moduleconfig[document_approval_customer_onetime_password_sms_body]"
-						  id="document_approval_customer_onetime_password_sms_body"
-						  cols="60" rows="7" {tip text="Enter document approval customer one-time password sms body"}
-					>{$moduleconfig.document_approval_customer_onetime_password_sms_body}</TEXTAREA>
-			</TD>
-		</TR>
-
+<table class="lmsbox" cellpadding="3">
+	<thead>
 		<tr>
-			<TD colspan="2" class="lms-ui-box-buttons">
-				{button type="submit" icon="submit" label="Submit"}
-				{button icon="cancel" label="Cancel" onclick="location.href = '?m=userpanel';"}
-			</TD>
+			<td class="bold">
+				{icon name="configuration"}
+				{trans("Module Configuration:")}
+			</td>
 		</tr>
-	</TABLE>
-	</FORM>
-    </TD></TR>
-</TABLE>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<form name="moduleconfig" method="POST" action="?m=userpanel&module=documents&f=submit_setup">
+					<table>
+						<colgroup>
+							<col style="width: 1%;">
+							<col style="width: 99%;">
+						</colgroup>
+						<tr>
+							<td class="nobr">
+								<label for="hide_documentbox">
+									{trans("Hide customer document box")}
+								</label>
+							</td>
+							<td class="nobr">
+								<input type="checkbox" name="moduleconfig[hide_documentbox]" id="hide_documentbox" value="1"
+									{if $moduleconfig.hide_documentbox} checked{/if} {tip text="Don't show customer document box"}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="show_confirmed_documents_only">
+									{trans("Show confirmed documents only:")}
+								</label>
+							</td>
+							<td class="nobr">
+								<input type="checkbox" name="moduleconfig[show_confirmed_documents_only]" id="show_confirmed_documents_only"
+									value="1"{if $moduleconfig.show_confirmed_documents_only} checked{/if} {tip text="Show only documents which are confirmed"}>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="allowed_document_types">
+									{trans("Visible document types")}
+								</label>
+							</td>
+							<td class="nobr">
+								<select name="moduleconfig[allowed_document_types][]" id="allowed_document_types"
+									class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+									{foreach Localisation::arraySort($_DOCTYPES) as $doctype => $label}
+										<option value="{$doctype}"
+											{if isset($moduleconfig.allowed_document_types[$doctype])} selected{/if}>{$label}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="nobr">
+								<label for="hide_archived_documents">
+									{trans("Hide archived documents:")}
+								</label>
+							</td>
+							<td class="nobr">
+								<input type="checkbox" name="moduleconfig[hide_archived_documents]" id="hide_archived_documents"
+									value="1"{if $moduleconfig.hide_archived_documents} checked{/if} {tip text="Hide archived documents"}>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="nobr" colspan="2">
+								<fieldset>
+									<legend class="bold">
+										{trans("Document notification general parameters")}
+									</legend>
+									<table>
+										<tr>
+											<td class="nobr">
+												<label for="document_notification_mail_dsn_address">
+													{trans("DSN address:")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[document_notification_mail_dsn_address]"
+													id="document_notification_mail_dsn_address"
+													value="{$moduleconfig.document_notification_mail_dsn_address}"
+													{tip text="Enter document notification mail DSN (Delivery Status Notification) address"}>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_notification_mail_mdn_address">
+													{trans("MDN address:")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[document_notification_mail_mdn_address]"
+													id="document_notification_mail_mdn_address"
+													value="{$moduleconfig.document_notification_mail_mdn_address}"
+													{tip text="Enter document notification mail MDN (Message Delivery Notification) address"}>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_notification_mail_sender_name">
+													{trans("Sender name:")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[document_notification_mail_sender_name]"
+													id="document_notification_mail_sender_name"
+													value="{$moduleconfig.document_notification_mail_sender_name}"
+													{tip text="Enter document notification mail sender name"}>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_notification_mail_sender_address">
+													{trans("Sender mail address:")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[document_notification_mail_sender_address]"
+													id="document_notification_mail_sender_address"
+													value="{$moduleconfig.document_notification_mail_sender_address}"
+													{tip text="Enter document notification mail sender name"}>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_notification_mail_reply_address">
+													{trans("Reply address:")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[document_notification_mail_reply_address]"
+													id="document_notification_mail_reply_address"
+													value="{$moduleconfig.document_notification_mail_reply_address}"
+													{tip text="Enter document notification mail reply address"}>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="nobr" colspan="2">
+								<fieldset>
+									<legend class="bold">
+										{trans("New document customer notifications")}
+									</legend>
+									<table>
+										{capture assign="hint"}{strip}
+											Supported substitutions:<br>
+											<br>
+											<strong>%cid%</strong> - customer identifier,<br>
+											<strong>%pin%</strong> - customer pin code,<br>
+											<strong>%customername%</strong> - full customer name,<br>
+											<strong>%docid%</strong> - document identifier,<br>
+											<strong>%date-y%</strong> - date to which we wait for customer action (year),<br>
+											<strong>%date-m%</strong> - date to which we wait for customer action (month),<br>
+											<strong>%date-d%</strong> - date to which we wait for customer action (day).
+										{/strip}{/capture}
+										<tr>
+											<td class="nobr">
+												<label for="new_document_customer_notification_mail_subject">
+													{trans("Mail subject:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<input type="text" size="50"
+														name="moduleconfig[new_document_customer_notification_mail_subject]"
+														id="new_document_customer_notification_mail_subject"
+														value="{$moduleconfig.new_document_customer_notification_mail_subject}"
+														{tip text="Enter new document customer notification mail subject"}>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="new_document_customer_notification_mail_body">
+													{trans("Mail body:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<textarea name="moduleconfig[new_document_customer_notification_mail_body]"
+														id="new_document_customer_notification_mail_body"
+														class="lms-ui-wysiwyg-editor"
+														data-wysiwyg="{if $moduleconfig.new_document_customer_notification_mail_format == 'html'}true{else}false{/if}"
+														cols="60" rows="7" {tip text="Enter new document customer notification mail body"}
+													>{$moduleconfig.new_document_customer_notification_mail_body}</textarea>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="new_document_customer_notification_sms_body">
+													{trans("SMS body")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<textarea name="moduleconfig[new_document_customer_notification_sms_body]"
+														id="new_document_customer_notification_sms_body"
+														cols="60" rows="7" {tip text="Enter new document customer notification sms body"}
+													>{$moduleconfig.new_document_customer_notification_sms_body}</textarea>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+
+						{capture assign="hint"}{strip}
+							Supported substitutions:<br>
+							<br>
+							<strong>%cid%</strong> - customer identifier,<br>
+							<strong>%customername%</strong> - full customer name,<br>
+							<strong>%docid%</strong> - document identifier.
+						{/strip}{/capture}
+
+						<tr>
+							<td class="nobr" colspan="2">
+								<fieldset>
+									<legend class="bold">
+										{trans("Signed document scan operator notifications")}
+									</legend>
+									<table>
+										<tr>
+											<td class="nobr">
+												<label for="signed_document_scan_operator_notification_mail_recipient">
+													{trans("Mail recipient:")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[signed_document_scan_operator_notification_mail_recipient]"
+													id="signed_document_scan_operator_notification_mail_recipient"
+													value="{$moduleconfig.signed_document_scan_operator_notification_mail_recipient}"
+													{tip text="Enter signed document scan operator notification mail recipient"}>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="signed_document_scan_operator_notification_mail_subject">
+													{trans("Mail subject:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<input type="text" size="50"
+														name="moduleconfig[signed_document_scan_operator_notification_mail_subject]"
+														id="signed_document_scan_operator_notification_mail_subject"
+														value="{$moduleconfig.signed_document_scan_operator_notification_mail_subject}"
+														{tip text="Enter signed document scan operator notification mail subject"}>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="signed_document_scan_operator_notification_mail_body">
+													{trans("Mail body:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<textarea name="moduleconfig[signed_document_scan_operator_notification_mail_body]"
+														id="signed_document_scan_operator_notification_mail_body"
+														class="lms-ui-wysiwyg-editor"
+														data-wysiwyg="{if $moduleconfig.signed_document_scan_operator_notification_mail_format == 'html'}true{else}false{/if}"
+														cols="60" rows="7" {tip text="Enter signed document scan operator notification mail body"}
+													>{$moduleconfig.signed_document_scan_operator_notification_mail_body}</textarea>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="nobr" colspan="2">
+								<fieldset>
+									<legend class="bold">
+										{trans("Signed document scan customer notifications")}
+									</legend>
+									<table>
+										<tr>
+											<td class="nobr">
+												<label for="signed_document_scan_customer_notification_mail_subject">
+													{trans("Mail subject:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<input type="text" size="50"
+														name="moduleconfig[signed_document_scan_customer_notification_mail_subject]"
+														id="signed_document_scan_customer_notification_mail_subject"
+														value="{$moduleconfig.signed_document_scan_customer_notification_mail_subject}"
+														{tip text="Enter signed document scan customer notification mail subject"}>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="signed_document_scan_customer_notification_mail_body">
+													{trans("Mail body:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<textarea name="moduleconfig[signed_document_scan_customer_notification_mail_body]"
+														id="signed_document_scan_customer_notification_mail_body"
+														class="lms-ui-wysiwyg-editor"
+														data-wysiwyg="{if $moduleconfig.signed_document_scan_customer_notification_mail_format == 'html'}true{else}false{/if}"
+														cols="60" rows="7" {tip text="Enter signed document scan customer notification mail body"}
+													>{$moduleconfig.signed_document_scan_customer_notification_mail_body}</textarea>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="nobr" colspan="2">
+								<fieldset>
+									<legend class="bold">
+										{trans("Document approval operator notifications")}
+									</legend>
+									<table>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_operator_notification_mail_recipient">
+													{trans("Recipient e-mail address")}
+												</label>
+											</td>
+											<td>
+												<input type="text" size="50"
+													name="moduleconfig[document_approval_operator_notification_mail_recipient]"
+													id="document_approval_operator_notification_mail_recipient"
+													value="{$moduleconfig.document_approval_operator_notification_mail_recipient}"
+													{tip text="Enter document approval operator notification mail recipient address"}>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_operator_notification_mail_subject">
+													{trans("Mail subject")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<input type="text" size="50"
+														name="moduleconfig[document_approval_operator_notification_mail_subject]"
+														id="document_approval_operator_notification_mail_subject"
+														value="{$moduleconfig.document_approval_operator_notification_mail_subject}"
+														{tip text="Enter document approval operator notification mail subject"}>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_operator_notification_mail_body">
+													{trans("Mail body")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<textarea name="moduleconfig[document_approval_operator_notification_mail_body]"
+														id="document_approval_operator_notification_mail_body"
+														class="lms-ui-wysiwyg-editor"
+														data-wysiwyg="{if $moduleconfig.document_approval_operator_notification_mail_format == 'html'}true{else}false{/if}"
+														cols="60" rows="7" {tip text="Enter document approval operator notification mail body"}
+													>{$moduleconfig.document_approval_operator_notification_mail_body}</textarea>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+
+						<tr>
+							<td class="nobr" colspan="2">
+								<fieldset>
+									<legend class="bold">
+										{trans("Document approval customer notifications")}
+									</legend>
+									<table>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_customer_notification_mail_subject">
+													{trans("Mail subject:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<input type="text" size="50"
+														name="moduleconfig[document_approval_customer_notification_mail_subject]"
+														id="document_approval_customer_notification_mail_subject"
+														value="{$moduleconfig.document_approval_customer_notification_mail_subject}"
+														{tip text="Enter document approval customer notification mail subject"}>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_customer_notification_mail_body">
+													{trans("Mail body:")}
+												</label>
+											</td>
+											<td>
+												<div class="lms-ui-cell-flex">
+													<textarea name="moduleconfig[document_approval_customer_notification_mail_body]"
+														id="document_approval_customer_notification_mail_body"
+														class="lms-ui-wysiwyg-editor"
+														data-wysiwyg="{if $moduleconfig.document_approval_customer_notification_mail_format == 'html'}true{else}false{/if}"
+														cols="60" rows="7" {tip text="Enter document approval customer notification mail body"}
+													>{$moduleconfig.document_approval_customer_notification_mail_body}</textarea>
+													{hint mode="toggle" content=$hint}
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_customer_notification_attachments">
+													{trans("Send document to customer")}
+												</label>
+											</td>
+											<td>
+												<input type="checkbox" name="moduleconfig[document_approval_customer_notification_attachments]"
+													id="document_approval_customer_notification_attachments"
+													{if !empty($moduleconfig.document_approval_customer_notification_attachments)} checked{/if}>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+
+						{capture assign="hint"}{strip}
+							Supported substitutions:<br>
+							<br>
+							<strong>%password%</strong> - replaced by one-time password sent to customer via SMS.
+						{/strip}{/capture}
+
+						<tr>
+							<td class="nobr">
+								<label for="document_approval_customer_onetime_password_sms_body">
+									{trans("One-time password SMS body:")}
+								</label>
+							</td>
+							<td class="nobr">
+								<div class="lms-ui-cell-flex">
+									<textarea name="moduleconfig[document_approval_customer_onetime_password_sms_body]"
+										id="document_approval_customer_onetime_password_sms_body"
+										cols="60" rows="7" {tip text="Enter document approval customer one-time password sms body"}
+									>{$moduleconfig.document_approval_customer_onetime_password_sms_body}</textarea>
+									{hint mode="toggle" content=$hint}
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2" class="lms-ui-box-buttons">
+								{button type="submit" icon="submit" label="Submit"}
+								{button icon="cancel" label="Cancel" onclick="location.href = '?m=userpanel';"}
+							</td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+	</tbody>
+</table>
 {include file="footer.html"}

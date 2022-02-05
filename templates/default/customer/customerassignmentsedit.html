@@ -110,8 +110,19 @@
 								{/block}
 
 								{foreach $tariffs as $tariff}
-									<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" data-tariffaccess="{$tariff.authtype}" data-tarifftags="{$tariff.tags}" {if $tariff.id==$assignment.tariffid} selected{/if} data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
-									{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{moneyf($tariff.value, $tariff.currency)}{/if}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
+									<option value="{$tariff.id}"
+											data-tarifftype="{$tariff.tarifftype}"
+											data-tariffaccess="{$tariff.authtype}"
+											data-tarifftags="{$tariff.tags}"
+											data-tariffvalue="{$tariff.value}"
+											data-tariffnetvalue="{$tariff.netvalue}"
+											data-tariffnetflag="{$tariff.netflag}"
+											data-tarifftaxid="{$tariff.taxid}"
+											{if $tariff.id==$assignment.tariffid} selected{/if}
+											data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
+									{$tariff.name}
+									{$bracket_open = false}
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}({moneyf($tariff.value, $tariff.currency)}{$bracket_open = true}{/if}{if $tariff.upceil || $tariff.downceil}{if $bracket_open}, {else}({$bracket_open = true}{/if}{convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if}{if $bracket_open}){/if}
 									</option>
 								{/foreach}
 							</select>
@@ -151,6 +162,11 @@
 {include file="customer/customerassignments.html"}
 
 <SCRIPT>
+	var tariffDefaultTaxId = {$defaultTaxId};
+	var assignmentGrossvalue = '{$assignment.value}';
+	var assignmentNetvalue = '{$assignment.netvalue}';
+	var assignmentNetflag = '{$assignment.netflag}';
+	var assignmentTaxid = '{$assignment.taxid}';
 
 	var tariffTypes = [];
 	{foreach $tariffs as $tariff}
@@ -172,6 +188,7 @@
 		selected: selected,
 		internetTariffType: {$smarty.const.SERVICE_INTERNET},
 		phoneTariffType: {$smarty.const.SERVICE_PHONE},
+		DOC_DNOTE:{$smarty.const.DOC_DNOTE},
 		tariffTypes: tariffTypes,
 		variablePrefix: 'assignment',
         hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
@@ -180,9 +197,14 @@
 	var customer_assignment_helper = new CustomerAssignmentHelper(assignment_settings);
 	$(function() {
 		$('#submit-button').click(function(e) {
-			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
 			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
 
+			$("#grossprice").prop('disabled', !isNaN(tariffid));
+			$("#netprice").prop('disabled', !isNaN(tariffid));
+			$("#netflag").prop('disabled', false);
+			$("#tax").prop('disabled', false);
+
+			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
 			if (isNaN(tariffid)) {
 				document.assignment.submit();
 				return;
@@ -211,7 +233,7 @@
 			}
 			{/if}
 
-            document.assignment.submit();
+			document.assignment.submit();
 		});
 
 		$('#alltariffs').click(function() {

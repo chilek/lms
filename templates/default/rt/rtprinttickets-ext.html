@@ -1,5 +1,66 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
+<style>
+
+	.no-page-break {
+		break-inside: avoid;
+	}
+
+	.auto-width {
+		width: 70%;
+	}
+
+	.message-header {
+		background-image: linear-gradient(to right, grey 25%, rgba(255,255,255,0) 0%);
+		background-position: bottom;
+		background-size: 5px 1px;
+		background-repeat: repeat-x;
+	}
+
+	.message-header-container {
+		display: inline-flex;
+		flex-grow: 1;
+		width: 100%;
+	}
+
+	.message-header-container > * {
+		padding-left: 0.25em;
+		padding-right: 0.25em;
+	}
+
+	.message-createtime {
+		font-weight: bold;
+		white-space: nowrap;
+		align-self: center;
+	}
+
+	.message-from-subject {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.message-from-subject > div {
+		display: flex;
+		align-items: center;
+	}
+
+	.message-from-subject > div > div {
+		padding-left: 0.3em;
+		padding-right: 0.3em;
+	}
+
+	.message-from-subject > div:nth-child(2) > div:nth-child(2) {
+		white-space: normal;
+	}
+
+	@media print {
+		.auto-width {
+			width: 100%;
+		}
+	}
+
+</style>
 <TABLE WIDTH="100%">
 	<TR>
 		<TD WIDTH="99%" VALIGN="TOP">
@@ -13,10 +74,10 @@
 	</TR>
 </TABLE>
 {foreach $list as $ticket}
-<TABLE WIDTH="640" CELLPADDING="3" ALIGN="CENTER">
+<TABLE class="auto-width" CELLPADDING="3" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="grey bb fleftu" ALIGN="CENTER" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">
+			{icon name="helpdesk"}
 		</TD>
 		<TD CLASS="grey bb fbt" ALIGN="CENTER" WIDTH="1%" NOWRAP>
 			<B>{$ticket.id|string_format:"%08d"}:</B>
@@ -28,59 +89,161 @@
 			#{counter}
 		</TD>
 	</TR>
-	<TR>
-		<TD COLSPAN="4" CLASS="flr bb">
-			<TABLE WIDTH="100%">
-			    <TR>
-				<TD WIDTH="1%">{trans("Date:")}</TD>
-				<TD WIDTH="99%">
-				    {$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
-				</TD>
-			    </TR>
-			    <TR>
-				<TD WIDTH="1%">{trans("Requestor:")}</TD>
-				<TD WIDTH="99%">
-				    {if $ticket.customerid}
-				    {$ticket.customername} ({$ticket.customerid|string_format:"%04d"})
-				    {else}
-				    {$ticket.requestor}
-				    {/if}
-				</TD>
-			    </TR>
-			    {if $ticket.address}
-			    <TR>
-				<TD WIDTH="1%">{trans("Address:")}</TD>
-				<TD WIDTH="99%">
-				    {$ticket.city}{if $ticket.address}, {$ticket.address}{/if}
-				    {if $ticket.phones}({trans("phone:")} {$ticket.phones}){/if}
-				    {if $ticket.emails}({trans("email:")} {$ticket.emails}){/if}
-				</TD>
-			    </TR>
-			    {/if}
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="4" CLASS="fbottomu bb">
-			<TABLE WIDTH="100%" CELLPADDING="3">
-			    {foreach $ticket.content as $item}
-			    <TR>
-				<TD WIDTH="100%" CLASS="ftop{if $item.note} blend{/if}">
-				    {$item.body|escape|replace:"\n":"<BR>"}
-				</TD>
-			    </TR>
-			    {/foreach}			
-			</TABLE>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="4" class="flr bb">
+			<table style="width: 100%;">
+				<colgroup>
+					<col style="width: 1%;">
+					<col style="width: 99%;">
+				</colgroup>
+				<tr>
+					<td>
+						{trans("Date:")}
+					</td>
+					<td>
+						{$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
+					</td>
+				</tr>
+				{if $ticket.deadline}
+					<tr>
+						<td>
+							{trans("<!rt>Deadline:")}
+						</td>
+						<td>
+							{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}
+						</td>
+					</tr>
+				{/if}
+				{if $ticket.resolvetime}
+					<tr>
+						<td class="nobr">
+							{trans("Resolve time:")}
+						</td>
+						<td>
+							{$ticket.resolvetime|date_format:"%Y/%m/%d %H:%M"}
+						</td>
+					</tr>
+				{/if}
+				{if $ticcket.customerid || $ticket.requestor}
+					<tr>
+						<td>
+							{trans("Requestor:")}
+						</td>
+						<td>
+							{if $ticket.customerid}
+								{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})
+							{else}
+								{$ticket.requestor|escape}
+							{/if}
+						</td>
+					</tr>
+				{/if}
+				{if $ticket.address}
+					<tr>
+						<td>
+							{trans("Address:")}
+						</td>
+						<td>
+							{$ticket.city}{if $ticket.address}, {$ticket.address}{/if}
+							{if $ticket.phones}
+								({trans("phone:")} {$ticket.phones})
+							{/if}
+							{if $ticket.emails}
+								({trans("email:")} {$ticket.emails})
+							{/if}
+						</td>
+					</tr>
+				{/if}
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" class="fbottomu bb">
+			<table style="width: 100%;" cellpadding="3" class="no-page-break">
+				<colgroup>
+					<col style="width: 100%;">
+				</colgroup>
+				{foreach $ticket.content as $item}
+					{if $comment_details}
+						<tr>
+							<td class="ftop {if $item.note} blend{/if} message-header">
+								<div class="message-header-container">
+									<div class="message-createtime">
+										{$item.createtime|date_format:"%Y/%m/%d %H:%M"}
+									</div>
+									<div class="message-from-subject">
+										<div{if ($item.type != $smarty.const.RTMESSAGE_REGULAR && $item.type != $smarty.const.RTMESSAGE_NOTE)
+											|| (!$item.customerid && !$item.userid && !$item.mailfrom
+											&& !$ticket.requestor && !$item.phonefrom)} style="display: none;"{/if}>
+											<div>
+												<strong>{trans("From:")}</strong>
+											</div>
+											<div>
+												{if $item.type == $smarty.const.RTMESSAGE_REGULAR}
+													{if $item.customerid}
+														{if $item.mailfrom}
+															{icon name="mail"}
+														{elseif $item.phonefrom}
+															{icon name="sms"}
+														{/if}
+														{$item.customername} (#{$item.customerid})
+													{elseif $mitem.userid}
+														{icon name="user"}
+														{$item.username|escape}
+													{elseif $item.mailfrom}
+														{icon name="mail"}
+														{$item.mailfrom|escape}
+													{else}
+														{$ticket.requestor|escape}
+														{if $ticket.requestor_mail}
+															&lt;{$ticket.requestor_mail|escape}
+														{/if}
+													{/if}
+													{if $item.phonefrom}
+														{icon name="phone"}
+														{$item.phonefrom}
+													{/if}
+												{else}
+													{$item.username|escape}
+												{/if}
+											</div>
+										</div>
+										{if $item.type == $smarty.const.RTMESSAGE_REGULAR}
+											<div>
+												<div>
+													<strong>{trans("Subject:")}</strong>
+												</div>
+												<div>
+													{$item.subject|escape}
+												</div>
+											</div>
+										{/if}
+									</div>
+								</div>
+							</td>
+						</tr>
+					{/if}
+					<tr>
+						<td class="{if !$comment_details}ftop{/if}{if $item.note} blend{/if}">
+							{if $message.contenttype == 'text/plain'}
+								{$item.body|trim|escape|regex_replace:"/\r?\n/":'<br>'|message_quote}
+							{else}
+								{$item.body|message_quote}
+							{/if}
+						</td>
+					</tr>
+				{/foreach}
+			</table>
+		</td>
+	</tr>
 </TABLE><BR>
 {foreachelse}
-<TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
-	<TR>
-    		<TD class="empty-table">
-			<p>{trans("No such requests in database.")}</p>
-		</TD>
-	</TR>
+<TABLE class="auto-width" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<tr>
+    	<td class="empty-table">
+			{trans("No such requests in database.")}
+		</td>
+	</tr>
 </TABLE>
 {/foreach}
 {include file="clearfooter.html"}

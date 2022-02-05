@@ -229,6 +229,7 @@ function parse_dns_record(&$record)
             $record['ipdst'] = $record['content'];
             break;
         case 'ALIAS':
+        case 'CNAME':
         case 'ANAME':
             $record['alias'] = $record['name'];
             $record['domain'] = $record['content'];
@@ -238,10 +239,6 @@ function parse_dns_record(&$record)
             break;
         case 'MX':
             $record['mailserver'] = $record['content'];
-            break;
-        case 'CNAME':
-            $record['alias'] = $record['name'];
-            $record['domain'] = $record['content'];
             break;
         case 'TXT':
         case 'SPF':

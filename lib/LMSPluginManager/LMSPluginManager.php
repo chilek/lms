@@ -74,7 +74,10 @@ class LMSPluginManager extends Subject implements SubjectInterface
                 'enabled' => false,
                 'new_style' => true,
                 'dbcurrschversion' => null,
-                'dbschversion' => defined($plugin_name . '::PLUGIN_DBVERSION') ? constant($plugin_name . '::PLUGIN_DBVERSION') : null,
+                'dbschversion' => defined($plugin_name . '::PLUGIN_DB_VERSION') ? constant($plugin_name . '::PLUGIN_DB_VERSION') : null,
+                'softwareversion' => defined($plugin_name . '::PLUGIN_SOFTWARE_VERSION') ? constant($plugin_name . '::PLUGIN_SOFTWARE_VERSION') : null,
+                'docurl' => defined($plugin_name . '::PLUGIN_DOC_URL') ? constant($plugin_name . '::PLUGIN_DOC_URL') : null,
+                'repourl' => defined($plugin_name . '::PLUGIN_REPO_URL') ? constant($plugin_name . '::PLUGIN_REPO_URL') : null,
                 'fullname' => defined($plugin_name . '::PLUGIN_NAME') ? trans(constant($plugin_name . '::PLUGIN_NAME')) : null,
                 'description' => defined($plugin_name . '::PLUGIN_DESCRIPTION') ? trans(constant($plugin_name . '::PLUGIN_DESCRIPTION')) : null,
                 'author' => defined($plugin_name . '::PLUGIN_AUTHOR') ? constant($plugin_name . '::PLUGIN_AUTHOR') : null,
@@ -183,7 +186,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
         $this->notifyObservers();
         return $this->hook_data;
     }
-    
+
     /**
      * Returns hook name
      *
@@ -193,7 +196,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
     {
         return $this->hook_name;
     }
-    
+
     /**
      * Returns hook data
      *
@@ -203,7 +206,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
     {
         return $this->hook_data;
     }
-    
+
     /**
      * Sets hook data
      *

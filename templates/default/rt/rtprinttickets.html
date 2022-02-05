@@ -47,21 +47,21 @@
 		</TD>
 		<TD NOWRAP>
 			{if $ticket.customerid}
-			{$ticket.customername|truncate:"50":"...":true} ({$ticket.customerid|string_format:"%04d"})
+			{$ticket.customername|truncate:"50":"&hellip;":true} ({$ticket.customerid|string_format:"%04d"})
 			{if $ticket.city}<BR>{$ticket.city}{if $ticket.address}, {$ticket.address}{/if}{/if}
 			{if $ticket.phones}<BR>{trans("phone:")} {$ticket.phones}{/if}
 			{if $ticket.emails}<BR>{trans("email:")} {$ticket.emails}{/if}
 			{else}
-			{$ticket.requestor|truncate:"50":"...":true}
+			{$ticket.requestor|truncate:"50":"&hellip;":true}
 			{/if}
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
-		<TD COLSPAN="7" class="empty-table">
-			<p>{trans("No such requests in database.")}</p>
-		</TD>
-	</TR>
+	<tr>
+		<td colspan="7" class="empty-table">
+			{trans("No such requests in database.")}
+		</td>
+	</tr>
 	{/foreach}
 </TABLE>
 {include file="clearfooter.html"}

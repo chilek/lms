@@ -112,7 +112,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 					if( !ownerid ) continue;
 					m = gc;
 					
-					res1 = g->db->pquery(g->db->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db->get_data(res,i,"ownerid"));
+					res1 = g->db->pquery(g->db->conn, "SELECT customergroupid FROM vcustomerassignments WHERE customerid=?", g->db->get_data(res,i,"ownerid"));
 					for(k=0; k<g->db->nrows(res1); k++)
 					{
 						int groupid = atoi(g->db->get_data(res1, k, "customergroupid"));

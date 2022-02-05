@@ -63,6 +63,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *          array() of integer values or single integer value
      *      priority - ticket priorities (default: null = any),
      *          array() of integer values or single integer value
+     *      source - ticket source (default: 0 = all),
+     *          -1 = unknown/other
+     *           0 = all
      *      owner - ticket owner (default: null = any),
      *          array() or single integer value
      *          -1 = without owner,
@@ -105,6 +108,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *      rights - tickets from queues with particular permissions (default:null whitch means tickets from all queues),
      *      projectids - ticket investment projects (default: null = any/none)
      *          array() of integer values,
+     *      cid - ticket customerid (default: null = any/none, integer value)
+     *      subject - ticket subject (default: null = any/none, text value)
+     *      fromdate - ticket creation date was from  (default: null = any/none, integer value)
+     *      todate - ticket creation date was to  (default: null = any/none, integer value)
      *      count - count records only or return selected record interval
      *          true - count only,
      *          false - get records,
@@ -117,13 +124,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
      *              type, createtime,
      *          supported orders:
      *          asc = ascending, desc = descending
+     *      short - returned only ticket data (default: null, type: boolean),
      * @return mixed
      */
     public function GetQueueContents(array $params)
     {
         extract($params);
-        foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-            'serviceids', 'typeids', 'unread', 'parentids','verifierids','rights') as $var) {
+        foreach (array('ids', 'state', 'priority', 'source', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+            'serviceids', 'typeids', 'unread', 'parentids', 'verifierids', 'rights', 'projectids', 'cid', 'subject', 'fromdate', 'todate', 'short', 'watching') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -152,7 +160,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $sqlord = ' ORDER BY t.subject';
                 break;
             case 'requestor':
-                $sqlord = ' ORDER BY requestor';
+                $sqlord = ' ORDER BY t.requestor';
                 break;
             case 'owner':
                 $sqlord = ' ORDER BY ownername';
@@ -198,17 +206,27 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($priority)) {
             $priorityfilter = '';
         } elseif (is_array($priority)) {
-            $priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+            if (in_array('-101', $priority)) {
+                $priorityfilter = ' AND (t.priority IN (' . implode(',', $priority) . ') OR t.priority IS NULL)';
+            } else {
+                $priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+            }
         } else {
             $priorityfilter = ' AND t.priority = '.$priority;
         }
 
-        if (empty($netdevids)) {
-                        $netdevidsfilter = '';
-        } elseif (is_array($netdevids)) {
-                        $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
+        if (empty($source) || intval($source) == -1) {
+            $sourcefilter = '';
         } else {
-            $netdevidsfilter = ' AND t.netdevid = '.$netdevids;
+            $sourcefilter = ' AND t.source = ' . $source;
+        }
+
+        if (empty($netdevids)) {
+            $netdevidsfilter = '';
+        } elseif (is_array($netdevids)) {
+            $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
+        } else {
+            $netdevidsfilter = ' AND t.netdevid = ' . $netdevids;
         }
 
         if (empty($netnodeids)) {
@@ -270,6 +288,36 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $projectidsfilter = ' AND t.invprojectid = '.$projectids;
         }
 
+        if (empty($cid)) {
+            $cidfilter = '';
+        } else {
+            $cidfilter = ' AND t.customerid = ' . $cid;
+        }
+
+        if (empty($subject)) {
+            $subjectfilter = '';
+        } else {
+            $subjectfilter = " AND t.subject ?LIKE? '%" . $subject . "%'";
+        }
+
+        if (empty($fromdate)) {
+            $fromdatefilter = '';
+        } else {
+            $fromdatefilter = ' AND t.createtime >= ' . $fromdate;
+        }
+
+        if (empty($todate)) {
+            $todatefilter = '';
+        } else {
+            $todatefilter = ' AND t.createtime <= ' . $todate;
+        }
+
+        if ($watching == '1') {
+                $watchingfilter = ' AND tw.userid IS NOT NULL';
+        } else {
+                $watchingfilter = '';
+        }
+
         if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
             $removedfilter = ' AND t.deleted = 0';
         } else {
@@ -306,6 +354,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
                 }
             }
+        } else {
+            $ownerfilter = '';
         }
 
         if (!empty($deadline)) {
@@ -358,6 +408,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             } else {
                 $parentfilter = ' AND t.parentid IN (' . implode(',', $parentids) . ')';
             }
+        } else {
+            $parentfilter = '';
         }
 
         if (!empty($catids) && !in_array('all', $catids)) {
@@ -400,6 +452,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rttickets t
 				LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 				LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
+				LEFT JOIN rtticketwatchers tw ON (t.id = tw.ticketid) AND tw.userid = ?
 				WHERE 1=1 '
                 . ($rights ? ' AND (t.queueid IN (
 						SELECT q.id FROM rtqueues q
@@ -426,6 +479,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $parentfilter
                 . $statefilter
                 . $priorityfilter
+                . $sourcefilter
                 . $ownerfilter
                 . $removedfilter
                 . $netdevidsfilter
@@ -434,19 +488,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . $serviceidsfilter
                 . $verifieridsfilter
                 . $projectidsfilter
-                . $typeidsfilter, array($userid));
+                . $cidfilter
+                . $subjectfilter
+                . $fromdatefilter
+                . $todatefilter
+                . $watchingfilter
+                . $typeidsfilter, array($userid, $userid));
         }
 
         if ($result = $this->db->GetAll(
             'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
-				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid,
-				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
-                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
+				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name,'
+                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
+				t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid, rq.name AS requestor_name,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
-				t.modtime AS lastmodified, vi.name AS verifiername, vi.id AS verifierid,
-				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type, t.resolvetime,
+				t.modtime AS lastmodified, vi.name AS verifiername, vi.id AS verifierid, tw.userid,
+				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, 
+				nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type, t.resolvetime,
 				(CASE WHEN t.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < t.modtime) THEN 1 ELSE 0 END) AS unread,
 				(CASE WHEN t.state <> ' . RT_RESOLVED . ' THEN m3.firstunread ELSE 0 END) as firstunread,
+				(CASE WHEN t.id = tw.ticketid AND tw.userid = ? THEN 1 ELSE 0 END) as watching,
 				ti.imagecount
 			FROM rttickets t
 			LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
@@ -454,6 +515,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LEFT JOIN vusers AS vi ON (verifierid = vi.id)
 			LEFT JOIN customeraddressview c ON (t.customerid = c.id)
 			LEFT JOIN vusers u ON (t.creatorid = u.id)
+			LEFT JOIN vusers rq ON (t.requestor_userid = rq.id)
+			LEFT JOIN rtticketwatchers tw ON (t.id = tw.ticketid) AND tw.userid = ?
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
 			LEFT JOIN netnodes nn ON nn.id = t.netnodeid
 			LEFT JOIN netdevices nd ON nd.id = t.netdevid
@@ -481,16 +544,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				SELECT m4.ticketid, MIN(m4.id) AS firstunread FROM rtmessages m4
 				JOIN rttickets t2 ON t2.id = m4.ticketid
 				LEFT JOIN rtticketlastview lv2 ON lv2.ticketid = m4.ticketid AND lv2.userid = ?
-				WHERE lv2.vdate < t2.modtime
+				WHERE 1 = 1'
+                    . str_replace('t.', 't2.', $qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
+                            . ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
+                        : ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
+                    . str_replace('t.', 't2.', $statefilter)
+                    . str_replace('t.', 't2.', $removedfilter)
+                    . ' AND lv2.vdate < t2.modtime
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
-			LEFT JOIN (
-			    SELECT ticketid, COUNT(*) AS imagecount
-			    FROM rtattachments a
-			    JOIN rtmessages ON rtmessages.id = a.messageid
-			    WHERE a.contenttype ?LIKE? ?
-			    GROUP BY ticketid
-			) ti ON ti.ticketid = t.id
+            LEFT JOIN (
+                SELECT ticketid, COUNT(*) AS imagecount
+                FROM rtattachments a
+                JOIN rtmessages ON rtmessages.id = a.messageid
+                WHERE a.contenttype ?LIKE? ?
+                    AND a.cid IS NULL
+                GROUP BY ticketid
+            ) ti ON ti.ticketid = t.id
 			WHERE 1=1 '
             . ($rights ? ' AND (t.queueid IN (
 					SELECT q.id FROM rtqueues q
@@ -518,6 +588,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $parentfilter
             . $statefilter
             . $priorityfilter
+            . $sourcefilter
             . $ownerfilter
             . $removedfilter
             . $netdevidsfilter
@@ -526,11 +597,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             . $serviceidsfilter
             . $verifieridsfilter
             . $projectidsfilter
+            . $cidfilter
+            . $subjectfilter
+            . $fromdatefilter
+            . $todatefilter
+            . $watchingfilter
             . $typeidsfilter
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
-            array($userid, $userid, 'image/%')
+            array($userid, $userid, $userid, $userid, 'image/%')
         )) {
             $ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
@@ -564,18 +640,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             unset($ticket);
         }
 
-        $result['total'] = empty($result) ? 0 : count($result);
-        $result['state'] = $state;
-        $result['order'] = $order;
-        $result['direction'] = $direction;
-        $result['owner'] = $owner;
-        $result['removed'] = $removed;
-        $result['priority'] = $priority;
-        $result['deadline'] = $deadline;
-        $result['service'] = $serviceids;
-        $result['type'] = $typeids;
-        $result['unread'] = $unread;
-        $result['rights'] = $rights;
+        if (!$short) {
+            $result['total'] = empty($result) ? 0 : count($result);
+            $result['state'] = $state;
+            $result['order'] = $order;
+            $result['direction'] = $direction;
+            $result['owner'] = $owner;
+            $result['removed'] = $removed;
+            $result['priority'] = $priority;
+            $result['source'] = $source;
+            $result['deadline'] = $deadline;
+            $result['service'] = $serviceids;
+            $result['type'] = $typeids;
+            $result['unread'] = $unread;
+            $result['rights'] = $rights;
+            $result['fromdate'] = $fromdate;
+            $result['todate'] = $todate;
+            $result['watching'] = $watching;
+        }
 
         return $result;
     }
@@ -619,7 +701,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $userid = Auth::GetCurrentUser();
         if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody,
+				newticketsmsbody, newmessagesmsbody, resolveticketsmsbody,
+				deleted, deltime, deluserid
 				FROM rtqueues q
 				' . ((ConfigHelper::checkPrivilege('full_access') && $only_accessible)
                     || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id' : '')
@@ -684,7 +768,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetEventsByTicketId($id)
     {
         $events = $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
-                . 'userid, customerid, private, closed, closeduserid, events.type, ticketid, va.location, '
+                . 'userid, customerid, private, closed, closeddate, closeduserid, events.type, ticketid, va.location, '
                 . ''.$this->db->Concat('customers.name', "' '", 'customers.lastname').' AS customername, '
                 . ''.$this->db->Concat('users.firstname', "' '", 'users.lastname').' AS username, '
                 . ''.$this->db->Concat('u.firstname', "' '", 'u.lastname').' AS closedusername, vn.name AS node_name, '
@@ -792,7 +876,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return 1;
         }
 
-        $owner = $this->db->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid=? AND categoryid ' .
+        if (!$this->db->GetOne('SELECT 1 FROM rtcategories WHERE id = ?', array($category))) {
+            return true;
+        }
+
+        $owner = $this->db->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid = ? AND categoryid ' .
                 (is_array($category) ? 'IN (' . implode(',', $category) . ')' : '= ' . $category), array($user));
 
         return ($owner === '1');
@@ -910,20 +998,30 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     private function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false)
     {
-        if (!empty($files) && ($dir = ConfigHelper::getConfig('rt.mail_dir'))) {
+        $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+        $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', ConfigHelper::getConfig('rt.mail_dir_permission', '0700')), 8);
+        $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
+        $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
+
+        if (!empty($files) && $rt_dir) {
+            $ticket_dir = $rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
+            $message_dir = $ticket_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $messageid);
+
             @umask(0007);
-            $dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
-            $dir = $dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
-            @mkdir($dir, $dir_permission);
-            $dir .= DIRECTORY_SEPARATOR . sprintf('%06d', $messageid);
-            @mkdir($dir, $dir_permission);
+
+            @mkdir($ticket_dir, $storage_dir_permission);
+            @chown($ticket_dir, $storage_dir_owneruid);
+            @chgrp($ticket_dir, $storage_dir_ownergid);
+            @mkdir($message_dir, $storage_dir_permission);
+            @chown($message_dir, $storage_dir_owneruid);
+            @chgrp($message_dir, $storage_dir_ownergid);
 
             $dirs_to_be_deleted = array();
             foreach ($files as $file) {
                 // handle spaces and unknown characters in filename
                 // on systems having problems with that
                 $filename = preg_replace('/[^\w\.-_]/', '_', basename($file['name']));
-                $dstfile = $dir . DIRECTORY_SEPARATOR . $filename;
+                $dstfile = $message_dir . DIRECTORY_SEPARATOR . $filename;
                 if (isset($file['content'])) {
                     $fh = @fopen($dstfile, 'w');
                     if (empty($fh)) {
@@ -939,8 +1037,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         continue;
                     }
                 }
-                $this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-					VALUES (?,?,?)', array($messageid, $filename, $file['type']));
+
+                @chown($dstfile, $storage_dir_owneruid);
+                @chgrp($dstfile, $storage_dir_ownergid);
+
+                $this->db->Execute(
+                    'INSERT INTO rtattachments (messageid, filename, contenttype, cid)
+					VALUES (?, ?, ?, ?)',
+                    array($messageid, $filename, $file['type'], isset($file['content-id']) ? $file['content-id'] : null)
+                );
             }
             if (!empty($dirs_to_be_deleted)) {
                 $dirs_to_be_deleted = array_unique($dirs_to_be_deleted);
@@ -969,15 +1074,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $createtime = isset($message['createtime']) ? $message['createtime'] : time();
 
+        $body = preg_replace("/\r/", "", $message['body']);
+        if ($message['contenttype'] == 'text/html') {
+            $body = Utils::removeInsecureHtml($body);
+        }
+
         $this->db->Execute(
             'INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom,
-			inreplyto, messageid, replyto, headers, type, phonefrom)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			inreplyto, messageid, replyto, headers, type, phonefrom, contenttype)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array(
                 $message['ticketid'],
                 $createtime,
                 isset($message['subject']) ? $message['subject'] : '',
-                preg_replace("/\r/", "", $message['body']),
+                $body,
                 isset($message['userid']) ? $message['userid'] : Auth::GetCurrentUser(),
                 empty($message['customerid']) ? null : $message['customerid'],
                 isset($message['mailfrom']) ? $message['mailfrom'] : '',
@@ -988,6 +1098,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $headers,
                 isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
                 isset($message['phonefrom']) && $message['phonefrom'] != -1 ? $message['phonefrom'] : '',
+                isset($message['contenttype']) ? $message['contenttype'] : 'text/plain',
             )
         );
         $msgid = $this->db->GetLastInsertID('rtmessages');
@@ -1012,20 +1123,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
 			requestor_userid, subject, state, owner, createtime, modtime, cause, creatorid, source, priority, address_id, nodeid,
 			netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
             empty($ticket['customerid']) ? null : $ticket['customerid'],
-            $ticket['requestor'],
-            $ticket['requestor_mail'],
-            $ticket['requestor_phone'],
-            isset($ticket['requestor_userid']) ? $ticket['requestor_userid'] : null,
+            isset($ticket['requestor']) ? $ticket['requestor'] : null,
+            isset($ticket['requestor_mail']) ? $ticket['requestor_mail'] : null,
+            isset($ticket['requestor_phone']) ? $ticket['requestor_phone'] : null,
+            empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'],
             $ticket['subject'],
+            isset($ticket['state']) && !empty($ticket['state']) ? $ticket['state'] : RT_NEW,
             isset($ticket['owner']) && !empty($ticket['owner']) ? $ticket['owner'] : null,
             $createtime,
             $createtime,
             isset($ticket['cause']) ? $ticket['cause'] : 0,
             isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
             isset($ticket['source']) ? $ticket['source'] : 0,
-            isset($ticket['priority']) ? $ticket['priority'] : 0,
+            isset($ticket['priority']) && strlen($ticket['priority']) ? $ticket['priority'] : null,
             isset($ticket['address_id']) && !empty($ticket['address_id']) ? $ticket['address_id'] : null,
             isset($ticket['nodeid']) && !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
             isset($ticket['netnodeid']) && !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
@@ -1048,18 +1160,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
+        if ($ticket['contenttype'] == 'text/plain') {
+            $body = str_replace("\r", "", $ticket['body']);
+        } else {
+            $body = Utils::removeInsecureHtml($ticket['body']);
+        }
+
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-				subject, body, mailfrom, phonefrom, messageid, replyto, headers)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
+				subject, body, mailfrom, phonefrom, messageid, replyto, headers, contenttype)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
             empty($ticket['customerid']) ? null : $ticket['customerid'],
             $createtime,
             $ticket['subject'],
-            preg_replace("/\r/", "", $ticket['body']),
+            $body,
             empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
             empty($ticket['phonefrom']) || $ticket['phonefrom'] == -1 ? '' : $ticket['phonefrom'],
             isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
             isset($ticket['replyto']) ? $ticket['replyto'] : '',
             isset($ticket['headers']) ? $ticket['headers'] : '',
+            isset($ticket['contenttype']) ? $ticket['contenttype'] : 'text/plain',
         ));
 
         if ($ticket['note']) {
@@ -1080,6 +1199,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         $msgid = $this->db->GetLastInsertID('rtmessages');
+
+        if ($ticket['contenttype'] == 'text/html') {
+            $body = str_replace(
+                array(
+                    '%tid%',
+                    '%mid%'
+                ),
+                array(
+                    $id,
+                    $msgid
+                ),
+                $body
+            );
+            $this->db->Execute('UPDATE rtmessages SET body = ? WHERE id = ?', array($body, $msgid));
+        }
 
         if (!empty($ticket['categories'])) {
             foreach (array_keys($ticket['categories']) as $catid) {
@@ -1119,6 +1253,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $RT_STATES;
 
+        $userid = Auth::GetCurrentUser();
+
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
 				t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
 				t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, t.verifier_rtime, '
@@ -1126,12 +1262,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
 				t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
 				t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name,
-				t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid
+				t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid' .
+                                (!empty($userid) ? ', (CASE WHEN t.id = w.ticketid AND w.userid = ' . $userid . ' THEN 1 ELSE 0 END) as watching ' : '') . '
 				FROM rttickets t
 				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
 				LEFT JOIN vusers o ON (t.owner = o.id)
 				LEFT JOIN vusers c ON (t.creatorid = c.id)
 				LEFT JOIN vusers d ON (t.requestor_userid = d.id)
+				LEFT JOIN rtticketwatchers w ON (t.id = w.ticketid)
 				LEFT JOIN customers ON (customers.id = t.customerid)
 				LEFT JOIN vaddresses va ON va.id = t.address_id
 				LEFT JOIN vnodes n ON n.id = t.nodeid
@@ -1169,7 +1307,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (!$short) {
             $ticket['messages'] = $this->db->GetAll(
-                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
+                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, contenttype, createtime, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 					userid, vusers.name AS username, customerid, rtmessages.type, rtmessages.deleted, rtmessages.deltime, rtmessages.deluserid
 					FROM rtmessages
@@ -1182,8 +1320,30 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 array($id)
             );
 
-            foreach ($ticket['messages'] as $idx => $message) {
-                $ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));
+            foreach ($ticket['messages'] as &$message) {
+                $message['attachments'] = array();
+                $attachments = $this->db->GetAll(
+                    'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ?',
+                    array($message['id'])
+                );
+                if ($attachments) {
+                    if ($message['contenttype'] == 'text/html') {
+                        $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                            . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                    }
+
+                    foreach ($attachments as $attachment) {
+                        if (empty($attachment['cid'])) {
+                            $message['attachments'][] = $attachment;
+                        } elseif ($message['contenttype'] == 'text/html') {
+                            $message['body'] = str_ireplace(
+                                '"CID:' . $attachment['cid'] . '"',
+                                '"' . $url_prefix . '?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $id . '&mid=' . $message['id'] . '"',
+                                $message['body']
+                            );
+                        }
+                    }
+                }
             }
         }
 
@@ -1197,10 +1357,58 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $ticket;
     }
 
+    public function changeTicketWatching($ticketid, $watching)
+    {
+        $userid = Auth::GetCurrentUser();
+        $ticketprivilege = $this->db->GetOne(
+            'SELECT rights FROM rtrights
+	        WHERE
+	              userid = ?
+	              AND queueid = (SELECT queueid FROM rttickets WHERE id = ?)',
+            array($userid, $ticketid)
+        );
+
+        if (!$ticketprivilege) {
+            die("No permission to watch this ticket. Don't mess with the developer.");
+        }
+
+        if ($watching) {
+            $this->db->Execute(
+                'INSERT INTO rtticketwatchers (ticketid, userid) VALUES (?, ?)',
+                array($ticketid, $userid)
+            );
+        } else {
+            $this->db->Execute(
+                'DELETE FROM rtticketwatchers WHERE ticketid = ? AND userid = ?',
+                array($ticketid, $userid)
+            );
+        }
+    }
+
     public function GetMessage($id)
     {
         if ($message = $this->db->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id))) {
-            $message['attachments'] = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
+            $message['attachments'] = array();
+
+            $attachments = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
+            if ($attachments) {
+                if ($message['contenttype'] == 'text/html') {
+                    $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                        . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
+                }
+
+                foreach ($attachments as $attachment) {
+                    if (empty($attachment['cid'])) {
+                        $message['attachments'][] = $attachment;
+                    } elseif ($message['contenttype'] == 'text/html') {
+                        $message['body'] = str_ireplace(
+                            '"CID:' . $attachment['cid'] . '"',
+                            '"' . $url_prefix . '/?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $id . '&mid=' . $message['id'] . '"',
+                            $message['body']
+                        );
+                    }
+                }
+            }
 
             $references = array();
             $reply = $message;
@@ -1217,6 +1425,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $references[] = $reply['messageid'];
             }
             $message['references'] = array_reverse($references);
+
+            $message['cc']  = array();
+            if (!empty($message['customerid']) && function_exists('imap_rfc822_parse_headers')) {
+                $headers = imap_rfc822_parse_headers($message['headers']);
+                if (!empty($headers) && isset($headers->cc)) {
+                    foreach ($headers->cc as $cc) {
+                        $email = $cc->mailbox . '@' . $cc->host;
+                        $message['cc'][$email] = array(
+                            'display' => iconv_mime_decode($cc->personal),
+                            'address' => $email,
+                        );
+                    }
+                }
+            }
         }
         return $message;
     }
@@ -1267,37 +1489,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 
         $userid = Auth::GetCurrentUser();
-
-        $ticket = $this->db->GetRow(
-            'SELECT owner, queueid, cause, t.state, subject, customerid, requestor, requestor_userid, requestor_mail, requestor_phone,
-                source, priority, ' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid,
-				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime, t.deadline,
-                t.service, t.type, t.parentid
-			FROM rttickets t
-			LEFT JOIN (
-			    SELECT ticketid, tc.categoryid FROM rtticketcategories tc
-			    JOIN rtcategoryusers cu ON cu.categoryid = tc.categoryid AND cu.userid = ?
-			) c ON c.ticketid = t.id
-			LEFT JOIN vaddresses va ON va.id = t.address_id
-			LEFT JOIN vnodes n ON n.id = t.nodeid
-			WHERE t.id=?
-				AND (EXISTS (
-						SELECT tc.categoryid FROM rtticketcategories tc
-						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
-						WHERE tc.ticketid = t.id
-					)' . ($allow_empty_categories
-                        ? ' OR NOT EXISTS (
-								SELECT tc2.categoryid FROM rtticketcategories tc2
-								WHERE tc2.ticketid = ' . intval($ticketid) . '
-							)'
-                        : '')
-                    . ')
-			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, requestor_userid, requestor_mail,
-			    requestor_phone, source, priority, t.address_id, t.nodeid, va.location,
-				t.nodeid, t.invprojectid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime,
-                t.deadline, t.service, t.type, t.parentid',
-            array($userid, $ticketid, $userid)
-        );
+        $ticket = $this->GetTicketContents($ticketid);
 
         $type = 0;
         $notes = array();
@@ -1320,6 +1512,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($ticket['queueid'] != $props['queueid'] && isset($props['queueid'])) {
             $notes[] = trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($props['queueid']));
             $type = $type | RTMESSAGE_QUEUE_CHANGE;
+            if (ConfigHelper::checkConfig('rt.ticket_queue_change_resets_ticket_state') && $ticket['state'] != RT_VERIFIED && $ticket['state'] != RT_RESOLVED) {
+                $props['state'] = RT_NEW;
+            }
         } else {
             $props['queueid'] = $ticket['queueid'];
         }
@@ -1338,8 +1533,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['source'] = $ticket['source'];
         }
 
-        if ($ticket['priority'] != $props['priority'] && isset($props['priority'])) {
-            $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]);
+        if ($ticket['priority'] != $props['priority'] && array_key_exists('priority', $props)) {
+            $a = isset($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : trans("undefined");
+            $b = ($props['priority'] == '') ? trans("undefined") : $RT_PRIORITIES[$props['priority']];
+            $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $a, $b);
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else {
             $props['priority'] = $ticket['priority'];
@@ -1526,18 +1723,18 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if (isset($props['categories'])) {
-            $ticket['categories'] = empty($ticket['categories']) ? array() : explode(',', $ticket['categories']);
+            $ticket['categories'] = empty($ticket['categories']) ? array() : array_keys($ticket['categories']);
             $categories = $this->db->GetAllByKey('SELECT id, name, description
 				FROM rtcategories', 'id');
 
             switch ($props['category_change']) {
                 case 2:
-                    $categories_added = $props['categories'];
+                    $categories_added = array_diff($props['categories'], $ticket['categories']);
                     $categories_removed = array();
                     break;
                 case 3:
                     $categories_added = array();
-                    $categories_removed = $props['categories'];
+                    $categories_removed = array_intersect($ticket['categories'], $props['categories']);
                     break;
                 default:
                     $categories_added = array_diff($props['categories'], $ticket['categories']);
@@ -1618,6 +1815,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     $ticket['nodeid']
                 );
             }
+        } else {
+            $props['nodeid'] = $ticket['nodeid'];
         }
 
         if (array_key_exists('requestor', $props)) {
@@ -1633,7 +1832,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $props['requestor_userid'] = null;
             }
         } else {
-            $props['requestor_userid'] = $ticket['requestor_userid'];
+            $props['requestor_userid'] = empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'];
         }
 
         if (array_key_exists('requestor_phone', $props)) {
@@ -1650,6 +1849,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         } else {
             $props['requestor_mail'] = $ticket['requestor_mail'];
+        }
+
+        if ($props['priority'] == '' || !isset($props['priority'])) {
+            $props['priority'] = null;
         }
 
         if ($type) {
@@ -1766,27 +1969,60 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function ReplaceNotificationSymbols($text, array $params)
     {
-        $text = str_replace('%tid', sprintf("%06d", $params['id']), $text);
+        if ($params['contenttype'] == 'text/html') {
+            $text = str_replace("\n", "<br>\n", $text);
+        }
+
+        $text = preg_replace_callback(
+            '/%(\\d*)tid/',
+            function ($m) use ($params) {
+                return sprintf('%0' . $m[1] . 'd', $params['id']);
+            },
+            $text
+        );
+
         $text = str_replace('%queue', $params['queue'], $text);
         $text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
         $text = str_replace('%status', $params['status']['label'], $text);
         $text = str_replace('%cat', implode(' ; ', $params['categories']), $text);
         $text = str_replace('%subject', $params['subject'], $text);
-        $text = str_replace('%body', $params['body'], $text);
+        if (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
+            $text = str_replace('%body', '<hr>' . $params['body'] . '<hr>', $text);
+        } else {
+            $text = str_replace('%body', $params['body'], $text);
+        }
         $text = str_replace('%priority', $params['priority'], $text);
         $text = (isset($params['deadline']) && !empty($params['deadline']))
             ? str_replace('%deadline', strftime('%Y/%m/%d %H:%M', $params['deadline']), $text)
             : str_replace('%deadline', '-', $text);
         $text = str_replace('%service', $params['service'], $text);
         $text = str_replace('%type', $params['type'], $text);
-        $text = str_replace('%invproject', $params['invprojectid'], $text);
+        $text = str_replace('%invproject', $params['invproject_name'], $text);
+        $text = str_replace('%invprojectid', $params['invprojectid'], $text);
+        $text = str_replace('%requestor', $params['requestor'], $text);
+        $text = str_replace('%requestor_mail', $params['requestor_mail'], $text);
+        $text = str_replace('%requestor_phone', $params['requestor_phone'], $text);
+        $text = str_replace('%requestor_userid', $params['requestor_userid'], $text);
         $text = str_replace('%parentid', $params['parentid'], $text);
+        $text = str_replace('%node', $params['node'], $text);
+        $text = str_replace('%nodeid', $params['nodeid'], $text);
+        $text = str_replace('%netnode', $params['netnode'], $text);
+        $text = str_replace('%netnodeid', $params['netnodeid'], $text);
+        $text = str_replace('%netdev', $params['netdev'], $text);
+        $text = str_replace('%netdevid', $params['netdevid'], $text);
+        $text = str_replace('%owner', $params['owner'], $text);
+        $text = str_replace('%ownerid', $params['ownerid'], $text);
+        $text = str_replace('%verifier', $params['verifier'], $text);
+        $text = str_replace('%verifierid', $params['verifierid'], $text);
         $url_prefix = (isset($params['url']) && !empty($params['url']) ? $params['url']
             : 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
             . $_SERVER['HTTP_HOST']
             . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1));
         $url = $url_prefix . '?m=rtticketview&id=' . $params['id']
                 . (isset($params['messageid']) ? '#rtmessage-' . $params['messageid'] : '');
+        if ($params['contenttype'] == 'text/html') {
+            $url = '<a href="' . $url . '">' . $url . '</a>';
+        }
         $text = str_replace('%url', $url, $text);
         $text = str_replace('%customerinfo', isset($params['customerinfo']) ? $params['customerinfo'] : '', $text);
         if (empty($params['attachments'])) {
@@ -1794,10 +2030,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } elseif (isset($params['messageid'])) {
             $attachment_text = trans('Attachments:');
             foreach ($params['attachments'] as $attachment) {
-                $attachment_text .= "\n" . $url_prefix . '?m=rtmessageview&tid=' . $params['id']
+                $url = $url_prefix . '?m=rtmessageview&tid=' . $params['id']
                     . '&mid=' . $params['messageid'] . '&file=' . urlencode(preg_replace('/[^\w\.-_]/', '_', $attachment['filename']));
+                $attachment_text .= "\n" . ($params['contenttype'] == 'text/html' ? '<br><a href="' . $url . '">' . $url . '</a>' : $url);
             }
             $text = str_replace('%attachments', $attachment_text, $text);
+        } else {
+            $text = str_replace('%attachments', '', $text);
         }
 
         return $text;
@@ -1843,7 +2082,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $smtp_options = $this->GetRTSmtpOptions();
 
-        if ($params['verifierid']) {
+        if ($params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_email = $this->db->GetOne(
                 'SELECT email FROM users WHERE email <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
                 AND (ntype & ?) > 0',
@@ -1862,7 +2101,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        if ($params['queue']) {
+        if ($params['queue'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_USER))) {
             if ($recipients = $this->db->GetCol(
                 'SELECT DISTINCT email
 			FROM users, rtrights
@@ -1887,13 +2126,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     }
                 }
 
+                if (isset($params['attachments']) && !empty($params['attachments'])) {
+                    if ($notification_attachments) {
+                        $attachments = $params['attachments'];
+                    } elseif ($params['contenttype'] == 'text/html') {
+                        $attachments = array_filter($params['attachments'], function ($attachment) {
+                            return isset($attachment['content-id']);
+                        });
+                    }
+                }
+
                 foreach ($recipients as $email) {
                     $params['mail_headers']['To'] = '<' . $email . '>';
                     $LMS->SendMail(
                         $email,
                         $params['mail_headers'],
                         $params['mail_body'],
-                        $notification_attachments && isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
+                        isset($attachments) && !empty($attachments) ? $attachments : null,
                         null,
                         $smtp_options
                     );
@@ -1904,7 +2153,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         // send sms
         $args['type'] = MSG_SMS;
 
-        if ($params['verifierid']) {
+        if ($params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_phone = $this->db->GetOne(
                 'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
                 AND (ntype & ?) > 0',
@@ -1915,7 +2164,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        if ($params['queue']) {
+        if ($params['queue'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_USER))) {
             if (!empty($sms_service) && ($recipients = $this->db->GetCol(
                 'SELECT DISTINCT phone
 			FROM users, rtrights
@@ -2052,6 +2301,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'left' => 0,
             'events' => 0,
             'overdue' => 0,
+            'watching' => 0,
         );
 
         if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_administration')) {
@@ -2066,6 +2316,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => 7,
                 'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
             $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => Auth::GetCurrentUser(),
+                'rights' => RT_RIGHT_INDICATOR));
+            $result['watching'] = $this->GetQueueContents(array('count' => true, 'watching' => 1,
                 'rights' => RT_RIGHT_INDICATOR));
         }
 
@@ -2110,6 +2362,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $attribute = next($attributes);
         }
         return $mailfrom;
+    }
+
+    public function GetTicketRequestorMail($ticketid)
+    {
+        $mail = $this->db->GetOne(
+            'SELECT requestor_mail FROM rttickets
+			WHERE id = ? AND requestor_mail <> ?',
+            array($ticketid, '')
+        );
+        if (empty($phone)) {
+            return $this->db->GetOne(
+                'SELECT mailfrom FROM rtmessages
+                    WHERE ticketid = ? AND mailfrom <> ?
+                    LIMIT 1',
+                array($ticketid, '')
+            );
+        } else {
+            return $mail;
+        }
     }
 
     public function GetTicketRequestorPhone($ticketid)
@@ -2199,13 +2470,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         if (is_array($ticketids)) {
             return $this->db->GetAllByKey(
-                'SELECT id, state, subject AS name FROM rttickets WHERE id IN ? ORDER BY id',
+                'SELECT id, state, subject AS name, customerid FROM rttickets WHERE id IN ? ORDER BY id',
                 'id',
                 array($ticketids)
             );
         } else {
             return $this->db->GetRow(
-                'SELECT id, state, subject AS name FROM rttickets WHERE id = ?',
+                'SELECT id, state, subject AS name, customerid FROM rttickets WHERE id = ?',
                 array($ticketids)
             );
         }
@@ -2246,6 +2517,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'ssl_verify_peer' => 'rt.smtp_ssl_verify_peer',
             'ssl_verify_peer_name' => 'rt.smtp_ssl_verify_peer_name',
             'ssl_allow_self_signed' => 'rt.smtp_ssl_allow_self_signed',
+            'smime_certificate' => 'rt.smime_certificate',
+            'smime_key' => 'rt.smime_key',
+            'smime_ca_chain' => 'rt.smime_ca_chain',
+            'smime_sender_email' => 'rt.smime_sender_email',
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {
@@ -2333,5 +2608,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
         unset($message);
+    }
+
+    public function cleanupTicketSubject($subject)
+    {
+        static $ticket_subject_remove_reply_prefix = null;
+        static $subject_ticket_regexp_match = null;
+
+        if (!isset($ticket_subject_remove_reply_prefix)) {
+            $ticket_subject_remove_reply_prefix = ConfigHelper::checkConfig('rt.ticket_subject_remove_reply_prefix');
+            $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', '\[RT#(?<ticketid>[0-9]{6,})\]');
+        }
+        if ($ticket_subject_remove_reply_prefix) {
+            $subject = preg_replace('/(Re|Odp):\s*/', '', $subject);
+        }
+        $subject = preg_replace('/' . $subject_ticket_regexp_match . '/', '', $subject);
+
+        return $subject;
     }
 }

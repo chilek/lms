@@ -101,6 +101,8 @@ interface LMSHelpdeskManagerInterface
 
     public function TicketChange($ticketid, array $props);
 
+    public function changeTicketWatching($ticketid, $watching);
+
     public function GetQueueCategories($queueid);
 
     public function ReplaceNotificationSymbols($text, array $params);
@@ -120,6 +122,8 @@ interface LMSHelpdeskManagerInterface
     public function GetIndicatorStats();
 
     public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null);
+
+    public function GetTicketRequestorMail($ticketid);
 
     public function GetTicketRequestorPhone($ticketid);
 
@@ -144,4 +148,6 @@ interface LMSHelpdeskManagerInterface
     public function TicketIsAssigned($ticketid);
 
     public function getTicketImageGalleries(&$ticket);
+
+    public function cleanupTicketSubject($subject);
 }

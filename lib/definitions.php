@@ -83,6 +83,25 @@ $CSTATUSES = array(
     ),
 );
 
+define('CUSTOMER_FLAG_RELATED_ENTITY', 1);
+define('CUSTOMER_FLAG_VAT_PAYER', 2);
+define('CUSTOMER_FLAG_SUPPLIER', 4);
+
+$CUSTOMERFLAGS = array(
+    CUSTOMER_FLAG_RELATED_ENTITY => array(
+        'label' => 'related entity',
+        'tip' => trans('translates into JPK TP flag'),
+    ),
+    CUSTOMER_FLAG_VAT_PAYER => array(
+        'label' => 'VAT payer',
+        'tip' => trans('if customer is not VAT payer, then his telecommunication services are reported with JPK EE flag'),
+    ),
+    CUSTOMER_FLAG_SUPPLIER => array(
+        'label' => 'supplier',
+        'tip' => trans('check it if customer is supplier for example for warehouse purpose'),
+    ),
+);
+
 // customer consents
 define('CCONSENT_DATE', 1);
 define('CCONSENT_INVOICENOTICE', 2);
@@ -92,6 +111,8 @@ define('CCONSENT_USERPANEL_SMS', 5);
 define('CCONSENT_USERPANEL_SCAN', 6);
 define('CCONSENT_TRANSFERFORM', 7);
 define('CCONSENT_SMSNOTICE', 8);
+define('CCONSENT_SMS_MARKETING', 9);
+define('CCONSENT_MAIL_MARKETING', 10);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -117,6 +138,16 @@ $CCONSENTS = array(
     CCONSENT_SMSNOTICE => array(
         'label' => trans('message delivery via sms'),
         'name' => 'sms_notice',
+        'type' => 'boolean',
+    ),
+    CCONSENT_MAIL_MARKETING => array(
+        'label' => trans('e-mail marketing'),
+        'name' => 'mail_marketing',
+        'type' => 'boolean',
+    ),
+    CCONSENT_SMS_MARKETING => array(
+        'label' => trans('sms marketing'),
+        'name' => 'sms_marketing',
         'type' => 'boolean',
     ),
     CCONSENT_USERPANEL_SMS => array(
@@ -246,6 +277,10 @@ $RT_RIGHTS = array(
     RT_RIGHT_INDICATOR => trans("Indicator (+R)"),
 );
 
+// helpdesk new message/note notification recipients
+define('RT_NOTIFICATION_USER', 1);
+define('RT_NOTIFICATION_VERIFIER', 2);
+
 //Helpdesk ticket source
 define('RT_SOURCE_UNKNOWN', 0);
 define('RT_SOURCE_PHONE', 1);
@@ -340,6 +375,9 @@ define('RTMESSAGE_INVPROJECT_CHANGE', 131072);
 define('RTMESSAGE_VERIFIER_RTIME', 262144);
 define('RTMESSAGE_SOURCE_CHANGE', 524288);
 define('RTMESSAGE_PARENT_CHANGE', 1048576);
+define('RTMESSAGE_ASSIGNED_EVENT_ADD', 2097152);
+define('RTMESSAGE_ASSIGNED_EVENT_CHANGE', 4194304);
+define('RTMESSAGE_ASSIGNED_EVENT_DELETE', 8388608);
 
 define('NETWORK_INTERFACE_TYPE_UNI', 0);
 define('NETWORK_INTERFACE_TYPE_NNI', 1);
@@ -370,68 +408,73 @@ define('RT_TYPE_OTHER', 9);
 define('RT_TYPE_CONF', 10);
 define('RT_TYPE_PAYMENT', 11);
 define('RT_TYPE_TRANSFER', 12);
-
+define('RT_TYPE_NO_SERVICE', 13);
 
 $RT_TYPES = array(
     RT_TYPE_OTHER => array(
-        'label' => trans('Other'),
+        'label' => 'other',
         'class' => 'lms-ui-rt-ticket-type-other',
         'name' => 'RT_TYPE_OTHER'
     ),
     RT_TYPE_OFFER => array(
-        'label' => trans('Offer'),
+        'label' => 'offer',
         'class' => 'lms-ui-rt-ticket-type-offer',
         'name' => 'RT_TYPE_OFFER'
     ),
     RT_TYPE_DOCS => array(
-        'label' => trans('Documents'),
+        'label' => 'documents',
         'class' => 'lms-ui-rt-ticket-type-docs',
         'name' => 'RT_TYPE_DOCS'
     ),
     RT_TYPE_FAULT => array(
-        'label' => trans('Fault'),
+        'label' => 'fault',
         'class' => 'lms-ui-rt-ticket-type-fault',
         'name' => 'RT_TYPE_FAULT'
     ),
     RT_TYPE_INST => array(
-        'label' => trans('Instalation'),
+        'label' => 'installation',
         'class' => 'lms-ui-rt-ticket-type-inst',
         'name' => 'RT_TYPE_INST'
     ),
     RT_TYPE_MOD => array(
-        'label' => trans('Modification'),
+        'label' => 'modification',
         'class' => 'lms-ui-rt-ticket-type-mod',
         'name' => 'RT_TYPE_MOD'
     ),
     RT_TYPE_CONF => array(
-        'label' => trans('Configuration'),
+        'label' => '<!rt-type>configuration',
         'class' => 'lms-ui-rt-ticket-type-conf',
         'name' => 'RT_TYPE_CONF'
     ),
     RT_TYPE_START => array(
-        'label' => trans('Start service'),
+        'label' => 'service start',
         'class' => 'lms-ui-rt-ticket-type-start',
         'name' => 'RT_TYPE_START'
     ),
     RT_TYPE_STOP => array(
-        'label' => trans('Hold service'),
+        'label' => 'service hold',
         'class' => 'lms-ui-rt-ticket-type-stop',
         'name' => 'RT_TYPE_STOP'
     ),
     RT_TYPE_TRANSFER => array(
-      'label' => trans('Transfer service'),
+      'label' => 'service transfer',
       'class' => 'lms-ui-rt-ticket-type-transfer',
       'name' => 'RT_TYPE_TRANSFER'
     ),
     RT_TYPE_REMOVE => array(
-        'label' => trans('Deinstalation'),
+        'label' => 'deinstallation',
         'class' => 'lms-ui-rt-ticket-type-remove',
         'name' => 'RT_TYPE_REMOVE'
     ),
     RT_TYPE_PAYMENT => array(
-        'label' => trans('Payment'),
+        'label' => 'payment',
         'class' => 'lms-ui-rt-ticket-type-payment',
         'name' => 'RT_TYPE_PAYMENT'
+    ),
+    RT_TYPE_NO_SERVICE => array(
+        'label' => 'no service',
+        'class' => 'lms-ui-rt-ticket-type-no-service',
+        'name' => 'RT_TYPE_NO_SERVICE'
     ),
 );
 
@@ -578,6 +621,7 @@ define('DOC_WARRANTY', -13);
 define('DOC_REGULATIONS', -14);
 define('DOC_CONF_FILE', -15);
 define('DOC_OFFER', -16);
+define('DOC_COMPLAINT', -17);
 define('DOC_OTHER', -128);
 
 
@@ -605,11 +649,29 @@ $DOCTYPES = array(
     DOC_WARRANTY       =>  trans('warranty'), // gwarancja
     DOC_REGULATIONS       =>  trans('regulations'), // regulamin
     DOC_CONF_FILE   =>  trans('configuration file'),
-    DOC_OTHER       =>  trans('other')
+    DOC_COMPLAINT   =>  trans('complaint'),
+    DOC_OTHER       =>  trans('other'),
 );
+
+// for all document types
+define('DOC_OPEN', 0);
+define('DOC_CLOSED', 1);
+// for document types < 0
+define('DOC_CLOSED_AFTER_CUSTOMER_SMS', 2);
+define('DOC_CLOSED_AFTER_CUSTOMER_SCAN', 3);
 
 define('DOC_FLAG_RECEIPT', 1);
 define('DOC_FLAG_TELECOM_SERVICE', 2);
+define('DOC_FLAG_RELATED_ENTITY', 4);
+define('DOC_FLAG_SPLIT_PAYMENT', 8);
+define('DOC_FLAG_NET_ACCOUNT', 16);
+
+$DOC_FLAGS = array(
+    DOC_FLAG_RECEIPT => trans('FP'),
+    DOC_FLAG_TELECOM_SERVICE => trans('EE'),
+    DOC_FLAG_RELATED_ENTITY => trans('TP'),
+    DOC_FLAG_SPLIT_PAYMENT => trans('MPP'),
+);
 
 define('DOC_ENTITY_ORIGINAL', 1);
 define('DOC_ENTITY_COPY', 2);
@@ -688,6 +750,33 @@ define('SERVICE_PHONE', 4);
 define('SERVICE_TV', 5);
 define('SERVICE_TRANSMISSION', 6);
 
+// Tariff flags
+define('TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS', 1);
+define('TARIFF_FLAG_REWARD_PENALTY_EINVOICE', 2);
+define('TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING', 4);
+define('TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING', 8);
+define('TARIFF_FLAG_NET_ACCOUNT', 16);
+define('TARIFF_FLAG_SPLIT_PAYMENT', 32);
+
+define(
+    'TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS',
+    TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS
+        | TARIFF_FLAG_REWARD_PENALTY_EINVOICE
+        | TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING
+        | TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING
+);
+
+$TARIFF_FLAGS = array(
+    TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS => trans('on time payments'),
+    TARIFF_FLAG_REWARD_PENALTY_EINVOICE => trans('electronic invoice'),
+    TARIFF_FLAG_REWARD_PENALTY_MAIL_MARKETING => trans('e-mail marketing'),
+    TARIFF_FLAG_REWARD_PENALTY_SMS_MARKETING => trans('sms marketing'),
+);
+
+// Liability flags
+define('LIABILITY_FLAG_NET_ACCOUT', 16);
+define('LIABILITY_FLAG_SPLIT_PAYMENT', 32);
+
 // VoIP call types
 define('CALL_INCOMING', 1);
 define('CALL_OUTGOING', 2);
@@ -732,6 +821,7 @@ $PAYTYPES = array(
     8   => 'paid',
     9   => 'cash on delivery',
     10  => 'instalments',
+    11  => 'bank loan',
 );
 
 // Contact types
@@ -996,6 +1086,7 @@ define('SESSIONTYPE_EAP', 4);
 define('SESSIONTYPE_WIFI', 8);
 define('SESSIONTYPE_VOIP', 16);
 define('SESSIONTYPE_STB', 32);
+define('SESSIONTYPE_DOCSIS', 64);
 
 $SESSIONTYPES = array(
     SESSIONTYPE_PPPOE => array(
@@ -1022,12 +1113,23 @@ $SESSIONTYPES = array(
         'label' => trans('Set-top box'),
         'tip' => 'Enable/disable set-top box access'
     ),
+    SESSIONTYPE_DOCSIS => array(
+        'label' => trans('DOCSIS access'),
+        'tip' => 'Enable/disable DOCSIS access'
+    ),
 );
 
 define('EXISTINGASSIGNMENT_KEEP', 0);
 define('EXISTINGASSIGNMENT_SUSPEND', 1);
 define('EXISTINGASSIGNMENT_CUT', 2);
 define('EXISTINGASSIGNMENT_DELETE', 3);
+
+$EXISTINGASSIGNMENTS = array(
+    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
+    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
+    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
+    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
+);
 
 $CURRENCIES = array(
     'AUD' => 'AUD',
@@ -1069,13 +1171,6 @@ $CURRENCIES = array(
     'USD' => 'USD',
     'XDR' => 'XOR',
     'ZAR' => 'ZAR',
-);
-
-$EXISTINGASSIGNMENTS = array(
-    EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
-    EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
-    EXISTINGASSIGNMENT_CUT => trans('<!existingassignment>cut'),
-    EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
 );
 
 $TAX_CATEGORIES = array(
@@ -1133,10 +1228,20 @@ $TAX_CATEGORIES = array(
     ),
 );
 
+// Identity types
+$IDENTITY_TYPES = array(
+    1   => 'ID card',
+    2   => 'driving license',
+    3   => 'passport',
+    4   => 'residence card',
+    5   => 'permanent residence card',
+);
+
 if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
     $SMARTY->assign('_CSTATUSES', $CSTATUSES);
+    $SMARTY->assign('_CUSTOMERFLAGS', $CUSTOMERFLAGS);
     $SMARTY->assign('_CCONSENTS', $CCONSENTS);
     $SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
     $SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);
@@ -1153,6 +1258,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_RT_PRIORITY_STYLES', $RT_PRIORITY_STYLES);
     $SMARTY->assign('_RT_TYPES', $RT_TYPES);
     $SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
+    $SMARTY->assign('_TARIFF_FLAGS', $TARIFF_FLAGS);
     $SMARTY->assign('_SERVICETYPES', $SERVICETYPES);
     $SMARTY->assign('_PAYTYPES', $PAYTYPES);
     $SMARTY->assign('_CONTACTTYPES', $CONTACTTYPES);
@@ -1173,6 +1279,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);
     $SMARTY->assign('_TAX_CATEGORIES', $TAX_CATEGORIES);
+    $SMARTY->assign('_IDENTITY_TYPES', $IDENTITY_TYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

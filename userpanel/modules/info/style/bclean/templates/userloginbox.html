@@ -10,10 +10,8 @@
 		</li>
 		<li class="list-group-item">
 			<strong>{trans("PIN")}:</strong>******
-			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
-				<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
-					{trans("Change")}
-				</button>
+			{if ConfigHelper::checkConfig('userpanel.pin_changes') || isset($passwd_change_required)}
+				{button id="updatepinbtn" class="btn btn-primary btn-sm" data_toggle="modal" data_target="#updatepinbox" accesskey="P" icon="modify" label="Change"}
 			{/if}
 		</li>
 	</ul>
@@ -28,11 +26,12 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{trans("PIN Update")}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				{button class="close" data_dismiss="modal" icon="cancel"}
 			</div>
 			<div class="modal-body">
+				{if isset($passwd_change_required)}
+					<div class="alert alert-danger">{trans("PIN change required!")}</div>
+				{/if}
 				{if $error.oldpin}
 				<div class="alert alert-danger">{$error.oldpin}</div>
 				{/if}
@@ -55,22 +54,25 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<a class="btn btn-danger" href="javascript:document.userpin.submit()" accesskey="A">{trans("Save")}</a>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+				{button type="submit" class="btn btn-danger" href="javascript:document.userpin.submit()" accesskey="A" icon="save" label="Save"}
+				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
 	</div>
 </div>
+
 <script>
+
 	$(function() {
 		$('#updatepinbtn').click(function() {
 			$($(this).attr('data-target')).find('.alert').remove();
 		});
 
-		{if $error.oldpin || $error.pin || $error.pin2}
-		$('#updatepinbox').modal('show');
+		{if $error.oldpin || $error.pin || $error.pin2 || isset($passwd_change_required)}
+			$('#updatepinbox').modal('show');
 		{elseif isset($error) && !isset($error.files)}
-		$('#updateuserinfobox').modal('show');
+			$('#updateuserinfobox').modal('show');
 		{/if}
-		});
+	});
+
 </script>

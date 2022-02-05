@@ -44,7 +44,12 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 
     public function GetDivision($id)
     {
-        return $this->db->GetRow('SELECT * FROM vdivisions WHERE id = ?', array($id));
+        return $this->db->GetRow(
+            'SELECT *
+            FROM vdivisions
+            WHERE id = ?',
+            array($id)
+        );
     }
 
     public function GetDivisionByName($name)
@@ -52,11 +57,16 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         return $this->db->GetRow('SELECT * FROM vdivisions WHERE shortname = ?', array($name));
     }
 
+    public function getDivisionIdByShortName($shortname)
+    {
+        return $this->db->GetOne('SELECT id FROM divisions WHERE UPPER(shortname) = UPPER(?)', array($shortname));
+    }
+
     public function GetDivisions($params = array())
     {
         extract($params);
 
-        if (isset($order) && is_null($order)) {
+        if ((isset($order) && is_null($order)) || !isset($order)) {
             $order = 'shortname,asc';
         }
 
@@ -69,12 +79,13 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
                 $sqlord = ' ORDER BY name';
                 break;
             default:
-                $sqlord = ' ORDER BY shortname';
+                $sqlord = ' ORDER BY (CASE WHEN vd.label IS NULL THEN vd.shortname ELSE vd.label END)';
                 break;
         }
 
         return $this->db->GetAllByKey(
-            'SELECT vd.*' . (isset($userid) ? ', vd.id as divisionid ' : '') . 'FROM vdivisions vd'
+            'SELECT vd.*,  (CASE WHEN vd.label IS NULL THEN vd.shortname ELSE vd.label END) AS label'
+            . (isset($userid) ? ', vd.id as divisionid' : '') . ' FROM vdivisions vd'
             . (isset($userid) ? ' JOIN userdivisions ud ON vd.id = ud.divisionid' : '') .
             ' WHERE 1=1'
             . (isset($status) ? ' AND vd.status = ' . intval($status) : '')
@@ -89,26 +100,24 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         extract($params);
 
-        if (isset($offset)) {
-            $offset = $offset;
-        } else {
+        if (!isset($offset)) {
             $offset = null;
         }
-        if (isset($limit)) {
-            $limit = $limit;
-        } else {
+        if (!isset($limit)) {
             $limit = null;
         }
 
         $user_divisions = implode(',', array_keys($this->GetDivisions(array('userid' => Auth::GetCurrentUser()))));
 
         return $this->db->GetAll(
-            'SELECT d.id, d.name, d.shortname, d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt
-            FROM divisions d
+            'SELECT d.id, d.name, d.shortname, (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END) AS label,
+                d.status, (SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt,
+                d.firstname, d.lastname, d.birthdate, d.naturalperson
+            FROM vdivisions d
             WHERE 1 = 1'
             . ((isset($superuser) && empty($superuser)) || !isset($superuser) ? ' AND id IN (' . $user_divisions . ')' : '')
             . (isset($exludedDivisions) && !empty($exludedDivisions) ? ' AND id NOT IN (' . $exludedDivisions . ')' : '') .
-            ' ORDER BY d.shortname'
+            ' ORDER BY (CASE WHEN d.label IS NULL THEN d.shortname ELSE d.label END)'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : '')
         );
@@ -122,6 +131,10 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $args = array(
             'name'            => $division['name'],
             'shortname'       => $division['shortname'],
+            'label'           => empty($division['label']) ? null : $division['label'],
+            'firstname'       => empty($division['firstname']) || empty($division['lastname']) || empty($division['birthdate']) ? null : $division['firstname'],
+            'lastname'        => empty($division['firstname']) || empty($division['lastname']) || empty($division['birthdate']) ? null : $division['lastname'],
+            'birthdate'       => empty($division['firstname']) || empty($division['lastname']) || empty($division['birthdate']) ? null : $division['birthdate'],
             'ten'             => $division['ten'],
             'regon'           => $division['regon'],
             'rbe'             => $division['rbe'],
@@ -136,15 +149,16 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_paytime'     => $division['inv_paytime'],
             'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
             'email'           => empty($division['email']) ? null : $division['email'],
+            'phone'           => empty($division['phone']) ? null : $division['phone'],
             'description'     => $division['description'],
             'tax_office_code' => $division['tax_office_code'],
             'address_id'      => ($address_id >= 0 ? $address_id : null)
         );
 
-        $this->db->Execute('INSERT INTO divisions (name, shortname,
+        $this->db->Execute('INSERT INTO divisions (name, shortname, label, firstname, lastname, birthdate,
 			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
-			inv_cplace, inv_paytime, inv_paytype, email, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			inv_cplace, inv_paytime, inv_paytype, email, phone, description, tax_office_code, address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -198,6 +212,10 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         $args = array(
             'name'        => $division['name'],
             'shortname'   => $division['shortname'],
+            'label'       => empty($division['label']) ? null : $division['label'],
+            'firstname'   => empty($division['firstname']) || empty($division['lastname']) || empty($division['birthdate']) ? null : $division['firstname'],
+            'lastname'    => empty($division['firstname']) || empty($division['lastname']) || empty($division['birthdate']) ? null : $division['lastname'],
+            'birthdate'   => empty($division['firstname']) || empty($division['lastname']) || empty($division['birthdate']) ? null : $division['birthdate'],
             'ten'         => $division['ten'],
             'regon'       => $division['regon'],
             'rbe'         => $division['rbe'] ? $division['rbe'] : '',
@@ -212,16 +230,18 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'inv_paytime' => $division['inv_paytime'],
             'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
             'email'           => empty($division['email']) ? null : $division['email'],
+            'phone'           => empty($division['phone']) ? null : $division['phone'],
             'description' => $division['description'],
             'status'      => !empty($division['status']) ? 1 : 0,
             'tax_office_code' => $division['tax_office_code'],
             SYSLOG::RES_DIV   => $division['id']
         );
 
-        $this->db->Execute('UPDATE divisions SET name=?, shortname=?,
+        $this->db->Execute('UPDATE divisions SET name=?, shortname=?, label = ?,
+            firstname = ?, lastname = ?, birthdate = ?,
 			ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
-			inv_paytype=?, email=?, description=?, status=?, tax_office_code = ?
+			inv_paytype=?, email=?, phone = ?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));
 
         if (!empty($division['diff_users_del'])) {

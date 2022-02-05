@@ -3,10 +3,10 @@
     <THEAD>
 	<TR>
 		<td class="bold nobr">
-		    {if $layout.module == 'ewxnodelist'}
-		    	{t a=$customernodes|@count|default:"0"}Channel Nodes ($a):{/t}
-		    {else}
-				{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
+			{if $layout.module == 'ewxnodelist'}
+				{t a=$customernodes|size}Channel Nodes ($a):{/t}
+			{else}
+				{t a=$customernodes|size}Customer Nodes ($a):{/t}
 			{/if}
 		</td>
 	</TR>
@@ -26,15 +26,15 @@
 			{/if}
 			<B>{$node.name}</B><BR>
 			{$node.ip} {if $node.ip_pub!="0.0.0.0"} ({$node.ip_pub}) {/if} / {$node.mac}<BR>
-			{$node.info|truncate:40:"...":true}
+			{$node.info|truncate:40:"&hellip;":true}
 		</TD>
 	</TR>
 	{foreachelse}
-	<TR>
+	<tr>
 		<td class="empty-table">
-			<p>{trans("No nodes found in database.")}</p>
+			{trans("No nodes found in database.")}
 		</td>
-	</TR>
+	</tr>
 	{/foreach}
     </TBODY>
 </TABLE>

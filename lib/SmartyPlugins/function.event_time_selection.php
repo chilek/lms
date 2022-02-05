@@ -30,6 +30,7 @@ function smarty_function_event_time_selection($params, $template)
     $begin = isset($params['begin']) ? $params['begin'] : '';
     $end = isset($params['end']) ? $params['end'] : '';
     $whole_days = isset($params['wholedays']) && $params['wholedays'];
+    $allow_past_date = !isset($params['allow_past_date']) || !empty($params['allow_past_date']);
 
     $legend_code = '<div class="lms-ui-event-time-legend">';
     for ($i = 0; $i <= 22; $i += 2) {
@@ -84,7 +85,8 @@ function smarty_function_event_time_selection($params, $template)
 					\'end-selector\': \'#event-end\',
 					\'slider-selector\': \'.lms-ui-event-time-slider\',
 					\'max\': 1410,
-					\'step\': lmsSettings.eventTimeStep
+					\'step\': lmsSettings.eventTimeStep,
+					\'allow-past-date\': ' . ($allow_past_date ? 'true' : 'false') . '
 				});
 			});
 

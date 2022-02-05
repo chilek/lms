@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -145,7 +145,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/");
 }
 
 // Init database
@@ -353,8 +353,8 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2019.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2019.zip');
+define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2021.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2021.zip');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -411,7 +411,7 @@ if (empty($teryt_dir)) {
     die;
 }
 
-$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2019.csv';
+$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2021.csv';
 
 //==============================================================================
 // Download required files
@@ -440,7 +440,7 @@ function get_teryt_file($ch, $type, $outfile)
     $continue = false;
     do {
         curl_setopt_array($ch, array(
-            CURLOPT_URL => 'http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
+            CURLOPT_URL => 'https://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => array(
@@ -585,7 +585,13 @@ if (isset($options['fetch'])) {
         }
     }
 
-    $ctx = stream_context_create();
+    $ctx = stream_context_create(
+        array(
+            'ssl'  => array(
+                'verify_peer' => false,
+            ),
+        )
+    );
 
     if (!$quiet) {
         echo 'Downloading ' . BUILDING_BASE_ZIP_URL . ' file...' . PHP_EOL;
@@ -604,16 +610,15 @@ if (isset($options['fetch'])) {
 
         if ($numFiles == 1) {
             $building_base_name = $zip->getNameIndex(0);
+            $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
         } else if ($numFiles > 1) {
+            $fh = fopen($building_base_name, 'w');
             for ($i = 0; $i < $numFiles; ++$i) {
-                if (preg_match('/siis_adresy/', $v)) {
-                    $building_base_name = $v;
-                    break;
-                }
+                fwrite($fh, $zip->getFromIndex($i));
             }
+            fclose($fh);
         }
 
-        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
         unset($numFiles);
     } else {
         fprintf($stderr, "Error: Can't unzip %s or file doesn't exist." . PHP_EOL, BUILDING_BASE_ZIP_NAME);
@@ -1114,7 +1119,7 @@ if (isset($options['update'])) {
                 } else {
                     // add new city
                     $DB->Execute(
-                        'INSERT INTO location_cities (boroughid, name, type = ?, cityid, ident) VALUES (?, ?, ?, ?, ?)',
+                        'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
                         array($terc[$key]['id'], $elem['nazwa'], $wmrodz[$elem['rodz_mi']]['id'], $cities[$id], $rid)
                     );
 
@@ -1346,12 +1351,12 @@ if (isset($options['buildings'])) {
                 continue;
             }
 
-            if ($v['id'] == 'ID') {
+            if ($v['woj'] == 'ID' || $v['woj'] == 'wojewodztwo') {
                 continue;
             }
 
             if (isset($state_list)) {
-                $state_ident = $state_name_to_ident[$v['woj']];
+                $state_ident = $state_name_to_ident[mb_strtoupper($v['woj'])];
 
                 if (!isset($state_list[intval($state_ident)])) {
                     continue;
@@ -1374,7 +1379,7 @@ if (isset($options['buildings'])) {
                 continue;
             }
 
-            if ($ulic == '99999') {
+            if ($ulic == '' || $city == '99999') {
                 $street = array('id' => '0');
             } else {
                 $street = $location_cache->getStreetByIdent($city['id'], $ulic);

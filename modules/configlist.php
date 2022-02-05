@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -73,6 +73,7 @@ function GetConfigList()
             'timetable_days_forward' => 'Number of days (including current day) on timetable. Default: 7.',
             'gd_translate_to' => 'Charset of data gd library expects (useful if gd library needs ISO-8859-2 instead of UTF-8 to feed imagetext() function).',
             'nodepassword_length' => 'Length of (auto-generated) node password. Max.32. Default: 16.',
+            'node_password_length' => 'Length of (auto-generated) node password. Max.32. Default: 16.',
             'custom_accesstable' => 'PHP file with user-defined access rules in "lib" directory. Default: empty.',
             'check_for_updates_period' => 'How often to check for LMS updates (in seconds). Default: 86400.',
             'map_type' => 'Network map type. Use "flash" if you have Ming library or "gd" if your PHP supports gdlib. By default LMS will try to generate flash map, with fallback to GD if it fails.',
@@ -119,7 +120,7 @@ function GetConfigList()
             'default_author' => 'Default invoice issuer',
             'cplace' => 'Invoice draw-up place.',
             'template_file' => 'Invoice template file. Default: "invoice.html". Should be placed in templates directory.',
-            'cnote_template_file' => 'Credit note template file. Default: "invoice.html". Should be placed in templates directory.',
+            'cnote_template_file' => 'Credit note template file. Default: "FT-0100". Should be placed in templates directory.',
             'content_type' => 'Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".',
             'attachment_name' => 'File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.',
             'type' => 'Documents type. You can use "html" or "pdf". Default: html.',
@@ -187,9 +188,9 @@ function GetConfigList()
 
     $config = $DB->GetAll(
         'SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid, c.divisionid, c.configid,
-        u.login, u.firstname, u.lastname, d.shortname
+        u.login, u.name AS username, u.rname AS rusername, d.shortname
         FROM uiconfig c
-        LEFT JOIN users u on c.userid = u.id
+        LEFT JOIN vallusers u on c.userid = u.id
         LEFT JOIN divisions d on c.divisionid = d.id
         WHERE section != \'userpanel\''
     );
@@ -230,14 +231,14 @@ function GetConfigList()
     return $config;
 }
 
-$layout['pagetitle'] = trans('User Interface Configuration');
+$layout['pagetitle'] = trans('Settings');
 
 $configlist = GetConfigList();
 
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($configlist));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']), true);
+$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']));
 
 $SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
 $SMARTY->assign('sections', $LMS->GetConfigSections());
@@ -245,4 +246,8 @@ $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');
+$SMARTY->assign('division', isset($_GET['d']) ? $_GET['d'] : '');
+$SMARTY->assign('user', isset($_GET['u']) ? $_GET['u'] : '');
+$SMARTY->assign('scope', isset($_GET['sc']) ? $_GET['sc'] : '');
+$SMARTY->assign('name', isset($_GET['v']) ? $_GET['v'] : '');
 $SMARTY->display('config/configlist.html');

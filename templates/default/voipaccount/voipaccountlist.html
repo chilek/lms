@@ -41,7 +41,7 @@
                 {trans("Password:")}
             </th>
             <th align="right" class="nobr">
-                {t a=$listdata.total}Total: $a{/t}
+		{button icon="add" label="New Account" href="?m=voipaccountadd"}
             </th>
         </tr>
         {/block}
@@ -59,7 +59,7 @@
                             <option value="" {if !$listdata.customergroup} selected {/if}>{trans("- all groups -")}</option>
                             {section name=customergroups loop=$customergroups}
                             <option value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} selected {/if}>
-                                {$customergroups[customergroups].name|truncate:30:"...":true}
+                                {$customergroups[customergroups].name|truncate:30:"&hellip;":true}
                             </option>
                             {/section}
                         </select>
@@ -89,8 +89,11 @@
 		{if $voipaccountlist[voipaccountlist].location} / {$voipaccountlist[voipaccountlist].location}{if $voipaccountlist[voipaccountlist].borough_name} ({$voipaccountlist[voipaccountlist].state_name} / {$voipaccountlist[voipaccountlist].district_name} / {$_BOROUGHTYPES[$voipaccountlist[voipaccountlist].borough_type]} {$voipaccountlist[voipaccountlist].borough_name}){/if}{/if}
 		<br>
                 <img src="img/customer.gif" alt="">&nbsp;
-                <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">
-                    {$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
+                <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}"
+                    class="lms-ui-hint-rollover"
+                    data-url="?m=customerinfoshort&id={$voipaccountlist[voipaccountlist].ownerid}">
+                    {$voipaccountlist[voipaccountlist].owner|truncate:40:"&hellip;":true|replace:" ":"&nbsp;"}
+                    ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
                 </a>
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
@@ -126,7 +129,7 @@
         {block name="voipaccountlist-list-empty-row"}
         <tr>
             <td class="empty-table" colspan="{$number_of_table_columns}">
-                <p>{trans("No such voip accounts in database.")}</p>
+                {trans("No such voip accounts in database.")}
             </td>
         </tr>
         {/block}

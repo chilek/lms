@@ -136,7 +136,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $recipient .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
         if ($this->data['ten']) {
             $recipient .= trans('TEN') . ': ' . $this->data['ten'];
-        } elseif ($this->data['ssn']) {
+        } elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
             $recipient .= trans('SSN') . ': ' . $this->data['ssn'];
         }
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
@@ -257,7 +257,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         if ($this->use_alert_color) {
             $this->backend->SetTextColorArray(array(255, 0, 0));
         }
-        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');
+        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay: $a', moneyf($this->data['value'], $this->data['currency'])), 0, 1, 0, true, 'R');
         if ($this->use_alert_color) {
             $this->backend->SetTextColor();
         }

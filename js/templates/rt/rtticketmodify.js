@@ -35,8 +35,8 @@ $(function() {
 		$('#assign-to-me').prop('checked', false);
 	});
 
-	$('#assign-to-me').change(function() {
-		var select = $('[name="ticket[owner]"]');
+	$('.assign-to-me').change(function() {
+		var select = $($(this).attr('data-target'));
 		if ($(this).prop('checked')) {
 			select.val($(this).attr('data-old-userid', select.val()).attr('data-userid'));
 		} else {

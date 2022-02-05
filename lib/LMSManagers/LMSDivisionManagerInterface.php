@@ -38,6 +38,8 @@ interface LMSDivisionManagerInterface
 
     public function GetDivisionByName($name);
 
+    public function getDivisionIdByShortName($shortname);
+
     public function GetDivisions($params = array());
 
     public function getDivisionList($params = array());

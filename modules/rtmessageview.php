@@ -24,18 +24,27 @@
  *  $Id$
  */
 
-if (isset($_GET['file'])) {
+$rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+
+if (isset($_GET['file']) || isset($_GET['cid'])) {
     if (!($LMS->CheckTicketAccess($_GET['tid']) & RT_RIGHT_READ)) {
         access_denied();
     }
 
-    $filename = urldecode($_GET['file']);
-    if ($attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename))) {
-        $file = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf(
+    if (isset($_GET['file'])) {
+        $filename = urldecode($_GET['file']);
+        $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename));
+    } else {
+        $cid = urldecode($_GET['cid']);
+        $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND cid = ?', array(intval($_GET['mid']), $cid));
+    }
+
+    if ($attach) {
+        $file = $rt_dir . DIRECTORY_SEPARATOR . sprintf(
             '%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s',
             $_GET['tid'],
             $_GET['mid'],
-            $filename
+            $attach['filename']
         );
         if (file_exists($file)) {
             if (isset($_GET['thumbnail']) && ($width = intval($_GET['thumbnail'])) > 0
@@ -82,8 +91,8 @@ if ($message['customerid']) {
 
 if (!empty($message['attachments']) && count($message['attachments'])) {
     foreach ($message['attachments'] as $key => $val) {
-        list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR
-        . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
+        list ($size, $unit) = setunits(@filesize($rt_dir . DIRECTORY_SEPARATOR
+            . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
         $message['attachments'][$key]['size'] = $size;
         $message['attachments'][$key]['unit'] = $unit;
     }

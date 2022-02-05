@@ -296,6 +296,7 @@ function sendvalue(targetfield, value)
 	targetfield.value = value;
 	// close popup
 	window.parent.parent.popclick();
+	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
 }
 
@@ -353,6 +354,39 @@ function setCookie(name, value, permanent)
 		cookie += '; expires=' + d.toUTCString();
 	}
 	document.cookie = cookie;
+}
+
+function getStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	return storage.getItem(name);
+}
+
+function setStorageItem(name, value, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.setItem(name, value);
+}
+
+function removeStorageItem(name, type)
+{
+	var storage;
+	if (typeof(type) === 'undefined' || type == 'session') {
+		storage = sessionStorage;
+	} else {
+		storage = localStorage;
+	}
+	storage.removeItem(name);
 }
 
 if (typeof String.prototype.trim == 'undefined')
@@ -552,17 +586,29 @@ function ping_popup(ip, type)
 
 function changeMacFormat(id)
 {
-	if (!id) return 0;
-	var elem = document.getElementById(id);
-	if (!elem) return 0;
-	var curmac = elem.innerHTML;
-	var macpatterns = [ /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi, /^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
-		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi, /^[0-9a-f]{12}$/gi ];
-	for (var i in macpatterns)
-		if (macpatterns[i].test(curmac))
-			break;
-	if (i >= macpatterns.length)
+	if (!id) {
 		return 0;
+	}
+	var elem = document.getElementById(id);
+	if (!elem) {
+		return 0;
+	}
+	var curmac = elem.innerHTML.trim();
+	var macpatterns = [
+		/^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi,
+		/^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
+		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi,
+		/^([0-9a-f]{4}-){2}[0-9a-f]{4}$/gi,
+		/^[0-9a-f]{12}$/gi
+	];
+	for (var i in macpatterns) {
+		if (macpatterns[i].test(curmac)) {
+			break;
+		}
+	}
+	if (i >= macpatterns.length) {
+		return 0;
+	}
 	i = parseInt(i);
 	switch (i) {
 		case 0:
@@ -574,23 +620,17 @@ function changeMacFormat(id)
 			curmac = curmac.replace(/^([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})$/gi, '$1.$2.$3');
 			break;
 		case 2:
-			curmac = curmac.replace(/\./g, '');
-			curmac = curmac.toUpperCase();
+			curmac = curmac.replace(/\./g, '-');
 			break;
 		case 3:
+			curmac = curmac.replace(/-/g, '');
+			curmac = curmac.toUpperCase();
+			break;
+		case 4:
 			curmac = curmac.replace(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/gi, '$1:$2:$3:$4:$5:$6');
+			break;
 	}
 	elem.innerHTML = curmac;
-}
-
-function reset_customer(form, elemname1, elemname2) {
-
-	if (document.forms[form].elements[elemname1].value) {
-		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
-
-		$( document.forms[form].elements[elemname1] ).trigger( 'keyup' );
-		$( document.forms[form].elements[elemname2] ).trigger( 'reset_customer' );
-	}
 }
 
 function generate_random_string(length, characters) {
@@ -636,78 +676,6 @@ function get_size_unit(size) {
 			size: size,
 			unit: 'B'
 		};
-}
-
-function _getCustomerNames(ids, success) {
-	if (!ids || String(ids).length == 0)
-		return 0;
-
-	$.ajax('?m=customerinfo&api=1&ajax=1', {
-		async: true,
-		method: 'POST',
-		data: {
-			id: ids
-		},
-		dataType: 'json',
-		success: success
-	});
-}
-
-function getCustomerName(elem) {
-	if ( $(elem).val().length == 0 ) {
-		$(elem).nextAll('.customername').html('');
-		return 0;
-	}
-
-	_getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
-		if (typeof data.error !== 'undefined') {
-			$(elem).nextAll('.customername').html( data.error );
-			return 0;
-		}
-
-		$(elem).nextAll('.customername').html(data.customernames[$(elem).val()] === undefined ? ''
-			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
-	});
-
-	$(elem).trigger('reset_customer');
-	$(elem).trigger('change');
-}
-
-var customerinputs = [];
-
-function getCustomerNameDeferred(elem) {
-	customerinputs.push(elem);
-}
-
-if (typeof $ !== 'undefined') {
-	$(function() {
-		var cids = [];
-		$.each(customerinputs, function(index, elem) {
-			cids.push($(elem).val());
-		});
-		_getCustomerNames(cids, function(data, textStatus, jqXHR) {
-			$.each(customerinputs, function(index, elem) {
-				if ( $(elem).val().length == 0 ) {
-					$(elem).nextAll('.customername').html('');
-					return 0;
-				}
-
-				if (data.error != undefined) {
-					$(elem).nextAll('.customername').html( data.error );
-					return 0;
-				}
-
-				$(elem).nextAll('.customername').html(data.customernames[$(elem).val()] === undefined ?
-					'' : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
-			});
-		});
-
-		$('a[rel="external"]')
-			.on('click keypress', function() {
-				window.open(this.href);
-				return false;
-			});
-	});
 }
 
 /*!
@@ -911,10 +879,18 @@ function GusApiFinished(fieldPrefix, details) {
 }
 
 function osm_get_zip_code(search, on_success) {
+	var street;
+	if (search.street.length) {
+		var chunks = search.street.split(' ');
+		chunks.shift();
+		street = chunks.join(' ') + ' ';
+	} else {
+		street = '';
+	}
 	var data = {
 		format: 'json',
 		city: search.city,
-		street: search.house + (search.street.length ? ' ' + search.street : ''),
+		street: street + search.house,
 		addressdetails: 1
 	}
 	if (search.countryid.length) {
@@ -992,3 +968,62 @@ function get_revdns(search) {
 		});
 	});
 }
+
+function escapeHtml(text) {
+	var map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#039;'
+	};
+
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function unescapeHtml(text) {
+	var map = {
+		'&amp;': '&',
+		'&lt;': '<',
+		'&gt;': '>',
+		'&quot;': '"',
+		'&#039;': "'"
+	};
+
+	return text.replace(/&(amp|lt|gt|quot|#039);/g, function(m) { return map[m]; });
+}
+
+// dedicated to financial calculations on decimals
+var financeDecimals = {
+	isRound: function(n,p){
+		let l = n.toFixed(20).replace(/\.?0+$/,"").split('.')[1].length;
+		return (p >= l);
+	},
+	round: function(n, p=2) {
+		if (Number.isInteger(n) || this.isRound(n,p)) {
+			return n;
+		}
+		let r = 0.5 * Number.EPSILON * n;
+		let o = 1; while(p-- > 0) o *= 10;
+		if (n<0) {
+			o *= -1;
+		}
+		return Math.round((n + r) * o) / o;
+	},
+	ceil: function(n, p=2) {
+		if(Number.isInteger(n) || this.isRound(n,p)) {
+			return n;
+		}
+		let r = 0.5 * Number.EPSILON * n;
+		let o = 1; while(p-- > 0) o *= 10;
+		return Math.ceil((n + r) * o) / o;
+	},
+	floor: function(n, p=2) {
+		if(Number.isInteger(n) || this.isRound(n,p)) {
+			return n;
+		}
+		let r = 0.5 * Number.EPSILON * n;
+		let o = 1; while(p-- > 0) o *= 10;
+		return Math.floor((n + r) * o) / o;
+	}
+};

@@ -132,7 +132,15 @@ if (!empty($_POST['marks'])) {
         }
         if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
             $margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
-            html2pdf($htmlbuffer, trans('Document'), null, null, null, 'P', $margins);
+            html2pdf(
+                $htmlbuffer,
+                trans('Document'),
+                null,
+                null,
+                null,
+                'P',
+                $margins
+            );
         } elseif ($pdf) {
             // Output the new PDF
             $pdf->Output();
@@ -143,7 +151,7 @@ if (!empty($_POST['marks'])) {
 	FROM documents d
 	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 	JOIN docrights r ON (r.doctype = d.type)
-	WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0', array($_GET['id'], Auth::GetCurrentUser(), DOCRIGHT_VIEW))) {
+	WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0', array(intval($_GET['id']), Auth::GetCurrentUser(), DOCRIGHT_VIEW))) {
     $docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
 		ORDER BY type DESC', 'id', array($_GET['id']));
     $attachmentid = intval($_GET['attachmentid']);

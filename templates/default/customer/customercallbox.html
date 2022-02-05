@@ -1,0 +1,317 @@
+<!--// $Id$ //-->
+
+{css}
+
+<form id="customer-call-edit"></form>
+
+{tab_container id="customercalls" label="Phone Calls"}
+
+    {tab_header content_id="callpanel"}
+        {tab_header_cell icon="lms-ui-icon-phone-call"}
+            <strong>{trans("Phone Calls")}</strong>
+            &nbsp;({t a=$limit}last $a phone calls{/t})
+        {/tab_header_cell}
+        {tab_header_cell}
+            <a href="?m=customercalllist&u={if isset($userinfo.id)}{$userinfo.id}{/if}&c={if isset($customerinfo.id)}{$customerinfo.id}{/if}"
+               id="all-phone-calls">
+                {trans("All Phone Calls")}
+                {icon name="next" class="fa-fw"}
+            </a>
+        {/tab_header_cell}
+    {/tab_header}
+
+    {tab_contents id="callpanel"}
+
+        {tab_table}
+
+            {if $customercalls}
+                <div class="lms-ui-tab-table-row header">
+                    <div class="lms-ui-tab-table-wrapper col-6">
+                        <div class="lms-ui-tab-table-wrapper col-3">
+                            <div class="lms-ui-tab-table-column date">
+                                <strong>{trans("Date")}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column username">
+                                {trans("User")}
+                            </div>
+                            <div class="lms-ui-tab-table-column duration">
+                                {trans("Duration")}
+                            </div>
+                        </div>
+                        <div class="lms-ui-tab-table-wrapper col-3">
+                            <div class="lms-ui-tab-table-column type">
+                                {trans("Type")}
+                            </div>
+                            <div class="lms-ui-tab-table-column phone-number">
+                                <strong>{trans("Phone number")}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column notes">
+                                <strong>{trans("Notes")}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lms-ui-tab-table-column buttons">
+                        &nbsp;
+                    </div>
+                </div>
+            {/if}
+
+            {foreach $customercalls as $call}
+                <div class="lms-ui-tab-table-row customer-call" data-call-id="{$call.id}">
+                    <div class="lms-ui-tab-table-wrapper col-6">
+                        <div class="lms-ui-tab-table-wrapper col-3">
+                            <div class="lms-ui-tab-table-column date">
+                                <strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
+                            </div>
+                            <div class="lms-ui-tab-table-column username">
+                                {$call.username|default:"-"|escape}
+                            </div>
+                            <div class="lms-ui-tab-table-column duration">
+                                {if $call.duration == -1}
+                                    {trans("- unknown -")}
+                                {else}
+                                    {$call.duration|duration_format}
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="lms-ui-tab-table-wrapper col-3">
+                            <div class="lms-ui-tab-table-column type">
+                                {capture assign="direction"}{if $call.outgoing}{trans("<!customer-call>outgoing")}{else}{trans("<!customer-call>incoming")}{/if}{/capture}
+                                {$direction}
+                            </div>
+                            <div class="lms-ui-tab-table-column phone-number">
+                                <strong>{$call.phone}</strong>
+                                <ul class="customer-list">
+                                    {foreach $call.customers as $customer}
+                                        <li data-customer-id="{$customer.id}">
+                                            <a href="?m=customerinfo&id={$customer.id}"
+                                                class="customer-call-view">
+                                                (#{$customer.id}) {$customer.lastname|escape} {$customer.name|escape}
+                                            </a>
+                                            <span class="customer-call-edit"></span>
+                                        </li>
+                                    {/foreach}
+                                    <li data-customer-id="">
+                                        <a href="?m=customerinfo&id=%customer_id%"
+                                           class="customer-call-view">
+                                        </a>
+                                        <span class="customer-call-edit"></span>
+                                    </li>
+                                    <li>
+                                        <span class="customer-call-edit">
+                                            {button type="link" icon="add" tip="Add" class="customer-add-button"}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="lms-ui-tab-table-column notes">
+                                <span class="customer-call-view customer-call-note-view">
+                                    {if $call.notes}
+                                        {$call.notes|trunescape:50|@nl2br}
+                                    {else}
+                                        -
+                                    {/if}
+                                </span>
+                                <span class="customer-call-view customer-call-note-more"
+                                    {if mb_strlen($call.notes) <= 50} style="display: none;"{/if}>
+                                    {hint mode="toggle" icon="view" class="customer-call-note-hint" text=nl2br($call.notes)}
+                                </span>
+                                <span class="customer-call-edit" style="display: none;">
+                                    <textarea type="text" class="customer-call-note lms-ui-autogrow"
+                                        data-original-value="{$call.notes|escape}"
+                                        >{$call.notes|escape}</textarea>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lms-ui-tab-table-column buttons">
+                        <audio src="?m=customercall&id={$call.id}" controls controlsList="nodownload"
+                               preload="none">
+                            {trans("Your browser does not support the audio element.")}
+                        </audio>
+                        {if ConfigHelper::checkPrivilege('customer_call_management')}
+                            {button type="link" icon="edit" tip="Edit" class="customer-call-view customer-call-edit-button"}
+                            {button type="link" icon="save" tip="Save" class="customer-call-edit customer-call-save-button"}
+                            {button type="link" icon="cancel" tip="Cancel" class="customer-call-edit customer-call-cancel-button"}
+                        {/if}
+                        {button type="link" icon="download" tip="<!customer-call>Download"
+                            href="?m=customercall&id={$call.id}"
+                            download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"%Y_%m_%d_%H_%M_%S"}-{$call.phone}"}
+                        {if ConfigHelper::checkPrivilege('customer_phonecall_delete')}
+                            {button type="link" icon="delete" tip="Delete"
+                                href="?m=customercall&id={$call.id}&cid={$customerinfo.id}&delete"}
+                        {/if}
+                    </div>
+                </div>
+            {foreachelse}
+                <div class="lms-ui-tab-empty-table">
+                    {trans("That customer hasn't got any phone calls.")}
+                </div>
+            {/foreach}
+
+        {/tab_table}
+    {/tab_contents}
+{/tab_container}
+
+<template id="customer-selection-template">
+    {customerlist
+        form        = "customer-call-edit"
+        customers   = $customers
+        selected    = "%customer_id%"
+        selectname  = "%select%"
+        select_id   = "%select_id%"
+        inputname   = "%input%"
+        input_id    = "%input_id%"
+        firstoption = ""
+        version = 2
+    }
+</template>
+
+<script>
+
+    $(function() {
+        $('#customercalls audio').on('play', function() {
+            $('#customercalls audio').not(this).each(function() {
+                this.pause();
+            });
+        });
+
+        $('.customer-call-note').keyup(function(e) {
+            switch (e.key) {
+/*
+                case 'Enter':
+                    $(this).closest('.customer-call').find('.customer-call-save-button.lms-ui-button').click();
+                    break;
+*/
+                case 'Escape':
+                    $(this).closest('.customer-call').find('.customer-call-cancel-button.lms-ui-button').click();
+                    break;
+            }
+        });
+
+        function addCustomerList(selector) {
+            var template = $('#customer-selection-template').html();
+            $(selector).each(function(index) {
+                var customerId = $(this).closest('[data-customer-id]').attr('data-customer-id');
+                var html = template
+                    .replace('%customer_id%', index)
+                    .replace('%input%', 'customer-input-' + index)
+                    .replace('%input_id%', 'customer-input-' + index)
+                    .replace('%select%', 'customer-select-' + index)
+                    .replace('%select_id%', 'customer-select-' + index);
+                $(this).html(html);
+                $(this).find('#customer-input-' + index).val(customerId);
+                initCustomerList($(this).find('.lms-ui-customer-select-container'));
+                var input = $(this).find('.lms-ui-customer-select-customerid');
+                input.focus();
+                input.change(function () {
+                });
+            });
+        }
+
+        $('.customer-call-view.lms-ui-button').click(function() {
+            var row = $(this).closest('.customer-call');
+            addCustomerList(row.find('.customer-list [data-customer-id] .customer-call-edit'));
+            row.find('.customer-call-edit').toggle();
+            row.find('.customer-call-view:not(.customer-call-note-more)').toggle();
+            row.find('.customer-call-note').trigger('input');
+        });
+
+        $('.customer-add-button').click(function() {
+            $(this).closest('li').before(
+                '<li data-customer-id="">' +
+                    '<a href="?m=customerinfo&id=%customer_id%"' +
+                        'class="customer-call-view">' +
+                    '</a>' +
+                    '<span class="customer-call-edit"></span>' +
+                '</li>'
+            );
+            addCustomerList($(this).closest('li').prev().find('.customer-call-edit'));
+            $(this).closest('.customer-list').find('.customer-call-edit').show().end().find('.customer-call-view').hide();
+        });
+
+        $('.customer-call-edit.lms-ui-button').click(function() {
+            var row = $(this).closest('.customer-call');
+            var notesInput = row.find('.customer-call-note');
+            var notes = notesInput.val();
+            if ($(this).is('.customer-call-save-button')) {
+                var listItems = row.find('.customer-list li');
+                var addedCustomers = [];
+                var removedCustomers = [];
+                listItems.find('.lms-ui-customer-select-customerid').each(function() {
+                    var customerId = parseInt($(this).val());
+
+                    if ($(this).closest('[data-customer-id=""]').length) {
+                        if (customerId) {
+                            addedCustomers.push(customerId);
+                        }
+                        return;
+                    }
+
+                    var oldCustomerId = parseInt($(this).closest('[data-customer-id]').attr('data-customer-id'));
+                    if (oldCustomerId !== customerId) {
+                        if (!oldCustomerId && customerId) {
+                            addedCustomers.push(customerId)
+                        } else if (oldCustomerId && !customerId) {
+                            removedCustomers.push(oldCustomerId);
+                        } else {
+                            removedCustomers.push(oldCustomerId);
+                            addedCustomers.push(customerId)
+                        }
+                    }
+                });
+
+                $.each(removedCustomers, function(index, value) {
+                    var addedIndex = addedCustomers.indexOf(value);
+                    if (addedIndex !== -1) {
+                        addedCustomers.splice(addedIndex, 1);
+                        removedCustomers.splice(index, 1);
+                    }
+                });
+
+                $.ajax({
+                    url: "?m=customercall&edit=1",
+                    dataType: "json",
+                    method: "POST",
+                    data: {
+                        callid: row.attr('data-call-id'),
+                        notes: notes,
+                        "added-customers": addedCustomers,
+                        "removed-customers": removedCustomers
+                    }
+                }).always(function() {
+                    row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more').toggle();
+                }).done(function() {
+                    row.find('.customer-call-note-more').toggle(notes.length >= 50);
+                    row.find('.customer-call-note-view').html(notes.length ? escapeHtml(notes.substring(0, 50)).replace(/\n/g, '<br>') + (notes.length > 50 ? '&hellip;' : '') : '-');
+                    if (notes.length >= 50) {
+                        row.find('.customer-call-note-hint').attr('data-hint', escapeHtml(notes).replace(/\n/g, '<br>')).removeAttr('data-init');
+                    }
+                    notesInput.attr('data-original-value', escapeHtml(notes));
+
+                    row.find('.customer-list li').each(function() {
+                        var newCustomerId = parseInt($(this).find('.lms-ui-customer-select-customerid').val());
+                        var newCustomerName = $(this).find('.lms-ui-customer-select-name').html();
+                        var anchor = $(this).find('.customer-call-view');
+                        if (newCustomerId) {
+                            anchor.html(newCustomerName).attr('href', '?m=customerinfo&id=' + newCustomerId);
+                        } else {
+                            anchor.html('').removeAttr('href');
+                        }
+                        $(this).attr('data-customer-id', newCustomerId ? newCustomerId : '');
+                    });
+                    row.find('[data-customer-id=""]').slice(1).remove();
+                    row.find('[data-customer-id=""]').appendTo(row.find('[data-customer-id=""]').parent());
+                });
+            } else {
+                row.find('.customer-call-edit,.customer-call-view:not(.customer-call-note-more)').toggle();
+                row.find('.customer-call-note-more').toggle(notesInput.attr('data-original-value') >= 50);
+                notesInput.val(notesInput.attr('data-original-value'));
+                row.find('[data-customer-id=""]').slice(1).remove();
+            }
+        });
+    });
+
+</script>

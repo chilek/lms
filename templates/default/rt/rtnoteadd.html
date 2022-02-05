@@ -2,6 +2,8 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+{$hide_disabled_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')}
+{$hide_deleted_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')}
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="note" id="note-form" action="?m=rtnoteadd">
@@ -17,14 +19,16 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" class="bold nobr">
-			<i class="lms-ui-icon-helpdesk"></i> {t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
+			{icon name="helpdesk"}
+			{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR id="note-template-row"{if empty($notetemplates)} style="display: none;"{/if}>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-document"></i> {trans("Note template:")}
+			{icon name="document"}
+			{trans("Note template")}
 		</TD>
 		<td id="note-templates">
 			{include file="rt/rtmessagetemplates.html" templates=$notetemplates tip="Select note template"}
@@ -32,15 +36,22 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-note"></i> {trans("Note content:")}
+			{icon name="note"}
+			{trans("Note content")}
 		</TD>
 		<TD>
-			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
+			<div class="valign-middle">
+				<textarea name="note[body]" id="note-body" cols="50" rows="5"
+					{tip text="Enter note content" trigger="body"}
+					>{$note.body}</textarea>
+				{speech_recognition target="#note-body"}
+			</div>
 		</TD>
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			<i class="lms-ui-icon-upload"></i> {trans("Attachments:")}
+			{icon name="attachment"}
+			{trans("Attachments")}
 		</TD>
 		<TD>
 			{fileupload id="files" fileupload=$fileupload form="note-form"}
@@ -63,7 +74,8 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-mail"></i><label for="notify"> {trans("Notify users:")}</label>
+			{icon name="mail"}
+			<label for="notify"> {trans("Notify users")}</label>
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
@@ -71,7 +83,8 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-status"></i> {trans("Status:")}
+			{icon name="status"}
+			{trans("Status")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[state]" id="state" {tip text="Select status" trigger="state"}>
@@ -88,7 +101,8 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-cause"></i> {trans("Cause:")}
+			{icon name="cause"}
+			{trans("Cause")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[cause]" {tip text="Select ticket cause" trigger="cause"}>
@@ -100,7 +114,8 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-source"></i> {trans("Ticket source:")}
+			{icon name="source"}
+			{trans("Ticket source")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[source]" {tip text="Select ticket source" trigger="source"}>
@@ -112,75 +127,96 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-priority"></i> {trans("Priority:")}
+			{icon name="priority"}
+			{trans("Priority")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[priority]" {tip text="Set ticket priority" trigger="priority"}>
 				{foreach $_RT_PRIORITIES as $priorityidx => $priority}
 				<OPTION value="{$priorityidx}"{if $note.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
 				{/foreach}
+				<OPTION value=""{if !isset($note.priority)} selected{/if}>{trans("undefined")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-queue"></i> {trans("Queue:")}
+			{icon name="queue"}
+			{trans("Queue")}
 		</TD>
-		<TD>
-			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
-			{foreach from=$queuelist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $note.queueid}SELECTED{/if}>{$item.name}</OPTION>
-			{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<i class="lms-ui-icon-owner"></i> {trans("Owner:")}
-		</TD>
-		<TD>
-			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
-				<OPTION value="0">- {trans("select user")} -</OPTION>
-				{foreach $userlist as $user}
-				{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-					|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-					|| $user.id == $note.owner}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.owner} selected{/if}>{$user.name} ({$user.login})</OPTION>
-				{/if}
+		<td>
+			<select size="1" name="note[queueid]" {tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
+				onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
+				{foreach $queuelist as $item}
+				<option value="{$item.id}"
+					{if $item.id == $note.queueid}selected{/if}>{$item.name}</option>
 				{/foreach}
-			</SELECT>
+			</select>
+		</td>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{icon name="owner"}
+			{trans("Owner")}
+		</TD>
+		<td>
+			<select size="1" name="note[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
+				<option value="0">- {trans("select user")} -</option>
+				{foreach $userlist as $user}
+					{if $user.id != $note.owner
+						&& ($hide_disabled_users && !$user.access
+							|| $hide_deleted_users && $user.deleted)}
+						{continue}
+					{/if}
+					<option value="{$user.id}"
+						class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+						{if $user.id == $note.owner}selected{/if}
+					>{strip}
+						{$user.name|trunescape:40} ({$user.login})
+					{/strip}</option>
+				{/foreach}
+			</select>
 			&nbsp;
 			<label>
 				<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
 				{trans("assign to me")}
 			</label>
-		</TD>
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-verifier"></i> {trans("Verifier:")}
+			{icon name="verifier"}
+			{trans("Verifier")}
 		</TD>
-		<TD>
+		<td id="rtverifiers">
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-				<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"} id="rtverifiers">
-					<OPTION value="0">- {trans("select user")} -</OPTION>
+				<select size="1" name="note[verifierid]"
+					{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
+					<option value="0">- {trans("select user")} -</option>
 					{foreach $userlist as $user}
-						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-							|| $user.id == $note.verifierid}
-							<OPTION value="{$user.id}"{if $user.id == $note.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.name} ({$user.login})</OPTION>
+						{if $user.id != $note.verifierid
+							&& ($hide_disabled_users && !$user.access
+								|| $hide_deleted_users && $user.deleted)}
+							{continue}
 						{/if}
+						<option value="{$user.id}"
+							class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+							{if $user.id == $note.verifierid} selected{/if}
+						>{strip}
+							{$user.name|trunescape:40} ({$user.login})
+						{/strip}</option>
 					{/foreach}
-				</SELECT>
+				</select>
 			{else}
 				<input type="hidden" name="note[verifierid]" value="{$ticket.verifierid}">
 				<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>
 			{/if}
-		</TD>
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-deadline"></i> {trans("<!rt>Deadline:")}
+			{icon name="deadline"}
+			{trans("<!rt>Deadline")}
 		</TD>
 		<TD>
 			{if ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
@@ -195,7 +231,8 @@
 
 	<TR>
 		<td class="bold nobr">
-			<i class="lms-ui-icon-queue"></i> {trans("Category changes:")}
+			{icon name="queue"}
+			{trans("Category changes")}
 		</td>
 		<td>
 			<SELECT name="note[category_change]" {tip text="Select category change type" trigger="category_change"}>
@@ -209,7 +246,8 @@
 
 	<TR id="categories">
 		<td class="bold nobr">
-			<i class="lms-ui-icon-categories"></i> {trans("Categories:")}
+			{icon name="categories"}
+			{trans("Categories")}
 		</td>
 		<td>
 			{include file="rt/rtcategoryselection.html" name_prefix="note[categories]" categories=$categories}

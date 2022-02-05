@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,12 +24,16 @@
  *  $Id$
  */
 
+$schemaid = intval($_GET['id']);
+if (!$schemaid) {
+    die;
+}
+
 $action = !empty($_GET['action']) ? $_GET['action'] : null;
 
 if ($action == 'tariff' && !empty($_POST['form'])) {
     $form = $_POST['form'];
     $assignmentid = intval($_GET['aid']);
-    $schemaid = intval($_GET['id']);
 
     $data = array();
     $regexp = '/^(' . ($assignmentid ? 'tariffval|tariffperiod' : 'value|period') .')([0-9]+)$/';
@@ -177,7 +181,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
         $data['tags'] = $_POST['form']['tags'];
         $data['alltariffs'] = $_POST['form']['alltariffs'];
         $SESSION->save('psdform', $data);
-        $SESSION->redirect('?m=promotionschemainfo&id=' . $_GET['id']);
+        $SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);
     }
 
     $data = $_POST['form'];
@@ -209,7 +213,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     $data['tags'] = $_POST['form']['tags'];
     $data['alltariffs'] = $_POST['form']['alltariffs'];
     $SESSION->save('psdform', $data);
-    $SESSION->redirect('?m=promotionschemainfo&id=' . $_GET['id']);
+    $SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);
 } else if ($action == 'tariff-reorder') {
     header('Content-Type: application/json');
 
@@ -217,7 +221,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
         $result = 'ERROR';
     } else {
         $assignments = array_flip($DB->GetCol('SELECT id FROM promotionassignments
-			WHERE promotionschemaid = ?', array($_GET['id'])));
+			WHERE promotionschemaid = ?', array($schemaid)));
         $orderid = 1;
         foreach ($_POST['assignments'] as $a) {
             if (isset($assignments[$a])) {
@@ -232,10 +236,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     die;
 }
 
-$oldschema = $DB->GetRow(
-    'SELECT * FROM promotionschemas WHERE id = ?',
-    array(intval($_GET['id']))
-);
+$oldschema = $LMS->getPromotionSchema($schemaid);
 
 if (isset($_POST['schema'])) {
     $schema =  $_POST['schema'];
@@ -252,36 +253,66 @@ if (isset($_POST['schema'])) {
 
     $schema['id'] = $oldschema['id'];
 
-    if ($schema['name'] == '') {
-        $error['name'] = trans('Schema name is required!');
-    } else if ($DB->GetOne(
-        'SELECT id FROM promotionschemas
-		WHERE name = ? AND promotionid = ? AND id <> ?',
-        array($schema['name'], $oldschema['promotionid'], $schema['id'])
-    )) {
-        $error['name'] = trans('Specified name is in use!');
+    if (empty($oldschema['assignmentcount']) || ConfigHelper::checkPrivilege('superuser')) {
+        if ($schema['name'] == '') {
+            $error['name'] = trans('Schema name is required!');
+        } else if ($DB->GetOne(
+            'SELECT id FROM promotionschemas
+            WHERE name = ? AND promotionid = ? AND id <> ?',
+            array($schema['name'], $oldschema['promotionid'], $schema['id'])
+        )) {
+            $error['name'] = trans('Specified name is in use!');
+        } elseif (!empty($oldschema['assignmentcount']) && $oldschema['name'] != $schema['name']
+                && ConfigHelper::checkPrivilege('superuser') && !isset($warnings['schema-name-'])) {
+            $warning['schema[name]'] = trans('Schema is assigned to liabilities, change its name can have impact on existing assignments!');
+        }
+    } else {
+        $schema['name'] = $oldschema['name'];
     }
 
-    if (!$error) {
-        $data = array();
-        foreach ($schema['periods'] as $period) {
-            if ($period = intval($period)) {
-                $data[] = $period;
-            } else {
-                break;
-            }
+    $length = 0;
+    $data = array();
+    foreach ($schema['periods'] as $period) {
+        if ($period = intval($period)) {
+            $data[] = $period;
+            $length += intval($period);
+        } else {
+            break;
         }
+    }
 
+    if (!empty($oldschema['assignmentcount']) && $oldschema['data'] != implode(';', $data)) {
+        if (ConfigHelper::checkPrivilege('superuser')) {
+            if (!isset($warnings['schema-periods---'])) {
+                $warning['schema[periods][]'] = trans('Schema is assigned to liabilities, change its periods can have impact on existing assignments!');
+            }
+        } else {
+            die;
+        }
+    }
+
+    if (!empty($schema['dateto']) && !empty($schema['datefrom']) && $schema['dateto'] < $schema['datefrom']) {
+        $error['dateto'] = trans('Incorrect date range!');
+    }
+
+    if (!$error && !$warning) {
         $DB->BeginTrans();
 
         $args = array(
             'name' => $schema['name'],
             'description' => $schema['description'],
-            'data' => implode(';', $data),
-            SYSLOG::RES_PROMOSCHEMA => $schema['id']
+            'data' => empty($oldschema['assignmentcount']) || ConfigHelper::checkPrivilege('superuser') ? implode(';', $data) : $oldschema['data'],
+            'length' => $length,
+            'datefrom' => $schema['datefrom'] ?: 0,
+            'dateto' => $schema['dateto'] ? strtotime('tomorrow', $schema['dateto']) - 1 : 0,
+            SYSLOG::RES_PROMOSCHEMA => $schema['id'],
         );
-        $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?
-			WHERE id = ?', array_values($args));
+        $DB->Execute(
+            'UPDATE promotionschemas
+            SET name = ?, description = ?, data = ?, length = ?, datefrom = ?, dateto = ?
+            WHERE id = ?',
+            array_values($args)
+        );
 
         if ($SYSLOG) {
             $args[SYSLOG::RES_PROMO] = $oldschema['promotionid'];
@@ -290,7 +321,7 @@ if (isset($_POST['schema'])) {
 
         // re-check promotionassignments data, check the number of periods
         // and remove excessive data or add data for additional periods
-        $tariffs = $DB->GetAll('SELECT a.id, a.data, a.tariffid, t.value
+        $tariffs = $DB->GetAll('SELECT a.id, a.data, a.tariffid, t.value, t.type
 			FROM promotionassignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
 			WHERE a.promotionschemaid = ?', array($schema['id']));
@@ -348,5 +379,6 @@ $schema['selection'] = array(1,3,6,9,12,18,24,30,36,42,48,60);
 $layout['pagetitle'] = trans('Schema Edit: $a', $oldschema['name']);
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('warning', $warning);
 $SMARTY->assign('schema', $schema);
 $SMARTY->display('promotion/promotionschemaedit.html');

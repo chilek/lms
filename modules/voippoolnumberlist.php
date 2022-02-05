@@ -89,7 +89,7 @@ function valid_pool($p, $id = 0)
     }
 
     if (gmp_cmp($pstart, $pend) == 0 || gmp_cmp($pstart, $pend) == 1) {
-        $error['poolstart'] = trans('Pool start must be lower that end!');
+        $error['poolstart'] = trans('Pool start must be lower than end!');
     }
 
     if (!getPoolTypeNameByNumber($type)) {

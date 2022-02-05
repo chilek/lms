@@ -37,8 +37,6 @@ if (isset($_GET['oper']) && $_GET['oper'] == 'loadtransactionlist') {
             )
         );
         $SMARTY->assign('transactions', $trans);
-        $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
-        $SMARTY->assign('resourceid', $customerid);
         die($SMARTY->fetch('transactionlist.html'));
     }
 
@@ -60,14 +58,19 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited             = !empty($_GET['commited']) ? true : false;
+    $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments_only', true));
+    $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
+    if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
+        $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
+    }
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
 if (!isset($resource_tabs['customergroups']) || $resource_tabs['customergroups']) {
     $customergroups = $LMS->CustomergroupGetForCustomer($customerid);
     $othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
 }
-if (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox']) {
+if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('finances_view') || ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management'))
+    && (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbalancebox'])) {
     if (isset($_GET['aggregate_documents'])) {
         $aggregate_documents = !empty($_GET['aggregate_documents']);
     } else {
@@ -79,6 +82,12 @@ if (!isset($resource_tabs['customerbalancebox']) || $resource_tabs['customerbala
 if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
     $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
 }
+
+if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
+    $SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
+    $SMARTY->assign('resourceid', $customerid);
+}
+
 if (!isset($resource_tabs['customerdocuments']) || $resource_tabs['customerdocuments']) {
     $documents = $LMS->GetDocuments($customerid, 10);
 
@@ -100,11 +109,30 @@ if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']
         $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
         $SMARTY->assign('events_from_date', $_GET['events-from-date']);
     }
-    $allevents = isset($_GET['allevents']) && !empty($_GET['allevents']);
+    $allevents = (isset($_GET['allevents']) && !empty($_GET['allevents']))
+        || ((!isset($_GET['allevents']) && ConfigHelper::checkConfig('phpui.default_show_closed_events')));
+
     if ($allevents) {
         $params['closed'] = '';
     }
     $eventlist = $LMS->EventSearch($params, 'date,desc', true);
+}
+if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets']) {
+    $aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+    $params = array(
+        'cid' => $customerid,
+        'short' => true,
+    );
+
+    if (isset($_GET['alltickets'])) {
+        $alltickets = !empty($_GET['alltickets']);
+    } else {
+        $alltickets = ConfigHelper::checkConfig('phpui.default_show_closed_tickets');
+    }
+    if (empty($alltickets)) {
+        $params['state'] = -1;
+    }
+    $ticketlist = $LMS->GetQueueContents($params);
 }
 if (!isset($resource_tabs['customernodesbox']) || $resource_tabs['customernodesbox']) {
     $customernodes = $LMS->GetCustomerNodes($customerid);
@@ -135,15 +163,25 @@ if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernet
 $userid = Auth::GetCurrentUser();
 $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
 $customerstats = array(
-    'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
+    'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state NOT IN ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets t
 		LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 		WHERE (r.queueid IS NOT NULL' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
         . (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0': '')
-        . ' AND customerid = ' . intval($customerid), array(RT_RESOLVED, $userid)),
+        . ' AND customerid = ' . intval($customerid), array(array(RT_RESOLVED, RT_DEAD), $userid)),
     'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
     'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
+
+if ((ConfigHelper::checkPrivilege('read_only')
+    || ConfigHelper::checkPrivilege('customer_call_view')
+    || ConfigHelper::checkPrivilege('customer_call_management'))
+    && (!isset($resource_tabs['customercallbox']) || $resource_tabs['customercallbox'])) {
+    $customercalls = $LMS->getCustomerCalls(array(
+        'customerid' => $customerid,
+        'limit' => -1,
+    ));
+}
 
 if (!isset($resource_tabs['customerdevices']) || $resource_tabs['customerdevices']) {
     $customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
@@ -183,7 +221,10 @@ $SMARTY->assign(array(
     'objectid' => $customerinfo['id'],
     'aggregate_documents' => $aggregate_documents,
     'commited' => $commited,
+    'expired' => $expired,
+    'period' => $period,
     'allevents' => $allevents,
+    'alltickets' => $alltickets,
     'time' => $SESSION->get('addbt'),
     'taxid' => $SESSION->get('addbtax'),
     'comment' => $SESSION->get('addbc'),
@@ -208,3 +249,6 @@ $SMARTY->assignByRef('taxeslist', $taxeslist);
 $SMARTY->assignByRef('allnodegroups', $allnodegroups);
 $SMARTY->assignByRef('messagelist', $messagelist);
 $SMARTY->assignByRef('eventlist', $eventlist);
+$SMARTY->assignByRef('customercalls', $customercalls);
+$SMARTY->assignByRef('ticketlist', $ticketlist);
+$SMARTY->assignByRef('aet', $aet);

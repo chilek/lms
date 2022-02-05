@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,42 +33,6 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
     echo '<H1>' . $layout['pagetitle'] . '</H1>';
 
-    $smtp_options = array(
-        'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
-        'port' => ConfigHelper::getConfig('sendinvoices.smtp_port'),
-        'user' => ConfigHelper::getConfig('sendinvoices.smtp_user'),
-        'pass' => ConfigHelper::getConfig('sendinvoices.smtp_pass'),
-        'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth'),
-        'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer', true)),
-        'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer_name', true)),
-        'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
-    );
-
-    $debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
-    $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
-    $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
-    $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
-    $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
-    $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
-    $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
-    $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
-    $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
-    $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
-    $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
-    $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
-    $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
-    $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
-    $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
-
-    if (empty($sender_email)) {
-        echo '<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
-    }
-
-    $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
-    if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
-        echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
-    }
-
     if (isset($_POST['marks'])) {
         if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice'])) {
             $marks = $_POST['marks'];
@@ -92,19 +56,26 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
     } else {
         $docs = $DB->GetAll(
-            "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email
+            "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email,
+                d.divisionid
 			FROM documents d
 			LEFT JOIN customers c ON c.id = d.customerid
-			JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
+			JOIN (
+			    SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+				FROM customercontacts
+				WHERE (type & ?) = ?
+				GROUP BY customerid
+			) m ON m.customerid = c.id
 			LEFT JOIN numberplans n ON n.id = d.numberplanid
 			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $ids) . ")
 			ORDER BY d.number",
-            array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
+            array(
+                CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
                 DOC_INVOICE,
-            DOC_CNOTE,
-            DOC_DNOTE,
-            DOC_INVOICE_PRO)
+                DOC_CNOTE,
+                DOC_DNOTE,
+                DOC_INVOICE_PRO
+            )
         );
 
         if (!empty($docs)) {
@@ -119,31 +90,85 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             }
 
             $currtime = time();
-            $LMS->SendInvoices($docs, 'frontend', compact(
-                'SMARTY',
-                'invoice_filename',
-                'dnote_filename',
-                'debug_email',
-                'mail_body',
-                'mail_subject',
-                'mail_format',
-                'currtime',
-                'sender_email',
-                'sender_name',
-                'extrafile',
-                'dsn_email',
-                'reply_email',
-                'mdn_email',
-                'notify_email',
-                'quiet',
-                'test',
-                'add_message',
-                'message_attachments',
-                'aggregate_documents',
-                'which',
-                'duplicate_date',
-                'smtp_options'
-            ));
+
+            $divisiondocs = array();
+            foreach ($docs as $doc) {
+                $divisionid = $doc['divisionid'];
+                if (!isset($divisiondocs[$divisionid])) {
+                    $divisiondocs[$divisionid] = array();
+                }
+                $divisiondocs[$divisionid][] = $doc;
+            }
+
+            foreach ($divisiondocs as $divisionid => $docs) {
+                ConfigHelper::setFilter($divisionid);
+
+                $smtp_options = array(
+                    'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
+                    'port' => ConfigHelper::getConfig('sendinvoices.smtp_port'),
+                    'user' => ConfigHelper::getConfig('sendinvoices.smtp_user'),
+                    'pass' => ConfigHelper::getConfig('sendinvoices.smtp_pass'),
+                    'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth'),
+                    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer', true)),
+                    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer_name', true)),
+                    'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
+                );
+
+                $debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
+                $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
+                $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
+                $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
+                $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
+                $mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
+                $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
+                $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
+                $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
+                $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
+                $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
+                $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
+                $aggregate_documents = ConfigHelper::checkConfig('sendinvoices.aggregate_documents');
+                $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
+                $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
+
+                if (empty($sender_email)) {
+                    echo '<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
+                }
+
+                $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
+                if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
+                    echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
+                }
+
+                $LMS->SendInvoices(
+                    $docs,
+                    'frontend',
+                    compact(
+                        'SMARTY',
+                        'invoice_filename',
+                        'dnote_filename',
+                        'debug_email',
+                        'mail_body',
+                        'mail_subject',
+                        'mail_format',
+                        'currtime',
+                        'sender_email',
+                        'sender_name',
+                        'extrafile',
+                        'dsn_email',
+                        'reply_email',
+                        'mdn_email',
+                        'notify_email',
+                        'quiet',
+                        'test',
+                        'add_message',
+                        'message_attachments',
+                        'aggregate_documents',
+                        'which',
+                        'duplicate_date',
+                        'smtp_options'
+                    )
+                );
+            }
         }
     }
 

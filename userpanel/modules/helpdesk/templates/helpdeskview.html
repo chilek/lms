@@ -1,10 +1,13 @@
 <!-- $Id$ -->
 {include file="header.html"}
+{$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than', 0))}
+{$allow_message_add_to_closed_tickets = intval(ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets', 1))}
+
 <table style="width: 100%;" cellpadding="10">
     <tr>
 	<td>
 {box title=$title}
-{$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
+
 <table class="width: 100%;" cellpadding="3">
 	{foreach from=$ticket.messages item=message}
         <tr class="darkest">
@@ -38,15 +41,21 @@
 			{/if}
 		</td>
 		<td width="1%">
-			{if ($ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
+			{if ($ticket.state != $smarty.const.RT_RESOLVED || $allow_message_add_to_closed_tickets)
 				&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
-			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
-			{else}&nbsp;{/if}
+				<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
+			{else}
+				&nbsp;
+			{/if}
 		</td>
 	</tr>
 	<tr>
 		<td colspan="5">
-			{$message.body|escape|replace:"\n":"<br/>"}
+			{if $message.contenttype == 'text/plain'}
+				{$message.body|trim|escape|regex_replace:"/\r?\n/":'<br/>'}
+			{else}
+				{$message.body}
+			{/if}
 		</td>
 	</tr>
 	{/foreach}

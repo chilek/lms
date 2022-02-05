@@ -40,7 +40,7 @@
 			{counter}
 		</TD>
 		<TD>
-			<B>{$list[list].customername|truncate:"50":"...":true} ({$list[list].customerid|string_format:"%04d"})</B>
+			<B>{$list[list].customername|truncate:"50":"&hellip;":true} ({$list[list].customerid|string_format:"%04d"})</B>
 		</TD>
 		<TD ALIGN="RIGHT">
 			{$list[list].total}
@@ -56,11 +56,11 @@
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>
-	        <TD COLSPAN="6" class="empty-table">
-			<p>{trans("No such requests in database.")}</p>
-		</TD>
-	</TR>
+		<tr>
+			<td colspan="6" class="empty-table">
+				{trans("No such requests in database.")}
+			</td>
+		</tr>
 	{/section}
 	<TR class="grey">
 		<TD COLSPAN="2" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>

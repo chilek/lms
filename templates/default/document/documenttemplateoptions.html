@@ -1,4 +1,6 @@
-<OPTION value="">... {trans("select template")} ...</OPTION>
+<option value="">... {trans("select template")} ...</option>
 {foreach $docengines as $templatename => $docengine}
-<OPTION value="{$docengine.name}"{if $templatename == $doctemplate} selected{/if}>{$docengine.title}</OPTION>
+    <option value="{$docengine.name}"
+        {if isset($docengine['reference-document-required']) && !empty($docengine['reference-document-required'])} data-refdoc-required="1"{/if}
+        {if $document.templ == $templatename} selected{/if}>{$docengine.title}</option>
 {/foreach}

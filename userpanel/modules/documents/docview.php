@@ -37,6 +37,14 @@ if (!empty($_GET['id'])) {
         die;
     }
 
+    $allowed_document_types = ConfigHelper::getConfig('userpanel.allowed_document_types');
+    if (!empty($allowed_document_types)) {
+        $allowed_document_types = array_flip(Utils::filterIntegers(explode(',', $allowed_document_types)));
+    }
+    if (!empty($allowed_document_types) && !isset($allowed_document_types[$doc['type']])) {
+        die;
+    }
+
     $docattachments = $LMS->DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
 		ORDER BY type DESC, filename', 'id', array($_GET['id']));
     $attachmentid = intval($_GET['attachmentid']);

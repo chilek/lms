@@ -8,13 +8,12 @@
 
 {$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
 {if ConfigHelper::checkConfig('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
-{assign var=today value=$today|date_format:"%s"}
 
 {tab_container id="customernodesbox" label="Customer Nodes"}
 
 	{tab_header content_id="nodespanel-`$layout.module`"}
 		{tab_header_cell icon="lms-ui-icon-node"}
-			<strong>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</strong>
+			<strong>{t a=$customernodes|size}Customer Nodes ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && ! $customerinfo.deleted}
@@ -77,30 +76,34 @@
 						<div class="lms-ui-tab-table-column name">
 							{if $node.lastonline}
 								{if ($smarty.now-$node.lastonline) > $lastonline_limit}
-									<i class="lms-ui-icon-nodeoff" {tip a=$node.lastonlinedate text="Last online: \$a"}></i>
+									{button icon="nodeoff" type="link" class="lms-ui-ignore-target-url"
+										onclick="ping_popup('{$node.ip}')" label=$node.name
+										tip="{trans("Last online:")} {$node.lastonline_date}"}
 								{else}
-									<i class="lms-ui-icon-nodeon" {tip a="on-line" text="Last online: \$a"}></i>
+									{button icon="nodeon" type="link" class="lms-ui-ignore-target-url"
+										onclick="ping_popup('{$node.ip}')" label=$node.name tip="online"}
 								{/if}
 							{else}
-								<i class="lms-ui-icon-nodeunk"></i>
+								{button icon="nodeunk" type="link" class="lms-ui-ignore-target-url"
+									onclick="ping_popup('{$node.ip}')" label=$node.name tip="unknown"}
 							{/if}
-							<strong>{$node.name}</strong>
+							{if $node.locked}{icon name="lock" tip="<!node>lock is active" class="node-lock-icon"}{/if}
 							{if isset($nodeassignments[$node.id])}
 								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}"><span
-										class="{if ($assignment.dateto < $today && $assignment.dateto) || ($assignment.liabilityid && $assignment.at < $today && $assignment.at > 365)} blend{elseif ($assignment.datefrom > $today && $assignment.datefrom && $assignment.period) && !($assignment.suspended)} alertblend{elseif ($assignment.suspended)}suspended{/if}
+										class="lms-ui-ignore-target-url{if ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.liabilityid && $assignment.at < $smarty.now && $assignment.at > 365)} blend{elseif ($assignment.datefrom > $smarty.now && $assignment.datefrom && $assignment.period) && !($assignment.suspended)} alertblend{elseif ($assignment.suspended)}suspended{/if}
 										{if !$assignment.commited} lms-ui-assignment-not-commited{/if}">{$assignment.name}</span></a>{if !$assignment@last}, {/if}{/foreach})
 							{/if}
 							{if $node.location}<BR>
-								<span class="nobr">
+								<span class="nobr" class="lms-ui-ignore-target-url">
 									{if $node.teryt}
-										{t a=$node.location|truncate:60:"...":true}$a (TERRIT){/t}
+										{button icon="map" type="link" href="?m=netdevmap&nodeid={$node.id}"} {t a=$node.location|trunescape:60}$a (TERRIT){/t}</a>
 									{else}
-										{$node.location|truncate:60:"...":true}
+										{button icon="map" type="link" href="?m=netdevmap&nodeid={$node.id}" label="{$node.location|trunescape:60}" }
 									{/if}
 								</span>
 							{/if}
 							{if $node.info}<BR>
-								<span class="nobr">{$node.info|truncate:60:"...":true}</span>
+								<span class="nobr lms-ui-ignore-target-url">{$node.info|truncate:60:"&hellip;":true}</span>
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column id">
@@ -109,7 +112,7 @@
 						{if $ewx}
 							<div class="lms-ui-tab-table-column channel">
 								{if $node.channelname}
-									<a href="?m=ewxchinfo&amp;id={$node.channelid}">{$node.channelname|truncate:30:"...":true}</a>
+									<a href="?m=ewxchinfo&amp;id={$node.channelid}">{$node.channelname|truncate:30:"&hellip;":true}</a>
 								{elseif $node.channelid}
 									{if !$node.cid}
 										<a href="?m=ewxchinfo&amp;id=0">[{trans("default")}]</a>
@@ -134,16 +137,18 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column groups">
 								{if $node.gcount}
-									<img src="img/nodegroup.gif" alt="" class="lms-ui-tooltip-nodegroupinfo" data-resourceid="{$node.id}">
+									<img src="img/nodegroup.gif" alt=""
+										class="lms-ui-hint-rollover"
+										data-url="?m=nodeinfo&nodegroups=1&id={$node.id}">
 								{else}
 									-
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column network">
 								<strong>
-									<A href="?m=netinfo&amp;id={$node.netid}">{$node.netname|truncate:"20":"...":true}</A>
+									<A href="?m=netinfo&amp;id={$node.netid}">{$node.netname|truncate:"20":"&hellip;":true}</A>
 									{if $node.network_pub}
-										(<A href="?m=netinfo&amp;id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"...":true}</A>)
+										(<A href="?m=netinfo&amp;id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"&hellip;":true}</A>)
 									{/if}
 								</strong>
 							</div>
@@ -196,7 +201,7 @@
 				<SELECT SIZE="1" id="groupselect">
 					{foreach $allnodegroups as $nodegroup}
 						<OPTION value="{$nodegroup.id}"{if $listdata.nodegroup == $nodegroup.id} selected{/if}>
-							{$nodegroup.name|truncate:30:"...":true}
+							{$nodegroup.name|truncate:30:"&hellip;":true}
 						</OPTION>
 					{/foreach}
 				</SELECT>

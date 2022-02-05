@@ -4,7 +4,7 @@
 	{box title="Warning to you"}
 	<div class="alert alert-warning" role="alert">
 		{$warning}
-		<a class="alert-link" href="?m=notices&amp;confirm_old=1">{trans("I confirm reading")}</a>
+		<a class="alert-link" href="?m=notices&amp;confirm_old=1">{trans("<!userpanel>Confirm")}</a>
 	</div>
 	{/box}
 {/if}
@@ -14,10 +14,10 @@
 	<div class="table-responsive">
 		<table class="table table-bordered table-condensed table-striped">
 			<tr class="bg-primary text-white">
-				<th>{trans("Date:")}</th>
-				<th>{trans("Status:")}</th>
-				<th>{trans("Subject:")}</th>
-				<th>{trans("Read status:")}</th>
+				<th>{trans("Date")}</th>
+				<th>{trans("Type")}</th>
+				<th>{trans("Subject")}</th>
+				<th>{trans("Read")}</th>
 			</tr>
 			{foreach $notice as $items}
 				<tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
@@ -29,7 +29,6 @@
 							{if $items.status == $smarty.const.MSG_SENT && !$items.lastreaddate}
 								{trans("Unread")}
 							{elseif $items.status == $smarty.const.MSG_SENT || $items.status == $smarty.const.MSG_DELIVERED}
-								{trans("Was read on:")}<br />
 								{$items.lastreaddate|date_format:"%Y/%m/%d %H:%M"}
 							{/if}
 						{/if}
@@ -57,7 +56,7 @@
 						{/if}
 						<br><br>
 						{if $items.status != $smarty.const.MSG_DELIVERED}
-							<a class="btn btn-primary" href="?m=notices&confirm={$items.id}">{trans("I confirm reading")}</a>
+							{button class="btn btn-primary" href="?m=notices&confirm={$items.id}" icon="confirm" label="<!userpanel>Confirm"}
 						{/if}
 					</td>
 				</tr>

@@ -28,6 +28,10 @@
 		max-width: 60em;
 	}
 
+	.lms-ui-button-clipboard {
+		margin-left: 0.3em;
+	}
+
 </style>
 
 <FORM method="POST" id="configedit" action="?m=configedit&id={$config.id}" name="config">
@@ -68,13 +72,13 @@
 							{if $reftype == 'division' || $reftype == 'divisionuser'}
 							<tr>
 								<td>
-									{icon name="division" class="fa-fw"}
+									{icon name="division"}
 								</td>
 								<td class="nobr bold">
 									{trans("Division")}
 								</td>
 								<td>
-									<strong>{$divisioninfo.shortname}</strong>
+									<strong>{$divisioninfo.shortname|escape}</strong>
 									<INPUT type="hidden" name="config[divisionid]" value="{$config.divisionid}">
 								</td>
 							</tr>
@@ -82,13 +86,13 @@
 							{if $reftype == 'divisionuser' || $reftype == 'user'}
 								<tr>
 									<td>
-										{icon name="user" class="fa-fw"}
+										{icon name="user"}
 									</td>
 									<td class="nobr bold">
 										{trans("User")}
 									</td>
 									<td>
-										<strong>{$config.userid}</strong>
+										<strong>{$userinfo.rname} ({$userinfo.login})</strong>
 										<INPUT type="hidden" name="config[userid]" value="{$config.userid}">
 									</td>
 								</tr>
@@ -96,7 +100,7 @@
 						{/if}
 						<TR>
 							<TD>
-								{icon name="configuration" class="fa-fw"}
+								{icon name="configuration"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Section:")}
@@ -117,7 +121,7 @@
 						</TR>
 						<TR>
 							<TD>
-								{icon name="service" class="fa-fw"}
+								{icon name="service"}
 							</TD>
 							<TD class="bold"width="1%">
 								{trans("Name:")}
@@ -129,7 +133,9 @@
 								{else}
 									<strong>{$config.var}</strong>
 									<INPUT type="hidden" name="config[var]" value="{$config.var}">
-								{/if}&nbsp;
+								{/if}
+								{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
+									data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}"}
 							</TD>
 						</TR>
 					</tbody>
@@ -150,7 +156,7 @@
 						<tbody>
 							<TR>
 								<TD>
-									{icon name="service" class="fa-fw"}
+									{icon name="service"}
 								</TD>
 								<TD class="bold">
 									{trans("Value:")}
@@ -163,7 +169,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="comment" class="fa-fw"}
+									{icon name="comment"}
 								</TD>
 								<TD class="bold">
 									{trans("Comment:")}
@@ -174,7 +180,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="wait" class="fa-fw"}
+									{icon name="wait"}
 								</TD>
 								<TD class="bold">
 									{trans("Status:")}
@@ -186,7 +192,7 @@
 							{if ConfigHelper::checkPrivilege('superuser') && empty($reftype)}
 								<TR>
 									<TD>
-										{icon name="type" class="fa-fw"}
+										{icon name="type"}
 									</TD>
 									<TD class="bold">
 										{trans("Type:")}
@@ -234,8 +240,8 @@
 		<TR>
 			<TD class="lms-ui-box-buttons">
 				{button type="submit" onclick="document.config.submit();" icon="save" label="Submit"}
-				{button id="delete-config" href="?m=configdel&id={$config.id}" icon="delete" label="Delete"}
-				{button type="link-button" onclick="location.href = '{$backurl}';" icon="cancel" label="Cancel"}
+				{button id="delete-config" data_href="?m=configdel&id={$config.id}" icon="delete" label="Delete"}
+				{button type="link-button" href="{$backurl}" icon="cancel" label="Cancel"}
 			</TD>
 		</TR>
     </TBODY>
@@ -277,8 +283,8 @@
 
 		$('#delete-config').click(function() {
 			var name = '{$config.section}.{$config.var}';
-			confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
-				location.href = $(this).attr('href');
+			confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function() {
+				location.href = $(this).attr('data-href');
 			});
 			return false;
 		});
@@ -289,6 +295,7 @@
 			uri: '?m=quicksearch&ajax=1&api=1&mode=config&what=',
 			emptyValue: true,
 			class: 'config-var-suggestion',
+			autoSubmitForm: false,
 			onSubmit: function (data) {
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');
 				$('[name="config[section]"]').scombobox('val', data.section);

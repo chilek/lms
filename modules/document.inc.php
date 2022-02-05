@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,23 +41,33 @@ if (isset($_GET['template'])) {
             header('Content-Type: text/javascript');
             echo file_get_contents($file);
         }
+        echo '$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true'). ');';
     }
     die;
 }
 
-function GenerateAttachmentHTML($template_dir, $engine, $selected)
+function GenerateAttachmentHTML($template_dir, $engine, $selected = null)
 {
     $output = array();
     if (isset($engine['attachments']) && !empty($engine['attachments']) && is_array($engine['attachments'])) {
-        foreach ($engine['attachments'] as $label => $file) {
-            if ($file[0] != DIRECTORY_SEPARATOR) {
-                $file = $template_dir . DIRECTORY_SEPARATOR . $file;
+        foreach ($engine['attachments'] as $idx => $file) {
+            if (is_array($file)) {
+                $file['checked'] = isset($selected) ? isset($selected[$file['label']]) : $file['checked'];
+            } else {
+                $file = array(
+                    'name' => $file,
+                    'label' => $idx,
+                    'checked' => isset($selected[$idx]),
+                );
             }
-            if (is_readable($file)) {
+            if ($file['name'] != DIRECTORY_SEPARATOR) {
+                $file['name'] = $template_dir . DIRECTORY_SEPARATOR . $file['name'];
+            }
+            if (is_readable($file['name'])) {
                 $output[] = '<label>'
-                . '<input type="checkbox" value="1" name="document[attachments][' . $label . ']"'
-                    . (isset($selected[$label]) ? ' checked' : '') . '>'
-                . $label
+                . '<input type="checkbox" value="1" name="document[attachments][' . htmlspecialchars($file['label']) . ']"'
+                    . ($file['checked'] ? ' checked' : '') . '>'
+                . $file['label']
                 . '</label>';
             }
         }
@@ -68,7 +78,7 @@ function GenerateAttachmentHTML($template_dir, $engine, $selected)
 function GetPlugin($template, $customer, $update_title, $JSResponse)
 {
     global $documents_dirs;
-    
+
     $result = '';
 
     foreach ($documents_dirs as $doc) {
@@ -97,7 +107,7 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
         }
     }
 
-    $attachment_content = GenerateAttachmentHTML($template_dir, $engine, array());
+    $attachment_content = GenerateAttachmentHTML($template_dir, $engine);
     $JSResponse->assign('attachment-cell', 'innerHTML', $attachment_content);
     if (empty($attachment_content)) {
         $JSResponse->script('$("#attachment-row").hide()');
@@ -109,6 +119,8 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
     if ($update_title) {
         $JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
     }
+
+    $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
 }
 
 function GetDocumentTemplates($rights, $type = null)
@@ -152,7 +164,12 @@ function GetDocumentTemplates($rights, $type = null)
     ob_end_clean();
 
     if (!empty($docengines)) {
-        ksort($docengines);
+        uasort($docengines, function ($a, $b) {
+            if ($a['title'] == $b['title']) {
+                return 0;
+            }
+            return $a['title'] < $b['title'] ? -1 : 1;
+        });
     }
 
     return $docengines;
@@ -163,23 +180,34 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     global $SMARTY;
 
     $DB = LMSDB::getInstance();
-    $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
+    $rights = $DB->GetCol(
+        'SELECT doctype
+        FROM docrights
+        WHERE userid = ?
+            AND (rights & ?) > 0',
+        array(
+            Auth::GetCurrentUser(),
+            DOCRIGHT_CREATE,
+        )
+    );
     $docengines = GetDocumentTemplates($rights, $doctype);
+    $document['templ'] = $doctemplate;
     $SMARTY->assign('docengines', $docengines);
-    $SMARTY->assign('doctemplate', $doctemplate);
+    $SMARTY->assign('document', $document);
     $contents = $SMARTY->fetch('document/documenttemplateoptions.html');
 
     $JSResponse->assign('templ', 'innerHTML', $contents);
-    if (!empty($doctype)) {
-        $JSResponse->call('show_templates');
+    if (isset($doctype) && !empty($doctype)) {
+        $JSResponse->call('enable_templates');
+    } else {
+        $JSResponse->call('disable_templates');
     }
 }
 
 function GetDocumentNumberPlans($doctype, $customerid = null)
 {
-    global $LMS;
-
-    $DB = LMSDB::getInstance();
+    $db = LMSDB::getInstance();
+    $lms = LMS::getInstance();
 
     if (!empty($doctype)) {
         $args = array(
@@ -189,12 +217,12 @@ function GetDocumentNumberPlans($doctype, $customerid = null)
             $args['customerid'] = array(
                 'customerid' => $customerid,
             );
-            $divisionid = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerid));
+            $divisionid = $db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerid));
             if (!empty($divisionid)) {
                 $args['division'] = $divisionid;
             }
         }
-        $numberplans = $LMS->GetNumberPlans($args);
+        $numberplans = $lms->GetNumberPlans($args);
         if (empty($numberplans)) {
             $numberplans = array();
         }
@@ -203,30 +231,6 @@ function GetDocumentNumberPlans($doctype, $customerid = null)
     }
 
     return $numberplans;
-}
-
-function _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse)
-{
-    global $SMARTY;
-
-    $numberplans = GetDocumentNumberPlans($doctype, $customerid);
-
-    $SMARTY->assign('numberplans', $numberplans);
-    $SMARTY->assign('numberplanid', $numberplanid);
-    $SMARTY->assign('customerid', $customerid);
-    $contents = $SMARTY->fetch('document/documentnumberplans.html');
-
-    $JSResponse->assign('numberplans', 'innerHTML', $contents);
-    $JSResponse->assign('numberplans', 'style', empty($numberplans) ? 'display: none' : 'display: inline');
-}
-
-function GetNumberPlans($doctype, $numberplanid, $customerid)
-{
-    $JSResponse = new XajaxResponse();
-
-    _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
-
-    return $JSResponse;
 }
 
 function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
@@ -284,27 +288,29 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
         . ' if (parseInt($(this).val())) { $("#a_reference_document_limit").show(); }'
         . ' else { $("#a_reference_document_limit").hide(); }'
         . '}).trigger("change")');
+
+    $JSResponse->script('$(\'[name="document[reference]"]\').prop("required", $(\'[name="document[templ]"] option:selected\').is("[data-refdoc-required]"));');
 }
 
-function CustomerChanged($doctype, $doctemplate, $numberplanid, $customerid)
+function CustomerChanged($doctype, $doctemplate, $customerid)
 {
     $JSResponse = new XajaxResponse();
 
     GetPlugin($doctemplate, $customerid, false, $JSResponse);
-    _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
     GetTemplates($doctype, $doctemplate, $JSResponse);
     GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
 
     return $JSResponse;
 }
 
-function DocTypeChanged($doctype, $numberplanid, $customerid)
+function DocTypeChanged($doctype, $customerid)
 {
     $JSResponse = new XajaxResponse();
 
-    _GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
     GetTemplates($doctype, null, $JSResponse);
     GetReferenceDocuments(null, $customerid, $JSResponse);
+
+    $JSResponse->script('$("#documentpromotions").toggle(false)');
 
     return $JSResponse;
 }
@@ -321,5 +327,5 @@ function DocTemplateChanged($doctype, $doctemplate, $customerid)
 
 
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetNumberPlans', 'DocTypeChanged', 'DocTemplateChanged', 'CustomerChanged'));
+$LMS->RegisterXajaxFunction(array('DocTypeChanged', 'DocTemplateChanged', 'CustomerChanged'));
 $SMARTY->assign('xajax', $LMS->RunXajax());

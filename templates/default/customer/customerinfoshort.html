@@ -7,46 +7,51 @@
 </style>
 
 <TABLE class="lmsbox-inner" id="table">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="customer" class="fa-fw"}
+		<TD>
+			{icon name="customer"}
 		</TD>
-		<TD WIDTH="99%">
-			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span COLOR="RED">({trans("deleted customer")})</span>{/if}</B>
+		<TD>
+			<strong>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span class="alert">({trans("deleted customer")})</span>{/if}</strong>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}" class="fa-fw"}
+		<TD>
+			{icon name="customer-status-{$_CSTATUSES[$customerinfo.status].alias}"}
 		</TD>
-		<TD WIDTH="99%" class="bold">
+		<TD class="bold">
 			{$_CSTATUSES[$customerinfo.status].singularlabel}
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" >
-			{icon name="homr" class="fa-fw"}
+		<TD>
+			{icon name="home"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			{if $customerinfo.postoffice && $customerinfo.postoffice != $customerinfo.city && $customerinfo.street}{$customerinfo.city}, {/if}{$customerinfo.address}<BR>
 			{$customerinfo.zip} {if $customerinfo.postoffice}{$customerinfo.postoffice}{else}{$customerinfo.city}{/if}
 		</TD>
 	</TR>
 {if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
 	<TR>
-		<TD WIDTH="1%" >
-			{icon name="mail" class="fa-fw"}
+		<TD>
+			{icon name="mail"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
+		<TD class="nobr">
+			{if $customerinfo.post_name != ""}{$customerinfo.post_name|escape}{/if}
 			{if $customerinfo.post_address != ""}{if $customerinfo.post_name != ""}<BR>{/if}
 				{if $customerinfo.post_postoffice && $customerinfo.post_postoffice != $customerinfo.post_city && $customerinfo.post_street}{$customerinfo.post_city}, {/if}
 				{$customerinfo.post_address}
 			{/if}
-			<BR>{$customerinfo.post_zip} {if $customerinfo.post_postoffice}{$customerinfo.post_postoffice}{else}{$customerinfo.post_city}{/if}
+			<br>
+			{$customerinfo.post_zip} {if $customerinfo.post_postoffice}{$customerinfo.post_postoffice}{else}{$customerinfo.post_city}{/if}
 		</TD>
 	</TR>
 {/if}
@@ -54,11 +59,11 @@
 {foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
 	{if isset($customerinfo[$type|cat:"s"])}
 		<TR>
-			<TD style="width: 1%;"></TD>
-			<TD style="width: 99%;" class="customer-contact">
+			<TD></TD>
+			<TD class="customer-contact">
 				<fieldset style="width: auto;">
 					<legend class="bold nobr">
-						{icon name="{$properties.ui.legend.icon}" class="fa-fw"}
+						{icon name="{$properties.ui.legend.icon}"}
 						{$properties.ui.legend.text}
 					</legend>
 					<TABLE>
@@ -66,9 +71,9 @@
 							<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 								<TD class="customer-contact">
 									<div>
-										{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact}{/if}
+										{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact|escape}{/if}
 										{if $contact.typestr}[{$contact.typestr}]{/if}
-										{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
+										{if $contact.name} ({$contact.name|trunescape:40}){/if}
 									</div>
 								</TD>
 							</TR>
@@ -82,60 +87,68 @@
 
 {if $customerinfo.icn != ""}
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="user-id-number" class="fa-fw"}
+		<TD>
+			{icon name="user-id-number"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{trans("ICN")}: {$customerinfo.icn}
+		<TD class="nobr">
+			{trans("Identity type:")}: {trans($_IDENTITY_TYPES[$customerinfo.ict])}
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			{icon name="user-id-number"}
+		</TD>
+		<TD class="nobr">
+			{trans("Identity number:")}: {$customerinfo.icn|escape}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ssn != ""}
 	<TR">
-		<TD WIDTH="1%">
-			{icon name="user-id-number" class="fa-fw"}
+		<TD>
+			{icon name="user-id-number"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{trans("SSN")}: {$customerinfo.ssn}
+		<TD class="nobr">
+			{trans("SSN")}: {$customerinfo.ssn|escape}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.ten != ""}
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="user-id-number" class="fa-fw"}
+		<TD>
+			{icon name="user-id-number"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			{trans("TEN")}: {$customerinfo.ten}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.regon != ""}
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="user-id-number" class="fa-fw"}
+		<TD>
+			{icon name="user-id-number"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			{trans("REGON")}: {$customerinfo.regon}
 		</TD>
 	</TR>
 {/if}
 {if $customerinfo.rbe != ""}
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="user-id-number" class="fa-fw"}
+		<TD>
+			{icon name="user-id-number"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{trans("RBE")}: {$customerinfo.rbe}
+		<TD class="nobr">
+			{trans("RBE")}: {$customerinfo.rbe|escape}
 		</TD>
 	</TR>
 {/if}
 {if $customergroups}
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="customergroup" class="fa-fw"}
+		<TD>
+			{icon name="customergroup"}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			{foreach from=$customergroups item=customergroup name=customergroup}
 				{$customergroup.name}{if !$smarty.foreach.customergroup.last},{/if}
 			{/foreach}
@@ -144,11 +157,11 @@
 {/if}
 {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 	<TR>
-		<TD WIDTH="1%">
-			{icon name="money" class="fa-fw"}
+		<TD>
+			{icon name="money"}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<B>{trans("Balance:")}</B>
+		<TD class="nobr">
+			<strong>{trans("Balance:")}</strong>
 			{if $customerinfo.balance < 0}<span class="lms-ui-alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>

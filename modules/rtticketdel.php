@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,25 +24,45 @@
  *  $Id$
  */
 
-$ticket = intval($_GET['id']);
-$taction = ($_GET['taction']);
-
-if (!($LMS->CheckTicketAccess($ticket) & RT_RIGHT_DELETE)) {
-    access_denied();
+if (is_array($_GET['id'])) {
+    $tickets = $_GET['id'];
+} else {
+    $tickets = array($_GET['id']);
+}
+$tickets = Utils::filterIntegers($tickets);
+if (empty($tickets)) {
+    die;
 }
 
-if ($taction == 'delete') {
-    $del = 1;
-    $nodel = 0;
-    $deltime = time();
-    // We use incomplete cascade delete. This means that we delete only messages tah weren't deleted before ticket delete operation.
-    $DB->BeginTrans();
-    $DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $ticket));
-    $DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $ticket));
-    $DB->CommitTrans();
-} elseif ($taction == 'delperm') {
-    $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
+foreach ($tickets as $ticket) {
+    if (!($LMS->CheckTicketAccess($ticket) & RT_RIGHT_DELETE)) {
+        access_denied();
+    }
 }
 
-$SESSION->redirect('?m=rtqueueview'
-    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+switch ($_GET['taction']) {
+    case 'delete':
+        // We use incomplete cascade delete. This means that we delete only messages tah weren't deleted before ticket delete operation.
+        $DB->BeginTrans();
+        $DB->Execute(
+            'UPDATE rttickets SET deleted = ?, deltime = ?NOW?, deluserid = ? WHERE deleted = ? AND id IN ?',
+            array(1, Auth::GetCurrentUser(), 0, $tickets)
+        );
+        $DB->Execute(
+            'UPDATE rtmessages SET deleted = ?, deluserid = ? WHERE deleted = ? and ticketid IN ?',
+            array(1, Auth::GetCurrentUser(), 0, $tickets)
+        );
+        $DB->CommitTrans();
+        break;
+    case 'delperm':
+        $DB->Execute(
+            'DELETE FROM rttickets WHERE id IN ?',
+            array($tickets)
+        );
+        break;
+}
+
+$SESSION->redirect(
+    '?m=rtqueueview'
+        . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : '')
+);

@@ -217,7 +217,7 @@ if (!empty($_POST['inv'])) {
             header('Content-Disposition: inline; filename=' . $invoice['filename']);
             echo $invoice['data'];
         }
-        $SESSION->close();
+        //$SESSION->close();
         die;
     }
 

@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -65,19 +65,19 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
     }
 }
 
-if (array_key_exists('version', $options)) {
+if (isset($options['version'])) {
     print <<<EOF
-lms-dsnhandler.php
-(C) 2001-2020 LMS Developers
+lms-dsn-handler.php
+(C) 2001-2021 LMS Developers
 
 EOF;
     exit(0);
 }
 
-if (array_key_exists('help', $options)) {
+if (isset($options['help'])) {
     print <<<EOF
-lms-dsnhandler.php
-(C) 2001-2020 LMS Developers
+lms-dsn-handler.php
+(C) 2001-2021 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -88,16 +88,16 @@ EOF;
     exit(0);
 }
 
-$quiet = array_key_exists('quiet', $options);
+$quiet = isset($options['quiet']);
 if (!$quiet) {
     print <<<EOF
-lms-dsnhandler.php
-(C) 2001-2020 LMS Developers
+lms-dsn-handler.php
+(C) 2001-2021 LMS Developers
 
 EOF;
 }
 
-if (array_key_exists('config-file', $options)) {
+if (isset($options['config-file'])) {
     $CONFIG_FILE = $options['config-file'];
 } else {
     $CONFIG_FILE = '/etc/lms/lms.ini';
@@ -127,7 +127,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -138,7 +138,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -165,10 +165,11 @@ $posts = imap_search($ih, 'ALL');
 if (!empty($posts)) {
     foreach ($posts as $postid) {
         $post = imap_fetchstructure($ih, $postid);
+        $headers = imap_fetchheader($ih, $postid);
         if ($post->subtype != 'REPORT') {
             continue;
         }
-        if (count($post->parts) < 2 || count($post->parts) > 3) {
+        if ((count($post->parts) < 2 || count($post->parts) > 3) && preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers) === 0) {
             continue;
         }
         $parts = $post->parts;
@@ -183,41 +184,56 @@ if (!empty($posts)) {
             switch ($part->subtype) {
                 case 'PLAIN':
                     $headers = imap_fetchheader($ih, $postid);
-                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
                         $lastdate = strtotime($m['date']);
                     }
                     break;
                 case 'DELIVERY-STATUS':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/Status:\s+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
+                    if (preg_match('/Status:[[:blank:]]+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
                         $code = explode('.', $m['status']);
                         $status = intval($code[0]);
                     }
-                    if (preg_match('/Diagnostic-Code:\s+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m)) {
+                    if (preg_match('/Diagnostic-Code:[[:blank:]]+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m)) {
                         $diag_code = $m['code'];
                     }
                     break;
                 case 'DISPOSITION-NOTIFICATION':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m)) {
+                    if (preg_match('/Disposition:[[:blank:]]+(?<disposition>.+)\r\n?/', $body, $m)) {
                         $disposition = $m['disposition'];
                     }
-                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                    if (preg_match('/.*Message-ID:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
                     }
                     $headers = imap_fetchheader($ih, $postid);
-                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
                         $readdate = strtotime($m['date']);
                     }
                     break;
                 case 'RFC822-HEADERS':
                 case 'RFC822':
                     $body = imap_fetchbody($ih, $postid, $partid + 1);
-                    if (preg_match('/X-LMS-Message-Item-Id:\s+(?<msgitemid>[0-9]+)/', $body, $m)) {
+                    if (preg_match('/X-LMS-Message-Item-Id:[[:blank:]]+(?<msgitemid>[0-9]+)/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
                     }
-                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                    if (preg_match('/.*Message-ID:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
                         $msgitemid = intval($m['msgitemid']);
+                    }
+                    break;
+                case 'HTML':
+                    $headers = imap_fetchheader($ih, $postid);
+                    if (preg_match('/Content-Type: .*report.+/', $headers) === 0) {
+                        break;
+                    }
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
+                        $readdate = strtotime($m['date']);
+                    }
+                    if (preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers, $m)) {
+                        $msgitemid = intval($m['msgitemid']);
+                    }
+                    if (preg_match('/.*report-type=(?<disposition>disposition-notification).+/', $headers, $m)) {
+                        $disposition = $m['disposition'];
                     }
                     break;
             }
@@ -245,7 +261,7 @@ if (!empty($posts)) {
                 'UPDATE messageitems SET status = ?, error = ?, lastdate = ? WHERE id = ?',
                 array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null,
                     $lastdate,
-                $msgitemid)
+                    $msgitemid)
             );
         } elseif (!empty($disposition) && !empty($readdate)) {
             $DB->Execute(
@@ -264,5 +280,3 @@ if (!empty($posts)) {
 }
 
 imap_close($ih, CL_EXPUNGE);
-
-?>

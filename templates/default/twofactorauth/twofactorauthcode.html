@@ -8,7 +8,7 @@
 	{include file="jquery.html" language=Localisation::getCurrentHtmlLanguage() lms_language=Localisation::getCurrentUiLanguage()}
     <link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
-    <title>::: {t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv} :::</title>
+    <title>{t a=LMS::SOFTWARE_NAME}Welcome to $a{/t} {$layout.lmsv}</title>
 	<style>
 		body {
 			justify-content: center;
@@ -78,7 +78,7 @@
 						{trans("Authentication code:")}
 					</td>
 					<td>
-						<input class="bold" type="number" name="authcodeform[authcode]" size="10" accesskey="l" autofocus autocomplete="off">
+						<input class="bold" type="number" name="authcodeform[authcode]" size="10" accesskey="l" autofocus autocomplete="new-password">
 					</td>
 				</tr>
 				<tr>
@@ -107,7 +107,7 @@
 		<br>
 		<br>
 		<a href="doc/html/{Localisation::getCurrentUiLanguage()}/"><span class="blend">{trans("Documentation")}</span></a><br>
-		<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
+		<a href="{LMS::SOFTWARE_URL}"><span class="blend">{trans("LMS Project Homepage")}</span></a>
 	</div>
 	{if $layout.dberrors}
 		{include file="dberrors.html"}

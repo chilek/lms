@@ -30,7 +30,7 @@
 
 </style>
 
-<FORM method="POST" id="configadd" action="?m=configadd" name="config">
+<FORM method="POST" id="configadd" action="?m=configadd&refconfigid={$refconfigid}&reftype={$reftype}&divisionid={$divisioninfo.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="config[reftype]" value="{$reftype}">
 <INPUT type="hidden" name="config[refconfigid]" value="{$refconfigid}">
@@ -52,7 +52,7 @@
 						{if !empty($reftype) && $reftype == 'division'}
 							<tr>
 								<td>
-									{icon name="division" class="fa-fw"}
+									{icon name="division"}
 								</td>
 								<td class="nobr bold">
 									{trans("Division")}
@@ -60,7 +60,7 @@
 								<td>
 									<SELECT size="1" name="config[divisionid]" {tip text="Select division" trigger="divisionid"}>
 										{foreach $divisionslist as $division}
-											<OPTION value="{$division.id}"{if $config.division == $division.id} selected{/if}>{$division.shortname}</OPTION>
+											<OPTION value="{$division.id}"{if $config.division == $division.id} selected{/if}>{$division.label|escape}</OPTION>
 										{/foreach}
 									</SELECT>
 								</td>
@@ -70,7 +70,7 @@
 							{if $reftype == 'divisionuser'}
 								<tr>
 									<td>
-										{icon name="division" class="fa-fw"}
+										{icon name="division"}
 									</td>
 									<td class="nobr bold">
 										{trans("Division")}
@@ -84,7 +84,7 @@
 							{if $reftype == 'divisionuser' || $reftype == 'user'}
 								<tr>
 									<td>
-										{icon name="user" class="fa-fw"}
+										{icon name="user"}
 									</td>
 									<td class="nobr bold">
 										{trans("User")}
@@ -92,7 +92,7 @@
 									<td>
 										<SELECT size="1" name="config[userid]" {tip text="Select user" trigger="userid"}>
 											{foreach $userslist as $user}
-												<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name}</OPTION>
+												<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name|escape}</OPTION>
 											{/foreach}
 										</SELECT>
 									</td>
@@ -101,7 +101,7 @@
 						{/if}
 						<tr>
 							<td>
-								{icon name="configuration" class="fa-fw"}
+								{icon name="configuration"}
 							</TD>
 							<td class="bold">
 								{trans("Section:")}
@@ -126,7 +126,7 @@
 						</tr>
 						<TR>
 							<TD>
-								{icon name="service" class="fa-fw"}
+								{icon name="service"}
 							</TD>
 							<TD class="bold">
 								{trans("Name:")}
@@ -159,7 +159,7 @@
 						<tbody>
 							<tr>
 								<td>
-									{icon name="service" class="fa-fw"}
+									{icon name="service"}
 								</td>
 								<TD class="bold">
 									{trans("Value:")}
@@ -172,7 +172,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="comment" class="fa-fw"}
+									{icon name="comment"}
 								</TD>
 								<TD class="bold">
 									{trans("Comment:")}
@@ -183,7 +183,7 @@
 							</TR>
 							<TR>
 								<TD>
-									{icon name="wait" class="fa-fw"}
+									{icon name="wait"}
 								</TD>
 								<TD class="bold">
 									{trans("Status:")}
@@ -195,7 +195,7 @@
 							{if ConfigHelper::checkPrivilege('superuser') && empty($reftype)}
 								<TR>
 									<TD>
-										<img src="img/desc.gif" alt="">
+										{icon name="type"}
 									</TD>
 									<TD class="bold">
 										{trans("Type:")}
@@ -253,7 +253,7 @@
 		</TR>
     </TBODY>
 </TABLE>
-</P>
+</FORM>
 <script>
 
 	$(function() {
@@ -286,6 +286,7 @@
 			uri: '?m=quicksearch&ajax=1&api=1&mode=config&what=',
 			emptyValue: true,
 			class: 'config-var-suggestion',
+			autoSubmitForm: false,
 			onSubmit: function (data) {
 				$('[name="config[section]"]').scombobox('val', data.section);
 				$('[name="config[var]"]').val(data.name).trigger('autogrow');

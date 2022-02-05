@@ -24,7 +24,7 @@
                                     <select tariff size="20" name="tariffassignments[gmtariffid][]" multiple>
                                         {section name=tariff loop=$tarifftag.tariffs}
                                             <option value="{$tarifftag.tariffs[tariff].id}">
-                                                {$tarifftag.tariffs[tariff].tariffname|truncate:40:"...":true} ({$tarifftag.tariffs[tariff].id|string_format:"%04d"})
+                                                {$tarifftag.tariffs[tariff].tariffname|truncate:40:"&hellip;":true} ({$tarifftag.tariffs[tariff].id|string_format:"%04d"})
                                             </option>
                                         {/section}
                                     </select>
@@ -56,7 +56,7 @@
                                     <select size="20" name="tariffassignments[mtariffid][]" multiple>
                                         {section name=tariff loop=$tariffs}
                                             <option value="{$tariffs[tariff].id}">
-                                                {$tariffs[tariff].tariffname|truncate:40:"...":true} ({$tariffs[tariff].id|string_format:"%04d"})
+                                                {$tariffs[tariff].tariffname|truncate:40:"&hellip;":true} ({$tariffs[tariff].id|string_format:"%04d"})
                                             </option>
                                         {/section}
                                     </select>

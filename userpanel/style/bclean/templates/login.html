@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{Localisation::getCurrentHtmlLanguage()}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -41,6 +41,9 @@
                 padding: 15px;
                 margin: 0 auto;
             }
+            .form-signin-header {
+                max-width: initial;
+            }
             .form-signin .form-signin-heading,
             .form-signin .checkbox {
                 margin-bottom: 10px;
@@ -77,11 +80,11 @@
             }
         </style>
     </head>
-    <body>
+    <body class="login-form">
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                    <h2 class="form-signin text-center">
+                    <h2 class="form-signin-header text-center">
 						{if $company_logo}
 							<img src="{$company_logo}">
 						{/if}
@@ -102,9 +105,7 @@
                                 <div class="toast-header bg-light">
                                     <span class="badge badge-warning mr-1">&nbsp;</span>
                                     <strong class="mr-auto">{trans("Notification")}</strong>
-                                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                    {button class="ml-2 mb-1 close" data-dismiss="toast" label="&times;"}
                                 </div>
                                 <div class="toast-body">
                                     {$error}
