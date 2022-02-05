@@ -496,8 +496,8 @@ CREATE TABLE documents (
 		CONSTRAINT documents_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	address varchar(255)	DEFAULT '' NOT NULL,
-	zip varchar(10)		NULL DEFAULT NULL,
-	city varchar(100)	NULL DEFAULT NULL,
+	zip varchar(10)		DEFAULT NULL,
+	city varchar(100)	DEFAULT NULL,
 	countryid integer	DEFAULT NULL
 		CONSTRAINT documents_countryid_fkey REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	ten varchar(50)		DEFAULT '' NOT NULL,
@@ -662,7 +662,7 @@ CREATE TABLE voipaccounts (
 		CONSTRAINT voipaccounts_modid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	balance		numeric(12,5) NOT NULL DEFAULT 0,
 	flags		smallint NOT NULL DEFAULT 0,
-	cost_limit	numeric(12,2) NULL DEFAULT NULL,
+	cost_limit	numeric(12,2) DEFAULT NULL,
 	address_id integer
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
     description text NOT NULL DEFAULT '',
@@ -720,7 +720,7 @@ DROP TABLE IF EXISTS voip_tariffs CASCADE;
 CREATE TABLE voip_tariffs (
 	id          integer      DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
 	name        varchar(100) NOT NULL,
-	description text         NULL DEFAULT NULL,
+	description text         DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -736,7 +736,7 @@ CREATE TABLE voip_rule_states (
 		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	rule_id         integer NOT NULL DEFAULT NULL
 		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	units_left      integer NULL DEFAULT NULL,
+	units_left      integer DEFAULT NULL,
 	PRIMARY KEY(id),
 	UNIQUE(voip_account_id, rule_id)
 );
