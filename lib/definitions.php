@@ -292,14 +292,14 @@ define('RT_SOURCE_PAPER', 6);
 define('RT_SOURCE_SMS', 7);
 
 $RT_SOURCES = array(
-    RT_SOURCE_UNKNOWN => trans('unknown/other'),
-    RT_SOURCE_PHONE => trans('Phone'),
-    RT_SOURCE_EMAIL => trans('e-mail'),
-    RT_SOURCE_USERPANEL => trans('Userpanel'),
-    RT_SOURCE_PERSONAL => trans('Personal'),
-    RT_SOURCE_MESSCHAT => trans('Instant messengers'),
-    RT_SOURCE_PAPER => trans('Letter complaint'),
-    RT_SOURCE_SMS => trans('SMS'),
+    RT_SOURCE_UNKNOWN => 'unknown/other',
+    RT_SOURCE_PHONE => 'Phone',
+    RT_SOURCE_EMAIL => 'e-mail',
+    RT_SOURCE_USERPANEL => 'Userpanel',
+    RT_SOURCE_PERSONAL => 'Personal',
+    RT_SOURCE_MESSCHAT => 'Instant messengers',
+    RT_SOURCE_PAPER => 'Letter complaint',
+    RT_SOURCE_SMS => 'SMS',
 );
 
 //Helpdesk ticket priority

@@ -96,6 +96,11 @@ function RTSearch($search, $order = 'createtime,desc')
             $where[] = 't.state = '.intval($search['state']);
         }
     }
+
+    if (isset($search['source']) && strlen($search['source'])) {
+        $where[] = 't.source = ' . intval($search['source']);
+    }
+
     if (!empty($search['priority'])) {
         if ($search['priority'] == '-101') {
             $where[] = 't.priority IS NULL';

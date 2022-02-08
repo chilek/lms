@@ -119,7 +119,7 @@
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[source]" {tip text="Select ticket source" trigger="source"}>
-				{foreach $_RT_SOURCES as $sourceidx => $status}
+				{foreach Localisation::arraySort($_RT_SOURCES) as $sourceidx => $status}
 				<OPTION value="{$sourceidx}"{if $note.source == $sourceidx} selected{/if}>{$status}</OPTION>
 				{/foreach}
 			</SELECT>
