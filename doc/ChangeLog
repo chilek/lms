@@ -75,6 +75,7 @@ version 28-git (????-??-??):
     specified tariff tags [chilan]
   - enhancement: optional document template file attachments can have initial checkbox state
     specified [chilan]
+  - enhancement: allow search helpdesk tickets by source [chilan]
 
 version 27.0 (2021-08-20):
 
