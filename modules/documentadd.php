@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -81,21 +81,30 @@ if (isset($_POST['document'])) {
         }
     }
 
+    $allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('documents.allow_past_date', 'true'));
+    if (!$allow_past_date) {
+        $today = strtotime('today');
+    }
+
     if (empty($document['fromdate'])) {
         $document['fromdate'] = 0;
     } elseif (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
         $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } elseif (!$allow_past_date && $document['fromdate'] < $today) {
+        die('From date can not be earlier than current date!');
     }
 
     if (empty($document['todate'])) {
         $document['todate'] = 0;
     } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
         $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } elseif (!$allow_past_date && $document['todate'] < $today) {
+        die('To date can not be earlier than current date!');
     } else {
         $document['todate'] += 86399;
     }
 
-    if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
+    if (!empty($document['todate']) && $document['fromdate'] > $document['todate']) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
