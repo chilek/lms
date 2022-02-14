@@ -96,15 +96,16 @@ if (isset($_POST['voipaccountdata'])) {
         $error['login'] = trans('Voip account login is too long (max.32 characters)!');
     } elseif ($LMS->GetVoipAccountIDByLogin($voipaccountdata['login'])) {
         $error['login'] = trans('Specified login is in use!');
-    } elseif (!preg_match('/^[_a-z0-9-]+$/i', $voipaccountdata['login'])) {
+    } elseif (!preg_match('/' . ConfigHelper::getConfig('voip.account_login_regexp', '^[_a-z0-9-]+$') . '/i', $voipaccountdata['login'])) {
         $error['login'] = trans('Specified login contains forbidden characters!');
     }
 
+    $password_max_length = intval(ConfigHelper::getConfig('voip.account_password_max_length', 32));
     if ($voipaccountdata['passwd']=='') {
         $error['passwd'] = trans('Voip account password is required!');
-    } elseif (strlen($voipaccountdata['passwd']) > 32) {
-        $error['passwd'] = trans('Voip account password is too long (max.32 characters)!');
-    } elseif (!preg_match('/^[_a-z0-9-@%]+$/i', $voipaccountdata['passwd'])) {
+    } elseif (strlen($voipaccountdata['passwd']) > $password_max_length) {
+        $error['passwd'] = trans('Voip account password is too long (max. $a characters)!', $password_max_length);
+    } elseif (!preg_match('/' . ConfigHelper::getConfig('voip.account_password_regexp', '^[_a-z0-9-@%]+$') . '/i', $voipaccountdata['passwd'])) {
         $error['passwd'] = trans('Specified password contains forbidden characters!');
     }
 
