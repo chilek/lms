@@ -78,6 +78,12 @@ version 28-git (????-??-??):
   - enhancement: allow search helpdesk tickets by source [chilan]
   - enhancement: 'documents.allow_past_date' ('true' by default) control if past date are allowed
     in date picker fields of document generator and add document forms [chilan]
+  - enhancement: 'voip.account_login_regexp' with default value '^[_a-z0-9-]+$' controls format
+    of voip account login [chilan]
+  - enhancement: 'voip.account_password_regexp' with default value '^[_a-z0-9-@%]+$' controls format
+    of voip account password [chilan]
+  - enhancement: 'voip.account_password_max_length' with default value '32' controls maximum
+    allowed length of voip account password [chilan]
 
 version 27.0 (2021-08-20):
 
