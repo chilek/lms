@@ -84,6 +84,8 @@ version 28-git (????-??-??):
     of voip account password [chilan]
   - enhancement: 'voip.account_password_max_length' with default value '32' controls maximum
     allowed length of voip account password [chilan]
+  - enhancement: 'phpui.promotion_force_at_next_day' with default value 'false' allows to force 'at' day
+    calculation such way that it's always next day for activation and settlement of start period [chilan]
 
 version 27.0 (2021-08-20):
 
