@@ -489,6 +489,18 @@ switch ($action) {
             $error['currency'] = trans('Invalid currency selection!');
         }
 
+        $currtime = time();
+        $cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
+        $sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
+        $deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
+        $comment = $invoice['comment'] ? $invoice['comment'] : null;
+        $paytime = round(($deadline - $cdate) / 86400);
+        $iid   = $invoice['id'];
+
+        if ($deadline < $cdate) {
+            break;
+        }
+
         $use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
 
         if ($use_current_customer_data) {
@@ -547,14 +559,6 @@ switch ($action) {
         if ($use_current_customer_data) {
             $LMS->UpdateDocumentPostAddress($invoice['id'], $invoice['customerid']);
         }
-
-        $currtime = time();
-        $cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
-        $sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
-        $deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
-        $comment = $invoice['comment'] ? $invoice['comment'] : null;
-        $paytime = round(($deadline - $cdate) / 86400);
-        $iid   = $invoice['id'];
 
         $invoice['currencyvalue'] = $LMS->getCurrencyValue(
             $invoice['currency'],
