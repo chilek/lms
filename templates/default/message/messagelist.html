@@ -71,6 +71,8 @@
 							<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} SELECTED{/if}>{trans("delivered<!plural>")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_CANCELLED}"{if $listdata.status == $smarty.const.MSG_CANCELLED} selected{/if}>{trans("cancelled<!plural>")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_BOUNCED}"{if $listdata.status == $smarty.const.MSG_BOUNCED} selected{/if}>{trans("bounced<!plural>")}</OPTION>
 						</SELECT>
 						<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 					</label>
