@@ -713,7 +713,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         } else {
             $cats = array();
             foreach ($categories as $category) {
-                if (($catid = $LMS->GetCategoryIdByName($category)) != null) {
+                if (preg_match('/^[0-9]+$/', $category) && $LMS->CategoryExists($category)) {
+                    $cats[$category] = $LMS->GetCategoryName($category);
+                } elseif (($catid = $LMS->GetCategoryIdByName($category)) != null) {
                     $cats[$catid] = $category;
                 }
             }
