@@ -13,6 +13,8 @@
 |
 {trans("After")}
 |
+{trans("Customer ID")}
+|
 {trans("Customer")}
 |
 {trans("Description")}
@@ -31,6 +33,8 @@
 {if !$item.covenant && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
 |
 {if $item.covenant}-{else}{moneyf($item.after)}{/if}
+|
+{$item.customerid}
 |
 {$item.customername|truncate:25:"..."}
 |
