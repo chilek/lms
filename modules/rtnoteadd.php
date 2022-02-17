@@ -151,7 +151,7 @@ if (isset($_GET['ticketid'])) {
 
         $LMS->TicketChange($note['ticketid'], $props);
 
-        if (isset($note['notify']) || !empty($note['verifierid'])) {
+        if (isset($note['notify'])) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
             $queue = $LMS->GetQueueByTicketId($note['ticketid']);
             $mailfname = '';
