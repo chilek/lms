@@ -87,6 +87,7 @@ version 28-git (????-??-??):
   - enhancement: 'phpui.promotion_force_at_next_day' with default value 'false' allows to force 'at' day
     calculation such way that it's always next day for activation and settlement of start period [chilan]
   - enhancement: added 'cancelled' and 'bounced' message statuses [chilan]
+  - enhancement: '%body' symbol is replaces by ticket messages in queue configured notifications [chilan]
 
 version 27.0 (2021-08-20):
 
