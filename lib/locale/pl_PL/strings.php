@@ -5301,13 +5301,45 @@ $_LANG['<!customer-notification-body>The following special symbols are supported
     . '<strong>%cid</strong> - customer identifier,<br>'
     . '<strong>%pin</strong> - customer PIN,<br>'
     . '<strong>%customername</strong> - customer full name,<br>'
-    . '<strong>%title</strong> - ticket title.<br>'] =
+    . '<strong>%title</strong> - ticket title,<br>'
+    . '<strong>%body</strong> - new ticket body.<br>'] =
     'Obsługiwane są następujące symbole specjalne:<br>'
     . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
     . '<strong>%cid</strong> - identyfikator klienta,<br>'
     . '<strong>%pin</strong> - PIN klienta,<br>'
     . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
-    . '<strong>%title</strong> - tytuł zgłoszenia.<br>';
+    . '<strong>%title</strong> - tytuł zgłoszenia,<br>'
+    . '<strong>%body</strong> - treść nowego zgłoszenia.<br>';
+
+$_LANG['<!customer-notification-body>The following special symbols are supported:<br>'
+    . '<strong>%tid</strong> - ticket identifier,<br>'
+    . '<strong>%cid</strong> - customer identifier,<br>'
+    . '<strong>%pin</strong> - customer PIN,<br>'
+    . '<strong>%customername</strong> - customer full name,<br>'
+    . '<strong>%title</strong> - ticket title,<br>'
+    . '<strong>%body</strong> - new message body.<br>'] =
+    'Obsługiwane są następujące symbole specjalne:<br>'
+    . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
+    . '<strong>%cid</strong> - identyfikator klienta,<br>'
+    . '<strong>%pin</strong> - PIN klienta,<br>'
+    . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%title</strong> - tytuł zgłoszenia,<br>'
+    . '<strong>%body</strong> - treść nowej wiadomości.<br>';
+
+$_LANG['<!customer-notification-body>The following special symbols are supported:<br>'
+    . '<strong>%tid</strong> - ticket identifier,<br>'
+    . '<strong>%cid</strong> - customer identifier,<br>'
+    . '<strong>%pin</strong> - customer PIN,<br>'
+    . '<strong>%customername</strong> - customer full name,<br>'
+    . '<strong>%title</strong> - ticket title,<br>'
+    . '<strong>%body</strong> - ticket last message body.<br>'] =
+    'Obsługiwane są następujące symbole specjalne:<br>'
+    . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
+    . '<strong>%cid</strong> - identyfikator klienta,<br>'
+    . '<strong>%pin</strong> - PIN klienta,<br>'
+    . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%title</strong> - tytuł zgłoszenia,<br>'
+    . '<strong>%body</strong> - treść ostatniej wiadomości w zgłoszeniu.<br>';
 
 $_LANG['(HTML content has been omitted)'] = '(Treść HTML została pominięta)';
 

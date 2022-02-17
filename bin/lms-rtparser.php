@@ -912,6 +912,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                 $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
                 $custmail_body = str_replace('%title', $mh_subject, $custmail_body);
+                $custmail_body = str_replace('%body', $mail_body, $custmail_body);
                 $custmail_headers = array(
                     'From' => $headers['From'],
                     'Reply-To' => $headers['From'],
