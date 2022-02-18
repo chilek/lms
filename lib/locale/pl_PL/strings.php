@@ -5389,6 +5389,10 @@ $_LANG['Issuer'] = 'Wystawca';
 $_LANG['Enter issuer name visible on documents'] = 'Podaj nazwę wystawcy widoczną na dokumentach';
 $_LANG['Are you sure, you want to delete that VLAN?'] = 'Czy jesteś pewien, że chcesz usunąć ten VLAN?';
 
+$_LANG['Message status color markings:'] = 'Legenda oznaczeń statusów wiadomości:';
+$_LANG['new/waiting'] = 'nowa/oczekująca';
+$_LANG['error'] = 'błąd';
+
 $_LANG['Assignments color markings:'] = 'Legenda oznaczeń:';
 $_LANG['Active tariff assignment'] = 'Zobowiązanie taryfowe aktywne';
 $_LANG['Active tariffless assignment'] = 'Zobowiązanie beztaryfowe aktywne';

@@ -326,6 +326,12 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 case MSG_DELIVERED:
                     $where[] = 'x.delivered = x.cnt';
                     break;
+                case MSG_CANCELLED:
+                    $where[] = 'x.cancelled = x.cnt';
+                    break;
+                case MSG_BOUNCED:
+                    $where[] = 'x.bounced = x.cnt';
+                    break;
             }
         }
 
@@ -339,9 +345,11 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				JOIN (
 					SELECT i.messageid,
 						COUNT(*) AS cnt,
-						COUNT(CASE WHEN i.status = '.MSG_SENT.' THEN 1 ELSE NULL END) AS sent,
-						COUNT(CASE WHEN i.status = '.MSG_DELIVERED.' THEN 1 ELSE NULL END) AS delivered,
-						COUNT(CASE WHEN i.status = '.MSG_ERROR.' THEN 1 ELSE NULL END) AS error
+						COUNT(CASE WHEN i.status = ' . MSG_SENT . ' THEN 1 ELSE NULL END) AS sent,
+						COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
+						COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
+						COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
+						COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
 					FROM messageitems i
 					LEFT JOIN (
 						SELECT DISTINCT a.customerid FROM vcustomerassignments a
@@ -361,9 +369,11 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 			JOIN (
 				SELECT i.messageid,
 					COUNT(*) AS cnt,
-					COUNT(CASE WHEN i.status = '.MSG_SENT.' THEN 1 ELSE NULL END) AS sent,
-					COUNT(CASE WHEN i.status = '.MSG_DELIVERED.' THEN 1 ELSE NULL END) AS delivered,
-					COUNT(CASE WHEN i.status = '.MSG_ERROR.' THEN 1 ELSE NULL END) AS error
+					COUNT(CASE WHEN i.status = ' . MSG_SENT . ' THEN 1 ELSE NULL END) AS sent,
+					COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
+					COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
+					COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
+					COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
 				FROM messageitems i
 				LEFT JOIN (
 					SELECT DISTINCT a.customerid FROM vcustomerassignments a

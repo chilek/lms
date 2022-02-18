@@ -92,7 +92,23 @@
     <TBODY class="lms-ui-multi-check">
 	<form method="post" name="messages">
 	{foreach $messagelist as $message}
-	<TR class="highlight{if $message.error > 0} lms-ui-alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}"
+	<TR class="highlight {strip}
+			{if $message.error > 0}
+				lms-ui-message-error
+			{elseif $message.error}
+				blendalert
+			{elseif $message.delivered == $message.cnt}
+				lms-ui-message-delivered
+			{elseif $message.sent == $message.cnt}
+				lms-ui-message-sent
+			{elseif $message.cancelled == $message.cnt}
+				lms-ui-message-cancelled
+			{elseif $message.bounced == $message.cnt}
+				lms-ui-message-bounced
+			{else}
+				lms-ui-message-new
+			{/if}
+		{/strip}"
 		data-target-url="?m=messageinfo&id={$message.id}"
 		data-popup-menu-title="{t a=$message.id|string_format:"%d"}Message #$a{/t}"
 	>

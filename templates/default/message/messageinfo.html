@@ -199,7 +199,21 @@
     <TBODY>
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
-	<TR class="{if $item.body}showitem{/if} {if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-itemid="{$item.id}">
+	<TR class="highlight{if $item.body} showitem{/if} {strip}
+			{if $item.status == $smarty.const.MSG_ERROR}
+				lms-ui-message-error
+			{elseif $item.status == $smarty.const.MSG_SENT}
+				lms-ui-message-sent
+			{elseif $item.status == $smarty.const.MSG_DELIVERED}
+				lms-ui-message-delivered
+			{elseif $item.status == $smarty.const.MSG_CANCELLED}
+				lms-ui-message-cancelled
+			{elseif $item.status == $smarty.const.MSG_BOUNCED}
+				lms-ui-message-bounced
+			{else}
+				lms-ui-message-new
+			{/if}
+		{/strip}" data-itemid="{$item.id}">
 		<TD class="nobr valign-top">
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</A>
