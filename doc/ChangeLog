@@ -88,6 +88,7 @@ version 28-git (????-??-??):
     calculation such way that it's always next day for activation and settlement of start period [chilan]
   - enhancement: added 'cancelled' and 'bounced' message statuses [chilan]
   - enhancement: '%body' symbol is replaces by ticket messages in queue configured notifications [chilan]
+  - improvement: message status color marking description hint in customer messages box [chilan]
 
 version 27.0 (2021-08-20):
 
