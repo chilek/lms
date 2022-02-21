@@ -148,7 +148,12 @@
 			<A href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction == "asc" && $listdata.order == "destination"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order == "destination"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")} ({trans("Error message")})</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">
+				{trans("Status")} ({trans("Description")})
+			</a>
+			{if $listdata.order == "status"}
+				<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{trans("Last read on:")}
@@ -238,8 +243,10 @@
 		<TD class="text-right valign-top">
 			{if $item.status == $smarty.const.MSG_SENT}
 				{trans("sent")}
+				{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_ERROR}
-				{trans("errornous")}{if $item.error} ({$item.error|escape}){/if}
+				{trans("errornous")}
+				{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_DELIVERED}
 				{trans("delivered")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
 			{elseif $item.status == $smarty.const.MSG_CANCELLED}
