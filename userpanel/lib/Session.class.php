@@ -540,6 +540,7 @@ class Session
         }
 
         if ($this->unsecure_pin_validity && time() - $passwdlastchange >= $this->unsecure_pin_validity) {
+            $this->error = trans('PIN is expired - use credential reminder form!');
             return false;
         }
 
