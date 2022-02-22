@@ -987,7 +987,9 @@ if (!empty($assigns)) {
     foreach ($reward_to_check as $cid) {
         $period_start = $period_starts[$reward_period_to_check[$cid]];
         $balance = $LMS->GetCustomerBalance($cid, $period_start);
-        if ($balance < 0) {
+        if (!isset($balance)) {
+            $balance = 0;
+        } elseif ($balance < 0) {
             $rewards[$cid] = false;
             continue;
         }
@@ -999,7 +1001,7 @@ if (!empty($assigns)) {
             LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
             WHERE c.customerid = ?
                 AND c.time >= ? AND c.time < ?
-            ORDER BY time',
+            ORDER BY c.time',
             array(
                 $reward_penalty_deadline_grace_days,
                 array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
@@ -1027,6 +1029,9 @@ if (!empty($assigns)) {
                 return $a['time'] - $b['time'];
             });
             foreach ($history as $record) {
+                if ($record['time'] >= $period_end) {
+                    break;
+                }
                 $balance += $record['value'];
                 if (empty($record['docid'])) {
                     continue;
