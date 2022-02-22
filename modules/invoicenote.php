@@ -96,15 +96,14 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['oldcurrency'] = $invoice['currency'];
     $cnote['oldcurrencyvalue'] = $invoice['currencyvalue'];
 
-    $t = $invoice['cdate'] + $invoice['paytime'] * 86400;
-    $deadline = mktime(23, 59, 59, date('m', $t), date('d', $t), date('Y', $t));
+    $deadline = strtotime('today + ' . ($invoice['paytime'] + 1) . ' days', $invoice['cdate']) - 1;
 
     if ($cnote['cdate'] > $deadline) {
         $cnote['paytime'] = 0;
     } else {
         $cnote['paytime'] = floor(($deadline - $cnote['cdate']) / 86400);
     }
-    $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
+    $cnote['deadline'] = strtotime('today + ' . ($cnote['paytime'] + 1) . ' days', $cnote['cdate']) - 1;
 
     $cnote['use_current_division'] = true;
 
@@ -227,16 +226,16 @@ switch ($action) {
         }
 
         if ($cnote['deadline']) {
-            list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
-            if (checkdate($dmonth, $dday, $dyear)) {
-                $cnote['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
-            } else {
+            $deadline = strtotime('tomorrow ' . $cnote['deadline']) - 1;
+            if (empty($deadline)) {
                 $error['deadline'] = trans('Incorrect date format!');
-                $cnote['deadline'] = $currtime;
+                $cnote['deadline'] = strtotime('tomorrow') - 1;
                 break;
+            } else {
+                $cnote['deadline'] = $deadline;
             }
         } else {
-            $cnote['deadline'] = $currtime;
+            $cnote['deadline'] = strtotime('tomorrow') - 1;
         }
 
         if ($cnote['deadline'] < $cnote['cdate']) {

@@ -99,7 +99,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 
     $cnote['oldcdate'] = $cnote['cdate'];
     $cnote['oldsdate'] = $cnote['sdate'];
-    $cnote['olddeadline'] = $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
+    $cnote['olddeadline'] = $cnote['deadline'] = strtotime('today + ' . ($cnote['paytime'] + 1) . ' days', $cnote['cdate']) - 1;
     $cnote['oldnumber'] = $cnote['number'];
     $cnote['oldnumberplanid'] = $cnote['numberplanid'];
     $cnote['oldcustomerid'] = $cnote['customerid'];
@@ -248,16 +248,16 @@ switch ($action) {
         }
 
         if ($cnote['deadline']) {
-            list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
-            if (checkdate($dmonth, $dday, $dyear)) {
-                $cnote['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
-            } else {
+            $deadline = strtotime($cnote['deadline'] . ' + 1 day') - 1;
+            if (empty($deadline)) {
                 $error['deadline'] = trans('Incorrect date format!');
-                $cnote['deadline'] = $currtime;
+                $cnote['deadline'] = strtotime('tomorrow') - 1;
                 break;
+            } else {
+                $cnote['deadline'] = $deadline;
             }
         } else {
-            $cnote['deadline'] = $currtime;
+            $cnote['deadline'] = strtotime('tomorrow') - 1;
         }
 
         if ($cnote['deadline'] < $cnote['cdate']) {
