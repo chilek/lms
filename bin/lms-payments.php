@@ -994,14 +994,14 @@ if (!empty($assigns)) {
             continue;
         }
         $history = $DB->GetAll(
-            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS time,
+            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
                 d.id AS docid,
                 (c.value * c.currencyvalue) AS value
             FROM cash c
             LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
             WHERE c.customerid = ?
                 AND c.time >= ? AND c.time < ?
-            ORDER BY c.time',
+            ORDER BY deadline',
             array(
                 $reward_penalty_deadline_grace_days,
                 array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
@@ -1014,22 +1014,22 @@ if (!empty($assigns)) {
         if (!empty($history)) {
             foreach ($history as &$record) {
                 if (!empty($record['docid'])) {
-                    $record['time'] = mktime(
+                    $record['deadline'] = mktime(
                         23,
                         59,
                         59,
-                        date('m', $record['time']),
-                        date('d', $record['time']),
-                        date('Y', $record['time'])
+                        date('m', $record['deadline']),
+                        date('d', $record['deadline']),
+                        date('Y', $record['deadline'])
                     ) + 1;
                 }
             }
             unset($record);
             usort($history, function ($a, $b) {
-                return $a['time'] - $b['time'];
+                return $a['deadline'] - $b['deadline'];
             });
             foreach ($history as $record) {
-                if ($record['time'] >= $period_end) {
+                if ($record['deadline'] >= $period_end) {
                     break;
                 }
                 $balance += $record['value'];
