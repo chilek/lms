@@ -94,6 +94,7 @@ if (isset($_GET['id']) && $action == 'edit') {
         $nitem['taxid']     = $item['taxid'];
         $nitem['servicetype'] = $item['servicetype'];
         $nitem['taxcategory'] = $item['taxcategory'];
+        $nitem['itemid'] = $item['itemid'];
         $cnotecontents[$item['itemid']] = $nitem;
     }
 
@@ -509,9 +510,11 @@ switch ($action) {
             $contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
         }
 
-        if (!isset($cnote['newheader'])
-            || (isset($cnote['newheader']) && empty(array_diff_assoc($cnote['oldheader'], $cnote['newheader'])))
-        ) {
+        $headerDiff = array();
+        if (isset($cnote['oldheader']) && isset($cnote['newheader'])) {
+            $headerDiff = array_diff_assoc($cnote['oldheader'], $cnote['newheader']);
+        }
+        if (!isset($cnote['newheader']) || empty($headerDiff)) {
             $contentDiff = false;
             foreach ($oldcnotecontents as $item) {
                 $idx = $item['itemid'];
