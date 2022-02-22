@@ -610,7 +610,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 //if ($invoice['cdate'] != $invoice['sdate'])
                 $jpk_data .= "\t\t<DataSprzedazy>" . strftime('%Y-%m-%d', $invoice['sdate']) . "</DataSprzedazy>\n";
 
-                if ($jpk_vat_version == 4) {
+                if ($jpk_vat_version >= 4) {
                     if (!empty($invoice['flags'][DOC_FLAG_RECEIPT])) {
                         $jpk_data .= "\t\t<TypDokumentu>FP</TypDokumentu>\n";
                     }
