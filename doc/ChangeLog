@@ -89,6 +89,7 @@ version 28-git (????-??-??):
   - enhancement: added 'cancelled' and 'bounced' message statuses [chilan]
   - enhancement: '%body' symbol is replaces by ticket messages in queue configured notifications [chilan]
   - improvement: message status color marking description hint in customer messages box [chilan]
+  - improvement: show last NAS/BRAS info obtained for latest node session [chilan]
 
 version 27.0 (2021-08-20):
 
