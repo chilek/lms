@@ -422,6 +422,7 @@ if (($fh = fopen($message_file, "r")) != null) {
                     trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
                     $custmail_body
                 );
+                $custmail_body = str_replace('%body', $message, $custmail_body);
                 $custmail_headers = array(
                     'From' => $headers['From'],
                     'Reply-To' => $headers['From'],
@@ -449,6 +450,7 @@ if (($fh = fopen($message_file, "r")) != null) {
                     trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
                     $custsms_body
                 );
+                $custsms_body = str_replace('%body', $message, $custsms_body);
 
                 foreach ($mobile_phones as $phone) {
                     $LMS->SendSMS($phone['contact'], $custsms_body);

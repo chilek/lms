@@ -414,9 +414,9 @@ if ($customer_netdevices) {
 			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.zip ELSE asrc.zip END) AS location_zip
 		FROM netlinks nl
 		JOIN netdevices ndsrc ON ndsrc.id = nl.src
-		JOIN addresses asrc ON asrc.id = ndsrc.address_id
+		LEFT JOIN addresses asrc ON asrc.id = ndsrc.address_id
 		JOIN netdevices nddst ON nddst.id = nl.dst
-		JOIN addresses adst ON adst.id = nddst.address_id
+		LEFT JOIN addresses adst ON adst.id = nddst.address_id
 		JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
 			OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
 		LEFT JOIN netradiosectors rs ON (ndsrc.ownerid IS NULL AND rs.id = nl.srcradiosector)

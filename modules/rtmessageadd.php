@@ -404,7 +404,7 @@ if (isset($_POST['message'])) {
                     $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
                 }
 
-                if (isset($message['notify']) || !empty($ticket['verifierid'])) {
+                if (isset($message['notify'])) {
                     $params = array(
                         'id' => $ticketid,
                         'queue' => $queue['name'],
@@ -477,6 +477,7 @@ if (isset($_POST['message'])) {
                     $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                     $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
                     $custmail_body = str_replace('%title', $title, $custmail_body);
+                    $custmail_body = str_replace('%body', $message['body'], $custmail_body);
                     $custmail_headers = array(
                         'From' => $headers['From'],
                         'Reply-To' => $headers['From'],
@@ -500,6 +501,7 @@ if (isset($_POST['message'])) {
                     $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                     $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
                     $custsms_body = str_replace('%title', $title, $custsms_body);
+                    $custsms_body = str_replace('%body', $message['body'], $custsms_body);
                     $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
 
                     foreach ($mobile_phones as $phone) {

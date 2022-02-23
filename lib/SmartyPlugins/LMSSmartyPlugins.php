@@ -1065,6 +1065,7 @@ class LMSSmartyPlugins
     public static function deadlineSelectionFunction(array $params, $template)
     {
         $name = $params['name'];
+        $id = isset($params['id']) ? $params['id'] : null;
         $cdate_selector = isset($params['cdate_selector']) ? $params['cdate_selector'] : '#cdate';
         $value = isset($params['value']) ? $params['value'] : '';
         if (!empty($params['value']) && preg_match('/^[0-9]+$/', $value)) {
@@ -1073,13 +1074,13 @@ class LMSSmartyPlugins
 
         return '
             <div class="lms-ui-deadline-selection" data-cdate-selector="' . $cdate_selector . '">
-                <input type="text" class="lms-ui-deadline-selection-date" name="' . $name . '" value="' . $value . '"
-                    size="12" placeholder="' . trans('yyyy/mm/dd') . '"
+                <input type="text" name="' . $name . '" value="' . $value . '"
+                    size="12" placeholder="' . trans('yyyy/mm/dd') . '"' . (isset($id) ? ' id="' . $id . '"' : '') . '
                     ' . self::tipFunction(
                         array(
-                            'class' => 'lms-ui-date',
+                            'class' => 'lms-ui-deadline-selection-date lms-ui-date',
                             'text' => 'Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar',
-                            'trigger' => $name,
+                            'trigger' => isset($id) ? $id : $name,
                         ),
                         $template
                     ) . '>

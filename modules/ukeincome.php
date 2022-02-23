@@ -110,8 +110,8 @@ $income = $DB->GetAll('
 		COUNT(DISTINCT CASE WHEN c.type = 0 THEN c.id ELSE null END) AS privatecount,
 		COUNT(DISTINCT CASE WHEN c.type = 1 THEN c.id ELSE null END) AS bussinesscount,
 		COUNT(DISTINCT c.id) AS totalcount,
-		SUM(CASE WHEN c.type = 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
-		SUM(CASE WHEN c.type = 1 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS bussinessincome,
+		SUM(CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
+		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS bussinessincome,
 		SUM(' . $value_formula . ') * -1 AS totalincome
 	FROM cash
     LEFT JOIN documents d ON d.id = cash.docid
@@ -184,7 +184,7 @@ if ($bandwidths) {
     $customer_links = $DB->GetAll(
         'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
             t.downceil,
-            ROUND(SUM((CASE WHEN c.type = 0 THEN ROUND(ic.count) ELSE 0 END)
+            ROUND(SUM((CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ROUND(ic.count) ELSE 0 END)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
                     WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
@@ -192,7 +192,7 @@ if ($bandwidths) {
                     WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
                     ELSE 0 END)
             )) AS private,
-            ROUND(SUM((CASE WHEN c.type = 1 THEN ROUND(ic.count) ELSE 0 END)
+            ROUND(SUM((CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ROUND(ic.count) ELSE 0 END)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
                     WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '

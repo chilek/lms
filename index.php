@@ -383,8 +383,9 @@ if ($AUTH->islogged) {
             $SYSLOG->NewTransaction($module);
         }
 
-        // everyone should have access to documentation
+        // everyone should have access to documentation and authentication configuration
         $rights[] = 'documentation';
+        $rights[] = 'auth';
 
         $access->applyMenuPermissions($menu, $rights);
 

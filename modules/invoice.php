@@ -400,7 +400,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2020/03/11/eD/DefinicjeTypy/\">\n";
                     break;
                 case 5:
-                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2021/07/08/07081/\""
+                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2021/12/27/11148/\""
                         . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/\">\n";
                     break;
             }
@@ -610,7 +610,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 //if ($invoice['cdate'] != $invoice['sdate'])
                 $jpk_data .= "\t\t<DataSprzedazy>" . strftime('%Y-%m-%d', $invoice['sdate']) . "</DataSprzedazy>\n";
 
-                if ($jpk_vat_version == 4) {
+                if ($jpk_vat_version >= 4) {
                     if (!empty($invoice['flags'][DOC_FLAG_RECEIPT])) {
                         $jpk_data .= "\t\t<TypDokumentu>FP</TypDokumentu>\n";
                     }

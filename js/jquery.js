@@ -254,6 +254,8 @@ function init_datepickers(selector) {
 	$(selector).each(function() {
 		var unix = $(this).hasClass('unix') || $(this).hasClass('lms-ui-date-unix');
 		var yearRange = $(this).attr('data-year-range');
+		var minDate = $(this).attr('data-min-date');
+		var maxDate = $(this).attr('data-max-date');
 		var value = $(this).val();
 		var dt = null;
 		if (unix) {
@@ -275,6 +277,12 @@ function init_datepickers(selector) {
 		}
 		if (yearRange) {
 			options.yearRange = yearRange;
+		}
+		if (minDate) {
+			options.minDate = new Date(minDate);
+		}
+		if (maxDate) {
+			options.minDate = new Date(maxDate);
 		}
 		$(this).wrap('<div class="lms-ui-date-container"/>');
 		$(this).datepicker(options).attr("autocomplete", 'off')

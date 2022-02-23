@@ -243,13 +243,16 @@ if ($id && !isset($_POST['ticket'])) {
                         $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                         $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
                         $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+                        $message = end($ticket['messages']);
+                        $body = str_replace('<br>', "\n", $message['body']);
+                        $custmail_body = str_replace('%body', $body, $custmail_body);
                         $custmail_headers = array(
                             'From' => $from,
                             'Reply-To' => $from,
                             'Subject' => $custmail_subject,
                         );
                         $smtp_options = $LMS->GetRTSmtpOptions();
-                        foreach (explode(',', $info['emails']) as $email) {
+                        foreach ($emails as $email) {
                             $custmail_headers['To'] = '<' . $email . '>';
                             $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
                         }
@@ -267,6 +270,9 @@ if ($id && !isset($_POST['ticket'])) {
                         $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                         $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
                         $custsms_body = str_replace('%title', $ticket['subject'], $custsms_body);
+                        $message = end($ticket['messages']);
+                        $body = str_replace('<br>', "\n", $message['body']);
+                        $custsms_body = str_replace('%body', $body, $custsms_body);
                         $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
 
                         foreach ($mobile_phones as $phone) {

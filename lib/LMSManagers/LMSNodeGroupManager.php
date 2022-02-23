@@ -179,7 +179,10 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
             $res = $this->db->Execute(
                 'DELETE FROM nodegroupassignments
                 WHERE nodegroupid = ? AND nodeid = ?',
-                array_values($params)
+                array(
+                    $params['nodegroupid'],
+                    $params['nodeid'],
+                )
             );
             if ($res && $this->syslog) {
                 $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;

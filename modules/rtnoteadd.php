@@ -47,7 +47,7 @@ if (isset($_GET['ticketid'])) {
     $note = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
     $reply = $LMS->GetFirstMessage($note['ticketid']);
     $note['inreplyto'] = $reply['id'];
-    $note['references'] = implode(' ', $reply['references']);
+    $note['references'] = empty($reply['references']) ? '' : implode(' ', $reply['references']);
 
     $note['category_change'] = 0;
 
@@ -144,7 +144,7 @@ if (isset($_GET['ticketid'])) {
 
         $LMS->TicketChange($note['ticketid'], $props);
 
-        if (isset($note['notify']) || !empty($ticket['verifierid'])) {
+        if (isset($note['notify'])) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
             $queue = $LMS->GetQueueByTicketId($note['ticketid']);
             $mailfname = '';

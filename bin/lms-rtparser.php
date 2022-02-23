@@ -713,7 +713,9 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         } else {
             $cats = array();
             foreach ($categories as $category) {
-                if (($catid = $LMS->GetCategoryIdByName($category)) != null) {
+                if (preg_match('/^[0-9]+$/', $category) && $LMS->CategoryExists($category)) {
+                    $cats[$category] = $LMS->GetCategoryName($category);
+                } elseif (($catid = $LMS->GetCategoryIdByName($category)) != null) {
                     $cats[$catid] = $category;
                 }
             }
@@ -910,6 +912,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                 $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                 $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
                 $custmail_body = str_replace('%title', $mh_subject, $custmail_body);
+                $custmail_body = str_replace('%body', $mail_body, $custmail_body);
                 $custmail_headers = array(
                     'From' => $headers['From'],
                     'Reply-To' => $headers['From'],

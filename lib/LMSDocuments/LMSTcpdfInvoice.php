@@ -942,6 +942,12 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $account = reset($accounts);
 
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+            $payment_value = $this->data['customerbalance'] * -1;
+        } else {
+            $payment_value = $this->data['value'];
+        }
+
         $this->backend->SetFont(self::TCPDF_FONT, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
@@ -950,7 +956,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             . '|'
             . $account
             . '|'
-            . str_pad($this->data['value'] * 100, 6, 0, STR_PAD_LEFT)
+            . str_pad(($payment_value < 0 ? 0 : $payment_value) * 100, 6, 0, STR_PAD_LEFT)
             . '|'
             . mb_substr($this->data['division_shortname'], 0, 20)
             . '|'

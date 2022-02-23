@@ -2892,7 +2892,7 @@ $_LANG['Voip account login is required!'] = 'Login jest wymagany!';
 $_LANG['Specified login is in use!'] = 'Podany login jest w użyciu!';
 $_LANG['Voip account login is too long (max.32 characters)!'] = 'Podany login jest za długi (max. 32 znaki)!';
 $_LANG['Voip account password is required!'] = 'Hasło jest wymagane!';
-$_LANG['Voip account password is too long (max.32 characters)!'] = 'Podane hasło jest za długie (max. 32 znaki)!';
+$_LANG['Voip account password is too long (max. $a characters)!'] = 'Podane hasło jest za długie (maks. $a znaki)!';
 $_LANG['Specified password contains forbidden characters!'] = 'Podane hasło zawiera zabronione znaki!';
 $_LANG['Voip account phone number is required!'] = 'Numer telefonu jest wymagany!';
 $_LANG['Voip account phone number is too long (max.32 characters)!'] = 'Podany numer telefonu jest za długi (max. 32 znaki)!';
@@ -2972,7 +2972,11 @@ $_LANG['No such messages in database.'] = 'Brak wiadomości w bazie danych.';
 $_LANG['No such recipients in database.'] = 'Brak odbiorców w bazie danych.';
 $_LANG['added'] = 'dodano';
 $_LANG['delivered'] = 'dostarczono';
+$_LANG['cancelled'] = 'anulowano';
+$_LANG['bounced'] = 'odesłano';
 $_LANG['delivered<!plural>'] = 'dostarczone';
+$_LANG['cancelled<!plural>'] = 'anulowane';
+$_LANG['bounced<!plural>'] = 'odesłane';
 $_LANG['sent'] = 'wysłano';
 $_LANG['sent<!plural>'] = 'wysłane';
 $_LANG['sms'] = 'SMS';
@@ -5182,6 +5186,7 @@ $_LANG['<!customersearch>Replace groups'] = 'Zastąp grupy';
 $_LANG['<!customersearch>Action:'] = 'Czynność:';
 $_LANG['<!customersearch>New customer group name cannot be empty!'] = 'Nazwa nowej grupy klientów nie może być pusta!';
 $_LANG['<!customersearch>Customer group with specified name already exists!'] = 'Grupa klientów o podanej nazwie już istnieje!';
+$_LANG['<!customersearch>No customer groups were selected!'] = 'Nie wybrano żadnej grupy klientów!';
 $_LANG['<!customersearch>Add flags'] = 'Dodaj flagi';
 $_LANG['<!customersearch>Remove flags'] = 'Usuń flagi';
 $_LANG['<!customersearch>Messages'] = 'Wiadomości';
@@ -5296,13 +5301,45 @@ $_LANG['<!customer-notification-body>The following special symbols are supported
     . '<strong>%cid</strong> - customer identifier,<br>'
     . '<strong>%pin</strong> - customer PIN,<br>'
     . '<strong>%customername</strong> - customer full name,<br>'
-    . '<strong>%title</strong> - ticket title.<br>'] =
+    . '<strong>%title</strong> - ticket title,<br>'
+    . '<strong>%body</strong> - new ticket body.<br>'] =
     'Obsługiwane są następujące symbole specjalne:<br>'
     . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
     . '<strong>%cid</strong> - identyfikator klienta,<br>'
     . '<strong>%pin</strong> - PIN klienta,<br>'
     . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
-    . '<strong>%title</strong> - tytuł zgłoszenia.<br>';
+    . '<strong>%title</strong> - tytuł zgłoszenia,<br>'
+    . '<strong>%body</strong> - treść nowego zgłoszenia.<br>';
+
+$_LANG['<!customer-notification-body>The following special symbols are supported:<br>'
+    . '<strong>%tid</strong> - ticket identifier,<br>'
+    . '<strong>%cid</strong> - customer identifier,<br>'
+    . '<strong>%pin</strong> - customer PIN,<br>'
+    . '<strong>%customername</strong> - customer full name,<br>'
+    . '<strong>%title</strong> - ticket title,<br>'
+    . '<strong>%body</strong> - new message body.<br>'] =
+    'Obsługiwane są następujące symbole specjalne:<br>'
+    . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
+    . '<strong>%cid</strong> - identyfikator klienta,<br>'
+    . '<strong>%pin</strong> - PIN klienta,<br>'
+    . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%title</strong> - tytuł zgłoszenia,<br>'
+    . '<strong>%body</strong> - treść nowej wiadomości.<br>';
+
+$_LANG['<!customer-notification-body>The following special symbols are supported:<br>'
+    . '<strong>%tid</strong> - ticket identifier,<br>'
+    . '<strong>%cid</strong> - customer identifier,<br>'
+    . '<strong>%pin</strong> - customer PIN,<br>'
+    . '<strong>%customername</strong> - customer full name,<br>'
+    . '<strong>%title</strong> - ticket title,<br>'
+    . '<strong>%body</strong> - ticket last message body.<br>'] =
+    'Obsługiwane są następujące symbole specjalne:<br>'
+    . '<strong>%tid</strong> - identyfikator zgłoszenia,<br>'
+    . '<strong>%cid</strong> - identyfikator klienta,<br>'
+    . '<strong>%pin</strong> - PIN klienta,<br>'
+    . '<strong>%customername</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%title</strong> - tytuł zgłoszenia,<br>'
+    . '<strong>%body</strong> - treść ostatniej wiadomości w zgłoszeniu.<br>';
 
 $_LANG['(HTML content has been omitted)'] = '(Treść HTML została pominięta)';
 
@@ -5351,6 +5388,10 @@ $_LANG['sms marketing'] = 'marketing SMS-em';
 $_LANG['Issuer'] = 'Wystawca';
 $_LANG['Enter issuer name visible on documents'] = 'Podaj nazwę wystawcy widoczną na dokumentach';
 $_LANG['Are you sure, you want to delete that VLAN?'] = 'Czy jesteś pewien, że chcesz usunąć ten VLAN?';
+
+$_LANG['Message status color markings:'] = 'Legenda oznaczeń statusów wiadomości:';
+$_LANG['new/waiting'] = 'nowa/oczekująca';
+$_LANG['error'] = 'błąd';
 
 $_LANG['Assignments color markings:'] = 'Legenda oznaczeń:';
 $_LANG['Active tariff assignment'] = 'Zobowiązanie taryfowe aktywne';
@@ -5422,3 +5463,7 @@ $_LANG['- ignore -'] = '- ignoruj -';
 $_LANG['with TEN'] = 'z NIP';
 $_LANG['without TEN'] = 'bez NIP';
 $_LANG['uses TEN from invoice'] = 'używa NIP z faktury';
+
+$_LANG['last NAS/BRAS'] = 'ostatni NAS/BRAS';
+$_LANG['<!last-nas>$a ($b)'] = '$a ($b)';
+$_LANG['<!last-nas>$a'] = '$a';

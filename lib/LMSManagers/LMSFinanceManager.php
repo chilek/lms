@@ -421,6 +421,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         // Create assignments according to promotion schema
         if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
+            $force_at_next_day = ConfigHelper::checkConfig('phpui.promotion_force_at_next_day');
+
             $now = strtotime('now');
 
             $align_periods = isset($data['align-periods']) && !empty($data['align-periods']);
@@ -467,7 +469,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         // payday is before the start of the period
                         // set activation payday to next month's payday
                         $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true);
-                        if (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
+                        if ($force_at_next_day) {
+                            $datefrom = strtotime('tomorrow', $datefrom);
+                            if ($activation_at_next_day == 'business') {
+                                $datefrom = Utils::findNextBusinessDay($datefrom);
+                            }
+                            $at = $datefrom;
+                        } elseif (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
                             if ($datefrom < $now && !$activation_at_same_day) {
                                 $datefrom = strtotime('tomorrow');
                             }
@@ -761,7 +769,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                                 $partial_at = $data['at'];
                             } else {
-                                $partial_at = $orig_datefrom <= $now ? date('d', strtotime('tomorrow')) : $dom;
+                                if ($force_at_next_day && $idx == 1) {
+                                    $partial_at = date('d', strtotime('tomorrow', $orig_datefrom));
+                                } else {
+                                    $partial_at = $orig_datefrom <= $now ? date('d', strtotime('tomorrow')) : $dom;
+                                }
                             }
 
                             if ($value != 'NULL') {

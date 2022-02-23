@@ -260,7 +260,7 @@
 
 			{box_row icon="source" label="Ticket source" icon_class="fa-fw"}
 				<SELECT size="1" name="ticket[source]" {tip text="Select ticket source" trigger="source"}>
-					{foreach $_RT_SOURCES as $sourceidx => $source}
+					{foreach Localisation::arraySort($_RT_SOURCES) as $sourceidx => $source}
 					<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$source}</OPTION>
 					{/foreach}
 				</SELECT>

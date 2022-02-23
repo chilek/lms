@@ -371,6 +371,7 @@ if (isset($_POST['ticket'])) {
                 $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
                 $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
                 $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+                $custmail_body = str_replace('%body', $ticket['body'], $custmail_body);
                 $custmail_body = str_replace('%service', $ticket['service'], $custmail_body);
                 $custmail_headers = array(
                     'From' => $headers['From'],
@@ -396,6 +397,7 @@ if (isset($_POST['ticket'])) {
                 $custsms_body = str_replace('%pin', $info['pin'], $custsms_body);
                 $custsms_body = str_replace('%customername', $info['customername'], $custsms_body);
                 $custsms_body = str_replace('%title', $ticket['subject'], $custsms_body);
+                $custsms_body = str_replace('%body', $ticket['body'], $custsms_body);
                 $custsms_body = str_replace('%service', $ticket['service'], $custsms_body);
 
                 foreach ($mobile_phones as $phone) {

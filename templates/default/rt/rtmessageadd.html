@@ -199,7 +199,7 @@
 {if !$group_action}
 			{box_row icon="source" icon_class="fa-fw" label="Ticket source"}
 				<SELECT size="1" name="message[source]" {tip text="Select ticket source" trigger="source"}>
-					{foreach $_RT_SOURCES as $sourceidx => $status}
+					{foreach Localisation::arraySort($_RT_SOURCES) as $sourceidx => $status}
 					<OPTION value="{$sourceidx}"{if $message.source == $sourceidx} selected{/if}>{$status}</OPTION>
 					{/foreach}
 				</SELECT>

@@ -339,8 +339,18 @@ $access->appendPermission(
         array(
             'documentation' => Permission::MENU_ALL,
         )
-    ),
-    'full_access'
+    )
+);
+$access->appendPermission(
+    new Permission(
+        'auth',
+        null,
+        null,
+        null,
+        array(
+            'auth' => Permission::MENU_ALL,
+        )
+    )
 );
 
 // read user-defined access rights table

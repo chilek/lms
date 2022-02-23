@@ -10,6 +10,20 @@
 	{tab_header content_id="messagespanel"}
 		{tab_header_cell icon="lms-ui-icon-message"}
 			<strong>{trans("Customer Messages:")}</strong>
+			{capture assign="message_hint"}
+				<strong>{trans("Message status color markings:")}</strong>
+				<br><br>
+				<span class="lms-ui-message-new"><strong>{trans("new/waiting")}</strong></span>
+				<br>
+				<span class='lms-ui-message-sent'><strong>{trans("sent")}</strong></span>
+				<br>
+				<span class='lms-ui-message-delivered'><strong>{trans("delivered")}</strong></span>
+				<br>
+				<span class='lms-ui-message-cancelled'><strong>{trans("cancelled")}</strong></span>
+				<br>
+				<span class='lms-ui-message-error'><strong>{trans("error")}</strong></span>
+			{/capture}
+			{hint text=$message_hint}
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A href="?m=messageadd&customerid={$customerinfo.id}">{trans("New Message")} &raquo;</A>
@@ -58,7 +72,21 @@
 				</THEAD>
 				<TBODY>
 				{foreach $messagelist as $item}
-				<TR class="{if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
+				<TR class="{strip}
+					{if $item.status == $smarty.const.MSG_ERROR}
+						lms-ui-message-error
+					{elseif $item.status == $smarty.const.MSG_SENT}
+						lms-ui-message-sent
+					{elseif $item.status == $smarty.const.MSG_DELIVERED}
+						lms-ui-message-delivered
+					{elseif $item.status == $smarty.const.MSG_CANCELLED}
+						lms-ui-message-cancelled
+					{elseif $item.status == $smarty.const.MSG_BOUNCED}
+						lms-ui-message-bounced
+					{else}
+						lms-ui-message-new
+					{/if}
+				{/strip}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>

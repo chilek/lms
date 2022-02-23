@@ -510,6 +510,38 @@
 										</tr>
 									{/if}
 
+									{if !empty($nodesessions)}
+										{$nodesession = reset($nodesessions)}
+										{if $nodesession.nasipaddr || $nodesession.nasid}
+											<tr>
+												<td>
+													{icon name="nodesession"}
+												</td>
+												<td>
+													{trans("last NAS/BRAS")}
+												</td>
+												<td class="cell-flex">
+													<div>
+														{if $nodesession.stop > $smarty.now - intval(ConfigHelper::getConfig('phpui.lastonline_limit'))}
+															{$online = true}
+														{else}
+															{$online = false}
+														{/if}
+														{if $nodesession.nasid}
+															{t a=$nodesession.nasip b=$nodesession.nasid}{strip}
+																<!last-nas>$a ($b)
+															{/strip}{/t}
+														{else}
+															{t a=$nodesession.nasip}{strip}
+																<!last-nas>$a
+															{/strip}{/t}
+														{/if}
+													</div>
+												</td>
+											</tr>
+										{/if}
+									{/if}
+
 									<tr>
 										<td>
 											{icon name="user"}

@@ -272,6 +272,7 @@ switch ($type) {
                 $list[$x]['time'] = $row['time'];
                 $list[$x]['sourcename'] = $row['sourcename'];
                 $list[$x]['comment'] = $row['comment'];
+                $list[$x]['customerid'] = $row['customerid'];
                 $list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
                 if ($row['customerid'] && $row['type']==0) {
