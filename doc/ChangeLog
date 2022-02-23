@@ -90,6 +90,12 @@ version 28-git (????-??-??):
   - enhancement: '%body' symbol is replaces by ticket messages in queue configured notifications [chilan]
   - improvement: message status color marking description hint in customer messages box [chilan]
   - improvement: show last NAS/BRAS info obtained for latest node session [chilan]
+  - enhancement: radius disconnect send support from within node info view [chilan]
+  - enhancement: 'phpui.default_radius_secret' with empty default value controls what radius secret is used
+    when network device corresponding nas ip address is not defined [chilan]
+  - enhancement: 'phpui.radius_disconnect_command' with 'Framed-IP-Address=\"%ip%\"' |radclient %nasip%:3799
+    disconnect '%secret%'' as default value defines default radius disconnect command which is used during
+    node session disconnect request [chilan]
 
 version 27.0 (2021-08-20):
 
