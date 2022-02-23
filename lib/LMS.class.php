@@ -1181,6 +1181,12 @@ class LMS
         return $manager->NodeStats();
     }
 
+    public function GetNodeSessions($nodeid)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeSessions($nodeid);
+    }
+
     public function GetNodeGroupNames()
     {
         $manager = $this->getNodeGroupManager();
@@ -3848,28 +3854,6 @@ class LMS
     {
         $manager = $this->getConfigManager();
         return $manager->GetConfigSections();
-    }
-
-    public function GetNodeSessions($nodeid)
-    {
-        $nodesessions = $this->DB->GetAll(
-            'SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
-		download, upload, terminatecause, type
-		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT ' . intval(ConfigHelper::getConfig('phpui.nodesession_limit', 10)),
-            array($nodeid)
-        );
-        if (!empty($nodesessions)) {
-            foreach ($nodesessions as $idx => $session) {
-                list ($number, $unit) = setunits($session['download']);
-                $nodesessions[$idx]['download'] = round($number, 2) . ' ' . $unit;
-                list ($number, $unit) = setunits($session['upload']);
-                $nodesessions[$idx]['upload'] = round($number, 2) . ' ' . $unit;
-                $nodesessions[$idx]['duration'] = $session['stop']
-                ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))
-                : '-';
-            }
-        }
-        return $nodesessions;
     }
 
     public function MessageTemplateExists($type, $name)

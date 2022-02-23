@@ -5463,3 +5463,7 @@ $_LANG['- ignore -'] = '- ignoruj -';
 $_LANG['with TEN'] = 'z NIP';
 $_LANG['without TEN'] = 'bez NIP';
 $_LANG['uses TEN from invoice'] = 'używa NIP z faktury';
+
+$_LANG['last NAS/BRAS'] = 'ostatni NAS/BRAS';
+$_LANG['<!last-nas>$a ($b)'] = '$a ($b)';
+$_LANG['<!last-nas>$a'] = '$a';

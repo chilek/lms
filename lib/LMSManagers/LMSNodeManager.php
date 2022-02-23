@@ -1211,4 +1211,32 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
         return $removed;
     }
+
+    public function GetNodeSessions($nodeid)
+    {
+        $nodesessions = $this->db->GetAll(
+            'SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
+                    download, upload, terminatecause, type,
+                    nasipaddr, INET_NTOA(nasipaddr) AS nasip,
+                    nasid
+                FROM nodesessions
+                WHERE nodeid = ?
+                ORDER BY stop DESC
+                LIMIT ' . intval(ConfigHelper::getConfig('phpui.nodesession_limit', 10)),
+            array($nodeid)
+        );
+        if (!empty($nodesessions)) {
+            foreach ($nodesessions as &$session) {
+                list ($number, $unit) = setunits($session['download']);
+                $session['download'] = round($number, 2) . ' ' . $unit;
+                list ($number, $unit) = setunits($session['upload']);
+                $session['upload'] = round($number, 2) . ' ' . $unit;
+                $session['duration'] = $session['stop']
+                    ? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))
+                    : '-';
+            }
+            unset($session);
+        }
+        return $nodesessions;
+    }
 }
