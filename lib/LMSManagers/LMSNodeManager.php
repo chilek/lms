@@ -1215,7 +1215,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function GetNodeSessions($nodeid)
     {
         $nodesessions = $this->db->GetAll(
-            'SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
+            'SELECT id, INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
                     download, upload, terminatecause, type,
                     nasipaddr, INET_NTOA(nasipaddr) AS nasip,
                     nasid
@@ -1238,5 +1238,32 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             unset($session);
         }
         return $nodesessions;
+    }
+
+    public function getRadiusParams(array $params)
+    {
+        if (isset($params['nodesessionid'])) {
+            $result = $this->db->GetRow(
+                'SELECT s.nasipaddr, INET_NTOA(s.nasipaddr) AS nasip,
+                    nd.secret,
+                    s.ipaddr, INET_NTOA(s.ipaddr) AS ip
+                FROM nodesessions s
+                LEFT JOIN nodes n ON n.nasipaddr = n.ipaddr AND n.ownerid IS NULL AND n.netdev IS NOT NULL
+                LEFT JOIN netdevices nd ON nd.id = n.netdev
+                WHERE s.id = ?',
+                array(
+                    $params['nodesessionid'],
+                )
+            );
+            if (empty($result)) {
+                return $result;
+            }
+            if (empty($result['secret'])) {
+                $result['secret'] = ConfigHelper::getConfig('phpui.default_radius_secret');
+            }
+            return $result;
+        } else {
+            return null;
+        }
     }
 }

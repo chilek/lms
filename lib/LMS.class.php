@@ -1187,6 +1187,12 @@ class LMS
         return $manager->GetNodeSessions($nodeid);
     }
 
+    public function getRadiusParams(array $params)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->getRadiusParams($params);
+    }
+
     public function GetNodeGroupNames()
     {
         $manager = $this->getNodeGroupManager();

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -141,22 +141,20 @@ function toggleNodeLock($id)
 
 function getThroughput($ip)
 {
-
-    $result = new xajaxResponse();
     $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
     if (empty($cmd)) {
-        return $result;
+        return '';
     }
 
     $cmd = str_replace('%i', $ip, $cmd);
     exec($cmd, $output);
     if (!is_array($output) && count($output) != 1) {
-        return $result;
+        return '';
     }
 
     $stats = explode(' ', $output[0]);
     if (count($stats) != 4) {
-        return $result;
+        return '';
     }
 
     $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
@@ -166,10 +164,8 @@ function getThroughput($ip)
     foreach (array(0, 2) as $idx) {
         $stats[$idx] = convert_to_units($stats[$idx], $speed_unit_aggregation_threshold, $speed_unit_type) . '/s';
     }
-    $result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2] . ' (' . $stats[1] . ' pps / ' . $stats[3] . ' pps)');
-    $result->call('live_traffic_finished');
 
-    return $result;
+    return $stats[0] . ' / ' . $stats[2] . ' (' . $stats[1] . ' pps / ' . $stats[3] . ' pps)';
 }
 
 function getNodeStats($nodeid)
@@ -177,7 +173,6 @@ function getNodeStats($nodeid)
     global $SMARTY, $DB;
 
     $nodeid = intval($nodeid);
-    $result = new xajaxResponse();
 
     $nodestats['hour'] = NodeStats($nodeid, 60 * 60);
     $nodestats['day'] = NodeStats($nodeid, 60 * 60 * 24);
@@ -187,27 +182,10 @@ function getNodeStats($nodeid)
     $nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM vnodes WHERE id = ?', array($nodeid));
     $SMARTY->assign('nodeip', $nodeip);
     $SMARTY->assign('nodestats', $nodestats);
+
     $contents = $SMARTY->fetch('node/nodestats.html');
-    $result->append('nodeinfo', 'innerHTML', $contents);
 
-    if (ConfigHelper::getConfig('phpui.live_traffic_helper')) {
-        $script = '
-			live_traffic_start = function() {
-				xajax.config.waitCursor = false;
-				xajax_getThroughput(\'' . $nodeip . '\');
-			}
-
-			live_traffic_finished = function() {
-				xajax.config.waitCursor = true;
-				setTimeout("live_traffic_start()", 3000);
-			}
-		';
-
-        $result->script($script);
-        $result->script("live_traffic_start()");
-    }
-
-    return $result;
+    return $contents;
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'managementurls.inc.php');
@@ -262,6 +240,24 @@ function getFirstFreeAddress($netid, $elemid)
     return $result;
 }
 
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock', 'getThroughput', 'getNodeStats',
+if (isset($_GET['action'])) {
+    header('Content-type: text/html');
+    switch ($_GET['action']) {
+        case 'get_node_stats':
+            if (!isset($_GET['id'])) {
+                die;
+            }
+            die(getNodeStats($_GET['id']));
+            break;
+        case 'get_throughput':
+            if (!isset($_GET['ip']) || !isset($_GET['id'])) {
+                die;
+            }
+            die(getThroughput($_GET['ip']));
+            break;
+    }
+}
+
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock',
     'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors',
     'getFirstFreeAddress'));

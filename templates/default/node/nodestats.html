@@ -47,7 +47,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-{elseif ConfigHelper::getConfig('phpui.live_traffic_helper')}
+{/if}
+{if ConfigHelper::getConfig('phpui.live_traffic_helper')}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/traffic.gif" ALT="">
@@ -70,4 +71,19 @@
 			</TABLE>
 		</TD>
 	</TR>
+
+	<script>
+
+		(function live_traffic_start() {
+			$.ajax({
+				url: "?m={$layout.module}&id={$nodeid}&action=get_throughput&ip={$nodeip}",
+				dataType: "html",
+				success: function(data) {
+					$('#livetraffic').html(data);
+					setTimeout(live_traffic_start, 3000);
+				}
+			});
+		})();
+
+	</script>
 {/if}

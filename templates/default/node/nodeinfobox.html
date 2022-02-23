@@ -536,6 +536,10 @@
 																<!last-nas>$a
 															{/strip}{/t}
 														{/if}
+														{if $online}
+															{button type="link" icon="reload" class="radius-disconnect-button"
+																data_nodesession_id=$nodesession.id tip="Disconnect existing session"}
+														{/if}
 													</div>
 												</td>
 											</tr>
@@ -581,10 +585,9 @@
 </table>
 
 <script>
-    xajax_getNodeStats({$nodeinfo.id});
 
-	$(function() {
-	    {if !$disable_active_links}
+    $(function() {
+        {if !$disable_active_links}
         var link = '?m=nodeedit&id={$nodeinfo.id}';
         var nodeid = {$nodeinfo.id};
 
@@ -627,6 +630,33 @@
 		$('.mac-address-copy-to-clipboard').on('lms:clipboard:click', function() {
 			return $(this).closest('tr').find('.mac-address').text().trim();
 		});
+
+		var disconnectButton = $('.radius-disconnect-button');
+		disconnectButton.click(function() {
+			disconnectButton.prop('disabled', true).attr('disabled', '');
+			$.ajax({
+				url: "?m=nodesession&action=disconnect&id=" + disconnectButton.attr('data-nodesession-id'),
+				dataType: "json",
+				success: function(data, textStatus, qXHR) {
+					disconnectButton.prop('disabled', false).removeAttr('disabled');
+					if (data.hasOwnProperty("error")) {
+						alertDialog(data.error, disconnectButton);
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					disconnectButton.prop('disabled', false).removeAttr('disabled');
+					alertDialog($t("AJAX: Invalid result - status: $a", textStatus), disconnectButton);
+				}
+			});
+		});
+	});
+
+	$.ajax({
+		url: "?m={$layout.module}&id={$nodeinfo.id}&action=get_node_stats",
+		dataType: "html",
+		success: function(data) {
+			$("#nodeinfo").append(data);
+		}
 	});
 
 	function change_netdevice(id) {

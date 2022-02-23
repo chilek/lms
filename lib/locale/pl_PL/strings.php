@@ -5467,3 +5467,6 @@ $_LANG['uses TEN from invoice'] = 'używa NIP z faktury';
 $_LANG['last NAS/BRAS'] = 'ostatni NAS/BRAS';
 $_LANG['<!last-nas>$a ($b)'] = '$a ($b)';
 $_LANG['<!last-nas>$a'] = '$a';
+$_LANG['Disconnect existing session'] = 'Rozłącz istniejącą sesję';
+$_LANG['Couldn\'t determine RADIUS secret value!'] = 'Niemożliwe wyznaczenie wartości RADIUS secret!';
+$_LANG['RADIUS disconnect failed!'] = 'Wysłanie komunikatu RADIUS disconnect nie powiodło się!';
