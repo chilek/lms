@@ -128,7 +128,11 @@ foreach ($categories as $category) {
     $category['checked'] = isset($ticket['categories'][$category['id']]);
     $ncategories[] = $category;
 }
-$categories = $ncategories;
+
+if (!empty($ncategories)) {
+    $categories = $ncategories;
+}
+
 $assignedevents = $LMS->GetEventsByTicketId($id);
 
 $LMS->MarkTicketAsRead($id);
