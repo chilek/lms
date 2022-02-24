@@ -1718,10 +1718,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['customerid'] = null;
         }
 
-        $ticket['categories'] = is_array($ticket['categories']) ? Utils::array_column($ticket['categories'], 'id') : null;
-        $props['categories'] = is_array($props['categories']) ? array_values($props['categories']) : null;
+        $ticket['categories'] = is_array($ticket['categories']) ? Utils::array_column($ticket['categories'], 'id') : array();
+        $props['categories'] = is_array($props['categories']) ? array_values($props['categories']) : array();
 
-        if (Utils::arrays_equal($ticket['categories'], $props['categories'])) {
+        if (!Utils::arrays_equal($ticket['categories'], $props['categories'])) {
             $ticket['categories'] = empty($ticket['categories']) ? array() : $ticket['categories'];
             $props['categories'] = empty($props['categories']) ? array() : $props['categories'];
 
