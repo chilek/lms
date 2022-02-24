@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
 
 check_file_uploads();
 
@@ -43,12 +45,9 @@ $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojec
 $ticket['parentid'] = isset($_GET['parentid']) ? intval($_GET['parentid']) : null;
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-if (!$categories) {
+if (!$categories && !$allow_empty_categories) {
     access_denied();
 }
-
-$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
-$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
 
 if (isset($_POST['ticket'])) {
     $ticket = $_POST['ticket'];

@@ -145,7 +145,9 @@
 				{if ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories')}
 				<input type="hidden" name="ticket[categorywarn]" value="{$ticket.categorywarn}">
 				{/if}
-				{include file="rt/rtcategoryselection.html" categories=$categories name_prefix="ticket[categories]"}
+				{if $categories}
+				    {include file="rt/rtcategoryselection.html" categories=$categories name_prefix="ticket[categories]"}
+				{/if}
 			{/box_row}
 
 			{box_row icon="message" label="Notify users" labelid="notify" icon_class="fa-fw"}
