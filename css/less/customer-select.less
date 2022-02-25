@@ -106,4 +106,21 @@ label > .lms-ui-customer-select-container {
       }
     }
   }
+
+  &.lms-ui-distinguished {
+    select {
+      border: @warning-outline;
+      box-shadow: @warning-box-shadow;
+
+      &:focus {
+        border: @warning-outline-focus;
+        box-shadow: @warning-box-shadow-focus;
+      }
+    }
+
+    .lms-ui-customer-select-name {
+      border: @warning-outline;
+      box-shadow: @warning-box-shadow;
+    }
+  }
 }

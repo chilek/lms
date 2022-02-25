@@ -63,6 +63,8 @@ $(function() {
                     jqElem.find('.scombobox-display').toggleClass('lms-ui-distinguished', distinguished);
                 } else if (jqElem.closest('.lms-ui-multiselect-container').length) {
                     jqElem.closest('.lms-ui-multiselect-container').toggleClass('lms-ui-distinguished', distinguished);
+                } else if (jqElem.closest('.lms-ui-customer-select-container').length) {
+                    jqElem.closest('.lms-ui-customer-select-container').toggleClass('lms-ui-distinguished', distinguished);
                 }
             });
     });
