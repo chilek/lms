@@ -38,6 +38,8 @@ $(function() {
             jqElem.val(defaultValue);
             if (jqElem.closest('.lms-ui-multiselect-container').length) {
                 jqElem.trigger('lms:multiselect:change');
+            } else if (jqElem.closest('.lms-ui-customer-select-container').length) {
+                jqElem.trigger('lms:customer-select:change');
             }
         });
         updateAdvancedSelects(elems.filter('.lms-ui-advanced-select'));

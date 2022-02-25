@@ -80,7 +80,7 @@ function initCustomerList(selector)
         var inputChange = false;
 
         if (select.length) {
-            input.on('change focus', function () {
+            input.on('change focus lms:customer-select:change', function () {
                 var elem = $(this);
                 if (elem.val() != elem.attr('data-prev-value')) {
                     if (input.val()) {
@@ -108,7 +108,7 @@ function initCustomerList(selector)
         } else {
             if (customerName) {
                 var timer;
-                input.on('blur focus input', function () {
+                input.on('blur focus input lms:customer-select:change', function () {
                     var elem = $(this);
                     if (elem.val() != elem.attr('data-prev-value')) {
                         if (timer) {
