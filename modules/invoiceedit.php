@@ -432,7 +432,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($invoice['numberplanid']) && $invoice['numberplanid'] != 0) {
+        if ($numberplans && count($numberplans) && empty($invoice['numberplanid']) && $invoice['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -516,7 +516,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($invoice['numberplanid'])) {
+        if ($numberplans && count($numberplans) && empty($invoice['numberplanid'])) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 

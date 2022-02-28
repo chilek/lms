@@ -306,7 +306,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($cnote['numberplanid']) && $cnote['numberplanid'] != 0) {
+        if ($numberplans && count($numberplans) && empty($cnote['numberplanid']) && $cnote['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -565,7 +565,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($cnote['numberplanid'])) {
+        if ($numberplans && count($numberplans) && empty($cnote['numberplanid'])) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
