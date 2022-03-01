@@ -217,7 +217,7 @@ $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
 
 $rtmessages_extid_exists = $DB->ResourceExists('rtmessages.extid', LMSDB::RESOURCE_TYPE_COLUMN);
 
-$inbox = imap_open($hostname, $username, $password);
+$inbox = @imap_open($hostname, $username, $password);
 if ($inbox === false) {
     die('Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
 }
