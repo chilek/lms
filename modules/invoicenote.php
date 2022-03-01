@@ -379,12 +379,14 @@ switch ($action) {
                     $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['s_valuebrutto']);
                     $contents[$idx]['count'] = 0;
                 } elseif (f_round($contents[$idx]['valuenetto']) === f_round($item['valuenetto'])
+                    && intval($contents[$idx]['taxid']) === intval($item['taxid'])
                     && f_round($contents[$idx]['count'], 3) === f_round($item['count'], 3)
                     && f_round($contents[$idx]['pdiscount']) === f_round($item['pdiscount'])
                     && f_round($contents[$idx]['vdiscount']) === f_round($item['vdiscount'])
                 ) {
                     $contents[$idx]['cash'] = 0;
                     $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['valuenetto']);
+                    $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['valuebrutto']);
                     $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
                     $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
                     $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
@@ -417,12 +419,14 @@ switch ($action) {
                     $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['s_valuebrutto']);
                     $contents[$idx]['count'] = 0;
                 } elseif (f_round($contents[$idx]['valuebrutto']) === f_round($item['valuebrutto'])
+                    && intval($contents[$idx]['taxid']) === intval($item['taxid'])
                     && f_round($contents[$idx]['count'], 3) === f_round($item['count'], 3)
                     && f_round($contents[$idx]['pdiscount']) === f_round($item['pdiscount'])
                     && f_round($contents[$idx]['vdiscount']) === f_round($item['vdiscount'])
                 ) {
                     $contents[$idx]['cash'] = 0;
                     $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['valuebrutto']);
+                    $contents[$idx]['valuenetto'] = f_round($invoicecontents[$idx]['valuenetto']);
                     $contents[$idx]['pdiscount'] = f_round($invoicecontents[$idx]['pdiscount']);
                     $contents[$idx]['vdiscount'] = f_round($invoicecontents[$idx]['vdiscount']);
                     $contents[$idx]['count'] = f_round($invoicecontents[$idx]['count'], 3);
