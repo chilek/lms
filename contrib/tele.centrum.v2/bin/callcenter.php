@@ -215,10 +215,16 @@ $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission
 $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
 $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
 
-$inbox  = imap_open($hostname, $username, $password) or die('Cannot connect to mail: ' . imap_last_error());
-$emails = imap_search($inbox, 'ALL FROM "'.ConfigHelper::getConfig('callcenter.mailfrom').'"');
+$rtmessages_extid_exists = $DB->ResourceExists('rtmessages.extid', LMSDB::RESOURCE_TYPE_COLUMN);
 
-if ($emails) {
+$inbox = imap_open($hostname, $username, $password);
+if ($inbox === false) {
+    die('Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
+}
+
+$emails = imap_search($inbox, 'ALL FROM "' . ConfigHelper::getConfig('callcenter.mailfrom') . '"');
+
+if (!empty($emails)) {
     foreach ($emails as $email_number) {
         $structure     = imap_fetchstructure($inbox, $email_number);
         $attachments = array();
@@ -263,8 +269,15 @@ if ($emails) {
         if (count($attachments) && !empty($uid)) {
             foreach ($attachments as $at) {
                 if ($at['is_attachment'] && !empty($rt_dir)) {
-                    $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr ['.$uid.']';
-                    $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
+                    $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr [' . $uid . ']';
+                    if ($rtmessages_extid_exists) {
+                        $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE extid = ?', array($uid));
+                    } else {
+                        $message = null;
+                    }
+                    if (empty($message)) {
+                        $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
+                    }
                     if (empty($message)) {
                         if (empty($queue)) {
                             die('Fatal error: missed \'default_queue\' configuration variable!' . PHP_EOL);
