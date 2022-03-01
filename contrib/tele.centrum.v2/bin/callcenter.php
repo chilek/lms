@@ -183,12 +183,13 @@ if (!empty($user)) {
 
 $queue = ConfigHelper::getConfig('callcenter.default_queue');
 if (empty($queue)) {
-    die('Fatal error: missed \'default_queue\' configuration variable!' . PHP_EOL);
+    echo 'Warning: missed \'default_queue\' configuration variable!' . PHP_EOL;
 }
 $queueid = $LMS->GetQueueIdByName($queue);
 if (empty($queueid)) {
     if (!preg_match('/^[0-9]+$/', $queue) || !$LMS->QueueExists($queue)) {
-        die('Fatal error: couldn\'t find default queue!' . PHP_EOL);
+        echo 'Warning: couldn\'t find default queue!' . PHP_EOL;
+        $queue = null;
     }
 } else {
     $queue = $queueid;
@@ -198,7 +199,8 @@ $category = ConfigHelper::getConfig('callcenter.default_category');
 $categoryid = $LMS->GetCategoryIdByName($category);
 if (empty($categoryid)) {
     if (!preg_match('/^[0-9]+$/', $category) || !$LMS->CategoryExists($category)) {
-        die('Fatal error: couldn\'t find default category!' . PHP_EOL);
+        echo 'Warning: couldn\'t find default category!' . PHP_EOL;
+        $category = null;
     }
 } else {
     $category = $categoryid;
@@ -264,6 +266,10 @@ if ($emails) {
                     $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr ['.$uid.']';
                     $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
                     if (empty($message)) {
+                        if (empty($queue)) {
+                            die('Fatal error: missed \'default_queue\' configuration variable!' . PHP_EOL);
+                        }
+
                         $DB->Execute(
                             'INSERT INTO rttickets (queueid, customerid, requestor, subject,
                             state, owner, createtime, cause, source, creatorid)
@@ -297,13 +303,15 @@ if ($emails) {
                         );
                         $message['id'] = $DB->GetLastInsertID('rtmessages');
 
-                        $DB->Execute(
-                            'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
-                            array(
-                                $id,
-                                $category,
-                            )
-                        );
+                        if (!empty($category)) {
+                            $DB->Execute(
+                                'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+                                array(
+                                    $id,
+                                    $category,
+                                )
+                            );
+                        }
 
                         $message['ticketid'] = $id;
                     }
