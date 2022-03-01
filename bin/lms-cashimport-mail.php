@@ -172,7 +172,7 @@ $cashimport_folder = ConfigHelper::getConfig($config_section . '.folder', 'INBOX
 
 $ih = @imap_open("{" . $cashimport_server . "}" . $cashimport_folder, $cashimport_username, $cashimport_password);
 if (!$ih) {
-    die("Cannot connect to mail server!" . PHP_EOL);
+    die('Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
 }
 
 $posts = imap_search($ih, $cashimport_use_seen_flag ? 'UNSEEN' : 'ALL');
