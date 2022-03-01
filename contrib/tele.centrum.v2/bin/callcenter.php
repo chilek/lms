@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 if (!is_readable($CONFIG_FILE)) {
-    die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+    die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
 }
 
 define('CONFIG_FILE', $CONFIG_FILE);
@@ -51,7 +51,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/");
 }
 
 // Init database
@@ -122,7 +122,7 @@ if ($emails) {
                         }
                     }
                 }
-                if ($structure->parts[$i]->type==0) {
+                if (!$structure->parts[$i]->type) {
                     foreach ($structure->parts[$i]->parameters as $object) {
                         $uid = imap_fetchbody($inbox, $email_number, 1);
                         $uid = explode('<UniqueID>', $uid);
@@ -141,9 +141,9 @@ if ($emails) {
                 }
             }
         }
-        if (count($attachments)!=0  and !empty($uid)) {
+        if (count($attachments) && !empty($uid)) {
             foreach ($attachments as $at) {
-                if ($at['is_attachment'] == 1  && !empty($rt_dir)) {
+                if ($at['is_attachment'] && !empty($rt_dir)) {
                     $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr ['.$uid.']';
                     $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
                     if (empty($message)) {
