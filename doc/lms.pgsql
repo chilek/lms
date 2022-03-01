@@ -2057,6 +2057,7 @@ CREATE TABLE rtmessages (
   deluserid integer	DEFAULT NULL
 	CONSTRAINT rtmessages_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   contenttype varchar(255) DEFAULT 'text/plain',
+  extid varchar(64)	DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -4234,6 +4235,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022012000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022030100');
 
 COMMIT;
