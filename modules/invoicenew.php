@@ -140,7 +140,6 @@ switch ($action) {
             $invoice['netflag'] = ConfigHelper::checkConfig('invoices.default_net_account');
         }
         $invoice['number'] = '';
-        $invoice['numberplanid'] = null;
 
         if (ConfigHelper::checkConfig('invoices.force_telecom_service_flag')) {
             $invoice['flags'][DOC_FLAG_TELECOM_SERVICE] = time() < mktime(0, 0, 0, 7, 1, 2021) ? 1 : 0;
@@ -165,10 +164,12 @@ switch ($action) {
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
 
-        $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
-            $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
-            empty($customer) ? null : $customer['divisionid']
-        );
+        if (!isset($_GET['clone'])) {
+            $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
+                $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+                empty($customer) ? null : $customer['divisionid']
+            );
+        }
 
         $hook_data = array(
             'invoice' => $invoice,
