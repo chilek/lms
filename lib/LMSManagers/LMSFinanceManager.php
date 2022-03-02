@@ -2454,7 +2454,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				cdv.ccode AS div_ccode,
 				d.currency, d.currencyvalue, d.memo
 				FROM documents d
-				JOIN customeraddressview c ON (c.id = d.customerid)
+				LEFT JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
