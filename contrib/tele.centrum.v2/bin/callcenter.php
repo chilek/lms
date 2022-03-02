@@ -206,9 +206,9 @@ if (empty($categoryid)) {
     $category = $categoryid;
 }
 
-$hostname = "{" . ConfigHelper::getConfig('callcenter.hostname') . "}INBOX";
-$username = ConfigHelper::getConfig('callcenter.user');
-$password = ConfigHelper::getConfig('callcenter.pass');
+$hostname = "{" . ConfigHelper::getConfig('callcenter.server', ConfigHelper::getConfig('callcenter.hostname')) . "}INBOX";
+$username = ConfigHelper::getConfig('callcenter.username', ConfigHelper::getConfig('callcenter.user'));
+$password = ConfigHelper::getConfig('callcenter.password', ConfigHelper::getConfig('callcenter.pass'));
 
 $rt_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt';
 $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', ConfigHelper::getConfig('rt.mail_dir_permission', '0700')), 8);
@@ -222,7 +222,7 @@ if ($inbox === false) {
     die('Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
 }
 
-$emails = imap_search($inbox, 'ALL FROM "' . ConfigHelper::getConfig('callcenter.mailfrom') . '"');
+$emails = imap_search($inbox, 'ALL FROM "' . ConfigHelper::getConfig('callcenter.sender_email', ConfigHelper::getConfig('callcenter.mailfrom')) . '"');
 
 if (!empty($emails)) {
     foreach ($emails as $email_number) {
