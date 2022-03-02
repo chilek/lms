@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ALL &~ E_NOTICE &~ E_DEPRECATED);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
 require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
@@ -11,13 +11,13 @@ $agentnr    = $_GET['agentnr'];
 $ticket['phonetype'] = 'on';
 
 $basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
-$wwwuser=posix_getuid();
-$wwwgroup=posix_getgid();
+$wwwuser = posix_getuid();
+$wwwgroup = posix_getgid();
 
 if (!is_dir($basedir)) {
     die("Please create Smarty compiled templates directory using shell command: mkdir " . $basedir);
 } elseif (!is_readable($basedir) || !is_writable($basedir)) {
-    die("Please set correct permissions to Smarty compiled templates directory using shell commands: chmod 755 " . $basedir . "; chown " . $wwwuser. ":" . $wwwgroup . " " . $basedir);
+    die("Please set correct permissions to Smarty compiled templates directory using shell commands: chmod 755 " . $basedir . "; chown " . $wwwuser . ":" . $wwwgroup . " " . $basedir);
 }
 
 $SMARTY = new LMSSmarty;
@@ -40,21 +40,29 @@ if ($ip != $callcenterip) {
 
 // get all customers with valid phone number
 if (!empty($phone)) {
-    $result     = $DB->GetAll("SELECT c.id, cc.contact AS phone, address, city, deleted,
-                ".$DB->Concat('UPPER(lastname)', "' '", 'c.name')." AS username
-                FROM customerview c
-                LEFT JOIN customercontacts cc ON cc.customerid = c.id 
-                WHERE REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? ? AND DELETED != 1
-                ORDER by deleted, username, cc.contact, address", array($phone));
+    $result = $DB->GetAll(
+        'SELECT c.id, cc.contact AS phone, address, city, deleted,
+        ' . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS username
+        FROM customerview c
+        LEFT JOIN customercontacts cc ON cc.customerid = c.id
+        WHERE REPLACE(REPLACE(cc.contact, \'-\', \'\'), \' \', \'\') ?LIKE? ?
+            AND c.deleted = 0
+        ORDER BY deleted, username, cc.contact, address',
+        array($phone)
+    );
     // prepare result to put in js
     $js_result  = json_encode($result, JSON_UNESCAPED_UNICODE);
 }
 
 if (!empty($_POST)) {
     $ticket = $_POST;
-        empty($ticket['phone']) ? $ticket['phone'] = $ticket['contactphone'] : '';
+
+    if (empty($ticket['phone'])) {
+        $ticket['phone'] = $ticket['contactphone'];
+    }
+
     // simple form validation
-    if ($ticket['body'] == '' and $ticket['queue']==1) {
+    if ($ticket['body'] == '' && $ticket['queue'] == 1) {
         $error['body'] = 'Podaj treść zgłoszenia!';
     }
 
@@ -72,7 +80,7 @@ if (!empty($_POST)) {
 
     // continue if no error found
     if (!$error) {
-        if (!$agentnr or !$agents[$agentnr]) {
+        if (!$agentnr || !isset($agents[$agentnr])) {
             $agent = 'Brak informacji';
         } else {
             $agent = $agents[$agentnr];
@@ -81,35 +89,35 @@ if (!empty($_POST)) {
         //prepare body
         $ticket['contactphone'] = $ticket['phone'];
         $ticket['mailfrom'] = '';
-        $ticket['owner'] = 0;
+        $ticket['owner'] = null;
         // if valid user found in db
         if (isset($ticket['othercustomer']) or !$result) {
             $ticket['customerid'] = 0;
             if ($ticket['odblokowanie_komunikatu'] == 'tak') {
-                $ticket['requestor']  = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] = 'Prośba o odblokowanie internetu.'.PHP_EOL.'Agent: '.$agent .PHP_EOL.'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
+                $ticket['body'] = 'Prośba o odblokowanie internetu.' . PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             } elseif ($ticket['kontakt'] == 'tak') {
-                $ticket['requestor']  = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.'. PHP_EOL .'Agent: '.$agent .PHP_EOL.'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['requestor'] = $ticket['name'].', '.$ticket['address'];
+                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.' . PHP_EOL . 'Agent: '.$agent . PHP_EOL .'Numer kontaktowy: ' . $ticket['contactphone'];
             } else {
-                $ticket['requestor']  = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] .=  PHP_EOL .'Agent: '.$agent .PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['requestor'] = $ticket['name'].', '.$ticket['address'];
+                $ticket['body'] .=  PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             }
         } else {
             $ticket['customerid'] = $result[$ticket['customer']]['id'];
             $ticket['requestor'] = '';
             if ($ticket['odblokowanie_komunikatu'] == 'tak') {
-                $ticket['requestor']  = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] = 'Prośba o odblokowanie internetu.'.PHP_EOL.'Agent: '.$agent .PHP_EOL.'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['requestor'] = $ticket['name'] . ', '.$ticket['address'];
+                $ticket['body'] = 'Prośba o odblokowanie internetu.' . PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             } elseif ($ticket['kontakt'] == 'tak') {
-                $ticket['requestor']  = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.'. PHP_EOL .'Agent: '.$agent .PHP_EOL.'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
+                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.' . PHP_EOL . 'Agent: '.$agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             } else {
-                $ticket['requestor']  = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] .=  PHP_EOL .'Agent: '.$agent .PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
+                $ticket['body'] .=  PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             }
         }
-        $ticket['subject'] = 'Zgłoszenie telefoniczne z E-Południe Call Center nr ['.$uid.']';
+        $ticket['subject'] = 'Zgłoszenie telefoniczne z E-Południe Call Center nr [' . $uid . ']';
         // set real quque id
         if ($ticket['queue'] == 1) {
             $ticket['queue'] = $queues[0];
@@ -120,24 +128,35 @@ if (!empty($_POST)) {
         }
 
         //insert ticket
-        $DB->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
-		state, owner, createtime, cause, creatorid)
-		VALUES (?, ?, ?, ?, 0, ?, ?NOW?, 0, ?)', array($ticket['queue'],
-        $ticket['customerid'],
-        $ticket['requestor'],
-        $ticket['subject'],
-        $ticket['owner'],
-        $user_id
-        ));
+        $DB->Execute(
+            'INSERT INTO rttickets (queueid, customerid, requestor, subject,
+                state, owner, createtime, cause, source, creatorid)
+                VALUES (?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)',
+            array(
+                $ticket['queue'],
+                $ticket['customerid'],
+                $ticket['requestor'],
+                $ticket['subject'],
+                RT_NEW,
+                $ticket['owner'],
+                RT_CAUSE_OTHER,
+                RT_SOURCE_PHONE,
+                $user_id,
+            )
+        );
         $id = $DB->GetLastInsertID('rttickets');
 
-        $DB->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-		    subject, body, mailfrom)
-		    VALUES (?, ?, ?NOW?, ?, ?, ?)', array($id,
-            $ticket['customerid'],
-            $ticket['subject'],
-            preg_replace("/\r/", "", $ticket['body']),
-            $ticket['mailfrom']));
+        $DB->Execute(
+            'INSERT INTO rtmessages (ticketid, customerid, createtime,
+                subject, body, mailfrom)
+                VALUES (?, ?, ?NOW?, ?, ?, ?)',
+            array($id,
+                $ticket['customerid'],
+                $ticket['subject'],
+                preg_replace("/\r/", "", $ticket['body']),
+                $ticket['mailfrom'],
+            )
+        );
 
         if (isset($ticket['internet'])) {
             $DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)', array($id, $categories[0]));
@@ -160,12 +179,20 @@ if (!empty($_POST)) {
 
             if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                 if ($ticket['customerid']) {
-                    $info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername,
-							address, zip, city FROM customeraddressview
-							WHERE id = ?', array($ticket['customerid']));
+                    $info = $DB->GetRow(
+                        'SELECT id, pin, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername,
+                            address, zip, city
+                        FROM customeraddressview
+                        WHERE id = ?',
+                        array($ticket['customerid'])
+                    );
 
-                    $info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
-						WHERE customerid = ?', array($ticket['customerid']));
+                    $info['contacts'] = $DB->GetAll(
+                        'SELECT contact, name, type
+                        FROM customercontacts
+                        WHERE customerid = ?',
+                        array($ticket['customerid'])
+                    );
 
                     $phones = array();
                     if (!empty($info['contacts'])) {
@@ -186,7 +213,7 @@ if (!empty($_POST)) {
                     }
                 } elseif (!empty($requestor)) {
                     $sms_body .= "\n";
-                    $sms_body .= trans('Customer:').' '.$requestor;
+                    $sms_body .= trans('Customer:') . ' ' . $requestor;
                 }
             }
 
@@ -194,10 +221,9 @@ if (!empty($_POST)) {
             $service = ConfigHelper::getConfig('sms.service');
             if (!empty($service) && ($recipients = $DB->GetCol(
                 'SELECT DISTINCT phone
-				FROM users, rtrights
-					WHERE users.id = userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & 8) = 8 AND deleted = 0
-						',
+                FROM users, rtrights
+                WHERE users.id = userid AND queueid = ? AND phone != \'\'
+                    AND (rtrights.rights & 8) = 8 AND deleted = 0',
                 array($queue)
             ))) {
                 foreach ($recipients as $phone) {
@@ -207,7 +233,7 @@ if (!empty($_POST)) {
         }
 
         if ($id) {
-            $msg    = 'Zgłoszenie zostoło dodane.';
+            $msg = 'Zgłoszenie zostoło dodane.';
             $ticket = array();
         } else {
             $msg = 'Wystąpił błąd. Nie dodano zgłoszenia!';
