@@ -140,7 +140,7 @@ if (!empty($_POST)) {
                 RT_NEW,
                 $ticket['owner'],
                 RT_CAUSE_OTHER,
-                RT_SOURCE_PHONE,
+                RT_SOURCE_CALLCENTER,
                 $user_id,
             )
         );

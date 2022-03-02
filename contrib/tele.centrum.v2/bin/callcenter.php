@@ -295,7 +295,7 @@ if (!empty($emails)) {
                                 RT_NEW,
                                 null,
                                 RT_CAUSE_OTHER,
-                                RT_SOURCE_PHONE,
+                                RT_SOURCE_CALLCENTER,
                                 $user,
                             )
                         );
