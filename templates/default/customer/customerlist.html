@@ -194,13 +194,13 @@
 				<label for="g[]">
 				{trans("Group")}
 				<input type="hidden" name="g[]" value="">
-				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-advanced-select" multiple>
+				<select size="1" name="g[]" onchange="document.choosefilter.submit();" class="lms-ui-advanced-select" multiple>
 					{foreach $customergroups as $customergroup}
 					<OPTION value="{$customergroup.id}"
 						{if (is_array($filter.customergroup) && in_array($customergroup.id, $filter.customergroup))
 							|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"&hellip;":true}</OPTION>
 					{/foreach}
-				</SELECT>
+				</select>
 				</label>
 			{else}
 			      <input type="hidden" name="g[]" value="">

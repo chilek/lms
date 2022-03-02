@@ -100,12 +100,12 @@
 				{button icon="delete" label="Delete" id="delete-groups"}
 {if !empty($othercustomergroups)}
 				{button icon="add" label="Add" id="add-groups" tip="Add customer to groups"}
-				<SELECT NAME="customergroupid[]" class="lms-ui-advanced-select" {tip text="Select group to attribute to customer"}
+				<select name="customergroupid[]" class="lms-ui-advanced-select" {tip text="Select group to attribute to customer"}
 						form="customergroupassignment" multiple>
 					{foreach $othercustomergroups as $customergroup}
 					<OPTION VALUE="{$customergroup.id}">{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</OPTION>
 					{/foreach}
-				</SELECT>
+				</select>
 {/if}
 			{/tab_buttons}
 			{tab_buttons}

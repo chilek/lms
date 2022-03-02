@@ -1653,13 +1653,13 @@
 								{trans("Group:")}
 							</TD>
 							<TD class="nobr">
-								<SELECT size="4" name="customergroups[]" class="lms-ui-advanced-select"
+								<select size="4" name="customergroups[]" class="lms-ui-advanced-select"
 										multiple {tip text="Select group"}
 										data-default-value="{trans("- all groups -")}">
 									{foreach $customergroups as $customergroup}
 										<OPTION value="{$customergroup.id}">{$customergroup.name|truncate:30:"&hellip;":true}</OPTION>
 									{/foreach}
-								</SELECT>
+								</select>
 							</TD>
 						</TR>
 						<TR>
