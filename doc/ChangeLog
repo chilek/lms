@@ -96,6 +96,7 @@ version 28-git (????-??-??):
   - enhancement: 'phpui.radius_disconnect_command' with 'Framed-IP-Address=\"%ip%\"' |radclient %nasip%:3799
     disconnect '%secret%'' as default value defines default radius disconnect command which is used during
     node session disconnect request [chilan]
+  - enhancement: added new ticket source 'call center' [chilan]
 
 version 27.0 (2021-08-20):
 
