@@ -220,11 +220,17 @@ if (!empty($_POST)) {
             // send sms
             $service = ConfigHelper::getConfig('sms.service');
             if (!empty($service) && ($recipients = $DB->GetCol(
-                'SELECT DISTINCT phone
-                FROM users, rtrights
-                WHERE users.id = userid AND queueid = ? AND phone != \'\'
-                    AND (rtrights.rights & 8) = 8 AND deleted = 0',
-                array($queue)
+                'SELECT DISTINCT u.phone
+                FROM users u
+                JOIN rtrights r ON r.userid = u.id
+                WHERE r.queueid = ?
+                    AND u.phone <> \'\'
+                    AND (r.rights & ?) > 0
+                    AND u.deleted = 0',
+                array(
+                    $queue,
+                    RT_RIGHT_NOTICE,
+                )
             ))) {
                 foreach ($recipients as $phone) {
                     $LMS->SendSMS($phone, $sms_body);
