@@ -3783,7 +3783,7 @@ $_LANG['Ticket\'s priority has been changed from $a to $b.'] = 'Priorytet zgłos
 $_LANG['Show tickets'] = 'Pokaż zgłoszenia';
 
 $_LANG['any sms'] = 'dowolny SMS';
-$_LANG['userpanel'] = 'Panel klienta';
+$_LANG['userpanel'] = 'panel klienta';
 $_LANG['Userpanel'] = 'Panel klienta';
 $_LANG['userpanel urgent'] = 'panel klienta (pilne)';
 $_LANG['I confirm reading'] = 'Zapoznałem się';
@@ -4108,7 +4108,7 @@ $_LANG['Payment for liabilities'] = 'Wpłata na poczet należności';
 
 $_LANG['Check if sent electronic invoices on this email'] = 'Zaznacz, jeśli na ten adres e-mail mają być wysyłane elektroniczne faktury';
 $_LANG['Not visible by the customer in electronic Customer Service Representative'] = 'Niewidoczny dla klienta w elektronicznym biurze obsługi klienta';
-$_LANG['Personal'] = 'Wizyta w biurze';
+$_LANG['personal'] = 'osobiście';
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną, musi zostać zaznaczony adres e-mail, na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['cancellation of a traditional invoice (agreement on an electronic invoice)'] = 'rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną)';
@@ -4392,8 +4392,9 @@ $_LANG['without zip (main address)'] = 'bez kodu pocztowego (główny adres)';
 $_LANG['without zip (other addresses)'] = 'bez kodu pocztowego (pozostałe adresy)';
 $_LANG['without city'] = 'bez miasta';
 
-$_LANG['Instant messengers'] = 'Komunikatory internetowe';
-$_LANG['Letter complaint'] = 'Pismo reklamacyjne';
+$_LANG['instant messenger'] = 'komunikator internetowy';
+$_LANG['letter complaint'] = 'pismo reklamacyjne';
+$_LANG['call center'] = 'call center';
 $_LANG['Enter IM uid (optional)'] = 'Podaj identyfikator użytkownika (opcjonalne)';
 $_LANG['Check if IM uid should be disabled'] = 'Oznacz, jeśli identyfikator użytkownika ma być wyłączony';
 $_LANG['IM uid is required!'] = 'Identyfikator użytkownika jest wymagany!';

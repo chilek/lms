@@ -290,16 +290,18 @@ define('RT_SOURCE_PERSONAL', 4);
 define('RT_SOURCE_MESSCHAT', 5);
 define('RT_SOURCE_PAPER', 6);
 define('RT_SOURCE_SMS', 7);
+define('RT_SOURCE_CALLCENTER', 8);
 
 $RT_SOURCES = array(
     RT_SOURCE_UNKNOWN => 'unknown/other',
-    RT_SOURCE_PHONE => 'Phone',
+    RT_SOURCE_PHONE => 'phone',
     RT_SOURCE_EMAIL => 'e-mail',
-    RT_SOURCE_USERPANEL => 'Userpanel',
-    RT_SOURCE_PERSONAL => 'Personal',
-    RT_SOURCE_MESSCHAT => 'Instant messengers',
-    RT_SOURCE_PAPER => 'Letter complaint',
+    RT_SOURCE_USERPANEL => 'userpanel',
+    RT_SOURCE_PERSONAL => 'personal',
+    RT_SOURCE_MESSCHAT => 'instant messenger',
+    RT_SOURCE_PAPER => 'letter complaint',
     RT_SOURCE_SMS => 'SMS',
+    RT_SOURCE_CALLCENTER => 'call center',
 );
 
 //Helpdesk ticket priority
