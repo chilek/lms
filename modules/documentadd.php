@@ -101,7 +101,7 @@ if (isset($_POST['document'])) {
     } elseif (!$allow_past_date && $document['todate'] < $today) {
         die('To date can not be earlier than current date!');
     } else {
-        $document['todate'] += 86399;
+        $document['todate'] = strtotime('tomorrow', $document['todate']) - 1;
     }
 
     if (!empty($document['todate']) && $document['fromdate'] > $document['todate']) {

@@ -80,7 +80,7 @@ if (isset($_POST['to'])) {
         if (empty($to)) {
             $error['dateto'] = trans('Invalid date format!');
         } else {
-            $to += 86399;
+            $to = strtotime('tomorrow', $to) - 1;
         }
     }
 } elseif ($SESSION->is_set('rlt')) {

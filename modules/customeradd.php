@@ -294,7 +294,7 @@ if (isset($_POST['customeradd'])) {
     } elseif ($customeradd['cutoffstop'] == '') {
         $cutoffstop = 0;
     } elseif ($cutoffstop = date_to_timestamp($customeradd['cutoffstop'])) {
-        $cutoffstop += 86399;
+        $cutoffstop = strtotime('tomorrow', $cutoffstop) - 1;
     } else {
         $error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
     }

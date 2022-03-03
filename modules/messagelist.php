@@ -79,7 +79,7 @@ $args = array(
 if ($c == 'date') {
     list ($y, $m, $d) = explode('/', $s);
     $args['datefrom'] = mktime(0, 0, 0, $m, $d, $y);
-    $args['dateto'] = $args['datefrom'] + 86399;
+    $args['dateto'] = strtotime('tomorrow', $args['datefrom']) - 1;
 }
 
 $total = intval($LMS->GetMessageList($args));

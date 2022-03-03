@@ -346,7 +346,7 @@ if (!isset($_POST['xjxfun'])) {
             } elseif ($customerdata['cutoffstop'] == '') {
                 $cutoffstop = 0;
             } elseif ($cutoffstop = date_to_timestamp($customerdata['cutoffstop'])) {
-                $cutoffstop += 86399;
+                $cutoffstop = strtotime('tomorrow', $cutoffstop) - 1;
             } else {
                 $error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
             }

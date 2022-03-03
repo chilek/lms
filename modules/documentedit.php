@@ -222,7 +222,7 @@ if (isset($_POST['document'])) {
                     ($document['docrights'] & DOCRIGHT_CONFIRM)
                         ? ($documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null)
                         : $document['cuserid'],
-                    !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : $documentedit['confirmdate'] + 86399),
+                    !$document['closed'] && $documentedit['closed'] && $document['confirmdate'] == -1 ? 0 : ($documentedit['closed'] || !$documentedit['confirmdate'] ? 0 : strtotime('tomorrow', $documentedit['confirmdate']) - 1),
                     $allowed_archiving ? $documentedit['archived'] : $document['archived'],
                     $allowed_archiving
                         ? ($documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0)
