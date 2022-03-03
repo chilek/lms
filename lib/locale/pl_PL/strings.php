@@ -4393,7 +4393,6 @@ $_LANG['without zip (other addresses)'] = 'bez kodu pocztowego (pozostałe adres
 $_LANG['without city'] = 'bez miasta';
 
 $_LANG['instant messenger'] = 'komunikator internetowy';
-$_LANG['letter complaint'] = 'pismo reklamacyjne';
 $_LANG['call center'] = 'call center';
 $_LANG['Enter IM uid (optional)'] = 'Podaj identyfikator użytkownika (opcjonalne)';
 $_LANG['Check if IM uid should be disabled'] = 'Oznacz, jeśli identyfikator użytkownika ma być wyłączony';

@@ -299,7 +299,7 @@ $RT_SOURCES = array(
     RT_SOURCE_USERPANEL => 'userpanel',
     RT_SOURCE_PERSONAL => 'personal',
     RT_SOURCE_MESSCHAT => 'instant messenger',
-    RT_SOURCE_PAPER => 'letter complaint',
+    RT_SOURCE_PAPER => 'complaint',
     RT_SOURCE_SMS => 'SMS',
     RT_SOURCE_CALLCENTER => 'call center',
 );
