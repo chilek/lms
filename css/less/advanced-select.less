@@ -54,6 +54,7 @@
     }
   }
   .chosen-drop {
+    display: none;
     background-color: @lucid;
     width: auto;
     min-width: 15em;
@@ -69,6 +70,10 @@
     background-position-x: -12px;
     background-position-y: -2px;
   }
+}
+
+.chosen-with-drop .chosen-drop {
+  display: block;
 }
 
 .chosen-container-single {
