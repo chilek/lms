@@ -533,7 +533,7 @@ foreach (array(
 }
 
 if (in_array('mail', $channels) && empty($mail_from)) {
-    die("Fatal error: mailfrom unset! Can't continue, exiting." . PHP_EOL);
+    die("Fatal error: 'mailfrom' nor 'sender_email' are not set! Can't continue, exiting." . PHP_EOL);
 }
 
 if (!empty($auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $auth)) {
