@@ -206,7 +206,8 @@ if (empty($categoryid)) {
     $category = $categoryid;
 }
 
-$hostname = "{" . ConfigHelper::getConfig('callcenter.server', ConfigHelper::getConfig('callcenter.hostname')) . "}INBOX";
+$folder = ConfigHelper::getConfig('callcenter.folder', 'INBOX');
+$hostname = "{" . ConfigHelper::getConfig('callcenter.server', ConfigHelper::getConfig('callcenter.hostname')) . "}" . $folder;
 $username = ConfigHelper::getConfig('callcenter.username', ConfigHelper::getConfig('callcenter.user'));
 $password = ConfigHelper::getConfig('callcenter.password', ConfigHelper::getConfig('callcenter.pass'));
 
