@@ -222,7 +222,7 @@ if ($inbox === false) {
     die('Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
 }
 
-$emails = imap_search($inbox, ConfigHelper::getConfig('callcenter.mail_filter', 'ALL'));
+$emails = imap_search($inbox, 'ALL FROM "' . ConfigHelper::getConfig('callcenter.sender_email', ConfigHelper::getConfig('callcenter.mailfrom')) . '"');
 
 if (!empty($emails)) {
     foreach ($emails as $email_number) {
