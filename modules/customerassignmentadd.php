@@ -184,6 +184,12 @@ if (isset($_POST['assignment'])) {
         $a['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
 
+    if (isset($_GET['nodeid']) && ($nodeid = intval($_GET['nodeid'])) > 0) {
+        $a['nodes'] = array(
+            $nodeid => $nodeid,
+        );
+    }
+
     $a['count'] = 1;
     $a['currency'] = Localisation::getDefaultCurrency();
 }

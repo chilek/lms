@@ -79,7 +79,7 @@
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
-				<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
+				<A href="?m=customerassignmentadd&id={$customerinfo.id}{if isset($nodeinfo.id)}&nodeid={$nodeinfo.id}{/if}">{trans("New Liability")} &raquo;</A>
 				<input type="hidden" value="{$customerinfo.id}">
 				<A class="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
 			{/if}
