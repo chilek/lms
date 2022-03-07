@@ -97,6 +97,8 @@ version 28-git (????-??-??):
     disconnect '%secret%'' as default value defines default radius disconnect command which is used during
     node session disconnect request [chilan]
   - enhancement: added new ticket source 'call center' [chilan]
+  - improvement: 'phpui.default_node_auth_types' allow to pre-check selected auth types in node add form
+    (empty default value) [chilan]
 
 version 27.0 (2021-08-20):
 
