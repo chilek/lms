@@ -368,6 +368,22 @@ if (isset($_POST['nodedata'])) {
         $nodedata['chkmac'] = 1;
     }
 
+    $nodedata['authtype'] = 0;
+    $auth_types = ConfigHelper::getConfig('phpui.default_node_auth_types');
+    if (!empty($auth_types)) {
+        $auth_types = preg_split('/([\s]+|[\s]*,[\s]*)/', strtolower($auth_types), -1, PREG_SPLIT_NO_EMPTY);
+        if (!empty($auth_types)) {
+            foreach ($auth_types as $auth_type) {
+                foreach ($SESSIONTYPES as $idx => $sessiontype) {
+                    if ($sessiontype['alias'] == $auth_type) {
+                        $nodedata['authtype'] |= $idx;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     // check if customer address is selected or if default location address exists
     // if both are not fullfilled we generate user interface warning
 /*

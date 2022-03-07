@@ -1095,31 +1095,38 @@ define('SESSIONTYPE_DOCSIS', 64);
 $SESSIONTYPES = array(
     SESSIONTYPE_PPPOE => array(
         'label' => trans('PPPoE Client'),
-        'tip' => 'Enable/disable PPPoE Server Client'
+        'tip' => 'Enable/disable PPPoE Server Client',
+        'alias' => 'pppoe',
     ),
     SESSIONTYPE_DHCP => array(
         'label' => trans('DHCP Client'),
-        'tip' => 'Enable/disable DHCP Server Client'
+        'tip' => 'Enable/disable DHCP Server Client',
+        'alias' => 'dhcp',
     ),
     SESSIONTYPE_EAP => array(
         'label' => trans('EAP Client'),
-        'tip' => 'Enable/disable EAP Server Client'
+        'tip' => 'Enable/disable EAP Server Client',
+        'alias' => 'eap',
     ),
     SESSIONTYPE_WIFI => array(
         'label' => trans('WiFi AP Client'),
-        'tip' => 'Enable/disable WiFi AP Client access'
+        'tip' => 'Enable/disable WiFi AP Client access',
+        'alias' => 'ap-client',
     ),
     SESSIONTYPE_VOIP => array(
         'label' => trans('VoIP Gateway'),
-        'tip' => 'Enable/disable VoIP Gateway access'
+        'tip' => 'Enable/disable VoIP Gateway access',
+        'alias' => 'voip',
     ),
     SESSIONTYPE_STB => array(
         'label' => trans('Set-top box'),
-        'tip' => 'Enable/disable set-top box access'
+        'tip' => 'Enable/disable set-top box access',
+        'alias' => 'stb',
     ),
     SESSIONTYPE_DOCSIS => array(
         'label' => trans('DOCSIS access'),
-        'tip' => 'Enable/disable DOCSIS access'
+        'tip' => 'Enable/disable DOCSIS access',
+        'alias' => 'docsis',
     ),
 );
 
