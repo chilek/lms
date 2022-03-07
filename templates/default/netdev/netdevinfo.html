@@ -27,7 +27,9 @@
 	{/if}
 {/block}
 {block name=netdevassignments}
-	{include file="customer/customerassignments.html" tab_label=trans("Network Device Liabilities:")}
+	{if !empty($netdev.ownerid)}
+		{include file="customer/customerassignments.html" tab_label=trans("Network Device Liabilities:")}
+	{/if}
 {/block}
 {block name=netdevmanagementurl}
 	{include file="managementurl/managementurls.html"}
