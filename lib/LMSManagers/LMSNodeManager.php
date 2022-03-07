@@ -1248,7 +1248,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                     nd.secret,
                     s.ipaddr, INET_NTOA(s.ipaddr) AS ip
                 FROM nodesessions s
-                LEFT JOIN nodes n ON n.nasipaddr = n.ipaddr AND n.ownerid IS NULL AND n.netdev IS NOT NULL
+                LEFT JOIN nodes n ON n.ipaddr = s.nasipaddr AND n.ownerid IS NULL AND n.netdev IS NOT NULL
                 LEFT JOIN netdevices nd ON nd.id = n.netdev
                 WHERE s.id = ?',
                 array(
