@@ -3285,7 +3285,7 @@ if (!empty($intersect)) {
                     $all_nodes = $DB->GetCol(
                         'SELECT n.id FROM nodes n
                         WHERE n.ownerid IN (' . implode(',', $all_customers) . ')'
-                        . (empty($where_nodes) ? '' : ' AND (' . implode(', ', $where_nodes) . ')')
+                        . (empty($where_nodes) ? '' : ' AND (' . implode(' AND ', $where_nodes) . ')')
                     );
                     if (empty($all_nodes)) {
                         $all_nodes = array();
@@ -3620,7 +3620,7 @@ if (!empty($intersect)) {
                     $all_nodes = $DB->GetCol(
                         'SELECT n.id FROM nodes n
                         WHERE n.ownerid IN (' . implode(',', $all_customers) . ')'
-                        . (empty($where_nodes) ? '' : ' AND (' . implode(', ', $where_nodes) . ')')
+                        . (empty($where_nodes) ? '' : ' AND (' . implode(' AND ', $where_nodes) . ')')
                     );
                     if (empty($all_nodes)) {
                         $all_nodes = array();
