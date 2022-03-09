@@ -551,11 +551,12 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
-        if ($DB->GetDbType() == 'postgres') {
-            $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
-        } else {
-            $tables = array('documents', 'numberplans', 'divisions', 'vdivisions', 'addresses', 'customer_addresses ca', 'customers c');
+        $tables = array('documents', 'numberplans', 'divisions', 'vdivisions',
+            'addresses', 'customers', 'customer_addresses');
+        if (ConfigHelper::getConfig('database.type') != 'postgres') {
+            $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
         }
+
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
         }

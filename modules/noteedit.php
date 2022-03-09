@@ -245,6 +245,13 @@ switch ($action) {
 
             $DB->BeginTrans();
             $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
+            $DB->BeginTrans();
+            $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans',
+                'addresses', 'customers', 'customer_addresses');
+            if (ConfigHelper::getConfig('database.type') != 'postgres') {
+                $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
+            }
+            $DB->LockTables($tables);
 
             if (!$note['number']) {
                 $note['number'] = $LMS->GetNewDocumentNumber(array(
