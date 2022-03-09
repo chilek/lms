@@ -4901,11 +4901,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $this->db->BeginTrans();
         $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
             'customerview', 'customercontacts', 'netdevices', 'nodes',
-            'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata');
-        if (ConfigHelper::getConfig('database.type') == 'postgres') {
-            $tables = array_merge($tables, array('customers', 'customer_addresses'));
-        } else {
-            $tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
+            'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata',
+            'addresses', 'customers', 'customer_addresses');
+        if (ConfigHelper::getConfig('database.type') != 'postgres') {
+            $tables = array_merge($tables, array('addresses a', 'customers c', 'customers cv', 'customer_addresses ca'));
         }
         $this->db->LockTables($tables);
 
