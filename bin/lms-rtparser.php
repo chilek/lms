@@ -242,7 +242,7 @@ define('MODE_IMAP', 2);
 
 $mode = isset($options['imap']) ? MODE_IMAP : MODE_FILE;
 
-if ($smtp_options['auth'] && !preg_match('/^(LOGIN|PLAIN|CRAM-MD5|NTLM)$/i', $smtp_options['auth'])) {
+if (isset($smtp_options['auth']) && $smtp_options['auth'] && !preg_match('/^(LOGIN|PLAIN|CRAM-MD5|NTLM)$/i', $smtp_options['auth'])) {
     fprintf($stderr, "Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
     exit(1);
 }
