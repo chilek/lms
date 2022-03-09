@@ -349,7 +349,12 @@
 			{/function}
 
 			{box_row icon="parentticket" label="Primary ticket" icon_class="fa-fw"}
-				{list id="parent-ticket" tipid="parentid" tip="Enter ID of primary ticket" items=$ticket.parent
+				{if isset($ticket)}
+					{$parent = $ticket.parent}
+				{else}
+					{$parent = array()}
+				{/if}
+				{list id="parent-ticket" tipid="parentid" tip="Enter ID of primary ticket" items=$parent
 					field_name_pattern="ticket[parentid]" item_content="ticket_item_content"}
 			{/box_row}
 
