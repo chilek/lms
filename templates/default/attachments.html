@@ -17,7 +17,7 @@
 {tab_container id="attachmentbox-{$attachmenttype}"}
     {tab_header content_id="attachmentpanel-{$attachmenttype}"}
         {tab_header_cell icon="lms-ui-icon-fileupload"}
-            <strong>{t a=$filecontainers[$attachmenttype].prefix b=$filecontainers[$attachmenttype].containers|@count|default:"0"}$a ($b):{/t}</strong>
+            <strong>{t a=$filecontainers[$attachmenttype].prefix b=$filecontainers[$attachmenttype].containers|size}$a ($b):{/t}</strong>
         {/tab_header_cell}
     {/tab_header}
 
