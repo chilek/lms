@@ -769,9 +769,14 @@ switch ($action) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
 
             $SESSION->save('invoiceprint', array('invoice' => $id, 'which' => $which), true);
+        } elseif ($SESSION->is_set('backto', true)) {
+            $SESSION->redirect('?' . $SESSION->get('backto', true));
+        } elseif ($SESSION->is_set('backto')) {
+            $SESSION->redirect('?' . $SESSION->get('backto'));
         }
 
         $SESSION->redirect('?m=invoicelist');
+
         break;
 }
 
