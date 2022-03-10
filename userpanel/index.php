@@ -186,7 +186,7 @@ if (!is_null($enabled_modules)) {
 
 $modules_dirs = array(USERPANEL_MODULES_DIR);
 $modules_dirs = $plugin_manager->executeHook('userpanel_modules_dir_initialized', $modules_dirs);
-$USERPANEL->setModuleDirectories($modules_dir);
+$USERPANEL->setModuleDirectories($modules_dirs);
 
 foreach ($modules_dirs as $suspected_module_dir) {
     $dh  = opendir($suspected_module_dir);
