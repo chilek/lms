@@ -318,5 +318,3 @@ if ($SESSION->islogged) {
 }
 
 $SESSION->close();
-
-$DB->Destroy();
