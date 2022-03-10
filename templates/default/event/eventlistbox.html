@@ -26,7 +26,7 @@
                 {icon name="timetable" label="{$day|date_format:"%A"} ({$day|date_format:"%x"})"}
             </TD>
             <TD colspan="3">
-                {if $getHolidays[$day]}
+                {if isset($getHolidays[$day]) && $getHolidays[$day]}
                 <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>
                 {/if}
                 {button type="link" href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}" icon="next"}
