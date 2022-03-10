@@ -326,6 +326,26 @@ $CUSTOMERCONTACTTYPES = array(
         'formatter' => 'format_customer_account',
         'validator' => 'validate_customer_accounts',
     ),
+    'srcaccount' => array(
+        'ui' => array(
+            'legend' => array(
+                'icon' => 'lms-ui-icon-cash fa-fw',
+                'text' => trans('Customer bank accounts'),
+            ),
+            'inputtype' => 'text',
+            'size' => 50,
+            'tip' => trans('Enter customer bank account (optional)'),
+            'flags' => array(
+                CONTACT_DISABLED => array(
+                    'label' => $CONTACTTYPES[CONTACT_DISABLED],
+                    'tip' => trans('Check if bank account should be disabled'),
+                ),
+            ),
+        ),
+        'flagmask' => CONTACT_SRCBANKACCOUNT,
+        'formatter' => 'format_customer_account',
+        'validator' => 'validate_customer_accounts',
+    ),
     'url' => array(
         'ui' => array(
             'legend' => array(
