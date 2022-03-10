@@ -166,10 +166,19 @@ $SESSION = new Session(
 // new browser tab can be opened as hidden or tabid of new tab can be not initialised
 // so we have to be careful and handle 'backto' session variable in special way and
 // correct this variable when new tab id has been determined before the moment
-if (isset($_GET['oldtabid']) && isset($_GET['tabid']) && isset($_POST['oldbackto']) && isset($_POST['backto'])
-    && preg_match('/^[0-9]+$/', $_GET['oldtabid'])
-    && preg_match('/^[0-9]+$/', $_GET['tabid'])) {
-    $SESSION->fixBackTo($_GET['oldtabid'], $_POST['oldbackto'], $_GET['tabid'], $_POST['backto']);
+if (isset($_GET['old_tab_id'], $_GET['tab_id'])
+    && (isset($_POST['old_backto'], $_POST['backto'])
+        || isset($_POST['old_history_entry'], $_POST['history_entry']))
+    && preg_match('/^[0-9]+$/', $_GET['old_tab_id'])
+    && preg_match('/^[0-9]+$/', $_GET['tab_id'])) {
+    $SESSION->historyQuirks(array(
+        'old_tab_id' => $_GET['old_tab_id'],
+        'old_backto' => isset($_POST['old_backto']) ? $_POST['old_backto'] : null,
+        'old_history_entry' => isset($_POST['old_history_entry']) ? $_POST['old_history_entry'] : null,
+        'tab_id' => $_GET['tab_id'],
+        'backto' => isset($_POST['backto']) ? $_POST['backto'] : null,
+        'history_entry' => isset($_POST['history_entry']) ? $_POST['history_entry'] : null,
+    ));
     //$SESSION->close();
     header('Content-Type: application/json');
     die('[]');

@@ -83,13 +83,7 @@ if (isset($_GET['search'])) {
         }
     }
 
-    if ($SESSION->is_set('backto', true)) {
-        $SESSION->redirect('?' . $SESSION->get('backto', true));
-    } elseif ($SESSION->is_set('backto')) {
-        $SESSION->redirect('?' . $SESSION->get('backto'));
-    } else {
-        $SESSION->redirect('?m=customerlist');
-    }
+    $SESSION->redirect_to_history_entry('m=customerlist');
 }
 
 if (isset($_GET['oper'])) {
@@ -134,14 +128,8 @@ if (!isset($_POST['xjxfun'])) {
     } elseif (!$exists) {
         $SESSION->redirect('?m=customerlist');
     } else {
-        if ($SESSION->is_set('backto', true)) {
-            $backto = $SESSION->get('backto', true);
-        } elseif ($SESSION->is_set('backto')) {
-            $backto = $SESSION->get('backto');
-        } else {
-            $backto = '';
-        }
-        $backurl = $backto ? '?' . $backto : '?m=customerlist';
+        $history_entry = $SESSION->remove_history_entry();
+        $backurl = $history_entry ? '?' . $history_entry : '?m=customerlist';
 
         $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
         if (!$pin_min_size) {

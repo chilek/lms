@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -69,8 +69,7 @@ if (!isset($_POST['xjxfun'])) {
     //if($customerinfo['cutoffstop'] > mktime(0,0,0))
     //        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
 
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-    $SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+    $SESSION->add_history_entry();
 
     $layout['pagetitle'] = trans('Customer Info: $a', $customerinfo['customername']);
 }

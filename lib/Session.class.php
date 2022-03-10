@@ -48,6 +48,8 @@ class Session
     private $tabId = null;
     private static $oldBackTo = '';
     private static $backTo = '';
+    private static $oldHistoryEntry = '';
+    private static $historyEntry = '';
 
     public function __construct(&$DB, $timeout = 0, $settings_timeout = 0)
     {
@@ -127,23 +129,47 @@ class Session
         return self::$backTo;
     }
 
-    public function fixBackTo($oldTabId, $oldBackTo, $newTabId, $newBackTo)
+    public static function getOldHistoryEntry()
     {
+        return self::$oldHistoryEntry;
+    }
+
+    public static function getHistoryEntry()
+    {
+        return self::$historyEntry;
+    }
+
+    public function historyQuirks(array $params)
+    {
+        extract($params);
+
         $this->DB->BeginTrans();
         $this->DB->LockTables('sessions');
 
         $content = $this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID));
         $content = unserialize($content);
 
-        if (isset($content['tabs'][$oldTabId]['backto'])) {
-            if ($content['tabs'][$oldTabId]['backto'] != $oldBackTo) {
-                $content['tabs'][$oldTabId]['backto'] = $oldBackTo;
+        if (!isset($content['tabs'][$params['tab_id']])) {
+            $content['tabs'][$params['tab_id']] = array();
+        }
+
+        if (isset($params['old_backto'], $params['backto'])) {
+            if (isset($content['tabs'][$params['old_tab_id']]['backto'])) {
+                if ($content['tabs'][$params['old_tab_id']]['backto'] != $params['old_backto']) {
+                    $content['tabs'][$params['old_tab_id']]['backto'] = $params['old_backto'];
+                }
             }
+            $content['tabs'][$params['tab_id']]['backto'] = $params['backto'];
         }
-        if (!isset($content['tabs'][$newTabId])) {
-            $content['tabs'][$newTabId] = array();
+
+        if (isset($params['old_history_entry'], $params['history_entry'])) {
+            if (isset($content['tabs'][$params['old_tab_id']]['history'])) {
+                if ($content['tabs'][$params['old_tab_id']]['history'] != $params['old_history_entry']) {
+                    $content['tabs'][$params['old_tab_id']]['history'] = $params['old_history_entry'];
+                }
+            }
+            $content['tabs'][$params['tab_id']]['history'] = $params['history_entry'];
         }
-        $content['tabs'][$newTabId]['backto'] = $newBackTo;
 
         $this->DB->Execute('UPDATE sessions SET content = ? WHERE id = ?', array(serialize($content), $this->SID));
 
@@ -260,6 +286,51 @@ class Session
         }
     }
 
+    public function add_history_entry($entry = null)
+    {
+        if (!isset($entry)) {
+            $entry = $_SERVER['QUERY_STRING'];
+        }
+        self::$oldHistoryEntry = $this->_tab_content[$this->tabId]['history'];
+        self::$historyEntry = $entry;
+        if (!isset($this->_tab_content[$this->tabId])) {
+            $this->_tab_content[$this->tabId] = array();
+        }
+        $this->_tab_content[$this->tabId]['history'] = $entry;
+
+        if ($this->autoupdate) {
+            $this->_saveSession();
+        } else {
+            $this->_updated = true;
+        }
+    }
+
+    public function redirect_to_history_entry($default = null)
+    {
+        if (isset($this->_tab_content[$this->tabId]['history'])) {
+            $url = $this->_tab_content[$this->tabId]['history'];
+            unset($this->_tab_content[$this->tabId]['history']);
+            $this->close();
+            header('Location: ?' . $url);
+            die;
+        } elseif (isset($default)) {
+            $this->close();
+            header('Location: ?' . $default);
+            die;
+        }
+    }
+
+    public function remove_history_entry()
+    {
+        if (isset($this->_tab_content[$this->tabId]['history'])) {
+            $url = $this->_tab_content[$this->tabId]['history'];
+            unset($this->_tab_content[$this->tabId]['history']);
+            return $url;
+        } else {
+            return null;
+        }
+    }
+
     public function _createSession()
     {
         $this->SID = $this->makeSID();
@@ -300,12 +371,11 @@ class Session
     public function _saveSession()
     {
         static $session_variables = array('session_id' => true, 'session_login' => true,
-            'session_target_login' => true,
-            'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
-            'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
-            'session_passwdrequiredchange' => true, 'session_authcoderequired' => true,
-            'session_twofactorauthrequirechange' => true, 'session_passverified' => true,
-            'tabs' => true, 'prepared_persistent_filters' => true);
+            'session_target_login' => true, 'session_logname' => true, 'session_last' => true,
+            'session_lastip' => true, 'session_smsauthenticated' => true, 'backto' => true,
+            'history' => true, 'lastmodule' => true, 'session_passwdrequiredchange' => true,
+            'session_authcoderequired' => true, 'session_twofactorauthrequirechange' => true,
+            'session_passverified' => true, 'tabs' => true, 'prepared_persistent_filters' => true);
 
         if ($this->autoupdate || $this->_updated) {
             $content = array_merge($this->_content, array('tabs' => $this->_tab_content));

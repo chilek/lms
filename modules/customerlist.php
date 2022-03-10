@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,7 +41,7 @@ if ($api) {
     echo json_encode(array_values($customerlist));
     die;
 } else {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 
     $divisionContext = $SESSION->get('division_context', true);
     if (!isset($divisionContext)) {

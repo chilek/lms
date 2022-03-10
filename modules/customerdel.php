@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ if (!$LMS->CustomerExists($_GET['id'])) {
     $layout['pagetitle'] = trans($permanent ? 'Permanent Customer Remove: $a' : 'Customer Remove: $a', sprintf("%04d", $_GET['id']));
     $SMARTY->assign('customerid', $_GET['id']);
     $body = '<P>' . trans('Incorrect Customer ID.') . '</P>';
-    $body .= '<A HREF="?' . $SESSION->get('backto') . '">' . trans('Back') . '</A></P>';
+    $body .= '<A HREF="?' . $SESSION->remove_history_entry() . '">' . trans('Back') . '</A></P>';
     $SMARTY->assign('body', $body);
     $SMARTY->display('dialog.html');
 } else {
@@ -56,5 +56,5 @@ if (!$LMS->CustomerExists($_GET['id'])) {
         )
     );
 
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }

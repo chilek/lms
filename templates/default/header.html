@@ -61,8 +61,12 @@
 		{include file="spinner.html"}
 		{$__oldbackto = SESSION::getOldBackTo()}
 		{$__backto = SESSION::getBackTo()}
-		<input type="hidden" id="oldbackto" value="{$__oldbackto}">
+		{$__old_history_entry = SESSION::getOldHistoryEntry()}
+		{$__history_entry = SESSION::getHistoryEntry()}
+		<input type="hidden" id="old-backto" value="{$__oldbackto}">
 		<input type="hidden" id="backto" value="{$__backto}">
+		<input type="hidden" id="old-history-entry" value="{$__old_history_entry}">
+		<input type="hidden" id="history-entry" value="{$__history_entry}">
 		<script>
 
 			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
@@ -81,16 +85,22 @@
 				// so we have to be careful and handle 'backto' session variable in special way and
 				// correct this variable when new tab id has been determined before the moment
 				var oldLmsTabId = getCookie('tabId');
-				{if $__backto}
+				{if $__backto || $__return_url}
 					if (oldLmsTabId) {
+						var params = {}
+						{if $__backto}
+							params.old_backto = $('#old-backto').val();
+							params.backto = $('#backto').val();
+						{/if}
+						{if $__history_entry}
+							params.old_history_entry = $('#old-history-entry').val();
+							params.history_entry = $('#history-entry').val();
+						{/if}
 						$.ajax({
-							url: '?oldtabid=' + oldLmsTabId + '&tabid=' + lmsTabId,
+							url: '?old_tab_id=' + oldLmsTabId + '&tab_id=' + lmsTabId,
 							method: "POST",
 							dataType: 'json',
-							data: {
-								oldbackto: $('#oldbackto').val(),
-								backto: $('#backto').val()
-							}
+							data: params
 						});
 					}
 				{/if}
