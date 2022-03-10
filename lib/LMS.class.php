@@ -2485,6 +2485,18 @@ class LMS
         return $manager->cleanupTicketSubject($subject);
     }
 
+    public function isCategoryAssignedToTicket($categoryid, $ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->isCategoryAssignedToTicket($categoryid, $ticketid);
+    }
+
+    public function assignCategoryToTicket($categoryid, $ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->assignCategoryToTicket($categoryid, $ticketid);
+    }
+
     /*
      *  LMS-UI configuration
      */

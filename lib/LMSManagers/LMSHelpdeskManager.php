@@ -2628,4 +2628,39 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         return $subject;
     }
+
+    public function isCategoryAssignedToTicket($categoryid, $ticketid)
+    {
+        return $this->db->GetOne(
+            'SELECT id
+            FROM rtticketcategories
+            WHERE ticketid = ?
+                AND categoryid = ?',
+            array(
+                $ticketid,
+                $categoryid,
+            )
+        );
+    }
+
+    public function assignCategoryToTicket($categoryid, $ticketid)
+    {
+        $categories = is_array($categoryid) ? $categoryid : array($categoryid);
+        $inserted = 0;
+        foreach ($categories as $category) {
+            if (!$this->isCategoryAssignedToTicket($category, $ticketid)) {
+                $res = $this->db->Execute(
+                    'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+                    array(
+                        $ticketid,
+                        $category,
+                    )
+                );
+                if (!empty($res)) {
+                    $inserted++;
+                }
+            }
+        }
+        return $inserted;
+    }
 }
