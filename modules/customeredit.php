@@ -128,7 +128,7 @@ if (!isset($_POST['xjxfun'])) {
     } elseif (!$exists) {
         $SESSION->redirect('?m=customerlist');
     } else {
-        $history_entry = $SESSION->remove_history_entry();
+        $history_entry = $SESSION->get_history_entry();
         $backurl = $history_entry ? '?' . $history_entry : '?m=customerlist';
 
         $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
@@ -443,6 +443,7 @@ if (!isset($_POST['xjxfun'])) {
                 }
                 $DB->CommitTrans();
 
+                $SESSION->remove_history_entry();
                 $SESSION->redirect($backurl);
             } else {
                 $olddata = $LMS->GetCustomer($_GET['id']);

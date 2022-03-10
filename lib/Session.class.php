@@ -331,6 +331,15 @@ class Session
         }
     }
 
+    public function get_history_entry()
+    {
+        if (isset($this->_tab_content[$this->tabId]['history'])) {
+            return $this->_tab_content[$this->tabId]['history'];
+        } else {
+            return null;
+        }
+    }
+
     public function _createSession()
     {
         $this->SID = $this->makeSID();
