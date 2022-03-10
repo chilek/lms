@@ -1360,6 +1360,7 @@ $_LANG['notice disabled'] = 'powiadomienie wyłączone';
 $_LANG['notice enabled'] = 'powiadomienie włączone';
 $_LANG['Not exists'] = 'Nie znaleziono';
 $_LANG['not sent to email'] = 'niewysłane e-mailem';
+$_LANG['Instant messengers'] = 'Komunikatory';
 $_LANG['Messages'] = 'Wiadomości';
 $_LANG['Message subject is required!'] = 'Temat wiadomości jest wymagany!';
 $_LANG['Message subject not specified!'] ='Brak tytułu wiadomości!';
