@@ -99,7 +99,9 @@ function _smarty_function_userpaneltip($params, $template)
 
     if (ConfigHelper::getConfig('userpanel.style') == 'bclean') {
         $result = ' class="' . (empty($class) ? '' : $class)
-            . (isset($params['trigger']) && isset($tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+            . (isset($params['trigger']) && isset($tpl[$params['trigger']])
+                ? (isset($params['bold']) && $params['bold'] ? ' alert bold' : ' alert')
+                : (isset($params['bold']) && $params['bold'] ? ' bold' : ''))
             . '" ';
     } elseif (ConfigHelper::getConfig('userpanel.hint') == 'classic') {
         if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {
