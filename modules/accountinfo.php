@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ $account = $DB->GetRow('SELECT p.*, d.name AS domain, '
 		WHERE p.id = ?', array(intval($_GET['id'])));
 
 if (!$account) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $account['aliases'] = $DB->GetAll('SELECT a.id, a.login, d.name AS domain 
@@ -41,8 +41,8 @@ $account['aliases'] = $DB->GetAll('SELECT a.id, a.login, d.name AS domain
 		WHERE a.id IN (SELECT aliasid FROM aliasassignments
 			WHERE accountid = ?)', array($account['id']));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-    
+$SESSION->add_history_entry();
+
 $layout['pagetitle'] = trans('Account Info: $a', $account['login'].'@'.$account['domain']);
 
 $SMARTY->assign('account', $account);

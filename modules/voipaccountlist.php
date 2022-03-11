@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Voip Accounts List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (!isset($_GET['o'])) {
     $SESSION->restore('nlo', $o);
@@ -47,7 +47,7 @@ unset($voipaccountlist['direction']);
 if ($SESSION->is_set('valp') && !isset($_GET['page'])) {
     $SESSION->restore('valp', $_GET['page']);
 }
-    
+
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.voipaccountlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -89,7 +89,7 @@ if ($action == 'delete') {
 } elseif (isset($_POST['nodeassignments']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($_GET['id']))) {
     $oper = $_POST['oper'];
     $nodeassignments = $_POST['nodeassignments'];
-    
+
     if (isset($nodeassignments['gmnodeid']) && $oper=='0') {
         foreach ($nodeassignments['gmnodeid'] as $nodeid) {
             $params = array(
@@ -120,10 +120,16 @@ if ($action == 'delete') {
             }
         }
     } elseif (isset($nodeassignments['membersnetid']) && $oper=='2') {
-        $SESSION->redirect('?'.preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->get('backto')).'&membersnetid='.$nodeassignments['membersnetid']);
+        $SESSION->redirect(
+            '?' . preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->remove_history_entry())
+            . '&membersnetid=' . $nodeassignments['membersnetid']
+        );
     } elseif (isset($nodeassignments['othersnetid']) && $oper=='3') {
-        $SESSION->redirect('?'.preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->get('backto')).'&othersnetid='.$nodeassignments['othersnetid']);
+        $SESSION->redirect(
+            '?' . preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->remove_history_entry())
+            . '&othersnetid=' . $nodeassignments['othersnetid']
+        );
     }
 }
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$SESSION->redirect_to_history_entry();

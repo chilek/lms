@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1132,4 +1132,4 @@ if (!empty($quicksearch['target'])) {
     $target = $quicksearch['target'];
 }
 
-$SESSION->redirect(!empty($target) ? $target : '?'.$SESSION->get('backto'));
+$SESSION->redirect(!empty($target) ? $target : '?' . $SESSION->remove_history_entry());

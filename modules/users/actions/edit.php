@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,7 +32,7 @@ $userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
 
 if ($userinfo) {
     $userinfo['id'] = $_GET['id'];
-    
+
     foreach ($userinfo as $key => $value) {
         $userinfo[$key] = trim($value);
     }
@@ -52,7 +52,7 @@ if ($userinfo) {
     if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
-                
+
     $userinfo['rights'] = '';
 
     if (!$error) {
@@ -71,7 +71,7 @@ foreach ($LMS->GetUserInfo($_GET['id']) as $key => $value) {
 
 $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('unlockedit', true);

@@ -6,7 +6,7 @@ use Com\Tecnick\Barcode\Barcode;
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -66,8 +66,7 @@ $userinfo['ntype'] = implode(', ', $ntype);
 
 $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 if (!empty($userinfo['twofactorauth'])) {
     $google2fa = new Google2FA();

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ if (!$LMS->NetworkExists($_GET['id'])) {
 
 if (isset($_GET['id']) && isset($_GET['networkset'])) {
     $LMS->NetworkSet($_GET['id']);
-    $SESSION->redirect('?' . $SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if ($SESSION->is_set('ntlp.'.$_GET['id']) && ! isset($_GET['page'])) {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,11 +35,11 @@ $hostadd = isset($_POST['hostadd']) ? $_POST['hostadd'] : null;
 if ($hostadd) {
     $hostadd['name'] = trim($hostadd['name']);
     $hostadd['description'] = trim($hostadd['description']);
-    
+
     if ($hostadd['name']=='' && $hostadd['description']=='') {
         $SESSION->redirect('?m=hostlist');
     }
-    
+
     if ($hostadd['name'] == '') {
         $error['name'] = trans('Host name is required!');
     } elseif (GetHostIdByName($hostadd['name'])) {
@@ -69,7 +69,7 @@ if ($hostadd) {
 
 $layout['pagetitle'] = trans('New Host');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('hostadd', $hostadd);

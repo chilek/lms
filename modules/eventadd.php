@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,13 +42,8 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 
 $userlist = $LMS->GetUserNames();
 
-if ($SESSION->is_set('backto', true)) {
-    $backto = $SESSION->get('backto', true);
-} elseif ($SESSION->is_set('backto')) {
-    $backto = $SESSION->get('backto');
-} else {
-    $backto = 'm=eventlist';
-}
+
+$backto = $SESSION->get_history_entry('m=eventlist');
 if (preg_match('/m=rtticketview/', $backto)) {
     $backid = '';
 } else {
@@ -562,7 +557,7 @@ if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
 $layout['pagetitle'] = trans('New Event');
 
 if (!isset($_GET['ticketid'])) {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 }
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -43,7 +43,7 @@ if (isset($_GET['id'])) {
     );
 
     if (!$record) {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     $record['value'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents 

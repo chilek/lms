@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  */
 
 $layout['pagetitle'] = trans('New Balance');
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, cash.currencyvalue,
         taxes.label AS tax, customerid, time, comment, '.$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -83,7 +83,7 @@ $LMS->RegisterXajaxFunction(array('GetPropertyNames', 'GetPropertyValues'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $limit = ConfigHelper::getConfig('phpui.archiveview_limit', 100);
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (isset($_POST['search'])) {
     $s = $_POST['search'];

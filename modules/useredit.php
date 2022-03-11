@@ -5,7 +5,7 @@ use PragmaRX\Google2FA\Google2FA;
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -224,8 +224,7 @@ foreach ($LMS->GetUserInfo($id) as $key => $value) {
 
 $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 $customercalls = $LMS->getCustomerCalls(array(
     'userid' => $userinfo['id'],

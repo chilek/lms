@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,8 +27,7 @@
 $proforma = isset($_GET['proforma']) ? 1 : 0;
 
 $layout['pagetitle'] = $proforma ? trans('Pro Forma Invoice List') : trans('Invoices List');
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 $SESSION->restore('ilm', $marks);
 

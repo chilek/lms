@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,13 +30,13 @@ if ($config) {
     foreach ($config as $idx => $key) {
         $config[$idx] = trim($key);
     }
-    
+
     $config['instanceid'] = $_GET['id'];
-    
+
     if ($config['var']=='' && $config['description']=='' && $config['value']=='') {
         $SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
     }
-    
+
     if ($config['var'] == '') {
         $error['var'] = trans('Option name is required!');
     } elseif ($DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid']))) {
@@ -75,7 +75,7 @@ $instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS host
 
 $layout['pagetitle'] = trans('New Option for Instance: $a/$b', $instance['name'], $instance['hostname']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instanceid', $_GET['id']);

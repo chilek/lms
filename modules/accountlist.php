@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -70,7 +70,7 @@ function GetAccountList($order = 'login,asc', $customer = null, $type = null, $k
         .($kind == 2 ? ' AND (p.expdate=0 OR p.expdate > ?NOW?)' : '')
         .($domain != '' ? ' AND p.domainid = '.intval($domain) : '')
         .($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['type'] = $type;
@@ -120,7 +120,7 @@ $SESSION->save('ald', $d);
 if ($SESSION->is_set('alp') && !isset($_GET['page'])) {
     $SESSION->restore('alp', $_GET['page']);
 }
-        
+
 $layout['pagetitle'] = trans('Accounts List');
 
 $accountlist = GetAccountList($o, $u, $t, $k, $d);
@@ -147,7 +147,7 @@ $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('alp', $page);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

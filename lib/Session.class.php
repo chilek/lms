@@ -331,12 +331,12 @@ class Session
         }
     }
 
-    public function get_history_entry()
+    public function get_history_entry($default = null)
     {
         if (isset($this->_tab_content[$this->tabId]['history'])) {
             return $this->_tab_content[$this->tabId]['history'];
         } else {
-            return null;
+            return $default;
         }
     }
 

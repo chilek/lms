@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,12 +44,7 @@ if (isset($_GET['action'])) {
             break;
         case 'unlink':
             $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
-            $backto = $SESSION->get('backto');
-            if (empty($backto)) {
-                $SESSION->redirect('?m=rtqueuelist');
-            } else {
-                $SESSION->redirect('?' . $backto);
-            }
+            $SESSION->redirect_to_history_entry('m=rtqueuelist');
             break;
     }
 }
@@ -63,12 +58,7 @@ if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
         $LMS->changeTicketWatching($_GET['ticketid'], 0);
     }
 
-    $backto = $SESSION->get('backto');
-    if (empty($backto)) {
-        $SESSION->redirect('?m=rtticketinfo&id=' . $_GET['ticketid']);
-    } else {
-        $SESSION->redirect('?' . $backto);
-    }
+    $SESSION->redirect_to_history_entry('m=rtticketinfo&id=' . $_GET['ticketid']);
 }
 
 // queue id's
@@ -372,7 +362,7 @@ $pagination = LMSPaginationFactory::getPagination(
     ConfigHelper::checkConfig('phpui.short_pagescroller')
 );
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $filter['direction'] = $queue['direction'];
 $filter['order'] = $queue['order'];

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -125,9 +125,10 @@ if ($id && !isset($_POST['ticket'])) {
                     'sms_body' => $sms_body,
                 ));
 
-                if ($SESSION->is_set('backto')) {
+                $backto = $SESSION->remove_history_entry();
+                if (!empty($backto)) {
                     $SESSION->redirect(
-                        '?' . $SESSION->get('backto') . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : '')
+                        '?' . $backto . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : '')
                     );
                 } else {
                     $SESSION->redirect('?m=rtticketview&id=' . $id);
@@ -619,7 +620,7 @@ if (isset($_POST['ticket'])) {
             ));
         }
 
-        $backto = $SESSION->get('backto');
+        $backto = $SESSION->remove_history_entry();
         if (empty($backto)) {
             $SESSION->redirect('?m=rtticketview&id='.$id);
         } elseif (strpos($backto, 'rtqueueview') !== false) {

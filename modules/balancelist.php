@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -185,7 +185,7 @@ $SESSION->restore('blt', $listdata['to']);
 
 $layout['pagetitle'] = trans('Balance Sheet');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('balancelist', $balancelist);
 $SMARTY->assign('listdata', $listdata);

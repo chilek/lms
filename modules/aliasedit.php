@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,7 +41,7 @@ $aliasold = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
 		WHERE a.id = ?', array(intval($_GET['id'])));
 
 if (!$aliasold) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $layout['pagetitle'] = trans('Alias Edit: $a', $aliasold['login'] .'@'. $aliasold['domain']);
@@ -71,7 +71,7 @@ if (isset($_POST['alias'])) {
             $error['login'] = trans('Account with that login name already exists in that domain!');
         }
     }
-        
+
     if (!empty($_GET['delaccount'])) {
         unset($alias['accounts'][intval($_GET['delaccount'])]);
     }
@@ -98,11 +98,11 @@ if (isset($_POST['alias'])) {
         $error['accountid'] = trans('You have to select destination account!');
         $error['mailforward'] = trans('You have to specify forward e-mail!');
     }
-    
+
     if (!$error && empty($_GET['addaccount']) && empty($_GET['delaccount'])
         && empty($_GET['addmailforward']) && empty($_GET['delmailforward'])) {
         $DB->BeginTrans();
-        
+
         $DB->Execute(
             'UPDATE aliases SET login = ?, domainid = ?
 				WHERE id = ?',
@@ -110,12 +110,12 @@ if (isset($_POST['alias'])) {
                     $alias['domainid'],
                     $alias['id'])
         );
-        
+
         $DB->Execute(
             'DELETE FROM aliasassignments WHERE aliasid = ?',
             array($alias['id'])
         );
-        
+
         if (count($alias['accounts'])) {
             foreach ($alias['accounts'] as $account) {
                 $DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
@@ -129,7 +129,7 @@ if (isset($_POST['alias'])) {
 					VALUES(?,?)', array($alias['id'], $mailforward));
             }
         }
-        
+
         $DB->CommitTrans();
 
         $SESSION->remove('aliasaccounts');
@@ -170,7 +170,7 @@ $accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain
             .(isset($where) ? $where : '')
             .' ORDER BY login, domains.name');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 $SESSION->save('aliasaccounts', $alias['accounts']);
 $SESSION->save('aliasmailforwards', $alias['mailforwards']);
 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -182,7 +182,7 @@ $logentry = $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ?
 
 $layout['pagetitle'] = trans('Cash Registry: $a', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));
 
-$SESSION->save('backto', 'm=receiptlist&regid='.$regid);
+$SESSION->add_history_entry();
 
 if ($receipt = $SESSION->get('receiptprint', true)) {
     $SMARTY->assign('receipt', $receipt);

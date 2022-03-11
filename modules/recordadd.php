@@ -3,8 +3,9 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2009 Webvisor Sp. z o.o.
+ *  (C) Copyright 2001-2022 LMS Developers
  *
+ *  Please, see the doc/AUTHORS for more information about authors!
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -20,9 +21,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
+ *  $Id$
  */
 
-include(LIB_DIR.'/dns.php');
+include(LIB_DIR . DIRECTORY_SEPARATOR . 'dns.php');
 
 $d = $_GET['d']*1;
 
@@ -34,7 +36,7 @@ if (isset($_POST['record'])) {
     foreach ($rec as $idx => $val) {
                 $rec[$idx] = trim(strip_tags($val));
     }
-    
+
     $record = array_merge($record, $rec);
 
     if ($record['type'] == 'SOA') {
@@ -42,11 +44,11 @@ if (isset($_POST['record'])) {
             $error['type'] = trans('SOA record already exists');
         }
     }
-    
+
     if ($record['ttl']*1 <= 0 || !is_numeric($record['ttl'])) {
         $error['ttl'] = trans('Wrong TTL');
     }
-    
+
     // call validate... after all checks
     if (!$error) {
             validate_dns_record($record, $error);
@@ -86,7 +88,7 @@ if (empty($record['ttl'])) {
     $error['ttl'] = '';
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('record', $record);
 $SMARTY->assign('error', $error);

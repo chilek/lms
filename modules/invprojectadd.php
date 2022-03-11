@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 if (!empty($_POST['invprojectadd'])) {
     $invproject = $_POST['invprojectadd'];
-            
+
     if ($invproject['project']=='') {
         $SESSION->redirect('?m=invprojectadd');
     }
@@ -34,7 +34,7 @@ if (!empty($_POST['invprojectadd'])) {
     if ($LMS->ProjectByNameExists($invproject['project'])) {
         $error['project'] = trans('Investment project with specified name already exists!');
     }
-        
+
     if (!$error) {
         $LMS->AddProject(array(
             'project' => $invproject['project'],
@@ -49,7 +49,7 @@ if (!empty($_POST['invprojectadd'])) {
 
 $layout['pagetitle'] = trans('New investment project');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('invprojectadd', $invproject);
 $SMARTY->assign('divisions', $LMS->GetDivisions());

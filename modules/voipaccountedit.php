@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -37,9 +37,9 @@ $voipaccountinfo = $LMS->GetVoipAccount($voipaccountid);
 $customerid = $voipaccountinfo['ownerid'];
 
 if (!isset($_GET['ownerid'])) {
-    $SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$customerid);
+    $SESSION->add_history_entry($SESSION->remove_history_entry() . '&ownerid=' . $customerid);
 } else {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 }
 
 $layout['pagetitle'] = trans('Voip Account Edit: $a', $voipaccountinfo['login']);

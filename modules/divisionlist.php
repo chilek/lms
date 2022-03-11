@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -57,8 +57,7 @@ if ($divisionlist) {
     }
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('divisionlist', $divisionlist);
 $SMARTY->assign('pagination', $pagination);

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,7 +40,7 @@ if (isset($_POST['hostedit'])) {
     $hostedit = $_POST['hostedit'];
     $hostedit['name'] = trim($hostedit['name']);
     $hostedit['description'] = trim($hostedit['description']);
-    
+
     if ($hostedit['name'] == '') {
         $error['name'] = trans('Host name is required!');
     } elseif ($host['name']!=$hostedit['name']) {
@@ -68,7 +68,7 @@ if (isset($_POST['hostedit'])) {
     $host['description'] = $hostedit['description'];
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('hostedit', $host);
 $SMARTY->assign('error', $error);

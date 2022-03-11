@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -39,7 +39,7 @@ function DomainExists($id)
 $id = $_GET['id'];
 
 if ($id && !DomainExists($id)) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $domain = $DB->GetRow('SELECT id, name, ownerid, description, master, last_check, type, notified_serial, account, mxbackup
@@ -50,16 +50,16 @@ $layout['pagetitle'] = trans('Domain Edit: $a', $domain['name']);
 if (isset($_POST['domain'])) {
     $olddomain = $domain['name'];
     $oldowner = $domain['ownerid'];
-    
+
     $domain = $_POST['domain'];
     $domain['name'] = trim($domain['name']);
     $domain['description'] = trim($domain['description']);
     $domain['id'] = $id;
-    
-    if ($domain['name']=='' && $domain['description']=='') {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+
+    if ($domain['name'] == '' && $domain['description'] == '') {
+        $SESSION->redirect_to_history_entry();
     }
-    
+
     if ($domain['type'] == 'SLAVE') {
         if (!check_ip($domain['master'])) {
             $error['master'] = trans('IP address of master NS is required!');
@@ -67,7 +67,7 @@ if (isset($_POST['domain'])) {
     } else {
         $domain['master'] = '';
     }
-    
+
     if ($domain['name'] == '') {
         $error['name'] = trans('Domain name is required!');
     } elseif (!preg_match('/^[a-z0-9._-]+$/', $domain['name'])) {
@@ -78,7 +78,7 @@ if (isset($_POST['domain'])) {
 
     if ($domain['ownerid'] && $domain['ownerid'] != $oldowner) {
                 $limits = $LMS->GetHostingLimits($domain['ownerid']);
-        
+
         if ($limits['domain_limit'] !== null) {
             if ($limits['domain_limit'] > 0) {
                     $cnt = $DB->GetOne(
@@ -86,7 +86,7 @@ if (isset($_POST['domain'])) {
                         array($domainadd['ownerid'])
                     );
             }
-        
+
             if ($limits['domain_limit'] == 0 || $limits['domain_limit'] <= $cnt) {
                     $error['ownerid'] = trans('Exceeded domains limit of selected customer ($a)!', $limits['domain_limit']);
             }
@@ -110,7 +110,7 @@ if (isset($_POST['domain'])) {
                 $domain['id']
                 )
         );
-        
+
         // accounts owner update
         if ($domain['ownerid']) {
             $DB->Execute(
@@ -123,7 +123,7 @@ if (isset($_POST['domain'])) {
     }
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('domain', $domain);

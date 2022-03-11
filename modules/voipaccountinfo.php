@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,10 +42,10 @@ $customerid = $voipaccountinfo['ownerid'];
 
 include(MODULES_DIR.'/customer.inc.php');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (!isset($_GET['ownerid'])) {
-    $SESSION->save('backto', $SESSION->get('backto').'&ownerid='.$customerid);
+    $SESSION->add_history_entry($SESSION->remove_history_entry() . '&ownerid=' . $customerid);
 }
 
 $layout['pagetitle'] = trans('Voip Account Info: $a', $voipaccountinfo['login']);

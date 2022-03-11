@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -407,7 +407,7 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction('netnode_changed');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
 unset($netnodelist['total']);

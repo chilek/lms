@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -58,7 +58,7 @@ function GetAliasList($order = 'login,asc', $customer = null, $domain = '')
         .($customer != '' ? ' AND d.ownerid = '.intval($customer) : '')
         .($domain != '' ? ' AND a.domainid = '.intval($domain) : '')
         .($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['customer'] = $customer;
@@ -109,14 +109,14 @@ unset($aliaslist['kind']);
 unset($aliaslist['customer']);
 unset($aliaslist['domain']);
 unset($aliaslist['direction']);
-        
+
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.aliaslist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('allp', $page);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

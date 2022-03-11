@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,7 +45,7 @@ function GetTaxRateList($order = 'name,asc')
     }
 
     $list = $DB->GetAll('SELECT * FROM taxes'.($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['direction'] = $direction;
@@ -80,7 +80,7 @@ unset($taxratelist['total']);
 unset($taxratelist['order']);
 unset($taxratelist['direction']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

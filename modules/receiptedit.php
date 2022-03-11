@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
 			    WHERE documents.id = ? AND type = ?', array($_GET['id'], DOC_RECEIPT));
 
     if (!$receipt) {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     $i = 1;

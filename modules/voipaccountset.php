@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,12 +38,12 @@ if ($ownerid && $LMS->CustomerExists($ownerid)) {
     }
 
     $backid = $ownerid;
-    $redir = $SESSION->get('backto');
-    if ($SESSION->get('lastmodule')=='customersearch') {
+    $redir = $SESSION->remove_history_entry());
+    if ($SESSION->get('lastmodule') == 'customersearch') {
         $redir .= '&search=1';
     }
 
-    $SESSION->redirect('?'.$redir.'#'.$backid);
+    $SESSION->redirect('?' . $redir . '#' . $backid);
 }
 
 // One voip account
@@ -70,7 +70,7 @@ if ($id && $LMS->VoipAccountExists($id)) {
 }
 
 if (!empty($_GET['shortlist'])) {
-    header('Location: ?m=voipaccountlistshort&id='.$LMS->GetVoipAccountOwner($id));
+    $SESSION->redirect('?m=voipaccountlistshort&id=' . $LMS->GetVoipAccountOwner($id));
 } else {
-    header('Location: ?'.$SESSION->get('backto').(isset($backid) ? '#'.$backid : ''));
+    $SESSION->redirect('?' . $SESSION->remove_history_entry() . (isset($backid) ? '#'.$backid : ''));
 }

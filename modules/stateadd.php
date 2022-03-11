@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,7 +32,7 @@ if (count($stateadd)) {
     if ($stateadd['name']=='' && $stateadd['description']=='') {
         $SESSION->redirect('?m=statelist');
     }
-    
+
     if ($stateadd['name'] == '') {
         $error['name'] = trans('State name is required!');
     }
@@ -61,7 +61,7 @@ if (count($stateadd)) {
 
 $layout['pagetitle'] = trans('New State');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('stateadd', $stateadd);
 $SMARTY->assign('error', $error);

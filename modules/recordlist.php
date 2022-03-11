@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2009 Webvisor Sp. z o.o.
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,6 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
+ *  $Id$
  */
 
 if (!isset($_GET['d'])) {
@@ -64,7 +65,7 @@ $SESSION->save('alp', $page);
 
 $layout['pagetitle'] = trans('DNS Records List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

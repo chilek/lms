@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -72,7 +72,7 @@ if (isset($_POST['sourceedit'])) {
     $source['account'] = $sourceedit['account'];
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('sourceedit', $source);
 $SMARTY->assign('error', $error);

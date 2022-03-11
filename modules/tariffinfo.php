@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,7 +46,7 @@ if (!empty($tariff['numberplanid'])) {
 
 $layout['pagetitle'] = trans('Subscription Info: $a', $tariff['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 // if selected tariff is phone tariff then load prefixes assigned to this tariff
 if ($tariff['type'] == SERVICE_PHONE) {

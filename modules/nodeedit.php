@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -70,9 +70,9 @@ foreach ($nodeinfo['macs'] as $key => $value) {
 $nodeinfo['macs'] = $macs;
 
 if (!isset($_GET['ownerid'])) {
-    $SESSION->save('backto', $SESSION->get('backto') . '&ownerid=' . $customerid);
+    $SESSION->add_history_entry($SESSION->remove_history_entry() . '&ownerid=' . $customerid);
 } else {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 }
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);

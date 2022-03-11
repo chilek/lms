@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -52,7 +52,7 @@ if ($ticket['customerid']) {
 
 $layout['pagetitle'] = trans('Ticket No. $a', sprintf("%06d", $ticket['ticketid']));
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('messages', isset($_GET['messages']) ? 1 : 0);

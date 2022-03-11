@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -76,7 +76,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     }
     $netdevips = $LMS->GetNetDevIPs($id);
 
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 
     $layout['pagetitle'] = trans('Device Info: $a $b $c', $netdev['name'], $netdev['producer'], $netdev['model']);
 

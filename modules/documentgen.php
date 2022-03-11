@@ -429,13 +429,12 @@ if (isset($_POST['document'])) {
 
 $SMARTY->setDefaultResourceType('extendsall');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
 
 if (!$rights) {
-    $SMARTY->display('noaccess.html');
-    die;
+    access_denied();
 }
 
 if (!isset($document['numberplanid'])) {

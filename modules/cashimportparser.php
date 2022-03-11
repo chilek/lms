@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -89,7 +89,7 @@ if (isset($_POST['fileupload'])) {
 
 $layout['pagetitle'] = trans('Cash Operations Import');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count

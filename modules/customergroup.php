@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -126,10 +126,10 @@ if ($action == 'delete') {
             }
         }
     } elseif ($oper=='2' || $oper=='3') {
-        $SESSION->redirect('?'.preg_replace('/&[a-z]*id=[0-9]+/i', '', $SESSION->get('backto')).'&id='.$_GET['id']
+        $SESSION->redirect('?' . preg_replace('/&[a-z]*id=[0-9]+/i', '', $SESSION->remove_history_entry()) . '&id=' . $_GET['id']
             .(isset($customerassignments['membersnetid']) && $customerassignments['membersnetid'] != '0' ? '&membersnetid='.$customerassignments['membersnetid'] : '')
             .(isset($customerassignments['othersnetid']) && $customerassignments['othersnetid'] != '0' ? '&othersnetid='.$customerassignments['othersnetid'] : ''));
     }
 }
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$SESSION->redirect_to_history_entry();

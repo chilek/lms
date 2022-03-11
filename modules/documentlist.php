@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -185,7 +185,7 @@ unset($documentlist['direction']);
 
 $layout['pagetitle'] = trans('Documents List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if ($docid = $SESSION->get('documentprint')) {
     $SMARTY->assign('docid', $docid);

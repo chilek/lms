@@ -376,7 +376,7 @@ $menu = array(
                     'prio' => 20,
                 ),
                 'paymentlist' => array(
-                    'name' => trans('Payments List'),
+                    'name' => trans('Payment List'),
                     'link' => '?m=paymentlist',
                     'tip' => trans('List of standing payments'),
                     'prio' => 30,
@@ -424,7 +424,7 @@ $menu = array(
                     'prio' => 100,
                 ),
                 'notelist' => array(
-                    'name' => trans('Debit Notes List'),
+                    'name' => trans('Debit Note List'),
                     'link' => '?m=notelist',
                     'tip' => trans('List of debit notes'),
                     'prio' => 110,
@@ -692,7 +692,7 @@ $menu = array(
                     'prio' => 20,
                 ),
                 'rtcategorylist' => array(
-                    'name' => trans('Categories List'),
+                    'name' => trans('Category List'),
                     'link' => '?m=rtcategorylist',
                     'tip' => trans('List of categories'),
                     'prio' => 30,

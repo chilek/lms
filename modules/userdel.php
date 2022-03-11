@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,10 +26,4 @@
 
 $LMS->UserDelete($_GET['id']);
 
-if ($SESSION->is_set('backto', true)) {
-    $SESSION->redirect('?' . $SESSION->get('backto', true));
-} elseif ($SESSION->is_set('backto')) {
-    $SESSION->redirect('?' . $SESSION->get('backto'));
-} else {
-    $SESSION->redirect('?m=userlist');
-}
+$SESSION->redirect_to_history_entry('m=userlist');

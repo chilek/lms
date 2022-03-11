@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -392,7 +392,7 @@ switch ($action) {
             $LMS->IPSetU($_GET['id'], $_GET['access']);
         }
 
-        header('Location: ?' . $SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
         break;
 
     case 'formaddip':

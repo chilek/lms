@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -39,7 +39,7 @@ if ($api) {
 } else {
     $layout['pagetitle'] = trans('Nodes List');
 
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 
     if (isset($_GET['o'])) {
         $filter['order'] = $_GET['o'];

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -203,8 +203,7 @@ if (Localisation::getCurrentSystemLanguage() == 'pl_PL') {
 $usersList = $LMS->GetUserList(array('superuser' => 1));
 unset($usersList['total']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('division', !empty($division) ? $division : $olddiv);
 $SMARTY->assign('division_users', $divisionUsers);

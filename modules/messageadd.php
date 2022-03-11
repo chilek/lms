@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -830,9 +830,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $message['id'] = $msgid;
         $SMARTY->assign('message', $message);
-        if ($SESSION->is_set('backto')) {
-            $SMARTY->assign('backto', '?' . $SESSION->get('backto'));
-        }
+        $SMARTY->assign('backto', $SESSION->get_history_entry());
         $SMARTY->display('message/messagesend.html');
 
         if ($message['type'] == MSG_MAIL) {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,7 +28,7 @@
 $aids = isset($_POST['customerassignments']) ? $_POST['customerassignments'] : array($_GET['id']);
 $aids = Utils::filterIntegers($aids);
 if (empty($aids)) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (count($aids) == 1) {
@@ -42,7 +42,7 @@ if (count($aids) == 1) {
         array($aid)
     );
     if (!$customer) {
-        $SESSION->redirect('?' . $SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 } else {
     if ($DB->GetOne(
@@ -52,7 +52,7 @@ if (count($aids) == 1) {
         WHERE a.id IN ?',
         array($aids)
     ) != count($aids)) {
-        $SESSION->redirect('?' . $SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 }
 
@@ -60,7 +60,7 @@ if ($_GET['action'] == 'suspend') {
     foreach ($aids as $aid) {
         $LMS->toggleAssignmentSuspension($aid);
     }
-    $SESSION->redirect('?' . $SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_POST['assignment'])) {
@@ -479,7 +479,7 @@ if (isset($_POST['assignment'])) {
 
         $DB->CommitTrans();
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     $a['alltariffs'] = isset($a['alltariffs']);
@@ -568,7 +568,7 @@ if (isset($_POST['assignment'])) {
 
 $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $LMS->executeHook(
     'customerassignmentedit_before_display',

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -701,10 +701,8 @@ switch ($action) {
 
         if (isset($_POST['reuse']) || isset($_GET['print'])) {
             $SESSION->redirect('?m=invoicenew&action=init');
-        } elseif ($SESSION->is_set('backto', true)) {
-            $SESSION->redirect('?' . $SESSION->get('backto', true));
-        } elseif ($SESSION->is_set('backto')) {
-            $SESSION->redirect('?' . $SESSION->get('backto'));
+        } else {
+            $SESSION->redirect_to_history_entry();
         }
 
         break;

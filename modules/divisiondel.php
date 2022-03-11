@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,10 +30,4 @@ if ($id) {
     $LMS->DeleteDivision($id);
 }
 
-if ($SESSION->is_set('backto', true)) {
-    $SESSION->redirect('?' . $SESSION->get('backto', true));
-} elseif ($SESSION->is_set('backto')) {
-    $SESSION->redirect('?' . $SESSION->get('backto'));
-} else {
-    $SESSION->redirect('?m=divisionlist');
-}
+$SESSION->redirect_to_history_entry('?m=divisionlist');

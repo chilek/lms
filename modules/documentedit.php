@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,7 +44,7 @@ if (isset($_GET['action'])) {
             break;
     }
 
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
@@ -268,7 +268,7 @@ if (isset($_POST['document'])) {
             $LMS->CommitDocuments(array($documentedit['id']), false, false);
         }
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     } else {
         $document['title'] = $documentedit['title'];
         $document['type'] = $documentedit['type'];

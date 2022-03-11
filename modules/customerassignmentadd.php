@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ $customer = $DB->GetRow('SELECT id, divisionid, '
 	FROM customerview WHERE id = ?', array($_GET['id']));
 
 if (!$customer) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_POST['assignment'])) {
@@ -129,7 +129,7 @@ if (isset($_POST['assignment'])) {
             )
         );
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     $a['alltariffs'] = isset($a['alltariffs']);
@@ -196,7 +196,7 @@ if (isset($_POST['assignment'])) {
 
 $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $LMS->executeHook(
     'customerassignmentadd_before_display',

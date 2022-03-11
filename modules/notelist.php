@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Debit Notes List<!long>');
+$layout['pagetitle'] = trans('Debit Note List<!long>');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SESSION->restore('dnlm', $marks);
 if (isset($_POST['marks'])) {

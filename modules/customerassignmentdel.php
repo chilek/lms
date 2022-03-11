@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -50,7 +50,7 @@ if (isset($ids) || isset($cid)) {
     }
 
     if (!$customer) {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     if (!empty($ids)) {
@@ -61,7 +61,7 @@ if (isset($ids) || isset($cid)) {
         $DB->CommitTrans();
     }
 
-    $backto = $SESSION->get('backto');
+    $backto = $SESSION->get_history_entry();
     // infinite loop prevention
     if (preg_match('/customerassignmentedit/', $backto)) {
         $backto = 'm=customerinfo&id=' . $customer;

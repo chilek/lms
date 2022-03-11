@@ -36,12 +36,12 @@ $domain = $DB->GetRow('SELECT d.id, d.name, d.ownerid, d.description, d.mxbackup
 		WHERE d.id = ?', array($id));
 
 if (!$domain) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $layout['pagetitle'] = trans('Domain Info: $a', $domain['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('domain', $domain);
 $SMARTY->display('domain/domaininfo.html');

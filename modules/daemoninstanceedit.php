@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,7 +36,7 @@ if (isset($_POST['instance'])) {
     }
 
     $instedit['id'] = $instance['id'];
-    
+
     if ($instedit['name'] == '') {
         $error['name'] = trans('Instance name is required!');
     } elseif ($instedit['name']!=$instance['name']) {
@@ -44,19 +44,19 @@ if (isset($_POST['instance'])) {
             $error['name'] = trans('Instance with specified name exists on that host!');
         }
     }
-    
+
     if ($instedit['module'] == '') {
         $error['module'] = trans('Instance module is required!');
     }
-        
+
     if (!$instedit['hostid']) {
         $error['hostid'] = trans('Instance host is required!');
     }
-    
+
     if ($instedit['crontab'] != '' && !preg_match('/^[0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+$/', $instedit['crontab'])) {
         $error['crontab'] = trans('Incorrect crontab format!');
     }
-    
+
     if (!isset($instedit['disabled'])) {
         $instedit['disabled'] = 0;
     }
@@ -105,7 +105,7 @@ if (isset($_POST['instance'])) {
     $SESSION->redirect('?m=daemoninstancelist');
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', isset($instedit) ? $instedit : $instance);

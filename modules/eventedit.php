@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,13 +44,7 @@ if (isset($_GET['id'])) {
     $event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
 }
 
-if ($SESSION->is_set('backto', true)) {
-    $backto = $SESSION->get('backto', true);
-} elseif ($SESSION->is_set('backto')) {
-    $backto = $SESSION->get('backto');
-} else {
-    $backto = 'm=eventlist';
-}
+$backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
@@ -58,12 +52,14 @@ switch ($_GET['action']) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && (time() - $event['closeddate'] < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
+            $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
             die(trans('Cannot open event - event closed too long ago.'));
         }
         break;
     case 'close':
+        $SESSION->remove_history_entry();
         if (isset($_GET['ticketid'])) {
             $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE closed = 0 AND ticketid = ?', array(Auth::GetCurrentUser(), $_GET['ticketid']));
             $SESSION->redirect($backurl);
@@ -75,6 +71,7 @@ switch ($_GET['action']) {
     case 'assign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
+            $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
             die("Cannot assign to event - event closed too long ago.");
@@ -83,6 +80,7 @@ switch ($_GET['action']) {
     case 'unassign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
+            $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
             die("Cannot unassign from event - event closed too long ago.");
@@ -239,7 +237,7 @@ if (isset($_POST['event'])) {
 
 $layout['pagetitle'] = trans('Event Edit');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 

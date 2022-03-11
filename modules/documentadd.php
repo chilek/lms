@@ -500,7 +500,7 @@ $SMARTY->assign('references', $references);
 
 $layout['pagetitle'] = trans('New Document');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());

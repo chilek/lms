@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -94,7 +94,7 @@ if (isset($setwarnings['mnodeid'])) {
     $SESSION->save('warnon', $warnon);
     $SESSION->save('warnoff', $warnoff);
 
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $warning = isset($_GET['warning']) ? 1 : 0;
@@ -110,7 +110,7 @@ if (!empty($_POST['marks'])) {
         $LMS->executeHook('nodewarn_after_submit', $data);
     }
 
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $backid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
@@ -125,12 +125,12 @@ if ($backid && $LMS->CustomerExists($backid)) {
         $LMS->executeHook('nodewarn_after_submit', $data);
     }
 
-    $redir = $SESSION->get('backto');
-    if ($SESSION->get('lastmodule')=='customersearch') {
+    $redir = $SESSION->get_history_entry();
+    if ($SESSION->get('lastmodule') == 'customersearch') {
         $redir .= '&search=1';
     }
 
-    $SESSION->redirect('?'.$redir.'#'.$backid);
+    $SESSION->redirect('?' . $redir . '#' . $backid);
 }
 
 $backid = isset($_GET['id']) ? $_GET['id'] : 0;
@@ -149,11 +149,11 @@ if ($backid && $LMS->NodeExists($backid)) {
         header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($backid));
         die;
     } else {
-        $SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
+        $SESSION->redirect('?' . $SESSION->remove() . '#' . $backid);
     }
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $layout['pagetitle'] = trans('Notices');
 

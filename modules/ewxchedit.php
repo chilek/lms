@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -37,7 +37,7 @@ if (!empty($_GET['action'])) {
         );
     }
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (!($channel = $DB->GetRow('SELECT * FROM ewx_channels WHERE id = ?', array($_GET['id'])))) {

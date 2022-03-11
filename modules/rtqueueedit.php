@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ if (! $LMS->QueueExists($_GET['id'])) {
 
 if (isset($_GET['unread'])) {
     $LMS->MarkQueueAsRead($_GET['id']);
-    $SESSION->redirect('?' . $SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_POST['queue'])) {
@@ -160,7 +160,7 @@ unset($userlist['total']);
 
 $layout['pagetitle'] = trans('Queue Edit: $a', $queue['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('userlist', $userlist);
