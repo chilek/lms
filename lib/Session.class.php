@@ -179,11 +179,11 @@ class Session
 
     public function save($variable, $content, $tab = false)
     {
+        if ($variable == 'backto') {
+            $this->add_history_entry(preg_replace('/^\?/', '', $content));
+            return;
+        }
         if ($tab) {
-            if ($variable === 'backto') {
-                self::$oldBackTo = $this->_tab_content[$this->tabId]['backto'];
-                self::$backTo = $content;
-            }
             if (!isset($this->_tab_content[$this->tabId])) {
                 $this->_tab_content[$this->tabId] = array();
             }
@@ -239,6 +239,9 @@ class Session
 
     public function get($variable, $tab = false)
     {
+        if ($variable == 'backto') {
+            return $this->get_history_entry();
+        }
         if ($tab) {
             if (isset($this->_tab_content[$this->tabId][$variable])) {
                 return $this->_tab_content[$this->tabId][$variable];
@@ -256,6 +259,9 @@ class Session
 
     public function remove($variable, $tab = false)
     {
+        if ($variable == 'backto') {
+            return $this->remove_history_entry();
+        }
         if ($tab) {
             if (isset($this->_tab_content[$this->tabId][$variable])) {
                 unset($this->_tab_content[$this->tabId][$variable]);
@@ -279,6 +285,10 @@ class Session
 
     public function is_set($variable, $tab = false)
     {
+        if ($variable == 'backto') {
+            $entry = $this->get_history_entry();
+            return !empty($entry);
+        }
         if ($tab) {
             return isset($this->_tab_content[$this->tabId][$variable]);
         } else {
