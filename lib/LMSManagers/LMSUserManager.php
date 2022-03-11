@@ -51,7 +51,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             );
         } else {
             $args = array(
-                'passwd' => crypt($passwd),
+                'passwd' => password_hash($passwd, PASSWORD_DEFAULT),
                 'passwdforcechange' => 0,
                 SYSLOG::RES_USER => $id
             );
@@ -60,7 +60,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 WHERE id = ?',
                 array_values($args)
             );
-            $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
+            $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, password_hash($passwd, PASSWORD_DEFAULT)));
         }
         if ($result && $this->syslog) {
             unset($args['passwd']);
@@ -309,7 +309,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
-            'passwd' => crypt($user['password']),
+            'passwd' => password_hash($user['password'], PASSWORD_DEFAULT),
             'netpasswd' => empty($user['netpassword']) ? null : $user['netpassword'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
@@ -686,7 +686,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $history = $this->db->GetAll('SELECT id, hash FROM passwdhistory WHERE userid = ? ORDER BY id DESC LIMIT ?', array($id, intval(ConfigHelper::getConfig('phpui.passwordhistory'))));
         foreach ($history as $h) {
-            if (crypt($passwd, $h['hash']) == $h['hash']) {
+            if (password_verify($passwd, $h['hash'])) {
                 return true;
             }
         }
@@ -705,7 +705,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 'SELECT passwd FROM users WHERE id = ?',
                 array(Auth::GetCurrentUser())
             );
-            return crypt($password, $dbpasswd) == $dbpasswd;
+            return password_verify($password, $dbpasswd);
         }
     }
 

@@ -49,7 +49,7 @@ if (isset($_POST['passwd'])) {
     if (!$error) {
         $DB->Execute(
             'UPDATE passwd SET password = ? WHERE id = ?',
-            array(crypt($account['passwd1']), $id)
+            array(password_hash($account['passwd1'], PASSWORD_DEFAULT), $id)
         );
 
         $SESSION->redirect_to_history_entry();

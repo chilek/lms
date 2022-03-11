@@ -531,8 +531,8 @@ class Session
 
     private function checkPIN($passwd, $passwdlastchange)
     {
-        if (preg_match('/^\$[0-9]+\$/', $passwd)) {
-            return crypt($this->passwd, $passwd) == $passwd;
+        if (preg_match('/^\$[0-9a-z]+\$/i', $passwd)) {
+            return password_verify($this->passwd, $passwd);
         }
 
         if (preg_match('/^[0-9a-f]{32}$/i', $passwd)) {

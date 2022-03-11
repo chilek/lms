@@ -151,7 +151,7 @@ if (isset($_POST['account'])) {
         $args = array(
             'ownerid' => empty($account['ownerid']) ? null : $account['ownerid'],
             'login' => $account['login'],
-            'password' => crypt($account['passwd1']),
+            'password' => password_hash($account['passwd1'], PASSWORD_DEFAULT),
             'home' => $account['home'],
             'expdate' => $account['expdate'],
             'domainid' => $account['domainid'],

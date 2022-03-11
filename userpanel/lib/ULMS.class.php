@@ -105,7 +105,7 @@ class ULMS extends LMS
     {
         $unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
 
-        $newpin = $unsecure_pin_validity ? crypt($pin) : $pin;
+        $newpin = $unsecure_pin_validity ? password_hash($pin, PASSWORD_DEFAULT) : $pin;
 
         $res = $this->DB->Execute(
             'UPDATE customers

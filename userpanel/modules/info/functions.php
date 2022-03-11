@@ -366,8 +366,8 @@ function module_updatepin()
     $userdata = $_POST['userdata'];
     $userinfo = $LMS->GetCustomer($SESSION->id);
 
-    if (preg_match('/\$[0-9]+\$/', $userinfo['pin'])) {
-        if (crypt($userdata['oldpin'], $userinfo['pin']) != $userinfo['pin']) {
+    if (preg_match('/\$[0-9a-z]+\$/i', $userinfo['pin'])) {
+        if (!password_verify($userdata['oldpin'], $userinfo['pin'])) {
             $error['oldpin'] = trans('Incorrect current PIN!');
         }
     } else {

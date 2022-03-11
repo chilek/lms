@@ -236,7 +236,7 @@ class Auth
 
     public function VerifyPassword($dbpasswd = '')
     {
-        if (crypt($this->passwd, $dbpasswd) == $dbpasswd) {
+        if (password_verify($this->passwd, $dbpasswd)) {
             return true;
         }
 

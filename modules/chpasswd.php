@@ -57,9 +57,7 @@ if ($LMS->UserExists($id)) {
 
         if (!$error) {
             $oldpasswd = $LMS->DB->GetOne('SELECT passwd FROM users WHERE id = ?', array($id));
-            list (, $alg, $salt) = explode('$', $oldpasswd);
-            $newpasswd = crypt($passwd['password'], '$' . $alg . '$' . $salt . '$');
-            if ($newpasswd == $oldpasswd) {
+            if (password_verify($passwd['password'], $oldpasswd)) {
                 $error['password'] = $error['confirm'] = trans('New password is the same as old password!');
             }
             if (!$error) {
