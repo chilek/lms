@@ -85,7 +85,7 @@
 				// so we have to be careful and handle 'backto' session variable in special way and
 				// correct this variable when new tab id has been determined before the moment
 				var oldLmsTabId = getCookie('tabId');
-				{if $__backto || $__return_url}
+				{if $__backto || $__history_entry}
 					if (oldLmsTabId) {
 						var params = {}
 						{if $__backto}
