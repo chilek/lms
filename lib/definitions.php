@@ -846,12 +846,14 @@ define('CONTACT_IM_FACEBOOK', 4096);
 define('CONTACT_DISABLED', 16384);
 define('CONTACT_DOCUMENTS', 32768);
 define('CONTACT_REPRESENTATIVE', 65536);
+define('CONTACT_CUSTOMEROWNEDBANKACCOUNT', 131072);
 
 $CONTACTTYPES = array(
     CONTACT_MOBILE          =>  trans('mobile'),
     CONTACT_FAX             =>  trans('fax'),
     CONTACT_INVOICES        =>  trans('invoices'),
     CONTACT_DISABLED        =>  trans('disabled'),
+    CONTACT_CUSTOMEROWNEDBANKACCOUNT => trans('customer bank account'),
     CONTACT_NOTIFICATIONS   =>  trans('notifications'),
     CONTACT_TECHNICAL       =>  trans('technical'),
     CONTACT_IM_GG           =>  trans('Gadu-Gadu'),

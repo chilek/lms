@@ -316,6 +316,10 @@ $CUSTOMERCONTACTTYPES = array(
                     'label' => $CONTACTTYPES[CONTACT_INVOICES],
                     'tip' => trans('Check if bank account should be visible on invoice'),
                 ),
+                CONTACT_CUSTOMEROWNEDBANKACCOUNT => array(
+                    'label' => $CONTACTTYPES[CONTACT_CUSTOMEROWNEDBANKACCOUNT],
+                    'tip' => trans('Check if this bank account is owned by customer'),
+                ),
                 CONTACT_DISABLED => array(
                     'label' => $CONTACTTYPES[CONTACT_DISABLED],
                     'tip' => trans('Check if bank account should be disabled'),
