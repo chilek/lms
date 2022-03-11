@@ -779,8 +779,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     }
                     break;
                 case 'type':
-                    if (!empty($type)) {
-                        $where[] = 'm.type = ' . intval($type);
+                    if (!empty($value)) {
+                        $where[] = 'm.type = ' . intval($value);
                     }
                     break;
                 case 'producer':
@@ -810,6 +810,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			    LEFT JOIN vaddresses addr       ON d.address_id = addr.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes n            ON n.id = d.netnodeid
+				LEFT JOIN netdevicemodels m     ON m.id = d.netdevicemodelid
 				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
