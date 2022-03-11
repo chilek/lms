@@ -60,6 +60,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         $ln = 0;
         $sum = array();
         $data = array();
+        $error = array();
         $syslog_records = array();
 
         foreach ($file as $line) {
