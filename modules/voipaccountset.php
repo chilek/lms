@@ -38,7 +38,7 @@ if ($ownerid && $LMS->CustomerExists($ownerid)) {
     }
 
     $backid = $ownerid;
-    $redir = $SESSION->remove_history_entry());
+    $redir = $SESSION->remove_history_entry();
     if ($SESSION->get('lastmodule') == 'customersearch') {
         $redir .= '&search=1';
     }
