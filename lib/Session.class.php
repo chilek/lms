@@ -46,8 +46,6 @@ class Session
                         // garbage collector procedure
 
     private $tabId = null;
-    private static $oldBackTo = '';
-    private static $backTo = '';
     private static $oldHistoryEntry = '';
     private static $historyEntry = '';
 
@@ -119,16 +117,6 @@ class Session
     // new browser tab can be opened as hidden or tabid of new tab can be not initialised
     // so we have to be careful and handle 'backto' session variable in special way and
     // correct this variable when new tab id has been determined before the moment
-    public static function getOldBackTo()
-    {
-        return self::$oldBackTo;
-    }
-
-    public static function getBackTo()
-    {
-        return self::$backTo;
-    }
-
     public static function getOldHistoryEntry()
     {
         return self::$oldHistoryEntry;
@@ -151,15 +139,6 @@ class Session
 
         if (!isset($content['tabs'][$params['tab_id']])) {
             $content['tabs'][$params['tab_id']] = array();
-        }
-
-        if (isset($params['old_backto'], $params['backto'])) {
-            if (isset($content['tabs'][$params['old_tab_id']]['backto'])) {
-                if ($content['tabs'][$params['old_tab_id']]['backto'] != $params['old_backto']) {
-                    $content['tabs'][$params['old_tab_id']]['backto'] = $params['old_backto'];
-                }
-            }
-            $content['tabs'][$params['tab_id']]['backto'] = $params['backto'];
         }
 
         if (isset($params['old_history_entry'], $params['history_entry'])) {
