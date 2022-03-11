@@ -567,10 +567,14 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         // check 'References'
         if ($lastref) {
             $message = $DB->GetRow(
-                "SELECT id, ticketid FROM rtmessages WHERE messageid = ?",
+                "SELECT m.id, m.ticketid, t.state, t.resolvetime
+                FROM rtmessages m
+                JOIN rttickets t ON t.id = m.ticketid
+                WHERE m.messageid = ?",
                 array($lastref)
             );
-            if (!empty($message)) {
+            if (!empty($message)
+                && ($message['state'] != RT_RESOLVED || $message['resolvetime'] + $modify_ticket_timeframe > time())) {
                 $prev_tid = $message['ticketid'];
                 $inreplytoid = $message['id'];
             }
