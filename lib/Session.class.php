@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,6 @@
 
 class Session
 {
-
     public $SID = null;         // session unique ID
     public $_version = '1.11-git';      // library version
     public $_revision = '$Revision$';   // library revision
@@ -46,6 +45,9 @@ class Session
                         // garbage collector procedure
 
     private $tabId = null;
+
+    const HISTORY_SIZE = 10;
+
     private static $oldHistoryEntry = '';
     private static $historyEntry = '';
 
@@ -143,11 +145,15 @@ class Session
 
         if (isset($params['old_history_entry'], $params['history_entry'])) {
             if (isset($content['tabs'][$params['old_tab_id']]['history'])) {
-                if ($content['tabs'][$params['old_tab_id']]['history'] != $params['old_history_entry']) {
-                    $content['tabs'][$params['old_tab_id']]['history'] = $params['old_history_entry'];
+                $old_history_entry = array_pop($content['tabs'][$params['old_tab_id']]['history']);
+                if ($old_history_entry != $params['old_history_entry']) {
+                    array_push($content['tabs'][$params['old_tab_id']]['history'], $params['old_history_entry']);
+                } else {
+                    array_push($content['tabs'][$params['old_tab_id']]['history'], $old_history_entry);
                 }
             }
-            $content['tabs'][$params['tab_id']]['history'] = $params['history_entry'];
+            array_pop($content['tabs'][$params['tab_id']]['history']);
+            array_push($content['tabs'][$params['tab_id']]['history'], $params['history_entry']);
         }
 
         $this->DB->Execute('UPDATE sessions SET content = ? WHERE id = ?', array(serialize($content), $this->SID));
@@ -280,12 +286,20 @@ class Session
         if (!isset($entry)) {
             $entry = $_SERVER['QUERY_STRING'];
         }
-        self::$oldHistoryEntry = $this->_tab_content[$this->tabId]['history'];
+        if (!isset($this->_tab_content[$this->tabId]['history'])) {
+            $this->_tab_content[$this->tabId]['history'] = array();
+        }
+        self::$oldHistoryEntry = end($this->_tab_content[$this->tabId]['history']);
         self::$historyEntry = $entry;
         if (!isset($this->_tab_content[$this->tabId])) {
             $this->_tab_content[$this->tabId] = array();
         }
-        $this->_tab_content[$this->tabId]['history'] = $entry;
+        $last_entry = end($this->_tab_content[$this->tabId]['history']);
+        if (empty($last_entry) || $last_entry != $entry) {
+            array_push($this->_tab_content[$this->tabId]['history'], $entry);
+        }
+        $this->_tab_content[$this->tabId]['history'] =
+            array_slice($this->_tab_content[$this->tabId]['history'], self::HISTORY_SIZE * -1);
 
         if ($this->autoupdate) {
             $this->_saveSession();
@@ -297,8 +311,7 @@ class Session
     public function redirect_to_history_entry($default = null)
     {
         if (isset($this->_tab_content[$this->tabId]['history'])) {
-            $url = $this->_tab_content[$this->tabId]['history'];
-            unset($this->_tab_content[$this->tabId]['history']);
+            $url = array_pop($this->_tab_content[$this->tabId]['history']);
             $this->close();
             header('Location: ?' . $url);
             die;
@@ -312,9 +325,7 @@ class Session
     public function remove_history_entry()
     {
         if (isset($this->_tab_content[$this->tabId]['history'])) {
-            $url = $this->_tab_content[$this->tabId]['history'];
-            unset($this->_tab_content[$this->tabId]['history']);
-            return $url;
+            return array_pop($this->_tab_content[$this->tabId]['history']);
         } else {
             return null;
         }
@@ -323,7 +334,7 @@ class Session
     public function get_history_entry($default = null)
     {
         if (isset($this->_tab_content[$this->tabId]['history'])) {
-            return $this->_tab_content[$this->tabId]['history'];
+            return end($this->_tab_content[$this->tabId]['history']);
         } else {
             return $default;
         }
