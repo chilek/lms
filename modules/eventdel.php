@@ -44,6 +44,8 @@ if (!empty($backto)) {
         $SESSION->redirect($backto);
     } elseif (strpos($backto, 'm=eventinfo') !== false) {
         $SESSION->redirect('?m=eventlist');
+    } else {
+        $SESSION->redirect('?' . $backto);
     }
 }
 

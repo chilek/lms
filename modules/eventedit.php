@@ -237,8 +237,6 @@ if (isset($_POST['event'])) {
 
 $layout['pagetitle'] = trans('Event Edit');
 
-$SESSION->add_history_entry();
-
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 
 if (isset($event['customerid']) && intval($event['customerid'])) {
