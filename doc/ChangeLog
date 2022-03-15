@@ -100,6 +100,8 @@ version 28-git (????-??-??):
   - improvement: 'phpui.default_node_auth_types' allow to pre-check selected auth types in node add form
     (empty default value) [chilan]
   - devel/improvement: switched from 'crypt()' usage to 'password_*()' [chilan]
+  - improvement: web browser multi-tab history support [chilan]
+  - improvement: switched customer address selection ui control to 'lms-ui-advanced-select' [chilan]
 
 version 27.0 (2021-08-20):
 
