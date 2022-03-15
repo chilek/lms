@@ -176,4 +176,4 @@ if (isset($addbalance['mcustomerid'])) {
     }
 }
 
-$SESSION->get_history_entry();
+$SESSION->redirect_to_history_entry();
