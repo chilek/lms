@@ -64,4 +64,5 @@ $SMARTY->assign('action', $action);
 $SMARTY->assign('vlanlist', $vlanlist);
 $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('pagetitle', $layout['pagetitle']);
+$SMARTY->assign('pagelimit', ConfigHelper::getConfig('phpui.vlanlist_pagelimit', 100));
 $SMARTY->display('vlan/vlanlist.html');
