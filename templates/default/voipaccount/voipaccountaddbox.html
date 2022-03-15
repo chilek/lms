@@ -252,7 +252,7 @@
 
     var remove_number      = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
-    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+    initAdvancedSelects("#customer_addresses");
 
     function checkIfTerritLocation() {
         {if ConfigHelper::checkConfig('phpui.teryt_required')}
@@ -318,19 +318,18 @@
      */
     function change_customer() {
         getCustomerAddresses($('[name="voipaccountdata[ownerid]"]').val(), function(addresses) {
-            customer_addresses.setAddressList( addresses );
+            setAddressList("#customer_addresses", addresses);
             checkIfTerritLocation();
         });
     }
 
     getCustomerAddresses( {intval($voipaccountdata.ownerid)}, function(addresses) {
-        customer_addresses.setAddressList( addresses );
+        setAddressList("#customer_addresses", addresses);
 
         {if $voipaccountdata.address_id}
-        $( '#customer_addresses' ).val( {$voipaccountdata.address_id} );
+            $('#customer_addresses').val({$voipaccountdata.address_id});
+            updateAdvancedSelects("#customer_addresses");
         {/if}
-
-        customer_addresses.init();
 
         checkIfTerritLocation();
     });

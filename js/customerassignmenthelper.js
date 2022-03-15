@@ -448,9 +448,10 @@ function CustomerAssignmentHelper(options) {
 				}
 
 				$('#location-select').toggleClass('lms-ui-error', location_count > 1).html(options);
-				new LmsUiIconSelectMenu('#location-select', {
-					change: helper.locationSelectionHandler
-				}).init();
+				initAdvancedSelects('#location-select');
+				$('#location-select').chosen().change(function() {
+					helper.locationSelectionHandler();
+				});
 
 				options = '<option value="-1">' + $t('none') + '</option>';
 				if (data.addresses) {

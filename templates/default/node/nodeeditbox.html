@@ -674,17 +674,15 @@
 
 	xajax_getRadioSectors({$nodeinfo.netdev}, {$nodeinfo.linktechnology});
 
-    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+    initAdvancedSelects('#customer_addresses');
 
     /*!
      * \brief Update addresses list on customer input change.
      */
     function customer_change() {
         getCustomerAddresses( $("#customerid_input").val(), function(addresses) {
-            customer_addresses.setAddressList(addresses);
+            setAddressList('#customer_addresses', addresses);
         });
     }
-
-    customer_addresses.init();
 
 </script>

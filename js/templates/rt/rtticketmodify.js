@@ -91,12 +91,9 @@ function update_nodes(data) {
 	$('.node-row').toggle(data.length > 0);
 }
 
-var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
-	change: function (event, ui) {
-		xajax_select_location($('[name="ticket[custid]"]').val(), $(this).val());
-	}
-});
-
 function initCustomerSelection() {
-	customer_addresses.init();
+	initAdvancedSelects('#customer_addresses');
+	$('#customer_addresses').chosen().change(function() {
+		xajax_select_location($('[name="ticket[custid]"]').val(), $(this).val());
+	});
 }

@@ -212,7 +212,7 @@
 
 <script>
 
-	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+	initAdvancedSelects('#customer_addresses');
 
 	$(function() {
 		$('[name="netnode[name]"]').focus();
@@ -274,11 +274,9 @@
 		$('#ownership').change();
 
 		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
-			customer_addresses.setAddressList( addresses );
+			setAddressList('#customer_addresses', addresses);
 		});
 	};
-
-	customer_addresses.init();
 
 </script>
 {/block}

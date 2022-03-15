@@ -330,7 +330,7 @@
 		}
 	}
 
-	var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses");
+	initAdvancedSelects('#customer_addresses');
 
 	/*!
      * \brief Update customer addresses list on input change.
@@ -341,12 +341,10 @@
 		updateLocationBoxesDisplay(id);
 
 		getCustomerAddresses(id, function (addresses) {
-			customer_addresses.setAddressList(addresses);
+			setAddressList('#customer_addresses', addresses);
 		});
 	}
 
 	updateLocationBoxesDisplay({intval($netdev.ownerid)});
-
-	customer_addresses.init();
 
 </script>

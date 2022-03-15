@@ -299,6 +299,9 @@ function init_datepickers(selector) {
 
 function initAdvancedSelects(selector) {
 	$(selector).each(function () {
+		$(this).find('option[data-icon]').each(function () {
+			$(this).html('<i class="' + $(this).attr('data-icon') + '"></i>&nbsp;' + $(this).html());
+		});
 		if ($(this).next('.chosen-container').length) {
 			$(this).trigger('chosen:updated');
 			return;
@@ -339,6 +342,78 @@ function updateAdvancedSelects(selector) {
 	$(selector).each(function() {
 		$(this).trigger('chosen:updated');
 	});
+}
+
+function setAddressList(selector, address_list, preselection) {
+	var icon;
+	var select = $(selector);
+
+	preselection = typeof(preselection) !== 'undefined' && preselection;
+
+	var addresses = [];
+	$.each(address_list, function (key, value) {
+		addresses.push(value);
+	});
+	addresses.sort(function (a, b) {
+		var a_city = a.location_city_name.toLowerCase();
+		var b_city = b.location_city_name.toLowerCase();
+		if (a_city > b_city) {
+			return 1;
+		} else if (a_city < b_city) {
+			return -1;
+		}
+		var a_street = a.location_street_name;
+		var b_street = b.location_street_name;
+		if (a_street && !b_street) {
+			return -1;
+		} else if (b_street && !a_street) {
+			return 1;
+		} else if (!a_street && !b_street) {
+			return 0;
+		}
+		a_street = a_street.toLowerCase();
+		b_street = b_street.toLowerCase();
+		if (a_street > b_street) {
+			return 1;
+		} else if (a_street < b_street) {
+			return -1;
+		}
+		return 0;
+	});
+	var html = '<option value="-1">---</option>';
+	$.each(addresses, function () {
+		switch (this.location_address_type) {
+			case "0":
+				icon = "lms-ui-icon-mail fa-fw";
+				break; // postal address
+			case "1":
+				icon = "lms-ui-icon-home fa-fw";
+				break; // billing address
+			case "2":
+				icon = "lms-ui-icon-customer-location fa-fw";
+				break; // location/recipient address
+			case "3":
+				icon = "lms-ui-icon-default-customer-location fa-fw";
+				break; // default location address
+			case "4":
+				icon = "lms-ui-icon-document fa-fw";
+				break; // invoice address
+
+			default:
+				icon = "";
+		}
+
+		html += '<option value="' + this.address_id + '" data-icon="' + icon + '"' +
+			' data-territ="' + this.teryt + '"' +
+			(preselection && this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
+			this.location + '</option>';
+	});
+
+	select.html(html);
+	select.find('option[data-icon]').each(function() {
+		$(this).html('<i class="' + $(this).attr('data-icon') + '"></i>&nbsp;' + $(this).html());
+	});
+	updateAdvancedSelects(select);
 }
 
 function init_comboboxes(selector) {

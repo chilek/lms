@@ -244,8 +244,11 @@
 
 <script>
 
-	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
 	var recipient_addr;
+
+	{if $invoice.customerid && isset($invoice.recipient_address)}
+		recipient_addr = JSON.parse(Base64.decode('{$invoice.recipient_address}'));
+	{/if}
 
 	function updateDocumentFlags() {
 		$.ajax({
@@ -274,31 +277,34 @@
 	 */
 	function customer_change() {
 		getCustomerAddresses($("#ownerid_input").val(), function(addresses) {
-			{if $invoice.customerid && isset($invoice.recipient_address) }
-				customer_addresses.setAddressList( recipient_addr, false );
-				$( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
-			{else}
-				customer_addresses.setAddressList();
+			{if $invoice.customerid && isset($invoice.recipient_address)}
+				var addr = {};
+				addr[recipient_addr.address_id] = $.extend(recipient_addr, {
+					default_address: true,
+					location_address_type: "4"
+				});
+				$.each(addresses, function() {
+					if (this.hasOwnProperty("default_address")) {
+						delete this.default_address;
+					}
+				});
+				addresses = $.extend(addr, addresses);
 			{/if}
 
-			customer_addresses.appendAddressList( addresses, false );
-			customer_addresses.refresh();
+			setAddressList('#customer_addresses', addresses, true);
 		});
 		updateDocumentFlags();
 	}
 
-	{if $invoice.customerid && isset($invoice.recipient_address)}
-		recipient_addr = [ JSON.parse(Base64.decode('{$invoice.recipient_address}')) ];
-	{/if}
-		customer_addresses.init();
+	initAdvancedSelects('#customer_addresses');
 
-		$(function() {
-			$('form[name="setcustomer"] [name="invoice[number]"]').focus();
+	$(function() {
+		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
 
-			$('#cdate').change(function() {
-				updateDocumentFlags();
-			});
+		$('#cdate').change(function() {
+			updateDocumentFlags();
 		});
+	});
 
 </script>
 {/block}

@@ -591,9 +591,9 @@
 
 <script>
 
-	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
 	const netFlagElem = $("#innet");
-	customer_addresses.init();
+
+	initAdvancedSelects('#customer_addresses');
 
 	function claculatePositionPriceFromGross(posuid, elem) {
 		let grossPriceElem = $(elem);
