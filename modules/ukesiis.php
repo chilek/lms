@@ -2028,7 +2028,7 @@ if ($netdevices) {
                             }
 
                             $processed_netlinks[$netnodelinkid] = true;
-                            $netnodes[$netdevnetnode]['distports']++;
+                            //$netnodes[$netdevnetnode]['distports']++;
                             $foreign = false;
 
                             if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2) {
@@ -2106,7 +2106,7 @@ if ($netdevices) {
                         }
 
                         $processed_netlinks[$netnodelinkid] = true;
-                        $netnodes[$netdevnetnode]['distports']++;
+                        //$netnodes[$netdevnetnode]['distports']++;
                         $foreign = false;
 
                         if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$srcnetnode]['ownership'] < 2) {
