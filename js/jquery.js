@@ -299,9 +299,12 @@ function init_datepickers(selector) {
 
 function initAdvancedSelects(selector) {
 	$(selector).each(function () {
-		$(this).find('option[data-icon]').each(function () {
-			$(this).html('<i class="' + $(this).attr('data-icon') + '"></i>&nbsp;' + $(this).html());
-		});
+		if ($(this).is('.lms-ui-customer-address-select')) {
+			$(this).find('option[data-icon]').each(function () {
+				$(this).html('<i class="' + $(this).attr('data-icon') + '"></i>&nbsp;' + $(this).html());
+			});
+		}
+
 		if ($(this).next('.chosen-container').length) {
 			$(this).trigger('chosen:updated');
 			return;
