@@ -152,6 +152,9 @@ class Session
                     array_push($content['tabs'][$params['old_tab_id']]['history'], $old_history_entry);
                 }
             }
+            if (!isset($content['tabs'][$params['tab_id']]['history'])) {
+                $content['tabs'][$params['tab_id']]['history'] = array();
+            }
             array_pop($content['tabs'][$params['tab_id']]['history']);
             array_push($content['tabs'][$params['tab_id']]['history'], $params['history_entry']);
         }
