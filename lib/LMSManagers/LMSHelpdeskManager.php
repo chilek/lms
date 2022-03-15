@@ -2104,7 +2104,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if ($params['queue'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_USER))) {
-            if ($recipients = $this->db->GetCol(
+            $recipients = $this->db->GetCol(
                 'SELECT DISTINCT email
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
@@ -2113,7 +2113,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ($params['verifierid'] ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                 . ' AND (ntype & ?) > 0',
                 array_values($args)
-            )) {
+            );
+
+            if (!empty($recipients) && isset($verifier_email) && !empty($verifier_email)) {
+                $recipients = array_diff($recipients, array($verifier_email));
+            }
+
+            if (!empty($recipients)) {
                 if (isset($params['oldqueue'])) {
                     $oldrecipients = $this->db->GetCol(
                         'SELECT DISTINCT email
