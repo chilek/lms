@@ -4,7 +4,7 @@
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="netdevticketpanel">
 		<TD class="bold">
 			{icon name="helpdesk" class="lms-ui-sortable-handle" label="Assigned tickets:"}
-			({if !empty($queue)}{count($queue)}{else}0{/if})
+			({$queue|size})
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=rtticketadd&netdevid={$queue_netdevid}{if isset($netdev.netnode.id)}&netnodeid={$netdev.netnode.id}{/if}"><IMG src="img/save.gif" alt="{trans("Add new")}"> {trans("Add new")}</A>
