@@ -42,6 +42,11 @@ class LMS
     public $xajax;  // xajax object
     private $mail_object = null;
     private static $lms = null;
+
+    private $message_template = '%body';
+    private $html_message_template = '%body';
+    private $text_message_template = '%body';
+
     protected $plugin_manager;
     protected $user_manager;
     protected $customer_manager;
@@ -2760,6 +2765,45 @@ class LMS
         }
 
         return false;
+    }
+
+    public function prepareMessageTemplates($section = 'phpui')
+    {
+        $this->message_template = ConfigHelper::getConfig($section . '.message_template', '%body');
+        $this->html_message_template = ConfigHelper::getConfig($section . '.html_message_template', $this->message_template);
+        $this->text_message_template = ConfigHelper::getConfig($section . '.text_message_template', $this->message_template);
+    }
+
+    public function applyMessageTemplates($body, $content_type = 'text/plain', $section = 'phpui')
+    {
+        static $username = null;
+
+        if (!isset($username)) {
+            $userid = Auth::GetCurrentUser();
+            if (empty($userid)) {
+                $username = trans('System');
+            } else {
+                $user_manager = $this->getUserManager();
+                $username = $user_manager->getUserName($userid);
+                if (empty($username)) {
+                    $username = trans('System');
+                }
+            }
+        }
+
+        $message_template = $content_type == 'text/plain' ? $this->text_message_template : $this->html_message_template;
+
+        return str_replace(
+            array(
+                '%body',
+                '%username',
+            ),
+            array(
+                $body,
+                $username,
+            ),
+            $message_template
+        );
     }
 
     public function SendMail($recipients, $headers, $body, $files = null, $persist = null, $smtp_options = null)

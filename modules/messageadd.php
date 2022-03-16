@@ -901,6 +901,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         $headers['Return-Receipt-To'] = $mdn_email;
                         $headers['Disposition-Notification-To'] = $mdn_email;
                     }
+
+                    $LMS->prepareMessageTemplates();
                 }
             }
 
@@ -958,7 +960,15 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                             $headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
                             $headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
                         }
-                        $result = $LMS->SendMail($destination, $headers, $body, $attachments);
+                        $result = $LMS->SendMail(
+                            $destination,
+                            $headers,
+                            $LMS->applyMessageTemplates(
+                                $body,
+                                $message['contenttype']
+                            ),
+                            $attachments
+                        );
 
                         if (!empty($interval)) {
                             if ($interval == -1) {
