@@ -3555,7 +3555,7 @@ if (!empty($intersect)) {
                                 $where_nodes[] = 'n.access = 0';
                                 break;
                             case 'node-warning':
-                                $where_customers[] = 'EXISTS (SELECT 1 FROM nodes n2 WHERE n2.wnerid = c.id AND n2.warning = 1)';
+                                $where_customers[] = 'EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.warning = 1)';
                                 $where_nodes[] = 'n.warning = 1';
                                 break;
                             case 'assignment-invoice':
