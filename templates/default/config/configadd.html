@@ -30,7 +30,8 @@
 
 </style>
 
-<FORM method="POST" id="configadd" action="?m=configadd&refconfigid={$refconfigid}&reftype={$reftype}&divisionid={$divisioninfo.id}" name="config">
+<FORM method="POST" id="configadd"  name="config"
+	action="?m=configadd{if !empty($refconfigid)}&refconfigid={$refconfigid}{/if}{if !empty($reftype)}&reftype={$reftype}{/if}{if !empty($divisioninfo.id)}&divisionid={$divisioninfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="config[reftype]" value="{$reftype}">
 <INPUT type="hidden" name="config[refconfigid]" value="{$refconfigid}">
@@ -242,8 +243,8 @@
 		</TR>
 		<TR>
 			<TD class="lms-ui-box-buttons">
-				{button type="submit" onclick="document.config.submit();" icon="save" label="Submit"}
-				{button type="link-button" onclick="location.href = '{$backurl}';" icon="cancel" label="Cancel"}
+				{button type="submit" id="document-submit" icon="save" label="Submit"}
+				{button type="link-button" href="?m=configadd&action=cancel" icon="cancel" label="Cancel"}
 				<br>
 				<label>
 					<INPUT type="checkbox" name="config[reuse]" value="ON" id="reuse"{if $config.reuse} checked{/if}>
@@ -305,6 +306,10 @@
 			var section = $('[name="config[section]"]').scombobox('val');
 			var variable = $('[name="config[var]"]').val();
 			getDocumentation(section, variable);
+		});
+
+		$('#document-submit').on('click', function () {
+			$('#configadd').append('<input type="hidden" name="action" value="save">');
 		});
 	});
 

@@ -17,9 +17,9 @@
         </td>
         <td>
             {if $reftype == division}
-                {button type="link-button" href="?m=configadd&refconfigid={$config.id}&divisionid={$divisioninfo.id}&reftype=divisionuser" icon="add" label="Add" tip="Add config for user in division"}
+                {button type="link-button" href="?m=configadd&refconfigid={$config.id}&divisionid={$divisioninfo.id}&reftype=divisionuser&action=init" icon="add" label="Add" tip="Add config for user in division"}
             {else}
-                {button type="link-button" href="?m=configadd&refconfigid={$relatedoption.id}&divisionid={$relatedoption.divisionid}&reftype=divisionuser" icon="add" label="Add" tip="Add config for user in division"}
+                {button type="link-button" href="?m=configadd&refconfigid={$relatedoption.id}&divisionid={$relatedoption.divisionid}&reftype=divisionuser&action=init" icon="add" label="Add" tip="Add config for user in division"}
             {/if}
         </td>
     </TR>
@@ -65,7 +65,7 @@
                         {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoptionuser.id}&statuschange=1"}
                     {/if}
                     {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoptionuser.id}"}
-                    {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoptionuser.id}"}
+                    {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoptionuser.id}&action=init"}
                 </TD>
             </TR>
             {foreachelse}
@@ -97,7 +97,7 @@
                         {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoptionuser.id}&statuschange=1"}
                     {/if}
                     {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoptionuser.id}"}
-                    {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoptionuser.id}"}
+                    {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoptionuser.id}&action=init"}
                 </TD>
             </TR>
             {foreachelse}

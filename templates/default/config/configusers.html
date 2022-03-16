@@ -12,7 +12,7 @@
             #4  {trans("User configuration variable parameters")} ({trans('overwrite parameters from panel #3 (if exists) and panel #2 and panel #1')})
         </td>
         <td>
-            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=user" icon="add" label="Add" tip="Add config for user"}
+            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=user&action=init" icon="add" label="Add" tip="Add config for user"}
         </td>
     </TR>
     <TR>
@@ -55,7 +55,7 @@
                     {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
                 {/if}
                 {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoption.id}"}
-                {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}"}
+                {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}&action=init"}
             </TD>
         </TR>
         {foreachelse}

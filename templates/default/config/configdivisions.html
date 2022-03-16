@@ -18,7 +18,7 @@
             #2 {trans("Division configuration variable parameters")} ({trans('overwrite parameters from panel #1')})
         </td>
         <td>
-            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=division" icon="add" label="Add" tip="Add config for division"}
+            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=division&action=init" icon="add" label="Add" tip="Add config for division"}
         </td>
     </TR>
     <TR>
@@ -58,7 +58,7 @@
                     {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
                 {/if}
                 {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoption.id}"}
-                {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}"}
+                {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}&action=init"}
             </TD>
         </TR>
     {foreachelse}

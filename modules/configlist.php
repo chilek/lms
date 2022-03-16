@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -198,7 +198,7 @@ function GetConfigList()
     if ($config) {
         $markdown_documentation = Utils::LoadMarkdownDocumentation();
 
-        foreach ($config as $idx => &$item) {
+        foreach ($config as &$item) {
             if (isset($markdown_documentation[$item['section']][$item['var']])) {
                 $item['description'] = Utils::MarkdownToHtml($markdown_documentation[$item['section']][$item['var']]);
             } else if (isset($configuration_variables[$item['section']][$item['var']])) {
@@ -237,17 +237,17 @@ $configlist = GetConfigList();
 
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($configlist));
 
-$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']), true);
-$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']));
+$SESSION->add_history_entry();
 
+$LMS = LMS::getInstance();
 $SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
-$SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');
-$SMARTY->assign('division', isset($_GET['d']) ? $_GET['d'] : '');
-$SMARTY->assign('user', isset($_GET['u']) ? $_GET['u'] : '');
-$SMARTY->assign('scope', isset($_GET['sc']) ? $_GET['sc'] : '');
-$SMARTY->assign('name', isset($_GET['v']) ? $_GET['v'] : '');
+$SMARTY->assign('section', $_GET['s'] ?? '');
+$SMARTY->assign('division', $_GET['d'] ?? '');
+$SMARTY->assign('user', $_GET['u'] ?? '');
+$SMARTY->assign('scope', $_GET['sc'] ?? '');
+$SMARTY->assign('name', $_GET['v'] ?? '');
 $SMARTY->display('config/configlist.html');

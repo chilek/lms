@@ -132,7 +132,7 @@
     </THEAD>
     <TBODY>
 	{foreach $configlist as $config}
-	<TR class="{if $config.disabled} blend{/if}" data-name="{$config.section}.{$config.var}" data-target-url="?m=configedit&id={$config.id}">
+	<TR class="{if $config.disabled} blend{/if}" data-name="{$config.section}.{$config.var}" data-target-url="?m=configedit&id={$config.id}&action=init">
 		<TD>
 			{$config.section}
 		</TD>
@@ -164,10 +164,10 @@
 			{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
 				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}{if $config.userid}&u={$config.userid}{/if}{if $config.divisionid}&d={$config.divisionid}{/if}"}
 			{if empty($config.configid)}
-				{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}"}
+				{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}&action=init"}
 			{/if}
 			{button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$config.id}"}
-			{button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$config.id}"}
+			{button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$config.id}&action=init"}
 			<input type="checkbox" name="marks[{$config.id}]" value="{$config.id}" form="configform" class="lms-ui-multi-check">
 		</TD>
 	</TR>
@@ -301,7 +301,7 @@
 
 		$('.configadd').click(function() {
 			var select = $('thead tr select', $(this).closest('table'));
-			href = '?m=configadd';
+			href = '?m=configadd&action=init';
 			if (select.prop('selectedIndex')) {
 				href += '&section=' + select.val();
 			}

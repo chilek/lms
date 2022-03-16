@@ -239,9 +239,9 @@
 		</TR>
 		<TR>
 			<TD class="lms-ui-box-buttons">
-				{button type="submit" onclick="document.config.submit();" icon="save" label="Submit"}
+				{button type="submit" id="document-submit" icon="save" label="Submit"}
 				{button id="delete-config" data_href="?m=configdel&id={$config.id}" icon="delete" label="Delete"}
-				{button type="link-button" href="{$backurl}" icon="cancel" label="Cancel"}
+				{button type="link-button" href="?m=configedit&action=cancel" icon="cancel" label="Cancel"}
 			</TD>
 		</TR>
     </TBODY>
@@ -314,6 +314,10 @@
 			var section = $('[name="config[section]"]').scombobox('val');
 			var variable = $('[name="config[var]"]').val();
 			getDocumentation(section, variable);
+		});
+
+		$('#document-submit').on('click', function () {
+			$('#configedit').append('<input type="hidden" name="action" value="save">');
 		});
 	});
 

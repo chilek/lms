@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,22 +27,28 @@
 $reftype = isset($_GET['reftype']) && ($_GET['reftype'] === 'division' || $_GET['reftype'] === 'divisionuser' || $_GET['reftype'] === 'user')  ? $_GET['reftype'] : null;
 $refconfigid = isset($_GET['refconfigid']) ? intval($_GET['refconfigid']) : null;
 $divisionid = isset($_GET['divisionid']) ? intval($_GET['divisionid']) : null;
+$error = array();
+$DB = LMSDB::getInstance();
+$LMS = LMS::getInstance();
 
-if ($SESSION->is_set('backtoStack', true)) {
-    $backtoStack = $SESSION->get('backtoStack', true);
-    $backto = end($backtoStack);
-} elseif ($SESSION->is_set('backto')) {
-    $backtoStack = $SESSION->get('backtoStack');
-    $backto = end($backtoStack);
-} else {
-    $backto = '';
+$action = ($_GET['action'] ?? ($_POST['action'] ?? null));
+
+switch ($action) {
+    case 'init':
+        $SESSION->add_history_entry();
+        break;
+    case 'cancel':
+        if ($SESSION->get_history_entry() != 'm=configlist') {
+            $SESSION->remove_history_entry();
+            $SESSION->redirect_to_history_entry();
+        }
+        break;
+    case 'save':
+        $SESSION->remove_history_entry();
+        break;
 }
-$backurl = $backto ? '?' . $backto : '?m=configlist';
-$SMARTY->assign('backurl', $backurl);
-$SESSION->save('backto', $backurl);
-$SESSION->save('backto', $backurl, true);
 
-$config = isset($_POST['config']) ? $_POST['config'] : array();
+$config = $_POST['config'] ?? array();
 
 if (!empty($config)) {
     foreach ($config as $key => $val) {
@@ -68,15 +74,14 @@ if (!empty($config)) {
         $error['section'] = trans('Section name contains forbidden characters!');
     }
 
-    if (!isset($config['reftype']) || empty($config['reftype'])) {
+    if (empty($config['reftype'])) {
         $option = $config['section'] . '.' . $config['var'];
-        if (!ConfigHelper::checkPrivilege('superuser') || $config['type'] == CONFIG_TYPE_AUTO) {
+        if ($msg = $LMS->CheckOption($option, $config['value'], $config['type'])) {
+            $error['value'] = $msg;
+        }
+        if (!isset($error['value']) && (!ConfigHelper::checkPrivilege('superuser') || $config['type'] == CONFIG_TYPE_AUTO)) {
             $config['type'] = $LMS->GetConfigDefaultType($option);
         }
-    }
-
-    if ($msg = $LMS->CheckOption($option, $config['value'], $config['type'])) {
-        $error['value'] = $msg;
     }
 
     if (!isset($config['disabled'])) {
@@ -84,12 +89,12 @@ if (!empty($config)) {
     }
 
     if (!empty($config['reftype'])) {
-        if (!isset($config['refconfigid']) || empty($config['refconfigid'])) {
+        if (empty($config['refconfigid'])) {
             $error['refconfigid'] = trans('Referenced option does not exists!');
         }
         switch ($config['reftype']) {
             case 'division':
-                if (!isset($config['divisionid']) || empty($config['divisionid'])) {
+                if (empty($config['divisionid'])) {
                     $error['divisionid'] = trans('Division is required!');
                 }
                 $refOption = $LMS->GetConfigVariable($config['refconfigid']);
@@ -98,10 +103,10 @@ if (!empty($config)) {
                 }
                 break;
             case 'divisionuser':
-                if (!isset($config['userid']) || empty($config['userid'])) {
+                if (empty($config['userid'])) {
                     $error['userid'] = trans('User is required!');
                 }
-                if (!isset($config['divisionid']) || empty($config['divisionid'])) {
+                if (empty($config['divisionid'])) {
                     $error['divisionid'] = trans('Division is required!');
                 }
                 $refOption = $LMS->GetConfigVariable($config['refconfigid']);
@@ -114,7 +119,7 @@ if (!empty($config)) {
                 }
                 break;
             case 'user':
-                if (!isset($config['userid']) || empty($config['userid'])) {
+                if (empty($config['userid'])) {
                     $error['userid'] = trans('User is required!');
                 }
                 $refOption = $LMS->GetConfigVariable($config['refconfigid']);
@@ -138,42 +143,36 @@ if (!empty($config)) {
             'configid' => (isset($config['refconfigid']) && !empty($config['refconfigid']) ? $config['refconfigid'] : null)
         );
 
+        $DB->BeginTrans();
         $configid = $LMS->addConfigOption($args);
+        $DB->CommitTrans();
 
-        if (!isset($config['reuse'])) {
-            if (!empty($config['reftype'])) {
-                switch ($config['reftype']) {
-                    case 'division':
-                        if (!isset($config['divisionid']) || empty($config['divisionid'])) {
-                            $error['divisionid'] = trans('Division is required!');
-                        }
-                        break;
-                    case 'divisionuser':
-                    case 'user':
-                        if (!isset($config['userid']) || empty($config['userid'])) {
-                            $error['userid'] = trans('User is required!');
-                        }
-                        break;
-                    default:
-                        $SESSION->redirect('?'.$_SERVER['QUERY_STRING']);
-                        break;
-                }
+        if (isset($config['reuse'])) {
+            $SESSION->redirect_to_history_entry($_SERVER['HTTP_REFERER']);
+        } else if (!empty($config['reftype'])) {
+            switch ($config['reftype']) {
+                case 'division':
+                    if (empty($config['divisionid'])) {
+                        $error['divisionid'] = trans('Division is required!');
+                    }
+                    break;
+                case 'divisionuser':
+                case 'user':
+                    if (empty($config['userid'])) {
+                        $error['userid'] = trans('User is required!');
+                    }
+                    break;
+                default:
+                    $SESSION->redirect_to_history_entry($_SERVER['HTTP_REFERER']);
+                    break;
             }
-        } else {
-            $SESSION->redirect('?'.$_SERVER['QUERY_STRING']);
         }
         unset($config['var']);
         unset($config['value']);
         unset($config['description']);
         unset($config['disabled']);
-        if ($SESSION->is_set('backto', true)) {
-            $SESSION->redirect($SESSION->get('backto', true));
-        } elseif ($SESSION->is_set('backto')) {
-            $SESSION->redirect($SESSION->get('backto'));
-        }
+        $SESSION->redirect_to_history_entry();
     }
-
-    $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 } elseif (isset($_GET['id'])) {
     $config = $LMS->GetConfigVariable($_GET['id']);
     unset($config['id']);
@@ -197,13 +196,13 @@ if (!empty($config)) {
         )
     );
     $DB->CommitTrans();
-    $SESSION->redirect('?m=configlist');
+    $SESSION->redirect_to_history_entry();
 }
 
 if (!empty($reftype)) {
     $params['id'] = $refconfigid;
     if (!($LMS->ConfigOptionExists($params))) {
-        $SESSION->redirect($backurl);
+        $SESSION->redirect_to_history_entry();
     }
     unset($params['id']);
 
@@ -246,6 +245,10 @@ if (!empty($reftype)) {
     }
 
     $SMARTY->assign('sections', $LMS->GetConfigSections());
+}
+
+if (!empty($option)) {
+    $config['documentation'] = Utils::MarkdownToHtml(Utils::LoadMarkdownDocumentation($option));
 }
 
 $SMARTY->assign('reftype', $reftype);
