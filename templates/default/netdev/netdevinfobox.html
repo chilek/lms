@@ -70,6 +70,19 @@
 										</td>
 									</tr>
 								{/if}
+								{if $netdev.type}
+									<tr>
+										<td>
+											{icon name="hardware"}
+										</td>
+										<td>
+											<strong>{trans("Hardware type")}</strong>
+										</td>
+										<td>
+											{$netdev.type}
+										</td>
+									</tr>
+								{/if}
 								{if $netdev.model}
 									<tr>
 										<td>

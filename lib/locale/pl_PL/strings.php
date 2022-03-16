@@ -1067,6 +1067,7 @@ $_LANG['Generate random PIN'] = 'Wygeneruj losowy PIN';
 $_LANG['Generating customers...'] = 'Generuję klientów…';
 $_LANG['Generating network...'] = 'Generuję sieć…';
 $_LANG['Generating network hardware and connections...'] = 'Generuję sprzęt i połączenia…';
+$_LANG['Hardware type'] = 'Typ sprzętu';
 $_LANG['Generating payments...'] = 'Generuję płatności…';
 $_LANG['Generating random data'] = 'Generowanie danych losowych';
 $_LANG['get source registry balance'] = 'wstaw saldo rejestru źródłowego';

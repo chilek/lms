@@ -1083,7 +1083,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNetDev($id)
     {
         $result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
-				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid,
+				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid, ndm.type AS typeid, ndt.name AS type,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
 				lt.name AS street_type, lc.name AS city_name,
 				lb.name AS borough_name, lb.type AS borough_type,
@@ -1097,6 +1097,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM netdevices d
 				LEFT JOIN netdevicemodels ndm      ON ndm.id = d.netdevicemodelid
+				LEFT JOIN netdevicetypes ndt       ON ndm.type = ndt.id
 				LEFT JOIN vaddresses addr          ON addr.id = d.address_id
 				LEFT JOIN nastypes t               ON (t.id = d.nastype)
 				LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
