@@ -69,12 +69,6 @@ foreach ($nodeinfo['macs'] as $key => $value) {
 
 $nodeinfo['macs'] = $macs;
 
-if (!isset($_GET['ownerid'])) {
-    $SESSION->add_history_entry($SESSION->remove_history_entry() . '&ownerid=' . $customerid);
-} else {
-    $SESSION->add_history_entry();
-}
-
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
 if (isset($_POST['nodeedit'])) {
@@ -91,7 +85,7 @@ if (isset($_POST['nodeedit'])) {
     }
 
     if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '' && !isset($nodeedit['wholenetwork'])) {
-        $SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
+        $SESSION->redirect_to_history_entry();
     }
 
     if (isset($nodeedit['wholenetwork'])) {
@@ -327,7 +321,7 @@ if (isset($_POST['nodeedit'])) {
         );
         $nodeedit = $hook_data['nodeedit'];
 
-        $SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
+        $SESSION->redirect_to_history_entry();
     }
 
     $nodeinfo['name'] = $nodeedit['name'];
@@ -403,6 +397,10 @@ $hook_data = $LMS->executeHook(
 $nodeinfo = $hook_data['nodeedit'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
+
+$history_entry = $SESSION->get_history_entry();
+$backurl = $history_entry ? '?' . $history_entry : '?m=nodelist';
+$SMARTY->assign('backurl', $backurl);
 
 if (!empty($nodeinfo['ownerid'])) {
     $addresses = $LMS->getCustomerAddresses($nodeinfo['ownerid']);
