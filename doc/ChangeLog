@@ -102,7 +102,7 @@ version 28-git (????-??-??):
   - devel/improvement: switched from 'crypt()' usage to 'password_*()' [chilan]
   - improvement: web browser multi-tab history support [chilan]
   - improvement: switched customer address selection ui control to 'lms-ui-advanced-select' [chilan]
-  - enhancement: 'phpui.message_template', 'phpui.text_message_template' and 'phpui.html_message_template'
+  - enhancement: 'mail.message_template', 'mail.text_message_template' and 'mail.html_message_template'
     configuration variables allow to globally format messages sent in web browser "New message" form
     ('%body' is default value) [chilan]
 
