@@ -105,6 +105,8 @@ version 28-git (????-??-??):
   - enhancement: 'mail.message_template', 'mail.text_message_template' and 'mail.html_message_template'
     configuration variables allow to globally format messages sent in web browser "New message" form
     ('%body' is default value) [chilan]
+  - enhancement/devel: 'database.auto_update' ('false' by default) controls if db schema attempt
+    is taken during launch web browser [chilan]
 
 version 27.0 (2021-08-20):
 

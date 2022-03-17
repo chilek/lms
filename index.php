@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -84,7 +84,7 @@ $composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/");
 }
 
 // Do some checks and load config defaults
@@ -108,12 +108,16 @@ $api = isset($_GET['api']);
 if (!$api) {
     // Call any of upgrade process before anything else
 
-    $old_locale = setlocale(LC_NUMERIC, '0');
-    setlocale(LC_NUMERIC, 'C');
+    if (isset($CONFIG['database']['auto_update']) && ConfigHelper::checkValue($CONFIG['database']['auto_update'])) {
+        $old_locale = setlocale(LC_NUMERIC, '0');
+        setlocale(LC_NUMERIC, 'C');
 
-    $layout['dbschversion'] = $DB->UpgradeDb();
+        $layout['dbschversion'] = $DB->UpgradeDb();
 
-    setlocale(LC_NUMERIC, $old_locale);
+        setlocale(LC_NUMERIC, $old_locale);
+    } else {
+        $layout['dbschversion'] = $DB->getCurrentDbSchemaVersion();
+    }
 
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;

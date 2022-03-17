@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -709,6 +709,14 @@ abstract class LMSDB_common implements LMSDBInterface
     {
 
         $this->debug = $debug;
+    }
+
+    public function getCurrentDbSchemaVersion()
+    {
+        return $this->GetOne(
+            'SELECT keyvalue FROM dbinfo WHERE keytype = ?',
+            array('dbversion')
+        );
     }
 
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null)
