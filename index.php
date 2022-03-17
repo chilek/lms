@@ -108,7 +108,12 @@ $api = isset($_GET['api']);
 if (!$api) {
     // Call any of upgrade process before anything else
 
+    $old_locale = setlocale(LC_NUMERIC, '0');
+    setlocale(LC_NUMERIC, 'C');
+
     $layout['dbschversion'] = $DB->UpgradeDb();
+
+    setlocale(LC_NUMERIC, $old_locale);
 
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
