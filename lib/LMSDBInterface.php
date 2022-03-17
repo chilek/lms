@@ -106,7 +106,5 @@ interface LMSDBInterface
 
     public function SetDebug($debug = true);
 
-    public function getCurrentDbSchemaVersion();
-
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null);
 }

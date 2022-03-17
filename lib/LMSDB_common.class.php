@@ -711,14 +711,6 @@ abstract class LMSDB_common implements LMSDBInterface
         $this->debug = $debug;
     }
 
-    public function getCurrentDbSchemaVersion()
-    {
-        return $this->GetOne(
-            'SELECT keyvalue FROM dbinfo WHERE keytype = ?',
-            array('dbversion')
-        );
-    }
-
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null)
     {
         $this->DisableWarnings();
