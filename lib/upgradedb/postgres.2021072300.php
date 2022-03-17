@@ -24,9 +24,6 @@
 define('DOC_INVOICE', 1);
 define('DOC_CNOTE', 3);
 
-$old_locale = setlocale(LC_NUMERIC, '0');
-setlocale(LC_NUMERIC, 'C');
-
 $this->BeginTrans();
 
 $invoicecontents = $this->GetAll(
@@ -88,5 +85,3 @@ if (!empty($invoicecontents)) {
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021072300', 'dbversion'));
 
 $this->CommitTrans();
-
-setlocale(LC_NUMERIC, $old_locale);
