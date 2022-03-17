@@ -268,7 +268,7 @@
 			<td>
 				<select size="1" name="search[verifierid]" form="search"
 					{tip text="Select user/owner of the ticket"}>
-					<option value="0">{trans("- all owners -")}</optiopn>
+					<option value="0">{trans("- all owners -")}</option>
 					{foreach $userlist as $item}
 						<option value="{$item.id}"{if $item.id == $search.verifierid} selected{/if}>{$item.rname|escape}</option>
 					{/foreach}
