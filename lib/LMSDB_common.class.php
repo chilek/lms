@@ -728,45 +728,61 @@ abstract class LMSDB_common implements LMSDBInterface
             'SELECT keyvalue FROM dbinfo WHERE keytype = ?',
             array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass))
         )) {
-            if ($dbver > $dbversion) {
-                set_time_limit(0);
+            if (isset($GLOBALS['CONFIG']['database']['auto_update']) && ConfigHelper::checkValue($GLOBALS['CONFIG']['database']['auto_update'])) {
+                if ($dbver > $dbversion) {
+                    $old_locale = setlocale(LC_NUMERIC, '0');
+                    setlocale(LC_NUMERIC, 'C');
 
-                if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
-					WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')) > 1) {
-                    $this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
+                    set_time_limit(0);
+
+                    if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
+                        WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')) > 1) {
+                        $this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
+                    }
+
+                    $lastupgrade = $dbversion;
+
+                    if (is_null($libdir)) {
+                        $libdir = LIB_DIR;
+                    }
+
+                    $filename_prefix = $this->_dbtype == LMSDB::POSTGRESQL ? 'postgres' : 'mysql';
+
+                    $pendingupgrades = array();
+                    $upgradelist = getdir(
+                        $libdir . DIRECTORY_SEPARATOR . 'upgradedb',
+                        '^' . $filename_prefix . '\.[0-9]{10}\.php$'
+                    );
+                    if (!empty($upgradelist)) {
+                        foreach ($upgradelist as $upgrade) {
+                            $upgradeversion = preg_replace(
+                                '/^' . $filename_prefix . '\.([0-9]{10})\.php$/',
+                                '\1',
+                                $upgrade
+                            );
+
+                            if ($upgradeversion > $dbversion && $upgradeversion <= $dbver) {
+                                $pendingupgrades[] = $upgradeversion;
+                            }
+                        }
+                    }
+
+                    if (!empty($pendingupgrades)) {
+                        sort($pendingupgrades);
+                        foreach ($pendingupgrades as $upgrade) {
+                            include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
+                            if (empty($this->errors)) {
+                                $lastupgrade = $upgrade;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+
+                    setlocale(LC_NUMERIC, $old_locale);
                 }
-
+            } else {
                 $lastupgrade = $dbversion;
-
-                if (is_null($libdir)) {
-                    $libdir = LIB_DIR;
-                }
-
-                $filename_prefix = $this->_dbtype == LMSDB::POSTGRESQL ? 'postgres' : 'mysql';
-
-                $pendingupgrades = array();
-                $upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb', '^' . $filename_prefix . '\.[0-9]{10}\.php$');
-                if (!empty($upgradelist)) {
-                    foreach ($upgradelist as $upgrade) {
-                        $upgradeversion = preg_replace('/^' . $filename_prefix . '\.([0-9]{10})\.php$/', '\1', $upgrade);
-
-                        if ($upgradeversion > $dbversion && $upgradeversion <= $dbver) {
-                            $pendingupgrades[] = $upgradeversion;
-                        }
-                    }
-                }
-
-                if (!empty($pendingupgrades)) {
-                    sort($pendingupgrades);
-                    foreach ($pendingupgrades as $upgrade) {
-                        include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
-                        if (empty($this->errors)) {
-                            $lastupgrade = $upgrade;
-                        } else {
-                            break;
-                        }
-                    }
-                }
             }
         } else {
             // save current errors

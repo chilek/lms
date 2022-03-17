@@ -108,16 +108,7 @@ $api = isset($_GET['api']);
 if (!$api) {
     // Call any of upgrade process before anything else
 
-    if (isset($CONFIG['database']['auto_update']) && ConfigHelper::checkValue($CONFIG['database']['auto_update'])) {
-        $old_locale = setlocale(LC_NUMERIC, '0');
-        setlocale(LC_NUMERIC, 'C');
-
-        $layout['dbschversion'] = $DB->UpgradeDb();
-
-        setlocale(LC_NUMERIC, $old_locale);
-    } else {
-        $layout['dbschversion'] = $DB->getCurrentDbSchemaVersion();
-    }
+    $layout['dbschversion'] = $DB->UpgradeDb();
 
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
