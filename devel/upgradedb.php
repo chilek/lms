@@ -153,8 +153,6 @@ if (isset($options['update-order'])) {
     $facilities = array('core', 'plugins');
 }
 
-setlocale(LC_NUMERIC, 'C');
-
 foreach ($facilities as $facility) {
     switch ($facility) {
         case 'core':
