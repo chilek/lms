@@ -25,6 +25,8 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 Localisation::initDefaultCurrency();
 $_currency = Localisation::getDefaultCurrency();
 
+setlocale(LC_NUMERIC, 'C');
+
 // Document types
 define('DOC_INVOICE', 1);
 define('DOC_RECEIPT', 2);
