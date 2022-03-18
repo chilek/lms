@@ -153,6 +153,9 @@ if (isset($options['update-order'])) {
     $facilities = array('core', 'plugins');
 }
 
+// force database auto update as we require it here
+$CONFIG['database']['auto_update'] = true;
+
 foreach ($facilities as $facility) {
     switch ($facility) {
         case 'core':
