@@ -77,6 +77,8 @@ abstract class LMSDB_common implements LMSDBInterface
 
     protected $_warnings = true;
 
+    private $_upgrade_errors = array();
+
     /**
      * Connects to database.
      *
@@ -729,8 +731,8 @@ abstract class LMSDB_common implements LMSDBInterface
         $keytype = 'dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass);
         if (isset($dbversions[$keytype])) {
             $dbversion = $dbversions[$keytype];
-            if (isset($GLOBALS['CONFIG']['database']['auto_update']) && ConfigHelper::checkValue($GLOBALS['CONFIG']['database']['auto_update'])) {
-                if ($dbver > $dbversion) {
+            if ($dbver > $dbversion) {
+                if (isset($GLOBALS['CONFIG']['database']['auto_update']) && ConfigHelper::checkValue($GLOBALS['CONFIG']['database']['auto_update'])) {
                     $old_locale = setlocale(LC_NUMERIC, '0');
                     setlocale(LC_NUMERIC, 'C');
 
@@ -781,9 +783,17 @@ abstract class LMSDB_common implements LMSDBInterface
                     }
 
                     setlocale(LC_NUMERIC, $old_locale);
+                } else {
+                    $lastupgrade = $dbversion;
+
+                    if (empty($pluginclass)) {
+                        $error_message = 'CORE';
+                    } else {
+                        $error_message = "Plugin '" . $pluginclass . "'";
+                    }
+                    $this->_upgrade_errors[] = $error_message . " database schema could be updated"
+                        . " from version '" . $dbversion . "' to '" . $dbver . "'<br>";
                 }
-            } else {
-                $lastupgrade = $dbversion;
             }
         } else {
             // save current errors
@@ -829,5 +839,10 @@ abstract class LMSDB_common implements LMSDBInterface
         $this->EnableWarnings();
 
         return isset($lastupgrade) ? $lastupgrade : $dbver;
+    }
+
+    public function getUpgradeErrors()
+    {
+        return $this->_upgrade_errors;
     }
 }

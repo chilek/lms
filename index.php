@@ -109,6 +109,13 @@ if (!$api) {
     // Call any of upgrade process before anything else
 
     $layout['dbschversion'] = $DB->UpgradeDb();
+    $db_upgrade_errors = $DB->getUpgradeErrors();
+    if (!empty($db_upgrade_errors)) {
+        die(
+            "Launch 'devel/upgradedb.php' script from your installation directory (recommended)'
+                . ' or add 'database.auto_update' configuration variable with value 'true' to lms.ini file (not recommended)<br>"
+        );
+    }
 
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
