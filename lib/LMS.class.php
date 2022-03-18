@@ -2774,7 +2774,7 @@ class LMS
         $this->text_message_template = ConfigHelper::getConfig($section . '.text_message_template', $this->message_template);
     }
 
-    public function applyMessageTemplates($body, $content_type = 'text/plain', $section = 'mail')
+    public function applyMessageTemplates($body, $content_type = 'text/plain')
     {
         static $username = null;
 

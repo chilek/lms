@@ -379,9 +379,17 @@ if (isset($_POST['ticket'])) {
                     'Subject' => $custmail_subject,
                 );
                 $smtp_options = $LMS->GetRTSmtpOptions();
+                $LMS->prepareMessageTemplates('rt');
                 foreach ($emails as $email) {
                     $custmail_headers['To'] = '<' . $info['email'] . '>';
-                    $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
+                    $LMS->SendMail(
+                        $email,
+                        $custmail_headers,
+                        $LMS->applyMessageTemplates($custmail_body),
+                        null,
+                        null,
+                        $smtp_options
+                    );
                 }
             }
             if (!empty($queuedata['newticketsmsbody']) && !empty($mobile_phones)) {

@@ -330,6 +330,8 @@ if (isset($_POST['message'])) {
 
             $LMS->TicketChange($ticketid, $props);
 
+            $LMS->prepareMessageTemplates('rt');
+
             // customer notification via e-mail when we reply to ticket message created from customer post
             if (isset($message['mailnotify'])) {
                 if ($group_reply) {
@@ -343,7 +345,14 @@ if (isset($_POST['message'])) {
                     $recipients = empty($toemails) ? '' : implode(',', Utils::array_column($toemails, 'email'));
                 }
                 if ($recipients) {
-                    $LMS->SendMail($recipients, $headers, $message['body'], $attachments, null, $smtp_options);
+                    $LMS->SendMail(
+                        $recipients,
+                        $headers,
+                        $LMS->applyMessageTemplates($message['body'], $message['contenttype']),
+                        $attachments,
+                        null,
+                        $smtp_options
+                    );
                 }
             }
             unset($headers['Cc']);
@@ -509,6 +518,9 @@ if (isset($_POST['message'])) {
                         'Reply-To' => $headers['From'],
                         'Subject' => $custmail_subject,
                     );
+
+                    $custmail_body = $LMS->applyMessageTemplates($custmail_body);
+
                     foreach ($emails as $email) {
                         $custmail_headers['To'] = '<' . $email . '>';
                         $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
