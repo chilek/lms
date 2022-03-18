@@ -103,10 +103,13 @@ version 28-git (????-??-??):
   - improvement: web browser multi-tab history support [chilan]
   - improvement: switched customer address selection ui control to 'lms-ui-advanced-select' [chilan]
   - enhancement: 'mail.message_template', 'mail.text_message_template' and 'mail.html_message_template'
-    configuration variables allow to globally format messages sent in web browser "New message" form
-    ('%body' is default value) [chilan]
+    configuration variables allow to globally format messages sent to customers in web browser "New message"
+    form ('%body' is default value) [chilan]
   - enhancement/devel: 'database.auto_update' ('false' by default) controls if db schema update attempt
     is taken during launch in web browser [chilan]
+  - enhancement: 'rt.message_template', 'rt.text_message_template' and 'rt.html_message_template'
+    configuration variables allow to globally format messages sent to customers in web browser
+    helpdesk forms ('%body' is default value) [chilan]
 
 version 27.0 (2021-08-20):
 
