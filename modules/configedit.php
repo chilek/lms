@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$DB = LMSDB::getInstance();
-$LMS = LMS::getInstance();
 $error = array();
 $action = ($_GET['action'] ?? ($_POST['action'] ?? null));
 

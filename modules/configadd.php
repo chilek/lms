@@ -28,9 +28,6 @@ $reftype = isset($_GET['reftype']) && ($_GET['reftype'] === 'division' || $_GET[
 $refconfigid = isset($_GET['refconfigid']) ? intval($_GET['refconfigid']) : null;
 $divisionid = isset($_GET['divisionid']) ? intval($_GET['divisionid']) : null;
 $error = array();
-$DB = LMSDB::getInstance();
-$LMS = LMS::getInstance();
-
 $action = ($_GET['action'] ?? ($_POST['action'] ?? null));
 
 switch ($action) {
