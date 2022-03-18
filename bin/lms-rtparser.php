@@ -304,7 +304,7 @@ if ($mode == MODE_IMAP) {
 
     $ih = @imap_open("{" . $rtparser_server . "}" . $rtparser_folder, $rtparser_username, $rtparser_password);
     if (!$ih) {
-        fprintf($stderr, "Cannot connect to mail server!" . PHP_EOL);
+        fprintf($stderr, 'Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
         exit(7);
     }
 
