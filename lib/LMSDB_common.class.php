@@ -713,13 +713,22 @@ abstract class LMSDB_common implements LMSDBInterface
 
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null)
     {
+        static $dbversions = null;
+
         $this->DisableWarnings();
 
+        if (!isset($dbversions)) {
+            $result = $this->GetAll('SELECT * FROM dbinfo WHERE keytype ?LIKE? ?', array('dbversion%'));
+            if (empty($result)) {
+                $result = array();
+            }
+            $dbversions = Utils::array_column($result, 'keyvalue', 'keytype');
+        }
+
         $lastupgrade = null;
-        if ($dbversion = $this->GetOne(
-            'SELECT keyvalue FROM dbinfo WHERE keytype = ?',
-            array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass))
-        )) {
+        $keytype = 'dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass);
+        if (isset($dbversions[$keytype])) {
+            $dbversion = $dbversions[$keytype];
             if (isset($GLOBALS['CONFIG']['database']['auto_update']) && ConfigHelper::checkValue($GLOBALS['CONFIG']['database']['auto_update'])) {
                 if ($dbver > $dbversion) {
                     $old_locale = setlocale(LC_NUMERIC, '0');
