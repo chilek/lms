@@ -213,9 +213,9 @@ CREATE TABLE location_buildings (
 		CONSTRAINT location_cities_city_id_fkey REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	street_id    integer NULL
 		CONSTRAINT location_cities_street_id_fkey REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	building_num varchar(20) NULL,
-	latitude     numeric(10,6) NULL,
-	longitude    numeric(10,6) NULL,
+	building_num varchar(20),
+	latitude     numeric(10,6),
+	longitude    numeric(10,6),
 	updated      smallint DEFAULT 0,
 	PRIMARY KEY (id)
 );
@@ -231,17 +231,17 @@ DROP TABLE IF EXISTS addresses CASCADE;
 CREATE TABLE addresses (
 	id         integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
 	name       text NULL,
-	state      varchar(64) NULL,
+	state      varchar(64),
 	state_id   integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	city       varchar(100) NULL,
+	city       varchar(100),
 	city_id    integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	postoffice varchar(32),
-	street     varchar(255) NULL,
+	street     varchar(255),
 	street_id  integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	zip        varchar(10) NULL,
+	zip        varchar(10),
 	country_id integer REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	house      varchar(20) NULL,
-	flat       varchar(20) NULL,
+	house      varchar(20),
+	flat       varchar(20),
 	PRIMARY KEY (id)
 );
 
@@ -778,8 +778,8 @@ CREATE TABLE voip_cdr (
 		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	caller_flags smallint NOT NULL DEFAULT 0,
 	callee_flags smallint NOT NULL DEFAULT 0,
-	caller_prefix_group varchar(100) NULL,
-	callee_prefix_group varchar(100) NULL,
+	caller_prefix_group varchar(100),
+	callee_prefix_group varchar(100),
 	uniqueid varchar(20) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (uniqueid)
