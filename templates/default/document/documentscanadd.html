@@ -72,7 +72,7 @@
 			{trans("Files:")}
 		</TD>
 		<TD>
-			{fileupload id="attachments" fileupload=$fileupload form="documentscanadd-form"}
+			{fileupload id="attachments" fileupload=$fileupload form="documentscanadd-form" accept=$allow_files}
 		</TD>
 	</TR>
 	{if !empty($files)}
