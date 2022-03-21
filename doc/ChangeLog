@@ -110,6 +110,9 @@ version 28-git (????-??-??):
   - enhancement: 'rt.message_template', 'rt.text_message_template' and 'rt.html_message_template'
     configuration variables allow to globally format messages sent to customers in web browser
     helpdesk forms ('%body' is default value) [chilan]
+  - improvement: 'phpui.allowed_document_scan_mime_types' configuration variable with default value
+    'application/pdf, image/jpeg,image/jpg,image/png' allows to limit acceptable scan file
+    mime types [chilan]
 
 version 27.0 (2021-08-20):
 
