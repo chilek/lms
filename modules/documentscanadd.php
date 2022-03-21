@@ -23,7 +23,8 @@
  *
  *  $Id$
  */
-$allow_files = ConfigHelper::getConfig('phpui.allowed_documents_scan_filetypes', 'application/pdf, images/jpeg, images/jpg');
+
+$allowed_mime_types = ConfigHelper::getConfig('phpui.allowed_document_scan_mime_types', 'application/pdf,image/jpeg,image/jpg,image/png');
 
 check_file_uploads();
 
@@ -120,5 +121,5 @@ $layout['pagetitle'] = trans('Add Scans');
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('scans', $scans);
-$SMARTY->assign('allow_files', $allow_files);
+$SMARTY->assign('allowed_mime_types', $allowed_mime_types);
 $SMARTY->display('document/documentscanadd.html');
