@@ -232,7 +232,7 @@ if (!empty($emails)) {
 
         if (isset($structure->parts) && count($structure->parts)) {
             for ($i = 0; $i < count($structure->parts); $i++) {
-                $attachments[$i] = array(
+                $attachment = array(
                     'is_attachment' => false,
                     'filename' => '',
                     'name' => '',
@@ -243,8 +243,8 @@ if (!empty($emails)) {
                 if ($structure->parts[$i]->ifdparameters) {
                     foreach ($structure->parts[$i]->dparameters as $object) {
                         if (strtolower($object->attribute) == 'filename') {
-                            $attachments[$i]['is_attachment'] = true;
-                            $attachments[$i]['filename'] = $object->value;
+                            $attachment['is_attachment'] = true;
+                            $attachment['filename'] = $object->value;
                         }
                     }
                 }
@@ -257,13 +257,14 @@ if (!empty($emails)) {
                     }
                 }
 
-                if ($attachments[$i]['is_attachment']) {
-                    $attachments[$i]['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
+                if ($attachment['is_attachment']) {
+                    $attachment['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
                     if ($structure->parts[$i]->encoding == 3) {
-                        $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
+                        $attachment['attachment'] = base64_decode($attachment['attachment']);
                     } elseif ($structure->parts[$i]->encoding == 4) {
-                        $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
+                        $attachment['attachment'] = quoted_printable_decode($attachment['attachment']);
                     }
+                    $attachments[] = $attachment;
                 }
             }
         }
