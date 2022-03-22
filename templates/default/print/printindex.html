@@ -1724,114 +1724,175 @@
 </style>
 
 <form method="post" name="uke-siis" id="uke-siis" action="?m=netdevprint&type=uke-siis">
-<input type="submit" class="hiddenbtn">
+	<input type="submit" class="hiddenbtn">
+</form>
+
 <table class="lmsbox">
-    <colgroup>
-        <col style="width: 1%;">
-        <col style="width: 1%;">
-        <col style="width: 99%;">
-    </colgroup>
-    <thead>
-	<tr>
-		<th scope="col" colspan="3" class="bold nobr">
-		    <img src="img/netdev.gif" alt=""> {trans("UKE SIIS report")}
-		</th>
-	</tr>
-    </thead>
-    <tbody>
-	<tr>
-		<td>
-			<img src="img/docum.gif" alt="">
-		</td>
-		<td class="bold nobr">
-			{trans("Exported sheets:")}
-		</td>
-		<td style="width: 98%;">
-			{*<input type="checkbox" name="sheets[dp]" id="sheets_dp" value="1" checked> <label for="sheets_dp">DP</label> *}
-			<input type="checkbox" name="sheets[proj]" id="sheets_proj" value="1" checked> <label for="sheets_proj">PROJ</label>
-			<input type="checkbox" name="sheets[ob]" id="sheets_ob" value="1" checked> <label for="sheets_ob">OB</label>
-			<input type="checkbox" name="sheets[ww]" id="sheets_ww" value="1" checked> <label for="sheets_ww">WW</label>
-			<input type="checkbox" name="sheets[wo]" id="sheets_wo" value="1" checked> <label for="sheets_wo">WO</label>
-			<input type="checkbox" name="sheets[int]" id="sheets_int" value="1" checked> <label for="sheets_int">INT</label>
-			<input type="checkbox" name="sheets[sr]" id="sheets_sr" value="1" checked> <label for="sheets_sr">SR</label>
-			<input type="checkbox" name="sheets[ps]" id="sheets_ps" value="1" checked> <label for="sheets_ps">PS</label>
-			<input type="checkbox" name="sheets[lp]" id="sheets_lp" value="1" checked> <label for="sheets_lp">LP</label>
-			<input type="checkbox" name="sheets[rl]" id="sheets_rl" value="1" checked> <label for="sheets_rl">RL</label>
-			<input type="checkbox" name="sheets[pol]" id="sheets_pol" value="1" checked> <label for="sheets_pol">POL</label>
-			<input type="checkbox" name="sheets[zas]" id="sheets_zas" value="1" checked> <label for="sheets_zas">ZAS</label>
-			<input type="checkbox" name="sheets[us]" id="sheets_us" value="1" checked> <label for="sheets_us">US</label>
-		</td>
-	</tr>
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<th scope="col" colspan="3" class="bold nobr">
+				{icon name="netdev" class="fa-fw"}
+				{trans("UKE SIIS report")}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="document" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Exported sheets:")}</strong>
+			</td>
+			<td style="width: 98%;">
+				{*
+				<label>
+					<input type="checkbox" name="sheets[dp]" form="uke-siis"
+						value="1" checked>
+					DP
+				</label>
+				*}
+				<label>
+					<input type="checkbox" name="sheets[proj]" form="uke-siis"
+						value="1" checked>
+					PROJ
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[ob]" form="uke-siis"
+						value="1" checked>
+					OB
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[ww]" form="uke-siis"
+						value="1" checked>
+					WW
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[wo]" form="uke-siis"
+						value="1" checked>
+					WO
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[int]" form="uke-siis"
+						value="1" checked>
+					INT
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[sr]" form="uke-siis"
+						value="1" checked>
+					SR
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[ps]" form="uke-siis"
+						value="1" checked>
+					PS
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[lp]" form="uke-siis"
+						value="1" checked>
+					LP
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[rl]" form="uke-siis"
+						value="1" checked>
+					RL
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[pol]" form="uke-siis"
+						value="1" checked>
+					POL
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[zas]" form="uke-siis"
+						value="1" checked>
+					ZAS
+				</label>
+				<label>
+					<input type="checkbox" name="sheets[us]" form="uke-siis"
+						value="1" checked>
+					US
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="netdevice" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="customernetdevices">
+					<strong>{trans("Include customer network device assignments:")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="customernetdevices" form="uke-siis"
+					id="customernetdevices" value="1">
+			</td>
+		</tr>
 
-	<tr>
-		<td>
-			<img src="img/netdev.gif" alt="">
-		</td>
-		<td class="bold nobr">
-			<label for="customernetdevices">
-				{trans("Include customer network device assignments:")}
-			</label>
-		</td>
-		<td>
-			<input type="checkbox" name="customernetdevices" id="customernetdevices" value="1">
-		</td>
-	</tr>
+		{if $linktypes}
+			<tr>
+				<td class="valign-top">
+					{icon name="view" class="fa-fw"}
+				</td>
+				<td class="valign-top">
+					<strong>{trans('Potential range')}<strong>
+				</td>
+				<td>
+					{$def_vals = json_decode(ConfigHelper::getConfig("phpui.linktype_ranges", '{"0":100,"1":2000,"2":300}'), true)}
+					{$i = 0}
 
-	{if $linktypes}
-	<tr>
-		<td class="valign-top"><img src="img/view.gif" alt=""></td>
-		<td class="bold valign-top">{trans('Potential range')}:</td>
-		<td>
-			{$def_vals = json_decode(ConfigHelper::getConfig("phpui.linktype_ranges", '{"0":100,"1":2000,"2":300}'), true)}
-			{$i = 0}
+					<table>
+						{foreach $linktypes as $l_id=>$l_name}
+						<tr class="blend">
+							<td>
+								<label>
+									<input type="checkbox" class="range_chk" form="uke-siis"
+										name="uke[linktypes][{$i}][type]" value="{$l_id}">{$l_name}
+								</label>
+							</td>
+							<td>
+								<input type="number" min="0" class="range-value" form="uke-siis"
+									name="uke[linktypes][{$i}][range]"
+									{if $def_vals[$l_id]}value="{$def_vals[$l_id]}"{/if}
+									disabled>
+								{trans('meters')}
+							</td>
+						</tr>
+						{$i = $i+1}
+						{/foreach}
+					</table>
+				</td>
+			</tr>
+		{/if}
 
-			<table>
-				{foreach $linktypes as $l_id=>$l_name}
-				<tr class="blend">
-					<td>
-						<label>
-							<input type="checkbox" class="range_chk" name="uke[linktypes][{$i}][type]" value="{$l_id}">{$l_name}
-						</label>
-					</td>
-					<td>
-						<input type="number" min="0" class="range-value" name="uke[linktypes][{$i}][range]"
-							{if $def_vals[$l_id]} value="{$def_vals[$l_id]}"{/if} disabled>
-						{trans('meters')}
-					</td>
-				</tr>
-				{$i = $i+1}
-				{/foreach}
-			</table>
-		</td>
-	</tr>
-	{/if}
-
-	<tr>
-		<td colspan="3" class="buttons">
-			<a href="javascript:document.forms['uke-siis'].submit();">{trans("Save")} <img src="img/save.gif" alt=""></a>
-		</td>
-	</tr>
-    </tbody>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button form="uke-siis" icon="save" label="Submit" onclick="$('#uke-siis').submit();"}
+			</td>
+		</tr>
+	</tbody>
 </table>
 
 <script>
-	$( function() {
-		$( '.range_chk' ).click( function() {
+
+	$(function() {
+		$('.range_chk').click( function() {
 			var tr  = $(this).closest('tr');
 			var inp = tr.find('input[type=number]');
 
 			tr.toggleClass('blend');
 
-			if ( inp.attr('disabled') ) {
-				inp.attr('disabled', false);
-			} else {
-				inp.attr('disabled', true);
-			}
+			inp.prop('disabled', !inp.prop('disabled'));
 		});
 	});
+
 </script>
 
-</FORM>
 {/if}
 
 {if $printmenu == "netdev" || $printmenu == "finances"}
@@ -1858,7 +1919,7 @@
 	<thead>
 		<tr>
 			<td colspan="3" class="nobr">
-				<img src="img/money.gif">
+				{icon name="money" class="fa-fw"}
 				<strong>{trans("UKE income report")}</strong>
 			</td>
 		</tr>
@@ -1960,7 +2021,7 @@
 		</tr>
 		<tr>
 			<td>
-				<img src="img/downrate.gif" alt="">
+				{icon name="download" class="fa-fw"}
 			</td>
 			<td class="nobr">
 				<label for="bandwidths">
