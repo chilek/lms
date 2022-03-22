@@ -2669,4 +2669,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
         return $inserted;
     }
+
+    public function deleteTicket($ticketid)
+    {
+        $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+
+        $ticket_dir = $rt_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
+
+        rrmdir($ticket_dir);
+
+        return $this->db->Execute('DELETE FROM rttickets WHERE id = ?', array($ticketid));
+    }
 }

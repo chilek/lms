@@ -55,10 +55,13 @@ switch ($_GET['taction']) {
         $DB->CommitTrans();
         break;
     case 'delperm':
-        $DB->Execute(
-            'DELETE FROM rttickets WHERE id IN ?',
-            array($tickets)
-        );
+        $DB->BeginTrans();
+
+        foreach ($tickets as $ticket) {
+            $LMS->deleteTicket($ticket);
+        }
+
+        $DB->CommitTrans();
         break;
 }
 

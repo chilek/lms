@@ -2502,6 +2502,12 @@ class LMS
         return $manager->assignCategoryToTicket($categoryid, $ticketid);
     }
 
+    public function deleteTicket($ticketid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->deleteTicket($ticketid);
+    }
+
     /*
      *  LMS-UI configuration
      */
