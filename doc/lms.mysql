@@ -3377,22 +3377,22 @@ CREATE VIEW vinvoicecontents AS
                 ROUND((ic.value / (1 + (t.value / 100))),2) - ROUND((ic2.value / (1 + (t.value / 100))), 2)
         END) AS diff_netprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND((ic.value * (1 + (t.value / 100))),2) - ROUND((ic2.value * (1 + (t.value / 100))),2)
+                ROUND((ic.value * (1 + (t.value / 100))), 2) - ROUND((ic2.value * (1 + (t.value / 100))), 2)
             ELSE
                 ROUND(ic.value, 2) - ROUND(ic2.value, 2)
         END) AS diff_grossprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
                 ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
             ELSE
-                ((ROUND((ic.value * ABS(ic.count)), 2) - ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)),2)) - ROUND((ic2.value * ABS(ic2.count)), 2)) + ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)),2)
+                ((ROUND((ic.value * ABS(ic.count)), 2) - ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)), 2)) - ROUND((ic2.value * ABS(ic2.count)), 2)) + ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)), 2)
         END) AS diff_netvalue,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / 100),2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / 100), 2)
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / 100), 2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / 100), 2)
             ELSE
-                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)),2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)), 2)
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)), 2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)), 2)
         END) AS diff_taxvalue,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND((ROUND((ic.value * ABS(ic.count)), 2) * (1 + (t.value / 100))),2) - ROUND((ROUND((ic2.value * ABS(ic2.count)), 2) * (1 + (t.value / 100))), 2)
+                ROUND((ROUND((ic.value * ABS(ic.count)), 2) * (1 + (t.value / 100))), 2) - ROUND((ROUND((ic2.value * ABS(ic2.count)), 2) * (1 + (t.value / 100))), 2)
             ELSE
                 ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
         END) AS diff_grossvalue,
