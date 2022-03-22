@@ -1038,7 +1038,8 @@ if ($netnodes) {
 
         if (empty($netnode['location_street_name'])) {
             // no street specified for address
-            if (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets'])) {
+            if (strlen(trim($netnode['address_budynek']))
+                && (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets']))) {
                 $netnode['address_ulica'] = "BRAK ULICY";
                 $netnode['address_symul'] = "99999";
             } else {
