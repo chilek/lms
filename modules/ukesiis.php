@@ -296,24 +296,24 @@ $allradiosectors = $DB->GetAllByKey("SELECT * FROM netradiosectors ORDER BY id",
 
 
 $teryt_cities = $DB->GetAllByKey(
-    "
-	SELECT lc.id AS cityid,
+    "SELECT lc.id AS cityid,
 			ls.name AS area_woj,
 			ld.name AS area_pow,
 			lb.name AS area_gmi,
 			(" . $DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type') . ") AS area_terc,
 			lc.name AS area_city,
 			lc.ident AS area_simc,
-			p.zip AS location_zip
+			p.zip AS location_zip,
+			(CASE WHEN EXISTS (SELECT 1 FROM location_streets lst WHERE lst.cityid = lc.id) THEN 1 ELSE 0 END) AS with_streets
 		FROM location_cities lc
 		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 		LEFT JOIN location_districts ld ON ld.id = lb.districtid
 		LEFT JOIN location_states ls ON ls.id = ld.stateid
-		LEFT JOIN location_streets lst ON lst.cityid = lc.id
 		LEFT JOIN (
 			SELECT pna.cityid, pna.streetid, " . $DB->GroupConcat('pna.zip', ',', true) . " AS zip FROM pna
 			WHERE pna.streetid IS NULL
-			GROUP BY pna.cityid, pna.streetid HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
+			GROUP BY pna.cityid, pna.streetid
+			HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
 		) p ON p.cityid = lc.id
 		JOIN (
 			SELECT DISTINCT city_id FROM addresses
@@ -1038,8 +1038,14 @@ if ($netnodes) {
 
         if (empty($netnode['location_street_name'])) {
             // no street specified for address
-            $netnode['address_ulica'] = "BRAK ULICY";
-            $netnode['address_symul'] = "99999";
+            if (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets'])) {
+                $netnode['address_ulica'] = "BRAK ULICY";
+                $netnode['address_symul'] = "99999";
+            } else {
+                $netnode['address_ulica'] = '';
+                $netnode['address_symul'] = '';
+                $netnode['address_budynek'] = '';
+            }
         } elseif (!isset($netnode['address_symul'])) {
             // specified street is from outside teryt
             $netnode['address_ulica'] = "ul. SPOZA ZAKRESU";
@@ -1384,11 +1390,17 @@ if ($netnodes) {
             $teryt['location_zip'] = empty($range['location_zip']) ? $teryt['location_zip'] : $range['location_zip'];
 
             if (empty($range['location_street_name'])) {
-                $teryt['address_ulica'] = "BRAK ULICY";
-                $teryt['address_symul'] = "99999";
+                if (!isset($teryt_cities[$range['location_city']]) || empty($teryt['with_streets'])) {
+                    $teryt['address_ulica'] = "BRAK ULICY";
+                    $teryt['address_symul'] = "99999";
+                } else {
+                    $teryt['address_ulica'] = '';
+                    $teryt['address_symul'] = '';
+                    $teryt['address_budynek'] = '';
+                }
             } else {
                 if (!isset($teryt['address_symul'])) {
-                    if ($DB->GetOne("SELECT COUNT(*) FROM location_streets WHERE cityid = ?", array($range['location_city']))) {
+                    if (isset($teryt_cities[$range['location_city']]) && !empty($teryt['with_streets'])) {
                         $teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
                         $teryt['address_symul'] = "99998";
                     } else {
