@@ -81,7 +81,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button type="submit" class="btn btn-danger" form="newscan-form" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
+				{button class="btn btn-danger submit-button" form="newscan-form" formnovalidate=true accesskey="S" icon="submit" label="<!documents>Submit" disabled=true}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
@@ -205,12 +205,14 @@
 					$('#file-status').text(error).show();
 					return false;
 				}
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 		}
 
 		$('#scans').change(function() {
-			check_file_sizes();
+			$('#newscan-dialog .submit-button').prop('disabled', !check_file_sizes());
 		});
 
 		$('#newscan-dialog .submit-button').click(function() {
