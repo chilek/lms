@@ -141,3 +141,5 @@ $_LANG[
     . '<strong>%password%</strong> - zastępowany jest hasłem jednorazowym SMS-em wysyłanym do klienta.';
 
 $_LANG['Send document to customer'] = 'Wyślij dokument do klienta';
+
+$_LANG['One from files is too large!'] = 'Zbyt duży rozmiar jednego z plików!';
