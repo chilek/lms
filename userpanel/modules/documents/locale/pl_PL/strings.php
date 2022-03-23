@@ -143,5 +143,7 @@ $_LANG[
 $_LANG['Send document to customer'] = 'Wyślij dokument do klienta';
 
 $_LANG['One from files is too large!'] = 'Zbyt duży rozmiar jednego z plików!';
+$_LANG['One from files has invalid type!'] = 'Jeden z plików ma nieprawidłowy typ!';
+$_LANG['Invalid file type: $a'] = 'Nieprawidłowy typ pliku: $a';
 $_LANG['Total file size is too large!'] = 'Zbyt duży całkowity rozmiar plików!';
 $_LANG['<!documents>Submit'] = 'Wyślij';

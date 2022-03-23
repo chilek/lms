@@ -139,7 +139,10 @@
 							<label for="scans"><strong>{trans("Select scan file:")}</strong></label>
 						</td>
 						<td>
-							<input type="file" name="files[]" id="scans" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+							<input type="file" name="files[]" id="scans"
+								{userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"}
+								accept="application/pdf,image/jpeg,image/png"
+								multiple />
 							<div id="file-status" style="display: none;">
 								{if isset($error.files)}
 									{$error.files}
@@ -168,19 +171,24 @@
 		<script>
 
 			$(function() {
-				function check_file_sizes() {
-					var attachments = $('#scans').get(0);
+				function check_file_attachments() {
+					var scans = $('#scans');
 					$('#file-status').hide().text();
-					if (attachments.files.length) {
+					if (scans.get(0).files.length) {
 						var error = '';
 						var post_max_size = parseInt($('#post_max_size').val());
 						var upload_max_filesize = parseInt($('#upload_max_filesize').val());
 						var total_size = 0;
-						$.each(attachments.files, function (index, file) {
+						var acceptedFileTypes = scans.attr('accept').split(',');
+						$.each(scans.get(0).files, function (index, file) {
 							if (upload_max_filesize && file.size > upload_max_filesize) {
 								error = '{trans("One from files is too large!")}';
 							}
 							total_size += file.size;
+
+							if (acceptedFileTypes.indexOf(file.type) == -1) {
+								error = '{trans("One from files has invalid type!")}';
+							}
 						});
 						if (post_max_size && total_size > post_max_size) {
 							error = '{trans("Total file size is too large!")}';
@@ -194,11 +202,11 @@
 				}
 
 				$('#scans').change(function() {
-					check_file_sizes();
+					check_file_attachments();
 				});
 
 				$('#newscan-dialog .submit-button').click(function() {
-					if (check_file_sizes()) {
+					if (check_file_attachments()) {
 						document.newscan.submit();
 					}
 				});

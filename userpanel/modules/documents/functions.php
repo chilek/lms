@@ -118,17 +118,29 @@ function module_main()
                 $error = null;
 
                 if (isset($_FILES['files'])) {
+                    $allowed_file_types = array(
+                        'application/pdf' => true,
+                        'image/jpeg' => true,
+                        'image/png' => true,
+                    );
                     foreach ($_FILES['files']['name'] as $fileidx => $filename) {
                         if (!empty($filename)) {
                             if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
-                                $files[] = array(
-                                    'tmpname' => null,
-                                    'filename' => $filename,
-                                    'name' => $_FILES['files']['tmp_name'][$fileidx],
-                                    'type' => $_FILES['files']['type'][$fileidx],
-                                    'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
-                                    'attachmenttype' => -1,
-                                );
+                                if (isset($allowed_file_types[$_FILES['files']['type'][$fileidx]])) {
+                                    $files[] = array(
+                                        'tmpname' => null,
+                                        'filename' => $filename,
+                                        'name' => $_FILES['files']['tmp_name'][$fileidx],
+                                        'type' => $_FILES['files']['type'][$fileidx],
+                                        'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
+                                        'attachmenttype' => -1,
+                                    );
+                                } else {
+                                    if (isset($error['files'])) {
+                                        $error['files'] .= "\n";
+                                    }
+                                    $error['files'] .= trans('Invalid file type: $a', $filename);
+                                }
                             } else { // upload errors
                                 if (isset($error['files'])) {
                                     $error['files'] .= "\n";
