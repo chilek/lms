@@ -113,6 +113,7 @@ version 28-git (????-??-??):
   - improvement: 'phpui.allowed_document_scan_mime_types' configuration variable with default value
     'application/pdf, image/jpeg,image/jpg,image/png' allows to limit acceptable scan file
     mime types [chilan]
+  - improvement: userpanel/documents: limit allowed file types to pdf, jpg and png [chilan]
 
 version 27.0 (2021-08-20):
 
