@@ -150,7 +150,7 @@ if (isset($_POST['alias'])) {
         array($alias['id'])
     );
     $alias['mailforwards'] = array();
-    if (count($mailforwards)) {
+    if (!empty($mailforwards)) {
         foreach ($mailforwards as $mailforward => $idx) {
             $alias['mailforwards'][] = $mailforward;
         }
