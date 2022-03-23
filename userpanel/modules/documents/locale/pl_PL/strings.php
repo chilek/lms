@@ -143,3 +143,4 @@ $_LANG[
 $_LANG['Send document to customer'] = 'Wyślij dokument do klienta';
 
 $_LANG['One from files is too large!'] = 'Zbyt duży rozmiar jednego z plików!';
+$_LANG['<!documents>Submit'] = 'Wyślij';
