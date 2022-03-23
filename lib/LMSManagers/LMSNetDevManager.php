@@ -731,6 +731,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             case 'type':
                 $sqlord = ' ORDER BY t.name';
                 break;
+            case 'customername':
+                $sqlord = ' ORDER BY customername';
+                break;
             default:
                 $sqlord = ' ORDER BY name';
                 break;
@@ -815,13 +818,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid
+				LEFT JOIN customers cu ON cu.id = d.ownerid '
                 . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : ''));
         }
 
         $netdevlist = $this->db->GetAll('SELECT d.id, d.name' . ($short ? '' : ',
 				d.description, d.producer, d.model, m.type AS devtype, t.name AS devtypename,
-				d.serialnumber, d.ports, d.ownerid,
+				d.serialnumber, d.ports, d.ownerid,' .
+                $this->db->Concat('cu.lastname', "' '", 'cu.name') . ' AS customername,
 				d.invprojectid, p.name AS project, d.status,
 				(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid IS NOT NULL)
 				+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
@@ -855,7 +860,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid
+				LEFT JOIN customers cu ON cu.id = d.ownerid '
                 . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
