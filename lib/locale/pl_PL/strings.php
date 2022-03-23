@@ -1827,6 +1827,7 @@ $_LANG['Send'] = 'Wyślij';
 $_LANG['Send registration info'] = 'Wyślij dane rejestracyjne';
 $_LANG['separate document'] = 'oddzielny dokument';
 $_LANG['Serial number:'] = 'Numer seryjny:';
+$_LANG['Serial number'] = 'Numer seryjny';
 $_LANG['Service:'] = 'Usługa:';
 $_LANG['Services:'] = 'Usługi:';
 $_LANG['Settlement date:'] = 'Data wystawienia:';
