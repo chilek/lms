@@ -1123,7 +1123,7 @@ class LMSSmartyPlugins
         return '<select name="' . $elemname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
             . (isset($params['onchange']) ? ' onChange="' . $params['onchange'] . '"' : '') . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans('filter off') . ' -</option>'
+			<option value=""' . (!$selected ? ' selected' : '') . '>' . trans('- filter off -') . '</option>'
             . $options
             . '</select>';
     }

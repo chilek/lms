@@ -1029,6 +1029,7 @@ $_LANG['File upload has finished unexpectedly: $a'] = 'Nieoczekiwane zakończeni
 $_LANG['File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.'] = 'Nazwa pliku dla zapisu dokumentu. UWAGA: Ustawienie attachment_name tak samo jak domyślnie content_type spowoduje (w przypadku MSIE) wydruk dokumentu i zapytanie o zapis na dysk. Domyślnie: pusta.';
 $_LANG['Filter'] = 'Filtr';
 $_LANG['no filter'] = 'filtr wyłączony';
+$_LANG['- no filter -'] = '- filtr wyłączony -';
 $_LANG['no owner'] = 'bez właściciela';
 $_LANG['no owner or logged user'] = 'bez właściciela lub zalogowany użytkownik';
 $_LANG['with owner'] = 'z właścicielem';
