@@ -569,6 +569,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $invoiceid,
             $jpk ? LMSFinanceManager::INVOICE_CONTENT_DETAIL_GENERAL : LMSFinanceManager::INVOICE_CONTENT_DETAIL_MORE
         ));
+        if ($invoice['doctype'] == DOC_INVOICE && isset($invoice['invoice'])) {
+            unset($invoice['invoice']);
+        }
+
         if (count($ids) == 1) {
             $docnumber = docnumber(array(
                 'number' => $invoice['number'],
