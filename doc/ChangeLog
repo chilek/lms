@@ -114,6 +114,9 @@ version 28-git (????-??-??):
     'application/pdf, image/jpeg,image/jpg,image/png' allows to limit acceptable scan file
     mime types [chilan]
   - improvement: userpanel/documents: limit allowed file types to pdf, jpg and png [chilan]
+  - improvement: helpdesk: added 'rt.default_message_reply_content_type' configuration variable
+    support ('text' as default value) which controls default visual editor state during reply to
+    or quoting ticket message [chilan]
 
 version 27.0 (2021-08-20):
 

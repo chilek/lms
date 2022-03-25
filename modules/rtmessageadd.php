@@ -628,6 +628,21 @@ if (isset($_POST['message'])) {
         if (isset($_GET['id'])) {
             $reply = $LMS->GetMessage($_GET['id']);
 
+            $content_type = ConfigHelper::getConfig('rt.default_message_reply_content_type', 'text');
+            switch ($content_type) {
+                case 'html':
+                    $message['contenttype'] = 'text/html';
+                    break;
+                case 'predecessor':
+                    $message['contenttype'] = $reply['contenttype'];
+                    break;
+                case 'text':
+                default:
+                    $message['contenttype'] = 'text/plain';
+                    break;
+            }
+            $message['wysiwyg']['body'] = $message['contenttype'] == 'text/html' ? 'true' : 'false';
+
             $message['mailfrom'] = array();
 
             if (!empty($reply['mailfrom']) && !empty($reply['customerid'])
