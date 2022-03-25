@@ -297,7 +297,7 @@ if ($documents) {
                 $tax = 0;
                 $brutto = $item['value'];
                 $netto = $item['value'];
-            } elseif (isset($document['invoice'])) {
+            } elseif (isset($document['invoice']) && $document['invoice']['doctype'] != DOC_INVOICE_PRO) {
                 $tax = $item['totaltax'] - $document['invoice']['content'][$itemid]['totaltax'];
                 $netto = $item['totalbase'] - $document['invoice']['content'][$itemid]['totalbase'];
                 $brutto = $item['total'] - $document['invoice']['content'][$itemid]['total'];
