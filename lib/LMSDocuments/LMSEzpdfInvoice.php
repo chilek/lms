@@ -1472,7 +1472,10 @@ class LMSEzpdfInvoice extends LMSInvoice
         $top = $this->invoice_footnote(30, $top, 530, 10);
 
         $this->backend->check_page_length($top);
-        $this->invoice_memo(30, $top);
+
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true))) {
+            $this->invoice_memo(30, $top);
+        }
 
         $page = $this->backend->ezStopPageNumbers(1, 1, $page);
 
@@ -1524,7 +1527,10 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $top = $this->invoice_comment(470, $top);
         $top = $this->invoice_footnote(470, $top, 90, 8);
-        $this->invoice_memo(30, $top);
+
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true))) {
+            $this->invoice_memo(30, $top);
+        }
 
         $return = $this->new_invoice_data(30, $top, 430, 6, 1);
         $top = $return[2] + 5 - 40;

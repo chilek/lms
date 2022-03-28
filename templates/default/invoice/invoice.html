@@ -674,7 +674,7 @@
 		{/if}
 	</table>
 
-	{if $invoice.memo}
+	{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true)) && $invoice.memo}
 		<table width="100%" cellpadding="3">
 			<tr>
 				<td width="100%" colspan="2">

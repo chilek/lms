@@ -1001,7 +1001,10 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $this->invoice_comment();
         $this->invoice_footnote();
-        $this->invoice_memo();
+
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true))) {
+            $this->invoice_memo();
+        }
 
         $docnumber = docnumber(array(
             'number' => $this->data['number'],
@@ -1142,7 +1145,11 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $this->invoice_comment();
         $this->invoice_footnote();
-        $this->invoice_memo();
+
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true))) {
+            $this->invoice_memo();
+        }
+
         if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
             && !isset($this->data['rebate'])) {
             /* FT-0100 form */
