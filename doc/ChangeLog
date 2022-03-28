@@ -117,6 +117,8 @@ version 28-git (????-??-??):
   - improvement: helpdesk: added 'rt.default_message_reply_content_type' configuration variable
     support ('text' as default value) which controls default visual editor state during reply to
     or quoting ticket message [chilan]
+  - enhancement: 'invoices.show_memo' ('true' by default) allows to disable document memo
+    customer property presentation on invoices [chilan]
 
 version 27.0 (2021-08-20):
 
