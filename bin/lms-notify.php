@@ -3234,8 +3234,10 @@ if (!empty($intersect)) {
                                         $target_doctype = DOC_DNOTE;
                                         break;
                                     case 'invoice':
-                                    default:
                                         $target_doctype = DOC_INVOICE;
+                                        break;
+                                    default:
+                                        $target_doctype = 0;
                                         break;
                                 }
                                 $where_customers[] = 'EXISTS (SELECT id FROM assignments
@@ -3567,8 +3569,10 @@ if (!empty($intersect)) {
                                         $target_doctype = DOC_DNOTE;
                                         break;
                                     case 'invoice':
-                                    default:
                                         $target_doctype = DOC_INVOICE;
+                                        break;
+                                    default:
+                                        $target_doctype = 0;
                                         break;
                                 }
                                 $where_customers[] = 'EXISTS (SELECT id FROM assignments
