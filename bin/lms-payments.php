@@ -562,7 +562,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-        . ($tarifftags ?: '')
+        . ($tariff_tags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
@@ -692,7 +692,7 @@ $query = "SELECT
 			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
         . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-        . ($tarifftags ?: '')
+        . ($tariff_tags ?: '')
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
