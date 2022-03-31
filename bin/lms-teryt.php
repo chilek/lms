@@ -269,7 +269,7 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
 			FROM location_streets s
 			JOIN location_street_types t ON t.id = s.typeid
 			JOIN location_cities c ON (s.cityid = c.id)
-			JOIN location_borughs lb ON lb.id = c.boroughid
+			JOIN location_boroughs lb ON lb.id = c.boroughid
 			JOIN location_districts ld ON ld.id = lb.districtid
 			WHERE
 				((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
