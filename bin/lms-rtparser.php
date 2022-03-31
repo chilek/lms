@@ -602,8 +602,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $replytoname = $replytoemail = '';
         }
 
-        if (preg_match('/^(?<display>.*)<(?<address>.+@.+)>$/', $mh_from, $m)) {
-            $fromname = $m['display'];
+        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_from, $m)) {
+            $fromname = isset($m['display']) ? $m['display'] : '';
             $fromemail = $m['address'];
         } else {
             $fromname = $fromemail = '';
