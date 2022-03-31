@@ -595,8 +595,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $reqcustid = 0;
         $requserid = null;
 
-        if (preg_match('/^(?<display>.*)<(?<address>.+@.+)>$/', $mh_replyto, $m)) {
-            $replytoname = $m['display'];
+        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_replyto, $m)) {
+            $replytoname = isset($m['display']) ? $m['display'] : '';
             $replytoemail = $m['address'];
         } else {
             $replytoname = $replytoemail = '';
@@ -611,7 +611,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
         $toemails = array();
 
-        if (preg_match('/^.*<(?<address>.+@.+)>$/', $mh_to, $m)) {
+        if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $mh_to, $m)) {
             $toemails[$m['address']] = $m['address'];
         } elseif (!empty($mh_to)) {
             $toemails[$mh_to] = $mh_to;
@@ -621,8 +621,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $_ccemails = preg_split('/\s*,\s*/', $mh_cc, null, PREG_SPLIT_NO_EMPTY);
         if (!empty($_ccemails)) {
             foreach ($_ccemails as $ccemail) {
-                if (preg_match('/^(?<display>.*)<(?<address>.+@.+)>$/', $ccemail, $m)) {
-                    $ccemails[$m['address']] = $m['display'];
+                if (preg_match('/^(?:(?<display>.*) )?<?(?<address>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $ccemail, $m)) {
+                    $ccemails[$m['address']] = isset($m['display']) ? $m['display'] : '';
                 } else {
                     $ccemails[$ccemail] = '';
                 }
