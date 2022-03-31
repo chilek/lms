@@ -285,7 +285,7 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
             return array();
         }
     } elseif ($city) {
-        $cities = $DB->GetRow(
+        $cities = $DB->GetAll(
             "SELECT c.id, ld.stateid
             FROM location_cities c
             JOIN location_boroughs lb ON lb.id = c.boroughid
