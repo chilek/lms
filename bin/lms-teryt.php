@@ -226,11 +226,13 @@ function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches)
     $DB = LMSDB::getInstance();
 
     $idents = $DB->GetAll(
-        "
-		SELECT s.id as streetid, " . $subcities['cityid'] . " AS cityid,
+        "SELECT s.id as streetid, ld.stateid, " . $subcities['cityid'] . " AS cityid,
 			(" . $DB->Concat('t.name', "' '", '(CASE WHEN s.name2 IS NULL THEN s.name ELSE ' . $DB->Concat('s.name2', "' '", 's.name') . ' END)') . ") AS streetname
 		FROM location_streets s
 		JOIN location_street_types t ON t.id = s.typeid
+		JOIN location_cities c ON c.id = " . $subcities['cityid'] . "
+		JOIN location_boroughs lb ON lb.id = c.boroughid
+		JOIN location_districts ld ON ld.id = lb.districtid
 		WHERE
 			((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
 			AND s.cityid IN (" . $subcities['cities'] . ")",
@@ -262,11 +264,13 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
 
     if ($city && $street) {
         $idents = $DB->GetAll("
-			SELECT s.id as streetid, s.cityid,
+			SELECT s.id as streetid, ld.stateid, s.cityid,
 				(" . $DB->Concat('t.name', "' '", '(CASE WHEN s.name2 IS NULL THEN s.name ELSE ' . $DB->Concat('s.name2', "' '", 's.name') . ' END)') . ") AS streetname
 			FROM location_streets s
 			JOIN location_street_types t ON t.id = s.typeid
 			JOIN location_cities c ON (s.cityid = c.id)
+			JOIN location_borughs lb ON lb.id = c.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
 			WHERE
 				((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
 				AND c.name ?LIKE? ?
@@ -281,13 +285,21 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
             return array();
         }
     } elseif ($city) {
-        $cityids = $DB->GetCol("SELECT id FROM location_cities WHERE name ?LIKE? ?", array($city));
-        if (empty($cityids)) {
+        $cities = $DB->GetRow(
+            "SELECT c.id, ld.stateid
+            FROM location_cities c
+            JOIN location_boroughs lb ON lb.id = c.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            WHERE c.name ?LIKE? ?",
+            array($city)
+        );
+        if (empty($cities)) {
             return array();
         }
-        if (($only_unique_city_matches && count($cityids) == 1) || !$only_unique_city_matches) {
+        if (($only_unique_city_matches && count($cities) == 1) || !$only_unique_city_matches) {
             return array(
-                'cityid' => $cityids[0],
+                'cityid' => $cities[0]['id'],
+                'stateid' => $cities[0]['stateid'],
             );
         } else {
             return array();
@@ -1544,8 +1556,8 @@ if (isset($options['merge'])) {
         }
 
         $DB->Execute(
-            "UPDATE addresses SET city_id = ?, street_id = ?, street = ? WHERE id = ?",
-            array($idents['cityid'], $idents['streetid'], $idents['streetname'], $a['id'])
+            "UPDATE addresses SET state_id = ?, city_id = ?, street_id = ?, street = ? WHERE id = ?",
+            array($idents['stateid'], $idents['cityid'], $idents['streetid'], $idents['streetname'], $a['id'])
         );
 
         $updated++;
