@@ -119,6 +119,8 @@ version 28-git (????-??-??):
     or quoting ticket message [chilan]
   - enhancement: 'invoices.show_memo' ('true' by default) allows to disable document memo
     customer property presentation on invoices [chilan]
+  - enhancement: added 'phpui.default_customer_phone_flags' and 'phpui.default_customer_email_flags'
+    configuration variable allow to initially check corresponding contact type flags [chilan]
 
 version 27.0 (2021-08-20):
 
