@@ -93,6 +93,7 @@
 
 <script>
 	var propertyNumber = 100;
+	var defaultContactFlags = JSON.parse('{json_encode($contact_default_flags)}');
 
 	function newcontact(type) {
 		var table = $('table.contacts[data-type="' + type + '"]');
@@ -123,7 +124,9 @@
 								+ '<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}>'
 									+ '<input type="checkbox" autocomplete="off" value="{$flagtype}"'
 										+ 'id="{$contacttype}-{$flagtype}-' + nr + '"'
-										+ 'name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}'
+										+ 'name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"'
+										+ (defaultContactFlags.hasOwnProperty('{$contacttype}') && defaultContactFlags["{$contacttype}"].hasOwnProperty('{$flagtype}') ? ' checked' : '' ) + '>'
+										+ ' {$flagproperties.label}'
 								+ '</label>'
 							+ '{/foreach}';
 				innerHTML += '</div>'+

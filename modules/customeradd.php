@@ -376,14 +376,14 @@ if (isset($_POST['customeradd'])) {
         0 => array(
             'contact' => '',
             'name' => '',
-            'type' => 0
+            'type' => empty($contact_default_flags['email']) ? 0 : array_sum($contact_default_flags['email']),
         )
     );
     $customeradd['phones'] = array(
         0 => array(
             'contact' => '',
             'name' => '',
-            'type' => 0
+            'type' => empty($contact_default_flags['phone']) ? 0 : array_sum($contact_default_flags['phone']),
         )
     );
 
