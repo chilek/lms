@@ -16,6 +16,11 @@
 		align-items: flex-start !important;
 	}
 
+	#requestor .indicated-person .lms-ui-box-row-label {
+		justify-content: flex-end;
+		display: flex;
+	}
+
 </style>
 
 {box_container id="ticket"}
@@ -87,26 +92,26 @@
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
-						{trans("Name")}
+						<label for="requestor_name">{trans("Name")}</label>
 					</div>
 					<div class="lms-ui-box-row-field">
-						<INPUT type="text" name="ticket[requestor_name]" id="requestor_name" value="{$ticket.requestor_name}" {tip trigger="requestor_name"}>
+						<input type="text" name="ticket[requestor_name]" id="requestor_name" value="{$ticket.requestor_name}" {tip trigger="requestor_name"}>
 					</div>
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
-						{trans("E-mail")}
+						<label for="requestor_mail">{trans("E-mail")}</label>
 					</div>
 					<div class="lms-ui-box-row-field">
-						<INPUT type="text" name="ticket[requestor_mail]" id="requestor_mail" value="{$ticket.requestor_mail}" {tip trigger="requestor_mail"}>
+						<input type="text" name="ticket[requestor_mail]" id="requestor_mail" value="{$ticket.requestor_mail}" {tip trigger="requestor_mail"}>
 					</div>
 				</div>
 				<div class="lms-ui-box-row indicated-person">
 					<div class="lms-ui-box-row-label">
-						{trans("Phone")}
+						<label for="requestor_phone">{trans("Phone")}</label>
 					</div>
 					<div class="lms-ui-box-row-field">
-						<INPUT type="text" name="ticket[requestor_phone]" id="requestor_phone" value="{$ticket.requestor_phone}" {tip trigger="requestor_phone"}>
+						<input type="text" name="ticket[requestor_phone]" id="requestor_phone" value="{$ticket.requestor_phone}" {tip trigger="requestor_phone"}>
 					</div>
 				</div>
 			{/box_row}

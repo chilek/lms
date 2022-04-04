@@ -24,11 +24,9 @@
 
 $(function() {
 	$('[name="ticket[requestor_userid]').change(function () {
-		if ($(this).val() == '0') {
-			$('.indicated-person').show();
-		} else {
-			$('.indicated-person').hide();
-		}
+		var disabled = $(this).val() != '0';
+		$('.indicated-person').find('input').prop('disabled', disabled)
+			.end().find('label').toggleClass('lms-ui-disabled', disabled);
 	}).change();
 
 	$('[name="ticket[owner]"]').change(function() {
