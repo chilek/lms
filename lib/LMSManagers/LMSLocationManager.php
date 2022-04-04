@@ -393,14 +393,23 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function GetAddress($address_id)
     {
-        return $this->db->GetRow('SELECT a.*, ls.name AS state_name,
-				ld.name AS district_name, lb.name AS borough_name,
-				lc.name AS city_name FROM vaddresses a
-			LEFT JOIN location_cities lc ON lc.id = a.city_id
-			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-			LEFT JOIN location_districts ld ON ld.id = lb.districtid
-			LEFT JOIN location_states ls ON ls.id = ld.stateid
-			WHERE a.id = ?', array($address_id));
+        return $this->db->GetRow(
+            'SELECT a.*,
+                c.name AS country_name,
+                ls.name AS state_name,
+                ld.name AS district_name, lb.name AS borough_name,
+                lc.name AS city_name,
+                ' . $this->db->Concat('(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . ' AS simple_street_name
+            FROM vaddresses a
+            LEFT JOIN location_cities lc ON lc.id = a.city_id
+            LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+            LEFT JOIN location_districts ld ON ld.id = lb.districtid
+            LEFT JOIN location_states ls ON ls.id = ld.stateid
+            LEFT JOIN countries c ON c.id = a.country_id
+            LEFT JOIN location_streets lst ON lst.id = a.street_id
+            WHERE a.id = ?',
+            array($address_id)
+        );
     }
 
     public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS)

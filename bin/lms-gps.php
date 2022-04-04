@@ -207,33 +207,53 @@ foreach ($types as $label => $type) {
     if (!$quiet) {
         echo $label . PHP_EOL;
     }
-    $locations = $DB->GetAll("SELECT t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
-			ld.name AS distict_name, lb.name AS borough_name FROM " . $type . " t
-		LEFT JOIN vaddresses va ON va.id = t.address_id
-		LEFT JOIN location_cities lc ON lc.id = va.city_id
-		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-		LEFT JOIN location_districts ld ON ld.id = lb.districtid
-		LEFT JOIN location_states ls ON ls.id = ld.stateid
-		WHERE location IS NOT NULL " . (isset($options['force']) ? '' : 'AND longitude IS NULL AND latitude IS NULL') . "
-			AND location_house IS NOT NULL AND location <> '' AND location_house <> ''");
+    $locations = $DB->GetAll(
+        "SELECT t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
+            ld.name AS distict_name, lb.name AS borough_name,
+            va.city AS city_name,
+            va.zip AS zip,
+            c.name AS country_name,
+            " . $DB->Concat('(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . " AS simple_street_name
+        FROM " . $type . " t
+        LEFT JOIN vaddresses va ON va.id = t.address_id
+        LEFT JOIN location_cities lc ON lc.id = va.city_id
+        LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+        LEFT JOIN location_districts ld ON ld.id = lb.districtid
+        LEFT JOIN location_states ls ON ls.id = ld.stateid
+        LEFT JOIN countries c ON c.id = va.country_id
+        LEFT JOIN location_streets lst ON lst.id = va.street_id
+        WHERE location IS NOT NULL " . (isset($options['force']) ? '' : 'AND longitude IS NULL AND latitude IS NULL') . "
+            AND location_house IS NOT NULL
+            AND location <> ''
+            AND location_house <> ''"
+    );
     if (!empty($locations)) {
         foreach ($locations as $row) {
             foreach ($sources as $source => $true) {
                 if ($source == 'google') {
                     $res = geocode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
-                    . $row['location'] . " Poland");
+                        . $row['location'] . " Poland");
                     if (($res['status'] == "OK") && ($res['accuracy'] == "ROOFTOP")) {
                         if (!$debug) {
-                            $DB->Execute("UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?", array($res['latitude'], $res['longitude'], $row['id']));
+                            $DB->Execute(
+                                "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
+                                array(
+                                    $res['latitude'],
+                                    $res['longitude'],
+                                    $row['id'],
+                                )
+                            );
                         }
                         if (!$quiet) {
-                            echo $row['id']." - OK - Accuracy: ".$res['accuracy']." (lat.: ".$res['latitude']." long.: ".$res['longitude'].")" . PHP_EOL;
+                            echo 'google: #' . $row['id'] . " - OK - Accuracy: " . $res['accuracy']
+                                . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
                         }
                         sleep(2);
                         break;
                     } else {
                         if (!$quiet) {
-                            echo $row['id']." - ERROR - Accuracy: ".$res['accuracy']." (lat.: ".$res['latitude']." long.: ".$res['longitude'].")" . PHP_EOL;
+                            echo 'google: #' . $row['id'] . " - ERROR - Accuracy: " . $res['accuracy']
+                                . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
                         }
                     }
                     if (empty($google_api_key)) {
@@ -241,23 +261,69 @@ foreach ($types as $label => $type) {
                     } else {
                         usleep(50000);
                     }
+                } elseif ($source == 'osm') {
+                    $params = array(
+                        'city' => $row['city_name'],
+                    );
+                    if (isset($row['country_name']) && !empty($row['country_name'])) {
+                        $params['country'] = $row['country_name'];
+                    }
+                    if (isset($row['state_name']) && !empty($row['state_name'])) {
+                        $params['state'] = $row['state_name'];
+                    }
+                    if (isset($row['simple_street_name']) && !empty($row['simple_street_name'])) {
+                        $params['street'] = (isset($row['house']) && mb_strlen($row['house'])
+                                ? $row['house'] . ' '
+                                : ''
+                            ) . $row['simple_street_name'];
+                    }
+                    if (isset($row['zip']) && !empty($row['zip'])) {
+                        $params['postalcode'] = $row['zip'];
+                    }
+                    $res = osm_geocode($params);
+                    if (empty($res)) {
+                        if (!$quiet) {
+                            echo 'osm: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
+                        }
+                        continue;
+                    }
+
+                    if (!$debug) {
+                        $DB->Execute(
+                            "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
+                            array(
+                                $res['latitude'],
+                                $res['longitude'],
+                                $row['id'],
+                            )
+                        );
+                    }
+                    if (!$quiet) {
+                        echo 'osm: #' . $row['id'] . " - OK (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
+                    }
+
+                    sleep(1);
                 } elseif ($source == 'siis' && !empty($row['state_name'])) {
                     if (($building = $lc->buildingExists($row['city_id'], empty($row['street_id']) ? 'null' : $row['street_id'], $row['house']))
                     && !empty($building['longitude']) && !empty($building['latitude'])) {
                         if (!$debug) {
                             $DB->Execute(
                                 "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
-                                array($building['latitude'], $building['longitude'], $row['id'])
+                                array(
+                                    $building['latitude'],
+                                    $building['longitude'],
+                                    $row['id'],
+                                )
                             );
                         }
                         if (!$quiet) {
-                            echo $row['id']." - OK - Building: " . $row['location'] . " (lat.: " . $building['latitude']
-                            . " long.: " . $building['longitude'] . ")" . PHP_EOL;
+                            echo 'siis: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $building['latitude']
+                                . " long.: " . $building['longitude'] . ")" . PHP_EOL;
                         }
                         break;
                     } else {
                         if (!$quiet) {
-                            echo $row['id']." - ERROR - Building: " . $row['location'] . PHP_EOL;
+                            echo 'siis: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
                         }
                     }
                 }
@@ -265,5 +331,3 @@ foreach ($types as $label => $type) {
         }
     }
 }
-
-?>

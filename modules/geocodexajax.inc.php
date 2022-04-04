@@ -46,6 +46,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
         $address = $LMS->GetAddress($location['address_id']);
         $address['city_name'] = $address['city'];
         $location['street'] = $address['street'];
+        $location['simple_street'] = $address['simple_street_name'];
         $location['house'] = $address['house'];
         $location['flat'] = $address['flat'];
     } elseif (isset($location['city_id'])) {
@@ -57,6 +58,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 			JOIN location_states ls ON ls.id = ld.stateid
 			WHERE lc.id = ?', array($location['city_id']));
         $address['street_id'] = $location['street_id'];
+        $address['country_name'] = 'Polska';
     } else {
         $address = array(
             'city_name' => $location['city'],
@@ -66,7 +68,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
         }
     }
 
-    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,siis'));
+    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,osm,siis'));
     $providers = preg_split('/\s*[,|]\s*/', $providers);
     $providers = array_filter($providers, 'array_provider_filter');
 
@@ -77,12 +79,12 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
     foreach ($providers as $provider) {
         if ($provider == 'google') {
             $location_string = (isset($address['state_name']) && !empty($address['state_name']) ? $address['state_name'] . ', ' : '')
-            . (isset($address['district_name']) && !empty($address['district_name']) ? $address['district_name'] . ', ' : '')
-            . (isset($address['borough_name']) && !empty($address['borough_name']) ? $address['borough_name'] . ', ' : '')
-            . (isset($address['zip']) ? $address['zip'] . ' ' : '') . $address['city_name']
-            . (isset($location['street']) && !empty($location['street']) ? ', ' . $location['street'] : '')
-            . (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
-            . (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
+                . (isset($address['district_name']) && !empty($address['district_name']) ? $address['district_name'] . ', ' : '')
+                . (isset($address['borough_name']) && !empty($address['borough_name']) ? $address['borough_name'] . ', ' : '')
+                . (isset($address['zip']) ? $address['zip'] . ' ' : '') . $address['city_name']
+                . (isset($location['street']) && !empty($location['street']) ? ', ' . $location['street'] : '')
+                . (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
+                . (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
             $geocode = geocode($location_string);
             if (!isset($geocode['status'])) {
                 continue;
@@ -110,6 +112,35 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
             } else {
                 $error = $geocode['status'] . ': ' . $geocode['error'];
             }
+        } elseif ($provider == 'osm') {
+            $params = array(
+                'city' => $address['city_name'],
+            );
+            if (isset($address['country_name']) && !empty($address['country_name'])) {
+                $params['country'] = $address['country_name'];
+            }
+            if (isset($address['state_name']) && !empty($address['state_name'])) {
+                $params['state'] = $address['state_name'];
+            }
+            if (isset($location['street']) && !empty($location['street'])) {
+                $params['street'] = (isset($location['house']) && mb_strlen($location['house'])
+                    ? $location['house'] . ' '
+                    : ''
+                    ) . $location['simple_street'];
+            }
+            if (isset($address['zip'])) {
+                $params['postalcode'] = $address['zip'];
+            }
+            $geocode = osm_geocode($params);
+            if (empty($geocode)) {
+                continue;
+            }
+
+            $found = true;
+            $result->script('
+                $("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
+                $("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
+            ');
         } elseif ($provider == 'siis' && isset($address) && isset($address['city_id'])
             && !empty($address['city_id']) && $DB->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
             $args = array(

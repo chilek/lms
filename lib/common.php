@@ -1457,6 +1457,36 @@ function geocode($location)
     );
 }
 
+function osm_geocode($params)
+{
+    $address = array();
+    foreach ($params as $name => $value) {
+        $address[] = $name . '=' . urlencode($value);
+    }
+    $link = "https://nominatim.openstreetmap.org/search?" . implode('&', $address) . '&format=json&limit=1';
+
+    $context = stream_context_create(array(
+        'http' => array(
+            'header' => array(
+                'User-Agent: PHP/' . PHP_VERSION,
+            ),
+        ),
+    ));
+
+    if (($res = @file_get_contents($link, false, $context)) === false) {
+        return null;
+    }
+
+    $page = json_decode($res, true);
+    $latitude = str_replace(',', '.', $page[0]['lat']);
+    $longitude = str_replace(',', '.', $page[0]['lon']);
+    return array(
+        'latitude' => $latitude,
+        'longitude' => $longitude,
+        'raw-result' => $page,
+    );
+}
+
 function exchangeratesapi_get_currency_value($currency, $date = null)
 {
     $result = file_get_contents('https://api.exchangeratesapi.io/'
