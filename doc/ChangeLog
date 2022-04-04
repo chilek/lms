@@ -121,7 +121,7 @@ version 28-git (????-??-??):
     customer property presentation on invoices [chilan]
   - enhancement: added 'phpui.default_customer_phone_flags' and 'phpui.default_customer_email_flags'
     configuration variable allow to initially check corresponding contact type flags [chilan]
-  - enhancement: 'phpui.gps_coordinate_providers' suppors 'osm' provider; changed default value
+  - enhancement: 'phpui.gps_coordinate_providers' supports 'osm' provider; changed default value
     of mentioned configuration variable to 'google,siis,osm' [chilan]
 
 version 27.0 (2021-08-20):
