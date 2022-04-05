@@ -666,6 +666,13 @@ if (isset($_POST['message'])) {
                 $message['mailfrom'] = array_merge($message['mailfrom'], $reply['cc']);
             }
 
+            if (!empty($reply['replyto'])) {
+                $message['mailfrom'][$reply['replyto']] = array(
+                    'contact' => $reply['replyto'],
+                    'display' => '',
+                    'source' => 'reply-to',
+                );
+            }
 
             if (!empty($message['mailfrom']) && ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
                 $message['mailnotify'] = true;
@@ -769,14 +776,50 @@ if (!is_array($message['ticketid'])) {
     if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
         $customer_mails = !empty($contact['mails']);
         foreach ($message['mailfrom'] as $address) {
+            switch ($address['source']) {
+                case 'carbon-copy':
+                    $contact_name = trans('from message "Copy" header');
+                    break;
+                case 'reply-to':
+                    $contact_name = trans('from message "Reply" header');
+                    break;
+                default:
+                    $contact_name = trans('from message "From" header');
+                    break;
+            }
             $contacts['mails'][$address['contact']] = array(
                 'contact' => $address['contact'],
-                'name' => $address['source'] == 'carbon-copy' ? trans('from message "Copy" header') : trans('from message "From" header'),
+                'name' => $contact_name,
                 'display' => $address['display'],
                 'source' => $address['source'],
                 'checked' => $customer_mails ? 0 : 1,
             );
         }
+    }
+
+    if (isset($message['inreplyto']) && !empty($message['inreplyto'])) {
+        $reply = $LMS->GetMessage($message['inreplyto']);
+        $customer_mails = !empty($contact['mails']);
+
+        if (!empty($reply['cc'])) {
+            foreach ($reply['cc'] as $cc) {
+                $contacts['mails'][$cc['address']] = array(
+                    'contact' => $cc['address'],
+                    'name' => trans('from message "Copy" header'),
+                    'display' => '',
+                    'source' => 'carbon-copy',
+                    'checked' => $customer_mails ? 0 : 1,
+                );
+            }
+        }
+
+        $contacts['mails'][$reply['replyto']] = array(
+            'contact' => $reply['replyto'],
+            'name' => trans('from message "Reply" header'),
+            'display' => '',
+            'source' => 'reply-to',
+            'checked' => $customer_mails ? 0 : 1,
+        );
     }
 
     // collect phone numbers from ticket, message to which you reply and customer mobile phone contacts
