@@ -199,7 +199,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      *
      * @param int $id Customer id
      * @param int $totime Timestamp
-     * @param boolean $expired take only expired liabilities into account
+     * @param boolean|int $expired take only expired liabilities into account
+     *   if int then treat it as grace period
      * @return int Balance
      */
     public function getCustomerBalance($id, $totime = null, $expired = false)
@@ -210,23 +211,44 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $totime = time();
             }
             return $this->db->GetOne(
-                'SELECT SUM(value * cash.currencyvalue) FROM cash
-				LEFT JOIN documents doc ON doc.id = cash.docid
-				LEFT JOIN customers cust ON cust.id = cash.customerid
-				LEFT JOIN divisions ON divisions.id = cust.divisionid
-				WHERE cust.id = ? AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . $totime . ')
-					OR (cash.type = 0 AND cash.time +
-						(CASE cust.paytime WHEN -1
-							THEN
-								(CASE WHEN divisions.inv_paytime IS NULL
-									THEN ' . $deadline . '
-									ELSE divisions.inv_paytime
-								END)
-							ELSE cust.paytime
-						END) * 86400 < ' . $totime . ')))
-						OR (cash.docid IS NOT NULL AND ((doc.type IN (?, ?) AND cash.time < ' . $totime . '
-							OR (doc.type IN (?, ?) AND doc.cdate + (doc.paytime + 0) * 86400 < ' . $totime . ')))))',
-                array($id, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE)
+                'SELECT SUM(value * cash.currencyvalue)
+                FROM cash
+                LEFT JOIN documents doc ON doc.id = cash.docid
+                LEFT JOIN customers cust ON cust.id = cash.customerid
+                LEFT JOIN divisions ON divisions.id = cust.divisionid
+                LEFT JOIN (
+                    SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid
+                    FROM cash
+                    JOIN documents ON documents.id = cash.docid
+                    WHERE cash.customerid = ?
+                        AND documents.type = ?
+                    GROUP BY docid
+                ) tv ON tv.docid = cash.docid
+                WHERE cust.id = ? AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . $totime . ')
+                    OR (cash.type = 0 AND cash.time +
+                        ((CASE cust.paytime WHEN -1
+                            THEN
+                                (CASE WHEN divisions.inv_paytime IS NULL
+                                    THEN ' . $deadline . '
+                                    ELSE divisions.inv_paytime
+                                END)
+                            ELSE cust.paytime
+                        END) + ' . (is_int($expired) ? $expired : '0') . ') * 86400 < ' . $totime . ')))
+                        OR (cash.docid IS NOT NULL AND ((doc.type = ? AND cash.time < ' . $totime . ')
+                            OR (doc.type = ? AND cash.time < ' . $totime . ' AND tv.totalvalue >= 0)
+                            OR (((doc.type = ? AND tv.totalvalue < 0)
+                                OR doc.type IN (?, ?, ?)) AND doc.cdate + (doc.paytime + ' . (is_int($expired) ? $expired : '0') . ') * 86400 < ' . $totime . '))))',
+                array(
+                    $id,
+                    DOC_CNOTE,
+                    $id,
+                    DOC_RECEIPT,
+                    DOC_CNOTE,
+                    DOC_CNOTE,
+                    DOC_INVOICE,
+                    DOC_INVOICE_PRO,
+                    DOC_DNOTE,
+                )
             );
         } else {
             return $this->db->GetOne(
