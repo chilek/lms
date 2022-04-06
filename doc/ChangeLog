@@ -123,6 +123,8 @@ version 28-git (????-??-??):
     configuration variable allow to initially check corresponding contact type flags [chilan]
   - enhancement: 'phpui.gps_coordinate_providers' supports 'osm' provider; changed default value
     of mentioned configuration variable to 'google,siis,osm' [chilan]
+  - improvement: support cashimport mailbox filtering by sender email ('cashimport.sender_email'
+    configuration variable without default value) [chilan]
 
 version 27.0 (2021-08-20):
 
