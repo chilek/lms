@@ -539,16 +539,7 @@
 			</td>
 			<td width="50%" align="right" rowspan="2">
 				{if !ConfigHelper::checkConfig('invoices.hide_expositor')}
-					{trans("Expositor:")}
-					{if $invoice.issuer}
-						{$invoice.issuer|escape}
-					{elseif $invoice.user}
-						{$invoice.user|escape}
-					{elseif $invoice.division_author}
-						{$invoice.division_author|escape}
-					{else}
-						{trans("system")}
-					{/if}
+					{t a=$invoice.expositor}Expositor: <b>$a</b>{/t}
 				{/if}
 			</td>
 		</tr>

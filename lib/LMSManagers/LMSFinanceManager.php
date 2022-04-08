@@ -2670,6 +2670,36 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
                     }
                 }
+
+                $default_author = ConfigHelper::getConfig('invoices.default_author', 'user_issuer,user_name,division_author');
+                $default_author = preg_split('/([\s]+|[\s]*,[\s]*)/', trim($default_author), PREG_SPLIT_NO_EMPTY);
+                $expositor = trans('system');
+                foreach ($default_author as $author) {
+                    switch ($author) {
+                        case 'user_issuer':
+                            if (!empty($result['issuer'])) {
+                                $expositor = $result['issuer'];
+                                break 2;
+                            }
+                            break;
+                        case 'user_name':
+                            if (!empty($result['user'])) {
+                                $expositor = $result['user'];
+                                break 2;
+                            }
+                            break;
+                        case 'division_author':
+                            if (!empty($result['division_author'])) {
+                                $expositor = $result['division_author'];
+                                break 2;
+                            }
+                            break;
+                        default:
+                            $expositor = $author;
+                            break 2;
+                    }
+                }
+                $result['expositor'] = $expositor;
             }
 
             $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');

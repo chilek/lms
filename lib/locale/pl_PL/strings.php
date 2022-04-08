@@ -1016,6 +1016,7 @@ $_LANG['<!rt>expired'] = 'przedawniony';
 $_LANG['expired<!guarantee>'] = 'wygasła';
 $_LANG['Exposed By'] = 'Wystawił';
 $_LANG['Expositor:'] = 'Wystawił:';
+$_LANG['Expositor: <b>$a</b>'] = 'Wystawił: <b>$a</b>';
 $_LANG['fiber'] = 'światłowodowe';
 $_LANG['Fiber<!noun>'] = 'Światłowód';
 $_LANG['Ethernet'] = 'Ethernet';
