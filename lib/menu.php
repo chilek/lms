@@ -24,6 +24,20 @@
  * $Id$
  */
 
+$__ui_lang = substr(Localisation::getCurrentUiLanguage(), 0, 2);
+$software_documentation_url = str_replace(
+    '%lang%',
+    $__ui_lang,
+    LMS::SOFTWARE_DOCUMENTATION_URL
+);
+if (!preg_match('/^https?:\/\//', $software_documentation_url) && !is_dir($software_documentation_url)) {
+    $software_documentation_url = str_replace(
+        '%lang%',
+        'en',
+        LMS::SOFTWARE_DOCUMENTATION_URL
+    );
+}
+
 $menu = array(
         'admin' => array(
             'name' => trans('Administration'),
@@ -886,9 +900,7 @@ $menu = array(
         'documentation' => array(
             'name' => trans('Documentation'),
             'css' => 'lms-ui-icon-documentation',
-            'link' => (is_dir('doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . Localisation::getCurrentUiLanguage())
-                ? 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . Localisation::getCurrentUiLanguage() . DIRECTORY_SEPARATOR
-                : 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR),
+            'link' => $software_documentation_url,
             'tip' => trans('Documentation'),
             'accesskey' => 'h',
             'prio' => 70,

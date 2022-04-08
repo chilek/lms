@@ -32,6 +32,7 @@ class LMS
     const SOFTWARE_NAME = 'LMS';
     const SOFTWARE_VERSION = '28-git';
     const SOFTWARE_URL = 'https://lms.org.pl';
+    const SOFTWARE_DOCUMENTATION_URL = 'doc/html/%lang%';
     const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
