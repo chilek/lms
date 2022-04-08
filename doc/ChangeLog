@@ -125,6 +125,9 @@ version 28-git (????-??-??):
     of mentioned configuration variable to 'google,siis,osm' [chilan]
   - improvement: support cashimport mailbox filtering by sender email ('cashimport.sender_email'
     configuration variable without default value) [chilan]
+  - enhancement: new configuration variable 'invoices.default_author'
+    (default value: 'user_issuer,user_name,division_author') controls order of expositor name
+    determination [chilan]
 
 version 27.0 (2021-08-20):
 
