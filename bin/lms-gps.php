@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,6 +35,7 @@ $parameters = array(
     'update' => 'u',
     'update-netdevices' => 'U',
     'update-netnodes' => 'N',
+    'providers:' => 'p:',
     'sources:' => 's:',
     'debug' => 'd',
     'force' => 'f',
@@ -89,6 +90,7 @@ lms-gps.php
 -u, --update                    update nodes GPS coordinates
 -U, --update-netdevices         update netdevices GPS coordinates
 -N, --update-netnodes           update netnodes GPS coordinates
+-p, --providers=<google,siis>
 -s, --sources=<google,siis>     use Google Maps API and/or SIIS building location database
                                 to determine GPS coordinates (in specified order)
 -d, --debug                     only try to determine GPS coordinates without updating database
@@ -182,17 +184,29 @@ if (isset($options['update'])) {
     $types['Nodes:'] = 'nodes';
 }
 
-$sources = array();
-if (isset($options['sources'])) {
-    $srcs = explode(',', $options['sources']);
-    foreach ($srcs as $source) {
-        if (in_array($source, array('google', 'siis'))) {
-            $sources[$source] = true;
-        }
-    }
+function array_provider_filter($provider)
+{
+    static $all_providers = array(
+        'google' => true,
+        'siis' => true,
+        'osm' => true,
+    );
+    return isset($all_providers[$provider]);
 }
-if (empty($sources)) {
-    $sources['google'] = true;
+
+$providers = array();
+if (isset($options['providers'])) {
+    $providers = explode(',', $options['providers']);
+} elseif (isset($options['sources'])) {
+    $providers = explode(',', $options['sources']);
+}
+if (empty($providers)) {
+    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,siis'));
+    $providers = preg_split('/([\s]+|[\s]*[,|][\s]*)/', $providers, -1, PREG_SPLIT_NO_EMPTY);
+}
+$providers = array_filter($providers, 'array_provider_filter');
+if (empty($providers)) {
+    $providers = array('google');
 }
 
 $google_api_key = ConfigHelper::getConfig(
@@ -208,29 +222,52 @@ foreach ($types as $label => $type) {
         echo $label . PHP_EOL;
     }
     $locations = $DB->GetAll(
-        "SELECT t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
+        "SELECT
+            t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
             ld.name AS distict_name, lb.name AS borough_name,
             va.city AS city_name,
             va.zip AS zip,
             c.name AS country_name,
             " . $DB->Concat('(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . " AS simple_street_name
         FROM " . $type . " t
-        LEFT JOIN vaddresses va ON va.id = t.address_id
+        JOIN (
+            SELECT n.id,
+                COALESCE(n.address_id, MIN(ca2.address_id)) AS address_id
+            FROM " . $type . " n
+            LEFT JOIN (
+                SELECT n2.id,
+                    MAX(ca.type) AS address_type
+                FROM " . $type . " n2
+                JOIN customer_addresses ca ON ca.customer_id = n2.ownerid
+                WHERE ca.type IN ?
+                    AND n2.address_id IS NULL
+                GROUP BY n2.id
+            ) at ON n.address_id IS NULL AND at.id = n.id
+            LEFT JOIN customer_addresses ca2 ON ca2.customer_id = n.ownerid AND ca2.type = at.address_type
+            WHERE n.address_id IS NOT NULL
+                OR ca2.address_id IS NOT NULL
+            GROUP BY n.id
+        ) t2 ON t2.id = t.id
+        LEFT JOIN vaddresses va ON va.id = t2.address_id
         LEFT JOIN location_cities lc ON lc.id = va.city_id
         LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
         LEFT JOIN location_districts ld ON ld.id = lb.districtid
         LEFT JOIN location_states ls ON ls.id = ld.stateid
         LEFT JOIN countries c ON c.id = va.country_id
         LEFT JOIN location_streets lst ON lst.id = va.street_id
-        WHERE location IS NOT NULL " . (isset($options['force']) ? '' : 'AND longitude IS NULL AND latitude IS NULL') . "
-            AND location_house IS NOT NULL
-            AND location <> ''
-            AND location_house <> ''"
+        WHERE va.location IS NOT NULL "
+            . (isset($options['force']) ? '' : 'AND t.longitude IS NULL AND t.latitude IS NULL') . "
+            AND va.location_house IS NOT NULL
+            AND va.location <> ''
+            AND va.location_house <> ''",
+        array(
+            array(BILLING_ADDRESS, DEFAULT_LOCATION_ADDRESS),
+        )
     );
     if (!empty($locations)) {
         foreach ($locations as $row) {
-            foreach ($sources as $source => $true) {
-                if ($source == 'google') {
+            foreach ($providers as $provider) {
+                if ($provider == 'google') {
                     $res = geocode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
                         . $row['location'] . " Poland");
                     if (($res['status'] == "OK") && ($res['accuracy'] == "ROOFTOP")) {
@@ -261,7 +298,7 @@ foreach ($types as $label => $type) {
                     } else {
                         usleep(50000);
                     }
-                } elseif ($source == 'osm') {
+                } elseif ($provider == 'osm') {
                     $params = array(
                         'city' => $row['city_name'],
                     );
@@ -303,7 +340,7 @@ foreach ($types as $label => $type) {
                     }
 
                     sleep(1);
-                } elseif ($source == 'siis' && !empty($row['state_name'])) {
+                } elseif ($provider == 'siis' && !empty($row['state_name'])) {
                     if (($building = $lc->buildingExists($row['city_id'], empty($row['street_id']) ? 'null' : $row['street_id'], $row['house']))
                     && !empty($building['longitude']) && !empty($building['latitude'])) {
                         if (!$debug) {
