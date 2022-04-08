@@ -228,7 +228,7 @@ foreach ($types as $label => $type) {
             va.city AS city_name,
             va.zip AS zip,
             c.name AS country_name,
-            " . $DB->Concat('(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . " AS simple_street_name
+            " . $DB->Concat('(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $DB->Concat('lst.name2', "' '", 'lst.name') . ' END)') . " AS simple_street_name
         FROM " . $type . " t
         JOIN (
             SELECT n.id,
