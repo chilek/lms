@@ -128,6 +128,10 @@ version 28-git (????-??-??):
   - enhancement: new configuration variable 'invoices.default_author'
     (default value: 'user_issuer,user_name,division_author') controls order of expositor name
     determination [chilan]
+  - improvement: lms-gps.php script uses 'phpui.gps_coordinate_providers' configuration
+    variable if --sources nor --providers parameter was not specified during launch [chilan]
+  - improvement: lms-gps.php script can use implicit network resource address locations to determine
+    gps coordinates [chilan]
 
 version 27.0 (2021-08-20):
 
