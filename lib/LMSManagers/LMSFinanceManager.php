@@ -2388,7 +2388,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				(CASE WHEN d.flags & ? > 0 THEN 1 ELSE 0 END) AS netflag,
 				d.flags, d.numberplanid,
 				d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
-				n.template,
+				u.name AS user, u.issuer, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid,
@@ -2401,6 +2401,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.currency, d.currencyvalue, d.memo
 				FROM documents d
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				LEFT JOIN vusers u ON u.id = d.userid
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)',
                 array(
                     DOC_FLAG_SPLIT_PAYMENT,
@@ -2649,30 +2650,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
                     $result['customerbalancelistlimit'] = ConfigHelper::getConfig('invoices.print_balance_history_limit');
                 }
-            }
-
-            $result['paytypename'] = $PAYTYPES[$result['paytype']];
-
-            // for backward compat.
-            $result['totalg'] = round(($result['value'] - floor($result['value'])) * 100);
-            $result['year'] = date('Y', $result['cdate']);
-            $result['month'] = date('m', $result['cdate']);
-            $result['pesel'] = $result['ssn'];
-            $result['nip'] = $result['ten'];
-
-            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL) {
-                if ($result['post_name'] || $result['post_address']) {
-                    $result['serviceaddr'] = $result['post_name'];
-                    if ($result['post_address']) {
-                        $result['serviceaddr'] .= "\n" . $result['post_address'];
-                    }
-                    if ($result['post_zip'] && $result['post_city']) {
-                        $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
-                    }
-                }
 
                 $default_author = ConfigHelper::getConfig('invoices.default_author', 'user_issuer,user_name,division_author');
-                $default_author = preg_split('/([\s]+|[\s]*,[\s]*)/', trim($default_author), PREG_SPLIT_NO_EMPTY);
+                $default_author = preg_split('/([\s]+|[\s]*,[\s]*)/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
                 $expositor = trans('system');
                 foreach ($default_author as $author) {
                     switch ($author) {
@@ -2699,7 +2679,29 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             break 2;
                     }
                 }
+
                 $result['expositor'] = $expositor;
+            }
+
+            $result['paytypename'] = $PAYTYPES[$result['paytype']];
+
+            // for backward compat.
+            $result['totalg'] = round(($result['value'] - floor($result['value'])) * 100);
+            $result['year'] = date('Y', $result['cdate']);
+            $result['month'] = date('m', $result['cdate']);
+            $result['pesel'] = $result['ssn'];
+            $result['nip'] = $result['ten'];
+
+            if ($detail_level == self::INVOICE_CONTENT_DETAIL_ALL) {
+                if ($result['post_name'] || $result['post_address']) {
+                    $result['serviceaddr'] = $result['post_name'];
+                    if ($result['post_address']) {
+                        $result['serviceaddr'] .= "\n" . $result['post_address'];
+                    }
+                    if ($result['post_zip'] && $result['post_city']) {
+                        $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
+                    }
+                }
             }
 
             $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
