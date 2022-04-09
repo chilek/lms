@@ -112,7 +112,7 @@ switch ($mode) {
 				LEFT JOIN vaddresses va ON va.id = ca.address_id
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
 				WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'c.id = ' . $search : '1=0') : '1=0')
-                    . (empty($properties) || isset($properties['name']) ? " OR LOWER(" . $DB->Concat('lastname', "' '", 'c.name') . ") ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['name']) ? " OR LOWER(" . $DB->Concat('lastname', "' '", 'c.name') . ") ?LIKE? LOWER($sql_search) OR LOWER(" . $DB->Concat('c.name', "' '", 'lastname') . ") ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['address']) ? " OR LOWER(full_address) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['post_name']) ? " OR LOWER(post_name) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['post_address']) ? " OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)" : '')
