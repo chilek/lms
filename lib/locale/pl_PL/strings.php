@@ -3581,6 +3581,7 @@ $_LANG['The password should contain at least one capital letter, one lower case 
 $_LANG['reports'] = 'raporty';
 $_LANG['Adjust the print'] = 'Dostosuj wydruk';
 $_LANG['hide customer ID'] = 'ukryj ID klienta';
+$_LANG['hide customer SSN'] = 'ukryj PESEL klienta';
 $_LANG['only summary'] = 'tylko podsumowanie';
 
 $_LANG['Active from:'] = 'Aktywne od:';

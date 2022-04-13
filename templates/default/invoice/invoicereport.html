@@ -68,8 +68,15 @@
 			{$invoice.pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			<B>{$invoice.custname}</B> {if !isset($printcustomerid)}({$invoice.customerid|string_format:"%04d"}){/if}{if $invoice.ten}, {$invoice.ten}{/if}<BR>
+			{strip}
+			<strong>{$invoice.custname}</strong>
+			{if !isset($printcustomerid)}&nbsp;(#{$invoice.customerid}){/if}
+			{if $invoice.ctype == $smarty.const.CTYPES_COMPANY || !isset(printcustomerssn)}
+				{if $invoice.ten}, {$invoice.ten}{/if}
+			{/if}
+			<br>
 			{$invoice.custaddress}
+			{/strip}
 		</TD>
 		<TD ALIGN="RIGHT">
 			{($invoice.brutto * $invoice.currencyvalue)|string_format:"%01.2f"}

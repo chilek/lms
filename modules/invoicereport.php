@@ -199,6 +199,7 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
             a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
             c.pin AS customerpin, c.divisionid AS current_divisionid,
             c.street, c.building, c.apartment,
+            c.type AS ctype,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
             (CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
@@ -257,6 +258,7 @@ if ($documents) {
         $invoicelist[$idx]['custname'] = $document['name'];
         $invoicelist[$idx]['custaddress'] = (empty($document['zip']) ? '' : $document['zip'] . ' ') . $document['city'] . ', ' . $document['address'];
         $invoicelist[$idx]['ten'] = ($document['ten'] ? trans('TEN') . ' ' . $document['ten'] : ($document['ssn'] ? trans('SSN') . ' ' . $document['ssn'] : ''));
+        $invoicelist[$idx]['ctype'] = $document['ctype'];
         $invoicelist[$idx]['number'] = docnumber(array(
             'number' => $document['number'],
             'template' => $document['template'],
@@ -410,25 +412,26 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('totals', $totals);
     $SMARTY->assign('pagescount', count($pages));
     $SMARTY->assign('reccount', $reccount);
+
+    $SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
+    $SMARTY->assign('printcustomerssn', $_POST['printcustomerssn']);
+    $SMARTY->assign('printonlysummary', $_POST['printonlysummary']);
+
     if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-        $SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
-        $SMARTY->assign('printonlysummary', $_POST['printonlysummary']);
         $output = $SMARTY->fetch('invoice/invoicereport-ext.html');
         html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
     } else {
-        $SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
-        $SMARTY->assign('printonlysummary', $_POST['printonlysummary']);
         $SMARTY->display('invoice/invoicereport-ext.html');
     }
 } else {
+    $SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
+    $SMARTY->assign('printcustomerssn', $_POST['printcustomerssn']);
+    $SMARTY->assign('printonlysummary', $_POST['printonlysummary']);
+
     if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-        $SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
-        $SMARTY->assign('printonlysummary', $_POST['printonlysummary']);
         $output = $SMARTY->fetch('invoice/invoicereport.html');
         html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
     } else {
-        $SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
-        $SMARTY->assign('printonlysummary', $_POST['printonlysummary']);
         $SMARTY->display('invoice/invoicereport.html');
     }
 }

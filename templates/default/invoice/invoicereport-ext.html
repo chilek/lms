@@ -75,8 +75,15 @@
 			{$invoicelist[invoicelist].pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			<B>{$invoicelist[invoicelist].custname}</B> {if !isset($printcustomerid)}({$invoicelist[invoicelist].customerid|string_format:"%04d"}){/if}{if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}<BR>
+			{strip}
+			<strong>{$invoicelist[invoicelist].custname}</strong>
+			{if !isset($printcustomerid)}&nbsp;(#{$invoicelist[invoicelist].customerid}){/if}
+			{if $invoicelist[invoicelist].ctype == $smarty.const.CTYPES_COMPANY || !isset(printcustomerssn)}
+				{if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}
+			{/if}
+			<br>
 			{$invoicelist[invoicelist].custaddress}
+			{/strip}
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach $taxes as $tax}
