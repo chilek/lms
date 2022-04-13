@@ -81,10 +81,6 @@
 										{trans("and")}
 									</label>
 									<label>
-										<input type="checkbox" name="printcustomerssn" value="1">
-										{trans("hide customer SSN")}
-									</label>
-									<label>
 										<INPUT class="radio" type="radio" value="OR" name="sk"{if $sk=='OR'} checked{/if}>
 										{trans("or")}
 									</label>
@@ -708,12 +704,17 @@
 									<td colspan="2" class="nobr">
 										<label>
 											<input type="checkbox" name="printcustomerid" value="1"
-												form="invoicereport" >
+												form="invoicereport">
 											{trans("hide customer ID")}
 										</label>
 										<label>
+											<input type="checkbox" name="printcustomerssn" value="1"
+												form="invoicereport">
+											{trans("hide customer SSN")}
+										</label>
+										<label>
 											<input type="checkbox" name="printonlysummary" value="1"
-												form="invoicereport" >
+												form="invoicereport">
 											{trans("only summary")}
 										</label>
 									</td>
