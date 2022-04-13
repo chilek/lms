@@ -64,7 +64,7 @@ services:
 #  - echo "extension = snmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
-  - printf "\n" | pecl install imagick
+  - yes | pecl install imagick
   - composer install
 
 before_script:
