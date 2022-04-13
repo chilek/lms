@@ -132,6 +132,7 @@ version 28-git (????-??-??):
     variable if --sources nor --providers parameter was not specified during launch [chilan]
   - improvement: lms-gps.php script can use implicit network resource address locations to determine
     gps coordinates [chilan]
+  - improvement: allow to optionally hide customer SSN on invoice report [chilan]
 
 version 27.0 (2021-08-20):
 
