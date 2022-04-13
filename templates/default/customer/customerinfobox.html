@@ -87,6 +87,17 @@
 											<strong>{$_CSTATUSES[$customerinfo.status].singularlabel}</strong>
 										</td>
 									</tr>
+									{if !empty($customerinfo.flags)}
+									<tr>
+										<td>
+											{icon name="legal-personality"}
+										</td>
+										<td>
+											{$first = true}
+											{foreach $_CUSTOMERFLAGS as $cflag => $flag}{if isset($customerinfo.flags[$cflag])}{if !$first}, {/if}<span title="{$flag.tip}">{trans($flag.label)}</span>{$first = false}{/if}{/foreach}
+										</td>
+									</tr>
+									{/if}
 									{if $customerinfo.division}
 										<tr>
 											<td>
@@ -111,16 +122,66 @@
 											{/if}
 										</td>
 									</tr>
-									{if !empty($customerinfo.flags)}
-										<tr>
-											<td>
-												{icon name="legal-personality"}
-											</td>
-											<td>
-												{$first = true}
-												{foreach $_CUSTOMERFLAGS as $cflag => $flag}{if isset($customerinfo.flags[$cflag])}{if !$first}, {/if}<span title="{$flag.tip}">{trans($flag.label)}</span>{$first = false}{/if}{/foreach}
-											</tD>
-										</tr>
+									{if $customerinfo.icn != ""}
+									<tr>
+										<td class="valign-top">
+											{icon name="user-id-number"}
+										</td>
+    									<td>
+											{trans("Identity document")}
+											<br>
+											{trans($_IDENTITY_TYPES[$customerinfo.ict])}
+											{$customerinfo.icn|escape}
+											{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
+											{if $customerinfo.icexpires !== ''}
+												{if $customerinfo.icexpires > 0}
+													{textformat assign="icexpires"}
+														{strip}
+															<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
+																{$customerinfo.icexpires|date_format:"%Y/%m/%d"}
+															<span>
+														{/strip}
+													{/textformat}
+													({t a=$icexpires}expires $a{/t})
+												{elseif $customerinfo.icexpires === '0'}
+													({trans("never expires")})
+												{/if}
+											{/if}
+										</td>
+									</tr>
+									{/if}
+									{if $customerinfo.ssn != ""}
+									<tr>
+										<td>
+											{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
+										</td>
+										<td>
+											{trans("SSN")}
+											{$customerinfo.ssn|escape}
+										</td>
+									</tr>
+									{/if}
+									{if $customerinfo.ten != ""}
+									<tr>
+										<td>
+											{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ten}
+										</td>
+										<td>
+											{trans("TEN")}
+											{$customerinfo.ten}
+										</td>
+									</tr>
+									{/if}
+									{if $customerinfo.regon != ""}
+									<tr>
+										<td>
+											{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.regon}
+										</td>
+										<td>
+											{trans("REGON")}
+											{$customerinfo.regon}
+										</td>
+									</tr>
 									{/if}
 
 									{foreach $customerinfo.addresses as $v}
@@ -246,65 +307,7 @@
 											</td>
 										</tr>
 									{/if}
-									{if $customerinfo.icn != ""}
-										<tr>
-											<td class="valign-top">
-												{icon name="user-id-number"}
-											</td>
-											<td>
-												{trans("Identity document")}
-												<br>
-												{trans($_IDENTITY_TYPES[$customerinfo.ict])}
-												{$customerinfo.icn|escape}
-												{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
-												{if $customerinfo.icexpires !== ''}
-													{if $customerinfo.icexpires > 0}
-														{textformat assign="icexpires"}{strip}
-															<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
-																{$customerinfo.icexpires|date_format:"%Y/%m/%d"}
-															<span>
-														{/strip}{/textformat}
-														({t a=$icexpires}expires $a{/t})
-													{elseif $customerinfo.icexpires === '0'}
-														({trans("never expires")})
-													{/if}
-												{/if}
-											</td>
-										</tr>
-									{/if}
-									{if $customerinfo.ssn != ""}
-										<tr>
-											<td>
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
-											</td>
-											<td>
-												{trans("SSN")}
-												{$customerinfo.ssn|escape}
-											</td>
-										</tr>
-									{/if}
-									{if $customerinfo.ten != ""}
-										<tr>
-											<td>
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ten}
-											</td>
-											<td>
-												{trans("TEN")}
-												{$customerinfo.ten}
-											</td>
-										</tr>
-									{/if}
-									{if $customerinfo.regon != ""}
-										<tr>
-											<td>
-												{icon name="user-id-number" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.regon}
-											</td>
-											<td>
-												{trans("REGON")}
-												{$customerinfo.regon}
-											</td>
-										</tr>
-									{/if}
+
 									{if $customerinfo.rbename != ""}
 										<tr>
 											<td class="valign-top">
