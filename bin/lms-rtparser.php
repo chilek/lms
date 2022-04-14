@@ -228,6 +228,7 @@ $rtparser_password = ConfigHelper::getConfig(
 );
 $rtparser_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.imap_use_seen_flag', true));
 $rtparser_folder = ConfigHelper::getConfig('rt.imap_folder', 'INBOX');
+$rtparser_move_to_trashbin = ConfigHelper::getConfig('rt.move_to_trashbin', true);
 
 $url_props = parse_url($lms_url);
 
@@ -935,6 +936,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             imap_setflag_full($ih, $postid, "\\Seen");
         } else {
             imap_clearflag_full($ih, $postid, "\\Seen");
+        }
+
+        if ($rtparser_move_to_trashbin) {
+            imap_mail_move($ih, $postid, 'Trash');
+            imap_expunge($ih);
         }
 
         $postid = next($posts);
