@@ -455,7 +455,7 @@ if (!empty($tariff_tags)) {
         }
         $tariff_tag_ORs[] = '('
             . (empty($tariff_tag_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM tarifftags
-                JOIN tariffrassignments ON tariffassignments.tarifftagid = tarifftags.id
+                JOIN tariffassignments ON tariffassignments.tarifftagid = tarifftags.id
                 WHERE tariffassignments.tariffid = t.id
                 AND UPPER(tarifftags.name) IN ('" . implode("', '", $tariff_tag_ANDs_regular) . "')
                 HAVING COUNT(*) = " . count($tariff_tag_ANDs_regular) . ')')
