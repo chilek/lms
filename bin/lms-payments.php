@@ -201,6 +201,7 @@ $sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
 $paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
 $comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attribute subscription for period %period");
 $backward_comment = ConfigHelper::getConfig('payments.backward_comment', $comment);
+$backward_on_the_last_day = ConfigHelper::getConfig('payments.backward_on_the_last_day');
 $s_comment = ConfigHelper::getConfig('payments.settlement_comment', $comment);
 $s_backward_comment = ConfigHelper::getConfig('payments.settlement_backward_comment', $s_comment);
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
@@ -289,14 +290,15 @@ $forward_aligned_periods = array(
     DISPOSABLE => $forward_periods[DISPOSABLE],
 );
 
+$d = $dom + ($backward_on_the_last_day ? 1 : 0);
 $backward_periods = array(
-    DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, $dom, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, $dom, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year))
+    DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $d-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $d, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, $d, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, $d, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $d, $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year))
 );
 
 $last_sunday = strtotime('last Sunday '.date("Y-m-d"));
@@ -1795,9 +1797,11 @@ foreach ($assigns as $assign) {
         if ($assign['settlement'] && $assign['datefrom']) {
             $alldays = 1;
 
-            $diffdays = sprintf("%d", round(($today - $assign['datefrom']) / 86400));
-            $period_start = mktime(0, 0, 0, $month, $dom - $diffdays, $year);
-            $period_end = mktime(0, 0, 0, $month, $dom - 1, $year);
+            $backward_correction = $backward_on_the_last_day ? 1 : 0;
+            $backward_correction = empty($assign['backwardperiod']) ? 0 : $backward_correction;
+            $diffdays = sprintf("%d", round(($today - $assign['datefrom']) / 86400)) + $backward_correction;
+            $period_start = mktime(0, 0, 0, $month, $dom - $diffdays + $backward_correction, $year);
+            $period_end = mktime(0, 0, 0, $month, $dom - 1 + $backward_correction, $year);
             $period = strftime($date_format, $period_start) . " - " . strftime($date_format, $period_end);
 
             switch ($assign['period']) {
