@@ -337,7 +337,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         } else {
             imap_clearflag_full($ih, $postid, "\\Seen");
         }
-
     }
 
     if (!empty($buffer)) {
@@ -934,7 +933,6 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     }
 
     if ($postid !== false && $postid !== null) {
-
         if (strpos($rtparser_handled_mail_post_action, 'seen') !== false) {
             imap_setflag_full($ih, $postid, "\\Seen");
         }
