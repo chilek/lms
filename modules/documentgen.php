@@ -210,6 +210,10 @@ if (isset($_POST['document'])) {
         if ($document['templ']) {
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+
+            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+                $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+            }
         }
 
         foreach ($customerlist as $idx => $gencust) {
@@ -399,6 +403,10 @@ if (isset($_POST['document'])) {
 
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+                $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+            }
+
             // set some variables
             $SMARTY->assign('document', $document);
 
