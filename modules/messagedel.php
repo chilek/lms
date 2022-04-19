@@ -29,19 +29,60 @@ if (isset($_GET['id'])) {
     if ($id) {
         $LMS->DeleteFileContainers('messageid', $id);
         $DB->BeginTrans();
-        $DB->Execute('DELETE FROM messageitems WHERE messageid = ?', array($id));
-        $DB->Execute('DELETE FROM messages WHERE id = ?', array($id));
+        if (isset($_GET['customerid'])) {
+            $DB->Execute(
+                'DELETE FROM messageitems
+                WHERE messageid = ?
+                    AND customerid = ?',
+                array(
+                    $id,
+                    $_GET['customerid'],
+                )
+            );
+        } else {
+            $DB->Execute('DELETE FROM messageitems WHERE messageid = ?', array($id));
+        }
+        $DB->Execute(
+            'DELETE FROM messages
+            WHERE id = ?
+                AND NOT EXISTS (SELECT 1 FROM messageitems i WHERE i.messageid = messages.id)',
+            array($id)
+        );
         $DB->CommitTrans();
     }
 } elseif (isset($_POST['marks'])) {
-    $ids = implode(',', Utils::filterIntegers($_POST['marks']));
+    $ids = Utils::filterIntegers($_POST['marks']);
     if (!empty($ids)) {
         foreach ($_POST['marks'] as $mkey => $mark) {
             $LMS->DeleteFileContainers('messageid', $mkey);
         }
         $DB->BeginTrans();
-        $DB->Execute('DELETE FROM messageitems WHERE messageid IN (' . $ids . ')');
-        $DB->Execute('DELETE FROM messages WHERE id IN (' . $ids . ')');
+        if (isset($_GET['customerid'])) {
+            $DB->Execute(
+                'DELETE FROM messageitems
+                WHERE messageid IN ?
+                    AND customerid = ?',
+                array(
+                    $ids,
+                    $_GET['customerid'],
+                )
+            );
+        } else {
+            $DB->Execute(
+                'DELETE FROM messageitems WHERE messageid IN ?',
+                array(
+                    $ids,
+                )
+            );
+        }
+        $DB->Execute(
+            'DELETE FROM messages
+            WHERE id IN ?
+                AND NOT EXISTS (SELECT 1 FROM messageitems i WHERE i.messageid = messages.id)',
+            array(
+                $ids,
+            )
+        );
         $DB->CommitTrans();
     }
 }
