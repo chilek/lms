@@ -133,6 +133,8 @@ version 28-git (????-??-??):
   - improvement: lms-gps.php script can use implicit network resource address locations to determine
     gps coordinates [chilan]
   - improvement: allow to optionally hide customer SSN on invoice report [chilan]
+  - enhancement: 'vhosts' property in document template definition ('engine' variable) allows
+    to overwrite 'engine' properites basing on http vhost name [chilan]
 
 version 27.0 (2021-08-20):
 
