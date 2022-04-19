@@ -227,8 +227,9 @@ $rtparser_password = ConfigHelper::getConfig(
     isset($smtp_options['pass']) ? $smtp_options['pass'] : ConfigHelper::GetConfig('mail.smtp_password')
 );
 $rtparser_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.imap_use_seen_flag', true));
+$rtparser_handled_mail_post_action = ConfigHelper::getConfig('rt.rtparser_handled_mail_post_action', 'seen, delete, expunge');
+
 $rtparser_folder = ConfigHelper::getConfig('rt.imap_folder', 'INBOX');
-$rtparser_move_to_trashbin = ConfigHelper::getConfig('rt.move_to_trashbin', true);
 
 $url_props = parse_url($lms_url);
 
@@ -336,6 +337,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         } else {
             imap_clearflag_full($ih, $postid, "\\Seen");
         }
+
     }
 
     if (!empty($buffer)) {
@@ -932,14 +934,16 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     }
 
     if ($postid !== false && $postid !== null) {
-        if ($rtparser_use_seen_flag) {
+
+        if (strpos($rtparser_handled_mail_post_action, 'seen') !== false) {
             imap_setflag_full($ih, $postid, "\\Seen");
-        } else {
-            imap_clearflag_full($ih, $postid, "\\Seen");
         }
 
-        if ($rtparser_move_to_trashbin) {
-            imap_mail_move($ih, $postid, 'Trash');
+        if (strpos($rtparser_handled_mail_post_action, 'delete') !== false) {
+            imap_setflag_full($ih, $postid, "\\Deleted");
+        }
+
+        if (strpos($rtparser_handled_mail_post_action, 'expunge') !== false) {
             imap_expunge($ih);
         }
 
