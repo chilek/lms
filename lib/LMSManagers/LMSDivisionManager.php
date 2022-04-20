@@ -66,7 +66,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         extract($params);
 
-        if ((isset($order) && is_null($order)) || !isset($order)) {
+        if (!isset($order) || empty($order)) {
             $order = 'shortname,asc';
         }
 
