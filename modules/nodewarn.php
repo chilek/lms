@@ -149,7 +149,7 @@ if ($backid && $LMS->NodeExists($backid)) {
         header('Location: ?m=nodelistshort&id='.$LMS->GetNodeOwner($backid));
         die;
     } else {
-        $SESSION->redirect('?' . $SESSION->remove() . '#' . $backid);
+        $SESSION->redirect('?' . $SESSION->remove_history_entry() . '#' . $backid);
     }
 }
 
