@@ -3999,11 +3999,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $from = $from ? $from : mktime(0, 0, 0);
         $to = $to ? $to : mktime(23, 59, 59);
 
+        $default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate');
+
         return $this->db->GetAllByKey(
             'SELECT id, value, label, taxed FROM taxes
             WHERE (validfrom = 0 OR validfrom <= ?)
             AND (validto = 0 OR validto >= ?)'
-            . ($default ? ' AND value = ' . ConfigHelper::getConfig('phpui.default_taxrate') : '' )
+            . ($default && isset($default_taxrate) ? ' AND value = ' . $default_taxrate : '')
             . ' ORDER BY value',
             'id',
             array($from, $to)
