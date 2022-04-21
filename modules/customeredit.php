@@ -217,7 +217,7 @@ if (!isset($_POST['xjxfun'])) {
                 }
             }
 
-            if ($customerdata['ten'] != '') {
+            if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->GetCustomerTen($_GET['id'])) {
                 if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
                     $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                     $tenwarning = 1;
@@ -247,7 +247,7 @@ if (!isset($_POST['xjxfun'])) {
                 }
             }
 
-            if ($customerdata['ssn'] != '') {
+            if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
                 if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
                     $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
                     $ssnwarning = 1;

@@ -2941,6 +2941,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $this->db->GetOne('SELECT pin FROM customers WHERE id = ?', array($id));
     }
 
+    public function getCustomerTen($id)
+    {
+        return $this->db->GetOne('SELECT ten FROM customers WHERE id = ?', array($id));
+    }
+
+    public function getCustomerSsn($id)
+    {
+        return $this->db->GetOne('SELECT ssn FROM customers WHERE id = ?', array($id));
+    }
+
     public function changeCustomerType($id, $type)
     {
         $this->db->Execute(
