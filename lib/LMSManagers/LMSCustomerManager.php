@@ -2192,7 +2192,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         // Remove customer addresses
         $addr_ids = $this->db->GetCol('SELECT address_id FROM customer_addresses WHERE customer_id = ?', array($id));
-        $this->db->Execute('DELETE FROM addresses WHERE id in (' . implode($addr_ids, ',') . ')');
+        $this->db->Execute(
+            'DELETE FROM addresses WHERE id IN ?',
+            array($addr_ids)
+        );
 
         $this->deleteCustomerHelper($id);
 
