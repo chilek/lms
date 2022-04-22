@@ -44,6 +44,7 @@ class LMSSmartyPlugins
             'visible' => true,
             'disabled' => false,
             'clipboard' => null,
+            'data_url' => null,
         );
 
         extract($defaults);
@@ -100,6 +101,7 @@ class LMSSmartyPlugins
             . ($tip ? ' title="' . $tip . '" data-title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')
+            . ($data_url ? ' data-url="' . $data_url . '"' : '')
             . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
             . $other_attributes
             . ($visible ? '' : ' style="display: none;"')
