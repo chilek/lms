@@ -67,7 +67,7 @@ install:
   - composer install
 
 before_script:
-  - pear install pecl/mailparse
+  - yes | pecl install mailparse
   - psql -c 'create database lms;' -U postgres
   - psql -U postgres -f doc/lms.pgsql
   - mysql -e 'CREATE DATABASE lms;'
