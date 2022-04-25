@@ -223,7 +223,6 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             foreach ($userlist as &$row) {
                 if ($row['id'] == Auth::GetCurrentUser()) {
                     $row['lastlogindate'] = $this->auth->last;
-                    $row['lastlogindate'] = $this->auth->last;
                     $row['lastloginip'] = $this->auth->lastip;
                 }
 
