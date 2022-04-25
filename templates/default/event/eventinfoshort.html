@@ -261,8 +261,8 @@
                 {trans("Users")}
             </TD>
             <TD class="nobr">
-                {foreach $event.userlist as $idx => $rname}
-                    <a href="?m=userinfo&id={$idx}">{$rname|escape}</a><br>
+                {foreach $event.userlist as $userid => $user}
+                    <a href="?m=userinfo&id={$userid}">{$user.rname|escape}</a><br>
                 {/foreach}
             </TD>
         </TR>

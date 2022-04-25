@@ -275,10 +275,10 @@
 					<strong>{trans("Users")}</strong>
 				</td>
 				<td class="nobr">
-					{foreach $event.userlist as $userid}
-						<a href="?m=userinfo&id={$userid}">{$userlist[$userid].rname|escape}</a>
-						{if !$userid@last}
-							<BR>
+					{foreach $event.userlist as $userid => $user}
+						<a href="?m=userinfo&id={$userid}">{$user.rname|escape}</a>
+						{if !$user@last}
+							<br>
 						{/if}
 					{/foreach}
 				</td>

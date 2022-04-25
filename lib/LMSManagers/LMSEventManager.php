@@ -271,10 +271,14 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $event['helpdesk'] = !empty($event['ticketid']);
 
-        $event['userlist'] = $this->db->GetCol('SELECT rname
-			FROM vusers, eventassignments
-			WHERE vusers.id = userid
-			AND eventid = ?', array($id));
+        $event['userlist'] = $this->db->GetAllByKey(
+            'SELECT u.id, u.rname, u.name, u.login
+            FROM vusers u
+            JOIN eventassignments a ON a.userid = u.id
+            WHERE a.eventid = ?',
+            'id',
+            array($id)
+        );
         if (empty($event['userlist'])) {
             $event['userlist'] = array();
         }

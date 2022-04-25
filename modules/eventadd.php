@@ -416,6 +416,9 @@ if (isset($_POST['event'])) {
     if (isset($_GET['id']) && intval($_GET['id'])) {
         // new event initialization during existing event clone
         $event = $LMS->GetEvent($_GET['id']);
+        if (!empty($event['userlist'])) {
+            $event['userlist'] = array_keys($event['userlist']);
+        }
         if (!empty($event['ticketid'])) {
             $event['helpdesk'] = 'assign';
             $eventticketid = $event['ticketid'];
