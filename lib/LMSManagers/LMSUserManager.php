@@ -204,35 +204,20 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
-        if (isset($superuser)) {
-            $userlist = $this->db->GetAllByKey(
-                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-                accessfrom, accessto, rname, twofactorauth
-            FROM vallusers
-            WHERE deleted = 0'
-                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
-                    FROM userdivisions
-                    WHERE divisionid IN (' . $divisions . ')
-                    )' : '') .
-                ' ORDER BY login ASC',
-                'id'
-            );
-        } else {
-            $userlist = $this->db->GetAllByKey(
-                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-                    accessfrom, accessto, rname, twofactorauth
-                FROM vusers
-                WHERE deleted = 0'
-                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
-                        FROM userdivisions
-                        WHERE divisionid IN (' . $divisions . ')
-                        )' : '') .
-                ' ORDER BY login ASC',
-                'id'
-            );
-        }
+        $userlist = $this->db->GetAllByKey(
+            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+            accessfrom, accessto, rname, twofactorauth'
+            . (isset($superuser) ? ' FROM vallusers' : ' FROM vusers')
+            . ' WHERE deleted = 0'
+            . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
+            . (isset($divisions) && !empty($divisions) ? ' AND id IN 
+                (SELECT userid
+                FROM userdivisions
+                WHERE divisionid IN (' . $divisions . ')
+                )' : '')
+            . ' ORDER BY login ASC',
+            'id'
+        );
 
         if ($userlist) {
             foreach ($userlist as &$row) {
@@ -240,32 +225,12 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                     $row['lastlogindate'] = $this->auth->last;
                     $row['lastlogindate'] = $this->auth->last;
                     $row['lastloginip'] = $this->auth->lastip;
-                    $row['lastloginip'] = $this->auth->lastip;
                 }
 
-                if ($row['accessfrom']) {
-                    $row['accessfrom'] = date('Y/m/d', $row['accessfrom']);
-                } else {
-                    $row['accessfrom'] = '-';
-                }
-
-                if ($row['accessto']) {
-                    $row['accessto'] = date('Y/m/d', $row['accessto']);
-                } else {
-                    $row['accessto'] = '-';
-                }
-
-                if ($row['lastlogindate']) {
-                    $row['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
-                } else {
-                    $row['lastlogin'] = '-';
-                }
-
-                if ($row['passwdlastchange']) {
-                    $row['passwdlastchange'] = date('Y/m/d H:i', $row['passwdlastchange']);
-                } else {
-                    $row['passwdlastchange'] = '-';
-                }
+                $row['accessfrom'] = ($row['accessfrom'] ? date('Y/m/d', $row['accessfrom']) : '-');
+                $row['accessto'] = ($row['accessto'] ? date('Y/m/d', $row['accessto']) : '-');
+                $row['lastlogin'] = ($row['lastlogindate'] ? date('Y/m/d H:i', $row['lastlogindate']) : '-');
+                $row['passwdlastchange'] = ($row['passwdlastchange'] ? date('Y/m/d H:i', $row['passwdlastchange']) : '-');
 
                 if (check_ip($row['lastloginip'])) {
                     // moved to '?m=dns&revdns=1&api=1'
