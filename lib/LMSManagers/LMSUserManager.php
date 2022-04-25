@@ -207,7 +207,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         $userlist = $this->db->GetAllByKey(
             'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
             accessfrom, accessto, rname, twofactorauth'
-            . (isset($superuser) ? ' FROM vallusers' : ' FROM vusers')
+            . ' FROM ' . (isset($superuser) ? 'vallusers' : 'vusers')
             . ' WHERE deleted = 0'
             . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
             . (isset($divisions) && !empty($divisions) ? ' AND id IN 
