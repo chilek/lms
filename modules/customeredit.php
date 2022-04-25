@@ -217,7 +217,7 @@ if (!isset($_POST['xjxfun'])) {
                 }
             }
 
-            if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->GetCustomerTen($_GET['id'])) {
+            if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->getCustomerTen($_GET['id'])) {
                 if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
                     $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
                     $tenwarning = 1;
