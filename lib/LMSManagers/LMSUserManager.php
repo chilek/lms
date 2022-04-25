@@ -229,16 +229,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 $row['accessfrom'] = ($row['accessfrom'] ? date('Y/m/d', $row['accessfrom']) : '-');
                 $row['accessto'] = ($row['accessto'] ? date('Y/m/d', $row['accessto']) : '-');
                 $row['lastlogin'] = ($row['lastlogindate'] ? date('Y/m/d H:i', $row['lastlogindate']) : '-');
+                $row['lastloginip'] = (check_ip($row['lastloginip']) ? $row['lastloginip'] : '-';
                 $row['passwdlastchange'] = ($row['passwdlastchange'] ? date('Y/m/d H:i', $row['passwdlastchange']) : '-');
-
-                if (check_ip($row['lastloginip'])) {
-                    // moved to '?m=dns&revdns=1&api=1'
-                    //$row['lastloginhost'] = gethostbyaddr($row['lastloginip']);
-                    $row['lastloginhost'] = '-';
-                } else {
-                    $row['lastloginhost'] = '-';
-                    $row['lastloginip'] = '-';
-                }
+                $row['lastloginhost'] = '-';
             }
             unset($row);
         }
