@@ -941,14 +941,15 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             imap_setflag_full($ih, $postid, "\\Deleted");
         }
 
-        if (strpos($rtparser_handled_mail_post_action, 'expunge') !== false) {
-            imap_expunge($ih);
-        }
-
         $postid = next($posts);
     }
 
     unset($buffer);
+}
+
+
+if (strpos($rtparser_handled_mail_post_action, 'expunge') !== false) {
+    imap_expunge($ih);
 }
 
 if (!empty($ih)) {
