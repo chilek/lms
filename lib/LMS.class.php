@@ -856,6 +856,18 @@ class LMS
         return $manager->getCustomerPin($id);
     }
 
+    public function getCustomerTen($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerTen($id);
+    }
+
+    public function getCustomerSsn($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerSsn($id);
+    }
+
     public function changeCustomerType($id, $type)
     {
         $manager = $this->getCustomerManager();
