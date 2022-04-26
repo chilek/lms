@@ -227,7 +227,7 @@ $rtparser_password = ConfigHelper::getConfig(
     isset($smtp_options['pass']) ? $smtp_options['pass'] : ConfigHelper::GetConfig('mail.smtp_password')
 );
 $rtparser_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.imap_use_seen_flag', true));
-$rtparser_handled_mail_post_action = ConfigHelper::getConfig('rt.rtparser_handled_mail_post_action', 'seen, delete, expunge');
+$rtparser_handled_mail_post_action = ConfigHelper::getConfig('rt.rtparser_handled_mail_post_action', 'delete, expunge');
 
 $rtparser_folder = ConfigHelper::getConfig('rt.imap_folder', 'INBOX');
 
