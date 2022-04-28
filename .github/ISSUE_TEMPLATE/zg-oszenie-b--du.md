@@ -30,7 +30,7 @@ Jeśli dotyczy prosimy o dodanie zrzutów ekranu, które pomogą wyjaśnić Twó
 **Środowisko - prosimy o uzupełnienie następującej informacji:**
  - system operacyjny, np. _Linux CentOS 8.1 x86_64_,
  - przeglądarka www, np. _Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36_ (można odczytać pod adresem: https://www.whatismybrowser.com/detect/what-is-my-user-agent),
- - wersja LMS+ - [jak sprawdzić?](https://github.com/chilek/lms-plus/wiki/faq#wersje-lms),
+ - wersja LMS+ - [jak sprawdzić?](https://github.com/chilek/lms-plus/wiki/faq#wersje-lms) - w nowszych wersjach LMS+ można przy aktywnej planszy powitalnej (moduł **welcome**) kliknąć w boksie **Informacje o LMS+** przycisk **Kopiuj**. Wszystkie informacje o komponentach LMS+ zostaną skopiowane do schowka, co następnie wklejamy do raportu,
  - wyjście polecenia
     ```sh
     composer info
