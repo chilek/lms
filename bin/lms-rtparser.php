@@ -933,12 +933,12 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     }
 
     if ($postid !== false && $postid !== null) {
-        if (strpos($rtparser_handled_mail_post_action, 'seen') !== false) {
-            imap_setflag_full($ih, $postid, "\\Seen");
-        }
-
-        if (strpos($rtparser_handled_mail_post_action, 'delete') !== false) {
-            imap_setflag_full($ih, $postid, "\\Deleted");
+        if (strpos($rtparser_handled_mail_post_action, 'seen') !== false
+            || strpos($rtparser_handled_mail_post_action, 'delete') !== false) {
+                imap_setflag_full($ih, $postid, '"'
+                    . (strpos($rtparser_handled_mail_post_action, 'delete') !== false ? '\\Deleted ' : '' )
+                    . (strpos($rtparser_handled_mail_post_action, 'seen') !== false ? '\\Seen' : '' )
+                    . '"');
         }
 
         $postid = next($posts);
@@ -947,13 +947,8 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
     unset($buffer);
 }
 
-
-if (strpos($rtparser_handled_mail_post_action, 'expunge') !== false) {
-    imap_expunge($ih);
-}
-
 if (!empty($ih)) {
-    imap_close($ih);
+    imap_close($ih, (strpos($rtparser_handled_mail_post_action, 'expunge') ? CL_EXPUNGE : ''));
 }
 
 /*
