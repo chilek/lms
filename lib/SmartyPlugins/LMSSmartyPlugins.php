@@ -160,6 +160,7 @@ class LMSSmartyPlugins
 
         $label = isset($params['label']) ? $params['label'] : null;
         $name = isset($params['name']) ? $params['name'] : 'division';
+        $shortname = !empty($params['shortname']);
         $id = isset($params['id']) ? $params['id'] : $name;
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
@@ -188,7 +189,7 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" '
+                $result .= '<select class="division-context" id="' . $id . '" name="' . ($shortname ? $user_divisions['shortname'] : $name) . '" '
                     . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
@@ -203,7 +204,7 @@ class LMSSmartyPlugins
             } else {
                 $user_division = reset($user_divisions);
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
+                $result .= '<span class="division-context bold">' . (empty($user_divisions) ? trans("all") : ($shortname ? $user_division['shortname'] : $user_division['name'])) . '</span>';
                 $result .= ($label ? '</label>' : '');
                 $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
