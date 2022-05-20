@@ -141,7 +141,7 @@ class Session
                 $body = ConfigHelper::getConfig('userpanel.reminder_sms_body');
             }
 
-            if (preg_match('/^\$[0-9]+\$/', $customer['pin']) || $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
+            if (preg_match('/^\$[0-9a-z]+\$/', $customer['pin']) || $this->unsecure_pin_validity && time() - $customer['pinlastchange'] > $this->unsecure_pin_validity) {
                 $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
                 if (!$pin_min_size) {
                     $pin_min_size = 4;

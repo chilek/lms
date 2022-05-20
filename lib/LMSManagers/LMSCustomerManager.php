@@ -2944,6 +2944,57 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $this->db->GetOne('SELECT pin FROM customers WHERE id = ?', array($id));
     }
 
+    public function getCustomerPinRequirements()
+    {
+        $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
+        if (!$pin_min_size) {
+            $pin_min_size = 4;
+        }
+        $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
+        if (!$pin_max_size) {
+            $pin_max_size = 6;
+        }
+        if ($pin_min_size > $pin_max_size) {
+            $pin_max_size = $pin_min_size;
+        }
+        $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+
+        return compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters');
+    }
+
+    public function checkCustomerPin($id, $pin)
+    {
+        if (empty($id)) {
+            $oldpin = '';
+            $hashed_oldpin = false;
+        } else {
+            $validate_changed_pin = ConfigHelper::checkConfig('phpui.validate_changed_pin');
+            $oldpin = $this->getCustomerPin($id);
+            $hashed_oldpin = preg_match('/^\$[0-9a-z]+\$/', $oldpin);
+        }
+
+        extract($this->getCustomerPinRequirements());
+
+        if (!$hashed_oldpin && $pin == '') {
+            return trans('PIN code is required!');
+        } elseif (!empty($id) && $validate_changed_pin) {
+            if ($hashed_oldpin && password_verify($pin, $oldpin) || $pin == $oldpin) {
+                return true;
+            }
+            if (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+                return true;
+            } else {
+                return trans('Incorrect PIN code!');
+            }
+        } else {
+            if (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+                return true;
+            } else {
+                return trans('Incorrect PIN code!');
+            }
+        }
+    }
+
     public function getCustomerTen($id)
     {
         return $this->db->GetOne('SELECT ten FROM customers WHERE id = ?', array($id));
