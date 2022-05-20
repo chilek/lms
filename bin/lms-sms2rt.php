@@ -279,7 +279,7 @@ if (($fh = fopen($message_file, "r")) != null) {
         if (preg_match("/^From: ([[:digit:]]{3,15})$/", $line, $matches) && $phone == null) {
             $phone = $matches[1];
         }
-        if (preg_match("/^Received: (.*)$/", $line, $matches) && $date == null) {
+        if (preg_match("/^Received: (.*)$/", $line, $matches) && !isset($date)) {
             $date = strtotime($matches[1]);
         }
         if (preg_match("/^Alphabet:.*UCS2?$/", $line)) {
@@ -332,6 +332,7 @@ if (($fh = fopen($message_file, "r")) != null) {
 
     $tid = $LMS->TicketAdd(array(
         'queue' => $queueid,
+        'createtime' => isset($date) ? strtotime($date) : null,
         'requestor' => $requestor,
         'requestor_phone' => empty($phone) ? null : $phone,
         'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
