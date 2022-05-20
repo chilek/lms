@@ -2975,22 +2975,36 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         extract($this->getCustomerPinRequirements());
 
-        if (!$hashed_oldpin && $pin == '') {
-            return trans('PIN code is required!');
-        } elseif (!empty($id) && $validate_changed_pin) {
-            if ($hashed_oldpin && password_verify($pin, $oldpin) || $pin == $oldpin) {
-                return true;
-            }
-            if (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+        if ($hashed_oldpin) {
+            if ($pin == ''
+                || $validate_changed_pin && password_verify($pin, $oldpin)
+                || validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
                 return true;
             } else {
                 return trans('Incorrect PIN code!');
             }
         } else {
-            if (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
-                return true;
+            if ($pin == '') {
+                return trans('PIN code is required!');
+            }
+            if (empty($id)) {
+                return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                    ? true
+                    : trans('Incorrect PIN code!'));
             } else {
-                return trans('Incorrect PIN code!');
+                if ($validate_changed_pin) {
+                    if ($pin == $oldpin) {
+                        return true;
+                    } else {
+                        return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                            ? true
+                            : trans('Incorrect PIN code!'));
+                    }
+                } else {
+                    return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                        ? true
+                        : trans('Incorrect PIN code!'));
+                }
             }
         }
     }
