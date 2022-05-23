@@ -281,6 +281,9 @@ if (($fh = fopen($message_file, "r")) != null) {
         }
         if (preg_match("/^Received: (.*)$/", $line, $matches) && !isset($date)) {
             $date = strtotime($matches[1]);
+            if ($date === false) {
+                $date = null;
+            }
         }
         if (preg_match("/^Alphabet:.*UCS2?$/", $line)) {
             $ucs = true;
