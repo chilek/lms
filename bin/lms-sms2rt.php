@@ -335,7 +335,7 @@ if (($fh = fopen($message_file, "r")) != null) {
 
     $tid = $LMS->TicketAdd(array(
         'queue' => $queueid,
-        'createtime' => isset($date) ? strtotime($date) : null,
+        'createtime' => isset($date) ? $date : null,
         'requestor' => $requestor,
         'requestor_phone' => empty($phone) ? null : $phone,
         'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
