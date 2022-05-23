@@ -126,7 +126,7 @@ if ($alias) {
 					VALUES(?,?)', array($id, $account['id']));
             }
         }
-        if (count($alias['mailforwards'])) {
+        if (is_array($alias['mailforwards']) && count($alias['mailforwards'])) {
             foreach ($alias['mailforwards'] as $mailforward) {
                 $DB->Execute('INSERT INTO aliasassignments (aliasid, mail_forward)
 					VALUES(?,?)', array($id, $mailforward));
