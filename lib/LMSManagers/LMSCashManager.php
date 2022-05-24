@@ -112,8 +112,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
 
             $name = isset($matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
-            $customername = preg_replace('/[\s]{2,}/', ' ', $name);
             $lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
+            $customername = preg_replace('/[\s]{2,}/', ' ', (empty($lastname) ? '' : $lastname . ' ') . $name);
             $comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
             $time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
             $value = str_replace(',', '.', isset($matches[$pattern['pvalue']]) ? preg_replace('/[\s]/', '', $matches[$pattern['pvalue']]) : '');
@@ -137,18 +137,40 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             // seek invoice number
             if (!$id && !empty($pattern['invoice_regexp'])) {
                 if (preg_match($pattern['invoice_regexp'], $theline, $matches)) {
-                    $invid = $matches[$pattern['pinvoice_number']];
-                    $invyear = $matches[$pattern['pinvoice_year']];
-                    $invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
-
-                    if ($invid && $invyear) {
-                        $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
-                        $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+                    if (empty($pattern['pinvoice_year']) || empty($pattern['pinvoice_month']) || empty($pattern['pinvoice_number'])) {
                         $id = $this->db->GetOne(
-                            'SELECT customerid FROM documents
-								WHERE number=? AND cdate>? AND cdate<? AND type IN (?,?)',
-                            array($invid, $from, $to, DOC_INVOICE, DOC_CNOTE)
+                            'SELECT customerid
+                            FROM documents
+                            WHERE LOWER(fullnumber) = LOWER(?)
+                                AND type IN ?',
+                            array(
+                                $matches[1],
+                                array(DOC_INVOICE, DOC_CNOTE)
+                            )
                         );
+                    } else {
+                        $invnumber = $matches[$pattern['pinvoice_number']];
+                        $invyear = $matches[$pattern['pinvoice_year']];
+                        $invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
+
+                        if ($invnumber && $invyear) {
+                            $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
+                            $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+                            $id = $this->db->GetOne(
+                                'SELECT customerid
+                                FROM documents
+                                WHERE number = ?
+                                    AND cdate > ?
+                                    AND cdate < ?
+                                    AND type IN ?',
+                                array(
+                                    $invnumber,
+                                    $from,
+                                    $to,
+                                    array(DOC_INVOICE, DOC_CNOTE)
+                                )
+                            );
+                        }
                     }
                 }
             }
