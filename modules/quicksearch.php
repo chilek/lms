@@ -687,7 +687,7 @@ switch ($mode) {
             $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 
             $candidates = $DB->GetAll(
-                "SELECT t.id, t.subject, t.requestor, t.state, c.name, c.lastname
+                "SELECT t.id, t.subject, t.requestor, t.requestor_mail, t.requestor_phone, t.state, c.name, c.lastname
 				FROM rttickets t
 				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & ? > 0
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
@@ -698,9 +698,11 @@ switch ($mode) {
                     . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 't.id = ' . $search : '1=0') : '1=0')
                     . (empty($properties) || isset($properties['subject']) ? " OR LOWER(t.subject) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['requestor']) ? " OR LOWER(t.requestor) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['requestor_mail']) ? " OR LOWER(t.requestor_mail) ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['requestor_phone']) ? " OR LOWER(t.requestor_phone) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['customername']) ? " OR LOWER(c.name) ?LIKE? LOWER($sql_search)
 						OR LOWER(c.lastname) ?LIKE? LOWER($sql_search)" : '') . ")
-					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
+					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor, t.requestor_mail, t.requestor_phone
 					LIMIT ?",
                 array(
                         $userid, RT_RIGHT_READ,
@@ -750,6 +752,12 @@ switch ($mode) {
                     } else if ((empty($properties) || isset($properties['requestor'])) && preg_match("~$search~i", $row['requestor'])) {
                         $description = trans('First/last name') . ': '
                         . htmlspecialchars(preg_replace('/ <.*/', '', $row['requestor']));
+                    } else if ((empty($properties) || isset($properties['requestor_mail'])) && preg_match("~$search~i", $row['requestor_mail'])) {
+                        $description = trans('Email') . ': '
+                            . htmlspecialchars(preg_replace('/ <.*/', '', $row['requestor_mail']));
+                    } else if ((empty($properties) || isset($properties['requestor_phone'])) && preg_match("~$search~i", $row['requestor_phone'])) {
+                        $description = trans('Phone') . ': '
+                            . htmlspecialchars(preg_replace('/ <.*/', '', $row['requestor_phone']));
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['name'])) {
                         $description = trans('First/last name') . ': ' . $row['name'];
                     } else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['lastname'])) {

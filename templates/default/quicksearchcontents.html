@@ -105,6 +105,8 @@
 		<option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
 		<option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
 		<option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
+		<option value="requestor_mail"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor_mail)} selected{/if}>{trans("<!qs>ticket requestor email")}</option>
+		<option value="requestor_phone"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor_phone)} selected{/if}>{trans("<!qs>ticket requestor phone")}</option>
 		<option value="customername"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.customername)} selected{/if}>{trans("<!qs>customer name")}</option>
 		<option value="unresolvedonly"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.unresolvedonly)} selected{/if}>{trans("<!qs>show unresolved only")}</option>
 	</select>

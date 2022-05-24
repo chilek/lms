@@ -109,7 +109,10 @@ function RTSearch($search, $order = 'createtime,desc')
         }
     }
     if (!empty($search['email'])) {
-        $where[] = 'requestor ?LIKE? '.$DB->Escape('%'.$search['email'].'%');
+        $where[] = 'requestor_mail ?LIKE? '.$DB->Escape('%' . $search['email'] . '%');
+    }
+    if (!empty($search['phone'])) {
+        $where[] = 'requestor_phone ?LIKE? '.$DB->Escape('%' . $search['phone'] . '%');
     }
     if (!empty($search['uptime'])) {
         $where[] = '(resolvetime-t.createtime > '.intval($search['uptime'])

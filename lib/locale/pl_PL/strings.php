@@ -2963,6 +2963,7 @@ $_LANG['Customers Messaging'] = 'Komunikacja z klientami';
 $_LANG['destination number/email'] = 'numer/adres odbiorcy';
 $_LANG['drafts'] = 'szkice';
 $_LANG['email'] = 'e-mail';
+$_LANG['Email'] = 'E-mail';
 $_LANG['Enter notice content'] = 'Wprowadź treść powiadomienia';
 $_LANG['errornous'] = 'błąd';
 $_LANG['errornous<!plural>'] = 'błędne';
@@ -4748,6 +4749,8 @@ $_LANG['<!qs>device serial number'] = 'numer seryjny urządzenia';
 $_LANG['<!qs>ticket id'] = 'identyfikator zgłoszenia';
 $_LANG['<!qs>ticket subject'] = 'temat zgłoszenia';
 $_LANG['<!qs>ticket requestor'] = 'zgłaszający';
+$_LANG['<!qs>ticket requestor email'] = 'e-mail zgłaszającego';
+$_LANG['<!qs>ticket requestor phone'] = 'telefon zgłaszającego';
 
 $_LANG['<!qs>customer'] = 'klient';
 $_LANG['<!qs>phone'] = 'telefon';
