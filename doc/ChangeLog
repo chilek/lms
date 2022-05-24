@@ -136,6 +136,9 @@ version 28-git (????-??-??):
   - enhancement: 'vhosts' property in document template definition ('engine' variable) allows
     to overwrite 'engine' properites basing on http vhost name [chilan]
   - enhancement: allow to search tickets by requestor email and phone number [chilan]
+  - improvement: cash import parser: if 'pinvoice_number' or 'pinvoice_month' or 'pinvoice_year'
+    is empty then treat 'invoice_regexp' property as regular expression which matches to full number
+    of invoice or correction note [chilan]
 
 version 27.0 (2021-08-20):
 
