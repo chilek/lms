@@ -203,13 +203,13 @@
 			{$balance.time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="nobr">
-			{if $balance.userid}{$balance.user|truncate:16:"&hellip;":true}{else}-{/if}
+			{if $balance.userid}{$balance.user|trunescape:16}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.covenant}{moneyf($balance.value*-1, $balance.currency)}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-                        {if !$balance.covenant && $balance.value > 0}{moneyf($balance.value, $balance.currency)}{else}-{/if}
+			{if !$balance.covenant && $balance.value > 0}{moneyf($balance.value, $balance.currency)}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{if !$balance.covenant && $balance.value < 0}{moneyf($balance.value*-1, $balance.currency)}{else}-{/if}
@@ -218,13 +218,13 @@
 			&raquo;
 		</TD>
 		<TD class="text-right nobr">
-                        {if $balance.covenant}-{else}{moneyf($balance.after)}{/if}
+			{if $balance.covenant}-{else}{moneyf($balance.after)}{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|trunescape:20}</A>{else} - {/if}
 		</TD>
 		<TD>
-			{$balance.comment}
+			{$balance.comment|escape}
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.docid}
