@@ -139,6 +139,7 @@ version 28-git (????-??-??):
   - improvement: cash import parser: if 'pinvoice_number' or 'pinvoice_month' or 'pinvoice_year'
     is empty then treat 'invoice_regexp' property as regular expression which matches to full number
     of invoice or correction note [chilan]
+  - enhancement: implemented 'year' filter in invoice and balance lists [chilan]
 
 version 27.0 (2021-08-20):
 
