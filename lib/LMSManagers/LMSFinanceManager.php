@@ -1998,11 +1998,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $where = ' AND d.number = '.intval($search);
                     break;
                 case 'cdate':
-                    $where = ' AND d.cdate >= '.intval($search).' AND d.cdate < '.(intval($search)+86400);
+                    $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('tomorrow', intval($search));
                     break;
                 case 'month':
-                    $last = mktime(23, 59, 59, date('n', $search) + 1, 0, date('Y', $search));
-                    $where = ' AND d.cdate >= '.intval($search).' AND d.cdate <= '.$last;
+                    $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 month', $search);
+                    break;
+                case 'year':
+                    $where = ' AND d.cdate >= ' . intval($search) . ' AND d.cdate < ' . strtotime('+1 year', $search);
                     break;
                 case 'ten':
                     $where = ' AND d.ten = ' . $this->db->Escape($search);
@@ -3524,10 +3526,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $where = ' AND documents.number = '.intval($search);
                     break;
                 case 'cdate':
-                    $where = ' AND cash.time >= '.intval($search).' AND cash.time < '.(intval($search)+86400);
+                    $where = ' AND cash.time >= ' . intval($search) . ' AND cash.time < ' . strtotime('tomorrow', intval($search));
                     break;
                 case 'month':
                     $where = ' AND cash.time >= ' . intval($search) . ' AND cash.time < ' . strtotime('+1 month', $search);
+                    break;
+                case 'year':
+                    $where = ' AND cash.time >= ' . intval($search) . ' AND cash.time < ' . strtotime('+1 year', $search);
                     break;
                 case 'ten':
                     $where = ' AND c.ten = ' . $this->db->Escape($search);
