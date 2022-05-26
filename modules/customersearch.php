@@ -133,6 +133,13 @@ if (!isset($_POST['cgk'])) {
 }
 $SESSION->save('cslcgk', $customergroupsqlskey);
 
+if (!isset($_POST['cgnot'])) {
+    $SESSION->restore('cslcgnot', $customergroupnegation);
+} else {
+    $customergroupnegation = true;
+}
+$SESSION->save('cslcgnot', $customergroupnegation);
+
 if (!isset($_POST['k'])) {
     $SESSION->restore('cslk', $sqlskey);
 } else {
@@ -161,6 +168,7 @@ if (isset($_GET['search'])) {
         "state",
         "statesqlskey",
         "customergroupsqlskey",
+        "customergroupnegation",
         "flags",
         "flagsqlskey",
         "consents",
@@ -259,6 +267,7 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('k', $sqlskey);
     $SMARTY->assign('sk', $statesqlskey);
     $SMARTY->assign('cgk', $customergroupsqlskey);
+    $SMARTY->assign('cgnot', $customergroupnegation);
     $SMARTY->assign('fk', $flagsqlskey);
     $SMARTY->assign('karma', $karma);
     $SMARTY->display('customer/customersearch.html');

@@ -1565,6 +1565,7 @@ $_LANG['Option name is required!'] = 'Nazwa opcji jest wymagana!';
 $_LANG['Option name is too long (max.64 characters)!'] = 'Nazwa opcji jest wymagana (maks. 64 znaki)!';
 $_LANG['Option with specified name exists in that instance!'] = 'Opcja o podanej nazwie istnieje w tej instancji!';
 $_LANG['or'] = 'lub';
+$_LANG['negation'] = 'negacja';
 $_LANG['or Customer ID:'] = 'lub ID klienta:';
 $_LANG['original'] = 'oryginał';
 $_LANG['ORIGINAL'] = 'ORYGINAŁ';

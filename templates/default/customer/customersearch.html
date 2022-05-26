@@ -602,6 +602,11 @@
 			<strong>{trans("Group")}</strong>
 		</td>
 		<td>
+			<label>
+				<input type="checkbox" value="NOT" name="cgnot"{if !empty($cgnot)} checked{/if}>
+				{trans("negation")}
+			</label>
+			&nbsp;
 			<select size="1" name="g[]" multiple class="lms-ui-multiselect">
 				<option value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if}
 					data-exclusive>{trans("- all groups -")}</option>

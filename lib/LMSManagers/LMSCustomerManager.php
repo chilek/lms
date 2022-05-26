@@ -738,6 +738,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $statesqlskey Logical conjunction used for state field
      * @param boolean $network With or without network params
      * @param int $customergroup Customer group
+     * @param boolean $customergroupnegation negate customer group assignments
      * @param string $customergroupsqlskey Logical conjunction used for customergroup field
      * @param array $search Search parameters
      * @param int $time Timestamp
@@ -799,6 +800,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($customergroupsqlskey)) {
             $customergroupsqlskey = 'AND';
+        }
+
+        if (!isset($customergroupnegation)) {
+            $customergroupnegation = false;
         }
 
         if (!is_array($state) && !empty($state)) {
@@ -1491,7 +1496,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
                 . (!empty($customergroup) && $customergroup != -1 ? ' AND ca.gcount '
-                    . ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0') : '')
+                    . ($customergroupnegation
+                        ? ($customergroupsqlskey == 'AND' ? 'IS NULL' : ' < ' . (is_array($customergroup) ? count($customergroup) : 1))
+                        : ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0')
+                    ) : '')
                 . ($customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
                     JOIN vnodes n ON (n.id = na.nodeid)
