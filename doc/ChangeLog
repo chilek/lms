@@ -140,6 +140,7 @@ version 28-git (????-??-??):
     is empty then treat 'invoice_regexp' property as regular expression which matches to full number
     of invoice or correction note [chilan]
   - enhancement: implemented 'year' filter in invoice and balance lists [chilan]
+  - enhancement: negation option in customer group filter of customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
