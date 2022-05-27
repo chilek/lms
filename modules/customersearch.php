@@ -109,7 +109,7 @@ $SESSION->save('cslkarma', $karma);
 if (!isset($_POST['n'])) {
     $SESSION->restore('csln', $network);
 } else if ($_POST['n'] == 'all') {
-        $network = array();
+    $network = array();
 } else {
     $network = Utils::filterIntegers($_POST['n']);
 }
@@ -117,6 +117,8 @@ $SESSION->save('csln', $network);
 
 if (!isset($_POST['g'])) {
     $SESSION->restore('cslg', $customergroup);
+} else if ($_POST['g'] == 'all') {
+    $customergroup = array();
 } else {
     if (count($_POST['g']) == 1 && intval($_POST['g'][0]) <= 0) {
         $customergroup = reset($_POST['g']);
