@@ -101,7 +101,7 @@
 						</div>
 						<div class="lms-ui-tab-table-column description">
 							{if $doc.description}
-								{$doc.description|replace:"\n":'<br>'}
+								{$doc.description|escape|replace:"\n":'<br>'}
 							{else}
 								&ndash;
 							{/if}
