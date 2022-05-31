@@ -86,7 +86,7 @@
       padding: 0px 0px 0px 4px;
       max-width: 200px;
       white-space: pre-wrap;
-      min-width: 200px;
+      min-width: 100px;
       display: block;
       &.lms-ui-multiselect-filter {
         min-width: 100px;
@@ -127,7 +127,7 @@
   .lms-ui-multiselect-popup {
     display: none;
     position: absolute;
-    width: 350px;
+    min-width: 100px;
     border: solid 1px @blend;
     background-color: @light;
     z-index: 65;
@@ -167,6 +167,7 @@
         white-space: normal;
         padding: 0;
         margin: 0;
+        padding-right: 0.5em;
         background-color: @lucid;
         padding-left: 2em;
         text-indent: -2em;
@@ -180,6 +181,8 @@
         input {
           border: none;
           margin: 3px 3px 3px 4px;
+          padding-left: 1em;
+          padding-right: 1em;
         }
         &.selected {
           background-color: @dark;
@@ -223,7 +226,10 @@
         padding-top: 0.5em;
       }
       input {
-        margin-right: 0.9em;
+        margin-right: 0.5em;
+      }
+      span {
+        padding-right: 0.5em;
       }
     }
   }
