@@ -141,6 +141,8 @@ version 28-git (????-??-??):
     of invoice or correction note [chilan]
   - enhancement: implemented 'year' filter in invoice and balance lists [chilan]
   - enhancement: negation option in customer group filter of customer search form [chilan]
+  - enhancement: 'timetable.use_event_assignments_for_privacy_flag' ('false' by default) allows to find
+    private events by event user assignments [chilan]
 
 version 27.0 (2021-08-20):
 
