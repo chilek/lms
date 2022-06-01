@@ -347,15 +347,27 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $day = date('j', $t);
         }
 
+        $current_user_id = intval(Auth::GetCurrentUser());
+
+        $event_user_assignments = ConfigHelper::checkConfig('timetable.use_event_assignments_for_privacy_flag');
+
         switch ($privacy) {
             case 0:
-                $privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval(Auth::GetCurrentUser()) . '))';
+                if ($event_user_assignments) {
+                    $privacy_condition = '(private = 0 OR (private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))))';
+                } else {
+                    $privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . $current_user_id . '))';
+                }
                 break;
             case 1:
                 $privacy_condition = 'private = 0';
                 break;
             case 2:
-                $privacy_condition = 'private = 1 AND userid = ' . intval(Auth::GetCurrentUser());
+                if ($event_user_assignments) {
+                    $privacy_condition = 'private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))';
+                } else {
+                    $privacy_condition = 'private = 1 AND userid = ' . $current_user_id;
+                }
                 break;
         }
 
