@@ -807,6 +807,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             } else {
                 $width = 0;
             }
+            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
             $this->backend->Ln(5);
             $this->backend->writeHTMLCell($width, 0, '', '', trans('Comment:') . ' ' . $this->data['comment'], 0, 1, 0, true, 'C');
         }
