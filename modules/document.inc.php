@@ -249,7 +249,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $SMARTY->assign('cid', $customerid);
     $SMARTY->assign('document', array('reference' => ''));
 
-    $references = $LMS->GetDocuments($customerid);
+    $references = $LMS->GetDocuments($customerid, null, isset($doctemplate));
 
     if (!empty($doctemplate)) {
         ob_start();
@@ -280,7 +280,14 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
                             unset($references[$idx]);
                         }
                     }
+                } else {
+                    foreach ($references as $idx => $reference) {
+                        if ($reference['doctype'] >= 0) {
+                            unset($references[$idx]);
+                        }
+                    }
                 }
+
                 break;
             }
         }

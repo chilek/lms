@@ -37,7 +37,7 @@ use setasign\FpdiProtection\FpdiProtection;
 class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterface
 {
 
-    public function GetDocuments($customerid = null, $limit = null)
+    public function GetDocuments($customerid = null, $limit = null, $all = false)
     {
         if (!$customerid) {
             return null;
@@ -48,14 +48,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				d.archived, d.adate, u3.name AS ausername, d.senddate,
 				d.cdate, u.name AS username, d.sdate, d.cuserid, u2.name AS cusername,
 				d.type AS doctype, d.template AS doctemplate, reference
-			FROM documentcontents c
-			JOIN documents d ON (c.docid = d.id)
-			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_VIEW . ' > 0)
-			JOIN vusers u ON u.id = d.userid
+			FROM documents d
+			LEFT JOIN documentcontents c ON c.docid = d.id
+			LEFT JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_VIEW . ' > 0)
+			LEFT JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN vusers u3 ON u3.id = d.auserid
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-			WHERE d.customerid = ?
+			WHERE d.customerid = ?' . ($all ? '' : ' AND c.docid IS NOT NULL AND r.doctype IS NOT NULL') . '
 			ORDER BY cdate', array(Auth::GetCurrentUser(), $customerid))) {
             foreach ($list as &$doc) {
                 $doc['attachments'] = $this->db->GetAll('SELECT * FROM documentattachments

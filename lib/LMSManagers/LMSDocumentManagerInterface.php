@@ -30,7 +30,7 @@
  */
 interface LMSDocumentManagerInterface
 {
-    public function GetDocuments($customerid = null, $limit = null);
+    public function GetDocuments($customerid = null, $limit = null, $all = false);
 
     public function GetDocumentList(array $params);
 
