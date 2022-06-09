@@ -143,6 +143,7 @@ version 28-git (????-??-??):
   - enhancement: negation option in customer group filter of customer search form [chilan]
   - enhancement: 'timetable.use_event_assignments_for_privacy_flag' ('false' by default) allows to find
     private events by event user assignments [chilan]
+  - improvement: document template can enable use trade documents as their reference documents [chilan]
 
 version 27.0 (2021-08-20):
 
