@@ -144,6 +144,8 @@ version 28-git (????-??-??):
   - enhancement: 'timetable.use_event_assignments_for_privacy_flag' ('false' by default) allows to find
     private events by event user assignments [chilan]
   - improvement: document template can enable use trade documents as their reference documents [chilan]
+  - enhancement: added cdate field to vpip_cdr table - it can be used as base for cdr record
+    interval calculation [chilan]
 
 version 27.0 (2021-08-20):
 
