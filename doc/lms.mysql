@@ -8,7 +8,6 @@ DROP TRIGGER IF EXISTS cash_customerbalances_delete_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_update_trigger;
 DROP TRIGGER IF EXISTS cash_customerbalances_insert_trigger;
 DROP TRIGGER IF EXISTS customerassignments_insert_trigger;
-DROP TRIGGER IF EXISTS voip_cdr_insert_trigger;
 
 DROP VIEW IF EXISTS vnetworks;
 DROP VIEW IF EXISTS customermailsview;
@@ -941,10 +940,8 @@ CREATE TABLE voip_cdr (
 	fraction            varchar(256)  DEFAULT NULL,
 	prefix              varchar(256)  DEFAULT NULL,
 	prefixname          varchar(256)  DEFAULT NULL,
-	cdate               int(11) DETAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY (uniqueid),
-	KEY voip_cdr_cdate_idx (cdate),
 	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -3543,16 +3540,6 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER voip_cdr_insert_trigger BEFORE INSERT ON voip_cdr
-    FOR EACH ROW
-BEGIN
-    IF NEW.cdate = 0 THEN
-        SET NEW.cdate = UNIX_TIMESTAMP();
-    END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
 CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
     FOR EACH ROW
     BEGIN
@@ -4197,4 +4184,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022061300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022061301');
