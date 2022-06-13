@@ -351,9 +351,45 @@
 									icon_tip="Debit note"}
 							{/if}
 						{/if}
+						{if !empty($item.documentreferenced)}
+							{button type="link" icon="more" class="all-attachment-toggle" tip="related documents"}
+						{/if}
 						<INPUT type="checkbox" form="addbalance-form"
 								NAME="marks{if $aggregate_documents}{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_INVOICE_PRO || $item.doctype == $smarty.const.DOC_CNOTE}[invoice][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_RECEIPT}[receipt][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_DNOTE}[note][{$item.docid}]{else}[{$item.id}]{/if}{else}{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]{/if}"
 								value="{$item.id}" class="lms-ui-multi-check">
+						{if !empty($item.documentreferenced)}
+							<div class="all-attachment-view">
+								{foreach $item.refdocs as $docid => $refdoc}
+									<div class="document-list">
+										{if count($refdoc.attachments) == 1}
+											<div class="document-title">
+												{$attachment = reset($refdoc.attachments)}
+												{$attachmentid = key($refdoc.attachments)}
+												{capture assign="attachment_text"}{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/capture}
+												{documentview id="{$docid}-{$attachmentid}" type=$attachment.contenttype name=$attachment.filename
+													url="?m=documentview&id={$docid}&attachmentid={$attachmentid}" external=true
+													text="{$attachment_text} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$attachment.contenttype)} xls{/if}\"></i>"}
+												{if $attachment.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $attachment.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+											</div>
+										{else}
+											<div class="document-title">
+												{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}
+											</div>
+											<div class="document-attachment-list">
+												{foreach $refdoc.attachments as $attachmentid => $attachment}
+													<div class="document-attachment">
+														{documentview id="{$docid}-{$attachmentid}" type=$attachment.contenttype name=$attachment.filename
+															url="?m=documentview&id={$docid}&attachmentid={$attachmentid}" external=true
+															text="{$attachment.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$attachment.contenttype)} xls{/if}\"></i>"}
+														{if $attachment.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $attachment.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+													</div>
+												{/foreach}
+											</div>
+										{/if}
+									</div>
+								{/foreach}
+							</div>
+						{/if}
 					</TD>
 				</TR>
 				{/foreach}
@@ -772,6 +808,14 @@
 
 	$('#duplicate-checkbox').click(function() {
 		$('#duplicate-box-date-selector').toggle($(this).prop('checked'));
+	});
+
+	$(function() {
+		$('.all-attachment-toggle').click(function() {
+			var attachmentView = $(this).siblings('.all-attachment-view');
+			attachmentView.toggle();
+			$(this).find('i').attr('class', 'lms-ui-icon-' + (attachmentView.is(':visible') ? 'less' : 'more'));
+		});
 	});
 
 	new_doc_type_changed($("[name=newdocument]").val());

@@ -282,13 +282,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, documents.senddate, documents.archived, cash.importid,
-                (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced,
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
                 documents.cdate, documents.number, numberplans.template
             FROM cash
             LEFT JOIN vusers ON vusers.id = cash.userid
             LEFT JOIN documents ON documents.id = docid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
-            LEFT JOIN documents d2 ON d2.reference = documents.id
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
@@ -301,6 +301,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     d.type AS doctype, d.closed AS closed,
                     d.published, d.senddate, 0 AS archived, NULL AS importid,
                     (CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
+                    0 AS documentreferenced,
                     d.cdate, d.number, numberplans.template
                 FROM documents d
                 JOIN ' . (ConfigHelper::getConfig('database.type') == 'postgres' ? 'get_invoice_contents(' . intval($id) . ')' : 'vinvoicecontents') . ' ic ON ic.docid = d.id
@@ -336,6 +337,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $result['balance'] += $row['value'] * $row['currencyvalue'];
                 }
                 $row['date'] = date('Y/m/d H:i', $row['time']);
+
+                if (!empty($row['doctype']) && !empty($row['documentreferenced'])) {
+                    if (!isset($document_manager)) {
+                        $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+                    $row['refdocs'] = $document_manager->getDocumentReferences($row['docid']);
+                }
             }
 
             $result['total'] = count($result['list']);

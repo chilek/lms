@@ -2080,7 +2080,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			d.currency, d.currencyvalue,
 			COUNT(a.docid) AS count,
 			i.sendinvoices,
-			(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
+			(CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
+			(CASE WHEN EXISTS (SELECT 1 FROM documents d3 WHERE d3.reference = d.id AND d3.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
 			FROM documents d
 			JOIN vinvoicecontents a ON (a.docid = d.id)
 			LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
@@ -2121,6 +2122,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . $sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
+
+        foreach ($invoicelist as &$invoice) {
+            if (!empty($invoice['documentreferenced'])) {
+                if (!isset($document_manager)) {
+                    $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+                }
+                $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
+            }
+        }
 
         $invoicelist['order'] = $order;
         $invoicelist['direction'] = $direction;

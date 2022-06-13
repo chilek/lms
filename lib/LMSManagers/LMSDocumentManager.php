@@ -2591,4 +2591,63 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             array(Auth::GetCurrentUser(), $docid)
         ) > 0;
     }
+
+    public function getDocumentReferences($docid)
+    {
+        $userid = Auth::GetCurrentUser();
+
+        $documents = array();
+
+        if (empty($userid)) {
+        } else {
+            $attachments = $this->db->GetAll(
+                'SELECT
+                    d.id AS docid,
+                    d.cdate,
+                    d.fullnumber,
+                    d.type AS doctype,
+                    a.id AS attachmentid,
+                    a.filename,
+                    a.contenttype,
+                    a.md5sum,
+                    a.type AS attachmenttype,
+                    a.cdate AS attachmentcdate
+                FROM documents d
+                JOIN docrights r ON r.doctype = d.type AND r.userid = ? AND (r.rights & ?) > 0
+                JOIN documentattachments a ON a.docid = d.id
+                WHERE d.reference = ?
+                ORDER BY d.id, a.type DESC',
+                array(
+                    $userid,
+                    DOCRIGHT_VIEW,
+                    $docid,
+                )
+            );
+            if (empty($attachments)) {
+                return $documents;
+            }
+
+            foreach ($attachments as $attachment) {
+                $docid = $attachment['docid'];
+                if (!isset($documents[$docid])) {
+                    $documents[$docid] = array(
+                        'cdate' => $attachment['cdate'],
+                        'fullnumber' => $attachment['fullnumber'],
+                        'type' => $attachment['doctype'],
+                        'attachments' => array(),
+                    );
+                }
+                $attachmentid = $attachment['attachmentid'];
+                $documents[$docid]['attachments'][$attachmentid] = array(
+                    'type' => $attachment['attachmenttype'],
+                    'filename' => $attachment['filename'],
+                    'contenttype' => $attachment['contenttype'],
+                    'md5sum' => $attachment['md5sum'],
+                    'cdate' => $attachment['attachmentcdate'],
+                );
+            }
+
+            return $documents;
+        }
+    }
 }
