@@ -57,7 +57,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     } else {
         $docs = $DB->GetAll(
             "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email,
-                d.divisionid
+                d.divisionid,
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
 			FROM documents d
 			LEFT JOIN customers c ON c.id = d.customerid
 			JOIN (

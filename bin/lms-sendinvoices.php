@@ -453,20 +453,23 @@ if ($backup || $archive) {
 
 $ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
 
-$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . "
-		FROM documents d
-		LEFT JOIN customeraddressview c ON c.id = d.customerid"
-        . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
-        . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
-            . $customer_status_condition
-            . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
-            . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
-            . ($archive ? " AND d.archived = 0" : '') . "
-			AND d.cdate >= $daystart AND d.cdate <= $dayend"
-            . ($customergroups ?: '')
-        . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
+$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
+            d.type AS doctype, d.archived,
+            d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . ",
+            (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
+    FROM documents d
+    LEFT JOIN customeraddressview c ON c.id = d.customerid"
+    . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+        FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
+    . " LEFT JOIN numberplans n ON n.id = d.numberplanid
+    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+        . $customer_status_condition
+        . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
+        . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
+        . ($archive ? " AND d.archived = 0" : '') . "
+        AND d.cdate >= $daystart AND d.cdate <= $dayend"
+        . ($customergroups ?: '')
+    . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {

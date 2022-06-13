@@ -5020,6 +5020,32 @@ class LMS
                         'data' => $document['data'],
                     );
 
+                    $referenced_documents = array();
+
+                    if (!empty($doc['documentreferenced'])) {
+                        if (!isset($document_manager)) {
+                            $document_manager = $this->getDocumentManager();
+                        }
+                        $docrefs = $document_manager->getDocumentReferences($doc['id']);
+
+                        if (!empty($docrefs)) {
+                            foreach ($docrefs as $docid => $docref) {
+                                $referenced_document = $document_manager->GetDocumentFullContents($docid);
+                                if (empty($referenced_document)) {
+                                    continue;
+                                }
+                                foreach ($referenced_document['attachments'] as $attachment) {
+                                    $files[] = array(
+                                        'content_type' => $attachment['contenttype'],
+                                        'filename' => $attachment['filename'],
+                                        'data' => $attachment['contents'],
+                                    );
+                                }
+                                $referenced_documents[] = $docid;
+                            }
+                        }
+                    }
+
                     if ($extrafile) {
                         $files[] = array(
                             'content_type' => mime_content_type($extrafile),
@@ -5178,6 +5204,16 @@ class LMS
                     if ($status == MSG_SENT) {
                         $this->PublishDocuments($doc['id']);
                         $this->MarkDocumentsAsSent($doc['id']);
+
+                        if (!empty($referenced_documents)) {
+                            $this->DB->Execute(
+                                'UPDATE documents
+                                SET published = 1, senddate = ?NOW?
+                                WHERE id IN ?',
+                                array($referenced_documents)
+                            );
+                        }
+
                         $published = true;
                     }
 

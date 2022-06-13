@@ -2599,6 +2599,26 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $documents = array();
 
         if (empty($userid)) {
+            $attachments = $this->db->GetAll(
+                'SELECT
+                    d.id AS docid,
+                    d.cdate,
+                    d.fullnumber,
+                    d.type AS doctype,
+                    a.id AS attachmentid,
+                    a.filename,
+                    a.contenttype,
+                    a.md5sum,
+                    a.type AS attachmenttype,
+                    a.cdate AS attachmentcdate
+                FROM documents d
+                JOIN documentattachments a ON a.docid = d.id
+                WHERE d.reference = ?
+                ORDER BY d.id, a.type DESC',
+                array(
+                    $docid,
+                )
+            );
         } else {
             $attachments = $this->db->GetAll(
                 'SELECT
@@ -2623,31 +2643,32 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $docid,
                 )
             );
-            if (empty($attachments)) {
-                return $documents;
-            }
+        }
 
-            foreach ($attachments as $attachment) {
-                $docid = $attachment['docid'];
-                if (!isset($documents[$docid])) {
-                    $documents[$docid] = array(
-                        'cdate' => $attachment['cdate'],
-                        'fullnumber' => $attachment['fullnumber'],
-                        'type' => $attachment['doctype'],
-                        'attachments' => array(),
-                    );
-                }
-                $attachmentid = $attachment['attachmentid'];
-                $documents[$docid]['attachments'][$attachmentid] = array(
-                    'type' => $attachment['attachmenttype'],
-                    'filename' => $attachment['filename'],
-                    'contenttype' => $attachment['contenttype'],
-                    'md5sum' => $attachment['md5sum'],
-                    'cdate' => $attachment['attachmentcdate'],
-                );
-            }
-
+        if (empty($attachments)) {
             return $documents;
         }
+
+        foreach ($attachments as $attachment) {
+            $docid = $attachment['docid'];
+            if (!isset($documents[$docid])) {
+                $documents[$docid] = array(
+                    'cdate' => $attachment['cdate'],
+                    'fullnumber' => $attachment['fullnumber'],
+                    'type' => $attachment['doctype'],
+                    'attachments' => array(),
+                );
+            }
+            $attachmentid = $attachment['attachmentid'];
+            $documents[$docid]['attachments'][$attachmentid] = array(
+                'type' => $attachment['attachmenttype'],
+                'filename' => $attachment['filename'],
+                'contenttype' => $attachment['contenttype'],
+                'md5sum' => $attachment['md5sum'],
+                'cdate' => $attachment['attachmentcdate'],
+            );
+        }
+
+        return $documents;
     }
 }
