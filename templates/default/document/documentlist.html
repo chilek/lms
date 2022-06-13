@@ -226,7 +226,7 @@
 			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 			{/if}
 			{if $doc.reference}<br>
-			<a href="?m=documentview&id={$doc.reference.id}" rel="external">
+			<a href="?m={if $doc.reference.type < 0}documentview{else}invoice{/if}&id={$doc.reference.id}" rel="external">
 				{t a=$_DOCTYPES[$doc.reference.type] b=$doc.reference.fullnumber c=$doc.reference.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}
 			</a>
 			{/if}
