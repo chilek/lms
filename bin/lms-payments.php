@@ -636,21 +636,41 @@ $query = "SELECT
 				JOIN voip_numbers vn ON vn.voip_account_id = va.id AND vn.phone = vc.caller
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
 				JOIN assignments a2 ON a2.id = vna.assignment_id
-				WHERE
-					vc.call_start_time >= (CASE a2.period
-						WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
-						WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
-						WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
-						WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
-						WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
-					END) AND
-					vc.call_start_time < (CASE a2.period
-						WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
-					END)
+				WHERE (
+					(
+						vc.call_start_time >= (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
+							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+						END)
+						AND
+						vc.call_start_time < (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+						END)
+					) OR (
+						vc.call_start_time + totaltime >= (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
+							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+						END)
+						AND
+						vc.call_start_time + totaltime < (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+						END)
+					)
+				)
 				GROUP BY va.ownerid, a2.id
 			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
 			LEFT JOIN (
