@@ -784,9 +784,11 @@ CREATE TABLE voip_cdr (
 	fraction varchar(256) DEFAULT NULL,
 	prefix varchar(256) DEFAULT NULL,
 	prefixname varchar(256) DEFAULT NULL,
+	cdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (uniqueid)
 );
+CREATE INDEX voip_cdr_cdate_idx ON voip_cdr (cdate);
 
 /* --------------------------------------------------------
   Structure of table "voip_price_groups"
@@ -4238,6 +4240,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022060900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022061300');
 
 COMMIT;
