@@ -601,10 +601,14 @@ $query = "SELECT
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
 			taxes.value AS taxrate,
-            voipcost.netvalue,
-            voipcost.netvalue AS unitary_netvalue,
-            voipcost.value,
-            voipcost.value AS unitary_value,
+            (CASE WHEN t.flags & ? > 0
+                THEN voipcost.netvalue
+                ELSE voipcost.value
+            END) AS value,
+            (CASE WHEN t.flags & ? > 0
+                THEN voipcost.netvalue
+                ELSE voipcost.value
+            END) AS unitary_value,
             (CASE WHEN c.type = ?
                 THEN 0
                 ELSE (CASE WHEN t.flags & ? > 0
@@ -724,6 +728,8 @@ $query = "SELECT
 $billings = $DB->GetAll(
     $query,
     array(
+        TARIFF_FLAG_NET_ACCOUNT,
+        TARIFF_FLAG_NET_ACCOUNT,
         CTYPES_PRIVATE,
         TARIFF_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
