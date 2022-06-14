@@ -113,6 +113,7 @@ define('CCONSENT_TRANSFERFORM', 7);
 define('CCONSENT_SMSNOTICE', 8);
 define('CCONSENT_SMS_MARKETING', 9);
 define('CCONSENT_MAIL_MARKETING', 10);
+define('CCONSENT_PHONE_BILLING', 11);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -163,6 +164,11 @@ $CCONSENTS = array(
     CCONSENT_TRANSFERFORM => array(
         'label' => trans('invoice transfer form'),
         'name' => 'transfer_form',
+        'type' => 'boolean',
+    ),
+    CCONSENT_PHONE_BILLING => array(
+        'label' => trans('phone billing'),
+        'name' => 'phone_billing',
         'type' => 'boolean',
     ),
 );
