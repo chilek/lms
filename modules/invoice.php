@@ -597,12 +597,30 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
 
             if ($jpk_type == 'vat') {
+                $ue = $foreign = false;
+                if (!empty($invoice['ten'])) {
+                    $ten = preg_replace('/[\s\-]/', '', $invoice['ten']);
+                    if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $ten, $m)) {
+                        $ue = true;
+                    } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
+                        $foreign = true;
+                    }
+                }
+
                 // JPK body positions (sale)
                 $jpk_data .= "\t<SprzedazWiersz>\n";
 
                 $jpk_data .= "\t\t<LpSprzedazy>" . $jpkrow . "</LpSprzedazy>\n";
                 $jpkrow++;
-                $ten = empty($invoice['ten']) ? 'brak' : preg_replace('/[\s\-]/', '', $invoice['ten']);
+                if ($ue) {
+                    $jpk_data .= "\t\t<KodKrajuNadaniaTIN>" . $m['country'] . "</KodKrajuNadaniaTIN>\n";
+                    $jpk_data .= "\t\t<NrKontrahenta>" . $m['ten'] . "</NrKontrahenta>\n";
+                } else {
+                    if (empty($invoice['ten'])) {
+                        $ten = 'brak';
+                    }
+                    $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
+                }
                 $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
                 $jpk_data .= "\t\t<NazwaKontrahenta>" . escapeJpkText($invoice['name']) . "</NazwaKontrahenta>\n";
                 if ($jpk_vat_version == 3) {
@@ -657,7 +675,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $ue = $foreign = false;
                 if (!empty($invoice['ten'])) {
                     $ten = str_replace('-', '', $invoice['ten']);
-                    if (preg_match('/^[A-Z]{2}[0-9]+$/', $ten)) {
+                    if (preg_match('/^[A-Z]{2}[A-Z0-9]+$/', $ten)) {
                         $ue = true;
                     } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
                         $foreign = true;
@@ -1045,7 +1063,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t\t<P_4B>" . preg_replace('/[\s\-]/', '', $invoice['division_ten']) . "</P_4B>\n";
                 }
                 if (!empty($invoice['ten'])) {
-                    if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[0-9]+)$/', $invoice['ten'], $m)) {
+                    if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $invoice['ten'], $m)) {
                         if (preg_match('/^[1-9]((\d[1-9])|([1-9]\d))\d{7}$/', $m['ten'])) {
                             $jpk_data .= "\t\t<P_5A>" . $m['country'] . "</P_5A>\n";
                             $jpk_data .= "\t\t<P_5B>" . $m['ten'] . "</P_5B>\n";
