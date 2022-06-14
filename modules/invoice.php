@@ -598,8 +598,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
             if ($jpk_type == 'vat') {
                 $ue = $foreign = false;
-                if (!empty($invoice['ten'])) {
-                    $ten = preg_replace('/[\s\-]/', '', $invoice['ten']);
+                $ten = preg_replace('/[\s\-]/', '', $invoice['ten']);
+                if (!empty($ten)) {
                     if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $ten, $m)) {
                         $ue = true;
                     } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
@@ -616,12 +616,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t\t<KodKrajuNadaniaTIN>" . $m['country'] . "</KodKrajuNadaniaTIN>\n";
                     $jpk_data .= "\t\t<NrKontrahenta>" . $m['ten'] . "</NrKontrahenta>\n";
                 } else {
-                    if (empty($invoice['ten'])) {
+                    if (empty($ten)) {
                         $ten = 'brak';
                     }
                     $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
                 }
-                $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
                 $jpk_data .= "\t\t<NazwaKontrahenta>" . escapeJpkText($invoice['name']) . "</NazwaKontrahenta>\n";
                 if ($jpk_vat_version == 3) {
                     $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
