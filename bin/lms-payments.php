@@ -592,7 +592,7 @@ $query = "SELECT
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
-			(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
+			t.type AS tarifftype,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, c.flags AS customerflags,
@@ -600,16 +600,21 @@ $query = "SELECT
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
-			voipcost.value,
-			voipcost.value AS unitary_value,
-			(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
-            (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
-                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
-            END) END) AS splitpayment,
-            (CASE WHEN a.liabilityid IS NULL
-                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+			taxes.value AS taxrate,
+            voipcost.netvalue,
+            voipcost.netvalue AS unitary_netvalue,
+            voipcost.value,
+            voipcost.value AS unitary_value,
+            (CASE WHEN c.type = ?
+                THEN 0
+                ELSE (CASE WHEN t.flags & ? > 0
+                    THEN 1
+                    ELSE 0
+                END)
+            END) AS splitpayment,
+            (CASE WHEN t.flags & ? > 0
+                THEN 1
+                ELSE 0
             END) AS netflag,
 			t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
@@ -623,19 +628,32 @@ $query = "SELECT
 					datefrom <= $currtime AND
 					(dateto > $currtime OR dateto = 0)) AS allsuspended
 			FROM assignments a
+            JOIN tariffs t ON t.id = a.tariffid
+            JOIN taxes ON taxes.id = t.taxid
             LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
             LEFT JOIN promotions p ON p.id = ps.promotionid
 			JOIN customers c ON (a.customerid = c.id)
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 			JOIN (
-				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
+				SELECT
+					(CASE WHEN t2.flags & ? > 0
+						THEN ROUND(SUM(price), 2)
+						ELSE ROUND(SUM(ROUND((price * 100) / (100 + taxes.value), 2)), 2)
+					END) AS netvalue,
+					(CASE WHEN t2.flags & ? > 0
+						THEN ROUND(SUM(ROUND((price * (100 + taxes.value)) / 100, 2)), 2)
+						ELSE ROUND(SUM(price), 2)
+					END) AS value,
+					va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
 				JOIN voipaccounts va ON vc.callervoipaccountid = va.id
 				JOIN voip_numbers vn ON vn.voip_account_id = va.id AND vn.phone = vc.caller
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
 				JOIN assignments a2 ON a2.id = vna.assignment_id
+				JOIN tariffs t2 ON t2.id = a2.tariffid
+				JOIN taxes ON taxes.id = t2.taxid
 				WHERE (
 					(
 						vc.call_start_time >= (CASE a2.period
@@ -671,7 +689,7 @@ $query = "SELECT
 						END)
 					)
 				)
-				GROUP BY va.ownerid, a2.id
+				GROUP BY va.ownerid, a2.id, t2.flags
 			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
 			LEFT JOIN (
 				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', ', ') . " AS phones
@@ -679,20 +697,6 @@ $query = "SELECT
 				LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
-            LEFT JOIN (
-                SELECT tariffs.*,
-                    taxes.value AS taxrate,
-                    (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
-                FROM tariffs
-                JOIN taxes ON taxes.id = tariffs.taxid
-            ) t ON a.tariffid = t.id
-            LEFT JOIN (
-                SELECT liabilities.*,
-                    taxes.value AS taxrate,
-                    (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
-                FROM liabilities
-                JOIN taxes ON taxes.id = liabilities.taxid
-            ) l ON a.liabilityid = l.id
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
            . $customer_status_condition
@@ -722,12 +726,10 @@ $billings = $DB->GetAll(
     array(
         CTYPES_PRIVATE,
         TARIFF_FLAG_SPLIT_PAYMENT,
-        LIABILITY_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
-        LIABILITY_FLAG_NET_ACCOUT,
         1,
         TARIFF_FLAG_NET_ACCOUNT,
-        LIABILITY_FLAG_NET_ACCOUT,
+        TARIFF_FLAG_NET_ACCOUNT,
         SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime,
@@ -737,38 +739,42 @@ $billings = $DB->GetAll(
 $assigns = array();
 
 if ($billings) {
-    // intelligent merge of service and billing assignment records
-    $billing_idx = 0;
-    $billing_count = count($billings);
-    foreach ($services as $service_idx => &$service) {
-        $assigns[] = $service;
-        if ($billing_idx == $billing_count || $service['tarifftype'] != SERVICE_PHONE) {
-            continue;
-        }
+    if (empty($services)) {
+        $assigns = $billings;
+    } else {
+        // intelligent merge of service and billing assignment records
+        $billing_idx = 0;
+        $billing_count = count($billings);
+        foreach ($services as $service_idx => &$service) {
+            $assigns[] = $service;
+            if ($billing_idx == $billing_count || $service['tarifftype'] != SERVICE_PHONE) {
+                continue;
+            }
 
-        $service_customerid = $service['customerid'];
+            $service_customerid = $service['customerid'];
 
-        while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] < $service_customerid) {
-            $billing_idx++;
-        }
-        if ($billing_idx === $billing_count) {
-            continue;
-        }
+            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] < $service_customerid) {
+                $billing_idx++;
+            }
+            if ($billing_idx === $billing_count) {
+                continue;
+            }
 
-        $old_billing_idx = $billing_idx;
+            $old_billing_idx = $billing_idx;
 
-        while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid
-            && $service['id'] != $billings[$billing_idx]['id']) {
-            $billing_idx++;
-        }
+            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid
+                && $service['id'] != $billings[$billing_idx]['id']) {
+                $billing_idx++;
+            }
 
-        if ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
-            $assigns[] = $billings[$billing_idx];
+            if ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
+                $assigns[] = $billings[$billing_idx];
+                $billing_idx = $old_billing_idx;
+            }
             $billing_idx = $old_billing_idx;
         }
-        $billing_idx = $old_billing_idx;
+        unset($service);
     }
-    unset($service);
 } else {
     $assigns = $services;
 }
