@@ -2052,6 +2052,7 @@ foreach ($assigns as $assign) {
                                 'confirmdate' => 0,
                                 'reference' => $invoices[$cid],
                                 'barcode' => base64_encode($bobj->getPngData()),
+                                'numbers' => preg_split('/\s*,\s*/', $assign['phones']),
                             );
 
                             $doc_dir = $billing_document_template['doc_dir'];
