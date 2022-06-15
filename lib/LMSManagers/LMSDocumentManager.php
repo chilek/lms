@@ -2021,6 +2021,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $error = array();
         $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
 
+        $stat = stat(DOC_DIR);
+
         foreach ($files as &$file) {
             $file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
             $file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
@@ -2044,6 +2046,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if (empty($error)) {
             foreach ($files as $file) {
                 @mkdir($file['path'], 0700);
+                chown($file['path'], $stat['uid']);
+                chgrp($file['path'], $stat['gid']);
                 if (empty($file['tmpname'])) {
                     if (!@copy($file['name'], $file['newfile'])) {
                         $error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
@@ -2053,6 +2057,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     $error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
                     break;
                 }
+                chown($file['newfile'], $stat['uid']);
+                chgrp($file['newfile'], $stat['gid']);
             }
         }
 
