@@ -2095,6 +2095,10 @@ foreach ($assigns as $assign) {
                             if (empty($error)) {
                                 $LMS->AddDocumentAttachments($billing_docid, $files);
                             }
+
+                            if (file_exists($file)) {
+                                @unlink($file);
+                            }
                         }
                     }
                 }
