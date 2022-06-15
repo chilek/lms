@@ -2598,11 +2598,18 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         ) > 0;
     }
 
-    public function getDocumentReferences($docid)
+    public function getDocumentReferences($docid, $cashid = null)
     {
         $userid = Auth::GetCurrentUser();
 
         $documents = array();
+
+        if (!empty($cashid)) {
+            $docid = $this->db->GetOne('SELECT docid FROM cash WHERE id = ?', array($cashid));
+            if (empty($docid)) {
+                return $documents;
+            }
+        }
 
         if (empty($userid)) {
             $attachments = $this->db->GetAll(
@@ -2659,6 +2666,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $docid = $attachment['docid'];
             if (!isset($documents[$docid])) {
                 $documents[$docid] = array(
+                    'docid' => $docid,
                     'cdate' => $attachment['cdate'],
                     'fullnumber' => $attachment['fullnumber'],
                     'type' => $attachment['doctype'],

@@ -4072,7 +4072,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function isDocumentReferenced($id)
     {
-        return $this->db->GetOne('SELECT id FROM documents WHERE reference = ?', array($id)) > 0;
+        return $this->db->GetOne(
+            'SELECT d.id
+            FROM documents d
+            WHERE d.reference = ?
+                AND d.type >= 0',
+            array(
+                $id,
+            )
+        ) > 0;
     }
 
     public function MarkDocumentsAsSent($ids)

@@ -116,7 +116,9 @@
 					{continue}
 					{/if}
 				{/if}
-				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}" data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$item.senddate}{/if}"
+				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}"
+					data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$item.senddate}{/if}"
+					data-refdocs="{if empty($item.documentreferenced)}0{else}1{/if}"
 					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
 					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
 					{/if}>
@@ -680,9 +682,22 @@
 				.done(function () {
 					confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"), this)
 						.done(function () {
-							document.addbalance.action = "?m=balancedel";
-							document.addbalance.target = "";
-							document.addbalance.submit();
+							if ($('tr[data-refdocs="1"] :checked').length) {
+								confirmDialog($t("Are you sure, you want to also remove related documents?"), this)
+									.done(function () {
+										document.addbalance.action = "?m=balancedel&documents=1";
+										document.addbalance.target = "";
+										document.addbalance.submit();
+									}).fail(function () {
+										document.addbalance.action = "?m=balancedel";
+										document.addbalance.target = "";
+										document.addbalance.submit();
+									});
+							} else {
+								document.addbalance.action = "?m=balancedel";
+								document.addbalance.target = "";
+								document.addbalance.submit();
+							}
 						});
 				});
 			return;
@@ -694,9 +709,22 @@
 
 		confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"), this)
 			.done(function() {
-				document.addbalance.action = "?m=balancedel";
-				document.addbalance.target = "";
-				document.addbalance.submit();
+				if ($('tr[data-refdocs="1"] :checked').length) {
+					confirmDialog($t("Are you sure, you want to also remove related documents?"), this)
+						.done(function () {
+							document.addbalance.action = "?m=balancedel&documents=1";
+							document.addbalance.target = "";
+							document.addbalance.submit();
+						}).fail(function () {
+							document.addbalance.action = "?m=balancedel";
+							document.addbalance.target = "";
+							document.addbalance.submit();
+						});
+				} else {
+					document.addbalance.action = "?m=balancedel";
+					document.addbalance.target = "";
+					document.addbalance.submit();
+				}
 			});
 	});
 	{/if}

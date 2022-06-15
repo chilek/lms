@@ -207,7 +207,8 @@
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
 	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
 			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}"
-			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$invoice.senddate}{/if}">
+			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$invoice.senddate}{/if}"
+			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
@@ -486,15 +487,28 @@
 	$('.delete-invoice').click(function () {
 		var published = parseInt($(this).closest('tr').attr('data-published'));
 		var number = $(this).closest('tr').attr('data-number');
+		var refdocs = parseInt($(this).closest('tr').attr('data-refdocs'));
 		if (published) {
 			confirmDialog($t('Document has been published already! Are you sure you want to remove it despite this?'), this).done(function () {
 				confirmDialog($t("Are you sure, you want to remove invoice '$a' from database?", number), this).done(function () {
-					location.href = $(this).attr('href');
+					confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+						location.href = $(this).attr('href') + '&documents=1';
+					}).fail(function() {
+						location.href = $(this).attr('href');
+					});
 				});
 			});
 		} else {
 			confirmDialog($t("Are you sure, you want to remove invoice '$a' from database?", number), this).done(function () {
-				location.href = $(this).attr('href');
+				if (refdocs) {
+					confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+						location.href = $(this).attr('href') + '&documents=1';
+					}).fail(function() {
+						location.href = $(this).attr('href');
+					});
+				} else {
+					location.href = $(this).attr('href');
+				}
 			});
 		}
 		return false;
@@ -512,9 +526,21 @@
 					.done(function () {
 						confirmDialog($t("Are you sure, you want to delete selected documents?"), this)
 								.done(function () {
-									document.page.action = "?m=invoicedel";
-									document.page.target = "";
-									document.page.submit();
+									if ($('tr[data-refdocs="1"] :checked').length) {
+										confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+											document.page.action = "?m=invoicedel&documents=1";
+											document.page.target = "";
+											document.page.submit();
+										}).fail(function () {
+											document.page.action = "?m=invoicedel";
+											document.page.target = "";
+											document.page.submit();
+										});;
+									} else {
+										document.page.action = "?m=invoicedel";
+										document.page.target = "";
+										document.page.submit();
+									}
 								});
 					});
 			return;
@@ -526,9 +552,21 @@
 
 		confirmDialog($t("Are you sure, you want to delete selected documents?"), this)
 				.done(function() {
-					document.page.action = "?m=invoicedel";
-					document.page.target = "";
-					document.page.submit();
+					if ($('tr[data-refdocs="1"] :checked').length) {
+						confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+							document.page.action = "?m=invoicedel&documents=1";
+							document.page.target = "";
+							document.page.submit();
+						}).fail(function () {
+							document.page.action = "?m=invoicedel";
+							document.page.target = "";
+							document.page.submit();
+						});;
+					} else {
+						document.page.action = "?m=invoicedel";
+						document.page.target = "";
+						document.page.submit();
+					}
 				});
 	});
 

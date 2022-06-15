@@ -80,7 +80,7 @@ interface LMSDocumentManagerInterface
 
     public function isDocumentAccessible($docid);
 
-    public function getDocumentReferences($docid);
+    public function getDocumentReferences($docid, $cashid = null);
 
     public function getDefaultNumberPlanID($doctype, $divisionid = null);
 

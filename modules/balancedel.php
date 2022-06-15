@@ -29,6 +29,7 @@ $docitems = array();
 $invoices = array();
 $receipts = array();
 $notes = array();
+
 if (!empty($_GET['id']) && intval($_GET['id'])) {
     $ids = array($_GET['id']);
 } elseif (count($_POST['marks'])) {
@@ -85,23 +86,58 @@ $notes = $hook_data['notes'];
 $DB->BeginTrans();
 
 sort($ids);
+
 if (!empty($ids)) {
+    $refdocs = array();
+
     foreach ($ids as $cashid) {
+        $refdocs = array_merge($refdocs, $LMS->getDocumentReferences(null, $cashid));
+
         $LMS->DelBalance($cashid);
+    }
+
+    if (!empty($refdocs)) {
+        foreach ($refdocs as $refdoc) {
+            $LMS->DeleteDocument($refdoc['docid']);
+        }
     }
 }
 
 if (!empty($docitems)) {
     foreach ($docitems as $docid => $items) {
+        if (isset($_GET['documents'])) {
+            $refdocs = $LMS->getDocumentReferences($docid);
+        } else {
+            $refdocs = null;
+        }
+
         foreach ($items as $itemid) {
             $LMS->InvoiceContentDelete($docid, $itemid);
+        }
+
+        if (!empty($refdocs)) {
+            foreach ($refdocs as $refdoc) {
+                $LMS->DeleteDocument($refdoc['docid']);
+            }
         }
     }
 }
 
 if (!empty($invoices)) {
     foreach ($invoices as $invoiceid) {
+        if (isset($_GET['documents'])) {
+            $refdocs = $LMS->getDocumentReferences($invoiceid);
+        } else {
+            $refdocs = null;
+        }
+
         $LMS->InvoiceDelete($invoiceid);
+
+        if (!empty($refdocs)) {
+            foreach ($refdocs as $refdoc) {
+                $LMS->DeleteDocument($refdoc['docid']);
+            }
+        }
     }
 }
 
