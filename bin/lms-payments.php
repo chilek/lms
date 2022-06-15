@@ -147,11 +147,17 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
+$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('DOC_DIR', $CONFIG['directories']['doc_dir']);
+define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
+define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 
@@ -171,7 +177,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -219,6 +225,8 @@ $reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig('payments.r
 
 $force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
+
+$billing_document_template = ConfigHelper::getConfig('payments.billing_document_template', '');
 
 $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
@@ -600,15 +608,9 @@ $query = "SELECT
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
+			voipcost.value,
+			voipcost.value AS unitary_value,
 			taxes.value AS taxrate,
-            (CASE WHEN t.flags & ? > 0
-                THEN voipcost.netvalue
-                ELSE voipcost.value
-            END) AS value,
-            (CASE WHEN t.flags & ? > 0
-                THEN voipcost.netvalue
-                ELSE voipcost.value
-            END) AS unitary_value,
             (CASE WHEN c.type = ?
                 THEN 0
                 ELSE (CASE WHEN t.flags & ? > 0
@@ -630,7 +632,8 @@ $query = "SELECT
 					tariffid    IS NULL   AND
 					liabilityid IS NULL   AND
 					datefrom <= $currtime AND
-					(dateto > $currtime OR dateto = 0)) AS allsuspended
+					(dateto > $currtime OR dateto = 0)) AS allsuspended,
+			(CASE WHEN cc.customerid IS NULL THEN 0 ELSE 1 END) AS billingconsent
 			FROM assignments a
             JOIN tariffs t ON t.id = a.tariffid
             JOIN taxes ON taxes.id = t.taxid
@@ -640,24 +643,13 @@ $query = "SELECT
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 			JOIN (
-				SELECT
-					(CASE WHEN t2.flags & ? > 0
-						THEN ROUND(SUM(price), 2)
-						ELSE ROUND(SUM(ROUND((price * 100) / (100 + taxes.value), 2)), 2)
-					END) AS netvalue,
-					(CASE WHEN t2.flags & ? > 0
-						THEN ROUND(SUM(ROUND((price * (100 + taxes.value)) / 100, 2)), 2)
-						ELSE ROUND(SUM(price), 2)
-					END) AS value,
-					va.ownerid AS customerid,
+				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
 				JOIN voipaccounts va ON vc.callervoipaccountid = va.id
 				JOIN voip_numbers vn ON vn.voip_account_id = va.id AND vn.phone = vc.caller
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
 				JOIN assignments a2 ON a2.id = vna.assignment_id
-				JOIN tariffs t2 ON t2.id = a2.tariffid
-				JOIN taxes ON taxes.id = t2.taxid
 				WHERE (
 					(
 						vc.call_start_time >= (CASE a2.period
@@ -693,7 +685,7 @@ $query = "SELECT
 						END)
 					)
 				)
-				GROUP BY va.ownerid, a2.id, t2.flags
+				GROUP BY va.ownerid, a2.id
 			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
 			LEFT JOIN (
 				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', ', ') . " AS phones
@@ -702,6 +694,7 @@ $query = "SELECT
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
+			LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
 	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
            . $customer_status_condition
            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
@@ -728,14 +721,11 @@ $query = "SELECT
 $billings = $DB->GetAll(
     $query,
     array(
-        TARIFF_FLAG_NET_ACCOUNT,
-        TARIFF_FLAG_NET_ACCOUNT,
         CTYPES_PRIVATE,
         TARIFF_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
         1,
-        TARIFF_FLAG_NET_ACCOUNT,
-        TARIFF_FLAG_NET_ACCOUNT,
+        CCONSENT_PHONE_BILLING,
         SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime,
@@ -1275,6 +1265,128 @@ if (empty($assigns)) {
     die;
 }
 
+$document_dirs = array(DOC_DIR);
+$document_dirs = $LMS->executeHook('documents_dir_initialized', $document_dirs);
+
+function GetBillingTemplates($document_dirs)
+{
+    $docengines = array();
+
+    foreach ($document_dirs as $doc_dir) {
+        if ($dirs = getdir($doc_dir . DIRECTORY_SEPARATOR . 'templates', '^[a-z0-9_-]+$')) {
+            foreach ($dirs as $dir) {
+                $infofile = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                    . $dir . DIRECTORY_SEPARATOR . 'info.php';
+                if (file_exists($infofile)) {
+                    unset($engine);
+                    include($infofile);
+                    $engine['doc_dir'] = $doc_dir;
+                    if (isset($engine['type'])) {
+                        if (!is_array($engine['type'])) {
+                            $engine['type'] = array($engine['type']);
+                        }
+                        $intersect = array_intersect($engine['type'], array(DOC_BILLING));
+                        if (!empty($intersect)) {
+                            $docengines[$dir] = $engine;
+                        }
+                    } else {
+                        $docengines[$dir] = $engine;
+                    }
+                }
+            }
+        }
+    }
+
+    return $docengines;
+}
+
+$billing_document_engines = GetBillingTemplates($document_dirs);
+
+if (!empty($billing_document_engines)) {
+    if (empty($billing_document_template)) {
+        if (count($billing_document_engines) == 1) {
+            $billing_document_template = reset($billing_document_engines);
+            $billing_document_template['dir'] = key($billing_document_engines);
+            unset($billing_document_engines);
+        }
+    } else {
+        foreach ($billing_document_engines as $dir => $engine) {
+            if ($engine['name'] == $billing_document_template) {
+                $billing_document_template = $engine;
+                $billing_document_template['dir'] = $dir;
+                break;
+            }
+        }
+    }
+}
+
+if (!empty($billing_document_template)) {
+    $billing_plans = array();
+    $billing_periods = array(
+        0 => YEARLY,
+    );
+    $results = $DB->GetAll(
+        "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault
+        FROM numberplans n
+        LEFT JOIN numberplanassignments a ON (a.planid = n.id)
+        WHERE doctype = ?",
+        array(
+            DOC_BILLING,
+        )
+    );
+    if (!empty($results)) {
+        foreach ($results as $row) {
+            if ($row['isdefault']) {
+                $billing_plans[$row['divid']] = $row['id'];
+            }
+            $billing_periods[$row['id']] = $row['period'] ? $row['period'] : YEARLY;
+        }
+    }
+
+    $barcode = new \Com\Tecnick\Barcode\Barcode();
+
+    // Initialize templates engine (must be before locale settings)
+    $SMARTY = new LMSSmarty;
+
+    // test for proper version of Smarty
+
+    if (defined('Smarty::SMARTY_VERSION')) {
+        $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+    } else {
+        $ver_chunks = null;
+    }
+    if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+        die('Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.' . PHP_EOL);
+    }
+
+    define('SMARTY_VERSION', $ver_chunks[0]);
+
+    // add LMS's custom plugins directory
+    $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+
+    // Set some template and layout variables
+
+    $SMARTY->setTemplateDir(null);
+/*
+    $custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
+    if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
+        && !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)) {
+        $SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
+    }
+    $SMARTY->AddTemplateDir(
+        array(
+            SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
+            SMARTY_TEMPLATES_DIR,
+        )
+    );
+*/
+    $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
+
+    $layout = array();
+
+    $SMARTY->assignByRef('layout', $layout);
+}
+
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
@@ -1798,6 +1910,192 @@ foreach ($assigns as $assign) {
                                 $assign['tarifftype'],
                             )
                         );
+                    }
+
+
+                    if (!empty($billing_document_template) && !empty($assign['billingconsent'])) {
+                        $billing_plan = isset($billing_plans[$divid]) ? $billing_plans[$divid] : 0;
+                        if (!isset($numbertemplates[$billing_plan])) {
+                            $numbertemplates[$billing_plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($billing_plan));
+                        }
+                        $customernumber = !empty($numbertemplates[$billing_plan]) && preg_match('/%[0-9]*C/', $numbertemplates[$billing_plan]);
+                        if (($customernumber && !isset($customernumbers[DOC_BILLING][$billing_plan][$cid]))
+                            || (!$customernumber && !isset($numbers[DOC_BILLING][$billing_plan]))) {
+                            $period = get_period($billing_periods[$billing_plan]);
+                            $query = "SELECT MAX(number) AS number FROM documents
+                                WHERE cdate >= ? AND cdate <= ? AND type = ? AND numberplanid "
+                                . ($billing_plan ? '= ' . $billing_plan : 'IS NULL');
+                            if ($customernumber) {
+                                $query .= ' AND customerid = ' . $cid;
+                            }
+                            $maxnumber = (($number = $DB->GetOne(
+                                $query,
+                                array($period['start'], $period['end'], DOC_BILLING)
+                            )) != 0 ? $number : 0);
+                            if ($customernumber) {
+                                $customernumbers[DOC_BILLING][$billing_plan][$cid] = $newnumber = $maxnumber + 1;
+                            } else {
+                                $numbers[DOC_BILLING][$billing_plan] = $newnumber = $maxnumber + 1;
+                            }
+                        } else {
+                            if ($customernumber) {
+                                $newnumber = $customernumbers[DOC_BILLING][$billing_plan][$cid] + 1;
+                                $customernumbers[DOC_BILLING][$billing_plan][$cid] = $newnumber;
+                            } else {
+                                $newnumber = $numbers[DOC_BILLING][$billing_plan] + 1;
+                                $numbers[DOC_BILLING][$billing_plan] = $newnumber;
+                            }
+                        }
+
+                        $fullnumber = docnumber(array(
+                            'number' => $newnumber,
+                            'template' => $numbertemplates[$billing_plan],
+                            'cdate' => $issuetime,
+                            'customerid' => $cid,
+                        ));
+
+                        $DB->Execute(
+                            "INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
+                                customerid, name, address, zip, city, ten, ssn, cdate,
+                                div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+                                div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+                                reference, template, closed)
+                                VALUES (?, ?, ?, ?, ?,
+                                    ?, ?, ?, ?, ?, ?, ?, ?,
+                                    ?, ?, ?, ?, ?, ?, ?, ?,
+                                    ?, ?, ?, ?, ?, ?, ?,
+                                    ?, ?, ?)",
+                            array(
+                                $newnumber,
+                                $billing_plan ? $billing_plan : null,
+                                DOC_BILLING,
+                                $customer['countryid'] ? $customer['countryid'] : null,
+                                $customer['divisionid'],
+                                $cid,
+                                $customer['lastname'] . ' ' . $customer['name'],
+                                ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+                                    ? $customer['city'] . ', ' : '') . $customer['address'],
+                                $customer['zip'] ? $customer['zip'] : null,
+                                $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
+                                $customer['ten'],
+                                $customer['ssn'],
+                                $issuetime,
+                                $division['name'] ? $division['name'] : '',
+                                $division['shortname'] ? $division['shortname'] : '',
+                                $division['address'] ? $division['address'] : '',
+                                $division['city'] ? $division['city'] : '',
+                                $division['zip'] ? $division['zip'] : '',
+                                $division['countryid'] ? $division['countryid'] : null,
+                                $division['ten'] ? $division['ten'] : '',
+                                $division['regon'] ? $division['regon'] : '',
+                                $division['bank'] ?: null,
+                                $division['account'] ? $division['account'] : '',
+                                $division['inv_header'] ? $division['inv_header'] : '',
+                                $division['inv_footer'] ? $division['inv_footer'] : '',
+                                $division['inv_author'] ? $division['inv_author'] : '',
+                                $division['inv_cplace'] ? $division['inv_cplace'] : '',
+                                $fullnumber,
+                                $invoices[$cid],
+                                $billing_document_template['name'],
+                                DOC_CLOSED,
+                            )
+                        );
+                        $billing_docid = $DB->GetLastInsertID('documents');
+
+                        switch ($assign['period']) {
+                            case YEARLY:
+                                $datefrom = mktime(0, 0, 0, $month, 1, $year - 1);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case HALFYEARLY:
+                                $datefrom = mktime(0, 0, 0, $month - 6, 1, $year);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case QUARTERLY:
+                                $datefrom = mktime(0, 0, 0, $month - 3, 1, $year);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case MONTHLY:
+                                $datefrom = mktime(0, 0, 0, $month-1, 1, $year);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case DISPOSABLE:
+                                $datefrom = $currtime;
+                                $dateto = strtotime('+ 1 day', $currtime) - 1;
+                                break;
+                        }
+
+                        $DB->Execute(
+                            "INSERT INTO documentcontents
+                            (docid, title, fromdate, todate)
+                            VALUES (?, ?, ?, ?)",
+                            array(
+                                $billing_docid,
+                                $billing_document_template['title'],
+                                $datefrom,
+                                $dateto,
+                            )
+                        );
+
+                        if (!$test) {
+                            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+
+                            $document = array(
+                                'customerid' => $cid,
+                                'type' => DOC_BILLING,
+                                'title' => $billing_document_template['title'],
+                                'number' => $newnumber,
+                                'numberplanid' => $billing_plan,
+                                'templ' => $billing_document_template['name'],
+                                'fromdate' => $datefrom,
+                                'todate' => $dateto,
+                                'confirmdate' => 0,
+                                'reference' => $invoices[$cid],
+                                'barcode' => base64_encode($bobj->getPngData()),
+                            );
+
+                            $doc_dir = $billing_document_template['doc_dir'];
+                            $template_dir = $billing_document_template['doc_dir'] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+
+                            $engine = $billing_document_template;
+
+                            // run template engine
+                            if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                                . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
+                                include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                                    . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
+                            } else {
+                                include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
+                                    . DIRECTORY_SEPARATOR . 'engine.php');
+                            }
+
+                            $files = array();
+
+                            if ($output) {
+                                $file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
+                                file_put_contents($file, $output);
+
+                                $md5sum = md5_file($file);
+                                $path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
+                                $docfile = array(
+                                    'md5sum' => $md5sum,
+                                    'type' => $engine['content_type'],
+                                    'filename' => $engine['output'],
+                                    'tmpname' => $file,
+                                    'attachmenttype' => 1,
+                                    'path' => $path,
+                                    'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+                                );
+                                $files[] = $docfile;
+                            } else {
+                                die('Fatal error: Problem during billing document generation!' . PHP_EOL);
+                            }
+
+                            $error = $LMS->AddDocumentFileAttachments($files);
+                            if (empty($error)) {
+                                $LMS->AddDocumentAttachments($billing_docid, $files);
+                            }
+                        }
                     }
                 }
             }
