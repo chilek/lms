@@ -415,6 +415,11 @@ if (!empty($divisionid)) {
     ConfigHelper::setFilter($divisionid);
 }
 
+$LMS->executeHook('division_set_after', array(
+    'lms' => $LMS,
+    'divisionid' => $divisionid,
+));
+
 // now it's time for script settings
 $smtp_options = array(
     'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
