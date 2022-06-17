@@ -582,11 +582,16 @@ $_LANG['Cautions:'] = 'Uwagi:';
 $_LANG['Change connection type'] = 'Zmień typ połączenia';
 $_LANG['Connection type:'] = 'Typ połączenia:';
 $_LANG['incoming'] = 'przychodzące';
+$_LANG['<!voip>incoming'] = 'przychodzące';
 $_LANG['Allows you to display IP address usage from whole network.'] = 'Umożliwia wyświetlenie użycia adresów IP z całej sieci.';
 $_LANG['outgoing'] = 'wychodzące';
+$_LANG['<!voip>outgoing'] = 'wychodzące';
 $_LANG['answered'] = 'odebrano';
 $_LANG['no answer'] = 'nie odebrano';
-$_LANG['busy<!voip>'] = 'zajęty';
+$_LANG['<!voip>busy'] = 'zajęty';
+$_LANG['<!voip>Direction'] = 'Kierunek';
+$_LANG['<!voip>Status'] = 'Status';
+
 $_LANG['ChangeLog'] = 'ChangeLog';
 $_LANG['Change password'] = 'Zmiana hasła';
 $_LANG['Change registration info'] = 'Zmień dane rejestracyjne';
