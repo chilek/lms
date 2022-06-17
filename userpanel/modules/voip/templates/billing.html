@@ -155,8 +155,8 @@
                                     {/if}
                                 </TD>
                                 <TD>{trans("Date range:")}</TD>
-                                <TD>{trans("Connection type:")}</TD>
-                                <TD>{trans("Status:")}</TD>
+                                <TD>{trans("<!voip>Direction")}</TD>
+                                <TD>{trans("<!voip>Status")}</TD>
                                 <td rowspan="2">
                                     <input type="button" id="billing" class="submit-btn" value="{trans("Search")} &raquo;">
                                     <input type="button" id="minibilling" class="submit-btn" value="{trans("Minibilling")} &raquo;">
@@ -199,8 +199,8 @@
                                 <TD>
                                     <SELECT SIZE="1" NAME="ftype" CLASS="lms-input">
                                         <OPTION VALUE="0">{trans("- all -")}</OPTION>
-                                        <OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
-                                        <OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
+                                        <OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("<!voip>incoming")}</OPTION>
+                                        <OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("<!voip>outgoing")}</OPTION>
                                     </SELECT>
                                 </TD>
                                 <TD>
@@ -208,7 +208,7 @@
                                         <OPTION VALUE="0">{trans("- all -")}</OPTION>
                                         <OPTION VALUE="{CALL_ANSWERED}"      {if $params.fstatus == CALL_ANSWERED}  SELECTED{/if}>{trans("answered")}</OPTION>
                                         <OPTION VALUE="{CALL_NO_ANSWER}"     {if $params.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
-                                        <OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
+                                        <OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("<!voip>busy")}</OPTION>
                                         <OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
                                     </SELECT>
                                 </TD>
@@ -234,13 +234,13 @@
                     {box title="Billing list"}
                         <TABLE CLASS="billing-tab">
                             <TR CLASS="darkest">
-                                <TD>{trans("Begin time:<!voip>")}</TD>
+                                <TD>{trans("<!voip>Begin time")}</TD>
                                 <TD>{trans("Caller:")}</TD>
                                 <TD>{trans("Callee:")}</TD>
                                 <TD>{trans("Call begin time:")}</TD>
                                 <TD>{trans("Call answer time:")}</TD>
-                                <TD>{trans("Connection type:")}</TD>
-                                <TD>{trans("Status:")}</TD>
+                                <TD>{trans("<!voip>Direction")}</TD>
+                                <TD>{trans("<!voip>Status")}</TD>
                                 <TD>{trans("Price:")}</TD>
                                 <TD>{trans("Others:")}</TD>
                             </TR>
@@ -255,14 +255,14 @@
                                         <TD>{if $billings[i].callanswertime>60}{floor($billings[i].callanswertime/60)}min{/if} {$billings[i].callanswertime%60}s</TD>
                                         <TD>
                                             {if $billings[i].type == CALL_OUTGOING}
-                                                {trans("outgoing")}
+                                                {trans("<!voip>outgoing")}
                                             {elseif $billings[i].type == CALL_INCOMING}
-                                                {trans("incoming")}
+                                                {trans("<!voip>incoming")}
                                             {/if}
                                         </TD>
                                         <TD>
                                             {if $billings[i].status == CALL_BUSY}
-                                                {trans("busy<!voip>")}
+                                                {trans("<!voip>busy")}
                                             {elseif $billings[i].status == CALL_ANSWERED}
                                                 {trans("answered")}
                                             {elseif $billings[i].status == CALL_NO_ANSWER}

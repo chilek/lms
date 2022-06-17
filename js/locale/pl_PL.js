@@ -580,12 +580,15 @@ $_LANG['Cash Report'] = 'Raport kasowy';
 $_LANG['Cautions:'] = 'Uwagi:';
 $_LANG['Change connection type'] = 'Zmień typ połączenia';
 $_LANG['Connection type:'] = 'Typ połączenia:';
+$_LANG['<!voip>Connection type'] = 'Kierunek';
 $_LANG['incoming'] = 'przychodzące';
+$_LANG['<!voip>incoming'] = 'przychodzące';
 $_LANG['Allows you to display IP address usage from whole network.'] = 'Umożliwia wyświetlenie użycia adresów IP z całej sieci.';
 $_LANG['outgoing'] = 'wychodzące';
+$_LANG['<!voip>outgoing'] = 'wychodzące';
 $_LANG['answered'] = 'odebrano';
 $_LANG['no answer'] = 'nie odebrano';
-$_LANG['busy<!voip>'] = 'zajęty';
+$_LANG['<!voip>busy<'] = 'zajęty';
 $_LANG['ChangeLog'] = 'ChangeLog';
 $_LANG['Change password'] = 'Zmiana hasła';
 $_LANG['Change registration info'] = 'Zmień dane rejestracyjne';
@@ -4284,7 +4287,7 @@ $_LANG['Today'] = 'Dziś';
 
 $_LANG['Begin time:'] = 'Czas rozpoczęcia:';
 $_LANG['Begin time'] = 'Czas rozpoczęcia';
-$_LANG['Begin time:<!voip>'] = 'Czas rozpoczęcia:';
+$_LANG['<!voip>Begin time'] = 'Czas rozpoczęcia';
 
 $_LANG['Debit Note No.'] = 'Numer noty obciążeniowej';
 
