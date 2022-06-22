@@ -103,7 +103,9 @@
 						{$item.subject|escape}
 					</TD>
 					<TD class="text-center nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
-						<a href="?m=userinfo&id={$item.userid}">{$item.username|escape}</a>
+						{if $item.userid}
+							<a href="?m=userinfo&id={$item.userid}">{$item.username|escape}</a>
+						{/if}
 					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.destination}
