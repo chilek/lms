@@ -569,7 +569,7 @@
 							<div class="valign-middle">
 								<textarea name="customerdata[info]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}
-									>{$customerinfo.info|escape}</textarea>
+									>{$customerinfo.info|default:""|escape}</textarea>
 								{hint content="Enter additional information (optional)"}
 							</div>
 						</TD>
@@ -581,7 +581,7 @@
 						<TD>
 							<div class="valign-middle">
 								<textarea name="customerdata[message]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
-									{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</textarea>
+									{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|default:""|escape}</textarea>
 								{hint content="Enter notice contents (optional)"}
 							</div>
 						</TD>
@@ -594,7 +594,7 @@
 							<div class="valign-middle">
 								<textarea name="customerdata[notes]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}
-									>{$customerinfo.notes|escape}</textarea>
+									>{$customerinfo.notes|default:""|escape}</textarea>
 								{hint content="Enter notes (optional)"}
 							</div>
 						</TD>

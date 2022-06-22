@@ -591,7 +591,7 @@
 						<div class="valign-middle">
 							<textarea rows="10" cols="60" name="customeradd[info]" class="lms-ui-wysiwyg-editor"
 								{if isset($customeradd.wysiwyg.info)} data-wysiwyg="{$customeradd.wysiwyg.info}"{/if}
-								>{$customeradd.info|escape}</textarea>
+								>{$customeradd.info|default:""|escape}</textarea>
 							{hint content="Enter additional information (optional)"}
 						</div>
 					</TD>
@@ -602,7 +602,7 @@
 						<div class="valign-middle">
 							<textarea rows="10" cols="60" name="customeradd[message]" class="lms-ui-wysiwyg-editor"
 								{if isset($customeradd.wysiwyg.message)} data-wysiwyg="{$customeradd.wysiwyg.message}"{/if}
-								>{$customeradd.message|escape}</textarea>
+								>{$customeradd.message|default:""|escape}</textarea>
 							{hint content="Enter notice contents (optional)"}
 						</div>
 					</TD>
@@ -613,7 +613,7 @@
 						<div class="valign-middle">
 							<textarea rows="10" cols="60" name="customeradd[notes]" class="lms-ui-wysiwyg-editor"
 								{if isset($customeradd.wysiwyg.notes)} data-wysiwyg="{$customeradd.wysiwyg.notes}"{/if}
-								>{$customeradd.notes|escape}</textarea>
+								>{$customeradd.notes|default:""|escape}</textarea>
 							{hint content="Enter notes (optional)"}
 						</div>
 					</TD>
@@ -625,7 +625,7 @@
 							<textarea name="customeradd[documentmemo]" class="lms-ui-wysiwyg-editor"
 								cols="60" rows="10"
 								{if isset($customeradd.wysiwyg.documentmemo)} data-wysiwyg="{$customeradd.wysiwyg.documentmemo}"{/if}
-								>{$customeradd.documentmemo|escape}</textarea>
+								>{$customeradd.documentmemo|default:""|escape}</textarea>
 							{hint content="Enter document memo (optional)"}
 						</div>
 					</TD>
