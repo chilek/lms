@@ -113,6 +113,7 @@ class LMSSmartyPlugins
 
     public static function currencySelectionFunction(array $params, $template)
     {
+        $elemid = isset($params['elemid']) ? 'id="' . $params['elemid'] . '"' : null;
         $elementname = isset($params['elementname']) ? $params['elementname'] : 'currency';
         $selected = isset($params['selected']) && isset($GLOBALS['CURRENCIES'][$params['selected']])
             ? $params['selected'] : null;
@@ -130,8 +131,8 @@ class LMSSmartyPlugins
         }
 
         if (function_exists('get_currency_value') && !$locked) {
-            $result = '<select class="'. (!$selected ? 'lms-ui-warning' : '')
-                .'" name="' . $elementname . '" '
+            $result = '<select class="' . (!$selected ? 'lms-ui-warning' : '')
+                .'" name="' . $elementname . '" ' . $elemid
                 . self::tipFunction(array('text' => !$selected ? 'Select currency and save' : 'Select currency'), $template)
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '>';
             foreach ($currencies as $currency) {
