@@ -354,7 +354,7 @@ class SYSLOG
             foreach ($data as $resourcetype => $val) {
                 if (((is_int($resourcetype) && isset(self::$resource_keys[$resourcetype]))
                 || (!is_int($resourcetype) && is_array($keys) && in_array($resourcetype, $keys)))
-                && (is_int($val) || preg_match('/^[0-9]+$/', $val) || !isset($val))) {
+                && (is_int($val) || !isset($val) || preg_match('/^[0-9]+$/', $val))) {
                     if (!isset($val)) {
                         $val = 0;
                     }
