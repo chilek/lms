@@ -85,7 +85,7 @@
                 {if !isset($eventlist_mode)}
                     <a href="#" class="lms-ui-button" title="{trans("Show in timetable")}"
                        data-title="{trans("Show in timetable")}"
-                       onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
+                       onclick="location.href = '?m=eventlist&year={date('Y', $event.date)}&month={date('m', $event.date)}&day={date('d', $event.date)}';">
                         {icon name="timetable"}
                     </a>
                 {/if}
