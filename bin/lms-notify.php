@@ -159,8 +159,8 @@ if (empty($channels)) {
     $channels[] = 'mail';
 }
 
-$current_month = intval(strftime('%m'));
-$current_year = intval(strftime('%Y'));
+$current_month = intval(date('m'));
+$current_year = intval(date('Y'));
 
 $config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
     ? $options['section'] : 'notify');
@@ -581,7 +581,7 @@ function parse_customer_data($data, $format, $row)
         $deadline = $row['cdate'] + $row['paytime'] * 86400;
     }
 
-    list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+    list ($now_y, $now_m) = explode('/', date('Y/m'));
 
     if ($row['totalbalnce'] < 0) {
         $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$row['totalbalance']));
@@ -620,12 +620,12 @@ function parse_customer_data($data, $format, $row)
             $row['age'],
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
-            strftime('%Y'),
-            strftime('%m'),
-            strftime("%B"),
-            strftime("%Y", $deadline),
-            strftime("%m", $deadline),
-            strftime("%d", $deadline),
+            date('Y'),
+            date('m'),
+            date('F'),
+            date('Y', $deadline),
+            date('m', $deadline),
+            date('d', $deadline),
             sprintf('%01.2f', $row['balance']),
             sprintf('%01.2f', $row['totalbalance']),
             moneyf($row['balance']),
@@ -688,10 +688,10 @@ function parse_customer_data($data, $format, $row)
             $row['doc_number'],
             $row['doc_number'],
             moneyf($row['value'], $row['currency']),
-            strftime('%Y', $row['cdate']),
-            strftime('%m', $row['cdate']),
-            strftime('%d', $row['cdate']),
-            strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+            date('Y', $row['cdate']),
+            date('m', $row['cdate']),
+            date('d', $row['cdate']),
+            date('d', mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
         ),
         $data
     );
@@ -3793,8 +3793,8 @@ if (!empty($intersect)) {
                                         "SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
                                         array($cid)
                                     )) {
-                                        $year = intval(strftime('%Y', $datefrom));
-                                        $month = intval(strftime('%m', $datefrom));
+                                        $year = intval(date('Y', $datefrom));
+                                        $month = intval(date('m', $datefrom));
                                         if ($year < $current_year || ($year == $current_year && $month < $current_month)) {
                                             $aids = $DB->GetCol(
                                                 "SELECT id FROM assignments

@@ -254,8 +254,8 @@ if (empty($fakedate)) {
 $issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
 list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
 list ($backward_year, $backward_month) = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
-$weekday = strftime('%u', $currtime);
-$yearday = strftime('%j', $currtime);
+$weekday = date('N', $currtime);
+$yearday = sprintf('%03d', date('z', $currtime) + 1);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
 
 if (is_leap_year($year) && $yearday > 31 + 28) {
@@ -326,14 +326,14 @@ $backward_aligned_periods = array(
 
 $current_month = strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
 $previous_month = strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, 0, $year));
-$current_period = strftime("%m/%Y", mktime(12, 0, 0, $month, 1, $year));
-$next_period = strftime("%m/%Y", mktime(12, 0, 0, $month + 1, 1, $year));
-$prev_period = strftime("%m/%Y", mktime(12, 0, 0, $month - 1, 1, $year));
+$current_period = date('m/Y', mktime(12, 0, 0, $month, 1, $year));
+$next_period = date('m/Y', mktime(12, 0, 0, $month + 1, 1, $year));
+$prev_period = date('m/Y', mktime(12, 0, 0, $month - 1, 1, $year));
 
 // sale date setting
 $saledate = $issuetime;
 if ($sdate_next) {
-    $saledate = strftime("%s", mktime(12, 0, 0, $month + 1, 1, $year));
+    $saledate = mktime(12, 0, 0, $month + 1, 1, $year);
 }
 
 // calculate start and end of numbering period
@@ -348,17 +348,17 @@ function get_period($period)
 
     switch ($period) {
         case DAILY:
-            $start = strftime("%s", mktime(0, 0, 0, $month, $dom, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $month, $dom + 1, $year));
+            $start = mktime(0, 0, 0, $month, $dom, $year);
+            $end = mktime(0, 0, 0, $month, $dom + 1, $year);
             break;
         case WEEKLY:
             $startweek = $dom - $weekday + 1;
-            $start = strftime("%s", mktime(0, 0, 0, $month, $startweek, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $month, $startweek + 7, $year));
+            $start = mktime(0, 0, 0, $month, $startweek, $year);
+            $end = mktime(0, 0, 0, $month, $startweek + 7, $year);
             break;
         case MONTHLY:
-            $start = strftime("%s", mktime(0, 0, 0, $month, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $month + 1, 1, $year));
+            $start = mktime(0, 0, 0, $month, 1, $year);
+            $end = mktime(0, 0, 0, $month + 1, 1, $year);
             break;
         case QUARTERLY:
             if ($month <= 3) {
@@ -370,8 +370,8 @@ function get_period($period)
             } else {
                 $startmonth = 10;
             }
-            $start = strftime("%s", mktime(0, 0, 0, $startmonth, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $startmonth + 3, 1, $year));
+            $start = mktime(0, 0, 0, $startmonth, 1, $year);
+            $end = mktime(0, 0, 0, $startmonth + 3, 1, $year);
             break;
         case HALFYEARLY:
             if ($month <= 6) {
@@ -379,16 +379,16 @@ function get_period($period)
             } else {
                 $startmonth = 7;
             }
-            $start = strftime("%s", mktime(0, 0, 0, $startmonth, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $startmonth + 6, 1, $year));
+            $start = mktime(0, 0, 0, $startmonth, 1, $year);
+            $end = mktime(0, 0, 0, $startmonth + 6, 1, $year);
             break;
         case CONTINUOUS:
-            $start = strftime("%s", mktime(0, 0, 0, 1, 1, 1970));
-            $end = strftime("%s", mktime(0, 0, 0, $month, $dom + 1, $year));
+            $start = mktime(0, 0, 0, 1, 1, 1970);
+            $end = mktime(0, 0, 0, $month, $dom + 1, $year);
             break;
         default:
-            $start = strftime("%s", mktime(0, 0, 0, 1, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, 1, 1, $year + 1));
+            $start = mktime(0, 0, 0, 1, 1, $year);
+            $end = mktime(0, 0, 0, 1, 1, $year + 1);
     }
     return array('start' => $start, 'end' => $end);
 }
@@ -2149,7 +2149,7 @@ foreach ($assigns as $assign) {
                     $m = $month;
                     $y = $year;
                     $partial_price = 0;
-                    $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+                    $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
                     while ($diffdays) {
                         if ($d - $diffdays <= 0) {
                             $partial_price += ($d - 1) * $price / $month_days;
@@ -2159,10 +2159,10 @@ foreach ($assigns as $assign) {
                             $diffdays = 0;
                         }
                         $date = mktime(0, 0, 0, $m, 0, $y);
-                        $month_days = strftime("%d", $date);
+                        $month_days = date('d', $date);
                         $d = $month_days + 1;
-                        $m = strftime("%m", $date);
-                        $y = strftime("%Y", $date);
+                        $m = date('m', $date);
+                        $y = date('Y', $date);
                     }
                     break;
                 case QUARTERLY:
