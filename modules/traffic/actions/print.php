@@ -25,16 +25,16 @@
  */
 
 $layout['pagetitle'] = trans('Printing');
-        
+
 $yearstart = date('Y', $DB->GetOne('SELECT MIN(dt) FROM stats'));
 $yearend = date('Y', $DB->GetOne('SELECT MAX(dt) FROM stats'));
 for ($i=$yearstart; $i<$yearend+1; $i++) {
     $statyears[] = $i;
 }
 for ($i=1; $i<13; $i++) {
-    $months[$i] = strftime('%B', mktime(0, 0, 0, $i, 1));
+    $months[$i] = date('F', mktime(0, 0, 0, $i, 1));
 }
-    
+
 $SMARTY->assign('currmonth', date('n'));
 $SMARTY->assign('curryear', date('Y'));
 $SMARTY->assign('statyears', $statyears);

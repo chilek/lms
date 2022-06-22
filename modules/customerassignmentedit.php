@@ -87,7 +87,7 @@ if (isset($_POST['assignment'])) {
             $at = sprintf('%d', $a['at']);
 
             if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0) {
-                $at = strftime('%u', time());
+                $at = date('N', time());
             }
 
             if ($at < 1 || $at > 7) {

@@ -460,7 +460,7 @@ if (!isset($_POST['xjxfun'])) {
                     $customerinfo['cutoffstop'] = 0;
                     $customerinfo['cutoffstopindefinitely'] = 1;
                 } else {
-                    $customerinfo['cutoffstop'] = strftime('%Y/%m/%d', $customerinfo['cutoffstop']);
+                    $customerinfo['cutoffstop'] = date('Y/m/d', $customerinfo['cutoffstop']);
                 }
             } else {
                 $customerinfo['cutoffstop'] = 0;

@@ -194,7 +194,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['payday'] = trans('daily');
                         break;
                     case WEEKLY:
-                        $row['at'] = strftime("%a", mktime(0, 0, 0, 0, $row['at'] + 5, 0));
+                        $row['at'] = date('D', mktime(0, 0, 0, 0, $row['at'] + 5, 0));
                         $row['payday'] = trans('weekly ($a)', $row['at']);
                         $row['period'] = trans('weekly');
                         break;
@@ -763,7 +763,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $diffdays = round(($partial_dateto - $orig_datefrom) / 86400);
                         if ($diffdays > 0) {
                             list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
-                            $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+                            $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
 
                             $partial_dateto--;
                             if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
@@ -868,7 +868,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
 
                         if ($diffdays > 0) {
-                            $month_days = strftime("%d", mktime(0, 0, 0, $month + 1, 0, $year));
+                            $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
                             $v = $diffdays * $discounted_val / $month_days;
                             $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
                             $partial_datefrom = $prevperiod;
@@ -1001,7 +1001,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $diffdays = ($partial_dateto - $data['datefrom']) / 86400;
                 if ($diffdays > 0) {
                     list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
-                    $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+                    $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
                     $partial_dateto--;
@@ -1077,7 +1077,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $prevperiod = mktime(0, 0, 0, $month, 1, $year);
                 $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
                 if ($diffdays > 0) {
-                    $month_days = strftime("%d", mktime(0, 0, 0, $month + 1, 0, $year));
+                    $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
                     $partial_datefrom = $prevperiod;
@@ -1304,7 +1304,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $at = sprintf('%d', $a['at']);
 
                 if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0) {
-                    $at = strftime('%u', time());
+                    $at = date('N', time());
                 }
 
                 if ($at < 1 || $at > 7) {
@@ -3838,7 +3838,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['payday'] = trans('daily');
                         break;
                     case WEEKLY:
-                        $row['payday'] = trans('weekly ($a)', strftime("%a", mktime(0, 0, 0, 0, $row['at'] + 5, 0)));
+                        $row['payday'] = trans('weekly ($a)', date('D', mktime(0, 0, 0, 0, $row['at'] + 5, 0)));
                         break;
                     case MONTHLY:
                         $row['payday'] = trans('monthly ($a)', $row['at']);
@@ -3872,7 +3872,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $payment['payday'] = trans('daily');
                 break;
             case WEEKLY:
-                $payment['payday'] = trans('weekly ($a)', strftime("%a", mktime(0, 0, 0, 0, $payment['at'] + 5, 0)));
+                $payment['payday'] = trans('weekly ($a)', date('D', mktime(0, 0, 0, 0, $payment['at'] + 5, 0)));
                 break;
             case MONTHLY:
                 $payment['payday'] = trans('monthly ($a)', $payment['at']);

@@ -426,8 +426,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $quarterend = mktime(0, 0, 0, $startq + 3, 1);
             $monthstart = mktime(0, 0, 0, $currmonth, 1, $curryear);
             $monthend = mktime(0, 0, 0, $currmonth + 1, 1, $curryear);
-            $weekstart = mktime(0, 0, 0, $currmonth, date('j') - strftime('%u') + 1);
-            $weekend = mktime(0, 0, 0, $currmonth, date('j') - strftime('%u') + 1 + 7);
+            $weekstart = mktime(0, 0, 0, $currmonth, date('j') - date('N') + 1);
+            $weekend = mktime(0, 0, 0, $currmonth, date('j') - date('N') + 1 + 7);
             $daystart = mktime(0, 0, 0);
             $dayend = mktime(0, 0, 0, date('n'), date('j') + 1);
 
@@ -637,7 +637,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $yearstart = mktime(0, 0, 0, 1, 1);
         $quarterstart = mktime(0, 0, 0, $startq, 1);
         $monthstart = mktime(0, 0, 0, $currmonth, 1);
-        $weekstart = mktime(0, 0, 0, $currmonth, date('j') - strftime('%u') + 1);
+        $weekstart = mktime(0, 0, 0, $currmonth, date('j') - date('N') + 1);
         $daystart = mktime(0, 0, 0);
 
         if (!empty($params['count'])) {
@@ -1116,7 +1116,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, date('n', $cdate), date('j', $cdate) + 1, date('Y', $cdate));
                 break;
             case WEEKLY:
-                $weekstart = date('j', $cdate) - strftime('%u', $cdate) + 1;
+                $weekstart = date('j', $cdate) - date('N', $cdate) + 1;
                 $start = mktime(0, 0, 0, date('n', $cdate), $weekstart, date('Y', $cdate));
                 $end = mktime(0, 0, 0, date('n', $cdate), $weekstart + 7, date('Y', $cdate));
                 break;
@@ -1251,7 +1251,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, date('n', $cdate), date('j', $cdate) + 1, date('Y', $cdate));
                 break;
             case WEEKLY:
-                $weekstart = date('j', $cdate) - strftime('%u', $cdate) + 1;
+                $weekstart = date('j', $cdate) - date('N', $cdate) + 1;
                 $start = mktime(0, 0, 0, date('n', $cdate), $weekstart, date('Y', $cdate));
                 $end = mktime(0, 0, 0, date('n', $cdate), $weekstart + 7, date('Y', $cdate));
                 break;
@@ -2326,9 +2326,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $subject = $mail_subject;
 
             $body = preg_replace('/%document/', $document['fullnumber'], $body);
-            $body = preg_replace('/%cdate-y/', strftime("%Y", $document['cdate']), $body);
-            $body = preg_replace('/%cdate-m/', strftime("%m", $document['cdate']), $body);
-            $body = preg_replace('/%cdate-d/', strftime("%d", $document['cdate']), $body);
+            $body = preg_replace('/%cdate-y/', date('Y', $document['cdate']), $body);
+            $body = preg_replace('/%cdate-m/', date('m', $document['cdate']), $body);
+            $body = preg_replace('/%cdate-d/', date('d', $document['cdate']), $body);
             $body = preg_replace('/%type/', $DOCTYPES[$document['type']], $body);
             $body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
             $body = str_replace('\n', "\n", $body);

@@ -464,7 +464,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $lN .= $horizontal_line . PHP_EOL;
                 }
                 foreach ($lastN as $row_s) {
-                    $cols['date']['value'] = strftime('%Y/%m/%d', $row_s['time']);
+                    $cols['date']['value'] = date('Y/m/d', $row_s['time']);
                     if ($row_s['value'] < 0) {
                         $cols['liability']['value'] = moneyf($row_s['value'] * -1, $row_s['currency']);
                         $cols['payment']['value'] = '';

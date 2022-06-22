@@ -4926,7 +4926,7 @@ class LMS
                 $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
             }
 
-            list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+            list ($now_y, $now_m) = explode('/', date('Y/m', time()));
 
             $body = str_replace(
                 array(
@@ -4957,17 +4957,17 @@ class LMS
                     $year . '-' . $month . '-' . $day,
                     "\n",
                     format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
-                    strftime("%Y", $deadline),
-                    strftime("%m", $deadline),
-                    strftime("%d", $deadline),
-                    strftime("%B", $deadline),
+                    date('Y', $deadline),
+                    date('m', $deadline),
+                    date('d', $deadline),
+                    date('F', $deadline),
                     $document['document']['customerpin'],
                     $doc['customerid'],
-                    strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+                    date('d', mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
                     moneyf($document['document']['total'], $document['document']['currency']),
-                    strftime("%Y", $document['document']['cdate']),
-                    strftime("%m", $document['document']['cdate']),
-                    strftime("%d", $document['document']['cdate']),
+                    date('Y', $document['document']['cdate']),
+                    date('m', $document['document']['cdate']),
+                    date('d', $document['document']['cdate']),
                 ),
                 $body
             );
