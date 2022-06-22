@@ -526,7 +526,7 @@ class LMSSmartyPlugins
             echo '" data-address="state-select">';
             echo '<option></option>';
 
-            $tmp_state = mb_strtolower($params['location_state_name']);
+            $tmp_state = is_null($params['location_state_name']) ? '' : mb_strtolower($params['location_state_name']);
 
             foreach ($states as $v) {
                 echo '<option ' . (!empty($v) && mb_strtolower($v['name']) == $tmp_state ? 'selected' : '')  . '>' . $v['name'] . '</option>';
