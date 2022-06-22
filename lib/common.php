@@ -600,7 +600,7 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
     );
 
     // time conversion specifiers
-    return strftime($result, $cdate);
+    return Utils::strftime($result, $cdate);
 }
 
 // our finance round
