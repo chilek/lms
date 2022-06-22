@@ -279,53 +279,53 @@ if ($month > 6) {
 $date_format = ConfigHelper::getConfig('payments.date_format', '%Y/%m/%d');
 
 $forward_periods = array(
-    DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
-    WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom+6, $year)),
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, $dom-1, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, $dom-1, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, $dom-1, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year+1)),
-    DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
+    DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
+    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom+6, $year)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+1, $dom-1, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+3, $dom-1, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+6, $dom-1, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year+1)),
+    DISPOSABLE => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
 $forward_aligned_periods = array(
     DAILY      => $forward_periods[DAILY],
     WEEKLY     => $forward_periods[WEEKLY],
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year+1)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year+1)),
     DISPOSABLE => $forward_periods[DISPOSABLE],
 );
 
 $d = $dom + ($backward_on_the_last_day ? 1 : 0);
 $backward_periods = array(
-    DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $d-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $d, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, $d, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, $d, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $d, $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
-    DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year))
+    DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-7, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month-1, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month-3, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month-6, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d, $year-1)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    DISPOSABLE => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year))
 );
 
 $last_sunday = strtotime('last Sunday '.date("Y-m-d"));
 
 $backward_aligned_periods = array(
     DAILY      => $backward_periods[DAILY],
-    WEEKLY     => strftime($date_format, $last_sunday-518400)                        .' - '.strftime($date_format, $last_sunday),
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, 1, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, 1, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, 1, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    WEEKLY     => Utils::strftime($date_format, $last_sunday-518400)                        .' - '.Utils::strftime($date_format, $last_sunday),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month-1, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month-3, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month-6, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year-1)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
     DISPOSABLE => $backward_periods[DISPOSABLE]
 );
 
 // Special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 // assignment is made not January, the 1st:
 
-$current_month = strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
-$previous_month = strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, 0, $year));
+$current_month = Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
+$previous_month = Utils::strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year))." - ".Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year));
 $current_period = date('m/Y', mktime(12, 0, 0, $month, 1, $year));
 $next_period = date('m/Y', mktime(12, 0, 0, $month + 1, 1, $year));
 $prev_period = date('m/Y', mktime(12, 0, 0, $month - 1, 1, $year));
@@ -1506,10 +1506,10 @@ foreach ($assigns as $assign) {
                 $first_aligned_partial_period = array(
                     DAILY => $forward_periods[DAILY],
                     WEEKLY => $forward_periods[WEEKLY],
-                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
-                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
-                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
-                    YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
+                    MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
+                    QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
+                    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
+                    YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
                     DISPOSABLE => $forward_periods[DISPOSABLE],
                 );
                 $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
@@ -1519,10 +1519,10 @@ foreach ($assigns as $assign) {
                     $last_aligned_partial_period = array(
                         DAILY => $forward_periods[DAILY],
                         WEEKLY => $forward_periods[WEEKLY],
-                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
-                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
-                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
-                        YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
+                        MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
+                        QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
+                        HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
+                        YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
                         DISPOSABLE => $forward_periods[DISPOSABLE],
                     );
                     $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
@@ -1536,10 +1536,10 @@ foreach ($assigns as $assign) {
                 $first_aligned_partial_period = array(
                     DAILY => $forward_periods[DAILY],
                     WEEKLY => $forward_periods[WEEKLY],
-                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 1, 0, $backward_year)),
-                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 3, 0, $backward_year)),
-                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 6, 0, $backward_year)),
-                    YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, 0, $backward_year + 1)),
+                    MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 1, 0, $backward_year)),
+                    QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 3, 0, $backward_year)),
+                    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 6, 0, $backward_year)),
+                    YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 0, $backward_year + 1)),
                     DISPOSABLE => $forward_periods[DISPOSABLE],
                 );
                 $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
@@ -1549,10 +1549,10 @@ foreach ($assigns as $assign) {
                     $last_aligned_partial_period = array(
                         DAILY => $forward_periods[DAILY],
                         WEEKLY => $forward_periods[WEEKLY],
-                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year)),
-                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 2, intval($dateto[2]), $backward_year)),
-                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 5, intval($dateto[2]), $backward_year)),
-                        YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year + 1)),
+                        MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year)),
+                        QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 2, intval($dateto[2]), $backward_year)),
+                        HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 5, intval($dateto[2]), $backward_year)),
+                        YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year + 1)),
                         DISPOSABLE => $forward_periods[DISPOSABLE],
                     );
                     $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
@@ -2137,7 +2137,7 @@ foreach ($assigns as $assign) {
             $diffdays = sprintf("%d", round(($today - $assign['datefrom']) / 86400)) + $backward_correction;
             $period_start = mktime(0, 0, 0, $month, $dom - $diffdays + $backward_correction, $year);
             $period_end = mktime(0, 0, 0, $month, $dom - 1 + $backward_correction, $year);
-            $period = strftime($date_format, $period_start) . " - " . strftime($date_format, $period_end);
+            $period = Utils::strftime($date_format, $period_start) . " - " . Utils::strftime($date_format, $period_end);
 
             switch ($assign['period']) {
                 case WEEKLY:
