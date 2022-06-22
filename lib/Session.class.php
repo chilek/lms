@@ -404,7 +404,10 @@ class Session
             $this->DB->BeginTrans();
             $this->DB->LockTables('sessions');
 
-            $content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
+            $sid = $this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID));
+            if (!empty($sid)) {
+                $content = unserialize($sid);
+            }
             if (is_array($content['tabs']) && (!is_array($session_content['tabs']) || (is_array($content['tabs']) && count($content['tabs']) > count($session_content['tabs'])))) {
                 $session_content['tabs'] = $content['tabs'];
             }
