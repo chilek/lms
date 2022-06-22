@@ -2749,14 +2749,16 @@ class LMS
                     $this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?', array('last_check_for_updates_timestamp'));
                 }
 
-                $content = unserialize((string) $content);
-                $content['regdata'] = unserialize((string) $content['regdata']);
+                if (!empty($content)) {
+                    $content = unserialize((string) $content);
+                    $content['regdata'] = unserialize((string) $content['regdata']);
 
-                if (is_array($content['regdata'])) {
-                    $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
+                    if (is_array($content['regdata'])) {
+                        $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
 
-                    foreach (array('id', 'name', 'url', 'hidden') as $key) {
-                        $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                        foreach (array('id', 'name', 'url', 'hidden') as $key) {
+                            $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                        }
                     }
                 }
             }
