@@ -27,7 +27,7 @@
 function smarty_modifier_duration_format($sec)
 {
     $H = floor($sec / 3600);
-    $m = ($sec / 60) % 60;
+    $m = intval($sec / 60) % 60;
     $s = $sec % 60;
     if ($sec < 60) {
         return sprintf("%02ds", $s);
