@@ -137,7 +137,15 @@
 				<a href="?m=customerinfo&id={$session.customerid}">{$session.lastname} {$session.name}</a>
 				{else}-{/if}
 			</td>
-			<td class="nobr">{$session.mac}</td>
+			<td>
+				{$session.mac}
+				{$producer = EtherCodes::GetProducer($session.mac)}
+				{if $producer}
+					<span class="lms-ui-font-smaller">
+						({$producer})
+					</span>
+				{/if}
+			</td>
 			<td class="nobr">
 				{$unknowntype=1}{$firsttype=1}
 				{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}

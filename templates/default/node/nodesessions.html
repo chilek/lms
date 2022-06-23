@@ -79,6 +79,12 @@
 						</div>
 						<div class="lms-ui-tab-table-column mac">
 							{$nodesession.mac}
+							{$producer = EtherCodes::GetProducer($nodesession.mac)}
+							{if $producer}
+								<span class="lms-ui-font-smaller">
+									({$producer})
+								</span>
+							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column type">
 							{$unknowntype=1}{$firsttype=1}
