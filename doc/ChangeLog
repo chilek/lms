@@ -146,6 +146,7 @@ version 28-git (????-??-??):
   - improvement: document template can enable use trade documents as their reference documents [chilan]
   - enhancement: added phone billing customer consent support [chilan]
   - enhancement: auto-generate billing documents with invoices issued to phone services [chilan]
+  - improvement: show mac vendors on node session lists [chilan]
 
 version 27.0 (2021-08-20):
 
