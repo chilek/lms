@@ -96,7 +96,7 @@
 							{/if}
 						{else}
 							<input type="hidden" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"Y/m/d"}">
-							{$invoice.cdate|date_format:"Y/m/d"}
+							{$invoice.cdate|date_format:"Y-m-d"}
 						{/if}
 					</td>
 				</tr>
@@ -112,7 +112,7 @@
 							>
 						{else}
 							<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"Y/m/d"}">
-							{$invoice.sdate|date_format:"Y/m/d"}
+							{$invoice.sdate|date_format:"Y-m-d"}
 						{/if}
 					</td>
 				</tr>
@@ -288,7 +288,7 @@
 			{cycle values="light,lucid" print=false}
 			{section name=covenantlist loop=$covenantlist}
 				<tr class="highlight {cycle}">
-					<td class="nobr">{$covenantlist[covenantlist].time|date_format:"Y/m/d"}</td>
+					<td class="nobr">{$covenantlist[covenantlist].time|date_format:"Y-m-d"}</td>
 					<td>{$covenantlist[covenantlist].comment|escape}</td>
 					<td>
 						<select name="l_servicetype[{$covenantlist[covenantlist].cashid}]">

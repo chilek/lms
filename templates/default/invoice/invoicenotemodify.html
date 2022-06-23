@@ -152,7 +152,7 @@
 						{/if}
 					{else}
 						<input type="hidden" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"Y/m/d"}">
-						{$cnote.cdate|date_format:"Y/m/d"}
+						{$cnote.cdate|date_format:"Y-m-d"}
 					{/if}
 				</td>
 			</tr>
@@ -168,7 +168,7 @@
 						>
 					{else}
 						<input type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}">
-						{$cnote.sdate|date_format:"Y/m/d"}
+						{$cnote.sdate|date_format:"Y-m-d"}
 					{/if}
 				</td>
 			</tr>
