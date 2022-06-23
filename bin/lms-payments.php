@@ -1230,18 +1230,17 @@ if (!empty($cashes)) {
 
 if (!empty($payments)) {
     foreach ($payments as $payment) {
-
-	$LMS->ExecuteHook(
-		'solid_payments_hook',
-		array(
-			$issuetime,
-			$payment['type'],
-			$payment['value'],
-			$payment['name'],
-			$payment['customerid'],
-			$payment['creditor'],
-		)
-	);
+        $LMS->ExecuteHook(
+            'solid_payments_hook',
+            array(
+            $issuetime,
+            $payment['type'],
+            $payment['value'],
+            $payment['name'],
+            $payment['customerid'],
+            $payment['creditor'],
+            )
+        );
 
         $DB->Execute(
             "INSERT INTO cash (time, type, value, customerid, comment)

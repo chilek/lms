@@ -3844,26 +3844,26 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         foreach ($paymentlist as $idx => $row) {
-                switch ($row['period']) {
-                    case DAILY:
-                        $row['payday'] = trans('daily');
-                        break;
-                    case WEEKLY:
-                        $row['payday'] = trans('weekly ($a)', date('D', mktime(0, 0, 0, 0, $row['at'] + 5, 0)));
-                        break;
-                    case MONTHLY:
-                        $row['payday'] = trans('monthly ($a)', $row['at']);
-                        break;
-                    case QUARTERLY:
-                        $row['payday'] = trans('quarterly ($a)', sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1));
-                        break;
-                    case HALFYEARLY:
-                        $row['payday'] = trans('half-yearly ($a)', sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1));
-                        break;
-                    case YEARLY:
-                        $row['payday'] = trans('yearly ($a)', date('d/m', ($row['at'] - 1) * 86400));
-                        break;
-                }
+            switch ($row['period']) {
+                case DAILY:
+                    $row['payday'] = trans('daily');
+                    break;
+                case WEEKLY:
+                    $row['payday'] = trans('weekly ($a)', date('D', mktime(0, 0, 0, 0, $row['at'] + 5, 0)));
+                    break;
+                case MONTHLY:
+                    $row['payday'] = trans('monthly ($a)', $row['at']);
+                    break;
+                case QUARTERLY:
+                    $row['payday'] = trans('quarterly ($a)', sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1));
+                    break;
+                case HALFYEARLY:
+                    $row['payday'] = trans('half-yearly ($a)', sprintf('%02d/%02d', $row['at'] % 100, $row['at'] / 100 + 1));
+                    break;
+                case YEARLY:
+                    $row['payday'] = trans('yearly ($a)', date('d/m', ($row['at'] - 1) * 86400));
+                    break;
+            }
             $paymentlist[$idx] = $row;
         }
 
