@@ -148,7 +148,7 @@ function getThroughput($ip)
 
     $cmd = str_replace('%i', $ip, $cmd);
     exec($cmd, $output);
-    if (!is_array($output) && count($output) != 1) {
+    if (!is_array($output) || count($output) != 1) {
         return '';
     }
 
