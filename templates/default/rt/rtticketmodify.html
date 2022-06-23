@@ -27,7 +27,7 @@
 	{box_header multi_row=true}
 		{box_header icon="helpdesk" label="Subject" icon_class="fa-fw"}
 			<INPUT type="text" size="50" name="ticket[subject]" maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
-				   value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"} {if $layout.module !="eventadd"} required{/if}>
+				   value="{$ticket.subject|default:""|escape}" {tip text="Enter subject" trigger="subject"} {if $layout.module !="eventadd"} required{/if}>
 		{/box_header}
 		{box_header icon="service" label="Service type" icon_class="fa-fw"}
 			<select name="ticket[service]" id="ticket-service"
