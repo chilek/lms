@@ -1230,11 +1230,25 @@ if (!empty($cashes)) {
 
 if (!empty($payments)) {
     foreach ($payments as $payment) {
+
+	$LMS->ExecuteHook(
+		'solid_payments_hook',
+		array(
+			$issuetime,
+			$payment['type'],
+			$payment['value'],
+			$payment['name'],
+			$payment['customerid'],
+			$payment['creditor'],
+		)
+	);
+
         $DB->Execute(
             "INSERT INTO cash (time, type, value, customerid, comment)
 			VALUES (?, ?, ?, ?, ?)",
             array($issuetime, 1, $payment['value'] * -1, null, $payment['name'] . '/' . $payment['creditor'])
         );
+
         if (!$quiet) {
             echo 'CID:-' . "\tVAL:" . $payment['value'] . "\tDESC:" . $payment['name'] . '/' . $payment['creditor'] . PHP_EOL;
         }

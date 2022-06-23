@@ -1865,11 +1865,14 @@ CREATE TABLE payments (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL DEFAULT '',
   value decimal(9,2) NOT NULL DEFAULT '0',
+  customerid integer,
   creditor varchar(255) NOT NULL DEFAULT '',
   period smallint NOT NULL DEFAULT '0',
   at smallint NOT NULL DEFAULT '0',
   description text NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  CONSTRAINT payments_customerid_fkey
+    FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4184,4 +4187,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022061301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062200');

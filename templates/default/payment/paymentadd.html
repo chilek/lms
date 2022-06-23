@@ -9,7 +9,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/payment.gif" ALT="">
+			{icon name='comment'}
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Name:")}</B>
@@ -22,18 +22,25 @@
     <TBODY>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/creditor.gif" ALT="">
+			{icon name='customer'}
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Creditor:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" required {tip text="Enter creditor name" trigger="creditor"}>
+			{customerList
+				version=2
+				inputname='payment[customerid]'
+				selected=$payment.customerid
+				trigger='customerid'
+				required=true
+			}
+			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/value.gif" ALT="">
+			{icon name='description'}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Value:")}</B> 
@@ -44,7 +51,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/calendar.gif" ALT="">
+			{icon name='timetable'}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Accounting day:")}</B>
@@ -60,7 +67,7 @@
 	</TR>	
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
+			{icon name='description'}
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Description:")}</B>
@@ -71,8 +78,8 @@
 	</TR>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.paymentadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=paymentlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			{button type='submit' accesskey='s' label='Submit' icon='submit'}
+			{button href='?m=paymentlist' label='Cancel' icon='cancel'}<br>
 			<INPUT TYPE="checkbox" NAME="payment[reuse]" VALUE="ON" {if $payment.reuse} checked{/if}> {trans("Display this form again, when this payment is saved")}
 		</TD>
 	</TR>

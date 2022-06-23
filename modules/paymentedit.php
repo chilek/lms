@@ -37,7 +37,7 @@ if (isset($_POST['payment'])) {
 
     $payment['value'] = str_replace(',', '.', $payment['value']);
     
-    if ($payment['creditor'] == '') {
+    if ($payment['creditor'] == '' && empty($payment['customerid'])) {
         $error['creditor'] = trans('Creditor name is required!');
     }
 

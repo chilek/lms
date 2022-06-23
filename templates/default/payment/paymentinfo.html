@@ -7,7 +7,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/payment.gif" ALT="">
+			{icon name='comment'}
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
 			<B>{$payment.name} ({$payment.id|string_format:"%04d"})</B>
@@ -17,18 +17,23 @@
     <TBODY>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/creditor.gif" ALT="">
+			{icon name='customer'}
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Creditor:")}</B>
 		</TD>
 		<TD WIDTH="98%">
+			{if $payment.customerid}
+				<a href="?m=customerinfo&id={$payment.customerid}">
+					#{$payment.customerid} ({$payment.customername})
+				</a>
+			{/if}
 			{$payment.creditor}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/value.gif" ALT="">
+			{icon name='money'}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Value:")}</B>
@@ -39,7 +44,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/calendar.gif" ALT="">
+			{icon name='timetable'}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Payment day:")}</B>
@@ -51,7 +56,7 @@
 	{if $payment.description}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
+			{icon name='description'}
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
@@ -69,9 +74,9 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
-			<A HREF="javascript:document.addbalance.submit();">{trans("Account payment")} <IMG SRC="img/pay.gif" alt=""></A>
-			<A HREF="?m=paymentedit&id={$payment.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
-			<A id="delete-payment" HREF="?m=paymentdel&id={$payment.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			{button label='Account payment' href="javascript:document.addbalance.submit();" icon='money' tip='Account payment'}
+			{button label='Edit' href="?m=paymentedit&id={$payment.id}" icon='edit' tip='Edit'}
+			{button label='Delete' class='delete-payment' href="?m=paymentdel&id={$payment.id}" icon='delete' tip='Delete'}
 			</FORM>
 		</TD>
 	</TR>

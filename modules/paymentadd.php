@@ -41,7 +41,8 @@ if ($payment) {
         $error['value'] = trans('Incorrect value!');
     }
 
-    if ($payment['creditor'] == '') {
+    if ($payment['creditor'] == '' && empty($payment['customerid'])) {
+        $error['customerid'] = trans('Creditor name is required!');
         $error['creditor'] = trans('Creditor name is required!');
     }
 
@@ -117,7 +118,6 @@ if ($payment) {
     }
     
     $payment['period'] = $period;
-    
     if (!$error) {
         $payment['at'] = $at;
         if (isset($payment['reuse'])) {

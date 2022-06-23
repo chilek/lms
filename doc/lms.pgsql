@@ -1755,6 +1755,8 @@ CREATE TABLE payments (
 	id integer DEFAULT nextval('payments_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	customerid integer
+	    CONSTRAINT payment_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	creditor varchar(255) 	DEFAULT '' NOT NULL,
 	period smallint		DEFAULT 0 NOT NULL,
 	at smallint 		DEFAULT 0 NOT NULL,
@@ -4238,6 +4240,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022061301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062200');
 
 COMMIT;

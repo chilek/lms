@@ -3831,8 +3831,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetPaymentList()
     {
-        if ($paymentlist = $this->db->GetAll('SELECT id, name, creditor, value, period, at, description FROM payments ORDER BY name ASC')) {
-            foreach ($paymentlist as $idx => $row) {
+        $paymentlist = $this->db->GetAll(
+            'SELECT p.id, p.name, customerid, creditor, value, period, at, description, '
+            . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
+            FROM payments p
+                LEFT JOIN customers c ON (c.id = p.customerid)
+            ORDER BY name ASC'
+        );
+
+        if (empty($paymentlist)) {
+            return;
+        }
+
+        foreach ($paymentlist as $idx => $row) {
                 switch ($row['period']) {
                     case DAILY:
                         $row['payday'] = trans('daily');
@@ -3853,9 +3864,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['payday'] = trans('yearly ($a)', date('d/m', ($row['at'] - 1) * 86400));
                         break;
                 }
-
-                $paymentlist[$idx] = $row;
-            }
+            $paymentlist[$idx] = $row;
         }
 
         $paymentlist['total'] = empty($paymentlist) ? 0 : count($paymentlist);
@@ -3865,7 +3874,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetPayment($id)
     {
-        $payment = $this->db->GetRow('SELECT id, name, creditor, value, period, at, description FROM payments WHERE id=?', array($id));
+        $payment = $this->db->GetRow(
+            'SELECT p.id, p.name, customerid, creditor, value, period, at, description, '
+            . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
+            FROM payments p
+                LEFT JOIN customers c ON (c.id = p.customerid)
+            WHERE p.id = ?',
+            array($id)
+        );
 
         switch ($payment['period']) {
             case DAILY:
@@ -3909,14 +3925,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $args = array(
             'name' => $paymentdata['name'],
+            'customerid' => intval($paymentdata['customerid']),
             'creditor' => $paymentdata['creditor'],
             'description' => $paymentdata['description'],
             'value' => $paymentdata['value'],
             'period' => $paymentdata['period'],
             'at' => $paymentdata['at'],
         );
-        if ($this->db->Execute('INSERT INTO payments (name, creditor, description, value, period, at)
-			VALUES (?, ?, ?, ?, ?, ?)', array_values($args))) {
+        if ($this->db->Execute('INSERT INTO payments (name, customerid, creditor, description, value, period, at)
+			VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('payments');
             if ($this->syslog) {
                 $args[SYSLOG::RES_PAYMENT] = $id;
@@ -3941,6 +3958,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $args = array(
             'name' => $paymentdata['name'],
+            'customerid' => intval($paymentdata['customerid']),
             'creditor' => $paymentdata['creditor'],
             'description' => $paymentdata['description'],
             'value' => $paymentdata['value'],
@@ -3948,7 +3966,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'at' => $paymentdata['at'],
             SYSLOG::RES_PAYMENT => $paymentdata['id'],
         );
-        $res = $this->db->Execute('UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?', array_values($args));
+        $res = $this->db->Execute('UPDATE payments SET name=?, customerid=?,  creditor=?, description=?, value=?, period=?, at=? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_PAYMENT, SYSLOG::OPER_UPDATE, $args);
         }
