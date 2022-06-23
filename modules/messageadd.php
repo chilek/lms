@@ -64,7 +64,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         $customergroup = intval($filter['customergroup']);
     }
     $nodegroup = intval($filter['nodegroup']);
-    $linktype = intval($filter['linktype']);
+    $linktype = $filter['linktype'] == '' ? '' : intval($filter['linktype']);
     $tarifftype = intval($filter['tarifftype']);
     $consent = isset($filter['consent']);
     $netdevices = isset($filter['netdevices']) ? $filter['netdevices'] : null;
