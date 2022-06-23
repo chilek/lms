@@ -248,7 +248,7 @@
                             {if $billings}
                                 {section name=i loop=$billings start=(($pagination->getCurrentPage()-1)*$pagination->getItemsPerPage()) max=$pagination->getItemsPerPage()}
                                     <TR CLASS="dark">
-                                        <TD>{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}</TD>
+                                        <TD>{$billings[i].begintime|date_format:"Y-m-d H:i:s"}</TD>
                                         <TD>{$billings[i].caller}</TD>
                                         <TD>{$billings[i].callee}</TD>
                                         <TD>{if $billings[i].callbegintime>60}{floor($billings[i].callbegintime/60)}min{/if} {$billings[i].callbegintime%60}s</TD>
@@ -285,7 +285,7 @@
                                                 {if $flags & CALL_FLAG_CUSTOMER_RECORDING}
                                                     {documentview id="{$billings[i].id}"
                                                                   type="audio/mp3"
-                                                                  name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
+                                                                  name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"Y-m-d H:i:s"}"
                                                                   url="?m=voip&record={$billings[i].id}"
                                                                   text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
                                                 {/if}
