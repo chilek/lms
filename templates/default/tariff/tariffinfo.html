@@ -277,10 +277,10 @@
                                             </td>
                                             <td>
                                                 {if $tariff.datefrom}
-                                                    {trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}
+                                                    {trans("from:")} {$tariff.datefrom|date_format:"Y-m-d"}
                                                 {/if}
                                                 {if $tariff.dateto}
-                                                    {trans("to:")} {$tariff.dateto|date_format:"%Y/%m/%d"}
+                                                    {trans("to:")} {$tariff.dateto|date_format:"Y-m-d"}
                                                 {/if}
                                             </td>
                                         </tr>

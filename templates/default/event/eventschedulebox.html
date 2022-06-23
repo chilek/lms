@@ -18,16 +18,16 @@
                 &nbsp;
             </td>
             <TD class="bold nobr" align="left">
-                {icon name="timetable" label="{$day|date_format:"%A"}" }
-                <span class="bold">({$day|date_format:"%x"})</span>&nbsp;
+                {icon name="timetable" label="{$day|date_format:"l"}" }
+                <span class="bold">({$day|date_format:"Y-m-d"})</span>&nbsp;
                 {if $getHolidays[$day]}
                 <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>&nbsp;
                 {/if}
-                <a href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
+                <a href="?m=eventsearch&datefrom={$day|date_format:"Y/m/d"}&dateto={$day|date_format:"Y/m/d"}">&raquo;&raquo;&raquo;</a>
             </TD>
             <TD class="text-right nobr" colspan="{($usereventlistcount - 1)}">
                 <div class="no-print">
-                    {button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"%d"}&month={$day|date_format:"%m"}&year={$day|date_format:"%Y"}';"
+                    {button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"d"}&month={$day|date_format:"m"}&year={$day|date_format:"Y"}';"
                        external=true label="Add Event"}
                 </div>
             </TD>
@@ -82,9 +82,9 @@
                                                                     {if $tevents[tevent].endtime == 86400}
                                                                         {trans("whole day")}
                                                                     {else}
-                                                                        {($day + $tevents[tevent].begintime)|date_format:"%H:%M"}
+                                                                        {($day + $tevents[tevent].begintime)|date_format:"H:i"}
                                                                         {if $tevents[tevent].begintime != $tevents[tevent].endtime}
-                                                                            - {($day + $tevents[tevent].endtime)|date_format:"%H:%M"}
+                                                                            - {($day + $tevents[tevent].endtime)|date_format:"H:i"}
                                                                         {/if}
                                                                         {if $tevents[tevent].multiday}<br>{trans("multi day")}{/if}
                                                                     {/if}

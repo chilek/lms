@@ -182,7 +182,7 @@
 				data-expired="{$a.expired}"
 				data-period="{$a.period}"
 				data-commited="{$a.commited}"
-				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
+				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/if}"
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					data-net-value="{$a.real_netvalue|default:"0"|replace:",":"."}"
 					data-gross-value="{$a.real_value|default:"0"|replace:",":"."}"
@@ -425,8 +425,8 @@
 									 {/if}
 								{/if}
 								<br>
-								{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
-								{if $a.dateto}{trans("to")} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
+								{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"Y-m-d"}{/if}
+								{if $a.dateto}{trans("to")} {$a.dateto|date_format:"Y-m-d"}{/if}
 								{if !$a.datefrom && !$a.dateto}-{/if}
 							</div>
 						</div>

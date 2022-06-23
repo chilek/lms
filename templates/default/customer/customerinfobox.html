@@ -138,7 +138,7 @@
 													{textformat assign="icexpires"}
 														{strip}
 															<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
-																{$customerinfo.icexpires|date_format:"%Y/%m/%d"}
+																{$customerinfo.icexpires|date_format:"Y-m-d"}
 															<span>
 														{/strip}
 													{/textformat}
@@ -384,7 +384,7 @@
 																{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}
 																	{trans("Cutoff suspended indefinitely")}
 																{else}
-																	{t a=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $a{/t}
+																	{t a=$customerinfo.cutoffstop|date_format:"Y-m-d"}Cutoff suspended to $a{/t}
 																{/if}
 															</span>
 														</td>
@@ -415,7 +415,7 @@
 															<td class="text-right">
 																{if isset($customerinfo.consents[$type])}
 																	{if $consent.type == 'date'}
-																		{$customerinfo.consents[$type]['cdate']|date_format:"Y/m/d"}
+																		{$customerinfo.consents[$type]['cdate']|date_format:"Y-m-d"}
 																	{else}
 																		{trans("yes")}
 																	{/if}
@@ -552,14 +552,14 @@
 										</td>
 										<td>
 											{if $customerinfo.up_logins.lastlogindate}
-												{$customerinfo.up_logins.lastlogindate|date_format:"%Y/%m/%d %H:%M"}
+												{$customerinfo.up_logins.lastlogindate|date_format:"Y-m-d H:i"}
 												({$customerinfo.up_logins.lastloginip})
 											{else}
 												-
 											{/if}
 											<br>
 											{if $customerinfo.up_logins.failedlogindate}
-												{$customerinfo.up_logins.failedlogindate|date_format:"%Y/%m/%d %H:%M"}
+												{$customerinfo.up_logins.failedlogindate|date_format:"Y-m-d H:i"}
 												({$customerinfo.up_logins.failedloginip})
 											{else}
 												-

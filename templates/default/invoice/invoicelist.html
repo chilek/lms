@@ -207,13 +207,13 @@
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
 	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
 			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}"
-			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$invoice.senddate}{/if}"
+			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"Y/m/d H:i"}{else}{$invoice.senddate}{/if}"
 			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
 		<TD class="nobr">
-			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$invoice.cdate|date_format:"Y/m/d H:i"}
 		</TD>
 		<TD class="text-right nobr">
 			{$number}
@@ -251,7 +251,7 @@
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 				{textformat assign="tip" wrap=5000}
-					{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+					{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"Y/m/d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
 				{/textformat}
 				{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
 					tip=$tip}
@@ -365,7 +365,7 @@
 								<div class="document-title">
 									{$attachment = reset($refdoc.attachments)}
 									{$attachmentid = key($refdoc.attachments)}
-									{capture assign="attachment_text"}{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/capture}
+									{capture assign="attachment_text"}{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"Y/m/d"}$a no. $b issued on $c{/t}{/capture}
 									{documentview id="{$docid}-{$attachmentid}" type=$attachment.contenttype name=$attachment.filename
 										url="?m=documentview&id={$docid}&attachmentid={$attachmentid}" external=true
 										text="{$attachment_text} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$attachment.contenttype)} xls{/if}\"></i>"}
@@ -373,7 +373,7 @@
 								</div>
 							{else}
 								<div class="document-title">
-									{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}
+									{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"Y/m/d"}$a no. $b issued on $c{/t}
 								</div>
 								<div class="document-attachment-list">
 									{foreach $refdoc.attachments as $attachmentid => $attachment}

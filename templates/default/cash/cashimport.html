@@ -83,7 +83,7 @@
 						{$item.id|string_format:"%04d"}
 					</td>
 					<td class="nobr">
-						{$item.date|date_format:"%Y/%m/%d"}
+						{$item.date|date_format:"Y-m-d"}
 					</td>
 					<td class="text-right nobr">
 						<strong>{$item.value|money_format}</strong>
@@ -198,7 +198,7 @@
 															{trans("Date:")}
 														</td>
 														<td>
-															{$item.date|date_format:"%Y/%m/%d"}
+															{$item.date|date_format:"Y-m-d"}
 														</td>
 													</tr>
 												{/if}
@@ -332,7 +332,7 @@
 					<tbody>
 						{foreach $sourcefiles as $item}
 						<tr>
-							<td class="bold nobr">{$item.idate|date_format:"%Y/%m/%d %H:%M"}</td>
+							<td class="bold nobr">{$item.idate|date_format:"Y-m-d H:i"}</td>
 							<td><a href="?m=balancelist&sourcefileid={$item.id}">{$item.name}</a></td>
 							<td class="text-center nobr">{$item.username}</td>
 							<td class="text-center">{$item.count|default:0}</td>

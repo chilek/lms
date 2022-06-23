@@ -19,14 +19,14 @@
         {if $event.endtime == 86400}
             {trans("whole day")}
         {else}
-            {($event.date + $event.begintime)|date_format:"%H:%M"}
+            {($event.date + $event.begintime)|date_format:"H:i"}
             {if $event.begintime != $event.endtime}
-                - {($event.date + $event.endtime)|date_format:"%H:%M"}
+                - {($event.date + $event.endtime)|date_format:"H:i"}
             {/if}
             {if $event.multiday}<br>{trans("multi day")}{/if}
         {/if}
         {if $overdue == 1}
-            <br>{$event.date|date_format:"%x"}
+            <br>{$event.date|date_format:"Y-m-d"}
         {/if}
         {$imadded=0}
         {$user_row_limit = intval(ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4))}

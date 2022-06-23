@@ -118,12 +118,12 @@
 						{date_period_preset from="[name=\"datefrom\"]" to="[name=\"dateto\"]" time=true}
 						<label>
 							{trans("From")}
-							<input type="text" name="datefrom" value="{$datefrom|date_format:"%Y/%m/%d %H:%M"}"
+							<input type="text" name="datefrom" value="{$datefrom|date_format:"Y/m/d H:i"}"
 								form="filter" class="filter-item lms-ui-datetime">
 						</label>
 						<label>
 							{trans("To")}
-							<input type="text" name="dateto" value="{$dateto|date_format:"%Y/%m/%d %H:%M"}"
+							<input type="text" name="dateto" value="{$dateto|date_format:"Y/m/d H:i"}"
 								form="filter" class="filter-item lms-ui-datetime">
 						</label>
 						{icon name="clear" id="clear-filter"}
@@ -186,7 +186,7 @@
 						{foreach $customercalls as $call}
 							<tr class="highlight customer-call" data-call-id="{$call.id}">
 								<td class="nobr">
-									<strong>{$call.dt|date_format:"%Y/%m/%d %H:%M:%S"}</strong>
+									<strong>{$call.dt|date_format:"Y-m-d H:i:s"}</strong>
 								</td>
 								<td class="nobr">
 									{$call.username|default:"-"|escape}
@@ -257,7 +257,7 @@
 									{/if}
 									{button type="link" icon="download" tip="<!customer-call>Download"
 										href="?m=customercall&id={$call.id}"
-										download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"%Y_%m_%d_%H_%M_%S"}-{$call.phone}"}
+										download="{trans("phone-call")}-{$direction}-{$call.dt|date_format:"Y_m_d_H_i_s"}-{$call.phone}"}
 									{if ConfigHelper::checkPrivilege('customer_call_management')}
 										{button type="link" icon="delete" tip="Delete"
 											href="?m=customercall&id={$call.id}&cid={$customerinfo.id}&delete"}

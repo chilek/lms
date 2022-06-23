@@ -99,7 +99,7 @@
 									{icon name="timetable" label="Create time"}
 								</TD>
 								<TD style="width: 99%;">
-									{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+									{$ticket.createtime|date_format:"Y-m-d H:i:s"}
 								</TD>
 							</TR>
 							{if $ticket.creatorid}
@@ -169,7 +169,7 @@
 								</TD>
 								<TD style="width: 99%;">
 									{if $ticket.deadline}
-										{$ticket.deadline|date_format:"%Y/%m/%d %H:%M:%S"}
+										{$ticket.deadline|date_format:"Y-m-d H:i:s"}
 									{else}
 										{trans("none")}
 									{/if}
@@ -218,7 +218,7 @@
 									{icon name="remove" label="Remove date"}
 								</TD>
 								<TD style="width: 99%;">
-									{$ticket.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
+									{$ticket.deltime|date_format:"Y-m-d H:i:s"}
 								</TD>
 							</TR>
 							{/if}

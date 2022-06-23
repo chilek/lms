@@ -7,10 +7,10 @@
 	</COLGROUP>
 	<TR>
 		<TD class="text-left nobr">
-			<H1>{$layout.pagetitle}: {$date|date_format:"%x (%A)"}</H1>
+			<H1>{$layout.pagetitle}: {$date|date_format:"Y-m-d (l)"}</H1>
 		</TD>
 		<TD class="text-right">
-			LMS {$layout.lmsv} @ {$layout.hostname} {$smarty.now|date_format:"%A %e %B %Y"}<BR>
+			LMS {$layout.lmsv} @ {$layout.hostname} {$smarty.now|date_format:"l Y-m-d"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
@@ -51,9 +51,9 @@
 			{if $event.endtime == 86400}
 				{trans("whole day")}
 			{else}
-				{($date + $event.begintime)|date_format:"%H:%M"}
+				{($date + $event.begintime)|date_format:"H:i"}
 				{if $event.begintime != $event.endtime}
-					- {($date + $event.endtime)|date_format:"%H:%M"}
+					- {($date + $event.endtime)|date_format:"H:i"}
 				{/if}
 				{if $event.multiday}<br>{trans("multi day")}{/if}
 			{/if}

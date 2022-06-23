@@ -161,7 +161,7 @@
 					<td colspan="4">
 						<div class="message-header-container">
 							<div class="message-createtime">
-								{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+								{$message.createtime|date_format:"Y-m-d H:i"}
 							</div>
 							<div class="message-from-subject">
 								<div{if ($message.type != $smarty.const.RTMESSAGE_REGULAR && $message.type != $smarty.const.RTMESSAGE_NOTE)
@@ -282,7 +282,7 @@
 				<TBODY>
 					<tr class="blend">
 						<td width="1%" class="text-right bold nobr valign-top">
-							{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+							{$message.createtime|date_format:"Y-m-d H:i"}
 						</td>
 						<td width="1%" class="text-right bold nobr valign-top">
 							{trans("From:")}

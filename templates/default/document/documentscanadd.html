@@ -120,7 +120,7 @@
 											{capture assign="customerlink"}
 												<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
 											{/capture}
-											{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c (already assigned){/t}
+											{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"Y-m-d" c=$customerlink}$a issued on $b for $c (already assigned){/t}
 										</li>
 										{/foreach}
 									</ul>
@@ -149,7 +149,7 @@
 													{capture assign="customerlink"}
 														<a href="?m=customerinfo&id={$document.customerid}">{$document.name} (#{$document.customerid})</a>
 													{/capture}
-													{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"%Y/%m/%d" c=$customerlink}$a issued on $b for $c{/t}
+													{t a=$_DOCTYPES[$document.type] b=$document.cdate|date_format:"Y-m-d" c=$customerlink}$a issued on $b for $c{/t}
 												</label>
 											</li>
 										{/foreach}

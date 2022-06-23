@@ -121,7 +121,7 @@
 		<TD class="nobr text-center">
 			({$item.id|string_format:"%04d"})
 		</TD>
-		<TD class="text-center">{$item.lastinspectiontime|date_format:"%x"}</TD>
+		<TD class="text-center">{$item.lastinspectiontime|date_format:"Y-m-d"}</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $item.filecontainers}
 				{foreach $item.filecontainers as $filecontainer}

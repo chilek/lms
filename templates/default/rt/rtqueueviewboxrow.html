@@ -38,7 +38,7 @@
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
 			<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
 			{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}
-				<br>{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+				<br>{$ticket.createtime|date_format:"Y-m-d H:i:s"}
 			{/if}
 		</span>
 	</TD>
@@ -95,7 +95,7 @@
 	</TD>
 	<TD class="nobr">
 		{if $ticket.ownername}{$ticket.ownername|trunescape:25}{else}-{/if}<br>
-		{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
+		{$ticket.lastmodified|date_format:"Y-m-d H:i:s"|default:"-"}
 	</TD>
 	<TD class="text-center nobr ticket-events">
 		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}">{$ticket.eventcountopened} </A>{else}- {/if}/

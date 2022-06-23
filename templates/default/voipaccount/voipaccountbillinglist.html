@@ -148,7 +148,7 @@
 							form="choosefilter"
 							size="10"
 							maxlength="20"
-							value="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
+							value="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"Y/m/d"}{/if}"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 						<span>{trans("to")}</span>
 						<input
@@ -158,7 +158,7 @@
 							form="choosefilter"
 							size="10"
 							maxlength="20"
-							value="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
+							value="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"Y/m/d"}{/if}"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 					</span>
 
@@ -198,7 +198,7 @@
 			<tr class="highlight">
 
 				<td nowrap>
-					{$record.begintime|date_format:"%e %B %Y %H:%M:%S"}
+					{$record.begintime|date_format:"Y-m-d H:i:s"}
 				</td>
 
 				<td nowrap>
@@ -288,7 +288,7 @@
 						<a href="?m=voipcallrecording&id={$record.id}&download=1"><img src="img/save.gif"></a>
 						{documentview id="{$record.id}"
 						              type="audio/mp3"
-						              name="{trans("ID:")} {$record.id}, {trans("Date:")} {$record.begintime|date_format:"%e %B %Y %H:%M:%S"}"
+						              name="{trans("ID:")} {$record.id}, {trans("Date:")} {$record.begintime|date_format:"Y-m-d H:i:s"}"
 	                                  url="?m=voipcallrecording&id={$record.id}"
 	                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
 					{/if}

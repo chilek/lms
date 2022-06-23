@@ -110,7 +110,7 @@
 			{$queue.unread|default:0}
 		</TD>
 		<TD class="text-center nobr">
-			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+			{if $queue.lastticket}{$queue.lastticket|date_format:"Y-m-d H:i:s"}{else}-{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{buttons}

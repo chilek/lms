@@ -62,7 +62,7 @@
 			</td>
 			<td class="nobr">
 				{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-					<input type="text" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"%Y/%m/%d"}" size="10"
+					<input type="text" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"Y/m/d"}" size="10"
 						placeholder="{trans("yyyy/mm/dd")}" form="setcustomer"
 						{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 					>
@@ -70,8 +70,8 @@
 						<input type="hidden" name="note[cdatewarning]" value="1" form="setcustomer">
 					{/if}
 				{else}
-					<input type="hidden" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"%Y/%m/%d"}" form="setcustomer">
-					{$note.cdate|date_format:"%Y/%m/%d"}
+					<input type="hidden" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"Y/m/d"}" form="setcustomer">
+					{$note.cdate|date_format:"Y-m-d"}
 				{/if}
 			</td>
 		</tr>
@@ -94,7 +94,7 @@
 					{if !isset($note.paytime_default) || $note.paytime_default} style="visibility: hidden"{/if}
 					{tip text="Enter deadline in days (optional)" trigger="paytime"}>
 					{* if $note.cdate}
-					({$note.cdate+$note.paytime*86400|date_format:"%Y/%m/%d"})
+					({$note.cdate+$note.paytime*86400|date_format:"Y-m-d"})
 					{/if *}
 				</td>
 		</tr>

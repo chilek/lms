@@ -9,7 +9,7 @@
 		</TD>
 		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{$smarty.now|date_format:"l, Y-m-d"}<BR>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
@@ -37,7 +37,7 @@
 			{counter}.
 		</TD>
 		<TD ALIGN="CENTER" NOWRAP>
-			{$importlist[importlist].time|date_format:"%d.%m.%Y"}
+			{$importlist[importlist].time|date_format:"d.m.Y"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$importlist[importlist].value|money_format}

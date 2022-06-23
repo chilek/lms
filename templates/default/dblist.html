@@ -47,10 +47,10 @@
 	{cycle values="light,lucid" print=false}
 	{section name=dblist loop=$dblist.time}
 	<TR class="highlight {cycle}{if $dblist.dbv[dblist] != $layout.dbschversion} blend{/if}"  >
-		<TD onClick="return self.location.href='?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
-			<IMG src="img/time.gif" alt=""> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
+		<TD onClick="return self.location.href='?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"Ymd-His"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
+			<IMG src="img/time.gif" alt=""> {$dblist.time[dblist]|date_format:"Y/m/d H:i:s (l)"}
 		</TD>
-		<TD class="text-right nobr" onClick="return self.location.href='?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
+		<TD class="text-right nobr" onClick="return self.location.href='?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"Ymd-His"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
 			{if $dblist.type[dblist]=="gz"}
 				<IMG src="img/zipped.gif" alt="">
 			{else}
@@ -62,7 +62,7 @@
 			<a class="recover-backup" href="?m=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}"><IMG src="img/recover.gif" alt="{trans("Restore")}" title="{trans("Restore")}"></A>
 			{/if}
 			<a class="delete-backup" href="?m=dbdel&db={$dblist.name[dblist]}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<a href="?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></A>
+			<a href="?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"Ymd-His"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}

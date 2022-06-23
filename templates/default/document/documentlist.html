@@ -126,12 +126,12 @@
 						{date_period_preset from="#documentlist [name=\"from\"]" to="#documentlist [name=\"to\"]"}
 						<span>{trans("from")}</span>
 						<input type="text" name="from" size="10" maxlength="10"
-							value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}"
+							value="{if $filter.from > 0}{$filter.from|date_format:"Y/m/d"}{/if}"
 							onChange="javascript:applyFilter();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 						<span>{trans("to")}</span>
 						<input type="text" name="to" size="10" maxlength="10"
-							value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}"
+							value="{if $filter.to > 0}{$filter.to|date_format:"Y/m/d"}{/if}"
 							onChange="javascript:applyFilter();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 					</span>
@@ -193,12 +193,12 @@
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
 	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-archived="{if $doc.archived}1{else}0{/if}" data-closed="{if $doc.closed}1{else}0{/if}"
-		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$doc.senddate}{/if}"
+		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}"
 		data-popup-menu-title="{t a=$doc.docid|string_format:"#%06d"}Document $a{/t}">
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
-			{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
+			{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 			{if $doc.closed == $smarty.const.DOC_OPEN && $doc.confirmdate}
-				{hint text=$doc.confirmdate|date_format:"%Y/%m/%d %H:%M" icon="wait"}
+				{hint text=$doc.confirmdate|date_format:"Y-m-d H:i" icon="wait"}
 			{/if}
 			{if $doc.number}<BR>
 				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
@@ -222,12 +222,12 @@
 				{hint icon="info" content=$doc.description|escape|replace:"\n":'<br>'}
 			{/if}
 			{if $doc.fromdate || $doc.todate}<BR>
-			    {if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
-			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+			    {if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
+			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
 			{/if}
 			{if $doc.reference}<br>
 			<a href="?m={if $doc.reference.type < 0}documentview{else}invoice{/if}&id={$doc.reference.id}" rel="external">
-				{t a=$_DOCTYPES[$doc.reference.type] b=$doc.reference.fullnumber c=$doc.reference.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}
+				{t a=$_DOCTYPES[$doc.reference.type] b=$doc.reference.fullnumber c=$doc.reference.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}
 			</a>
 			{/if}
 		</TD>
@@ -237,7 +237,7 @@
 			{buttons}
 				{if $doc.senddocuments}
 					{textformat assign="tip" wrap=5000}
-						{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
+						{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
 					{/textformat}
 					{button type="link" class="send-document" icon="{if $doc.senddate}mailsent{else}mail{/if}" href="?m=documentsend&id={$doc.docid}"
 						tip=$tip}

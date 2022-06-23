@@ -118,8 +118,8 @@
 			{/foreach}
 		</TD>
 		<TD class="text-right" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
-			<SPAN class="nobr">{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</SPAN><BR>
-			<SPAN class="nobr">{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"%Y/%m/%d"}{/if}</SPAN>
+			<SPAN class="nobr">{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"Y-m-d H:i"}{/if}</SPAN><BR>
+			<SPAN class="nobr">{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"Y-m-d"}{/if}</SPAN>
 		</TD>
 		<TD class="text-right">
 			{assign var=account value="`$accountlist[accountlist].login`@`$accountlist[accountlist].domain`"}

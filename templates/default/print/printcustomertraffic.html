@@ -28,7 +28,7 @@
 		</TD>
 		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{$smarty.now|date_format:"l, Y-m-d"}<BR>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
@@ -76,7 +76,7 @@
 	{foreach $nodestats as $stat}
 	<TR class="{cycle}">
 		<TD ALIGN="LEFT" NOWRAP>
-			{$stat.date|date_format:"%d.%m.%Y (%A)"}
+			{$stat.date|date_format:"d.m.Y (l)"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$stat.download|string_format:"%.2f"} {$stat.downloadunit}

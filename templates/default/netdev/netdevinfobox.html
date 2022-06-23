@@ -320,7 +320,7 @@
 											<strong>{trans("Purchase date")}</strong>
 										</td>
 										<td>
-											{$netdev.purchasetime|date_format:"%Y/%m/%d"}
+											{$netdev.purchasetime|date_format:"Y-m-d"}
 										</td>
 									</tr>
 								{/if}
@@ -339,7 +339,7 @@
 										{else}
 											{assign var=periodid value=$netdev.guaranteeperiod}
 											{$_GUARANTEEPERIODS.$periodid}
-												({if $netdev.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdev.guaranteetime|date_format:"%Y/%m/%d"}{/if})
+												({if $netdev.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdev.guaranteetime|date_format:"Y-m-d"}{/if})
 										{/if}
 									</td>
 								</tr>

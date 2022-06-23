@@ -65,7 +65,7 @@
 
 			{foreach $documents as $doc}
 			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
-				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$doc.senddate}{/if}">
+				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}">
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
@@ -74,7 +74,7 @@
 								<strong>{number number=$doc.number template=$doc.template customerid=$customerinfo.id time=$doc.cdate}</strong>
 							</div>
 							<div class="lms-ui-tab-table-column creation-date" onclick="window.open('?m=documentview&id={$doc.docid}');">
-								{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
+								{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
@@ -107,8 +107,8 @@
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column period" onclick="window.open('?m=documentview&id={$doc.docid}');">
-							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
-							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
+							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
 						</div>
 					</div>
 				</div>
@@ -117,7 +117,7 @@
 					<div class="lms-ui-tab-table-column buttons">
 						{if $customerinfo.senddocuments}
 							{textformat assign="tip" wrap=5000}
-								{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
+								{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
 							{/textformat}
 							{button type="link" class="send-doc" icon="{if $doc.senddate}mailsent{else}mail{/if}" href="?m=documentsend&id={$doc.docid}"
 								tip=$tip}

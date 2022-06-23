@@ -147,10 +147,10 @@
 			<a href="?m=tariffinfo&id={$tariff.id}"><B>{$tariff.name}</B></a>
 			{if $tariff.datefrom || $tariff.dateto}
 				{if $tariff.datefrom}
-				({trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}{if !$tariff.dateto}){/if}
+				({trans("from:")} {$tariff.datefrom|date_format:"Y-m-d"}{if !$tariff.dateto}){/if}
 				{/if}
 				{if $tariff.dateto}
-				{if !$tariff.datefrom}({/if}{trans("to:")} {$tariff.dateto|date_format:"%Y/%m/%d"})
+				{if !$tariff.datefrom}({/if}{trans("to:")} {$tariff.dateto|date_format:"Y-m-d"})
 				{/if}
 			{/if}
 			<BR>

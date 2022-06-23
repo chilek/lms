@@ -117,7 +117,7 @@
 					{/if}
 				{/if}
 				<TR{if $item.docid} data-published="{$item.published}" data-doctype="{$item.doctype}"
-					data-senddate="{if $item.senddate}{$item.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$item.senddate}{/if}"
+					data-senddate="{if $item.senddate}{$item.senddate|date_format:"Y-m-d H:i"}{else}{$item.senddate}{/if}"
 					data-refdocs="{if empty($item.documentreferenced)}0{else}1{/if}"
 					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
 					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
@@ -149,7 +149,7 @@
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
 								|| $item.doctype == $smarty.const.DOC_DNOTE)}
 								{textformat assign="tip" wrap=5000}
-									{if $item.senddate}{trans("Send invoice again")}<br><strong>{t a=$item.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+									{if $item.senddate}{trans("Send invoice again")}<br><strong>{t a=$item.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
 								{/textformat}
 								{button type="link" icon="{if $item.senddate}mailsent{else}mail{/if}" class="send-invoice"
 									href="?m=invoicesend&id={$item.docid}" tip=$tip}
@@ -367,7 +367,7 @@
 											<div class="document-title">
 												{$attachment = reset($refdoc.attachments)}
 												{$attachmentid = key($refdoc.attachments)}
-												{capture assign="attachment_text"}{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/capture}
+												{capture assign="attachment_text"}{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/capture}
 												{documentview id="{$docid}-{$attachmentid}" type=$attachment.contenttype name=$attachment.filename
 													url="?m=documentview&id={$docid}&attachmentid={$attachmentid}" external=true
 													text="{$attachment_text} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$attachment.contenttype)} xls{/if}\"></i>"}
@@ -375,7 +375,7 @@
 											</div>
 										{else}
 											<div class="document-title">
-												{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}
+												{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}
 											</div>
 											<div class="document-attachment-list">
 												{foreach $refdoc.attachments as $attachmentid => $attachment}
@@ -459,7 +459,7 @@
 				{tab_buttons}
 					<div class="addbalance-form-cell">
 						<INPUT type="hidden" form="addbalance-form" name="addbalance[customerid]" value="{$balancelist.customerid}">
-						<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
+						<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"Y/m/d H:i"}"{/if}>
 						{$layout.logname|truncate:16:"&hellip;":true}
 						<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
 						{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}

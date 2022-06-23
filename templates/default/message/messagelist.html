@@ -113,7 +113,7 @@
 		data-popup-menu-title="{t a=$message.id|string_format:"%d"}Message #$a{/t}"
 	>
 		<TD class="nobr">
-			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$message.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 		<TD class="text-center nobr">
 			{if $message.type == $smarty.const.MSG_MAIL}

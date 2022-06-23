@@ -164,7 +164,7 @@
 							{trans("Date:")}
 						</td>
 						<td>
-							<input type="text" name="addbalance[time]" value="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}"
+							<input type="text" name="addbalance[time]" value="{if $time}{$time|date_format:"Y/m/d H:i"}{/if}"
 								size="15" maxlength="15" form="addbalance"
 								{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 						</td>
@@ -255,7 +255,7 @@
 							{trans("Date:")}
 						</td>
 						<td>
-							{$last.time|date_format:"%Y/%m/%d %H:%M"}
+							{$last.time|date_format:"Y-m-d H:i"}
 						</td>
 					</tr>
 					{if $last.customerid}

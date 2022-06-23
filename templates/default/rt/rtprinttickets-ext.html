@@ -68,7 +68,7 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{$smarty.now|date_format:"l, Y-m-d"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
@@ -101,7 +101,7 @@
 						{trans("Date:")}
 					</td>
 					<td>
-						{$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
+						{$ticket.createtime|date_format:"Y-m-d H:i"}
 					</td>
 				</tr>
 				{if $ticket.deadline}
@@ -110,7 +110,7 @@
 							{trans("<!rt>Deadline:")}
 						</td>
 						<td>
-							{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}
+							{$ticket.deadline|date_format:"Y-m-d H:i"}
 						</td>
 					</tr>
 				{/if}
@@ -120,7 +120,7 @@
 							{trans("Resolve time:")}
 						</td>
 						<td>
-							{$ticket.resolvetime|date_format:"%Y/%m/%d %H:%M"}
+							{$ticket.resolvetime|date_format:"Y-m-d H:i"}
 						</td>
 					</tr>
 				{/if}
@@ -169,7 +169,7 @@
 							<td class="ftop {if $item.note} blend{/if} message-header">
 								<div class="message-header-container">
 									<div class="message-createtime">
-										{$item.createtime|date_format:"%Y/%m/%d %H:%M"}
+										{$item.createtime|date_format:"Y-m-d H:i"}
 									</div>
 									<div class="message-from-subject">
 										<div{if ($item.type != $smarty.const.RTMESSAGE_REGULAR && $item.type != $smarty.const.RTMESSAGE_NOTE)

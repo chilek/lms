@@ -33,7 +33,7 @@
 					<strong>{trans("Time")}</strong>
 				</td>
 				<td>
-					{$event.date|date_format:"%x (%A)"}
+					{$event.date|date_format:"Y-m-d (l)"}
 					{if $event.wholedays}
 						- {trans("whole day")}
 					{else}

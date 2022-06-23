@@ -13,7 +13,7 @@
 		</TD>
 		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{$smarty.now|date_format:"l, Y-m-d"}<BR>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
@@ -53,7 +53,7 @@
 			{counter}.
 		</TD>
 		<TD ALIGN="CENTER" NOWRAP>
-			{$balancelist[balancelist].time|date_format:"%d.%m.%Y"}
+			{$balancelist[balancelist].time|date_format:"d.m.Y"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{if $balancelist[balancelist].covenant}{moneyf($balancelist[balancelist].value*-1, $balancelist[balancelist].currency)}{else}-{/if}

@@ -35,7 +35,7 @@
 			({$host.id|string_format:"%04d"})
 		</TD>
 		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';" nowrap>
-			{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+			{if $host.lastreload}{$host.lastreload|date_format:"Y-m-d H:i:s"}{else}-{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';">
 			{$host.description}

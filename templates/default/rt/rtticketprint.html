@@ -4,7 +4,7 @@
 	<TR>
 		<TD width="100%" align="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{$smarty.now|date_format:"l, Y-m-d"}<BR>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
@@ -63,7 +63,7 @@
 			{trans("Create time:")}
 		</TD>
 		<TD>
-			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+			{$ticket.createtime|date_format:"Y/m/d H:i:s"}
 		</TD>
 	</TR>
 	{if $ticket.ownername}
@@ -148,7 +148,7 @@
 	<THEAD>
 	<TR>
 		<TD class="HEAD valign-top text-right bold nobr">
-			{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+			{$message.createtime|date_format:"Y/m/d H:i"}
 		</TD>
 		<TD class="HEAD text-right bold">
 			{trans("From:")}{if $message.type == $smarty.const.RTMESSAGE_REGULAR}<BR>{trans("Subject")}{/if}
@@ -193,7 +193,7 @@
 	{elseif $message.type != $smarty.const.RTMESSAGE_NOTE && $history}
 		<tr class="blend">
 			<td class="fbt text-right bold nobr valign-top">
-				{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+				{$message.createtime|date_format:"Y/m/d H:i"}
 			</td>
 			<td class="fbt text-right bold nobr valign-top">
 				{trans("From")}

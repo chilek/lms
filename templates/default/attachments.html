@@ -52,7 +52,7 @@
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
                         <div class="lms-ui-tab-table-column date">
-                            {$container.creationdate|date_format:"%Y/%m/%d %H:%M:%S"}
+                            {$container.creationdate|date_format:"Y/m/d H:i:s"}
                         </div>
                         <div class="lms-ui-tab-table-column creator">
                             <a href="?m=userinfo&id={$container.creatorid}">{$container.creatorname}</a>

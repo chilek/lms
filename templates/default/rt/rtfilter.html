@@ -204,10 +204,10 @@
             </label>
             <label class="nobr">
                 {trans("Created")}
-                <input type="text" name="fromdate" SIZE="14" maxlength="16" value="{if $filter.fromdate}{$filter.fromdate|date_format:"%Y/%m/%d %H:%M"}{/if}"
+                <input type="text" name="fromdate" SIZE="14" maxlength="16" value="{if $filter.fromdate}{$filter.fromdate|date_format:"Y/m/d H:i"}{/if}"
                     placeholder="{trans("yyyy/mm/dd hh:mm")}"
                     {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
-                <input type="text" name="todate" size="14" maxlength="16" value="{if $filter.todate}{$filter.todate|date_format:"%Y/%m/%d %H:%M"}{/if}"
+                <input type="text" name="todate" size="14" maxlength="16" value="{if $filter.todate}{$filter.todate|date_format:"Y/m/d H:i"}{/if}"
                     placeholder="{trans("yyyy/mm/dd hh:mm")}"
                     {tip class="lms-ui-datetime"} onChange="document.filter.submit();">
             </label>

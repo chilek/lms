@@ -11,7 +11,7 @@
 		</TD>
 		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{$smarty.now|date_format:"l, Y-m-d"}<BR>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
@@ -61,11 +61,11 @@
 		</TD>
 		<TD ALIGN="RIGHT">
 			<B>{$invoice.number}</B><BR>
-			{$invoice.cdate|date_format:"%d.%m.%Y"}
+			{$invoice.cdate|date_format:"d.m.Y"}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{if $invoice.sdate}{$invoice.sdate|date_format:"%d.%m.%Y"}{else}{$invoice.cdate|date_format:"%d.%m.%Y"}{/if}<BR>
-			{$invoice.pdate|date_format:"%d.%m.%Y"}
+			{if $invoice.sdate}{$invoice.sdate|date_format:"d.m.Y"}{else}{$invoice.cdate|date_format:"d.m.Y"}{/if}<BR>
+			{$invoice.pdate|date_format:"d.m.Y"}
 		</TD>
 		<TD>
 			{strip}

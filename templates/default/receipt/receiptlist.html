@@ -96,12 +96,12 @@
 					{date_period_preset from="#receiptlist [name=\"from\"]" to="#receiptlist [name=\"to\"]"}
 					<span>{trans("from")}</span>
 					<input type="text" name="from" size="10" maxlength="10"
-						value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}"
+						value="{if $listdata.from > 0}{$listdata.from|date_format:"Y/m/d"}{/if}"
 						placeholder="{trans("yyyy/mm/dd")}"
 						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 					<span>{trans("to")}</span>
 					<input type="text" name="to" size="10" maxlength="10"
-						value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}"
+						value="{if $listdata.to > 0}{$listdata.to|date_format:"Y/m/d"}{/if}"
 						placeholder="{trans("yyyy/mm/dd")}"
 						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				</span>
@@ -126,7 +126,7 @@
 	<TR class="highlight" data-name="{$receipt.number}">
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<span class="lms-ui-alert">{/if}
-			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
+			{$receipt.cdate|date_format:"Y-m-d H:i"}<BR>
 			{$receipt.user|truncate:"16":"&hellip;":true}
 			{if !$receipt.closed}</span>{/if}
 		</TD>
@@ -245,7 +245,7 @@
 			<IMG SRC="img/time.gif" ALT=""> <B>{trans("Cash History Last Entry:")}</B>
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			{$logentry.time|date_format:"%x %H:%M"} &nbsp;
+			{$logentry.time|date_format:"Y-m-d H:i"} &nbsp;
 			<B>
 			{if $logentry.value<0}<span class="lms-ui-alert">{/if}{$logentry.value|money_format}{if $logentry.value<0}</span>{/if}
 			<span class="blend">({trans("Cash state:")} {$logentry.snapshot|money_format})</span> &nbsp;

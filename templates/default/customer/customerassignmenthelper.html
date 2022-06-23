@@ -157,7 +157,7 @@
 													label="{strip}
 															{$promotion.name|escape}
 															{if !$promotion.valid && $promotion.datefrom > $smarty.now}
-																&nbsp;({trans("from")}&nbsp;{$promotion.datefrom|date_format:"%Y/%m/%d"})
+																&nbsp;({trans("from")}&nbsp;{$promotion.datefrom|date_format:"Y-m-d"})
 															{/if}
 														{/strip}"
 													data-valid="{$promotion.valid}"
@@ -182,7 +182,7 @@
 															>{strip}
 																{$schema.name|trunescape:$promotion_schema_name_limit}
 																{if !$schema.valid && $schema.datefrom > $smarty.now}
-																	&nbsp;({trans("from")}&nbsp;{$schema.datefrom|date_format:"%Y/%m/%d"})
+																	&nbsp;({trans("from")}&nbsp;{$schema.datefrom|date_format:"Y-m-d"})
 																{/if}
 															{/strip}</option>
 														{/if}

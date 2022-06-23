@@ -60,7 +60,7 @@
 			{trans("Creation date:")}
 		</TD>
 		<TD>
-			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$message.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 	</TR>
 {if $message.sender}
@@ -248,20 +248,20 @@
 				{trans("errornous")}
 				{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_DELIVERED}
-				{trans("delivered")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
+				{trans("delivered")} ({$item.lastdate|date_format:"Y-m-d H:i"})
 			{elseif $item.status == $smarty.const.MSG_CANCELLED}
-				{trans("cancelled")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
+				{trans("cancelled")} ({$item.lastdate|date_format:"Y-m-d H:i"})
 			{elseif $item.status == $smarty.const.MSG_BOUNCED}
-				{trans("bounced")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
+				{trans("bounced")} ({$item.lastdate|date_format:"Y-m-d H:i"})
 			{else}
 				{trans("waiting")}
 			{/if}
 		</TD>
 		<TD class="text-right valign-top">
-			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 		</TD>
 		<TD class="text-right">
-			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 		</TD>
 		<TD class="text-right nobr valign-top">
 			{if $item.body}

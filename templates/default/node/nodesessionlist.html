@@ -150,11 +150,11 @@
 				{if $unknowntype}-{/if}
 			</td>
 			<td class="nobr">
-				<span class="bold">{$session.start|date_format:"%Y.%m.%d"}</span> {$session.start|date_format:"%H:%M:%S"}
+				<span class="bold">{$session.start|date_format:"Y.m.d"}</span> {$session.start|date_format:"H:i:s"}
 			</td>
 			<td class="nobr">
 				{if $session.stop}
-				<span class="bold">{$session.stop|date_format:"%Y.%m.%d"}</span> {$session.stop|date_format:"%H:%M:%S"}
+				<span class="bold">{$session.stop|date_format:"Y.m.d"}</span> {$session.stop|date_format:"H:i:s"}
 				{else}-{/if}
 			</td>
 			<TD class="bold nobr">{$session.duration}</TD>
