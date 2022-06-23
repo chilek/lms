@@ -613,7 +613,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				JOIN rtcategoryusers cu ON cu.categoryid = c.id
 				WHERE cu.userid = ?', 'categoryid', array($userid));
             foreach ($result as &$ticket) {
-                if (ConfigHelper::checkConfig('rt.show_ticket_categories')) {
+                if (!empty($ticket['categories']) && ConfigHelper::checkConfig('rt.show_ticket_categories')) {
                     $categories = explode(',', $ticket['categories']);
                     if (!empty($categories)) {
                         foreach ($categories as $idx2 => $categoryid) {
