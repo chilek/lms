@@ -114,13 +114,13 @@
                                     {/if}
                                 </span>
                                 <span class="customer-call-view customer-call-note-more"
-                                    {if mb_strlen($call.notes) <= 50} style="display: none;"{/if}>
-                                    {hint mode="toggle" icon="view" class="customer-call-note-hint" text=nl2br($call.notes)}
+                                    {if isset($call.notes) && mb_strlen($call.notes) <= 50} style="display: none;"{/if}>
+                                    {hint mode="toggle" icon="view" class="customer-call-note-hint" text=$call.notes|default:""|@nl2br}
                                 </span>
                                 <span class="customer-call-edit" style="display: none;">
                                     <textarea type="text" class="customer-call-note lms-ui-autogrow"
-                                        data-original-value="{$call.notes|escape}"
-                                        >{$call.notes|escape}</textarea>
+                                        data-original-value="{$call.notes|default:""|escape}"
+                                        >{$call.notes|default:""|escape}</textarea>
                                 </span>
                             </div>
                         </div>
