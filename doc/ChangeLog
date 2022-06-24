@@ -165,6 +165,7 @@ version 28-git (????-??-??):
   - devel/cleanup: reanmed 'phpui.event_max_userlist_size' to 'timetable.event_max_userlist_size' [chilan]
   - devel/cleanup: renamed 'phpui.event_usergroup_selection_type'
     to 'timetable.event_usergroup_selection_type' [chilan]
+  - devel/cleanup: renamed 'phpui.customer_event_limit' to 'timetable.customer_event_limit' [chilan]
 
 version 27.0 (2021-08-20):
 
