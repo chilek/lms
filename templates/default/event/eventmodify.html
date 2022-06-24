@@ -43,7 +43,7 @@
 
 					{box_row icon="uptime" label="Time:" icon_class="fa-fw"}
 						{if $layout.module == 'eventadd'}
-							{$allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
+							{$allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.allow_past_events', ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true')))}
 						{else}
 							{$allow_past_date = true}
 						{/if}

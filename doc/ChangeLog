@@ -149,6 +149,7 @@ version 28-git (????-??-??):
   - improvement: show mac vendors on node session lists [chilan]
   - devel/cleanup: renamed 'phpui.timetable_working_hours_interval' and 'phpui.timetable_working_hours'
     to 'timetable.work_time_step' and 'timetable.work_time_hours' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_allow_past_events' to 'timetable.allow_past_events' [chilan]
 
 version 27.0 (2021-08-20):
 
