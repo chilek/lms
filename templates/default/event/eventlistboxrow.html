@@ -56,7 +56,9 @@
                 {$event.title|escape}
             </span>
         </a>
-        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}{/if}
+        {if !ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.hide_description', ConfigHelper::getConfig('phpui.timetable_hide_description', 'false')))}
+            {if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}
+        {/if}
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note|escape}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
