@@ -161,6 +161,7 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.timetable_hide_description' to 'timetable.hide_description' [chilan]
   - devel/cleanup: renamed 'phpui.event_time_step' to 'timetable.event_time_step' [chilan]
   - devel/cleanup: renamed 'phpui.event_user_required' to 'timetable.event_user_required' [chilan]
+  - devel/cleanup: renamed 'phpui.event_overlap_warning' to 'timetable.event_overlap_warning' [chilan]
 
 version 27.0 (2021-08-20):
 

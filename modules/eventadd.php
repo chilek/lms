@@ -138,7 +138,7 @@ if (isset($_POST['event'])) {
         $error['end'] = trans('End time must not precede start time!');
     }
 
-    if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.event_overlap_warning', ConfigHelper::getConfig('phpui.event_overlap_warning', 'false')))
         && !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
             'date' => $date,
             'begintime' => $begintime,
