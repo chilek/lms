@@ -3006,12 +3006,12 @@ CASE
 END
 ' LANGUAGE SQL;
 
-CREATE VIEW vcustomerassignments AS
+CREATE OR REPLACE VIEW vcustomerassignments AS
     SELECT ca.*
     FROM customerassignments ca
     WHERE startdate <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer AND enddate = 0;
 
-CREATE VIEW vaddresses AS
+CREATE OR REPLACE VIEW vaddresses AS
     SELECT a.*, c.ccode AS ccode, country_id AS countryid, city_id AS location_city, street_id AS location_street,
         house AS location_house, flat AS location_flat,
         (TRIM(both ' ' FROM
@@ -3037,14 +3037,14 @@ CREATE VIEW vaddresses AS
 /* ---------------------------------------------------
  Structure of view "vdivisions"
 ------------------------------------------------------*/
-CREATE VIEW vdivisions AS
+CREATE OR REPLACE VIEW vdivisions AS
     SELECT d.*,
         a.country_id as countryid, a.ccode, a.zip as zip, a.city as city, a.address,
         (CASE WHEN d.firstname IS NOT NULL AND d.lastname IS NOT NULL AND d.birthdate IS NOT NULL THEN 1 ELSE 0 END) AS naturalperson
     FROM divisions d
         JOIN vaddresses a ON a.id = d.address_id;
 
-CREATE VIEW vnetworks AS
+CREATE OR REPLACE VIEW vnetworks AS
     SELECT h.name AS hostname, ne.*, no.ownerid, a.ccode, a.city_id as location_city,
         a.street_id as location_street, a.house as location_house, a.flat as location_flat,
         no.chkmac, inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip,
@@ -3055,7 +3055,7 @@ CREATE VIEW vnetworks AS
         LEFT JOIN vaddresses a ON no.address_id = a.id
     WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 
-CREATE VIEW customerconsentview AS
+CREATE OR REPLACE VIEW customerconsentview AS
     SELECT c.id AS customerid,
         SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::integer AS consentdate,
         SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END)::smallint AS invoicenotice,
@@ -3066,7 +3066,7 @@ CREATE VIEW customerconsentview AS
         LEFT JOIN customerconsents cc ON cc.customerid = c.id
     GROUP BY c.id;
 
-CREATE VIEW customerview AS
+CREATE OR REPLACE VIEW customerview AS
     SELECT c.*,
         cc.consentdate AS consentdate,
         cc.invoicenotice AS invoicenotice,
@@ -3100,7 +3100,7 @@ CREATE VIEW customerview AS
             WHERE ud.userid = lms_current_user()))
         AND c.type < 2;
 
-CREATE VIEW contractorview AS
+CREATE OR REPLACE VIEW contractorview AS
     SELECT c.*,
         cc.consentdate AS consentdate,
         cc.invoicenotice AS invoicenotice,
@@ -3125,7 +3125,7 @@ CREATE VIEW contractorview AS
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
     WHERE c.type = 2;
 
-CREATE VIEW customeraddressview AS
+CREATE OR REPLACE VIEW customeraddressview AS
     SELECT c.*,
         cc.consentdate AS consentdate,
         cc.invoicenotice AS invoicenotice,
@@ -3154,14 +3154,14 @@ CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
 $$ LANGUAGE SQL IMMUTABLE;
 
-CREATE VIEW nas AS
+CREATE OR REPLACE VIEW nas AS
 SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description
 	FROM nodes n
 	JOIN netdevices d ON (n.netdev = d.id)
 	WHERE n.nas = 1;
 
-CREATE VIEW vnodes AS
+CREATE OR REPLACE VIEW vnodes AS
     SELECT n.*, m.mac,
         a.ccode,
         a.city_id as location_city, a.street_id as location_street,
@@ -3172,7 +3172,7 @@ CREATE VIEW vnodes AS
         LEFT JOIN vaddresses a ON n.address_id = a.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
-CREATE VIEW vmacs AS
+CREATE OR REPLACE VIEW vmacs AS
     SELECT n.*, m.mac, m.id AS macid,
         a.ccode,
         a.city_id as location_city,
@@ -3183,7 +3183,7 @@ CREATE VIEW vmacs AS
         LEFT JOIN vaddresses a ON n.address_id = a.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
-CREATE VIEW vnodetariffs AS
+CREATE OR REPLACE VIEW vnodetariffs AS
     SELECT n.*,
         t.downrate, t.downceil,
         t.uprate, t.upceil,
@@ -3240,7 +3240,7 @@ CREATE VIEW vnodetariffs AS
     ) t ON t.nodeid = n.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
-CREATE VIEW vnodealltariffs AS
+CREATE OR REPLACE VIEW vnodealltariffs AS
     SELECT n.*,
         COALESCE(t1.downrate, t2.downrate, 0) AS downrate,
         COALESCE(t1.downceil, t2.downceil, 0) AS downceil,
@@ -3417,7 +3417,7 @@ CREATE VIEW vnodealltariffs AS
             OR (t1.nodeid IS NULL AND t2.nodeid IS NOT NULL)
             OR (t1.nodeid IS NULL AND t2.nodeid IS NULL));
 
-CREATE VIEW teryt_terc AS
+CREATE OR REPLACE VIEW teryt_terc AS
 SELECT ident AS woj, 0::text AS pow, 0::text AS gmi, 0 AS rodz,
         UPPER(name) AS nazwa
     FROM location_states
@@ -3433,7 +3433,7 @@ SELECT ident AS woj, 0::text AS pow, 0::text AS gmi, 0 AS rodz,
     JOIN location_districts d ON (b.districtid = d.id)
     JOIN location_states s ON (d.stateid = s.id);
 
-CREATE VIEW teryt_simc AS
+CREATE OR REPLACE VIEW teryt_simc AS
 SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
         c.ident AS sym, c.id AS cityid, c.name AS nazwa,
         COALESCE(cc.ident, c.ident) AS sympod,
@@ -3444,7 +3444,7 @@ SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
     JOIN location_states s ON (d.stateid = s.id)
     LEFT JOIN location_cities cc ON (c.cityid = cc.id);
 
-CREATE VIEW teryt_ulic AS
+CREATE OR REPLACE VIEW teryt_ulic AS
 SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
         c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, s.name2 AS nazwa_2, t.name AS cecha, s.id
     FROM location_streets s
@@ -3454,13 +3454,13 @@ SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
     JOIN location_districts d ON (b.districtid = d.id)
     JOIN location_states st ON (d.stateid = st.id);
 
-CREATE VIEW customermailsview AS
+CREATE OR REPLACE VIEW customermailsview AS
 		SELECT customerid, array_to_string(array_agg(contact), ',') AS email
 			FROM customercontacts
 			WHERE (type & 8) > 0 AND contact <> ''
 			GROUP BY customerid;
 
-CREATE VIEW vusers AS
+CREATE OR REPLACE VIEW vusers AS
     SELECT u.*, (u.firstname || ' ' || u.lastname) AS name, (u.lastname || ' ' || u.firstname) AS rname
     FROM users u
     LEFT JOIN userdivisions ud ON u.id = ud.userid
@@ -3469,7 +3469,7 @@ CREATE VIEW vusers AS
                              WHERE ud2.userid = lms_current_user())
     GROUP BY u.id;
 
-CREATE VIEW vallusers AS
+CREATE OR REPLACE VIEW vallusers AS
 SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
 FROM users;
 
@@ -3580,7 +3580,7 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
     WHERE $1 IS NULL OR d.customerid = $1
 $$ LANGUAGE SQL IMMUTABLE;
 
-CREATE VIEW vinvoicecontents AS
+CREATE OR REPLACE VIEW vinvoicecontents AS
     SELECT * FROM get_invoice_contents(NULL);
 
 CREATE OR REPLACE FUNCTION customerbalances_update()
