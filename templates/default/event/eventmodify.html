@@ -123,7 +123,7 @@
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
 						<select name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple
-								{if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
+								{if ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.event_user_required', ConfigHelper::getConfig('phpui.event_user_required')))}required{/if}>
 							{foreach $userlist as $user}
 								{if (!is_array($event.userlist) || !in_array($user.id, $event.userlist))
 									&& ($hide_disabled_users && !$user.access
