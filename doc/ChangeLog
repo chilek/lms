@@ -147,6 +147,8 @@ version 28-git (????-??-??):
   - enhancement: added phone billing customer consent support [chilan]
   - enhancement: auto-generate billing documents with invoices issued to phone services [chilan]
   - improvement: show mac vendors on node session lists [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_working_hours_interval' and 'phpui.timetable_working_hours'
+    to 'timetable.work_time_step' and 'timetable.work_time_hours' [chilan]
 
 version 27.0 (2021-08-20):
 
