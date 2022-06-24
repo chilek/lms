@@ -65,6 +65,8 @@ function smarty_function_tax_rate_selection(array $params, $template)
         }
     }
 
+    $data_attributes .= ' ' . 'data-default-value="' . $selected . '"';
+
     $options = '';
     if (empty($taxratelist)) {
         $options .= '<option selected value="">' . trans('- no tax rates defined -') . '</option>';
