@@ -65,14 +65,14 @@ function smarty_function_tax_rate_selection(array $params, $template)
         }
     }
 
-    $data_attributes .= ' ' . 'data-default-value="' . $selected . '"';
+    $data_attributes .= ' data-default-value="' . $selected . '"';
 
     $options = '';
     if (empty($taxratelist)) {
         $options .= '<option selected value="">' . trans('- no tax rates defined -') . '</option>';
     } else {
         foreach ($taxratelist as $tax) {
-            $options .= '<option value="' . $tax['id'] . '" data-taxratevalue="' . $tax['value'] . '"'
+            $options .= '<option value="' . $tax['id'] . '" data-taxrate-value="' . $tax['value'] . '"'
             . LMSSmartyPlugins::tipFunction(array('text' => $tax['label']), $template)
             . ($tax['id'] == $selected ? ' selected' : null)
             . '>' . $tax['label'] . ' (' . $tax['value'] . '%)</option>';
