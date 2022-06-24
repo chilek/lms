@@ -200,7 +200,7 @@
 		}
             </label>
             <label class="nobr">
-                <input type="text" name="subject" value="{$filter.subject|escape}" placeholder="{trans("Subject")}" onChange="document.filter.submit();">
+                <input type="text" name="subject" value="{$filter.subject|default:""|escape}" placeholder="{trans("Subject")}" onChange="document.filter.submit();">
             </label>
             <label class="nobr">
                 {trans("Created")}
