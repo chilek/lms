@@ -3721,7 +3721,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'reload_execcmd', '/bin/true', '', 0),
 ('phpui', 'reload_sqlquery', '', '', 0),
 ('phpui', 'lastonline_limit', '600', '', 0),
-('phpui', 'timetable_days_forward', '7', '', 0),
+('timetable', 'default_forward_day_limit', '7', '', 0),
 ('phpui', 'gd_translate_to', 'ISO-8859-2', '', 0),
 ('phpui', 'check_for_updates_period', '86400', '', 0),
 ('phpui', 'homedir_prefix', '/home/', '', 0),
@@ -4238,6 +4238,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022061301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062400');
 
 COMMIT;
