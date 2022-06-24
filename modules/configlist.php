@@ -135,6 +135,7 @@ function GetConfigList()
         ),
         'timetable' => array(
             'default_forward_day_limit' => 'Number of days (including current day) on timetable. Default: 7.',
+            'event_max_userlist_size' => 'Automatically adjusts the size of the selection list to the number of users when set to 0.',
         ),
         'notes' => array(
             'template_file' => 'Debit note template file. Default: "note.html". Should be placed in templates directory.',

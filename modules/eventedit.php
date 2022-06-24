@@ -259,7 +259,7 @@ if (!isset($event['usergroup'])) {
 }
     //$SESSION->restore('eventgid', $event['usergroup']);
 
-$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
+$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size')));
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }
