@@ -682,6 +682,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevList($order = 'name,asc', $search = array())
     {
+        if (empty($order)) {
+            $order = 'name,asc';
+        }
         if (isset($search['count'])) {
             $count = $search['count'];
         } else {
