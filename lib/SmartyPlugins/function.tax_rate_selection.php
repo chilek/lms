@@ -26,12 +26,23 @@
 
 function smarty_function_tax_rate_selection(array $params, $template)
 {
+    $default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate', 23.00);
+
     $lms = LMS::getInstance();
     $taxratelist = $lms->GetTaxes();
 
+    // search taxid using taxrate
+    foreach ($taxratelist as $idx => $tr) {
+        if ($tr['value'] === $default_taxrate) {
+            $default_taxid = $idx;
+            break;
+        }
+    }
+
     $id = isset($params['id']) ? ' id="' . $params['id'] . '"' : null;
     $name = isset($params['name']) ? ' name="' . $params['name'] . '"' : null;
-    $selected = $params['selected'] ?? ConfigHelper::getConfig('phpui.default_taxrate', 23.00);
+    $selected = isset($params['selected']) ? $params['selected'] : $default_taxid;
+    $value = ' value="' . $selected . '"';
     $class = isset($params['class']) ? ' class="'. $params['class'] . '"' : null;
     $form = isset($params['form']) ? ' form="'. $params['form'] . '"' : null;
     $trigger = $params['trigger'] ?? null;
@@ -48,9 +59,9 @@ function smarty_function_tax_rate_selection(array $params, $template)
     $icon = '<i class="' . (strpos($params['icon'], 'lms-ui-icon-') === 0 ? $params['icon'] : 'lms-ui-icon-' . $params['icon']) . '"></i>';
 
     $data_attributes = '';
-    foreach ($params as $name => $value) {
-        if (strpos($name, 'data_') === 0) {
-            $data_attributes .= ' ' . str_replace('_', '-', $name) . '="' . $value . '"';
+    foreach ($params as $attname => $attvalue) {
+        if (strpos($attname, 'data_') === 0) {
+            $data_attributes .= ' ' . str_replace('_', '-', $attname) . '="' . $attvalue . '"';
         }
     }
 
@@ -61,10 +72,11 @@ function smarty_function_tax_rate_selection(array $params, $template)
         foreach ($taxratelist as $tax) {
             $options .= '<option value="' . $tax['id'] . '" data-taxratevalue="' . $tax['value'] . '"'
             . LMSSmartyPlugins::tipFunction(array('text' => $tax['label']), $template)
-            . ($tax['value'] == $selected ? ' selected' : null) . '>' . $tax['label'] . ' (' . $tax['value'] . '%)</option>';
+            . ($tax['id'] == $selected ? ' selected' : null)
+            . '>' . $tax['label'] . ' (' . $tax['value'] . '%)</option>';
         }
     }
 
-    return $icon . '<select ' . $name . $id . $class . $form . $tip_text . $visible . $required . $data_attributes . '>'
-        . $options . '</select>';
+    return $icon . '<select ' . $id . $name . $value . $class . $form . $tip_text . $visible . $required
+        . $data_attributes . '>' . $options . '</select>';
 }
