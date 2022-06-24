@@ -416,7 +416,7 @@
 									{trans("Name:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name|escape}{/if}"
+									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name|default:""|escape}{/if}"
 										size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
 								</TD>
 							</TR>
