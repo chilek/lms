@@ -313,7 +313,7 @@
 
 		function update_user_selection(users) {
 			var userms = $('#userlist').val();
-			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type') == 'filter'}
+			{if ConfigHelper::getConfig('timetable.event_usergroup_selection_type', ConfigHelper::getConfig('phpui.event_usergroup_selection_type')) == 'filter'}
 				$("#userlist").val( users );
 			{else}
 				var users2 = jQuery.unique([].concat.apply(users, userms));

@@ -3721,7 +3721,7 @@ URL: %url
 ('phpui', 'ping_type', '1','', 0),
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
-('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('timetable', 'event_usergroup_selection_type', 'update', '', 0),
 ('phpui', 'force_global_division_context', 'false', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
@@ -4184,4 +4184,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062402');
