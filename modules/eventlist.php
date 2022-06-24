@@ -173,7 +173,8 @@ $force_overdue_events = isset($_GET['force_overdue_events']) ? 1 : 0;
 $overdue_events = array();
 
 $params['userid'] = Auth::GetCurrentUser();
-if (ConfigHelper::checkConfig('phpui.timetable_overdue_events') && empty($overdue_events_only)) {
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.delayed_events', ConfigHelper::getConfig('phpui.timetable_overdue_events', 'false')))
+    && empty($overdue_events_only)) {
     $params['forward'] = -1;
     $params['closed'] = 0;
     $params['type'] = 0;
