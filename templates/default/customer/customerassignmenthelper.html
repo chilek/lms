@@ -632,7 +632,7 @@
 									{trans("Product ID:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid|escape}"
+									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid|default:""|escape}"
 										size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
 								</TD>
 							</TR>

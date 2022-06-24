@@ -476,7 +476,7 @@ switch ($mode) {
                         $description = trans('Id') . ': ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
                         $description = trans('Name') . ': ' . $row['name'];
-                    } else if ((empty($properties) || isset($properties['login'])) && preg_match("~$search~i", $row['login'])) {
+                    } else if ((empty($properties) || isset($properties['login'])) && isset($row['login']) && preg_match("~$search~i", $row['login'])) {
                         $description = trans('<!node>Login') . ': ' . $row['login'];
                     } else if ((empty($properties) || isset($properties['ip'])) && preg_match("~$search~i", $row['ip'])) {
                         $description = trans('IP') . ': ' . $row['ip'];
