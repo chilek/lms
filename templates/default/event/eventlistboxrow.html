@@ -29,7 +29,7 @@
             <br>{$event.date|date_format:"Y-m-d"}
         {/if}
         {$imadded=0}
-        {$user_row_limit = intval(ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4))}
+        {$user_row_limit = intval(ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)))}
         {if !empty($event.userlist)}
             {if !$user_row_limit || count($event.userlist) <= $user_row_limit}
                 {foreach $event.userlist as $user}
