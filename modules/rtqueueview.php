@@ -257,7 +257,7 @@ if (isset($_GET['s'])) {
     $filter['state'] = $_GET['s'];
 } elseif (!isset($filter['state'])) {
     $filter['state'] = ConfigHelper::getConfig('phpui.ticketlist_status');
-    if (strlen($filter['state'])) {
+    if (isset($filter['state']) && strlen($filter['state'])) {
         $filter['state'] = explode(',', $filter['state']);
     }
 }
