@@ -128,6 +128,9 @@ $DEFAULTS = array(
         'type' => 'html',
         'attachment_name' => '',
     ),
+    'timetable' => array(
+        'default_forward_day_limit' => 7,
+    ),
     'notes' => array(
         'template_file' => 'note.html',
         'content_type' => 'text/html',

@@ -99,6 +99,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'userpanel.debug_email'             => CONFIG_TYPE_EMAIL,
         'zones.hostmaster_mail'             => CONFIG_TYPE_EMAIL,
         'phpui.reload_type'                 => CONFIG_TYPE_RELOADTYPE,
+        'timetable.default_forward_day_limit' => CONFIG_TYPE_POSITIVE_INTEGER,
         'notes.type'                        => CONFIG_TYPE_DOCTYPE,
         'receipts.type'                     => CONFIG_TYPE_DOCTYPE,
         'phpui.report_type'                 => CONFIG_TYPE_DOCTYPE,

@@ -133,6 +133,9 @@ function GetConfigList()
             'paytype' => 'Default invoices paytype. Default: "1" (cash)',
             'customer_bankaccount' => 'Show bankaccount on invoice. Default: 0',
         ),
+        'timetable' => array(
+            'default_forward_day_limit' => 'Number of days (including current day) on timetable. Default: 7.',
+        ),
         'notes' => array(
             'template_file' => 'Debit note template file. Default: "note.html". Should be placed in templates directory.',
             'content_type' => 'Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".',

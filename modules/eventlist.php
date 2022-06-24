@@ -145,7 +145,7 @@ if (!isset($filter['year'])) {
 
 $layout['pagetitle'] = trans('Timetable');
 
-$filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
+$filter['forward'] = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
 $eventlist = $LMS->GetEventList($filter);
 
 if ($eventlist) {
@@ -208,7 +208,7 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.show_delayed_eve
 }
 
 // create calendars
-for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
+for ($i = 0; $i < ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward')); $i++) {
     $dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
     $daylist[$i] = $dt;
 }

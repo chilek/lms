@@ -169,7 +169,7 @@ if (!isset($filter['year'])) {
 
 $layout['pagetitle'] = trans('Schedule');
 
-$filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
+$filter['forward'] = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
 $eventlist = $LMS->GetEventList($filter);
 $eventlistIds = Utils::array_column($eventlist, 'id', 'id');
 
@@ -350,7 +350,7 @@ foreach ($usereventlistgrid as $guserid => $guserevents) {
 //</editor-fold>
 
 // create calendars
-for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
+for ($i = 0; $i < ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward')); $i++) {
     $dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
     $daylist[$i] = $dt;
 }

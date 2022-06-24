@@ -152,6 +152,7 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.timetable_allow_past_events' to 'timetable.allow_past_events' [chilan]
   - devel/cleanup: renamed 'phpui.timetable_overdue_events' to 'timetable.show_delayed_events' [chilan]
   - devel/cleanup: renamed 'phpui.timetable_user_row_limit' to 'timetable.row_user_limit' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_days_forward' to 'timetable.default_forward_day_limit' [chilan]
 
 version 27.0 (2021-08-20):
 
