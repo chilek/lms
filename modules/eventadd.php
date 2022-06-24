@@ -91,8 +91,8 @@ if (isset($_POST['event'])) {
                 $error['begin'] = trans('Events which begin in the past are not allowed!');
             }
 
-            $distant_event_day_trigger = intval(ConfigHelper::getConfig('phpui.timetable_distant_event_day_trigger', 0, true));
-            $distant_event_restriction = ConfigHelper::getConfig('phpui.timetable_distant_event_restriction', 'none', true);
+            $distant_event_day_trigger = intval(ConfigHelper::getConfig('timetable.distant_event_day_trigger', ConfigHelper::getConfig('phpui.timetable_distant_event_day_trigger', 0, true), true));
+            $distant_event_restriction = ConfigHelper::getConfig('timetable.distant_event_restriction', ConfigHelper::getConfig('phpui.timetable_distant_event_restriction', 'none'));
             if ($distant_event_restriction != 'none' && $distant_event_day_trigger && $date >= time() + $distant_event_day_trigger * 86400) {
                 switch ($distant_event_restriction) {
                     case 'error':
