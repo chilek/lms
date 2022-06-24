@@ -71,7 +71,9 @@ class LMSSmartyPlugins
                 case 'tip':
                 // optional - button with icon only don't use label
                 case 'label':
-                    $$name = trans($value);
+                    if (isset($value)) {
+                        $$name = trans($value);
+                    }
                     break;
                 // optional - allow to specify javascript code lauched after click,
                 case 'onclick':
