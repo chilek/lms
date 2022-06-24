@@ -159,6 +159,7 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.timetable_hide_disabled_users' and 'phpui.timetable_hide_deleted_users'
     to 'timetable.hide_disabled_users' and 'timetable.hide_deleted_users' [chilan]
   - devel/cleanup: renamed 'phpui.timetable_hide_description' to 'timetable.hide_description' [chilan]
+  - devel/cleanup: renamed 'phpui.event_time_step' to 'timetable.event_time_step' [chilan]
 
 version 27.0 (2021-08-20):
 
