@@ -3225,7 +3225,7 @@ if (!empty($intersect)) {
                     foreach ($block_prechecks as $precheck => $precheck_params) {
                         switch ($precheck) {
                             case 'node-access':
-                                $where_customers[] = 'EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 1)';
+                                $where_customers[] = '(EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 1) OR NOT EXISTS (SELECT 1 FROM nodes n3 WHERE n3.ownerid = c.id))';
                                 $where_nodes[] = 'n.access = 1';
                                 break;
                             case 'node-warning':
@@ -3561,7 +3561,7 @@ if (!empty($intersect)) {
                     foreach ($unblock_prechecks as $precheck => $precheck_params) {
                         switch ($precheck) {
                             case 'node-access':
-                                $where_customers[] = 'EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 0)';
+                                $where_customers[] = '(EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 0) OR NOT EXISTS (SELECT 1 FROM nodes n3 WHERE n3.ownerid = c.id))';
                                 $where_nodes[] = 'n.access = 0';
                                 break;
                             case 'node-warning':
