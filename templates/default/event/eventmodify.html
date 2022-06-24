@@ -1,8 +1,8 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{$hide_disabled_users = ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')}
-{$hide_deleted_users = ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')}
+{$hide_disabled_users = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.hide_disabled_users', ConfigHelper::getConfig('phpui.timetable_hide_disabled_users', 'false')))}
+{$hide_deleted_users = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.hide_deleted_users', ConfigHelper::getConfig('phpui.timetable_hide_deleted_users', 'false')))}
 	<!--// $Id$ //-->
 	{$xajax}
 	{if empty($event.ticketid)}

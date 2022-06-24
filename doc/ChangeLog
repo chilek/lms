@@ -156,6 +156,8 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.timetable_distant_event_day_trigger'
     and 'phpui.timetable_distant_event_restriction' to 'timetable.distant_event_day_trigger'
     and 'timetable.distant_event_restriction' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_hide_disabled_users' and 'phpui.timetable_hide_deleted_users'
+    to 'timetable.hide_disabled_users' and 'timetable.hide_deleted_users' [chilan]
 
 version 27.0 (2021-08-20):
 
