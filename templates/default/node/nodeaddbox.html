@@ -172,7 +172,7 @@
 											{icon name="login"}
 										</td>
 										<td>
-											<input type="text" name="nodedata[login]" value="{$nodedata.login|escape}"
+											<input type="text" name="nodedata[login]" value="{$nodedata.login|default:""|escape}"
 												placeholder="{trans("<!node>Login")}"
 												{tip trigger="login"}>
 										</td>
@@ -183,7 +183,7 @@
 											{icon name="password"}
 										</td>
 										<td>
-											<input type="text" name="nodedata[passwd]" value="{$nodedata.passwd|escape}"
+											<input type="text" name="nodedata[passwd]" value="{$nodedata.passwd|default:""|escape}"
 												placeholder="{trans("Password")}"
 												{tip trigger="passwd"}>
 											{button type="link" id="genpasswd" icon="next"
@@ -279,7 +279,7 @@
 													>{$project.name|escape}</option>
 												{/foreach}
 											</select>
-											<input type="text" name="nodedata[projectname]" value="{$nodedata.projectname|escape}"
+											<input type="text" name="nodedata[projectname]" value="{$nodedata.projectname|default:""|escape}"
 												placeholder="{trans("Investment project")}"
 												{tip trigger="projectname" } id="projectname"
 												{if !isset($nodedata.invprojectid) || empty($nodedata.invprojectid)} style="display: none;"{/if}>

@@ -197,7 +197,7 @@
 											{trans("<!node>Login")}
 										</td>
 										<td>
-											<input type="text" name="nodeedit[login]" value="{$nodeinfo.login|escape}"
+											<input type="text" name="nodeedit[login]" value="{$nodeinfo.login|default:""|escape}"
 												{tip trigger="login"}>
 										</td>
 									</tr>
@@ -312,7 +312,7 @@
 														>{$project.name|escape}</option>
 												{/foreach}
 											</select>
-											<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname|escape}"
+											<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname|default:""|escape}"
 												{tip text="Enter new project name" trigger="projectname" } id="projectname"
 												{if !isset($nodeinfo.invprojectid) || $nodeinfo.invprojectid != -1} style="display: none;"{/if}>
 										</td>
