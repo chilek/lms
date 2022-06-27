@@ -166,6 +166,8 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.event_usergroup_selection_type'
     to 'timetable.event_usergroup_selection_type' [chilan]
   - devel/cleanup: renamed 'phpui.customer_event_limit' to 'timetable.customer_event_limit' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_hide_deleted_users' and 'phpui.helpdesk_hide_disabled_users'
+    to 'rt.hide_deleted_users' and 'rt.hide_disabled_users' [chilan]
 
 version 27.0 (2021-08-20):
 

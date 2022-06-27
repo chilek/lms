@@ -5,8 +5,8 @@
 {$xajax}
 
 {$group_action=is_array($message.ticketid)}
-{$hide_disabled_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')}
-{$hide_deleted_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')}
+{$hide_disabled_users = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.hide_disabled_users', ConfigHelper::getConfig('phpui.helpdesk_hide_disabled_users', 'false')))}
+{$hide_deleted_users = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.hide_deleted_users', ConfigHelper::getConfig('phpui.helpdesk_hide_deleted_users', 'false')))}
 
 <style>
 
