@@ -802,7 +802,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $ticket = $LMS->GetTicketContents($ticket_id);
 
         if ($notify || $ticket['customerid'] && $reqcustid) {
-            $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+            $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
             if (!empty($helpdesk_sender_name)) {
                 $mailfname = '"' . $LMS->GetQueueName($queue) . '"';
             } else {

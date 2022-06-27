@@ -81,7 +81,7 @@ if ($id && !isset($_POST['ticket'])) {
 
                 $mailfname = '';
 
-                $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+                $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
                 if (!empty($helpdesk_sender_name)) {
                     if ($helpdesk_sender_name == 'queue') {
                         $mailfname = $queue['name'];
@@ -206,7 +206,7 @@ if ($id && !isset($_POST['ticket'])) {
 
                 $mailfname = '';
 
-                $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+                $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
                 if (!empty($helpdesk_sender_name)) {
                     if ($helpdesk_sender_name == 'queue') {
                         $mailfname = $queue['name'];
@@ -527,7 +527,7 @@ if (isset($_POST['ticket'])) {
             $verifierid = $ticket['verifierid'];
             $mailfname = '';
 
-            $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+            $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
             if (!empty($helpdesk_sender_name)) {
                 if ($helpdesk_sender_name == 'queue') {
                     $mailfname = $queue['name'];

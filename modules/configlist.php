@@ -150,6 +150,9 @@ function GetConfigList()
             'attachment_name' => 'File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.',
             'type' => 'Documents type. You can use "html" or "pdf". Default: html.',
         ),
+        'rt' => array(
+            'sender_name' => 'Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.',
+        ),
         'mail' => array(
             'debug_email' => 'E-mail address for debugging - messages from \'Mailing\' module will be sent at this address, instead to real users.',
             'smtp_port' => 'SMTP settings.',

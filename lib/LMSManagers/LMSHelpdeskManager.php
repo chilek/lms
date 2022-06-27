@@ -2343,7 +2343,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function DetermineSenderEmail($user_email, $queue_email, $ticket_email, $forced_order = null)
     {
         $helpdesk_sender_email = empty($forced_order)
-            ? ConfigHelper::getConfig('phpui.helpdesk_sender_email', 'user,queue,ticket')
+            ? ConfigHelper::getConfig('rt.sender_email', ConfigHelper::getConfig('phpui.helpdesk_sender_email', 'user,queue,ticket'))
             : $forced_order;
         $attributes = explode(',', $helpdesk_sender_email);
         $attribute = reset($attributes);

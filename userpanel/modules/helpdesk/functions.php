@@ -202,7 +202,7 @@ function module_main()
             if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true))) {
                 $user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));
 
-                if ($mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name')) {
+                if ($mailfname = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'))) {
                     if ($mailfname == 'queue') {
                         $mailfname = $LMS->GetQueueName($ticket['queue']);
                     }
@@ -407,7 +407,7 @@ function module_main()
 
             $user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));
 
-            if ($mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name')) {
+            if ($mailfname = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'))) {
                 if ($mailfname == 'queue') {
                     $mailfname = $ticket['queue']['name'];
                 }

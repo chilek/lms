@@ -128,6 +128,9 @@ $DEFAULTS = array(
         'type' => 'html',
         'attachment_name' => '',
     ),
+    'rt' => array(
+        'sender_name' => '',
+    ),
     'timetable' => array(
         'default_forward_day_limit' => 7,
     ),

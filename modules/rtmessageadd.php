@@ -175,7 +175,7 @@ if (isset($_POST['message'])) {
 
             $mailfname = '';
 
-            $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+            $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
             if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name)) {
                 if ($mailfname == 'queue') {
                     $mailfname = $queue['name'];
@@ -386,7 +386,7 @@ if (isset($_POST['message'])) {
             if (isset($message['notify']) || isset($message['customernotify']) || !empty($message['verifierid'])) {
                 $mailfname = '';
 
-                $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+                $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
                 if (!empty($helpdesk_sender_name)) {
                     $mailfname = $helpdesk_sender_name;
 

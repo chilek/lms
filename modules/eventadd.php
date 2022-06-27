@@ -254,7 +254,7 @@ if (isset($_POST['event'])) {
                 if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
                     $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
-                    $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+                    $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
                     if (!empty($helpdesk_sender_name)) {
                         $mailfname = $helpdesk_sender_name;
 

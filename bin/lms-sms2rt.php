@@ -200,7 +200,7 @@ if (!empty($service)) {
 $prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
 $newticket_notify = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true));
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
-$helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+$helpdesk_sendername = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
