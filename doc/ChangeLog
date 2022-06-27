@@ -186,6 +186,8 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.helpdesk_backend_mode' to 'rt.backend_mode' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_block_ticket_close_with_open_events'
     to 'rt.block_ticket_close_with_open_events' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_check_owner_verifier_conflict'
+    to 'rt.check_owner_verifier_conflict' [chilan]
 
 version 27.0 (2021-08-20):
 
