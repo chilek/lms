@@ -3214,7 +3214,7 @@ class LMS
             $data = $this->ExecHook('send_sms_before', $data);
             $data = $this->executeHook('send_sms_before', $data);
 
-            if ($data['abort']) {
+            if (isset($data['abort']) && $data['abort']) {
                 if (is_string($data['result'])) {
                     $errors[] = $data['result'];
                     continue;
