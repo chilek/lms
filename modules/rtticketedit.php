@@ -427,7 +427,7 @@ if (isset($_POST['ticket'])) {
         $error['owner'] = trans('Only \'new\' ticket can be owned by no one!');
     }
 
-    if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_change_ticket_state_from_open_to_new')) {
+    if (!ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_change_ticket_state_from_open_to_new', ConfigHelper::getConfig('phpui.helpdesk_allow_change_ticket_state_from_open_to_new', 'false')))) {
         if ($ticketedit['state'] == RT_NEW && $ticketedit['owner']) {
             $ticketedit['state'] = RT_OPEN;
         }
