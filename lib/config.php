@@ -129,6 +129,7 @@ $DEFAULTS = array(
         'attachment_name' => '',
     ),
     'rt' => array(
+        'backend_mode' => false,
         'sender_name' => '',
     ),
     'timetable' => array(

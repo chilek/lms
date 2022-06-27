@@ -151,6 +151,7 @@ function GetConfigList()
             'type' => 'Documents type. You can use "html" or "pdf". Default: html.',
         ),
         'rt' => array(
+            'backend_mode' => 'When enabled, all messages in helpdesk system (except those sent to requester) will be sent to mail server corresponding queue address. lms-rtparser script should be running on server. Messages won\'t be written directly to database, but on solely responsibility of rtparser script. Default: disabled.',
             'sender_name' => 'Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.',
         ),
         'mail' => array(

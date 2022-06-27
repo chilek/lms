@@ -36,6 +36,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.smarty_debug'                => CONFIG_TYPE_BOOLEAN,
         'phpui.use_current_payday'          => CONFIG_TYPE_BOOLEAN,
         'phpui.helpdesk_backend_mode'       => CONFIG_TYPE_BOOLEAN,
+        'rt.backend_mode'                   => CONFIG_TYPE_BOOLEAN,
         'phpui.helpdesk_reply_body'         => CONFIG_TYPE_BOOLEAN,
         'phpui.to_words_short_version'      => CONFIG_TYPE_BOOLEAN,
         'phpui.newticket_notify'            => CONFIG_TYPE_BOOLEAN,

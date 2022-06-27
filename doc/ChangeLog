@@ -183,6 +183,7 @@ version 28-git (????-??-??):
     to 'rt.allow_all_users_modify_deadline' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_allow_change_ticket_state_from_open_to_new'
     to 'rt.allow_change_ticket_state_from_open_to_new' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_backend_mode' to 'rt.backend_mode' [chilan]
 
 version 27.0 (2021-08-20):
 
