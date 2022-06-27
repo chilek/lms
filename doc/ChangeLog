@@ -171,6 +171,7 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.helpdesk_allow_empty_categories'
     and 'phpui.helpdesk_empty_category_warning' to 'rt.allow_empty_categories'
     and 'rt.empty_category_warning' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_customer_notify' to 'rt.customer_notify' [chilan]
 
 version 27.0 (2021-08-20):
 

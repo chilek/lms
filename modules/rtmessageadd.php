@@ -616,7 +616,7 @@ if (isset($_POST['message'])) {
         foreach ($ticketid as $id) {
             $LMS->MarkTicketAsRead($id);
         }
-        if (ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
             $message['smsnotify'] = true;
         }
 
@@ -674,13 +674,13 @@ if (isset($_POST['message'])) {
                 );
             }
 
-            if (!empty($message['mailfrom']) && ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
+            if (!empty($message['mailfrom']) && ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
                 $message['mailnotify'] = true;
             }
 
             if ($reply['phonefrom']) {
                 $message['phonefrom'] = $reply['phonefrom'];
-                if (ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
+                if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
                     $message['smsnotify'] = true;
                 }
             }
@@ -868,7 +868,7 @@ if (!is_array($message['ticketid'])) {
             }
             unset($contact);
         }
-    } elseif (ConfigHelper::checkConfig('phpui.helpdesk_customer_notify')) {
+    } elseif (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
         $message['mailnotify'] = !empty($contacts['mails']);
         $message['smsnotify'] = !empty($contacts['phones']);
     }
