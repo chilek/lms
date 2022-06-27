@@ -3501,13 +3501,23 @@ $_LANG['SMS from $a'] = 'SMS od $a';
 
 $_LANG['Backup MX support:'] = 'Obsługa zapasowego MX:';
 
+$_LANG['<!date-format>$a, $b'] = '$a, $b';
+$_LANG['<!date-format>$a ($b)'] = '$a ($b)';
+
 $_LANG['Mon'] = 'pn.';
+$_LANG['Monday'] = 'poniedziałek';
 $_LANG['Tue'] = 'wt.';
-$_LANG['Thu'] = 'śr.';
-$_LANG['Wed'] = 'cz.';
+$_LANG['Tuesday'] = 'wtorek';
+$_LANG['Wed'] = 'śr.';
+$_LANG['Wednesday'] = 'środa';
+$_LANG['Thu'] = 'cz.';
+$_LANG['Thursday'] = 'czwartek';
 $_LANG['Fri'] = 'pt.';
+$_LANG['Friday'] = 'piątek';
 $_LANG['Sat'] = 'sb.';
+$_LANG['Saturday'] = 'sobota';
 $_LANG['Sun'] = 'nd.';
+$_LANG['Sunday'] = 'niedziela';
 $_LANG['No locks.'] = 'Brak blokad.';
 $_LANG['Locks:'] = 'Blokady:';
 $_LANG['Node Locks'] = 'Blokady komputera';

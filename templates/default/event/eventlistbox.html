@@ -23,7 +23,7 @@
     <THEAD>
         <TR{if $day == $today} class="superdark"{/if}>
             <TD class="bold nobr">
-                {icon name="timetable" label="{$day|date_format:"l"} ({$day|date_format:"Y-m-d"})"}
+                {icon name="timetable" label="{t a=trans($day|date_format:"l") b=$day|date_format:"Y-m-d"}<!date-format>\$a (\$b){/t}"}
             </TD>
             <TD colspan="3">
                 {if isset($getHolidays[$day]) && $getHolidays[$day]}

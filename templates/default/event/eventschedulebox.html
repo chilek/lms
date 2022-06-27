@@ -18,7 +18,7 @@
                 &nbsp;
             </td>
             <TD class="bold nobr" align="left">
-                {icon name="timetable" label="{$day|date_format:"l"}" }
+                {icon name="timetable" label="{trans($day|date_format:"l")}"}
                 <span class="bold">({$day|date_format:"Y-m-d"})</span>&nbsp;
                 {if $getHolidays[$day]}
                 <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>&nbsp;

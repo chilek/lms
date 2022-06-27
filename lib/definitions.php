@@ -878,8 +878,8 @@ $DISCOUNTTYPES = array(
 
 define('DAY_MONDAY', 0);
 define('DAY_TUESDAY', 1);
-define('DAY_THURSDAY', 2);
-define('DAY_WEDNESDAY', 3);
+define('DAY_WEDNESDAY', 2);
+define('DAY_THURSDAY', 3);
 define('DAY_FRIDAY', 4);
 define('DAY_SATURDAY', 5);
 define('DAY_SUNDAY', 6);
@@ -887,8 +887,8 @@ define('DAY_SUNDAY', 6);
 $DAYS = array(
     DAY_MONDAY  => trans('Mon'),
     DAY_TUESDAY => trans('Tue'),
-    DAY_THURSDAY    => trans('Thu'),
     DAY_WEDNESDAY   => trans('Wed'),
+    DAY_THURSDAY    => trans('Thu'),
     DAY_FRIDAY  => trans('Fri'),
     DAY_SATURDAY    => trans('Sat'),
     DAY_SUNDAY  => trans('Sun'),

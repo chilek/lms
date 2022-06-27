@@ -4,7 +4,8 @@
 	<TR>
 		<TD width="100%" align="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"l, Y-m-d"}<BR>
+			{t a=trans($smarty.now|date_format:"l") b=$smarty.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}
+			<br>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>

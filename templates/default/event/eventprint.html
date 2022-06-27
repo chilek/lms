@@ -7,10 +7,11 @@
 	</COLGROUP>
 	<TR>
 		<TD class="text-left nobr">
-			<H1>{$layout.pagetitle}: {$date|date_format:"Y-m-d (l)"}</H1>
+			<H1>{$layout.pagetitle}: {t a=trans($date|date_format:"l") b=$date|date_format:"Y-m-d"}<!date-format>$a, $b{/t}</H1>
 		</TD>
 		<TD class="text-right">
-			LMS {$layout.lmsv} @ {$layout.hostname} {$smarty.now|date_format:"l Y-m-d"}<BR>
+			LMS {$layout.lmsv} @ {$layout.hostname}
+			{t a=trans($smarty.now|date_format:"l") b=$smart.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
