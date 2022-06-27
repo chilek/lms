@@ -129,7 +129,7 @@ function RTSearch($search, $order = 'createtime,desc')
             } else {
                 $where_queue = '(t.queueid = ' . intval($search['queue']);
             }
-            $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+            $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
             $userid = Auth::GetCurrentUser();
             $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
         }

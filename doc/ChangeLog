@@ -177,6 +177,8 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.helpdesk_notification_attachments'
     to 'rt.notification_attachments' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_author_notify' to 'rt.author_notify' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_additional_user_permission_checks'
+    to 'rt.additional_user_permission_checks' [chilan]
 
 version 27.0 (2021-08-20):
 

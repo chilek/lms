@@ -428,8 +428,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $userid = Auth::GetCurrentUser();
 
-        $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
-        $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+        $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
+        $allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
 
         $qids = null;
         if (!empty($ids)) {
@@ -806,7 +806,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $stats = null;
 
         $userid = Auth::GetCurrentUser();
-        $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+        $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
 
         if ($result = $this->db->GetAll(
             'SELECT t.state, COUNT(t.state) AS scount
@@ -1488,7 +1488,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES;
 
-        $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+        $allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
 
         $userid = Auth::GetCurrentUser();
         $ticket = $this->GetTicketContents($ticketid);
@@ -2414,8 +2414,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $userid = Auth::GetCurrentUser();
 
-        $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
-        $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+        $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
+        $allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
 
         if ($user_permission_checks) {
             return $this->db->GetOne(

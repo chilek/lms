@@ -161,7 +161,7 @@ if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernet
 }
 
 $userid = Auth::GetCurrentUser();
-$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+$user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
 $customerstats = array(
     'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state NOT IN ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets t
