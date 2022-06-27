@@ -272,11 +272,17 @@ if (isset($_POST['ticket'])) {
                         'phones' => $phones,
                     );
                     $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'),
+                        ConfigHelper::getConfig(
+                            'rt.notification_mail_body_customerinfo_format',
+                            ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')
+                        ),
                         $params
                     );
                     $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'),
+                        ConfigHelper::getConfig(
+                            'rt.notification_sms_body_customerinfo_format',
+                            ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')
+                        ),
                         $params
                     );
                 }

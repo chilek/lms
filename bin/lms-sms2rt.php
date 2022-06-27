@@ -392,8 +392,20 @@ if (($fh = fopen($message_file, "r")) != null) {
                     'phones' => $phones,
                     'categories' => $cats,
                 );
-                $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-                $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
+                $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                    ConfigHelper::getConfig(
+                        'rt.notification_mail_body_customerinfo_format',
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')
+                    ),
+                    $params
+                );
+                $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                    ConfigHelper::getConfig(
+                        'rt.notification_sms_body_customerinfo_format',
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')
+                    ),
+                    $params
+                );
             }
 
             if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {

@@ -431,8 +431,20 @@ if (isset($_POST['message'])) {
                             'emails' => $emails,
                             'phones' => $phones,
                         );
-                        $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-                        $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
+                        $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                            ConfigHelper::getConfig(
+                                'rt.notification_mail_body_customerinfo_format',
+                                ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')
+                            ),
+                            $params
+                        );
+                        $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                            ConfigHelper::getConfig(
+                                'rt.notification_sms_body_customerinfo_format',
+                                ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')
+                            ),
+                            $params
+                        );
                     }
                 } elseif ((isset($message['notify']) || !empty($message['verifierid'])) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
                     $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
