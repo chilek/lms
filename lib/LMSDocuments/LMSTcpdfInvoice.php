@@ -478,7 +478,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
+        $tmp = str_replace('%bankname', isset($this->data['div_bank']) ? $this->data['div_bank'] : '', $tmp);
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
