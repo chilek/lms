@@ -2066,7 +2066,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $LMS;
 
-        $notification_attachments = ConfigHelper::checkConfig('phpui.helpdesk_notification_attachments');
+        $notification_attachments = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notification_attachments', ConfigHelper::getConfig('phpui.helpdesk_notification_attachments')));
 
         $notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
         $userid = Auth::GetCurrentUser();
