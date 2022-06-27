@@ -131,6 +131,7 @@ $DEFAULTS = array(
     'rt' => array(
         'backend_mode' => false,
         'sender_name' => '',
+        'reply_body' => false,
     ),
     'timetable' => array(
         'default_forward_day_limit' => 7,
