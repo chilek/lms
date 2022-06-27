@@ -173,7 +173,8 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'resolve':
                 $ticket = $LMS->GetTicketContents($id);
-                if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events') && !empty($ticket['openeventcount'])) {
+                if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false')))
+                    && !empty($ticket['openeventcount'])) {
                     die(trans("Ticket have open assigned events!"));
                 } else {
                     if ($ticket['state'] != RT_RESOLVED) {
@@ -417,7 +418,7 @@ if (isset($_POST['ticket'])) {
         $error['subject'] = trans('Ticket subject can contain maximum $a characters!', ConfigHelper::getConfig('rt.subject_max_length', 50));
     }
 
-    if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false')))) {
         if ($ticketedit['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
             $error['state'] = trans('Ticket have open assigned events!');
         }

@@ -364,7 +364,8 @@
 				{button type="link-button" icon="edit" tip= "Edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
-				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
+				{if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false'))))
+					&& !empty($ticket['openeventcount'])}
 					{button icon="status-resolved" label="Ticket have open assigned events!" tip="Ticket have open assigned events!" class="blend disabled"}
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}

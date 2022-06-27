@@ -66,7 +66,7 @@ if (isset($_GET['ticketid'])) {
 
     $ticket = $LMS->GetTicketContents($note['ticketid']);
 
-    if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false')))
         && $note['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
         $error['state'] = trans('Ticket have open assigned events!');
     }
