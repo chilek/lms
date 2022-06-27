@@ -2068,7 +2068,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $notification_attachments = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notification_attachments', ConfigHelper::getConfig('phpui.helpdesk_notification_attachments')));
 
-        $notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
+        $notify_author = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.author_notify', ConfigHelper::getConfig('phpui.helpdesk_author_notify', 'false')));
         $userid = Auth::GetCurrentUser();
         $sms_service = ConfigHelper::getConfig('sms.service');
 
