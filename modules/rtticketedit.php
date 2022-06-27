@@ -672,7 +672,7 @@ if (isset($_POST['ticket'])) {
 } else {
     $ticketedit['categories'] = $ticket['categories'];
 
-    if (ConfigHelper::checkConfig('phpui.helpdesk_notify')) {
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notify', ConfigHelper::getConfig('phpui.helpdesk_notify', 'false')))) {
         $ticket['notify'] = true;
     }
 

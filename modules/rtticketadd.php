@@ -478,7 +478,7 @@ if (isset($_POST['ticket'])) {
         unset($category);
     }
 
-    if (ConfigHelper::checkConfig('phpui.helpdesk_notify')) {
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notify', ConfigHelper::getConfig('phpui.helpdesk_notify', 'false')))) {
         $ticket['notify'] = true;
     }
 

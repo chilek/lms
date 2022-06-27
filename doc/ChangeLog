@@ -188,6 +188,7 @@ version 28-git (????-??-??):
     to 'rt.block_ticket_close_with_open_events' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_check_owner_verifier_conflict'
     to 'rt.check_owner_verifier_conflict' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_notify' to 'rt.notify' [chilan]
 
 version 27.0 (2021-08-20):
 

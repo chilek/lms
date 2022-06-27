@@ -51,7 +51,7 @@ if (isset($_GET['ticketid'])) {
 
     $note['category_change'] = 0;
 
-    if (ConfigHelper::checkConfig('phpui.helpdesk_notify')) {
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notify', ConfigHelper::getConfig('phpui.helpdesk_notify', 'false')))) {
         $note['notify'] = true;
     }
 
