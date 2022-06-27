@@ -190,6 +190,10 @@ version 28-git (????-??-??):
     to 'rt.check_owner_verifier_conflict' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_notify' to 'rt.notify' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_reply_body' to 'rt.quote_body' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_notification_mail_subject',
+    'phpui.helpdesk_notification_mail_body' and 'phpui.helpdesk_notification_sms_body'
+    to 'rt.notification_mail_subject', 'rt.notification_mail_body' and 'rt.notification_sms_body'
+    [chilan]
 
 version 27.0 (2021-08-20):
 

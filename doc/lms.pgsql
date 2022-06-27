@@ -3745,13 +3745,13 @@ Telefon: %phone', '', 0),
 ('rt', 'backend_mode', 'false', '', 0),
 ('rt', 'sender_name', '', '', 0),
 ('rt', 'quote_body', 'false', '', 0),
-('phpui', 'helpdesk_notification_mail_subject', '[RT#%tid] %subject', '', 0),
-('phpui', 'helpdesk_notification_mail_body', '%body
+('rt', 'notification_mail_subject', '[RT#%tid] %subject', '', 0),
+('rt', 'notification_mail_body', '%body
 
 URL: %url
 
 %customerinfo', '', 0),
-('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body %customerinfo', '', 0),
+('rt', 'notification_sms_body', '[RT#%tid] %subject: %body %customerinfo', '', 0),
 ('phpui', 'use_invoices', 'false', '', 0),
 ('phpui', 'ticket_template_file', 'rtticketprint.html', '', 0),
 ('phpui', 'use_current_payday', 'false', '', 0),
@@ -4238,6 +4238,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062704');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062705');
 
 COMMIT;
