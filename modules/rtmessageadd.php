@@ -105,7 +105,7 @@ if (isset($_POST['message'])) {
     // TODO: verifierid/deadline validation for group reply
     $deadline = datetime_to_timestamp($message['deadline']);
     if (!$group_reply && $deadline != $ticket['deadline']) {
-        if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+        if (!ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
             && !empty($message['verifierid']) && $message['verifierid'] != Auth::GetCurrentUser()) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $message['deadline'] = $ticket['deadline'];

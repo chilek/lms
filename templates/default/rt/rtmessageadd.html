@@ -289,7 +289,9 @@
 			{/box_row}
 
 			{box_row icon="deadline" icon_class="fa-fw" label="<!rt>Deadline"}
-				{if $group_action || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
+				{if $group_action
+					|| ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
+					|| !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"Y/m/d H:i"}{/if}"
 							SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 				{else}

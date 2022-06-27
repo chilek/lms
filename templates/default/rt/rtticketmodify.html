@@ -219,7 +219,8 @@
 			{/box_row}
 
 			{box_row icon="deadline" label="<!rt>Deadline" icon_class="fa-fw"}
-				{if $layout.module != 'rtticketedit' || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+				{if $layout.module != 'rtticketedit'
+					|| ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
 					|| !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
 					<input type="text" name="ticket[deadline]" value="{if $ticket.deadline}{$ticket.deadline|date_format:"Y/m/d H:i"}{/if}" size="20"
 						{tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>

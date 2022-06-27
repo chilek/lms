@@ -87,7 +87,7 @@ if (isset($_GET['ticketid'])) {
 
     $deadline = datetime_to_timestamp($note['deadline']);
     if ($deadline != $ticket['deadline']) {
-        if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+        if (!ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
             && !empty($note['verifierid']) && $note['verifierid'] != Auth::GetCurrentUser()) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $note['deadline'] = $ticket['deadline'];

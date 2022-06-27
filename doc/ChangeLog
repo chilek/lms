@@ -179,6 +179,8 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.helpdesk_author_notify' to 'rt.author_notify' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_additional_user_permission_checks'
     to 'rt.additional_user_permission_checks' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_allow_all_users_modify_deadline'
+    to 'rt.allow_all_users_modify_deadline' [chilan]
 
 version 27.0 (2021-08-20):
 
