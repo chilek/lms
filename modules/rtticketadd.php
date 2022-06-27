@@ -47,8 +47,8 @@ if (!$categories) {
     access_denied();
 }
 
-$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
-$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
+$allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
+$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.empty_category_warning', ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', 'true')));
 
 if (isset($_POST['ticket'])) {
     $ticket = $_POST['ticket'];

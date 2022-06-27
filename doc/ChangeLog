@@ -168,6 +168,9 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.customer_event_limit' to 'timetable.customer_event_limit' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_hide_deleted_users' and 'phpui.helpdesk_hide_disabled_users'
     to 'rt.hide_deleted_users' and 'rt.hide_disabled_users' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_allow_empty_categories'
+    and 'phpui.helpdesk_empty_category_warning' to 'rt.allow_empty_categories'
+    and 'rt.empty_category_warning' [chilan]
 
 version 27.0 (2021-08-20):
 
