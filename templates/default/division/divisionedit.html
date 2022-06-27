@@ -337,7 +337,7 @@
 			</td>
 			<td>
 				<select name="division[inv_paytime]" {tip text="Select default deadline in days" trigger="inv_paytime"}>
-					<option value=""{if !strlen($division.inv_paytime)} selected{/if}>- {trans("default<!paytime>")} -</option>
+					<option value=""{if !isset($division.inv_paytime) || !strlen($division.inv_paytime)} selected{/if}>- {trans("default<!paytime>")} -</option>
 					<option value="0"{if $division.inv_paytime == "0"} selected{/if}>0</option>
 					<option value="7"{if $division.inv_paytime == 7} selected{/if}>7</option>
 					<option value="10"{if $division.inv_paytime == 10} selected{/if}>10</option>
