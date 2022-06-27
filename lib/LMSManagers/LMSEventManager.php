@@ -354,19 +354,19 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         switch ($privacy) {
             case 0:
                 if ($event_user_assignments) {
-                    $privacy_condition = '(private = 0 OR (private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))))';
+                    $privacy_condition = 'AND (private = 0 OR (private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))))';
                 } else {
-                    $privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . $current_user_id . '))';
+                    $privacy_condition = 'AND (private = 0 OR (private = 1 AND userid = ' . $current_user_id . '))';
                 }
                 break;
             case 1:
-                $privacy_condition = 'private = 0';
+                $privacy_condition = 'AND private = 0';
                 break;
             case 2:
                 if ($event_user_assignments) {
-                    $privacy_condition = 'private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))';
+                    $privacy_condition = 'AND private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))';
                 } else {
-                    $privacy_condition = 'private = 1 AND userid = ' . $current_user_id;
+                    $privacy_condition = 'AND private = 1 AND userid = ' . $current_user_id;
                 }
                 break;
         }
@@ -418,7 +418,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 				LEFT JOIN customerview c ON (events.customerid = c.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
-				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
                 . $privacy_condition
                 . ($customerid ? ' AND events.customerid = '.intval($customerid) : '')
                 . $userfilter
@@ -448,7 +448,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 WHERE type & ? > 0 AND type & ? = 0
                 GROUP BY customerid
             ) cc ON cc.customerid = c.id
-			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
             . $privacy_condition
             .($customerid ? ' AND events.customerid = '.intval($customerid) : '')
             . $userfilter
