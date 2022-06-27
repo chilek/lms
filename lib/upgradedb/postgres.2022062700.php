@@ -27,7 +27,7 @@ $this->Execute(
     "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
     array(
         'rt',
-        'sender_name'
+        'sender_name',
         'phpui',
         'helpdesk_sender_name',
     )
