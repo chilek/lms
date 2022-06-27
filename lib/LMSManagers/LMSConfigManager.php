@@ -38,7 +38,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.helpdesk_backend_mode'       => CONFIG_TYPE_BOOLEAN,
         'rt.backend_mode'                   => CONFIG_TYPE_BOOLEAN,
         'phpui.helpdesk_reply_body'         => CONFIG_TYPE_BOOLEAN,
-        'rt.reply_body'                     => CONFIG_TYPE_BOOLEAN,
+        'rt.quote_body'                     => CONFIG_TYPE_BOOLEAN,
         'phpui.to_words_short_version'      => CONFIG_TYPE_BOOLEAN,
         'phpui.newticket_notify'            => CONFIG_TYPE_BOOLEAN,
         'phpui.short_pagescroller'          => CONFIG_TYPE_BOOLEAN,

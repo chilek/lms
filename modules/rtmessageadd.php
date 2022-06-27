@@ -697,7 +697,7 @@ if (isset($_POST['message'])) {
             $message['references'] = implode(' ', $reply['references']);
             $message['cc'] = $reply['cc'];
 
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.reply_body', ConfigHelper::getConfig('phpui.helpdesk_reply_body', 'false')))
+            if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.quote_body', ConfigHelper::getConfig('phpui.helpdesk_reply_body', 'false')))
                 || isset($_GET['citing'])) {
                 $body = explode("\n", textwrap(strip_tags($reply['body']), 74));
                 foreach ($body as $line) {
@@ -882,7 +882,7 @@ if (!is_array($message['ticketid'])) {
 }
 $SMARTY->assign('citing',
     isset($_GET['citing'])
-        || ConfigHelper::checkValue(ConfigHelper::getConfig('rt.reply_body', ConfigHelper::getConfig('phpui.helpdesk_reply_body', 'false')))
+        || ConfigHelper::checkValue(ConfigHelper::getConfig('rt.quote_body', ConfigHelper::getConfig('phpui.helpdesk_reply_body', 'false')))
 );
 $SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('categories', $categories);

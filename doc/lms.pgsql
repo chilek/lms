@@ -3744,7 +3744,7 @@ Telefon: %phone', '', 0),
 ('phpui', 'helpdesk_customerinfo_sms_body', 'Klient: %custname ID: %cid Adres: %address Telefon: %phone', '', 0),
 ('rt', 'backend_mode', 'false', '', 0),
 ('rt', 'sender_name', '', '', 0),
-('rt', 'reply_body', 'false', '', 0),
+('rt', 'quote_body', 'false', '', 0),
 ('phpui', 'helpdesk_notification_mail_subject', '[RT#%tid] %subject', '', 0),
 ('phpui', 'helpdesk_notification_mail_body', '%body
 
@@ -4238,6 +4238,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062703');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062704');
 
 COMMIT;
