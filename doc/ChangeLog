@@ -206,6 +206,8 @@ version 28-git (????-??-??):
     to 'rt.default_show_closed_tickets' [chilan]
   - devel/cleanup: renamed 'phpui.category_adjustments_in_ticketedit'
     to 'rt.category_adjustments_in_ticketedit' [chilan]
+  - devel/cleanup: renamed 'phpui.ticket_property_change_notify'
+    to 'rt.ticket_property_change_notify' [chilan]
 
 version 27.0 (2021-08-20):
 

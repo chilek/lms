@@ -291,7 +291,12 @@ if ($id && !isset($_POST['ticket'])) {
                     }
                 }
 
-                $ticket_property_change_notify = ConfigHelper::checkConfig('phpui.ticket_property_change_notify');
+                $ticket_property_change_notify = ConfigHelper::checkValue(
+                    ConfigHelper::getConfig(
+                        'rt.ticket_property_change_notify',
+                        ConfigHelper::getConfig('phpui.ticket_property_change_notify', 'false')
+                    )
+                );
                 if ($ticket_property_change_notify) {
                     $headers['From'] = $from;
                     $headers['Reply-To'] = $headers['From'];
@@ -536,7 +541,12 @@ if (isset($_POST['ticket'])) {
                 ConfigHelper::getConfig('phpui.newticket_notify', 'true')
             )
         );
-        $ticket_property_change_notify = ConfigHelper::checkConfig('phpui.ticket_property_change_notify');
+        $ticket_property_change_notify = ConfigHelper::checkValue(
+            ConfigHelper::getConfig(
+                'rt.ticket_property_change_notify',
+                ConfigHelper::getConfig('phpui.ticket_property_change_notify', 'false')
+            )
+        );
         if (isset($ticketedit['notify'])
             && (($ticket_property_change_notify && ($ticket['state'] != $ticketedit['state']
                 || $ticket['owner'] != $ticketedit['owner']
