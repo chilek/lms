@@ -23,9 +23,10 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE voip_cdr DROP KEY uniqueid");
-
-$this->Execute("ALTER TABLE voip_cdr ADD CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)");
+if (!$this->ResourceExists('voip_cdr_type_uniqueid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE voip_cdr DROP KEY uniqueid");
+    $this->Execute("ALTER TABLE voip_cdr ADD CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022062808', 'dbversion'));
 
