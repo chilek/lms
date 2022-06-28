@@ -530,7 +530,12 @@ if (isset($_POST['ticket'])) {
         $ticketedit = $hook_data['ticketedit'];
 
         // we notify about new ticket after queue change
-        $newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
+        $newticket_notify = ConfigHelper::checkValue(
+            ConfigHelper::getConfig(
+                'rt.new_ticket_notify',
+                ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+            )
+        );
         $ticket_property_change_notify = ConfigHelper::checkConfig('phpui.ticket_property_change_notify');
         if (isset($ticketedit['notify'])
             && (($ticket_property_change_notify && ($ticket['state'] != $ticketedit['state']

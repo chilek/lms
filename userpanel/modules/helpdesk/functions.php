@@ -199,7 +199,12 @@ function module_main()
                 'mailfrom' => $ticket['mailfrom'],
                 'source' => RT_SOURCE_USERPANEL), $files);
 
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true))) {
+            if (ConfigHelper::checkValue(
+                ConfigHelper::getConfig(
+                    'rt.new_ticket_notify',
+                    ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                )
+            )) {
                 $user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));
 
                 if ($mailfname = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'))) {

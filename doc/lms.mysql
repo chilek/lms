@@ -3702,7 +3702,7 @@ URL: %url
 ('phpui','ticket_template_file','rtticketprint.html','',0),
 ('phpui','use_current_payday','false','',0),
 ('phpui','default_monthly_payday','','',0),
-('phpui','newticket_notify','true','',0),
+('rt','new_ticket_notify','true','',0),
 ('phpui','to_words_short_version','false','',0),
 ('phpui','ticketlist_status','','',0),
 ('phpui','ewx_support','false','',0),
@@ -4184,4 +4184,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062801');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062802');

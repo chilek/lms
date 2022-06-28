@@ -130,6 +130,7 @@ $DEFAULTS = array(
     ),
     'rt' => array(
         'backend_mode' => false,
+        'new_ticket_notify' => true,
         'notification_customerinfo' => true,
         'quote_body' => false,
         'sender_name' => '',

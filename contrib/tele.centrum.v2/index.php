@@ -173,7 +173,12 @@ if (!empty($_POST)) {
 
         $queue = $ticket['queue'];
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true))) {
+        if (ConfigHelper::checkValue(
+            ConfigHelper::getConfig(
+                'rt.new_ticket_notify',
+                ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+            )
+        )) {
             $headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
             $sms_body = $headers['Subject']."\n".$ticket['body'];
 

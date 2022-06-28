@@ -41,6 +41,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'rt.quote_body'                     => CONFIG_TYPE_BOOLEAN,
         'phpui.to_words_short_version'      => CONFIG_TYPE_BOOLEAN,
         'phpui.newticket_notify'            => CONFIG_TYPE_BOOLEAN,
+        'rt.new_ticket_notify'              => CONFIG_TYPE_BOOLEAN,
         'phpui.short_pagescroller'          => CONFIG_TYPE_BOOLEAN,
         'phpui.big_networks'                => CONFIG_TYPE_BOOLEAN,
         'phpui.ewx_support'                 => CONFIG_TYPE_BOOLEAN,

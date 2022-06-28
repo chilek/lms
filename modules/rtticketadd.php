@@ -222,7 +222,14 @@ if (isset($_POST['ticket'])) {
             rrmdir($tmppath);
         }
 
-        if ((isset($ticket['notify']) || isset($ticket['customernotify'])) && ConfigHelper::checkConfig('phpui.newticket_notify')) {
+        if ((isset($ticket['notify']) || isset($ticket['customernotify']))
+            && ConfigHelper::checkValue(
+                ConfigHelper::getConfig(
+                    'rt.new_ticket_notify',
+                    ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                )
+            )
+        ) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
             $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
@@ -367,7 +374,13 @@ if (isset($_POST['ticket'])) {
             }
         }
 
-        if (isset($ticket['customernotify']) && $ticket['customerid'] && ConfigHelper::checkConfig('phpui.newticket_notify')
+        if (isset($ticket['customernotify']) && $ticket['customerid']
+            && ConfigHelper::checkValue(
+                ConfigHelper::getConfig(
+                    'rt.new_ticket_notify',
+                    ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                )
+            )
             && (!empty($mails) || !empty($mobile_phones))) {
             if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
                 $custmail_subject = $queuedata['newticketsubject'];

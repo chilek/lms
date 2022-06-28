@@ -199,7 +199,12 @@ $categories = ConfigHelper::getConfig('rt.default_categories', 'default');
 $categories = preg_split('/\s*,\s*/', trim($categories));
 $auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', true));
 //$tmp_dir = ConfigHelper::getConfig('rt.tmp_dir', '', true);
-$notify = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.newticket_notify', true));
+$notify = ConfigHelper::checkValue(
+    ConfigHelper::getConfig(
+        'rt.new_ticket_notify',
+        ConfigHelper::getConfig('rt.newticket_notify', 'false')
+    )
+);
 $customerinfo = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.include_customerinfo', '1'));
 $lms_url = ConfigHelper::getConfig('rt.lms_url', 'http://localhost/lms/');
 $autoreply_from = ConfigHelper::getConfig('rt.mail_from', '', true);
