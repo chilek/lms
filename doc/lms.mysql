@@ -3647,7 +3647,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','balancelist_pagelimit','100','',0),
 ('phpui','invoicelist_pagelimit','100','',0),
 ('phpui','debitnotelist_pagelimit','100','',0),
-('phpui','ticketlist_pagelimit','100','',0),
+('rt','ticketlist_pagelimit','100','',0),
 ('phpui','accountlist_pagelimit','100','',0),
 ('phpui','domainlist_pagelimit','100','',0),
 ('phpui','aliaslist_pagelimit','100','',0),
@@ -3704,7 +3704,7 @@ URL: %url
 ('phpui','default_monthly_payday','','',0),
 ('rt','new_ticket_notify','true','',0),
 ('phpui','to_words_short_version','false','',0),
-('phpui','ticketlist_status','','',0),
+('rt','ticketlist_status','','',0),
 ('phpui','ewx_support','false','',0),
 ('phpui','invoice_check_payment','false','',0),
 ('phpui','note_check_payment','false','',0),
@@ -4184,4 +4184,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062803');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062804');

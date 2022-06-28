@@ -73,6 +73,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.configlist_pagelimit'        => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.invoicelist_pagelimit'       => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.ticketlist_pagelimit'        => CONFIG_TYPE_POSITIVE_INTEGER,
+        'rt.ticketlist_pagelimit'           => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.accountlist_pagelimit'       => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.domainlist_pagelimit'        => CONFIG_TYPE_POSITIVE_INTEGER,
         'phpui.aliaslist_pagelimit'         => CONFIG_TYPE_POSITIVE_INTEGER,

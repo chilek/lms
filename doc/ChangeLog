@@ -209,6 +209,9 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.ticket_property_change_notify'
     to 'rt.ticket_property_change_notify' [chilan]
   - devel/cleanup: renamed 'phpui.ticket_template_file' to 'rt.ticket_template_file' [chilan]
+  - devel/cleanup: renamed 'phpui.ticketlist_pagelimit', 'phpui.ticketlist_priority'
+    and 'phpui.ticketlist_status' to 'rt.ticketlist_pagelimit', 'rt.ticketlist_priority'
+    and 'rt.ticketlist_status' [chilan]
 
 version 27.0 (2021-08-20):
 

@@ -92,7 +92,10 @@ $queue = $LMS->GetQueueContents(array('removed' => 0, 'netnodeids' => $id, 'shor
 $SMARTY->assign('queue', $queue);
 
 $start = 0;
-$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total);
+$pagelimit = ConfigHelper::getConfig(
+    'rt.ticketlist_pagelimit',
+    ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total)
+);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('pagelimit', $pagelimit);
 

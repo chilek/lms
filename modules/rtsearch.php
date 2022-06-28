@@ -342,7 +342,10 @@ if (isset($search) || isset($_GET['s'])) {
         $search['total'] = intval(RTSearch($search, $o));
 
         $search['page'] = intval((! isset($_GET['page']) ? 1 : $_GET['page']));
-        $search['limit'] = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total']));
+        $search['limit'] = intval(ConfigHelper::getConfig(
+            'rt.ticketlist_pagelimit',
+            ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total'])
+        ));
         $search['offset'] = ($search['page'] - 1) * $search['limit'];
 
         $search['count'] = false;

@@ -163,6 +163,8 @@ function GetConfigList()
             'sender_name' => 'Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.',
             'show_stats' => 'Adds helpdesk requests causes stats on ticket view and print pages. Default: true',
             'ticket_template_file' => 'Helpdesk ticket printout template file. Default: rtticketprint.html',
+            'ticketlist_pagelimit' => 'Limit of records displayed on one page in tickets (requests) list. Default: 100.',
+            'ticketlist_status' => 'Default status filter setting on tickets list. For allowed values see html source code. Default: not set',
         ),
         'mail' => array(
             'debug_email' => 'E-mail address for debugging - messages from \'Mailing\' module will be sent at this address, instead to real users.',

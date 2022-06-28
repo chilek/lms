@@ -104,7 +104,10 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $queue = $LMS->GetQueueContents(array('netdevids' => $id, 'short'=> 1));
 
     $start = 0;
-    $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
+    $pagelimit = ConfigHelper::getConfig(
+        'rt.ticketlist_pagelimit',
+        ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total'])
+    );
 
     $SMARTY->assign('netdev', $netdev);
     $SMARTY->assign('start', $start);
