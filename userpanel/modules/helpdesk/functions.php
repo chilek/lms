@@ -234,7 +234,12 @@ function module_main()
                     return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
                 });
 
-                if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                if (ConfigHelper::checkValue(
+                    ConfigHelper::getConfig(
+                        'rt.notification_customerinfo',
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                    )
+                )) {
                     $params = array(
                         'id' => $id,
                         'customerid' => $SESSION->id,
@@ -445,7 +450,12 @@ function module_main()
             }
             $headers['Message-ID'] = $ticket['messageid'];
 
-            if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+            if (ConfigHelper::checkValue(
+                ConfigHelper::getConfig(
+                    'rt.notification_customerinfo',
+                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                )
+            )) {
                 $info = $LMS->GetCustomer($SESSION->id, true);
 
                 $emails = array_map(function ($contact) {

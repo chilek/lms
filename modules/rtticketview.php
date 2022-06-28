@@ -93,7 +93,14 @@ if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) 
     $SMARTY->assign('stats', $stats);
 }
 
-if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+if ($ticket['customerid']
+    && ConfigHelper::checkValue(
+        ConfigHelper::getConfig(
+            'rt.notification_customerinfo',
+            ConfigHelper:getConfig('phpui.helpdesk_customerinfo', 'false')
+        )
+    )
+) {
     $customer = $LMS->GetCustomer($ticket['customerid'], true);
     $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
 

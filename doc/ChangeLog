@@ -197,6 +197,7 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.helpdesk_customerinfo_mail_body'
     and 'phpui.helpdesk_customerinfo_sms_body' to 'rt.notification_mail_body_customerinfo_format'
     and 'rt.notification_sms_body_customerinfo_format' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_customerinfo' to 'rt.notification_customerinfo' [chilan]
 
 version 27.0 (2021-08-20):
 

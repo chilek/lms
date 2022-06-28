@@ -263,7 +263,14 @@ if (isset($_POST['ticket'])) {
                     return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
                 });
 
-                if (isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                if (isset($ticket['notify'])
+                    && ConfigHelper::checkValue(
+                        ConfigHelper::getConfig(
+                            'rt.notification_customerinfo',
+                            ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                        )
+                    )
+                ) {
                     $params = array(
                         'id' => $id,
                         'customerid' => $ticket['customerid'],
@@ -286,7 +293,14 @@ if (isset($_POST['ticket'])) {
                         $params
                     );
                 }
-            } elseif (!empty($requestor) && isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+            } elseif (!empty($requestor) && isset($ticket['notify'])
+                && ConfigHelper::checkValue(
+                    ConfigHelper::getConfig(
+                        'rt.notification_customerinfo',
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                    )
+                )
+            ) {
                 $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
                 $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;
             }

@@ -177,7 +177,12 @@ if (!empty($_POST)) {
             $headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
             $sms_body = $headers['Subject']."\n".$ticket['body'];
 
-            if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+            if (ConfigHelper::checkValue(
+                ConfigHelper::getConfig(
+                    'rt.notification_customerinfo',
+                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                )
+            )) {
                 if ($ticket['customerid']) {
                     $info = $DB->GetRow(
                         'SELECT id, pin, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername,

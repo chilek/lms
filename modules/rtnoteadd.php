@@ -180,7 +180,12 @@ if (isset($_GET['ticketid'])) {
                 $headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
             }
 
-            if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+            if (ConfigHelper::checkValue(
+                ConfigHelper::getConfig(
+                    'rt.notification_customerinfo',
+                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                )
+            )) {
                 if ($ticket['customerid']) {
                     $info = $LMS->GetCustomer($ticket['customerid'], true);
 

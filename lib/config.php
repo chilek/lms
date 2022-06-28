@@ -130,8 +130,9 @@ $DEFAULTS = array(
     ),
     'rt' => array(
         'backend_mode' => false,
-        'sender_name' => '',
+        'notification_customerinfo' => true,
         'quote_body' => false,
+        'sender_name' => '',
     ),
     'timetable' => array(
         'default_forward_day_limit' => 7,

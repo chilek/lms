@@ -296,7 +296,12 @@ if ($id && !isset($_POST['ticket'])) {
                     $headers['From'] = $from;
                     $headers['Reply-To'] = $headers['From'];
 
-                    if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                    if (ConfigHelper::checkValue(
+                        ConfigHelper::getConfig(
+                            'rt.notification_customerinfo',
+                            ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                        )
+                    )) {
                         if ($ticket['customerid']) {
                             $params = array(
                                 'id' => $id,
@@ -560,7 +565,12 @@ if (isset($_POST['ticket'])) {
             $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
             $headers['Reply-To'] = $headers['From'];
 
-            if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+            if (ConfigHelper::checkValue(
+                ConfigHelper::getConfig(
+                    'rt.notification_customerinfo',
+                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
+                )
+            )) {
                 if ($ticketedit['customerid']) {
                     $info = $LMS->GetCustomer($ticketedit['customerid'], true);
 
