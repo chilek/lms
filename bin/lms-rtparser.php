@@ -202,7 +202,7 @@ $auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', tr
 $notify = ConfigHelper::checkValue(
     ConfigHelper::getConfig(
         'rt.new_ticket_notify',
-        ConfigHelper::getConfig('rt.newticket_notify', 'false')
+        ConfigHelper::getConfig('rt.newticket_notify', 'true')
     )
 );
 $customerinfo = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.include_customerinfo', '1'));

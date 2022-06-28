@@ -226,7 +226,7 @@ if (isset($_POST['ticket'])) {
             && ConfigHelper::checkValue(
                 ConfigHelper::getConfig(
                     'rt.new_ticket_notify',
-                    ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                    ConfigHelper::getConfig('phpui.newticket_notify', 'true')
                 )
             )
         ) {
@@ -378,7 +378,7 @@ if (isset($_POST['ticket'])) {
             && ConfigHelper::checkValue(
                 ConfigHelper::getConfig(
                     'rt.new_ticket_notify',
-                    ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                    ConfigHelper::getConfig('phpui.newticket_notify', 'true')
                 )
             )
             && (!empty($mails) || !empty($mobile_phones))) {

@@ -202,7 +202,7 @@ function module_main()
             if (ConfigHelper::checkValue(
                 ConfigHelper::getConfig(
                     'rt.new_ticket_notify',
-                    ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                    ConfigHelper::getConfig('phpui.newticket_notify', 'true')
                 )
             )) {
                 $user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));

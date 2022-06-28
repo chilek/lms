@@ -533,7 +533,7 @@ if (isset($_POST['ticket'])) {
         $newticket_notify = ConfigHelper::checkValue(
             ConfigHelper::getConfig(
                 'rt.new_ticket_notify',
-                ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                ConfigHelper::getConfig('phpui.newticket_notify', 'true')
             )
         );
         $ticket_property_change_notify = ConfigHelper::checkConfig('phpui.ticket_property_change_notify');

@@ -254,7 +254,7 @@ if (isset($_POST['event'])) {
                 if (ConfigHelper::checkValue(
                     ConfigHelper::getConfig(
                         'rt.new_ticket_notify',
-                        ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+                        ConfigHelper::getConfig('phpui.newticket_notify', 'true')
                     )
                 )) {
                     $user = $LMS->GetUserInfo(Auth::GetCurrentUser());

@@ -201,7 +201,7 @@ $prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
 $newticket_notify = ConfigHelper::checkValue(
     ConfigHelper::getConfig(
         'rt.new_ticket_notify',
-        ConfigHelper::getConfig('phpui.newticket_notify', 'false')
+        ConfigHelper::getConfig('phpui.newticket_notify', 'true')
     )
 );
 $helpdesk_customerinfo = ConfigHelper::checkValue(
