@@ -133,6 +133,7 @@ $DEFAULTS = array(
         'notification_customerinfo' => true,
         'quote_body' => false,
         'sender_name' => '',
+        'show_stats' => true,
     ),
     'timetable' => array(
         'default_forward_day_limit' => 7,

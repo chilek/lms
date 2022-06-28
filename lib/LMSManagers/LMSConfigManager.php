@@ -45,6 +45,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         'phpui.big_networks'                => CONFIG_TYPE_BOOLEAN,
         'phpui.ewx_support'                 => CONFIG_TYPE_BOOLEAN,
         'phpui.helpdesk_stats'              => CONFIG_TYPE_BOOLEAN,
+        'rt.show_stats'                     => CONFIG_TYPE_BOOLEAN,
         'phpui.helpdesk_customerinfo'       => CONFIG_TYPE_BOOLEAN,
         'rt.notification_customerinfo'      => CONFIG_TYPE_BOOLEAN,
         'phpui.logging'                     => CONFIG_TYPE_BOOLEAN,

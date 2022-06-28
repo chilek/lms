@@ -3734,7 +3734,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'allow_mac_sharing', 'false', '', 0),
 ('phpui', 'big_networks', 'true', '', 0),
 ('phpui', 'short_pagescroller', 'true', '', 0),
-('phpui', 'helpdesk_stats', 'true', '', 0),
+('rt', 'show_stats', 'true', '', 0),
 ('rt', 'notification_customerinfo', 'true', '', 0),
 ('rt', 'notification_mail_body_customerinfo_format', '--
 Klient: %custname ID: %cid
@@ -4238,6 +4238,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062801');
 
 COMMIT;

@@ -160,6 +160,7 @@ function GetConfigList()
             'notification_sms_body_customerinfo_format' => 'Template for user sms notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mails ; %phone - phones',
             'quote_body' => 'Adds body of message in ticket reply. Default: false',
             'sender_name' => 'Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.',
+            'show_stats' => 'Adds helpdesk requests causes stats on ticket view and print pages. Default: true',
         ),
         'mail' => array(
             'debug_email' => 'E-mail address for debugging - messages from \'Mailing\' module will be sent at this address, instead to real users.',
