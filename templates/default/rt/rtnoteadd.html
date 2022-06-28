@@ -2,8 +2,8 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
-{$hide_disabled_users = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.hide_disabled_users', ConfigHelper::getConfig('phpui.helpdesk_hide_disabled_users', 'false')))}
-{$hide_deleted_users = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.hide_deleted_users', ConfigHelper::getConfig('phpui.helpdesk_hide_deleted_users', 'false')))}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
+{$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="note" id="note-form" action="?m=rtnoteadd">
@@ -219,7 +219,7 @@
 			{trans("<!rt>Deadline")}
 		</TD>
 		<TD>
-			{if ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
+			{if ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'))
 				|| !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 				<INPUT TYPE="TEXT" NAME="note[deadline]" VALUE="{if $note.deadline}{$note.deadline|date_format:"Y/m/d H:i"}{/if}"
 						SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>

@@ -605,7 +605,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
-        $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
 
         $customeradd['name'] = str_replace(array('”', '„'), '"', $customeradd['name']);
         $customeradd['lastname'] = str_replace(array('”', '„'), '"', $customeradd['lastname']);
@@ -718,7 +718,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 array_keys($customeradd['consents'])
             );
 
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
+            if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
                 $gargs = array(
                         'customerid' => $id,
                         'customergroupid' => $customeradd['group']
@@ -1340,7 +1340,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.balance > 0 THEN b.balance ELSE 0 END) AS balanceover,
             	SUM(CASE WHEN b.balance < 0 THEN b.balance ELSE 0 END) AS balancebelow ';
         } else {
-            $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+            $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
             $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
                 c.karma, c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
@@ -1663,7 +1663,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
 
             // get EtherWerX channels
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+            if (ConfigHelper::checkConfig('phpui.ewx_support')) {
                 $channels = $this->db->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
 				        nc.upceil, nc.downceil
 			 		FROM ewx_stm_nodes
@@ -1764,7 +1764,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
-        $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
         if ($result = $this->db->GetRow('SELECT c.*, '
                 . $this->db->Concat($capitalize_customer_names ? 'UPPER(c.lastname)' : 'c.lastname', "' '", 'c.name') . ' AS customername,
 			d.shortname AS division, d.label AS division_label, d.account
@@ -1995,7 +1995,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
-        $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
 
         // UPDATE CUSTOMER FIELDS
         $res = $this->db->Execute(

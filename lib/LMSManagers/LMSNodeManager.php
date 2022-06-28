@@ -39,7 +39,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function NodeUpdate($nodedata, $deleteassignments = false)
     {
         $args = array(
-            'name' => ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_node_names', true))
+            'name' => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
             'ipaddr'            => $nodedata['ipaddr'],
@@ -749,7 +749,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function NodeAdd($nodedata)
     {
         $args = array(
-            'name'              => ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_node_names', true))
+            'name'              => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr'            => $nodedata['ipaddr'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
@@ -789,7 +789,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
             // EtherWerX support (devices have some limits)
             // We must to replace big ID with smaller (first free)
-            if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+            if ($id > 99999 && ConfigHelper::checkConfig('phpui.ewx_support')) {
                 $this->db->BeginTrans();
                 $this->db->LockTables('nodes');
 

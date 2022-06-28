@@ -51,7 +51,7 @@ if (isset($_GET['ticketid'])) {
 
     $note['category_change'] = 0;
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notify', ConfigHelper::getConfig('phpui.helpdesk_notify', 'false')))) {
+    if (ConfigHelper::checkConfig('rt.notify', ConfigHelper::checkConfig('phpui.helpdesk_notify'))) {
         $note['notify'] = true;
     }
 
@@ -66,7 +66,7 @@ if (isset($_GET['ticketid'])) {
 
     $ticket = $LMS->GetTicketContents($note['ticketid']);
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false')))
+    if (ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
         && $note['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
         $error['state'] = trans('Ticket have open assigned events!');
     }
@@ -79,7 +79,7 @@ if (isset($_GET['ticketid'])) {
         $SESSION->redirect('?m=rtqueuelist');
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.check_owner_verifier_conflict', ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', 'true')))
+    if (ConfigHelper::checkConfig('rt.check_owner_verifier_conflict', ConfigHelper::checkConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
         && !empty($note['verifierid']) && $note['verifierid'] == $note['owner']) {
         $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
         $error['owner'] = trans('Ticket verifier could not be the same as owner!');
@@ -87,7 +87,7 @@ if (isset($_GET['ticketid'])) {
 
     $deadline = datetime_to_timestamp($note['deadline']);
     if ($deadline != $ticket['deadline']) {
-        if (!ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
+        if (!ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'))
             && !empty($note['verifierid']) && $note['verifierid'] != Auth::GetCurrentUser()) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $note['deadline'] = $ticket['deadline'];
@@ -180,11 +180,9 @@ if (isset($_GET['ticketid'])) {
                 $headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
             }
 
-            if (ConfigHelper::checkValue(
-                ConfigHelper::getConfig(
-                    'rt.notification_customerinfo',
-                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                )
+            if (ConfigHelper::checkConfig(
+                'rt.notification_customerinfo',
+                ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
             )) {
                 if ($ticket['customerid']) {
                     $info = $LMS->GetCustomer($ticket['customerid'], true);

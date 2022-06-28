@@ -82,11 +82,9 @@ if ($ticket['deluserid']) {
 }
 
 if ($ticket['customerid']
-    && ConfigHelper::checkValue(
-        ConfigHelper::getConfig(
-            'rt.show_stats',
-            ConfigHelper::getConfig('phpui.helpdesk_stats', 'false')
-        )
+    && ConfigHelper::checkConfig(
+        'rt.show_stats',
+        ConfigHelper::checkConfig('phpui.helpdesk_stats')
     )
 ) {
     $yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
@@ -101,11 +99,9 @@ if ($ticket['customerid']
 }
 
 if ($ticket['customerid']
-    && ConfigHelper::checkValue(
-        ConfigHelper::getConfig(
-            'rt.notification_customerinfo',
-            ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-        )
+    && ConfigHelper::checkConfig(
+        'rt.notification_customerinfo',
+        ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
     )
 ) {
     $customer = $LMS->GetCustomer($ticket['customerid'], true);

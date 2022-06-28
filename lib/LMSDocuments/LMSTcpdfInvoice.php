@@ -45,7 +45,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
         $hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid');
-        $show_tax_category = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_tax_category', 'true')) && !empty($this->data['taxcategories']);
+        $show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category', true) && !empty($this->data['taxcategories']);
 
         /* set the line width and headers font */
         $this->backend->SetFillColor(255, 255, 255);
@@ -480,7 +480,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
         $tmp = str_replace('%bankname', isset($this->data['div_bank']) ? $this->data['div_bank'] : '', $tmp);
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
+        if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
         }
 
@@ -510,10 +510,10 @@ class LMSTcpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['lang']);
             $buyer .= trans('TEN') . ': ' . format_ten($this->data['ten'], $this->data['export']) . '<br>';
             Localisation::setSystemLanguage($currentSystemLanguage);
-        } elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
+        } elseif (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $buyer .= trans('SSN') . ': ' . $this->data['ssn'] . '<br>';
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_customerid', true))) {
+        if (ConfigHelper::checkConfig('invoices.show_customerid', true)) {
             $buyer .= '<b>' . trans('Customer No.:') . ' ' . $this->data['customerid'] . '</b><br>';
         }
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
@@ -521,7 +521,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $y = $this->backend->GetY();
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))) {
+        if (ConfigHelper::checkConfig('invoices.post_address', true)) {
             $postbox = '';
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
@@ -547,7 +547,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
         }
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
+        if (ConfigHelper::checkConfig('invoices.customer_credentials', true)) {
             $pin = str_replace(
                 array('%cid', '%pin'),
                 array(
@@ -942,7 +942,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         $account = reset($accounts);
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+        if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
             $payment_value = $this->data['customerbalance'] * -1;
         } else {
             $payment_value = $this->data['value'];
@@ -989,10 +989,10 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_data();
         $this->invoice_to_pay();
         $this->invoice_expositor();
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+        if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+        if (ConfigHelper::checkConfig('invoices.show_balance', true)
             || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $this->invoice_balance();
         }
@@ -1002,7 +1002,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_comment();
         $this->invoice_footnote();
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true))) {
+        if (ConfigHelper::checkConfig('invoices.show_memo', true)) {
             $this->invoice_memo();
         }
 
@@ -1065,7 +1065,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $payment_title = ConfigHelper::getConfig('invoices.payment_title', null, true);
         if (empty($payment_title)) {
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+            if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
                 $payment_title = trans('Payment for liabilities');
             } else {
                 $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
@@ -1081,7 +1081,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             );
         }
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+        if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
             $payment_value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
             $payment_barcode = trans('Customer ID: $a', $customerid);
         } else {
@@ -1133,10 +1133,10 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_data();
         $this->invoice_to_pay();
         $this->invoice_expositor();
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+        if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $this->invoice_pricing_method();
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+        if (ConfigHelper::checkConfig('invoices.show_balance', true)
             || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $this->invoice_balance();
         }
@@ -1146,11 +1146,11 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->invoice_comment();
         $this->invoice_footnote();
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true))) {
+        if (ConfigHelper::checkConfig('invoices.show_memo', true)) {
             $this->invoice_memo();
         }
 
-        if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
+        if (($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))
             && !isset($this->data['rebate'])) {
             /* FT-0100 form */
             $lms = LMS::getInstance();

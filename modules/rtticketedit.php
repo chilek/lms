@@ -173,7 +173,7 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'resolve':
                 $ticket = $LMS->GetTicketContents($id);
-                if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false')))
+                if (ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
                     && !empty($ticket['openeventcount'])) {
                     die(trans("Ticket have open assigned events!"));
                 } else {
@@ -291,21 +291,17 @@ if ($id && !isset($_POST['ticket'])) {
                     }
                 }
 
-                $ticket_property_change_notify = ConfigHelper::checkValue(
-                    ConfigHelper::getConfig(
-                        'rt.ticket_property_change_notify',
-                        ConfigHelper::getConfig('phpui.ticket_property_change_notify', 'false')
-                    )
+                $ticket_property_change_notify = ConfigHelper::checkConfig(
+                    'rt.ticket_property_change_notify',
+                    ConfigHelper::checkConfig('phpui.ticket_property_change_notify')
                 );
                 if ($ticket_property_change_notify) {
                     $headers['From'] = $from;
                     $headers['Reply-To'] = $headers['From'];
 
-                    if (ConfigHelper::checkValue(
-                        ConfigHelper::getConfig(
-                            'rt.notification_customerinfo',
-                            ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                        )
+                    if (ConfigHelper::checkConfig(
+                        'rt.notification_customerinfo',
+                        ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                     )) {
                         if ($ticket['customerid']) {
                             $params = array(
@@ -370,8 +366,8 @@ if ($id && !isset($_POST['ticket'])) {
     }
 }
 
-$allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
-$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.empty_category_warning', ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', 'true')));
+$allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
+$empty_category_warning = ConfigHelper::checkConfig('rt.empty_category_warning', ConfigHelper::checkConfig('phpui.helpdesk_empty_category_warning', true));
 
 $ticket = $LMS->GetTicketContents($id);
 $LMS->MarkTicketAsRead($id);
@@ -403,7 +399,7 @@ if (isset($_POST['ticket'])) {
         }
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.check_owner_verifier_conflict', ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', 'true')))
+    if (ConfigHelper::checkConfig('rt.check_owner_verifier_conflict', ConfigHelper::checkConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
         && !empty($ticketedit['verifierid']) && $ticketedit['verifierid'] == $ticketedit['owner']) {
         $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
         $error['owner'] = trans('Ticket verifier could not be the same as owner!');
@@ -411,7 +407,7 @@ if (isset($_POST['ticket'])) {
 
     $deadline = datetime_to_timestamp($ticketedit['deadline']);
     if ($deadline != $ticket['deadline']) {
-        if (!ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
+        if (!ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'))
             && !empty($ticket['verifierid']) && $ticket['verifierid'] != Auth::GetCurrentUser()) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $ticketedit['deadline'] = $ticket['deadline'];
@@ -440,7 +436,7 @@ if (isset($_POST['ticket'])) {
         $error['subject'] = trans('Ticket subject can contain maximum $a characters!', ConfigHelper::getConfig('rt.subject_max_length', 50));
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false')))) {
+    if (ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))) {
         if ($ticketedit['state'] == RT_RESOLVED && !empty($ticket['openeventcount'])) {
             $error['state'] = trans('Ticket have open assigned events!');
         }
@@ -450,7 +446,7 @@ if (isset($_POST['ticket'])) {
         $error['owner'] = trans('Only \'new\' ticket can be owned by no one!');
     }
 
-    if (!ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_change_ticket_state_from_open_to_new', ConfigHelper::getConfig('phpui.helpdesk_allow_change_ticket_state_from_open_to_new', 'false')))) {
+    if (!ConfigHelper::checkConfig('rt.allow_change_ticket_state_from_open_to_new', ConfigHelper::checkConfig('phpui.helpdesk_allow_change_ticket_state_from_open_to_new'))) {
         if ($ticketedit['state'] == RT_NEW && $ticketedit['owner']) {
             $ticketedit['state'] = RT_OPEN;
         }
@@ -535,17 +531,13 @@ if (isset($_POST['ticket'])) {
         $ticketedit = $hook_data['ticketedit'];
 
         // we notify about new ticket after queue change
-        $newticket_notify = ConfigHelper::checkValue(
-            ConfigHelper::getConfig(
-                'rt.new_ticket_notify',
-                ConfigHelper::getConfig('phpui.newticket_notify', 'true')
-            )
+        $newticket_notify = ConfigHelper::checkConfig(
+            'rt.new_ticket_notify',
+            ConfigHelper::checkConfig('phpui.newticket_notify', true)
         );
-        $ticket_property_change_notify = ConfigHelper::checkValue(
-            ConfigHelper::getConfig(
-                'rt.ticket_property_change_notify',
-                ConfigHelper::getConfig('phpui.ticket_property_change_notify', 'false')
-            )
+        $ticket_property_change_notify = ConfigHelper::checkConfig(
+            'rt.ticket_property_change_notify',
+            ConfigHelper::checkConfig('phpui.ticket_property_change_notify')
         );
         if (isset($ticketedit['notify'])
             && (($ticket_property_change_notify && ($ticket['state'] != $ticketedit['state']
@@ -580,11 +572,9 @@ if (isset($_POST['ticket'])) {
             $headers['From'] = $mailfname . ' <' . $mailfrom . '>';
             $headers['Reply-To'] = $headers['From'];
 
-            if (ConfigHelper::checkValue(
-                ConfigHelper::getConfig(
-                    'rt.notification_customerinfo',
-                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                )
+            if (ConfigHelper::checkConfig(
+                'rt.notification_customerinfo',
+                ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
             )) {
                 if ($ticketedit['customerid']) {
                     $info = $LMS->GetCustomer($ticketedit['customerid'], true);
@@ -721,7 +711,7 @@ if (isset($_POST['ticket'])) {
 } else {
     $ticketedit['categories'] = $ticket['categories'];
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notify', ConfigHelper::getConfig('phpui.helpdesk_notify', 'false')))) {
+    if (ConfigHelper::checkConfig('rt.notify', ConfigHelper::checkConfig('phpui.helpdesk_notify'))) {
         $ticket['notify'] = true;
     }
 

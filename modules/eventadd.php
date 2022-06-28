@@ -29,8 +29,8 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
-$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.empty_category_warning', ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', 'true')));
+$allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
+$empty_category_warning = ConfigHelper::checkConfig('rt.empty_category_warning', ConfigHelper::checkConfig('phpui.helpdesk_empty_category_warning', true));
 
 if (isset($_GET['ticketid']) && !empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
@@ -86,7 +86,7 @@ if (isset($_POST['event'])) {
         }
 
         if (!empty($date)) {
-            $allow_past_events = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.allow_past_events', ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true')));
+            $allow_past_events = ConfigHelper::checkConfig('timetable.allow_past_events', ConfigHelper::checkConfig('phpui.timetable_allow_past_events', true));
             if (!$allow_past_events && $date + $begintime < time()) {
                 $error['begin'] = trans('Events which begin in the past are not allowed!');
             }
@@ -138,7 +138,7 @@ if (isset($_POST['event'])) {
         $error['end'] = trans('End time must not precede start time!');
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.event_overlap_warning', ConfigHelper::getConfig('phpui.event_overlap_warning', 'false')))
+    if (ConfigHelper::checkConfig('timetable.event_overlap_warning', ConfigHelper::checkConfig('phpui.event_overlap_warning'))
         && !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
             'date' => $date,
             'begintime' => $begintime,
@@ -251,11 +251,9 @@ if (isset($_POST['event'])) {
 
                 $event['ticketid'] = $LMS->TicketAdd($ticket);
 
-                if (ConfigHelper::checkValue(
-                    ConfigHelper::getConfig(
-                        'rt.new_ticket_notify',
-                        ConfigHelper::getConfig('phpui.newticket_notify', 'true')
-                    )
+                if (ConfigHelper::checkConfig(
+                    'rt.new_ticket_notify',
+                    ConfigHelper::checkConfig('phpui.newticket_notify', true)
                 )) {
                     $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
@@ -293,11 +291,9 @@ if (isset($_POST['event'])) {
                             return $contact['fullname'];
                         }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
-                        if (ConfigHelper::checkValue(
-                            ConfigHelper::getConfig(
-                                'rt.notification_customerinfo',
-                                ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                            )
+                        if (ConfigHelper::checkConfig(
+                            'rt.notification_customerinfo',
+                            ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                         )) {
                             $params = array(
                                 'id' => $id,
@@ -356,11 +352,9 @@ if (isset($_POST['event'])) {
                             }
                         }
                     } elseif (!empty($requestor)
-                        && ConfigHelper::checkValue(
-                            ConfigHelper::getConfig(
-                                'rt.notification_customerinfo',
-                                ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                            )
+                        && ConfigHelper::checkConfig(
+                            'rt.notification_customerinfo',
+                            ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                         )
                     ) {
                         $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;

@@ -58,7 +58,7 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments_only', true));
+    $commited = ConfigHelper::checkConfig('phpui.default_show_approved_assignments_only', true);
     $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
     if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
         $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
@@ -127,11 +127,9 @@ if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets
     if (isset($_GET['alltickets'])) {
         $alltickets = !empty($_GET['alltickets']);
     } else {
-        $alltickets = ConfigHelper::checkValue(
-            ConfigHelper::getConfig(
-                'rt.default_show_closed_tickets',
-                ConfigHelper::getConfig('phpui.default_show_closed_tickets', 'false')
-            )
+        $alltickets = ConfigHelper::checkConfig(
+            'rt.default_show_closed_tickets',
+            ConfigHelper::checkConfig('phpui.default_show_closed_tickets')
         );
     }
     if (empty($alltickets)) {
@@ -166,7 +164,7 @@ if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernet
 }
 
 $userid = Auth::GetCurrentUser();
-$user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
+$user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
 $customerstats = array(
     'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state NOT IN ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets t

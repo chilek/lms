@@ -1500,8 +1500,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'user' => ConfigHelper::getConfig('documents.smtp_user'),
                             'pass' => ConfigHelper::getConfig('documents.smtp_pass'),
                             'auth' => ConfigHelper::getConfig('documents.smtp_auth'),
-                            'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('documents.smtp_ssl_verify_peer', true)),
-                            'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('documents.smtp_ssl_verify_peer_name', true)),
+                            'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', true),
+                            'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', true),
                             'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed'),
                         );
 

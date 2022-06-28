@@ -428,8 +428,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $userid = Auth::GetCurrentUser();
 
-        $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
-        $allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
+        $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
+        $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
         $qids = null;
         if (!empty($ids)) {
@@ -806,7 +806,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $stats = null;
 
         $userid = Auth::GetCurrentUser();
-        $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
+        $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
 
         if ($result = $this->db->GetAll(
             'SELECT t.state, COUNT(t.state) AS scount
@@ -1488,7 +1488,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES;
 
-        $allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
+        $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
         $userid = Auth::GetCurrentUser();
         $ticket = $this->GetTicketContents($ticketid);
@@ -2066,9 +2066,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $LMS;
 
-        $notification_attachments = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notification_attachments', ConfigHelper::getConfig('phpui.helpdesk_notification_attachments')));
+        $notification_attachments = ConfigHelper::checkConfig('rt.notification_attachments', ConfigHelper::checkConfig('phpui.helpdesk_notification_attachments'));
 
-        $notify_author = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.author_notify', ConfigHelper::getConfig('phpui.helpdesk_author_notify', 'false')));
+        $notify_author = ConfigHelper::checkConfig('rt.author_notify', ConfigHelper::checkConfig('phpui.helpdesk_author_notify'));
         $userid = Auth::GetCurrentUser();
         $sms_service = ConfigHelper::getConfig('sms.service');
 
@@ -2414,8 +2414,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $userid = Auth::GetCurrentUser();
 
-        $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
-        $allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
+        $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
+        $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
         if ($user_permission_checks) {
             return $this->db->GetOne(

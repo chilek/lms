@@ -1,8 +1,8 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{$hide_disabled_users = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.hide_disabled_users', ConfigHelper::getConfig('phpui.timetable_hide_disabled_users', 'false')))}
-{$hide_deleted_users = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.hide_deleted_users', ConfigHelper::getConfig('phpui.timetable_hide_deleted_users', 'false')))}
+{$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))}
+{$hide_deleted_users = ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users'))}
 	<!--// $Id$ //-->
 	{$xajax}
 	{if empty($event.ticketid)}
@@ -43,7 +43,7 @@
 
 					{box_row icon="uptime" label="Time:" icon_class="fa-fw"}
 						{if $layout.module == 'eventadd'}
-							{$allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.allow_past_events', ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true')))}
+							{$allow_past_date = ConfigHelper::checkConfig('timetable.allow_past_events', ConfigHelper::checkConfig('phpui.timetable_allow_past_events', true))}
 						{else}
 							{$allow_past_date = true}
 						{/if}
@@ -123,7 +123,7 @@
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
 						<select name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple
-								{if ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.event_user_required', ConfigHelper::getConfig('phpui.event_user_required')))}required{/if}>
+								{if ConfigHelper::checkConfig('timetable.event_user_required', ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
 								{if (!is_array($event.userlist) || !in_array($user.id, $event.userlist))
 									&& ($hide_disabled_users && !$user.access

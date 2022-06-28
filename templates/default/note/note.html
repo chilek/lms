@@ -51,7 +51,7 @@
 			{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
 			{$tmp = str_replace('%bankname', $note.div_bank, $tmp)}
 
-			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))}
+			{if ConfigHelper::checkConfig('invoices.customer_bankaccount', true)}
 				{textformat assign="tmp" wrap=5000}
 					{$tmp}<br>{trans('Bank account:')}<br><strong>{$account_text}</strong>
 				{/textformat}
@@ -67,10 +67,10 @@
 			{$note.zip} {$note.city}
 			{if $note.ten}
 				<BR>{t a=$note.ten}TEN $a{/t}
-			{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $note.ssn}
+			{elseif !ConfigHelper::checkConfig('invoices.hide_ssn', true) && $note.ssn}
 				<br>{t a=$note.ssn}SSN $a{/t}
 			{/if}
-			{if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true)))}
+			{if ConfigHelper::checkConfig('invoices.customer_credentials', true)}
 				{if $note.customerpin}
 					<BR>
 					<strong>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}<BR>
@@ -80,7 +80,7 @@
 			{/if}
 		</TD>
 		<TD WIDTH="46%" class="mdf bold valign-top">
-			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))}
+			{if ConfigHelper::checkConfig('invoices.post_address', true)}
 				<BR>
 				<BR>
 				<B>

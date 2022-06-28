@@ -47,8 +47,8 @@ if (!$categories) {
     access_denied();
 }
 
-$allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
-$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.empty_category_warning', ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', 'true')));
+$allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
+$empty_category_warning = ConfigHelper::checkConfig('rt.empty_category_warning', ConfigHelper::checkConfig('phpui.helpdesk_empty_category_warning', true));
 
 if (isset($_POST['ticket'])) {
     $ticket = $_POST['ticket'];
@@ -58,7 +58,7 @@ if (isset($_POST['ticket'])) {
     extract($result);
     $SMARTY->assign('fileupload', $fileupload);
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.check_owner_verifier_conflict', ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', 'true')))
+    if (ConfigHelper::checkConfig('rt.check_owner_verifier_conflict', ConfigHelper::checkConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
         && !empty($ticket['verifierid']) && $ticket['verifierid'] == $ticket['owner']) {
         $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
         $error['owner'] = trans('Ticket verifier could not be the same as owner!');
@@ -223,11 +223,9 @@ if (isset($_POST['ticket'])) {
         }
 
         if ((isset($ticket['notify']) || isset($ticket['customernotify']))
-            && ConfigHelper::checkValue(
-                ConfigHelper::getConfig(
-                    'rt.new_ticket_notify',
-                    ConfigHelper::getConfig('phpui.newticket_notify', 'true')
-                )
+            && ConfigHelper::checkConfig(
+                'rt.new_ticket_notify',
+                ConfigHelper::checkConfig('phpui.newticket_notify', true)
             )
         ) {
             $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
@@ -271,11 +269,9 @@ if (isset($_POST['ticket'])) {
                 });
 
                 if (isset($ticket['notify'])
-                    && ConfigHelper::checkValue(
-                        ConfigHelper::getConfig(
-                            'rt.notification_customerinfo',
-                            ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                        )
+                    && ConfigHelper::checkConfig(
+                        'rt.notification_customerinfo',
+                        ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                     )
                 ) {
                     $params = array(
@@ -301,11 +297,9 @@ if (isset($_POST['ticket'])) {
                     );
                 }
             } elseif (!empty($requestor) && isset($ticket['notify'])
-                && ConfigHelper::checkValue(
-                    ConfigHelper::getConfig(
-                        'rt.notification_customerinfo',
-                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                    )
+                && ConfigHelper::checkConfig(
+                    'rt.notification_customerinfo',
+                    ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                 )
             ) {
                 $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
@@ -375,11 +369,9 @@ if (isset($_POST['ticket'])) {
         }
 
         if (isset($ticket['customernotify']) && $ticket['customerid']
-            && ConfigHelper::checkValue(
-                ConfigHelper::getConfig(
-                    'rt.new_ticket_notify',
-                    ConfigHelper::getConfig('phpui.newticket_notify', 'true')
-                )
+            && ConfigHelper::checkConfig(
+                'rt.new_ticket_notify',
+                ConfigHelper::checkConfig('phpui.newticket_notify', true)
             )
             && (!empty($mails) || !empty($mobile_phones))) {
             if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
@@ -511,7 +503,7 @@ if (isset($_POST['ticket'])) {
         unset($category);
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notify', ConfigHelper::getConfig('phpui.helpdesk_notify', 'false')))) {
+    if (ConfigHelper::checkConfig('rt.notify', ConfigHelper::checkConfig('phpui.helpdesk_notify'))) {
         $ticket['notify'] = true;
     }
 

@@ -173,20 +173,16 @@ if (!empty($_POST)) {
 
         $queue = $ticket['queue'];
 
-        if (ConfigHelper::checkValue(
-            ConfigHelper::getConfig(
-                'rt.new_ticket_notify',
-                ConfigHelper::getConfig('phpui.newticket_notify', 'false')
-            )
+        if (ConfigHelper::checkConfig(
+            'rt.new_ticket_notify',
+            ConfigHelper::checkConfig('phpui.newticket_notify')
         )) {
             $headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
             $sms_body = $headers['Subject']."\n".$ticket['body'];
 
-            if (ConfigHelper::checkValue(
-                ConfigHelper::getConfig(
-                    'rt.notification_customerinfo',
-                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                )
+            if (ConfigHelper::checkConfig(
+                'rt.notification_customerinfo',
+                ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
             )) {
                 if ($ticket['customerid']) {
                     $info = $DB->GetRow(

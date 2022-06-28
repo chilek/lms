@@ -556,7 +556,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
             // EtherWerX support (devices have some limits)
             // We must to replace big ID with smaller (first free)
-            if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+            if ($id > 99999 && ConfigHelper::checkConfig('phpui.ewx_support')) {
                 $this->db->BeginTrans();
                 $this->db->LockTables('ewx_channels');
 

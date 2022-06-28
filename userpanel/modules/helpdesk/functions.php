@@ -199,11 +199,9 @@ function module_main()
                 'mailfrom' => $ticket['mailfrom'],
                 'source' => RT_SOURCE_USERPANEL), $files);
 
-            if (ConfigHelper::checkValue(
-                ConfigHelper::getConfig(
-                    'rt.new_ticket_notify',
-                    ConfigHelper::getConfig('phpui.newticket_notify', 'true')
-                )
+            if (ConfigHelper::checkConfig(
+                'rt.new_ticket_notify',
+                ConfigHelper::checkConfig('phpui.newticket_notify', true)
             )) {
                 $user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));
 
@@ -239,11 +237,9 @@ function module_main()
                     return ($contact['type'] & (CONTACT_MOBILE | CONTACT_DISABLED)) == CONTACT_MOBILE;
                 });
 
-                if (ConfigHelper::checkValue(
-                    ConfigHelper::getConfig(
-                        'rt.notification_customerinfo',
-                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                    )
+                if (ConfigHelper::checkConfig(
+                    'rt.notification_customerinfo',
+                    ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                 )) {
                     $params = array(
                         'id' => $id,
@@ -455,11 +451,9 @@ function module_main()
             }
             $headers['Message-ID'] = $ticket['messageid'];
 
-            if (ConfigHelper::checkValue(
-                ConfigHelper::getConfig(
-                    'rt.notification_customerinfo',
-                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                )
+            if (ConfigHelper::checkConfig(
+                'rt.notification_customerinfo',
+                ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
             )) {
                 $info = $LMS->GetCustomer($SESSION->id, true);
 

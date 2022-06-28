@@ -84,7 +84,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
         $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
+        if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
         }
 
@@ -98,7 +98,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
     public function shipping_address()
     {
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))) {
+        if (ConfigHelper::checkConfig('invoices.post_address', true)) {
             $shipaddress = '';
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
@@ -136,7 +136,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $recipient .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
         if ($this->data['ten']) {
             $recipient .= trans('TEN') . ': ' . $this->data['ten'];
-        } elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
+        } elseif (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $recipient .= trans('SSN') . ': ' . $this->data['ssn'];
         }
         $this->backend->SetFont(self::TCPDF_FONT, '', 8);
@@ -144,7 +144,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
         $y = $this->backend->GetY();
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
+        if (ConfigHelper::checkConfig('invoices.customer_credentials', true)) {
             $pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';
             $pin .= '<b>PIN: ' . sprintf('%04d', $this->data['customerpin']) . '</b><br>';
 

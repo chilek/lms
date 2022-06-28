@@ -1,6 +1,6 @@
 {block name=eventlistfilter}
-{$hide_disabled_users = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.hide_disabled_users', ConfigHelper::getConfig('phpui.timetable_hide_disabled_users', 'false')))}
-{$hide_deleted_users = ConfigHelper::checkValue(ConfigHelper::getConfig('timetable.hide_deleted_users', ConfigHelper::getConfig('phpui.timetable_hide_deleted_users', 'false')))}
+{$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))}
+{$hide_deleted_users = ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users'))}
 	<TR>
 		<TD colspan="6" class="text-center nobr no-print">
 			<A href="?m=eventlist&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>

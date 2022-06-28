@@ -69,7 +69,7 @@ if (isset($_POST['message'])) {
         }
 
         $ticket = $LMS->GetTicketContents($message['ticketid']);
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.block_ticket_close_with_open_events', ConfigHelper::getConfig('phpui.helpdesk_block_ticket_close_with_open_events', 'false')))) {
+        if (ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))) {
             $oec = $ticket['openeventcount'];
             if ($message['state'] == RT_RESOLVED && !empty($oec)) {
                 $error['state'] = trans('Ticket have open assigned events!');
@@ -96,7 +96,7 @@ if (isset($_POST['message'])) {
         $error['body'] = trans('Message body not specified!');
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.check_owner_verifier_conflict', ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', 'true')))
+    if (ConfigHelper::checkConfig('rt.check_owner_verifier_conflict', ConfigHelper::checkConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
         && !empty($message['verifierid']) && $message['verifierid'] == $message['owner']) {
         $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
         $error['owner'] = trans('Ticket verifier could not be the same as owner!');
@@ -105,7 +105,7 @@ if (isset($_POST['message'])) {
     // TODO: verifierid/deadline validation for group reply
     $deadline = datetime_to_timestamp($message['deadline']);
     if (!$group_reply && $deadline != $ticket['deadline']) {
-        if (!ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_all_users_modify_deadline', ConfigHelper::getConfig('phpui.helpdesk_allow_all_users_modify_deadline', 'false')))
+        if (!ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'))
             && !empty($message['verifierid']) && $message['verifierid'] != Auth::GetCurrentUser()) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $message['deadline'] = $ticket['deadline'];
@@ -427,11 +427,9 @@ if (isset($_POST['message'])) {
                     });
 
                     if ((isset($message['notify']) || !empty($message['verifierid']))
-                        && ConfigHelper::checkValue(
-                            ConfigHelper::getConfig(
-                                'rt.notification_customerinfo',
-                                ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                            )
+                        && ConfigHelper::checkConfig(
+                            'rt.notification_customerinfo',
+                            ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                         )
                     ) {
                         $params = array(
@@ -457,11 +455,9 @@ if (isset($_POST['message'])) {
                         );
                     }
                 } elseif ((isset($message['notify']) || !empty($message['verifierid']))
-                    && ConfigHelper::checkValue(
-                        ConfigHelper::getConfig(
-                            'rt.notification_customerinfo',
-                            ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-                        )
+                    && ConfigHelper::checkConfig(
+                        'rt.notification_customerinfo',
+                        ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
                     )
                 ) {
                     $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
@@ -634,7 +630,7 @@ if (isset($_POST['message'])) {
             }
         }
         $message['category_change'] = 0;
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.notify', ConfigHelper::getConfig('phpui.helpdesk_notify', 'false')))) {
+        if (ConfigHelper::checkConfig('rt.notify', ConfigHelper::checkConfig('phpui.helpdesk_notify'))) {
             $message['notify'] = true;
         }
     }
@@ -645,7 +641,7 @@ if (isset($_POST['message'])) {
         foreach ($ticketid as $id) {
             $LMS->MarkTicketAsRead($id);
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
+        if (ConfigHelper::checkConfig('rt.customer_notify', ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'))) {
             $message['smsnotify'] = true;
         }
 
@@ -703,13 +699,13 @@ if (isset($_POST['message'])) {
                 );
             }
 
-            if (!empty($message['mailfrom']) && ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
+            if (!empty($message['mailfrom']) && ConfigHelper::checkConfig('rt.customer_notify', ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'))) {
                 $message['mailnotify'] = true;
             }
 
             if ($reply['phonefrom']) {
                 $message['phonefrom'] = $reply['phonefrom'];
-                if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
+                if (ConfigHelper::checkConfig('rt.customer_notify', ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'))) {
                     $message['smsnotify'] = true;
                 }
             }
@@ -726,7 +722,7 @@ if (isset($_POST['message'])) {
             $message['references'] = implode(' ', $reply['references']);
             $message['cc'] = $reply['cc'];
 
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.quote_body', ConfigHelper::getConfig('phpui.helpdesk_reply_body', 'false')))
+            if (ConfigHelper::checkConfig('rt.quote_body', ConfigHelper::checkConfig('phpui.helpdesk_reply_body'))
                 || isset($_GET['citing'])) {
                 $body = explode("\n", textwrap(strip_tags($reply['body']), 74));
                 foreach ($body as $line) {
@@ -898,7 +894,7 @@ if (!is_array($message['ticketid'])) {
             }
             unset($contact);
         }
-    } elseif (ConfigHelper::checkValue(ConfigHelper::getConfig('rt.customer_notify', ConfigHelper::getConfig('phpui.helpdesk_customer_notify', 'false')))) {
+    } elseif (ConfigHelper::checkConfig('rt.customer_notify', ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'))) {
         $message['mailnotify'] = !empty($contacts['mails']);
         $message['smsnotify'] = !empty($contacts['phones']);
     }
@@ -911,7 +907,7 @@ if (!is_array($message['ticketid'])) {
 }
 $SMARTY->assign('citing',
     isset($_GET['citing'])
-        || ConfigHelper::checkValue(ConfigHelper::getConfig('rt.quote_body', ConfigHelper::getConfig('phpui.helpdesk_reply_body', 'false')))
+        || ConfigHelper::checkConfig('rt.quote_body', ConfigHelper::checkConfig('phpui.helpdesk_reply_body'))
 );
 $SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('categories', $categories);

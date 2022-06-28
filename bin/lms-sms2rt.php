@@ -198,17 +198,13 @@ if (!empty($service)) {
     LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $service));
 }
 $prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
-$newticket_notify = ConfigHelper::checkValue(
-    ConfigHelper::getConfig(
-        'rt.new_ticket_notify',
-        ConfigHelper::getConfig('phpui.newticket_notify', 'true')
-    )
+$newticket_notify = ConfigHelper::checkConfig(
+    'rt.new_ticket_notify',
+    ConfigHelper::checkConfig('phpui.newticket_notify', true)
 );
-$helpdesk_customerinfo = ConfigHelper::checkValue(
-    ConfigHelper::getConfig(
-        'rt.notification_customerinfo',
-        ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
-    )
+$helpdesk_customerinfo = ConfigHelper::checkConfig(
+    'rt.notification_customerinfo',
+    ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
 );
 $helpdesk_sendername = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
 

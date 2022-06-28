@@ -162,7 +162,7 @@
 				<strong>{trans("Period:")}</strong>
 			</td>
 			<td>
-				{$allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('documents.allow_past_date', 'true'))}
+				{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
 				{trans("from:")}
 				<input type="text" name="document[fromdate]" id="fromdate"
 					value="{if $document.fromdate}{$document.fromdate}{/if}"

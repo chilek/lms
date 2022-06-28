@@ -37,7 +37,7 @@
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
 		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
         zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
-        multiSelectPopupOnBottom: {if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.multiselect_popup_on_bottom', 'true'))}true{else}false{/if},
+        multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom', true)}true{else}false{/if},
 		multiSelectMaxVisible: '{intval(ConfigHelper::getConfig('phpui.multiselect_max_visible', 5))}',
         eventTimeStep: {ConfigHelper::getConfig('timetable.event_time_step', ConfigHelper::getConfig('phpui.event_time_step', 30))},
 		openCalendarOnInputClick: {if ConfigHelper::checkConfig('phpui.open_calendar_on_input_click')}true{else}false{/if},
@@ -51,7 +51,7 @@
 		tooltipsEnabled = false;
 	}
 
-	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
+	{if ConfigHelper::checkConfig('phpui.disable_mobile_tooltips', true)}
 	$(function() {
 		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			$('[title]').removeAttr('title');

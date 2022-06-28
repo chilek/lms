@@ -223,7 +223,7 @@ $tariff_tags = ConfigHelper::getConfig('payments.tariff_tags', '', true);
 
 $reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig('payments.reward_penalty_deadline_grace_days'));
 
-$force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
+$force_telecom_service_flag = ConfigHelper::checkConfig('invoices.force_telecom_service_flag', true);
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
 $billing_document_template = ConfigHelper::getConfig('payments.billing_document_template', '');

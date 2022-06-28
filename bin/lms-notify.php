@@ -427,8 +427,8 @@ $smtp_options = array(
     'user' => ConfigHelper::getConfig($config_section . '.smtp_username', ConfigHelper::getConfig($config_section . '.smtp_user')),
     'pass' => ConfigHelper::getConfig($config_section . '.smtp_password', ConfigHelper::getConfig($config_section . '.smtp_pass')),
     'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth_type', ConfigHelper::getConfig($config_section . '.smtp_auth')),
-    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)),
-    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)),
+    'ssl_verify_peer' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer', true),
+    'ssl_verify_peer_name' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer_name', true),
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
 );
 

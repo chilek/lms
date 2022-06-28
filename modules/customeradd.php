@@ -106,7 +106,7 @@ if (isset($_POST['customeradd'])) {
         $error['name'] = trans('First name cannot be empty!');
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
+    if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
         if ($customeradd['group'] == 0) {
             $error['group'] = trans('Group name required!');
         }
@@ -405,7 +405,7 @@ $SMARTY->assign('legal_person_required_properties', $legal_person_required_prope
 $SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
-if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
+if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
         $SMARTY->assign('groups', $DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
 }
 

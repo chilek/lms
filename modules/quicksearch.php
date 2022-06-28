@@ -683,8 +683,8 @@ switch ($mode) {
 
             $userid = Auth::GetCurrentUser();
 
-            $user_permission_checks = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.additional_user_permission_checks', ConfigHelper::getConfig('phpui.helpdesk_additional_user_permission_checks', 'false')));
-            $allow_empty_categories = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.allow_empty_categories', ConfigHelper::getConfig('phpui.helpdesk_allow_empty_categories', 'false')));
+            $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
+            $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
             $candidates = $DB->GetAll(
                 "SELECT t.id, t.subject, t.requestor, t.requestor_mail, t.requestor_phone, t.state, c.name, c.lastname

@@ -37,11 +37,9 @@ $LMS->MarkTicketAsRead($_GET['id']);
 $ticket = $LMS->GetTicketContents($_GET['id']);
 
 if ($ticket['customerid']
-    && ConfigHelper::checkValue(
-        ConfigHelper::getConfig(
-            'rt.show_stats',
-            ConfigHelper::getConfig('phpui.helpdesk_stats', 'false')
-        )
+    && ConfigHelper::checkConfig(
+        'rt.show_stats',
+        ConfigHelper::checkConfig('phpui.helpdesk_stats')
     )
 ) {
     $yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);

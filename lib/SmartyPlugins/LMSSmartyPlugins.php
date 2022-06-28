@@ -157,7 +157,7 @@ class LMSSmartyPlugins
         static $user_divisions = array();
         $lms = LMS::getInstance();
         $layout = $template->getTemplateVars('layout');
-        $force_global_division_context = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.force_global_division_context'), false);
+        $force_global_division_context = ConfigHelper::checkConfig('phpui.force_global_division_context');
 
         if (empty($params)) {
             $params = array();

@@ -197,21 +197,19 @@ if (preg_match('/^[0-9]+$/', $queue)) {
 }
 $categories = ConfigHelper::getConfig('rt.default_categories', 'default');
 $categories = preg_split('/\s*,\s*/', trim($categories));
-$auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', true));
+$auto_open = ConfigHelper::checkConfig('rt.auto_open', true);
 //$tmp_dir = ConfigHelper::getConfig('rt.tmp_dir', '', true);
-$notify = ConfigHelper::checkValue(
-    ConfigHelper::getConfig(
-        'rt.new_ticket_notify',
-        ConfigHelper::getConfig('rt.newticket_notify', 'true')
-    )
+$notify = ConfigHelper::checkConfig(
+    'rt.new_ticket_notify',
+    ConfigHelper::checkConfig('rt.newticket_notify', true)
 );
-$customerinfo = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.include_customerinfo', '1'));
+$customerinfo = ConfigHelper::checkConfig('rt.include_customerinfo', true);
 $lms_url = ConfigHelper::getConfig('rt.lms_url', 'http://localhost/lms/');
 $autoreply_from = ConfigHelper::getConfig('rt.mail_from', '', true);
 $autoreply_name = ConfigHelper::getConfig('rt.mail_from_name', '', true);
 $autoreply_subject = ConfigHelper::getConfig('rt.autoreply_subject', "[RT#%tid] Receipt of request '%subject'");
 $autoreply_body = ConfigHelper::getConfig('rt.autoreply_body', '', true);
-$autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1'));
+$autoreply = ConfigHelper::checkConfig('rt.autoreply', true);
 $subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', '\[RT#(?<ticketid>[0-9]{6,})\]');
 $modify_ticket_timeframe = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 604800);
 
@@ -231,7 +229,7 @@ $rtparser_password = ConfigHelper::getConfig(
     'rt.imap_password',
     isset($smtp_options['pass']) ? $smtp_options['pass'] : ConfigHelper::GetConfig('mail.smtp_password')
 );
-$rtparser_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.imap_use_seen_flag', true));
+$rtparser_use_seen_flag = ConfigHelper::checkConfig('rt.imap_use_seen_flag', true);
 $rtparser_folder = ConfigHelper::getConfig('rt.imap_folder', 'INBOX');
 
 $url_props = parse_url($lms_url);
