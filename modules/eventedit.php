@@ -29,7 +29,10 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$aee = ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800);
+$aee = ConfigHelper::getConfig(
+    'timetable.allow_modify_closed_events_newer_than',
+    ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)
+);
 
 if (isset($_GET['id'])) {
     $event = $LMS->GetEvent($_GET['id']);
