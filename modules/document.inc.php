@@ -294,6 +294,10 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
         ob_end_clean();
     }
 
+    if (!empty($references)) {
+        $references = array_reverse($references);
+    }
+
     $SMARTY->assign('references', $references);
 
     $template = $SMARTY->fetch('document/documentreference.html');
