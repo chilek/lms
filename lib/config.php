@@ -135,6 +135,7 @@ $DEFAULTS = array(
         'quote_body' => false,
         'sender_name' => '',
         'show_stats' => true,
+        'ticket_template_file' => 'rtticketprint.html',
     ),
     'timetable' => array(
         'default_forward_day_limit' => 7,

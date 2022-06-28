@@ -65,4 +65,4 @@ $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('messages', isset($_GET['messages']) ? 1 : 0);
 $SMARTY->assign('notes', isset($_GET['notes']) ? 1 : 0);
 $SMARTY->assign('history', isset($_GET['history']) ? 1 : 0);
-$SMARTY->display('rt/' . ConfigHelper::getConfig('phpui.ticket_template_file'));
+$SMARTY->display('rt/' . ConfigHelper::getConfig('rt.ticket_template_file', ConfigHelper::getConfig('phpui.ticket_template_file')));

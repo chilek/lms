@@ -208,6 +208,7 @@ version 28-git (????-??-??):
     to 'rt.category_adjustments_in_ticketedit' [chilan]
   - devel/cleanup: renamed 'phpui.ticket_property_change_notify'
     to 'rt.ticket_property_change_notify' [chilan]
+  - devel/cleanup: renamed 'phpui.ticket_template_file' to 'rt.ticket_template_file' [chilan]
 
 version 27.0 (2021-08-20):
 
