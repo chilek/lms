@@ -154,7 +154,10 @@ if (isset($_POST['message'])) {
 
         $smtp_options = $LMS->GetRTSmtpOptions();
 
-        $customer_notification_mail_subject = ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject');
+        $customer_notification_mail_subject = ConfigHelper::getConfig(
+            'rt.customer_notification_mail_subject',
+            ConfigHelper::getConfig('phpui.helpdesk_customer_notification_mail_subject', '[RT#%tid] %subject')
+        );
 
         $message['userid'] = $userid;
 

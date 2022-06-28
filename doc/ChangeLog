@@ -200,6 +200,8 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.helpdesk_customerinfo' to 'rt.notification_customerinfo' [chilan]
   - devel/cleanup: renamed 'phpui.helpdesk_stats' to 'rt.show_stats' [chilan]
   - devel/cleanup: renamed 'phpui.newticket_notify' to 'rt.new_ticket_notify' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_customer_notification_mail_subject'
+    to 'rt.customer_notification_mail_subject' [chilan]
 
 version 27.0 (2021-08-20):
 
