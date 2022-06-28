@@ -104,7 +104,7 @@ if ($ticket['customerid']
     && ConfigHelper::checkValue(
         ConfigHelper::getConfig(
             'rt.notification_customerinfo',
-            ConfigHelper:getConfig('phpui.helpdesk_customerinfo', 'false')
+            ConfigHelper::getConfig('phpui.helpdesk_customerinfo', 'false')
         )
     )
 ) {
