@@ -2751,7 +2751,7 @@ class LMS
 
                 if (!empty($content)) {
                     $content = unserialize((string) $content);
-                    $content['regdata'] = unserialize((string) $content['regdata']);
+                    $content['regdata'] = unserialize(isset($content['regdata']) ? (string) $content['regdata'] : '');
 
                     if (is_array($content['regdata'])) {
                         $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
