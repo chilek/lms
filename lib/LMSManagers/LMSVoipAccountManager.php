@@ -744,27 +744,27 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $limit = null;
         }
 
-        $order = explode(',', $params['o']);
-        if (empty($order[1]) || $order[1] != 'desc') {
-             $order[1] = 'asc';
-        }
+        $order_string = '';
+        if (isset($params['o'])) {
+            $order = explode(',', $params['o']);
+            if (empty($order[1]) || $order[1] != 'desc') {
+                 $order[1] = 'asc';
+            }
 
-        switch ($order[0]) {
-            case 'caller_name':
-            case 'callee_name':
-            case 'caller':
-            case 'callee':
-            case 'begintime':
-            case 'callbegintime':
-            case 'callanswertime':
-            case 'status':
-            case 'type':
-            case 'price':
-                $order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
-                break;
-
-            default:
-                $order_string = '';
+            switch ($order[0]) {
+                case 'caller_name':
+                case 'callee_name':
+                case 'caller':
+                case 'callee':
+                case 'begintime':
+                case 'callbegintime':
+                case 'callanswertime':
+                case 'status':
+                case 'type':
+                case 'price':
+                    $order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
+                    break;
+            }
         }
 
         // FILTERS
