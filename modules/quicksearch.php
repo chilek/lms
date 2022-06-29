@@ -356,12 +356,12 @@ switch ($mode) {
                     } else {
                         $action = '?m=customerinfo&id=' . $row['id'];
                     }
-                    $name = truncate_str($row['customername'], 50);
+                    $name = htmlspecialchars(truncate_str($row['customername'], 50));
                     if (isset($row['number'])) {
-                        $description = trans('VoIP number:') . ' ' . $row['number'];
+                        $description = trans('VoIP number:') . ' ' . htmlspecialchars($row['number']);
                         $name_class = 'lms-ui-suggestion-phone';
                     } else {
-                        $description = trans('Phone:') . ' ' . $row['phone'];
+                        $description = trans('Phone:') . ' ' . htmlspecialchars($row['phone']);
                         $name_class = 'lms-ui-suggestion-customer-status-connected';
                     }
                     $name_class .= $row['deleted'] ? ' blend' : '';
