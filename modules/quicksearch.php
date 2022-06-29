@@ -482,7 +482,7 @@ switch ($mode) {
                         $description = trans('IP') . ': ' . $row['ip'];
                     } else if ((empty($properties) || isset($properties['public_ip'])) && preg_match("~$search~i", $row['ip_pub'])) {
                         $description = trans('IP') . ': ' . $row['ip_pub'];
-                    } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
+                    } else if ((empty($properties) || isset($properties['location_address'])) && isset($row['location']) && preg_match("~$search~i", $row['location'])) {
                         $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
                     } else if ((empty($properties) || isset($properties['mac'])) && preg_match("~" . macformat($search) . "~i", $row['mac'])) {
                         $macs = explode(',', $row['mac']);
