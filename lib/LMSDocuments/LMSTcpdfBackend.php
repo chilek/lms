@@ -78,6 +78,6 @@ class LMSTcpdfBackend extends LMSTCPDF
 
     public function WriteToString()
     {
-        return $this->Output(null, 'S');
+        return $this->Output('', 'S');
     }
 }
