@@ -241,7 +241,7 @@
 									</span>
 									<span class="customer-call-edit" style="display: none;">
 										<textarea type="text" class="customer-call-note lms-ui-autogrow"
-											data-original-value="{$call.notes|escape}"
+											data-original-value="{$call.notes|default:""|escape}"
 											>{$call.notes|default:""|escape}</textarea>
 									</span>
 								</td>
