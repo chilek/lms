@@ -238,4 +238,6 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 }
 $SMARTY->assign('pagination', $pagination);
 
+$layout['pagetitle'] = trans('Customer Phone Calls');
+
 $SMARTY->display('customer/customercalllist.html');
