@@ -566,7 +566,7 @@ class SYSLOG
                 $data['value'] = '***';
                 break;
             default:
-                if (strpos($data['name'], 'chkconsent') === 0) {
+                if (isset($data['name']) && strpos($data['name'], 'chkconsent') === 0) {
                     $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
                 }
         }
