@@ -23,6 +23,7 @@
  *
  *  $Id$
  */
+
 $_LANG['billing'] = 'de facturare';
 $_LANG['$a ($b addresses)'] = '$a ($b adrese)';
 $_LANG['$a addresses'] = '$a adrese';
@@ -37,7 +38,7 @@ $_LANG['30 days'] = '30 zile';
 $_LANG['365 days'] = '365 zile';
 $_LANG['7 days'] = '7 zile';
 $_LANG['About LMS:'] = 'Despre LMS:';
-$_LANG['About system:'] = 'Despre sistem:';
+$_LANG['About system'] = 'Despre sistem';
 $_LANG['Access denied!'] = 'Acces interzis!';
 $_LANG['Access rights:'] = 'Drepturi de acces:';
 $_LANG['Account'] = 'Cont';
@@ -1070,7 +1071,7 @@ $_LANG['records $a - $b of $c'] = 'înregistrări $a - $b din $c';
 $_LANG['Registered for:'] = 'Înregistrat pentru:';
 $_LANG['Register your installation today! ;-)'] = 'Înregistrează instalarea ta azi! ;-)';
 $_LANG['Registration ID:'] = 'Nr înregistrare:';
-$_LANG['Registration info:'] = 'Informaţii despre înregistrare:';
+$_LANG['Registration info'] = 'Informaţii despre înregistrare';
 $_LANG['Reload'] = 'Reâncărcare';
 $_LANG['Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).'] = 'Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).';
 $_LANG['Remove'] = 'Elimină';
@@ -1319,7 +1320,7 @@ $_LANG['Uptime:'] = 'Uptime:';
 $_LANG['URL:'] = 'Adresa URL:';
 $_LANG['URL of your homepage:'] = 'Adresa URl a paginii dvs.:';
 $_LANG['Use carriage return for indentation only. LMS will reformat paragraphs and break long lines.'] = 'Foloseşte linie nouă doar pt. aliniere. LMS va reformata paragrafele şi va despărţi liniile lungi';
-$_LANG['Useful Links:'] = 'Legături utile:';
+$_LANG['Useful Links'] = 'Legături utile';
 $_LANG['User'] = 'Utilizator';
 $_LANG['User:'] = 'Utilizator:';
 $_LANG['User-defined stats'] = 'Statistici definite de utilizator';

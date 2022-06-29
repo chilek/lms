@@ -24,6 +24,7 @@
  *
  *  $Id$
  */
+
 $_LANG['billing'] = 'atsiskaitymo';
 $_LANG['$a ($b addresses)'] = '$a ($b adresas)';
 $_LANG['$a addresses'] = '$a adresu';
@@ -39,7 +40,7 @@ $_LANG['30 days'] = '30 dienų';
 $_LANG['365 days'] = '365 dienų';
 $_LANG['7 days'] = '7 dienos';
 $_LANG['About LMS:'] = 'Informacija apie LMS:';
-$_LANG['About system:'] = 'Informacija apie sistemą:';
+$_LANG['About system'] = 'Informacija apie sistemą';
 $_LANG['Access denied!'] = 'Neturite teisių!';
 $_LANG['Access rights:'] = 'Priėjimo teisės:';
 $_LANG['Account'] = 'Įrašas';
@@ -1106,7 +1107,7 @@ $_LANG['records $a - $b of $c'] = 'įrašai $a - $b iš $c';
 $_LANG['Registered for:'] = 'Užregistruota (kam):';
 $_LANG['Register your installation today! ;-)'] = 'Užregistruok savo instaliaciją dar šiandien! ;-)';
 $_LANG['Registration ID:'] = 'Registracijos Nr.:';
-$_LANG['Registration info:'] = 'Informacija apie registraciją:';
+$_LANG['Registration info'] = 'Informacija apie registraciją';
 $_LANG['Reload'] = 'Perkrovimas';
 $_LANG['Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).'] = 'Perkrovimo tipas. Galimi pasirinkimai: exec – komandos įvykdymas (dažniausiai kokio nors skripto arba kitokios programos naudojant sudo – konfigūruojant toliau); sql – įrašo nurodymą į duomenų bazę SQL ( konkretų klausimą sql gali būti taip pat nenurodytas).';
 $_LANG['Remove'] = 'Pašalink';
@@ -1366,7 +1367,7 @@ $_LANG['Uptime:'] = 'Uptime:';
 $_LANG['URL:'] = 'Adresas URL:';
 $_LANG['URL of your homepage:'] = 'Tavo tinklapio adresas:';
 $_LANG['Use carriage return for indentation only. LMS will reformat paragraphs and break long lines.'] = 'Naudokite Enter klavišą tik norėdami uždaryti pastaripą. LMS suredaguos žinutę ir išskaidys linijas';
-$_LANG['Useful Links:'] = 'Naudingos nuorodos:';
+$_LANG['Useful Links'] = 'Naudingos nuorodos';
 $_LANG['User'] = 'Vartotojas';
 $_LANG['User:'] = 'Vartotojas:';
 $_LANG['User-defined stats'] = 'Statistika apibrėžta vartotojo';

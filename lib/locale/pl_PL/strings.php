@@ -349,8 +349,8 @@ $_LANG['$a - removed, $b - inserted<BR>'] = '$a - usuniętych, $b - dodanych<BR>
 $_LANG['30 days'] = '30 dni';
 $_LANG['365 days'] = '365 dni';
 $_LANG['7 days'] = '7 dni';
-$_LANG['About $a:'] = 'Informacje o $a:';
-$_LANG['About system:'] = 'Informacje o systemie:';
+$_LANG['About $a'] = 'Informacje o $a';
+$_LANG['About system'] = 'Informacje o systemie';
 $_LANG['Access denied!'] = 'Dostęp zabroniony!';
 $_LANG['Permission denied!'] = 'Błąd uprawnień!';
 $_LANG['Access rights:'] = 'Prawa dostępu:';
@@ -1712,7 +1712,7 @@ $_LANG['records $a - $b of $c'] = 'rekordy $a - $b z $c';
 $_LANG['Registered for:'] = 'Zarejestrowano dla:';
 $_LANG['Register your installation today! ;-)'] = 'Zarejestruj swoją instalację jeszcze dziś! ;-)';
 $_LANG['Registration ID:'] = 'Nr rejestracyjny:';
-$_LANG['Registration info:'] = 'Informacje o rejestracji:';
+$_LANG['Registration info'] = 'Informacje o rejestracji';
 $_LANG['Reload'] = 'Przeładowanie';
 $_LANG['Reload configuration in:'] = "Przeładowanie konfiguracji za:";
 $_LANG['Reload timer. If set to true it will display remaining time to configuration reload. If using more than one host, remember to sync time between them.'] = 'Odliczanie przeładowania. Jeżeli ustawione na 1, wyświetli czas pozostały do przeładowania konfiguracji. Jeżeli używasz więcej niż jednego hosta, należy pamiętać, aby czas między nim i był synchronizowany.';
@@ -2046,7 +2046,7 @@ $_LANG['Enter message body.<br><br>'
     . '<strong>%node_ip</strong> - adres IP komputera klienckiego,<br>'
     . '<strong>%node_ip_pub</strong> - publiczny adres IP komputera klienckiego,<br>'
     . '<strong>%node_mac</strong> - adresy MAC komputera klienckiego.<br>';
-$_LANG['Useful Links:'] = 'Użyteczne linki:';
+$_LANG['Useful Links'] = 'Użyteczne linki';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';
 $_LANG['User-defined stats'] = 'Statystyki zdefiniowane przez użytkownika';
