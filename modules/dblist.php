@@ -26,15 +26,16 @@
 
 $layout['pagetitle'] = trans('Database Backups');
 
-if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir'))) {
+$backup_dir = ConfigHelper::getConfig('directories.backup_dir');
+if ($backup_dir && $handle = opendir($backup_dir)) {
     while (false !== ($file = readdir($handle))) {
         if ($file != '.' && $file != '..') {
             $path = pathinfo($file);
-            
+
             if (!isset($path['extension'])) {
                 continue;
             }
-            
+
             if ($path['extension'] == 'sql') {
                 if (substr($path['basename'], 0, 4) == 'lms-') {
                     $name = substr(basename($file, '.sql'), 4, 25);
@@ -45,7 +46,7 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir'))) {
                         $dblist['dbv'][]  = '';
                         $dblist['time'][] = (int) $name;
                     }
-                    
+
                     $dblist['name'][] = $name;
                     $dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
                     list ($hsize, $hunit) = setunits($filesize);
