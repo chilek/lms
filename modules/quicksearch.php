@@ -152,7 +152,7 @@ switch ($mode) {
                     $action = '?m=customerinfo&id=' . $row['id'];
 
                     if ((empty($properties) || isset($properties['name'])) && $customer_count[$row['customername']]) {
-                        $description = htmlspecialchars($row['address']);
+                        $description = isset($row['address']) ? htmlspecialchars($row['address']) : '';
                         if (!empty($row['post_address'])) {
                             $description .= '<BR>' . htmlspecialchars($row['post_address']);
                             if (!empty($row['post_name'])) {
