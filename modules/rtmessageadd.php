@@ -905,7 +905,8 @@ if (!is_array($message['ticketid'])) {
     $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
     $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));
 }
-$SMARTY->assign('citing',
+$SMARTY->assign(
+    'citing',
     isset($_GET['citing'])
         || ConfigHelper::checkConfig('rt.quote_body', ConfigHelper::checkConfig('phpui.helpdesk_reply_body'))
 );
