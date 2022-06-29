@@ -2757,7 +2757,9 @@ class LMS
                         $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
 
                         foreach (array('id', 'name', 'url', 'hidden') as $key) {
-                            $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                            if (isset($content['regdata'][$key])) {
+                                $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                            }
                         }
                     }
                 }
