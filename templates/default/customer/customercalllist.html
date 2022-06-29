@@ -113,7 +113,7 @@
 						</label>
 						<label>
 							{trans("Phone number")}
-							<input type="text" name="phone" value="{$phone|escape}" form="filter" class="filter-item">
+							<input type="text" name="phone" value="{$phone|default:""|escape}" form="filter" class="filter-item">
 						</label>
 						{date_period_preset from="[name=\"datefrom\"]" to="[name=\"dateto\"]" time=true}
 						<label>
