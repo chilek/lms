@@ -223,6 +223,7 @@ version 28-git (????-??-??):
   - enhancement: userpanel/documents: multiple email addresses can be entered in operator
     notification address list settings and special symbol '%creatoremail%' support [chilan]
   - enhancement: added 'deleted tickets' filter in rtqueuelist module [chilan]
+  - enhancement: implemented multi node group selection in customerlist module [chilan]
 
 version 27.0 (2021-08-20):
 
