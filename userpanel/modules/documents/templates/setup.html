@@ -233,6 +233,12 @@
 							<strong>%docid%</strong> - document identifier.
 						{/strip}{/capture}
 
+						{capture assign="recipient_hint"}{strip}
+							Supported substitutions:<br>
+							<br>
+							<strong>%creatoremail%</strong> - document creator e-mail address.
+						{/strip}{/capture}
+
 						<tr>
 							<td class="nobr" colspan="2">
 								<fieldset>
@@ -251,7 +257,8 @@
 													name="moduleconfig[signed_document_scan_operator_notification_mail_recipient]"
 													id="signed_document_scan_operator_notification_mail_recipient"
 													value="{$moduleconfig.signed_document_scan_operator_notification_mail_recipient}"
-													{tip text="Enter signed document scan operator notification mail recipient"}>
+													{tip text="Enter signed document scan operator notification mail recipients separated by commas"}>
+												{hint mode="toggle" content=$recipient_hint}
 											</td>
 										</tr>
 										<tr>
@@ -359,7 +366,8 @@
 													name="moduleconfig[document_approval_operator_notification_mail_recipient]"
 													id="document_approval_operator_notification_mail_recipient"
 													value="{$moduleconfig.document_approval_operator_notification_mail_recipient}"
-													{tip text="Enter document approval operator notification mail recipient address"}>
+													{tip text="Enter document approval operator notification mail recipient addresses separated by commas"}>
+												{hint mode="toggle" content=$recipient_hint}
 											</td>
 										</tr>
 										<tr>

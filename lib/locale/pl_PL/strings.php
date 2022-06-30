@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['comma separated emails'] = 'adresy e-mail oddzielone przecinkami';
+
 $_LANG['related documents'] = 'powiązane dokumenty';
 $_LANG['Are you sure, you want to also remove related documents?'] = 'Czy jesteś pewien, że chcesz usunąć również powiązane dokumenty?';
 

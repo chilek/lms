@@ -1342,6 +1342,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return $string;
         }
 
+        function parse_notification_recipient($string, $data)
+        {
+            return str_replace(
+                array(
+                    '%creatoremail%',
+                ),
+                array(
+                    empty($data['creatoremail']) ? '' : $data['creatoremail'],
+                ),
+                $string
+            );
+        }
+
         $userid = Auth::GetCurrentUser();
 
         $ids = Utils::filterIntegers($ids);
@@ -1352,6 +1365,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, dc.fromdate AS datefrom,
 					d.reference, d.commitflags, d.confirmdate, d.closed,
+					u.email AS creatoremail,
 					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
                     (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
 				FROM documents d
@@ -1363,9 +1377,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     WHERE da.type = -1
                     GROUP BY da.docid
 				) a ON a.docid = d.id
+				LEFT JOIN users u ON u.id = d.userid AND (u.ntype & ?) > 0 AND u.email <> ?
 				WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
                     . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
-            'id'
+            'id',
+            array(
+                MSG_MAIL,
+                '',
+            )
         );
         if (empty($docs)) {
             return;
@@ -1474,7 +1493,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     if (!isset($lms)) {
                         $lms = LMS::getInstance();
                     }
-                    $lms->SendMail($operator_mail_recipient, $headers, $operator_mail_body);
+
+                    foreach (explode(',', parse_notification_recipient($operator_mail_recipient, $doc)) as $recipient) {
+                        if (check_email($recipient)) {
+                            $headers['To'] = $recipient;
+                            $lms->SendMail($recipient, $headers, $operator_mail_body);
+                        }
+                    }
                 }
 
                 // customer awaits for signed document scan approval

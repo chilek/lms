@@ -52,7 +52,7 @@ $_LANG['Enter document notification mail sender name'] = 'Wprowadź nazwę nadaw
 $_LANG['Enter document notification mail sender address'] = 'Wprowadź adres nadawcy listu z powiadomieniem o dokumencie';
 
 $_LANG['Signed document scan operator notifications'] = 'Powiadomienia operatora o skanie podpisanego dokumentu';
-$_LANG['Enter signed document scan operator notification mail recipient'] = 'Wprowadź odbiorcę listu z powiadomieniem operatora o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan operator notification mail recipients separated by commas'] = 'Wprowadź odbiorców listu (oddzielone przecinkami) z powiadomieniem operatora o skanie podpisanego dokumentu';
 $_LANG['Enter signed document scan operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o skanie podpisanego dokumentu';
 $_LANG['Enter signed document scan operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o skanie podpisanego dokumentu';
 $_LANG['Signed document scan customer notifications'] = 'Powiadomienia klienta o skanie podpisanego dokumentu';
@@ -62,7 +62,7 @@ $_LANG['Document approval customer notifications'] = 'Powiadomienia klienta o za
 $_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
 $_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
 $_LANG['Document approval operator notifications'] = 'Powiadomienia operatora o zatwierdzeniu dokumentu';
-$_LANG['Enter document approval operator notification mail recipient address'] = 'Wprowadź adres e-mail odbiorcy listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail recipient addresses separated by commas'] = 'Wprowadź adresy e-mail (oddzielone przecinkami) odbiorców listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 $_LANG['Enter document approval operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 $_LANG['Enter document approval operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 
@@ -139,6 +139,13 @@ $_LANG[
 ] =
     'Obsługiwane symbole specjalne:<br><br>'
     . '<strong>%password%</strong> - zastępowany jest hasłem jednorazowym SMS-em wysyłanym do klienta.';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%creatoremail%</strong> - document creator e-mail address.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%creatoremail%</strong> - adres e-mail twórcy dokumentu.';
 
 $_LANG['Send document to customer'] = 'Wyślij dokument do klienta';
 
