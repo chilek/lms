@@ -1997,11 +1997,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $text = (isset($params['deadline']) && !empty($params['deadline']))
             ? str_replace('%deadline', date('Y/m/d H:i', $params['deadline']), $text)
             : str_replace('%deadline', '-', $text);
-        $text = str_replace('%service', $params['service'], $text);
-        $text = str_replace('%type', $params['type'], $text);
+        $text = str_replace('%service', $params['service'] ?? '', $text);
+        $text = str_replace('%type', $params['type'] ?? '', $text);
         $text = str_replace('%invproject', $params['invproject_name'] ?? '', $text);
         $text = str_replace('%invprojectid', $params['invprojectid'] ?? '', $text);
-        $text = str_replace('%requestor', $params['requestor'], $text);
+        $text = str_replace('%requestor', $params['requestor'] ?? '', $text);
         $text = str_replace('%requestor_mail', $params['requestor_mail'] ?? '', $text);
         $text = str_replace('%requestor_phone', $params['requestor_phone'] ?? '', $text);
         $text = str_replace('%requestor_userid', $params['requestor_userid'] ?? '', $text);
