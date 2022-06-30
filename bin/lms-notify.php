@@ -703,7 +703,19 @@ function parse_customer_data($data, $format, $row)
 
 function parse_node_data($data, $row)
 {
-    $data = preg_replace("/\%i/", $row['ip'], $data);
+    $data = str_replace(
+        array(
+            '%i',
+            '%cid',
+            '%customername',
+        ),
+        array(
+            $row['ip'],
+            $row['customerid'],
+            str_replace('"', "'", iconv('UTF-8', 'ASCII//TRANSLIT', $row['customername'])),
+        ),
+        $data
+    );
     //$data = preg_replace("/\%nas/", $row['nasip'], $data);
 
     return $data;
