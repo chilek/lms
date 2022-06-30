@@ -216,6 +216,8 @@ version 28-git (????-??-??):
     to 'timetable.allow_modify_closed_events_newer_than' [chilan]
   - devel/cleanup: renamed 'phpui.default_show_closed_events'
     to 'timetable.default_show_closed_events' [chilan]
+  - improvement: lms-notify.php: added '%cid' and '%customername' substitution symbols in generated
+    firewall rules [chilan]
 
 version 27.0 (2021-08-20):
 
