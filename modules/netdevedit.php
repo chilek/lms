@@ -774,8 +774,8 @@ if (isset($netdev)) {
 } else {
     $netdev = $LMS->GetNetDev($id);
 
-    if (preg_match('/^[0-9]+$/', $netdev['producerid'])
-        && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
+    if (isset($netdev['producerid']) && preg_match('/^[0-9]+$/', $netdev['producerid'])
+        && isset($netdev['modelid']) && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
         $netdev['producer'] = $netdev['producerid'];
         $netdev['model'] = $netdev['modelid'];
     }
