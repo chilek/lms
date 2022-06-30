@@ -67,6 +67,10 @@ if (isset($_POST['fileupload'])) {
 
     $SMARTY->clearAssign('fileupload');
 
+    if (ConfigHelper::checkConfig('cashimport.autocommit')) {
+        $LMS->CashImportCommit();
+    }
+
     include(MODULES_DIR . DIRECTORY_SEPARATOR . 'cashimport.php');
     die;
 } elseif (isset($_FILES['file'])) { // upload errors
