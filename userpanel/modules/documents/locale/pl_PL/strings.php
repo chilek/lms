@@ -66,7 +66,7 @@ $_LANG['Enter document approval operator notification mail recipient addresses s
 $_LANG['Enter document approval operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 $_LANG['Enter document approval operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 
-$_LANG['Recipient e-mail address'] = 'Adres e-mail odbiorcy';
+$_LANG['Recipient e-mail addresses'] = 'Adresy e-mail odbiorców';
 $_LANG['Mail subject'] = 'Temat listu';
 $_LANG['Mail body'] = 'Treść listu';
 
