@@ -33,6 +33,8 @@ class LMS
     const SOFTWARE_VERSION = '28-git';
     const SOFTWARE_URL = 'https://lms.org.pl';
     const SOFTWARE_DOCUMENTATION_URL = 'doc/html/%lang%';
+    const SOFRWARE_REPO_URL = 'https://git.lms.org.pl';
+    const SOFRWARE_SUPPORT_URL = 'https://github.com/chilek/lms/issues';
     const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
