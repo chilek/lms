@@ -53,7 +53,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetQueueEmail($id);
 
-    public function GetQueueStats($id);
+    public function GetQueueStats($id, $deleted_tickets = true);
 
     public function GetCategory($id);
 

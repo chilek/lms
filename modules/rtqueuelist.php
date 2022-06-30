@@ -30,6 +30,12 @@ if (isset($_POST['deleted'])) {
     $filter['deleted'] = true;
 }
 
+if (isset($_POST['deleted_tickets'])) {
+    $filter['deleted_tickets'] = $_POST['deleted_tickets'];
+} elseif (!isset($filter['deleted_tickets'])) {
+    $filter['deleted_tickets'] = true;
+}
+
 $SESSION->saveFilter($filter);
 
 $filter['stats'] = true;

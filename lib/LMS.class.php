@@ -2234,10 +2234,10 @@ class LMS
         return $manager->GetQueueEmail($id);
     }
 
-    public function GetQueueStats($id)
+    public function GetQueueStats($id, $deleted_tickets = true)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueStats($id);
+        return $manager->GetQueueStats($id, $deleted_tickets);
     }
 
     public function GetCategory($id)

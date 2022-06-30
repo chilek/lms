@@ -4805,6 +4805,8 @@ $_LANG['Cancel changes'] = 'Anuluj zmiany';
 $_LANG['Save this item'] = 'Zapisz zmiany';
 
 $_LANG['Show deleted'] = 'Pokaż skasowane';
+$_LANG['deleted queues'] = 'usunięte kolejki';
+$_LANG['deleted tickets'] = 'usunięte zgłoszenia';
 $_LANG['Enter body fragment'] = 'Wprowadź fragment treści';
 $_LANG['treat as regular expression'] = 'traktuj jako wyrażenie regularne';
 

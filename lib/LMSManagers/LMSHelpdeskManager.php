@@ -713,7 +713,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ' ORDER BY name')) {
             if ($stats) {
                 foreach ($result as &$row) {
-                    $stats = $this->GetQueueStats($row['id']);
+                    $stats = $this->GetQueueStats($row['id'], $deleted_tickets);
                     if ($stats) {
                         $row = array_merge($row, $stats);
                     }
@@ -801,7 +801,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $this->db->GetOne('SELECT email FROM rtqueues WHERE id=?', array($id));
     }
 
-    public function GetQueueStats($id)
+    public function GetQueueStats($id, $deleted_tickets = true)
     {
         $stats = null;
 
@@ -813,6 +813,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			FROM rttickets t
 			' . ($user_permission_checks ? 'LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ' . $userid . ' AND r.rights <> 0' : '') . '
 			WHERE t.queueid = ?' . ($user_permission_checks ? ' AND (r.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : '')
+            . (empty($deleted_tickets) ? ' AND t.deleted = 0' : '')
             . ' GROUP BY t.state
 			ORDER BY t.state ASC',
             array($id)
@@ -833,7 +834,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rttickets t
 				LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
 				' . ($user_permission_checks ? 'LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ' . $userid . ' AND r.rights <> 0' : '') . '
-				WHERE t.queueid = ?' . ($user_permission_checks ? ' AND (r.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''),
+				WHERE t.queueid = ?' . ($user_permission_checks ? ' AND (r.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : '')
+                    . (empty($deleted_tickets) ? ' AND t.deleted = 0' : ''),
                 array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
                     Auth::GetCurrentUser(),
                 $id)
