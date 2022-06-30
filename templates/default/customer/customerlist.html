@@ -207,17 +207,23 @@
 			{/if}
 
 			{if !empty($nodegroups) && count($nodegroups)}
-				<label for="ng">
-				{trans("Node Group<!short>")}
-				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
-					{foreach from=$nodegroups item=nodegroup}
-					<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
-					{/foreach}
-				</SELECT>
+				<label for="ng[]">
+					{trans("Node Group<!short>")}
+					<input type="hidden" name="ng" value="all">
+					<select size="1" name="ng[]" onchange="document.choosefilter.submit();"
+							class="lms-ui-multiselect lms-ui-multiselect-filter" multiple>
+						<option value=""{if !is_array($filter.nodegroup) && !$filter.nodegroup} selected{/if}
+							data-exclusive>{trans("- all groups -")}</option>
+						{foreach $nodegroups as $nodegroup}
+							<option value="{$nodegroup.id}"
+								{if (is_array($filter.nodegroup) && in_array($nodegroup.id, $filter.nodegroup))
+								|| (!is_array($filter.nodegroup) && $filter.nodegroup == $nodegroup.id)} selected{/if}
+							>{$nodegroup.name|trunescape:30}</option>
+						{/foreach}
+					</select>
 				</label>
 			{else}
-				<input type="hidden" name="ng" value="">
+				<input type="hidden" name="ng" value="all">
 			{/if}
 
 			<label for="assignments">

@@ -1381,6 +1381,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
                         . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
             		GROUP BY vcustomerassignments.customerid) ca ON ca.customerid = c.id ' : '')
+            . (!empty($nodegroup) ? 'LEFT JOIN (SELECT nodes.ownerid AS customerid, COUNT(*) AS gcount
+                FROM nodegroupassignments
+                JOIN nodes ON nodes.id = nodeid'
+                . (is_array($nodegroup) || $nodegroup > 0 ? ' WHERE nodegroupid IN ('
+                    . (is_array($nodegroup) ? implode(',', Utils::filterIntegers($nodegroup)) : intval($nodegroup)) . ')' : '') . '
+                GROUP BY ownerid) na ON na.customerid = c.id ' : '')
             . ($count ? '' : '
                 LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
                 FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
@@ -1509,9 +1515,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         : ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0')
                     ) : '')
                 . ($customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
-                . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
-                    JOIN vnodes n ON (n.id = na.nodeid)
-                    WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
+                . (!empty($nodegroup) ? ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1) : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction . ', c.id ASC' : '')
