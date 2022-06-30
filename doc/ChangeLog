@@ -218,6 +218,8 @@ version 28-git (????-??-??):
     to 'timetable.default_show_closed_events' [chilan]
   - improvement: lms-notify.php: added '%cid' and '%customername' substitution symbols in generated
     firewall rules [chilan]
+  - improvement: 'cashimport.autocommit' also applies to cash source files loaded from
+    frontend [chilan]
 
 version 27.0 (2021-08-20):
 
