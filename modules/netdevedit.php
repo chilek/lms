@@ -516,7 +516,7 @@ switch ($action) {
         }
 
         foreach ($nodeipdata as $key => $value) {
-            if (!is_array($value)) {
+            if (isset($value) && !is_array($value)) {
                 $nodeipdata[$key] = trim($value);
             }
         }
