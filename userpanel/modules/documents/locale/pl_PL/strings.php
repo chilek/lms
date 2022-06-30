@@ -25,7 +25,7 @@
  */
 
 $_LANG['Documents to review'] = 'Dokumenty do przejrzenia';
-$_LAMG['Documents which require your review'] = 'Dokumenty, które wymagają przejrzenia';
+$_LANG['Documents which require your review'] = 'Dokumenty, które wymagają przejrzenia';
 $_LANG['Document management'] = 'Zarządzanie dokumentami';
 $_LANG['This module allows to view documents'] = 'Moduł pozwala przeglądać dokumenty';
 
