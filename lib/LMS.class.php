@@ -2751,14 +2751,16 @@ class LMS
 
                 if (!empty($content)) {
                     $content = unserialize((string) $content);
-                    $content['regdata'] = unserialize(isset($content['regdata']) ? (string) $content['regdata'] : '');
+                    if (isset($content['regdata'])) {
+                        $content['regdata'] = unserialize((string) $content['regdata']);
 
-                    if (is_array($content['regdata']) && !empty($content['regdata'])) {
-                        $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
+                        if (is_array($content['regdata']) && !empty($content['regdata'])) {
+                            $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
 
-                        foreach (array('id', 'name', 'url', 'hidden') as $key) {
-                            if (isset($content['regdata'][$key])) {
-                                $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                            foreach (array('id', 'name', 'url', 'hidden') as $key) {
+                                if (isset($content['regdata'][$key])) {
+                                    $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                                }
                             }
                         }
                     }
