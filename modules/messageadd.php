@@ -63,7 +63,11 @@ function GetRecipients($filter, $type = MSG_MAIL)
     } else {
         $customergroup = intval($filter['customergroup']);
     }
-    $nodegroup = intval($filter['nodegroup']);
+    if (is_array($filter['nodegroup'])) {
+        $nodegroup = implode(',', Utils::filterIntegers($filter['nodegroup']));
+    } else {
+        $nodegroup = intval($filter['nodegroup']);
+    }
     $linktype = $filter['linktype'] == '' ? '' : intval($filter['linktype']);
     $tarifftype = intval($filter['tarifftype']);
     $consent = isset($filter['consent']);
@@ -218,8 +222,8 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .($customergroup ? ' AND c.id IN (SELECT customerid FROM vcustomerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
         .($nodegroup ? ' AND c.id IN (SELECT ownerid FROM vnodes
-			JOIN nodegroupassignments ON (nodeid = vnodes.id)
-			WHERE nodegroupid = ' . $nodegroup . ')' : '')
+			JOIN nodegroupassignments ON nodeid = vnodes.id
+			WHERE nodegroupid IN (' . $nodegroup . '))' : '')
         .($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM vnodes
 			WHERE linktype = ' . $linktype . ')' : '')
         .($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
@@ -604,7 +608,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $phonenumbers = preg_split('/,/', $message['phonenumber']);
             }
             if (!empty($message['users']) && count($message['users'])) {
-                $user_phones = $DB->GetAllByKey('SELECT id, phone FROM users', 'id');
+                $user_phones =
+                    $DB->GetAllByKey('SELECT id, phone FROM users', 'id');
                 foreach ($message['users'] as $userid) {
                     if (isset($user_phones[$userid])) {
                         $phonenumbers[] = $user_phones[$userid]['phone'];

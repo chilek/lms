@@ -280,12 +280,12 @@
 						</tr>
 						<tr>
 							<td class="nobr">{trans("Node Group<!short>")}</td>
-							<td>
-								<select size="1" name="message[nodegroup]" {tip trigger="nodegroup"}>
-									<option value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</option>
+							<td class="multiselect">
+								<select size="1" name="message[nodegroup][]" multiple class="lms-ui-multiselect"
+									{tip trigger="nodegroup"} data-default-value="{trans("- all groups -")}">
 									{foreach $nodegroups as $nodegroup}
-										<option value="{$nodegroup.id}"{if $message.nodegroup == $nodegroup.id} selected{/if}
-											>{$nodegroup.name|truncate:30:"&hellip;":true}</option>
+										<option value="{$nodegroup.id}"{if isset($message.nodegroup) && in_array($nodegroup.id, $message.nodegroup)} selected{/if}
+											>{$nodegroup.name|trunescape:30}</option>
 									{/foreach}
 								</select>
 							</td>
