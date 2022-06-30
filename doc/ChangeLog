@@ -220,6 +220,8 @@ version 28-git (????-??-??):
     firewall rules [chilan]
   - improvement: 'cashimport.autocommit' also applies to cash source files loaded from
     frontend [chilan]
+  - enhancement: userpanel/documents: multiple email addresses can be entered in operator
+    notification address list settings and special symbol '%creatoremail%' support [chilan]
 
 version 27.0 (2021-08-20):
 
