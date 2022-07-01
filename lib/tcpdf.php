@@ -161,7 +161,7 @@ class LMSTCPDF extends TCPDF
     {
         if (preg_match('/^[a-z_\-]+$/i', $family)) {
             $filename = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR
-                . $family . strtolower($style) . '.php';
+                . strtolower($family . $style) . '.php';
             if (file_exists($filename)) {
                 $fontfile = $filename;
             }
