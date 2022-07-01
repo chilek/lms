@@ -87,7 +87,7 @@
 			{/box_row}
 
 			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Owner identifier"}
-				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|escape}"
+				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|default:""|escape}"
 					{tip trigger="coowner" text="Enter co-owner name"}>
 			{/box_row}
 
@@ -188,7 +188,7 @@
 
 			{box_row icon="note" icon_class="fa-fw" label="Note"}
 				<textarea id="info" name="netnode[info]"
-					{tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info|escape}</textarea>
+					{tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info|default:""|escape}</textarea>
 			{/box_row}
 
 			{box_row icon="calendar" icon_class="fa-fw" label="Last inspection"}
