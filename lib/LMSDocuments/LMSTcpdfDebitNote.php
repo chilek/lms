@@ -26,7 +26,7 @@
 
 class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 {
-    // unused - only for compatibility with older LMS versions
+    // default font
     const TCPDF_FONT = 'liberationsans';
 
     private $use_alert_color;
@@ -36,7 +36,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
 
         $this->backend->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
-        $this->backend->SetFont(ConfigHelper::getConfig('invoices.pdf_font', 'liberationsans'), '', 7);
+        $this->backend->SetFont(ConfigHelper::getConfig('invoices.pdf_font', self::TCPDF_FONT), '', 7);
 
         $this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
     }

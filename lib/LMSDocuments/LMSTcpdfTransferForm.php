@@ -26,7 +26,7 @@
 
 class LMSTcpdfTransferForm extends LMSDocument
 {
-    // unused - only for compatibility with older LMS versions
+    // default font
     const TCPDF_FONT = 'liberationsans';
 
     const VALUE_BALANCE = 1;
@@ -38,7 +38,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
 
         $this->backend->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
-        $this->backend->SetFont(ConfigHelper::getConfig('invoices.pdf_font', 'liberationsans'), '', 7);
+        $this->backend->SetFont(ConfigHelper::getConfig('invoices.pdf_font', self::TCPDF_FONT), '', 7);
 
         list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
         $this->backend->SetMargins(trim($margin_left), trim($margin_top), trim($margin_right));
