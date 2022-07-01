@@ -159,7 +159,7 @@ class LMSTCPDF extends TCPDF
 
     public function SetFont($family, $style = '', $size = null, $fontfile = '', $subset = 'default', $out = true)
     {
-        if (preg_match('/^[a-z_\-]+$/i', $family)) {
+        if (isset($family) && preg_match('/^[a-z_\-]+$/i', $family)) {
             $filename = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR
                 . strtolower($family . $style) . '.php';
             if (file_exists($filename)) {
