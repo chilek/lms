@@ -225,6 +225,9 @@ version 28-git (????-??-??):
   - enhancement: added 'deleted tickets' filter in rtqueuelist module [chilan]
   - enhancement: implemented multi node group selection in customerlist and messageadd
     modules [chilan]
+  - improvement: 'invoices.pdf_version' (default: '1.7') and 'invoices.pdf_font'
+    (default: 'liberationsans') allow to customize generated version of pdf file and used
+    font respectively [chilan]
 
 version 27.0 (2021-08-20):
 
