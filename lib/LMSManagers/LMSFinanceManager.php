@@ -5115,7 +5115,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         return ($this->db->GetOne(
             'SELECT d.id FROM documents d
-            LEFT JOIN documents d2 ON d2.reference = d.id
+            LEFT JOIN documents d2 ON d2.reference = d.id AND d2.type > 0
             WHERE d.id = ? AND d.type IN ? AND d.cancelled = 0 AND d.closed = 0 AND d.archived = 0 AND d2.id IS NULL
                 ' . (ConfigHelper::checkPrivilege('published_document_modification') ? '' : ' AND d.published = 0'),
             array($id, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))
