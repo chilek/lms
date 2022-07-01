@@ -74,7 +74,7 @@ if (!empty($_POST['qs'])) {
     }
     $search = urldecode(trim($search));
 } else {
-    $search = urldecode(trim($_GET['what']));
+    $search = urldecode(trim(isset($_GET['what']) ? $_GET['what'] : ''));
     $mode = $_GET['mode'];
 }
 $sql_search = $DB->Escape("%$search%");
