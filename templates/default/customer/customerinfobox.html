@@ -408,16 +408,27 @@
 												</tr>
 												{block name="customerinfobox-options"}
 													{foreach $_CCONSENTS as $type => $consent}
+														{if !is_array($consent)}
+															{continue}
+														{/if}
 														<tr>
 															<td>
-																{$consent.label}
+																{if $consent.type == 'selection' && isset($customerinfo.consents[$type]) && isset($consent.values[$customerinfo.consents[$type]].name)}
+																	{t a=$consent.label b=$consent.values[$customerinfo.consents[$type]].label}<!billing-type>$a ($b){/t}
+																{else}
+																	{$consent.label}
+																{/if}
 															</td>
 															<td class="text-right">
 																{if isset($customerinfo.consents[$type])}
 																	{if $consent.type == 'date'}
 																		{$customerinfo.consents[$type]['cdate']|date_format:"Y-m-d"}
 																	{else}
-																		{trans("yes")}
+																		{if $consent.type != 'selection' || isset($consent.values[$customerinfo.consents[$type]].name)}
+																			{trans("yes")}
+																		{else}
+																			{trans("no")}
+																		{/if}
 																	{/if}
 																{else}
 																	{trans("no")}

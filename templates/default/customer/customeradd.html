@@ -549,26 +549,49 @@
 					<TD>
 						<TABLE cellpadding="0" class="lms-ui-separated-rows">
 							<tbody class="lms-ui-multi-check">
-								<TR>
-									<TD class="bold">
-										{trans("Consents")}
-									</TD>
-									<TD>
-										<INPUT type="checkbox" class="lms-ui-multi-check-all" value="1">
-									</TD>
-								</TR>
+								<tr>
+									<td class="bold">
+										<label for="check-all-consents">
+											{trans("Consents")}
+										</label>
+									</td>
+									<td>
+										<input type="checkbox" class="lms-ui-multi-check-all"
+											id="check-all-consents" value="1">
+									</td>
+								</tr>
 								{block name="customeradd-options"}
 									{foreach $_CCONSENTS as $type => $consent}
-										<TR>
-											<TD>
-												<span class="consent-label">{$consent.label}</span>
-											</TD>
-											<TD>
-												<INPUT type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"
-													value="{$smarty.now}"{if isset($customeradd.consents[$type])} checked{/if}
-													{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
-											</TD>
-										</TR>
+										{if !is_array($consent)}
+											{continue}
+										{/if}
+										{if $consent.type == 'selection'}
+											{foreach $consent.values as $subtype => $subconsent}
+												<tr>
+													<td>
+														<label class="consent-label" for="chkconsent{$subtype}">
+															{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
+														</label>
+													</td>
+													<td>
+														<input type="radio" name="customeradd[consents][{$type}]" id="chkconsent{$subtype}"
+															value="{$subtype}"
+															{if isset($customeradd.consents[$type]) && $customeradd.consents[$type] == $subtype} checked{/if}>
+													</td>
+												</tr>
+											{/foreach}
+										{else}
+											<tr>
+												<td>
+													<span class="consent-label">{$consent.label}</span>
+												</td>
+												<td>
+													<input type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"
+														value="{$smarty.now}"{if isset($customeradd.consents[$type])} checked{/if}
+														{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
+												</td>
+											</tr>
+										{/if}
 									{/foreach}
 								{/block}
 							</tbody>
@@ -739,6 +762,10 @@
 		if (!$('[name="customeradd[pin]"]').val().length) {
 			$('#randomize').click();
 		}
+
+		$('#check-all-consents').change(function() {
+			$(this).closest('.lms-ui-multi-check').find(':radio').prop('checked', $(this).prop('checked'));
+		});
 	});
 
 </script>

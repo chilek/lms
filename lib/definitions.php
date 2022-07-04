@@ -114,6 +114,9 @@ define('CCONSENT_SMSNOTICE', 8);
 define('CCONSENT_SMS_MARKETING', 9);
 define('CCONSENT_MAIL_MARKETING', 10);
 define('CCONSENT_PHONE_BILLING', 11);
+define('CCONSENT_NONE_PHONE_BILLING', 12);
+define('CCONSENT_FULL_PHONE_BILLING', 13);
+define('CCONSENT_SIMPLIFIED_PHONE_BILLING', 14);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -169,8 +172,24 @@ $CCONSENTS = array(
     CCONSENT_PHONE_BILLING => array(
         'label' => trans('phone billing'),
         'name' => 'phone_billing',
-        'type' => 'boolean',
+        'type' => 'selection',
+        'values' => array(
+            CCONSENT_NONE_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>none'),
+            ),
+            CCONSENT_SIMPLIFIED_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>simplified'),
+                'name' => 'simplified_phone_billing',
+            ),
+            CCONSENT_FULL_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>full'),
+                'name' => 'full_phone_billing',
+            ),
+        ),
     ),
+    CCONSENT_NONE_PHONE_BILLING => CCONSENT_PHONE_BILLING,
+    CCONSENT_SIMPLIFIED_PHONE_BILLING => CCONSENT_PHONE_BILLING,
+    CCONSENT_FULL_PHONE_BILLING => CCONSENT_PHONE_BILLING,
 );
 
 // Config types

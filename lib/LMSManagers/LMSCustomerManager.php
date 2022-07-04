@@ -549,6 +549,40 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
+    private function extractCustomerConsents($consents)
+    {
+        $final_consents = array();
+        array_walk(
+            $consents,
+            function ($value, $type) use (&$final_consents) {
+                global $CCONSENTS;
+                if (isset($CCONSENTS[$type]) && !is_array($CCONSENTS[$type])) {
+                    $final_consents[$CCONSENTS[$type]] = $type;
+                } else {
+                    $final_consents[$type] = $value;
+                }
+            }
+        );
+        return $final_consents;
+    }
+
+    private function compactCustomerConsents($consents)
+    {
+        $final_consents = array();
+        array_walk(
+            $consents,
+            function ($value, $type) use (&$final_consents) {
+                global $CCONSENTS;
+                if (isset($CCONSENTS[$type]) && $CCONSENTS[$type]['type'] == 'selection') {
+                    $final_consents[$value] = time();
+                } else {
+                    $final_consents[$type] = $value;
+                }
+            }
+        );
+        return $final_consents;
+    }
+
     public function updateCustomerConsents($customerid, $current_consents, $new_consents)
     {
         $consents_to_remove = array_diff($current_consents, $new_consents);
@@ -715,7 +749,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $this->updateCustomerConsents(
                 $id,
                 array(),
-                array_keys($customeradd['consents'])
+                array_keys($this->compactCustomerConsents($customeradd['consents']))
             );
 
             if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
@@ -1751,7 +1785,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (empty($result)) {
             return array();
         }
-        return $result;
+
+        return $this->extractCustomerConsents($result);
     }
 
     /**
@@ -2022,8 +2057,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             // update customer consents
             $this->updateCustomerConsents(
                 $customerdata['id'],
-                array_keys($this->getCustomerConsents($customerdata['id'])),
-                array_keys($customerdata['consents'])
+                array_keys($this->compactCustomerConsents($this->getCustomerConsents($customerdata['id']))),
+                array_keys($this->compactCustomerConsents($customerdata['consents']))
             );
         }
 
