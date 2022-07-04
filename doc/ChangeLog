@@ -228,6 +228,7 @@ version 28-git (????-??-??):
   - improvement: 'invoices.pdf_version' (default: '1.7') and 'invoices.pdf_font'
     (default: 'liberationsans') allow to customize generated version of pdf file and used
     font respectively [chilan]
+  - enhancement: phone billing type basing on customer subconsents support added [chilan]
 
 version 27.0 (2021-08-20):
 
