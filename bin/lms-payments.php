@@ -646,8 +646,19 @@ $query = "SELECT
 				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
-				JOIN voipaccounts va ON vc.callervoipaccountid = va.id
-				JOIN voip_numbers vn ON vn.voip_account_id = va.id AND vn.phone = vc.caller
+				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.type = " . CALL_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.type = " . CALL_INCOMING . "
+				JOIN voip_numbers vn ON vn.voip_account_id = va.id
+					AND (
+						(
+							vn.voip_account_id = vc.callervoipaccountid
+							AND
+							vn.phone = vc.caller
+						) OR (
+							vn.voip_account_id = vc.calleevoipaccountid
+							AND
+							vn.phone = vc.callee
+						)
+					)
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
 				JOIN assignments a2 ON a2.id = vna.assignment_id
 				WHERE (

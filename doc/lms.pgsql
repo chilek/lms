@@ -787,6 +787,8 @@ CREATE TABLE voip_cdr (
 	PRIMARY KEY (id),
 	CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)
 );
+CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
+CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
 
 /* --------------------------------------------------------
   Structure of table "voip_price_groups"
@@ -4238,6 +4240,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062808');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022070400');
 
 COMMIT;
