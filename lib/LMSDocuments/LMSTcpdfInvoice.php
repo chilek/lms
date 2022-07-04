@@ -36,7 +36,12 @@ class LMSTcpdfInvoice extends LMSInvoice
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
 
         $this->backend->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
-        $this->backend->SetFont(ConfigHelper::getConfig('invoices.pdf_font', self::TCPDF_FONT), '', 7);
+
+        $font = ConfigHelper::getConfig('invoices.pdf_font', self::TCPDF_FONT);
+        $this->backend->SetFont($font, 'I', 7);
+        $this->backend->SetFont($font, 'B', 7);
+        $this->backend->SetFont($font, 'BI', 7);
+        $this->backend->SetFont($font, '', 7);
 
         $this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
 
