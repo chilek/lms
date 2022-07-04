@@ -633,7 +633,7 @@ $query = "SELECT
 					liabilityid IS NULL   AND
 					datefrom <= $currtime AND
 					(dateto > $currtime OR dateto = 0)) AS allsuspended,
-			(CASE WHEN cc.customerid IS NULL THEN 0 ELSE 1 END) AS billingconsent
+			(CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc ON cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
 			FROM assignments a
             JOIN tariffs t ON t.id = a.tariffid
             JOIN taxes ON taxes.id = t.taxid
@@ -705,7 +705,6 @@ $query = "SELECT
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
-			LEFT JOIN customerconsents cc ON cc.customerid = c.id AND cc.type = ?
 	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
            . $customer_status_condition
            . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
@@ -736,7 +735,7 @@ $billings = $DB->GetAll(
         TARIFF_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
         1,
-        CCONSENT_PHONE_BILLING,
+        array(CCONSENT_FULL_PHONE_BILLING, CCONSENT_SIMPLIFIED_PHONE_BILLING),
         SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime,
