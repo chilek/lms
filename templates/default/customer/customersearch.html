@@ -283,28 +283,61 @@
 				</colgroup>
 				<tbody>
 					{foreach $_CCONSENTS as $consentid => $consent}
-					<tr class="highlight">
-						<td>
-							{$consent.label}
-						</td>
-						<td>
-							<label>
-								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="-1"
-									{if !isset($consents[$consentid]) || $consents[$consentid] == -1} checked{/if}>
-								{trans("ignore")}
-							</label>
-							<label>
-								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="1"
-										{if isset($consents[$consentid]) && $consents[$consentid] == 1} checked{/if}>
-								{trans("yes")}
-							</label>
-							<label>
-								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="0"
-										{if isset($consents[$consentid]) && $consents[$consentid] == 0} checked{/if}>
-								{trans("no")}
-							</label>
-						</td>
-					</tr>
+						{if !is_array($consent)}
+							{continue}
+						{/if}
+						{if $consent.type == 'selection'}
+							{foreach $consent.values as $subconsentid => $subconsent}
+								{if !isset($subconsent.name)}
+									{continue}
+								{/if}
+								<tr class="highlight">
+									<td>
+										{t a=$consent.label b=$subconsent.label}$a ($b){/t}
+									</td>
+									<td>
+										<label>
+											<input type="radio" class="cconsent" name="consents[{$subconsentid}]" value="-1"
+													{if !isset($consents[$subconsentid]) || $consents[$subconsentid] == -1} checked{/if}>
+											{trans("ignore")}
+										</label>
+										<label>
+											<input type="radio" class="cconsent" name="consents[{$subconsentid}]" value="1"
+													{if isset($consents[$subconsentid]) && $consents[$subconsentid] == 1} checked{/if}>
+											{trans("yes")}
+										</label>
+										<label>
+											<input type="radio" class="cconsent" name="consents[{$subconsentid}]" value="0"
+													{if isset($consents[$subconsentid]) && $consents[$subconsentid] == 0} checked{/if}>
+											{trans("no")}
+										</label>
+									</td>
+								</tr>
+							{/foreach}
+						{else}
+							<tr class="highlight">
+								<td>
+									{$consent.label}
+								</td>
+								<td>
+									<label>
+										<input type="radio" class="cconsent" name="consents[{$consentid}]" value="-1"
+											{if !isset($consents[$consentid]) || $consents[$consentid] == -1} checked{/if}>
+										{trans("ignore")}
+									</label>
+									<label>
+										<input type="radio" class="cconsent" name="consents[{$consentid}]" value="1"
+												{if isset($consents[$consentid]) && $consents[$consentid] == 1} checked{/if}>
+										{trans("yes")}
+									</label>
+									<label>
+										<input type="radio" class="cconsent" name="consents[{$consentid}]" value="0"
+												{if isset($consents[$consentid]) && $consents[$consentid] == 0} checked{/if}>
+										{trans("no")}
+									</label>
+								</td>
+							</tr>
+						{/if}
 					{/foreach}
 				</tbody>
 				<tfoot>
