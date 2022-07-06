@@ -30,7 +30,10 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 
     $DB = LMSDB::getInstance();
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    if (!isset($order)) {
+        $order = 'name,asc';
+    }
+    list ($order, $direction) = sscanf($order, '%[^,],%s');
 
     ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
