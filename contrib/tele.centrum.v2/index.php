@@ -5,10 +5,20 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
 require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
 
-$uid        = $_GET['id'];
-$phone      = $_GET['phone'];
-$agentnr    = $_GET['agentnr'];
+$uid        = intval($_GET['id']);
+$phone      = intval($_GET['phone']);
+$agentnr    = intval($_GET['agentnr']);
 $ticket['phonetype'] = 'on';
+
+$newticket_subject = ConfigHelper::getConfig(
+    'callcenter.newticket_subject',
+    'Zgłoszenie telefoniczne z E-Południe Call Center nr [#' . $uid . ']'
+);
+
+
+str_replace('%uid', $uid, $newticket_subject);
+str_replace('%customerphone', $phone, $newticket_subject);
+str_replace('%agentnr', $agentnr, $newticket_subject);
 
 $basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
 $wwwuser = posix_getuid();
@@ -117,7 +127,7 @@ if (!empty($_POST)) {
                 $ticket['body'] .=  PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             }
         }
-        $ticket['subject'] = 'Zgłoszenie telefoniczne z E-Południe Call Center nr [' . $uid . ']';
+        $ticket['subject'] = $newticket_subject;
         // set real quque id
         if ($ticket['queue'] == 1) {
             $ticket['queue'] = $queues[0];
