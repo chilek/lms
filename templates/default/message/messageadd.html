@@ -230,22 +230,32 @@
 							<td rowspan="3">
 								<select name="message[group]" {tip trigger="group" text="Select recipients group"}>
 									<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
-									{foreach $_CSTATUSES as $statusidx => $status}
-										<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
-									{/foreach}
-									<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
-									<option value="51"{if $message.group == "51"} selected{/if}>{trans("with disconnected nodes")}</option>
-									<option value="52"{if $message.group == "52"} selected{/if}>{trans("in debt")}</option>
-									<option value="61"{if $message.group == "61"} selected{/if}>{trans("in debt (expired)")}</option>
-									<option value="64"{if $message.group == "64"} selected{/if}>{trans("in debt (expired by more than 30 days)")}</option>
-									<option value="65"{if $message.group == "65"} selected{/if}>{trans("in debt (expired by more than 60 days)")}</option>
-									<option value="57"{if $message.group == "57"} selected{/if}>{trans("in debt above 100%")}</option>
-									<option value="62"{if $message.group == "62"} selected{/if}>{trans("in debt above 100% (expired)")}</option>
-									<option value="58"{if $message.group == "58"} selected{/if}>{trans("in debt above 200%")}</option>
-									<option value="63"{if $message.group == "63"} selected{/if}>{trans("in debt above 200% (expired)")}</option>
-									<option value="53"{if $message.group == "53"} selected{/if}>{trans("not in debt")}</option>
-									<option value="60"{if $message.group == "60"} selected{/if}>{trans("not in debt (expired)")}</option>
-									<option value="59"{if $message.group == "59"} selected{/if}>{trans("unapproved documents")}</option>
+									<optgroup label="{trans("Customers")}">
+										{foreach $_CSTATUSES as $statusidx => $status}
+											<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
+										{/foreach}
+										<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
+									</optgroup>
+									<optgroup label="{trans("Nodes")}">
+										<option value="51"{if $message.group == "51"} selected{/if}>{trans("with disconnected nodes")}</option>
+									</optgroup>
+									<optgroup label="{trans("Finances")}">
+										{if !ConfigHelper::checkPrivilege('hide_finances')}
+											<option value="52"{if $message.group == "52"} selected{/if}>{trans("in debt")}</option>
+											<option value="61"{if $message.group == "61"} selected{/if}>{trans("in debt (expired)")}</option>
+											<option value="64"{if $message.group == "64"} selected{/if}>{trans("in debt (expired by more than 30 days)")}</option>
+											<option value="65"{if $message.group == "65"} selected{/if}>{trans("in debt (expired by more than 60 days)")}</option>
+											<option value="57"{if $message.group == "57"} selected{/if}>{trans("in debt above 100%")}</option>
+											<option value="62"{if $message.group == "62"} selected{/if}>{trans("in debt above 100% (expired)")}</option>
+											<option value="58"{if $message.group == "58"} selected{/if}>{trans("in debt above 200%")}</option>
+											<option value="63"{if $message.group == "63"} selected{/if}>{trans("in debt above 200% (expired)")}</option>
+											<option value="53"{if $message.group == "53"} selected{/if}>{trans("not in debt")}</option>
+											<option value="60"{if $message.group == "60"} selected{/if}>{trans("not in debt (expired)")}</option>
+										{/if}
+									</optgroup>
+									<optgroup label="{trans("Documents")}">
+										<option value="59"{if $message.group == "59"} selected{/if}>{trans("unapproved documents")}</option>
+									</optgroup>
 								</select>
 							</td>
 							<td class="nobr">{trans("Group")}</td>
