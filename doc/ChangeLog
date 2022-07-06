@@ -229,6 +229,7 @@ version 28-git (????-??-??):
     (default: 'liberationsans') allow to customize generated version of pdf file and used
     font respectively [chilan]
   - enhancement: phone billing type basing on customer subconsents support added [chilan]
+  - enhancement: impelemented document/assignment expiration filters in new message form [chilan]
 
 version 27.0 (2021-08-20):
 
