@@ -109,7 +109,7 @@ class Auth
                 $this->authcode = $loginform['authcode'];
                 $this->trusteddevice = isset($loginform['trusteddevice']);
                 writesyslog('Login attempt (authentication code) by ' . $this->login, LOG_INFO);
-            } else {
+            } elseif (isset($loginform['login'])) {
                 list ($login, $targetLogin) = explode('#', $loginform['login']);
                 $this->login = $login;
                 if (!empty($targetLogin)
