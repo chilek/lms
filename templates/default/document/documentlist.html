@@ -64,13 +64,13 @@
 					<input type="hidden" name="m" value="documentlist">
 
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
-					{customerlist form="documentlist" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
+					{customerlist form="documentlist" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="— all customers —"}
 
 					<input type="hidden" name="t[]" value="0">
 					<label>
 						{trans("Type:")}
 						<select size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect"
-							data-default-value="{trans("- all -")}">
+							data-default-value="{trans("— all —")}">
 							{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 								{if $key < 0}
 									<option value="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</option>
@@ -82,7 +82,7 @@
 					<input type="hidden" name="service[]" value="0">
 					<label>
 						{trans("Service:")}
-						<SELECT size="1" name="service[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+						<SELECT size="1" name="service[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 							{foreach $_SERVICETYPES as $key => $item}
 							<OPTION VALUE="{$key}"{if is_array($filter.service) && in_array($key, $filter.service)} selected{/if}>{$item}</OPTION>
 							{/foreach}
@@ -102,7 +102,7 @@
 						</SELECT>
 
 						<input type="hidden" name="u[]" value="0">
-						<SELECT name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+						<SELECT name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 							{foreach $users as $user}
 							<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
 							{/foreach}
@@ -140,7 +140,7 @@
 						<label>
 							{trans("Number plan:")}
 							<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
-								<OPTION value="0">- {trans("all")} -</OPTION>
+								<OPTION value="0">{trans("— all —")}</OPTION>
 								{foreach $numberplans as $plan}
 								{$period = $plan.period}
 								<OPTION value="{$plan.id}"{if $filter.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$filter.customer} ({$_NUM_PERIODS.$period})</OPTION>
@@ -154,7 +154,7 @@
 					<label>
 						{trans("Status:")}
 						<SELECT name="s" onChange="javascript:applyFilter();" {tip text="Select document status"}>
-							<OPTION value="-1">- {trans("all")} - </OPTION>
+							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 							<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
 							<OPTION value="4"{if $filter.status == 4} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
@@ -167,7 +167,7 @@
 					<label>
 						{trans("Archived:")}
 						<SELECT name="archived" onChange="javascript:applyFilter();" {tip text="Select document archived state"}>
-							<OPTION value="-1">- {trans("all")} - </OPTION>
+							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="1"{if $filter.archived == 1} selected{/if}>{trans("yes")}</OPTION>
 							<OPTION value="0"{if $filter.archived == 0} selected{/if}>{trans("no")}</OPTION>
 						</SELECT>

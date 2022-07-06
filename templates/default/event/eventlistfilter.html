@@ -21,7 +21,7 @@
 						<INPUT type="submit" class="hiddenbtn"> <INPUT type="HIDDEN" name="m" value="eventlist">
 						<span class="bold">{trans("Filter:")} </span>
 						{trans("Type:")}
-						<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
+						<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("— all —")}">
 							{foreach $_EVENTTYPES as $id => $label}
 								<OPTION value="{$id}"{if is_array($filter.type) && in_array($id, $filter.type)} selected{/if}>{$label}</OPTION>
 							{/foreach}
@@ -34,9 +34,9 @@
 						</label>
 						<SELECT size="1" name="a[]" OnChange="document.filter.submit();"
 								class="lms-ui-multiselect lms-ui-multiselect-filter" multiple
-								data-default-value="{trans("- all -")}">
+								data-default-value="{trans("— all —")}">
 							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
-									data-exclusive>- {trans("unassigned")} -
+									data-exclusive>— {trans("unassigned")} —
 							</OPTION>
 							{foreach $userlist as $user}
 								{if (!is_array($filter.owner) || !in_array($user.id, $filter.owner))
@@ -55,7 +55,7 @@
 						</SELECT>
 						{trans("Privacy:")}
 						<SELECT name="privacy" onchange="document.filter.submit();">
-							<OPTION value="0"{if $filter.privacy == "0"} selected{/if}>{trans("- all -")}</OPTION>
+							<OPTION value="0"{if $filter.privacy == "0"} selected{/if}>{trans("— all —")}</OPTION>
 							<OPTION value="1"{if $filter.privacy == "1"} selected{/if}>{trans("public")}</OPTION>
 							<OPTION value="2"{if $filter.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
 						</SELECT>
@@ -65,7 +65,7 @@
 						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{sprintf("%04d/%02d/%02d", $filter.year, $filter.month, $filter.day)}{/if}" onchange="document.filter.submit();">
 						{trans("Status:")}
 						<SELECT name="closed" onchange="document.filter.submit();">
-							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
+							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("— all —")}</OPTION>
 							<OPTION value="0"{if $filter.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
 							<OPTION value="1"{if $filter.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
 						</SELECT>

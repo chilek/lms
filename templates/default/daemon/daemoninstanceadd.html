@@ -30,7 +30,7 @@
 		</TD>
 		<TD width="98%">
 			<SELECT name="instance[hostid]" {tip text="Select host name" trigger="hostid"}>
-				<OPTION value="0"{if !$instance.hostid} SELECTED{/if}>{trans("- select host -")}</OPTION>
+				<OPTION value="0"{if !$instance.hostid} SELECTED{/if}>{trans("— select host —")}</OPTION>
 				{foreach from=$hosts item=host}
 				<OPTION value="{$host.id}"{if $instance.hostid == $host.id} SELECTED{/if}>{$host.name}</OPTION>
 				{/foreach}

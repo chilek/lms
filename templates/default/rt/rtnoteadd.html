@@ -161,7 +161,7 @@
 		</TD>
 		<td>
 			<select size="1" name="note[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
-				<option value="0">- {trans("select user")} -</option>
+				<option value="0">{trans("— select user —")}</option>
 				{foreach $userlist as $user}
 					{if $user.id != $note.owner
 						&& ($hide_disabled_users && !$user.access
@@ -192,7 +192,7 @@
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 				<select size="1" name="note[verifierid]"
 					{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
-					<option value="0">- {trans("select user")} -</option>
+					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
 						{if $user.id != $note.verifierid
 							&& ($hide_disabled_users && !$user.access
@@ -225,7 +225,7 @@
 						SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 			{else}
 				<INPUT TYPE="hidden" NAME="note[deadline]" VALUE="{if $note.deadline}{$note.deadline|date_format:"Y/m/d H:i"}{/if}">
-				<span title="{trans("Only verifier can change this")}">{if $note.deadline}{$note.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>- none -")}{/if}</span>
+				<span title="{trans("Only verifier can change this")}">{if $note.deadline}{$note.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>— none —")}{/if}</span>
 			{/if}
 		</TD>
 	</TR>
@@ -237,10 +237,10 @@
 		</td>
 		<td>
 			<SELECT name="note[category_change]" {tip text="Select category change type" trigger="category_change"}>
-				<option value="0"{if $note.category_change == 0} selected{/if}>{trans("- no changes -")}</option>
-				<option value="1"{if $note.category_change == 1} selected{/if}>{trans("- replace -")}</option>
-				<option value="2"{if $note.category_change == 2} selected{/if}>{trans("- append -")}</option>
-				<option value="3"{if $note.category_change == 3} selected{/if}>{trans("- remove -")}</option>
+				<option value="0"{if $note.category_change == 0} selected{/if}>{trans("— no changes —")}</option>
+				<option value="1"{if $note.category_change == 1} selected{/if}>{trans("— replace —")}</option>
+				<option value="2"{if $note.category_change == 2} selected{/if}>{trans("— append —")}</option>
+				<option value="3"{if $note.category_change == 3} selected{/if}>{trans("— remove —")}</option>
 			</SELECT>
 		</td>
 	</TR>

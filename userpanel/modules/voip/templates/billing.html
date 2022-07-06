@@ -166,7 +166,7 @@
                                 <TD>
                                     {if count($customer_phone_list) > 1}
                                     <SELECT NAME="phone" CLASS="lms-input">
-                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="0">{trans("— all —")}</OPTION>
                                         {foreach from=$customer_phone_list item=phone}
                                         <OPTION VALUE="{$phone}"{if $params.phone == $phone} SELECTED{/if}>{$phone}</OPTION>
                                         {/foreach}
@@ -198,14 +198,14 @@
                                 </TD>
                                 <TD>
                                     <SELECT SIZE="1" NAME="ftype" CLASS="lms-input">
-                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="0">{trans("— all —")}</OPTION>
                                         <OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("<!voip>incoming")}</OPTION>
                                         <OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("<!voip>outgoing")}</OPTION>
                                     </SELECT>
                                 </TD>
                                 <TD>
                                     <SELECT SIZE="1" NAME="fstatus" CLASS="lms-input">
-                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="0">{trans("— all —")}</OPTION>
                                         <OPTION VALUE="{CALL_ANSWERED}"      {if $params.fstatus == CALL_ANSWERED}  SELECTED{/if}>{trans("answered")}</OPTION>
                                         <OPTION VALUE="{CALL_NO_ANSWER}"     {if $params.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
                                         <OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("<!voip>busy")}</OPTION>
@@ -330,7 +330,7 @@
                     <th style="font-weight: normal;">{trans("Select account")}</th>
                     <th colspan="2">
                         <select id="account-select" class="lms-input">
-                            <option value="0">{trans("- all -")}</option>
+                            <option value="0">{trans("— all —")}</option>
                             {foreach $user_accounts as $acc}
                             <option value="{$acc.id}">{$acc.login}</option>
                             {/foreach}

@@ -144,7 +144,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" NAME="net">
-				<OPTION VALUE="0">{trans("- all -")}</OPTION>
+				<OPTION VALUE="0">{trans("— all —")}</OPTION>
 				{section name="netlist" loop=$netlist}
 				<OPTION VALUE="{$netlist[netlist].id}" {if $netlist[netlist].id == $trafficnet}SELECTED{/if}>{$netlist[netlist].name|truncate:30:"&hellip;":true}</OPTION>
 				{/section}
@@ -160,7 +160,7 @@
 		</TD>
 		<TD>
 			{customerlist form="traffic" customers=$customers selectname="custid" version=2
-				inputname="customerid" firstoption="- all customers -"}
+				inputname="customerid" firstoption="— all customers —"}
 		</TD>
 	</TR>
 	<TR {tip text="Select results sorting order"}>

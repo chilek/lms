@@ -39,7 +39,7 @@ if (isset($_POST['assignment'])) {
     $result = $LMS->ValidateAssignment($a);
     extract($result);
     if (empty($a['taxid'])) {
-        $error['taxid'] = trans('- no tax rates defined -');
+        $error['taxid'] = trans('— no tax rates defined —');
     }
 
     if (isset($schemaid) && !$LMS->CheckSchemaModifiedValues($a)) {

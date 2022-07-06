@@ -423,7 +423,7 @@ function CustomerAssignmentHelper(options) {
 				];
 
 				var location_count = 0;
-				options = '<option value="">' + $t('- all -') + '</option>';
+				options = '<option value="">' + $t('— all —') + '</option>';
 				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
 					$.each(data['with-end-points'], function(key, value) {

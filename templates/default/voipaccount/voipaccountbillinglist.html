@@ -164,14 +164,14 @@
 
 					<span>{trans("<!voip>Direction")}</span>
 					<select size="1" name="ftype" form="choosefilter">
-						<option value="">{trans("- all -")}</option>
+						<option value="">{trans("— all —")}</option>
 						<option value="{$smarty.const.CALL_INCOMING}" {if $listdata.ftype == $smarty.const.CALL_INCOMING} selected{/if}>{trans("<!voip>incoming")}</option>
 						<option value="{$smarty.const.CALL_OUTGOING}" {if $listdata.ftype == $smarty.const.CALL_OUTGOING} selected{/if}>{trans("<!voip>outgoing")}</option>
 					</select>
 
 					<span>{trans("<!voip>Status")}</span>
 					<select size="1" name="fstatus"	form="choosefilter">
-						<option value="">{trans("- all -")}</option>
+						<option value="">{trans("— all —")}</option>
 						<option value="{$smarty.const.CALL_ANSWERED}"
 							{if $listdata.fstatus == $smarty.const.CALL_ANSWERED}selected{/if}>{trans("answered")}</option>
 						<option value="{$smarty.const.CALL_NO_ANSWER}"

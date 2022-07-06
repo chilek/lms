@@ -148,7 +148,7 @@
 			<INPUT type="text" name="search" id="search" value="{if $listdata.cat == 'cashimport' && isset($sourcefilename)}{$sourcefilename}{else}{$listdata.search}{/if}"
 				   size="15" {tip text="Enter value of searching data and select category"}>
 			<SELECT size="1" name="cat" id="cat" style="width: 150px">
-				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
+				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select category —")}</OPTION>
 				<OPTION value="comment"{if $listdata.cat == "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
 				<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
 				<OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
@@ -165,7 +165,7 @@
 			</SELECT>
 			{trans("Group:")}
 			<SELECT size="1" name="group">
-				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("— all groups —")}</OPTION>
 				{section name="grouplist" loop=$grouplist}
 					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"&hellip;":true}</OPTION>
 				{/section}

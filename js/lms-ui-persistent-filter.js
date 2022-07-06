@@ -60,7 +60,7 @@ $(function() {
 					result = result[filterId];
 				}
 				result.unshift({
-					text: $t('<!filter>- none -'),
+					text: $t('<!filter>— none —'),
 					value: -1
 				})
 				selectelem.scombobox('fill', result);
@@ -104,7 +104,7 @@ $(function() {
 					result = result[filterId];
 				}
 				result.unshift({
-					text: $t('<!filter>- none -'),
+					text: $t('<!filter>— none —'),
 					value: -1
 				})
 				selectelem.scombobox('fill', result);

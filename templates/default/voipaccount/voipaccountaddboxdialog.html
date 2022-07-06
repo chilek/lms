@@ -8,7 +8,7 @@
     <FORM ACTION="?m={$layout.module}" METHOD="POST">
         {trans("Pool numbers")}<BR>
         <SELECT ID="pool_list" STYLE="width: 20%;">
-            <OPTION VALUE="0">- {trans("select")} -</OPTION>
+            <OPTION VALUE="0">{trans("— select —")}</OPTION>
             {foreach $pool_list as $v}
             <OPTION VALUE="{$v.id}">{$v.name}</OPTION>
             {/foreach}

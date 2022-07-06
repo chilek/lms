@@ -292,7 +292,7 @@
 					<td>{$covenantlist[covenantlist].comment|escape}</td>
 					<td>
 						<select name="l_servicetype[{$covenantlist[covenantlist].cashid}]">
-							<option value="">{trans("- none -")}</option>
+							<option value="">{trans("— none —")}</option>
 							{foreach $_SERVICETYPES as $servicetype => $label}
 								<option value="{$servicetype}"
 									{if $servicetype == $covenantlist[covenantlist].servicetype} selected{/if}>{$label}</option>

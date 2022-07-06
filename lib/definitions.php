@@ -208,7 +208,7 @@ define('CONFIG_TYPE_DATE_FORMAT', 11);
 define('CONFIG_TYPE_EMAILS', 12);
 
 $CONFIG_TYPES = array(
-    CONFIG_TYPE_AUTO => trans('- auto -'),
+    CONFIG_TYPE_AUTO => trans('— auto —'),
     CONFIG_TYPE_NONE => trans('none'),
     CONFIG_TYPE_BOOLEAN => trans('boolean'),
     CONFIG_TYPE_POSITIVE_INTEGER => trans('integer greater than 0'),

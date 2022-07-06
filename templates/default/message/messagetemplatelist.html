@@ -49,7 +49,7 @@
 			<td colspan="7">
 				<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
 				<select name="type" id="template-type" form="filter" onchange="javascript:document.filter.submit();">
-					<option value="0">{trans("- all -")}</option>
+					<option value="0">{trans("— all —")}</option>
 					{foreach $_MESSAGETEMPLATES as $template_type => $template}
 					<option value="{$template_type}"
 							{if $type == $template_type} selected{/if}>{$template.label}</option>

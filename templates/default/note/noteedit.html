@@ -186,7 +186,7 @@
 					{if isset($_SERVICETYPES[$item.servicetype])}
 						{$_SERVICETYPES[$item.servicetype]}
 					{else}
-						{trans("- none -")}
+						{trans("— none —")}
 					{/if}
 				</td>
 				<td class="text-right nobr">
@@ -229,7 +229,7 @@
 			</td>
 			<td class="text-right">
 				<select name="servicetype" form="additem" {tip text="Select type" trigger="type"}>
-					<option value="">{trans("- none -")}</option>
+					<option value="">{trans("— none —")}</option>
 					{foreach $_SERVICETYPES as $servicetype => $label}
 						<option value="{$servicetype}">{$label}</option>
 					{/foreach}

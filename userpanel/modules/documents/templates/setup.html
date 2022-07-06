@@ -49,7 +49,7 @@
 							</td>
 							<td class="nobr">
 								<select name="moduleconfig[allowed_document_types][]" id="allowed_document_types"
-									class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+									class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
 									{foreach Localisation::arraySort($_DOCTYPES) as $doctype => $label}
 										<option value="{$doctype}"
 											{if isset($moduleconfig.allowed_document_types[$doctype])} selected{/if}>{$label}</option>

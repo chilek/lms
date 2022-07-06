@@ -68,8 +68,8 @@
 			{box_row icon="user" label="Requestor" field_id="requestor" icon_class="fa-fw"}
 				<div class="lms-ui-box-row">
 					<select name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select" text="Select requestor from list" trigger="requestor_userid"}>
-						<option value="">{trans("<!person>- none -")}</option>
-						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
+						<option value="">{trans("<!person>— none —")}</option>
+						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("— indicated person —")}</option>
 						{foreach $userlist as $user}
 							{if $user.id != $ticket.requestor_userid
 								&& ($hide_disabled_users && !$user.access
@@ -171,7 +171,7 @@
 			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="owner" label="Owner" icon_class="fa-fw"}
 				<select size="1" name="ticket[owner]" {tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
-					<option value="0">- {trans("select user")} -</option>
+					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
 						{if $user.id != $ticket.owner
 							&& ($hide_disabled_users && !$user.access
@@ -197,7 +197,7 @@
 			{box_row icon="verifier" label="Verifier" field_id="rtverifiers" icon_class="fa-fw"}
 				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid || ConfigHelper::checkConfig('privileges.superuser')}
 					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
-						<option value="">- {trans("select user")} -</option>
+						<option value="">{trans("— select user —")}</option>
 						{foreach $userlist as $user}
 							{if $user.id != $ticket.verifierid
 								&& ($hide_disabled_users && !$user.access
@@ -227,7 +227,7 @@
 					{day_selection elem='[name="ticket[deadline]"]'}
 				{else}
 					<input type="hidden" name="ticket[deadline]" value="{if $ticket.deadline}{$ticket.deadline|date_format:"Y/m/d H:i"}{/if}">
-					<span title="{trans("Only verifier can change this")}">{if $ticket.deadline}{$ticket.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>- none -")}{/if}</span>
+					<span title="{trans("Only verifier can change this")}">{if $ticket.deadline}{$ticket.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>— none —")}{/if}</span>
 				{/if}
 			{/box_row}
 
@@ -308,7 +308,7 @@
 			{$visibility=(!empty($nodes) && $layout.module != 'eventadd')}
 			{box_row class="node-row" icon="node" label="Node:" visible=$visibility}
 				<select class="node-list" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
-					<option value="">{trans("- none -")}</option>
+					<option value="">{trans("— none —")}</option>
 					{if !empty($nodes)}
 						{foreach $nodes as $node}
 							<option value="{$node.id}"{if $node.id == $ticket.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
@@ -320,7 +320,7 @@
 			{box_row icon="netnode" label="Network node" icon_class="fa-fw"}
 				<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}
 						onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
-					<OPTION value="">{trans("- none -")}</OPTION>
+					<OPTION value="">{trans("— none —")}</OPTION>
 					{foreach $netnodelist as $idx => $netnode}
 					<OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
 					{/foreach}
@@ -337,7 +337,7 @@
 
 			{box_row icon="invproject" label="Investment project" icon_class="fa-fw"}
 				<SELECT name="ticket[invprojectid]" {tip class="lms-ui-advanced-select" text="Select investment projects" trigger="invprojectid"}>
-					<OPTION value="">{trans("- none -")}</OPTION>
+					<OPTION value="">{trans("— none —")}</OPTION>
 					{foreach $invprojectlist as $idx => $project}
 					<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
 					{$project.name} ({$project.id})

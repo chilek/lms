@@ -81,7 +81,7 @@
 						<label>
 							{trans("<!customer-call>Assigned")}
 							<select name="assigned" form="filter" class="filter-item">
-								<option value=""{if $assigned === ''} selected{/if}>{trans("- all -")}</option>
+								<option value=""{if $assigned === ''} selected{/if}>{trans("— all —")}</option>
 								<option value="1"{if $assigned === 1} selected{/if}>{trans("yes")}</option>
 								<option value="0"{if $assigned === 0} selected{/if}>{trans("no")}</option>
 							</select>
@@ -90,7 +90,7 @@
 							<label>
 								{trans("User")}
 								<select name="userid" form="filter" class="filter-item">
-									<option value="">{trans("- all -")}</option>
+									<option value="">{trans("— all —")}</option>
 									{foreach $users as $user}
 										<option value="{$user.id}"{if $user.id == $uid} selected{/if}>{$user.rname|escape} ({$user.login|escape})</option>
 									{/foreach}
@@ -193,7 +193,7 @@
 								</td>
 								<td class="nobr">
 									{if $call.duration == -1}
-										{trans("- unknown -")}
+										{trans("— unknown —")}
 									{else}
 										{$call.duration|duration_format}
 									{/if}

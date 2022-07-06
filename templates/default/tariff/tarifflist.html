@@ -75,35 +75,35 @@
 				<span class="bold">{trans("Filter:")}</span>
 				{trans("Type:")}
 				<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all -")}</OPTION>
+					<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("— all —")}</OPTION>
 					{foreach from=$_SERVICETYPES item=item key=key}
 					<OPTION value="{$key}" {if $listdata.type == $key} SELECTED {/if}>{$item}</OPTION>
 					{/foreach}
 				</SELECT>
 				{trans("Access:")}
 				<SELECT size="1" name="a" onChange="document.choosefilter.submit();">
-					<OPTION value="0"{if $listdata.access} selected{/if}>{trans("<!access>- any -")}</OPTION>
+					<OPTION value="0"{if $listdata.access} selected{/if}>{trans("<!access>— any —")}</OPTION>
 					{foreach $_SESSIONTYPES as $idx => $sessiontype}
 					<OPTION value="{$idx}"{if $listdata.access == $idx} selected{/if}>{$sessiontype.label}</OPTION>
 					{/foreach}
 				</SELECT>
 				{trans("Promotion:")}
 				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="0"{if !$listdata.promotionid} SELECTED{/if}>{trans("- all -")}</OPTION>
+					<OPTION value="0"{if !$listdata.promotionid} SELECTED{/if}>{trans("— all —")}</OPTION>
 					{section name=promotions loop=$promotions}
 					<OPTION value="{$promotions[promotions].id}" {if $listdata.promotionid == $promotions[promotions].id} SELECTED {/if}>{$promotions[promotions].name|truncate:50:"&hellip;":true}</OPTION>
 					{/section}
 				</SELECT>
 				{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value=""{if !$listdata.state} SELECTED{/if}>{trans("- all -")}</OPTION>
+					<OPTION value=""{if !$listdata.state} SELECTED{/if}>{trans("— all —")}</OPTION>
 					<OPTION value="1"{if $listdata.state == 1} SELECTED{/if}>{trans("enabled")}</OPTION>
 					<OPTION value="2"{if $listdata.state == 2} SELECTED{/if}>{trans("disabled")}</OPTION>
 				</SELECT>
 				{if !empty($customergroups) && count($customergroups)}
 					{trans("Group:")}
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
-						<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</OPTION>
+						<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("— all —")}</OPTION>
 						{section name=customergroups loop=$customergroups}
 						<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"&hellip;":true}</OPTION>
 						{/section}
@@ -116,7 +116,7 @@
 					{trans("Tags:")}
 					<SELECT size="5" name="tg[]" class="lms-ui-multiselect lms-ui-multiselect-filter"
 							onchange="document.choosefilter.submit();" {tip text="Select tariff tags"}
-							multiple data-shorten-to-default-value="false" data-default-value="{trans("- all -")}">
+							multiple data-shorten-to-default-value="false" data-default-value="{trans("— all —")}">
 						{foreach $tags as $tag}
 						<OPTION value="{$tag.id}"{if !empty($listdata.tags) && in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
 						{/foreach}
@@ -124,14 +124,14 @@
 				{/if}
 				{trans("PTU:")}
 				<select size="1" name="tax" onchange="document.choosefilter.submit();">
-					<option value="" {if !$listdata.tax} selected{/if}>{trans("- all -")}</option>
+					<option value="" {if !$listdata.tax} selected{/if}>{trans("— all —")}</option>
 					{foreach $taxeslist as $tax}
 						<option value="{$tax.id}"{if $tax.id == $listdata.tax} selected{/if}>{$tax.label}</option>
 					{/foreach}
 				</select>
 				{trans("Accounting:")}
 				<select size="1" name="netflag" onchange="document.choosefilter.submit();">
-					<option value="" {if !$listdata.netflag} selected{/if}>{trans("- all -")}</option>
+					<option value="" {if !$listdata.netflag} selected{/if}>{trans("— all —")}</option>
 					<option value="1" {if $listdata.netflag == 1} selected{/if}>{trans("net")}</option>
 					<option value="2" {if $listdata.netflag == 2} selected{/if}>{trans("gross")}</option>
 				</select>

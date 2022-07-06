@@ -87,7 +87,7 @@
 						<td>
 							<select size="1" name="queue" {tip text="You can select queue to limit results"}
 								form="ticketlist">
-								<option value="0">{trans("- all queues -")}</option>
+								<option value="0">{trans("— all queues —")}</option>
 								{foreach $queues as $queue}
 									<option value="{$queue.id}">{$queue.name|trunescape:40}</option>
 								{/foreach}
@@ -102,7 +102,7 @@
 						<td class="nobr">
 							{customerlist form="ticketlist" customers=$customers selectname="cust" inputname="customer"
 								version=2
-								firstoption="- all customers -" selecttip="You can select customer to limit results"
+								firstoption="— all customers —" selecttip="You can select customer to limit results"
 								inputtip="Enter customer ID or leave empty for all customers"}
 						</td>
 						<td>
@@ -126,7 +126,7 @@
 						<td>
 							<select size="1" name="status" {tip text="You can select status to limit results"}
 								form="ticketlist">
-								<option value="">- {trans("all")} -</option>
+								<option value="">{trans("— all —")}</option>
 								<option value="-1">{trans("not resolved")}</option>
 								{foreach $_RT_STATES as $key => $item}
 									<option value="{$key}">{$item.label}</option>
@@ -159,7 +159,7 @@
 							<td>
 								<select size="1" name="removed" {tip text="You can select status to limit results"}
 									form="ticketlist">
-									<option value="">- {trans("all")} -</option>
+									<option value="">{trans("— all —")}</option>
 									<option value="-1">{trans("Not removed")}</option>
 									<option value="1">{trans("Removed")}</option>
 								</select>
@@ -176,8 +176,8 @@
 						<td>
 							<input type="hidden" name="categories" value="all" form="ticketlist">
 							<select size="1" name="categories[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter"
-								form="ticketlist" data-default-value="{trans("- all -")}">
-								<option value="-1" data-exclusive>{trans('- no categories -')}</option>
+								form="ticketlist" data-default-value="{trans("— all —")}">
+								<option value="-1" data-exclusive>{trans('— no categories —')}</option>
 								{foreach $categories as $c}
 									<option value="{$c.id}">{$c.name}</option>
 								{/foreach}
@@ -281,7 +281,7 @@
 						<td>
 							<select size="1" name="queue" {tip text="You can select queue to limit results"}
 								form="stats">
-								<option value="0">{trans("- all queues -")}</option>
+								<option value="0">{trans("— all queues —")}</option>
 								{foreach $queues as $queue}
 									<option value="{$queue.id}">{$queue.name|trunescape:40}</option>
 								{/foreach}
@@ -305,7 +305,7 @@
 							<td colspan="3">
 								<select size="1" name="removed" {tip text="You can select status to limit results"}
 									form="stats">
-									<option value="">- {trans("all")} -</option>
+									<option value="">{trans("— all —")}</option>
 									<option value="-1">{trans("Not removed")}</option>
 									<option value="1">{trans("Removed")}</option>
 								</select>
@@ -322,8 +322,8 @@
 						<td colspan="3">
 							<input type="hidden" name="categories" value="all" form="stats">
 							<select size="1" name="categories[]" multiple class="lms-ui-multiselect lms-ui-multiselect-filter"
-								form="stats" data-default-value="{trans("- all -")}">
-								<option value="-1" data-exclusive>{trans('- no categories -')}</option>
+								form="stats" data-default-value="{trans("— all —")}">
+								<option value="-1" data-exclusive>{trans('— no categories —')}</option>
 								{foreach $categories as $c}
 									<option value="{$c.id}">{$c.name}</option>
 								{/foreach}

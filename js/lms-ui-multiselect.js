@@ -146,7 +146,7 @@ function multiselect(options) {
 	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
 	var maxVisible = typeof options.maxVisible !== 'undefined' ? parseInt(options.maxVisible) : 0;
 	var substMessage = typeof options.substMessage !== 'undefined' ? options.substMessage
-		: '- $a options selected -';
+		: '— $a options selected —';
 	var tooltipMessage = typeof options.tooltipMessage !== 'undefined' ? options.tooltipMessage : '';
 
 	var old_element = $('#' + elemid);
