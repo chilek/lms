@@ -238,7 +238,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($expired_notindebted ? ' AND COALESCE(b2.balance, 0) >= 0' : '')
         . ($unapproved_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
 			WHERE documents.closed = 0
-				AND documents.type NOT IN (' . DOC_INVOICE . ',' . DOC_CNOTE . ',' . DOC_DNOTE . '))' : '')
+				AND documents.type < 0)' : '')
         . ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
 				AND (datefrom = 0 OR datefrom < ?NOW?)
