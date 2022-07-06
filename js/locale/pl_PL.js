@@ -4555,7 +4555,7 @@ $_LANG['Reverse charge:'] = 'Odwrócone obciążenie:';
 $_LANG['Check if reverse charge should be applied'] = 'Zaznacz, jeśli ma zostać zastosowane odwrócone obciążenie';
 $_LANG['$a rc'] = '$a oo';
 
-$_LANG['opened documents'] = 'otwarte dokumenty';
+$_LANG['unapproved documents'] = 'niezatwierdzone dokumenty';
 
 $_LANG['Select reference document'] = 'Wybierz dokument odniesienia';
 $_LANG['Reference document:'] = 'Dokument odniesienia:';

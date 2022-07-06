@@ -86,7 +86,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $notindebted = ($group == 53) ? 1 : 0;
     $indebted2 = ($group == 57) ? 1 : 0;
     $indebted3 = ($group == 58) ? 1 : 0;
-    $opened_documents = ($group == 59) ? 1 : 0;
+    $unapproved_documents = ($group == 59) ? 1 : 0;
 
     $expired_indebted = ($group == 61 || $group == 64 || $group == 65) ? 1 : 0;
     switch ($group) {
@@ -236,7 +236,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($expired_indebted2 ? ' AND t.value > 0 AND COALESCE(b2.balance, 0) < -t.value' : '')
         . ($expired_indebted3 ? ' AND t.value > 0 AND COALESCE(b2.balance, 0) < -t.value * 2' : '')
         . ($expired_notindebted ? ' AND COALESCE(b2.balance, 0) >= 0' : '')
-        . ($opened_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
+        . ($unapproved_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
 			WHERE documents.closed = 0
 				AND documents.type NOT IN (' . DOC_INVOICE . ',' . DOC_CNOTE . ',' . DOC_DNOTE . '))' : '')
         . ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
