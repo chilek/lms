@@ -130,7 +130,9 @@
     									<td>
 											{trans("Identity document")}
 											<br>
-											{trans($_IDENTITY_TYPES[$customerinfo.ict])}
+											{if isset($_IDENTITY_TYPES[$customerinfo.ict])}
+												{trans($_IDENTITY_TYPES[$customerinfo.ict])}
+											{/if}
 											{$customerinfo.icn|escape}
 											{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
 											{if $customerinfo.icexpires !== ''}
