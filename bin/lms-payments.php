@@ -633,7 +633,7 @@ $query = "SELECT
 					liabilityid IS NULL   AND
 					datefrom <= $currtime AND
 					(dateto > $currtime OR dateto = 0)) AS allsuspended,
-			(CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc ON cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
+			(CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
 			FROM assignments a
             JOIN tariffs t ON t.id = a.tariffid
             JOIN taxes ON taxes.id = t.taxid
