@@ -56,7 +56,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
 {
     global $LMS;
 
-    $group = intval($filter['group']);
+    $state = intval($filter['state']);
     $network = intval($filter['network']);
     if (is_array($filter['customergroup'])) {
         $customergroup = implode(',', Utils::filterIntegers($filter['customergroup']));
@@ -73,7 +73,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $consent = isset($filter['consent']);
     $netdevices = isset($filter['netdevices']) ? $filter['netdevices'] : null;
 
-    if ($group == 50) {
+    if ($state == 50) {
         $deleted = 1;
         $network = null;
         $customergroup = null;
@@ -81,32 +81,89 @@ function GetRecipients($filter, $type = MSG_MAIL)
         $deleted = 0;
     }
 
-    $disabled = ($group == 51) ? 1 : 0;
-    $indebted = ($group == 52) ? 1 : 0;
-    $notindebted = ($group == 53) ? 1 : 0;
-    $indebted2 = ($group == 57) ? 1 : 0;
-    $indebted3 = ($group == 58) ? 1 : 0;
-    $unapproved_documents = ($group == 59) ? 1 : 0;
+    $disabled = 0;
+    $indebted = 0;
+    $not_indebted = 0;
+    $indebted2 = 0;
+    $indebted3 = 0;
+    $unapproved_documents = 0;
+    $expired_indebted = 0;
+    $expired_not_indebted = 0;
+    $expired_indebted2 = 0;
+    $expired_indebted3 = 0;
 
-    $expired_indebted = ($group == 61 || $group == 64 || $group == 65) ? 1 : 0;
-    switch ($group) {
-        case 61:
-            $expired_days = 0;
+    $expired_days = 0;
+
+    $archived_document_condition = '';
+    $document_condition = '';
+
+    switch ($state) {
+        case 51:
+            $disabled = 1;
             break;
-        case 64:
+        case 52:
+            $indebted = 1;
+            break;
+        case 57:
+            $indebted2 = 1;
+            break;
+        case 58:
+            $indebted3 = 1;
+            break;
+        case 59:
+        case 60:
+        case 61:
+        case 76:
+        case 77:
+        case 78:
+            $contracts_expiration_type = ConfigHelper::getConfig('contracts.expiration_type', 'documents');
+            if ($state >= 76) {
+                $contracts = $state - 75;
+                if ($contracts_expiration_type == 'documents') {
+                    $archived_document_condition = ' AND d.archived = 0';
+                }
+            } else {
+                $contracts = $state - 58;
+            }
+            $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
+            if ($contracts == 1) {
+                if ($contracts_expiration_type == 'documents') {
+                    $document_condition = ' AND d.customerid IS NULL';
+                } else {
+                    $document_condition = ' AND ass.customerid IS NULL';
+                }
+            }
+            break;
+        case 153:
+            $not_indebted = 1;
+            break;
+        case 159:
+            $unapproved_documents = 1;
+            break;
+        case 160:
+            $expired_not_indebted = 1;
+            break;
+        case 161:
+            $expired_indebted = 1;
+            break;
+        case 162:
+            $expired_indebted2 = 1;
+            break;
+        case 163:
+            $expired_indebted3 = 1;
+            break;
+        case 164:
+            $expired_indebted = 1;
             $expired_days = 30;
             break;
-        case 65:
+        case 165:
+            $expired_indebted = 1;
             $expired_days = 60;
             break;
     }
 
-    $expired_notindebted = ($group == 60) ? 1 : 0;
-    $expired_indebted2 = ($group == 62) ? 1 : 0;
-    $expired_indebted3 = ($group == 63) ? 1 : 0;
-
-    if ($group >= 50) {
-        $group = 0;
+    if ($state >= 50) {
+        $state = 0;
     }
 
     if ($network) {
@@ -175,12 +232,12 @@ function GetRecipients($filter, $type = MSG_MAIL)
                 GROUP BY docid
             ) tv ON tv.docid = cash.docid
             WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
-                OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
-                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ?NOW?)))
+                OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN ' . $deadline . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END) + ' . $expired_days . ') * 86400 < ?NOW?)))
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < ?NOW?)
                     OR (d.type = ? AND cash.time < ?NOW? AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?, ?)) AND d.cdate + d.paytime * 86400 < ?NOW?)))
+                        OR d.type IN (?, ?, ?)) AND d.cdate + (d.paytime + ' . $expired_days . ') * 86400 < ?NOW?)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT a.customerid,
@@ -207,7 +264,60 @@ function GetRecipients($filter, $type = MSG_MAIL)
 			LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
 			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0) 
 			GROUP BY a.customerid
-		) t ON (t.customerid = c.id) '
+        ) t ON (t.customerid = c.id) '
+        . ($contracts == 1 ?
+            ($contracts_expiration_type == 'documents' ?
+                'LEFT JOIN (
+                    SELECT COUNT(*), d.customerid FROM documents d
+                    JOIN documentcontents dc ON dc.docid = d.id
+                    WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                    . $archived_document_condition
+                    . ' GROUP BY d.customerid
+                ) d ON d.customerid = c.id' :
+                'LEFT JOIN (
+                    SELECT customerid
+                    FROM assignments
+                    WHERE dateto > 0
+                    GROUP BY customerid
+                    HAVING MAX(dateto) < ?NOW?
+                ) ass ON ass.customerid = c.id') :
+        ($contracts == 2 ?
+            ($contracts_expiration_type == 'documents' ?
+                'JOIN (
+                    SELECT SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END),
+                        SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
+                        d.customerid FROM documents d
+                    JOIN documentcontents dc ON dc.docid = d.id
+                    WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                    . $archived_document_condition
+                    . ' GROUP BY d.customerid
+                    HAVING SUM(CASE WHEN dc.todate > 0 AND dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
+                        AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
+                ) d ON d.customerid = c.id' :
+                'JOIN (
+                    SELECT customerid
+                    FROM assignments
+                    WHERE dateto > 0
+                    GROUP BY customerid
+                    HAVING MAX(dateto) < ?NOW?
+                ) ass ON ass.customerid = c.id') :
+        ($contracts == 3 ?
+            ($contracts_expiration_type == 'documents' ?
+                'JOIN (
+                    SELECT DISTINCT d.customerid FROM documents d
+                    JOIN documentcontents dc ON dc.docid = d.id
+                    WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
+                        AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                    . $archived_document_condition
+                    . '
+                ) d ON d.customerid = c.id' :
+                'JOIN (
+                    SELECT customerid
+                    FROM assignments
+                    WHERE dateto > 0
+                    GROUP BY customerid
+                    HAVING MAX(dateto) >= ?NOW? AND MAX(dateto) <= ?NOW? + 86400 * ' . $contracts_days . '
+                ) ass ON ass.customerid = c.id') : '')))
         . (isset($netdevtable) ? $netdevtable : '')
         . (isset($mailtable) ? $mailtable : '')
         . (isset($smstable) ? $smstable : '')
@@ -215,7 +325,9 @@ function GetRecipients($filter, $type = MSG_MAIL)
         .'WHERE deleted = ' . $deleted
         . ($consent ? ' AND ' . ($type == MSG_SMS || $type == MSG_ANYSMS ? 'c.smsnotice' : 'c.mailingnotice') . ' = 1' : '')
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
-        .($group!=0 ? ' AND c.status = '.$group : '')
+        . ($state != 0 ? ' AND c.status = ' . $state : '')
+        . $document_condition
+        . $archived_document_condition
         .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
@@ -231,11 +343,11 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
         . ($indebted2 ? ' AND t.value > 0 AND COALESCE(b.value, 0) < -t.value' : '')
         . ($indebted3 ? ' AND t.value > 0 AND COALESCE(b.value, 0) < -t.value * 2' : '')
-        . ($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
+        . ($not_indebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
         . ($expired_indebted ? ' AND COALESCE(b2.balance, 0) < 0' : '')
         . ($expired_indebted2 ? ' AND t.value > 0 AND COALESCE(b2.balance, 0) < -t.value' : '')
         . ($expired_indebted3 ? ' AND t.value > 0 AND COALESCE(b2.balance, 0) < -t.value * 2' : '')
-        . ($expired_notindebted ? ' AND COALESCE(b2.balance, 0) >= 0' : '')
+        . ($expired_not_indebted ? ' AND COALESCE(b2.balance, 0) >= 0' : '')
         . ($unapproved_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
 			WHERE documents.closed = 0
 				AND documents.type < 0)' : '')
@@ -575,9 +687,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['type'] = MSG_USERPANEL_URGENT;
     }
 
-    if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 65
-        || ($message['group'] > CSTATUS_LAST && $message['group'] < 50))) {
-        $error['group'] = trans('Incorrect customers group!');
+    if (empty($message['customerid']) && ($message['state'] < 0 || $message['state'] > 165
+        || ($message['state'] > CSTATUS_LAST && $message['state'] < 50))) {
+        $error['state'] = trans('Incorrect recipient group!');
     }
 
     $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
