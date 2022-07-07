@@ -167,7 +167,7 @@ foreach ($facilities as $facility) {
             $plugin_info = $plugin_manager->getAllPluginInfo();
             if (!empty($plugin_info)) {
                 foreach ($plugin_info as $plugin) {
-                    if ($plugin['dbcurrschversion']) {
+                    if (isset($plugin['dbcurrschversion'])) {
                         echo 'Plugin ' . $plugin['name'] . ' DB schema version bumped to ' . $plugin['dbcurrschversion'] . PHP_EOL;
                     }
                 }
