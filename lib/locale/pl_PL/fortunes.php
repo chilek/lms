@@ -25,11 +25,11 @@
  */
 
 $fortunes[] = "Możesz się pokaleczyć wymachując siekierą?";
-$fortunes[] = "Komputer nie podłączony do źródła zasilania zdecydowanie odmówi działania.";
+$fortunes[] = "Komputer niepodłączony do źródła zasilania zdecydowanie odmówi działania.";
 $fortunes[] = "Doświadczenie to coś, co zdobywasz tuż po chwili w której go potrzebowałeś.";
 $fortunes[] = "Najlepszą metodą do zainspirowania odkrywczych myśli, jest zaklejenie koperty.";
 $fortunes[] = "Wszystko zabiera znacznie więcej czasu, niż by się wydawało.";
-$fortunes[] = "Zawsze kiedy masz właśnie coś zrobić, okazuje się, że najpierw musisz zrobić coś innego.";
+$fortunes[] = "Zawsze, kiedy masz właśnie coś zrobić, okazuje się, że najpierw musisz zrobić coś innego.";
 $fortunes[] = "Każde rozwiązanie rodzi nowe problemy.";
 $fortunes[] = "Głupcy są tak pomysłowi, że niemożliwe jest stworzenie czegoś, z czym każdy głupi sobie poradzi.";
 $fortunes[] = "Matka Natura jest suką.";
@@ -47,7 +47,7 @@ $fortunes[] = "Każdy przewód przycięty na długość, okaże się za krótki.
 $fortunes[] = "Stopień głupoty twojego postępowania, jest wprost proporcjonalny do liczby przyglądających ci się osób.";
 $fortunes[] = "Prawdopodobieństwo wyczerpania się baterii, jest wprost-proporcjonalne do zapotrzebowania na kalkulator.";
 $fortunes[] = "Ciężar upuszczonej części jest wprost proporcjonalny do ceny obszaru uderzonego.";
-$fortunes[] = "To czego szukasz, znajdziesz w ostatnim spośród możliwych miejsc.";
+$fortunes[] = "To, czego szukasz, znajdziesz w ostatnim spośród możliwych miejsc.";
 $fortunes[] = "Wniosek to punkt, w którym nie masz już siły dalej myśleć.";
 $fortunes[] = "To co może się nie udać, nie uda się na pewno.";
 $fortunes[] = "Cztery zjawiska blokują postęp ludzkości - ignorancja, głupota, komitety normalizacyjne, oraz ludzie sprzedający komputery.";
@@ -58,9 +58,9 @@ $fortunes[] = "Rozłożenie dowolnego urządzenia na części jest proste, ponow
 $fortunes[] = "Każdy skomplikowany montaż wymaga trzech rąk.";
 $fortunes[] = "Każdy prosty montaż wymaga czterech rąk.";
 $fortunes[] = "Sprawy pozostawione same sobie, zmieniają się ze złych na jeszcze gorsze.";
-$fortunes[] = "Wszystkie komputery PC są kompatybilne, ale niektóre są kompatybilniejsze od innych. Twój jest zawsze mniej kompatybilny.";
+$fortunes[] = "Wszystkie komputery PC są kompatybilne, ale niektóre są bardziej kompatybilne od innych. Twój jest zawsze mniej kompatybilny.";
 $fortunes[] = "Pustą dyskietkę możesz przeszukiwać długo i bezskutecznie. Długo i bezskutecznie możesz przeszukiwać także pełną dyskietkę. Wniosek - każdą dyskietkę możesz przeszukiwać długo i bezskutecznie.";
-$fortunes[] = "Komputer służy do tego aby ułatwić ci pracę, której bez niego w ogóle byś nie miał.";
+$fortunes[] = "Komputer służy do tego, aby ułatwić ci pracę, której bez niego w ogóle byś nie miał.";
 $fortunes[] = "Dla komputera nie ma rzeczy niemożliwych z wyjątkiem tych, których od niego wymagamy.";
 $fortunes[] = "W świecie komputerów żadna awaria się nie kończy, ponieważ przechodzi zawsze w następną.";
 $fortunes[] = "Awaria komputera wyczekuje cierpliwie na najbardziej niedogodny moment, aby bezlitośnie zaatakować.";
@@ -73,7 +73,7 @@ $fortunes[] = "Wyjątki są liczniejsze od reguł. Od wszystkich uznanych wyjąt
 $fortunes[] = "Klientowi nigdy nie przyjdzie na myśl ile kosztuje projekt, tylko ile można na tym projekcie zaoszczędzić. Jeżeli udało ci się wprowadzić w programie wymagane przez klienta poprawki, wtedy on z nich zrezygnuje. Żaden klient nie wie czego właściwie chce. Każdy klient wie dokładnie czego nie chce. Żaden klient nie chce tego co masz już gotowe. Nie wie także co chciałby mieć zamiast tego. Klient, który najmniej płaci, marudzi najwięcej. Klient żąda największych zmian dokładnie wtedy, kiedy produkt jest już gotowy.";
 $fortunes[] = "Na polecenie \"napisz tak lub nie\" użytkownik wpisuje \"tak lub nie\". Na polecenie \"wciśnij Enter\" użytkownik wpisuje \"Enter\". Na polecenie \"naciśnij dowolny klawisz\", użytkownik naciska na klawisz \"reset\". Wniosek: Nie ma programów całkowicie idiotoodpornych.";
 $fortunes[] = "W zespole programistów każdy ma genialny plan rozwiązania problemu. Wszystkie plany się wzajemnie wykluczają i żaden nie prowadzi do poprawnego rozwiązania. Liczba osób w zespole programistycznym ma tendencje wzrastające, niezależnie od ilości pracy.";
-$fortunes[] = "01:04 < [hunter]> robić dokumentacje ?
+$fortunes[] = "01:04 < [hunter]> robić dokumentacje?
 01:04 < [hunter]> :)
 01:04 <@Warden> dokumentację? rób
 01:04 <@Warden> ;)
@@ -119,7 +119,7 @@ klientem...
 jedna z lepszych adnotacji z dzialu DH:
  \"Klient ma problem egzystencjonalny, prawdopodobnie pomylil dzien z
  noca, albo butelke wody mineralnej z inna woda przezroczysta
- 
+
  ... nie potrafil wypelnic formularza rejestracji domeny\"
 
 Pozdrawiam,
