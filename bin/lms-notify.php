@@ -577,7 +577,7 @@ function parse_customer_data($data, $format, $row)
 
     if (isset($row['deadline'])) {
         $deadline = $row['deadline'];
-    } else {
+    } elseif (isset($row['cdate'])) {
         $deadline = $row['cdate'] + $row['paytime'] * 86400;
     }
 
@@ -618,16 +618,16 @@ function parse_customer_data($data, $format, $row)
             format_bankaccount(bankaccount($row['id'], $row['account'])),
             $commented_balance,
             $row['name'],
-            $row['age'],
+            isset($row['age']) ? $row['age'] : '',
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
             date('Y'),
             date('m'),
             date('d'),
             date('F'),
-            date('Y', $deadline),
-            date('m', $deadline),
-            date('d', $deadline),
+            isset($deadline) ? date('Y', $deadline) : '',
+            isset($deadline) ? date('m', $deadline) : '',
+            isset($deadline) ? date('d', $deadline) : '',
             sprintf('%01.2f', $row['balance']),
             sprintf('%01.2f', $row['totalbalance']),
             moneyf($row['balance']),
@@ -652,7 +652,7 @@ function parse_customer_data($data, $format, $row)
                 AND NOT EXISTS (
                     SELECT COUNT(id) FROM assignments
                     WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
-                        AND datefrom <= ? AND (dateto > ? OR dateto = 0                
+                        AND datefrom <= ? AND (dateto > ? OR dateto = 0
                 )
             GROUP BY tariffs.currency',
             array(
@@ -687,12 +687,12 @@ function parse_customer_data($data, $format, $row)
             '%lastday',
         ),
         array(
-            $row['doc_number'],
-            $row['doc_number'],
-            moneyf($row['value'], $row['currency']),
-            date('Y', $row['cdate']),
-            date('m', $row['cdate']),
-            date('d', $row['cdate']),
+            isset($row['doc_number']) ? $row['doc_number'] : '',
+            isset($row['doc_number']) ? $row['doc_number'] : '',
+            isset($row['value'], $row['currency']) ? moneyf($row['value'], $row['currency']) : '',
+            isset($row['cdate']) ? date('Y', $row['cdate']) : '',
+            isset($row['cdate']) ? date('m', $row['cdate']) : '',
+            isset($row['cdate']) ? date('d', $row['cdate']) : '',
             date('d', mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
         ),
         $data
