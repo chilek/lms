@@ -83,7 +83,7 @@
 				{trans("Issuer")}
 			</td>
 			<td>
-				<input type="text" name="userinfo[issuer]" value="{$userinfo.issuer|escape}" size="40"
+				<input type="text" name="userinfo[issuer]" value="{$userinfo.issuer|default:""|escape}" size="40"
 					{tip text="Enter issuer name visible on documents" trigger="issuer"}>
 			</td>
 		</tr>

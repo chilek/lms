@@ -193,7 +193,7 @@
 													{icon name="home" tip="billing address"}
 												</td>
 												<td>
-													<span title="{trans('billing address')}">{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
+													<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location|default:""|escape}$a (TERRIT){/t}{else}{$v.location|default:""|escape}{/if}
 														<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 													</span>
 												</td>
