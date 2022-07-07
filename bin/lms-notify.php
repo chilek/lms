@@ -570,6 +570,10 @@ function parse_customer_data($data, $format, $row)
     global $LMS;
     $DB = LMSDB::getInstance();
 
+    if (!isset($row['totalbalance'])) {
+        $row['totalbalance'] = 0;
+    }
+
     $amount = -$row['balance'];
     $totalamount = -$row['totalbalance'];
     $hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'customer' => $row));
@@ -577,7 +581,7 @@ function parse_customer_data($data, $format, $row)
 
     if (isset($row['deadline'])) {
         $deadline = $row['deadline'];
-    } elseif (isset($row['cdate'])) {
+    } elseif (isset($row['cdate'], $row['paytime'])) {
         $deadline = $row['cdate'] + $row['paytime'] * 86400;
     }
 
@@ -615,7 +619,7 @@ function parse_customer_data($data, $format, $row)
 
         ),
         array(
-            format_bankaccount(bankaccount($row['id'], $row['account'])),
+            isset($row['account']) ? format_bankaccount(bankaccount($row['id'], $row['account'])) : '',
             $commented_balance,
             $row['name'],
             isset($row['age']) ? $row['age'] : '',
