@@ -482,7 +482,7 @@
 						<div class="servicetype">
 							{icon name="money"}
 							<select id="servicetype" name="addbalance[servicetype]" form="addbalance-form" {tip text="Service type"}>
-								<option value="">{trans("- none -")}</option>
+								<option value="">{trans("— none —")}</option>
 								{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
 									<option value="{$type}"{if $servicetype == $type} selected{/if}>{$label}</option>
 								{/foreach}
@@ -492,7 +492,7 @@
 						<div class="isource">
 							<i class="lms-ui-icon-isource fa-fw"></i>
 							<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-								<OPTION value="0">{trans("- none -")}</OPTION>
+								<OPTION value="0">{trans("— none —")}</OPTION>
 								{foreach $sourcelist as $source}
 								<OPTION value="{$source.id}"{if $source.id == $sourceid} selected{/if}>{$source.name}</OPTION>
 								{/foreach}

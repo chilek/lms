@@ -118,7 +118,7 @@
 					<input type="text" name="search" value="{$listdata.search}" size="15"
 						{tip text="Enter value of searching data and select category"}>
 					<select size="1" name="cat">
-						<option value=""{if $listdata.cat == ""} selected{/if}>{trans("- select filter category -")}</option>
+						<option value=""{if $listdata.cat == ""} selected{/if}>{trans("— select filter category —")}</option>
 						<option value="cdate"{if $listdata.cat == "cdate"} selected{/if}>{trans("day (YYYY/MM/DD)")}</option>
 						<option value="month"{if $listdata.cat == "month"} selected{/if}>{trans("month (YYYY/MM)")}</option>
 						<option value="year"{if $listdata.cat == "year"} selected{/if}>{trans("year (YYYY)")}</option>
@@ -132,7 +132,7 @@
 					<label>
 						{trans("Plan:")}
 						<input type="hidden" name="numberplanid" value="all">
-						<select name="numberplanid[]" class="lms-ui-multiselect" {tip text="Select numbering plan"} multiple data-default-value="{trans("- all -")}">
+						<select name="numberplanid[]" class="lms-ui-multiselect" {tip text="Select numbering plan"} multiple data-default-value="{trans("— all —")}">
 							{foreach $numberplans as $plan}
 								{$period = $plan.period}
 								<option value="{$plan.id}"{if !empty($listdata.numberplanid) && in_array($plan.id, $listdata.numberplanid)} selected{/if}
@@ -143,7 +143,7 @@
 					<label>
 						{trans("Division")}
 						<select size="1" name="divisionid" {tip text="Select division"}>
-							<option value="0">- {trans("all")} -</option>
+							<option value="0">{trans("— all —")}</option>
 							{foreach $divisions as $division}
 								<option value="{$division.id}"{if $division.id == $listdata.divisionid} selected{/if}>{$division.label|escape}</option>
 							{/foreach}
@@ -152,7 +152,7 @@
 					<label>
 						{trans("Group")}
 						<input type="hidden" name="group" value="all">
-						<select size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
+						<select size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all groups —")}">
 							{foreach $grouplist as $group}
 								<option value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}
 									>{$group.name|truncate:30:"&hellip;":true}</option>

@@ -93,7 +93,7 @@
 					{if $event.customername}
 						<A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
 					{else}
-						- {trans("none")} -
+						{trans("— none —")}
 					{/if}
 				</td>
 			</tr>
@@ -123,7 +123,7 @@
 							<br>
 						{/if}
 					{foreachelse}
-						{trans("- none -")}
+						{trans("— none —")}
 					{/foreach}
 				</td>
 			</tr>

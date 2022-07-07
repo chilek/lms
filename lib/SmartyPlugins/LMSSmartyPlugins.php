@@ -268,7 +268,7 @@ class LMSSmartyPlugins
                 if (empty($params['selected'])) {
                     $result .= ' selected';
                 }
-                $result .= '>' . trans("- select customer -") . '</option>';
+                $result .= '>' . trans("— select customer —") . '</option>';
             }
             foreach ($params['customers'] as $customer) {
                 $result .= '<option value="' . $customer['id'] . '"';
@@ -983,7 +983,7 @@ class LMSSmartyPlugins
                     ' . trans("Visible tabs:") . '
                 </div>
                 <select id="resource-tab-selector" name="resource-tabs[]" form="resource-tab-selector-form"
-                    data-default-value="' . trans("- none -") . '"
+                    data-default-value="' . trans("— none —") . '"
                     data-shorten-to-default-value="false"
                     onchange="resourceTabSelectorChanged()" multiple>
                 </select>
@@ -1128,7 +1128,7 @@ class LMSSmartyPlugins
         return '<select name="' . $elemname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
             . (isset($params['onchange']) ? ' onChange="' . $params['onchange'] . '"' : '') . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>- undefined -') . '</option>'
+			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>— undefined —') . '</option>'
             . $options
             . '</select>';
     }
@@ -1146,7 +1146,7 @@ class LMSSmartyPlugins
         $tip = isset($params['tip']) ? $params['tip'] : trans('Select identity type');
         $trigger = isset($params['trigger']) ? $params['trigger'] : 'ict';
 
-        $options = '<option value="0">' . trans('- select -') . '</option>';
+        $options = '<option value="0">' . trans('— select —') . '</option>';
         foreach ($identityTypes as $key => $item) {
             $item = trans($item);
             $options .= '<option value="' . $key . '"' . ($selected === $key ? ' selected' : '') . '>' . $item . '</option>';
@@ -1215,7 +1215,7 @@ class LMSSmartyPlugins
                 . ' name="' . $params['input_name'] . '"'
                 . (empty($params['input_id']) ? '' : ' id="' . $params['input_id'] . '"')
                 . (empty($params['input_value']) ? '' : ' value="' . $params['input_value'] . '"')
-                . ' placeholder="- auto -"'
+                . ' placeholder="— auto —"'
                 . (isset($form) ? ' form="' . $form . '"' : '')
                 . ' ' . self::tipFunction(
                     array(
@@ -1253,7 +1253,7 @@ class LMSSmartyPlugins
 
         if (!empty($params['numberplanlist'])) {
             if (count($params['numberplanlist']) > 1) {
-                $result .= '<option value="" disabled selected hidden>' . trans("- select -") . '</option>';
+                $result .= '<option value="" disabled selected hidden>' . trans("— select —") . '</option>';
             }
             foreach ($params['numberplanlist'] as $plan) {
                 $result .= '<option value="' . $plan['id'] . '"';
@@ -1274,7 +1274,7 @@ class LMSSmartyPlugins
                 $result .= '</option>' . PHP_EOL;
             }
         } else {
-            $result .= '<option value="">' . trans("- select -") . '</option>';
+            $result .= '<option value="">' . trans("— select —") . '</option>';
         }
         $result .= '</select>' . PHP_EOL;
         $result .= '</div>' . PHP_EOL;

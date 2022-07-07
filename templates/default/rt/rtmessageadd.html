@@ -164,7 +164,7 @@
 			{box_row icon="status" icon_class="fa-fw" label="Status"}
 				<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
 					{if $group_action}
-					<option value="-1"{if $message.state == -1} selected{/if}>{trans("- no changes -")}</option>
+					<option value="-1"{if $message.state == -1} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					{foreach $_RT_STATES as $stateidx => $state}
 					<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
@@ -179,7 +179,7 @@
 
 			{box_row icon="watch" icon_class="fa-fw" label="Obserwowanie zgłoszeń"}
 				<SELECT size="1" name="message[watching]">
-					<option value="-100" selected>{trans("- no changes -")}</option>
+					<option value="-100" selected>{trans("— no changes —")}</option>
 					<option value="1">{trans("Start watching")}</option>
 					<option value="0">{trans("Stop watching")}</option>
 				</SELECT>
@@ -188,7 +188,7 @@
 			{box_row icon="cause" icon_class="fa-fw" label="Cause"}
 				<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
 					{if $group_action}
-					<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
+					<option value="-1"{if $message.cause == -1} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
 					<OPTION value="1" {if $message.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
@@ -209,7 +209,7 @@
 			{box_row icon="priority" icon_class="fa-fw" label="Priority"}
 				<SELECT size="1" name="message[priority]" {tip text="Set ticket priority" trigger="priority"}>
 					{if $group_action}
-					<option value="-100"{if $message.priority == -100} selected{/if}>{trans("- no changes -")}</option>
+					<option value="-100"{if $message.priority == -100} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
 					<OPTION value="{$priorityidx}"{if $message.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
@@ -223,7 +223,7 @@
 					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
 					onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
 					{if $group_action}
-						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
+						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("— no changes —")}</option>
 					{/if}
 					{foreach $queuelist as $item}
 						<option value="{$item.id}"
@@ -235,9 +235,9 @@
 
 			{box_row icon="owner" icon_class="fa-fw" label="Owner"}
 				<select size="1" name="message[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
-					<option value="0">- {trans("select user")} -</option>
+					<option value="0">{trans("— select user —")}</option>
 					{if $group_action}
-						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("- no changes -")}</option>
+						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					{foreach $userlist as $user}
 						{if $user.id != $message.owner
@@ -264,9 +264,9 @@
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<select size="1" name="message[verifierid]"
 						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
-						<option value="0">- {trans("select user")} -</option>
+						<option value="0">{trans("— select user —")}</option>
 						{if $group_action}
-							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
+							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("— no changes —")}</option>
 						{/if}
 						{foreach $userlist as $user}
 							{if $user.id != $message.verifierid
@@ -296,16 +296,16 @@
 							SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 				{else}
 					<INPUT TYPE="hidden" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"Y/m/d H:i"}{/if}">
-					<span title="{trans("Only verifier can change this")}">{if $message.deadline}{$message.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>- none -")}{/if}</span>
+					<span title="{trans("Only verifier can change this")}">{if $message.deadline}{$message.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>— none —")}{/if}</span>
 				{/if}
 			{/box_row}
 
 			{box_row icon="queue" icon_class="fa-fw" label="Category changes"}
 				<SELECT name="message[category_change]" {tip text="Select category change type" trigger="category_change"}>
-					<option value="0"{if $message.category_change == 0} selected{/if}>{trans("- no changes -")}</option>
-					<option value="1"{if $message.category_change == 1} selected{/if}>{trans("- replace -")}</option>
-					<option value="2"{if $message.category_change == 2} selected{/if}>{trans("- append -")}</option>
-					<option value="3"{if $message.category_change == 3} selected{/if}>{trans("- remove -")}</option>
+					<option value="0"{if $message.category_change == 0} selected{/if}>{trans("— no changes —")}</option>
+					<option value="1"{if $message.category_change == 1} selected{/if}>{trans("— replace —")}</option>
+					<option value="2"{if $message.category_change == 2} selected{/if}>{trans("— append —")}</option>
+					<option value="3"{if $message.category_change == 3} selected{/if}>{trans("— remove —")}</option>
 				</SELECT>
 			{/box_row}
 

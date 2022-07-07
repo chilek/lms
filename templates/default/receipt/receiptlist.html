@@ -82,7 +82,7 @@
 				<B>{trans("Filter:")} </B>
 				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter -")}</OPTION>
+					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter —")}</OPTION>
 					<OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("number")}</OPTION>
 					<OPTION value="value"{if $listdata.cat == "value"} SELECTED{/if}>{trans("value")}</OPTION>
 					<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>

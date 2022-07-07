@@ -382,7 +382,7 @@
 							{if isset($_SERVICETYPES[$item.servicetype])}
 								<span class="invoice-contents-field-value">{$_SERVICETYPES[$item.servicetype]}</span>
 							{else}
-								{trans("- none -")}
+								{trans("— none —")}
 							{/if}
 
 							<input type="hidden" value="{$item.taxcategory}" name="taxcategory[{$itemid}]">
@@ -392,11 +392,11 @@
 									({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
 								{/strip}</span>
 							{else}
-								{trans("- none -")}
+								{trans("— none —")}
 							{/if}
 						{else}
 							<select name="servicetype[{$itemid}]">
-								<option value="">{trans("- none -")}</option>
+								<option value="">{trans("— none —")}</option>
 								{foreach $_SERVICETYPES as $servicetype => $label}
 									<option value="{$servicetype}"{if $item.servicetype == $servicetype} selected{/if}>{$label}</option>
 								{/foreach}

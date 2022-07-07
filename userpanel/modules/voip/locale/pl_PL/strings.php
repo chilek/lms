@@ -41,12 +41,12 @@ $_LANG['This module shows billing list.'] = 'Ten moduł pokazuje listy billingó
 
 $_LANG['Minibilling'] = 'Minibilling';
 
-$_LANG['Minibilling for number $a (period from $b to $c)'] = 'Minibiling dla numeru $a (okres od $b to $c)';
-$_LANG['Minibilling for number $a (period from $b)'] = 'Minibiling dla numeru $a (okres od $b)';
-$_LANG['Minibilling for number $a (period to $c)'] = 'Minibiling dla numeru $a (okres do $c)';
-$_LANG['Minibilling summary (period from $a to $b)'] = 'Minibiling razem (okres od $a do $b)';
-$_LANG['Minibilling summary (period from $a)'] = 'Minibiling razem (okres od $a)';
-$_LANG['Minibilling summary (period to $b)'] = 'Minibiling razem (okres do $b)';
+$_LANG['Minibilling for number $a (period from $b to $c)'] = 'Minibilling dla numeru $a (okres od $b to $c)';
+$_LANG['Minibilling for number $a (period from $b)'] = 'Minibilling dla numeru $a (okres od $b)';
+$_LANG['Minibilling for number $a (period to $c)'] = 'Minibilling dla numeru $a (okres do $c)';
+$_LANG['Minibilling summary (period from $a to $b)'] = 'Minibilling razem (okres od $a do $b)';
+$_LANG['Minibilling summary (period from $a)'] = 'Minibilling razem (okres od $a)';
+$_LANG['Minibilling summary (period to $b)'] = 'Minibilling razem (okres do $b)';
 
 $_LANG['<!minibilling>Call type'] = 'Typ połączenia';
 $_LANG['<!minibilling>Call time'] = 'Czas połączeń';

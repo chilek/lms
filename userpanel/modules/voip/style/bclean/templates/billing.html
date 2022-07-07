@@ -22,7 +22,7 @@
 				</label>
 				{if count($customer_phone_list) > 1}
 					<SELECT NAME="phone" CLASS="form-control" id="phonelabel">
-						<OPTION VALUE="0">{trans("- all -")}</OPTION>
+						<OPTION VALUE="0">{trans("— all —")}</OPTION>
 							{foreach $customer_phone_list as $phone}
 							<OPTION VALUE="{$phone}"{if $params.phone == $phone} SELECTED{/if}>{$phone}</OPTION>
 							{/foreach}
@@ -54,7 +54,7 @@
 					{trans("<!voip>Direction")}
 				</label>
 				<SELECT NAME="ftype" CLASS="form-control">
-					<OPTION VALUE="0">{trans("- all -")}</OPTION>
+					<OPTION VALUE="0">{trans("— all —")}</OPTION>
 					<OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("<!voip>incoming")}</OPTION>
 					<OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("<!voip>outgoing")}</OPTION>
 				</SELECT>
@@ -64,7 +64,7 @@
 					{trans("<!voip>Status")}
 				</label>
 				<SELECT NAME="fstatus" CLASS="form-control">
-					<OPTION VALUE="0">{trans("- all -")}</OPTION>
+					<OPTION VALUE="0">{trans("— all —")}</OPTION>
 					<OPTION VALUE="{CALL_ANSWERED}"      {if $params.fstatus == CALL_ANSWERED}  SELECTED{/if}>{trans("answered")}</OPTION>
 					<OPTION VALUE="{CALL_NO_ANSWER}"     {if $params.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
 					<OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("<!voip>busy")}</OPTION>

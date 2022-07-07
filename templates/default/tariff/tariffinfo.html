@@ -212,7 +212,7 @@
                                             {if $tariff.taxcategory}
                                                 <span {tip text=$_TAX_CATEGORIES[$tariff.taxcategory].description}>({sprintf('%02d', $tariff.taxcategory)}) {$_TAX_CATEGORIES[$tariff.taxcategory].label}</span>
                                             {else}
-                                                {trans("- none -")}
+                                                {trans("— none —")}
                                             {/if}
                                         </td>
                                     </tr>
@@ -566,7 +566,7 @@
                                         <input type="hidden" value="{$tariff.id}" name="id">
 
                                         <select size="1" name="netid" onChange="javascript:changeNetwork();">
-                                            <option value="0" {if !$netid}selected{/if}>{trans("- all networks -")}</option>
+                                            <option value="0" {if !$netid}selected{/if}>{trans("— all networks —")}</option>
                                             {section name=networks loop=$networks}
                                                 <option value="{$networks[networks].id}" {if $networks[networks].id == $netid}selected{/if}>
                                                     {$networks[networks].name|truncate:30:"&hellip;":true}

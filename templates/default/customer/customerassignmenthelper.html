@@ -149,7 +149,7 @@
 									<select size="1" name="{$variable_prefix}[schemaid]" id="promotion-select"
 										{tip text="Select promotion schema" trigger="promotion-select" class="lms-ui-advanced-select"}>
 										{if $promotion_only}
-											<option value="0">{trans("<!promotionschema>- none -")}</option>
+											<option value="0">{trans("<!promotionschema>— none —")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
 											{if $promotion.valid || $promotion.datefrom > $smarty.now}
@@ -310,7 +310,7 @@
 																		<td>
 																			<select class="schema-tariff-selection" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]" data-label="{$label}">
 																				{if !$item.selection.required}
-																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("- none -")}</option>
+																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("— none —")}</option>
 																				{/if}
 																				{foreach $item.selection.items as $item}
 																				<option value="{$item.assignmentid}" data-tariffaccess="{$item.authtype}"
@@ -646,7 +646,7 @@
 								</TD>
 								<TD>
 									<SELECT name="{$variable_prefix}[numberplanid]" {tip text="Select numbering plan"}>
-										<OPTION value=""{if !$variables.numberplanid} selected{/if}>- {trans("default")} -</OPTION>
+										<OPTION value=""{if !$variables.numberplanid} selected{/if}>— {trans("default")} —</OPTION>
 
 										{foreach item=plan from=$numberplanlist}
 										{assign var=period value=$plan.period}
@@ -731,7 +731,7 @@
 							{else}
 							{trans("settlement type of first deficient period:")}
 							<SELECT name="{$variable_prefix}[settlement]">
-								<OPTION value="0">{trans("<!settlement>- none -")}</OPTION>
+								<OPTION value="0">{trans("<!settlement>— none —")}</OPTION>
 								<OPTION value="1"{if $variables.settlement == 1} selected{/if}>{trans("<!settlement>next period")}</OPTION>
 								<OPTION value="2"{if $variables.settlement == 2} selected{/if}>{trans("<!settlement>current period")}</OPTION>
 							</SELECT>

@@ -406,7 +406,7 @@
 					<div class="lms-ui-box-button-container">
 						{button icon="convert" id="replace-netdev" label="Replace"}
 						<select id="target-netdev" class="lms-ui-advanced-select">
-							<option value="">{trans("- select target network device -")}</option>
+							<option value="">{trans("— select target network device —")}</option>
 							{foreach $targetnetdevs as $targetnetdev}
 								<option value="{$targetnetdev.id}" title="{$targetnetdev.producer} / {$targetnetdev.model}"
 									{if $netdev.ports > $targetnetdev.ports}disabled{/if}

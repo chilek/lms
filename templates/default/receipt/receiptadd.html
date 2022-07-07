@@ -305,7 +305,7 @@
 		<TD class="bold nobr valign-top">
 			{trans("Cash Registry:")}
 			<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
+				<OPTION VALUE="0">{trans("— select registry —")}</OPTION>
 				{foreach from=$cashreglist item=c}
 				{if $c.id != $receipt.regid}
 				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>

@@ -165,7 +165,7 @@
 {if isset($channels)}
 				{box_row icon="img/channel.gif" label="Channel:"}
 					<select name="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
-						<option value="">- {trans("none")} -</option>
+						<option value="">{trans("— none —")}</option>
 						{foreach $channels as $item}
 							<option value="{$item.id}"
 								{if $item.id == $netdev.channelid} selected{/if}>{$item.name}</option>
@@ -204,7 +204,7 @@
 						data-alt-field="#projectid-value"
 						data-alt-invalid-field="#project-value"
 						{tip class="lms-ui-combobox" trigger="project"}>
-						<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
+						<option value="0" {if !$netdev.invprojectid} selected{/if}>{trans("— none —")}</option>
 						<option value="1" {if $netdev.invprojectid == 1} selected{/if}>{trans("From root device")}</option>
 						{foreach $NNprojects as $project}
 							<option value="{$project.id}"

@@ -89,7 +89,7 @@
 	}
 
 	function messageTemplatesReceived(templates) {
-		var options = '<OPTION value="0">' + $t("- none -") + '</OPTION>';
+		var options = '<OPTION value="0">' + $t("— none —") + '</OPTION>';
 		if (templates) {
 			for (i = 0; i < templates.length; i++) {
 				options += '<option value="' + templates[i].id + '">' + templates[i].name + '</option>';
@@ -196,7 +196,7 @@
 						{else}
 							{trans("Node:")}
 							<select name="message[nodeid]">
-								<option value="">{trans("- none -")}</option>
+								<option value="">{trans("— none —")}</option>
 								{foreach $nodes as $node}
 									<option value="{$node.id}"{if $node.id == $message.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
 								{/foreach}
@@ -229,7 +229,7 @@
 							<td class="nobr" rowspan="3">{trans("Status")}</td>
 							<td rowspan="3">
 								<select name="message[state]" {tip trigger="state"}>
-									<option value="0"{if !$message.state} selected{/if}>{trans("- all customers -")}</option>
+									<option value="0"{if !$message.state} selected{/if}>{trans("— all customers —")}</option>
 									<optgroup label="Status">
 										{foreach $_CSTATUSES as $statusidx => $status}
 											<option value="{$statusidx}"{if $message.state == $statusidx} selected{/if}>{$status.plurallabel}</option>
@@ -269,7 +269,7 @@
 							<td class="nobr">{trans("Group")}</td>
 							<td class="multiselect">
 								<select name="message[customergroup][]" multiple class="lms-ui-multiselect"
-									{tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
+									{tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("— all groups —")}">
 									{foreach $customergroups as $customergroup}
 										<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}
 											>{$customergroup.name|trunescape:30}</option>
@@ -279,7 +279,7 @@
 							<td class="nobr">{trans("Network")}</td>
 							<td>
 								<select name="message[network]" {tip trigger="network" text="Select IP network"}>
-									<option value="0">{trans("- all networks -")}</option>
+									<option value="0">{trans("— all networks —")}</option>
 									{foreach $networks as $network}
 										<option value="{$network.id}"{if $message.network == $network.id} selected{/if}
 											>{$network.name|trunescape:30}</option>
@@ -289,7 +289,7 @@
 							<td class="nobr">{trans("Tariff type")}</td>
 							<td>
 								<select name="message[tarifftype]" {tip trigger="network"}>
-									<option value="0">{trans("- all -")}</option>
+									<option value="0">{trans("— all —")}</option>
 									{foreach $_SERVICETYPES as $key => $type}
 										<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
 									{/foreach}
@@ -300,7 +300,7 @@
 							<td class="nobr">{trans("Node Group<!short>")}</td>
 							<td class="multiselect">
 								<select size="1" name="message[nodegroup][]" multiple class="lms-ui-multiselect"
-									{tip trigger="nodegroup"} data-default-value="{trans("- all groups -")}">
+									{tip trigger="nodegroup"} data-default-value="{trans("— all groups —")}">
 									{foreach $nodegroups as $nodegroup}
 										<option value="{$nodegroup.id}"{if isset($message.nodegroup) && in_array($nodegroup.id, $message.nodegroup)} selected{/if}
 											>{$nodegroup.name|trunescape:30}</option>
@@ -310,7 +310,7 @@
 							<td class="nobr">{trans("Link type")}</td>
 							<td>
 								<select size="1" name="message[linktype]" {tip trigger="linktype"}>
-									<option value="">{trans("- all -")}</option>
+									<option value="">{trans("— all —")}</option>
 									{foreach $_LINKTYPES as $type => $label}
 										<option value="{$type}">{$label}</option>
 									{/foreach}
@@ -333,7 +333,7 @@
 							</td>
 							<td colspan="7" class="nobr">
 								<select name="message[netdev]" id="netdev" {tip class="lms-ui-advanced-select" trigger="netdev" text="Select network device"}>
-									<option value="">{trans("- none -")}</option>
+									<option value="">{trans("— none —")}</option>
 									{foreach $netdevices as $netdev}
 										<option value="{$netdev.id}"{if isset($message.netdev) && $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
 									{/foreach}
@@ -495,14 +495,14 @@
 			</td>
 			<td>
 				<select size="4" name="message[users][]" id="user-selection" multiple class="lms-ui-multiselect"
-						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+						data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 					{foreach $users as $user}
 						<option value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|trunescape:30}</option>
 					{/foreach}
 				</select>
 				<strong>{trans("user group")}</strong>
 				<select name="message[usergroup]" id="usergroup-selection">
-					<option value="" data-users="[{implode(',', array_keys($users))}]">{trans("- all -")}</option>
+					<option value="" data-users="[{implode(',', array_keys($users))}]">{trans("— all —")}</option>
 					{foreach $usergroups as $usergroup}
 						<option value="{$usergroup.id}" data-users="[{$usergroup.users}]"
 							{if $message.usergroup == $usergroup.id} selected{/if}>{$usergroup.name}</option>
@@ -545,7 +545,7 @@
 			<td>
 				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
 						onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
-					<option value="0">{trans("- none -")}</option>
+					<option value="0">{trans("— none —")}</option>
 					{foreach $messagetemplates as $msgtmpl}
 						<option value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</option>
 					{/foreach}
