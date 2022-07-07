@@ -225,7 +225,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     'SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
                     array($lastname, $name)
                 );
-                if (count($uids) == 1) {
+                if (!empty($uids) && count($uids) == 1) {
                     $id = $uids[0];
                 }
                 $found_by_name = true;
