@@ -46,7 +46,7 @@ function smarty_function_tax_rate_selection(array $params, $template)
     $class = isset($params['class']) ? ' class="'. $params['class'] . '"' : null;
     $form = isset($params['form']) ? ' form="'. $params['form'] . '"' : null;
     $trigger = $params['trigger'] ?? null;
-    $tip = $params['tip'] ?? '- select tax rate -';
+    $tip = $params['tip'] ?? '— select tax rate —';
     $tip_text = LMSSmartyPlugins::tipFunction(
         array(
             'text' => trans($tip),
