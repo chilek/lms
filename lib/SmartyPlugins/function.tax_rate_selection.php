@@ -69,7 +69,7 @@ function smarty_function_tax_rate_selection(array $params, $template)
 
     $options = '';
     if (empty($taxratelist)) {
-        $options .= '<option selected value="">' . trans('- no tax rates defined -') . '</option>';
+        $options .= '<option selected value="">' . trans('— no tax rates defined —') . '</option>';
     } else {
         foreach ($taxratelist as $tax) {
             $options .= '<option value="' . $tax['id'] . '" data-taxrate-value="' . $tax['value'] . '"'
