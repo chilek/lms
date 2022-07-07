@@ -273,14 +273,14 @@ function GetRecipients($filter, $type = MSG_MAIL)
                     WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
                     . $archived_document_condition
                     . ' GROUP BY d.customerid
-                ) d ON d.customerid = c.id' :
+                ) d ON d.customerid = c.id ' :
                 'LEFT JOIN (
                     SELECT customerid
                     FROM assignments
                     WHERE dateto > 0
                     GROUP BY customerid
                     HAVING MAX(dateto) < ?NOW?
-                ) ass ON ass.customerid = c.id') :
+                ) ass ON ass.customerid = c.id ') :
         ($contracts == 2 ?
             ($contracts_expiration_type == 'documents' ?
                 'JOIN (
@@ -293,14 +293,14 @@ function GetRecipients($filter, $type = MSG_MAIL)
                     . ' GROUP BY d.customerid
                     HAVING SUM(CASE WHEN dc.todate > 0 AND dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
                         AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
-                ) d ON d.customerid = c.id' :
+                ) d ON d.customerid = c.id ' :
                 'JOIN (
                     SELECT customerid
                     FROM assignments
                     WHERE dateto > 0
                     GROUP BY customerid
                     HAVING MAX(dateto) < ?NOW?
-                ) ass ON ass.customerid = c.id') :
+                ) ass ON ass.customerid = c.id ') :
         ($contracts == 3 ?
             ($contracts_expiration_type == 'documents' ?
                 'JOIN (
@@ -310,14 +310,14 @@ function GetRecipients($filter, $type = MSG_MAIL)
                         AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
                     . $archived_document_condition
                     . '
-                ) d ON d.customerid = c.id' :
+                ) d ON d.customerid = c.id ' :
                 'JOIN (
                     SELECT customerid
                     FROM assignments
                     WHERE dateto > 0
                     GROUP BY customerid
                     HAVING MAX(dateto) >= ?NOW? AND MAX(dateto) <= ?NOW? + 86400 * ' . $contracts_days . '
-                ) ass ON ass.customerid = c.id') : '')))
+                ) ass ON ass.customerid = c.id ') : '')))
         . (isset($netdevtable) ? $netdevtable : '')
         . (isset($mailtable) ? $mailtable : '')
         . (isset($smstable) ? $smstable : '')
