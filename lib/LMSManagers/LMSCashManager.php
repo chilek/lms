@@ -384,7 +384,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         }
 
         if ($sourcefileid) {
-            if ($error['sum']) {
+            if (isset($error['sum'])) {
                 $this->db->Execute('DELETE FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
                 $this->db->Execute('DELETE FROM sourcefiles WHERE id = ?', array($sourcefileid));
             } else {
