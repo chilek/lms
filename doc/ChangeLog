@@ -230,6 +230,7 @@ version 28-git (????-??-??):
     font respectively [chilan]
   - enhancement: phone billing type basing on customer subconsents support added [chilan]
   - enhancement: impelemented document/assignment expiration filters in new message form [chilan]
+  - enhancement: added info property to voip numbers [chilan]
 
 version 27.0 (2021-08-20):
 
