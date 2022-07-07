@@ -893,6 +893,7 @@ CREATE TABLE voip_numbers (
 		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	phone varchar(20) NOT NULL,
 	number_index smallint,
+	info varchar(255) DEFAULT NULL,
 	tariff_id integer NULL
 		REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	UNIQUE(phone),
@@ -4240,6 +4241,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022070401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022070700');
 
 COMMIT;
