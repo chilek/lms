@@ -420,10 +420,12 @@ class Session
             $this->DB->UnLockTables();
             $this->DB->CommitTrans();
 
-            $this->DB->Execute(
-                'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
-                array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
-            );
+            if (isset($this->_content['session_login'])) {
+                $this->DB->Execute(
+                    'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
+                    array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
+                );
+            }
         }
     }
 
