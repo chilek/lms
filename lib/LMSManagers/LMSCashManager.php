@@ -351,7 +351,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     $res = $this->db->Execute('INSERT INTO cashimport (date, value, customer,
 						customerid, description, hash, sourceid, sourcefileid, srcaccount)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-                    if ($res && $this->sylog) {
+                    if ($res && $this->syslog) {
                         $args[SYSLOG::RES_CASHIMPORT] = $this->db->GetLastInsertID('cashimport');
                         $syslog_records[] = array(
                             'resource' => SYSLOG::RES_CASHIMPORT,
