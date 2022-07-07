@@ -420,9 +420,11 @@ class LMSSmartyPlugins
         }
         $result .= '</div>
 			<div class="fileupload-status lms-ui-error bold">
-			</div>
-			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="'
-            . (isset($fileupload[$id . '-tmpdir']) ? $fileupload[$id . '-tmpdir'] : '') . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+			</div>'
+            . (isset($fileupload[$id . '-tmpdir'])
+                ? '<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="'
+                    . $fileupload[$id . '-tmpdir'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>'
+                : '') . '
 		</div>';
         $result .= '<script>
 			$(function() {
