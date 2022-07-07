@@ -711,8 +711,8 @@ function parse_node_data($data, $row)
         ),
         array(
             $row['ip'],
-            $row['customerid'],
-            str_replace('"', "'", iconv('UTF-8', 'ASCII//TRANSLIT', $row['customername'])),
+            isset($row['customerid']) ? $row['customerid'] : '',
+            isset($row['customername']) ? str_replace('"', "'", iconv('UTF-8', 'ASCII//TRANSLIT', $row['customername'])) : '',
         ),
         $data
     );
