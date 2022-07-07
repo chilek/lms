@@ -99,7 +99,11 @@ class Session
 
     public function restore_user_settings($force_settings_restore = false)
     {
-        $settings = $this->DB->GetRow('SELECT settings, persistentsettings FROM users WHERE login = ?', array($this->_content['session_login']));
+        if (isset($this->_content['session_login'])) {
+            $settings = $this->DB->GetRow('SELECT settings, persistentsettings FROM users WHERE login = ?', array($this->_content['session_login']));
+        } else {
+            $settings = null;
+        }
         if (!empty($settings)) {
             if (isset($settings['persistentsettings'])) {
                 $this->_persistent_settings = unserialize($settings['persistentsettings']);
