@@ -63,6 +63,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         $error = array();
         $syslog_records = array();
 
+        $sourcefileid = null;
+
         foreach ($file as $line) {
             $id = null;
             $count = 0;
@@ -310,7 +312,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
                 if (!$this->db->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash))) {
                     // Add file
-                    if (!$sourcefileid) {
+                    if (!isset($sourcefileid)) {
                         $args = array(
                             'name' => $filename,
                             'idate' => isset($filemtime) ? $filemtime : time(),
