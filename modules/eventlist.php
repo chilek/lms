@@ -242,5 +242,5 @@ $SMARTY->assign('overdue_events_only', $overdue_events_only);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-$SMARTY->assign('getHolidays', getHolidays($year));
+$SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
 $SMARTY->display('event/eventlist.html');
