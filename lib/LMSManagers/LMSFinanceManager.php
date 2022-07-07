@@ -226,7 +226,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 $row['docnumber'] = docnumber(array(
                     'number' => $row['docnumber'],
-                    'template' => $row['numtemplate'],
+                    'template' => isset($row['numtemplate']) ? $row['numtemplate'] : null,
                     'cdate' => $row['cdate'],
                     'customerid' => $id,
                 ));

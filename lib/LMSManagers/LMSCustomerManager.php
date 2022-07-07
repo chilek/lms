@@ -3135,10 +3135,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $where[] = 'c.userid = ' . intval($params['userid']);
         }
 
-        if ($params['assigned'] === 1) {
+        if (isset($params['assigned']) && $params['assigned'] === 1) {
             $where[] = 'EXISTS (SELECT 1 FROM customercallassignments a WHERE a.customercallid = c.id'
                 . (isset($params['customerid']) ? ' AND a.customerid = ' . intval($params['customerid']) : '') . ')';
-        } elseif ($params['assigned'] === 0) {
+        } elseif (isset($params['assigned']) && $params['assigned'] === 0) {
             $where[] = 'NOT EXISTS (SELECT 1 FROM customercallassignments a WHERE a.customercallid = c.id'
                 . (isset($params['customerid']) ? ' AND a.customerid = ' . intval($params['customerid']) : '') . ')';
         } elseif (isset($params['customerid'])) {

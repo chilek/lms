@@ -546,9 +546,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 break;
         }
 
-        $datefrom = intval($search['datefrom']);
-        $dateto = intval($search['dateto']);
-        $ticketid = intval($search['ticketid']);
+        $datefrom = isset($search['datefrom']) ? intval($search['datefrom']) : 0;
+        $dateto = isset($search['dateto']) ? intval($search['dateto']) : 0;
+        $ticketid = isset($search['ticketid']) ? intval($search['ticketid']) : 0;
 
         $list = $this->db->GetAll(
             'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid,'
@@ -569,7 +569,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             array(Auth::GetCurrentUser())
         );
 
-        if ($search['userid']) {
+        if (isset($search['userid'])) {
             if (is_array($search['userid'])) {
                 $users = array_filter($search['userid'], 'is_natural');
             } else {
@@ -633,7 +633,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 }
             }
 
-            if ($search['userid']) {
+            if (isset($search['userid'])) {
                 return $list3;
             } else {
                 return $list2;
