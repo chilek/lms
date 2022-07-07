@@ -510,7 +510,7 @@ class LMSSmartyPlugins
               <td>' . trans('Name') . '</td>
               <td>
                   <input type="text"   value="' . (!empty($params['location_name']) ? htmlspecialchars($params['location_name']) : '' ) . '" name="' . $input_name_location . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="location-name">
-                  <input type="hidden" value="' . (($params['location'])            ? $params['location']      : '')  . '" name="' . $input_name . '" data-address="location">
+                  <input type="hidden" value="' . (isset($params['location']) ? $params['location'] : '') . '" name="' . $input_name . '" data-address="location">
               </td>
           </tr>';
 
@@ -530,7 +530,7 @@ class LMSSmartyPlugins
             echo '" data-address="state-select">';
             echo '<option></option>';
 
-            $tmp_state = is_null($params['location_state_name']) ? '' : mb_strtolower($params['location_state_name']);
+            $tmp_state = isset($params['location_state_name']) ? mb_strtolower($params['location_state_name']) : '';
 
             foreach ($states as $v) {
                 echo '<option ' . (!empty($v) && mb_strtolower($v['name']) == $tmp_state ? 'selected' : '')  . '>' . $v['name'] . '</option>';
@@ -610,7 +610,7 @@ class LMSSmartyPlugins
                 <option value="">---</option>';
 
             foreach ($countries as $v) {
-                if ($v['id'] == $params['location_country_id']) {
+                if (isset($params['location_country_id']) && $v['id'] == $params['location_country_id']) {
                     echo '<option value="'.$v['id'].'" selected>' . trans($v['name']) . '</option>' ;
                 } else {
                     echo '<option value="'.$v['id'].'">' . trans($v['name']) . '</option>' ;
@@ -678,7 +678,7 @@ class LMSSmartyPlugins
         $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
-        $location_str .= $params['data']['location']
+        $location_str .= isset($params['data']['location'])
             ? ($params['data']['teryt']
                 ? trans('$a (TERRIT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
             : '...';
