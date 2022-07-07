@@ -230,7 +230,7 @@ if ($receipt = $SESSION->get('receiptprint', true)) {
 $SMARTY->assign(array(
     'id' => $customerinfo['id'],
     'objectid' => $customerinfo['id'],
-    'aggregate_documents' => $aggregate_documents,
+    'aggregate_documents' => isset($aggregate_documents) ? $aggregate_documents : false,
     'commited' => $commited,
     'expired' => $expired,
     'period' => $period,
