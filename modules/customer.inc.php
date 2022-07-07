@@ -62,6 +62,8 @@ if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerass
     $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
     if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
         $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
+    } else {
+        $period = null;
     }
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
