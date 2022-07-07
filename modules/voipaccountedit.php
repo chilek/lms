@@ -89,15 +89,15 @@ if (isset($_POST['voipaccountedit'])) {
         $error['passwd'] = trans('Specified password contains forbidden characters!');
     }
 
-    foreach ($voipaccountedit['phone'] as $k => $phone) {
-        if (!strlen($phone)) {
-            $error['phone'.$k] = trans('Voip account phone number is required!');
-        } elseif (strlen($phone) > 32) {
-            $error['phone'.$k] = trans('Voip account phone number is too long (max.32 characters)!');
-        } elseif (($accountid = $LMS->GetVoipAccountIDByPhone($phone)) > 0 && $accountid != $voipaccountedit['id']) {
-            $error['phone'.$k] = trans('Specified phone is in use!');
-        } elseif (!preg_match('/^C?[0-9]+$/', $phone)) {
-            $error['phone'.$k] = trans('Specified phone number contains forbidden characters!');
+    foreach ($voipaccountedit['numbers'] as $k => $number) {
+        if (!strlen($number['phone'])) {
+            $error['phone-number-' . $k] = trans('Voip account phone number is required!');
+        } elseif (strlen($number['phone']) > 32) {
+            $error['phone-number-' . $k] = trans('Voip account phone number is too long (max.32 characters)!');
+        } elseif (($accountid = $LMS->GetVoipAccountIDByPhone($number['phone'])) > 0 && $accountid != $voipaccountedit['id']) {
+            $error['phone-number-' . $k] = trans('Specified phone is in use!');
+        } elseif (!preg_match('/^C?[0-9]+$/', $number['phone'])) {
+            $error['phone-number-' . $k] = trans('Specified phone number contains forbidden characters!');
         }
     }
 
@@ -139,10 +139,6 @@ if (isset($_POST['voipaccountedit'])) {
     $voipaccountinfo['login']   = $voipaccountedit['login'];
     $voipaccountinfo['passwd']  = $voipaccountedit['passwd'];
     $voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
-
-    foreach ($voipaccountedit['phone'] as $k => $v) {
-        $voipaccountinfo['phones'][$k] = array('phone'=>$v);
-    }
 
     if (!isset($error['voipaccountedit[ownerid]'])) {
         // check if selected address belongs to customer

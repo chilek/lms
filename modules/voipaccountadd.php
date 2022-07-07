@@ -109,15 +109,15 @@ if (isset($_POST['voipaccountdata'])) {
         $error['passwd'] = trans('Specified password contains forbidden characters!');
     }
 
-    foreach ($voipaccountdata['phone'] as $k => $phone) {
-        if (!strlen($phone)) {
-            $error['phone'.$k] = trans('Voip account phone number is required!');
-        } elseif (strlen($phone) > 32) {
-            $error['phone'.$k] = trans('Voip account phone number is too long (max.32 characters)!');
-        } elseif ($LMS->GetVoipAccountIDByPhone($phone)) {
-            $error['phone'.$k] = trans('Specified phone is in use!');
-        } elseif (!preg_match('/^C?[0-9]+$/', $phone)) {
-            $error['phone'.$k] = trans('Specified phone number contains forbidden characters!');
+    foreach ($voipaccountdata['numbers'] as $k => $number) {
+        if (!strlen($number['phone'])) {
+            $error['phone-number-' . $k] = trans('Voip account phone number is required!');
+        } elseif (strlen($number['phone']) > 32) {
+            $error['phone-number-' . $k] = trans('Voip account phone number is too long (max.32 characters)!');
+        } elseif ($LMS->GetVoipAccountIDByPhone($number['phone'])) {
+            $error['phone-number-' . $k] = trans('Specified phone is in use!');
+        } elseif (!preg_match('/^C?[0-9]+$/', $number['phone'])) {
+            $error['phone-number-' . $k] = trans('Specified phone number contains forbidden characters!');
         }
     }
 
