@@ -29,6 +29,8 @@ class LMSSmartyPlugins
     const HINT_TYPE_ROLLOVER = 'rollover';
     const HINT_TYPE_TOGGLE = 'toggle';
 
+    const LOCATION_BOX_INPUT_SIZE = 30;
+
     public static function buttonFunction(array $params, $template)
     {
         static $defaults = array(
@@ -448,8 +450,6 @@ class LMSSmartyPlugins
         // generate unique id for location box
         $LOCATION_ID = 'lmsui-' . uniqid();
 
-        // input size
-        define('INPUT_SIZE', 30);
 
         // base name for localization inputs
         $input_name             = 'location';
@@ -509,7 +509,7 @@ class LMSSmartyPlugins
         echo '<tr' . (isset($params['hide_name']) ? ' style="display: none;"' : '') . '>
               <td>' . trans('Name') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_name']) ? htmlspecialchars($params['location_name']) : '' ) . '" name="' . $input_name_location . '" size="' . INPUT_SIZE . '" data-address="location-name">
+                  <input type="text"   value="' . (!empty($params['location_name']) ? htmlspecialchars($params['location_name']) : '' ) . '" name="' . $input_name_location . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="location-name">
                   <input type="hidden" value="' . (($params['location'])            ? $params['location']      : '')  . '" name="' . $input_name . '" data-address="location">
               </td>
           </tr>';
@@ -543,7 +543,7 @@ class LMSSmartyPlugins
 
         echo '<input type="text"
                  value="' . (!empty($params['location_state_name']) ? htmlspecialchars($params['location_state_name']) : '' ) . '"
-                 size="' . INPUT_SIZE . '"
+                 size="' . self::LOCATION_BOX_INPUT_SIZE . '"
                  data-address="state"
                  name="' . $input_name_state . '"
                  ' . (empty($params['teryt']) ? 'style="display:none;"' : '') . '
@@ -558,7 +558,7 @@ class LMSSmartyPlugins
               <td>
                   <input type="text"   value="'
                     . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' )
-                    . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
+                    . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
                     . ($params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
               </td>
@@ -567,7 +567,7 @@ class LMSSmartyPlugins
         echo '<tr>
               <td>' . trans('Street') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_street_name']) ? htmlspecialchars($params['location_street_name']) : '' ) . '" size="' . INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
+                  <input type="text"   value="' . (!empty($params['location_street_name']) ? htmlspecialchars($params['location_street_name']) : '' ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
                   <input type="hidden" value="' . (!empty($params['location_street'])      ? $params['location_street']      : '' ) . '" data-address="street-hidden" name="' . $input_name_street_id . '">
               </td>
           </tr>';
@@ -592,7 +592,7 @@ class LMSSmartyPlugins
 
         echo '<tr>
               <td class="nobr">' . trans('Post office') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
+              <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
           </tr>';
 
         if (empty($params['countryid'])) {
