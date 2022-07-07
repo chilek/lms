@@ -327,7 +327,6 @@ function GetRecipients($filter, $type = MSG_MAIL)
         . ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
         . ($state != 0 ? ' AND c.status = ' . $state : '')
         . $document_condition
-        . $archived_document_condition
         .($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
