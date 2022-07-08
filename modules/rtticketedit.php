@@ -518,7 +518,7 @@ if (isset($_POST['ticket'])) {
             'requestor_phone' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
                 || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
-            'relatedtickets' => $ticketedit['relatedtickets'],
+            'relatedtickets' => isset($ticketedit['relatedtickets']) ? $ticketedit['relatedtickets'] : array(),
         );
         $LMS->TicketChange($ticketedit['ticketid'], $props);
 
