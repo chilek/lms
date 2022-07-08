@@ -123,10 +123,10 @@ if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) 
 }
 
 $SESSION->save('eld', array(
-    'year' => $filter['year'],
-    'month' => $filter['month'],
-    'day' => $filter['day'],
-    'edate' => $filter['edate'],
+    'year' => isset($filter['year']) ? $filter['year'] : null,
+    'month' => isset($filter['month']) ? $filter['month'] : null,
+    'day' => isset($filter['day']) ? $filter['day'] : null,
+    'edate' => isset($filter['edate']) ? $filter['edate'] : null,
 ));
 
 $SESSION->saveFilter($filter, null, array('year', 'month', 'day', 'edate'), true);
