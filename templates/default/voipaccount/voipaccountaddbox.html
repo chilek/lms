@@ -106,6 +106,7 @@
                                                                 <input type="search" name="voipaccountdata[numbers][0][info]"
                                                                     value="{$voipaccountdata.numbers[0].info|default:""|escape}"
                                                                     class="phone-info" placeholder="{trans("description")}"
+                                                                    autocomplete="off"
                                                                     {tip trigger="phone-info-0"}>
                                                             </td>
                                                             <td>
@@ -127,6 +128,7 @@
                                                                         <input type="search" name="voipaccountdata[numbers][{$k}][info]"
                                                                             value="{$v.info|default:""|escape}"
                                                                             class="phone-info" placeholder="{trans("description")}"
+                                                                            autocomplete="off"
                                                                             {tip trigger="phone-info-{$k}"}>
                                                                     </td>
                                                                     <td><div>{$pool_number_select} {$remove_number}</div></td>
@@ -306,7 +308,7 @@
             var table = $('#phone_numbers_table');
             var i = table.find('[type="tel"]').length;
             var phone_number_input = '<input type="tel" name="voipaccountdata[numbers][' + i +'][phone]" class="phone-number" placeholder="{trans("<!phone>number")}" {tip trigger="phone-number"}>' +
-                '<input type="search" name="voipaccountdata[numbers][' + i + '][info]" class="phone-info" placeholder="{trans("description")}" {tip trigger="phone-info"}>';
+                '<input type="search" name="voipaccountdata[numbers][' + i + '][info]" class="phone-info" placeholder="{trans("description")}" autocomplete="off" {tip trigger="phone-info"}>';
             table.append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
             var numbers = table.find('.remove-number');
             numbers.toggleClass('lms-ui-visibility-hidden', numbers.length < 2);
