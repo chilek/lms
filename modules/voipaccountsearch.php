@@ -51,7 +51,7 @@ if (!isset($_POST['k'])) {
 $SESSION->save('vaslk', $k);
 
 if (isset($_GET['search'])) {
-    $layout['pagetitle'] = trans('Voip Account Search Results');
+    $layout['pagetitle'] = trans('VoIP Account Search Results');
 
     $voipaccountlist = $LMS->GetVoipAccountList($o, $voipaccountsearch, $k);
 
@@ -87,7 +87,7 @@ if (isset($_GET['search'])) {
         $SMARTY->display('voipaccount/voipaccountsearchresults.html');
     }
 } else {
-    $layout['pagetitle'] = trans('Voip Accounts Search');
+    $layout['pagetitle'] = trans('VoIP Accounts Search');
 
     $SESSION->remove('vaslp');
 

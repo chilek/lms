@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Voip Accounts List');
+$layout['pagetitle'] = trans('VoIP Accounts List');
 
 $SESSION->add_history_entry();
 

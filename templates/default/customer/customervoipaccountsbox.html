@@ -2,14 +2,14 @@
 {css}
 {js}
 
-{tab_container id="customervoipaccountsbox" label="Voip Accounts"}
+{tab_container id="customervoipaccountsbox" label="VoIP Accounts"}
 	{tab_header content_id="voipaccountspanel"}
 		{tab_header_cell icon="lms-ui-icon-phone"}
-			<strong>{t a=$customervoipaccounts|size}Voip Accounts ($a):{/t}</strong>
+			<strong>{t a=$customervoipaccounts|size}VoIP Accounts ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}
-				<A href="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>
+				<A href="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New VoIP Account")} &raquo;</A>
 			{/if}
 		{/tab_header_cell}
 	{/tab_header}
@@ -79,7 +79,7 @@
 			{foreachelse}
 				{block name="customervoipaccountsbox-list-empty-row"}
 				<div class="lms-ui-tab-empty-table">
-					{trans("That customer does not own any voip account.")}
+					{trans("That customer does not own any VoIP account.")}
 				</div>
 				{/block}
 			{/foreach}

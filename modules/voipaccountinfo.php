@@ -48,7 +48,7 @@ if (!isset($_GET['ownerid'])) {
     $SESSION->add_history_entry($SESSION->remove_history_entry() . '&ownerid=' . $customerid);
 }
 
-$layout['pagetitle'] = trans('Voip Account Info: $a', $voipaccountinfo['login']);
+$layout['pagetitle'] = trans('VoIP Account Info: $a', $voipaccountinfo['login']);
 
 $hook_data = $plugin_manager->executeHook(
     'voipaccountinfo_before_display',

@@ -42,7 +42,7 @@ if (!isset($_GET['ownerid'])) {
     $SESSION->add_history_entry();
 }
 
-$layout['pagetitle'] = trans('Voip Account Edit: $a', $voipaccountinfo['login']);
+$layout['pagetitle'] = trans('VoIP Account Edit: $a', $voipaccountinfo['login']);
 
 if (isset($_POST['voipaccountedit'])) {
     $voipaccountedit = $_POST['voipaccountedit'];
@@ -55,7 +55,7 @@ if (isset($_POST['voipaccountedit'])) {
     }
 
     if ($voipaccountedit['login']=='') {
-        $error['login'] = trans('Voip account login is required!');
+        $error['login'] = trans('VoIP account login is required!');
     } else {
         $loginids = $LMS->GetVoipAccountIDByLogin($voipaccountedit['login']);
 
@@ -76,24 +76,24 @@ if (isset($_POST['voipaccountedit'])) {
         if (!preg_match('/' . ConfigHelper::getConfig('voip.account_login_regexp', '^[_a-z0-9-]+$') . '/i', $voipaccountedit['login'])) {
             $error['login'] = trans('Specified login contains forbidden characters!');
         } elseif (strlen($voipaccountedit['login']) > 32) {
-            $error['login'] = trans('Voip account login is too long (max.32 characters)!');
+            $error['login'] = trans('VoIP account login is too long (max.32 characters)!');
         }
     }
 
     $password_max_length = intval(ConfigHelper::getConfig('voip.account_password_max_length', 32));
     if ($voipaccountedit['passwd']=='') {
-        $error['passwd'] = trans('Voip account password is required!');
+        $error['passwd'] = trans('VoIP account password is required!');
     } elseif (strlen($voipaccountedit['passwd']) > $password_max_length) {
-        $error['passwd'] = trans('Voip account password is too long (max. $a characters)!', $password_max_length);
+        $error['passwd'] = trans('VoIP account password is too long (max. $a characters)!', $password_max_length);
     } elseif (!preg_match('/' . ConfigHelper::getConfig('voip.account_password_regexp', '^[_a-z0-9-@%]+$') . '/i', $voipaccountedit['passwd'])) {
         $error['passwd'] = trans('Specified password contains forbidden characters!');
     }
 
     foreach ($voipaccountedit['numbers'] as $k => $number) {
         if (!strlen($number['phone'])) {
-            $error['phone-number-' . $k] = trans('Voip account phone number is required!');
+            $error['phone-number-' . $k] = trans('VoIP account phone number is required!');
         } elseif (strlen($number['phone']) > 32) {
-            $error['phone-number-' . $k] = trans('Voip account phone number is too long (max.32 characters)!');
+            $error['phone-number-' . $k] = trans('VoIP account phone number is too long (max.32 characters)!');
         } elseif (($accountid = $LMS->GetVoipAccountIDByPhone($number['phone'])) > 0 && $accountid != $voipaccountedit['id']) {
             $error['phone-number-' . $k] = trans('Specified phone is in use!');
         } elseif (!preg_match('/^C?[0-9]+$/', $number['phone'])) {
@@ -113,7 +113,7 @@ if (isset($_POST['voipaccountedit'])) {
             $error['voipaccountedit[customerid]'] = trans('Selected customer is not connected!');
             $error['voipaccountedit[ownerid]'] = trans('Selected customer is not connected!');
         } elseif ($status == CSTATUS_WAITING) { // awaiting
-            $error['voipaccountedit[customerid]'] = trans('Voip account owner is not connected!');
+            $error['voipaccountedit[customerid]'] = trans('VoIP account owner is not connected!');
             $error['voipaccountedit[ownerid]'] = trans('Selected customer is not connected!');
         }
     }

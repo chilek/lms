@@ -385,7 +385,7 @@ function CustomerAssignmentHelper(options) {
 
 					if (data.voipaccounts) {
 						html += '<div class="phones"><img src="img/voip.gif"> ' +
-							'<span class="bold">' + $t('Voip Accounts:') + '</span><br>';
+							'<span class="bold">' + $t('VoIP Accounts:') + '</span><br>';
 						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + '][' +
 							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 

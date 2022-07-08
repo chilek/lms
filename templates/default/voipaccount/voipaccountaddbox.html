@@ -60,7 +60,7 @@
                     {trans("Login:")}
                 </td>
                 <td>
-                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" {tip text="Enter voip account login" trigger="login" bold=1}>
+                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" {tip text="Enter VoIP account login" trigger="login" bold=1}>
                 </td>
             </tr>
             {/block}
@@ -194,7 +194,7 @@
                                                         selected=$voipaccountdata.ownerid
                                                         selectname="voipaccountdata[customerid]"
                                                         inputname="voipaccountdata[ownerid]"
-                                                        selecttip="Assign voip account to customer"
+                                                        selecttip="Assign VoIP account to customer"
                                                         customOnChange="change_customer();"
                                                         required=true
                                                         version=2
@@ -268,7 +268,7 @@
                         <label>
                             <input type="checkbox" name="voipaccountdata[reuse]" value="ON"
                                 {if $voipaccountdata.reuse}checked{/if}>
-                            {trans("Display this form again, when this voip account is saved")}
+                            {trans("Display this form again, when this VoIP account is saved")}
                         </label>
                     {/block}
                 </td>
