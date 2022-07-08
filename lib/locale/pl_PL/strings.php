@@ -1648,6 +1648,7 @@ $_LANG['Print cash receipts'] = 'Drukuj dowody wpłaty';
 $_LANG['Print invoices'] = 'Drukuj faktury';
 $_LANG['Print form of cash transfer'] = 'Drukuj formularz przelewu/wpłaty';
 $_LANG['Priority'] = 'Priorytet';
+$_LANG['<!pluginlist>Priority:'] = 'Priorytet:';
 $_LANG['normal'] = 'normalny';
 $_LANG['very low'] = 'bardzo niski';
 $_LANG['higher'] = 'wyższy';
@@ -4263,6 +4264,7 @@ $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 $_LANG['expire in indicated number of days'] = 'wygasną za wskazaną liczbę dni';
 
 $_LANG['TERRIT not specified'] = 'bez TERYT';
+$_LANG['<!welcome>TERRIT not specified'] = 'Bez TERYT';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
