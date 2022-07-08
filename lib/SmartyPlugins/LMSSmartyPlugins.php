@@ -820,7 +820,7 @@ class LMSSmartyPlugins
                 $error = str_replace("\n", '<BR>', $error);
 
                 $result .= ' title="' . $error . '" ';
-                $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
+                $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
             } else {
                 $warnings = $template->getTemplateVars('warning');
                 if (isset($params['trigger']) && isset($warnings[$params['trigger']])) {

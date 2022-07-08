@@ -1537,7 +1537,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['source'] = $ticket['source'];
         }
 
-        if ($ticket['priority'] != $props['priority'] && array_key_exists('priority', $props)) {
+        if (array_key_exists('priority', $props) && $ticket['priority'] != $props['priority']) {
             $a = isset($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : trans("undefined");
             $b = ($props['priority'] == '') ? trans("undefined") : $RT_PRIORITIES[$props['priority']];
             $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $a, $b);
@@ -1553,7 +1553,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['state'] = $ticket['state'];
         }
 
-        if ($ticket['subject'] != $props['subject'] && isset($props['subject'])) {
+        if (isset($props['subject']) && $ticket['subject'] != $props['subject']) {
             $notes[] = trans('Ticket\'s subject has been changed from $a to $b.', $ticket['subject'], $props['subject']);
             $type = $type | RTMESSAGE_SUBJECT_CHANGE;
         } else {
@@ -1640,7 +1640,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['verifierid'] = $ticket['verifierid'];
         }
 
-        if ($ticket['verifier_rtime'] != $props['verifier_rtime'] && isset($props['verifier_rtime'])) {
+        if (isset($props['verifier_rtime']) && $ticket['verifier_rtime'] != $props['verifier_rtime']) {
             $notes[] = trans('Ticket has been transferred to verifier.');
             $type = $type | RTMESSAGE_VERIFIER_RTIME;
         } else {
@@ -1661,14 +1661,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['deadline'] = $ticket['deadline'];
         }
 
-        if ($ticket['service'] != $props['service'] && isset($props['service'])) {
+        if (isset($props['service']) && $ticket['service'] != $props['service']) {
             $notes[] = trans('Ticket service has been set to $a.', $SERVICETYPES[$props['service']]);
             $type = $type | RTMESSAGE_SERVICE_CHANGE;
         } else {
             $props['service'] = $ticket['service'];
         }
 
-        if ($ticket['type'] != $props['type'] && isset($props['type'])) {
+        if (isset($props['type']) && $ticket['type'] != $props['type']) {
             $notes[] = trans('Ticket type has been set to $a.', $RT_TYPES[$props['type']]['label']);
             $type = $type | RTMESSAGE_TYPE_CHANGE;
         } else {
