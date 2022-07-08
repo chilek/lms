@@ -82,8 +82,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         if (!empty($event['ticketid'])) {
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-            $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
             $messagebody = trans('Assigned event ($a) was created.', $a = $id);
 
             $helpdesk_manager->TicketMessageAdd(array(
@@ -167,8 +167,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         if (!empty($event['helpdesk'])) {
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-            $messageid = '<msg.' . $ticketsqueue . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
             $messagebody = trans('Assigned event ($a) was modified.', $a = $event['id']);
 
             $helpdesk_manager->TicketMessageAdd(array(
@@ -211,8 +211,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
             if (!empty($event['ticketid'])) {
                 $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-                $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-                $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+                $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+                $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
                 $messagebody = trans('Assigned event ($a) was deleted.', $a = $id);
 
                 $helpdesk_manager->TicketMessageAdd(array(
