@@ -4594,7 +4594,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'name' => $promotion_schema['name'],
                     'valid' => $promotion_schema['valid'],
                     'datefrom' => $promotion_schema['datefrom'],
-                    'dateto' => $promotion_schema['dateto'],
+                    'dateto' => isset($promotion_schema['dateto']) ? $promotion_schema['dateto'] : null,
                     'description' => $promotion_schema['description'],
                     'tariffs' => $promotion_schema['tariffs'],
                     'period_labels' => $period_labels,
