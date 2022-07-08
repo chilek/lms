@@ -631,6 +631,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                         array_values($args)
                     );
                     if ($result && $this->syslog) {
+                        unset($args['info']);
                         $voip_number_id = $this->db->GetOne(
                             'SELECT id FROM voip_numbers WHERE number_index = ? AND phone = ? AND voip_account_id = ?',
                             array_values($args)
