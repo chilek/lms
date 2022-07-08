@@ -1841,8 +1841,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $result['cstate'] = $cstate['name'];
                 }
                 if ($result['zip'] == $result['post_zip']) {
-                    $result['post_stateid'] = $result['stateid'];
-                    $result['post_cstate'] = $result['cstate'];
+                    $result['post_stateid'] = isset($result['stateid']) ? $result['stateid'] : null;
+                    $result['post_cstate'] = isset($result['cstate']) ? $result['cstate'] : null;
                 } else if ($result['post_zip'] && ($cstate = $this->db->GetRow('SELECT s.id, s.name
 					FROM states s, zipcodes
 					WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))) {
