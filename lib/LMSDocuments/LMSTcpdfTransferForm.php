@@ -220,7 +220,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Translate(0, 23);
         $this->backend->Text(80, 75, 'pieczęć, data i podpis(y) zleceniodawcy');
         $this->backend->StopTransform();
-        $this->backend->Line(134, 90, 201, 90, $line);
+        $this->backend->Line(134, 90, 201, 90, $line_thin);
         $this->backend->Rect(155, 83, 20, 20, 'DF', array('all' => $line_thin));
         $this->backend->SetLineStyle($line_dash);
         $this->backend->Circle(165, 93, 8);
