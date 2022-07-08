@@ -314,7 +314,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 END)
                 ELSE NULL
             END) AS lang
-            ' . ($attach_documents ? ', (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS docrefs' : '') . '
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN countries cn ON (cn.id = d.countryid)
