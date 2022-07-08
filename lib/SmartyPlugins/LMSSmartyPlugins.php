@@ -608,7 +608,7 @@ class LMSSmartyPlugins
         if ($countries) {
             echo '<tr><td>' . trans('Country') . '</td><td>
                 <select name="' . $input_name_country_id . '" data-address="country">
-                <option value="">---</option>';
+                <option value="">—</option>';
 
             foreach ($countries as $v) {
                 if (isset($params['location_country_id']) && $v['id'] == $params['location_country_id']) {
