@@ -169,7 +169,7 @@ if (isset($_POST['message'])) {
 
             $requestor_mail = $LMS->GetTicketRequestorMail($ticketid);
 
-            $message['queue'] = $queue;
+            $message['queue'] = $queue['id'];
 
             $message['messageid'] = '<msg.' . $queue['id'] . '.' . $ticketid . '.' . time()
                 . '@rtsystem.' . gethostname() . '>';
@@ -262,7 +262,6 @@ if (isset($_POST['message'])) {
             $message['headers'] = $headers;
             $message['ticketid'] = $ticketid;
             $msgid = $LMS->TicketMessageAdd($message, $files);
-
 
             $hook_data = $LMS->executeHook(
                 'rtmessageadd_after_submit',
