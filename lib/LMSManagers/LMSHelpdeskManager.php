@@ -1061,7 +1061,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function TicketMessageAdd($message, $files = null)
     {
         $headers = '';
-        if ($message['headers']) {
+        if (isset($message['headers'])) {
             if (is_array($message['headers'])) {
                 foreach ($message['headers'] as $name => $value) {
                     $headers .= $name . ': ' . $value . "\n";
@@ -1077,7 +1077,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $createtime = isset($message['createtime']) ? $message['createtime'] : time();
 
         $body = preg_replace("/\r/", "", $message['body']);
-        if ($message['contenttype'] == 'text/html') {
+        if (isset($message['contenttype']) && $message['contenttype'] == 'text/html') {
             $body = Utils::removeInsecureHtml($body);
         }
 
