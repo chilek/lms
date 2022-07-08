@@ -294,7 +294,8 @@ class LMSSmartyPlugins
         }
 
         $result .= '<input type="text" name="' . $params['inputname'] . '"' . (empty($params['selected']) ? '' : ' value="'
-            . $params['selected'] . '"') . ' class="lms-ui-customer-select-customerid"'
+            . (isset($params['selected']) ? $params['selected'] : '') . '"')
+            . ' class="lms-ui-customer-select-customerid"'
             . ' data-default-value="' . (isset($params['default_value']) ? htmlspecialchars($params['default_value']) : '') . '"'
             . ' data-prev-value="' . $params['selected'] . '" size="5"';
 
