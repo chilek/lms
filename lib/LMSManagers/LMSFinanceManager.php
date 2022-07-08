@@ -2123,12 +2123,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
-        foreach ($invoicelist as &$invoice) {
-            if (!empty($invoice['documentreferenced'])) {
-                if (!isset($document_manager)) {
-                    $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+        if (!empty($invoicelist)) {
+            foreach ($invoicelist as &$invoice) {
+                if (!empty($invoice['documentreferenced'])) {
+                    if (!isset($document_manager)) {
+                        $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+                    $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
                 }
-                $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
             }
         }
 

@@ -473,9 +473,11 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $totalon = 0;
         $totaloff = 0;
 
-        if ($network) {
+        if (isset($network) && $network) {
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
             $net = $network_manager->GetNetworkParams($network);
+        } else {
+            $net = null;
         }
 
         $sql = '';
@@ -521,10 +523,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid '
-                . ($customergroup ? 'JOIN vcustomerassignments ON (customerid = c.id) ' : '')
-                . ($nodegroup ? ($nodegroup > 0 ? '' : 'LEFT ') . 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
+                . (isset($customergroup) && $customergroup ? 'JOIN vcustomerassignments ON (customerid = c.id) ' : '')
+                . (isset($nodegroup) && $nodegroup ? ($nodegroup > 0 ? '' : 'LEFT ') . 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
                 . ' WHERE 1=1 '
-                . ($network ? ' AND (n.netid = ' . $network . ' OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
+                . (isset($network) && $network ? ' AND (n.netid = ' . $network . ' OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
                 . ($status == 1 ? ' AND n.access = 1' : '') //connected
                 . ($status == 2 ? ' AND n.access = 0' : '') //disconnected
                 . ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
@@ -540,9 +542,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 . ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
                 . ($status == 9 ? ' AND (n.linktype = ' . LINKTYPE_WIRELESS . ' AND n.linkradiosector IS NULL)' : '')
                 . ($status == 10 ? ' AND EXISTS (SELECT 1 FROM nodelocks WHERE disabled = 0 AND nodeid = n.id)' : '')
-                . ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
-                . ($nodegroup > 0 ? ' AND nodegroupid = ' . intval($nodegroup)
-                    : ($nodegroup == -1 ? ' AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga WHERE nga.nodeid = n.id)' : ''))
+                . (isset($customergroup) && $customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
+                . (isset($nodegroup) ? ($nodegroup > 0 ? ' AND nodegroupid = ' . intval($nodegroup)
+                    : ($nodegroup == -1 ? ' AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga WHERE nga.nodeid = n.id)' : '')) : '')
                 . (!empty($searchargs) ? $searchargs : '')
                 . ($sqlord != '' && !$count ? $sqlord . ' ' . $direction : '')
                 . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
