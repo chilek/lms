@@ -200,7 +200,7 @@ class LMSSmartyPlugins
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . '>';
-                $result .= '<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
+                $result .= '<option value=""' . (!$selected ? ' selected' : '') . '>— ' . trans("all") . ' —</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'
                         . ($selected == $division['id'] ? ' selected' : '') . '>' . htmlspecialchars($division['label']) . '</option>';
@@ -1051,7 +1051,7 @@ class LMSSmartyPlugins
         }
         return '<select' . (isset($id) ? ' id="' . $id . '"' : '')
             . ' name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
+			<option value=""' . (!$selected ? ' selected' : '') . '>— ' . trans("default") . '—</option>'
             . $options
             . '</select>';
     }
