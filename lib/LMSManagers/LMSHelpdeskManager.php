@@ -1731,19 +1731,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $categories = $this->db->GetAllByKey('SELECT id, name, description
 				FROM rtcategories', 'id');
 
-            switch ($props['category_change']) {
-                case 2:
-                    $categories_added = array_diff($props['categories'], $ticket['categories']);
-                    $categories_removed = array();
-                    break;
-                case 3:
-                    $categories_added = array();
-                    $categories_removed = array_intersect($ticket['categories'], $props['categories']);
-                    break;
-                default:
-                    $categories_added = array_diff($props['categories'], $ticket['categories']);
-                    $categories_removed = array_diff($ticket['categories'], $props['categories']);
-                    break;
+            if (isset($props['category_change'])) {
+                switch ($props['category_change']) {
+                    case 2:
+                        $categories_added = array_diff($props['categories'], $ticket['categories']);
+                        $categories_removed = array();
+                        break;
+                    case 3:
+                        $categories_added = array();
+                        $categories_removed = array_intersect($ticket['categories'], $props['categories']);
+                        break;
+                    default:
+                        $categories_added = array_diff($props['categories'], $ticket['categories']);
+                        $categories_removed = array_diff($ticket['categories'], $props['categories']);
+                        break;
+                }
+            } else {
+                $categories_added = $categories_removed = array();
             }
 
             if (!empty($categories_removed)) {
