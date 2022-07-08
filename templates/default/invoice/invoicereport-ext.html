@@ -58,7 +58,7 @@
 		</TD>
 		{/if}
 	</TR>
-	{if !isset($printonlysummary)}
+	{if !$printonlysummary}
 	{cycle values="grey,white" print=false}
 	{math assign=start equation="(x-1)*y" x=$item y=$rows}
 	{section name=invoicelist loop=$invoicelist start=$start max=$rows}
@@ -78,8 +78,8 @@
 		<TD>
 			{strip}
 			<strong>{$invoicelist[invoicelist].custname}</strong>
-			{if !isset($printcustomerid)}&nbsp;(#{$invoicelist[invoicelist].customerid}){/if}
-			{if $invoicelist[invoicelist].ctype == $smarty.const.CTYPES_COMPANY || !isset(printcustomerssn)}
+			{if !$printcustomerid}&nbsp;(#{$invoicelist[invoicelist].customerid}){/if}
+			{if $invoicelist[invoicelist].ctype == $smarty.const.CTYPES_COMPANY || !$printcustomerssn}
 				{if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}
 			{/if}
 			<br>

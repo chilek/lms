@@ -53,7 +53,7 @@
 		</TD>
 		{/if}
 	</TR>
-	{if !isset($printonlysummary)}
+	{if !$printonlysummary)}
 	{cycle values="grey,white" print=false}
 	{foreach $invoicelist as $invoice}
 	<TR class="{cycle}">
@@ -71,8 +71,8 @@
 		<TD>
 			{strip}
 			<strong>{$invoice.custname}</strong>
-			{if !isset($printcustomerid)}&nbsp;(#{$invoice.customerid}){/if}
-			{if $invoice.ctype == $smarty.const.CTYPES_COMPANY || !isset(printcustomerssn)}
+			{if !$printcustomerid}&nbsp;(#{$invoice.customerid}){/if}
+			{if $invoice.ctype == $smarty.const.CTYPES_COMPANY || !$printcustomerssn}
 				{if $invoice.ten}, {$invoice.ten}{/if}
 			{/if}
 			<br>
