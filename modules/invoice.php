@@ -283,6 +283,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
     $einvoice = intval($_GET['einvoice']);
+    $attach_documents = isset($_GET['attach-documents']);
+
     $documents = $DB->GetAllByKey(
         'SELECT
             d.id, d.type,
@@ -312,6 +314,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 END)
                 ELSE NULL
             END) AS lang
+            ' . ($attach_documents ? ', (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS docrefs' : '') . '
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN countries cn ON (cn.id = d.countryid)
@@ -346,6 +349,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         'id',
         array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE)
     );
+
     if (empty($documents)) {
         if ($jpk) {
             echo trans('No documents to JPK export!');
@@ -1303,11 +1307,47 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             foreach (array_keys($DOCENTITIES) as $type) {
                 if ($which & $type) {
                     $i++;
-                    if ($i == $count) {
+                    if ($i == $count || ($attach_documents && $invoice_type == 'pdf')) {
                         $invoice['last'] = true;
                     }
                     $invoice['type'] = $type;
                     invoice_body($document, $invoice);
+                }
+            }
+
+            if ($invoice_type == 'pdf' && $attach_documents) {
+                if (!isset($fpdi)) {
+                    $fpdi = new LMSFpdiBackend;
+                    $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+                }
+
+                $fpdi->AppendPage($document->WriteToString());
+                $document = new $classname(trans('Invoices'));
+
+                $docrefs = $LMS->getDocumentReferences($invoiceid);
+                if (empty($docrefs)) {
+                    continue;
+                }
+
+                $document_attachment_files = array();
+                foreach ($docrefs as $docid => $docref) {
+                    $referenced_document = $LMS->GetDocumentFullContents($docid);
+                    if (empty($referenced_document)) {
+                        continue;
+                    }
+                    foreach ($referenced_document['attachments'] as $attachment) {
+                        $document_attachment_files[] = array(
+                            'contenttype' => $attachment['contenttype'],
+                            'filename' => $attachment['filename'],
+                            'data' => $attachment['contents'],
+                        );
+                    }
+                }
+
+                foreach ($document_attachment_files as $document_attachment_file) {
+                    if (preg_match('/pdf$/', $document_attachment_file['contenttype'])) {
+                        $fpdi->AppendPage($document_attachment_file['data']);
+                    }
                 }
             }
         }
@@ -1550,7 +1590,11 @@ if ($jpk) {
 
     echo $jpk_data;
 } else {
-    $document->WriteToBrowser($attachment_name);
+    if ($invoice_type == 'pdf' && $attach_documents && isset($fpdi)) {
+        $fpdi->WriteToBrowser($attachment_name);
+    } else {
+        $document->WriteToBrowser($attachment_name);
+    }
 }
 
 if (!$dontpublish && isset($ids) && !empty($ids)) {
