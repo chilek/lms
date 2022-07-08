@@ -1071,7 +1071,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        $this->lastmessageid = '<msg.' . $message['queue'] . '.' . $message['ticketid']
+        $this->lastmessageid = '<msg.' . $this->GetQueueByTicketId($message['ticketid'])
+            . '.' . $message['ticketid']
             . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
         $createtime = isset($message['createtime']) ? $message['createtime'] : time();
@@ -1977,7 +1978,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function ReplaceNotificationSymbols($text, array $params)
     {
-        if ($params['contenttype'] == 'text/html') {
+        if (isset($params['contentype']) && $params['contenttype'] == 'text/html') {
             $text = str_replace("\n", "<br>\n", $text);
         }
 
