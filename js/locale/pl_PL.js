@@ -1753,7 +1753,7 @@ $_LANG['Select accounting frequency'] = 'Wybierz częstotliwość naliczania';
 $_LANG['Select address status'] = 'Wybierz status adresu';
 $_LANG['Select All<!nodes>'] = 'Zaznacz wszystkie';
 $_LANG['— select customer —'] = '— wybierz klienta —';
-$_LANG['... select customer ...'] = '… wybierz klienta …';
+$_LANG['… select customer …'] = '… wybierz klienta …';
 $_LANG['select customer'] = 'wybierz klienta';
 $_LANG['Select customer'] = 'Wybierz klienta';
 $_LANG['select customer from list or enter his data if is not a customer'] = 'wybierz klienta z listy lub wprowadź jego dane, jeżeli nie ma go na liście';
@@ -1779,8 +1779,8 @@ $_LANG['Select event\'s status'] = 'Wybierz status wpisu';
 $_LANG['— select filter category —'] = '— wybierz kategorię filtrowania —';
 $_LANG['Select from list device for connection'] = 'Z listy wybierz urządzenie do podłączenia';
 $_LANG['Select from list device for replacement'] = 'Z listy wybierz urządzenie do wymiany';
-$_LANG['... select group ...'] = '… wybierz grupę …';
-$_LANG['... select groups ...'] = '… wybierz grupy …';
+$_LANG['… select group …'] = '… wybierz grupę …';
+$_LANG['… select groups …'] = '… wybierz grupy …';
 $_LANG['Select group'] = 'Wybierz grupę';
 $_LANG['Select group to attribute to customer'] = 'Wybierz grupę, którą chcesz przypisać klientowi';
 $_LANG['— select host —'] = '— wybierz host —';
@@ -2317,7 +2317,7 @@ $_LANG['less than or equal to'] = 'mniejsze równe';
 $_LANG['duplicate'] = 'duplikat';
 $_LANG['DUPLICATE'] = 'DUPLIKAT';
 $_LANG['DUPLICATE, draw-up date:'] = 'DUPLIKAT, data wystawienia:';
-$_LANG['If true on invoice (html) will be printed history of financial operations on customer account. Default: not set.'] = 'Określa czy na fakturze (html) drukować listę operacji finansowych na koncie klienta. Domyślnie: nie ustawiona.';
+$_LANG['If true on invoice (HTML) will be printed history of financial operations on customer account. Default: not set.'] = 'Określa czy na fakturze (HTML) drukować listę operacji finansowych na koncie klienta. Domyślnie: nie ustawiona.';
 $_LANG['Number of Records on customer balance list on invoice. Specify last x records. Default: 10.'] = 'Liczba rekordów na liście operacji finansowych na fakturze. Domyślnie: 10.';
 $_LANG['Expense:'] = 'Rozchód:';
 $_LANG['Final balance:'] = 'Saldo końcowe:';
@@ -2561,7 +2561,7 @@ $_LANG['Helpdesk ticket printout template file. Default: rtticketprint.html'] = 
 $_LANG['suspended<!plural>'] = 'zawieszeni';
 $_LANG['without tariff'] = 'bez taryfy';
 $_LANG['without group'] = 'bez grupy';
-$_LANG['Default status filter setting on tickets list. For allowed values see html source code. Default: not set'] = 'Domyślne ustawienie filtra statusu na liście zgłoszeń. Dozwolonych wartości szukaj w kodzie html strony. Domyślnie: nie ustawiona';
+$_LANG['Default status filter setting on tickets list. For allowed values see HTML source code. Default: not set'] = 'Domyślne ustawienie filtra statusu na liście zgłoszeń. Dozwolonych wartości szukaj w kodzie html strony. Domyślnie: nie ustawiona';
 $_LANG['Channel:'] = 'Kanał:';
 $_LANG['Channel'] = 'Kanał';
 $_LANG['Makes option "with invoice" checked by default. Default: false'] = 'Sprawia, że opcja "z fakturą" będzie domyślnie zaznaczona. Domyślnie: 0';
@@ -3466,9 +3466,9 @@ $_LANG['GPS latitude:'] = 'Szerokość geograficzna:';
 $_LANG['GPS latitude'] = 'Szerokość geograficzna';
 $_LANG['GPS longitude:'] = 'Długość geograficzna:';
 $_LANG['GPS longitude'] = 'Długość geograficzna';
-$_LANG['Click to select gps coordinates from map'] = 'Kliknij, aby wybrać współrzędne geograficzne z mapy';
-$_LANG['Select gps coordinates'] = 'Wybierz współrzędne geograficzne';
-$_LANG['Select gps coordinates:'] = 'Wybierz współrzędne geograficzne:';
+$_LANG['Click to select GPS coordinates from map'] = 'Kliknij, aby wybrać współrzędne geograficzne z mapy';
+$_LANG['Select GPS coordinates'] = 'Wybierz współrzędne geograficzne';
+$_LANG['Select GPS coordinates:'] = 'Wybierz współrzędne geograficzne:';
 $_LANG['Show on map'] = 'Pokaż na mapie';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';
@@ -3515,8 +3515,8 @@ $_LANG['UKE SIIS report'] = 'Raport UKE SIIS';
 $_LANG['Allows you to prepare SIIS v5 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 5 do UKE';
 $_LANG['UKE income report'] = 'Raport przychodów UKE';
 $_LANG['<!uke-income>Link technology'] = 'Technologia łącza';
-$_LANG['<!uke-income>Bussiness services'] = 'Usługi świadczone klientom biznesowym';
-$_LANG['<!uke-income>Bussiness income'] = 'Przychód biznesowy';
+$_LANG['<!uke-income>Business services'] = 'Usługi świadczone klientom biznesowym';
+$_LANG['<!uke-income>Business income'] = 'Przychód biznesowy';
 $_LANG['<!uke-income>Private services'] = 'Usługi świadczone klientom prywatnym';
 $_LANG['<!uke-income>Private income'] = 'Przychód prywatny';
 $_LANG['<!uke-income>Total services'] = 'Całkowita liczba świadczonych usług';
@@ -3726,7 +3726,7 @@ $_LANG['cash registry history<!syslog>'] = 'historia rejestru kasowego';
 $_LANG['network<!syslog>'] = 'sieć';
 $_LANG['network device<!syslog>'] = 'urządzenie sieciowe';
 $_LANG['network link<!syslog>'] = 'połączenie sieciowe';
-$_LANG['management url<!syslog>'] = 'adres url do zarządzania';
+$_LANG['management URL<!syslog>'] = 'adres URL do zarządzania';
 $_LANG['template<!syslog>'] = 'szablon';
 $_LANG['radio sector<!syslog>'] = 'sektor radiowy';
 $_LANG['event<!syslog>'] = 'zdarzenie terminarza';
@@ -4220,7 +4220,7 @@ $_LANG['Can\'t send message. PHPMailer not found!'] = 'Nie można wysłać wiado
 
 $_LANG['E-mail address from which we send mail.'] = 'Adres e-mail, z którego wysyłamy maile.';
 $_LANG['E-mail address name from which we send mail.'] = 'Nazwa adresu e-mail, z którego wysyłamy maile.';
-$_LANG['Email message in html format.'] = 'Wiadomość e-mail w formacie html.';
+$_LANG['Email message in HTML format.'] = 'Wiadomość e-mail w formacie html.';
 $_LANG['mail security protocol'] = 'protokół bezpieczeństwa';
 $_LANG['Security protocol. Available options: ssl or tls.'] = 'Protokół bezpieczeństwa. Dostępne opcje: ssl lub tls.';
 $_LANG['Incorrect mail security protocol. Valid types are: ssl, tls!'] = 'Niepoprawny protokół bezpieczeństwa. Dostępne opcje: ssl, tls!';
@@ -4333,7 +4333,7 @@ $_LANG['Add tag'] = 'Dodaj etykietę';
 $_LANG['Edit tag'] = 'Edytuj etykietę';
 $_LANG['Reset tags'] = 'Resetuj etykiety';
 $_LANG['There are no tags in database.'] = 'Nie ma etykiet w bazie danych.';
-$_LANG['Tag with assigned tariffs cannont be deleted!'] = 'Etykieta z przypisanymi taryfami nie może zostać usunięta!';
+$_LANG['Tag with assigned tariffs cannot be deleted!'] = 'Etykieta z przypisanymi taryfami nie może zostać usunięta!';
 
 $_LANG['URL addresses'] = 'Adresy URL';
 $_LANG['Enter URL address (optional)'] = 'Podaj adres URL (opcjonalnie)';
@@ -4397,7 +4397,7 @@ $_LANG['NO ACCOUNTANT DOCUMENT'] = 'DOKUMENT NIEKSIĘGOWY';
 $_LANG['No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'] = 'Nie przypisano żadnego komputera do zobowiązania, podczas gdy co najmniej jeden jest zalecany! Jesteś pewien, że chcesz kontynuować mimo tego?';
 $_LANG['No assignment selected, by at least one is recommended! Are you sure you want to continue despite of this?'] = 'Nie wybrano żadnego zobowiązania, podczas gdy co najmniej jedno jest zalecane! Jesteś pewien, że chcesz kontynuować mimo tego?';
 
-$_LANG['without gps coords'] = 'bez współrzędnych GPS';
+$_LANG['without GPS coords'] = 'bez współrzędnych GPS';
 
 $_LANG['without invoice flag'] = 'bez flagi z fakturą';
 
@@ -4417,7 +4417,7 @@ $_LANG['Facebook'] = 'Facebook';
 $_LANG['Next Reload:'] = 'Następne przeładowanie:';
 
 $_LANG['Evio status'] = 'Status Evio';
-$_LANG['Checks vitalilty of all Evio services'] = 'Sprawdza żywotność wszystkich usług Evio';
+$_LANG['Checks vitality of all Evio services'] = 'Sprawdza żywotność wszystkich usług Evio';
 
 $_LANG['New Pro Forma Invoice'] = 'Nowa faktura pro forma';
 $_LANG['New Pro Forma'] = 'Nowa pro forma';
@@ -4453,7 +4453,7 @@ $_LANG['Notes<!rt>'] = 'Notatki';
 $_LANG['History<!rt>'] = 'Historia';
 
 $_LANG['Sort by'] = 'Sortuj wg';
-$_LANG['Select sort cryterion'] = 'Wybierz kryterium sortowania';
+$_LANG['Select sorting criterion'] = 'Wybierz kryterium sortowania';
 $_LANG['Document number'] = 'Numer dokumentu';
 
 $_LANG['Enter main bank account number (optional)'] = 'Wprowadź główny numer rachunku bankowego (opcjonalnie)';
@@ -4524,7 +4524,7 @@ $_LANG['Resolve ticket subject should not be empty if you set resolve ticket bod
 $_LANG['Post office:'] = 'Poczta:';
 $_LANG['Post office'] = 'Poczta';
 
-$_LANG['Determined gps coordinates are not precise.\nDo you still want to use them?'] = 'Wyznaczone współrzędne GPS nie są precyzyjne. Czy mimo tego chcesz je użyć?';
+$_LANG['Determined GPS coordinates are not precise.\nDo you still want to use them?'] = 'Wyznaczone współrzędne GPS nie są precyzyjne. Czy mimo tego chcesz je użyć?';
 
 
 $_LANG['Removed:'] = 'Usunięte:';
@@ -4908,7 +4908,7 @@ $_LANG['Are you sure, you want to archive selected documents?'] = 'Jesteś pewie
 $_LANG['Are you sure, you want to unarchive selected documents?'] = 'Jesteś pewien, że chcesz cofnąć archiwizację wybranych dokumentów?';
 $_LANG['Cannot undo document confirmation while it is archived!'] = 'Nie można cofnąć zatwierdzenia dokumentu, gdy jest on zarchiwizowany!';
 $_LANG['archivization date'] = 'data archiwizacji';
-$_LANG['archivizator'] = 'archiwizator';
+$_LANG['archiver'] = 'archiwizator';
 $_LANG['trade document archiving'] = 'archiwizacja dokumentów handlowych';
 $_LANG['trade document unarchiving'] = 'cofanie archiwizacji dokumentów handlowych';
 $_LANG['Unarchive'] = 'Cofnij archiwizację';
@@ -4934,7 +4934,7 @@ $_LANG['<!message-type>note'] = 'notatka';
 $_LANG['Quote'] = 'Cytuj';
 $_LANG['<!vocative>Reply'] = 'Odpowiedz';
 
-$_LANG['Unable to determine gps coordinates!'] = 'Nie można wyznaczyć współrzędnych GPS!';
+$_LANG['Unable to determine GPS coordinates!'] = 'Nie można wyznaczyć współrzędnych GPS!';
 
 $_LANG['representative'] = 'reprezentant';
 $_LANG['Representatives'] = 'Reprezentanci';
@@ -4979,7 +4979,7 @@ $_LANG['Overriding config option for user in division'] = 'Nadpisywanie opcji ko
 $_LANG['Overriding config option for user'] = 'Nadpisywanie opcji konfiguracyjnej dla użytkownika';
 $_LANG['Referenced option does not exists!'] = 'Opcja nadrzędna nie istnieje!';
 $_LANG['User is required!'] = 'Użytkownik jest wymagany!';
-$_LANG['User is not asigned to the division!'] = 'Użytkownik nie jest przypisany do firmy!';
+$_LANG['User is not assigned to the division!'] = 'Użytkownik nie jest przypisany do firmy!';
 
 $_LANG['<!netelemtype>office building'] = 'budynek biurowy';
 $_LANG['<!netelemtype>residential building'] = 'budynek mieszkalny';

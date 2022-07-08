@@ -102,7 +102,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                     $result->script('
 						var longitude = "' . $geocode['longitude'] . '";
 						var latitude = "' . $geocode['latitude'] . '";
-						confirmDialog($t("Determined gps coordinates are not precise.\nDo you still want to use them?"),
+						confirmDialog($t("Determined GPS coordinates are not precise.\nDo you still want to use them?"),
 						    $("' . $longitude_selector . '")).done(function() {
     							$("' . $latitude_selector . '").val(latitude);
     							$("' . $longitude_selector . '").val(longitude);
@@ -168,9 +168,9 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
     if (!$found) {
         $result->script('
 			$("' . $latitude_selector . '").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
-				$t("Unable to determine gps coordinates!") + "' . ($error ? '<br>' . $error : '') . '");
+				$t("Unable to determine GPS coordinates!") + "' . ($error ? '<br>' . $error : '') . '");
 			$("' . $longitude_selector . '").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
-				$t("Unable to determine gps coordinates!") + "' . ($error ? '<br>' . $error : '') . '");
+				$t("Unable to determine GPS coordinates!") + "' . ($error ? '<br>' . $error : '') . '");
 		');
     }
 

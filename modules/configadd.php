@@ -112,7 +112,7 @@ if (!empty($config)) {
                 }
                 $divisionaccess = $LMS->CheckDivisionsAccess(array('divisions' => $config['divisionid'], 'user_id' => $config['userid']));
                 if (!$divisionaccess) {
-                    $error['userid'] = trans('User is not asigned to the division!');
+                    $error['userid'] = trans('User is not assigned to the division!');
                 }
                 break;
             case 'user':
