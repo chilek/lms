@@ -221,7 +221,7 @@ $hook_data = $plugin_manager->executeHook(
 $voipaccountdata = $hook_data['voipaccountdata'];
 
 $SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers"));
-$SMARTY->assign('customers', $customers);
+$SMARTY->assign('customers', isset($customers) ? $customers : null);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('voipaccountdata', $voipaccountdata);
 $SMARTY->display('voipaccount/voipaccountadd.html');
