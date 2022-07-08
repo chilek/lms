@@ -98,7 +98,7 @@
 						<SELECT name="usertype" onChange="javascript:applyFilter();">
 							<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
 							<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
-							<option value="archivizator"{if empty($filter.usertype) || $filter.usertype == 'archivizator'} selected{/if}>{trans("archiwizator")}</option>
+							<option value="archiver"{if empty($filter.usertype) || $filter.usertype == 'archiver'} selected{/if}>{trans("archiver")}</option>
 						</SELECT>
 
 						<input type="hidden" name="u[]" value="0">

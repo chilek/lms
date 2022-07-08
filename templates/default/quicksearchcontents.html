@@ -33,7 +33,7 @@
 			<option value="contact"{if !isset($qs_properties.phone) || isset($qs_properties.phone.contact)} selected{/if}>{trans("<!qs>customer phone number")}</option>
 		{/if}
 		{if ConfigHelper::checkPrivilege('voip_account_management') || ConfigHelper::checkPrivilege('read_only')}
-			<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>voip account number")}</option>
+			<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>VoIP account number")}</option>
 		{/if}
 	</select>
 </div>

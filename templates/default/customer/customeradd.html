@@ -199,7 +199,7 @@
 					</TD>
 					<TD>
 						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
-							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
+							<OPTION VALUE="0">{trans("… select group …")}</OPTION>
 							{foreach $groups as $group}
 							<OPTION VALUE="{$group.id}" {if $customeradd.group == $group.id}SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
 							{/foreach}

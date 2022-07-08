@@ -150,7 +150,7 @@ class SYSLOG
         self::RES_NETWORK => 'network<!syslog>',
         self::RES_NETDEV => 'network device<!syslog>',
         self::RES_NETLINK => 'network link<!syslog>',
-        self::RES_MGMTURL => 'management url<!syslog>',
+        self::RES_MGMTURL => 'management URL<!syslog>',
         self::RES_TMPL => 'template<!syslog>',
         self::RES_RADIOSECTOR => 'radio sector<!syslog>',
         self::RES_USERGROUP => 'user group<!syslog>',

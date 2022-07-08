@@ -118,14 +118,14 @@
 				{box_row icon="location" icon_class="fa-fw" label="GPS longitude"}
 					<input id="longitude" type="text" name="netdev[longitude]" value="{$netdev.longitude}"
 							{tip trigger="longitude"}>
-					{button type="link" icon="map" tip="Click to select gps coordinates from map"
+					{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 						onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"}
 				{/box_row}
 
 				{box_row icon="location" icon_class="fa-fw" label="GPS latitude"}
 					<input id="latitude" type="text" name="netdev[latitude]" value="{$netdev.latitude}"
 						{tip trigger="latitude" }>
-					{button type="link" icon="map" tip="Click to select gps coordinates from map"
+					{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 						onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"}
 				{/box_row}
 
