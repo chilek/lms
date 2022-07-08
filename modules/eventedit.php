@@ -54,7 +54,8 @@ $backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
-switch ($_GET['action']) {
+$action = isset($_GET['action']) ? $_GET['action'] : null;
+switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && (time() - $event['closeddate'] < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
