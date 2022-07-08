@@ -154,7 +154,7 @@ if (!empty($_POST['marks'])) {
 	WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0', array(intval($_GET['id']), Auth::GetCurrentUser(), DOCRIGHT_VIEW))) {
     $docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
 		ORDER BY type DESC', 'id', array($_GET['id']));
-    $attachmentid = intval($_GET['attachmentid']);
+    $attachmentid = isset($_GET['attachmentid']) ? intval($_GET['attachmentid']) : null;
     if ($attachmentid) {
         $docattach = $docattachments[$attachmentid];
     } else {
