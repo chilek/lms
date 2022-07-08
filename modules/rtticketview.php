@@ -188,9 +188,9 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SMARTY->assign('aet', $aet);
 $SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('relatedticketscontent', $relatedticketscontent);
-$SMARTY->assign('childticketscontent', $childticketscontent);
-$SMARTY->assign('parentticketcontent', $parentticketcontent);
+$SMARTY->assign('relatedticketscontent', isset($relatedticketscontent) ? $relatedticketscontent : null);
+$SMARTY->assign('childticketscontent', isset($childticketscontent) ? $childticketscontent : null);
+$SMARTY->assign('parentticketcontent', isset($parentticketcontent) ? $parentticketcontent : null);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);
