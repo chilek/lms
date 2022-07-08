@@ -92,7 +92,7 @@ if (isset($_POST['ticket'])) {
         $error['body'] = trans('Ticket must have its body!');
     }
 
-    if ($ticket['mail']!='' && !check_email($ticket['mail'])) {
+    if (isset($ticket['mail']) && $ticket['mail']!='' && !check_email($ticket['mail'])) {
         $error['mail'] = trans('Incorrect email!');
     }
 
