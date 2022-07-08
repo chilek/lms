@@ -354,19 +354,19 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         switch ($privacy) {
             case 0:
                 if ($event_user_assignments) {
-                    $privacy_condition = 'AND (private = 0 OR (private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))))';
+                    $privacy_condition = ' AND (private = 0 OR (private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))))';
                 } else {
-                    $privacy_condition = 'AND (private = 0 OR (private = 1 AND userid = ' . $current_user_id . '))';
+                    $privacy_condition = ' AND (private = 0 OR (private = 1 AND userid = ' . $current_user_id . '))';
                 }
                 break;
             case 1:
-                $privacy_condition = 'AND private = 0';
+                $privacy_condition = ' AND private = 0';
                 break;
             case 2:
                 if ($event_user_assignments) {
-                    $privacy_condition = 'AND private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))';
+                    $privacy_condition = ' AND private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))';
                 } else {
-                    $privacy_condition = 'AND private = 1 AND userid = ' . $current_user_id;
+                    $privacy_condition = ' AND private = 1 AND userid = ' . $current_user_id;
                 }
                 break;
         }
