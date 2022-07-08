@@ -4264,6 +4264,7 @@ $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 $_LANG['expire in indicated number of days'] = 'wygasną za wskazaną liczbę dni';
 
 $_LANG['TERRIT not specified'] = 'bez TERYT';
+$_LANG['<!welcome>TERRIT not specified'] = 'Bez TERYT';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
