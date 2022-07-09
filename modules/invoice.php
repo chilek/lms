@@ -533,7 +533,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 }
                 if (empty($division['naturalperson'])) {
                     $jpk_data .= "\t\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
-                    $jpk_data .= "\t\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
+                    $jpk_data .= "\t\t\t<PelnaNazwa>" . isset($division['name']) ? htmlspecialchars($division['name']) : '' . "</PelnaNazwa>\n";
                 } else {
                     $jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
                     $jpk_data .= "\t\t\t<etd:ImiePierwsze>" . htmlspecialchars($division['firstname']) . "</etd:ImiePierwsze>\n";
