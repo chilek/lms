@@ -1226,20 +1226,20 @@ if (empty($types) || in_array('contracts', $types)) {
     $days = $notifications['contracts']['days'];
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-            SUM(value * currencyvalue) AS balance, d.dateto AS cdate,
+            SUM(value * currencyvalue) AS balance, d.cdate, d.dateto AS deadline,
             m.email, x.phone
         FROM customeraddressview c
         JOIN cash ON (c.id = cash.customerid) "
         . ($expiration_type == 'assignments' ?
             "JOIN (
-                SELECT MAX(a.dateto) AS dateto, a.customerid
+                SELECT 0 AS cdate, MAX(a.dateto) AS dateto, a.customerid
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
                 HAVING MAX(a.dateto) >= $daystart + $days * 86400 AND MAX(a.dateto) < $daystart + ($days + 1) * 86400
             ) d ON d.customerid = c.id" :
             "JOIN (
-                SELECT DISTINCT customerid, documents.id, dc.todate AS dateto FROM documents
+                SELECT DISTINCT customerid, documents.id, documents.cdate, dc.todate AS dateto FROM documents
                 JOIN documentcontents dc ON dc.docid = documents.id
                 WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
