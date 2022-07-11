@@ -610,9 +610,9 @@ $query = "SELECT
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
-			voipcost.value,
-			voipcost.value AS unitary_value,
-			" . ($billing_invoice_separate_fractions ? ' voipcost.call_count, voipcost.call_fraction, ' : '') . "
+			COALESCE(voipcost.value, 0) AS value,
+			COALESCE(voipcost.value, 0) AS unitary_value,
+			" . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
 			taxes.value AS taxrate,
             (CASE WHEN c.type = ?
                 THEN 0
@@ -645,7 +645,7 @@ $query = "SELECT
 			JOIN customers c ON (a.customerid = c.id)
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
-			JOIN (
+			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
 					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
                     . "va.ownerid AS customerid,
