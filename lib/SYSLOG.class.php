@@ -505,6 +505,10 @@ class SYSLOG
     {
         global $PERIODS, $PAYTYPES, $LINKTYPES, $LINKSPEEDS, $CSTATUSES;
 
+        if (!isset($data['name'])) {
+            $data['name'] = '';
+        }
+
         switch ($data['name']) {
             case 'datefrom':
             case 'dateto':
