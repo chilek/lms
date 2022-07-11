@@ -60,12 +60,14 @@ if (isset($_POST['message'])) {
 
         $tickets = array($message['ticketid']);
 
-        if ($message['destination'] != '' && !check_email($message['destination'])) {
-            $error['destination'] = trans('Incorrect email!');
-        }
+        if (isset($message['destination'])) {
+            if ($message['destination'] != '' && !check_email($message['destination'])) {
+                $error['destination'] = trans('Incorrect email!');
+            }
 
-        if ($message['destination'] != '' && $message['sender'] == 'customer') {
-            $error['destination'] = trans('Customer cannot send message!');
+            if ($message['destination'] != '' && $message['sender'] == 'customer') {
+                $error['destination'] = trans('Customer cannot send message!');
+            }
         }
 
         $ticket = $LMS->GetTicketContents($message['ticketid']);
@@ -709,7 +711,7 @@ if (isset($_POST['message'])) {
                 }
             }
 
-            if (!$message['destination'] && !$reply['userid']) {
+            if ((!isset($message['destination']) || !$message['destination']) && !$reply['userid']) {
                 $message['destination'] = $LMS->GetCustomerEmail($message['customerid'], 0, CONTACT_DISABLED);
                 if (!empty($message['destination'])) {
                     $message['destination'] = implode(',', $message['destination']);
