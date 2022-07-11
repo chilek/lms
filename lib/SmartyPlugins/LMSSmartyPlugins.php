@@ -561,7 +561,7 @@ class LMSSmartyPlugins
                   <input type="text"   value="'
                     . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' )
                     . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
-                    . ($params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
+                    . (isset($params['location_address_type']) && $params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
               </td>
           </tr>';
