@@ -1233,12 +1233,12 @@ if (!empty($payments)) {
         $LMS->ExecuteHook(
             'solid_payments_hook',
             array(
-            $issuetime,
-            $payment['type'],
-            $payment['value'],
-            $payment['name'],
-            $payment['customerid'],
-            $payment['creditor'],
+                $issuetime,
+                $payment['type'],
+                $payment['value'],
+                $payment['name'],
+                $payment['customerid'],
+                $payment['creditor'],
             )
         );
 
