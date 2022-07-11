@@ -56,7 +56,7 @@ if (count($aids) == 1) {
     }
 }
 
-if ($_GET['action'] == 'suspend') {
+if (isset($_GET['action']) && $_GET['action'] == 'suspend') {
     foreach ($aids as $aid) {
         $LMS->toggleAssignmentSuspension($aid);
     }
