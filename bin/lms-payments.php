@@ -594,6 +594,7 @@ $services = $DB->GetAll(
 );
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
+$billing_invoice_separate_fractions = ConfigHelper::checkConfig('payments.billing_invoice_separate_fractions');
 
 $query = "SELECT
 			a.id, a.tariffid, a.customerid, a.recipient_address_id,
@@ -610,6 +611,7 @@ $query = "SELECT
 			t.taxid AS taxid, '' as prodid,
 			voipcost.value,
 			voipcost.value AS unitary_value,
+			" . ($billing_invoice_separate_fractions ? ' voipcost.call_count, voipcost.call_fraction, ' : '') . "
 			taxes.value AS taxrate,
             (CASE WHEN c.type = ?
                 THEN 0
@@ -643,7 +645,9 @@ $query = "SELECT
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 			JOIN (
-				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
+				SELECT ROUND(sum(price), 2) AS value,
+					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
+					. "va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
 				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.type = " . CALL_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.type = " . CALL_INCOMING . "
@@ -696,7 +700,7 @@ $query = "SELECT
 						END)
 					)
 				)
-				GROUP BY va.ownerid, a2.id
+				GROUP BY va.ownerid, a2.id" . ($billing_invoice_separate_fractions ? ', vc.fraction' : '') . "
 			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
 			LEFT JOIN (
 				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', ', ') . " AS phones
@@ -1397,6 +1401,8 @@ if (!empty($billing_document_template)) {
     $SMARTY->assignByRef('layout', $layout);
 }
 
+$invoices_with_billings = array();
+
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
@@ -1461,6 +1467,8 @@ foreach ($assigns as $assign) {
             '%tariff',
             '%attribute',
             '%desc',
+            '%call_count',
+            '%call_fraction',
             '%promotion_name',
             '%promotion_schema_name',
             '%promotion_schema_length',
@@ -1484,6 +1492,8 @@ foreach ($assigns as $assign) {
             $assign['name'],
             $assign['attribute'],
             $assign['description'],
+            isset($assign['call_count']) && !empty($assign['call_count']) ? $assign['call_count'] : 0,
+            isset($assign['call_fraction']) && mb_strlen($assign['call_fraction']) ? $assign['call_fraction'] : '',
             $assign['promotion_name'],
             $assign['promotion_schema_name'],
             empty($assign['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $assign['promotion_schema_length']),
@@ -1923,7 +1933,7 @@ foreach ($assigns as $assign) {
                     }
 
 
-                    if (!empty($billing_document_template) && !empty($assign['billingconsent'])) {
+                    if (!empty($billing_document_template) && !empty($assign['billingconsent']) && !isset($invoices_with_billings[$invoices[$cid]])) {
                         $billing_plan = isset($billing_plans[$divid]) ? $billing_plans[$divid] : 0;
                         if (!isset($numbertemplates[$billing_plan])) {
                             $numbertemplates[$billing_plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($billing_plan));
@@ -2046,6 +2056,8 @@ foreach ($assigns as $assign) {
                                 $dateto,
                             )
                         );
+
+                        $invoices_with_billings[$invoices[$cid]] = $billing_docid;
 
                         if (!$test) {
                             $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
