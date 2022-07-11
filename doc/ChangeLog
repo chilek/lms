@@ -232,6 +232,10 @@ version 28-git (????-??-??):
   - enhancement: impelemented document/assignment expiration filters in new message form [chilan]
   - enhancement: added info property to voip numbers [chilan]
   - enhancement: new LMSFpdiBackend allows to easily merge/unite many PDF contents [chilan]
+  - enhancement: added 'payments.billing_invoice_separate_fractions' support with 'false'
+    as default value [chilan]
+  - enhancement: added %call_count and %call_fraction support to
+    'payments.invoice_billing_description' configuration variable [chilan]
 
 version 27.0 (2021-08-20):
 
