@@ -1857,7 +1857,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result['consents'] = $this->getCustomerConsents($id);
             }
             $result['balance'] = $this->getCustomerBalance($result['id']);
-            if (ConfigHelper::checkConfig('phpui.show_due_balance', ConfigHelper::checkConfig('phpui.show_expired_balance'))) {
+            if (ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))) {
                 $result['expiredbalance'] = $this->getCustomerBalance($result['id'], null, true);
             }
             $result['bankaccount'] = bankaccount($result['id'], $result['account']);
