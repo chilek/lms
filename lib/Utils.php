@@ -43,6 +43,9 @@ class Utils
     public static function filterIntegers(array $params)
     {
         return array_filter($params, function ($value) {
+            if (!isset($value)) {
+                return false;
+            }
             $string = strval($value);
             if ($string[0] == '-') {
                 $string = ltrim($string, '-');
