@@ -3481,10 +3481,28 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
+    public function documentCommitParseNotificationMail($string, $data)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->documentCommitParseNotificationMail($string, $data);
+    }
+
+    public function documentCommitParseNotificationRecipient($string, $data)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->documentCommitParseNotificationRecipient($string, $data);
+    }
+
     public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
         $manager = $this->getDocumentManager();
         return $manager->CommitDocuments($ids, $userpanel, $check_close_flag);
+    }
+
+    public function newDocumentParseNotification($string, $data)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->newDocumentParseNotification($string, $data);
     }
 
     public function NewDocumentCustomerNotifications(array $document)

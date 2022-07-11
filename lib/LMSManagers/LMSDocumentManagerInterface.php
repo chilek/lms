@@ -42,7 +42,13 @@ interface LMSDocumentManagerInterface
 
     public function DocumentExists($properties);
 
+    public function documentCommitParseNotificationMail($string, $data);
+
+    public function documentCommitParseNotificationRecipient($string, $data);
+
     public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true);
+
+    public function newDocumentParseNotification($string, $data);
 
     public function NewDocumentCustomerNotifications(array $document);
 
