@@ -130,8 +130,8 @@ if (!empty($iteration['total'])) {
             break;
         }
     }
-    $ticket['next_ticketid'] = $next_ticketid;
-    $ticket['prev_ticketid'] = $prev_ticketid;
+    $ticket['next_ticketid'] = isset($next_ticketid) ? $next_ticketid : null;
+    $ticket['prev_ticketid'] = isset($prev_ticketid) ? $prev_ticketid : null;
 }
 
 foreach ($categories as $category) {
