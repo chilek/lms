@@ -16,9 +16,11 @@ $newticket_subject = ConfigHelper::getConfig(
 );
 
 
-str_replace('%uid', $uid, $newticket_subject);
-str_replace('%customerphone', $phone, $newticket_subject);
-str_replace('%agentnr', $agentnr, $newticket_subject);
+str_replace(
+    array('%uid', '%customerphone', '%agentnr'),
+    array($uid, $phone, $agentnr),
+    $newticket_subject
+);
 
 $basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
 $wwwuser = posix_getuid();
