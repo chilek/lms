@@ -595,6 +595,7 @@ $services = $DB->GetAll(
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 $billing_invoice_separate_fractions = ConfigHelper::checkConfig('payments.billing_invoice_separate_fractions');
+$empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 
 $query = "SELECT
 			a.id, a.tariffid, a.customerid, a.recipient_address_id,
@@ -1408,7 +1409,8 @@ foreach ($assigns as $assign) {
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
     $assign['value'] = floatval($assign['value']);
-    if (empty($assign['value'])) {
+
+    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
     }
 
@@ -1445,7 +1447,7 @@ foreach ($assigns as $assign) {
     if (!$assign['suspended'] && $assign['allsuspended']) {
         $assign['value'] = $assign['value'] * $suspension_percentage / 100;
     }
-    if (empty($assign['value'])) {
+    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
     }
 
@@ -1607,7 +1609,7 @@ foreach ($assigns as $assign) {
         $numberplans[$cid] = 0;
     }
 
-    if ($assign['unitary_value'] != 0) {
+    if ($assign['unitary_value'] != 0 || $empty_billings && $assign['liabilityid'] == 'set') {
         $price = $assign['unitary_value'];
         $currency = $assign['currency'];
         $netflag = intval($assign['netflag']);
