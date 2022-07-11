@@ -56,7 +56,10 @@ function smarty_function_tax_rate_selection(array $params, $template)
     );
     $visible = isset($params['visible']) && !$params['visible'] ? ' style="display: none;"' : '';
     $required = isset($params['required']) ? ' required' : null;
-    $icon = '<i class="' . (strpos($params['icon'], 'lms-ui-icon-') === 0 ? $params['icon'] : 'lms-ui-icon-' . $params['icon']) . '"></i>';
+
+    $icon = '<i class="' . (empty($params['icon']) ? 'lms-ui-icon-taxrate'
+        : (strpos($params['icon'], 'lms-ui-icon-') === 0 ? $params['icon'] : 'lms-ui-icon-' . $params['icon'])
+        ) . '"></i>';
 
     $data_attributes = '';
     foreach ($params as $attname => $attvalue) {
