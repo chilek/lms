@@ -283,7 +283,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
     $einvoice = intval($_GET['einvoice']);
-    $attach_documents = isset($_GET['attach-documents']);
+    $related_documents = isset($_GET['related-documents']);
 
     $documents = $DB->GetAllByKey(
         'SELECT
@@ -1306,7 +1306,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             foreach (array_keys($DOCENTITIES) as $type) {
                 if ($which & $type) {
                     $i++;
-                    if ($i == $count || ($attach_documents && $invoice_type == 'pdf')) {
+                    if ($i == $count || ($related_documents && $invoice_type == 'pdf')) {
                         $invoice['last'] = true;
                     }
                     $invoice['type'] = $type;
@@ -1314,7 +1314,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 }
             }
 
-            if ($invoice_type == 'pdf' && $attach_documents) {
+            if ($invoice_type == 'pdf' && $related_documents) {
                 if (!isset($fpdi)) {
                     $fpdi = new LMSFpdiBackend;
                     $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
@@ -1589,7 +1589,7 @@ if ($jpk) {
 
     echo $jpk_data;
 } else {
-    if ($invoice_type == 'pdf' && $attach_documents && isset($fpdi)) {
+    if ($invoice_type == 'pdf' && isset($fpdi) && $related_documents) {
         $fpdi->WriteToBrowser($attachment_name);
     } else {
         $document->WriteToBrowser($attachment_name);
