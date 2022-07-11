@@ -1519,7 +1519,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['owner'] = $ticket['owner'];
         }
 
-        if ($ticket['queueid'] != $props['queueid'] && isset($props['queueid'])) {
+        if (isset($props['queueid']) && $ticket['queueid'] != $props['queueid']) {
             $notes[] = trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($props['queueid']));
             $type = $type | RTMESSAGE_QUEUE_CHANGE;
             if (ConfigHelper::checkConfig('rt.ticket_queue_change_resets_ticket_state') && $ticket['state'] != RT_VERIFIED && $ticket['state'] != RT_RESOLVED) {
@@ -1529,7 +1529,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['queueid'] = $ticket['queueid'];
         }
 
-        if ($ticket['cause'] != $props['cause'] && isset($props['cause'])) {
+        if (isset($props['cause']) && $ticket['cause'] != $props['cause']) {
             $notes[] = trans('Ticket\'s cause has been changed from $a to $b.', $RT_CAUSE[$ticket['cause']], $RT_CAUSE[$props['cause']]);
             $type = $type | RTMESSAGE_CAUSE_CHANGE;
         } else {
