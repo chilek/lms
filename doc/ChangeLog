@@ -236,6 +236,8 @@ version 28-git (????-??-??):
     as default value [chilan]
   - enhancement: added %call_count and %call_fraction support to
     'payments.invoice_billing_description' configuration variable [chilan]
+  - improvement: 'phpui.ignore_deleted_customers' ('false' by default) allows to hide deleted
+    customers from lists by default [chilan]
 
 version 27.0 (2021-08-20):
 
