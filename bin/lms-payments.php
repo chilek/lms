@@ -647,7 +647,7 @@ $query = "SELECT
 			JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
 					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
-					. "va.ownerid AS customerid,
+                    . "va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
 				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.type = " . CALL_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.type = " . CALL_INCOMING . "
