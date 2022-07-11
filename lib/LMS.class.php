@@ -2430,20 +2430,21 @@ class LMS
 
     public function ReplaceInstanceLabelSymbols($text)
     {
-        $search = array(
-            '%hostname',
-            '%dbversion',
-            '%phpversion',
-            '%ipaddr',
+        return str_replace(
+            array(
+                '%hostname',
+                '%dbversion',
+                '%phpversion',
+                '%ipaddr',
+            ),
+            array(
+                gethostname(),
+                $this->DB->GetVersion(),
+                phpversion(),
+                $_SERVER['SERVER_ADDR'],
+            ),
+            $text
         );
-        $replace = array(
-            gethostname(),
-            $this->DB->GetVersion(),
-            phpversion(),
-            $_SERVER['SERVER_ADDR'],
-        );
-
-        return str_replace($search, $replace, $text);
     }
 
     public function CheckUpdates($force = false)
