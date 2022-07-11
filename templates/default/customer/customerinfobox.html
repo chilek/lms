@@ -554,6 +554,25 @@
 												{/if}
 											</td>
 										</tr>
+										{if ConfigHelper::checkConfig('phpui.show_due_balance', ConfigHelper::checkConfig('phpui.show_expired_balance'))}
+											<tr>
+												<td>
+													{icon name="money"}
+												</td>
+												<td>
+													<strong>{trans("Due balance")}</strong>
+												</td>
+												<td>
+													{if $customerinfo.expiredbalance < 0}
+														<span class="lms-ui-alert">
+															{$customerinfo.balance|default:"0"|money_format}
+														</span>
+													{else}
+														{$customerinfo.expiredbalance|default:"0"|money_format}
+													{/if}
+												</td>
+											</tr>
+										{/if}
 									{/if}
 									<tr>
 										<td>

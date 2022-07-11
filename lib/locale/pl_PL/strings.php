@@ -1023,6 +1023,7 @@ $_LANG['meeting'] = 'spotkanie';
 $_LANG['exclude group'] = 'wyłącz grupę';
 $_LANG['Expiration date:'] = 'Data ważności:';
 $_LANG['expired'] = 'wygasł';
+$_LANG['Due balance'] = 'Saldo wymagalne';
 $_LANG['<!rt>expired'] = 'przedawniony';
 $_LANG['expired<!guarantee>'] = 'wygasła';
 $_LANG['Exposed By'] = 'Wystawił';
