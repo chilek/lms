@@ -3051,7 +3051,7 @@ class LMS
 
             if ($files) {
                 foreach ($files as $chunk) {
-                    if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                    if (isset($header['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
                         $this->mail_object->addStringEmbeddedImage(
                             $chunk['data'],
                             $chunk['content-id'],
@@ -3070,7 +3070,7 @@ class LMS
                 }
             }
 
-            if ($headers['X-LMS-Format'] == 'html') {
+            if (isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html') {
                 $this->mail_object->isHTML(true);
                 $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
                 $this->mail_object->msgHTML(preg_replace('/\r?\n/', "\n", $body));
