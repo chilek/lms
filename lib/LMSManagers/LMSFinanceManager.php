@@ -1573,6 +1573,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result['error'] = $error;
 
         $result['a'] = $a;
+        if (!isset($schemaid)) {
+            $schemaid = null;
+        }
         $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count'));
 
         return $result;
