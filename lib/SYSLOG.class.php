@@ -150,7 +150,7 @@ class SYSLOG
         self::RES_NETWORK => 'network<!syslog>',
         self::RES_NETDEV => 'network device<!syslog>',
         self::RES_NETLINK => 'network link<!syslog>',
-        self::RES_MGMTURL => 'management url<!syslog>',
+        self::RES_MGMTURL => 'management URL<!syslog>',
         self::RES_TMPL => 'template<!syslog>',
         self::RES_RADIOSECTOR => 'radio sector<!syslog>',
         self::RES_USERGROUP => 'user group<!syslog>',
@@ -505,6 +505,10 @@ class SYSLOG
     {
         global $PERIODS, $PAYTYPES, $LINKTYPES, $LINKSPEEDS, $CSTATUSES;
 
+        if (!isset($data['name'])) {
+            $data['name'] = '';
+        }
+
         switch ($data['name']) {
             case 'datefrom':
             case 'dateto':
@@ -566,14 +570,16 @@ class SYSLOG
                 $data['value'] = '***';
                 break;
             default:
-                if (strpos($data['name'], 'chkconsent') === 0) {
+                if (isset($data['name']) && strpos($data['name'], 'chkconsent') === 0) {
                     $data['value'] = !empty($data['value']) ? $data['value'] = date('Y.m.d', $data['value']) : $data['value'];
                 }
         }
-        if ($data['resource'] != self::RES_USER && strlen($data['value']) > 50) {
-            $data['value'] = substr($data['value'], 0, 50) . '...';
+        if (isset($data['value'])) {
+            if ($data['resource'] != self::RES_USER && strlen($data['value']) > 50) {
+                $data['value'] = substr($data['value'], 0, 50) . '...';
+            }
+            $data['value'] = htmlspecialchars($data['value']);
         }
-        $data['value'] = htmlspecialchars($data['value']);
         //$data['name'] = trans($data['name']);
     }
 

@@ -183,7 +183,7 @@
 					<SELECT NAME="radiosector" id="devnodesradiosector"
 							{tip trigger="devnodesradiosector" text="Select radio sector"}{if $nodelinktype != 1} style="display: none;"{/if}
 							form="connectnode-form">
-						<OPTION value="0">- {trans("none")} -</OPTION>
+						<OPTION value="0">{trans("— none —")}</OPTION>
 						{foreach $netdev.radiosectors as $radiosector}
 							<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodelinkradiosector} selected{/if}>{$radiosector.name}</OPTION>
 						{/foreach}
@@ -199,7 +199,7 @@
 					<SELECT NAME="linktechnology" id="devnodeslinktechnology"
 							{tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology()"
 							form="connectnode-form">
-						<OPTION value="0">{trans("- unknown -")}</OPTION>
+						<OPTION value="0">{trans("— unknown —")}</OPTION>
 						{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
 							<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
 						{/foreach}
@@ -226,7 +226,7 @@
 		var options = xjx.$('devnodeslinktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('{trans("- unknown -")}', 0));
+		options.add(new Option('{trans("— unknown —")}', 0));
 		switch (linktype) {
 			case 0:
 				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
@@ -262,7 +262,7 @@
 		var oldvalue = options[xjx.$('devnodesradiosector').selectedIndex].value;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('- {trans("none")} -', 0));
+		options.add(new Option('{trans("none")}', 0));
 		if (radiosectors !== null) {
 			radiosectors.forEach(function(elem) {
 				var option = new Option(elem.name, elem.id);

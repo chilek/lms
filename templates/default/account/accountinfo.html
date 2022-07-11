@@ -79,7 +79,7 @@
 					<B>{trans("Expiration date:")}</B>
 				    </TD>
 				    <TD width="98%">
-					{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{else}{trans("not expire")}{/if}
+					{if $account.expdate}{$account.expdate|date_format:"Y-m-d"}{else}{trans("not expire")}{/if}
 				    </TD>
 			    	</TR>
 				{if $account.mail_forward}

@@ -22,4 +22,4 @@ rm -f temp.txt
 rm -f oui.txt
 rm -f out.txt
 
-git commit -a -m "bumped ethercodes.txt"
+git commit -a -m "devel/improvement: bumped ethercodes.txt"

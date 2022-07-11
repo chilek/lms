@@ -73,7 +73,7 @@
                     {foreach $customernotes as $customernote}
                     <TR data-id="{$customernote.id}">
                         <TD class="date">
-                            {$customernote.dt|date_format:"%Y/%m/%d %H:%M"}
+                            {$customernote.dt|date_format:"Y-m-d H:i"}
                         </TD>
                         <TD class="username" data-order="{$customernote.rusername}">
                             {$customernote.username}

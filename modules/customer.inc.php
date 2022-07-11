@@ -58,10 +58,12 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_show_approved_assignments_only', true));
+    $commited = ConfigHelper::checkConfig('phpui.default_show_approved_assignments_only', true);
     $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
     if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
         $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
+    } else {
+        $period = null;
     }
     $assignments = $LMS->GetCustomerAssignments($customerid, true, false);
 }
@@ -110,7 +112,13 @@ if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']
         $SMARTY->assign('events_from_date', $_GET['events-from-date']);
     }
     $allevents = (isset($_GET['allevents']) && !empty($_GET['allevents']))
-        || ((!isset($_GET['allevents']) && ConfigHelper::checkConfig('phpui.default_show_closed_events')));
+        || ((!isset($_GET['allevents'])
+            && ConfigHelper::checkConfig(
+                'timetable.default_show_closed_events',
+                ConfigHelper::checkConfig('phpui.default_show_closed_events')
+            )
+        )
+    );
 
     if ($allevents) {
         $params['closed'] = '';
@@ -127,7 +135,10 @@ if (!isset($resource_tabs['customertickets']) || $resource_tabs['customertickets
     if (isset($_GET['alltickets'])) {
         $alltickets = !empty($_GET['alltickets']);
     } else {
-        $alltickets = ConfigHelper::checkConfig('phpui.default_show_closed_tickets');
+        $alltickets = ConfigHelper::checkConfig(
+            'rt.default_show_closed_tickets',
+            ConfigHelper::checkConfig('phpui.default_show_closed_tickets')
+        );
     }
     if (empty($alltickets)) {
         $params['state'] = -1;
@@ -161,7 +172,7 @@ if (!isset($resource_tabs['customernetworksbox']) || $resource_tabs['customernet
 }
 
 $userid = Auth::GetCurrentUser();
-$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+$user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
 $customerstats = array(
     'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state NOT IN ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets t
@@ -219,10 +230,10 @@ if ($receipt = $SESSION->get('receiptprint', true)) {
 $SMARTY->assign(array(
     'id' => $customerinfo['id'],
     'objectid' => $customerinfo['id'],
-    'aggregate_documents' => $aggregate_documents,
-    'commited' => $commited,
-    'expired' => $expired,
-    'period' => $period,
+    'aggregate_documents' => isset($aggregate_documents) ? $aggregate_documents : false,
+    'commited' => isset($commited) ? $commited : true,
+    'expired' => isset($expired) ? $expired : false,
+    'period' => isset($period) ? $period : null,
     'allevents' => $allevents,
     'alltickets' => $alltickets,
     'time' => $SESSION->get('addbt'),

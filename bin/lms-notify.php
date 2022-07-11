@@ -427,8 +427,8 @@ $smtp_options = array(
     'user' => ConfigHelper::getConfig($config_section . '.smtp_username', ConfigHelper::getConfig($config_section . '.smtp_user')),
     'pass' => ConfigHelper::getConfig($config_section . '.smtp_password', ConfigHelper::getConfig($config_section . '.smtp_pass')),
     'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth_type', ConfigHelper::getConfig($config_section . '.smtp_auth')),
-    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)),
-    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)),
+    'ssl_verify_peer' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer', true),
+    'ssl_verify_peer_name' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_verify_peer_name', true),
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
 );
 
@@ -570,6 +570,10 @@ function parse_customer_data($data, $format, $row)
     global $LMS;
     $DB = LMSDB::getInstance();
 
+    if (!isset($row['totalbalance'])) {
+        $row['totalbalance'] = 0;
+    }
+
     $amount = -$row['balance'];
     $totalamount = -$row['totalbalance'];
     $hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'customer' => $row));
@@ -577,7 +581,7 @@ function parse_customer_data($data, $format, $row)
 
     if (isset($row['deadline'])) {
         $deadline = $row['deadline'];
-    } else {
+    } elseif (isset($row['cdate'], $row['paytime'])) {
         $deadline = $row['cdate'] + $row['paytime'] * 86400;
     }
 
@@ -601,6 +605,7 @@ function parse_customer_data($data, $format, $row)
             '%totalb',
             '%date-y',
             '%date-m',
+            '%date-d',
             '%date_month_name',
             '%deadline-y',
             '%deadline-m',
@@ -614,18 +619,19 @@ function parse_customer_data($data, $format, $row)
 
         ),
         array(
-            format_bankaccount(bankaccount($row['id'], $row['account'])),
+            isset($row['account']) ? format_bankaccount(bankaccount($row['id'], $row['account'])) : '',
             $commented_balance,
             $row['name'],
-            $row['age'],
+            isset($row['age']) ? $row['age'] : '',
             sprintf('%01.2f', $amount),
             sprintf('%01.2f', $totalamount),
             date('Y'),
             date('m'),
+            date('d'),
             date('F'),
-            date('Y', $deadline),
-            date('m', $deadline),
-            date('d', $deadline),
+            isset($deadline) ? date('Y', $deadline) : '',
+            isset($deadline) ? date('m', $deadline) : '',
+            isset($deadline) ? date('d', $deadline) : '',
             sprintf('%01.2f', $row['balance']),
             sprintf('%01.2f', $row['totalbalance']),
             moneyf($row['balance']),
@@ -650,7 +656,7 @@ function parse_customer_data($data, $format, $row)
                 AND NOT EXISTS (
                     SELECT COUNT(id) FROM assignments
                     WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
-                        AND datefrom <= ? AND (dateto > ? OR dateto = 0                
+                        AND datefrom <= ? AND (dateto > ? OR dateto = 0
                 )
             GROUP BY tariffs.currency',
             array(
@@ -685,12 +691,12 @@ function parse_customer_data($data, $format, $row)
             '%lastday',
         ),
         array(
-            $row['doc_number'],
-            $row['doc_number'],
-            moneyf($row['value'], $row['currency']),
-            date('Y', $row['cdate']),
-            date('m', $row['cdate']),
-            date('d', $row['cdate']),
+            isset($row['doc_number']) ? $row['doc_number'] : '',
+            isset($row['doc_number']) ? $row['doc_number'] : '',
+            isset($row['value'], $row['currency']) ? moneyf($row['value'], $row['currency']) : '',
+            isset($row['cdate']) ? date('Y', $row['cdate']) : '',
+            isset($row['cdate']) ? date('m', $row['cdate']) : '',
+            isset($row['cdate']) ? date('d', $row['cdate']) : '',
             date('d', mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
         ),
         $data
@@ -701,7 +707,19 @@ function parse_customer_data($data, $format, $row)
 
 function parse_node_data($data, $row)
 {
-    $data = preg_replace("/\%i/", $row['ip'], $data);
+    $data = str_replace(
+        array(
+            '%i',
+            '%cid',
+            '%customername',
+        ),
+        array(
+            $row['ip'],
+            isset($row['customerid']) ? $row['customerid'] : '',
+            isset($row['customername']) ? str_replace('"', "'", iconv('UTF-8', 'ASCII//TRANSLIT', $row['customername'])) : '',
+        ),
+        $data
+    );
     //$data = preg_replace("/\%nas/", $row['nasip'], $data);
 
     return $data;
@@ -3223,7 +3241,7 @@ if (!empty($intersect)) {
                     foreach ($block_prechecks as $precheck => $precheck_params) {
                         switch ($precheck) {
                             case 'node-access':
-                                $where_customers[] = 'EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 1)';
+                                $where_customers[] = '(EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 1) OR NOT EXISTS (SELECT 1 FROM nodes n3 WHERE n3.ownerid = c.id))';
                                 $where_nodes[] = 'n.access = 1';
                                 break;
                             case 'node-warning':
@@ -3559,7 +3577,7 @@ if (!empty($intersect)) {
                     foreach ($unblock_prechecks as $precheck => $precheck_params) {
                         switch ($precheck) {
                             case 'node-access':
-                                $where_customers[] = 'EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 0)';
+                                $where_customers[] = '(EXISTS (SELECT 1 FROM nodes n2 WHERE n2.ownerid = c.id AND n2.access = 0) OR NOT EXISTS (SELECT 1 FROM nodes n3 WHERE n3.ownerid = c.id))';
                                 $where_nodes[] = 'n.access = 0';
                                 break;
                             case 'node-warning':

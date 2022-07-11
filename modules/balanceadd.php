@@ -168,10 +168,16 @@ if (isset($addbalance['mcustomerid'])) {
     $addbalance['type'] = '1';
 
     if ($addbalance['value'] != 0) {
-        $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
-        if (!isset($addbalance['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+        if (isset($addbalance['currency'])) {
+            $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
+            if (!isset($addbalance['currencyvalue'])) {
+                die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+            }
+        } else {
+            $addbalance['currency'] = Localisation::getCurrentCurrency();
+            $addbalance['currencyvalue'] = 1.0;
         }
+
         $LMS->AddBalance($addbalance);
     }
 }

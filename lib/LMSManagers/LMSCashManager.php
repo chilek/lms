@@ -63,6 +63,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         $error = array();
         $syslog_records = array();
 
+        $sourcefileid = null;
+
         foreach ($file as $line) {
             $id = null;
             $count = 0;
@@ -223,7 +225,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     'SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
                     array($lastname, $name)
                 );
-                if (count($uids) == 1) {
+                if (!empty($uids) && count($uids) == 1) {
                     $id = $uids[0];
                 }
                 $found_by_name = true;
@@ -310,7 +312,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
                 if (!$this->db->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash))) {
                     // Add file
-                    if (!$sourcefileid) {
+                    if (!isset($sourcefileid)) {
                         $args = array(
                             'name' => $filename,
                             'idate' => isset($filemtime) ? $filemtime : time(),
@@ -351,7 +353,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     $res = $this->db->Execute('INSERT INTO cashimport (date, value, customer,
 						customerid, description, hash, sourceid, sourcefileid, srcaccount)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-                    if ($res && $this->sylog) {
+                    if ($res && $this->syslog) {
                         $args[SYSLOG::RES_CASHIMPORT] = $this->db->GetLastInsertID('cashimport');
                         $syslog_records[] = array(
                             'resource' => SYSLOG::RES_CASHIMPORT,
@@ -382,7 +384,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         }
 
         if ($sourcefileid) {
-            if ($error['sum']) {
+            if (isset($error['sum'])) {
                 $this->db->Execute('DELETE FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
                 $this->db->Execute('DELETE FROM sourcefiles WHERE id = ?', array($sourcefileid));
             } else {

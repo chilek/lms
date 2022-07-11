@@ -107,14 +107,14 @@
 			<tr class="align-middle p-2 {if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)}text-muted{/if}">
 				<td>{number number=$doc.number template=$doc.template time=$doc.cdate}</td>
 				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
-				<td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
+				<td>{$doc.cdate|date_format:"Y-m-d"}</td>
 				<td>
 					{if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
 						{if $doc.fromdate}
-							{$doc.fromdate|date_format:"%d.%m.%Y"}
+							{$doc.fromdate|date_format:"Y-m-d"}
 						{/if}
 						{if $doc.todate}
-							- {$doc.todate|date_format:"%d.%m.%Y"}
+							- {$doc.todate|date_format:"Y-m-d"}
 						{else}
 							{if $doc.fromdate}
 								-

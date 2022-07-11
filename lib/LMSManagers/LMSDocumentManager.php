@@ -167,7 +167,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             case 'authorising':
                 $userfield = 'd.cuserid';
                 break;
-            case 'archivizator':
+            case 'archiver':
                 $userfield = 'd.auserid';
                 break;
             default:
@@ -256,7 +256,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $list = $this->db->GetAll(
             'SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
-				u.name AS username, u.lastname, fromdate, todate, description, 
+				u.name AS username, u.lastname, fromdate, todate, description,
 				numberplans.template, d.closed, d.confirmdate, d.senddate,
 				d.archived, d.adate, d.auserid, u3.name AS ausername,
 				d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
@@ -433,7 +433,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
             foreach ($list as &$item) {
                 $max = $this->db->GetOne(
-                    'SELECT MAX(number) AS max 
+                    'SELECT MAX(number) AS max
 					FROM documents
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					WHERE numberplanid = ? AND ' . (!preg_match('/%[0-9]*C/', $item['template']) || empty($customerid)
@@ -1191,8 +1191,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $number = $this->db->GetOne(
             '
-				SELECT MAX(number) 
-				FROM documents 
+				SELECT MAX(number)
+				FROM documents
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
                 . (!isset($numtemplate) || !preg_match('/%[0-9]*C/', $numtemplate) || empty($customerid)
                     ? '' : ' AND customerid = ' . intval($customerid)),
@@ -1330,18 +1330,31 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         );
     }
 
+    public function documentCommitParseNotificationMail($string, $data)
+    {
+        $customerinfo = $data['customerinfo'];
+        $string = str_replace('%cid%', $customerinfo['id'], $string);
+        $string = str_replace('%customername%', $customerinfo['customername'], $string);
+        $document = $data['document'];
+        $string = str_replace('%docid%', $document['id'], $string);
+        return $string;
+    }
+
+    public function documentCommitParseNotificationRecipient($string, $data)
+    {
+        return str_replace(
+            array(
+                '%creatoremail%',
+            ),
+            array(
+                empty($data['creatoremail']) ? '' : $data['creatoremail'],
+            ),
+            $string
+        );
+    }
+
     public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
-        function parse_notification_mail($string, $data)
-        {
-            $customerinfo = $data['customerinfo'];
-            $string = str_replace('%cid%', $customerinfo['id'], $string);
-            $string = str_replace('%customername%', $customerinfo['customername'], $string);
-            $document = $data['document'];
-            $string = str_replace('%docid%', $document['id'], $string);
-            return $string;
-        }
-
         $userid = Auth::GetCurrentUser();
 
         $ids = Utils::filterIntegers($ids);
@@ -1352,6 +1365,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, dc.fromdate AS datefrom,
 					d.reference, d.commitflags, d.confirmdate, d.closed,
+					u.email AS creatoremail,
 					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
                     (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
 				FROM documents d
@@ -1363,9 +1377,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     WHERE da.type = -1
                     GROUP BY da.docid
 				) a ON a.docid = d.id
+				LEFT JOIN users u ON u.id = d.userid AND (u.ntype & ?) > 0 AND u.email <> ?
 				WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
                     . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
-            'id'
+            'id',
+            array(
+                MSG_MAIL,
+                '',
+            )
         );
         if (empty($docs)) {
             return;
@@ -1446,7 +1465,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                     $customerinfo = $customerinfos[$doc['customerid']];
 
-                    $operator_mail_subject = parse_notification_mail(
+                    $operator_mail_subject = $this->documentCommitParseNotificationMail(
                         $operator_mail_subject,
                         array(
                             'customerinfo' => $customerinfo,
@@ -1455,7 +1474,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             ),
                         )
                     );
-                    $operator_mail_body = parse_notification_mail(
+                    $operator_mail_body = $this->documentCommitParseNotificationMail(
                         $operator_mail_body,
                         array(
                             'customerinfo' => $customerinfo,
@@ -1474,7 +1493,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     if (!isset($lms)) {
                         $lms = LMS::getInstance();
                     }
-                    $lms->SendMail($operator_mail_recipient, $headers, $operator_mail_body);
+
+                    foreach (explode(',', $this->documentCommitParseNotificationRecipient($operator_mail_recipient, $doc)) as $recipient) {
+                        if (check_email($recipient)) {
+                            $headers['To'] = $recipient;
+                            $lms->SendMail($recipient, $headers, $operator_mail_body);
+                        }
+                    }
                 }
 
                 // customer awaits for signed document scan approval
@@ -1500,8 +1525,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'user' => ConfigHelper::getConfig('documents.smtp_user'),
                             'pass' => ConfigHelper::getConfig('documents.smtp_pass'),
                             'auth' => ConfigHelper::getConfig('documents.smtp_auth'),
-                            'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('documents.smtp_ssl_verify_peer', true)),
-                            'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('documents.smtp_ssl_verify_peer_name', true)),
+                            'ssl_verify_peer' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer', true),
+                            'ssl_verify_peer_name' => ConfigHelper::checkConfig('documents.smtp_ssl_verify_peer_name', true),
                             'ssl_allow_self_signed' => ConfigHelper::checkConfig('documents.smtp_ssl_allow_self_signed'),
                         );
 
@@ -1588,7 +1613,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         }
                     }
 
-                    $customer_mail_subject = parse_notification_mail(
+                    $customer_mail_subject = $this->documentCommitParseNotificationMail(
                         $customer_mail_subject,
                         array(
                             'customerinfo' => $customerinfo,
@@ -1597,7 +1622,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             ),
                         )
                     );
-                    $customer_mail_body = parse_notification_mail(
+                    $customer_mail_body = $this->documentCommitParseNotificationMail(
                         $customer_mail_body,
                         array(
                             'customerinfo' => $customerinfo,
@@ -1675,46 +1700,46 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
+    public function newDocumentParseNotification($string, $data)
+    {
+        $customerinfo = $data['customerinfo'];
+        $string = str_replace(
+            array(
+                '%cid%',
+                '%pin%',
+                '%customername%',
+            ),
+            array(
+                $customerinfo['id'],
+                $customerinfo['pin'],
+                $customerinfo['customername'],
+            ),
+            $string
+        );
+
+        $document = $data['document'];
+        $string = str_replace(
+            array(
+                '%docid%',
+                '%date-y%',
+                '%date-m%',
+                '%date-d%',
+            ),
+            array(
+                $document['id'],
+                date('Y', $document['confirmdate']),
+                date('m', $document['confirmdate']),
+                date('d', $document['confirmdate']),
+            ),
+            $string
+        );
+
+        return $string;
+    }
+
     public function NewDocumentCustomerNotifications(array $document)
     {
         global $LMS;
-
-        function parse_notification($string, $data)
-        {
-            $customerinfo = $data['customerinfo'];
-            $string = str_replace(
-                array(
-                    '%cid%',
-                    '%pin%',
-                    '%customername%',
-                ),
-                array(
-                    $customerinfo['id'],
-                    $customerinfo['pin'],
-                    $customerinfo['customername'],
-                ),
-                $string
-            );
-
-            $document = $data['document'];
-            $string = str_replace(
-                array(
-                    '%docid%',
-                    '%date-y%',
-                    '%date-m%',
-                    '%date-d%',
-                ),
-                array(
-                    $document['id'],
-                    date('Y', $document['confirmdate']),
-                    date('m', $document['confirmdate']),
-                    date('d', $document['confirmdate']),
-                ),
-                $string
-            );
-
-            return $string;
-        }
 
         if (!$LMS->checkCustomerConsent($document['customerid'], CCONSENT_USERPANEL_SCAN)
             && !$LMS->checkCustomerConsent($document['customerid'], CCONSENT_USERPANEL_SMS)) {
@@ -1746,14 +1771,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                 }
                 if (!empty($destinations)) {
-                    $mail_subject = parse_notification(
+                    $mail_subject = $this->newDocumentParseNotification(
                         $new_document_mail_subject,
                         array(
                             'customerinfo' => $customerinfo,
                             'document' => $document,
                         )
                     );
-                    $mail_body = parse_notification(
+                    $mail_body = $this->newDocumentParseNotification(
                         $new_document_mail_body,
                         array(
                             'customerinfo' => $customerinfo,
@@ -1836,7 +1861,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if (!empty($destinations)) {
-                    $sms_body = parse_notification(
+                    $sms_body = $this->newDocumentParseNotification(
                         $new_document_sms_body,
                         array(
                             'customerinfo' => $customerinfo,

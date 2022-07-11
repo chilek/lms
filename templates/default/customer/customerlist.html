@@ -123,7 +123,7 @@
 			{icon name="filter"}
 			<label for="s">{trans("Customers")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
+				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("— all customers —")}</OPTION>
 				<optgroup label="Status">
 					{foreach $_CSTATUSES as $statusidx => $status}
 						<OPTION VALUE="{$statusidx}"{if $filter.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
@@ -183,7 +183,7 @@
 			<label for="n" class="nobr">
 			{trans("Network")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
-				<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
+				<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("— all networks —")}</OPTION>
 				{section name=networks loop=$networks}
 				<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 				{/section}
@@ -194,7 +194,7 @@
 				<label for="g[]">
 				{trans("Group")}
 				<input type="hidden" name="g[]" value="">
-				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all groups -")}">
+				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("— all groups —")}">
 					{foreach $customergroups as $customergroup}
 					<OPTION value="{$customergroup.id}"
 						{if (is_array($filter.customergroup) && in_array($customergroup.id, $filter.customergroup))
@@ -207,23 +207,29 @@
 			{/if}
 
 			{if !empty($nodegroups) && count($nodegroups)}
-				<label for="ng">
-				{trans("Node Group<!short>")}
-				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
-					{foreach from=$nodegroups item=nodegroup}
-					<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
-					{/foreach}
-				</SELECT>
+				<label for="ng[]">
+					{trans("Node Group<!short>")}
+					<input type="hidden" name="ng" value="all">
+					<select size="1" name="ng[]" onchange="document.choosefilter.submit();"
+							class="lms-ui-multiselect lms-ui-multiselect-filter" multiple>
+						<option value=""{if is_array($filter.nodegroup) && empty($filter.nodegroup) || !is_array($filter.nodegroup) && !$filter.nodegroup} selected{/if}
+							data-exclusive>{trans("— all groups —")}</option>
+						{foreach $nodegroups as $nodegroup}
+							<option value="{$nodegroup.id}"
+								{if (is_array($filter.nodegroup) && in_array($nodegroup.id, $filter.nodegroup))
+								|| (!is_array($filter.nodegroup) && $filter.nodegroup == $nodegroup.id)} selected{/if}
+							>{$nodegroup.name|trunescape:30}</option>
+						{/foreach}
+					</select>
 				</label>
 			{else}
-				<input type="hidden" name="ng" value="">
+				<input type="hidden" name="ng" value="all">
 			{/if}
 
 			<label for="assignments">
 			{trans("Assignments")}
 			<select size="1" name="assignments" onchange="document.choosefilter.submit();" {if $filter.assignments}class="active"{/if}>
-				<option value="0" {if $filter.assignments eq '0'} selected {/if}>{trans('- all -')}</option>
+				<option value="0" {if $filter.assignments eq '0'} selected {/if}>{trans('— all —')}</option>
 				<option value="7" {if $filter.assignments eq '7'} selected {/if}>{trans('expire in $a days', 7)}</option>
 				<option value="14" {if $filter.assignments eq '14'} selected {/if}>{trans('expire in $a days', 14)}</option>
 				<option value="30" {if $filter.assignments eq '30'} selected {/if}>{trans('expire in $a days', 30)}</option>

@@ -134,7 +134,7 @@
 						customOnChange="CustomerChanged($(this).val());"
 					}
 
-					<span>{trans("Voip account")}</span>
+					<span>{trans("VoIP account")}</span>
 					{include file="voipaccount/voipaccounts.html" form="choosefilter"}
 
 					<span class="lms-ui-date-period-container">
@@ -148,7 +148,7 @@
 							form="choosefilter"
 							size="10"
 							maxlength="20"
-							value="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
+							value="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"Y/m/d"}{/if}"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 						<span>{trans("to")}</span>
 						<input
@@ -158,20 +158,20 @@
 							form="choosefilter"
 							size="10"
 							maxlength="20"
-							value="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
+							value="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"Y/m/d"}{/if}"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 					</span>
 
 					<span>{trans("<!voip>Direction")}</span>
 					<select size="1" name="ftype" form="choosefilter">
-						<option value="">{trans("- all -")}</option>
+						<option value="">{trans("— all —")}</option>
 						<option value="{$smarty.const.CALL_INCOMING}" {if $listdata.ftype == $smarty.const.CALL_INCOMING} selected{/if}>{trans("<!voip>incoming")}</option>
 						<option value="{$smarty.const.CALL_OUTGOING}" {if $listdata.ftype == $smarty.const.CALL_OUTGOING} selected{/if}>{trans("<!voip>outgoing")}</option>
 					</select>
 
 					<span>{trans("<!voip>Status")}</span>
 					<select size="1" name="fstatus"	form="choosefilter">
-						<option value="">{trans("- all -")}</option>
+						<option value="">{trans("— all —")}</option>
 						<option value="{$smarty.const.CALL_ANSWERED}"
 							{if $listdata.fstatus == $smarty.const.CALL_ANSWERED}selected{/if}>{trans("answered")}</option>
 						<option value="{$smarty.const.CALL_NO_ANSWER}"
@@ -198,7 +198,7 @@
 			<tr class="highlight">
 
 				<td nowrap>
-					{$record.begintime|date_format:"%e %B %Y %H:%M:%S"}
+					{$record.begintime|date_format:"Y-m-d H:i:s"}
 				</td>
 
 				<td nowrap>
@@ -288,7 +288,7 @@
 						<a href="?m=voipcallrecording&id={$record.id}&download=1"><img src="img/save.gif"></a>
 						{documentview id="{$record.id}"
 						              type="audio/mp3"
-						              name="{trans("ID:")} {$record.id}, {trans("Date:")} {$record.begintime|date_format:"%e %B %Y %H:%M:%S"}"
+						              name="{trans("ID:")} {$record.id}, {trans("Date:")} {$record.begintime|date_format:"Y-m-d H:i:s"}"
 	                                  url="?m=voipcallrecording&id={$record.id}"
 	                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
 					{/if}

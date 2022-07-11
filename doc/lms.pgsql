@@ -785,8 +785,10 @@ CREATE TABLE voip_cdr (
 	prefix varchar(256) DEFAULT NULL,
 	prefixname varchar(256) DEFAULT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (uniqueid)
+	CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)
 );
+CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
+CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
 
 /* --------------------------------------------------------
   Structure of table "voip_price_groups"
@@ -891,6 +893,7 @@ CREATE TABLE voip_numbers (
 		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	phone varchar(20) NOT NULL,
 	number_index smallint,
+	info varchar(255) DEFAULT NULL,
 	tariff_id integer NULL
 		REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	UNIQUE(phone),
@@ -3703,7 +3706,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'balancelist_pagelimit', '100', '', 0),
 ('phpui', 'invoicelist_pagelimit', '100', '', 0),
 ('phpui', 'debitnotelist_pagelimit', '100', '', 0),
-('phpui', 'ticketlist_pagelimit', '100', '', 0),
+('rt', 'ticketlist_pagelimit', '100', '', 0),
 ('phpui', 'accountlist_pagelimit', '100', '', 0),
 ('phpui', 'domainlist_pagelimit', '100', '', 0),
 ('phpui', 'aliaslist_pagelimit', '100', '', 0),
@@ -3723,7 +3726,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'reload_execcmd', '/bin/true', '', 0),
 ('phpui', 'reload_sqlquery', '', '', 0),
 ('phpui', 'lastonline_limit', '600', '', 0),
-('phpui', 'timetable_days_forward', '7', '', 0),
+('timetable', 'default_forward_day_limit', '7', '', 0),
 ('phpui', 'gd_translate_to', 'ISO-8859-2', '', 0),
 ('phpui', 'check_for_updates_period', '86400', '', 0),
 ('phpui', 'homedir_prefix', '/home/', '', 0),
@@ -3736,31 +3739,31 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'allow_mac_sharing', 'false', '', 0),
 ('phpui', 'big_networks', 'true', '', 0),
 ('phpui', 'short_pagescroller', 'true', '', 0),
-('phpui', 'helpdesk_stats', 'true', '', 0),
-('phpui', 'helpdesk_customerinfo', 'true', '', 0),
-('phpui', 'helpdesk_customerinfo_mail_body', '--
+('rt', 'show_stats', 'true', '', 0),
+('rt', 'notification_customerinfo', 'true', '', 0),
+('rt', 'notification_mail_body_customerinfo_format', '--
 Klient: %custname ID: %cid
 Adres: %address
 E-mail: %email
 Telefon: %phone', '', 0),
-('phpui', 'helpdesk_customerinfo_sms_body', 'Klient: %custname ID: %cid Adres: %address Telefon: %phone', '', 0),
-('phpui', 'helpdesk_backend_mode', 'false', '', 0),
-('phpui', 'helpdesk_sender_name', '', '', 0),
-('phpui', 'helpdesk_reply_body', 'false', '', 0),
-('phpui', 'helpdesk_notification_mail_subject', '[RT#%tid] %subject', '', 0),
-('phpui', 'helpdesk_notification_mail_body', '%body
+('rt', 'notification_sms_body_customerinfo_format', 'Klient: %custname ID: %cid Adres: %address Telefon: %phone', '', 0),
+('rt', 'backend_mode', 'false', '', 0),
+('rt', 'sender_name', '', '', 0),
+('rt', 'quote_body', 'false', '', 0),
+('rt', 'notification_mail_subject', '[RT#%tid] %subject', '', 0),
+('rt', 'notification_mail_body', '%body
 
 URL: %url
 
 %customerinfo', '', 0),
-('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body %customerinfo', '', 0),
+('rt', 'notification_sms_body', '[RT#%tid] %subject: %body %customerinfo', '', 0),
 ('phpui', 'use_invoices', 'false', '', 0),
-('phpui', 'ticket_template_file', 'rtticketprint.html', '', 0),
+('rt', 'ticket_template_file', 'rtticketprint.html', '', 0),
 ('phpui', 'use_current_payday', 'false', '', 0),
 ('phpui', 'default_monthly_payday', '', '', 0),
-('phpui', 'newticket_notify', 'true', '', 0),
+('rt', 'new_ticket_notify', 'true', '', 0),
 ('phpui', 'to_words_short_version', 'false', '', 0),
-('phpui', 'ticketlist_status', '', '', 0),
+('rt', 'ticketlist_status', '', '', 0),
 ('phpui', 'ewx_support', 'false', '', 0),
 ('phpui', 'invoice_check_payment', 'false', '', 0),
 ('phpui', 'note_check_payment', 'false', '', 0),
@@ -3777,7 +3780,7 @@ URL: %url
 ('phpui', 'ping_type', '1', '', 0),
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
-('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('timetable', 'event_usergroup_selection_type', 'update', '', 0),
 ('phpui', 'force_global_division_context', 'false', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
@@ -4240,6 +4243,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022062200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022071100');
 
 COMMIT;

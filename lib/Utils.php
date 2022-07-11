@@ -297,8 +297,16 @@ class Utils
         if (!empty($value)) {
             $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {
-                if (isset($values[$consent['name']])) {
-                    $result[$consent_id] = $consent_id;
+                if ($consent['type'] == 'selection') {
+                    foreach ($consent['values'] as $sub_consent_id => $subconsent) {
+                        if (isset($subconsent['name']) && isset($values[$subconsent['name']])) {
+                            $result[$consent_id] = $sub_consent_id;
+                        }
+                    }
+                } else {
+                    if (isset($values[$consent['name']])) {
+                        $result[$consent_id] = $consent_id;
+                    }
                 }
             }
         }
@@ -797,7 +805,6 @@ class Utils
                 '%m',
                 '%d',
                 '%e',
-                '%j',
                 '%u',
                 '%a',
                 '%A',
@@ -818,33 +825,12 @@ class Utils
                 '%k',
                 '%k',
                 '%R',
+                '%j',
             ),
-            array(
-                date('Y', $date),
-                date('m', $date),
-                date('m', $date),
-                date('j', $date),
-                sprintf('%03d', date('z', $date) + 1),
-                date('N', $date),
-                date('D', $date),
-                date('l', $date),
-                date('w', $date),
-                date('M', $date),
-                date('F', $date),
-                date('y', $date),
-                date('H', $date),
-                date('h', $date),
-                date('i', $date),
-                date('s', $date),
-                date('H:i:s', $date),
-                date('Y-m-d', $date),
-                date('m/d/y', $date),
-                date('U', $date),
-                date('T', $date),
-                date('O', $date),
-                date('G', $date),
-                date('G', $date),
-                date('H:i', $date),
+            explode(
+                '|',
+                date('Y|m|d|j|N|D|l|w|M|F|y|H|h|i|s|H:i:s|Y-m-d|m/d/y|U|T|O|G|G|H:i|', $date)
+                . sprintf('%03d', date('z', $date) + 1)
             ),
             $format
         );

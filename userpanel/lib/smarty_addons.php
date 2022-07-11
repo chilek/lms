@@ -152,14 +152,14 @@ function _smarty_function_img($params, $template)
     $result .= 'src="'.$file.'" ';
 
     $repeat = false;
-    if ($alt = $params['alt']) {
-        $result .= 'alt="'.trans($alt).'" ';
+    if (isset($params['alt'])) {
+        $result .= 'alt="' . trans($params['alt']) . '" ';
     } else {
         $result .= 'alt="" ';
     }
 
-    if ($text = $params['text']) {
-        $text = trans(array_merge(array($text), $params));
+    if (isset($params['text'])) {
+        $text = trans(array_merge(array($params['text']), $params));
 
         $tpl = $template->getTemplateVars('error');
         $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
@@ -192,11 +192,11 @@ function _smarty_function_img($params, $template)
     if ($params['height']) {
         $result .= 'height="'.$params['height'].'" ';
     }
-    if ($params['style']) {
-        $result .= 'style="'.$params['style'].'" ';
+    if (isset($params['style'])) {
+        $result .= 'style="' . $params['style'] . '" ';
     }
-    if ($params['border']) {
-        $result .= 'border="'.$params['border'].'" ';
+    if (isset($params['border'])) {
+        $result .= 'border="' . $params['border'] . '" ';
     }
 
     $result .= '/>';

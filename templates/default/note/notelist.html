@@ -67,7 +67,7 @@
 				<span class="bold">{trans("Filter:")}</span>
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
-					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter category —")}</OPTION>
 					<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("day (YYYY/MM/DD)")}</OPTION>
 					<OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
 					<OPTION value="number"{if $listdata.cat == "number"} SELECTED{/if}>{trans("number")}</OPTION>
@@ -79,7 +79,7 @@
 				</SELECT>&nbsp;
 				{trans("Group:")}
 				<SELECT size="1" name="group">
-					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("— all groups —")}</OPTION>
 					{section name="grouplist" loop=$grouplist}
 					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"&hellip;":true}</OPTION>
 					{/section}
@@ -106,7 +106,7 @@
 			{$note.id|string_format:"%06d"}
 		</TD>
 		<TD class="nobr">
-			{$note.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$note.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 		<TD class="text-right nobr">
 			{$number}

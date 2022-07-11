@@ -155,11 +155,13 @@ switch ($action) {
         if (isset($_GET['id'])) {
             $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
         } else {
-            if (isset($customer) && $customer['paytime'] != -1) {
-                $paytime = $customer['paytime'];
-            } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
-				WHERE id = ?', array($customer['divisionid']))) === null) {
-                $paytime = ConfigHelper::getConfig('invoices.paytime');
+            if (isset($customer)) {
+                if ($customer['paytime'] != -1) {
+                    $paytime = $customer['paytime'];
+                } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+                     WHERE id = ?', array($customer['divisionid']))) === null) {
+                    $paytime = ConfigHelper::getConfig('invoices.paytime');
+                }
             }
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
@@ -343,7 +345,7 @@ switch ($action) {
         break;
 
     case 'setcustomer':
-        $customer_paytime = $customer['paytime'];
+        $customer_paytime = isset($customer) ? $customer['paytime'] : -1;
 
         unset($invoice);
         unset($customer);
@@ -720,7 +722,9 @@ if ($action && !$error) {
 }
 
 $covenantlist = array();
-$list = GetCustomerCovenants($customer['id'], $invoice['currency']);
+if (isset($customer)) {
+    $list = GetCustomerCovenants($customer['id'], $invoice['currency']);
+}
 
 if (isset($list)) {
     if ($contents) {

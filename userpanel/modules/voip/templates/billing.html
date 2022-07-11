@@ -166,7 +166,7 @@
                                 <TD>
                                     {if count($customer_phone_list) > 1}
                                     <SELECT NAME="phone" CLASS="lms-input">
-                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="0">{trans("— all —")}</OPTION>
                                         {foreach from=$customer_phone_list item=phone}
                                         <OPTION VALUE="{$phone}"{if $params.phone == $phone} SELECTED{/if}>{$phone}</OPTION>
                                         {/foreach}
@@ -198,14 +198,14 @@
                                 </TD>
                                 <TD>
                                     <SELECT SIZE="1" NAME="ftype" CLASS="lms-input">
-                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="0">{trans("— all —")}</OPTION>
                                         <OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("<!voip>incoming")}</OPTION>
                                         <OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("<!voip>outgoing")}</OPTION>
                                     </SELECT>
                                 </TD>
                                 <TD>
                                     <SELECT SIZE="1" NAME="fstatus" CLASS="lms-input">
-                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="0">{trans("— all —")}</OPTION>
                                         <OPTION VALUE="{CALL_ANSWERED}"      {if $params.fstatus == CALL_ANSWERED}  SELECTED{/if}>{trans("answered")}</OPTION>
                                         <OPTION VALUE="{CALL_NO_ANSWER}"     {if $params.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
                                         <OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("<!voip>busy")}</OPTION>
@@ -248,7 +248,7 @@
                             {if $billings}
                                 {section name=i loop=$billings start=(($pagination->getCurrentPage()-1)*$pagination->getItemsPerPage()) max=$pagination->getItemsPerPage()}
                                     <TR CLASS="dark">
-                                        <TD>{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}</TD>
+                                        <TD>{$billings[i].begintime|date_format:"Y-m-d H:i:s"}</TD>
                                         <TD>{$billings[i].caller}</TD>
                                         <TD>{$billings[i].callee}</TD>
                                         <TD>{if $billings[i].callbegintime>60}{floor($billings[i].callbegintime/60)}min{/if} {$billings[i].callbegintime%60}s</TD>
@@ -285,7 +285,7 @@
                                                 {if $flags & CALL_FLAG_CUSTOMER_RECORDING}
                                                     {documentview id="{$billings[i].id}"
                                                                   type="audio/mp3"
-                                                                  name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
+                                                                  name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"Y-m-d H:i:s"}"
                                                                   url="?m=voip&record={$billings[i].id}"
                                                                   text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
                                                 {/if}
@@ -330,7 +330,7 @@
                     <th style="font-weight: normal;">{trans("Select account")}</th>
                     <th colspan="2">
                         <select id="account-select" class="lms-input">
-                            <option value="0">{trans("- all -")}</option>
+                            <option value="0">{trans("— all —")}</option>
                             {foreach $user_accounts as $acc}
                             <option value="{$acc.id}">{$acc.login}</option>
                             {/foreach}

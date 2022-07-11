@@ -45,7 +45,7 @@
                                         <INPUT type="HIDDEN" name="page" value="1">
                                         <SPAN class="bold">{trans("Filter:")}</SPAN> {trans("Owner:")}
                                         <SELECT size="1" name="u" OnChange="document.filter.submit();">
-                                                <OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
+                                                <OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("— all owners —")}</OPTION>
                                                 <OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</OPTION>
                                                 {foreach from=$customerlist item=customer}
                                                 <OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:35:"&hellip;":true}</OPTION>
@@ -53,20 +53,20 @@
                                         </SELECT>
                                         {trans("Type:")}
                                         <SELECT size="1" name="t" ONCHANGE="document.filter.submit();">
-											<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
+											<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("— all —")}</OPTION>
 											{foreach $_ACCOUNTTYPES as $typeidx => $type}
 											<OPTION value="{$typeidx}"{if $listdata.type == $typeidx} selected{/if}>{$type.label}</OPTION>
 											{/foreach}
                                         </SELECT>
                                         {trans("Status:")}
                                         <SELECT size="1" name="k" OnChange="document.filter.submit();">
-                                                <OPTION value="0"{if !$listdata.kind} SELECTED {/if}>{trans("- all -")}</OPTION>
+                                                <OPTION value="0"{if !$listdata.kind} SELECTED {/if}>{trans("— all —")}</OPTION>
                                                 <OPTION value="1"{if $listdata.kind == 1} SELECTED {/if}>{trans("expired")}</OPTION>
                                                 <OPTION value="2"{if $listdata.kind == 2} SELECTED {/if}>{trans("active")}</OPTION>
                                         </SELECT>
                                         {trans("Domain:")}
                                         <SELECT size="1" name="d" OnChange="document.filter.submit();">
-                                                <OPTION value=""{if $listdata.domain == ""} SELECTED{/if}>{trans("- all -")}</OPTION>
+                                                <OPTION value=""{if $listdata.domain == ""} SELECTED{/if}>{trans("— all —")}</OPTION>
                                                 {section name=domainlist loop=$domainlist}
                                                 <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id == $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
                                                 {/section}
@@ -118,8 +118,8 @@
 			{/foreach}
 		</TD>
 		<TD class="text-right" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
-			<SPAN class="nobr">{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</SPAN><BR>
-			<SPAN class="nobr">{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"%Y/%m/%d"}{/if}</SPAN>
+			<SPAN class="nobr">{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"Y-m-d H:i"}{/if}</SPAN><BR>
+			<SPAN class="nobr">{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"Y-m-d"}{/if}</SPAN>
 		</TD>
 		<TD class="text-right">
 			{assign var=account value="`$accountlist[accountlist].login`@`$accountlist[accountlist].domain`"}

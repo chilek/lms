@@ -81,7 +81,7 @@ if (isset($_POST['document'])) {
         }
     }
 
-    $allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('documents.allow_past_date', 'true'));
+    $allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true);
     if (!$allow_past_date) {
         $today = strtotime('today');
     }
@@ -449,7 +449,7 @@ if (isset($_POST['document'])) {
         }
     }
     $document['assignment']['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
-    $document['assignment']['align-periods'] = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_assignment_align_periods', true));
+    $document['assignment']['align-periods'] = ConfigHelper::checkConfig('phpui.default_assignment_align_periods', true);
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $document['assignment']['period'] = $default_assignment_period;

@@ -261,7 +261,7 @@ $access_table = array(
         'label' => trans('summaries hiding'),
     ),
     'voip_account_management' => array(
-        'label' => trans('voip accounts management'),
+        'label' => trans('VoIP accounts management'),
         'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit|rules))$',
         'allow_menu_items' => array(
             'VoIP' => Permission::MENU_ALL,

@@ -156,7 +156,7 @@ function init_multiselects(selector) {
 				bottom: lmsSettings.multiSelectPopupOnBottom,
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,
-				substMessage: '- $a options selected -',
+				substMessage: '— $a options selected —',
 				tooltipMessage: $(this).attr('data-tooltip-message')
 			});
 		});
@@ -530,7 +530,7 @@ function init_datatables(selector) {
 						});
 						if (selectValues.length > 1) {
 							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
-								'><option value="">' + $t('- any -') + '</option>';
+								'><option value="">' + $t('— any —') + '</option>';
 							selectValues.sort().forEach(function (value, index) {
 								content += '<option value="' + value + '">' + value + '</option>';
 							});

@@ -29,7 +29,7 @@ use setasign\Fpdi\PdfParser\StreamReader;
 
 function invoice_body($document, $invoice)
 {
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.use_customer_lang', true))) {
+    if (ConfigHelper::checkConfig('invoices.use_customer_lang', true)) {
         Localisation::setUiLanguage($invoice['lang']);
     }
     $document->Draw($invoice);
@@ -283,6 +283,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
     $einvoice = intval($_GET['einvoice']);
+    $attach_documents = isset($_GET['attach-documents']);
+
     $documents = $DB->GetAllByKey(
         'SELECT
             d.id, d.type,
@@ -346,6 +348,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         'id',
         array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE)
     );
+
     if (empty($documents)) {
         if ($jpk) {
             echo trans('No documents to JPK export!');
@@ -530,7 +533,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 }
                 if (empty($division['naturalperson'])) {
                     $jpk_data .= "\t\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
-                    $jpk_data .= "\t\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
+                    $jpk_data .= "\t\t\t<PelnaNazwa>" . (isset($division['name']) ? htmlspecialchars($division['name']) : '') . "</PelnaNazwa>\n";
                 } else {
                     $jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
                     $jpk_data .= "\t\t\t<etd:ImiePierwsze>" . htmlspecialchars($division['firstname']) . "</etd:ImiePierwsze>\n";
@@ -1303,11 +1306,47 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             foreach (array_keys($DOCENTITIES) as $type) {
                 if ($which & $type) {
                     $i++;
-                    if ($i == $count) {
+                    if ($i == $count || ($attach_documents && $invoice_type == 'pdf')) {
                         $invoice['last'] = true;
                     }
                     $invoice['type'] = $type;
                     invoice_body($document, $invoice);
+                }
+            }
+
+            if ($invoice_type == 'pdf' && $attach_documents) {
+                if (!isset($fpdi)) {
+                    $fpdi = new LMSFpdiBackend;
+                    $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+                }
+
+                $fpdi->AppendPage($document->WriteToString());
+                $document = new $classname(trans('Invoices'));
+
+                $docrefs = $LMS->getDocumentReferences($invoiceid);
+                if (empty($docrefs)) {
+                    continue;
+                }
+
+                $document_attachment_files = array();
+                foreach ($docrefs as $docid => $docref) {
+                    $referenced_document = $LMS->GetDocumentFullContents($docid);
+                    if (empty($referenced_document)) {
+                        continue;
+                    }
+                    foreach ($referenced_document['attachments'] as $attachment) {
+                        $document_attachment_files[] = array(
+                            'contenttype' => $attachment['contenttype'],
+                            'filename' => $attachment['filename'],
+                            'data' => $attachment['contents'],
+                        );
+                    }
+                }
+
+                foreach ($document_attachment_files as $document_attachment_file) {
+                    if (preg_match('/pdf$/', $document_attachment_file['contenttype'])) {
+                        $fpdi->AppendPage($document_attachment_file['data']);
+                    }
                 }
             }
         }
@@ -1550,7 +1589,11 @@ if ($jpk) {
 
     echo $jpk_data;
 } else {
-    $document->WriteToBrowser($attachment_name);
+    if ($invoice_type == 'pdf' && $attach_documents && isset($fpdi)) {
+        $fpdi->WriteToBrowser($attachment_name);
+    } else {
+        $document->WriteToBrowser($attachment_name);
+    }
 }
 
 if (!$dontpublish && isset($ids) && !empty($ids)) {

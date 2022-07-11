@@ -15,7 +15,7 @@
 	$(function() {
 		$('[name="ticket[subject]"]').focus();
 
-		{$category_adjustments=ConfigHelper::checkConfig('phpui.category_adjustments_in_ticketedit')}
+		{$category_adjustments = ConfigHelper::checkConfig('rt.category_adjustments_in_ticketedit', ConfigHelper::checkConfig('phpui.category_adjustments_in_ticketedit'))}
 		{if $category_adjustments}
 		$('[name="ticket[queueid]"]').change(function() {
 			xajax_GetCategories($(this).val());

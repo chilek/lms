@@ -72,7 +72,7 @@
 			<FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$payment.value * -1}">
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
 			{button label='Account payment' href="javascript:document.addbalance.submit();" icon='money' tip='Account payment'}
 			{button label='Edit' href="?m=paymentedit&id={$payment.id}" icon='edit' tip='Edit'}

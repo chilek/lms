@@ -74,7 +74,7 @@ if (!empty($_POST['qs'])) {
     }
     $search = urldecode(trim($search));
 } else {
-    $search = urldecode(trim($_GET['what']));
+    $search = urldecode(trim(isset($_GET['what']) ? $_GET['what'] : ''));
     $mode = $_GET['mode'];
 }
 $sql_search = $DB->Escape("%$search%");
@@ -152,7 +152,7 @@ switch ($mode) {
                     $action = '?m=customerinfo&id=' . $row['id'];
 
                     if ((empty($properties) || isset($properties['name'])) && $customer_count[$row['customername']]) {
-                        $description = htmlspecialchars($row['address']);
+                        $description = isset($row['address']) ? htmlspecialchars($row['address']) : '';
                         if (!empty($row['post_address'])) {
                             $description .= '<BR>' . htmlspecialchars($row['post_address']);
                             if (!empty($row['post_name'])) {
@@ -356,12 +356,12 @@ switch ($mode) {
                     } else {
                         $action = '?m=customerinfo&id=' . $row['id'];
                     }
-                    $name = truncate_str($row['customername'], 50);
+                    $name = htmlspecialchars(truncate_str($row['customername'], 50));
                     if (isset($row['number'])) {
-                        $description = trans('VoIP number:') . ' ' . $row['number'];
+                        $description = trans('VoIP number:') . ' ' . htmlspecialchars($row['number']);
                         $name_class = 'lms-ui-suggestion-phone';
                     } else {
-                        $description = trans('Phone:') . ' ' . $row['phone'];
+                        $description = trans('Phone:') . ' ' . htmlspecialchars($row['phone']);
                         $name_class = 'lms-ui-suggestion-customer-status-connected';
                     }
                     $name_class .= $row['deleted'] ? ' blend' : '';
@@ -476,13 +476,13 @@ switch ($mode) {
                         $description = trans('Id') . ': ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
                         $description = trans('Name') . ': ' . $row['name'];
-                    } else if ((empty($properties) || isset($properties['login'])) && preg_match("~$search~i", $row['login'])) {
+                    } else if ((empty($properties) || isset($properties['login'])) && isset($row['login']) && preg_match("~$search~i", $row['login'])) {
                         $description = trans('<!node>Login') . ': ' . $row['login'];
                     } else if ((empty($properties) || isset($properties['ip'])) && preg_match("~$search~i", $row['ip'])) {
                         $description = trans('IP') . ': ' . $row['ip'];
                     } else if ((empty($properties) || isset($properties['public_ip'])) && preg_match("~$search~i", $row['ip_pub'])) {
                         $description = trans('IP') . ': ' . $row['ip_pub'];
-                    } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
+                    } else if ((empty($properties) || isset($properties['location_address'])) && isset($row['location']) && preg_match("~$search~i", $row['location'])) {
                         $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
                     } else if ((empty($properties) || isset($properties['mac'])) && preg_match("~" . macformat($search) . "~i", $row['mac'])) {
                         $macs = explode(',', $row['mac']);
@@ -683,8 +683,8 @@ switch ($mode) {
 
             $userid = Auth::GetCurrentUser();
 
-            $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
-            $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+            $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
+            $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 
             $candidates = $DB->GetAll(
                 "SELECT t.id, t.subject, t.requestor, t.requestor_mail, t.requestor_phone, t.state, c.name, c.lastname

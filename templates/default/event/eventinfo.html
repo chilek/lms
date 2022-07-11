@@ -32,8 +32,8 @@
 					<strong>{trans("Begin time")}</strong>
 				</td>
 				<td>
-					{$event.date|date_format:"%x (%A)"}
-					{($event.date + $event.begintime)|date_format:"%H:%M"}
+					{$event.date|date_format:"Y-m-d (l)"}
+					{($event.date + $event.begintime)|date_format:"H:i"}
 				</td>
 			</tr>
 			{if $event.begintime != $event.endtime || $event.enddate > $event.date}
@@ -46,11 +46,11 @@
 				</td>
 				<TD>
 					{if $event.enddate}
-					{$event.enddate|date_format:"%x (%A)"}
-					{($event.enddate + $event.endtime)|date_format:"%H:%M"}
+					{$event.enddate|date_format:"Y-m-d (l)"}
+					{($event.enddate + $event.endtime)|date_format:"H:i"}
 					{else}
-					{$event.date|date_format:"%x (%A)"}
-					{($event.date + $event.endtime)|date_format:"%H:%M"}
+					{$event.date|date_format:"Y-m-d (l)"}
+					{($event.date + $event.endtime)|date_format:"H:i"}
 					{/if}
 				</TD>
 			</tr>
@@ -122,7 +122,7 @@
 						<strong>{trans("Creation time")}</strong>
 					</td>
 					<td>
-						{$event.creationdate|date_format:"%x (%X)"}
+						{$event.creationdate|date_format:"Y-m-d (H:i:s)"}
 					</td>
 				</tr>
 			{/if}
@@ -150,7 +150,7 @@
 						<strong>{trans("Last modification")}</strong>
 					</td>
 					<td>
-						{$event.moddate|date_format:"%x (%X)"}
+						{$event.moddate|date_format:"Y-m-d (H:i:s)"}
 					</td>
 				</tr>
 			{/if}
@@ -178,7 +178,7 @@
 						<strong>{trans("Closed time")}</strong>
 					</td>
 					<td>
-						{$event.closeddate|date_format:"%x (%X)"}
+						{$event.closeddate|date_format:"Y-m-d (H:i:s)"}
 					</td>
 				</tr>
 			{/if}
@@ -308,7 +308,10 @@
 				{else}
 					{button type="link-button" href="?m=eventedit&id={$event.id}&action=open" icon="open" label="Open"}
 				{/if}
-				{if !$event.closed || ($event.closed && ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800) && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)))|| ConfigHelper::checkPrivilege('superuser')}
+				{if !$event.closed
+					|| ($event.closed && ConfigHelper::getConfig('timetable.allow_modify_closed_events_newer_than', ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))
+						&& ($smarty.now - $event.closeddate < ConfigHelper::getConfig('timetable.allow_modify_closed_events_newer_than', ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))))
+					|| ConfigHelper::checkPrivilege('superuser')}
 					{button type="link-button" href="?m=eventedit&id={$event.id}" icon="edit" label="Edit"}
 					{button type="link-button" href="?m=eventdel&id={$event.id}" icon="delete" label="Delete" class="delete-event"}
 				{/if}

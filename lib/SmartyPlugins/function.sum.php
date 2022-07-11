@@ -29,9 +29,11 @@ function smarty_function_sum($params, $template)
     $array = $params['array'];
     $format = (isset($params['string_format']) ? $params['string_format'] : '%d');
     $default = (isset($params['default']) ? $params['default'] : 0);
+    $result = 0;
+
     if ($array) {
         foreach ($array as $row) {
-            if (is_array($row)) {
+            if (is_array($row) && isset($row[$params['column']])) {
                 $result += $row[$params['column']];
             }
         }

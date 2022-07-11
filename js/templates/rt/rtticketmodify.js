@@ -71,17 +71,17 @@ $(function() {
 
 function change_customer(customer_selector, address_selector) {
 	getCustomerAddresses($(customer_selector).val(), function (addresses) {
-		customer_addresses.setAddressList(addresses);
+		setAddressList('#customer_addresses', addresses);
 		if (Object.keys(addresses).length == 1) {
 			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			customer_addresses.refresh();
+			updateAdvancedSelects('#customer_addresses');
 		}
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
 	});
 }
 
 function update_nodes(data) {
-	var options = '<option value="">' + $t('- none -') + '</option>';
+	var options = '<option value="">' + $t('— none —') + '</option>';
 	$.each(data, function (k, v) {
 		options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
 	});

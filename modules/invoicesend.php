@@ -110,8 +110,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     'user' => ConfigHelper::getConfig('sendinvoices.smtp_user'),
                     'pass' => ConfigHelper::getConfig('sendinvoices.smtp_pass'),
                     'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth'),
-                    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer', true)),
-                    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer_name', true)),
+                    'ssl_verify_peer' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer', true),
+                    'ssl_verify_peer_name' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer_name', true),
                     'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
                 );
 

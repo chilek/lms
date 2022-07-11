@@ -70,7 +70,7 @@
 					{$category.open|default:0}
 				</td>
 				<td class="text-center nobr">
-					{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
+					{if $category.lastticket}{$category.lastticket|date_format:"Y-m-d H:i:s"}{else}-{/if}
 				</td>
 				<td class="lms-ui-buttons text-right nobr">
 					{button type="link" href="?m=rtcategoryadd&id={$category.id}" icon="clone" tip="Clone"}

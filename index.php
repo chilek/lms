@@ -28,6 +28,10 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
+if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = '';
+}
+
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
 //define('K_TCPDF_EXTERNAL_CONFIG', true);

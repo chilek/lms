@@ -226,7 +226,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 $row['docnumber'] = docnumber(array(
                     'number' => $row['docnumber'],
-                    'template' => $row['numtemplate'],
+                    'template' => isset($row['numtemplate']) ? $row['numtemplate'] : null,
                     'cdate' => $row['cdate'],
                     'customerid' => $id,
                 ));
@@ -627,7 +627,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     $datefrom  = !empty($_datefrom) ? $_datefrom : $datefrom;
                     $_datefrom = 0;
-                    $at        = (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.promotion_preserve_at_day', true)) && $data['at'] !== '')
+                    $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day', true) && $data['at'] !== '')
                                                ? $data['at'] : $this->CalcAt($period, $datefrom);
 
                     $length    = $data_schema[$idx - 1];
@@ -1573,6 +1573,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result['error'] = $error;
 
         $result['a'] = $a;
+        if (!isset($schemaid)) {
+            $schemaid = null;
+        }
         $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count'));
 
         return $result;
@@ -2123,12 +2126,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
-        foreach ($invoicelist as &$invoice) {
-            if (!empty($invoice['documentreferenced'])) {
-                if (!isset($document_manager)) {
-                    $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+        if (!empty($invoicelist)) {
+            foreach ($invoicelist as &$invoice) {
+                if (!empty($invoice['documentreferenced'])) {
+                    if (!isset($document_manager)) {
+                        $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+                    $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
                 }
-                $invoice['refdocs'] = $document_manager->getDocumentReferences($invoice['id']);
             }
         }
 
@@ -2555,7 +2560,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 DOC_FLAG_RELATED_ENTITY => ($result['flags'] & DOC_FLAG_RELATED_ENTITY) ? 1 : 0,
             );
 
-            if ($result['reference'] && $result['type'] != DOC_INVOICE_PRO && !$nested_flag) {
+            if ($result['reference'] && $result['doctype'] != DOC_INVOICE_PRO && !$nested_flag) {
                 $result['invoice'] = $this->GetInvoiceContent($result['reference'], $detail_level);
                 if (isset($result['invoice']['invoice'])) {
                     // replace pointed correction note number to previous one in invoice chain
@@ -2654,8 +2659,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                 $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
                 // NOTE: don't waste CPU/mem when printing history is not set:
-                if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history', false))) {
-                    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.print_balance_history_save', false))) {
+                if (ConfigHelper::checkConfig('invoices.print_balance_history')) {
+                    if (ConfigHelper::checkConfig('invoices.print_balance_history_save')) {
                         $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid'], $result['cdate']);
                     } else {
                         $result['customerbalancelist'] = $customer_manager->GetCustomerBalanceList($result['customerid']);
@@ -2956,8 +2961,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 
             // NOTE: don't waste CPU/mem when printing history is not set:
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance', false))) {
-                if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.print_balance_history', false))) {
+            if (ConfigHelper::checkConfig('notes.print_balance')) {
+                if (ConfigHelper::checkConfig('notes.print_balance_history')) {
                     $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid'], $result['cdate']);
                 } else {
                     $result['customerbalancelist'] = $LMS->GetCustomerBalanceList($result['customerid']);
@@ -4610,7 +4615,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'name' => $promotion_schema['name'],
                     'valid' => $promotion_schema['valid'],
                     'datefrom' => $promotion_schema['datefrom'],
-                    'dateto' => $promotion_schema['dateto'],
+                    'dateto' => isset($promotion_schema['dateto']) ? $promotion_schema['dateto'] : null,
                     'description' => $promotion_schema['description'],
                     'tariffs' => $promotion_schema['tariffs'],
                     'period_labels' => $period_labels,
@@ -5133,7 +5138,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         return ($this->db->GetOne(
             'SELECT d.id FROM documents d
-            LEFT JOIN documents d2 ON d2.reference = d.id
+            LEFT JOIN documents d2 ON d2.reference = d.id AND d2.type > 0
             WHERE d.id = ? AND d.type IN ? AND d.cancelled = 0 AND d.closed = 0 AND d.archived = 0 AND d2.id IS NULL
                 ' . (ConfigHelper::checkPrivilege('published_document_modification') ? '' : ' AND d.published = 0'),
             array($id, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))

@@ -65,7 +65,7 @@
 							{/if}
 						data-value="{$period}">
 						{if !$key && count($schema.periods) == 1}
-							<option value="0"{if !$period} selected{/if}>- {trans("unlimited")} -</option>
+							<option value="0"{if !$period} selected{/if}>— {trans("unlimited")} —</option>
 						{/if}
 						{foreach $schema.selection as $item}
 							<option value="{$item}"{if $period == $item} selected{/if}>{$item}</option>

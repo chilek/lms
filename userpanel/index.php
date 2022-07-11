@@ -30,6 +30,10 @@
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
+if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = '';
+}
+
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 // find alternative config files:

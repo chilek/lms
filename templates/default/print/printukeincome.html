@@ -7,7 +7,8 @@
 		</TD>
 		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t a=trans($smarty.now|date_format:"l") b=$smarty.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}
+			<br>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
@@ -26,11 +27,11 @@
 			{/if}
 		</TD>
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
-			{trans("<!uke-income>Bussiness services")}
+			{trans("<!uke-income>Business services")}
 		</TD>
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
-			{trans("<!uke-income>Bussiness income")}
+			{trans("<!uke-income>Business income")}
 		</TD>
 		{/if}
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">

@@ -80,7 +80,7 @@
 
 		markEmptyPanels();
 	</script>
-	{if $newer_version}
+	{if isset($newer_version) && $newer_version}
 		<script>
 			alertDialog($t("There is newer version of LMS ($a) available for download from $b.",'{$newer_version}', 'http://lms.org.pl/download'));
 		</script>

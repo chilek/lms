@@ -29,6 +29,8 @@ class LMSSmartyPlugins
     const HINT_TYPE_ROLLOVER = 'rollover';
     const HINT_TYPE_TOGGLE = 'toggle';
 
+    const LOCATION_BOX_INPUT_SIZE = 30;
+
     public static function buttonFunction(array $params, $template)
     {
         static $defaults = array(
@@ -71,7 +73,9 @@ class LMSSmartyPlugins
                 case 'tip':
                 // optional - button with icon only don't use label
                 case 'label':
-                    $$name = trans($value);
+                    if (isset($value)) {
+                        $$name = trans($value);
+                    }
                     break;
                 // optional - allow to specify javascript code lauched after click,
                 case 'onclick':
@@ -155,7 +159,7 @@ class LMSSmartyPlugins
         static $user_divisions = array();
         $lms = LMS::getInstance();
         $layout = $template->getTemplateVars('layout');
-        $force_global_division_context = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.force_global_division_context'), false);
+        $force_global_division_context = ConfigHelper::checkConfig('phpui.force_global_division_context');
 
         if (empty($params)) {
             $params = array();
@@ -196,7 +200,7 @@ class LMSSmartyPlugins
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
                     . ($onchange ? ' onchange="' . $onchange . '"' : '')
                     . '>';
-                $result .= '<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("all") . ' -</option>';
+                $result .= '<option value=""' . (!$selected ? ' selected' : '') . '>— ' . trans("all") . ' —</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'
                         . ($selected == $division['id'] ? ' selected' : '') . '>' . htmlspecialchars($division['label']) . '</option>';
@@ -266,7 +270,7 @@ class LMSSmartyPlugins
                 if (empty($params['selected'])) {
                     $result .= ' selected';
                 }
-                $result .= '>' . trans("- select customer -") . '</option>';
+                $result .= '>' . trans("— select customer —") . '</option>';
             }
             foreach ($params['customers'] as $customer) {
                 $result .= '<option value="' . $customer['id'] . '"';
@@ -290,9 +294,11 @@ class LMSSmartyPlugins
         }
 
         $result .= '<input type="text" name="' . $params['inputname'] . '"' . (empty($params['selected']) ? '' : ' value="'
-            . $params['selected'] . '"') . ' class="lms-ui-customer-select-customerid"'
+            . (isset($params['selected']) ? $params['selected'] : '') . '"')
+            . ' class="lms-ui-customer-select-customerid"'
             . ' data-default-value="' . (isset($params['default_value']) ? htmlspecialchars($params['default_value']) : '') . '"'
-            . ' data-prev-value="' . $params['selected'] . '" size="5"';
+            . ' data-prev-value="' . (isset($params['selected']) ? $params['selected'] : '')
+            . '" size="5"';
 
         if (isset($form)) {
             $result .= ' form="' . $form . '"';
@@ -419,7 +425,9 @@ class LMSSmartyPlugins
         $result .= '</div>
 			<div class="fileupload-status lms-ui-error bold">
 			</div>
-			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="' . $fileupload[$id . '-tmpdir'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="'
+            . (isset($fileupload[$id . '-tmpdir']) ? $fileupload[$id . '-tmpdir'] : '')
+            . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 		</div>';
         $result .= '<script>
 			$(function() {
@@ -444,8 +452,6 @@ class LMSSmartyPlugins
         // generate unique id for location box
         $LOCATION_ID = 'lmsui-' . uniqid();
 
-        // input size
-        define('INPUT_SIZE', 30);
 
         // base name for localization inputs
         $input_name             = 'location';
@@ -505,8 +511,8 @@ class LMSSmartyPlugins
         echo '<tr' . (isset($params['hide_name']) ? ' style="display: none;"' : '') . '>
               <td>' . trans('Name') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_name']) ? htmlspecialchars($params['location_name']) : '' ) . '" name="' . $input_name_location . '" size="' . INPUT_SIZE . '" data-address="location-name">
-                  <input type="hidden" value="' . (($params['location'])            ? $params['location']      : '')  . '" name="' . $input_name . '" data-address="location">
+                  <input type="text"   value="' . (!empty($params['location_name']) ? htmlspecialchars($params['location_name']) : '' ) . '" name="' . $input_name_location . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="location-name">
+                  <input type="hidden" value="' . (isset($params['location']) ? $params['location'] : '') . '" name="' . $input_name . '" data-address="location">
               </td>
           </tr>';
 
@@ -526,7 +532,7 @@ class LMSSmartyPlugins
             echo '" data-address="state-select">';
             echo '<option></option>';
 
-            $tmp_state = is_null($params['location_state_name']) ? '' : mb_strtolower($params['location_state_name']);
+            $tmp_state = isset($params['location_state_name']) ? mb_strtolower($params['location_state_name']) : '';
 
             foreach ($states as $v) {
                 echo '<option ' . (!empty($v) && mb_strtolower($v['name']) == $tmp_state ? 'selected' : '')  . '>' . $v['name'] . '</option>';
@@ -539,7 +545,7 @@ class LMSSmartyPlugins
 
         echo '<input type="text"
                  value="' . (!empty($params['location_state_name']) ? htmlspecialchars($params['location_state_name']) : '' ) . '"
-                 size="' . INPUT_SIZE . '"
+                 size="' . self::LOCATION_BOX_INPUT_SIZE . '"
                  data-address="state"
                  name="' . $input_name_state . '"
                  ' . (empty($params['teryt']) ? 'style="display:none;"' : '') . '
@@ -554,7 +560,7 @@ class LMSSmartyPlugins
               <td>
                   <input type="text"   value="'
                     . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' )
-                    . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
+                    . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
                     . ($params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
               </td>
@@ -563,7 +569,7 @@ class LMSSmartyPlugins
         echo '<tr>
               <td>' . trans('Street') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_street_name']) ? htmlspecialchars($params['location_street_name']) : '' ) . '" size="' . INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
+                  <input type="text"   value="' . (!empty($params['location_street_name']) ? htmlspecialchars($params['location_street_name']) : '' ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
                   <input type="hidden" value="' . (!empty($params['location_street'])      ? $params['location_street']      : '' ) . '" data-address="street-hidden" name="' . $input_name_street_id . '">
               </td>
           </tr>';
@@ -588,7 +594,7 @@ class LMSSmartyPlugins
 
         echo '<tr>
               <td class="nobr">' . trans('Post office') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
+              <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
           </tr>';
 
         if (empty($params['countryid'])) {
@@ -603,10 +609,10 @@ class LMSSmartyPlugins
         if ($countries) {
             echo '<tr><td>' . trans('Country') . '</td><td>
                 <select name="' . $input_name_country_id . '" data-address="country">
-                <option value="">---</option>';
+                <option value="">—</option>';
 
             foreach ($countries as $v) {
-                if ($v['id'] == $params['location_country_id']) {
+                if (isset($params['location_country_id']) && $v['id'] == $params['location_country_id']) {
                     echo '<option value="'.$v['id'].'" selected>' . trans($v['name']) . '</option>' ;
                 } else {
                     echo '<option value="'.$v['id'].'">' . trans($v['name']) . '</option>' ;
@@ -674,7 +680,7 @@ class LMSSmartyPlugins
         $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
-        $location_str .= $params['data']['location']
+        $location_str .= isset($params['data']['location'])
             ? ($params['data']['teryt']
                 ? trans('$a (TERRIT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
             : '...';
@@ -816,7 +822,7 @@ class LMSSmartyPlugins
                 $error = str_replace("\n", '<BR>', $error);
 
                 $result .= ' title="' . $error . '" ';
-                $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
+                $result .= ' class="' . (empty($class) ? '' : $class) . (isset($params['bold']) && $params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
             } else {
                 $warnings = $template->getTemplateVars('warning');
                 if (isset($params['trigger']) && isset($warnings[$params['trigger']])) {
@@ -828,7 +834,7 @@ class LMSSmartyPlugins
                     $result .= ' title="' . $error . '" ';
                     $result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-warning bold" ' : ' lms-ui-warning" ');
                 } else {
-                    if ($params['text'] != '') {
+                    if (isset($params['text']) && $params['text'] != '') {
                         $text = $params['text'];
                         unset($params['text']);
                         $text = trans(array_merge((array)$text, $params));
@@ -981,7 +987,7 @@ class LMSSmartyPlugins
                     ' . trans("Visible tabs:") . '
                 </div>
                 <select id="resource-tab-selector" name="resource-tabs[]" form="resource-tab-selector-form"
-                    data-default-value="' . trans("- none -") . '"
+                    data-default-value="' . trans("— none —") . '"
                     data-shorten-to-default-value="false"
                     onchange="resourceTabSelectorChanged()" multiple>
                 </select>
@@ -1046,7 +1052,7 @@ class LMSSmartyPlugins
         }
         return '<select' . (isset($id) ? ' id="' . $id . '"' : '')
             . ' name="' . $elemname . '" ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '>- ' . trans("default") . '-</option>'
+			<option value=""' . (!$selected ? ' selected' : '') . '>— ' . trans("default") . '—</option>'
             . $options
             . '</select>';
     }
@@ -1126,7 +1132,7 @@ class LMSSmartyPlugins
         return '<select name="' . $elemname . '"' . (isset($params['id']) ? ' id="' . $params['id'] . '"' : '')
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template)
             . (isset($params['onchange']) ? ' onChange="' . $params['onchange'] . '"' : '') . '>
-			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>- undefined -') . '</option>'
+			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>— undefined —') . '</option>'
             . $options
             . '</select>';
     }
@@ -1144,7 +1150,7 @@ class LMSSmartyPlugins
         $tip = isset($params['tip']) ? $params['tip'] : trans('Select identity type');
         $trigger = isset($params['trigger']) ? $params['trigger'] : 'ict';
 
-        $options = '<option value="0">' . trans('- select -') . '</option>';
+        $options = '<option value="0">' . trans('— select —') . '</option>';
         foreach ($identityTypes as $key => $item) {
             $item = trans($item);
             $options .= '<option value="' . $key . '"' . ($selected === $key ? ' selected' : '') . '>' . $item . '</option>';
@@ -1200,11 +1206,11 @@ class LMSSmartyPlugins
 
         //<editor-fold desc="numberplan container">
         $result .= '<div class="lms-ui-numberplan-container" style="display: flex;"'
-                . 'data-doctype-selector="'. $params['doctype_selector'] .'"'
-                . 'data-customer-selector="'. $params['customer_selector'] .'"'
-                . 'data-cdate-selector="'. $params['cdate_selector'] .'"'
-                . 'data-plan-document-type="'. $params['planDocumentType'] .'"'
-                . 'data-plan-customer-id="'. $params['customer_id'] .'"'
+                . ' data-doctype-selector="'. $params['doctype_selector'] .'"'
+                . ' data-customer-selector="'. $params['customer_selector'] .'"'
+                . (isset($params['cdate_selector']) ? ' data-cdate-selector="' . $params['cdate_selector'] . '"' : '')
+                . ' data-plan-document-type="'. $params['planDocumentType'] .'"'
+                . ' data-plan-customer-id="'. $params['customer_id'] .'"'
                 . '>' . PHP_EOL;
 
         //<editor-fold desc="number">
@@ -1213,7 +1219,7 @@ class LMSSmartyPlugins
                 . ' name="' . $params['input_name'] . '"'
                 . (empty($params['input_id']) ? '' : ' id="' . $params['input_id'] . '"')
                 . (empty($params['input_value']) ? '' : ' value="' . $params['input_value'] . '"')
-                . ' placeholder="- auto -"'
+                . ' placeholder="— auto —"'
                 . (isset($form) ? ' form="' . $form . '"' : '')
                 . ' ' . self::tipFunction(
                     array(
@@ -1251,7 +1257,7 @@ class LMSSmartyPlugins
 
         if (!empty($params['numberplanlist'])) {
             if (count($params['numberplanlist']) > 1) {
-                $result .= '<option value="" disabled selected hidden>' . trans("- select -") . '</option>';
+                $result .= '<option value="" disabled selected hidden>' . trans("— select —") . '</option>';
             }
             foreach ($params['numberplanlist'] as $plan) {
                 $result .= '<option value="' . $plan['id'] . '"';
@@ -1272,7 +1278,7 @@ class LMSSmartyPlugins
                 $result .= '</option>' . PHP_EOL;
             }
         } else {
-            $result .= '<option value="">' . trans("- select -") . '</option>';
+            $result .= '<option value="">' . trans("— select —") . '</option>';
         }
         $result .= '</select>' . PHP_EOL;
         $result .= '</div>' . PHP_EOL;

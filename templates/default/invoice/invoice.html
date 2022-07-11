@@ -1,10 +1,10 @@
 {$use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color')}
-{$show_balance = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))}
+{$show_balance = ConfigHelper::checkConfig('invoices.show_balance', true)}
 {$show_expired_balance = ConfigHelper::checkConfig('invoices.show_expired_balance')}
 {$show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary')}
 {$hide_discount = ConfigHelper::checkConfig('invoices.hide_discount')}
 {$hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid')}
-{$show_tax_category = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_tax_category', 'true'))}
+{$show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category', true)}
 {if empty($invoice.taxcategories)}
 	{$show_tax_category = false}
 {/if}
@@ -52,9 +52,9 @@
 					<span class="sdr">
 						{trans("DUPLICATE, draw-up date:")}
 						{if $invoice['duplicate-date']}
-							{$invoice['duplicate-date']|date_format:"%Y/%m/%d"}
+							{$invoice['duplicate-date']|date_format:"Y-m-d"}
 						{else}
-							{$smarty.now|date_format:"%Y/%m/%d"}
+							{$smarty.now|date_format:"Y-m-d"}
 						{/if}
 					</span>
 				{/if}
@@ -79,19 +79,19 @@
 				{/if}
 			</td>
 			<td width="1%" nowrap align="left" valign="top" class="sdr">
-				{$invoice.cdate|date_format:"%Y/%m/%d"}
+				{$invoice.cdate|date_format:"Y-m-d"}
 				{if $invoice.division_cplace != ""}
 					, {$invoice.division_cplace}
 				{/if}
 				<br>
 				{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}
-					{$invoice.sdate|date_format:"%Y/%m/%d"}
+					{$invoice.sdate|date_format:"Y-m-d"}
 					<br>
 				{/if}
 				{if $use_alert_color}
 					<span style="color: red; font-weight: bold;">
 				{/if}
-				{$invoice.pdate|date_format:"%Y/%m/%d"}
+				{$invoice.pdate|date_format:"Y-m-d"}
 				<br>
 				{if $use_alert_color}
 					</span>
@@ -147,7 +147,7 @@
 				{$tmp = str_replace('%bankaccount', $account_text, $tmp)}
 				{$tmp = str_replace('%bankname', $invoice.div_bank, $tmp)}
 
-				{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))}
+				{if ConfigHelper::checkConfig('invoices.customer_bankaccount', true)}
 					{textformat assign="tmp" wrap=5000}
 						{$tmp}
 						<br>
@@ -175,7 +175,7 @@
 					{format_ten($invoice.ten, $invoice.export)}
 					<br>
 					{Localisation::setSystemLanguage($currentSystemLanguage)}
-				{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $invoice.ssn != ""}
+				{elseif !ConfigHelper::checkConfig('invoices.hide_ssn', true) && $invoice.ssn != ""}
 					{trans("SSN:")} {$invoice.ssn}
 					<br>
 				{/if}
@@ -190,7 +190,7 @@
 				{/if}
 			</td>
 			<td width="34%" valign="top" class="sdr">
-				{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))}
+				{if ConfigHelper::checkConfig('invoices.post_address', true)}
 					<br>
 					<br>
 					<br>
@@ -556,7 +556,7 @@
 			</tr>
 		{/if}
 
-		{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))}
+		{if ConfigHelper::checkConfig('invoices.show_pricing_method', true)}
 			<tr>
 				<td colspan="2" class="bold">
 					{if $invoice.netflag}
@@ -665,7 +665,7 @@
 		{/if}
 	</table>
 
-	{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_memo', true)) && $invoice.memo}
+	{if ConfigHelper::checkConfig('invoices.show_memo', true) && $invoice.memo}
 		<table width="100%" cellpadding="3">
 			<tr>
 				<td width="100%" colspan="2">
@@ -681,7 +681,7 @@
 	<!-- The Other Page of Invoice customerbalancelist + customerpin -->
 	<!-- insert page break here and buy auto-duplex printer :p -->
 
-	{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))}
+	{if ConfigHelper::checkConfig('invoices.customer_credentials', true)}
 		{if $invoice.customerpin}
 			<br><br>
 			<strong>{trans("Customer ID:")} {$invoice.customerid|string_format:"%04d"}</strong><br>

@@ -363,17 +363,17 @@ if (!isset($_POST['xjxfun'])) {
 
                 $LMS->CustomerUpdate($customerdata);
 
-                    $hook_data = $LMS->executeHook(
-                        'customeredit_after_submit',
-                        array(
-                            'customerdata' => $customerdata,
-                        )
-                    );
-                        $customerdata = $hook_data['customerdata'];
-                        $id = $hook_data['id'];
+                $hook_data = $LMS->executeHook(
+                    'customeredit_after_submit',
+                    array(
+                        'customerdata' => $customerdata,
+                    )
+                );
+                $customerdata = $hook_data['customerdata'];
+                $id = isset($hook_data['id']) ? $hook_data['id'] : null;
 
                 if ($SYSLOG) {
-                        $contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
+                    $contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
                     if (!empty($contactids)) {
                         foreach ($contactids as $contactid) {
                             $args = array(
@@ -420,7 +420,7 @@ if (!isset($_POST['xjxfun'])) {
                                 'contact' => $contact['contact'],
                                 'name' => $contact['name'],
                                 'type' => $contact['type'],
-                                'properties' => serialize($contact['properties']),
+                                'properties' => isset($contact['properties']) ? serialize($contact['properties']) : null,
                             );
                             $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                         }

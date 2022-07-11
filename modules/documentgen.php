@@ -59,7 +59,7 @@ if (isset($_POST['document'])) {
         $error['number'] = trans('Document with specified number exists!');
     }
 
-    $allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('documents.allow_past_date', 'true'));
+    $allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true);
     if (!$allow_past_date) {
         $today = strtotime('today');
     }

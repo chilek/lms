@@ -81,7 +81,12 @@ if ($ticket['deluserid']) {
     $ticket['delusername'] = $LMS->GetUserName($ticket['deluserid']);
 }
 
-if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) {
+if ($ticket['customerid']
+    && ConfigHelper::checkConfig(
+        'rt.show_stats',
+        ConfigHelper::checkConfig('phpui.helpdesk_stats')
+    )
+) {
     $yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
     //$del = 0;
     $stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets
@@ -93,7 +98,12 @@ if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) 
     $SMARTY->assign('stats', $stats);
 }
 
-if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+if ($ticket['customerid']
+    && ConfigHelper::checkConfig(
+        'rt.notification_customerinfo',
+        ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
+    )
+) {
     $customer = $LMS->GetCustomer($ticket['customerid'], true);
     $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
 
@@ -120,8 +130,8 @@ if (!empty($iteration['total'])) {
             break;
         }
     }
-    $ticket['next_ticketid'] = $next_ticketid;
-    $ticket['prev_ticketid'] = $prev_ticketid;
+    $ticket['next_ticketid'] = isset($next_ticketid) ? $next_ticketid : null;
+    $ticket['prev_ticketid'] = isset($prev_ticketid) ? $prev_ticketid : null;
 }
 
 foreach ($categories as $category) {
@@ -178,9 +188,9 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SMARTY->assign('aet', $aet);
 $SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('relatedticketscontent', $relatedticketscontent);
-$SMARTY->assign('childticketscontent', $childticketscontent);
-$SMARTY->assign('parentticketcontent', $parentticketcontent);
+$SMARTY->assign('relatedticketscontent', isset($relatedticketscontent) ? $relatedticketscontent : null);
+$SMARTY->assign('childticketscontent', isset($childticketscontent) ? $childticketscontent : null);
+$SMARTY->assign('parentticketcontent', isset($parentticketcontent) ? $parentticketcontent : null);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);

@@ -128,6 +128,20 @@ $DEFAULTS = array(
         'type' => 'html',
         'attachment_name' => '',
     ),
+    'rt' => array(
+        'backend_mode' => false,
+        'new_ticket_notify' => true,
+        'notification_customerinfo' => true,
+        'quote_body' => false,
+        'sender_name' => '',
+        'show_stats' => true,
+        'ticket_template_file' => 'rtticketprint.html',
+        'ticketlist_pagelimit' => 100,
+        'ticketlist_status' => '',
+    ),
+    'timetable' => array(
+        'default_forward_day_limit' => 7,
+    ),
     'notes' => array(
         'template_file' => 'note.html',
         'content_type' => 'text/html',

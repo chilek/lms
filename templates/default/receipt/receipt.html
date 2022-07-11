@@ -30,7 +30,7 @@
 	<tr>
 		<td width="34%" colspan="2" class="fleft"></td>
 		<td width="34%" colspan="2" class="flr sdr" align="center" nowrap>
-			{trans("Date:")} {$receipt.cdate|date_format:"%x"}
+			{trans("Date:")} {$receipt.cdate|date_format:"Y-m-d"}
 		</td>
 		<td width="32%" colspan="2" class="flr sdr" align="center">
 			<b>{t a=$receipt.number}No. $a{/t}</b>
@@ -148,7 +148,7 @@
 	</tr>
 	<tr>
 		<td colspan="6" align="right">
-			<span class="small">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</span>
+			<span class="small">Copyright &copy; 2001-{$smarty.now|date_format:"Y"} LMS Developers</span>
 		</td>
 	</tr>
 </table>
@@ -188,7 +188,7 @@
 	<tr>
 		<td width="34%" colspan="2" class="fleft"></td>
 		<td width="34%" colspan="2" class="flr sdr" align="center" nowrap>
-			{trans("Date:")} {$receipt.cdate|date_format:"%x"}
+			{trans("Date:")} {$receipt.cdate|date_format:"Y-m-d"}
 		</td>
 		<td width="32%" colspan="2" class="flr sdr" align="center">
 			<b>{t a=$receipt.number}No. $a{/t}</b>
@@ -304,7 +304,7 @@
 	</tr>
 	<tr>
 		<td colspan="6" align="right">
-			<span class="small">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</span>
+			<span class="small">Copyright &copy; 2001-{$smarty.now|date_format:"Y"} LMS Developers</span>
 		</td>
 	</tr>
 </table>

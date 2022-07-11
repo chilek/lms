@@ -114,6 +114,9 @@ define('CCONSENT_SMSNOTICE', 8);
 define('CCONSENT_SMS_MARKETING', 9);
 define('CCONSENT_MAIL_MARKETING', 10);
 define('CCONSENT_PHONE_BILLING', 11);
+define('CCONSENT_NONE_PHONE_BILLING', 12);
+define('CCONSENT_FULL_PHONE_BILLING', 13);
+define('CCONSENT_SIMPLIFIED_PHONE_BILLING', 14);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -169,8 +172,24 @@ $CCONSENTS = array(
     CCONSENT_PHONE_BILLING => array(
         'label' => trans('phone billing'),
         'name' => 'phone_billing',
-        'type' => 'boolean',
+        'type' => 'selection',
+        'values' => array(
+            CCONSENT_NONE_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>none'),
+            ),
+            CCONSENT_SIMPLIFIED_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>simplified'),
+                'name' => 'simplified_phone_billing',
+            ),
+            CCONSENT_FULL_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>full'),
+                'name' => 'full_phone_billing',
+            ),
+        ),
     ),
+    CCONSENT_NONE_PHONE_BILLING => CCONSENT_PHONE_BILLING,
+    CCONSENT_SIMPLIFIED_PHONE_BILLING => CCONSENT_PHONE_BILLING,
+    CCONSENT_FULL_PHONE_BILLING => CCONSENT_PHONE_BILLING,
 );
 
 // Config types
@@ -186,9 +205,10 @@ define('CONFIG_TYPE_RICHTEXT', 8);
 define('CONFIG_TYPE_MAIL_BACKEND', 9);
 define('CONFIG_TYPE_MAIL_SECURE', 10);
 define('CONFIG_TYPE_DATE_FORMAT', 11);
+define('CONFIG_TYPE_EMAILS', 12);
 
 $CONFIG_TYPES = array(
-    CONFIG_TYPE_AUTO => trans('- auto -'),
+    CONFIG_TYPE_AUTO => trans('— auto —'),
     CONFIG_TYPE_NONE => trans('none'),
     CONFIG_TYPE_BOOLEAN => trans('boolean'),
     CONFIG_TYPE_POSITIVE_INTEGER => trans('integer greater than 0'),
@@ -200,6 +220,7 @@ $CONFIG_TYPES = array(
     CONFIG_TYPE_MAIL_BACKEND => trans('mail backend'),
     CONFIG_TYPE_MAIL_SECURE => trans('mail security protocol'),
     CONFIG_TYPE_DATE_FORMAT => trans('date format'),
+    CONFIG_TYPE_EMAILS => trans('comma separated emails'),
 );
 
 // Helpdesk ticket status
@@ -878,8 +899,8 @@ $DISCOUNTTYPES = array(
 
 define('DAY_MONDAY', 0);
 define('DAY_TUESDAY', 1);
-define('DAY_THURSDAY', 2);
-define('DAY_WEDNESDAY', 3);
+define('DAY_WEDNESDAY', 2);
+define('DAY_THURSDAY', 3);
 define('DAY_FRIDAY', 4);
 define('DAY_SATURDAY', 5);
 define('DAY_SUNDAY', 6);
@@ -887,8 +908,8 @@ define('DAY_SUNDAY', 6);
 $DAYS = array(
     DAY_MONDAY  => trans('Mon'),
     DAY_TUESDAY => trans('Tue'),
-    DAY_THURSDAY    => trans('Thu'),
     DAY_WEDNESDAY   => trans('Wed'),
+    DAY_THURSDAY    => trans('Thu'),
     DAY_FRIDAY  => trans('Fri'),
     DAY_SATURDAY    => trans('Sat'),
     DAY_SUNDAY  => trans('Sun'),

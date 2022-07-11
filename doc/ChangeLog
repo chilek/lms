@@ -146,6 +146,100 @@ version 28-git (????-??-??):
   - improvement: document template can enable use trade documents as their reference documents [chilan]
   - enhancement: added phone billing customer consent support [chilan]
   - enhancement: auto-generate billing documents with invoices issued to phone services [chilan]
+  - improvement: show mac vendors on node session lists [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_working_hours_interval' and 'phpui.timetable_working_hours'
+    to 'timetable.work_time_step' and 'timetable.work_time_hours' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_allow_past_events' to 'timetable.allow_past_events' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_overdue_events' to 'timetable.show_delayed_events' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_user_row_limit' to 'timetable.row_user_limit' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_days_forward' to 'timetable.default_forward_day_limit' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_distant_event_day_trigger'
+    and 'phpui.timetable_distant_event_restriction' to 'timetable.distant_event_day_trigger'
+    and 'timetable.distant_event_restriction' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_hide_disabled_users' and 'phpui.timetable_hide_deleted_users'
+    to 'timetable.hide_disabled_users' and 'timetable.hide_deleted_users' [chilan]
+  - devel/cleanup: renamed 'phpui.timetable_hide_description' to 'timetable.hide_description' [chilan]
+  - devel/cleanup: renamed 'phpui.event_time_step' to 'timetable.event_time_step' [chilan]
+  - devel/cleanup: renamed 'phpui.event_user_required' to 'timetable.event_user_required' [chilan]
+  - devel/cleanup: renamed 'phpui.event_overlap_warning' to 'timetable.event_overlap_warning' [chilan]
+  - devel/cleanup: reanmed 'phpui.event_max_userlist_size' to 'timetable.event_max_userlist_size' [chilan]
+  - devel/cleanup: renamed 'phpui.event_usergroup_selection_type'
+    to 'timetable.event_usergroup_selection_type' [chilan]
+  - devel/cleanup: renamed 'phpui.customer_event_limit' to 'timetable.customer_event_limit' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_hide_deleted_users' and 'phpui.helpdesk_hide_disabled_users'
+    to 'rt.hide_deleted_users' and 'rt.hide_disabled_users' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_allow_empty_categories'
+    and 'phpui.helpdesk_empty_category_warning' to 'rt.allow_empty_categories'
+    and 'rt.empty_category_warning' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_customer_notify' to 'rt.customer_notify' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_sender_name' and 'phpui.helpdesk_sender_email'
+    to 'rt.sender_name' and 'rt.sender_email' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_notification_attachments'
+    to 'rt.notification_attachments' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_author_notify' to 'rt.author_notify' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_additional_user_permission_checks'
+    to 'rt.additional_user_permission_checks' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_allow_all_users_modify_deadline'
+    to 'rt.allow_all_users_modify_deadline' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_allow_change_ticket_state_from_open_to_new'
+    to 'rt.allow_change_ticket_state_from_open_to_new' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_backend_mode' to 'rt.backend_mode' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_block_ticket_close_with_open_events'
+    to 'rt.block_ticket_close_with_open_events' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_check_owner_verifier_conflict'
+    to 'rt.check_owner_verifier_conflict' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_notify' to 'rt.notify' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_reply_body' to 'rt.quote_body' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_notification_mail_subject',
+    'phpui.helpdesk_notification_mail_body' and 'phpui.helpdesk_notification_sms_body'
+    to 'rt.notification_mail_subject', 'rt.notification_mail_body' and 'rt.notification_sms_body'
+    [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_customerinfo_mail_body'
+    and 'phpui.helpdesk_customerinfo_sms_body' to 'rt.notification_mail_body_customerinfo_format'
+    and 'rt.notification_sms_body_customerinfo_format' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_customerinfo' to 'rt.notification_customerinfo' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_stats' to 'rt.show_stats' [chilan]
+  - devel/cleanup: renamed 'phpui.newticket_notify' to 'rt.new_ticket_notify' [chilan]
+  - devel/cleanup: renamed 'phpui.helpdesk_customer_notification_mail_subject'
+    to 'rt.customer_notification_mail_subject' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_closed_tickets'
+    to 'rt.default_show_closed_tickets' [chilan]
+  - devel/cleanup: renamed 'phpui.category_adjustments_in_ticketedit'
+    to 'rt.category_adjustments_in_ticketedit' [chilan]
+  - devel/cleanup: renamed 'phpui.ticket_property_change_notify'
+    to 'rt.ticket_property_change_notify' [chilan]
+  - devel/cleanup: renamed 'phpui.ticket_template_file' to 'rt.ticket_template_file' [chilan]
+  - devel/cleanup: renamed 'phpui.ticketlist_pagelimit', 'phpui.ticketlist_priority'
+    and 'phpui.ticketlist_status' to 'rt.ticketlist_pagelimit', 'rt.ticketlist_priority'
+    and 'rt.ticketlist_status' [chilan]
+  - devel/cleanup: renamed 'phpui.allow_modify_closed_events_newer_than'
+    to 'timetable.allow_modify_closed_events_newer_than' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_closed_events'
+    to 'timetable.default_show_closed_events' [chilan]
+  - improvement: lms-notify.php: added '%cid' and '%customername' substitution symbols in generated
+    firewall rules [chilan]
+  - improvement: 'cashimport.autocommit' also applies to cash source files loaded from
+    frontend [chilan]
+  - enhancement: userpanel/documents: multiple email addresses can be entered in operator
+    notification address list settings and special symbol '%creatoremail%' support [chilan]
+  - enhancement: added 'deleted tickets' filter in rtqueuelist module [chilan]
+  - enhancement: implemented multi node group selection in customerlist and messageadd
+    modules [chilan]
+  - improvement: 'invoices.pdf_version' (default: '1.7') and 'invoices.pdf_font'
+    (default: 'liberationsans') allow to customize generated version of pdf file and used
+    font respectively [chilan]
+  - enhancement: phone billing type basing on customer subconsents support added [chilan]
+  - enhancement: impelemented document/assignment expiration filters in new message form [chilan]
+  - enhancement: added info property to voip numbers [chilan]
+  - enhancement: new LMSFpdiBackend allows to easily merge/unite many PDF contents [chilan]
+  - enhancement: added 'payments.billing_invoice_separate_fractions' support with 'false'
+    as default value [chilan]
+  - enhancement: added %call_count and %call_fraction support to
+    'payments.invoice_billing_description' configuration variable [chilan]
+  - improvement: 'phpui.ignore_deleted_customers' ('false' by default) allows to hide deleted
+    customers from lists by default [chilan]
+  - improvement: 'phpui.show_due_balance' (with 'false' as default value) enables
+    presentation of due/expired balance in customer info box [chilan]
 
 version 27.0 (2021-08-20):
 

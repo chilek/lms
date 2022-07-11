@@ -148,7 +148,7 @@
 			<INPUT type="text" name="search" id="search" value="{if $listdata.cat == 'cashimport' && isset($sourcefilename)}{$sourcefilename}{else}{$listdata.search}{/if}"
 				   size="15" {tip text="Enter value of searching data and select category"}>
 			<SELECT size="1" name="cat" id="cat" style="width: 150px">
-				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
+				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select category —")}</OPTION>
 				<OPTION value="comment"{if $listdata.cat == "comment"} SELECTED{/if}>{trans("comment")}</OPTION>
 				<OPTION value="cdate"{if $listdata.cat == "cdate"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
 				<OPTION value="month"{if $listdata.cat == "month"} SELECTED{/if}>{trans("month (YYYY/MM)")}</OPTION>
@@ -165,7 +165,7 @@
 			</SELECT>
 			{trans("Group:")}
 			<SELECT size="1" name="group">
-				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
+				<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("— all groups —")}</OPTION>
 				{section name="grouplist" loop=$grouplist}
 					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"&hellip;":true}</OPTION>
 				{/section}
@@ -176,12 +176,12 @@
 				{date_period_preset from="#balancelist [name=\"from\"]" to="#balancelist [name=\"to\"]" time=true}
 				<span>{trans("From:")}</span>
 				<input type="text" name="from" size="14" maxlength="16"
-					value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d %H:%M"}{/if}"
+					value="{if $listdata.from > 0}{$listdata.from|date_format:"Y/m/d H:i"}{/if}"
 					placeholder="{trans("yyyy/mm/dd hh:mm")}"
 					{tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				<span>{trans("To:")}</span>
 				<input type="text" name="to" size="14" maxlength="16"
-					value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d %H:%M"}{/if}"
+					value="{if $listdata.to > 0}{$listdata.to|date_format:"Y/m/d H:i"}{/if}"
 					placeholder="{trans("yyyy/mm/dd hh:mm")}"
 					{tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 			</span>
@@ -201,7 +201,7 @@
 	<TR class="highlight"{if $balance.docid} data-published="{$balance.published}"
 			data-doctype="{$balance.doctype}"{/if}>
 		<TD class="nobr">
-			{$balance.time|date_format:"%Y/%m/%d %H:%M"}
+			{$balance.time|date_format:"Y-m-d H:i"}
 		</TD>
 		<TD class="nobr">
 			{if $balance.userid}{$balance.user|trunescape:16}{else}-{/if}

@@ -37,8 +37,8 @@
             {trans("Begin time")}
         </TD>
         <TD>
-            {$event.date|date_format:"%x (%A)"}
-            {($event.date + $event.begintime)|date_format:"%H:%M"}
+            {$event.date|date_format:"Y-m-d (l)"}
+            {($event.date + $event.begintime)|date_format:"H:i"}
         </TD>
     </TR>
     {if $event.begintime != $event.endtime || $event.enddate > $event.date}
@@ -51,11 +51,11 @@
             </TD>
             <TD>
                 {if $event.enddate}
-                    {$event.enddate|date_format:"%x (%A)"}
-                    {($event.enddate + $event.endtime)|date_format:"%H:%M"}
+                    {$event.enddate|date_format:"Y-m-d (l)"}
+                    {($event.enddate + $event.endtime)|date_format:"H:i"}
                 {else}
-                    {$event.date|date_format:"%x (%A)"}
-                    {($event.date + $event.endtime)|date_format:"%H:%M"}
+                    {$event.date|date_format:"Y-m-d (l)"}
+                    {($event.date + $event.endtime)|date_format:"H:i"}
                 {/if}
             </TD>
         </TR>
@@ -117,7 +117,7 @@
                 {trans("Creation time")}
             </TD>
             <TD>
-                {$event.creationdate|date_format:"%x (%X)"}
+                {$event.creationdate|date_format:"Y-m-d (H:i:s)"}
             </TD>
         </TR>
     {/if}
@@ -143,7 +143,7 @@
                 {trans("Last modification time")}
             </TD>
             <TD>
-                {$event.moddate|date_format:"%x (%X)"}
+                {$event.moddate|date_format:"Y-m-d (H:i:s)"}
             </TD>
         </TR>
     {/if}
@@ -169,7 +169,7 @@
                 {trans("Closed time")}:
             </TD>
             <TD>
-                {$event.closeddate|date_format:"%x (%X)"}
+                {$event.closeddate|date_format:"Y-m-d (H:i:s)"}
             </TD>
         </TR>
     {/if}

@@ -51,7 +51,7 @@ class LMSTcpdfBackend extends LMSTCPDF
         $this->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $this->setLanguageArray($l);
+        //$this->setLanguageArray($l);
 
         /* disable font subsetting to improve performance */
         $this->setFontSubsetting(true);
@@ -78,6 +78,6 @@ class LMSTcpdfBackend extends LMSTCPDF
 
     public function WriteToString()
     {
-        return $this->Output(null, 'S');
+        return $this->Output('', 'S');
     }
 }

@@ -217,7 +217,7 @@
             </td>
             <td>
                 <select name="allowed_customer_status[]" class="lms-ui-multiselect" multiple
-                    required data-default-value="{trans("- all -")}" form="general-settings-form">
+                    required data-default-value="{trans("— all —")}" form="general-settings-form">
                     {foreach Localisation::arraySort($_CSTATUSES, 'singularlabel') as $statusidx => $status}
                         <option value="{$statusidx}"
                             {if empty($allowed_customer_status) || in_array($statusidx, $allowed_customer_status)} selected{/if}

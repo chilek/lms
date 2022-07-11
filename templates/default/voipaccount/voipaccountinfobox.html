@@ -67,18 +67,30 @@
                                 {block name="voipaccountinfobox-phone"}
                                 <tr>
                                     <td>
-                                        <img src="img/phone.gif" alt="{trans("Phone number:")}">
+                                        <img src="img/phone.gif" alt="{trans("Phone number")}">
                                     </td>
                                     <td class="bold nobr">
-                                        {if count($voipaccountinfo['phones']) > 1}
-                                            {trans("Phone numbers:")}
+                                        {if count($voipaccountinfo['numbers']) > 1}
+                                            {trans("Phone numbers")}
                                         {else}
-                                            {trans("Phone number:")}
+                                            {trans("Phone number")}
                                         {/if}
                                     </td>
                                     <td>
-                                        {foreach $voipaccountinfo['phones'] as $v}
-                                            {if $v.number_index == 1 && $v@total > 1}<B>{$v.phone}</B>{else}{$v.phone}{/if}{if !$v@last}, {/if}
+                                        {foreach $voipaccountinfo['numbers'] as $number}
+                                            {strip}
+                                                {if !$number@first},&nbsp{/if}
+                                                {if $number.number_index == 1 && $number@total > 1}
+                                                    <strong>
+                                                        {$number.phone}
+                                                    </strong>
+                                                {else}
+                                                    {$number.phone}
+                                                {/if}
+                                                {if isset($number.info)}
+                                                    &nbsp;({$number.info|escape})
+                                                {/if}
+                                            {/strip}
                                         {/foreach}
                                     </td>
                                 </tr>
@@ -235,25 +247,26 @@
             </table>
         </td>
     </tr>
-       {block name="voipaccountinfobox-buttons"}
         <tr>
-            <td class="text-right" colspan="2">
-				<a href="?m=voipaccountbillinglist&fvoipaccid={$voipaccountinfo.id}">{trans("Billings")} <img src="img/voip.gif" alt="show billings"></a>
-
-                <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="edit"></a>
-
-                <a id="delete-voipaccount" href="?m=voipaccountdel&id={$voipaccountinfo.id}" data-name="{$voipaccountinfo.login}">{trans("Delete")} <img src="img/delete.gif" alt="delete"></a>
+            <td class="lms-ui-box-buttons" colspan="2">
+                {block name="voipaccountinfobox-buttons"}
+                    {button href="?m=voipaccountbillinglist&fvoipaccid={$voipaccountinfo.id}" label="Billings" icon="billing" tip="show billings"}
+                    {button href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E" label="Edit" icon="edit"}
+                    {button id="delete-voipaccount" data_href="?m=voipaccountdel&id={$voipaccountinfo.id}"
+                        data_name=$voipaccountinfo.login label="Delete" icon="delete"}
+                {/block}
             </td>
         </tr>
-        {/block}
     </tbody>
 </table>
 <script>
+
     $('#delete-voipaccount').click(function() {
         var name = $(this).attr('data-name');
         confirmDialog($t("Are you sure, you want to remove voip account '$a' from database?", name), this).done(function() {
-            location.href = $(this).attr('href');
+            location.href = $(this).attr('data-href');
         });
         return false;
     });
+
 </script>

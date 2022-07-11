@@ -49,7 +49,7 @@
                         </TD>
                         <TD WIDTH="99%" NOWRAP>
                             <SELECT NAME="default_userid" {tip text="Sender of new request notifications and his email. If not specified notifications goes from queue address."}> 
-                                <OPTION value="0" SELECTED>{trans("- select user -")}</OPTION>
+                                <OPTION value="0" SELECTED>{trans("— select user —")}</OPTION>
                                 {foreach $userlist as $user}
                                 <OPTION value="{$user.id}"{if $user.id == $default_userid} SELECTED{/if}>{$user.name|escape}</OPTION>
                                 {/foreach}
