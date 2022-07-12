@@ -4900,6 +4900,10 @@ class LMS
             $eol = PHP_EOL;
         }
 
+        if (!isset($no_attachments)) {
+            $no_attachments = false;
+        }
+
         $month = sprintf('%02d', intval(date('m', $currtime)));
         $day = sprintf('%02d', intval(date('d', $currtime)));
         $year = sprintf('%04d', intval(date('Y', $currtime)));
