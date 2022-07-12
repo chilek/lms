@@ -692,14 +692,14 @@ if (isset($_POST['ticket'])) {
     $ticket['deadline'] = $ticketedit['deadline'];
     $ticket['address_id'] = $ticketedit['address_id'];
     $ticket['nodeid'] = $ticketedit['nodeid'];
-    $ticket['netnodeid'] = $ticketedit['netnodeid'];
+    $ticket['netnodeid'] = isset($ticketedit['netnodeid']) ? $ticketedit['netnodeid'] : null;
     $ticket['netdevid'] = $ticketedit['netdevid'];
     $ticket['priority'] = $ticketedit['priority'];
     $ticket['requestor_userid'] = $ticketedit['requestor_userid'];
-    $ticket['requestor_name'] = $ticketedit['requestor_name'];
-    $ticket['requestor_mail'] = $ticketedit['requestor_mail'];
-    $ticket['requestor_phone'] = $ticketedit['requestor_phone'];
-    $ticket['parentid'] = $ticketedit['parentid'];
+    $ticket['requestor_name'] = isset($ticketedit['requestor_name']) ? $ticketedit['requestor_name'] : null;
+    $ticket['requestor_mail'] = isset($ticketedit['requestor_mail']) ? $ticketedit['requestor_mail'] : null;
+    $ticket['requestor_phone'] = isset($ticketedit['requestor_phone']) ? $ticketedit['requestor_phone'] : null;
+    $ticket['parentid'] = isset($ticketedit['parentid']) ? $ticketedit['parentid'] : null;
     $ticket['categorywarn'] = $ticketedit['categorywarn'];
 
     if (!empty($ticketedit['relatedtickets'])) {
