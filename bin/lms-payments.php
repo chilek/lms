@@ -2068,6 +2068,7 @@ foreach ($assigns as $assign) {
                             $document = array(
                                 'customerid' => $cid,
                                 'type' => DOC_BILLING,
+                                'cdate' => $issuetime,
                                 'title' => $billing_document_template['title'],
                                 'number' => $newnumber,
                                 'numberplanid' => $billing_plan,
