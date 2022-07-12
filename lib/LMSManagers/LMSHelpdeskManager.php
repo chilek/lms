@@ -1536,7 +1536,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['cause'] = $ticket['cause'];
         }
 
-        if ($ticket['source'] != $props['source'] && isset($props['source'])) {
+        if (isset($props['source']) && $ticket['source'] != $props['source']) {
             $notes[] = trans('Ticket\'s source has been changed from $a to $b.', $RT_SOURCES[$ticket['source']], $RT_SOURCES[$props['source']]);
             $type = $type | RTMESSAGE_SOURCE_CHANGE;
         } else {
