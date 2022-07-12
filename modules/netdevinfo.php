@@ -73,6 +73,8 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 
     if ($netdev['ports'] > $netdev['takenports']) {
         $nodelist = $LMS->GetUnlinkedNodes();
+    } else {
+        $nodelist = array();
     }
     $netdevips = $LMS->GetNetDevIPs($id);
 
