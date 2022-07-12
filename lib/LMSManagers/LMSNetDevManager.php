@@ -469,11 +469,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 if (!empty($nodeassigns)) {
                     foreach ($nodeassigns as $nodeassign) {
                         $args = array(
-                        SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
-                        SYSLOG::RES_NETDEV => $data['id'],
-                        SYSLOG::RES_NODE => $nodedata['id'],
-                        SYSLOG::RES_ASSIGN => $nodedata['assignmentid'],
-                        SYSLOG::RES_CUST => $nodedata['ownerid']
+                            SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                            SYSLOG::RES_NETDEV => $data['id'],
+                            SYSLOG::RES_NODE => $nodeassign['id'],
+                            SYSLOG::RES_ASSIGN => $nodeassign['assignmentid'],
+                            SYSLOG::RES_CUST => $ownerid,
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
