@@ -47,7 +47,7 @@ class Utils
                 return false;
             }
             $string = strval($value);
-            if ($string[0] == '-') {
+            if (strlen($string) && $string[0] == '-') {
                 $string = ltrim($string, '-');
             }
             return ctype_digit($string);
