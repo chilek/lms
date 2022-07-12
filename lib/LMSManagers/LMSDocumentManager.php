@@ -196,7 +196,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         switch ($status) {
             case 0:
-                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate >= 0 AND (d.confirmdate = 0 OR d.confirmdate < ?NOW?)';
+                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND (d.confirmdate = 0 OR d.confirmdate > ?NOW?)';
                 break;
             case 1:
                 $status_sql = ' AND d.closed > ' . DOC_OPEN;
