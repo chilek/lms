@@ -140,6 +140,10 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
                 }
 
+                $extrafile = null;
+                $quiet = false;
+                $test = false;
+
                 $LMS->SendInvoices(
                     $docs,
                     'frontend',
