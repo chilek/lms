@@ -3022,7 +3022,9 @@ class LMS
             preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $headers['From'], $from);
             $sender_email = $from['mail'];
             $this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
-            $this->mail_object->addReplyTo($headers['Reply-To']);
+            if (isset($headers['Reply-To'])) {
+                $this->mail_object->addReplyTo($headers['Reply-To']);
+            }
             $this->mail_object->CharSet = 'UTF-8';
             $this->mail_object->Subject = $headers['Subject'];
 
