@@ -365,7 +365,7 @@ if (isset($search) || isset($_GET['s'])) {
         unset($queue['order']);
         unset($queue['direction']);
 
-        $SESSION->save('rtp', $page);
+        $SESSION->save('rtp', isset($page) ? $page : 0);
         $SESSION->save('rtsearch', $search);
 
         $SMARTY->assign('pagination', $pagination);
