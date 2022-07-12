@@ -152,6 +152,8 @@ if (isset($_POST['message'])) {
                 $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
             }
             unset($file);
+        } else {
+            $files = array();
         }
 
         $smtp_options = $LMS->GetRTSmtpOptions();

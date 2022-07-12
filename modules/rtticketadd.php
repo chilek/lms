@@ -206,6 +206,8 @@ if (isset($_POST['ticket'])) {
                 $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
             }
             unset($file);
+        } else {
+            $files = array();
         }
         $id = $LMS->TicketAdd($ticket, $files);
 
