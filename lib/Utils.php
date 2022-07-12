@@ -300,15 +300,17 @@ class Utils
         if (!empty($value)) {
             $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {
-                if ($consent['type'] == 'selection') {
-                    foreach ($consent['values'] as $sub_consent_id => $subconsent) {
-                        if (isset($subconsent['name']) && isset($values[$subconsent['name']])) {
-                            $result[$consent_id] = $sub_consent_id;
+                if (is_array($consent)) {
+                    if ($consent['type'] == 'selection') {
+                        foreach ($consent['values'] as $sub_consent_id => $subconsent) {
+                            if (isset($subconsent['name']) && isset($values[$subconsent['name']])) {
+                                $result[$consent_id] = $sub_consent_id;
+                            }
                         }
-                    }
-                } else {
-                    if (isset($values[$consent['name']])) {
-                        $result[$consent_id] = $consent_id;
+                    } else {
+                        if (isset($values[$consent['name']])) {
+                            $result[$consent_id] = $consent_id;
+                        }
                     }
                 }
             }

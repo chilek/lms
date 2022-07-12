@@ -1373,6 +1373,8 @@ function handle_file_uploads($elemid, &$error)
             }
             unset($file);
             $$elemid = $fileupload[$elemid];
+        } else {
+            $$elemid = array();
         }
     } else {
         $$elemid = array();
