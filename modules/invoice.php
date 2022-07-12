@@ -167,10 +167,11 @@ function escapeJpkText($text)
     }
 }
 
-switch (intval($_GET['customertype'])) {
+$customertype = isset($_GET['customertype']) ? intval($_GET['customertype']) : -1;
+switch ($customertype) {
     case CTYPES_PRIVATE:
     case CTYPES_COMPANY:
-        $ctype = $_GET['customertype'];
+        $ctype = $customertype;
         break;
 
     default:
