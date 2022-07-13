@@ -610,6 +610,7 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = netdevices.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
                 . "	ORDER by name
 				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 

@@ -4771,6 +4771,7 @@ $_LANG['Additional options'] = 'Opcje dodatkowe';
 $_LANG['<!qs>device id'] = 'identyfikator urządzenia';
 $_LANG['<!qs>device name'] = 'nazwa urządzenia';
 $_LANG['<!qs>device serial number'] = 'numer seryjny urządzenia';
+$_LANG['<!qs>device mac'] = 'adres MAC urządzenia';
 
 $_LANG['<!qs>ticket id'] = 'identyfikator zgłoszenia';
 $_LANG['<!qs>ticket subject'] = 'temat zgłoszenia';
