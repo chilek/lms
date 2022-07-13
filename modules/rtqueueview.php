@@ -321,16 +321,7 @@ if (isset($_GET['unread'])) {
     $filter['unread'] = -1;
 }
 
-if (!empty($_GET['parentids'])) {
-    if (!is_array($_GET['parentids'])) {
-        $_GET['parentids'] = array($_GET['parentids']);
-    }
-    if (!in_array('-1', $_GET['parentids'])) {
-        $filter['parentids'] = Utils::filterIntegers($_GET['parentids']);
-    } else {
-        $filter['parentids'] = -1;
-    }
-}
+$filter['parentids'] = empty($_GET['parentids']) ? null : Utils::filterIntegers($_GET['parentids']);
 
 if (isset($_GET['rights'])) {
     $filter['rights'] = $_GET['rights'];

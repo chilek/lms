@@ -157,9 +157,10 @@
             </label>
             <label class="nobr">
                 {trans("Primary ticket")}
-                <SELECT size="1" name="parentids" onChange="document.filter.submit()">
-                    <option value=""{if $filter.parentids == ""} selected{/if}>{trans("all")}</option>
-                    <option value="-1"{if $filter.parentids == -1} selected{/if}>{trans("show only primary tickets")}</option>
+                <SELECT size="1" name="parentids[]" onChange="document.filter.submit()">
+                    <option value=""{if !isset($filter.parentids)} selected{/if}>{trans("all")}</option>
+                    <option value="-1"{if is_array($filter.parentids) && in_array('-1', $filter.parentids)} selected{/if}>{trans("show only primary tickets")}</option>
+                    <option value="-2"{if is_array($filter.parentids) && in_array('-2', $filter.parentids)} selected{/if}>{trans("show only slave tickets")}</option>
                 </SELECT>
             </label>
             <label class="nobr">

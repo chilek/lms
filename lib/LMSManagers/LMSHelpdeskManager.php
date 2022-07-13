@@ -398,18 +398,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $unreadfilter = '';
         }
 
-        if (!empty($parentids)) {
-            if (!is_array($parentids)) {
-                $parentids = array($parentids);
-            }
-
+        if (empty($parentids)) {
+            $parentfilter = null;
+        } else {
             if (in_array(-1, $parentids)) {
                 $parentfilter = ' AND t.parentid IS NULL';
+            } elseif (in_array(-2, $parentids)) {
+                $parentfilter = ' AND t.parentid IS NOT NULL';
             } else {
                 $parentfilter = ' AND t.parentid IN (' . implode(',', $parentids) . ')';
             }
-        } else {
-            $parentfilter = '';
         }
 
         if (!empty($catids) && !in_array('all', $catids)) {
