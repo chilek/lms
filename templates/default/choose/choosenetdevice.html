@@ -5,9 +5,9 @@
         {include file="language.html"}
         <title>LMS – {if $layout.pagetitle neq ""}{$layout.pagetitle}{/if}</title>
         <link href="css/style.css" rel="stylesheet" type="text/css">
-        <script type="text/javascript" src="js/common.js"></script>
+        <script src="js/common.js"></script>
         {if $js}
-        <script type="text/javascript">
+        <script>
             {$js}
         </script>
         {/if}
@@ -31,49 +31,67 @@
                 </tr>
             </table>
         </form>
-        <script type="text/javascript">
-			<!--
-				$(function() {
-					$('form[name="search"] [name="searchnetdev"]').focus();
-				});
-			//-->
+        <script>
+
+            window.addEventListener('DOMContentLoaded', function() {
+                document.querySelector('form[name="search"] [name="searchnetdev"]').focus();
+            });
+
         </script>
     </body>
     {/if}
     {if $part eq "main"}
     <body class="lms-ui-popup">
-        <table cellpadding="3" width="100%">
+        <script>
+
+            window.addEventListener('DOMContentLoaded', function() {
+                var tbody = document.querySelector('tbody');
+                tbody.addEventListener('click',function(e) {
+                    if (e.target.tagName == 'TD') {
+                        window.parent.parent.postMessage({
+                                targetValue: e.target.parentNode.getAttribute('data-netdevice-id'),
+                                targetSelector: "#" + targetfield.getAttribute('id')
+                            }, "*"
+                        );
+                        window.parent.parent.popclick();
+                    }
+                });
+            });
+
+        </script>
+        <table class="lmsbox lms-ui-background-cycle">
             {if $netdevices}
-                <tr class="dark">
-                    <td nowrap="" class="fleftu"><b>{trans('Name:')}</b></td>
-                    <td nowrap="" class="fbt">{trans('Location:')}</td>
-                    <td nowrap="" class="fbt">{trans('Producer:')}</td>
-                    <td nowrap="" class="fbt">{trans('Empty ports:')}</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <td class="nobr"><strong>{trans('Name:')}</strong></td>
+                        <td class="nobr">{trans('Location:')}</td>
+                        <td class="nobr">{trans('Producer:')}</td>
+                        <td class="nobr">{trans('Empty ports:')}</td>
+                    </tr>
+                </thead>
             {/if}
-            {cycle values="light,lucid" print=false}
-            {foreach from=$netdevices item=netdevice}
-                <tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="font-weight: bold;">{$netdevice.name}</td>
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');">{$netdevice.location|replace:'Gdynia, ':''}</td>
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');">{$netdevice.producer}</td>
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="text-align: center;">{$netdevice.ports}</td>
-                </tr>
-            {foreachelse}
-                <tr>
-                    <td colspan="5" align="center">
-                        <p>&nbsp;</p>
-                        <p><b>
-                        {if $searchnetdev}
-                                {trans('No such devices matching search criteria.')}
-                        {else}
-                                {trans('Enter device name.')}
-                        {/if}
-                        </b></p>
-                        <p>&nbsp;</p>
-                    </td>
-                </tr>
-            {/foreach}
+            <tbody style="border: 0;">
+                {foreach $netdevices as $netdevice}
+                    <tr class="highlight" data-netdevice-id="{$netdevice.id}">
+                        <td>
+                            <strong>{$netdevice.name|escape}</strong>
+                        </td>
+                        <td>{$netdevice.location}</td>
+                        <td>{$netdevice.producer|escape}</td>
+                        <td class="text-center">{$netdevice.ports}</td>
+                    </tr>
+                {foreachelse}
+                    <tr style="border: 0;">
+                        <td colspan="5" class="empty-table">
+                            {if $searchnetdev}
+                                    {trans('No such devices matching search criteria.')}
+                            {else}
+                                    {trans('Enter device name.')}
+                            {/if}
+                        </td>
+                    </tr>
+                {/foreach}
+            </tbody>
         </table>
     </body>
     {/if}
