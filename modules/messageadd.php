@@ -686,7 +686,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['type'] = MSG_USERPANEL_URGENT;
     }
 
-    if (empty($message['customerid']) && ($message['state'] < 0 || $message['state'] > 165
+    if (empty($message['customerid']) && isset($message['state']) && ($message['state'] < 0 || $message['state'] > 165
         || ($message['state'] > CSTATUS_LAST && $message['state'] < 50))) {
         $error['state'] = trans('Incorrect recipient group!');
     }
