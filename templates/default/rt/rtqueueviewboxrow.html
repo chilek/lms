@@ -11,21 +11,21 @@
 				class="lms-ui-hint-rollover" data-url="?m=rtticketinfo&id={$ticket.id}">
 				<i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i>
 			</a>
-		{elseif $ticket.messageid}
+		{elseif !empty($ticket.messageid)}
 			<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}"
 				class="lms-ui-hint-rollover" data-url="?m=rtticketinfo&id={$ticket.id}">
 				<i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}priority{else}search{/if}"></i>
 			</a>
 		{/if}
 
-		{if $ticket.watching}
+		{if !empty($ticket.watching)}
 			{icon name="watch"}
 		{/if}
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">
 		<span class="lms-ui-hint-toggle" data-url="?m=rtticketinfo&id={$ticket.id}">
 			{$_RT_STATES[$ticket.state].label}<br>
-			{if $ticket.priority != 0}
+			{if !empty($ticket.priority)}
 				<span {if $ticket.state != $smarty.const.RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>
 			{/if}
 			{if !empty($ticket.verifiername) && !empty($ticket.state) && $ticket.state == $smarty.const.RT_VERIFIED}
@@ -35,7 +35,7 @@
 	</TD>
 	<TD class="nobr">
 		<span class="lms-ui-hint-rollover" data-url="?m=rtticketinfo&id={$ticket.id}">
-			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
+			<span class="bold" {if isset($ticket.priority)}style="{$_RT_PRIORITY_STYLES[$ticket.priority]}"{/if}>&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
 			<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
 			{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}
 				<br>{$ticket.createtime|date_format:"Y-m-d H:i:s"}
@@ -48,13 +48,15 @@
 	</TD>
 	<TD class="valign-middle">
 		<span class="bold">{$ticket.subject|trunescape:100|default:"&nbsp;"}</span>
-		{foreach $ticket.categories as $tc}
-			<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc">
-				<div class="lms-ui-category-label" style="{$tc.style}">
-					{$tc.name}
-				</div>
-			</a>
-		{/foreach}
+		{if !empty($ticket.categories)}
+			{foreach $ticket.categories as $tc}
+				<a href="?m=rtqueueview&persistent-filter=-1&catid={$tc.categoryid}&s=-1&priority=all&unread=-1&o=lastmodified,desc">
+					<div class="lms-ui-category-label" style="{$tc.style}">
+						{$tc.name}
+					</div>
+				</a>
+			{/foreach}
+		{/if}
 		{if $ticket.customerid}
 			<br>
 			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.customername|trunescape:60}</A>
@@ -148,7 +150,7 @@
 				{button type="link" icon="message" href="?m=rtmessageadd&ticketid={$ticket.id}" tip="New Message"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
-				{button type="link" icon="childticket" href="?m=rtticketadd&parentid={$ticket.ticketid}" tip="Create secondary ticket"}
+				{button type="link" icon="childticket" href="?m=rtticketadd&parentid={$ticket.id}" tip="Create secondary ticket"}
 			{/if}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 				{button type="link" icon="reload" href="?m=rtrestore&id={$ticket.id}&taction=restore" tip="Restore<!RT>"}

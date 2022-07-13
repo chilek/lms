@@ -410,7 +410,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        if (!empty($catids) && !in_array('all', $catids)) {
+        if (empty($catids) || in_array('all', $catids)) {
+            $categoriesfilter = null;
+        } else {
             if (in_array(-1, $catids)) {
                 if (count($catids) > 1) {
                     $categoriesfilter = ' AND (tc.categoryid IN (' . implode(',', $catids) . ') OR tc.categoryid IS NULL)';
@@ -420,8 +422,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             } else {
                 $categoriesfilter = ' AND tc.categoryid IN (' . implode(',', $catids) . ')';
             }
-        } else {
-            $categoriesfilter = '';
         }
 
         $userid = Auth::GetCurrentUser();
