@@ -1116,7 +1116,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $errors = array($result);
                 } else {
                     $status = $result['status'];
-                    $errors = $result['errors'];
+                    $errors = isset($result['errors']) ? $result['errors'] : array();
                 }
                 switch ($status) {
                     case MSG_ERROR:
