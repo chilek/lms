@@ -291,7 +291,7 @@ function module_main()
                     $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
                     $custmail_headers = array(
                         'From' => $headers['From'],
-                        'To' => '<' . $info['email'] . '>',
+                        'To' => '<' . (isset($info['email']) ? $info['email'] : '') . '>',
                         'Reply-To' => $headers['From'],
                         'Subject' => $custmail_subject,
                     );

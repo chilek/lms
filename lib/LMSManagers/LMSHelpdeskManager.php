@@ -1169,7 +1169,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
-        if ($ticket['contenttype'] == 'text/plain') {
+        if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/plain') {
             $body = str_replace("\r", "", $ticket['body']);
         } else {
             $body = Utils::removeInsecureHtml($ticket['body']);
@@ -1191,7 +1191,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['extid']) ? $ticket['extid'] : null,
         ));
 
-        if ($ticket['note']) {
+        if (isset($ticket['note']) && $ticket['note']) {
             $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
@@ -1210,7 +1210,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $msgid = $this->db->GetLastInsertID('rtmessages');
 
-        if ($ticket['contenttype'] == 'text/html') {
+        if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/html') {
             $body = str_replace(
                 array(
                     '%tid%',
@@ -1552,7 +1552,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['priority'] = $ticket['priority'];
         }
 
-        if ($ticket['state'] != $props['state'] && isset($props['state'])) {
+        if (isset($props['state']) && $ticket['state'] != $props['state']) {
             $notes[] = trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']]['label'], $RT_STATES[$props['state']]['label']);
             $type = $type | RTMESSAGE_STATE_CHANGE;
         } else {
@@ -1995,7 +1995,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $text
         );
 
-        $text = str_replace('%queue', $params['queue'], $text);
+        $text = str_replace('%queue', isset($params['queue']) ? $params['queue'] : '', $text);
         $text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
         $text = str_replace('%status', $params['status']['label'], $text);
         $text = str_replace('%cat', implode(' ; ', $params['categories']), $text);
@@ -2096,7 +2096,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $smtp_options = $this->GetRTSmtpOptions();
 
-        if ($params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
+        if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_email = $this->db->GetOne(
                 'SELECT email FROM users WHERE email <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
                 AND (ntype & ?) > 0',
@@ -2122,7 +2122,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
 				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
-                . ($params['verifierid'] ? ' AND users.id <> ' . intval($params['verifierid']) : '')
+                . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                 . ' AND (ntype & ?) > 0',
                 array_values($args)
             );
@@ -2173,7 +2173,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         // send sms
         $args['type'] = MSG_SMS;
 
-        if ($params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
+        if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_phone = $this->db->GetOne(
                 'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
                 AND (ntype & ?) > 0',
@@ -2191,7 +2191,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
 					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                     . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
-                    . ($params['verifierid'] ? ' AND users.id <> ' . intval($params['verifierid']) : '')
+                    . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                     . ' AND (ntype & ?) > 0',
                 array_values($args)
             ))) {
