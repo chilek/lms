@@ -2158,7 +2158,7 @@ $(function() {
 	});
 
 	window.addEventListener('message', function(e) {
-		if (e.data.hasOwnProperty('targetValue',) && e.data.hasOwnProperty('targetSelector')) {
+		if (e.data.hasOwnProperty('targetValue') && e.data.hasOwnProperty('targetSelector')) {
 			var elem = $(e.data.targetSelector);
 			elem.val(e.data.targetValue);
 			updateAdvancedSelects(elem);
