@@ -426,7 +426,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         $args[SYSLOG::RES_NETDEV] = $data['id'];
 
-        if ($data['address_id'] && $data['address_id'] < 0) {
+        if (isset($data['address_id']) && $data['address_id'] && $data['address_id'] < 0) {
             $data['address_id'] = null;
         }
 
@@ -445,7 +445,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 )
             );
         } else {
-            if (!$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
+            if (!isset($data['address_id']) || !$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
                 $address_id = $location_manager->InsertAddress($data);
 
                 $this->db->Execute(
