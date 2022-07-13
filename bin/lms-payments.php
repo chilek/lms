@@ -1935,7 +1935,6 @@ foreach ($assigns as $assign) {
                         );
                     }
 
-
                     if (!empty($billing_document_template) && !empty($assign['billingconsent']) && !isset($invoices_with_billings[$invoices[$cid]])) {
                         $billing_plan = isset($billing_plans[$divid]) ? $billing_plans[$divid] : 0;
                         if (!isset($numbertemplates[$billing_plan])) {
