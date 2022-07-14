@@ -359,15 +359,17 @@ switch ($mode) {
                     $name = htmlspecialchars(truncate_str($row['customername'], 50));
                     if (isset($row['number'])) {
                         $description = trans('VoIP number:') . ' ' . htmlspecialchars($row['number']);
-                        $name_class = 'lms-ui-suggestion-phone';
+                        $name_class = '';
+                        $icon = 'fa-fw lms-ui-icon-phone';
                     } else {
                         $description = trans('Phone:') . ' ' . htmlspecialchars($row['phone']);
-                        $name_class = 'lms-ui-suggestion-customer-status-connected';
+                        $name_class = '';
+                        $icon = 'fa-fw lms-ui-icon-customer-status-connected';
                     }
                     $name_class .= $row['deleted'] ? ' blend' : '';
 
                     $description_class = '';
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -460,11 +462,11 @@ switch ($mode) {
                         $name_classes[] = 'blend';
                     }
                     if (!$row['lastonline']) {
-                        $name_classes[] = 'lms-ui-suggestion-node-status-unknown';
+                        $icon = 'fa-fw lms-ui-icon-nodeunk';
                     } else if (time() - $row['lastonline'] <= $lastonline_limit) {
-                            $name_classes[] = 'lms-ui-suggestion-node-status-online';
+                        $icon = 'fa-fw lms-ui-icon-nodeon';
                     } else {
-                        $name_classes[] = 'lms-ui-suggestion-node-status-offline';
+                        $icon = 'fa-fw lms-ui-icon-nodeoff';
                     }
                     $name_class = implode(' ', $name_classes);
 
@@ -496,7 +498,7 @@ switch ($mode) {
                         }
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -553,26 +555,28 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name FROM netnodes
-                                WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
-				LOWER(name) ?LIKE? LOWER($sql_search) 
-                                ORDER by name
-                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
+                LOWER(name) ?LIKE? LOWER($sql_search)
+                ORDER by name
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
                 $result = array();
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
-                                $name = truncate_str($row['name'], 50);
-                                $name_class = 'lms-ui-suggestion-netnode';
+                    $name = truncate_str($row['name'], 50);
+                    $name_class = '';
 
-                                $description = '';
-                                $description_class = '';
-                                $action = '?m=netnodeinfo&id=' . $row['id'];
+                    $icon = 'fa-fw lms-ui-icon-netnode';
+
+                    $description = '';
+                    $description_class = '';
+                    $action = '?m=netnodeinfo&id=' . $row['id'];
 
                     if (preg_match("~^$search\$~i", $row['id'])) {
                             $description = trans('Id:') . ' ' . $row['id'];
                     }
 
-                                $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -618,7 +622,9 @@ switch ($mode) {
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
                     $name = truncate_str($row['name'], 50);
-                    $name_class = 'lms-ui-suggestion-netdevice';
+                    $name_class = '';
+
+                    $icon = 'fa-fw lms-ui-icon-netdev';
 
                     $description = '';
                     $description_class = '';
@@ -632,7 +638,7 @@ switch ($mode) {
                         $description = trans('Serial number:') . ' ' . $row['serialnumber'];
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -811,10 +817,10 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name, type, netdev FROM netradiosectors
-                                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
-				LOWER(name) ?LIKE? LOWER($sql_search)
-                                ORDER by name
-                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
+                LOWER(name) ?LIKE? LOWER($sql_search)
+                ORDER by name
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
             $result = array();
             if ($candidates) {
@@ -874,7 +880,9 @@ switch ($mode) {
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
                     $name = truncate_str($row['name'], 50);
-                    $name_class = 'lms-ui-suggestion-network';
+                    $name_class = '';
+
+                    $icon = 'fa-fw lms-ui-icon-network';
 
                     $description = '';
                     $description_class = '';
@@ -891,7 +899,7 @@ switch ($mode) {
                         $description = trans('Network address:') . ' ' . $row['address'];
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -955,6 +963,7 @@ switch ($mode) {
                 foreach ($candidates as $idx => $row) {
                     $name = $row['login'] . '@' . $row['domain'];
                     $name_class = '';
+                    $icon = 'fa-fw lms-ui-icon-hosting';
                     $description = '';
                     $description_class = '';
                     if ($row['type']) {
@@ -963,7 +972,7 @@ switch ($mode) {
                         $action = '?m=accountinfo&id=' . $row['id'];
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
