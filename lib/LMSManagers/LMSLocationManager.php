@@ -241,19 +241,20 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                    flat = ?, zip = ?, postoffice = ?, country_id = ?
                                 WHERE id = ?',
                 array(
-                                   $args['location_name']        ? $args['location_name']        : null,
-                                   $args['location_state_name']  ? $args['location_state_name']  : null,
-                                   $args['location_state']       ? $args['location_state']       : null,
-                                   $args['location_city_name']   ? $args['location_city_name']   : null,
-                                   $args['location_city']        ? $args['location_city']        : null,
-                                   $args['location_street_name'] ? $args['location_street_name'] : null,
-                                   $args['location_street']      ? $args['location_street']      : null,
-                                   $args['location_house']       ? $args['location_house']       : null,
-                                   $args['location_flat']        ? $args['location_flat']        : null,
-                                   $args['location_zip']         ? $args['location_zip']         : null,
-                                   $args['location_postoffice']  ? $args['location_postoffice']  : null,
-                                   $args['location_country_id']  ? $args['location_country_id']  : null,
-                $args['address_id'])
+                    $args['location_name'] ? $args['location_name'] : null,
+                    isset($args['location_state_name']) && $args['location_state_name'] ? $args['location_state_name'] : null,
+                    $args['location_state'] ? $args['location_state'] : null,
+                    $args['location_city_name'] ? $args['location_city_name'] : null,
+                    $args['location_city'] ? $args['location_city'] : null,
+                    $args['location_street_name'] ? $args['location_street_name'] : null,
+                    $args['location_street'] ? $args['location_street'] : null,
+                    $args['location_house'] ? $args['location_house'] : null,
+                    $args['location_flat'] ? $args['location_flat'] : null,
+                    $args['location_zip'] ? $args['location_zip'] : null,
+                    $args['location_postoffice'] ? $args['location_postoffice'] : null,
+                    $args['location_country_id'] ? $args['location_country_id'] : null,
+                    $args['address_id'],
+                )
             );
             return true;
         } else if (isset($args['address_id'])) {
