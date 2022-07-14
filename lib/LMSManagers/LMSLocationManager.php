@@ -345,10 +345,20 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $args['location_country'] = null;
         }
 
-        $tmp = array($args['location_name']     , $args['location_state_name'], $args['location_state'],
-                     $args['location_city_name'], $args['location_city']      , $args['location_street_name'],
-                     $args['location_street']   , $args['location_house']     , $args['location_flat'],
-                     $args['location_zip']      , $args['location_postoffice'], $args['location_country_id']);
+        $tmp = array(
+            $args['location_name'],
+            isset($args['location_state_name']) ? $args['location_state_name'] : '',
+            $args['location_state'],
+            $args['location_city_name'],
+            $args['location_city'],
+            $args['location_street_name'],
+            $args['location_street'],
+            $args['location_house'],
+            $args['location_flat'],
+            $args['location_zip'],
+            $args['location_postoffice'],
+            $args['location_country_id'],
+        );
 
         if (array_filter($tmp)) {
             return true;
