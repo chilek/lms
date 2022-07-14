@@ -405,7 +405,7 @@ if (isset($_POST['message'])) {
                     $mailfname = '"' . $mailfname . '"';
                 }
 
-                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
+                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
 
                 $ticketdata = $LMS->GetTicketContents($ticketid);
 
