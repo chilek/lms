@@ -4802,7 +4802,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetDocumentLastReference($docid)
     {
-        while ($refdocid = $this->db->GetOne("SELECT id FROM documents WHERE reference = ?", array($docid))) {
+        while ($refdocid = $this->db->GetOne("SELECT id FROM documents WHERE reference = ? AND type > 0", array($docid))) {
             $docid = $refdocid;
         }
         return $docid;
