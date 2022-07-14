@@ -587,7 +587,7 @@ function parse_customer_data($data, $format, $row)
 
     list ($now_y, $now_m) = explode('/', date('Y/m'));
 
-    if ($row['totalbalnce'] < 0) {
+    if ($row['totalbalance'] < 0) {
         $commented_balance = trans('Billing status: $a (to pay)', moneyf(-$row['totalbalance']));
     } elseif ($row['totalbalance'] > 0) {
         $commented_balance = trans('Billing status: $a (excess payment or to repay)', moneyf($row['totalbalance']));
