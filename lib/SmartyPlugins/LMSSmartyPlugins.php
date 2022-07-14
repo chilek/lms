@@ -1206,8 +1206,8 @@ class LMSSmartyPlugins
 
         //<editor-fold desc="numberplan container">
         $result .= '<div class="lms-ui-numberplan-container" style="display: flex;"'
-                . (isset($params['doctype_selector']) ? ' data-doctype-selector="'. $params['doctype_selector'] .'"' : '')
-                . ' data-customer-selector="'. $params['customer_selector'] .'"'
+                . (isset($params['doctype_selector']) ? ' data-doctype-selector="' . $params['doctype_selector'] . '"' : '')
+                . (isset($params['customer_selector']) ? ' data-customer-selector="' . $params['customer_selector'] . '"' : '')
                 . (isset($params['cdate_selector']) ? ' data-cdate-selector="' . $params['cdate_selector'] . '"' : '')
                 . ' data-plan-document-type="'. $params['planDocumentType'] .'"'
                 . ' data-plan-customer-id="'. $params['customer_id'] .'"'

@@ -142,10 +142,12 @@ if (isset($_POST['ticket'])) {
             ? 'text/html' : 'text/plain';
 
         if (!$ticket['customerid']) {
-            if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '') {
+            if ((!isset($ticket['requestor_name']) || $ticket['requestor_name'] == '')
+                && (!isset($ticket['requestor_phone']) || $ticket['requestor_phone'] == '')
+                && (!isset($ticket['requestor_mail']) || $ticket['requestor_mail'] == '')) {
                 $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
-            }
                 $ticket['requestor_userid'] = $userinfo['id'];
+            }
         }
 
         if ($ticket['address_id'] == -1) {
