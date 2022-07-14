@@ -609,22 +609,37 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, serialnumber FROM netdevices
-				WHERE "
+            $candidates = $DB->GetAll("SELECT id, name, serialnumber, no.lastonline FROM netdevices
+                LEFT JOIN (
+                    SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
+                    FROM nodes
+                    WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
+                        AND lastonline > 0
+                    GROUP BY netdev
+                ) no ON no.netdevid = netdevices.id
+                WHERE "
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = netdevices.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
                 . "	ORDER by name
-				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
                 $result = array();
             if ($candidates) {
+                $lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit');
+
                 foreach ($candidates as $idx => $row) {
                     $name = truncate_str($row['name'], 50);
                     $name_class = '';
 
-                    $icon = 'fa-fw lms-ui-icon-netdev';
+                    if (!$row['lastonline']) {
+                        $icon = 'fa-fw lms-ui-icon-netdevunk';
+                    } else if (time() - $row['lastonline'] <= $lastonline_limit) {
+                        $icon = 'fa-fw lms-ui-icon-netdevon';
+                    } else {
+                        $icon = 'fa-fw lms-ui-icon-netdevoff';
+                    }
 
                     $description = '';
                     $description_class = '';
