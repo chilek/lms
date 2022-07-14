@@ -677,7 +677,7 @@ class LMSSmartyPlugins
             . ' data-netnode-use-counter="' . (isset($params['data']['netnode_use_counter']) ? $params['data']['netnode_use_counter'] : '0') . '">';
 
         $uid = uniqid();
-        $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
+        $location_str = isset($params['data']['location_address_type']) && $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
         $location_str .= isset($params['data']['location'])
