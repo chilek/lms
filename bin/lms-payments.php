@@ -1001,7 +1001,7 @@ if (!empty($assigns)) {
         if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)) {
             $reward_to_check[$cid] = $cid;
         }
-        if ($reward_to_check[$cid]) {
+        if (isset($reward_to_check[$cid]) && $reward_to_check[$cid]) {
             if (!isset($reward_period_to_check[$cid])) {
                 $reward_period_to_check[$cid] = DAILY;
             }
