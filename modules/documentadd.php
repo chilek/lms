@@ -134,7 +134,7 @@ if (isset($_POST['document'])) {
     $files = array();
 
     if (!isset($_GET['ajax'])) {
-        if ($document['reference']) {
+        if (isset($document['reference']) && $document['reference']) {
             $document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
 				WHERE id = ?', array($document['reference']));
         }
