@@ -75,7 +75,7 @@ function _smarty_function_body($params, $template)
 function _smarty_function_userpaneltip($params, $template)
 {
     $repeat = false;
-    $text = trans(array_merge(array($params['text']), $params));
+    $text = trans(array_merge(isset($params['test']) ? array($params['text']) : array(), $params));
 
     $tpl = $template->getTemplateVars('error');
     if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {

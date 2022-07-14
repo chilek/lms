@@ -423,14 +423,20 @@ function BodyVars(&$body, $data, $format)
 {
     global $LMS;
 
-    $data['services'] = $LMS->GetCustomerServiceSummary($data['id']);
+    $data['services'] = isset($data['id']) ? $LMS->GetCustomerServiceSummary($data['id']) : array();
 
     $hook_data = $LMS->ExecuteHook('messageadd_data_parser', array(
         'data' => $data
     ));
     $data = $hook_data['data'];
 
+    if (!isset($data['balance'])) {
+        $data['balance'] = 0;
+    }
     $amount = -$data['balance'];
+    if (!isset($data['totalbalance'])) {
+        $data['totalbalance'] = 0;
+    }
     $totalamount = -$data['totalbalance'];
 
     if (strpos($body, '%bankaccount') !== false) {
@@ -478,9 +484,9 @@ function BodyVars(&$body, $data, $format)
             moneyf($data['totalbalance'], $currency),
             sprintf('%01.2f', $data['balance']),
             moneyf($data['balance'], $currency),
-            $data['customername'],
-            $data['id'],
-            $data['pin'],
+            isset($data['customername']) ? $data['customername'] : '',
+            isset($data['id']) ? $data['id'] : '',
+            isset($data['pin']) ? $data['pin'] : '',
         ),
         $body
     );
@@ -992,7 +998,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $divisionid = 0;
         $key = 1;
         foreach ($recipients as $row) {
-            if ($row['divisionid'] != $divisionid) {
+            if (isset($row['divisionid']) && $row['divisionid'] != $divisionid) {
                 $divisionid = $row['divisionid'];
                 ConfigHelper::setFilter($divisionid);
 
