@@ -42,7 +42,7 @@ function smarty_function_tax_rate_selection(array $params, $template)
     $id = isset($params['id']) ? ' id="' . $params['id'] . '"' : null;
     $name = isset($params['name']) ? ' name="' . $params['name'] . '"' : null;
     $selected = isset($params['selected']) ? $params['selected'] : $default_taxid;
-    $value = ' value="' . $selected . '"';
+    $value = empty($selected) ? null : ' value="' . $selected . '"';
     $class = isset($params['class']) ? ' class="'. $params['class'] . '"' : null;
     $form = isset($params['form']) ? ' form="'. $params['form'] . '"' : null;
     $trigger = $params['trigger'] ?? null;
