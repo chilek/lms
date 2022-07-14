@@ -356,7 +356,7 @@ switch ($mode) {
                     } else {
                         $action = '?m=customerinfo&id=' . $row['id'];
                     }
-                    $name = htmlspecialchars(truncate_str($row['customername'], 50));
+                    $name = truncate_str('(#' . $row['id'] . ') ' . $row['customername'], 50);
                     if (isset($row['number'])) {
                         $description = trans('VoIP number:') . ' ' . htmlspecialchars($row['number']);
                         $name_class = '';
