@@ -1488,7 +1488,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
                     $a['promotionassignmentid'] = $a['sassignmentid'][$schemaid];
 
-                    $values = $a['values'][$schemaid];
+                    $values = isset($a['values'][$schemaid]) ? $a['values'][$schemaid] : array();
                     $counts = $a['counts'][$schemaid];
                     foreach ($a['promotionassignmentid'] as $label => $tariffid) {
                         if (empty($tariffid)) {
@@ -1590,7 +1590,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $schemaid = $data['schemaid'];
         $sassignments = $data['sassignmentid'][$schemaid];
-        $values = $data['values'][$schemaid];
+        $values = isset($data['values'][$schemaid]) ? $data['values'][$schemaid] : null;
 
         if (is_array($values)) {
             foreach ($values as $label => &$assignments) {
