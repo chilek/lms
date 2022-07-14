@@ -486,6 +486,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
         $sql = '';
 
+        if (!isset($count)) {
+            $count = false;
+        }
+
         if ($count) {
             $sql .= 'SELECT COUNT(n.id) ';
         } else {
@@ -552,8 +556,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                     : ($nodegroup == -1 ? ' AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga WHERE nga.nodeid = n.id)' : '')) : '')
                 . (!empty($searchargs) ? $searchargs : '')
                 . ($sqlord != '' && !$count ? $sqlord . ' ' . $direction : '')
-                . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
-                . ($offset !== null && !$count ? ' OFFSET ' . $offset : '');
+                . (isset($limit) && !$count ? ' LIMIT ' . $limit : '')
+                . (isset($offset) && !$count ? ' OFFSET ' . $offset : '');
 
         if (!$count) {
             $nodelist = $this->db->GetAll($sql);
