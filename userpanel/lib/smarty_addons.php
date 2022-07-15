@@ -29,7 +29,11 @@
 function _smarty_block_box($params, $content, $template, &$repeat)
 {
     if (!$repeat && isset($content)) {
-        $title = trans(array_merge(array($params['title']), $params));
+        if (isset($params['title'])) {
+            $title = trans(array_merge(array($params['title']), $params));
+        } else {
+            $title = '';
+        }
 
         $style = ConfigHelper::getConfig('userpanel.style', 'default');
 
