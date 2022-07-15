@@ -2929,10 +2929,10 @@ if (empty($types) || in_array('events', $types)) {
         "SELECT id, title, description, customerid, userid FROM events
         WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0
             AND date <= ? AND enddate + 86400 >= ?
-            AND begintime <= ? AND (endtime = 0 OR endtime >= ?)"
+            " . ($days ? '' : " AND begintime <= " . $time . " AND (endtime = 0 OR endtime >= " . $time . ")")
         . ($customerid ? ' AND customerid = ' . $customerid : '')
         . (empty($notifications['events']['type']) ? '' : ' AND type IN (' . implode(', ', $notifications['events']['type']) .')'),
-        array($date_start, $date_end, $time, $time)
+        array($date_start, $date_end)
     );
 
     if (!empty($events)) {
