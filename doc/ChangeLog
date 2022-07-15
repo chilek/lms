@@ -243,6 +243,8 @@ version 28-git (????-??-??):
   - enhancement: search network devices by their mac addresses [chilan]
   - improvement: network device status presentation using different icons in quick search
     suggestion popup [chilan]
+  - enhancement: lms-notify.php: implemented event type selection for which customer and user
+    notifications should be generated [chilan]
 
 version 27.0 (2021-08-20):
 
