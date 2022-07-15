@@ -123,11 +123,11 @@ if (isset($_POST['voipaccountdata'])) {
 
     if (!isset($voipaccountdata['balance'])) {
         $voipaccountdata['balance'] = 0;
-    } elseif ($voipaccountdata['balance'] < 0) {
+    } elseif (!empty($voipaccountdata['balance']) && $voipaccountdata['balance'] < 0) {
         $error['balance'] = trans('Account balance must be positive!');
     }
 
-    if ($voipaccountdata['cost_limit'] < 0) {
+    if (!empty($voipaccountdata['cost_limit']) && $voipaccountdata['cost_limit'] < 0) {
         $error['cost_limit'] = trans('Cost limit must be positive!');
     }
 
