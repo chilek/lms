@@ -535,6 +535,27 @@ foreach (array(
     $notifications[$type]['footer'] = ConfigHelper::getConfig($config_section . '.' . $type . '_footer', '', true);
     $notifications[$type]['deleted_customers'] = ConfigHelper::checkConfig($config_section . '.' . $type . '_deleted_customers', true);
     $notifications[$type]['aggregate_documents'] = ConfigHelper::checkConfig($config_section . '.' . $type . '_aggregate_documents');
+    $record_types = ConfigHelper::getConfig($config_section . '.' . $type . '_type');
+    switch ($type) {
+        case 'events':
+            $all_event_types = array_flip(Utils::array_column($EVENTTYPES, 'alias'));
+            $selected_event_types = preg_split("/([\s]+|[\s]*,[\s]*)/", strtolower($record_types), -1, PREG_SPLIT_NO_EMPTY);
+            $record_types = array();
+            if (empty($selected_event_types)) {
+                break;
+            }
+            foreach ($selected_event_types as $event_type) {
+                if (isset($all_event_types[$event_type])) {
+                    $record_types[] = $all_event_types[$event_type];
+                }
+            }
+            break;
+
+        default:
+            $record_types = array();
+            break;
+    }
+    $notifications[$type]['type'] = $record_types;
 }
 
 if (in_array('mail', $channels) && empty($mail_from)) {
@@ -2901,13 +2922,17 @@ if (empty($types) || in_array('warnings', $types)) {
 // Events about customers should be notified if they are still opened
 if (empty($types) || in_array('events', $types)) {
     $time = intval(strtotime('now') - strtotime('today'));
+    $days = $notifications['events']['days'];
+    $date_start = $days ? strtotime('+' . $days . ' days', $daystart) : $daystart;
+    $date_end = $days ? strtotime('+' . $days . ' days', $dayend) : $dayend;
     $events = $DB->GetAll(
         "SELECT id, title, description, customerid, userid FROM events
         WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0
             AND date <= ? AND enddate + 86400 >= ?
             AND begintime <= ? AND (endtime = 0 OR endtime >= ?)"
-        . ($customerid ? ' AND customerid = ' . $customerid : ''),
-        array($daystart, $dayend, $time, $time)
+        . ($customerid ? ' AND customerid = ' . $customerid : '')
+        . (empty($notifications['events']['type']) ? '' : ' AND type IN (' . implode(', ', $notifications['events']['type']) .')'),
+        array($date_start, $date_end, $time, $time)
     );
 
     if (!empty($events)) {
@@ -2917,8 +2942,9 @@ if (empty($types) || in_array('events', $types)) {
                 (CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
             WHERE deleted = 0 AND access = 1
                 AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
-                AND ntype & ? > 0 AND (email <> '' OR phone <> '')
-            ORDER BY id",
+                AND ntype & ? > 0 AND (email <> '' OR phone <> '')"
+                . (empty($notifications['events']['type']) ? '' : ' AND type IN (' . implode(', ', $notifications['events']['type']) .')')
+            . " ORDER BY id",
             'id',
             array(MSG_MAIL, MSG_SMS, MSG_MAIL | MSG_SMS)
         );
