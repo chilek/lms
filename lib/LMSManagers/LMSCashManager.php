@@ -139,7 +139,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             // seek invoice number
             if (!$id && !empty($pattern['invoice_regexp'])) {
                 if (preg_match($pattern['invoice_regexp'], $theline, $matches)) {
-                    if (empty($pattern['pinvoice_year']) || empty($pattern['pinvoice_month']) || empty($pattern['pinvoice_number'])) {
+                    if (!isset($pattern['pinvoice_year']) || !isset($pattern['pinvoice_month']) || !isset($pattern['pinvoice_number'])) {
                         $id = $this->db->GetOne(
                             'SELECT customerid
                             FROM documents
