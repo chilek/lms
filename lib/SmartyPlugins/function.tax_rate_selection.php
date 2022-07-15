@@ -44,6 +44,7 @@ function smarty_function_tax_rate_selection(array $params, $template)
     $selected = isset($params['selected']) ? $params['selected'] : $default_taxid;
     $value = empty($selected) ? null : ' value="' . $selected . '"';
     $class = isset($params['class']) ? ' class="'. $params['class'] . '"' : null;
+    $customonchange = isset($params['customonchange']) ? ' onchange="'. $params['customonchange'] . '"' : null;
     $form = isset($params['form']) ? ' form="'. $params['form'] . '"' : null;
     $trigger = $params['trigger'] ?? null;
     $tip = $params['tip'] ?? '— select tax rate —';
@@ -83,5 +84,5 @@ function smarty_function_tax_rate_selection(array $params, $template)
     }
 
     return $icon . '<select ' . $id . $name . $value . $class . $form . $tip_text . $visible . $required
-        . $data_attributes . '>' . $options . '</select>';
+        . $data_attributes . $customonchange . '>' . $options . '</select>';
 }
