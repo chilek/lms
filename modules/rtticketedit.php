@@ -700,7 +700,7 @@ if (isset($_POST['ticket'])) {
     $ticket['requestor_mail'] = isset($ticketedit['requestor_mail']) ? $ticketedit['requestor_mail'] : null;
     $ticket['requestor_phone'] = isset($ticketedit['requestor_phone']) ? $ticketedit['requestor_phone'] : null;
     $ticket['parentid'] = isset($ticketedit['parentid']) ? $ticketedit['parentid'] : null;
-    $ticket['categorywarn'] = $ticketedit['categorywarn'];
+    $ticket['categorywarn'] = isset($ticketedit['categorywarn']) ? $ticketedit['categorywarn'] : 0;
 
     if (!empty($ticketedit['relatedtickets'])) {
         $ticket['relatedtickets'] = $LMS->getTickets($ticketedit['relatedtickets']);
