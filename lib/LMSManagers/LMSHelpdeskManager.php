@@ -1996,11 +1996,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
         $text = str_replace('%status', $params['status']['label'], $text);
         $text = str_replace('%cat', implode(' ; ', $params['categories']), $text);
-        $text = str_replace('%subject', $params['subject'], $text);
+        $text = str_replace('%subject', isset($params['subject']) ? $params['subject'] : '', $text);
         if (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
-            $text = str_replace('%body', '<hr>' . $params['body'] . '<hr>', $text);
+            $text = str_replace('%body', '<hr>' . (isset($params['body']) ? $params['body'] : '') . '<hr>', $text);
         } else {
-            $text = str_replace('%body', $params['body'], $text);
+            $text = str_replace('%body', isset($params['body']) ? $params['body'] : '', $text);
         }
         $text = str_replace('%priority', $params['priority'] ?? '', $text);
         $text = (isset($params['deadline']) && !empty($params['deadline']))
