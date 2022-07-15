@@ -3036,13 +3036,17 @@ class LMS
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
                         preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc, $m);
-                        $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        if (!empty($m)) {
+                            $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        }
                     }
                 }
                 if (isset($headers['Bcc'])) {
                     foreach (explode(',', $headers['Bcc']) as $bcc) {
                         preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $bcc, $m);
-                        $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        if (!empty($m)) {
+                            $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        }
                     }
                 }
             }
