@@ -71,14 +71,14 @@
 		<TD class="bold">
 			{trans("Type:")}
 		</TD>
-		<TD>
-			<SELECT name="event[type]" size="1">
-				<OPTION value="0" SELECTED>{trans("— all —")}</OPTION>
-				{foreach from=$_EVENTTYPES key=key item=type}
-					<OPTION value="{$key}">{$type}</OPTION>
+		<td>
+			<select name="event[type]" size="1">
+				<option value="0" selected>{trans("— all —")}</option>
+				{foreach $_EVENTTYPES as $idx => $eventtype}
+					<option value="{$idx}">{$eventtype.label}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
+			</select>
+		</td>
 	</TR>
 	<TR>
 		<TD>
