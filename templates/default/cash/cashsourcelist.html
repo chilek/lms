@@ -89,7 +89,7 @@
 		$('.delete-cashsource').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
 			confirmDialog($t("Are you sure, you want to remove source '$a'?", name), this).done(function () {
-				location.href = '?m=cashsourcedel&id=' + $(this).attr('data-resouece-id');
+				location.href = '?m=cashsourcedel&id=' + $(this).attr('data-resource-id');
 			});
 			return false;
 		});
