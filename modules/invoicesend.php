@@ -37,7 +37,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice'])) {
             $marks = $_POST['marks'];
         }
-        if ($_POST['marks']['invoice']) {
+        if (isset($_POST['marks']['invoice']) && $_POST['marks']['invoice']) {
             $marks = $_POST['marks']['invoice'];
         }
 
