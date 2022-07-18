@@ -245,6 +245,7 @@ version 28-git (????-??-??):
     suggestion popup [chilan]
   - enhancement: lms-notify.php: implemented event type selection for which customer and user
     notifications should be generated [chilan]
+  - enhancement: added default flag to cash import sources [chilan]
 
 version 27.0 (2021-08-20):
 
