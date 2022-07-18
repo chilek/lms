@@ -283,7 +283,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
-    $einvoice = intval($_GET['einvoice']);
+    $einvoice = isset($_GET['einvoice']) ? intval($_GET['einvoice']) : 0;
     $related_documents = isset($_GET['related-documents']);
 
     $documents = $DB->GetAllByKey(

@@ -681,7 +681,7 @@ class LMSSmartyPlugins
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
         $location_str .= isset($params['data']['location'])
-            ? ($params['data']['teryt']
+            ? (isset($params['data']['teryt']) && $params['data']['teryt']
                 ? trans('$a (TERRIT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
             : '...';
 

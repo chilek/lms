@@ -410,7 +410,7 @@ if (isset($_POST['ticket'])) {
                 $smtp_options = $LMS->GetRTSmtpOptions();
                 $LMS->prepareMessageTemplates('rt');
                 foreach ($emails as $email) {
-                    $custmail_headers['To'] = '<' . $info['email'] . '>';
+                    $custmail_headers['To'] = '<' . (isset($info['email']) ? $info['email'] : $email) . '>';
                     $LMS->SendMail(
                         $email,
                         $custmail_headers,
