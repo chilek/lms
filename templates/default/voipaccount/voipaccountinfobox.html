@@ -87,7 +87,7 @@
                                                 {else}
                                                     {$number.phone}
                                                 {/if}
-                                                {if isset($number.info)}
+                                                {if isset($number.info) && strlen($number.info)}
                                                     &nbsp;({$number.info|escape})
                                                 {/if}
                                             {/strip}
