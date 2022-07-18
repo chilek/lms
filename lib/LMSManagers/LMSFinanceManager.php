@@ -914,7 +914,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $__datefrom = $idx ? $datefrom : 0;
                     $__dateto = $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date;
                     if (!$align_periods) {
-                         $dateto = $_dateto;
+                         $dateto = isset($_dateto) ? $_dateto : 0;
                     }
 
                     if ($__datefrom < $__dateto || !$__dateto) {
@@ -934,7 +934,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'datefrom' => $__datefrom,
                             'dateto' => $__dateto,
                             'pdiscount' => 0,
-                            'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $value : 0)) * ($val < 0 ? -1 : 1)),
+                            'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $value : 0)) * (isset($val) && $val < 0 ? -1 : 1)),
                             'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
                             SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                             'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
