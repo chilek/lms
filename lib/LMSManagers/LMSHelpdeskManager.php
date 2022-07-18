@@ -1794,7 +1794,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['address_id'] = $ticket['address_id'];
         }
 
-        if (isset($props['nodeid'])) {
+        if (isset($props['nodeid']) && !empty($props['nodeid'])) {
             if ($ticket['nodeid'] != $props['nodeid']) {
                 $type = $type | RTMESSAGE_NODE_CHANGE;
                 $node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
