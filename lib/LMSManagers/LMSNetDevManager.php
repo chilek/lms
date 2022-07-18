@@ -433,7 +433,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         if ($data['ownerid']) {
-            if ($data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
+            if (isset($data['address_id']) && $data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
                 $location_manager->DeleteAddress($data['address_id']);
             }
 
