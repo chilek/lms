@@ -3148,6 +3148,7 @@ $_LANG['transactions'] = 'transakcje';
 $_LANG['debit notes'] = 'noty obciążeniowe';
 $_LANG['Debit Note Edit: $a'] = 'Edycja noty: $a';
 $_LANG['default'] = 'domyślny';
+$_LANG['<!cash-source>— default —'] = '— domyślne —';
 $_LANG['(domain alias)'] = '(alias domenowy)';
 $_LANG['night:'] = 'noc:';
 $_LANG['not defined'] = 'brak';

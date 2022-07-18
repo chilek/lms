@@ -3667,6 +3667,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function AddBalance($addbalance)
     {
+        if ($addbalance['sourceid'] == -1) {
+            $default_source_id = $this->db->GetOne('SELECT id FROM cashsources WHERE isdefault = 1');
+        }
+
         $args = array(
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
             SYSLOG::RES_USER => isset($addbalance['userid']) && !empty($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
@@ -3681,7 +3685,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
             'servicetype' => isset($addbalance['servicetype']) && !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
-            SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : null,
+            SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid'])
+                ? ($addbalance['sourceid'] == -1 && $default_source_id ? $default_source_id : $addbalance['sourceid'])
+                : null,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
 			customerid, comment, docid, itemid, servicetype, importid, sourceid)

@@ -180,6 +180,7 @@
 						<td>
 							<select name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}
 								form="addbalance">
+								<option value="-1">{trans("<!cash-source>— default —")}</option>
 								<option value="0">{trans("— none —")}</option>
 								{foreach $sourcelist as $item}
 									<option value="{$item.id}"{if $item.id == $sourceid} selected{/if}>{$item.name}</option>
