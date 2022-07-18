@@ -173,7 +173,7 @@ $filter['forward'] = ConfigHelper::getConfig('timetable.default_forward_day_limi
 $eventlist = $LMS->GetEventList($filter);
 $eventlistIds = Utils::array_column($eventlist, 'id', 'id');
 
-$userid = $filter['userid'];
+$userid = isset($filter['userid']) ? $filter['userid'] : null;
 $userlistcount = empty($userid) ? 0 : count($userid);
 
 $params['short'] = 1;
