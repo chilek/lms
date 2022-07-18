@@ -379,7 +379,7 @@ if (isset($_POST['document'])) {
                 $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
 
                 if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
-                    $modifiedvalues = $selected_assignment['values'][$schemaid];
+                    $modifiedvalues = isset($selected_assignment['values'][$schemaid]) ? $selected_assignment['values'][$schemaid] : array();
                     $counts = $selected_assignment['counts'][$schemaid];
                     $backwardperiods = $selected_assignment['backwardperiods'][$schemaid];
                     $copy_a = $selected_assignment;
