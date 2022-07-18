@@ -385,5 +385,5 @@ $SMARTY->assign('error', $error);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-$SMARTY->assign('getHolidays', getHolidays($year));
+$SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
 $SMARTY->display('event/eventschedule.html');
