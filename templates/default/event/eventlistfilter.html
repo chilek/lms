@@ -34,7 +34,7 @@
 								class="lms-ui-multiselect lms-ui-multiselect-filter" multiple
 								data-default-value="{trans("— all —")}">
 							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}
-									data-exclusive>- {trans("unassigned")} -
+									data-exclusive>— {trans("unassigned")} —
 							</OPTION>
 							{foreach $userlist as $user}
 								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
