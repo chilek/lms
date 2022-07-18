@@ -54,7 +54,7 @@
 					{if $source.isdefault}{icon name="checked" tip="yes"}{/if}
 				</td>
 				<td data-target-url="?m=cashsourceedit&id={$source.id}">
-					{$source.description}
+					{$source.description|escape}
 				</td>
 				<td class="text-right nobr">
 					{if $source.deleted == 1}
