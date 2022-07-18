@@ -583,14 +583,14 @@
 												{trans("Last failed login")}</strong>
 										</td>
 										<td>
-											{if $customerinfo.up_logins.lastlogindate}
+											{if isset($customerinfo.up_logins.lastlogindate) && $customerinfo.up_logins.lastlogindate}
 												{$customerinfo.up_logins.lastlogindate|date_format:"Y-m-d H:i"}
 												({$customerinfo.up_logins.lastloginip})
 											{else}
 												-
 											{/if}
 											<br>
-											{if $customerinfo.up_logins.failedlogindate}
+											{if isset($customerinfo.up_logins.failedlogindate) && $customerinfo.up_logins.failedlogindate}
 												{$customerinfo.up_logins.failedlogindate|date_format:"Y-m-d H:i"}
 												({$customerinfo.up_logins.failedloginip})
 											{else}
