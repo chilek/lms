@@ -2,9 +2,12 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<form method="POST" action="?m=cashsourceadd" name="sourceadd">
-<input type="submit" class="hiddenbtn">
+<h1>{$layout.pagetitle}</h1>
+
+<form method="POST" action="?m=cashsourceadd" name="sourceadd" id="sourceadd">
+	<input type="submit" class="hiddenbtn">
+</form>
+
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -17,10 +20,10 @@
 				{icon name="cashsource"}
 			</td>
 			<td>
-				<strong>{trans("Name:")}</strong>
+				<strong>{trans("Name")}</strong>
 			</td>
 			<td>
-				<input type="text" size="40" name="sourceadd[name]" value="{$sourceadd.name}"
+				<input type="text" size="40" name="sourceadd[name]" value="{$sourceadd.name}" form="sourceadd" required
 					{tip text="Enter source name" trigger="name" bold=1}>
 			</td>
 		</tr>
@@ -34,7 +37,7 @@
 				<strong>{trans("Bank account:")}</strong>
 			</td>
 			<td>
-				<input type="text" name="sourceadd[account]" value="{$sourceadd.account}" size="45"
+				<input type="text" name="sourceadd[account]" value="{$sourceadd.account}" size="45" form="sourceadd"
 					{tip text="Enter main bank account number (optional)" trigger="account"}>
 			</td>
 		</tr>
@@ -46,17 +49,32 @@
 				<strong>{trans("Description:")}</strong>
 			</td>
 			<td>
-				<textarea rows="5" cols="50" name="sourceadd[description]"
+				<textarea rows="5" cols="50" name="sourceadd[description]" form="sourceadd"
 					{tip text="Enter additional information (optional)" trigger="description"}>{$sourceadd.description}</textarea>
 			</td>
 		</tr>
 		<tr>
+			<td>
+				{icon name="checked"}
+			</td>
+			<td>
+				<label for="default-checkbox">
+					<strong>{trans("Default")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" id="default-checkbox" name="sourceadd[isdefault]" value="1" form="sourceadd"
+					{tip trigger="isdefault"}
+					{if !empty($sourceadd.isdefault)} checked{/if}>
+			</td>
+		</tr>
+		<tr>
 			<td class="lms-ui-box-buttons" colspan="3">
-				{button icon="save" label="Submit" onclick="document.sourceadd.submit()"}
+				{button type="submit" class="lms-ui-button-submit" icon="save" label="Submit" form="sourceadd"}
 				{button icon="cancel" label="Cancel" href="?m=cashsourcelist"}
 				<br>
 				<label>
-					<input type="checkbox" name="sourceadd[reuse]" value="ON"{if $sourceadd.reuse} checked{/if}>
+					<input type="checkbox" name="sourceadd[reuse]" value="ON"{if $sourceadd.reuse} checked{/if} form="sourceadd">
 					{trans("Display this form again, when this source is saved")}
 				</label>
 			</td>
