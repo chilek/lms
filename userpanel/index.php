@@ -113,6 +113,8 @@ try {
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
 
+$SMARTY->muteUndefinedOrNullWarnings();
+
 // test for proper version of Smarty
 
 if (constant('Smarty::SMARTY_VERSION')) {
