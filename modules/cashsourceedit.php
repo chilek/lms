@@ -39,7 +39,7 @@ if (isset($_POST['sourceedit'])) {
 
     if ($sourceedit['name'] == '') {
         $error['name'] = trans('Source name is required!');
-    } elseif (mb_strlen($sourceadd['name'])>32) {
+    } elseif (mb_strlen($sourceedit['name'])>32) {
         $error['name'] = trans('Source name is too long!');
     } elseif ($source['name'] != $sourceedit['name']) {
         if ($DB->GetOne('SELECT 1 FROM cashsources WHERE name = ?', array($sourceedit['name']))) {
