@@ -105,8 +105,13 @@
 
 	{box_buttons}
 		{button type="submit" icon="save" accesskey="s" label="Submit/Send"}
-		{button icon="cancel" onclick="location.href = '?m=rtticketview&id={$message.ticketid}';"
-			label="Cancel"}
+		{if $group_action}
+			{button icon="cancel" onclick="location.href = '?m=rtqueueview';"
+				label="Cancel"}
+		{else}
+			{button icon="cancel" onclick="location.href = '?m=rtticketview&id={$message.ticketid}';"
+				label="Cancel"}
+		{/if}
 	{/box_buttons}
 {/box_container}
 
