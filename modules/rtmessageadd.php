@@ -135,7 +135,7 @@ if (isset($_POST['message'])) {
         $message['contenttype'] = isset($message['wysiwyg']) && isset($message['wysiwyg']['body']) && ConfigHelper::checkValue($message['wysiwyg']['body'])
             ? 'text/html' : 'text/plain';
 
-        $message['categories'] = is_array($message['categories']) ? array_flip($message['categories']) : array();
+        $message['categories'] = isset($message['categories']) && is_array($message['categories']) ? array_flip($message['categories']) : array();
 
         $userid = Auth::GetCurrentUser();
         $user = $LMS->GetUserInfo($userid);

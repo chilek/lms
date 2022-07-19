@@ -1799,8 +1799,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $type = $type | RTMESSAGE_NODE_CHANGE;
                 $node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
                 $node_locations = $node_manager->GetNodeLocations($ticket['customerid']);
-                $props['node_name'] = $node_locations[$props['nodeid']]['name'];
-                $props['node_location'] = $node_locations[$props['nodeid']]['location'];
+                if (isset($node_locations[$props['nodeid']])) {
+                    $props['node_name'] = $node_locations[$props['nodeid']]['name'];
+                    $props['node_location'] = $node_locations[$props['nodeid']]['location'];
+                } else {
+                    $props['node_name'] = $props['node_location'] = '-';
+                }
                 if (empty($ticket['nodeid'])) {
                     $notes[] = trans(
                         'Ticket\'s node has been changed to $a ($b).',
