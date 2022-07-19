@@ -903,7 +903,7 @@ if (!is_array($message['ticketid'])) {
     }
 
     $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));
-    $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
+    $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($message['queueid'], RTMESSAGE_REGULAR));
 } else {
     $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
     $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));
