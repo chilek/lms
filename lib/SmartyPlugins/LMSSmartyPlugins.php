@@ -623,7 +623,7 @@ class LMSSmartyPlugins
         }
 
         if (isset($params['default_type'])) {
-            if ($params['location_address_type'] == null) {
+            if (!isset($params['location_address_type'])) {
                 $params['location_address_type'] = -1;
             }
 
@@ -687,19 +687,23 @@ class LMSSmartyPlugins
 
         $title = '';
 
-        switch ($params['data']['location_address_type']) {
-            case POSTAL_ADDRESS:
-                $title = trans('postal address');
-                break;
-            case BILLING_ADDRESS:
-                $title = trans('billing address');
-                break;
-            case LOCATION_ADDRESS:
-                $title = trans('location/recipient address');
-                break;
-            case DEFAULT_LOCATION_ADDRESS:
-                $title = trans('default location address');
-                break;
+        if (isset($params['data']['location_address_type'])) {
+            switch ($params['data']['location_address_type']) {
+                case POSTAL_ADDRESS:
+                    $title = trans('postal address');
+                    break;
+                case BILLING_ADDRESS:
+                    $title = trans('billing address');
+                    break;
+                case LOCATION_ADDRESS:
+                    $title = trans('location/recipient address');
+                    break;
+                case DEFAULT_LOCATION_ADDRESS:
+                    $title = trans('default location address');
+                    break;
+            }
+        } else {
+            $title = '';
         }
 
         echo '<div class="address-full"
