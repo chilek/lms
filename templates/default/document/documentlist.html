@@ -136,7 +136,7 @@
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 					</span>
 
-					{if !empty($numberplans) && count($numberplans)}
+					{if $numberplans|size}
 						<label>
 							{trans("Number plan:")}
 							<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
@@ -258,14 +258,14 @@
 				{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
 					{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 				{/if}
-				{if $docattach.type == 1 || count($doc.attachments) == 1}
+				{if $docattach.type == 1 || $doc.attachments|size == 1}
 					{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url="?m=documentview&id={$doc.docid}" external=true
 						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
 						tip="Preview"}
 				{/if}
 			{/buttons}
-			{if count($doc.attachments) > 1 || $docattach.type < 1}
+			{if $doc.attachments|size > 1 || $docattach.type < 1}
 			<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
 				<img src="img/asc_order.gif">
 			</a>
@@ -302,7 +302,7 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="5">
-			{if count($documentlist) > 0}
+			{if $documentlist|size}
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="nobr">
