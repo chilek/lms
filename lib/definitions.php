@@ -831,6 +831,10 @@ $VOIP_POOL_NUMBER_TYPES = array(
 define('CALL_FLAG_ADMIN_RECORDING', 1);
 define('CALL_FLAG_CUSTOMER_RECORDING', 2);
 
+define('VOIP_ACCOUNT_FLAG_ADMIN_RECORDING', CALL_FLAG_ADMIN_RECORDING);
+define('VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING', CALL_FLAG_CUSTOMER_RECORDING);
+define('VOIP_ACCOUNT_FLAG_TRUNK', 4);
+
 $SERVICETYPES = array(
     SERVICE_OTHER => ConfigHelper::getConfig('tarifftypes.other', trans('other')),
     SERVICE_INTERNET => ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),

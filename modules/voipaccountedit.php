@@ -119,12 +119,16 @@ if (isset($_POST['voipaccountedit'])) {
     }
 
     $flags = 0;
-    if (!empty($voipaccountedit['admin_record_flag'])) {
-        $flags |= CALL_FLAG_ADMIN_RECORDING;
+    if (isset($voipaccountedit[VOIP_ACCOUNT_FLAG_ADMIN_RECORDING])) {
+        $flags |= VOIP_ACCOUNT_FLAG_ADMIN_RECORDING;
     }
 
-    if (!empty($voipaccountedit['customer_record_flag'])) {
-        $flags |= CALL_FLAG_CUSTOMER_RECORDING;
+    if (isset($voipaccountedit[VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING])) {
+        $flags |= VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING;
+    }
+
+    if (isset($voipaccountedit[VOIP_ACCOUNT_FLAG_TRUNK])) {
+        $flags |= VOIP_ACCOUNT_FLAG_TRUNK;
     }
 
     if (ConfigHelper::checkPrivilege('superuser')) {

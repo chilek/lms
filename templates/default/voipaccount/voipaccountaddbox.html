@@ -220,11 +220,25 @@
                                                     {trans("Settings:")}
                                                 </td>
                                                 <td>
-                                                    <input id="admin_record" type="checkbox" name="voipaccountdata[admin_record_flag]" value="yes">
-                                                    <label for="admin_record">{trans("recording for operator")}</label><br>
+                                                    <label>
+                                                        <input type="checkbox" name="voipaccountdata[{$smarty.const.VOIP_ACCOUNT_FLAG_ADMIN_RECORDING}]" value="yes"
+                                                            {if $voipaccountdata.flags & $smarty.const.VOIP_ACCOUNT_FLAG_ADMIN_RECORDING} checked{/if}>
+                                                        {trans("recording for operator")}
+                                                    </label>
+                                                    <br>
 
-                                                    <input id="customer_record" type="checkbox" name="voipaccountdata[customer_record_flag]" value="yes">
-                                                    <label for="customer_record">{trans("recording for customer")}</label>
+                                                    <label>
+                                                        <input type="checkbox" name="voipaccountdata[{$smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING}]" value="yes"
+                                                            {if $voipaccountdata.flags & $smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING} checked{/if}>
+                                                        {trans("recording for customer")}
+                                                    </label>
+                                                    <br>
+
+                                                    <label>
+                                                        <input type="checkbox" name="voipaccountdata[{$smarty.const.VOIP_ACCOUNT_FLAG_TRUNK}]" value="yes"
+                                                            {if $voipaccountdata.flags & $smarty.const.VOIP_ACCOUNT_FLAG_TRUNK} checked{/if}>
+                                                        {trans("<!voip-account>trunk")}
+                                                    </label>
                                                 </td>
                                             </tr>
                                         {/block}

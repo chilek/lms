@@ -177,9 +177,9 @@
                                     <td>
                                         <table>
                                             <tr>
-                                                <td>{trans("recording for operator")}: </td>
+                                                <td>{trans("recording for operator")}</td>
                                                 <td>
-                                                    {if $voipaccountinfo.flags & CALL_FLAG_ADMIN_RECORDING}
+                                                    {if $voipaccountinfo.flags & $smarty.const.VOIP_ACCOUNT_FLAG_ADMIN_RECORDING}
                                                         {trans("yes")}
                                                     {else}
                                                         {trans("no")}
@@ -187,9 +187,19 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>{trans("recording for customer")}: </td>
+                                                <td>{trans("recording for customer")}</td>
                                                 <td>
-                                                    {if $voipaccountinfo.flags & CALL_FLAG_CUSTOMER_RECORDING}
+                                                    {if $voipaccountinfo.flags & $smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING}
+                                                        {trans("yes")}
+                                                    {else}
+                                                        {trans("no")}
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{trans("<!voip-account>trunk")}</td>
+                                                <td>
+                                                    {if $voipaccountinfo.flags & $smarty.const.VOIP_ACCOUNT_FLAG_TRUNK}
                                                         {trans("yes")}
                                                     {else}
                                                         {trans("no")}
