@@ -942,6 +942,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             extract($params);
         }
 
+        if (!isset($orderby)) {
+            $orderby = '';
+        }
+
         switch ($orderby) {
             case 'id':
                 $orderby = ' ORDER BY vl.id';
