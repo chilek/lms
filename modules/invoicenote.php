@@ -271,7 +271,7 @@ switch ($action) {
             'netflag' => $cnote['netflag'],
             'paytype' => $cnote['paytype'],
             'deadline' => date("Y/m/d", $cnote['deadline']),
-            'recipient_address_id' => $_POST['cnote[recipient_address_id]'],
+            'recipient_address_id' => $cnote['recipient_address_id'],
             'use_current_customer_data' => isset($cnote['use_current_customer_data']),
             'reason' => $cnote['reason'],
         );
