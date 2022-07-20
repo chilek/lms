@@ -33,7 +33,7 @@ $action = !empty($_GET['action']) ? $_GET['action'] : null;
 
 if ($action == 'tariff' && !empty($_POST['form'])) {
     $form = $_POST['form'];
-    $assignmentid = intval($_GET['aid']);
+    $assignmentid = isset($_GET['aid']) ? intval($_GET['aid']) : null;
 
     $data = array();
     $regexp = '/^(' . ($assignmentid ? 'tariffval|tariffperiod' : 'value|period') .')([0-9]+)$/';
@@ -178,14 +178,14 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
             }
         }
 
-        $data['tags'] = $_POST['form']['tags'];
-        $data['alltariffs'] = $_POST['form']['alltariffs'];
+        $data['tags'] = isset($_POST['form']['tags']) ? $_POST['form']['tags'] : array();
+        $data['alltariffs'] = isset($_POST['form']['alltariffs']);
         $SESSION->save('psdform', $data);
         $SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);
     }
 
     $data = $_POST['form'];
-    $data['aid'] = $assignmentid ? $assignmentid : null;
+    $data['aid'] = $assignmentid ?: null;
 
     $SMARTY->assign('formdata', $data);
     $SMARTY->assign('error', $error);

@@ -304,7 +304,7 @@
 									<label>
 										<input type="checkbox" id="alltariffs" name="form[alltariffs]" value="1"
 												{tip text="Check if all tariffs should be displayed" trigger="alltariffs"}
-												{if isset($formdata.alltariffs)} checked{/if}>
+												{if !empty($formdata.alltariffs)} checked{/if}>
 										{trans("show all tariffs")}
 									</label>
 								</div>
