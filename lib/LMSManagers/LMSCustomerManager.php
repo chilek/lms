@@ -1024,6 +1024,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM customer_addresses WHERE customer_addresses.customer_id = c.id
                         AND customer_addresses.type IN (' . LOCATION_ADDRESS . ',' . DEFAULT_LOCATION_ADDRESS . '))';
                     break;
+                case 82:
+                    $state_conditions[] = 'b.balance <= -t.value';
+                    break;
+                case 83:
+                    $state_conditions[] = 'b.balance <= -t.value * 2';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
