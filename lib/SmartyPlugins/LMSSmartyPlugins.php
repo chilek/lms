@@ -168,6 +168,7 @@ class LMSSmartyPlugins
         $label = isset($params['label']) ? $params['label'] : null;
         $name = isset($params['name']) ? $params['name'] : 'division';
         $id = isset($params['id']) ? $params['id'] : $name;
+        $icon = empty($params['icon']) ? null : $params['icon'];
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
@@ -187,7 +188,9 @@ class LMSSmartyPlugins
 
         if ($force_global_division_context) {
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-            $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all")) . '</span>';
+            $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all"))
+                . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>';
             $result .= ($label ? '</label>' : '');
             $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
@@ -195,6 +198,8 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
+                $result .= (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;');
                 $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" '
                     . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
@@ -210,7 +215,9 @@ class LMSSmartyPlugins
             } else {
                 $user_division = reset($user_divisions);
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
+                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all"));
+                $result .= (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>';
                 $result .= ($label ? '</label>' : '');
                 $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
@@ -230,6 +237,7 @@ class LMSSmartyPlugins
         $customername = !isset($params['customername']) || $params['customername'];
 
         $form = isset($params['form']) ? $params['form'] : null;
+        $icon = empty($params['icon']) ? null : $params['icon'];
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -237,6 +245,9 @@ class LMSSmartyPlugins
 
         $result .= '<div class="lms-ui-customer-select-container" data-version="' . $version . '"'
             . ($version == 2 ? ' data-show-id="1"' : '') . '>' . PHP_EOL;
+
+        $result .= (!empty($icon) ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+            || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '');
 
         if (!empty($params['customers'])) {
             $result .= sprintf('<select name="%s" value="%s"', $params['selectname'], $params['selected']);
