@@ -3686,7 +3686,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'servicetype' => isset($addbalance['servicetype']) && !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid'])
-                ? ($addbalance['sourceid'] == -1 && $default_source_id ? $default_source_id : $addbalance['sourceid'])
+                ? ($addbalance['sourceid'] == -1 ? ($default_source_id ? $default_source_id : null) : $addbalance['sourceid'])
                 : null,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
