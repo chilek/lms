@@ -1132,13 +1132,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $result['takenports']   = $this->CountNetDevLinks($id);
         $result['radiosectors'] = $this->db->GetAll('SELECT * FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id));
 
-        if ($result['guaranteeperiod'] != null && $result['guaranteeperiod'] != 0) {
+        if (isset($result['guaranteeperiod']) && $result['guaranteeperiod'] != 0) {
             $result['guaranteetime'] = strtotime('+' . $result['guaranteeperiod'] . ' month', $result['purchasetime']); // transform to UNIX timestamp
-        } elseif ($result['guaranteeperiod'] == null) {
+        } elseif (!isset($result['guaranteeperiod'])) {
             $result['guaranteeperiod'] = -1;
         }
 
-        if ($result['ownerid']) {
+        if (!empty($result['ownerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['owner'] = $customer_manager->getCustomerName($result['ownerid']);
         }
