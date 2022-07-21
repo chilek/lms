@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$source = $DB->GetRow('SELECT id, name, description, account FROM cashsources WHERE id=?', array($_GET['id']));
+$source = $DB->GetRow('SELECT * FROM cashsources WHERE id = ?', array($_GET['id']));
 
 if (!$source) {
     $SESSION->redirect('?m=cashsourcelist');
@@ -39,7 +39,7 @@ if (isset($_POST['sourceedit'])) {
 
     if ($sourceedit['name'] == '') {
         $error['name'] = trans('Source name is required!');
-    } elseif (mb_strlen($sourceadd['name'])>32) {
+    } elseif (mb_strlen($sourceedit['name'])>32) {
         $error['name'] = trans('Source name is too long!');
     } elseif ($source['name'] != $sourceedit['name']) {
         if ($DB->GetOne('SELECT 1 FROM cashsources WHERE name = ?', array($sourceedit['name']))) {
@@ -51,14 +51,19 @@ if (isset($_POST['sourceedit'])) {
         $error['account'] = trans('Wrong account number!');
     }
 
+    if (isset($sourceedit['isdefault']) && $DB->GetOne('SELECT id FROM cashsources WHERE isdefault = ? AND id <> ?', array(1, $_GET['id'])) > 0) {
+        $error['isdefault'] = trans('Only one cash import source can be set as default!');
+    }
+
     if (!$error) {
         $args = array(
             'name' => $sourceedit['name'],
             'description' => $sourceedit['description'],
             'account' => $sourceedit['account'],
+            'isdefault' => isset($sourceedit['isdefault']) ? 1 : 0,
             SYSLOG::RES_CASHSOURCE => $_GET['id']
         );
-        $DB->Execute('UPDATE cashsources SET name=?, description=?, account=? WHERE id=?', array_values($args));
+        $DB->Execute('UPDATE cashsources SET name = ?, description = ?, account = ?, isdefault = ? WHERE id=?', array_values($args));
 
         if ($SYSLOG) {
             $SYSLOG->AddMessage(SYSLOG::RES_CASHSOURCE, SYSLOG::OPER_UPDATE, $args);
@@ -70,6 +75,7 @@ if (isset($_POST['sourceedit'])) {
     $source['name'] = $sourceedit['name'];
     $source['description'] = $sourceedit['description'];
     $source['account'] = $sourceedit['account'];
+    $source['isdefault'] = isset($sourceedit['isdefault']);
 }
 
 $SESSION->add_history_entry();

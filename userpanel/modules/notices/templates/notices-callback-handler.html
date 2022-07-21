@@ -70,7 +70,7 @@
         });
 
     </script>
-    {assign var=title_date value=$urgent_notice.cdate|date_format:"%Y/%m/%d %H:%M"}
+    {assign var=title_date value=$urgent_notice.cdate|date_format:"Y-m-d H:i"}
     {assign var=title_subject value=$urgent_notice.subject}
     <div id="urgent-notice-dialog" data-id="{$urgent_notice.id}" title="{$title_date} / {$title_subject}">
         <div id="urgent-notice-body">{$urgent_notice.body}</div>

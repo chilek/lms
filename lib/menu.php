@@ -473,23 +473,23 @@ $menu = array(
                     'tip' => trans('Financial data export to external systems'),
                     'prio' => 160,
                 ),
-                'print' => array(
-                    'name' => trans('Reports'),
-                    'link' => '?m=print',
-                    'tip' => trans('Lists and reports printing'),
+                'tarifftaglist' => array(
+                    'name' => trans('Tags list'),
+                    'link' => '?m=tarifftaglist',
+                    'tip' => trans('Tags list'),
                     'prio' => 170,
                 ),
                 'tarifftagadd' => array(
                     'name' => trans('New tag'),
                     'link' => '?m=tarifftagadd',
                     'tip' => trans('Allows you to add new tag'),
-                    'prio' => 140,
+                    'prio' => 180,
                 ),
-                'tarifftaglist' => array(
-                    'name' => trans('Tags list'),
-                    'link' => '?m=tarifftaglist',
-                    'tip' => trans('Tags list'),
-                    'prio' => 150,
+                'print' => array(
+                    'name' => trans('Reports'),
+                    'link' => '?m=print',
+                    'tip' => trans('Lists and reports printing'),
+                    'prio' => 190,
                 ),
             ),
         ),

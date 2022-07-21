@@ -166,8 +166,8 @@
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
 							<SELECT name="form[{$tariff.id}][selectable]" class="selectable selectable-edit" {tip text="Choose tag from list"}>
-								<OPTION value="0"{if !$formdata[$tariff.id].selectable} selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
-								<OPTION value="-1"{if $formdata[$tariff.id].selectable == -1} selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
+								<OPTION value="0"{if !$formdata[$tariff.id].selectable} selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
+								<OPTION value="-1"{if $formdata[$tariff.id].selectable == -1} selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
 								{foreach $schema.selections as $selid}
 								<OPTION value="{$selid}"{if $selid == $formdata[$tariff.id].selectable} selected{/if}>{$selid}</OPTION>
 								{/foreach}
@@ -257,7 +257,7 @@
 								</div>
 								<div class="promoschema-tariff-selection-header-cell">
 									<select id="service-type" name="form[servicetype]">
-										<option value="0">{trans("- all -")}</option>
+										<option value="0">{trans("— all —")}</option>
 										{foreach $_SERVICETYPES as $type => $label}
 											<option value="{$type}"{if $formdata.servicetype == $type} selected{/if}>{$label}</option>
 										{/foreach}
@@ -304,7 +304,7 @@
 									<label>
 										<input type="checkbox" id="alltariffs" name="form[alltariffs]" value="1"
 												{tip text="Check if all tariffs should be displayed" trigger="alltariffs"}
-												{if isset($formdata.alltariffs)} checked{/if}>
+												{if !empty($formdata.alltariffs)} checked{/if}>
 										{trans("show all tariffs")}
 									</label>
 								</div>
@@ -321,8 +321,8 @@
 					</TD>
 					<TD class="ftop text-right valign-top nobr">
 						<SELECT name="form[selectable]" class="selectable" {tip text="Choose tag from list"}>
-							<OPTION value="0" {if !$formdata.selectable}selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
-							<OPTION value="-1" {if $formdata.selectable == -1}selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
+							<OPTION value="0" {if !$formdata.selectable}selected{/if}>{trans("<!promotionassignment>— none —")}</OPTION>
+							<OPTION value="-1" {if $formdata.selectable == -1}selected{/if}>{trans("<!promotionassignment>— new —")}</OPTION>
 							{foreach $schema.selections as $selid}
 							<OPTION value="{$selid}"{if $selid == $formdata.selectable} selected{/if}>{$selid}</OPTION>
 							{/foreach}

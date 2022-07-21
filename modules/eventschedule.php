@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function hoursRange($lower, $upper, $step)
+function hourRange($lower, $upper, $step)
 {
     $times = array();
 
@@ -36,17 +36,16 @@ function hoursRange($lower, $upper, $step)
     return $times;
 }
 
-function parseWorkingHours($hours_period)
+function parseWorkTimeHours($period)
 {
-    $working_hours_ts = array();
-
-    list($begin,$end) = explode('-', $hours_period);
+    list ($begin, $end) = explode('-', $period);
     $parsed_begin = date_parse($begin);
     $parsed_end = date_parse($end);
-    $working_hours_ts['begin'] = $parsed_begin['hour'] * 3600 + $parsed_begin['minute'] * 60;
-    $working_hours_ts['end'] = $parsed_end['hour'] * 3600 + $parsed_end['minute'] * 60 - 1;
 
-    return $working_hours_ts;
+    return array(
+        'begin' => $parsed_begin['hour'] * 3600 + $parsed_begin['minute'] * 60,
+        'end' => $parsed_end['hour'] * 3600 + $parsed_end['minute'] * 60 - 1,
+    );
 }
 
 // ajax request handling
@@ -170,11 +169,11 @@ if (!isset($filter['year'])) {
 
 $layout['pagetitle'] = trans('Schedule');
 
-$filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
+$filter['forward'] = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
 $eventlist = $LMS->GetEventList($filter);
 $eventlistIds = Utils::array_column($eventlist, 'id', 'id');
 
-$userid = $filter['userid'];
+$userid = isset($filter['userid']) ? $filter['userid'] : null;
 $userlistcount = empty($userid) ? 0 : count($userid);
 
 $params['short'] = 1;
@@ -248,11 +247,11 @@ foreach ($usereventlist as $userid => $userevents) {
 }
 //</editor-fold>
 
-$working_hours_interval = ConfigHelper::getConfig('phpui.timetable_working_hours_interval', 30);
-$working_hours_interval_ts = $working_hours_interval * 60;
-$working_hours = ConfigHelper::getConfig('phpui.timetable_working_hours', '08:00-19:00');
-$working_hours_ts = parseWorkingHours($working_hours);
-$times = hoursRange($working_hours_ts['begin'], $working_hours_ts['end'], $working_hours_interval_ts);
+$work_time_step = ConfigHelper::getConfig('timetable.work_time_step', ConfigHelper::getConfig('phpui.timetable_working_hours_interval', 30));
+$work_time_step_ts = $work_time_step * 60;
+$work_time_hours = ConfigHelper::getConfig('timetable.work_time_hours', ConfigHelper::getConfig('phpui.timetable_working_hours', '08:00-19:00'));
+$work_time_hours_ts = parseWorkTimeHours($work_time_hours);
+$times = hourRange($work_time_hours_ts['begin'], $work_time_hours_ts['end'], $work_time_step_ts);
 $SMARTY->assign('times', $times);
 
 //<editor-fold desc="set events in columns">
@@ -314,8 +313,8 @@ foreach ($usereventlistgrid as $guserid => $guserevents) {
             foreach ($gdateevent['columns'] as $colkey => $column) {
                 foreach ($column as $ekey => $event) {
                     foreach ($times as $ktime => $time) {
-                        if (($ktime > ($event['begintime'] - $working_hours_interval_ts) && $ktime < $event['endtime'] && $event['endtime'] != $event['begintime'])
-                            || ($ktime > ($event['begintime'] - $working_hours_interval_ts) && $ktime <= $event['endtime'] && $event['endtime'] == $event['begintime'])) {
+                        if (($ktime > ($event['begintime'] - $work_time_step_ts) && $ktime < $event['endtime'] && $event['endtime'] != $event['begintime'])
+                            || ($ktime > ($event['begintime'] - $work_time_step_ts) && $ktime <= $event['endtime'] && $event['endtime'] == $event['begintime'])) {
                             $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$ktime][$colkey] = $event;
 
                             if (!array_key_exists($event['id'], $usereventlistgrid[$guserid]['gridhelper'][$gdekey])) {
@@ -351,7 +350,7 @@ foreach ($usereventlistgrid as $guserid => $guserevents) {
 //</editor-fold>
 
 // create calendars
-for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
+for ($i = 0; $i < ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward')); $i++) {
     $dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
     $daylist[$i] = $dt;
 }
@@ -386,5 +385,5 @@ $SMARTY->assign('error', $error);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-$SMARTY->assign('getHolidays', getHolidays($year));
+$SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
 $SMARTY->display('event/eventschedule.html');

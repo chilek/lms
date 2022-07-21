@@ -41,7 +41,7 @@ switch ($type) {
         $year = isset($_POST['year']) ? $_POST['year'] : date('Y');
         $customer = isset($_POST['customer']) ? intval($_POST['customer']) : intval($_GET['customer']);
 
-        $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)));
+        $layout['pagetitle'] = trans('Stats of Customer $a in month $b', $LMS->GetCustomerName($customer), date('F Y', mktime(0, 0, 0, $month, 1, $year)));
 
         $SMARTY->assign('showavg', isset($_POST['showavg']) ? 1 : 0);
         $SMARTY->assign('showmax', isset($_POST['showmax']) ? 1 : 0);
@@ -136,7 +136,7 @@ switch ($type) {
             $statyears[] = $i;
         }
         for ($i=1; $i<13; $i++) {
-            $months[$i] = strftime('%B', mktime(0, 0, 0, $i, 1));
+            $months[$i] = date('F', mktime(0, 0, 0, $i, 1));
         }
 
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {

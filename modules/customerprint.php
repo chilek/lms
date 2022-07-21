@@ -668,7 +668,7 @@ switch ($type) {
         $content .= "\t</Jednostka>\n";
         $content .= "</Operator>\n";
 
-        $attachment_name = strftime('TRANSGUS-%Y-%m-%d-%H-%M-%S.xml');
+        $attachment_name = 'TRANSGUS-' . date('Y-m-d-H-i-s') . '.xml';
 
         header('Content-Type: text/xml');
         header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
@@ -689,7 +689,7 @@ switch ($type) {
             $statyears[] = $i;
         }
         for ($i=1; $i<13; $i++) {
-            $months[$i] = strftime('%B', mktime(0, 0, 0, $i, 1));
+            $months[$i] = date('F', mktime(0, 0, 0, $i, 1));
         }
 
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {

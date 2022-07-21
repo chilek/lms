@@ -528,9 +528,9 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             imageline($image, $Xpos, $crtY1+1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
 
             if ($unit >= 24 * 3600) {
-                $utxt = strftime('%e/%m', $Tpos);
+                $utxt = date('j/m', $Tpos);
             } else {
-                $utxt = strftime('%H:%M', $Tpos);
+                $utxt = date('H:i', $Tpos);
             }
             imagestringcenter($image, $crtFont, $Xpos, $crtY2, -1, $crtSPC, $utxt, $clrTXT);
         }

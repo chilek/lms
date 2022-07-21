@@ -78,7 +78,7 @@ if (isset($_POST['document'])) {
 
     $oldfdate = $documentedit['fromdate'];
     $oldtdate = $documentedit['todate'];
-    $oldconfirmdate = $documentedit['confirmdate'];
+    $oldconfirmdate = isset($documentedit['confirmdate']) ? $documentedit['confirmdate'] : 0;
 
     if (!$documentedit['title']) {
         $error['title'] = trans('Document title is required!');
@@ -113,7 +113,7 @@ if (isset($_POST['document'])) {
                 'number' => $documentedit['number'],
                 'doctype' => $documentedit['type'],
                 'planid' => $documentedit['numberplanid'],
-                'customerid' => $documentedit['customerid'],
+                'customerid' => isset($documentedit['customerid']) ? $documentedit['customerid'] : null,
             ))) > 0 && $docid != $documentedit['id']) {
                 $error['number'] = trans('Document with specified number exists!');
             }
@@ -152,7 +152,7 @@ if (isset($_POST['document'])) {
         $error['closed'] = trans('Cannot undo document confirmation while it is archived!');
     }
 
-    if ($documentedit['confirmdate'] && !$documentedit['closed']) {
+    if (isset($documentedit['confirmdate']) && $documentedit['confirmdate'] && !$documentedit['closed']) {
         $date = explode('/', $documentedit['confirmdate']);
         if (checkdate($date[1], $date[2], $date[0])) {
             $documentedit['confirmdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);

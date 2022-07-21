@@ -28,7 +28,7 @@ $voipaccountid = intval($_GET['id']);
 $voipaccountlogin = $LMS->GetVoipAccountLogin($voipaccountid);
 
 if (!$LMS->VoipAccountExists($voipaccountid)) {
-    $layout['pagetitle'] = trans('Delete Voip Account $a', $voipaccountlogin);
+    $layout['pagetitle'] = trans('Delete VoIP Account $a', $voipaccountlogin);
     $body = '<p>' . trans('Incorrect ID number') . '</p>';
     $body .= '<a href="?' . $SESSION->get_history_entry() . '">' . trans('Back') . '</a></p>';
     $SMARTY->assign('body', $body);

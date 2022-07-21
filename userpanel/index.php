@@ -30,6 +30,10 @@
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
+if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = '';
+}
+
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 // find alternative config files:
@@ -109,6 +113,8 @@ try {
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
 
+$SMARTY->muteUndefinedOrNullWarnings();
+
 // test for proper version of Smarty
 
 if (constant('Smarty::SMARTY_VERSION')) {
@@ -128,7 +134,7 @@ $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Redirect to SSL
 $_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
-if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
+if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
      header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
      exit(0);
 }

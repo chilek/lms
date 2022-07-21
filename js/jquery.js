@@ -156,7 +156,7 @@ function init_multiselects(selector) {
 				bottom: lmsSettings.multiSelectPopupOnBottom,
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,
-				substMessage: '- $a options selected -',
+				substMessage: '— $a options selected —',
 				tooltipMessage: $(this).attr('data-tooltip-message')
 			});
 		});
@@ -347,6 +347,10 @@ function updateAdvancedSelects(selector) {
 	});
 }
 
+function activateAdvancedSelect(selector) {
+	$(selector).trigger('chosen:activate');
+}
+
 function setAddressList(selector, address_list, preselection) {
 	var icon;
 	var select = $(selector);
@@ -530,7 +534,7 @@ function init_datatables(selector) {
 						});
 						if (selectValues.length > 1) {
 							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
-								'><option value="">' + $t('- any -') + '</option>';
+								'><option value="">' + $t('— any —') + '</option>';
 							selectValues.sort().forEach(function (value, index) {
 								content += '<option value="' + value + '">' + value + '</option>';
 							});
@@ -2152,6 +2156,15 @@ $(function() {
 			button.prop('disabled', false);
 		});
 	});
+
+	window.addEventListener('message', function(e) {
+		if (e.data.hasOwnProperty('targetValue') && e.data.hasOwnProperty('targetSelector')) {
+			var elem = $(e.data.targetSelector);
+			elem.val(e.data.targetValue);
+			updateAdvancedSelects(elem);
+			activateAdvancedSelect(elem);
+		}
+	}, false);
 
 	initAutoGrow('.lms-ui-autogrow');
 });

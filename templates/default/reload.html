@@ -49,7 +49,7 @@
 					</TD>
 					<TD>{$host.description}</TD>
 					<TD class="text-center nobr">
-						{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}
+						{if $host.lastreload}{$host.lastreload|date_format:"Y-m-d H:i"}{else}-{/if}
 					</TD>
 					<TD class="text-center nobr">
 						{if $host.reload==1}{trans("waiting")}

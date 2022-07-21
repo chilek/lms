@@ -159,11 +159,13 @@ class LMSTCPDF extends TCPDF
 
     public function SetFont($family, $style = '', $size = null, $fontfile = '', $subset = 'default', $out = true)
     {
-        static $supported_fonts = array(
-            'liberationsans' => true,
-        );
-        $fontfile = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR
-            . (isset($supported_fonts[$family]) ? $family : 'liberationsans') . $style . '.php';
+        if (isset($family) && preg_match('/^[a-z_\-]+$/i', $family)) {
+            $filename = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR
+                . strtolower($family . $style) . '.php';
+            if (file_exists($filename)) {
+                $fontfile = $filename;
+            }
+        }
         parent::SetFont($family, $style, $size, $fontfile, $subset, $out);
     }
 }

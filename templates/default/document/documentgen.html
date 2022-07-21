@@ -63,7 +63,7 @@
 				<select size="1" name="document[type]" id="doctype" onChange="DocTypeChanged();"
 						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required
 				>
-					<option value="0">{trans("select type")}</option>
+					<option value="0">{trans("— select type —")}</option>
 					{foreach $_DOCTYPES as $key => $item}
 						{if $key < 0 && in_array($key, $docrights)}
 							<option value="{$key}"{if $document.type == $key} selected{/if}>{$item}</option>
@@ -135,7 +135,7 @@
 				<strong>{trans("Period:")}</strong>
 			</td>
 			<td>
-				{$allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('documents.allow_past_date', 'true'))}
+				{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
 				{trans("from:")}
 				<input type="text" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}"
 					placeholder="{trans("yyyy/mm/dd")}"
@@ -258,7 +258,7 @@
 			</td>
 			<td>
 				<select size="1" name="network" {tip text="Select network" trigger="customer"}>
-					<option value="0">{trans("- all networks -")}</option>
+					<option value="0">{trans("— all networks —")}</option>
 					{foreach $networks as $net}
 						<option value="{$net.id}"{if $network == $net.id} selected{/if}
 							>{$net.name|truncate:40:"&hellip;":true}</option>
@@ -275,7 +275,7 @@
 			</td>
 			<td>
 				<select size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
-					<option value="0" selected>{trans("- all groups -")}</option>
+					<option value="0" selected>{trans("— all groups —")}</option>
 					{foreach $customergroups as $group}
 						<option value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"&hellip;":true}</option>
 					{/foreach}

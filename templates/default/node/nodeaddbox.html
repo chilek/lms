@@ -85,14 +85,14 @@
 											<div>
 												<select size="1" name="nodedata[netid]"
 														{tip class="lms-ui-advanced-select" trigger="netid"}>
-													<option value="0">{trans("- automatic selection -")}</option>
+													<option value="0">{trans("— automatic selection —")}</option>
 													{foreach $networks as $net}
 														<option value="{$net.id}" data-pubnetid="{$net.pubnetid}"
 																{if $net.id == $nodedata.netid} selected{/if}
 																{if $net.disabled == 1} class="lms-ui-alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
 													{/foreach}
 												</select>
-												{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only')) && ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
+												{if ConfigHelper::checkConfig('phpui.show_assigned_networks_only') && ConfigHelper::checkConfig('phpui.public_ip', true)}
 													<script>
 
 														$('[name="nodedata[netid]"]').change(function() {
@@ -135,7 +135,7 @@
 										</td>
 									</tr>
 
-									{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
+									{if ConfigHelper::checkConfig('phpui.public_ip', true)}
 										<tr>
 											<td>
 												{icon name="routed"}
@@ -172,7 +172,7 @@
 											{icon name="login"}
 										</td>
 										<td>
-											<input type="text" name="nodedata[login]" value="{$nodedata.login|escape}"
+											<input type="text" name="nodedata[login]" value="{$nodedata.login|default:""|escape}"
 												placeholder="{trans("<!node>Login")}"
 												{tip trigger="login"}>
 										</td>
@@ -183,7 +183,7 @@
 											{icon name="password"}
 										</td>
 										<td>
-											<input type="text" name="nodedata[passwd]" value="{$nodedata.passwd|escape}"
+											<input type="text" name="nodedata[passwd]" value="{$nodedata.passwd|default:""|escape}"
 												placeholder="{trans("Password")}"
 												{tip trigger="passwd"}>
 											{button type="link" id="genpasswd" icon="next"
@@ -202,7 +202,7 @@
 														onclick="return netDevChooseWin(document.nodeadd.elements['nodedata[netdev]']);"}
 													<select size="1" name="nodedata[netdev]" id="netdev" {tip trigger="netdev" class="lms-ui-advanced-select"}
 															{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}>
-														<option value="0"{if !$nodedata.netdev} selected{/if}>- {trans("no device")} -</option>
+														<option value="0"{if !$nodedata.netdev} selected{/if}>— {trans("no device")} —</option>
 														{foreach $netdevices as $netdev}
 															<option value="{$netdev.id}"
 																	{if $nodedata.netdev == $netdev.id} selected{/if}
@@ -230,7 +230,7 @@
 													<select name="nodedata[radiosector]" id="radiosector"
 															{tip trigger="radiosector" text="Select radio sector"}
 															{if $nodedata.linktype != $smarty.const.LINKTYPE_WIRELESS} style="display: none;"{/if}>
-														<option value="0">- {trans("none")} -</option>
+														<option value="0">{trans("— none —")}</option>
 														{foreach $nodedata.radiosectors as $radiosector}
 															<option value="{$radiosector.id}"
 																	{if $radiosector.id == $nodedata.linkradiosector} selected{/if}
@@ -240,7 +240,7 @@
 
 													<select name="nodedata[linktechnology]" id="linktechnology"
 															{tip trigger="linktechnology" text="Select link technology"}
-														<option value="0">{trans("- unknown -")}</option>
+														<option value="0">{trans("— unknown —")}</option>
 														{foreach $_LINKTECHNOLOGIES[$nodedata.linktype] as $linktechnologyidx => $linktechnology}
 															<option value="{$linktechnologyidx}"
 																{if $linktechnologyidx == $nodedata.linktechnology} selected{/if}
@@ -268,7 +268,7 @@
 										<td>
 											<select name="nodedata[invprojectid]" id="project" value="{$nodedata.invprojectid}">
 												<option value="-2" {if $nodedata.invprojectid == '-2'} selected{/if}
-													>- {trans("none")} -</option>
+													>{trans("— none —")}</option>
 												<option value="-1" {if $nodedata.invprojectid == '-1'} selected{/if}
 													>{trans("New project")}</option>
 												<option value="1" {if $nodedata.invprojectid == '1'} selected{/if}
@@ -279,7 +279,7 @@
 													>{$project.name|escape}</option>
 												{/foreach}
 											</select>
-											<input type="text" name="nodedata[projectname]" value="{$nodedata.projectname|escape}"
+											<input type="text" name="nodedata[projectname]" value="{$nodedata.projectname|default:""|escape}"
 												placeholder="{trans("Investment project")}"
 												{tip trigger="projectname" } id="projectname"
 												{if !isset($nodedata.invprojectid) || empty($nodedata.invprojectid)} style="display: none;"{/if}>
@@ -392,7 +392,7 @@
 											<input type="text" id="longitude" name="nodedata[longitude]"
 												value="{if $nodedata.longitude}{$nodedata.longitude}{else}{/if}"
 												{tip trigger="longitude"}>
-											{button type="link" icon="map" tip="Click to select gps coordinates from map"
+											{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 												onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[longitude]'], document.nodeadd.elements['nodedata[latitude]']);"}
 										</td>
 									</tr>
@@ -408,7 +408,7 @@
 											<input type="text" id="latitude" name="nodedata[latitude]"
 												value="{if $nodedata.latitude}{$nodedata.latitude}{else}{/if}"
 												{tip trigger="latitude"}>
-											{button type="link" icon="map" tip="Click to select gps coordinates from map"
+											{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 												onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[longitude]'], document.nodeadd.elements['nodedata[latitude]']);"}
 										</td>
 									</tr>
@@ -552,7 +552,7 @@
 			linktype = parseInt($(this).val());
 			var select = $('#linktechnology');
 			var selected = parseInt($('#netdev').val());
-			var html = '<option value="0">{trans("- unknown -")}</option>';
+			var html = '<option value="0">{trans("— unknown —")}</option>';
 			switch (linktype) {
 				case 0:
 				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE] as $linktechnologyidx => $linktechnology}
@@ -601,7 +601,7 @@
 	function radio_sectors_received(radiosectors) {
 		var select = $('#radiosector');
 		var oldValue = select.val();
-		var html = '<option value="0">- {trans("none")} -</option>';
+		var html = '<option value="0">{trans("— none —")}</option>';
 		if (radiosectors !== null) {
 			$.each(radiosectors, function(index, elem) {
 				html += '<option value="' + elem.id + '"' + (elem.id == oldValue ? ' selected' : '') + '>' + elem.name + '</option>';

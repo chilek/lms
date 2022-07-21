@@ -56,7 +56,7 @@
 		var options = document.getElementById('linktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('{trans("- none -")}', 0));
+		options.add(new Option('{trans("— none —")}', 0));
 		switch (linktype) {
 			case '':
 				{foreach array(0, 1, 2) as $linktype}
@@ -131,7 +131,7 @@
 			<span class="bold">{trans("Postcode:")}</span> <INPUT type="text" name="search[zip]" VALUE="{$search.zip}" SIZE="10">
 			<span class="bold">{trans("Address type:")}</span>
 			<SELECT name="search[addresstype]">
-				<OPTION value="">{trans("- all -")}</OPTION>
+				<OPTION value="">{trans("— all —")}</OPTION>
 				<OPTION value="{$smarty.const.BILLING_ADDRESS}">{trans("settlement<!addresstype>")}</OPTION>
 				<OPTION value="{$smarty.const.POSTAL_ADDRESS}">{trans("postal")}</OPTION>
 				<OPTION value="{$smarty.const.LOCATION_ADDRESS}">{trans("localisation<!addresstype>")}</OPTION>
@@ -242,7 +242,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[type]">
-				<OPTION VALUE="">{trans("- all -")}</OPTION>
+				<OPTION VALUE="">{trans("— all —")}</OPTION>
 				<OPTION VALUE="0">{trans("private person")}</OPTION>
 				<OPTION VALUE="1">{trans("legal entity")}</OPTION>
 			</SELECT>
@@ -255,7 +255,7 @@
 		<TD>
 			<input type="hidden" name="flags[]" value="0">
 			<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
-					multiple data-default-value="{trans("- all -")}">
+					multiple data-default-value="{trans("— all —")}">
 				{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
 					<option value="{$cflag}" title="{$flag.tip}">{$flag.label}</option>
 				{/foreach}
@@ -283,28 +283,61 @@
 				</colgroup>
 				<tbody>
 					{foreach $_CCONSENTS as $consentid => $consent}
-					<tr class="highlight">
-						<td>
-							{$consent.label}
-						</td>
-						<td>
-							<label>
-								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="-1"
-									{if !isset($consents[$consentid]) || $consents[$consentid] == -1} checked{/if}>
-								{trans("ignore")}
-							</label>
-							<label>
-								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="1"
-										{if isset($consents[$consentid]) && $consents[$consentid] == 1} checked{/if}>
-								{trans("yes")}
-							</label>
-							<label>
-								<input type="radio" class="cconsent" name="consents[{$consentid}]" value="0"
-										{if isset($consents[$consentid]) && $consents[$consentid] == 0} checked{/if}>
-								{trans("no")}
-							</label>
-						</td>
-					</tr>
+						{if !is_array($consent)}
+							{continue}
+						{/if}
+						{if $consent.type == 'selection'}
+							{foreach $consent.values as $subconsentid => $subconsent}
+								{if !isset($subconsent.name)}
+									{continue}
+								{/if}
+								<tr class="highlight">
+									<td>
+										{t a=$consent.label b=$subconsent.label}$a ($b){/t}
+									</td>
+									<td>
+										<label>
+											<input type="radio" class="cconsent" name="consents[{$subconsentid}]" value="-1"
+													{if !isset($consents[$subconsentid]) || $consents[$subconsentid] == -1} checked{/if}>
+											{trans("ignore")}
+										</label>
+										<label>
+											<input type="radio" class="cconsent" name="consents[{$subconsentid}]" value="1"
+													{if isset($consents[$subconsentid]) && $consents[$subconsentid] == 1} checked{/if}>
+											{trans("yes")}
+										</label>
+										<label>
+											<input type="radio" class="cconsent" name="consents[{$subconsentid}]" value="0"
+													{if isset($consents[$subconsentid]) && $consents[$subconsentid] == 0} checked{/if}>
+											{trans("no")}
+										</label>
+									</td>
+								</tr>
+							{/foreach}
+						{else}
+							<tr class="highlight">
+								<td>
+									{$consent.label}
+								</td>
+								<td>
+									<label>
+										<input type="radio" class="cconsent" name="consents[{$consentid}]" value="-1"
+											{if !isset($consents[$consentid]) || $consents[$consentid] == -1} checked{/if}>
+										{trans("ignore")}
+									</label>
+									<label>
+										<input type="radio" class="cconsent" name="consents[{$consentid}]" value="1"
+												{if isset($consents[$consentid]) && $consents[$consentid] == 1} checked{/if}>
+										{trans("yes")}
+									</label>
+									<label>
+										<input type="radio" class="cconsent" name="consents[{$consentid}]" value="0"
+												{if isset($consents[$consentid]) && $consents[$consentid] == 0} checked{/if}>
+										{trans("no")}
+									</label>
+								</td>
+							</tr>
+						{/if}
 					{/foreach}
 				</tbody>
 				<tfoot>
@@ -324,7 +357,7 @@
 		</TD>
 		<TD>
 			<SELECT name="search[stateid]" {tip text="Select country state"}>
-				<OPTION value="">{trans("- all states -")}</OPTION>
+				<OPTION value="">{trans("— all states —")}</OPTION>
 				{foreach from=$cstateslist item=item key=key}
 				<OPTION value="{$key}">{$item.name}</OPTION>
 				{/foreach}
@@ -337,7 +370,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
-				<OPTION VALUE="">{trans("- all -")}</OPTION>
+				<OPTION VALUE="">{trans("— all —")}</OPTION>
 				{foreach from=$_LINKTYPES item=item key=key}
 					<OPTION VALUE="{$key}">{$item}</OPTION>
 				{/foreach}
@@ -350,7 +383,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[linktechnology]" id="linktechnology">
-				<OPTION VALUE="">{trans("- all -")}</OPTION>
+				<OPTION VALUE="">{trans("— all —")}</OPTION>
 				{foreach array(0, 1, 2) as $linktype}
 					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
 					<OPTION VALUE="{$linktechnologyidx}">{$linktechnology}</OPTION>
@@ -365,7 +398,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[linkspeed]">
-				<OPTION VALUE="">{trans("- all -")}</OPTION>
+				<OPTION VALUE="">{trans("— all —")}</OPTION>
 				{foreach from=$_LINKSPEEDS item=item key=key}
 					<OPTION VALUE="{$key}">{$item}</OPTION>
 				{/foreach}
@@ -377,14 +410,14 @@
 			{icon name="money"} {trans("Tariffs:")}
 		</TD>
 		<TD class="multiselect">
-			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
 				{foreach $tariffs as $item}
 				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 			&nbsp;{trans("with end date:")}
 			<select name="search[withenddate]">
-				<option value="-1">{trans("<!enddate>- any -")}</option>
+				<option value="-1">{trans("<!enddate>— any —")}</option>
 				<option value="1">{trans("yes")}</option>
 				<option value="0">{trans("no")}</option>
 			</select>
@@ -396,7 +429,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="search[tarifftype]">
-				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
+				<OPTION VALUE="" SELECTED>{trans("— all —")}</OPTION>
 				{foreach $_SERVICETYPES as $id => $name}
 				 	<OPTION VALUE="{$id}">{$name}</OPTION>
 				{/foreach}
@@ -409,7 +442,7 @@
 		</TD>
 		<TD>
 			<select size="1" id="assignment-selector" name="search[assignments]">
-				<option value="0">{trans('- all -')}</option>
+				<option value="0">{trans('— all —')}</option>
 				<option value="7">{trans('expire in $a days', 7)}</option>
 				<option value="14">{trans('expire in $a days', 14)}</option>
 				<option value="30">{trans('expire in $a days', 30)}</option>
@@ -503,7 +536,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="d">
-				<OPTION VALUE="">- {trans("all")} -</OPTION>
+				<OPTION VALUE="">{trans("— all —")}</OPTION>
 				{foreach $divisions as $division}
 					<OPTION VALUE="{$division.id}"{if $listdata.division==$division.id} selected{/if}
 						>{$division.shortname|trunescape:30}</OPTION>
@@ -517,7 +550,7 @@
 		</TD>
 		<TD>
 			<input type="hidden" name="s[]" value="0">
-			<SELECT SIZE="1" name="s[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+			<SELECT SIZE="1" name="s[]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
 				{foreach $_CSTATUSES as $statusidx => $status}
 				<OPTION VALUE="{$statusidx}">{$status.plurallabel}</OPTION>
 				{/foreach}
@@ -528,6 +561,8 @@
 					<OPTION VALUE="52">{trans("in debt")}</OPTION>
 					<OPTION VALUE="57">{trans("in debt above 100%")}</OPTION>
 					<OPTION VALUE="58">{trans("in debt above 200%")}</OPTION>
+					<OPTION VALUE="82">{trans("in debt above or equal 100%")}</OPTION>
+					<OPTION VALUE="83">{trans("in debt above or equal 200%")}</OPTION>
 					<option value="71">{trans("overdue receivables")}</option>
 				{/if}
 				<OPTION VALUE="55">{trans("without tariff")}</OPTION>
@@ -589,7 +624,7 @@
 		</TD>
 		<TD>
 			<input type="hidden" name="n" value="all">
-			<SELECT SIZE="1" name="n[]" class="lms-ui-multiselect" data-default-value="{trans("- all networks -")}" multiple>
+			<SELECT SIZE="1" name="n[]" class="lms-ui-multiselect" data-default-value="{trans("— all networks —")}" multiple>
 				{foreach $networks as $network}
 				<OPTION value="{$network.id}"{if $listdata.network && in_array($network.id, $listdata.network)} selected{/if}>{$network.name|truncate:50:"&hellip;":true}</OPTION>
 				{/foreach}
@@ -602,11 +637,17 @@
 			<strong>{trans("Group")}</strong>
 		</td>
 		<td>
+			<label>
+				<input type="checkbox" value="NOT" name="cgnot"{if !empty($cgnot)} checked{/if}>
+				{trans("negation")}
+			</label>
+			&nbsp;
+			<input type="hidden" name="g" value="all">
 			<select size="1" name="g[]" multiple class="lms-ui-multiselect">
 				<option value=""{if ! is_array($listdata.customergroup) && !$listdata.customergroup} selected{/if}
-					data-exclusive>{trans("- all groups -")}</option>
+					data-exclusive>{trans("— all groups —")}</option>
 				<option value="-1"{if !is_array($listdata.customergroup) && $listdata.customergroup == -1} selected{/if}
-					data-exclusive>{trans("- without assigned groups -")}</option>
+					data-exclusive>{trans("— without assigned groups —")}</option>
 				{foreach $customergroups as $customergroup}
 					<option value="{$customergroup.id}"
 						{if is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup)}selected{/if}
@@ -629,7 +670,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="ng">
-				<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+				<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("— all groups —")}</OPTION>
 				{foreach from=$nodegroups item=nodegroup}
 				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 				{/foreach}

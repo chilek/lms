@@ -75,9 +75,9 @@ switch ($_GET['action']) {
         $flags = $LMS->DB->GetOne('SELECT flags FROM voipaccounts WHERE id = ?', array($id));
 
         if ($rec) {
-            $flags |= CALL_FLAG_CUSTOMER_RECORDING;
+            $flags |= VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING;
         } else {
-            $flags &= ~(CALL_FLAG_CUSTOMER_RECORDING);
+            $flags &= ~(VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING);
         }
         $LMS->DB->Execute('UPDATE voipaccounts SET flags = ? WHERE id = ?', array($flags, $id));
 

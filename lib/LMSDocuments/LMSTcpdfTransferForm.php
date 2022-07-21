@@ -26,7 +26,9 @@
 
 class LMSTcpdfTransferForm extends LMSDocument
 {
+    // default font
     const TCPDF_FONT = 'liberationsans';
+
     const VALUE_BALANCE = 1;
     const VALUE_ASSIGNMENTS = 2;
     const VALUE_CUSTOM = 3;
@@ -34,6 +36,14 @@ class LMSTcpdfTransferForm extends LMSDocument
     public function __construct($title, $pagesize = 'A4', $orientation = 'portrait')
     {
         parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
+
+        $this->backend->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+
+        $font = ConfigHelper::getConfig('invoices.pdf_font', self::TCPDF_FONT);
+        $this->backend->SetFont($font, 'I', 7);
+        $this->backend->SetFont($font, 'B', 7);
+        $this->backend->SetFont($font, 'BI', 7);
+        $this->backend->SetFont($font, '', 7);
 
         list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
         $this->backend->SetMargins(trim($margin_left), trim($margin_top), trim($margin_right));
@@ -48,7 +58,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $line_light = array('width' => 0.25, 'cap' => 'butt', 'join' => 'miter', 'dash' => '3, 5', 'phase' => 10, 'color' => array(245, 200, 200));
 
         $this->backend->setColor('text', 255, 0, 0);
-        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
+        $this->backend->SetFont(null, '', 8);
         $this->backend->setFontStretching(120);
 
         $this->backend->StartTransform();
@@ -56,7 +66,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Text(1, 75, 'Pokwitowanie dla zleceniodawcy');
         $this->backend->StopTransform();
 
-        $this->backend->SetFont(self::TCPDF_FONT, '', 6);
+        $this->backend->SetFont(null, '', 6);
         $this->backend->setFontStretching(100);
 
         /* draw simple form */
@@ -122,7 +132,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $line_dash = array('width' => 0.25, 'cap' => 'butt', 'join' => 'miter', 'dash' => '3, 3', 'phase' => 10, 'color' => array(255, 0, 0));
 
         $this->backend->setColor('text', 255, 0, 0);
-        $this->backend->SetFont(self::TCPDF_FONT, '', 8);
+        $this->backend->SetFont(null, '', 8);
         $this->backend->setFontStretching(120);
 
         $this->backend->StartTransform();
@@ -136,7 +146,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Text(202, 75, 'odcinek dla banku zleceniodawcy');
         $this->backend->StopTransform();
 
-        $this->backend->SetFont(self::TCPDF_FONT, '', 6);
+        $this->backend->SetFont(null, '', 6);
         $this->backend->setFontStretching(100);
 
         /* draw main form */
@@ -160,12 +170,12 @@ class LMSTcpdfTransferForm extends LMSDocument
         for ($i = 0; $i < 2; $i++) {
             $this->backend->Rect(105 + ($i * 5.5), 33, 5, 5, 'DF', array('all' => $line_thin));
         }
-        $this->backend->SetFont(self::TCPDF_FONT, '', 12);
+        $this->backend->SetFont(null, '', 12);
         $this->backend->Text(104.5, 33, 'W');
         $this->backend->Text(110.5, 33, 'P');
 
         /* currency */
-        $this->backend->SetFont(self::TCPDF_FONT, '', 6);
+        $this->backend->SetFont(null, '', 6);
         $this->backend->Rect(121, 30, 10, 3, 'F', '', array(255, 255, 255));
         $this->backend->Text(121, 30, 'waluta');
         for ($i = 0; $i < 3; $i++) {
@@ -210,7 +220,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Translate(0, 23);
         $this->backend->Text(80, 75, 'pieczęć, data i podpis(y) zleceniodawcy');
         $this->backend->StopTransform();
-        $this->backend->Line(134, 90, 201, 90, $line);
+        $this->backend->Line(134, 90, 201, 90, $line_thin);
         $this->backend->Rect(155, 83, 20, 20, 'DF', array('all' => $line_thin));
         $this->backend->SetLineStyle($line_dash);
         $this->backend->Circle(165, 93, 8);
@@ -228,9 +238,9 @@ class LMSTcpdfTransferForm extends LMSDocument
     {
         /* set font style & color */
         if (mb_strlen($this->data['division_shortname']) > 25) {
-            $this->backend->SetFont(self::TCPDF_FONT, '', floor(235 / mb_strlen($this->data['division_shortname'])));
+            $this->backend->SetFont(null, '', floor(235 / mb_strlen($this->data['division_shortname'])));
         } else {
-            $this->backend->SetFont(self::TCPDF_FONT, '', 9);
+            $this->backend->SetFont(null, '', 9);
         }
         $this->backend->setColor('text', 0, 0, 0);
 
@@ -243,7 +253,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Text(7, 29, $this->data['account']);
 
         /* customer name */
-        $this->backend->SetFont(self::TCPDF_FONT, '', 9);
+        $this->backend->SetFont(null, '', 9);
         /* if customer name lenght > 26 chars then cut string */
         if (mb_strlen($this->data['name']) > 26) {
             $this->backend->Text(7, 38, mb_substr($this->data['name'], 0, 26));
@@ -257,14 +267,14 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->MultiCell(50, 10, $this->data['title'], 0, 'L', false, 1, 7, 59, true, 0, false, true, 10, 'M');
 
         /* amount */
-        $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
+        $this->backend->SetFont(null, 'B', 10);
         $this->backend->Text(7, 73, moneyf($this->data['value'], $this->data['currency']));
     }
 
     protected function transferform_main_form_fill()
     {
         /* set font style & color */
-        $this->backend->SetFont(self::TCPDF_FONT, '', 9);
+        $this->backend->SetFont(null, '', 9);
         $this->backend->setColor('text', 0, 0, 0);
 
         /* division name */
@@ -272,11 +282,11 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Text(67, 16, $this->data['division_address'] . ', ' . $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
         /* account */
-        $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
+        $this->backend->SetFont(null, 'B', 9);
         $this->backend->Text(67, 25, format_bankaccount($this->data['account'], isset($this->data['export']) ? $this->data['export'] : false));
 
         /* currency */
-        $this->backend->SetFont(self::TCPDF_FONT, 'B', 10);
+        $this->backend->SetFont(null, 'B', 10);
         $this->backend->setFontSpacing(2.2);
         $this->backend->Text(120, 33.5, $this->data['currency']);
         $this->backend->setFontSpacing(0);
@@ -286,7 +296,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->backend->Text(67, 43, moneyf_in_words($this->data['value'], $this->data['currency']));
 
         /* customer name */
-        $this->backend->SetFont(self::TCPDF_FONT, '', 9);
+        $this->backend->SetFont(null, '', 9);
         /* if customer name lenght > 70 chars then stretch font */
         if (mb_strlen($this->data['name']) > 70) {
             $this->backend->setFontStretching(85);
@@ -318,14 +328,14 @@ class LMSTcpdfTransferForm extends LMSDocument
         /* deadline */
         $paytype = $this->data['paytype'];
         if ($paytype != 8) {
-            $this->backend->SetFont(self::TCPDF_FONT, '', 8);
+            $this->backend->SetFont(null, '', 8);
             if ($paytype != 8) {
                 $this->backend->MultiCell(135 - 70, 10, trans('Deadline:') . ' ' . date("d.m.Y", $this->data['pdate']) . ' r.', 0, 'R', false, 1, 66.25 + 68.5, 69, true, 0, false, true, 10, 'M');
             }
         }
 
         /* title */
-        $this->backend->SetFont(self::TCPDF_FONT, 'B', 9);
+        $this->backend->SetFont(null, 'B', 9);
         $cell_height_ratio = $this->backend->getCellHeightRatio();
         $this->backend->setCellHeightRatio(0.9);
         $this->backend->MultiCell(135 - 70, 10, $this->data['title'], 0, 'R', false, 1, 66.25 + 68.5, 73.5, true, 0, false, true, 10, 'M');

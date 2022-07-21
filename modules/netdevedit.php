@@ -516,7 +516,7 @@ switch ($action) {
         }
 
         foreach ($nodeipdata as $key => $value) {
-            if (!is_array($value)) {
+            if (isset($value) && !is_array($value)) {
                 $nodeipdata[$key] = trim($value);
             }
         }
@@ -774,8 +774,8 @@ if (isset($netdev)) {
 } else {
     $netdev = $LMS->GetNetDev($id);
 
-    if (preg_match('/^[0-9]+$/', $netdev['producerid'])
-        && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
+    if (isset($netdev['producerid']) && preg_match('/^[0-9]+$/', $netdev['producerid'])
+        && isset($netdev['modelid']) && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
         $netdev['producer'] = $netdev['producerid'];
         $netdev['model'] = $netdev['modelid'];
     }
@@ -867,8 +867,8 @@ $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('nodelist', $nodelist);
 $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $netdev['id']));
 $SMARTY->assign('radiosectors', $LMS->GetRadioSectors($netdev['id']));
-$SMARTY->assign('netdevcontype', $netdevcontype);
-$SMARTY->assign('netdevauthtype', $netdevauthtype);
+$SMARTY->assign('netdevcontype', isset($netdevcontype) ? $netdevcontype : null);
+$SMARTY->assign('netdevauthtype', isset($netdevauthtype) ? $netdevauthtype : null);
 $SMARTY->assign('netdevips', $netdevips);
 $SMARTY->assign('restnetdevlist', $netdevlist);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));

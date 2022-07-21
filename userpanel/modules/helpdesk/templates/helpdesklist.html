@@ -16,10 +16,10 @@
 			<a href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{img src="ticket.gif" alt="Details"}</a>
 		</td>
 		<td width="1%" class="bold">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
-		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"}</td>
+		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].createtime|date_format:"Y-m-d H:i"}</td>
 		<td width="1%" class="bold nobr">{$helpdesklist[helpdesklist].queuename}</td>
 		<td width="94%" class="bold">{$helpdesklist[helpdesklist].subject|escape}</td>
-		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</td>
+		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].lastmod|date_format:"Y-m-d H:i"}</td>
     		<td width="1%" class="bold">
 			{if $helpdesklist[helpdesklist].state == 0}{trans("new")}
 			{elseif $helpdesklist[helpdesklist].state == 1}{trans("open")}

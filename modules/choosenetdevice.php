@@ -40,13 +40,16 @@ if (isset($_POST['searchnetdev']) && $_POST['searchnetdev']) {
     $search = $_POST['searchnetdev'];
 
     $netdevices = $DB->GetAll('
-		SELECT n.id, n.name, va.location, n.producer, n.ports, n.ownerid, n.address_id
-		FROM netdevices n
-			LEFT JOIN vaddresses va ON n.address_id = va.id
-		WHERE (n.name ?LIKE? '.$DB->Escape('%'.$search.'%').' OR va.location ?LIKE? '.$DB->Escape('%'.$search.'%').' OR n.producer ?LIKE? '.$DB->Escape('%'.$search.'%').')
-			' . (isset($netdevid) ? ' AND n.id <> ' . intval($netdevid)
+        SELECT n.id, n.name, va.location, n.producer, n.ports, n.ownerid, n.address_id
+        FROM netdevices n
+        LEFT JOIN vaddresses va ON n.address_id = va.id
+        WHERE (n.name ?LIKE? ' . $DB->Escape('%' . $search . '%') . '
+            OR va.location ?LIKE? ' . $DB->Escape('%' . $search . '%') . '
+            OR n.producer ?LIKE? ' . $DB->Escape('%' . $search . '%') . '
+            OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = n.id AND netdevicemacs.mac ?LIKE? ' . $DB->Escape('%'. $search . '%') . '))
+            ' . (isset($netdevid) ? ' AND n.id <> ' . intval($netdevid)
             . ' AND NOT EXISTS (SELECT n.id FROM netlinks WHERE (n.id = dst AND src = ' . intval($netdevid) . ')
-					OR (n.id = src AND dst = ' . intval($netdevid) . '))'
+                    OR (n.id = src AND dst = ' . intval($netdevid) . '))'
             : '') . '
 		ORDER BY n.name');
 

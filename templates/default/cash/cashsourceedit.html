@@ -2,9 +2,12 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<form method="POST" action="?m=cashsourceedit&id={$sourceedit.id}" name="sourceedit">
-<input type="submit" class="hiddenbtn">
+<h1>{$layout.pagetitle}</h1>
+
+<form method="POST" action="?m=cashsourceedit&id={$sourceedit.id}" name="sourceedit" id="sourceedit">
+	<input type="submit" class="hiddenbtn">
+</form>
+
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -17,10 +20,10 @@
 				{icon name="cashsource"}
 			</td>
 			<td>
-				<strong>{trans("Name:")}</strong>
+				<strong>{trans("Name")}</strong>
 			</td>
 			<td>
-				<input type="text" size="40" name="sourceedit[name]" value="{$sourceedit.name}"
+				<input type="text" size="40" name="sourceedit[name]" value="{$sourceedit.name}" form="sourceedit" required
 					{tip text="Enter source name" trigger="name" bold=1}>
 			</td>
 		</tr>
@@ -35,6 +38,7 @@
 			</td>
 			<td>
 				<input type="text" name="sourceedit[account]" value="{$sourceedit.account}" size="45"
+					form="sourceedit"
 					{tip text="Enter main bank account number (optional)" trigger="account"}>
 			</td>
 		</tr>
@@ -46,13 +50,28 @@
 				<strong>{trans("Description:")}</strong>
 			</td>
 			<td>
-				<textarea rows="5" cols="50" name="sourceedit[description]"
-					{tip text="Enter additional information (optional)" trigger="value"}>{$sourceedit.description}</textarea>
+				<textarea rows="5" cols="50" name="sourceedit[description]" form="sourceedit"
+					{tip text="Enter additional information (optional)" trigger="value"}>{$sourceedit.description|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="checked"}
+			</td>
+			<td>
+				<label for="default-checkbox">
+					<strong>{trans("Default")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" id="default-checkbox" name="sourceedit[isdefault]" value="1" form="sourceedit"
+					{tip trigger="isdefault"}
+					{if !empty($sourceedit.isdefault)} checked{/if}>
 			</td>
 		</tr>
 		<tr>
 			<td class="lms-ui-box-buttons" colspan="3">
-				{button icon="save" label="Submit" onclick="document.sourceedit.submit()"}
+				{button type="submit" class="lms-ui-button-submit" icon="save" label="Submit" form="sourceedit"}
 				{button icon="cancel" label="Cancel" href="?m=cashsourcelist"}
 			</td>
 		</tr>

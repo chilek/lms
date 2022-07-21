@@ -28,6 +28,10 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
+if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = '';
+}
+
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
 //define('K_TCPDF_EXTERNAL_CONFIG', true);
@@ -139,6 +143,8 @@ if (!$api) {
     $SMARTY->setMergeCompiledIncludes(true);
 
     $SMARTY->setDefaultResourceType('extendsall');
+
+    $SMARTY->muteUndefinedOrNullWarnings();
 
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;

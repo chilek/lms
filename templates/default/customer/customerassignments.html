@@ -26,19 +26,19 @@
 			<label class="assignment-type-filter">
 				{trans("Type:")}
 				<select class="assignment-type">
-					<option value="">{trans("- all -")}</option>
+					<option value="">{trans("— all —")}</option>
 				</select>
 			</label>
 			<label class="document-filter">
 				{trans("Document")}
 				<select class="document">
-					<option value="">{trans("- all -")}</option>
+					<option value="">{trans("— all —")}</option>
 				</select>
 			</label>
 			<label class="period-filter">
 				{trans("Period")}
 				<select class="period-selection">
-					<option value="">{trans("- all -")}</option>
+					<option value="">{trans("— all —")}</option>
 				</select>
 			</label>
 			<label class="expired-filter">
@@ -182,7 +182,7 @@
 				data-expired="{$a.expired}"
 				data-period="{$a.period}"
 				data-commited="{$a.commited}"
-				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
+				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/if}"
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					data-net-value="{$a.real_netvalue|default:"0"|replace:",":"."}"
 					data-gross-value="{$a.real_value|default:"0"|replace:",":"."}"
@@ -425,8 +425,8 @@
 									 {/if}
 								{/if}
 								<br>
-								{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
-								{if $a.dateto}{trans("to")} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
+								{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"Y-m-d"}{/if}
+								{if $a.dateto}{trans("to")} {$a.dateto|date_format:"Y-m-d"}{/if}
 								{if !$a.datefrom && !$a.dateto}-{/if}
 							</div>
 						</div>

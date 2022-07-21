@@ -94,7 +94,8 @@ if (isset($_POST['alias'])) {
 
     if (empty($_GET['addaccount']) && empty($_GET['delaccount'])
         && empty($_GET['addaccount']) && empty($_GET['delaccount'])
-        && !count($alias['accounts']) && !count($alias['mailforwards'])) {
+        && (!is_array($alias['accounts']) || !count($alias['accounts']))
+        && (!is_array($alias['mailforward']) || !count($alias['mailforwards']))) {
         $error['accountid'] = trans('You have to select destination account!');
         $error['mailforward'] = trans('You have to specify forward e-mail!');
     }

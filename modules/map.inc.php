@@ -43,8 +43,8 @@ if ($devices) {
     $time_now = time();
 
     foreach ($devices as $devidx => $device) {
-        if (empty($device['location']) &&  $acc['ownerid']) {
-            $devices[$devidx]['location'] = $LMS->getAddressForCustomerStuff($acc['ownerid']);
+        if (empty($device['location']) && $device['ownerid']) {
+            $devices[$devidx]['location'] = $LMS->getAddressForCustomerStuff($device['ownerid']);
         }
         $devices[$devidx]['name'] = trim($device['name'], ' "');
         if ($device['lastonline']) {

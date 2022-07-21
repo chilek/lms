@@ -227,7 +227,19 @@
 				<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
 						id="customerconsents" style="display: none;" multiple>
 					{foreach $_CCONSENTS as $type => $consent}
-						<option value="{$type}">{$consent.label}</option>
+						{if !is_array($consent)}
+							{continue}
+						{/if}
+						{if $consent.type == 'selection'}
+							{foreach $consent.values as $subtype => $subconsent}
+								{if !isset($subconsent.name)}
+									{continue}
+								{/if}
+								<option value="{$subtype}">{t a=$consent.label b=$subconsent.label}$a ($b){/t}</option>
+							{/foreach}
+						{else}
+							<option value="{$type}">{$consent.label}</option>
+						{/if}
 					{/foreach}
 				</select>
 				{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}

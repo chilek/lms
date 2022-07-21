@@ -92,7 +92,7 @@
 			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" class="lms-ui-date" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} {if ($rights & 256) != 256}readonly{/if}>
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" class="lms-ui-date" VALUE="{$receipt.cdate|date_format:"Y/m/d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} {if ($rights & 256) != 256}readonly{/if}>
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
@@ -305,7 +305,7 @@
 		<TD class="bold nobr valign-top">
 			{trans("Cash Registry:")}
 			<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
+				<OPTION VALUE="0">{trans("— select registry —")}</OPTION>
 				{foreach from=$cashreglist item=c}
 				{if $c.id != $receipt.regid}
 				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
@@ -356,7 +356,7 @@
 							{cycle values="light,lucid" print=false}
 							{foreach from=$invoicelist item=item}
 							<TR class="highlight {cycle}"  >
-								<TD onclick="checkElement('mark{$item.id}')" class="nobr">{$item.cdate|date_format:"%Y/%m/%d"}</TD>
+								<TD onclick="checkElement('mark{$item.id}')" class="nobr">{$item.cdate|date_format:"Y-m-d"}</TD>
 								<TD onclick="checkElement('mark{$item.id}')">{$item.number}</TD>
 								<TD align="right" onclick="checkElement('mark{$item.id}')" class="nobr">
 									{moneyf($item.value * $item.currencyvalue)}

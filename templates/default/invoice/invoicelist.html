@@ -28,6 +28,29 @@
 		padding-left: 0.8em;
 	}
 
+	.all-attachment-view {
+		display: none;
+		padding-right: 0.3em;
+	}
+
+	.document-list {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.document-attachment-list {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.document-title {
+		text-decoration: underline dotted;
+	}
+
+	.document-title > a {
+		text-decoration: underline dotted;
+	}
+
 </style>
 
 <script>
@@ -95,9 +118,10 @@
 					<input type="text" name="search" value="{$listdata.search}" size="15"
 						{tip text="Enter value of searching data and select category"}>
 					<select size="1" name="cat">
-						<option value=""{if $listdata.cat == ""} selected{/if}>{trans("- select filter category -")}</option>
+						<option value=""{if $listdata.cat == ""} selected{/if}>{trans("— select filter category —")}</option>
 						<option value="cdate"{if $listdata.cat == "cdate"} selected{/if}>{trans("day (YYYY/MM/DD)")}</option>
 						<option value="month"{if $listdata.cat == "month"} selected{/if}>{trans("month (YYYY/MM)")}</option>
+						<option value="year"{if $listdata.cat == "year"} selected{/if}>{trans("year (YYYY)")}</option>
 						<option value="number"{if $listdata.cat == "number"} selected{/if}>{trans("number")}</option>
 						<option value="value"{if $listdata.cat == "value"} selected{/if}>{trans("value")}</option>
 						<option value="name"{if $listdata.cat == "name"} selected{/if}>{trans("customer name")}</option>
@@ -108,7 +132,7 @@
 					<label>
 						{trans("Plan:")}
 						<input type="hidden" name="numberplanid" value="all">
-						<select name="numberplanid[]" class="lms-ui-multiselect" {tip text="Select numbering plan"} multiple data-default-value="{trans("- all -")}">
+						<select name="numberplanid[]" class="lms-ui-multiselect" {tip text="Select numbering plan"} multiple data-default-value="{trans("— all —")}">
 							{foreach $numberplans as $plan}
 								{$period = $plan.period}
 								<option value="{$plan.id}"{if !empty($listdata.numberplanid) && in_array($plan.id, $listdata.numberplanid)} selected{/if}
@@ -119,7 +143,7 @@
 					<label>
 						{trans("Division")}
 						<select size="1" name="divisionid" {tip text="Select division"}>
-							<option value="0">- {trans("all")} -</option>
+							<option value="0">{trans("— all —")}</option>
 							{foreach $divisions as $division}
 								<option value="{$division.id}"{if $division.id == $listdata.divisionid} selected{/if}>{$division.label|escape}</option>
 							{/foreach}
@@ -128,7 +152,7 @@
 					<label>
 						{trans("Group")}
 						<input type="hidden" name="group" value="all">
-						<select size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
+						<select size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("— all groups —")}">
 							{foreach $grouplist as $group}
 								<option value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}
 									>{$group.name|truncate:30:"&hellip;":true}</option>
@@ -183,12 +207,13 @@
 	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
 	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
 			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}"
-			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$invoice.senddate}{/if}">
+			data-senddate="{if $invoice.senddate}{$invoice.senddate|date_format:"Y-m-d H:i"}{else}{$invoice.senddate}{/if}"
+			data-refdocs="{if empty($invoice.documentreferenced)}0{else}1{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
 		<TD class="nobr">
-			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$invoice.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 		<TD class="text-right nobr">
 			{$number}
@@ -226,7 +251,7 @@
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 				{textformat assign="tip" wrap=5000}
-					{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
+					{if $invoice.senddate}{trans("Send invoice again")}<br><strong>{t a=$invoice.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Send invoice")}{/if}
 				{/textformat}
 				{button type="link" icon="{if $invoice.senddate}mailsent{else}mail{/if}" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
 					tip=$tip}
@@ -328,7 +353,43 @@
 				{/if}
 				{button type="link" icon="print" tip="Print" class="print-invoice" href="?m=invoice&id={$invoice.id}"}
 			{/if}
+			{if !empty($invoice.refdocs)}
+				{button type="link" icon="more" class="all-attachment-toggle" tip="related documents"}
+			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="lms-ui-multi-check"{if $marks.$invoiceid} checked{/if}>
+			{if !empty($invoice.documentreferenced)}
+				<div class="all-attachment-view">
+					{foreach $invoice.refdocs as $docid => $refdoc}
+						<div class="document-list">
+							{if count($refdoc.attachments) == 1}
+								<div class="document-title">
+									{$attachment = reset($refdoc.attachments)}
+									{$attachmentid = key($refdoc.attachments)}
+									{capture assign="attachment_text"}{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}{/capture}
+									{documentview id="{$docid}-{$attachmentid}" type=$attachment.contenttype name=$attachment.filename
+										url="?m=documentview&id={$docid}&attachmentid={$attachmentid}" external=true
+										text="{$attachment_text} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$attachment.contenttype)} xls{/if}\"></i>"}
+									{if $attachment.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $attachment.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+								</div>
+							{else}
+								<div class="document-title">
+									{t a=$_DOCTYPES[$refdoc.type] b=$refdoc.fullnumber c=$refdoc.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}
+								</div>
+								<div class="document-attachment-list">
+									{foreach $refdoc.attachments as $attachmentid => $attachment}
+										<div class="document-attachment">
+											{documentview id="{$docid}-{$attachmentid}" type=$attachment.contenttype name=$attachment.filename
+												url="?m=documentview&id={$docid}&attachmentid={$attachmentid}" external=true
+												text="{$attachment.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$attachment.contenttype)} xls{/if}\"></i>"}
+											{if $attachment.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $attachment.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
+										</div>
+									{/foreach}
+								</div>
+							{/if}
+						</div>
+					{/foreach}
+				</div>
+			{/if}
 		</TD>
 	</TR>
 	{foreachelse}
@@ -426,15 +487,28 @@
 	$('.delete-invoice').click(function () {
 		var published = parseInt($(this).closest('tr').attr('data-published'));
 		var number = $(this).closest('tr').attr('data-number');
+		var refdocs = parseInt($(this).closest('tr').attr('data-refdocs'));
 		if (published) {
 			confirmDialog($t('Document has been published already! Are you sure you want to remove it despite this?'), this).done(function () {
 				confirmDialog($t("Are you sure, you want to remove invoice '$a' from database?", number), this).done(function () {
-					location.href = $(this).attr('href');
+					confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+						location.href = $(this).attr('href') + '&documents=1';
+					}).fail(function() {
+						location.href = $(this).attr('href');
+					});
 				});
 			});
 		} else {
 			confirmDialog($t("Are you sure, you want to remove invoice '$a' from database?", number), this).done(function () {
-				location.href = $(this).attr('href');
+				if (refdocs) {
+					confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+						location.href = $(this).attr('href') + '&documents=1';
+					}).fail(function() {
+						location.href = $(this).attr('href');
+					});
+				} else {
+					location.href = $(this).attr('href');
+				}
 			});
 		}
 		return false;
@@ -452,9 +526,21 @@
 					.done(function () {
 						confirmDialog($t("Are you sure, you want to delete selected documents?"), this)
 								.done(function () {
-									document.page.action = "?m=invoicedel";
-									document.page.target = "";
-									document.page.submit();
+									if ($('tr[data-refdocs="1"] :checked').length) {
+										confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+											document.page.action = "?m=invoicedel&documents=1";
+											document.page.target = "";
+											document.page.submit();
+										}).fail(function () {
+											document.page.action = "?m=invoicedel";
+											document.page.target = "";
+											document.page.submit();
+										});;
+									} else {
+										document.page.action = "?m=invoicedel";
+										document.page.target = "";
+										document.page.submit();
+									}
 								});
 					});
 			return;
@@ -466,9 +552,21 @@
 
 		confirmDialog($t("Are you sure, you want to delete selected documents?"), this)
 				.done(function() {
-					document.page.action = "?m=invoicedel";
-					document.page.target = "";
-					document.page.submit();
+					if ($('tr[data-refdocs="1"] :checked').length) {
+						confirmDialog($t("Are you sure, you want to also remove related documents?"), this).done(function () {
+							document.page.action = "?m=invoicedel&documents=1";
+							document.page.target = "";
+							document.page.submit();
+						}).fail(function () {
+							document.page.action = "?m=invoicedel";
+							document.page.target = "";
+							document.page.submit();
+						});;
+					} else {
+						document.page.action = "?m=invoicedel";
+						document.page.target = "";
+						document.page.submit();
+					}
 				});
 	});
 
@@ -642,6 +740,14 @@
 
 	$('#duplicate-checkbox').click(function () {
 		$('#duplicate-box-date-selector').toggle($(this).prop('checked'));
+	});
+
+	$(function() {
+		$('.all-attachment-toggle').click(function() {
+			var attachmentView = $(this).siblings('.all-attachment-view');
+			attachmentView.toggle();
+			$(this).find('i').attr('class', 'lms-ui-icon-' + (attachmentView.is(':visible') ? 'less' : 'more'));
+		});
 	});
 
 </script>

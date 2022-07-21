@@ -71,14 +71,14 @@
 		<TD class="bold">
 			{trans("Type:")}
 		</TD>
-		<TD>
-			<SELECT name="event[type]" size="1">
-				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
-				{foreach from=$_EVENTTYPES key=key item=type}
-					<OPTION value="{$key}">{$type}</OPTION>
+		<td>
+			<select name="event[type]" size="1">
+				<option value="0" selected>{trans("— all —")}</option>
+				{foreach $_EVENTTYPES as $idx => $eventtype}
+					<option value="{$idx}">{$eventtype.label}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
+			</select>
+		</td>
 	</TR>
 	<TR>
 		<TD>
@@ -89,7 +89,7 @@
 		</TD>
 		<TD>
 			<SELECT name="event[closed]" size="1">
-				<OPTION value="" SELECTED>{trans("- all -")}</OPTION>
+				<OPTION value="" SELECTED>{trans("— all —")}</OPTION>
 				<OPTION value="0">{trans("opened<!plural:event>")}</OPTION>
 				<OPTION value="1">{trans("closed<!plural:event>")}</OPTION>
 			</SELECT>
@@ -128,7 +128,7 @@
 			{trans("User:")}
 		</TD>
 		<TD class="multiselect nobr">
-			<SELECT name="event[userid][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+			<SELECT name="event[userid][]" class="lms-ui-multiselect" multiple data-default-value="{trans("— select user —")}" data-shorten-to-default-value="false">
 				{foreach $userlist as $user}
 				<OPTION value="{$user.id}">{$user.name|escape}</OPTION>
 				{/foreach}

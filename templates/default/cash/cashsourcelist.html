@@ -8,7 +8,8 @@
 		<col style="width: 1%;">
 		<col style="width: 1%;">
 		<col style="width: 1%;">
-		<col style="width: 97%;">
+		<col style="width: 1%;">
+		<col style="width: 96%;">
 		<col style="width: 1%;">
 	</colgroup>
 	<thead>
@@ -22,6 +23,9 @@
 			</td>
 			<td class="nobr">
 				{trans("Main bank account:")}
+			</td>
+			<td class="text-right nobr">
+				{trans("Default")}
 			</td>
 			<td>
 				{trans("Description:")}
@@ -46,8 +50,11 @@
 						{format_bankaccount($source.account)}
 					{/if}
 				</td>
+				<td class="text-rightr" data-target-url="?m=cashsourceedit&id={$source.id}">
+					{if $source.isdefault}{icon name="checked" tip="yes"}{/if}
+				</td>
 				<td data-target-url="?m=cashsourceedit&id={$source.id}">
-					{$source.description}
+					{$source.description|escape}
 				</td>
 				<td class="text-right nobr">
 					{if $source.deleted == 1}
@@ -61,7 +68,7 @@
 			</tr>
 		{foreachelse}
 			<tr>
-				<td colspan="5" class="empty-table">
+				<td colspan="6" class="empty-table">
 					{trans("There are no sources in database.")}
 				</td>
 			</tr>
@@ -69,7 +76,7 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="5" class="text-right nobr">
+			<td colspan="6" class="text-right nobr">
 				{button icon="add" label="Add source" href="?m=cashsourceadd"}
 			</td>
 		</tr>
@@ -82,7 +89,7 @@
 		$('.delete-cashsource').click(function () {
 			var name = $(this).closest('tr').attr('data-name');
 			confirmDialog($t("Are you sure, you want to remove source '$a'?", name), this).done(function () {
-				location.href = '?m=cashsourcedel&id=' + $(this).attr('data-resouece-id');
+				location.href = '?m=cashsourcedel&id=' + $(this).attr('data-resource-id');
 			});
 			return false;
 		});

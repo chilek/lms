@@ -65,7 +65,7 @@
 
 			{foreach $documents as $doc}
 			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
-				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"%Y/%m/%d %H:%M"}{else}{$doc.senddate}{/if}">
+				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}">
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
@@ -74,7 +74,7 @@
 								<strong>{number number=$doc.number template=$doc.template customerid=$customerinfo.id time=$doc.cdate}</strong>
 							</div>
 							<div class="lms-ui-tab-table-column creation-date" onclick="window.open('?m=documentview&id={$doc.docid}');">
-								{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
+								{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
@@ -101,14 +101,14 @@
 						</div>
 						<div class="lms-ui-tab-table-column description">
 							{if $doc.description}
-								{$doc.description|replace:"\n":'<br>'}
+								{$doc.description|escape|replace:"\n":'<br>'}
 							{else}
 								&ndash;
 							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column period" onclick="window.open('?m=documentview&id={$doc.docid}');">
-							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
-							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
+							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
 						</div>
 					</div>
 				</div>
@@ -117,7 +117,7 @@
 					<div class="lms-ui-tab-table-column buttons">
 						{if $customerinfo.senddocuments}
 							{textformat assign="tip" wrap=5000}
-								{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"%Y/%m/%d %H:%M"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
+								{if $doc.senddate}{trans("Send document again")}<br><strong>{t a=$doc.senddate|date_format:"Y-m-d H:i"}(already sent on $a){/t}</strong>{else}{trans("Document send")}{/if}
 							{/textformat}
 							{button type="link" class="send-doc" icon="{if $doc.senddate}mailsent{else}mail{/if}" href="?m=documentsend&id={$doc.docid}"
 								tip=$tip}
@@ -136,16 +136,18 @@
 						{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
 							{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 						{/if}
-						{$docattach = $doc.attachments[0]}
-						{if $docattach.type == 1 || count($doc.attachments) == 1}
-							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-							url="?m=documentview&id={$doc.docid}" external=true
-							text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
-						{/if}
-						{if count($doc.attachments) > 1 || !$docattach.type < 1}
-							<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-								<img src="img/asc_order.gif">
-							</a>
+						{if is_array($doc.attachments)}
+							{$docattach = $doc.attachments[0]}
+							{if $docattach.type == 1 || count($doc.attachments) == 1}
+								{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+								url="?m=documentview&id={$doc.docid}" external=true
+								text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+							{/if}
+							{if count($doc.attachments) > 1 || !$docattach.type < 1}
+								<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+									<img src="img/asc_order.gif">
+								</a>
+							{/if}
 						{/if}
 						<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" form="customerdocuments-form" class="lms-ui-multi-check" VALUE="{$doc.docid}">
 					</div>

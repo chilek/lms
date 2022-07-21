@@ -135,7 +135,7 @@
 				    <TD COLSPAN="3" CLASS="ftop">
 						<B>{trans("Add:")}</B>
 						<SELECT SIZE="1" NAME="devid" {tip text="Select device to associate with the channel"}>
-						        <OPTION VALUE="">- {trans("select device")} -</OPTION>
+						        <OPTION VALUE="">{trans("— select device —")}</OPTION>
 						        {foreach from=$channel.freedevices item=item}
 							<OPTION VALUE="{$item.id}">{$item.name}{if $item.producer} / {$item.producer}{/if}{if $item.location} ({$item.location}){/if}</OPTION>
 			        			{/foreach}

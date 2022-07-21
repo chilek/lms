@@ -33,6 +33,8 @@ class LMS
     const SOFTWARE_VERSION = '28-git';
     const SOFTWARE_URL = 'https://lms.org.pl';
     const SOFTWARE_DOCUMENTATION_URL = 'doc/html/%lang%';
+    const SOFTWARE_REPO_URL = 'https://git.lms.org.pl';
+    const SOFTWARE_SUPPORT_URL = 'https://github.com/chilek/lms/issues';
     const SOFTWARE_REVISION = '$Format:%cI$'; // %H for last commit checksum
 
     public $DB;   // database object
@@ -854,6 +856,30 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerPin($id);
+    }
+
+    public function getCustomerPinRequirements()
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerPinRequirements();
+    }
+
+    public function checkCustomerPin($id, $pin)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->checkCustomerPin($id, $pin);
+    }
+
+    public function getCustomerTen($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerTen($id);
+    }
+
+    public function getCustomerSsn($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerSsn($id);
     }
 
     public function changeCustomerType($id, $type)
@@ -2208,10 +2234,10 @@ class LMS
         return $manager->GetQueueEmail($id);
     }
 
-    public function GetQueueStats($id)
+    public function GetQueueStats($id, $deleted_tickets = true)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueStats($id);
+        return $manager->GetQueueStats($id, $deleted_tickets);
     }
 
     public function GetCategory($id)
@@ -2725,14 +2751,20 @@ class LMS
                     $this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?', array('last_check_for_updates_timestamp'));
                 }
 
-                $content = unserialize((string) $content);
-                $content['regdata'] = unserialize((string) $content['regdata']);
+                if (!empty($content)) {
+                    $content = unserialize((string) $content);
+                    if (isset($content['regdata'])) {
+                        $content['regdata'] = unserialize((string) $content['regdata']);
 
-                if (is_array($content['regdata'])) {
-                    $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
+                        if (is_array($content['regdata']) && !empty($content['regdata'])) {
+                            $this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
 
-                    foreach (array('id', 'name', 'url', 'hidden') as $key) {
-                        $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                            foreach (array('id', 'name', 'url', 'hidden') as $key) {
+                                if (isset($content['regdata'][$key])) {
+                                    $this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_' . $key, $content['regdata'][$key]));
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2950,11 +2982,11 @@ class LMS
             $this->mail_object->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => isset($smtp_options['ssl_verify_peer']) ? $smtp_options['ssl_verify_peer']
-                        : ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer', false, true)),
+                        : ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer'),
                     'verify_peer_name' => isset($smtp_options['ssl_verify_peer_name']) ? $smtp_options['ssl_verify_peer_name']
-                        : ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer_name', false, true)),
+                        : ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer_name'),
                     'allow_self_signed' => isset($smtp_options['ssl_allow_self_signed']) ? $smtp_options['ssl_allow_self_signed']
-                        : ConfigHelper::checkValue(ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed', true)),
+                        : ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed', true),
                 )
             );
 
@@ -2990,7 +3022,9 @@ class LMS
             preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $headers['From'], $from);
             $sender_email = $from['mail'];
             $this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
-            $this->mail_object->addReplyTo($headers['Reply-To']);
+            if (isset($headers['Reply-To'])) {
+                $this->mail_object->addReplyTo($headers['Reply-To']);
+            }
             $this->mail_object->CharSet = 'UTF-8';
             $this->mail_object->Subject = $headers['Subject'];
 
@@ -3002,13 +3036,17 @@ class LMS
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
                         preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc, $m);
-                        $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        if (!empty($m)) {
+                            $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        }
                     }
                 }
                 if (isset($headers['Bcc'])) {
                     foreach (explode(',', $headers['Bcc']) as $bcc) {
                         preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $bcc, $m);
-                        $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        if (!empty($m)) {
+                            $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        }
                     }
                 }
             }
@@ -3019,7 +3057,7 @@ class LMS
 
             if ($files) {
                 foreach ($files as $chunk) {
-                    if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                    if (isset($header['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
                         $this->mail_object->addStringEmbeddedImage(
                             $chunk['data'],
                             $chunk['content-id'],
@@ -3038,7 +3076,7 @@ class LMS
                 }
             }
 
-            if ($headers['X-LMS-Format'] == 'html') {
+            if (isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html') {
                 $this->mail_object->isHTML(true);
                 $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
                 $this->mail_object->msgHTML(preg_replace('/\r?\n/', "\n", $body));
@@ -3188,7 +3226,7 @@ class LMS
             $data = $this->ExecHook('send_sms_before', $data);
             $data = $this->executeHook('send_sms_before', $data);
 
-            if ($data['abort']) {
+            if (isset($data['abort']) && $data['abort']) {
                 if (is_string($data['result'])) {
                     $errors[] = $data['result'];
                     continue;
@@ -3287,10 +3325,10 @@ class LMS
         return $manager->GetMessages($customerid, $limit);
     }
 
-    public function GetDocuments($customerid = null, $limit = null)
+    public function GetDocuments($customerid = null, $limit = null, $all = false)
     {
         $manager = $this->getDocumentManager();
-        return $manager->GetDocuments($customerid, $limit);
+        return $manager->GetDocuments($customerid, $limit, $all);
     }
 
     public function GetDocumentList(array $params)
@@ -3449,10 +3487,28 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
+    public function documentCommitParseNotificationMail($string, $data)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->documentCommitParseNotificationMail($string, $data);
+    }
+
+    public function documentCommitParseNotificationRecipient($string, $data)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->documentCommitParseNotificationRecipient($string, $data);
+    }
+
     public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
         $manager = $this->getDocumentManager();
         return $manager->CommitDocuments($ids, $userpanel, $check_close_flag);
+    }
+
+    public function newDocumentParseNotification($string, $data)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->newDocumentParseNotification($string, $data);
     }
 
     public function NewDocumentCustomerNotifications(array $document)
@@ -3561,6 +3617,12 @@ class LMS
     {
         $manager = $this->getDocumentManager();
         return $manager->isDocumentAccessible($docid);
+    }
+
+    public function getDocumentReferences($docid, $cashid = null)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentReferences($docid, $cashid);
     }
 
     /*
@@ -4844,6 +4906,10 @@ class LMS
             $eol = PHP_EOL;
         }
 
+        if (!isset($no_attachments)) {
+            $no_attachments = false;
+        }
+
         $month = sprintf('%02d', intval(date('m', $currtime)));
         $day = sprintf('%02d', intval(date('d', $currtime)));
         $year = sprintf('%04d', intval(date('Y', $currtime)));
@@ -4896,7 +4962,7 @@ class LMS
                 $commented_balance = trans('Billing status: $a', moneyf($balance, $currency));
             }
 
-            list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+            list ($now_y, $now_m) = explode('/', date('Y/m', time()));
 
             $body = str_replace(
                 array(
@@ -4927,17 +4993,17 @@ class LMS
                     $year . '-' . $month . '-' . $day,
                     "\n",
                     format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
-                    strftime("%Y", $deadline),
-                    strftime("%m", $deadline),
-                    strftime("%d", $deadline),
-                    strftime("%B", $deadline),
+                    date('Y', $deadline),
+                    date('m', $deadline),
+                    date('d', $deadline),
+                    date('F', $deadline),
                     $document['document']['customerpin'],
                     $doc['customerid'],
-                    strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
+                    date('d', mktime(12, 0, 0, $now_m + 1, 0, $now_y)),
                     moneyf($document['document']['total'], $document['document']['currency']),
-                    strftime("%Y", $document['document']['cdate']),
-                    strftime("%m", $document['document']['cdate']),
-                    strftime("%d", $document['document']['cdate']),
+                    date('Y', $document['document']['cdate']),
+                    date('m', $document['document']['cdate']),
+                    date('d', $document['document']['cdate']),
                 ),
                 $body
             );
@@ -4989,6 +5055,32 @@ class LMS
                         'filename' => $filename,
                         'data' => $document['data'],
                     );
+
+                    $referenced_documents = array();
+
+                    if (!empty($doc['documentreferenced'])) {
+                        if (!isset($document_manager)) {
+                            $document_manager = $this->getDocumentManager();
+                        }
+                        $docrefs = $document_manager->getDocumentReferences($doc['id']);
+
+                        if (!empty($docrefs)) {
+                            foreach ($docrefs as $docid => $docref) {
+                                $referenced_document = $document_manager->GetDocumentFullContents($docid);
+                                if (empty($referenced_document)) {
+                                    continue;
+                                }
+                                foreach ($referenced_document['attachments'] as $attachment) {
+                                    $files[] = array(
+                                        'content_type' => $attachment['contenttype'],
+                                        'filename' => $attachment['filename'],
+                                        'data' => $attachment['contents'],
+                                    );
+                                }
+                                $referenced_documents[] = $docid;
+                            }
+                        }
+                    }
 
                     if ($extrafile) {
                         $files[] = array(
@@ -5148,6 +5240,16 @@ class LMS
                     if ($status == MSG_SENT) {
                         $this->PublishDocuments($doc['id']);
                         $this->MarkDocumentsAsSent($doc['id']);
+
+                        if (!empty($referenced_documents)) {
+                            $this->DB->Execute(
+                                'UPDATE documents
+                                SET published = 1, senddate = ?NOW?
+                                WHERE id IN ?',
+                                array($referenced_documents)
+                            );
+                        }
+
                         $published = true;
                     }
 

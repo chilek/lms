@@ -91,7 +91,7 @@
 									<label>
 										{trans("Message template:")}
 										<select name="setwarnings[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
-											<option value="0">{trans("- none -")}</option>
+											<option value="0">{trans("— none —")}</option>
 											{foreach $messagetemplates as $msgtmpl}
 											<option value="{$msgtmpl.id}">{$msgtmpl.name}</option>
 											{/foreach}

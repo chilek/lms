@@ -33,7 +33,7 @@
 				<INPUT type="HIDDEN" name="m" value="daemoninstancelist">
 				<B>{trans("Filter:")} </B> {trans("Host:")}
 				<SELECT size="1" name="id" OnChange="document.filter.submit();">
-					<OPTION value="0"{if ! $hostid} SELECTED{/if}>{trans("- all hosts -")}</OPTION>
+					<OPTION value="0"{if ! $hostid} SELECTED{/if}>{trans("— all hosts —")}</OPTION>
 					{section name=hosts loop=$hosts}
 					<OPTION value="{$hosts[hosts].id}"{if $hosts[hosts].id == $hostid} SELECTED{/if}>{$hosts[hosts].name}</OPTION>
 					{/section}

@@ -73,22 +73,22 @@
 			{section name=eventlist loop=$eventlist max=$limit}
 			{$event=$eventlist[eventlist]}
 				<div class="lms-ui-tab-table-row{if $event.closed} blend{/if}" data-target-url="?m=eventinfo&id={$event.id}">
-					<div class="lms-ui-tab-table-column type" style="{if !$event.closed}{if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}{/if}">
-						{$_EVENTTYPES[$event.type]}
+					<div class="lms-ui-tab-table-column type" style="{if !$event.closed}{if isset($_EVENTTYPES[$event.type])} {$_EVENTTYPES[$event.type].style}{/if}{/if}">
+						{$_EVENTTYPES[$event.type].label}
 						{if $event.ticketid}
 							<br><A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
 						{/if}
 					</div>
 					<div class="lms-ui-tab-table-wrapper col-3">
 						<div class="lms-ui-tab-table-column creation-date">
-							{$event.date|date_format:"%Y/%m/%d"}
+							{$event.date|date_format:"Y-m-d"}
 							{if $event.endtime == 86400}
-								{if $event.enddate > $event.date}- {$event.enddate|date_format:"%Y/%m/%d"}{/if}
+								{if $event.enddate > $event.date}- {$event.enddate|date_format:"Y-m-d"}{/if}
 								{trans("whole day")}
 							{else}
-								{($event.date + $event.begintime)|date_format:"%H:%M"}
+								{($event.date + $event.begintime)|date_format:"H:i"}
 								{if $event.begintime != $event.endtime}
-									- {($event.enddate + $event.endtime)|date_format:"%H:%M"}
+									- {($event.enddate + $event.endtime)|date_format:"H:i"}
 								{/if}
 							{/if}
 						</div>

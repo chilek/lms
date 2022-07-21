@@ -426,14 +426,14 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         $args[SYSLOG::RES_NETDEV] = $data['id'];
 
-        if ($data['address_id'] && $data['address_id'] < 0) {
+        if (isset($data['address_id']) && $data['address_id'] && $data['address_id'] < 0) {
             $data['address_id'] = null;
         }
 
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         if ($data['ownerid']) {
-            if ($data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
+            if (isset($data['address_id']) && $data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
                 $location_manager->DeleteAddress($data['address_id']);
             }
 
@@ -445,7 +445,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 )
             );
         } else {
-            if (!$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
+            if (!isset($data['address_id']) || !$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
                 $address_id = $location_manager->InsertAddress($data);
 
                 $this->db->Execute(
@@ -469,11 +469,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 if (!empty($nodeassigns)) {
                     foreach ($nodeassigns as $nodeassign) {
                         $args = array(
-                        SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
-                        SYSLOG::RES_NETDEV => $data['id'],
-                        SYSLOG::RES_NODE => $nodedata['id'],
-                        SYSLOG::RES_ASSIGN => $nodedata['assignmentid'],
-                        SYSLOG::RES_CUST => $nodedata['ownerid']
+                            SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                            SYSLOG::RES_NETDEV => $data['id'],
+                            SYSLOG::RES_NODE => $nodeassign['id'],
+                            SYSLOG::RES_ASSIGN => $nodeassign['assignmentid'],
+                            SYSLOG::RES_CUST => $ownerid,
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
@@ -556,7 +556,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
             // EtherWerX support (devices have some limits)
             // We must to replace big ID with smaller (first free)
-            if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+            if ($id > 99999 && ConfigHelper::checkConfig('phpui.ewx_support')) {
                 $this->db->BeginTrans();
                 $this->db->LockTables('ewx_channels');
 
@@ -682,6 +682,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevList($order = 'name,asc', $search = array())
     {
+        if (empty($order)) {
+            $order = 'name,asc';
+        }
         if (isset($search['count'])) {
             $count = $search['count'];
         } else {
@@ -1129,13 +1132,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $result['takenports']   = $this->CountNetDevLinks($id);
         $result['radiosectors'] = $this->db->GetAll('SELECT * FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id));
 
-        if ($result['guaranteeperiod'] != null && $result['guaranteeperiod'] != 0) {
+        if (isset($result['guaranteeperiod']) && $result['guaranteeperiod'] != 0) {
             $result['guaranteetime'] = strtotime('+' . $result['guaranteeperiod'] . ' month', $result['purchasetime']); // transform to UNIX timestamp
-        } elseif ($result['guaranteeperiod'] == null) {
+        } elseif (!isset($result['guaranteeperiod'])) {
             $result['guaranteeperiod'] = -1;
         }
 
-        if ($result['ownerid']) {
+        if (!empty($result['ownerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['owner'] = $customer_manager->getCustomerName($result['ownerid']);
         }

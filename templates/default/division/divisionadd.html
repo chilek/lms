@@ -144,7 +144,7 @@
 			<td>
 				{if isset($_TAX_OFFICE_CODES)}
 					<select name="division[tax_office_code]" {tip text="Enter Tax Office Code (optional)" trigger="tax_office_code"}>
-						<option value="0">{trans("- none -")}</option>
+						<option value="0">{trans("— none —")}</option>
 						{foreach $_TAX_OFFICE_CODES as $code => $tax_office}
 							<option value="{$code}"{if $division.tax_office_code == $code} selected{/if}>{$tax_office}</option>
 						{/foreach}
@@ -314,7 +314,7 @@
 			</td>
 			<td>
 				<select name="division[inv_paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
-					<option value=""{if !$division.inv_paytype} selected{/if}>- {trans("default")} -</option>
+					<option value=""{if !$division.inv_paytype} selected{/if}>— {trans("default")} —</option>
 					{foreach $_PAYTYPES as $key => $item}
 						<option value="{$key}"{if $division.inv_paytype == $key} selected{/if}>{trans($item)}</option>
 					{/foreach}
@@ -330,7 +330,7 @@
 			</td>
 			<td>
 				<select name="division[inv_paytime]" {tip text="Select default deadline in days" trigger="inv_paytime"}>
-					<option value=""{if !strlen($division.inv_paytime)} selected{/if}>- {trans("default")} -</option>
+					<option value=""{if !strlen($division.inv_paytime)} selected{/if}>— {trans("default")} —</option>
 					<option value="0"{if $division.inv_paytime == "0"} selected{/if}>0</option>
 					<option value="7"{if $division.inv_paytime == 7} selected{/if}>7</option>
 					<option value="10"{if $division.inv_paytime == 10} selected{/if}>10</option>
@@ -350,7 +350,7 @@
 			<td>
 				<label for="division[users][]">
 					<select size="4" name="division[users][]" multiple {tip text="Select users" class="lms-ui-multiselect"}
-						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+						data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 						{foreach $userslist as $user}
 							<option value="{$user.id}" {if isset($division.users) && in_array($user.id, $division.users)} selected{/if}>
 								{$user.login|trunescape:30}
@@ -393,4 +393,3 @@
 
 </script>
 {/block}
-

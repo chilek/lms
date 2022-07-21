@@ -86,7 +86,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    if ($nodedata['wholenetwork'] && empty($nodedata['netid'])) {
+    if (isset($nodedata['wholenetwork']) && $nodedata['wholenetwork'] && empty($nodedata['netid'])) {
         $error['netid'] = trans('Please choose network');
     }
 
@@ -323,7 +323,7 @@ if (isset($_POST['nodedata'])) {
 
         $nodeid = $LMS->NodeAdd($nodedata);
 
-        if (is_array($nodedata['nodegroup']) && count($nodedata['nodegroup'])) {
+        if (isset($nodedata['nodegroup']) && is_array($nodedata['nodegroup']) && count($nodedata['nodegroup'])) {
             foreach ($nodedata['nodegroup'] as $nodegroupid) {
                 $DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
 					VALUES (?, ?)', array($nodeid, intval($nodegroupid)));

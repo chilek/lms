@@ -64,7 +64,7 @@ function GetPropertyValues($resource, $propname, $propvalue)
             . (strlen($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
     } else {
         $options = '<SELECT size="1" name="propertyvalue" id="propertyvalue">';
-        $options .= '<OPTION value="">' . trans('- all -') . '</OPTION>';
+        $options .= '<OPTION value="">' . trans('— all —') . '</OPTION>';
         foreach ($values as $value) {
             $data = array('resource' => $resource, 'name' => $propname, 'value' => $value);
             $SYSLOG->DecodeMessageData($data);

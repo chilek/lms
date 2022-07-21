@@ -467,22 +467,25 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('Invoices');
 
-        header('Location: ?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . $_GET['jpk'] : '')
-            . (isset($_GET['jpk_format']) ? '&jpk_format=' . $_GET['jpk_format'] : '')
-            .$type
-            .'&from='.$date['from']
-            .'&to='.$date['to']
-            .(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
-            .(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
-            .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
-            .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
-                . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
-            .(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
-            .(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]='
-                . implode('&numberplanid[]=', Utils::filterIntegers($_POST['numberplan'])) : '')
-            .(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
-            .(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
-            .(!empty($_POST['manualissued']) ? '&manualissued=1' : ''));
+        header(
+            'Location: ?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . $_GET['jpk'] : '')
+                . (isset($_GET['jpk_format']) ? '&jpk_format=' . $_GET['jpk_format'] : '')
+                .$type
+                .'&from='.$date['from']
+                .'&to='.$date['to']
+                .(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
+                .(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
+                .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
+                .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
+                    . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
+                .(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
+                .(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]='
+                    . implode('&numberplanid[]=', Utils::filterIntegers($_POST['numberplan'])) : '')
+                .(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
+                .(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
+                .(!empty($_POST['manualissued']) ? '&manualissued=1' : '')
+                . (isset($_POST['related-documents']) ? '&related-documents=1' : '')
+        );
         break;
 
     case 'transferforms':

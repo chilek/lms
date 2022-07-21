@@ -5,10 +5,22 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
 require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
 
-$uid        = $_GET['id'];
-$phone      = $_GET['phone'];
-$agentnr    = $_GET['agentnr'];
+$uid        = intval($_GET['id']);
+$phone      = intval($_GET['phone']);
+$agentnr    = intval($_GET['agentnr']);
 $ticket['phonetype'] = 'on';
+
+$newticket_subject = ConfigHelper::getConfig(
+    'callcenter.newticket_subject',
+    'Zgłoszenie telefoniczne z E-Południe Call Center nr [#' . $uid . ']'
+);
+
+
+str_replace(
+    array('%uid', '%customerphone', '%agentnr'),
+    array($uid, $phone, $agentnr),
+    $newticket_subject
+);
 
 $basedir=(__DIR__ . DIRECTORY_SEPARATOR . 'templates_c');
 $wwwuser = posix_getuid();
@@ -117,7 +129,7 @@ if (!empty($_POST)) {
                 $ticket['body'] .=  PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             }
         }
-        $ticket['subject'] = 'Zgłoszenie telefoniczne z E-Południe Call Center nr [' . $uid . ']';
+        $ticket['subject'] = $newticket_subject;
         // set real quque id
         if ($ticket['queue'] == 1) {
             $ticket['queue'] = $queues[0];
@@ -173,11 +185,17 @@ if (!empty($_POST)) {
 
         $queue = $ticket['queue'];
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true))) {
+        if (ConfigHelper::checkConfig(
+            'rt.new_ticket_notify',
+            ConfigHelper::checkConfig('phpui.newticket_notify')
+        )) {
             $headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
             $sms_body = $headers['Subject']."\n".$ticket['body'];
 
-            if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+            if (ConfigHelper::checkConfig(
+                'rt.notification_customerinfo',
+                ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
+            )) {
                 if ($ticket['customerid']) {
                     $info = $DB->GetRow(
                         'SELECT id, pin, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername,

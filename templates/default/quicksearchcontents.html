@@ -33,7 +33,7 @@
 			<option value="contact"{if !isset($qs_properties.phone) || isset($qs_properties.phone.contact)} selected{/if}>{trans("<!qs>customer phone number")}</option>
 		{/if}
 		{if ConfigHelper::checkPrivilege('voip_account_management') || ConfigHelper::checkPrivilege('read_only')}
-			<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>voip account number")}</option>
+			<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>VoIP account number")}</option>
 		{/if}
 	</select>
 </div>
@@ -85,6 +85,7 @@
 		<option value="id"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.id)} selected{/if}>{trans("<!qs>device id")}</option>
 		<option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
 		<option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
+		<option value="mac"{if !isset($qs_properties.mac) || isset($qs_properties.netdevice.mac)} selected{/if}>{trans("<!qs>device mac")}</option>
 	</select>
 </div>
 {/if}
@@ -105,6 +106,8 @@
 		<option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
 		<option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
 		<option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
+		<option value="requestor_mail"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor_mail)} selected{/if}>{trans("<!qs>ticket requestor email")}</option>
+		<option value="requestor_phone"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor_phone)} selected{/if}>{trans("<!qs>ticket requestor phone")}</option>
 		<option value="customername"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.customername)} selected{/if}>{trans("<!qs>customer name")}</option>
 		<option value="unresolvedonly"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.unresolvedonly)} selected{/if}>{trans("<!qs>show unresolved only")}</option>
 	</select>

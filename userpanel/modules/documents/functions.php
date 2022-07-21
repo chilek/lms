@@ -205,12 +205,32 @@ function module_main()
                                                 ),
                                             )
                                         );
-                                        $LMS->SendMail($mail_recipient, array(
+
+                                        $document = $DB->GetRow(
+                                            'SELECT u.email AS creatoremail
+                                            FROM users u
+                                            JOIN documents d ON d.userid = u.id
+                                            WHERE d.id = ?
+                                                AND (u.ntype & ?) > 0
+                                                AND u.email <> ?',
+                                            array(
+                                                $documentid,
+                                                MSG_MAIL,
+                                                '',
+                                            )
+                                        );
+
+                                        $headers = array(
                                             'From' => ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>',
-                                            'To' => $mail_recipient,
                                             'Subject' => $mail_subject,
                                             'X-LMS-Format' => $mail_format,
-                                        ), $mail_body);
+                                        );
+                                        foreach (explode(',', $LMS->documentCommitParseNotificationRecipient($mail_recipient, $document)) as $recipient) {
+                                            if (!empty($recipient) && check_email($recipient)) {
+                                                $headers['To'] = $recipient;
+                                                $LMS->SendMail($recipient, $headers, $mail_body);
+                                            }
+                                        }
                                     }
 
                                     $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_format', 'text');
@@ -468,14 +488,14 @@ if (defined('USERPANEL_SETUPMODE')) {
             'new_document_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'new_document_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
             'new_document_customer_notification_sms_body' => CONFIG_TYPE_RICHTEXT,
-            'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,
+            'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_EMAILS,
             'signed_document_scan_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
-            'document_approval_operator_notification_mail_recipient' => CONFIG_TYPE_EMAIL,
+            'document_approval_operator_notification_mail_recipient' => CONFIG_TYPE_EMAILS,
             'document_approval_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'document_approval_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'document_approval_operator_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
@@ -505,6 +525,17 @@ if (defined('USERPANEL_SETUPMODE')) {
                     break;
                 case CONFIG_TYPE_EMAIL:
                     $value = check_email($moduleconfig[$variable]) ? $moduleconfig[$variable] : '';
+                    break;
+                case CONFIG_TYPE_EMAILS:
+                    $emails = array();
+                    foreach (explode(',', $moduleconfig[$variable]) as $email) {
+                        $email = trim($email);
+                        if (!strlen($email) || !check_email($email) && !preg_match('/^%[a-z_]+%$/', $email)) {
+                            continue;
+                        }
+                        $emails[] = $email;
+                    }
+                    $value = implode(',', $emails);
                     break;
                 case CONFIG_TYPE_NONE:
                     $mail_format = str_replace('_mail_format', '_mail_body', $variable);

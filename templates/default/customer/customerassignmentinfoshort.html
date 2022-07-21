@@ -136,7 +136,7 @@
 				{if $assignment.taxcategory}
 					<span {tip text=$_TAX_CATEGORIES[$assignment.taxcategory].description}>({sprintf('%02d', $assignment.taxcategory)}) {$_TAX_CATEGORIES[$assignment.taxcategory].label}</span>
 				{else}
-					{trans("- none -")}
+					{trans("— none —")}
 				{/if}
 			</TD>
 		</TR>

@@ -56,7 +56,7 @@ if (count($aids) == 1) {
     }
 }
 
-if ($_GET['action'] == 'suspend') {
+if (isset($_GET['action']) && $_GET['action'] == 'suspend') {
     foreach ($aids as $aid) {
         $LMS->toggleAssignmentSuspension($aid);
     }
@@ -87,7 +87,7 @@ if (isset($_POST['assignment'])) {
             $at = sprintf('%d', $a['at']);
 
             if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0) {
-                $at = strftime('%u', time());
+                $at = date('N', time());
             }
 
             if ($at < 1 || $at > 7) {
@@ -557,7 +557,7 @@ if (isset($_POST['assignment'])) {
     $a['phones'] = $DB->GetCol('SELECT number_id FROM voip_number_assignments WHERE assignment_id=?', array($a['id']));
 
     if (empty($a['currency'])) {
-        $a['currency'] = $_default_currency;
+        $a['currency'] = Localisation::getDefaultCurrency();
     }
 
     if (empty($a['pdiscount']) && empty($a['vdiscount'])) {

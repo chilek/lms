@@ -82,8 +82,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         if (!empty($event['ticketid'])) {
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-            $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
             $messagebody = trans('Assigned event ($a) was created.', $a = $id);
 
             $helpdesk_manager->TicketMessageAdd(array(
@@ -167,8 +167,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         if (!empty($event['helpdesk'])) {
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-            $messageid = '<msg.' . $ticketsqueue . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
             $messagebody = trans('Assigned event ($a) was modified.', $a = $event['id']);
 
             $helpdesk_manager->TicketMessageAdd(array(
@@ -211,8 +211,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
             if (!empty($event['ticketid'])) {
                 $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-                $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-                $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+                $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+                $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
                 $messagebody = trans('Assigned event ($a) was deleted.', $a = $id);
 
                 $helpdesk_manager->TicketMessageAdd(array(
@@ -270,10 +270,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
 
         $event['helpdesk'] = !empty($event['ticketid']);
-        $event['userlist'] = $this->db->GetCol('SELECT userid AS id
-			FROM vusers, eventassignments
-			WHERE vusers.id = userid
-			AND eventid = ?', array($id));
+
+        $event['userlist'] = $this->db->GetAllByKey(
+            'SELECT u.id, u.rname, u.name, u.login
+            FROM vusers u
+            JOIN eventassignments a ON a.userid = u.id
+            WHERE a.eventid = ?',
+            'id',
+            array($id)
+        );
         if (empty($event['userlist'])) {
             $event['userlist'] = array();
         }
@@ -342,15 +347,27 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $day = date('j', $t);
         }
 
+        $current_user_id = intval(Auth::GetCurrentUser());
+
+        $event_user_assignments = ConfigHelper::checkConfig('timetable.use_event_assignments_for_privacy_flag');
+
         switch ($privacy) {
             case 0:
-                $privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval(Auth::GetCurrentUser()) . '))';
+                if ($event_user_assignments) {
+                    $privacy_condition = ' AND (private = 0 OR (private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))))';
+                } else {
+                    $privacy_condition = ' AND (private = 0 OR (private = 1 AND userid = ' . $current_user_id . '))';
+                }
                 break;
             case 1:
-                $privacy_condition = 'private = 0';
+                $privacy_condition = ' AND private = 0';
                 break;
             case 2:
-                $privacy_condition = 'private = 1 AND userid = ' . intval(Auth::GetCurrentUser());
+                if ($event_user_assignments) {
+                    $privacy_condition = ' AND private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))';
+                } else {
+                    $privacy_condition = ' AND private = 1 AND userid = ' . $current_user_id;
+                }
                 break;
         }
 
@@ -401,7 +418,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 				LEFT JOIN customerview c ON (events.customerid = c.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
-				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
                 . $privacy_condition
                 . ($customerid ? ' AND events.customerid = '.intval($customerid) : '')
                 . $userfilter
@@ -431,7 +448,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 WHERE type & ? > 0 AND type & ? = 0
                 GROUP BY customerid
             ) cc ON cc.customerid = c.id
-			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
             . $privacy_condition
             .($customerid ? ' AND events.customerid = '.intval($customerid) : '')
             . $userfilter
@@ -529,9 +546,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 break;
         }
 
-        $datefrom = intval($search['datefrom']);
-        $dateto = intval($search['dateto']);
-        $ticketid = intval($search['ticketid']);
+        $datefrom = isset($search['datefrom']) ? intval($search['datefrom']) : 0;
+        $dateto = isset($search['dateto']) ? intval($search['dateto']) : 0;
+        $ticketid = isset($search['ticketid']) ? intval($search['ticketid']) : 0;
 
         $list = $this->db->GetAll(
             'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid,'
@@ -552,7 +569,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             array(Auth::GetCurrentUser())
         );
 
-        if ($search['userid']) {
+        if (isset($search['userid'])) {
             if (is_array($search['userid'])) {
                 $users = array_filter($search['userid'], 'is_natural');
             } else {
@@ -616,7 +633,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 }
             }
 
-            if ($search['userid']) {
+            if (isset($search['userid'])) {
                 return $list3;
             } else {
                 return $list2;

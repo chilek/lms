@@ -332,7 +332,7 @@
 					</div>
 					<select size="1" id="queue-verifierid" form="queue-form" class="lms-ui-box-field-value"
 							name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
-						<option value="">- {trans("select user")} -</option>
+						<option value="">{trans("— select user —")}</option>
 						{foreach $userlist as $user}
 							<option value="{$user.id}" {if $user.id == $queue.verifierid} selected{/if}>{$user.rname|escape}
 								({$user.login})

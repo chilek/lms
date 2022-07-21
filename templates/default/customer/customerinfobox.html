@@ -56,10 +56,10 @@
 						{icon name="customer" class="{if $customerpanel} lms-ui-sortable-handle{/if}"}
 						{if $customerpanel}{trans("Owner:")}{/if}
 						{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid|escape}{/if})
-						{karma title="Karma" value=$customerinfo.karma handler="?m=customeredit&id={$customerinfo.id}&op=changekarma"}
 						{if $customerinfo.deleted} <span class="lms-ui-alert">({trans("deleted customer")})</span>{/if}
 					</div>
 					<div>
+						{karma title="Karma" value=$customerinfo.karma handler="?m=customeredit&id={$customerinfo.id}&op=changekarma"}
 						{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
 					</div>
 				</div>
@@ -130,7 +130,9 @@
     									<td>
 											{trans("Identity document")}
 											<br>
-											{trans($_IDENTITY_TYPES[$customerinfo.ict])}
+											{if isset($_IDENTITY_TYPES[$customerinfo.ict])}
+												{trans($_IDENTITY_TYPES[$customerinfo.ict])}
+											{/if}
 											{$customerinfo.icn|escape}
 											{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.icn}
 											{if $customerinfo.icexpires !== ''}
@@ -138,7 +140,7 @@
 													{textformat assign="icexpires"}
 														{strip}
 															<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
-																{$customerinfo.icexpires|date_format:"%Y/%m/%d"}
+																{$customerinfo.icexpires|date_format:"Y-m-d"}
 															<span>
 														{/strip}
 													{/textformat}
@@ -191,7 +193,7 @@
 													{icon name="home" tip="billing address"}
 												</td>
 												<td>
-													<span title="{trans('billing address')}">{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
+													<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location|default:""|escape}$a (TERRIT){/t}{else}{$v.location|default:""|escape}{/if}
 														<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
 													</span>
 												</td>
@@ -384,7 +386,7 @@
 																{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}
 																	{trans("Cutoff suspended indefinitely")}
 																{else}
-																	{t a=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $a{/t}
+																	{t a=$customerinfo.cutoffstop|date_format:"Y-m-d"}Cutoff suspended to $a{/t}
 																{/if}
 															</span>
 														</td>
@@ -408,16 +410,27 @@
 												</tr>
 												{block name="customerinfobox-options"}
 													{foreach $_CCONSENTS as $type => $consent}
+														{if !is_array($consent)}
+															{continue}
+														{/if}
 														<tr>
 															<td>
-																{$consent.label}
+																{if $consent.type == 'selection' && isset($customerinfo.consents[$type]) && isset($consent.values[$customerinfo.consents[$type]].name)}
+																	{t a=$consent.label b=$consent.values[$customerinfo.consents[$type]].label}<!billing-type>$a ($b){/t}
+																{else}
+																	{$consent.label}
+																{/if}
 															</td>
 															<td class="text-right">
 																{if isset($customerinfo.consents[$type])}
 																	{if $consent.type == 'date'}
-																		{$customerinfo.consents[$type]['cdate']|date_format:"Y/m/d"}
+																		{$customerinfo.consents[$type]['cdate']|date_format:"Y-m-d"}
 																	{else}
-																		{trans("yes")}
+																		{if $consent.type != 'selection' || isset($consent.values[$customerinfo.consents[$type]].name)}
+																			{trans("yes")}
+																		{else}
+																			{trans("no")}
+																		{/if}
 																	{/if}
 																{else}
 																	{trans("no")}
@@ -541,6 +554,25 @@
 												{/if}
 											</td>
 										</tr>
+										{if ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))}
+											<tr>
+												<td>
+													{icon name="money"}
+												</td>
+												<td>
+													<strong>{trans("Due balance")}</strong>
+												</td>
+												<td>
+													{if $customerinfo.expiredbalance < 0}
+														<span class="lms-ui-alert">
+															{$customerinfo.expiredbalance|default:"0"|money_format}
+														</span>
+													{else}
+														{$customerinfo.expiredbalance|default:"0"|money_format}
+													{/if}
+												</td>
+											</tr>
+										{/if}
 									{/if}
 									<tr>
 										<td>
@@ -551,15 +583,15 @@
 												{trans("Last failed login")}</strong>
 										</td>
 										<td>
-											{if $customerinfo.up_logins.lastlogindate}
-												{$customerinfo.up_logins.lastlogindate|date_format:"%Y/%m/%d %H:%M"}
+											{if isset($customerinfo.up_logins.lastlogindate) && $customerinfo.up_logins.lastlogindate}
+												{$customerinfo.up_logins.lastlogindate|date_format:"Y-m-d H:i"}
 												({$customerinfo.up_logins.lastloginip})
 											{else}
 												-
 											{/if}
 											<br>
-											{if $customerinfo.up_logins.failedlogindate}
-												{$customerinfo.up_logins.failedlogindate|date_format:"%Y/%m/%d %H:%M"}
+											{if isset($customerinfo.up_logins.failedlogindate) && $customerinfo.up_logins.failedlogindate}
+												{$customerinfo.up_logins.failedlogindate|date_format:"Y-m-d H:i"}
 												({$customerinfo.up_logins.failedloginip})
 											{else}
 												-

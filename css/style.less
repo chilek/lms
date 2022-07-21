@@ -556,7 +556,12 @@ A {
 			text-decoration: none;
 		}
 	}
+
+    &[href^="mailto:"] {
+      font-family: 'Fira Code', monospace;
+    }
 }
+
 TR,.lms-ui-tab-table-row {
 	&.blend A {
 		color: @blend;
@@ -2684,4 +2689,8 @@ fieldset {
 .lms-ui-message-error,
 .lms-ui-message-bounced {
 	color: @error-text;
+}
+
+.lms-ui-font-smaller {
+	font-size: 80%;
 }

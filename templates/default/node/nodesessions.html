@@ -79,6 +79,12 @@
 						</div>
 						<div class="lms-ui-tab-table-column mac">
 							{$nodesession.mac}
+							{$producer = EtherCodes::GetProducer($nodesession.mac)}
+							{if $producer}
+								<span class="lms-ui-font-smaller">
+									({$producer})
+								</span>
+							{/if}
 						</div>
 						<div class="lms-ui-tab-table-column type">
 							{$unknowntype=1}{$firsttype=1}
@@ -98,15 +104,15 @@
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column started">
 									<strong>
-										{$nodesession.start|date_format:"%Y.%m.%d"}
+										{$nodesession.start|date_format:"Y.m.d"}
 									</strong>
-									{$nodesession.start|date_format:"%H:%M:%S"}
+									{$nodesession.start|date_format:"H:i:s"}
 								</div>
 								<div class="lms-ui-tab-table-column finished">
 									<strong>
-										{$nodesession.stop|date_format:"%Y.%m.%d"}
+										{$nodesession.stop|date_format:"Y.m.d"}
 									</strong>
-									{$nodesession.stop|date_format:"%H:%M:%S"}
+									{$nodesession.stop|date_format:"H:i:s"}
 								</div>
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">

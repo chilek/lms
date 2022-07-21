@@ -23,9 +23,9 @@
  *
  *  $Id$
  */
-$maction = ($_GET['maction']);
-$taction = ($_GET['taction']);
-$qaction = ($_GET['qaction']);
+$maction = isset($_GET['maction']) ? $_GET['maction'] : null;
+$taction = isset($_GET['taction']) ? $_GET['taction'] : null;
+$qaction = isset($_GET['qaction']) ? $_GET['qaction'] : null;
 
 $rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
 

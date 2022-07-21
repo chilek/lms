@@ -328,7 +328,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['macs'] = $nodeedit['macs'];
     $nodeinfo['ipaddr'] = $nodeedit['ipaddr'];
     $nodeinfo['netid'] = $nodeedit['netid'];
-    $nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'];
+    $nodeinfo['wholenetwork'] = isset($nodeedit['wholenetwork']) ? $nodeedit['wholenetwork'] : null;
     $nodeinfo['ipaddr_pub'] = $nodeedit['ipaddr_pub'];
     $nodeinfo['pubnetid'] = $nodeedit['pubnetid'];
     $nodeinfo['passwd'] = $nodeedit['passwd'];
@@ -337,10 +337,11 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['chkmac'] = $nodeedit['chkmac'];
     $nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
     $nodeinfo['port'] = $nodeedit['port'];
-    $nodeinfo['stateid'] = $nodeedit['stateid'];
+    $nodeinfo['stateid'] = isset($nodeedit['stateid']) ? $nodeedit['stateid'] : null;
     $nodeinfo['latitude'] = $nodeedit['latitude'];
     $nodeinfo['longitude'] = $nodeedit['longitude'];
     $nodeinfo['invprojectid'] = $nodeedit['invprojectid'];
+    $nodeinfo['authtype'] = $nodeedit['authtype'];
     $nodeinfo['info'] = $nodeedit['info'];
     $nodeinfo['wysiwyg'] = $nodeedit['wysiwyg'];
 
@@ -433,6 +434,5 @@ if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
-$SMARTY->assign('nodeauthtype', $nodeauthtype);
 $SMARTY->assign('nodeedit_sortable_order', $SESSION->get_persistent_setting('nodeedit-sortable-order'));
 $SMARTY->display('node/nodeedit.html');

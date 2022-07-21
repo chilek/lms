@@ -167,7 +167,7 @@ if (empty($cashimport_server) || empty($cashimport_username) || empty($cashimpor
     die("Fatal error: mailbox credentials are not set!" . PHP_EOL);
 }
 
-$cashimport_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.use_seen_flag', true));
+$cashimport_use_seen_flag = ConfigHelper::checkConfig($config_section . '.use_seen_flag', true);
 $cashimport_sender_email = ConfigHelper::getConfig($config_section . '.sender_email', '', true);
 $cashimport_folder = ConfigHelper::getConfig($config_section . '.folder', 'INBOX');
 

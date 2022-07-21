@@ -30,7 +30,7 @@
  */
 interface LMSDocumentManagerInterface
 {
-    public function GetDocuments($customerid = null, $limit = null);
+    public function GetDocuments($customerid = null, $limit = null, $all = false);
 
     public function GetDocumentList(array $params);
 
@@ -42,7 +42,13 @@ interface LMSDocumentManagerInterface
 
     public function DocumentExists($properties);
 
+    public function documentCommitParseNotificationMail($string, $data);
+
+    public function documentCommitParseNotificationRecipient($string, $data);
+
     public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true);
+
+    public function newDocumentParseNotification($string, $data);
 
     public function NewDocumentCustomerNotifications(array $document);
 
@@ -79,6 +85,8 @@ interface LMSDocumentManagerInterface
     public function getDocumentsByChecksum($checksum, $all_types = false);
 
     public function isDocumentAccessible($docid);
+
+    public function getDocumentReferences($docid, $cashid = null);
 
     public function getDefaultNumberPlanID($doctype, $divisionid = null);
 

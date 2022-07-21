@@ -32,10 +32,10 @@
 				</td>
 				<td class="nobr" colspan="2">
 					{if $schema.datefrom}
-						{trans("from")} {$schema.datefrom|date_format:"%Y/%m/%d"}
+						{trans("from")} {$schema.datefrom|date_format:"Y-m-d"}
 					{/if}
 					{if $schema.dateto}
-						{trans("to")} {$schema.dateto|date_format:"%Y/%m/%d"}
+						{trans("to")} {$schema.dateto|date_format:"Y-m-d"}
 					{/if}
 				</td>
 			</tr>

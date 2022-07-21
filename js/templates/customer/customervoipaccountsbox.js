@@ -24,7 +24,7 @@
 
 $(function() {
 	$('.delete-voipaccount').click(function() {
-		confirmDialog($t("Are you sure, you want to remove customer voip account?"), this).done(function() {
+		confirmDialog($t("Are you sure, you want to remove customer VoIP account?"), this).done(function() {
 			location.href = $(this).attr('href');
 		});
 		return false;

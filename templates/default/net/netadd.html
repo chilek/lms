@@ -106,7 +106,7 @@
 		</TD>
 		<TD colspan="3">
 			<select size="1" name="netadd[pubnetid]" {tip text="Assign public network (optional)"}>
-				<option value="0">{trans("- select public network -")}</option>
+				<option value="0">{trans("— select public network —")}</option>
 				{foreach $networks as $net}
 				{if $net.id neq $network.id}
 				<option value="{$net.id}" {if $netadd.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
@@ -124,7 +124,7 @@
 			{/if}
 
 			<select size="1" name="netadd[hostid]" {tip text="Select host" trigger="hostid"}>
-				<option value="0">{trans("- none -")}</option>
+				<option value="0">{trans("— none —")}</option>
 				{foreach $hostlist as $host}
 				<option value="{$host.id}"{if $host.id == $netadd.hostid} selected{/if}>{$host.name}</option>
 				{/foreach}

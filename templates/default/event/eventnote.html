@@ -33,7 +33,7 @@
 					<strong>{trans("Time")}</strong>
 				</td>
 				<td>
-					{$event.date|date_format:"%x (%A)"}
+					{$event.date|date_format:"Y-m-d (l)"}
 					{if $event.wholedays}
 						- {trans("whole day")}
 					{else}
@@ -93,7 +93,7 @@
 					{if $event.customername}
 						<A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
 					{else}
-						- {trans("none")} -
+						{trans("— none —")}
 					{/if}
 				</td>
 			</tr>
@@ -117,13 +117,13 @@
 					<strong>{trans("Users")}</strong>
 				</td>
 				<td class="nobr">
-					{foreach $event.userlist as $user}
-						<a href="?m=userinfo&id={$user.id}">{$user.name|escape}</a>
+					{foreach $event.userlist as $userid => $user}
+						<a href="?m=userinfo&id={$userid}">{$user.rname|escape}</a>
 						{if !$user@last}
 							<br>
 						{/if}
 					{foreachelse}
-						{trans("- none -")}
+						{trans("— none —")}
 					{/foreach}
 				</td>
 			</tr>

@@ -99,7 +99,11 @@ class Session
 
     public function restore_user_settings($force_settings_restore = false)
     {
-        $settings = $this->DB->GetRow('SELECT settings, persistentsettings FROM users WHERE login = ?', array($this->_content['session_login']));
+        if (isset($this->_content['session_login'])) {
+            $settings = $this->DB->GetRow('SELECT settings, persistentsettings FROM users WHERE login = ?', array($this->_content['session_login']));
+        } else {
+            $settings = null;
+        }
         if (!empty($settings)) {
             if (isset($settings['persistentsettings'])) {
                 $this->_persistent_settings = unserialize($settings['persistentsettings']);
@@ -404,7 +408,10 @@ class Session
             $this->DB->BeginTrans();
             $this->DB->LockTables('sessions');
 
-            $content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
+            $sid = $this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID));
+            if (!empty($sid)) {
+                $content = unserialize($sid);
+            }
             if (is_array($content['tabs']) && (!is_array($session_content['tabs']) || (is_array($content['tabs']) && count($content['tabs']) > count($session_content['tabs'])))) {
                 $session_content['tabs'] = $content['tabs'];
             }
@@ -417,10 +424,12 @@ class Session
             $this->DB->UnLockTables();
             $this->DB->CommitTrans();
 
-            $this->DB->Execute(
-                'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
-                array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
-            );
+            if (isset($this->_content['session_login'])) {
+                $this->DB->Execute(
+                    'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
+                    array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
+                );
+            }
         }
     }
 

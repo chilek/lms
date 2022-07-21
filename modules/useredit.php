@@ -74,7 +74,7 @@ $user_divisions = array_keys($LMS->GetDivisions(array('userid' => $id)));
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'usercopypermissions.inc.php');
 
-$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
+$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : array();
 
 if ($userinfo) {
     $acl = $_POST['acl'];

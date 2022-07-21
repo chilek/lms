@@ -54,6 +54,9 @@ $SESSION->add_history_entry();
 
 $params = array();
 $params['o']          = sessionHandler('o', 'vblo');
+if (!isset($params['o'])) {
+    $params['o'] = 'login,asc';
+}
 $params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
 if (empty($params['frangefrom'])) {
     $params['frangefrom'] = date('Y/m/01');

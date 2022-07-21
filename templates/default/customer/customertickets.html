@@ -61,7 +61,7 @@
 						<div class="lms-ui-tab-table-wrapper col-4">
 							<div class="lms-ui-tab-table-wrapper col-2" {tip text=$ticket.id}>
 								<div class="lms-ui-tab-table-column cdate">
-									{$ticket.createtime|date_format:"%Y/%m/%d %H:%M"}
+									{$ticket.createtime|date_format:"Y-m-d H:i"}
 								</div>
 								<div class="lms-ui-tab-table-column queue">
 									{$ticket.name}

@@ -356,7 +356,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 }
             }
         }
-        $sqlwhere = rtrim($sqlwhere, $search['operatorType']);
+        if (isset($search['operatorType'])) {
+            $sqlwhere = rtrim($sqlwhere, $search['operatorType']);
+        }
 
         $count = isset($search['count']) && !empty($search['count']);
 
@@ -938,6 +940,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         if (!empty($params)) {
             extract($params);
+        }
+
+        if (!isset($orderby)) {
+            $orderby = '';
         }
 
         switch ($orderby) {

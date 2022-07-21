@@ -37,7 +37,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice'])) {
             $marks = $_POST['marks'];
         }
-        if ($_POST['marks']['invoice']) {
+        if (isset($_POST['marks']['invoice']) && $_POST['marks']['invoice']) {
             $marks = $_POST['marks']['invoice'];
         }
 
@@ -57,7 +57,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
     } else {
         $docs = $DB->GetAll(
             "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email,
-                d.divisionid
+                d.divisionid,
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
 			FROM documents d
 			LEFT JOIN customers c ON c.id = d.customerid
 			JOIN (
@@ -109,8 +110,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                     'user' => ConfigHelper::getConfig('sendinvoices.smtp_user'),
                     'pass' => ConfigHelper::getConfig('sendinvoices.smtp_pass'),
                     'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth'),
-                    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer', true)),
-                    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer_name', true)),
+                    'ssl_verify_peer' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer', true),
+                    'ssl_verify_peer_name' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer_name', true),
                     'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
                 );
 
@@ -138,6 +139,10 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
                     echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
                 }
+
+                $extrafile = null;
+                $quiet = false;
+                $test = false;
 
                 $LMS->SendInvoices(
                     $docs,
