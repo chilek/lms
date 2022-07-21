@@ -626,7 +626,7 @@ class SYSLOG
                     foreach ($msg['keys'] as $keyname => &$key) {
                         $msg['text'] .= ', ' . $keyname . ': ' . $key['value'];
                         $key_name = preg_replace('/^[a-z]+_/i', '', $keyname);
-                        $key['type'] = self::$resourceKeyByName[$key_name];
+                        $key['type'] = isset(self::$resourceKeyByName[$key_name]) ? self::$resourceKeyByName[$key_name] : 0;
                     }
                     unset($key);
                 }

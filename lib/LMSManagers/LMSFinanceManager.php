@@ -1254,13 +1254,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($this->syslog) {
                 $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($args['assignmentid']));
                 foreach ($nodeassigns as $nodeassign) {
-                    $args = array(
+                    $args2 = array(
                         SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
                         SYSLOG::RES_CUST => $args['customerid'],
                         SYSLOG::RES_NODE => $nodeassign['nodeid'],
                         SYSLOG::RES_ASSIGN => $args['assignmentid'],
                     );
-                    $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
+                    $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args2);
                 }
             }
         }
