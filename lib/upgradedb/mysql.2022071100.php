@@ -20,12 +20,12 @@
  *  USA.
  *
  */
-
+ 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE payments ADD COLUMN customerid integer
-                    CONSTRAINT payments_customerid_fkey
-                        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute('ALTER TABLE payments ADD COLUMN customerid int(11)');
+$this->Execute('ALTER TABLE payments ADD CONSTRAINT payments_customerid_fkey 
+    FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022071100', 'dbversion'));
 
