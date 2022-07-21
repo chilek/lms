@@ -55,7 +55,7 @@ $a = $DB->GetRow(
     )
 );
 
-if ($a['template']) {
+if (!empty($a['template'])) {
     $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';
 }
 
@@ -74,7 +74,7 @@ if (!empty($a['docnumber'])) {
     );
 }
 
-$a['paytypename'] = isset($PAYTYPES[$a['paytype']]) ? $PAYTYPES[$a['paytype']] : '';
+$a['paytypename'] = !empty($a['paytype']) && isset($PAYTYPES[$a['paytype']]) ? $PAYTYPES[$a['paytype']] : '';
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->display('customer/customerassignmentinfoshort.html');
