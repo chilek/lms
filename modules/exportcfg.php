@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -71,7 +71,7 @@ $invoice_type = '0'; // typ dokumentu: faktura (zmienna %TYPE)
 %VATx - wartość podatku
 
 %TAXEDx - czy dana stawka podatkowa jest zwolniona, w sumie to tylko jedna kombinacja
-    taxed=1 i VATP=0.00 ma sens, no ale skoro juz jestesmy porzadni to niech tak bedzie
+    taxed=1 i VATP=0.00 ma sens, ale skoro już jesteśmy porządni to niech tak będzie
 
 UWAGA: x zastępujemy cyfrą od 1 do 8, która oznacza kolejną stawkę,
        np. %VATP1, %VATP2 itd.
