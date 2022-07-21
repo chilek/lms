@@ -228,14 +228,16 @@ if (isset($_GET['ticketid'])) {
                 'customerid' => $ticket['customerid'],
                 'status' => $ticket['status'],
                 'categories' => $ticket['categorynames'],
-                'priority' => $RT_PRIORITIES[$ticket['priority']],
+                'priority' => isset($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : '',
                 'deadline' => $ticket['deadline'],
                 'subject' => $ticket['subject'],
                 'body' => $note['body'],
                 'attachments' => &$attachments,
             );
 
-            $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticket['priority']];
+            if (isset($ticket['priority'])) {
+                $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticket['priority']];
+            }
 
             if (ConfigHelper::checkConfig('rt.note_send_re_in_subject')) {
                 $params['subject'] = 'Re: ' . $LMS->cleanupTicketSubject($ticket['subject']);
