@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE payments ADD COLUMN customerid integer
-                    CONSTRAINT payment_customerid_fkey
+                    CONSTRAINT payments_customerid_fkey
                         REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022071100', 'dbversion'));
