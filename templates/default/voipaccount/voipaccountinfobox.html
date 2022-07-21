@@ -70,28 +70,32 @@
                                         <img src="img/phone.gif" alt="{trans("Phone number")}">
                                     </td>
                                     <td class="bold nobr">
-                                        {if count($voipaccountinfo['numbers']) > 1}
+                                        {if $voipaccountinfo['numbers']|size > 1}
                                             {trans("Phone numbers")}
                                         {else}
                                             {trans("Phone number")}
                                         {/if}
                                     </td>
                                     <td>
-                                        {foreach $voipaccountinfo['numbers'] as $number}
-                                            {strip}
-                                                {if !$number@first},&nbsp{/if}
-                                                {if $number.number_index == 1 && $number@total > 1}
-                                                    <strong>
+                                        {if empty($voipaccountinfo['numbers'])}
+                                            {trans("— none —")}
+                                        {else}
+                                            {foreach $voipaccountinfo['numbers'] as $number}
+                                                {strip}
+                                                    {if !$number@first},&nbsp{/if}
+                                                    {if $number.number_index == 1 && $number@total > 1}
+                                                        <strong>
+                                                            {$number.phone}
+                                                        </strong>
+                                                    {else}
                                                         {$number.phone}
-                                                    </strong>
-                                                {else}
-                                                    {$number.phone}
-                                                {/if}
-                                                {if isset($number.info) && strlen($number.info)}
-                                                    &nbsp;({$number.info|escape})
-                                                {/if}
-                                            {/strip}
-                                        {/foreach}
+                                                    {/if}
+                                                    {if isset($number.info) && strlen($number.info)}
+                                                        &nbsp;({$number.info|escape})
+                                                    {/if}
+                                                {/strip}
+                                            {/foreach}
+                                        {/if}
                                     </td>
                                 </tr>
                                 {/block}
