@@ -237,6 +237,7 @@ class LMSSmartyPlugins
         $customername = !isset($params['customername']) || $params['customername'];
 
         $form = isset($params['form']) ? $params['form'] : null;
+        $firstoption = $params['firstoption'] ?? '— select customer —';
         $icon = empty($params['icon']) ? null : $params['icon'];
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
@@ -263,26 +264,13 @@ class LMSSmartyPlugins
             if (!empty($params['selecttip'])) {
                 $result .= ' ' . self::tipFunction(array('text' => $params['selecttip']), $template);
             } else {
-                $result .= ' ' . self::tipFunction(array('text' => 'Select customer (optional)'), $template);
+                $result .= ' ' . self::tipFunction(array('text' => $firstoption . (empty($required) ? null : '(optional)')), $template);
             }
 
             $result .= '">' . PHP_EOL;
 
-            if (isset($params['firstoption'])) {
-                if (!empty($params['firstoption'])) {
-                    $result .= '<option value="0"';
-                    if (empty($params['selected'])) {
-                        $result .= ' selected';
-                    }
-                    $result .= '>' . trans($params['firstoption']) . '</option>';
-                }
-            } else {
-                $result .= '<option value="0"';
-                if (empty($params['selected'])) {
-                    $result .= ' selected';
-                }
-                $result .= '>' . trans("— select customer —") . '</option>';
-            }
+            $result .= '<option value="0"' . (empty($params['selected']) ? ' selected' : null) . '>' . $firstoption . '</option>';
+
             foreach ($params['customers'] as $customer) {
                 $result .= '<option value="' . $customer['id'] . '"';
                 if ($customer['id'] == $params['selected']) {
@@ -341,11 +329,11 @@ class LMSSmartyPlugins
 
         if ($version == 2) {
             $result .= '<input type="text"'
-                . ' placeholder="' . trans('Search for customer') . '"'
+                . ' placeholder="' . trans($firstoption) . '"'
                 . (isset($form) ? ' form="' . $form . '"' : '')
                 . ' ' . self::tipFunction(
                     array(
-                        'text' => 'Search for customer',
+                        'text' => $firstoption,
                         'trigger' => 'customerid',
                         'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
                     ),
