@@ -177,7 +177,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         if ($_POST['body'] == '') {
             $error['body'] = trans('This cannot be empty');
         }
-        if (!$error) {
+        if (empty($error)) {
             add_solution($_POST['refid'], $_POST['title'], Utils::removeInsecureHtml($_POST['body']));
             header('Location: ?m=userpanel&module=help');
         } else {
