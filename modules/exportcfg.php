@@ -26,7 +26,7 @@
 
 /* variables used in *record options below
 
-%CLARION_DATE - data w formacie Clarion tj. ilość dni od 28.12.1800
+%CLARION_DATE - data w formacie Clarion tj. liczba dni od 28.12.1800
 %DATE - data w formacie określonym zmienną $date_format
 %NUMBER - cały numer dokumentu
 %N - numer dokumentu (liczba)
