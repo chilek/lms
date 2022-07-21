@@ -159,8 +159,6 @@ $SESSION->save('arvpv', $propertyvalue);
 
 $page = isset($_GET['page']) ? intval($_GET['page']) : 0;
 
-unset($invoicelist['page']);
-
 $listdata['page'] = $page;
 $listdata['user'] = $user;
 $listdata['users'] = $DB->GetAllByKey('SELECT id, login FROM users ORDER BY login', 'id');
