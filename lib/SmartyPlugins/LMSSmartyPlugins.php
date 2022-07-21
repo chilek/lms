@@ -168,6 +168,7 @@ class LMSSmartyPlugins
         $label = isset($params['label']) ? $params['label'] : null;
         $name = isset($params['name']) ? $params['name'] : 'division';
         $id = isset($params['id']) ? $params['id'] : $name;
+        $icon = empty($params['icon']) ? null : $params['icon'];
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
@@ -187,7 +188,9 @@ class LMSSmartyPlugins
 
         if ($force_global_division_context) {
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-            $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all")) . '</span>';
+            $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all"))
+                . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>';
             $result .= ($label ? '</label>' : '');
             $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
@@ -195,6 +198,8 @@ class LMSSmartyPlugins
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
                 $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
+                $result .= (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;');
                 $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" '
                     . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
@@ -210,7 +215,9 @@ class LMSSmartyPlugins
             } else {
                 $user_division = reset($user_divisions);
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all")) . '</span>';
+                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all"));
+                $result .= (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>';
                 $result .= ($label ? '</label>' : '');
                 $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
@@ -230,6 +237,7 @@ class LMSSmartyPlugins
         $customername = !isset($params['customername']) || $params['customername'];
 
         $form = isset($params['form']) ? $params['form'] : null;
+        $icon = empty($params['icon']) ? null : $params['icon'];
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -237,6 +245,9 @@ class LMSSmartyPlugins
 
         $result .= '<div class="lms-ui-customer-select-container" data-version="' . $version . '"'
             . ($version == 2 ? ' data-show-id="1"' : '') . '>' . PHP_EOL;
+
+        $result .= (!empty($icon) ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+            || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '');
 
         if (!empty($params['customers'])) {
             $result .= sprintf('<select name="%s" value="%s"', $params['selectname'], $params['selected']);
@@ -561,7 +572,7 @@ class LMSSmartyPlugins
                   <input type="text"   value="'
                     . (!empty($params['location_city_name']) ? htmlspecialchars($params['location_city_name']) : '' )
                     . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
-                    . ($params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
+                    . (isset($params['location_address_type']) && $params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
               </td>
           </tr>';
@@ -623,7 +634,7 @@ class LMSSmartyPlugins
         }
 
         if (isset($params['default_type'])) {
-            if ($params['location_address_type'] == null) {
+            if (!isset($params['location_address_type'])) {
                 $params['location_address_type'] = -1;
             }
 
@@ -677,29 +688,33 @@ class LMSSmartyPlugins
             . ' data-netnode-use-counter="' . (isset($params['data']['netnode_use_counter']) ? $params['data']['netnode_use_counter'] : '0') . '">';
 
         $uid = uniqid();
-        $location_str = $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
+        $location_str = isset($params['data']['location_address_type']) && $params['data']['location_address_type'] == BILLING_ADDRESS ? ''
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
         $location_str .= isset($params['data']['location'])
-            ? ($params['data']['teryt']
+            ? (isset($params['data']['teryt']) && $params['data']['teryt']
                 ? trans('$a (TERRIT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
             : '...';
 
         $title = '';
 
-        switch ($params['data']['location_address_type']) {
-            case POSTAL_ADDRESS:
-                $title = trans('postal address');
-                break;
-            case BILLING_ADDRESS:
-                $title = trans('billing address');
-                break;
-            case LOCATION_ADDRESS:
-                $title = trans('location/recipient address');
-                break;
-            case DEFAULT_LOCATION_ADDRESS:
-                $title = trans('default location address');
-                break;
+        if (isset($params['data']['location_address_type'])) {
+            switch ($params['data']['location_address_type']) {
+                case POSTAL_ADDRESS:
+                    $title = trans('postal address');
+                    break;
+                case BILLING_ADDRESS:
+                    $title = trans('billing address');
+                    break;
+                case LOCATION_ADDRESS:
+                    $title = trans('location/recipient address');
+                    break;
+                case DEFAULT_LOCATION_ADDRESS:
+                    $title = trans('default location address');
+                    break;
+            }
+        } else {
+            $title = '';
         }
 
         echo '<div class="address-full"
@@ -1206,8 +1221,8 @@ class LMSSmartyPlugins
 
         //<editor-fold desc="numberplan container">
         $result .= '<div class="lms-ui-numberplan-container" style="display: flex;"'
-                . ' data-doctype-selector="'. $params['doctype_selector'] .'"'
-                . ' data-customer-selector="'. $params['customer_selector'] .'"'
+                . (isset($params['doctype_selector']) ? ' data-doctype-selector="' . $params['doctype_selector'] . '"' : '')
+                . (isset($params['customer_selector']) ? ' data-customer-selector="' . $params['customer_selector'] . '"' : '')
                 . (isset($params['cdate_selector']) ? ' data-cdate-selector="' . $params['cdate_selector'] . '"' : '')
                 . ' data-plan-document-type="'. $params['planDocumentType'] .'"'
                 . ' data-plan-customer-id="'. $params['customer_id'] .'"'

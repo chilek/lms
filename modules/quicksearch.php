@@ -75,7 +75,7 @@ if (!empty($_POST['qs'])) {
     $search = urldecode(trim($search));
 } else {
     $search = urldecode(trim(isset($_GET['what']) ? $_GET['what'] : ''));
-    $mode = $_GET['mode'];
+    $mode = isset($_GET['mode']) ? $_GET['mode'] : '';
 }
 $sql_search = $DB->Escape("%$search%");
 
@@ -356,18 +356,20 @@ switch ($mode) {
                     } else {
                         $action = '?m=customerinfo&id=' . $row['id'];
                     }
-                    $name = htmlspecialchars(truncate_str($row['customername'], 50));
+                    $name = truncate_str('(#' . $row['id'] . ') ' . $row['customername'], 50);
                     if (isset($row['number'])) {
                         $description = trans('VoIP number:') . ' ' . htmlspecialchars($row['number']);
-                        $name_class = 'lms-ui-suggestion-phone';
+                        $name_class = '';
+                        $icon = 'fa-fw lms-ui-icon-phone';
                     } else {
                         $description = trans('Phone:') . ' ' . htmlspecialchars($row['phone']);
-                        $name_class = 'lms-ui-suggestion-customer-status-connected';
+                        $name_class = '';
+                        $icon = 'fa-fw lms-ui-icon-customer-status-connected';
                     }
                     $name_class .= $row['deleted'] ? ' blend' : '';
 
                     $description_class = '';
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -460,11 +462,11 @@ switch ($mode) {
                         $name_classes[] = 'blend';
                     }
                     if (!$row['lastonline']) {
-                        $name_classes[] = 'lms-ui-suggestion-node-status-unknown';
+                        $icon = 'fa-fw lms-ui-icon-nodeunk';
                     } else if (time() - $row['lastonline'] <= $lastonline_limit) {
-                            $name_classes[] = 'lms-ui-suggestion-node-status-online';
+                        $icon = 'fa-fw lms-ui-icon-nodeon';
                     } else {
-                        $name_classes[] = 'lms-ui-suggestion-node-status-offline';
+                        $icon = 'fa-fw lms-ui-icon-nodeoff';
                     }
                     $name_class = implode(' ', $name_classes);
 
@@ -496,7 +498,7 @@ switch ($mode) {
                         }
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -553,26 +555,28 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name FROM netnodes
-                                WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
-				LOWER(name) ?LIKE? LOWER($sql_search) 
-                                ORDER by name
-                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
+                LOWER(name) ?LIKE? LOWER($sql_search)
+                ORDER by name
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
                 $result = array();
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
-                                $name = truncate_str($row['name'], 50);
-                                $name_class = 'lms-ui-suggestion-netnode';
+                    $name = truncate_str($row['name'], 50);
+                    $name_class = '';
 
-                                $description = '';
-                                $description_class = '';
-                                $action = '?m=netnodeinfo&id=' . $row['id'];
+                    $icon = 'fa-fw lms-ui-icon-netnode';
+
+                    $description = '';
+                    $description_class = '';
+                    $action = '?m=netnodeinfo&id=' . $row['id'];
 
                     if (preg_match("~^$search\$~i", $row['id'])) {
                             $description = trans('Id:') . ' ' . $row['id'];
                     }
 
-                                $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -605,19 +609,37 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, serialnumber FROM netdevices
-				WHERE "
+            $candidates = $DB->GetAll("SELECT id, name, serialnumber, no.lastonline FROM netdevices
+                LEFT JOIN (
+                    SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
+                    FROM nodes
+                    WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
+                        AND lastonline > 0
+                    GROUP BY netdev
+                ) no ON no.netdevid = netdevices.id
+                WHERE "
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = netdevices.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
                 . "	ORDER by name
-				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
                 $result = array();
             if ($candidates) {
+                $lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit');
+
                 foreach ($candidates as $idx => $row) {
                     $name = truncate_str($row['name'], 50);
-                    $name_class = 'lms-ui-suggestion-netdevice';
+                    $name_class = '';
+
+                    if (!$row['lastonline']) {
+                        $icon = 'fa-fw lms-ui-icon-netdevunk';
+                    } else if (time() - $row['lastonline'] <= $lastonline_limit) {
+                        $icon = 'fa-fw lms-ui-icon-netdevon';
+                    } else {
+                        $icon = 'fa-fw lms-ui-icon-netdevoff';
+                    }
 
                     $description = '';
                     $description_class = '';
@@ -631,7 +653,7 @@ switch ($mode) {
                         $description = trans('Serial number:') . ' ' . $row['serialnumber'];
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -810,10 +832,10 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT id, name, type, netdev FROM netradiosectors
-                                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
-				LOWER(name) ?LIKE? LOWER($sql_search)
-                                ORDER by name
-                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
+                LOWER(name) ?LIKE? LOWER($sql_search)
+                ORDER by name
+                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
             $result = array();
             if ($candidates) {
@@ -873,7 +895,9 @@ switch ($mode) {
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
                     $name = truncate_str($row['name'], 50);
-                    $name_class = 'lms-ui-suggestion-network';
+                    $name_class = '';
+
+                    $icon = 'fa-fw lms-ui-icon-network';
 
                     $description = '';
                     $description_class = '';
@@ -890,7 +914,7 @@ switch ($mode) {
                         $description = trans('Network address:') . ' ' . $row['address'];
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
@@ -954,6 +978,7 @@ switch ($mode) {
                 foreach ($candidates as $idx => $row) {
                     $name = $row['login'] . '@' . $row['domain'];
                     $name_class = '';
+                    $icon = 'fa-fw lms-ui-icon-hosting';
                     $description = '';
                     $description_class = '';
                     if ($row['type']) {
@@ -962,7 +987,7 @@ switch ($mode) {
                         $action = '?m=accountinfo&id=' . $row['id'];
                     }
 
-                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(

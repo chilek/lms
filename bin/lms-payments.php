@@ -595,6 +595,7 @@ $services = $DB->GetAll(
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 $billing_invoice_separate_fractions = ConfigHelper::checkConfig('payments.billing_invoice_separate_fractions');
+$empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 
 $query = "SELECT
 			a.id, a.tariffid, a.customerid, a.recipient_address_id,
@@ -609,9 +610,9 @@ $query = "SELECT
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.taxid AS taxid, '' as prodid,
-			voipcost.value,
-			voipcost.value AS unitary_value,
-			" . ($billing_invoice_separate_fractions ? ' voipcost.call_count, voipcost.call_fraction, ' : '') . "
+			COALESCE(voipcost.value, 0) AS value,
+			COALESCE(voipcost.value, 0) AS unitary_value,
+			" . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
 			taxes.value AS taxrate,
             (CASE WHEN c.type = ?
                 THEN 0
@@ -644,10 +645,10 @@ $query = "SELECT
 			JOIN customers c ON (a.customerid = c.id)
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
-			JOIN (
+			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
 					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
-					. "va.ownerid AS customerid,
+                    . "va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
 				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.type = " . CALL_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.type = " . CALL_INCOMING . "
@@ -777,9 +778,10 @@ if ($billings) {
                 $billing_idx++;
             }
 
-            if ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
+            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
                 $assigns[] = $billings[$billing_idx];
-                $billing_idx = $old_billing_idx;
+                //$billing_idx = $old_billing_idx;
+                $billing_idx++;
             }
             $billing_idx = $old_billing_idx;
         }
@@ -999,7 +1001,7 @@ if (!empty($assigns)) {
         if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)) {
             $reward_to_check[$cid] = $cid;
         }
-        if ($reward_to_check[$cid]) {
+        if (isset($reward_to_check[$cid]) && $reward_to_check[$cid]) {
             if (!isset($reward_period_to_check[$cid])) {
                 $reward_period_to_check[$cid] = DAILY;
             }
@@ -1421,7 +1423,8 @@ foreach ($assigns as $assign) {
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
     $assign['value'] = floatval($assign['value']);
-    if (empty($assign['value'])) {
+
+    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
     }
 
@@ -1458,7 +1461,7 @@ foreach ($assigns as $assign) {
     if (!$assign['suspended'] && $assign['allsuspended']) {
         $assign['value'] = $assign['value'] * $suspension_percentage / 100;
     }
-    if (empty($assign['value'])) {
+    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
     }
 
@@ -1620,7 +1623,7 @@ foreach ($assigns as $assign) {
         $numberplans[$cid] = 0;
     }
 
-    if ($assign['unitary_value'] != 0) {
+    if ($assign['unitary_value'] != 0 || $empty_billings && $assign['liabilityid'] == 'set') {
         $price = $assign['unitary_value'];
         $currency = $assign['currency'];
         $netflag = intval($assign['netflag']);
@@ -1945,7 +1948,6 @@ foreach ($assigns as $assign) {
                         );
                     }
 
-
                     if (!empty($billing_document_template) && !empty($assign['billingconsent']) && !isset($invoices_with_billings[$invoices[$cid]])) {
                         $billing_plan = isset($billing_plans[$divid]) ? $billing_plans[$divid] : 0;
                         if (!isset($numbertemplates[$billing_plan])) {
@@ -2078,6 +2080,7 @@ foreach ($assigns as $assign) {
                             $document = array(
                                 'customerid' => $cid,
                                 'type' => DOC_BILLING,
+                                'cdate' => $issuetime,
                                 'title' => $billing_document_template['title'],
                                 'number' => $newnumber,
                                 'numberplanid' => $billing_plan,

@@ -914,7 +914,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $__datefrom = $idx ? $datefrom : 0;
                     $__dateto = $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date;
                     if (!$align_periods) {
-                         $dateto = $_dateto;
+                         $dateto = isset($_dateto) ? $_dateto : 0;
                     }
 
                     if ($__datefrom < $__dateto || !$__dateto) {
@@ -934,7 +934,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'datefrom' => $__datefrom,
                             'dateto' => $__dateto,
                             'pdiscount' => 0,
-                            'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $value : 0)) * ($val < 0 ? -1 : 1)),
+                            'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $value : 0)) * (isset($val) && $val < 0 ? -1 : 1)),
                             'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
                             SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
                             'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
@@ -1254,13 +1254,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($this->syslog) {
                 $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($args['assignmentid']));
                 foreach ($nodeassigns as $nodeassign) {
-                    $args = array(
+                    $args2 = array(
                         SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
                         SYSLOG::RES_CUST => $args['customerid'],
                         SYSLOG::RES_NODE => $nodeassign['nodeid'],
                         SYSLOG::RES_ASSIGN => $args['assignmentid'],
                     );
-                    $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
+                    $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args2);
                 }
             }
         }
@@ -1488,7 +1488,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
                     $a['promotionassignmentid'] = $a['sassignmentid'][$schemaid];
 
-                    $values = $a['values'][$schemaid];
+                    $values = isset($a['values'][$schemaid]) ? $a['values'][$schemaid] : array();
                     $counts = $a['counts'][$schemaid];
                     foreach ($a['promotionassignmentid'] as $label => $tariffid) {
                         if (empty($tariffid)) {
@@ -1529,13 +1529,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $error['name'] = trans('Liability name is required!');
                     }
 
-                    if (!$a['value'] && !$a['netflag']) {
+                    if (!$a['value'] && empty($a['netflag'])) {
                         $error['value'] = trans('Liability value is required!');
-                    } elseif (!$a['netvalue'] && $a['netflag']) {
+                    } elseif (!$a['netvalue'] && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Liability value is required!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && !$a['netflag']) {
+                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && empty($a['netflag'])) {
                         $error['value'] = trans('Incorrect value!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && $a['netflag']) {
+                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Incorrect value!');
                     } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
                         $error['value'] = trans('Value less than discount are not allowed!');
@@ -1590,7 +1590,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $schemaid = $data['schemaid'];
         $sassignments = $data['sassignmentid'][$schemaid];
-        $values = $data['values'][$schemaid];
+        $values = isset($data['values'][$schemaid]) ? $data['values'][$schemaid] : null;
 
         if (is_array($values)) {
             foreach ($values as $label => &$assignments) {
@@ -3667,6 +3667,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function AddBalance($addbalance)
     {
+        if ($addbalance['sourceid'] == -1) {
+            $default_source_id = $this->db->GetOne('SELECT id FROM cashsources WHERE isdefault = 1');
+        }
+
         $args = array(
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
             SYSLOG::RES_USER => isset($addbalance['userid']) && !empty($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
@@ -3681,7 +3685,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
             'servicetype' => isset($addbalance['servicetype']) && !empty($addbalance['servicetype']) ? $addbalance['servicetype'] : null,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
-            SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : null,
+            SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid'])
+                ? ($addbalance['sourceid'] == -1 ? ($default_source_id ? $default_source_id : null) : $addbalance['sourceid'])
+                : null,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
 			customerid, comment, docid, itemid, servicetype, importid, sourceid)
@@ -4820,7 +4826,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetDocumentLastReference($docid)
     {
-        while ($refdocid = $this->db->GetOne("SELECT id FROM documents WHERE reference = ?", array($docid))) {
+        while ($refdocid = $this->db->GetOne("SELECT id FROM documents WHERE reference = ? AND type > 0", array($docid))) {
             $docid = $refdocid;
         }
         return $docid;

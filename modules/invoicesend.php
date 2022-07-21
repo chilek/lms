@@ -37,7 +37,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice'])) {
             $marks = $_POST['marks'];
         }
-        if ($_POST['marks']['invoice']) {
+        if (isset($_POST['marks']['invoice']) && $_POST['marks']['invoice']) {
             $marks = $_POST['marks']['invoice'];
         }
 
@@ -139,6 +139,10 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
                 if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth)) {
                     echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
                 }
+
+                $extrafile = null;
+                $quiet = false;
+                $test = false;
 
                 $LMS->SendInvoices(
                     $docs,

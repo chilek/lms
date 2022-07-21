@@ -35,7 +35,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
         $filename = urldecode($_GET['file']);
         $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename));
     } else {
-        $cid = urldecode($_GET['cid']);
+        $filename = $cid = urldecode($_GET['cid']);
         $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND cid = ?', array(intval($_GET['mid']), $cid));
     }
 

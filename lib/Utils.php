@@ -43,8 +43,11 @@ class Utils
     public static function filterIntegers(array $params)
     {
         return array_filter($params, function ($value) {
+            if (!isset($value)) {
+                return false;
+            }
             $string = strval($value);
-            if ($string[0] == '-') {
+            if (strlen($string) && $string[0] == '-') {
                 $string = ltrim($string, '-');
             }
             return ctype_digit($string);
@@ -297,15 +300,17 @@ class Utils
         if (!empty($value)) {
             $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {
-                if ($consent['type'] == 'selection') {
-                    foreach ($consent['values'] as $sub_consent_id => $subconsent) {
-                        if (isset($subconsent['name']) && isset($values[$subconsent['name']])) {
-                            $result[$consent_id] = $sub_consent_id;
+                if (is_array($consent)) {
+                    if ($consent['type'] == 'selection') {
+                        foreach ($consent['values'] as $sub_consent_id => $subconsent) {
+                            if (isset($subconsent['name']) && isset($values[$subconsent['name']])) {
+                                $result[$consent_id] = $sub_consent_id;
+                            }
                         }
-                    }
-                } else {
-                    if (isset($values[$consent['name']])) {
-                        $result[$consent_id] = $consent_id;
+                    } else {
+                        if (isset($values[$consent['name']])) {
+                            $result[$consent_id] = $consent_id;
+                        }
                     }
                 }
             }

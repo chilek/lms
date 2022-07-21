@@ -211,10 +211,12 @@ if (isset($_GET['todate'])) {
 }
 
 // user watching tickets
-if ($_GET['watching'] == '1') {
-    $filter['watching'] = 1;
-} elseif (isset($_GET['watching'])) {
-    unset($filter['watching']);
+if (isset($_GET['watching'])) {
+    if ($_GET['watching'] == '1') {
+        $filter['watching'] = 1;
+    } else {
+        unset($filter['watching']);
+    }
 }
 
 // types

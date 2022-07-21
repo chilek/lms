@@ -165,6 +165,12 @@ $SESSION->save('csld', $division);
 
 if (isset($_GET['search'])) {
     $layout['pagetitle'] = trans('Customer Search Results');
+    if (!isset($time)) {
+        $time = null;
+    }
+    if (!isset($days)) {
+        $days = null;
+    }
     $customerlist = $LMS->GetCustomerList(compact(
         "order",
         "state",

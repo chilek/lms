@@ -397,9 +397,9 @@ switch ($action) {
         if ($invoice['deadline']) {
             list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
-                $olddday = date('d', $invoice['oldddate']);
-                $olddmonth = date('m', $invoice['oldddate']);
-                $olddyear = date('Y', $invoice['oldddate']);
+                $olddday = date('d', $invoice['olddeadline']);
+                $olddmonth = date('m', $invoice['olddeadline']);
+                $olddyear = date('Y', $invoice['olddeadline']);
 
                 if ($olddday != $dday || $olddmonth != $dmonth || $olddyear != $dyear) {
                     $invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
@@ -425,7 +425,7 @@ switch ($action) {
         }
 
         $args = array(
-            'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
             'customerid' => $invoice['customerid'],
             'division' => $invoice['divisionid'],
             'next' => false,
@@ -705,7 +705,7 @@ switch ($action) {
                         $args = array(
                             SYSLOG::RES_CASH => $cashid,
                             SYSLOG::RES_DOC => $iid,
-                            SYSLOG::RES_CUST => $customer['id'],
+                            SYSLOG::RES_CUST => $invoice['customerid'],
                         );
                         $SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
                     }
@@ -714,7 +714,7 @@ switch ($action) {
                 foreach ($itemids as $itemid) {
                     $args = array(
                         SYSLOG::RES_DOC => $iid,
-                        SYSLOG::RES_CUST => $customer['id'],
+                        SYSLOG::RES_CUST => $invoice['customerid'],
                         'itemid' => $itemid,
                     );
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
@@ -746,7 +746,7 @@ switch ($action) {
 					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
-                    $args[SYSLOG::RES_CUST] = $customer['id'];
+                    $args[SYSLOG::RES_CUST] = $invoice['customerid'];
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
                 }
 
@@ -868,7 +868,7 @@ if (isset($customer)) {
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('planDocumentType', $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
+$SMARTY->assign('planDocumentType', isset($invoice['proforma']) && $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
 
 $total_value = 0;
 if (!empty($contents)) {

@@ -294,7 +294,7 @@ if (!isset($_POST['xjxfun'])) {
 
             $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
             if ($customer_invoice_notice_consent_check != 'none') {
-                if ($customerdata['emails']) {
+                if (isset($customerdata['emails']) && $customerdata['emails']) {
                     foreach ($customerdata['emails'] as $idx => $val) {
                         if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
                             $emaileinvoice = true;

@@ -484,7 +484,7 @@ switch ($type) {
                 .(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
                 .(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
                 .(!empty($_POST['manualissued']) ? '&manualissued=1' : '')
-                . (isset($_POST['attach-documents']) ? '&attach-documents=1' : '')
+                . (isset($_POST['related-documents']) ? '&related-documents=1' : '')
         );
         break;
 

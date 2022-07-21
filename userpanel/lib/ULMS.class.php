@@ -157,7 +157,7 @@ class ULMS extends LMS
         global $RT_STATES;
 
         $ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename,
-				    requestor, state, owner, customerid, cause, source, '
+				    requestor, state, owner, customerid, cause, source, priority, '
                     .$this->DB->Concat('UPPER(customers.lastname)', "' '", 'customers.name').' AS customername,
 				    vusers.name AS ownername, createtime, resolvetime, subject
 				FROM rttickets

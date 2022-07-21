@@ -146,7 +146,7 @@
 		$("#perioddel").click(function() {
 			var comboboxes = $('#periodcont .scombobox');
 			var select = $(comboboxes[0]).find('select');
-			select.prepend('<OPTION value="0">- ' + $t("unlimited") + ' -</OPTION>');
+			select.prepend('<OPTION value="0">— ' + $t("unlimited") + ' —</OPTION>');
 			$(comboboxes[0]).scombobox('fill');
 
 			$('#perioddel').prev().remove();

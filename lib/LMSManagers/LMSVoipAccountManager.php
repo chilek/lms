@@ -692,7 +692,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function getCustomerVoipAccounts($id)
     {
         $result = $this->db->GetAll(
-            'SELECT v.id, login, passwd, ownerid, access,
+            'SELECT v.id, login, passwd, ownerid, access, flags,
                 lb.name AS borough_name, ld.name AS district_name,
                 lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,

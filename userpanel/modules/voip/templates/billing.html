@@ -282,12 +282,12 @@
                                                     {assign var=flags value=0}
                                                 {/if}
 
-                                                {if $flags & CALL_FLAG_CUSTOMER_RECORDING}
+                                                {if $flags & $smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING}
                                                     {documentview id="{$billings[i].id}"
-                                                                  type="audio/mp3"
-                                                                  name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"Y-m-d H:i:s"}"
-                                                                  url="?m=voip&record={$billings[i].id}"
-                                                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
+                                                        type="audio/mp3"
+                                                        name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"Y-m-d H:i:s"}"
+                                                        url="?m=voip&record={$billings[i].id}"
+                                                        text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
                                                 {/if}
                                             {/if}
                                         </TD>
@@ -483,7 +483,7 @@
          * \param  int/string customer flags
          */
         function updateRecordingRadioBtn( flags ) {
-            if (flags & {CALL_FLAG_CUSTOMER_RECORDING}) {
+            if (flags & {$smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING}) {
                 $( '#callrecordyes' ).prop( 'checked', true );
             } else {
                 $( '#callrecordno' ).prop( 'checked', true );

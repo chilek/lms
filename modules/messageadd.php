@@ -423,14 +423,20 @@ function BodyVars(&$body, $data, $format)
 {
     global $LMS;
 
-    $data['services'] = $LMS->GetCustomerServiceSummary($data['id']);
+    $data['services'] = isset($data['id']) ? $LMS->GetCustomerServiceSummary($data['id']) : array();
 
     $hook_data = $LMS->ExecuteHook('messageadd_data_parser', array(
         'data' => $data
     ));
     $data = $hook_data['data'];
 
+    if (!isset($data['balance'])) {
+        $data['balance'] = 0;
+    }
     $amount = -$data['balance'];
+    if (!isset($data['totalbalance'])) {
+        $data['totalbalance'] = 0;
+    }
     $totalamount = -$data['totalbalance'];
 
     if (strpos($body, '%bankaccount') !== false) {
@@ -478,9 +484,9 @@ function BodyVars(&$body, $data, $format)
             moneyf($data['totalbalance'], $currency),
             sprintf('%01.2f', $data['balance']),
             moneyf($data['balance'], $currency),
-            $data['customername'],
-            $data['id'],
-            $data['pin'],
+            isset($data['customername']) ? $data['customername'] : '',
+            isset($data['id']) ? $data['id'] : '',
+            isset($data['pin']) ? $data['pin'] : '',
         ),
         $body
     );
@@ -517,7 +523,9 @@ function BodyVars(&$body, $data, $format)
         );
     }
 
-    $body = $LMS->getLastNInTable($body, $data['id'], $format, ConfigHelper::checkConfig('phpui.aggregate_documents'));
+    if (isset($data['id'])) {
+        $body = $LMS->getLastNInTable($body, $data['id'], $format, ConfigHelper::checkConfig('phpui.aggregate_documents'));
+    }
 
     if (strpos($body, '%services') !== false) {
         $services = $data['services'];
@@ -686,7 +694,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['type'] = MSG_USERPANEL_URGENT;
     }
 
-    if (empty($message['customerid']) && ($message['state'] < 0 || $message['state'] > 165
+    if (empty($message['customerid']) && isset($message['state']) && ($message['state'] < 0 || $message['state'] > 165
         || ($message['state'] > CSTATUS_LAST && $message['state'] < 50))) {
         $error['state'] = trans('Incorrect recipient group!');
     }
@@ -992,7 +1000,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $divisionid = 0;
         $key = 1;
         foreach ($recipients as $row) {
-            if ($row['divisionid'] != $divisionid) {
+            if (isset($row['divisionid']) && $row['divisionid'] != $divisionid) {
                 $divisionid = $row['divisionid'];
                 ConfigHelper::setFilter($divisionid);
 
@@ -1063,7 +1071,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $key,
                     count($recipients),
                     sprintf('%02.1f%%', round((100 / count($recipients)) * $key, 1)),
-                    $row['customername'] . ' &lt;' . $destination . '&gt;'
+                    (isset($row['customername']) ? $row['customername'] : '-') . ' &lt;' . $destination . '&gt;'
                 );
                 flush();
 
@@ -1098,7 +1106,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                         break;
                     case MSG_SMS:
                     case MSG_ANYSMS:
-                        $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], $sms_options);
+                        $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], isset($sms_options) ? $sms_options : null);
                         break;
                     case MSG_USERPANEL:
                     case MSG_USERPANEL_URGENT:
@@ -1116,7 +1124,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                     $errors = array($result);
                 } else {
                     $status = $result['status'];
-                    $errors = $result['errors'];
+                    $errors = isset($result['errors']) ? $result['errors'] : array();
                 }
                 switch ($status) {
                     case MSG_ERROR:

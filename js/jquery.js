@@ -347,6 +347,10 @@ function updateAdvancedSelects(selector) {
 	});
 }
 
+function activateAdvancedSelect(selector) {
+	$(selector).trigger('chosen:activate');
+}
+
 function setAddressList(selector, address_list, preselection) {
 	var icon;
 	var select = $(selector);
@@ -2152,6 +2156,15 @@ $(function() {
 			button.prop('disabled', false);
 		});
 	});
+
+	window.addEventListener('message', function(e) {
+		if (e.data.hasOwnProperty('targetValue') && e.data.hasOwnProperty('targetSelector')) {
+			var elem = $(e.data.targetSelector);
+			elem.val(e.data.targetValue);
+			updateAdvancedSelects(elem);
+			activateAdvancedSelect(elem);
+		}
+	}, false);
 
 	initAutoGrow('.lms-ui-autogrow');
 });

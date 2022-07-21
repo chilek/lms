@@ -240,6 +240,13 @@ version 28-git (????-??-??):
     customers from lists by default [chilan]
   - improvement: 'phpui.show_due_balance' (with 'false' as default value) enables
     presentation of due/expired balance in customer info box [chilan]
+  - enhancement: search network devices by their mac addresses [chilan]
+  - improvement: network device status presentation using different icons in quick search
+    suggestion popup [chilan]
+  - enhancement: lms-notify.php: implemented event type selection for which customer and user
+    notifications should be generated [chilan]
+  - enhancement: added default flag to cash import sources [chilan]
+  - enhancement: added 'trunk' flag for voip accounts [chilan]
 
 version 27.0 (2021-08-20):
 

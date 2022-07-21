@@ -88,6 +88,15 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
         if (!empty($docs)) {
             $currtime = time();
+            if (!isset($quiet)) {
+                $quiet = false;
+            }
+            if (!isset($test)) {
+                $test = false;
+            }
+            if (!isset($extra_file)) {
+                $extra_file = null;
+            }
             $LMS->SendDocuments($docs, 'frontend', compact(
                 'debug_email',
                 'mail_body',

@@ -557,7 +557,7 @@ if (isset($_POST['assignment'])) {
     $a['phones'] = $DB->GetCol('SELECT number_id FROM voip_number_assignments WHERE assignment_id=?', array($a['id']));
 
     if (empty($a['currency'])) {
-        $a['currency'] = $_default_currency;
+        $a['currency'] = Localisation::getDefaultCurrency();
     }
 
     if (empty($a['pdiscount']) && empty($a['vdiscount'])) {

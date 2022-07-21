@@ -48,7 +48,7 @@ if (isset($_POST['assignment'])) {
 
     // try to restrict node assignment sharing
     if ($a['tariffid'] > 0 && isset($a['nodes']) && !empty($a['nodes'])) {
-        $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'], $a['nodes'], $from, $to);
+        $restricted_nodes = $LMS->CheckNodeTariffRestrictions(isset($a['id']) ? $a['id'] : null, $a['nodes'], $from, $to);
         $node_multi_tariff_restriction = ConfigHelper::getConfig(
             'phpui.node_multi_tariff_restriction',
             '',
@@ -90,7 +90,7 @@ if (isset($_POST['assignment'])) {
 
         $LMS->UpdateExistingAssignments($a);
 
-        if (is_array($a['sassignmentid'][$schemaid])) {
+        if (isset($a['sassignmentid'][$schemaid]) && is_array($a['sassignmentid'][$schemaid])) {
             $modifiedvalues = $a['values'][$schemaid];
             $counts = $a['counts'][$schemaid];
             $backwardperiods = $a['backwardperiods'][$schemaid];

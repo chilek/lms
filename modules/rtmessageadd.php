@@ -60,12 +60,14 @@ if (isset($_POST['message'])) {
 
         $tickets = array($message['ticketid']);
 
-        if ($message['destination'] != '' && !check_email($message['destination'])) {
-            $error['destination'] = trans('Incorrect email!');
-        }
+        if (isset($message['destination'])) {
+            if ($message['destination'] != '' && !check_email($message['destination'])) {
+                $error['destination'] = trans('Incorrect email!');
+            }
 
-        if ($message['destination'] != '' && $message['sender'] == 'customer') {
-            $error['destination'] = trans('Customer cannot send message!');
+            if ($message['destination'] != '' && $message['sender'] == 'customer') {
+                $error['destination'] = trans('Customer cannot send message!');
+            }
         }
 
         $ticket = $LMS->GetTicketContents($message['ticketid']);
@@ -133,7 +135,7 @@ if (isset($_POST['message'])) {
         $message['contenttype'] = isset($message['wysiwyg']) && isset($message['wysiwyg']['body']) && ConfigHelper::checkValue($message['wysiwyg']['body'])
             ? 'text/html' : 'text/plain';
 
-        $message['categories'] = is_array($message['categories']) ? array_flip($message['categories']) : array();
+        $message['categories'] = isset($message['categories']) && is_array($message['categories']) ? array_flip($message['categories']) : array();
 
         $userid = Auth::GetCurrentUser();
         $user = $LMS->GetUserInfo($userid);
@@ -150,6 +152,8 @@ if (isset($_POST['message'])) {
                 $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
             }
             unset($file);
+        } else {
+            $files = array();
         }
 
         $smtp_options = $LMS->GetRTSmtpOptions();
@@ -401,7 +405,7 @@ if (isset($_POST['message'])) {
                     $mailfname = '"' . $mailfname . '"';
                 }
 
-                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
+                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $requestor_mail);
 
                 $ticketdata = $LMS->GetTicketContents($ticketid);
 
@@ -709,7 +713,7 @@ if (isset($_POST['message'])) {
                 }
             }
 
-            if (!$message['destination'] && !$reply['userid']) {
+            if ((!isset($message['destination']) || !$message['destination']) && !$reply['userid']) {
                 $message['destination'] = $LMS->GetCustomerEmail($message['customerid'], 0, CONTACT_DISABLED);
                 if (!empty($message['destination'])) {
                     $message['destination'] = implode(',', $message['destination']);
@@ -899,7 +903,7 @@ if (!is_array($message['ticketid'])) {
     }
 
     $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));
-    $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
+    $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($message['queueid'], RTMESSAGE_REGULAR));
 } else {
     $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
     $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));

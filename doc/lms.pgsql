@@ -1125,6 +1125,7 @@ CREATE TABLE cashsources (
 	description text	DEFAULT NULL,
 	account varchar(48) NOT NULL DEFAULT '',
 	deleted smallint	NOT NULL DEFAULT 0,
+	isdefault smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );

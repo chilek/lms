@@ -29,7 +29,11 @@
 function _smarty_block_box($params, $content, $template, &$repeat)
 {
     if (!$repeat && isset($content)) {
-        $title = trans(array_merge(array($params['title']), $params));
+        if (isset($params['title'])) {
+            $title = trans(array_merge(array($params['title']), $params));
+        } else {
+            $title = '';
+        }
 
         $style = ConfigHelper::getConfig('userpanel.style', 'default');
 
@@ -75,7 +79,7 @@ function _smarty_function_body($params, $template)
 function _smarty_function_userpaneltip($params, $template)
 {
     $repeat = false;
-    $text = trans(array_merge(array($params['text']), $params));
+    $text = trans(array_merge(isset($params['test']) ? array($params['text']) : array(), $params));
 
     $tpl = $template->getTemplateVars('error');
     if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {

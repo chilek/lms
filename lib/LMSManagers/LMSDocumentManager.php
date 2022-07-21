@@ -196,7 +196,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         switch ($status) {
             case 0:
-                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND d.confirmdate >= 0 AND (d.confirmdate = 0 OR d.confirmdate < ?NOW?)';
+                $status_sql = ' AND d.closed = ' . DOC_OPEN . ' AND (d.confirmdate = 0 OR d.confirmdate > ?NOW?)';
                 break;
             case 1:
                 $status_sql = ' AND d.closed > ' . DOC_OPEN;
@@ -2142,7 +2142,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if ($userid) {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn
+                    d.fullnumber, n.template, d.ssn, d.name
                 FROM documents d
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
@@ -2152,7 +2152,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         } else {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn
+                    d.fullnumber, n.template, d.ssn, d.name
                 FROM documents d
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -831,6 +831,10 @@ $VOIP_POOL_NUMBER_TYPES = array(
 define('CALL_FLAG_ADMIN_RECORDING', 1);
 define('CALL_FLAG_CUSTOMER_RECORDING', 2);
 
+define('VOIP_ACCOUNT_FLAG_ADMIN_RECORDING', CALL_FLAG_ADMIN_RECORDING);
+define('VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING', CALL_FLAG_CUSTOMER_RECORDING);
+define('VOIP_ACCOUNT_FLAG_TRUNK', 4);
+
 $SERVICETYPES = array(
     SERVICE_OTHER => ConfigHelper::getConfig('tarifftypes.other', trans('other')),
     SERVICE_INTERNET => ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
@@ -1088,27 +1092,51 @@ define('EVENT_PHONE', 8);
 define('EVENT_TV', 9);
 
 $EVENTTYPES = array(
-    EVENT_OTHER => trans('other'),
-    EVENT_NETWORK => trans('network'),
-    EVENT_SERVICE => trans('service<!event>'),
-    EVENT_INSTALLATION => trans('installation'),
-    EVENT_MEETING => trans('meeting'),
-    EVENT_VACATION => trans('vacation'),
-    EVENT_DUTY => trans('duty'),
-    EVENT_PHONE => trans('phone'),
-    EVENT_TV => trans('tv'),
-);
-
-$EVENTSTYLES = array(
-    EVENT_OTHER => 'background-color: gray; color: white;',
-    EVENT_NETWORK => 'background-color: blue; color: white;',
-    EVENT_SERVICE => 'background-color: red; color: white;',
-    EVENT_INSTALLATION => 'background-color: green; color: white;',
-    EVENT_MEETING => 'background-color: gold; color: black;',
-    EVENT_VACATION => 'background-color: white; color: black;',
-    EVENT_DUTY => 'background-color: brown; color: white;',
-    EVENT_PHONE => 'background-color: yellow; color: black;',
-    EVENT_TV => 'background-color: greenyellow; color: blue;',
+    EVENT_OTHER => array(
+        'label' => trans('other'),
+        'style' => 'background-color: gray; color: white;',
+        'alias' => 'other',
+    ),
+    EVENT_NETWORK => array(
+        'label' => trans('network'),
+        'style' => 'background-color: blue; color: white;',
+        'alias' => 'network',
+    ),
+    EVENT_SERVICE => array(
+        'label' => trans('service<!event>'),
+        'style' => 'background-color: red; color: white;',
+        'alias' => 'service',
+    ),
+    EVENT_INSTALLATION => array(
+        'label' => trans('installation'),
+        'style' => 'background-color: green; color: white;',
+        'alias'=> 'installation',
+    ),
+    EVENT_MEETING => array(
+        'label' => trans('meeting'),
+        'style' => 'background-color: gold; color: black;',
+        'alias' => 'meeting',
+    ),
+    EVENT_VACATION => array(
+        'label' => trans('vacation'),
+        'style' => 'background-color: white; color: black;',
+        'alias' => 'vacation',
+    ),
+    EVENT_DUTY => array(
+        'label' => trans('duty'),
+        'style' => 'background-color: brown; color: white;',
+        'alias' => 'duty',
+    ),
+    EVENT_PHONE => array(
+        'label' => trans('phone'),
+        'style' => 'background-color: yellow; color: black;',
+        'alias' => 'phone',
+    ),
+    EVENT_TV => array(
+        'label' => trans('tv'),
+        'style' => 'background-color: greenyellow; color: blue;',
+        'alias' => 'tv',
+    ),
 );
 
 define('SESSIONTYPE_PPPOE', 1);
@@ -1311,8 +1339,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
     $SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
     $SMARTY->assign('_USERPANEL_AUTH_TYPES', $USERPANEL_AUTH_TYPES);
-    $SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
-    $SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
+    $SMARTY->assignByRef('_EVENTTYPES', $EVENTTYPES);
     $SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);

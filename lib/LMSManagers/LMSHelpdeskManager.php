@@ -1169,7 +1169,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
-        if ($ticket['contenttype'] == 'text/plain') {
+        if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/plain') {
             $body = str_replace("\r", "", $ticket['body']);
         } else {
             $body = Utils::removeInsecureHtml($ticket['body']);
@@ -1191,7 +1191,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['extid']) ? $ticket['extid'] : null,
         ));
 
-        if ($ticket['note']) {
+        if (isset($ticket['note']) && $ticket['note']) {
             $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
@@ -1210,7 +1210,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $msgid = $this->db->GetLastInsertID('rtmessages');
 
-        if ($ticket['contenttype'] == 'text/html') {
+        if (isset($ticket['contenttype']) && $ticket['contenttype'] == 'text/html') {
             $body = str_replace(
                 array(
                     '%tid%',
@@ -1519,7 +1519,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['owner'] = $ticket['owner'];
         }
 
-        if ($ticket['queueid'] != $props['queueid'] && isset($props['queueid'])) {
+        if (isset($props['queueid']) && $ticket['queueid'] != $props['queueid']) {
             $notes[] = trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($props['queueid']));
             $type = $type | RTMESSAGE_QUEUE_CHANGE;
             if (ConfigHelper::checkConfig('rt.ticket_queue_change_resets_ticket_state') && $ticket['state'] != RT_VERIFIED && $ticket['state'] != RT_RESOLVED) {
@@ -1529,14 +1529,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['queueid'] = $ticket['queueid'];
         }
 
-        if ($ticket['cause'] != $props['cause'] && isset($props['cause'])) {
+        if (isset($props['cause']) && $ticket['cause'] != $props['cause']) {
             $notes[] = trans('Ticket\'s cause has been changed from $a to $b.', $RT_CAUSE[$ticket['cause']], $RT_CAUSE[$props['cause']]);
             $type = $type | RTMESSAGE_CAUSE_CHANGE;
         } else {
             $props['cause'] = $ticket['cause'];
         }
 
-        if ($ticket['source'] != $props['source'] && isset($props['source'])) {
+        if (isset($props['source']) && $ticket['source'] != $props['source']) {
             $notes[] = trans('Ticket\'s source has been changed from $a to $b.', $RT_SOURCES[$ticket['source']], $RT_SOURCES[$props['source']]);
             $type = $type | RTMESSAGE_SOURCE_CHANGE;
         } else {
@@ -1552,7 +1552,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['priority'] = $ticket['priority'];
         }
 
-        if ($ticket['state'] != $props['state'] && isset($props['state'])) {
+        if (isset($props['state']) && $ticket['state'] != $props['state']) {
             $notes[] = trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']]['label'], $RT_STATES[$props['state']]['label']);
             $type = $type | RTMESSAGE_STATE_CHANGE;
         } else {
@@ -1737,23 +1737,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $categories = $this->db->GetAllByKey('SELECT id, name, description
 				FROM rtcategories', 'id');
 
-            if (isset($props['category_change'])) {
-                switch ($props['category_change']) {
-                    case 2:
-                        $categories_added = array_diff($props['categories'], $ticket['categories']);
-                        $categories_removed = array();
-                        break;
-                    case 3:
-                        $categories_added = array();
-                        $categories_removed = array_intersect($ticket['categories'], $props['categories']);
-                        break;
-                    default:
-                        $categories_added = array_diff($props['categories'], $ticket['categories']);
-                        $categories_removed = array_diff($ticket['categories'], $props['categories']);
-                        break;
-                }
-            } else {
-                $categories_added = $categories_removed = array();
+            $category_change = isset($props['category_change']) ? $props['category_change'] : null;
+            switch ($category_change) {
+                case 2:
+                    $categories_added = array_diff($props['categories'], $ticket['categories']);
+                    $categories_removed = array();
+                    break;
+                case 3:
+                    $categories_added = array();
+                    $categories_removed = array_intersect($ticket['categories'], $props['categories']);
+                    break;
+                default:
+                    $categories_added = array_diff($props['categories'], $ticket['categories']);
+                    $categories_removed = array_diff($ticket['categories'], $props['categories']);
+                    break;
             }
 
             if (!empty($categories_removed)) {
@@ -1797,13 +1794,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['address_id'] = $ticket['address_id'];
         }
 
-        if (isset($props['nodeid'])) {
+        if (isset($props['nodeid']) && !empty($props['nodeid'])) {
             if ($ticket['nodeid'] != $props['nodeid']) {
                 $type = $type | RTMESSAGE_NODE_CHANGE;
                 $node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
                 $node_locations = $node_manager->GetNodeLocations($ticket['customerid']);
-                $props['node_name'] = $node_locations[$props['nodeid']]['name'];
-                $props['node_location'] = $node_locations[$props['nodeid']]['location'];
+                if (isset($node_locations[$props['nodeid']])) {
+                    $props['node_name'] = $node_locations[$props['nodeid']]['name'];
+                    $props['node_location'] = $node_locations[$props['nodeid']]['location'];
+                } else {
+                    $props['node_name'] = $props['node_location'] = '-';
+                }
                 if (empty($ticket['nodeid'])) {
                     $notes[] = trans(
                         'Ticket\'s node has been changed to $a ($b).',
@@ -1995,15 +1996,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $text
         );
 
-        $text = str_replace('%queue', $params['queue'], $text);
+        $text = str_replace('%queue', isset($params['queue']) ? $params['queue'] : '', $text);
         $text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
         $text = str_replace('%status', $params['status']['label'], $text);
         $text = str_replace('%cat', implode(' ; ', $params['categories']), $text);
-        $text = str_replace('%subject', $params['subject'], $text);
+        $text = str_replace('%subject', isset($params['subject']) ? $params['subject'] : '', $text);
         if (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
-            $text = str_replace('%body', '<hr>' . $params['body'] . '<hr>', $text);
+            $text = str_replace('%body', '<hr>' . (isset($params['body']) ? $params['body'] : '') . '<hr>', $text);
         } else {
-            $text = str_replace('%body', $params['body'], $text);
+            $text = str_replace('%body', isset($params['body']) ? $params['body'] : '', $text);
         }
         $text = str_replace('%priority', $params['priority'] ?? '', $text);
         $text = (isset($params['deadline']) && !empty($params['deadline']))
@@ -2096,7 +2097,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $smtp_options = $this->GetRTSmtpOptions();
 
-        if ($params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
+        if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_email = $this->db->GetOne(
                 'SELECT email FROM users WHERE email <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
                 AND (ntype & ?) > 0',
@@ -2122,7 +2123,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
 				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                 . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
-                . ($params['verifierid'] ? ' AND users.id <> ' . intval($params['verifierid']) : '')
+                . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                 . ' AND (ntype & ?) > 0',
                 array_values($args)
             );
@@ -2173,7 +2174,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         // send sms
         $args['type'] = MSG_SMS;
 
-        if ($params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
+        if (isset($params['verifierid']) && $params['verifierid'] && (!isset($params['recipients']) || ($params['recipients'] & RT_NOTIFICATION_VERIFIER))) {
             $verifier_phone = $this->db->GetOne(
                 'SELECT phone FROM users WHERE phone <> \'\' AND deleted = 0 AND access = 1 AND users.id = ?
                 AND (ntype & ?) > 0',
@@ -2191,7 +2192,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
 					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0 AND access = 1'
                     . (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
-                    . ($params['verifierid'] ? ' AND users.id <> ' . intval($params['verifierid']) : '')
+                    . (!empty($params['verifierid']) ? ' AND users.id <> ' . intval($params['verifierid']) : '')
                     . ' AND (ntype & ?) > 0',
                 array_values($args)
             ))) {

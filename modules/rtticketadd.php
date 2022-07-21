@@ -142,10 +142,12 @@ if (isset($_POST['ticket'])) {
             ? 'text/html' : 'text/plain';
 
         if (!$ticket['customerid']) {
-            if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '') {
+            if ((!isset($ticket['requestor_name']) || $ticket['requestor_name'] == '')
+                && (!isset($ticket['requestor_phone']) || $ticket['requestor_phone'] == '')
+                && (!isset($ticket['requestor_mail']) || $ticket['requestor_mail'] == '')) {
                 $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
-            }
                 $ticket['requestor_userid'] = $userinfo['id'];
+            }
         }
 
         if ($ticket['address_id'] == -1) {
@@ -206,6 +208,8 @@ if (isset($_POST['ticket'])) {
                 $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
             }
             unset($file);
+        } else {
+            $files = array();
         }
         $id = $LMS->TicketAdd($ticket, $files);
 
@@ -406,7 +410,7 @@ if (isset($_POST['ticket'])) {
                 $smtp_options = $LMS->GetRTSmtpOptions();
                 $LMS->prepareMessageTemplates('rt');
                 foreach ($emails as $email) {
-                    $custmail_headers['To'] = '<' . $info['email'] . '>';
+                    $custmail_headers['To'] = '<' . (isset($info['email']) ? $info['email'] : $email) . '>';
                     $LMS->SendMail(
                         $email,
                         $custmail_headers,

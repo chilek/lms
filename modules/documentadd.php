@@ -134,7 +134,7 @@ if (isset($_POST['document'])) {
     $files = array();
 
     if (!isset($_GET['ajax'])) {
-        if ($document['reference']) {
+        if (isset($document['reference']) && $document['reference']) {
             $document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
 				WHERE id = ?', array($document['reference']));
         }
@@ -379,12 +379,12 @@ if (isset($_POST['document'])) {
                 $selected_assignment['align-periods'] = isset($document['assignment']['align-periods']);
 
                 if (is_array($selected_assignment['sassignmentid'][$schemaid])) {
-                    $modifiedvalues = $selected_assignment['values'][$schemaid];
+                    $modifiedvalues = isset($selected_assignment['values'][$schemaid]) ? $selected_assignment['values'][$schemaid] : array();
                     $counts = $selected_assignment['counts'][$schemaid];
                     $backwardperiods = $selected_assignment['backwardperiods'][$schemaid];
                     $copy_a = $selected_assignment;
-                    $snodes = $selected_assignment['snodes'][$schemaid];
-                    $sphones = $selected_assignment['sphones'][$schemaid];
+                    $snodes = isset($selected_assignment['snodes'][$schemaid]) ? $selected_assignment['snodes'][$schemaid] : array();
+                    $sphones = isset($selected_assignment['sphones'][$schemaid]) ? $selected_assignment['sphones'][$schemaid] : array();
 
                     foreach ($selected_assignment['sassignmentid'][$schemaid] as $label => $v) {
                         if (!$v) {
@@ -395,8 +395,8 @@ if (isset($_POST['document'])) {
                         $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
                         $copy_a['count'] = $counts[$label];
                         $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
-                        $copy_a['nodes'] = $snodes[$label];
-                        $copy_a['phones'] = $sphones[$label];
+                        $copy_a['nodes'] = isset($snodes[$label]) ? $snodes[$label] : array();
+                        $copy_a['phones'] = isset($sphones[$label]) ? $sphones[$label] : array();
                         $tariffid = $LMS->AddAssignment($copy_a);
                     }
                 }

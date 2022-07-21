@@ -715,8 +715,7 @@ $SESSION->save('invoicecontents', isset($contents) ? $contents : null, true);
 $SESSION->save('invoicecustomer', isset($customer) ? $customer : null, true);
 $SESSION->save('invoicenewerror', isset($error) ? $error : null, true);
 
-
-if ($action && !$error) {
+if ($action && (!isset($error) || !$error)) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
     $SESSION->redirect('?m=invoicenew');
 }

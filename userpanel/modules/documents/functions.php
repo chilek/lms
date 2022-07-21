@@ -225,7 +225,7 @@ function module_main()
                                             'Subject' => $mail_subject,
                                             'X-LMS-Format' => $mail_format,
                                         );
-                                        foreach (explode(',', $LMS->documentParseNotificationRecipient($mail_recipient, $document)) as $recipient) {
+                                        foreach (explode(',', $LMS->documentCommitParseNotificationRecipient($mail_recipient, $document)) as $recipient) {
                                             if (!empty($recipient) && check_email($recipient)) {
                                                 $headers['To'] = $recipient;
                                                 $LMS->SendMail($recipient, $headers, $mail_body);

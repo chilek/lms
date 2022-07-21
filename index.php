@@ -144,6 +144,8 @@ if (!$api) {
 
     $SMARTY->setDefaultResourceType('extendsall');
 
+    $SMARTY->muteUndefinedOrNullWarnings();
+
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;
 }

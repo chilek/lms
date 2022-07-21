@@ -194,6 +194,6 @@ if (!isset($_GET['searchform']) && !empty($netsearch)) {
 
     $SESSION->remove('ndlsp');
     $SMARTY->assign('autosuggest_placement', ConfigHelper::getConfig('phpui.default_autosuggest_placement'));
-    $SMARTY->assign('k', $k);
+    //$SMARTY->assign('k', $k);
     $SMARTY->display('net/netsearch.html');
 }

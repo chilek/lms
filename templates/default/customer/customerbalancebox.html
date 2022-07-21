@@ -491,12 +491,13 @@
 						{if $sourcelist}
 						<div class="isource">
 							<i class="lms-ui-icon-isource fa-fw"></i>
-							<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-								<OPTION value="0">{trans("— none —")}</OPTION>
+							<select form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
+								<option value="-1">{trans("<!cash-source>— default —")}</option>
+								<option value="0">{trans("— none —")}</option>
 								{foreach $sourcelist as $source}
-								<OPTION value="{$source.id}"{if $source.id == $sourceid} selected{/if}>{$source.name}</OPTION>
+									<option value="{$source.id}"{if $source.id == $sourceid} selected{/if}>{$source.name}</option>
 								{/foreach}
-							</SELECT>
+							</select>
 						</div>
 						{/if}
 					</div>

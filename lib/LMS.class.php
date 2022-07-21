@@ -3022,7 +3022,9 @@ class LMS
             preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $headers['From'], $from);
             $sender_email = $from['mail'];
             $this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
-            $this->mail_object->addReplyTo($headers['Reply-To']);
+            if (isset($headers['Reply-To'])) {
+                $this->mail_object->addReplyTo($headers['Reply-To']);
+            }
             $this->mail_object->CharSet = 'UTF-8';
             $this->mail_object->Subject = $headers['Subject'];
 
@@ -3034,13 +3036,17 @@ class LMS
                 if (isset($headers['Cc'])) {
                     foreach (explode(',', $headers['Cc']) as $cc) {
                         preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc, $m);
-                        $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        if (!empty($m)) {
+                            $this->mail_object->addCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        }
                     }
                 }
                 if (isset($headers['Bcc'])) {
                     foreach (explode(',', $headers['Bcc']) as $bcc) {
                         preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $bcc, $m);
-                        $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        if (!empty($m)) {
+                            $this->mail_object->addBCC($m['mail'], isset($m['name']) ? trim($m['name'], "\"") : '');
+                        }
                     }
                 }
             }
@@ -4898,6 +4904,10 @@ class LMS
             $eol = '<br>';
         } else {
             $eol = PHP_EOL;
+        }
+
+        if (!isset($no_attachments)) {
+            $no_attachments = false;
         }
 
         $month = sprintf('%02d', intval(date('m', $currtime)));
