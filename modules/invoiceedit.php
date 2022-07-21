@@ -397,9 +397,9 @@ switch ($action) {
         if ($invoice['deadline']) {
             list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
-                $olddday = date('d', $invoice['oldddate']);
-                $olddmonth = date('m', $invoice['oldddate']);
-                $olddyear = date('Y', $invoice['oldddate']);
+                $olddday = date('d', $invoice['olddeadline']);
+                $olddmonth = date('m', $invoice['olddeadline']);
+                $olddyear = date('Y', $invoice['olddeadline']);
 
                 if ($olddday != $dday || $olddmonth != $dmonth || $olddyear != $dyear) {
                     $invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
@@ -425,7 +425,7 @@ switch ($action) {
         }
 
         $args = array(
-            'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
             'customerid' => $invoice['customerid'],
             'division' => $invoice['divisionid'],
             'next' => false,
@@ -868,7 +868,7 @@ if (isset($customer)) {
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('planDocumentType', $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
+$SMARTY->assign('planDocumentType', isset($invoice['proforma']) && $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
 
 $total_value = 0;
 if (!empty($contents)) {
