@@ -1759,7 +1759,7 @@ CREATE TABLE payments (
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	customerid integer
-	    CONSTRAINT payment_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	    CONSTRAINT payments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	creditor varchar(255) 	DEFAULT '' NOT NULL,
 	period smallint		DEFAULT 0 NOT NULL,
 	at smallint 		DEFAULT 0 NOT NULL,
