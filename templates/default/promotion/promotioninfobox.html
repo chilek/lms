@@ -24,10 +24,10 @@
 				</td>
 				<td class="nobr" colspan="2">
 					{if $promotion.datefrom}
-						{trans("from")} {$promotion.datefrom|date_format:"%Y/%m/%d"}
+						{trans("from")} {$promotion.datefrom|date_format:"Y-m-d"}
 					{/if}
 					{if $promotion.dateto}
-						{trans("to")} {$promotion.dateto|date_format:"%Y/%m/%d"}
+						{trans("to")} {$promotion.dateto|date_format:"Y-m-d"}
 					{/if}
 				</td>
 			</tr>

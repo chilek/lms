@@ -600,7 +600,7 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
     );
 
     // time conversion specifiers
-    return strftime($result, $cdate);
+    return Utils::strftime($result, $cdate);
 }
 
 // our finance round
@@ -1373,7 +1373,11 @@ function handle_file_uploads($elemid, &$error)
             }
             unset($file);
             $$elemid = $fileupload[$elemid];
+        } else {
+            $$elemid = array();
         }
+    } else {
+        $$elemid = array();
     }
     return compact('fileupload', 'tmppath', $elemid);
 }

@@ -175,7 +175,7 @@
 					<SELECT NAME="srcradiosector" id="connboxsrcradiosector" {tip trigger="connboxsrcradiosector" text="Select radio sector"}
 							{if $devlinktype != $smarty.const.LINKTYPE_WIRELESS} style="display: none;"{/if}
 							form="connect-form">
-						<OPTION value="0">- {trans("none")} -</OPTION>
+						<OPTION value="0">{trans("— none —")}</OPTION>
 					</SELECT>
 
 					<label class="nobr">
@@ -187,7 +187,7 @@
 					<SELECT NAME="dstradiosector" id="connboxdstradiosector" {tip trigger="connboxdstradiosector" text="Select radio sector"}
 							{if $devlinktype != $smarty.const.LINKTYPE_WIRELESS} style="display: none;"{/if}
 							form="connect-form">
-						<OPTION value="0">- {trans("none")} -</OPTION>
+						<OPTION value="0">{trans("— none —")}</OPTION>
 						{foreach $netdev.radiosectors as $radiosector}
 						<OPTION value="{$radiosector.id}"{if $radiosector.id == $netlinkdstradiosector} selected{/if}>{$radiosector.name}</OPTION>
 						{/foreach}
@@ -204,7 +204,7 @@
 					<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"}
 							onchange="change_devlinktechnology(this.options[this.selectedIndex].value)"
 							form="connect-form">
-						<OPTION value="0">{trans("- unknown -")}</OPTION>
+						<OPTION value="0">{trans("— unknown —")}</OPTION>
 						{if !$devlinktype}{$devlinktype = 0}{/if}
 						{foreach $_LINKTECHNOLOGIES[$devlinktype] as $linktechnologyidx => $linktechnology}
 						<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $devlinktechnology} selected{/if}>{$linktechnology}</OPTION>
@@ -234,7 +234,7 @@
 		var options = xjx.$('connboxlinktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('{trans("- unknown -")}', 0));
+		options.add(new Option('{trans("— unknown —")}', 0));
 		switch (linktype) {
 			case 0:
 				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
@@ -293,7 +293,7 @@
 		var oldvalue = options[xjx.$('connboxsrcradiosector').selectedIndex].value;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('- {trans("none")} -', 0));
+		options.add(new Option('{trans("none")}', 0));
 		if (radiosectors !== null) {
 			radiosectors.forEach(function(elem) {
 				var option = new Option(elem.name, elem.id);
@@ -310,7 +310,7 @@
 		var oldvalue = options[xjx.$('connboxdstradiosector').selectedIndex].value;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('- {trans("none")} -', 0));
+		options.add(new Option('{trans("none")}', 0));
 		if (radiosectors !== null) {
 			radiosectors.forEach(function(elem) {
 				var option = new Option(elem.name, elem.id);

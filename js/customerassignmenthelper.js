@@ -385,7 +385,7 @@ function CustomerAssignmentHelper(options) {
 
 					if (data.voipaccounts) {
 						html += '<div class="phones"><img src="img/voip.gif"> ' +
-							'<span class="bold">' + $t('Voip Accounts:') + '</span><br>';
+							'<span class="bold">' + $t('VoIP Accounts:') + '</span><br>';
 						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + '][' +
 							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -423,7 +423,7 @@ function CustomerAssignmentHelper(options) {
 				];
 
 				var location_count = 0;
-				options = '<option value="">' + $t('- all -') + '</option>';
+				options = '<option value="">' + $t('— all —') + '</option>';
 				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
 					$.each(data['with-end-points'], function(key, value) {

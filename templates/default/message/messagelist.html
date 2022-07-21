@@ -38,7 +38,7 @@
 						<strong>{trans("Filter:")}</strong>
 						<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 						<SELECT size="1" name="cat">
-							<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+							<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter category —")}</OPTION>
 							<OPTION value="subject"{if $listdata.cat == "subject"} SELECTED{/if}>{trans("subject")}</OPTION>
 							<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
 							<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
@@ -51,7 +51,7 @@
 					<label>
 						{trans("Type:")}
 						<SELECT size="1" name="type">
-							<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all types -")}</OPTION>
+							<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("— all types —")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_MAIL}"{if $listdata.type == $smarty.const.MSG_MAIL} SELECTED{/if}>{trans("email")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{trans("sms")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_ANYSMS}"{if $listdata.type == $smarty.const.MSG_ANYSMS} SELECTED{/if}>{trans("any sms")}</OPTION>
@@ -63,7 +63,7 @@
 					<label>
 						{trans("Status:")}
 						<SELECT size="1" name="status">
-							<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</OPTION>
+							<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("— all statuses —")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
 						{*
 							<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
@@ -113,7 +113,7 @@
 		data-popup-menu-title="{t a=$message.id|string_format:"%d"}Message #$a{/t}"
 	>
 		<TD class="nobr">
-			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$message.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 		<TD class="text-center nobr">
 			{if $message.type == $smarty.const.MSG_MAIL}

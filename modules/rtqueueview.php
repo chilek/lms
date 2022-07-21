@@ -211,10 +211,12 @@ if (isset($_GET['todate'])) {
 }
 
 // user watching tickets
-if ($_GET['watching'] == '1') {
-    $filter['watching'] = 1;
-} elseif (isset($_GET['watching'])) {
-    unset($filter['watching']);
+if (isset($_GET['watching'])) {
+    if ($_GET['watching'] == '1') {
+        $filter['watching'] = 1;
+    } else {
+        unset($filter['watching']);
+    }
 }
 
 // types
@@ -256,8 +258,11 @@ if (isset($_GET['d'])) {
 if (isset($_GET['s'])) {
     $filter['state'] = $_GET['s'];
 } elseif (!isset($filter['state'])) {
-    $filter['state'] = ConfigHelper::getConfig('phpui.ticketlist_status');
-    if (strlen($filter['state'])) {
+    $filter['state'] = ConfigHelper::getConfig(
+        'rt.ticketlist_status',
+        ConfigHelper::getConfig('phpui.ticketlist_status')
+    );
+    if (isset($filter['state']) && strlen($filter['state'])) {
         $filter['state'] = explode(',', $filter['state']);
     }
 }
@@ -283,8 +288,11 @@ if (isset($_GET['priority'])) {
         $filter['priority'] = Utils::filterIntegers(array($_GET['priority']));
     }
 } elseif (!isset($filter['priority'])) {
-    $filter['priority'] = ConfigHelper::getConfig('phpui.ticketlist_priority');
-    if (strlen($filter['priority'])) {
+    $filter['priority'] = ConfigHelper::getConfig(
+        'rt.ticketlist_priority',
+        ConfigHelper::getConfig('phpui.ticketlist_priority')
+    );
+    if (isset($filter['priority']) && strlen($filter['priority'])) {
         $filter['priority'] = explode(',', $filter['priority']);
     }
 }
@@ -345,7 +353,10 @@ $filter['count'] = true;
 
 $filter['total'] = intval($LMS->GetQueueContents($filter));
 
-$filter['limit'] = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
+$filter['limit'] = intval(ConfigHelper::getConfig(
+    'rt.ticketlist_pagelimit',
+    ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total'])
+));
 $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
 if ($filter['offset'] > $filter['total']) {
     $filter['page'] = 1;

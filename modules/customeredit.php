@@ -131,19 +131,6 @@ if (!isset($_POST['xjxfun'])) {
         $history_entry = $SESSION->get_history_entry();
         $backurl = $history_entry ? '?' . $history_entry : '?m=customerlist';
 
-        $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
-        if (!$pin_min_size) {
-            $pin_min_size = 4;
-        }
-        $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
-        if (!$pin_max_size) {
-            $pin_max_size = 6;
-        }
-        if ($pin_min_size > $pin_max_size) {
-            $pin_max_size = $pin_min_size;
-        }
-        $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
-
         if (isset($_POST['customerdata'])) {
             $customerdata = $_POST['customerdata'];
 
@@ -288,14 +275,12 @@ if (!isset($_POST['xjxfun'])) {
 
             Localisation::resetSystemLanguage();
 
-            if ($customerdata['pin'] == '') {
-                $error['pin'] = trans('PIN code is required!');
-            } elseif ((!ConfigHelper::checkConfig('phpui.validate_changed_pin') || $customerdata['pin'] != $LMS->getCustomerPin($_GET['id']))
-                && !validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
-                $error['pin'] = trans('Incorrect PIN code!');
+            $pin_check_result = $LMS->checkCustomerPin($customerdata['id'], $customerdata['pin']);
+            if (is_string($pin_check_result)) {
+                $error['pin'] = $pin_check_result;
             }
 
-            if ($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) {
+            if ($customerdata['status'] == CSTATUS_INTERESTED && $LMS->GetCustomerNodesNo($customerdata['id'])) {
                 $error['status'] = trans('Interested customers can\'t have computers!');
             }
 
@@ -309,7 +294,7 @@ if (!isset($_POST['xjxfun'])) {
 
             $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
             if ($customer_invoice_notice_consent_check != 'none') {
-                if ($customerdata['emails']) {
+                if (isset($customerdata['emails']) && $customerdata['emails']) {
                     foreach ($customerdata['emails'] as $idx => $val) {
                         if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
                             $emaileinvoice = true;
@@ -378,17 +363,17 @@ if (!isset($_POST['xjxfun'])) {
 
                 $LMS->CustomerUpdate($customerdata);
 
-                    $hook_data = $LMS->executeHook(
-                        'customeredit_after_submit',
-                        array(
-                            'customerdata' => $customerdata,
-                        )
-                    );
-                        $customerdata = $hook_data['customerdata'];
-                        $id = $hook_data['id'];
+                $hook_data = $LMS->executeHook(
+                    'customeredit_after_submit',
+                    array(
+                        'customerdata' => $customerdata,
+                    )
+                );
+                $customerdata = $hook_data['customerdata'];
+                $id = isset($hook_data['id']) ? $hook_data['id'] : null;
 
                 if ($SYSLOG) {
-                        $contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
+                    $contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
                     if (!empty($contactids)) {
                         foreach ($contactids as $contactid) {
                             $args = array(
@@ -435,7 +420,7 @@ if (!isset($_POST['xjxfun'])) {
                                 'contact' => $contact['contact'],
                                 'name' => $contact['name'],
                                 'type' => $contact['type'],
-                                'properties' => serialize($contact['properties']),
+                                'properties' => isset($contact['properties']) ? serialize($contact['properties']) : null,
                             );
                             $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                         }
@@ -475,7 +460,7 @@ if (!isset($_POST['xjxfun'])) {
                     $customerinfo['cutoffstop'] = 0;
                     $customerinfo['cutoffstopindefinitely'] = 1;
                 } else {
-                    $customerinfo['cutoffstop'] = strftime('%Y/%m/%d', $customerinfo['cutoffstop']);
+                    $customerinfo['cutoffstop'] = date('Y/m/d', $customerinfo['cutoffstop']);
                 }
             } else {
                 $customerinfo['cutoffstop'] = 0;
@@ -541,7 +526,7 @@ $hook_data = $LMS->executeHook(
 $customerinfo = $hook_data['customerinfo'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
+$SMARTY->assign($LMS->getCustomerPinRequirements());
 $SMARTY->assign('customerinfo', $customerinfo);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('recover', ($action == 'recover' ? 1 : 0));

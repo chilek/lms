@@ -242,11 +242,11 @@
 			onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong></td>
 		<td class="nobr">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
-		<td class="nobr">{$doc.cdate|date_format:"%d.%m.%Y"}</td>
+		<td class="nobr">{$doc.cdate|date_format:"Y-m-d"}</td>
 		<td class="nobr">
 		{if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
-			{if $doc.fromdate}{$doc.fromdate|date_format:"%d.%m.%Y"}{/if}
-			{if $doc.todate} - {$doc.todate|date_format:"%d.%m.%Y"}{else}{if $doc.fromdate} - {/if}{trans("indefinitely")}{/if}
+			{if $doc.fromdate}{$doc.fromdate|date_format:"Y-m-d"}{/if}
+			{if $doc.todate} - {$doc.todate|date_format:"Y-m-d"}{else}{if $doc.fromdate} - {/if}{trans("indefinitely")}{/if}
 		{/if}
 		</td>
 		<td class="nobr" align="right">

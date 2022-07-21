@@ -179,7 +179,7 @@ if (array_key_exists('import-file', $options)) {
     $filemtime = filemtime($import_file);
 } else {
     $import_file = 'php://stdin';
-    $import_filename = strftime('%Y%m%d%H%M%S.csv');
+    $import_filename = date('YmdHis') . '.csv';
     $filemtime = time();
 }
 

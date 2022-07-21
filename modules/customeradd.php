@@ -73,19 +73,6 @@ if (isset($_GET['ajax'])) {
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
-$pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
-if (!$pin_min_size) {
-    $pin_min_size = 4;
-}
-$pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
-if (!$pin_max_size) {
-    $pin_max_size = 6;
-}
-if ($pin_min_size > $pin_max_size) {
-    $pin_max_size = $pin_min_size;
-}
-$pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
-
 $customeradd = array();
 
 $natural_person_required_properties = ConfigHelper::getConfig('phpui.natural_person_required_properties', '', true);
@@ -119,7 +106,7 @@ if (isset($_POST['customeradd'])) {
         $error['name'] = trans('First name cannot be empty!');
     }
 
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
+    if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
         if ($customeradd['group'] == 0) {
             $error['group'] = trans('Group name required!');
         }
@@ -253,10 +240,9 @@ if (isset($_POST['customeradd'])) {
 
     Localisation::resetSystemLanguage();
 
-    if ($customeradd['pin'] == '') {
-        $error['pin'] = trans('PIN code is required!');
-    } elseif (!validate_random_string($customeradd['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
-        $error['pin'] = trans('Incorrect PIN code!');
+    $pin_check_result = $LMS->checkCustomerPin(null, $customeradd['pin']);
+    if (is_string($pin_check_result)) {
+        $error['pin'] = $pin_check_result;
     }
 
     $contacts = array();
@@ -414,12 +400,12 @@ $hook_data = $LMS->executeHook(
 $customeradd = $hook_data['customeradd'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
+$SMARTY->assign($LMS->getCustomerPinRequirements());
 $SMARTY->assign('legal_person_required_properties', $legal_person_required_properties);
 $SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('customeradd', $customeradd);
-if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
+if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
         $SMARTY->assign('groups', $DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
 }
 

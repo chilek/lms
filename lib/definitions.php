@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -113,6 +113,10 @@ define('CCONSENT_TRANSFERFORM', 7);
 define('CCONSENT_SMSNOTICE', 8);
 define('CCONSENT_SMS_MARKETING', 9);
 define('CCONSENT_MAIL_MARKETING', 10);
+define('CCONSENT_PHONE_BILLING', 11);
+define('CCONSENT_NONE_PHONE_BILLING', 12);
+define('CCONSENT_FULL_PHONE_BILLING', 13);
+define('CCONSENT_SIMPLIFIED_PHONE_BILLING', 14);
 
 $CCONSENTS = array(
     CCONSENT_DATE => array(
@@ -165,6 +169,27 @@ $CCONSENTS = array(
         'name' => 'transfer_form',
         'type' => 'boolean',
     ),
+    CCONSENT_PHONE_BILLING => array(
+        'label' => trans('phone billing'),
+        'name' => 'phone_billing',
+        'type' => 'selection',
+        'values' => array(
+            CCONSENT_NONE_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>none'),
+            ),
+            CCONSENT_SIMPLIFIED_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>simplified'),
+                'name' => 'simplified_phone_billing',
+            ),
+            CCONSENT_FULL_PHONE_BILLING => array(
+                'label' => trans('<!billing-type>full'),
+                'name' => 'full_phone_billing',
+            ),
+        ),
+    ),
+    CCONSENT_NONE_PHONE_BILLING => CCONSENT_PHONE_BILLING,
+    CCONSENT_SIMPLIFIED_PHONE_BILLING => CCONSENT_PHONE_BILLING,
+    CCONSENT_FULL_PHONE_BILLING => CCONSENT_PHONE_BILLING,
 );
 
 // Config types
@@ -180,9 +205,10 @@ define('CONFIG_TYPE_RICHTEXT', 8);
 define('CONFIG_TYPE_MAIL_BACKEND', 9);
 define('CONFIG_TYPE_MAIL_SECURE', 10);
 define('CONFIG_TYPE_DATE_FORMAT', 11);
+define('CONFIG_TYPE_EMAILS', 12);
 
 $CONFIG_TYPES = array(
-    CONFIG_TYPE_AUTO => trans('- auto -'),
+    CONFIG_TYPE_AUTO => trans('— auto —'),
     CONFIG_TYPE_NONE => trans('none'),
     CONFIG_TYPE_BOOLEAN => trans('boolean'),
     CONFIG_TYPE_POSITIVE_INTEGER => trans('integer greater than 0'),
@@ -194,6 +220,7 @@ $CONFIG_TYPES = array(
     CONFIG_TYPE_MAIL_BACKEND => trans('mail backend'),
     CONFIG_TYPE_MAIL_SECURE => trans('mail security protocol'),
     CONFIG_TYPE_DATE_FORMAT => trans('date format'),
+    CONFIG_TYPE_EMAILS => trans('comma separated emails'),
 );
 
 // Helpdesk ticket status
@@ -804,6 +831,10 @@ $VOIP_POOL_NUMBER_TYPES = array(
 define('CALL_FLAG_ADMIN_RECORDING', 1);
 define('CALL_FLAG_CUSTOMER_RECORDING', 2);
 
+define('VOIP_ACCOUNT_FLAG_ADMIN_RECORDING', CALL_FLAG_ADMIN_RECORDING);
+define('VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING', CALL_FLAG_CUSTOMER_RECORDING);
+define('VOIP_ACCOUNT_FLAG_TRUNK', 4);
+
 $SERVICETYPES = array(
     SERVICE_OTHER => ConfigHelper::getConfig('tarifftypes.other', trans('other')),
     SERVICE_INTERNET => ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
@@ -872,8 +903,8 @@ $DISCOUNTTYPES = array(
 
 define('DAY_MONDAY', 0);
 define('DAY_TUESDAY', 1);
-define('DAY_THURSDAY', 2);
-define('DAY_WEDNESDAY', 3);
+define('DAY_WEDNESDAY', 2);
+define('DAY_THURSDAY', 3);
 define('DAY_FRIDAY', 4);
 define('DAY_SATURDAY', 5);
 define('DAY_SUNDAY', 6);
@@ -881,8 +912,8 @@ define('DAY_SUNDAY', 6);
 $DAYS = array(
     DAY_MONDAY  => trans('Mon'),
     DAY_TUESDAY => trans('Tue'),
-    DAY_THURSDAY    => trans('Thu'),
     DAY_WEDNESDAY   => trans('Wed'),
+    DAY_THURSDAY    => trans('Thu'),
     DAY_FRIDAY  => trans('Fri'),
     DAY_SATURDAY    => trans('Sat'),
     DAY_SUNDAY  => trans('Sun'),
@@ -1061,27 +1092,51 @@ define('EVENT_PHONE', 8);
 define('EVENT_TV', 9);
 
 $EVENTTYPES = array(
-    EVENT_OTHER => trans('other'),
-    EVENT_NETWORK => trans('network'),
-    EVENT_SERVICE => trans('service<!event>'),
-    EVENT_INSTALLATION => trans('installation'),
-    EVENT_MEETING => trans('meeting'),
-    EVENT_VACATION => trans('vacation'),
-    EVENT_DUTY => trans('duty'),
-    EVENT_PHONE => trans('phone'),
-    EVENT_TV => trans('tv'),
-);
-
-$EVENTSTYLES = array(
-    EVENT_OTHER => 'background-color: gray; color: white;',
-    EVENT_NETWORK => 'background-color: blue; color: white;',
-    EVENT_SERVICE => 'background-color: red; color: white;',
-    EVENT_INSTALLATION => 'background-color: green; color: white;',
-    EVENT_MEETING => 'background-color: gold; color: black;',
-    EVENT_VACATION => 'background-color: white; color: black;',
-    EVENT_DUTY => 'background-color: brown; color: white;',
-    EVENT_PHONE => 'background-color: yellow; color: black;',
-    EVENT_TV => 'background-color: greenyellow; color: blue;',
+    EVENT_OTHER => array(
+        'label' => trans('other'),
+        'style' => 'background-color: gray; color: white;',
+        'alias' => 'other',
+    ),
+    EVENT_NETWORK => array(
+        'label' => trans('network'),
+        'style' => 'background-color: blue; color: white;',
+        'alias' => 'network',
+    ),
+    EVENT_SERVICE => array(
+        'label' => trans('service<!event>'),
+        'style' => 'background-color: red; color: white;',
+        'alias' => 'service',
+    ),
+    EVENT_INSTALLATION => array(
+        'label' => trans('installation'),
+        'style' => 'background-color: green; color: white;',
+        'alias'=> 'installation',
+    ),
+    EVENT_MEETING => array(
+        'label' => trans('meeting'),
+        'style' => 'background-color: gold; color: black;',
+        'alias' => 'meeting',
+    ),
+    EVENT_VACATION => array(
+        'label' => trans('vacation'),
+        'style' => 'background-color: white; color: black;',
+        'alias' => 'vacation',
+    ),
+    EVENT_DUTY => array(
+        'label' => trans('duty'),
+        'style' => 'background-color: brown; color: white;',
+        'alias' => 'duty',
+    ),
+    EVENT_PHONE => array(
+        'label' => trans('phone'),
+        'style' => 'background-color: yellow; color: black;',
+        'alias' => 'phone',
+    ),
+    EVENT_TV => array(
+        'label' => trans('tv'),
+        'style' => 'background-color: greenyellow; color: blue;',
+        'alias' => 'tv',
+    ),
 );
 
 define('SESSIONTYPE_PPPOE', 1);
@@ -1284,8 +1339,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
     $SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
     $SMARTY->assign('_USERPANEL_AUTH_TYPES', $USERPANEL_AUTH_TYPES);
-    $SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
-    $SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
+    $SMARTY->assignByRef('_EVENTTYPES', $EVENTTYPES);
     $SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);

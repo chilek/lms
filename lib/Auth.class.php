@@ -109,9 +109,10 @@ class Auth
                 $this->authcode = $loginform['authcode'];
                 $this->trusteddevice = isset($loginform['trusteddevice']);
                 writesyslog('Login attempt (authentication code) by ' . $this->login, LOG_INFO);
-            } else {
-                list ($login, $targetLogin) = explode('#', $loginform['login']);
-                $this->login = $login;
+            } elseif (isset($loginform['login'])) {
+                $components = explode('#', $loginform['login']);
+                $this->login = $login = $components[0];
+                $targetLogin = count($components) == 2 ? $components[1] : null;
                 if (!empty($targetLogin)
                     && $this->DB->GetOne(
                         'SELECT 1 FROM users WHERE deleted = 0 AND access = 1 AND '
@@ -169,7 +170,7 @@ class Auth
             if (isset($loginform)) {
                 if ($this->id) {
                     if ($this->authcoderequired) {
-                        writesyslog('Bad authentication code (' . $this->authcode . ') for ' . $this->login, LOG_WARNING);
+                        writesyslog('Bad authentication code (' . (isset($this->authcode) ? $this->authcode : '-') . ') for ' . $this->login, LOG_WARNING);
                     } else {
                         if (!$this->hostverified) {
                             writesyslog('Bad host (' . $this->ip . ') for ' . $this->login, LOG_WARNING);

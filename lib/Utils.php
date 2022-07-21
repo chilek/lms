@@ -43,8 +43,11 @@ class Utils
     public static function filterIntegers(array $params)
     {
         return array_filter($params, function ($value) {
+            if (!isset($value)) {
+                return false;
+            }
             $string = strval($value);
-            if ($string[0] == '-') {
+            if (strlen($string) && $string[0] == '-') {
                 $string = ltrim($string, '-');
             }
             return ctype_digit($string);
@@ -297,8 +300,18 @@ class Utils
         if (!empty($value)) {
             $values = array_flip(preg_split('/[\s\.,;]+/', $value, -1, PREG_SPLIT_NO_EMPTY));
             foreach ($CCONSENTS as $consent_id => $consent) {
-                if (isset($values[$consent['name']])) {
-                    $result[$consent_id] = $consent_id;
+                if (is_array($consent)) {
+                    if ($consent['type'] == 'selection') {
+                        foreach ($consent['values'] as $sub_consent_id => $subconsent) {
+                            if (isset($subconsent['name']) && isset($values[$subconsent['name']])) {
+                                $result[$consent_id] = $sub_consent_id;
+                            }
+                        }
+                    } else {
+                        if (isset($values[$consent['name']])) {
+                            $result[$consent_id] = $consent_id;
+                        }
+                    }
                 }
             }
         }
@@ -787,5 +800,44 @@ class Utils
 
         $url = str_replace('%phone', $phone, $call_phone_url);
         return '<a href="' . $url . '"><i class="lms-ui-icon-phone"></i></a>';
+    }
+
+    public static function strftime($format, $date)
+    {
+        return str_replace(
+            array(
+                '%Y',
+                '%m',
+                '%d',
+                '%e',
+                '%u',
+                '%a',
+                '%A',
+                '%w',
+                '%b',
+                '%B',
+                '%y',
+                '%H',
+                '%I',
+                '%M',
+                '%S',
+                '%T',
+                '%F',
+                '%D',
+                '%s',
+                '%Z',
+                '%z',
+                '%k',
+                '%k',
+                '%R',
+                '%j',
+            ),
+            explode(
+                '|',
+                date('Y|m|d|j|N|D|l|w|M|F|y|H|h|i|s|H:i:s|Y-m-d|m/d/y|U|T|O|G|G|H:i|', $date)
+                . sprintf('%03d', date('z', $date) + 1)
+            ),
+            $format
+        );
     }
 }

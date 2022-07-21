@@ -120,7 +120,7 @@ if (isset($_POST['queue'])) {
         }
 
         foreach ($categories as $category) {
-            if ($category['checked']) {
+            if (!empty($category['checked'])) {
                 if (!$DB->GetOne(
                     'SELECT id FROM rtqueuecategories WHERE queueid = ? AND categoryid = ?',
                     array($queue['id'], $category['id'])

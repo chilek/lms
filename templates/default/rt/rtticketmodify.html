@@ -1,5 +1,5 @@
-{$hide_disabled_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')}
-{$hide_deleted_users = ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
+{$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
 
 <style>
 
@@ -27,7 +27,7 @@
 	{box_header multi_row=true}
 		{box_header icon="helpdesk" label="Subject" icon_class="fa-fw"}
 			<INPUT type="text" size="50" name="ticket[subject]" maxlength="{ConfigHelper::getConfig('rt.subject_max_length', 50)}"
-				   value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"} {if $layout.module !="eventadd"} required{/if}>
+				   value="{$ticket.subject|default:""|escape}" {tip text="Enter subject" trigger="subject"} {if $layout.module !="eventadd"} required{/if}>
 		{/box_header}
 		{box_header icon="service" label="Service type" icon_class="fa-fw"}
 			<select name="ticket[service]" id="ticket-service"
@@ -68,8 +68,8 @@
 			{box_row icon="user" label="Requestor" field_id="requestor" icon_class="fa-fw"}
 				<div class="lms-ui-box-row">
 					<select name="ticket[requestor_userid]" {tip class="lms-ui-advanced-select" text="Select requestor from list" trigger="requestor_userid"}>
-						<option value="">{trans("<!person>- none -")}</option>
-						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
+						<option value="">{trans("<!person>— none —")}</option>
+						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("— indicated person —")}</option>
 						{foreach $userlist as $user}
 							{if $user.id != $ticket.requestor_userid
 								&& ($hide_disabled_users && !$user.access
@@ -156,7 +156,7 @@
 {/if}
 
 			{box_row icon="categories" label="Categories" class="categories" icon_class="fa-fw"}
-				{if ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories')}
+				{if ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'))}
 				<input type="hidden" name="ticket[categorywarn]" value="{$ticket.categorywarn}">
 				{/if}
 				{include file="rt/rtcategoryselection.html" categories=$categories name_prefix="ticket[categories]"}
@@ -171,7 +171,7 @@
 			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="owner" label="Owner" icon_class="fa-fw"}
 				<select size="1" name="ticket[owner]" {tip class="lms-ui-advanced-select" text="Select user" trigger="owner"}>
-					<option value="0">- {trans("select user")} -</option>
+					<option value="0">{trans("— select user —")}</option>
 					{foreach $userlist as $user}
 						{if $user.id != $ticket.owner
 							&& ($hide_disabled_users && !$user.access
@@ -197,7 +197,7 @@
 			{box_row icon="verifier" label="Verifier" field_id="rtverifiers" icon_class="fa-fw"}
 				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid || ConfigHelper::checkConfig('privileges.superuser')}
 					<select size="1" name="ticket[verifierid]" {tip class="lms-ui-advanced-select" text="Select user" trigger="verifierid"}>
-						<option value="">- {trans("select user")} -</option>
+						<option value="">{trans("— select user —")}</option>
 						{foreach $userlist as $user}
 							{if $user.id != $ticket.verifierid
 								&& ($hide_disabled_users && !$user.access
@@ -219,14 +219,15 @@
 			{/box_row}
 
 			{box_row icon="deadline" label="<!rt>Deadline" icon_class="fa-fw"}
-				{if $layout.module != 'rtticketedit' || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+				{if $layout.module != 'rtticketedit'
+					|| ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'))
 					|| !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
-					<input type="text" name="ticket[deadline]" value="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}" size="20"
+					<input type="text" name="ticket[deadline]" value="{if $ticket.deadline}{$ticket.deadline|date_format:"Y/m/d H:i"}{/if}" size="20"
 						{tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 					{day_selection elem='[name="ticket[deadline]"]'}
 				{else}
-					<input type="hidden" name="ticket[deadline]" value="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}">
-					<span title="{trans("Only verifier can change this")}">{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{else}{trans("<!rt>- none -")}{/if}</span>
+					<input type="hidden" name="ticket[deadline]" value="{if $ticket.deadline}{$ticket.deadline|date_format:"Y/m/d H:i"}{/if}">
+					<span title="{trans("Only verifier can change this")}">{if $ticket.deadline}{$ticket.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>— none —")}{/if}</span>
 				{/if}
 			{/box_row}
 
@@ -307,7 +308,7 @@
 			{$visibility=(!empty($nodes) && $layout.module != 'eventadd')}
 			{box_row class="node-row" icon="node" label="Node:" visible=$visibility}
 				<select class="node-list" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
-					<option value="">{trans("- none -")}</option>
+					<option value="">{trans("— none —")}</option>
 					{if !empty($nodes)}
 						{foreach $nodes as $node}
 							<option value="{$node.id}"{if $node.id == $ticket.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
@@ -319,7 +320,7 @@
 			{box_row icon="netnode" label="Network node" icon_class="fa-fw"}
 				<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}
 						onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
-					<OPTION value="">{trans("- none -")}</OPTION>
+					<OPTION value="">{trans("— none —")}</OPTION>
 					{foreach $netnodelist as $idx => $netnode}
 					<OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
 					{/foreach}
@@ -336,7 +337,7 @@
 
 			{box_row icon="invproject" label="Investment project" icon_class="fa-fw"}
 				<SELECT name="ticket[invprojectid]" {tip class="lms-ui-advanced-select" text="Select investment projects" trigger="invprojectid"}>
-					<OPTION value="">{trans("- none -")}</OPTION>
+					<OPTION value="">{trans("— none —")}</OPTION>
 					{foreach $invprojectlist as $idx => $project}
 					<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
 					{$project.name} ({$project.id})

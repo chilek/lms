@@ -36,7 +36,12 @@ $LMS->MarkTicketAsRead($_GET['id']);
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
 
-if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) {
+if ($ticket['customerid']
+    && ConfigHelper::checkConfig(
+        'rt.show_stats',
+        ConfigHelper::checkConfig('phpui.helpdesk_stats')
+    )
+) {
     $yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
     $stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets
 		WHERE customerid = ? AND createtime >= ?
@@ -58,4 +63,4 @@ $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('messages', isset($_GET['messages']) ? 1 : 0);
 $SMARTY->assign('notes', isset($_GET['notes']) ? 1 : 0);
 $SMARTY->assign('history', isset($_GET['history']) ? 1 : 0);
-$SMARTY->display('rt/' . ConfigHelper::getConfig('phpui.ticket_template_file'));
+$SMARTY->display('rt/' . ConfigHelper::getConfig('rt.ticket_template_file', ConfigHelper::getConfig('phpui.ticket_template_file')));

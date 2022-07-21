@@ -194,7 +194,7 @@
 		<TD colspan="3">
 			{if $unlockedit}
 			<select size="1" name="networkdata[pubnetid]" {tip text="Assign public network (optional)"}>
-				<option value="0">{trans("- select public network -")}</option>
+				<option value="0">{trans("— select public network —")}</option>
 				{foreach $networks as $net}
 				{if $net.id neq $network.id}
 				<option value="{$net.id}" {if $network.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
@@ -204,7 +204,7 @@
 			{elseif $network.pubnetid}
 			{$network.pubnet.name} ({$network.pubnet.address}/{$network.pubnet.prefix})
 			{else}
-			{trans("- none -")}
+			{trans("— none —")}
 			{/if}
 		</TD>
 	</TR>
@@ -216,7 +216,7 @@
 		<TD colspan="3">
 			{if $unlockedit}
 			<select size="1" name="networkdata[hostid]" {tip text="Select host" trigger="hostid"}>
-				<option value="0">{trans("- none -")}</option>
+				<option value="0">{trans("— none —")}</option>
 				{foreach $hostlist as $host}
 				<option value="{$host.id}"{if $host.id == $network.hostid} selected{/if}>{$host.name}</option>
 				{/foreach}

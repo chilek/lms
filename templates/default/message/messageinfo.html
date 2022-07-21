@@ -60,7 +60,7 @@
 			{trans("Creation date:")}
 		</TD>
 		<TD>
-			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$message.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 	</TR>
 {if $message.sender}
@@ -171,14 +171,14 @@
 			<span class="bold">{trans("Filter:")}</span>
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 			<SELECT size="1" name="cat">
-				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter category —")}</OPTION>
 				<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
 				<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
 				<OPTION value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
 			</SELECT>&nbsp;
 			{trans("Status:")}
 			<SELECT size="1" name="status">
-				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</OPTION>
+				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("— all statuses —")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
 			{*
 				<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
@@ -248,20 +248,20 @@
 				{trans("errornous")}
 				{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_DELIVERED}
-				{trans("delivered")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
+				{trans("delivered")} ({$item.lastdate|date_format:"Y-m-d H:i"})
 			{elseif $item.status == $smarty.const.MSG_CANCELLED}
-				{trans("cancelled")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
+				{trans("cancelled")} ({$item.lastdate|date_format:"Y-m-d H:i"})
 			{elseif $item.status == $smarty.const.MSG_BOUNCED}
-				{trans("bounced")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
+				{trans("bounced")} ({$item.lastdate|date_format:"Y-m-d H:i"})
 			{else}
 				{trans("waiting")}
 			{/if}
 		</TD>
 		<TD class="text-right valign-top">
-			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 		</TD>
 		<TD class="text-right">
-			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 		</TD>
 		<TD class="text-right nobr valign-top">
 			{if $item.body}

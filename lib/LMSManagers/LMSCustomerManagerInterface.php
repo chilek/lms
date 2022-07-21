@@ -138,6 +138,10 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerPin($id);
 
+    public function getCustomerPinRequirements();
+
+    public function checkCustomerPin($id, $pin);
+
     public function getCustomerTen($id);
 
     public function getCustomerSsn($id);

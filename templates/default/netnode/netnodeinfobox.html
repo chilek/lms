@@ -207,7 +207,7 @@
 										<strong>{trans('Created')}</strong>
 									</td>
 									<td>
-										{$nodeinfo.createtime|date_format:"%Y/%m/%d (%A)"}
+										{$nodeinfo.createtime|date_format:"Y-m-d (l)"}
 									</td>
 								</tr>
 								<tr>
@@ -219,7 +219,7 @@
 									</td>
 									<td>
 										{if $nodeinfo.lastinspectiontime}
-											{$nodeinfo.lastinspectiontime|date_format:"%Y/%m/%d (%A)"}
+											{$nodeinfo.lastinspectiontime|date_format:"Y-m-d (l)"}
 										{else}
 											-
 										{/if}

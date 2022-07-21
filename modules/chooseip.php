@@ -65,7 +65,7 @@ if (ConfigHelper::checkConfig('phpui.autodetect_network_types')) {
     foreach ($networks as $idx => $row) {
         if ($privnetid && preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.64\.|100\.68\.)/', $row['address'])) {
             unset($networks[$idx]);
-        } else if (!$privnetid && !preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.64\.|100\.68\.)/', $row['address'])) {
+        } else if (!$privnetid && !preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.(6[4-9]|[7-9][0-9]|1[0-1][0-9]|12[0-7])\.)/', $row['address'])) {
             unset($networks[$idx]);
         }
     }

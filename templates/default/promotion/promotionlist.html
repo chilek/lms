@@ -45,10 +45,10 @@
 			{icon name="money"} <strong>{$promo.name|escape}</strong>
 			{if $promo.datefrom || $promo.dateto}
 				{if $promo.datefrom}
-					({trans("from")} {$promo.datefrom|date_format:"%Y/%m/%d"}{if !$promo.dateto}){/if}
+					({trans("from")} {$promo.datefrom|date_format:"Y-m-d"}{if !$promo.dateto}){/if}
 				{/if}
 				{if $promo.dateto}
-					{if !$promo.datefrom}({/if}{trans("to")} {$promo.dateto|date_format:"%Y/%m/%d"})
+					{if !$promo.datefrom}({/if}{trans("to")} {$promo.dateto|date_format:"Y-m-d"})
 				{/if}
 			{/if}
 		</td>

@@ -99,7 +99,7 @@
 												class="radio-sector-edit-field"
 												{tip trigger="technology" text="Select link technology"}
 												form="radiosectoradd">
-											<OPTION value="0">{trans("- unknown -")}</OPTION>
+											<OPTION value="0">{trans("— unknown —")}</OPTION>
 											{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
 												<OPTION value="{$technologyidx}"{if $formdata.technology == $technologyidx} selected{/if}>{$technology}</OPTION>
 											{/foreach}

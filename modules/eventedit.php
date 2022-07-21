@@ -29,7 +29,10 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$aee = ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800);
+$aee = ConfigHelper::getConfig(
+    'timetable.allow_modify_closed_events_newer_than',
+    ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)
+);
 
 if (isset($_GET['id'])) {
     $event = $LMS->GetEvent($_GET['id']);
@@ -51,7 +54,8 @@ $backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
-switch ($_GET['action']) {
+$action = isset($_GET['action']) ? $_GET['action'] : null;
+switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && (time() - $event['closeddate'] < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
             $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
@@ -159,7 +163,7 @@ if (isset($_POST['event'])) {
         $error['end'] = trans('End time must not precede start time!');
     }
 
-    if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
+    if (ConfigHelper::checkConfig('timetable.event_overlap_warning', ConfigHelper::checkConfig('phpui.event_overlap_warning'))
         && !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
             'date' => $date,
             'begintime' => $begintime,
@@ -259,7 +263,7 @@ if (!isset($event['usergroup'])) {
 }
     //$SESSION->restore('eventgid', $event['usergroup']);
 
-$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
+$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size')));
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }

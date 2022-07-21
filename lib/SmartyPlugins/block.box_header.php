@@ -40,10 +40,10 @@ function smarty_block_box_header($params, $content, $template, $repeat)
         } else {
             return '
 		<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
-		' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+		' . (isset($icon) ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
                     : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 ? $icon : 'lms-ui-icon-' . $icon)
-                    . (!empty($icon_class) ? ' ' . $icon_class : '') . '"></i>')
-                  . trans($label)
+                    . (!empty($icon_class) ? ' ' . $icon_class : '') . '"></i>') : '')
+                  . (isset($label) ? trans($label) : '')
                   . $content . '
 				</div>';
         }

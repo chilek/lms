@@ -109,7 +109,10 @@ function RTSearch($search, $order = 'createtime,desc')
         }
     }
     if (!empty($search['email'])) {
-        $where[] = 'requestor ?LIKE? '.$DB->Escape('%'.$search['email'].'%');
+        $where[] = 'requestor_mail ?LIKE? '.$DB->Escape('%' . $search['email'] . '%');
+    }
+    if (!empty($search['phone'])) {
+        $where[] = 'requestor_phone ?LIKE? '.$DB->Escape('%' . $search['phone'] . '%');
     }
     if (!empty($search['uptime'])) {
         $where[] = '(resolvetime-t.createtime > '.intval($search['uptime'])
@@ -126,7 +129,7 @@ function RTSearch($search, $order = 'createtime,desc')
             } else {
                 $where_queue = '(t.queueid = ' . intval($search['queue']);
             }
-            $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+            $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
             $userid = Auth::GetCurrentUser();
             $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
         }
@@ -246,7 +249,7 @@ function RTSearch($search, $order = 'createtime,desc')
 
     if ($result) {
         foreach ($result as &$ticket) {
-            if (!$ticket['custid']) {
+            if (!isset($ticket['custid']) || !$ticket['custid']) {
                 list ($ticket['requestor'], $ticket['requestor_mail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
             } else {
                 list ($ticket['requestor_mail']) = sscanf($ticket['req'], "<%[^>]");
@@ -339,7 +342,10 @@ if (isset($search) || isset($_GET['s'])) {
         $search['total'] = intval(RTSearch($search, $o));
 
         $search['page'] = intval((! isset($_GET['page']) ? 1 : $_GET['page']));
-        $search['limit'] = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total']));
+        $search['limit'] = intval(ConfigHelper::getConfig(
+            'rt.ticketlist_pagelimit',
+            ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total'])
+        ));
         $search['offset'] = ($search['page'] - 1) * $search['limit'];
 
         $search['count'] = false;
@@ -359,7 +365,7 @@ if (isset($search) || isset($_GET['s'])) {
         unset($queue['order']);
         unset($queue['direction']);
 
-        $SESSION->save('rtp', $page);
+        $SESSION->save('rtp', isset($page) ? $page : 0);
         $SESSION->save('rtsearch', $search);
 
         $SMARTY->assign('pagination', $pagination);

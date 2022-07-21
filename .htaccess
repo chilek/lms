@@ -1,20 +1,17 @@
 <Files lms.ini>
-	Order Deny,Allow
-	Deny From All
+    Require all denied
 </Files>
 
 <Files composer.lock>
-	Order Deny,Allow
-	Deny From All
+    Require all denied
 </Files>
 
 <FilesMatch "^\.(git|js|travis).*">
-	Order Deny,Allow
-	Deny From All
+    Require all denied
 </FilesMatch>
 
 <IfModule mod_rewrite.c>
-	RewriteEngine On
-	RewriteCond %{REQUEST_URI} ^/.git/(.*)$
-	RewriteRule ^(.*)$ - [L,R=404]
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} ^/.git/(.*)$
+    RewriteRule ^(.*)$ - [L,R=404]
 </IfModule>

@@ -124,6 +124,8 @@ if (isset($_POST['phone'])) {
     $phone = intval($_GET['p']);
 } elseif ($SESSION->is_set('customer_call_list_phone')) {
     $SESSION->restore('customer_call_list_phone', $phone);
+} else {
+    $phone = null;
 }
 
 if (isset($_POST['datefrom'])) {
@@ -132,6 +134,8 @@ if (isset($_POST['datefrom'])) {
     $datefrom = intval($_GET['df']);
 } elseif ($SESSION->is_set('customer_call_list_datefrom')) {
     $SESSION->restore('customer_call_list_datefrom', $datefrom);
+} else {
+    $datefrom = 0;
 }
 
 if (isset($_POST['dateto'])) {
@@ -140,6 +144,8 @@ if (isset($_POST['dateto'])) {
     $dateto = intval($_GET['dt']);
 } elseif ($SESSION->is_set('customer_call_list_dateto')) {
     $SESSION->restore('customer_call_list_dateto', $dateto);
+} else {
+    $dateto = 0;
 }
 
 if ($cid && !$LMS->CustomerExists($cid)) {
@@ -237,5 +243,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 $SMARTY->assign('pagination', $pagination);
+
+$layout['pagetitle'] = trans('Customer Phone Calls');
 
 $SMARTY->display('customer/customercalllist.html');

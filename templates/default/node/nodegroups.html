@@ -76,7 +76,7 @@
 				{if !empty($othernodegroups)}
 				{button id="add-nodegroups" icon="add" tip="Add node to groups" label="Add"}
 				<SELECT SIZE="1" NAME="nodegroupid[]" form="nodegroupassignment" class="lms-ui-multiselect"
-						{tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}"
+						{tip text="Select groups to attribute to node"} multiple data-default-value="{trans("… select groups …")}"
 						data-shorten-to-default-value="false">
 					{foreach $othernodegroups as $item}
 					<OPTION VALUE="{$item.id}">{$item.name} ({$item.id|string_format:"%04d"})</OPTION>

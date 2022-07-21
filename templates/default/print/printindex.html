@@ -53,7 +53,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Status:")}</TD>
 								<TD style="width: 98%;">
 									<SELECT size="1" name="filter[]" {tip class="lms-ui-multiselect" text="Select customer's group"}
-											data-default-value="- {trans("all<!customers>")} -" multiple>
+											data-default-value="— {trans("all<!customers>")} —" multiple>
 										{foreach $_CSTATUSES as $statusidx => $status}
 										<OPTION value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} selected{/if}>{$status.plurallabel}</OPTION>
 										{/foreach}
@@ -91,7 +91,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Division")}:</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="division" {tip text="Select division"}>
-										<OPTION value="0">- {trans("all")} -</OPTION>
+										<OPTION value="0">{trans("— all —")}</OPTION>
 										{foreach $divisions as $item}
 											<OPTION value="{$item.id}">{$item.label|escape}</OPTION>
 										{/foreach}
@@ -103,7 +103,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Legal personality:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="type" {tip text="Select legal personality type"}>
-										<OPTION value="" selected>{trans("- all -")}</OPTION>
+										<OPTION value="" selected>{trans("— all —")}</OPTION>
 										<OPTION value="{$smarty.const.CTYPES_PRIVATE}">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</OPTION>
 										<OPTION value="{$smarty.const.CTYPES_COMPANY}">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</OPTION>
 									</SELECT>
@@ -114,7 +114,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Link type:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="linktype" {tip text="Select link type"}>
-										<OPTION value="">{trans("- all -")}</OPTION>
+										<OPTION value="">{trans("— all —")}</OPTION>
 										{foreach from=$_LINKTYPES item=item key=key}
 										<OPTION value="{$key}">{$item}</OPTION>
 										{/foreach}
@@ -126,7 +126,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Link speed:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="linkspeed" {tip text="Select link speed"}>
-										<OPTION value="">{trans("- all -")}</OPTION>
+										<OPTION value="">{trans("— all —")}</OPTION>
 										{foreach from=$_LINKSPEEDS item=item key=key}
 										<OPTION value="{$key}">{$item}</OPTION>
 										{/foreach}
@@ -138,7 +138,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Network:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="network" {tip text="Select network"}>
-										<OPTION value="0" selected>{trans("- all networks -")}</OPTION>
+										<OPTION value="0" selected>{trans("— all networks —")}</OPTION>
 										{section name="networks" loop=$networks}
 										<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"&hellip;":true}</OPTION>
 										{/section}
@@ -150,7 +150,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Group:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="customergroup" {tip text="Select group"}>
-										<OPTION value="0" selected>{trans("- all groups -")}</OPTION>
+										<OPTION value="0" selected>{trans("— all groups —")}</OPTION>
 										{section name="customergroups" loop=$customergroups}
 										<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"&hellip;":true}</OPTION>
 										{/section}
@@ -162,7 +162,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Nodes Group:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="nodegroup" {tip text="Select group"}>
-										<OPTION value="" selected>{trans("- all groups -")}</OPTION>
+										<OPTION value="" selected>{trans("— all groups —")}</OPTION>
 										{foreach from=$nodegroups item=nodegroup}
 										<OPTION value="{$nodegroup.id}">{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
 										{/foreach}
@@ -174,7 +174,7 @@
 								<TD style="width: 1%;" class="bold nobr">{trans("Country state:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT name="stateid" {tip text="Select country state"}>
-										<OPTION value="0">{trans("- all states -")}</OPTION>
+										<OPTION value="0">{trans("— all states —")}</OPTION>
 										{foreach from=$cstateslist item=item key=key}
 										<OPTION value="{$key}">{$item.name}</OPTION>
 										{/foreach}
@@ -225,7 +225,7 @@
 								<TD style="width: 99%;" class="nobr" colspan="2">
 									<span class="bold nobr">{trans("With document of type:")}</span>
 									<SELECT SIZE="1" name="doctype" {tip text="Select document type"}>
-										<OPTION value="0">{trans("- all -")}</OPTION>
+										<OPTION value="0">{trans("— all —")}</OPTION>
 										{foreach from=$_DOCTYPES key=key item=item}
 										<OPTION value="{$key}">{$item}</OPTION>
 										{/foreach}
@@ -305,7 +305,7 @@
 						    </TD>
 						    <TD style="width: 98%;">
 						        <SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-						    	    <OPTION value="">{trans("- all users -")}</OPTION>
+						    	    <OPTION value="">{trans("— all users —")}</OPTION>
 							    {section name="users" loop=$users}
 							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"&hellip;":true}</OPTION>
 							    {/section}
@@ -320,7 +320,7 @@
 						    </TD>
 						    <TD style="width: 98%;">
 							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("— all networks —")}</OPTION>
 							    {section name="networks" loop=$networks}
 							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"&hellip;":true}</OPTION>
 							    {/section}
@@ -336,7 +336,7 @@
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
 							<SELECT size="1" name="division" {tip text="Select division"}>
-								<OPTION value="0">- {trans("all")} -</OPTION>
+								<OPTION value="0">{trans("— all —")}</OPTION>
 								{foreach $divisions as $item}
 									<OPTION value="{$item.id}">{$item.label|escape}</OPTION>
 								{/foreach}
@@ -352,7 +352,7 @@
 						    </TD>
 						    <TD style="width: 98%;">
 							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("— all groups —")}</OPTION>
 							    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"&hellip;":true}</OPTION>
 							    {/section}
@@ -371,7 +371,7 @@
 							{trans("Transaction type:")}
 						    </TD>
 							<TD style="width: 98%;" class="multiselect">
-								<SELECT name="types[]" class="lms-ui-multiselect" {tip text="Select transaction type"} multiple data-default-value="{trans("- all types -")}">
+								<SELECT name="types[]" class="lms-ui-multiselect" {tip text="Select transaction type"} multiple data-default-value="{trans("— all types —")}">
 									<OPTION value="1">{trans("Liability")}</OPTION>
 									<OPTION value="2">{trans("Income")}</OPTION>
 									<OPTION value="3">{trans("Expense")}</OPTION>
@@ -387,7 +387,7 @@
                         			    </TD>
                         			    <TD style="width: 98%;">
                         				<SELECT size="1" name="docs" {tip text="Select transaction type"}>
-                                			    <OPTION value="">{trans("- all -")}</OPTION>
+                                			    <OPTION value="">{trans("— all —")}</OPTION>
                             				    <OPTION value="documented">{trans("with document")}</OPTION>
                             				    <OPTION value="notdocumented">{trans("without document")}</OPTION>
                         				</SELECT>
@@ -402,8 +402,8 @@
                         			    </TD>
                         			    <TD style="width: 98%;">
 							<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
-							<OPTION value="0">{trans("- all sources -")}</OPTION>
-							<OPTION value="-1">- {trans("none")} -</OPTION>
+							<OPTION value="0">{trans("— all sources —")}</OPTION>
+							<OPTION value="-1">{trans("— none —")}</OPTION>
 							{foreach from=$sourcelist item=item}
 							<OPTION value="{$item.id}">{$item.name}</OPTION>
 							{/foreach}
@@ -583,7 +583,7 @@
 									</td>
 									<td colspan="2">
 										<select size="1" name="division" {tip text="Select division"} form="invoicereport">
-											<option value="0">- {trans("all")} -</option>
+											<option value="0">{trans("— all —")}</option>
 											{foreach $divisions as $item}
 												<option value="{$item.id}">{$item.label|escape}</option>
 											{/foreach}
@@ -599,7 +599,7 @@
 									</td>
 									<td>
 										<select name="customer_type" form="invoicereport">
-											<option value="-1">{trans("- all customers -")}</option>
+											<option value="-1">{trans("— all customers —")}</option>
 											<option value="{$smarty.const.CTYPES_PRIVATE}">{trans("private person")}</option>
 											<option value="{$smarty.const.CTYPES_COMPANY}">{trans("legal entity")}</option>
 										</select>
@@ -615,7 +615,7 @@
 									</td>
 									<td>
 										<select name="customer_ten" form="invoicereport">
-											<option value="0">{trans("- ignore -")}</option>
+											<option value="0">{trans("— ignore —")}</option>
 											<option value="1">{trans("with TEN")}</option>
 											<option value="2">{trans("without TEN")}</option>
 										</select>
@@ -632,7 +632,7 @@
 										<select size="4" name="group[]" class="lms-ui-multiselect"
 												multiple {tip text="Select group"}
 												form="invoicereport"
-												data-default-value="{trans("- all groups -")}">
+												data-default-value="{trans("— all groups —")}">
 											{foreach $customergroups as $customergroup}
 												<option value="{$customergroup.id}">{$customergroup.name|truncate:30:"&hellip;":true}</option>
 											{/foreach}
@@ -657,7 +657,7 @@
 										<select name="numberplanid[]" class="lms-ui-multiselect"
 												form="invoicereport"
 												style="min-width: 200px;" {tip text="Select numbering plan"} multiple
-												data-default-value="{trans("- all -")}">
+												data-default-value="{trans("— all —")}">
 											{foreach $numberplans as $plan}
 												{$period = $plan.period}
 												<option value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate}
@@ -677,7 +677,7 @@
 									<td colspan="2" class="nobr">
 										<select name="servicetypes[]" class="lms-ui-multiselect" multiple
 											form="invoicereport"
-											data-default-value="{trans("- any -")}" data-shorten-to-default-value="false">
+											data-default-value="{trans("— any —")}" data-shorten-to-default-value="false">
 											{foreach Localisation::arraySort($_SERVICETYPES) as $type => $label}
 												<option value="{$type}">{$label}</option>
 											{/foreach}
@@ -756,7 +756,7 @@
 									<td colspan="2"></td>
 									<td colspan="2" class="nobr">
 										{trans("Sorting")}
-										<select name="sorttype" form="invoicereport" {tip text="Select sort cryterion"}>
+										<select name="sorttype" form="invoicereport" {tip text="Select sorting criterion"}>
 											<option value="cdate">{trans("Draw-up date")}</option>
 											<option value="sdate">{trans("Sale date")}</option>
 											<option value="pdate">{trans("Deadline")}</option>
@@ -774,7 +774,7 @@
 									<TD colspan="2">
 										<select name="doctype[]" {tip class="lms-ui-multiselect" text="Select document type"}
 											multiple form="invoicereport"
-											data-default-value="{trans("- all -")}">
+											data-default-value="{trans("— all —")}">
 											<option value="invoices">{trans("invoices")}</option>
 											<option value="cnotes">{trans("credit notes")}</option>
 											<option value="dnotes" data-exclusive>{trans("debit notes")}</option>
@@ -835,7 +835,7 @@
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
 							<SELECT SIZE="1" name="registry" {tip text="Select cash registry"}>
-					    		    <OPTION value="0">{trans("- all -")}</OPTION>
+					    		    <OPTION value="0">{trans("— all —")}</OPTION>
 						    	    {foreach from=$cashreglist item=c}
 							    <OPTION value="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 						    	    {/foreach}
@@ -851,7 +851,7 @@
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
 							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("— all groups —")}</OPTION>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"&hellip;":true}</OPTION>
 							    {/section}
@@ -868,7 +868,7 @@
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
 							<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-							    <OPTION value="">{trans("- all users -")}</OPTION>
+							    <OPTION value="">{trans("— all users —")}</OPTION>
 							    {section name="users" loop=$users}
 							    <OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"&hellip;":true}</OPTION>
 							    {/section}
@@ -911,211 +911,264 @@
 {/if}
 {if $printmenu=="finances"}
 <form method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices">
-<INPUT type="submit" class="hiddenbtn">
-<SCRIPT type="text/javascript">
-<!--
-	function print()
-	{
+	<input type="submit" class="hiddenbtn">
+</form>
+<script>
+
+	function print() {
 		document.printinvoices.action="?m=print&type=invoices";
 		document.printinvoices.target='_blank';
 		document.printinvoices.submit();
 	}
 
-	function print_forms()
-	{
+	function print_forms() {
 		document.printinvoices.action="?m=print&type=transferforms&kind=1";
 		document.printinvoices.target='_blank';
 		document.printinvoices.submit();
 	}
 
 	function export_to_jpk(type) {
-		if ($('form[name="printinvoices"] select[name="division"]').val() == '0') {
+		if ($('select[form="printinvoices"][name="division"]').val() == '0') {
 			alertDialog($t("Division not selected!"), $(".export_to_jpk"));
 			return;
 		}
 
 		document.printinvoices.action = "?m=print&type=invoices&jpk=" + type + '&jpk_format='
-			+ $('form[name="printinvoices"] select[name="format"]').val();
+			+ $('select[form="printinvoices"][name="format"]').val();
 		document.printinvoices.submit();
 	}
-//-->
-</SCRIPT>
-<TABLE class="lmsbox">
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 99%;">
-    </COLGROUP>
-    <THEAD>
-	<TR>
-		<TH scope="col">
-			<IMG src="img/money.gif" alt="">
-		</TH>
-		<TH scope="col" class="bold nobr">
-			{trans("Invoices")}
-		</TH>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD class="container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD style="width: 1%;">
-					    <TABLE width="100%">
-						<TR>
-							<TD style="width: 1%;">
-								<IMG src="img/division.gif" alt="">
-							</TD>
-							<TD style="width: 1%;" class="bold nobr">
-								{trans("Division")}:
-							</TD>
-							<TD style="width: 98%;" class="nobr">
-								<SELECT size="1" name="division" {tip text="Select division"}>
-									<OPTION value="0">- {trans("all")} -</OPTION>
-									{foreach $divisions as $division}
-									<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
-									{/foreach}
-								</SELECT>
-							</TD>
-						</TR>
-						<TR>
-							<TD style="width: 1%;">
-								<IMG src="img/customer.gif" alt="">
-							</TD>
-							<TD style="width: 1%;" class="bold nobr">
-								{trans("Customer:")}
-							</TD>
-							<TD style="width: 98%;" class="nobr">
-								{customerlist form="printinvoices" customers=$customers version=2
-									selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
-							</TD>
-						</TR>
-						<tr>
-							<td><img src="img/customer.gif" alt=""></td>
-							<td class="bold">{trans("Customers")}:</td>
-							<td>
-								<select name="customer_type">
-									<option value="-1">{trans("- all customers -")}</option>
-									{foreach from=$_CTYPES key=key item=item}
-									<option value="{$key}">{$item}</option>
-									{/foreach}
-								</select>
-							</td>
-						</tr>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/group.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Group:")}
-						    </TD>
-						    <TD style="width: 98%;" class="nobr">
-								<input type="hidden" name="group" value="all">
-								<SELECT size="1" name="group[]" class="lms-ui-multiselect" data-default-value="{trans("- all groups -")}" multiple>
-									{foreach $customergroups as $customergroup}
-									<OPTION value="{$customergroup.id}">{$customergroup.name|truncate:30:"&hellip;":true}</OPTION>
-									{/foreach}
-								</SELECT>
-								<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoices-groupexclude">{trans("exclude group")}</label>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/queue.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" class="bold nobr">
-							{trans("Plan:")}
-						    </TD>
-						    <TD style="width: 98%;" class="nobr">
-								<input type="hidden" name="numberplan" value="all">
-								<SELECT name="numberplan[]" {tip class="lms-ui-multiselect" text="Select numbering plan"} data-default-value="- {trans("all")} -" multiple>
-									{foreach $numberplans as $plan}
-									{assign var=period value=$plan.period}
-									<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-									{/foreach}
-								</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
-					</TD>
-					<TD style="width: 99%;">
-						<TABLE style="width: 100%;">
-							<TR>
-								<TD style="width: 1%;">
-									<IMG src="img/calendar.gif" alt="">
-								</TD>
-								<TD style="width: 1%;">
-									<span class="lms-ui-date-period-container">
-										<strong>{trans("Period:")}</strong>
-										{date_period_preset from="#printinvoices [name=\"invoicefrom\"]" to="#printinvoices [name=\"invoiceto\"]"}
-										<span>{trans("From")}</span>
-										<input type="text" name="invoicefrom" size="10" maxlength="10"
-											placeholder="{trans("yyyy/mm/dd")}"
-											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-										<span>{trans("To")}</span>
-										<input type="text" name="invoiceto" size="10" maxlength="10"
-											placeholder="{trans("yyyy/mm/dd")}"
-											{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									</span>
-								</TD>
-								<TD style="width: 1%;">
-									<IMG src="img/info.gif" alt="">
-								</TD>
-								<TD style="width: 97%; white-space: nowrap;">
-									<INPUT type="checkbox" name="invoiceorg" ID="invoiceorg"{if preg_match('/original/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoiceorg">{trans("original")}</label>&nbsp;
-									<INPUT type="checkbox" name="invoicecopy" ID="invoicecopy"{if preg_match('/copy/i', $default_printpage)}  CHECKED{/if}>&nbsp;<label for="invoicecopy">{trans("copy")}</label>&nbsp;
-									<INPUT type="checkbox" name="invoicedup" ID="invoicedup"{if preg_match('/duplicate/i', $default_printpage)} CHECKED{/if}>&nbsp;<label for="invoicedup">{trans("duplicate")}</label>
-								</TD>
-							</TR>
-							<TR>
-								<TD>
-									<IMG src="img/options.gif" alt="">
-								</TD>
-								<TD colspan="2" class="bold nobr">
-									{trans("Agreement for an electronic invoice:")}
-									<select name="einvoice">
-										<option value="0">{trans("- all -")}</option>
-										<option value="1">{trans("yes")}</option>
-										<option value="2">{trans("no")}</option>
-									</select>
-								</TD>
-								<TD>
-									<label>
-										<input type="checkbox" name="autoissued">
-										{trans("only automatically issued")}
-									</label>
-									<br>
-									<label>
-										<input type="checkbox" name="manualissued">
-										{trans("only manually issued")}
-									</label>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;" colspan="2" align="right">
-			<label style="display: none;">
-				{trans("JPK format:")}
-				<SELECT name="format">
-					<OPTION value="xml">{trans("XML")}</OPTION>
-					<OPTION value="csv">{trans("CSV")}</OPTION>
-				</SELECT>
-			</label>
-			<input type="hidden" name="format" value="xml">
-			<a class="export_to_jpk" href="javascript:export_to_jpk('fa');">{trans("Export to JPK-FA format")} <img src="img/docum.gif" alt=""></a>
-			<a class="export_to_jpk" href="javascript:export_to_jpk('vat');">{trans("Export to JPK-VAT format")} <img src="img/docum.gif" alt=""></a>
-			<a href="javascript:print_forms();">{trans("Print form of cash transfer")} <img src="img/print.gif" alt=""></a>
-			<A href="javascript:print();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</form>
+
+</script>
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<th scope="col">
+				{icon name="money"}
+			</th>
+			<th scope="col" class="nobr">
+				<strong>{trans("Invoices")}</strong>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="container" colspan="2">
+				<table style="width: 100%;">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 99%;">
+					</colgroup>
+					<tr>
+						<td>
+							<table style="width: 100%;">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								<tr>
+									<td>
+										{icon name="division"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Division")}</strong>
+									</td>
+									<td>
+										<select size="1" name="division" form="printinvoices"
+											{tip text="Select division"}>
+											<option value="0">{trans("— all —")}</option>
+											{foreach $divisions as $division}
+												<option value="{$division.id}">{$division.label|escape}</option>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="customer"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Customer")}</strong>
+									</td>
+									<td class="nobr">
+										{customerlist form="printinvoices" customers=$customers version=2
+											selectname="cust" inputname="customer" firstoption="— all customers —"
+											selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="customer"}
+									</td>
+									<td>
+										<strong>{trans("Customers")}</strong>
+									</td>
+									<td>
+										<select name="customer_type" form="printinvoices">
+											<option value="-1">{trans("— all customers —")}</option>
+											{foreach $_CTYPES as $key => $item}
+												<option value="{$key}">{$item}</option>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="customergroup"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Group")}</strong>
+									</td>
+									<td class="nobr">
+										<input type="hidden" name="group" value="all" form="printinvoices">
+										<select size="1" name="group[]" class="lms-ui-multiselect" form="printinvoices"
+											data-default-value="{trans("— all groups —")}" multiple>
+											{foreach $customergroups as $customergroup}
+												<option value="{$customergroup.id}">{$customergroup.name|trunescape:30}</option>
+											{/foreach}
+										</select>
+										<label>
+											<input type="checkbox" name="groupexclude" form="printinvoices"
+												{if $listdata.groupexclude} checked{/if}>
+											{trans("exclude group")}
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="queue"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Plan")}</strong>
+									</td>
+									<td>
+										<input type="hidden" name="numberplan" value="all" form="printinvoices">
+										<select name="numberplan[]" {tip class="lms-ui-multiselect" text="Select numbering plan"}
+											form="printinvoices" data-default-value="{trans("— all —")}" multiple>
+											{foreach $numberplans as $plan}
+												{assign var=period value=$plan.period}
+												<option value="{$plan.id}"
+													>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</option>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table style="width: 100%;">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 97%;">
+								</colgroup>
+								<tr>
+									<td>
+										{icon name="calendar"}
+									</td>
+									<td>
+										<span class="lms-ui-date-period-container">
+											<strong>{trans("Period:")}</strong>
+											{date_period_preset from="[form=\"printinvoices\"][name=\"invoicefrom\"]" to="[form=\"printinvoices\"][name=\"invoiceto\"]"}
+											<span>{trans("From")}</span>
+											<input type="text" name="invoicefrom" size="10" maxlength="10" form="printinvoices"
+												placeholder="{trans("yyyy/mm/dd")}"
+												{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+											<span>{trans("To")}</span>
+											<input type="text" name="invoiceto" size="10" maxlength="10" form="printinvoices"
+												placeholder="{trans("yyyy/mm/dd")}"
+												{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+										</span>
+									</td>
+									<td>
+										{icon name="info"}
+									</td>
+									<td class="nobr">
+										<label>
+											<input type="checkbox" name="invoiceorg" form="printinvoices"
+												{if preg_match('/original/i', $default_printpage)} checked{/if}>
+											{trans("original")}
+										</label>
+										<label>
+											<input type="checkbox" name="invoicecopy" form="printinvoices"
+												{if preg_match('/copy/i', $default_printpage)}  checked{/if}>
+											{trans("copy")}
+										</label>
+										<label>
+											<input type="checkbox" name="invoicedup" form="printinvoices"
+												{if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
+											{trans("duplicate")}
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="options"}
+									</td>
+									<td colspan="2" class="nobr">
+										<strong>
+											{trans("Agreement for an electronic invoice")}
+										</strong>
+										<select name="einvoice" form="printinvoices">
+											<option value="0">{trans("— all —")}</option>
+											<option value="1">{trans("yes")}</option>
+											<option value="2">{trans("no")}</option>
+										</select>
+									</td>
+									<td>
+										<label>
+											<input type="checkbox" name="autoissued" form="printinvoices">
+											{trans("only automatically issued")}
+										</label>
+										<br>
+										<label>
+											<input type="checkbox" name="manualissued" form="printinvoices">
+											{trans("only manually issued")}
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{icon name="document"}
+									</td>
+									<td collspan="3">
+										<label>
+											<input type="checkbox" name="related-documents" form="printinvoices">
+											<strong>
+												{trans("related documents")}
+											</strong>
+										</label>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				<label style="display: none;">
+					{trans("JPK format")}
+					<select name="format" form="printinvoices">
+						<option value="xml">{trans("XML")}</option>
+						<option value="csv">{trans("CSV")}</option>
+					</select>
+				</label>
+				<input type="hidden" name="format" value="xml" form="printinvoices">
+				{button class="export_to_jpk" icon="document" onclick="javascript:export_to_jpk('fa');" label="Export to JPK-FA format"}
+				{button class="export_to_jpk" icon="document" onclick="javascript:export_to_jpk('vat');" label="Export to JPK-VAT format"}
+				{button icon="print" label="Print form of cash transfer" onclick="print()_forms;"}
+				{button icon="print" label="Print" onclick="print();"}
+			</td>
+		</tr>
+	</tbody>
+</table>
 {/if}
 {if $printmenu=="finances"}
 <form method="post" name="printforms" id="printforms" action="?m=print&type=transferforms&kind=2">
@@ -1151,7 +1204,7 @@
 							</TD>
 							<TD style="width: 98%;" class="nobr">
 								{customerlist form="printforms" customers=$customers version=2
-									selectname="cust" inputname="customer" firstoption="- all customers -"
+									selectname="cust" inputname="customer" firstoption="— all customers —"
 									selecttip="You can select customer to limit results"
 									inputtip="Enter customer ID or leave empty for all customers"}
 							</TD>
@@ -1165,7 +1218,7 @@
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
 							<SELECT size="1" name="customergroup">
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+							    <OPTION value="0" SELECTED>{trans("— all groups —")}</OPTION>
 			    				    {section name="customergroups" loop=$customergroups}
 							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"&hellip;":true}</OPTION>
 							    {/section}
@@ -1288,7 +1341,7 @@
 								</TD>
 								<TD class="nobr">
 									<SELECT size="1" name="division" {tip text="Select division"}>
-										<OPTION value="0">- {trans("all")} -</OPTION>
+										<OPTION value="0">{trans("— all —")}</OPTION>
 										{foreach $divisions as $division}
 										<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
 										{/foreach}
@@ -1304,7 +1357,7 @@
 								</TD>
 								<TD class="nobr">
 									{customerlist form="liabilityreport" customers=$customers version=2
-										selectname="cust" inputname="customer" firstoption="- all customers -"
+										selectname="cust" inputname="customer" firstoption="— all customers —"
 										inputtip="Enter customer ID or leave empty for all customers"}
 								</TD>
 							</TR>
@@ -1400,7 +1453,7 @@
 					</TD>
 					<TD style="width: 1%;">
 						<SELECT size="1" name="source" {tip text="You can select import source to limit results"}>
-						<OPTION value="0">{trans("- all sources -")}</OPTION>
+						<OPTION value="0">{trans("— all sources —")}</OPTION>
 						{foreach from=$sourcelist item=item}
 						<OPTION value="{$item.id}">{$item.name}</OPTION>
 						{/foreach}
@@ -1476,7 +1529,7 @@
 					</td>
 					<TD>
 						<SELECT size="1" name="network" {tip text="Select network"}>
-						    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+						    <OPTION value="0" SELECTED>{trans("— all networks —")}</OPTION>
 						    {section name="networks" loop=$networks}
 						    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"&hellip;":true}</OPTION>
 						    {/section}
@@ -1489,7 +1542,7 @@
 					</TD>
 					<TD>
 					    <SELECT size="1" name="customergroup" {tip text="Select group"}>
-						    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+						    <OPTION value="0" SELECTED>{trans("— all groups —")}</OPTION>
 						    {section name="customergroups" loop=$customergroups}
 						    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"&hellip;":true}</OPTION>
 						    {/section}
@@ -1643,7 +1696,7 @@
 							<TD class="bold nobr">{trans("Division")}:</TD>
 							<TD class="nobr">
 								<SELECT size="1" name="division" {tip text="Select division"}>
-									<OPTION value="0">{trans("- none -")}</OPTION>
+									<OPTION value="0">{trans("— none —")}</OPTION>
 									{foreach $divisions as $item}
 										<OPTION value="{$item.id}">{$item.label|escape}</OPTION>
 									{/foreach}
@@ -1660,7 +1713,7 @@
 							<TD class="nobr">
 								<SELECT size="4" name="customergroups[]" class="lms-ui-multiselect"
 										multiple {tip text="Select group"}
-										data-default-value="{trans("- all groups -")}">
+										data-default-value="{trans("— all groups —")}">
 									{foreach $customergroups as $customergroup}
 										<OPTION value="{$customergroup.id}">{$customergroup.name|truncate:30:"&hellip;":true}</OPTION>
 									{/foreach}
@@ -1959,7 +2012,7 @@
 			</td>
 			<td>
 				<select name="division"	form="uke-income-form" {tip text="Select division"}>
-					<option value="">{trans("- all -")}</option>
+					<option value="">{trans("— all —")}</option>
 					{foreach $divisions as $division}
 						<option value="{$division.id}"{if isset($filter['uke-income']['division']) && $filter['uke-income']['division'] == $division.id} selected{/if}
 							>{$division.label|escape}</option>
@@ -1977,7 +2030,7 @@
 			<td>
 				<div id="uke-income-customergroup-selection">
 					<select name="customergroup" form="uke-income-form">
-						<option value="">{trans("- any -")}</option>
+						<option value="">{trans("— any —")}</option>
 						{foreach $customergroups as $group}
 							<option value="{$group.id}"{if isset($filter['uke-income']['customergroup']) && $filter['uke-income']['customergroup'] == $group.id} selected{/if}
 								>{$group.name|escape}</option>

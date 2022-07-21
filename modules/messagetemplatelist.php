@@ -60,8 +60,8 @@ if (isset($_GET['action'])) {
                         $p['type'],
                         $p['name'],
                         $p['subject'],
-                        $p['helpdesk-queues'],
-                        $p['helpdesk-message-types'],
+                        isset($p['helpdesk-queues']) ? $p['helpdesk-queues'] : null,
+                        isset($p['helpdesk-message-types']) ? $p['helpdesk-message-types'] : null,
                         $body
                     );
                 } else {
@@ -70,8 +70,8 @@ if (isset($_GET['action'])) {
                         $p['type'],
                         $p['name'],
                         $p['subject'],
-                        $p['helpdesk-queues'],
-                        $p['helpdesk-message-types'],
+                        isset($p['helpdesk-queues']) ? $p['helpdesk-queues'] : null,
+                        isset($p['helpdesk-message-types']) ? $p['helpdesk-message-types'] : null,
                         $body
                     );
                 }

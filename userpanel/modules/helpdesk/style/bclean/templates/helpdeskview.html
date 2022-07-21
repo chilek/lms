@@ -38,7 +38,7 @@
 					{if $ticket.requestoremail}
 						&lt;{$ticket.requestoremail|escape}&gt;
 					{/if}
-				{/if}, {trans("Time:")} {$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+				{/if}, {trans("Time:")} {$message.createtime|date_format:"Y-m-d H:i"}
 			</small>
 				{if $message.attachments}
 					<strong>{trans("Attachments:")}</strong>

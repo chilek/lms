@@ -1,8 +1,8 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{$hide_disabled_users = ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')}
-{$hide_deleted_users = ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')}
+{$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))}
+{$hide_deleted_users = ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users'))}
 	<!--// $Id$ //-->
 	{$xajax}
 	{if empty($event.ticketid)}
@@ -43,7 +43,7 @@
 
 					{box_row icon="uptime" label="Time:" icon_class="fa-fw"}
 						{if $layout.module == 'eventadd'}
-							{$allow_past_date = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
+							{$allow_past_date = ConfigHelper::checkConfig('timetable.allow_past_events', ConfigHelper::checkConfig('phpui.timetable_allow_past_events', true))}
 						{else}
 							{$allow_past_date = true}
 						{/if}
@@ -71,11 +71,13 @@
 					{/box_row}
 
 					{box_row icon="type" label="Type:" icon_class="fa-fw"}
-						<SELECT name="event[type]" size="1">
-							{foreach from=$_EVENTTYPES key=key item=type}
-								<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
+						<select name="event[type]" size="1">
+							{foreach $_EVENTTYPES as $idx => $eventtype}
+								<option value="{$idx}"
+									{if $idx == $event.type || (!$event.type && $idx == $smarty.const.EVENT_OTHER)} selected{/if}
+									>{$eventtype.label}</option>
 							{/foreach}
-						</SELECT>
+						</select>
 					{/box_row}
 
 					{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
@@ -106,7 +108,7 @@
 					{box_row class="node-row" icon="node" label="Node:" icon_class="fa-fw" visible=$visibility}
 						{if !empty($event.ticketid)}
 							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
-								<option value="">{trans("- none -")}</option>
+								<option value="">{trans("— none —")}</option>
 								{foreach $nodes as $node}
 									<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
 								{/foreach}
@@ -123,7 +125,7 @@
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
 						<select name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple
-								{if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
+								{if ConfigHelper::checkConfig('timetable.event_user_required', ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
 								{if (!is_array($event.userlist) || !in_array($user.id, $event.userlist))
 									&& ($hide_disabled_users && !$user.access
@@ -313,7 +315,7 @@
 
 		function update_user_selection(users) {
 			var userms = $('#userlist').val();
-			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type') == 'filter'}
+			{if ConfigHelper::getConfig('timetable.event_usergroup_selection_type', ConfigHelper::getConfig('phpui.event_usergroup_selection_type')) == 'filter'}
 				$("#userlist").val( users );
 			{else}
 				var users2 = jQuery.unique([].concat.apply(users, userms));

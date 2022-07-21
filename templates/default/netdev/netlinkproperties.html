@@ -44,7 +44,7 @@
 			<td class="nobr">{trans("Radio sector:")}</td>
 			<td>
 				<SELECT NAME="srcradiosector" id="srcradiosector" {tip trigger="srcradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
-					<OPTION value="0">- {trans("none")} -</OPTION>
+					<OPTION value="0">{trans("— none —")}</OPTION>
 					{foreach $radiosectors.src as $radiosector}
 					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.srcradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
 					{/foreach}
@@ -55,7 +55,7 @@
 			<td class="nobr">{trans("Destination radio sector:")}</td>
 			<td>
 				<SELECT NAME="dstradiosector" id="dstradiosector" {tip trigger="dstradiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
-					<OPTION value="0">- {trans("none")} -</OPTION>
+					<OPTION value="0">{trans("— none —")}</OPTION>
 					{foreach $radiosectors.dst as $radiosector}
 					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $radiosectors.dstradiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
 					{/foreach}
@@ -74,7 +74,7 @@
 			<td class="nobr">{trans("Radio sector:")}</td>
 			<td>
 				<SELECT NAME="radiosector" id="radiosector" {tip trigger="radiosector" text="Select radio sector"}{if $link.type != 1} disabled{/if}>
-					<OPTION value="0">- {trans("none")} -</OPTION>
+					<OPTION value="0">{trans("— none —")}</OPTION>
 					{foreach $radiosectors as $radiosector}
 					<OPTION value="{$radiosector.id}"{if $link.type == 1 && $link.radiosector == $radiosector.id} selected{/if}>{$radiosector.name}</OPTION>
 					{/foreach}
@@ -86,7 +86,7 @@
 			<td class="nobr">{trans("Link technology:")}</td>
 			<td>
 				<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)">
-					<OPTION value="0">{trans("- unknown -")}</OPTION>
+					<OPTION value="0">{trans("— unknown —")}</OPTION>
 					{foreach $_LINKTECHNOLOGIES[$link.type] as $linktechnologyidx => $linktechnology}
 					<OPTION value="{$linktechnologyidx}"{if $link.technology == $linktechnologyidx} selected{/if}>{$linktechnology}</OPTION>
 					{/foreach}
@@ -117,7 +117,7 @@
 	function change_linktype(linktype) {
 		linktype = parseInt(linktype);
 		var select = $('#linktechnology');
-		var options = '<option value="0">{trans("- unknown -")}</option>';
+		var options = '<option value="0">{trans("— unknown —")}</option>';
 		switch (linktype) {
 			case 0:
 				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
@@ -157,7 +157,7 @@
 			var select = $('#' + control);
 			var oldValue = select.val();
 			var options = '';
-			options += '<option value="0">- {trans("none")} -</option>';
+			options += '<option value="0">{trans("— none —")}</option>';
 			if (radiosectors[control] !== null) {
 				radiosectors[control].forEach(function(elem) {
 					options += '<option value="' + elem.id + '"' + (elem.id == oldValue ? ' selected' : '') + '>' + elem.name + '</option>';

@@ -156,7 +156,7 @@
                 {trans("Date:")}
             </td>
             <td class="nobr">
-               {$cdr.call_start_time|date_format:"%e %B %Y %H:%M:%S"}
+               {$cdr.call_start_time|date_format:"Y-m-d H:i:s"}
             </td>
         </tr>
 		<tr>
@@ -180,11 +180,11 @@
 		<tr>
             <td></td>
             <td class="bold nobr">
-                {trans("Status:")}
+                {trans("<!voip>Status")}
             </td>
             <td class="nobr">
 				{if $cdr.status == $smarty.const.CALL_BUSY}
-					{trans("busy<!voip>")}
+					{trans("<!voip>busy")}
 				{else if $cdr.status == $smarty.const.CALL_ANSWERED}
 					{trans("answered")}
 				{else if $cdr.status == $smarty.const.CALL_NO_ANSWER}

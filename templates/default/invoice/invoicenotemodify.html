@@ -143,7 +143,7 @@
 				</td>
 				<td class="nobr">
 					{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-						<input type="text" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}" size="12"
+						<input type="text" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"Y/m/d"}" size="12"
 							placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$cnote.cdate}"
 							{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 						>
@@ -151,8 +151,8 @@
 							<input type="hidden" name="cnote[cdatewarning]" value="1">
 						{/if}
 					{else}
-						<input type="hidden" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"%Y/%m/%d"}">
-						{$cnote.cdate|date_format:"%Y/%m/%d"}
+						<input type="hidden" name="cnote[cdate]" id="cdate" value="{$cnote.cdate|date_format:"Y/m/d"}">
+						{$cnote.cdate|date_format:"Y-m-d"}
 					{/if}
 				</td>
 			</tr>
@@ -162,13 +162,13 @@
 				</td>
 				<td class="nobr">
 					{if ConfigHelper::checkPrivilege("invoice_sale_date")}
-						<input type="text" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}" size="12"
+						<input type="text" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}" size="12"
 							placeholder="{trans("yyyy/mm/dd")}"
 							{tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}
 						>
 					{else}
-						<input type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"%Y/%m/%d"}">
-						{$cnote.sdate|date_format:"%Y/%m/%d"}
+						<input type="hidden" name="cnote[sdate]" value="{$cnote.sdate|date_format:"Y/m/d"}">
+						{$cnote.sdate|date_format:"Y-m-d"}
 					{/if}
 				</td>
 			</tr>
@@ -382,7 +382,7 @@
 							{if isset($_SERVICETYPES[$item.servicetype])}
 								<span class="invoice-contents-field-value">{$_SERVICETYPES[$item.servicetype]}</span>
 							{else}
-								{trans("- none -")}
+								{trans("— none —")}
 							{/if}
 
 							<input type="hidden" value="{$item.taxcategory}" name="taxcategory[{$itemid}]">
@@ -392,11 +392,11 @@
 									({sprintf('%02d', $item.taxcategory)}) {$_TAX_CATEGORIES[$item.taxcategory].label}
 								{/strip}</span>
 							{else}
-								{trans("- none -")}
+								{trans("— none —")}
 							{/if}
 						{else}
 							<select name="servicetype[{$itemid}]">
-								<option value="">{trans("- none -")}</option>
+								<option value="">{trans("— none —")}</option>
 								{foreach $_SERVICETYPES as $servicetype => $label}
 									<option value="{$servicetype}"{if $item.servicetype == $servicetype} selected{/if}>{$label}</option>
 								{/foreach}

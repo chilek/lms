@@ -469,7 +469,7 @@
 										<div class="valign-middle">
 											<select name="customerdata[paytime]" data-value="{$customerinfo.paytime}"
 												{tip class="lms-ui-combobox" trigger="paytime"}>
-												<option value="-1"{if $customerinfo.paytime == -1} selected{/if}>- {trans("default")} -</option>
+												<option value="-1"{if $customerinfo.paytime == -1} selected{/if}>— {trans("default")} —</option>
 												<option value="0"{if $customerinfo.paytime == 0} selected{/if}>0</option>
 												<option value="7"{if $customerinfo.paytime == 7} selected{/if}>7</option>
 												<option value="10"{if $customerinfo.paytime == 10} selected{/if}>10</option>
@@ -525,26 +525,49 @@
 						<TD>
 							<TABLE cellpadding="0" class="lms-ui-separated-rows">
 								<tbody class="lms-ui-multi-check">
-									<TR>
-										<TD>
-											<strong>{trans("Consents")}</strong>
-										</TD>
-										<TD>
-											<input type="checkbox" class="lms-ui-multi-check-all" value="1">
-										</TD>
-									</TR>
+									<tr>
+										<td>
+											<label for="check-all-consents">
+												<strong>{trans("Consents")}</strong>
+											</label>
+										</td>
+										<td>
+											<input type="checkbox" class="lms-ui-multi-check-all"
+												id="check-all-consents" value="1">
+										</td>
+									</tr>
 									{block name="customereditbox-options"}
 										{foreach $_CCONSENTS as $type => $consent}
-											<TR>
-												<TD>
-													<span class="consent-label">{$consent.label}</span>
-												</TD>
-												<TD>
-													<input type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
-														value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
-														{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
-												</TD>
-											</TR>
+											{if !is_array($consent)}
+												{continue}
+											{/if}
+											{if $consent.type == 'selection'}
+												{foreach $consent.values as $subtype => $subconsent}
+													<tr>
+														<td>
+															<label class="consent-label" for="chkconsent{$subtype}">
+																{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
+															</label>
+														</td>
+														<td>
+															<input type="radio" name="customerdata[consents][{$type}]" id="chkconsent{$subtype}"
+																value="{$subtype}"
+																{if isset($customerinfo.consents[$type]) && $customerinfo.consents[$type] == $subtype} checked{/if}>
+														</td>
+													</tr>
+												{/foreach}
+											{else}
+												<tr>
+													<td>
+														<span class="consent-label">{$consent.label}</span>
+													</td>
+													<td>
+														<input type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
+															value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
+															{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
+													</td>
+												</tr>
+											{/if}
 										{/foreach}
 									{/block}
 								</tbody>
@@ -569,7 +592,7 @@
 							<div class="valign-middle">
 								<textarea name="customerdata[info]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}
-									>{$customerinfo.info|escape}</textarea>
+									>{$customerinfo.info|default:""|escape}</textarea>
 								{hint content="Enter additional information (optional)"}
 							</div>
 						</TD>
@@ -581,7 +604,7 @@
 						<TD>
 							<div class="valign-middle">
 								<textarea name="customerdata[message]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
-									{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</textarea>
+									{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|default:""|escape}</textarea>
 								{hint content="Enter notice contents (optional)"}
 							</div>
 						</TD>
@@ -594,7 +617,7 @@
 							<div class="valign-middle">
 								<textarea name="customerdata[notes]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}
-									>{$customerinfo.notes|escape}</textarea>
+									>{$customerinfo.notes|default:""|escape}</textarea>
 								{hint content="Enter notes (optional)"}
 							</div>
 						</TD>
@@ -608,7 +631,7 @@
 								<textarea name="customerdata[documentmemo]" class="lms-ui-wysiwyg-editor"
 									cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.documentmemo)} data-wysiwyg="{$customerinfo.wysiwyg.documentmemo}"{/if}
-									>{$customerinfo.documentmemo|escape}</textarea>
+									>{$customerinfo.documentmemo|default:""|escape}</textarea>
 								{hint content="Enter document memo (optional)"}
 							</div>
 						</TD>
@@ -748,6 +771,10 @@
 				});
 				return false;
 			}
+		});
+
+		$('#check-all-consents').change(function() {
+			$(this).closest('.lms-ui-multi-check').find(':radio').prop('checked', $(this).prop('checked'));
 		});
 	});
 

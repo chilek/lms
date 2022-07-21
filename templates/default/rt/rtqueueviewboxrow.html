@@ -38,7 +38,7 @@
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
 			<span>{if (is_array($filter.ids) && count($filter.ids) != 1) || !isset($filter.ids)}{$ticket.name}{/if}</span>
 			{if !ConfigHelper::checkConfig('rt.hide_ticket_row_create_time')}
-				<br>{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+				<br>{$ticket.createtime|date_format:"Y-m-d H:i:s"}
 			{/if}
 		</span>
 	</TD>
@@ -95,7 +95,7 @@
 	</TD>
 	<TD class="nobr">
 		{if $ticket.ownername}{$ticket.ownername|trunescape:25}{else}-{/if}<br>
-		{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
+		{$ticket.lastmodified|date_format:"Y-m-d H:i:s"|default:"-"}
 	</TD>
 	<TD class="text-center nobr ticket-events">
 		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}">{$ticket.eventcountopened} </A>{else}- {/if}/
@@ -120,7 +120,7 @@
 			{if !$ticket.ownerid && Auth::GetCurrentUser() != $ticket.verifierid}
 				{button type="link" icon="owner" class="ticket-assign-to-me" tip="Assign to me as owner" href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"}
 			{/if}
-			{if $ticket.state != $smarty.const.RT_RESOLVED && $ticket.priority != $smaty.const.RT_PRIORITY_NORMAL}
+			{if $ticket.state != $smarty.const.RT_RESOLVED && $ticket.priority != $smarty.const.RT_PRIORITY_NORMAL}
 				{button type="link" icon="priority" class="ticket-reset-priority" tip="Reset ticket priority" href="?m=rtticketedit&id={$ticket.id}&action=resetpriority"}
 			{/if}
 			{if ($ticket.state != $smarty.const.RT_RESOLVED && !$ticket.verifierid && Auth::GetCurrentUser() != $ticket.ownerid)}
@@ -129,7 +129,8 @@
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if $ticket.verifierid && $ticket.verifierid != Auth::GetCurrentUser() &&  $ticket.state != $smarty.const.RT_VERIFIED}
 					{button type="link" icon="verifier" tip="Transfer to verifier" href="?m=rtticketedit&id={$ticket.id}&action=verify"}
-				{elseif (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events') && $ticket['openeventcount'] !== 0)}
+				{elseif ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
+					&& $ticket['openeventcount'] !== 0}
 					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve" class="disabled" tip="Ticket have open assigned events!"}
 				{else}
 					{button type="link" icon="close" tip="Resolve" href="?m=rtticketedit&id={$ticket.id}&action=resolve"}

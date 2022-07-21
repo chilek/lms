@@ -28,7 +28,7 @@ function GetSourceList()
 {
     $DB = LMSDB::getInstance();
 
-    $list = $DB->GetAll("SELECT id, name, description, account, deleted FROM cashsources ORDER BY name");
+    $list = $DB->GetAll("SELECT * FROM cashsources ORDER BY name");
     return $list;
 }
 

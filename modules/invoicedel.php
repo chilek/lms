@@ -53,8 +53,22 @@ foreach ($ids as $id) {
     if (isset($hook_data['continue']) && empty($hook_data['continue'])) {
         continue;
     }
+
+    if (isset($_GET['documents'])) {
+        $refdocs = $LMS->getDocumentReferences($id);
+    } else {
+        $refdocs = null;
+    }
+
     $DB->BeginTrans();
+
     $LMS->InvoiceDelete($id);
+    if (!empty($refdocs)) {
+        foreach ($refdocs as $refdoc) {
+            $LMS->DeleteDocument($refdoc['docid']);
+        }
+    }
+
     $DB->CommitTrans();
 }
 

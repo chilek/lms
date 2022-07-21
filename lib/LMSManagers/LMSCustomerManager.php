@@ -282,13 +282,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, documents.senddate, documents.archived, cash.importid,
-                (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced,
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type > 0) THEN 1 ELSE 0 END) AS referenced,
+                (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = documents.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced,
                 documents.cdate, documents.number, numberplans.template
             FROM cash
             LEFT JOIN vusers ON vusers.id = cash.userid
             LEFT JOIN documents ON documents.id = docid
             LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
-            LEFT JOIN documents d2 ON d2.reference = documents.id
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
@@ -301,6 +301,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     d.type AS doctype, d.closed AS closed,
                     d.published, d.senddate, 0 AS archived, NULL AS importid,
                     (CASE WHEN d3.reference IS NULL THEN 0 ELSE 1 END) AS referenced,
+                    0 AS documentreferenced,
                     d.cdate, d.number, numberplans.template
                 FROM documents d
                 JOIN ' . (ConfigHelper::getConfig('database.type') == 'postgres' ? 'get_invoice_contents(' . intval($id) . ')' : 'vinvoicecontents') . ' ic ON ic.docid = d.id
@@ -336,6 +337,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $result['balance'] += $row['value'] * $row['currencyvalue'];
                 }
                 $row['date'] = date('Y/m/d H:i', $row['time']);
+
+                if (!empty($row['doctype']) && !empty($row['documentreferenced'])) {
+                    if (!isset($document_manager)) {
+                        $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+                    $row['refdocs'] = $document_manager->getDocumentReferences($row['docid']);
+                }
             }
 
             $result['total'] = count($result['list']);
@@ -456,7 +464,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $lN .= $horizontal_line . PHP_EOL;
                 }
                 foreach ($lastN as $row_s) {
-                    $cols['date']['value'] = strftime('%Y/%m/%d', $row_s['time']);
+                    $cols['date']['value'] = date('Y/m/d', $row_s['time']);
                     if ($row_s['value'] < 0) {
                         $cols['liability']['value'] = moneyf($row_s['value'] * -1, $row_s['currency']);
                         $cols['payment']['value'] = '';
@@ -541,6 +549,40 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
+    private function extractCustomerConsents($consents)
+    {
+        $final_consents = array();
+        array_walk(
+            $consents,
+            function ($value, $type) use (&$final_consents) {
+                global $CCONSENTS;
+                if (isset($CCONSENTS[$type]) && !is_array($CCONSENTS[$type])) {
+                    $final_consents[$CCONSENTS[$type]] = $type;
+                } else {
+                    $final_consents[$type] = $value;
+                }
+            }
+        );
+        return $final_consents;
+    }
+
+    private function compactCustomerConsents($consents)
+    {
+        $final_consents = array();
+        array_walk(
+            $consents,
+            function ($value, $type) use (&$final_consents) {
+                global $CCONSENTS;
+                if (isset($CCONSENTS[$type]) && $CCONSENTS[$type]['type'] == 'selection') {
+                    $final_consents[$value] = time();
+                } else {
+                    $final_consents[$type] = $value;
+                }
+            }
+        );
+        return $final_consents;
+    }
+
     public function updateCustomerConsents($customerid, $current_consents, $new_consents)
     {
         $consents_to_remove = array_diff($current_consents, $new_consents);
@@ -597,7 +639,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
-        $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
 
         $customeradd['name'] = str_replace(array('”', '„'), '"', $customeradd['name']);
         $customeradd['lastname'] = str_replace(array('”', '„'), '"', $customeradd['lastname']);
@@ -707,10 +749,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $this->updateCustomerConsents(
                 $id,
                 array(),
-                array_keys($customeradd['consents'])
+                array_keys($this->compactCustomerConsents($customeradd['consents']))
             );
 
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
+            if (ConfigHelper::checkConfig('phpui.add_customer_group_required')) {
                 $gargs = array(
                         'customerid' => $id,
                         'customergroupid' => $customeradd['group']
@@ -738,6 +780,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $statesqlskey Logical conjunction used for state field
      * @param boolean $network With or without network params
      * @param int $customergroup Customer group
+     * @param boolean $customergroupnegation negate customer group assignments
      * @param string $customergroupsqlskey Logical conjunction used for customergroup field
      * @param array $search Search parameters
      * @param int $time Timestamp
@@ -801,7 +844,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $customergroupsqlskey = 'AND';
         }
 
-        if (!is_array($state) && !empty($state)) {
+        if (!isset($customergroupnegation)) {
+            $customergroupnegation = false;
+        }
+
+        if (isset($state) && !is_array($state) && !empty($state)) {
             $state = array($state);
         }
 
@@ -835,7 +882,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $state = array();
         }
 
+        $contracts = 0;
+        $overduereceivables = 0;
         $archived_document_condition = '';
+
+        $ignore_deleted_customers = ConfigHelper::checkConfig('phpui.ignore_deleted_customers');
 
         foreach ($state as $state_item) {
             switch ($state_item) {
@@ -850,6 +901,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         return $customerlist;
                     }
                     $state_conditions[] = 'c.deleted = 1';
+                    $ignore_deleted_customers = false;
                     break;
                 case 51:
                     $state_conditions[] = '(s.ownerid IS NOT null AND s.account > s.acsum)';
@@ -972,6 +1024,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM customer_addresses WHERE customer_addresses.customer_id = c.id
                         AND customer_addresses.type IN (' . LOCATION_ADDRESS . ',' . DEFAULT_LOCATION_ADDRESS . '))';
                     break;
+                case 82:
+                    $state_conditions[] = 'b.balance <= -t.value';
+                    break;
+                case 83:
+                    $state_conditions[] = 'b.balance <= -t.value * 2';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
@@ -981,6 +1039,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
         if (!empty($customer_statuses)) {
             $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ') AND c.deleted = 0)';
+            $ignore_deleted_customers = false;
         }
 
         $flagmask = 0;
@@ -1068,7 +1127,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
         }
 
-        if ($network) {
+        if (isset($network) && $network) {
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
             $net = $network_manager->getNetworkParams($network);
         }
@@ -1327,7 +1386,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.balance > 0 THEN b.balance ELSE 0 END) AS balanceover,
             	SUM(CASE WHEN b.balance < 0 THEN b.balance ELSE 0 END) AS balancebelow ';
         } else {
-            $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+            $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
             $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
                 c.karma, c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
@@ -1368,13 +1427,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
                         . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
             		GROUP BY vcustomerassignments.customerid) ca ON ca.customerid = c.id ' : '')
+            . (!empty($nodegroup) ? 'LEFT JOIN (SELECT nodes.ownerid AS customerid, COUNT(*) AS gcount
+                FROM nodegroupassignments
+                JOIN nodes ON nodes.id = nodeid'
+                . (is_array($nodegroup) || $nodegroup > 0 ? ' WHERE nodegroupid IN ('
+                    . (is_array($nodegroup) ? implode(',', Utils::filterIntegers($nodegroup)) : intval($nodegroup)) . ')' : '') . '
+                GROUP BY ownerid) na ON na.customerid = c.id ' : '')
             . ($count ? '' : '
                 LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
                 FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
                 LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS phone
                 FROM customercontacts WHERE (type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE) .' > 0) GROUP BY customerid) ccp ON ccp.customerid = c.id
                 LEFT JOIN countries ON (c.countryid = countries.id) ')
-            . ($time ?
+            . (isset($time) && $time ?
                 'LEFT JOIN (SELECT SUM(value * currencyvalue) AS balance, customerid FROM cash
                 WHERE time < ' . $time . ' GROUP BY customerid) b ON b.customerid = c.id'
                 : 'LEFT JOIN customerbalances b ON b.customerid = c.id')
@@ -1479,10 +1544,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 						) ass ON ass.customerid = c.id') : '')))
                 . ' WHERE '
                 . (empty($state_conditions) ? '1 = 1' : implode(' ' . $statesqlskey . ' ', $state_conditions))
+                . ($ignore_deleted_customers ? ' AND c.deleted = 0' : '')
                 . ($flag_condition ? ' AND ' . $flag_condition : '')
-                . ($division ? ' AND c.divisionid = ' . intval($division) : '')
+                . (isset($division) && $division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($assignment ? ' AND c.id IN ('.$assignment.')' : '')
-                . ($network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
+                . (isset($network) && $network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
                 		AND (netid' . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))
                 	OR EXISTS (SELECT 1 FROM netdevices
@@ -1491,16 +1557,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
                 . (!empty($customergroup) && $customergroup != -1 ? ' AND ca.gcount '
-                    . ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0') : '')
-                . ($customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
-                . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
-                    JOIN vnodes n ON (n.id = na.nodeid)
-                    WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
+                    . ($customergroupnegation
+                        ? ($customergroupsqlskey == 'AND' ? 'IS NULL' : ' < ' . (is_array($customergroup) ? count($customergroup) : 1))
+                        : ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0')
+                    ) : '')
+                . (isset($customergroup) && $customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
+                . (!empty($nodegroup) ? ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1) : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction . ', c.id ASC' : '')
-                . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
-                . ($offset !== null && !$count ? ' OFFSET ' . $offset : '');
+                . (isset($limit) && !$count ? ' LIMIT ' . $limit : '')
+                . (isset($offset) && !$count ? ' OFFSET ' . $offset : '');
 
         if (!$count) {
             $customerlist = $this->db->GetAll($sql);
@@ -1647,7 +1714,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
 
             // get EtherWerX channels
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+            if (ConfigHelper::checkConfig('phpui.ewx_support')) {
                 $channels = $this->db->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
 				        nc.upceil, nc.downceil
 			 		FROM ewx_stm_nodes
@@ -1731,7 +1798,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (empty($result)) {
             return array();
         }
-        return $result;
+
+        return $this->extractCustomerConsents($result);
     }
 
     /**
@@ -1748,7 +1816,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
-        $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
         if ($result = $this->db->GetRow('SELECT c.*, '
                 . $this->db->Concat($capitalize_customer_names ? 'UPPER(c.lastname)' : 'c.lastname', "' '", 'c.name') . ' AS customername,
 			d.shortname AS division, d.label AS division_label, d.account
@@ -1784,8 +1852,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $result['cstate'] = $cstate['name'];
                 }
                 if ($result['zip'] == $result['post_zip']) {
-                    $result['post_stateid'] = $result['stateid'];
-                    $result['post_cstate'] = $result['cstate'];
+                    $result['post_stateid'] = isset($result['stateid']) ? $result['stateid'] : null;
+                    $result['post_cstate'] = isset($result['cstate']) ? $result['cstate'] : null;
                 } else if ($result['post_zip'] && ($cstate = $this->db->GetRow('SELECT s.id, s.name
 					FROM states s, zipcodes
 					WHERE zip = ? AND stateid = s.id', array($result['post_zip'])))) {
@@ -1795,9 +1863,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result['consents'] = $this->getCustomerConsents($id);
             }
             $result['balance'] = $this->getCustomerBalance($result['id']);
+            if (ConfigHelper::checkConfig('phpui.show_customer_due_balance', ConfigHelper::checkConfig('phpui.show_customer_expired_balance'))) {
+                $result['expiredbalance'] = $this->getCustomerBalance($result['id'], null, true);
+            }
             $result['bankaccount'] = bankaccount($result['id'], $result['account']);
 
-            $result['secure_pin'] = preg_match('/^\$[0-9]+\$/', $result['pin']);
+            $result['secure_pin'] = preg_match('/^\$[0-9a-z]+\$/', $result['pin']);
 
             $flags = $result['flags'];
             $result['flags'] = array();
@@ -1979,7 +2050,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
-        $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+        $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
 
         // UPDATE CUSTOMER FIELDS
         $res = $this->db->Execute(
@@ -2002,8 +2073,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             // update customer consents
             $this->updateCustomerConsents(
                 $customerdata['id'],
-                array_keys($this->getCustomerConsents($customerdata['id'])),
-                array_keys($customerdata['consents'])
+                array_keys($this->compactCustomerConsents($this->getCustomerConsents($customerdata['id']))),
+                array_keys($this->compactCustomerConsents($customerdata['consents']))
             );
         }
 
@@ -2944,6 +3015,71 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $this->db->GetOne('SELECT pin FROM customers WHERE id = ?', array($id));
     }
 
+    public function getCustomerPinRequirements()
+    {
+        $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
+        if (!$pin_min_size) {
+            $pin_min_size = 4;
+        }
+        $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
+        if (!$pin_max_size) {
+            $pin_max_size = 6;
+        }
+        if ($pin_min_size > $pin_max_size) {
+            $pin_max_size = $pin_min_size;
+        }
+        $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+
+        return compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters');
+    }
+
+    public function checkCustomerPin($id, $pin)
+    {
+        if (empty($id)) {
+            $oldpin = '';
+            $hashed_oldpin = false;
+        } else {
+            $validate_changed_pin = ConfigHelper::checkConfig('phpui.validate_changed_pin');
+            $oldpin = $this->getCustomerPin($id);
+            $hashed_oldpin = preg_match('/^\$[0-9a-z]+\$/', $oldpin);
+        }
+
+        extract($this->getCustomerPinRequirements());
+
+        if ($hashed_oldpin) {
+            if ($pin == ''
+                || $validate_changed_pin && password_verify($pin, $oldpin)
+                || validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+                return true;
+            } else {
+                return trans('Incorrect PIN code!');
+            }
+        } else {
+            if ($pin == '') {
+                return trans('PIN code is required!');
+            }
+            if (empty($id)) {
+                return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                    ? true
+                    : trans('Incorrect PIN code!'));
+            } else {
+                if ($validate_changed_pin) {
+                    if ($pin == $oldpin) {
+                        return true;
+                    } else {
+                        return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                            ? true
+                            : trans('Incorrect PIN code!'));
+                    }
+                } else {
+                    return (validate_random_string($pin, $pin_min_size, $pin_max_size, $pin_allowed_characters)
+                        ? true
+                        : trans('Incorrect PIN code!'));
+                }
+            }
+        }
+    }
+
     public function getCustomerTen($id)
     {
         return $this->db->GetOne('SELECT ten FROM customers WHERE id = ?', array($id));
@@ -3015,10 +3151,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $where[] = 'c.userid = ' . intval($params['userid']);
         }
 
-        if ($params['assigned'] === 1) {
+        if (isset($params['assigned']) && $params['assigned'] === 1) {
             $where[] = 'EXISTS (SELECT 1 FROM customercallassignments a WHERE a.customercallid = c.id'
                 . (isset($params['customerid']) ? ' AND a.customerid = ' . intval($params['customerid']) : '') . ')';
-        } elseif ($params['assigned'] === 0) {
+        } elseif (isset($params['assigned']) && $params['assigned'] === 0) {
             $where[] = 'NOT EXISTS (SELECT 1 FROM customercallassignments a WHERE a.customercallid = c.id'
                 . (isset($params['customerid']) ? ' AND a.customerid = ' . intval($params['customerid']) : '') . ')';
         } elseif (isset($params['customerid'])) {

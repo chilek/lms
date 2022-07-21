@@ -50,9 +50,11 @@ switch ($type) {
         }
         $catids = is_array($categories) ? Utils::filterIntegers($categories) : null;
         if (!empty($catids)) {
-            $where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
-        } else {
-            $where[] = 'tc.categoryid IS NULL';
+            if (count($catids) == 1 && $catids[0] == -1) {
+                $where[] = 'tc.categoryid IS NULL';
+            } else {
+                $where[] = 'tc.categoryid IN (' . implode(',', $catids) . ')';
+            }
         }
 
         if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {

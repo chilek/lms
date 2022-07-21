@@ -82,7 +82,7 @@
 							</td>
 							<td>
 								<select name="default_userid" {tip text="Sender of new request notifications and his email. If not specified notifications goes from queue address."}>
-									<option value="0" selected>{trans("- select user -")}</option>
+									<option value="0" selected>{trans("— select user —")}</option>
 									{foreach $userlist as $user}
 										<option value="{$user.id}"{if $user.id == $default_userid} selected{/if}>{$user.name|escape}</option>
 									{/foreach}

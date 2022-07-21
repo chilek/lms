@@ -42,7 +42,7 @@ if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', arr
         die;
 }
 
-$reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
+$reglog['time'] = date('Y/m/d H:i', $reglog['time']);
 
 $layout['pagetitle'] = trans('Cash History Entry Info');
 

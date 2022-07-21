@@ -7,7 +7,8 @@
 		</TD>
 		<TD WIDTH="180" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t a=trans($smarty.now|date_format:"l") b=$smarty.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}
+			<br>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
@@ -59,7 +60,7 @@
 	{sectionelse}
 	<tr>
 		<td colspan="6" class="emtpy-table">
-			{trans("No such voip accounts in database.")}
+			{trans("No such VoIP accounts in database.")}
 		</td>
 	</tr>
 	{/section}

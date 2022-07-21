@@ -77,7 +77,7 @@ if (!empty($_POST['marks'])) {
         }
         header('Content-Type: '.$ctype);
 
-        if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+        if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type', '', true)) == 'pdf') {
             $htmlbuffer = null;
         }
         $i = 0;
@@ -88,7 +88,7 @@ if (!empty($_POST['marks'])) {
 
             $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
             if (file_exists($filename)) {
-                if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+                if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type', '', true)) == 'pdf') {
                     if ($i > 0) {
                         $htmlbuffer .= "\n<page>\n";
                     }
@@ -130,7 +130,7 @@ if (!empty($_POST['marks'])) {
             }
             $i++;
         }
-        if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+        if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type', '', true)) == 'pdf') {
             $margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
             html2pdf(
                 $htmlbuffer,
@@ -154,7 +154,7 @@ if (!empty($_POST['marks'])) {
 	WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0', array(intval($_GET['id']), Auth::GetCurrentUser(), DOCRIGHT_VIEW))) {
     $docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
 		ORDER BY type DESC', 'id', array($_GET['id']));
-    $attachmentid = intval($_GET['attachmentid']);
+    $attachmentid = isset($_GET['attachmentid']) ? intval($_GET['attachmentid']) : null;
     if ($attachmentid) {
         $docattach = $docattachments[$attachmentid];
     } else {
@@ -180,7 +180,7 @@ if (!empty($_POST['marks'])) {
             header('Content-Length: ' . filesize($filename_pdf));
             header('Accept-Ranges: bytes');
             readfile($filename_pdf);
-        } elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+        } elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type', '', true)) == 'pdf') {
             if ($doc['type'] == DOC_CONTRACT) {
                 $subject = trans('Contract');
                 $title = trans('Contract No. $a', $docnumber);

@@ -49,7 +49,12 @@ class ConfigHelper
      */
     public static function getConfig($name, $default = null, $allow_empty_value = false)
     {
-        list($section_name, $variable_name) = explode('.', $name, 2);
+        $components = explode('.', $name, 2);
+        if (count($components) != 2) {
+            return $default;
+        }
+        $section_name = $components[0];
+        $variable_name = $components[1];
 
         if (empty($variable_name)) {
             return $default;
@@ -74,12 +79,12 @@ class ConfigHelper
      * @param string $name Config variable name in section.variable format
      * @return boolean
      */
-    public static function checkConfig($name)
+    public static function checkConfig($name, $default = false)
     {
         list($section_name, $variable_name) = explode('.', $name, 2);
 
         if (empty($variable_name)) {
-            return false;
+            return $default;
         }
 
         if ($section_name === 'privileges') {
@@ -88,11 +93,11 @@ class ConfigHelper
         }
 
         if (!LMSConfig::getConfig()->hasSection($section_name)) {
-            return false;
+            return $default;
         }
 
         if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
-            return false;
+            return $default;
         }
 
         return self::checkValue(LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name)->getValue());

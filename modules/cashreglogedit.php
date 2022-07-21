@@ -27,7 +27,7 @@
 $reglog = $DB->GetRow('SELECT * FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
 
 $regid = $reglog['regid'];
-$reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
+$reglog['time'] = date('Y/m/d H:i', $reglog['time']);
 
 if (!$regid) {
         $SESSION->redirect('?m=cashreglist');

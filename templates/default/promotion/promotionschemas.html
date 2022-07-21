@@ -47,10 +47,10 @@
 									<strong>{$schema.name|escape}</strong>
 									{if $schema.datefrom || $schema.dateto}
 										{if $schema.datefrom}
-											({trans("from")} {$schema.datefrom|date_format:"%Y/%m/%d"}{if !$schema.dateto}){/if}
+											({trans("from")} {$schema.datefrom|date_format:"Y-m-d"}{if !$schema.dateto}){/if}
 										{/if}
 										{if $schema.dateto}
-											{if !$schema.datefrom}({/if}{trans("to")} {$schema.dateto|date_format:"%Y/%m/%d"})
+											{if !$schema.datefrom}({/if}{trans("to")} {$schema.dateto|date_format:"Y-m-d"})
 										{/if}
 									{/if}
 								</td>

@@ -73,6 +73,8 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 
     if ($netdev['ports'] > $netdev['takenports']) {
         $nodelist = $LMS->GetUnlinkedNodes();
+    } else {
+        $nodelist = array();
     }
     $netdevips = $LMS->GetNetDevIPs($id);
 
@@ -104,13 +106,15 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $queue = $LMS->GetQueueContents(array('netdevids' => $id, 'short'=> 1));
 
     $start = 0;
-    $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
+    $pagelimit = ConfigHelper::getConfig(
+        'rt.ticketlist_pagelimit',
+        ConfigHelper::getConfig('phpui.ticketlist_pagelimit', isset($queue['total']) ? $queue['total'] : null)
+    );
 
     $SMARTY->assign('netdev', $netdev);
     $SMARTY->assign('start', $start);
     $SMARTY->assign('pagelimit', $pagelimit);
     $SMARTY->assign('queue', $queue);
-    $SMARTY->assign('queue_count', $queue_count);
     $SMARTY->assign('queue_netdevid', $id);
     $SMARTY->assign('objectid', $netdev['id']);
     $SMARTY->assign('restnetdevlist', $netdevlist);

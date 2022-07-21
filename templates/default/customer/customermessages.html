@@ -88,7 +88,7 @@
 					{/if}
 				{/strip}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
-						{$item.cdate|date_format:"%Y/%m/%d"}
+						{$item.cdate|date_format:"Y-m-d"}
 					</TD>
 					<TD class="bold" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{if $item.type == $smarty.const.MSG_MAIL}
@@ -103,17 +103,19 @@
 						{$item.subject|escape}
 					</TD>
 					<TD class="text-center nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
-						<a href="?m=userinfo&id={$item.userid}">{$item.username|escape}</a>
+						{if $item.userid}
+							<a href="?m=userinfo&id={$item.userid}">{$item.username|escape}</a>
+						{/if}
 					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.destination}
 					</TD>
 					<TD class="text-right nobr">
-						{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+						{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
 						{if $item.status == $smarty.const.MSG_DELIVERED
-							&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+							&& $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
 						{if $item.files}

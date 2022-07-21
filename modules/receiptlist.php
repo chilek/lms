@@ -143,8 +143,8 @@ $SESSION->restore('rlf', $listdata['from']);
 $SESSION->restore('rlt', $listdata['to']);
 $SESSION->restore('rla', $listdata['advances']);
 
-$listdata['order'] = $receiptlist['order'];
-$listdata['direction'] = $receiptlist['direction'];
+$listdata['order'] = isset($receiptlist['order']) ? $receiptlist['order'] : null;
+$listdata['direction'] = isset($receiptlist['direction']) ? $receiptlist['direction'] : null;
 $listdata['totalincome'] = $summary['totalincome'];
 $listdata['totalexpense'] = $summary['totalexpense'];
 $listdata['regid'] = $regid;

@@ -37,7 +37,7 @@
                                         <INPUT type="HIDDEN" name="page" value="1">
                                         <B>{trans("Filter:")} </B> {trans("Domain's owner:")}
                                         <SELECT size="1" name="u" OnChange="document.filter.submit();">
-                                                <OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
+                                                <OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("— all owners —")}</OPTION>
                                                 <OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
                                                 {foreach from=$customerlist item=customer}
                                                 <OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"&hellip;"}</OPTION>
@@ -45,7 +45,7 @@
                                         </SELECT>&nbsp;
                                         {trans("Domain:")}
                                         <SELECT size="1" name="d" OnChange="document.filter.submit();">
-                                                <OPTION value=""{if $listdata.domainid == ""} SELECTED{/if}>{trans("- all -")}</OPTION>
+                                                <OPTION value=""{if $listdata.domainid == ""} SELECTED{/if}>{trans("— all —")}</OPTION>
                                         {foreach from=$domainlist item=item}
                                                 <OPTION value="{$item.id}"{if $item.id == $listdata.domain} SELECTED{/if}>{$item.name}</OPTION>
                                         {/foreach}

@@ -149,7 +149,7 @@
 									<select size="1" name="{$variable_prefix}[schemaid]" id="promotion-select"
 										{tip text="Select promotion schema" trigger="promotion-select" class="lms-ui-advanced-select"}>
 										{if $promotion_only}
-											<option value="0">{trans("<!promotionschema>- none -")}</option>
+											<option value="0">{trans("<!promotionschema>— none —")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
 											{if $promotion.valid || $promotion.datefrom > $smarty.now}
@@ -157,7 +157,7 @@
 													label="{strip}
 															{$promotion.name|escape}
 															{if !$promotion.valid && $promotion.datefrom > $smarty.now}
-																&nbsp;({trans("from")}&nbsp;{$promotion.datefrom|date_format:"%Y/%m/%d"})
+																&nbsp;({trans("from")}&nbsp;{$promotion.datefrom|date_format:"Y-m-d"})
 															{/if}
 														{/strip}"
 													data-valid="{$promotion.valid}"
@@ -182,7 +182,7 @@
 															>{strip}
 																{$schema.name|trunescape:$promotion_schema_name_limit}
 																{if !$schema.valid && $schema.datefrom > $smarty.now}
-																	&nbsp;({trans("from")}&nbsp;{$schema.datefrom|date_format:"%Y/%m/%d"})
+																	&nbsp;({trans("from")}&nbsp;{$schema.datefrom|date_format:"Y-m-d"})
 																{/if}
 															{/strip}</option>
 														{/if}
@@ -310,7 +310,7 @@
 																		<td>
 																			<select class="schema-tariff-selection" name="{$variable_prefix}[sassignmentid][{$schemaid}][{$label}]" data-label="{$label}">
 																				{if !$item.selection.required}
-																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("- none -")}</option>
+																				<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("— none —")}</option>
 																				{/if}
 																				{foreach $item.selection.items as $item}
 																				<option value="{$item.assignmentid}" data-tariffaccess="{$item.authtype}"
@@ -416,7 +416,7 @@
 									{trans("Name:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name|escape}{/if}"
+									<INPUT type="text" name="{$variable_prefix}[name]" value="{if $variables.tariffid<=0}{$variables.name|default:""|escape}{/if}"
 										size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
 								</TD>
 							</TR>
@@ -632,7 +632,7 @@
 									{trans("Product ID:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid|escape}"
+									<INPUT type="text" name="{$variable_prefix}[prodid]" value="{$variables.prodid|default:""|escape}"
 										size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
 								</TD>
 							</TR>
@@ -646,7 +646,7 @@
 								</TD>
 								<TD>
 									<SELECT name="{$variable_prefix}[numberplanid]" {tip text="Select numbering plan"}>
-										<OPTION value=""{if !$variables.numberplanid} selected{/if}>- {trans("default")} -</OPTION>
+										<OPTION value=""{if !$variables.numberplanid} selected{/if}>— {trans("default")} —</OPTION>
 
 										{foreach item=plan from=$numberplanlist}
 										{assign var=period value=$plan.period}
@@ -731,7 +731,7 @@
 							{else}
 							{trans("settlement type of first deficient period:")}
 							<SELECT name="{$variable_prefix}[settlement]">
-								<OPTION value="0">{trans("<!settlement>- none -")}</OPTION>
+								<OPTION value="0">{trans("<!settlement>— none —")}</OPTION>
 								<OPTION value="1"{if $variables.settlement == 1} selected{/if}>{trans("<!settlement>next period")}</OPTION>
 								<OPTION value="2"{if $variables.settlement == 2} selected{/if}>{trans("<!settlement>current period")}</OPTION>
 							</SELECT>

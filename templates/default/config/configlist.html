@@ -150,10 +150,10 @@
 				{trans($config.reftypedescription)}
 			</td>
 			<td>
-				{if $config.userid}{$config.rusername} ({$config.login}){else}{trans('<!filter>- none -')}{/if}
+				{if $config.userid}{$config.rusername} ({$config.login}){else}{trans('<!filter>— none —')}{/if}
 			</td>
 			<td>
-				{if $config.divisionid}{$config.shortname|escape}{else}{trans('<!filter>- none -')}{/if}
+				{if $config.divisionid}{$config.shortname|escape}{else}{trans('<!filter>— none —')}{/if}
 			</td>
 			<td class="lms-ui-buttons text-right nobr">
 				{if $config.disabled}
@@ -344,12 +344,12 @@ $(function() {
 							type_filer === $t("global value")
 							&& (
 									typeof(division_filer) === 'undefined'
-									|| division_filer === $t("<!filter>- none -")
+									|| division_filer === $t("<!filter>— none —")
 									|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
 							)
 							&& (
 									typeof(user_filer) === 'undefined'
-									|| user_filer === $t("<!filter>- none -")
+									|| user_filer === $t("<!filter>— none —")
 									|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
 							)
 					)
@@ -359,11 +359,11 @@ $(function() {
 			}
 
 			if (type_filer === $t("division value")
-				&& division_filer != $t("<!filter>- none -")
+				&& division_filer != $t("<!filter>— none —")
 				&& division_filer.length > 0
 				&& (
 					typeof(user_filer) === 'undefined'
-					|| user_filer === $t("<!filter>- none -")
+					|| user_filer === $t("<!filter>— none —")
 					|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
 				)
 			) {
@@ -371,18 +371,18 @@ $(function() {
 			}
 
 			if (type_filer === $t("user in division value")
-					&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
-					&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0) {
+					&& division_filer != $t("<!filter>— none —") && division_filer.length > 0
+					&& user_filer !== $t("<!filter>— none —") && user_filer.length > 0) {
 				export_args += '&source-division=' + division_filer + '';
 				export_args += '&source-user=' + user_filer + '';
 			}
 
 			if (type_filer === $t("user value")
-				&& user_filer !== $t("<!filter>- none -")
+				&& user_filer !== $t("<!filter>— none —")
 				&& user_filer.length > 0
 				&& (
 					typeof(division_filer) === 'undefined'
-					|| division_filer === $t("<!filter>- none -")
+					|| division_filer === $t("<!filter>— none —")
 					|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
 				)
 			) {
@@ -507,12 +507,12 @@ $(function() {
 					type_filer === $t("global value")
 					&& (
 						typeof(division_filer) === 'undefined'
-						|| division_filer === $t("<!filter>- none -")
+						|| division_filer === $t("<!filter>— none —")
 						|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
 					)
 					&& (
 						typeof(user_filer) === 'undefined'
-						|| user_filer === $t("<!filter>- none -")
+						|| user_filer === $t("<!filter>— none —")
 						|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
 					)
 				)
@@ -523,11 +523,11 @@ $(function() {
 			}
 
 			if (type_filer === $t("division value")
-				&& division_filer != $t("<!filter>- none -")
+				&& division_filer != $t("<!filter>— none —")
 				&& division_filer.length > 0
 				&& (
 					typeof(user_filer) === 'undefined'
-					|| user_filer === $t("<!filter>- none -")
+					|| user_filer === $t("<!filter>— none —")
 					|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
 				)
 			) {
@@ -537,19 +537,19 @@ $(function() {
 			}
 
 			if (type_filer === $t("user in division value")
-					&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
-					&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0) {
+					&& division_filer != $t("<!filter>— none —") && division_filer.length > 0
+					&& user_filer !== $t("<!filter>— none —") && user_filer.length > 0) {
 				$('#export, #clone, .clone-container-user, .clone-container-section-select, .clone-container-division, .withparentbindings, .override').show();
 				$('.clone-container-section-input, .withchildbindings').hide();
 				return;
 			}
 
 			if (type_filer === $t("user value")
-				&& user_filer !== $t("<!filter>- none -")
+				&& user_filer !== $t("<!filter>— none —")
 				&& user_filer.length > 0
 				&& (
 					typeof(division_filer) === 'undefined'
-					|| division_filer === $t("<!filter>- none -")
+					|| division_filer === $t("<!filter>— none —")
 					|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
 				)
 			) {

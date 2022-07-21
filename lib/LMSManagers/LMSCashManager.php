@@ -63,6 +63,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         $error = array();
         $syslog_records = array();
 
+        $sourcefileid = null;
+
         foreach ($file as $line) {
             $id = null;
             $count = 0;
@@ -112,8 +114,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
 
             $name = isset($matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
-            $customername = preg_replace('/[\s]{2,}/', ' ', $name);
             $lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
+            $customername = preg_replace('/[\s]{2,}/', ' ', (empty($lastname) ? '' : $lastname . ' ') . $name);
             $comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
             $time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
             $value = str_replace(',', '.', isset($matches[$pattern['pvalue']]) ? preg_replace('/[\s]/', '', $matches[$pattern['pvalue']]) : '');
@@ -137,18 +139,40 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             // seek invoice number
             if (!$id && !empty($pattern['invoice_regexp'])) {
                 if (preg_match($pattern['invoice_regexp'], $theline, $matches)) {
-                    $invid = $matches[$pattern['pinvoice_number']];
-                    $invyear = $matches[$pattern['pinvoice_year']];
-                    $invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
-
-                    if ($invid && $invyear) {
-                        $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
-                        $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+                    if (!isset($pattern['pinvoice_year']) || !isset($pattern['pinvoice_month']) || !isset($pattern['pinvoice_number'])) {
                         $id = $this->db->GetOne(
-                            'SELECT customerid FROM documents
-								WHERE number=? AND cdate>? AND cdate<? AND type IN (?,?)',
-                            array($invid, $from, $to, DOC_INVOICE, DOC_CNOTE)
+                            'SELECT customerid
+                            FROM documents
+                            WHERE LOWER(fullnumber) = LOWER(?)
+                                AND type IN ?',
+                            array(
+                                $matches[1],
+                                array(DOC_INVOICE, DOC_CNOTE)
+                            )
                         );
+                    } else {
+                        $invnumber = $matches[$pattern['pinvoice_number']];
+                        $invyear = $matches[$pattern['pinvoice_year']];
+                        $invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
+
+                        if ($invnumber && $invyear) {
+                            $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
+                            $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+                            $id = $this->db->GetOne(
+                                'SELECT customerid
+                                FROM documents
+                                WHERE number = ?
+                                    AND cdate > ?
+                                    AND cdate < ?
+                                    AND type IN ?',
+                                array(
+                                    $invnumber,
+                                    $from,
+                                    $to,
+                                    array(DOC_INVOICE, DOC_CNOTE)
+                                )
+                            );
+                        }
                     }
                 }
             }
@@ -201,7 +225,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     'SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
                     array($lastname, $name)
                 );
-                if (count($uids) == 1) {
+                if (!empty($uids) && count($uids) == 1) {
                     $id = $uids[0];
                 }
                 $found_by_name = true;
@@ -288,7 +312,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
                 if (!$this->db->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash))) {
                     // Add file
-                    if (!$sourcefileid) {
+                    if (!isset($sourcefileid)) {
                         $args = array(
                             'name' => $filename,
                             'idate' => isset($filemtime) ? $filemtime : time(),
@@ -329,7 +353,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     $res = $this->db->Execute('INSERT INTO cashimport (date, value, customer,
 						customerid, description, hash, sourceid, sourcefileid, srcaccount)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-                    if ($res && $this->sylog) {
+                    if ($res && $this->syslog) {
                         $args[SYSLOG::RES_CASHIMPORT] = $this->db->GetLastInsertID('cashimport');
                         $syslog_records[] = array(
                             'resource' => SYSLOG::RES_CASHIMPORT,
@@ -360,7 +384,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         }
 
         if ($sourcefileid) {
-            if ($error['sum']) {
+            if (isset($error['sum'])) {
                 $this->db->Execute('DELETE FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
                 $this->db->Execute('DELETE FROM sourcefiles WHERE id = ?', array($sourcefileid));
             } else {

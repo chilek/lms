@@ -447,7 +447,7 @@ function get_teryt_file($ch, $type, $outfile)
         11 => 'listopada',
         12 => 'grudnia',
     );
-    $date = strftime('%d') . ' ' . $month_names[intval(strftime('%m'))] . ' ' . strftime('%Y');
+    $date = date('d') . ' ' . $month_names[intval(date('m'))] . ' ' . date('Y');
 
     $continue = false;
     do {
@@ -530,7 +530,7 @@ if (isset($options['fetch'])) {
     $ch = curl_init();
 
     $file_counter = 0;
-    $teryt_filename_suffix = '_' . strftime('%d%m%Y');
+    $teryt_filename_suffix = '_' . date('dmY');
     foreach ($teryt_files as $file) {
         $res = get_teryt_file($ch, $file['type'], $teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . $teryt_filename_suffix . '.zip');
         if ($res) {

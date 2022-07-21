@@ -320,7 +320,7 @@
 											<strong>{trans("Purchase date")}</strong>
 										</td>
 										<td>
-											{$netdev.purchasetime|date_format:"%Y/%m/%d"}
+											{$netdev.purchasetime|date_format:"Y-m-d"}
 										</td>
 									</tr>
 								{/if}
@@ -339,7 +339,7 @@
 										{else}
 											{assign var=periodid value=$netdev.guaranteeperiod}
 											{$_GUARANTEEPERIODS.$periodid}
-												({if $netdev.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdev.guaranteetime|date_format:"%Y/%m/%d"}{/if})
+												({if $netdev.guaranteetime-$smarty.now < 0}{trans("expired<!guarantee>")}{else}{$netdev.guaranteetime|date_format:"Y-m-d"}{/if})
 										{/if}
 									</td>
 								</tr>
@@ -406,7 +406,7 @@
 					<div class="lms-ui-box-button-container">
 						{button icon="convert" id="replace-netdev" label="Replace"}
 						<select id="target-netdev" class="lms-ui-advanced-select">
-							<option value="">{trans("- select target network device -")}</option>
+							<option value="">{trans("— select target network device —")}</option>
 							{foreach $targetnetdevs as $targetnetdev}
 								<option value="{$targetnetdev.id}" title="{$targetnetdev.producer} / {$targetnetdev.model}"
 									{if $netdev.ports > $targetnetdev.ports}disabled{/if}

@@ -49,7 +49,7 @@
 		<TD colspan="6">
 			{trans("Status")}:
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>- {trans("all")} -</OPTION>
+				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>{trans("— all —")}</OPTION>
 				{foreach $_NETELEMENTSTATUSES as $idx => $status}
 					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
 				{/foreach}
@@ -59,16 +59,16 @@
 			</SELECT>
 			{trans("Project:")}
 			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>— {trans("without project")} —</OPTION>
 				{foreach $NNprojects as $project}
 					<OPTION value="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Network node:")}
 			<SELECT NAME="n" ONCHANGE="document.choosefilter.submit();" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}>
-				<OPTION VALUE="-1"{if $listdata.netnode == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.netnode == -2} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.netnode == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.netnode == -2} selected{/if}>{trans("— none —")}</OPTION>
 				{foreach $netnodes as $netnode}
 				<OPTION VALUE="{$netnode.id}"{if $listdata.netnode == $netnode.id} selected{/if}>{$netnode.name}</OPTION>
 				{/foreach}
@@ -77,16 +77,16 @@
 			{networkDeviceTypes elemname="type" selected=$listdata.type onchange="document.choosefilter.submit();"}
 			{trans("Producer:")}
 			<SELECT SIZE="1" NAME="producer" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.producer == -2} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.producer == -2} selected{/if}>{trans("— none —")}</OPTION>
 				{foreach $producers as $producer}
 				<OPTION VALUE="{$producer}"{if $listdata.producer == $producer} selected{/if}>{$producer}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Model:")}
 			<SELECT SIZE="1" NAME="model" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.model == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.model == -2} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.model == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.model == -2} selected{/if}>{trans("— none —")}</OPTION>
 				{foreach $models as $model}
 				<OPTION VALUE="{$model}"{if $listdata.model == $model} selected{/if}>{$model}</OPTION>
 				{/foreach}
@@ -115,7 +115,7 @@
 				<i class="lms-ui-icon-netdevunk"></i>
 			{/if}
 			<A href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
-					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}">
+					title="{$netdev.description|replace:"\n":"<br>"|default:trans("— no description —")}">
 				<B>{$netdev.name}</B></A>
 			<br>
 			{if $netdev.producer}
@@ -146,7 +146,7 @@
 				{/if}
 			{/if}
 			{if $netdev.ownerid}
-			<br>{button type="link" icon="customer" label=$netdev.customername href="?m=customerinfo&id={$netdev.ownerid}"}
+				<div>{button type="link" icon="customer" label=$netdev.customername href="?m=customerinfo&id={$netdev.ownerid}"}</div>
 			{/if}
 		</TD>
 		<TD class="nobr valign-top">

@@ -99,7 +99,7 @@
 									{icon name="timetable" label="Create time"}
 								</TD>
 								<TD style="width: 99%;">
-									{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+									{$ticket.createtime|date_format:"Y-m-d H:i:s"}
 								</TD>
 							</TR>
 							{if $ticket.creatorid}
@@ -169,7 +169,7 @@
 								</TD>
 								<TD style="width: 99%;">
 									{if $ticket.deadline}
-										{$ticket.deadline|date_format:"%Y/%m/%d %H:%M:%S"}
+										{$ticket.deadline|date_format:"Y-m-d H:i:s"}
 									{else}
 										{trans("none")}
 									{/if}
@@ -218,7 +218,7 @@
 									{icon name="remove" label="Remove date"}
 								</TD>
 								<TD style="width: 99%;">
-									{$ticket.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
+									{$ticket.deltime|date_format:"Y-m-d H:i:s"}
 								</TD>
 							</TR>
 							{/if}
@@ -364,7 +364,8 @@
 				{button type="link-button" icon="edit" tip= "Edit" label="Edit" href="?m=rtticketedit&id={$ticket.ticketid}"}
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
-				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
+				{if ConfigHelper::checkConfig('rt.block_ticket_close_with_open_events', ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))
+					&& !empty($ticket['openeventcount'])}
 					{button icon="status-resolved" label="Ticket have open assigned events!" tip="Ticket have open assigned events!" class="blend disabled"}
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}

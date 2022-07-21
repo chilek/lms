@@ -41,7 +41,7 @@ if (isset($filter['edate']) && !empty($filter['edate'])) {
 if (!isset($_POST['loginform']) && !empty($_POST)) {
     list ($filter['year'], $filter['month'], $filter['day']) = explode('/', isset($_POST['date']) && !empty($_POST['date']) ? $_POST['date'] : date('Y/m/d'));
 
-    if ($filter['edate']) {
+    if (isset($filter['edate']) && $filter['edate']) {
         if (empty($filter['month'])) {
             if ($filter['month'] != $_POST['month']) {
                 $filter['day'] = 1;
@@ -123,10 +123,10 @@ if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) 
 }
 
 $SESSION->save('eld', array(
-    'year' => $filter['year'],
-    'month' => $filter['month'],
-    'day' => $filter['day'],
-    'edate' => $filter['edate'],
+    'year' => isset($filter['year']) ? $filter['year'] : null,
+    'month' => isset($filter['month']) ? $filter['month'] : null,
+    'day' => isset($filter['day']) ? $filter['day'] : null,
+    'edate' => isset($filter['edate']) ? $filter['edate'] : null,
 ));
 
 $SESSION->saveFilter($filter, null, array('year', 'month', 'day', 'edate'), true);
@@ -145,7 +145,7 @@ if (!isset($filter['year'])) {
 
 $layout['pagetitle'] = trans('Timetable');
 
-$filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
+$filter['forward'] = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
 $eventlist = $LMS->GetEventList($filter);
 
 if ($eventlist) {
@@ -173,7 +173,8 @@ $force_overdue_events = isset($_GET['force_overdue_events']) ? 1 : 0;
 $overdue_events = array();
 
 $params['userid'] = Auth::GetCurrentUser();
-if (ConfigHelper::checkConfig('phpui.timetable_overdue_events') && empty($overdue_events_only)) {
+if (ConfigHelper::checkConfig('timetable.show_delayed_events', ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
+    && empty($overdue_events_only)) {
     $params['forward'] = -1;
     $params['closed'] = 0;
     $params['type'] = 0;
@@ -207,7 +208,7 @@ if (ConfigHelper::checkConfig('phpui.timetable_overdue_events') && empty($overdu
 }
 
 // create calendars
-for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
+for ($i = 0; $i < ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward')); $i++) {
     $dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
     $daylist[$i] = $dt;
 }
@@ -241,5 +242,5 @@ $SMARTY->assign('overdue_events_only', $overdue_events_only);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
-$SMARTY->assign('getHolidays', getHolidays($year));
+$SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
 $SMARTY->display('event/eventlist.html');

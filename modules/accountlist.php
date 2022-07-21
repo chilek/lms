@@ -28,6 +28,10 @@ function GetAccountList($order = 'login,asc', $customer = null, $type = null, $k
 {
     global $DB, $ACCOUNTTYPES;
 
+    if (!isset($order)) {
+        $order = 'login,asc';
+    }
+
     list($order,$direction) = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';

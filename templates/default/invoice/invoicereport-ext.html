@@ -14,7 +14,8 @@
 		</TD>
 		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t a=trans($smarty.now|date_format:"l") b=$smarty.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}
+			<br>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>
@@ -57,7 +58,7 @@
 		</TD>
 		{/if}
 	</TR>
-	{if !isset($printonlysummary)}
+	{if !$printonlysummary}
 	{cycle values="grey,white" print=false}
 	{math assign=start equation="(x-1)*y" x=$item y=$rows}
 	{section name=invoicelist loop=$invoicelist start=$start max=$rows}
@@ -68,17 +69,17 @@
 		</TD>
 		<TD ALIGN="RIGHT">
 			<B>{$invoicelist[invoicelist].number}</B><BR>
-			{$invoicelist[invoicelist].cdate|date_format:"%d.%m.%Y"}
+			{$invoicelist[invoicelist].cdate|date_format:"d.m.Y"}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{if $invoicelist[invoicelist].sdate}{$invoicelist[invoicelist].sdate|date_format:"%d.%m.%Y"}{else}{$invoicelist[invoicelist].cdate|date_format:"%d.%m.%Y"}{/if}<BR>
-			{$invoicelist[invoicelist].pdate|date_format:"%d.%m.%Y"}
+			{if $invoicelist[invoicelist].sdate}{$invoicelist[invoicelist].sdate|date_format:"d.m.Y"}{else}{$invoicelist[invoicelist].cdate|date_format:"d.m.Y"}{/if}<BR>
+			{$invoicelist[invoicelist].pdate|date_format:"d.m.Y"}
 		</TD>
 		<TD>
 			{strip}
 			<strong>{$invoicelist[invoicelist].custname}</strong>
-			{if !isset($printcustomerid)}&nbsp;(#{$invoicelist[invoicelist].customerid}){/if}
-			{if $invoicelist[invoicelist].ctype == $smarty.const.CTYPES_COMPANY || !isset(printcustomerssn)}
+			{if !$printcustomerid}&nbsp;(#{$invoicelist[invoicelist].customerid}){/if}
+			{if $invoicelist[invoicelist].ctype == $smarty.const.CTYPES_COMPANY || !$printcustomerssn}
 				{if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}
 			{/if}
 			<br>
@@ -249,7 +250,8 @@
 		</TD>
 		<TD WIDTH="200" ALIGN="RIGHT" NOWRAP>
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t a=trans($smarty.now|date_format:"l") b=$smarty.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}
+			<br>
 			{t a=$layout.logname}Created by: $a{/t}
 		</TD>
 	</TR>

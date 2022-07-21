@@ -1,10 +1,10 @@
 UWAGA! Ta wiadomość została wygenerowana automatycznie.
 
 Uprzejmie informujemy iż na Pani/Pana koncie figuruje zaległość w opłatach za
-internet w wysokości %b zł. 
+internet w wysokości %b zł.
 
 Jeżeli porozumieli się już Państwo z administratorami w kwestii opłaty za
-bieżący miesiąc czyli %date-m %date-y roku, prosimy o 
+bieżący miesiąc czyli %date-m %date-y roku, prosimy o
 zignorowanie tej wiadomości.
 
 W wypadku gdy uważają Państwo iż zaległość ta jest nieporozumieniem prosimy o
@@ -26,10 +26,10 @@ telefon: 0-606666666
 email: gwidonm@naszasiec.pl
 
 ps. załączamy ostatnie 10 operacji jakie zostało zarejestrowane przez nasz
-system bilingowy na Państwa koncie:
+system billingowy na Państwa koncie:
 
 ---data----+---kwota---+------------------------opis------------------------
-%last_10_in_a_table 
+%last_10_in_a_table
 
 --
 Amatorska Sieć Komputerowa NaszaSiec

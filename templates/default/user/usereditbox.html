@@ -83,7 +83,7 @@
 				{trans("Issuer")}
 			</td>
 			<td>
-				<input type="text" name="userinfo[issuer]" value="{$userinfo.issuer|escape}" size="40"
+				<input type="text" name="userinfo[issuer]" value="{$userinfo.issuer|default:""|escape}" size="40"
 					{tip text="Enter issuer name visible on documents" trigger="issuer"}>
 			</td>
 		</tr>
@@ -287,7 +287,7 @@
 									<label>
 										{trans("of selected user:")}
 										<select id="from-user" name="userinfo[src_userid]">
-											<option value="">{trans("<!access-rights>- empty -")}</option>
+											<option value="">{trans("<!access-rights>— empty —")}</option>
 											{foreach $users as $user}
 												{if $user.id != $userinfo.id}
 													<option value="{$user.id}"
@@ -336,7 +336,7 @@
 			<td>
 				<select size="4" name="userinfo[usergroups][]" id="usergroups" multiple
 					{tip text="Select user groups" class="lms-ui-multiselect" trigger="usergroups"}
-					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 					{foreach $usergroups as $group}
 						<option value="{$group.id}"{if isset($selectedusergroups[$group.id])} selected{/if}>{$group.name}</option>
 					{/foreach}
@@ -356,7 +356,7 @@
 			<td>
 				<select size="4" name="userinfo[customergroups][]" id="customergroups" multiple
 					{tip text="Select customer groups" class="lms-ui-multiselect" trigger="customergroups"}
-					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 					{foreach $customergroups as $customergroup}
 						<option value="{$customergroup.id}"{if isset($selectedgroups[$customergroup.id])} selected{/if}>{$customergroup.name}</option>
 					{/foreach}
@@ -376,7 +376,7 @@
 				<td>
 					<select size="4" name="userinfo[divisions][]" id="divisions" multiple
 						{tip text="Select divisions" class="lms-ui-multiselect" trigger="divisions"}
-						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+						data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 						{foreach $divisions as $division}
 							<option value="{$division.id}" {if isset($user_divisions) && in_array($division.id, $user_divisions)} selected{/if}>
 								{$division.label|trunescape:30}

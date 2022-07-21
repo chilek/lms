@@ -170,10 +170,10 @@ if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-$month = intval(strftime("%m", time()));
-$year = strftime("%Y", time());
-$yearday = strftime("01/%m", time());
-$mday = strftime("%s", mktime(0, 0, 0, $month, 1, $year));
+$month = intval(date('m'));
+$year = date('Y');
+$yearday = date('01/m');
+$mday = mktime(0, 0, 0, $month, 1, $year);
 
 /* ********************************************************************
    We should have all hard work here which is being done by our script!
