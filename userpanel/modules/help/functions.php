@@ -117,7 +117,10 @@ if (defined('USERPANEL_SETUPMODE')) {
         $treefile = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/help/templates/tree.html';
         $SMARTY->assign('tree', $questions);
         $SMARTY->assign('treefile', $treefile);
+        $oldDefaultResourceType = $SMARTY->default_resource_type;
+        $SMARTY->setDefaultResourceType('file');
         $SMARTY->display('module:help:setup.html');
+        $SMARTY->setDefaultResourceType($oldDefaultResourceType);
     }
 
     function module_edit()
