@@ -1529,13 +1529,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $error['name'] = trans('Liability name is required!');
                     }
 
-                    if (!$a['value'] && !$a['netflag']) {
+                    if (!$a['value'] && empty($a['netflag'])) {
                         $error['value'] = trans('Liability value is required!');
-                    } elseif (!$a['netvalue'] && $a['netflag']) {
+                    } elseif (!$a['netvalue'] && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Liability value is required!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && !$a['netflag']) {
+                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && empty($a['netflag'])) {
                         $error['value'] = trans('Incorrect value!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && $a['netflag']) {
+                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Incorrect value!');
                     } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
                         $error['value'] = trans('Value less than discount are not allowed!');
