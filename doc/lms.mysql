@@ -1868,7 +1868,7 @@ CREATE TABLE payments (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL DEFAULT '',
   value decimal(9,2) NOT NULL DEFAULT '0',
-  customerid integer,
+  customerid int(11),
   creditor varchar(255) NOT NULL DEFAULT '',
   period smallint NOT NULL DEFAULT '0',
   at smallint NOT NULL DEFAULT '0',
