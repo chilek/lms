@@ -487,7 +487,7 @@ if (($fh = fopen($message_file, "r")) != null) {
             'id' => $tid,
             'queue' => $queuedata['name'],
             'messageid' => isset($msgid) ? $msgid : null,
-            'customerid' => $customer['cid'],
+            'customerid' => empty($customer) ? null : $customer['cid'],
             'status' => $RT_STATES[RT_NEW],
             'categories' => $cats,
             'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
