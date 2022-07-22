@@ -119,8 +119,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             $comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
             $time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
             $value = str_replace(',', '.', isset($matches[$pattern['pvalue']]) ? preg_replace('/[\s]/', '', $matches[$pattern['pvalue']]) : '');
-            $srcaccount = isset($matches[$pattern['srcaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]) : '';
-            $dstaccount = isset($matches[$pattern['dstaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]) : '';
+            $srcaccount = isset($pattern['srcaccount']) && isset($matches[$pattern['srcaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]) : '';
+            $dstaccount = isset($pattern['dstaccount']) && isset($matches[$pattern['dstaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]) : '';
 
             if (!$pattern['pid']) {
                 if (!empty($pattern['pid_regexp'])) {
