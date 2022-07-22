@@ -47,7 +47,7 @@ if (!isset($_POST['event'])) {
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
-    if ($event['ticketid']) {
+    if (!empty($event['ticketid'])) {
         $event['ticketid'] = intval($event['ticketid']);
     }
 
@@ -61,8 +61,8 @@ if (isset($_POST['event'])) {
         $event['dateto'] = mktime(0, 0, 0, $month, $day, $year);
     }
 
-    if ($event['custid']) {
-        $event['customerid'] = $event['custid'];
+    if (!empty($event['custid'])) {
+        $event['customerid'] = intval($event['custid']);
     }
 
     $eventlist = $LMS->EventSearch($event);
