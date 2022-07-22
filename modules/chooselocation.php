@@ -23,6 +23,7 @@
  *
  *  $Id$
  */
+$default_teryt_state = ConfigHelper::getConfig('phpui.default_teryt_state', 1);
 
 function get_loc_streets($cityid)
 {
@@ -223,15 +224,14 @@ if ($streetid) {
 		JOIN location_boroughs b ON (c.boroughid = b.id)
 		JOIN location_districts d ON (b.districtid = d.id)
 		WHERE c.id = ?', array($cityid));
-} else if (count($states)) {
-    $data['stateid'] = $states[key($states)]['id'];
 }
 
-if (!empty($data['stateid'])) {
-    $districts = $DB->GetAll('SELECT id, ident, name
-		FROM location_districts WHERE stateid = ?', array($data['stateid']));
-    $SMARTY->assign('districts', $districts);
-}
+$data['stateid'] = empty($data['stateid']) ? $default_teryt_state : $data['stateid'];
+$districts = $DB->GetAll(
+    'SELECT id, ident, name FROM location_districts WHERE stateid = ?',
+    array($data['stateid'])
+);
+$SMARTY->assign('districts', $districts);
 
 if (!empty($data['districtid'])) {
     $cities = get_loc_cities($data['districtid']);
