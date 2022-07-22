@@ -78,7 +78,7 @@ class LMSEzpdfBackend extends Cezpdf
 
         $this->addInfo('Producer', 'LMS Developers');
         $this->addInfo('Title', $title);
-        $this->addInfo('Creator', 'LMS '.$layout['lmsv']);
+        $this->addInfo('Creator', 'LMS' . (isset($layout['lmsv']) ? ' ' . $layout['lmsv'] : ''));
         $this->setPreferences('FitWindow', '1');
         list ($margin_top, $margin_right, $margin_bottom, $margin_left) =
             explode(',', ConfigHelper::getConfig('invoices.ezpdf_margins', '40,30,40,30'));
