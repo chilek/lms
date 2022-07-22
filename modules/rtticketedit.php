@@ -634,7 +634,7 @@ if (isset($_POST['ticket'])) {
                 'service' => $ticketdata['service'],
                 'type' => $ticketdata['type'],
                 'invproject' => $ticketdata['invproject_name'],
-                'invprojectid' => $ticketdata['invproject'],
+                'invprojectid' => $ticketdata['invprojectid'],
                 'requestor' => $ticketdata['requestor'],
                 'requestor_mail' => $ticketdata['requestor_mail'],
                 'requestor_phone' => $ticketdata['requestor_phone'],
