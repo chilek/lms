@@ -4556,8 +4556,8 @@ $_LANG['Determined GPS coordinates are not precise.\nDo you still want to use th
 
 
 $_LANG['Removed:'] = 'Usunięte:';
-$_LANG['Remover:'] = 'Usuwający:';
-$_LANG['Remove date:'] = 'Data usunięcia:';
+$_LANG['Remover'] = 'Usuwający:';
+$_LANG['Remove date'] = 'Data usunięcia';
 $_LANG['Not removed'] = 'nieusunięte';
 $_LANG['Removed'] = 'usunięte';
 $_LANG['<!rt>Removed'] = 'Usunięte';
