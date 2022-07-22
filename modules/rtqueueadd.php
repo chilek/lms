@@ -120,7 +120,7 @@ if (isset($_POST['queue'])) {
         }
 
         foreach ($categories as $category) {
-            if ($category['checked']) {
+            if (!empty($category['checked'])) {
                 $DB->Execute(
                     'INSERT INTO rtqueuecategories (queueid, categoryid) VALUES (?, ?)',
                     array($id, $category['id'])
