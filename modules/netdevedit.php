@@ -438,7 +438,7 @@ switch ($action) {
                 $error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
             } else if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid'])) {
                 $error['ipaddr'] = trans('Specified IP address is in use!');
-            } else if ($LMS->IsIPGateway($nodedata['ipaddr'])) {
+            } else if ($LMS->IsIPGateway($nodeipdata['ipaddr'])) {
                 $error['ipaddr'] = trans('Specified IP address is network gateway!');
             }
         }
