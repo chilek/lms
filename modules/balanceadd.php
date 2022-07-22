@@ -65,6 +65,9 @@ if (!$addbalance['type']) {
     $addbalance['sourceid'] = null;
     $addbalance['value'] *= -1;
 } else {
+    if (!isset($addbalance['sourceid'])) {
+        $addbalance['sourceid'] = null;
+    }
     $addbalance['servicetype'] = null;
     $addbalance['taxid'] = 0;
 }
