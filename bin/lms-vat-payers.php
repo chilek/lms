@@ -202,6 +202,8 @@ if (!empty($customergroups)) {
             . ')';
     }
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
+} else {
+    $customergroups = '';
 }
 
 $customers = $DB->GetAll(
@@ -213,7 +215,7 @@ $customers = $DB->GetAll(
     JOIN vdivisions d ON d.id = c.divisionid
     WHERE d.ten <> ? AND c.ten <> ? AND c.status IN ?"
     . ($customerid ? ' AND c.id = ' . $customerid : '')
-    . ($customergroups ?: $customergroups)
+    . $customergroups
     . " ORDER BY c.id",
     array(
         '',
