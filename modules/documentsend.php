@@ -94,8 +94,8 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
             if (!isset($test)) {
                 $test = false;
             }
-            if (!isset($extra_file)) {
-                $extra_file = null;
+            if (!isset($extrafile)) {
+                $extrafile = null;
             }
             $LMS->SendDocuments($docs, 'frontend', compact(
                 'debug_email',
