@@ -629,7 +629,7 @@ if (isset($_POST['ticket'])) {
                 'categories' => $ticketdata['categorynames'],
                 'subject' => $ticket['subject'],
                 'body' => $message['body'],
-                'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                'priority' => $ticketdata['priority'] ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                 'deadline' => $ticketdata['deadline'],
                 'service' => $ticketdata['service'],
                 'type' => $ticketdata['type'],
