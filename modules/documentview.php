@@ -198,9 +198,9 @@ if (!empty($_POST['marks'])) {
             ob_end_clean();
             $margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
             if (ConfigHelper::getConfig('phpui.cache_documents')) {
-                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false, false, $doc['md5sum']);
+                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, !empty($_GET['save']), false, $doc['md5sum']);
             } else {
-                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false);
+                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, !empty($_GET['save']));
             }
         } else {
             header('Content-Type: ' . $doc['contenttype']);
