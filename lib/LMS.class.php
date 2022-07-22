@@ -3005,7 +3005,13 @@ class LMS
                     if ($header_name == 'Message-ID') {
                         $this->mail_object->MessageID = $headers[$header_name];
                     } else {
-                        $this->mail_object->addCustomHeader($header_name . ': ' . $headers[$header_name]);
+                        if (is_array($headers[$header_name])) {
+                            foreach ($headers[$header_name] as $header_value) {
+                                $this->mail_object->addCustomHeader($header_name . ': ' . $header_value);
+                            }
+                        } else {
+                            $this->mail_object->addCustomHeader($header_name . ': ' . $headers[$header_name]);
+                        }
                     }
                 }
             }
