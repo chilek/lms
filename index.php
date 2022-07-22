@@ -413,7 +413,7 @@ if ($AUTH->islogged) {
             $SESSION->save('module', $module);
 
             if (!$api) {
-                $SMARTY->assign('url', 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST']
+                $SMARTY->assign('url', 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST']
                     . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1));
 
                 // get all persistent filters
