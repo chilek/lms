@@ -2695,15 +2695,29 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $ten = preg_replace('/- /', '', $ten);
         if (empty($divisionid)) {
-            return $this->db->GetOne(
-                "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
-                array($customerid, preg_replace('/[ \-]/', '', $ten))
-            ) > 0;
+            if (empty($customerid)) {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+                    array(preg_replace('/[ \-]/', '', $ten))
+                ) > 0;
+            } else {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+                    array($customerid, preg_replace('/[ \-]/', '', $ten))
+                ) > 0;
+            }
         } else {
-            return $this->db->GetOne(
-                "SELECT id FROM customers WHERE id <> ? AND divisionid = ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
-                array($customerid, $divisionid, preg_replace('/[ \-]/', '', $ten))
-            ) > 0;
+            if (empty($customerid)) {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE divisionid = ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+                    array($divisionid, preg_replace('/[ \-]/', '', $ten))
+                ) > 0;
+            } else {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE id <> ? AND divisionid = ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+                    array($customerid, $divisionid, preg_replace('/[ \-]/', '', $ten))
+                ) > 0;
+            }
         }
     }
 
@@ -2711,15 +2725,29 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $ssn = preg_replace('/- /', '', $ssn);
         if (empty($divisionid)) {
-            return $this->db->GetOne(
-                "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
-                array($customerid, preg_replace('/[ \-]/', '', $ssn))
-            ) > 0;
+            if (empty($customerid)) {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+                    array(preg_replace('/[ \-]/', '', $ssn))
+                ) > 0;
+            } else {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+                    array($customerid, preg_replace('/[ \-]/', '', $ssn))
+                ) > 0;
+            }
         } else {
-            return $this->db->GetOne(
-                "SELECT id FROM customers WHERE id <> ? AND divisionid = ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
-                array($customerid, $divisionid, preg_replace('/[ \-]/', '', $ssn))
-            ) > 0;
+            if (empty($customerid)) {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE divisionid = ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+                    array($divisionid, preg_replace('/[ \-]/', '', $ssn))
+                ) > 0;
+            } else {
+                return $this->db->GetOne(
+                    "SELECT id FROM customers WHERE id <> ? AND divisionid = ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+                    array($customerid, $divisionid, preg_replace('/[ \-]/', '', $ssn))
+                ) > 0;
+            }
         }
     }
 
