@@ -824,9 +824,7 @@ if (!empty($netdev['ownerid'])) {
 }
 
 $netdevips       = $LMS->GetNetDevIPs($id);
-if ($netdev['ports'] > $netdev['takenports']) {
-    $nodelist        = $LMS->GetUnlinkedNodes();
-}
+$nodelist        = $netdev['ports'] > $netdev['takenports'] ? $LMS->GetUnlinkedNodes() : array();
 $netdevconnected = $LMS->GetNetDevConnectedNames($id);
 $netcomplist     = $LMS->GetNetDevLinkedNodes($id);
 $netdevlist      = $LMS->GetNotConnectedDevices($id);
