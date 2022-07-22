@@ -475,13 +475,15 @@ if (isset($_POST['message'])) {
                         'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
                         'status' => $ticketdata['status'],
                         'categories' => $ticketdata['categorynames'],
-                        'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                        'priority' => $ticketdata['priority'] ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                         'deadline' => $ticketdata['deadline'],
                         'subject' => $message['subject'],
                         'body' => $message['body'],
                         'attachments' => &$attachments,
                     );
-                    $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
+                    if ($ticketdata['priority']) {
+                        $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
+                    }
                     $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
 
                     $params['customerinfo'] = isset($mail_customerinfo)
