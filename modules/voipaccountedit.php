@@ -176,9 +176,7 @@ if (isset($_POST['voipaccountedit'])) {
     }
 }
 
-if (!ConfigHelper::checkConfig('phpui.big_networks')) {
-    $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+$SMARTY->assign('customers', ConfigHelper::checkConfig('phpui.big_networks') ? array() : $LMS->GetCustomerNames());
 
 if (!empty($voipaccountinfo['ownerid']) && $LMS->CustomerExists($voipaccountinfo['ownerid']) && ($customerid = $voipaccountinfo['ownerid'])) {
     include(MODULES_DIR . '/customer.inc.php');
@@ -198,7 +196,6 @@ $SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers;
 $SMARTY->assign('customervoipaccounts', $customervoipaccounts);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('voipaccountinfo', $voipaccountinfo);
-$SMARTY->assign('customers', $customers);
 $SMARTY->assign('customer_addresses', empty($voipaccountinfo['ownerid']) ? array() : $LMS->getCustomerAddresses($voipaccountinfo['ownerid']));
 
 $SMARTY->display('voipaccount/voipaccountedit.html');
