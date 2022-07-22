@@ -2164,7 +2164,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
-        if ($invoice['invoice']['recipient_address_id'] > 0) {
+        if (!empty($invoice['invoice']['recipient_address_id']) && $invoice['invoice']['recipient_address_id'] > 0) {
             $invoice['invoice']['recipient_address_id'] = $location_manager->CopyAddress($invoice['invoice']['recipient_address_id']);
         } else {
             $invoice['invoice']['recipient_address_id'] = null;
@@ -2178,7 +2178,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $invoice['invoice']['post_address_id'] = $location_manager->CopyAddress($post_address_id);
 
-        $doc_comment = $invoice['invoice']['comment'];
+        $doc_comment = isset($invoice['invoice']['comment']) ? $invoice['invoice']['comment'] : '';
         if (isset($invoice['invoice']['proformanumber']) && $invoice['invoice']['type'] == DOC_INVOICE) {
             $comment = ConfigHelper::getConfig('invoices.proforma_conversion_comment_format', '%comment');
             $comment = str_replace(
