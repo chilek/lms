@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -52,15 +52,16 @@ if (!preg_match('/^[0-9]+-[0-9]+$/', $_GET['db'])) {
     die;
 }
 
-$filename = ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$_GET['db'].'.sql';
+$filename = ConfigHelper::getConfig('directories.backup_dir') . DIRECTORY_SEPARATOR . 'lms-' . $_GET['db'] . '.sql';
+$suffix = '';
 
 header('Content-Type: application/octet-stream');
-if ((extension_loaded('zlib')) && (strstr($_GET['file'], "sql.gz"))) {
+list ($db_dump_date, $db_schema_date) = explode('-', $_GET['db']);
+if (extension_loaded('zlib') && strstr($_GET['file'], 'sql.gz')) {
+    $suffix = '.gz';
     $filename .= '.gz';
-    header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His', $_GET['db']).'.sql.gz');
-} else {
-    header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His', $_GET['db']).'.sql');
 }
+header('Content-Disposition: attachment; filename=lms-backup-' . date('Ymd-His', $db_dump_date) . '-' . $db_schema_date . '.sql' . $suffix);
 header('Pragma: public');
 header('Content-Length: '.filesize($filename));
 set_time_limit(0);
