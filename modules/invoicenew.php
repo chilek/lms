@@ -162,6 +162,8 @@ switch ($action) {
                      WHERE id = ?', array($customer['divisionid']))) === null) {
                     $paytime = ConfigHelper::getConfig('invoices.paytime');
                 }
+            } else {
+                $paytime = ConfigHelper::getConfig('invoices.paytime');
             }
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
