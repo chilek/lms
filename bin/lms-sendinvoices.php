@@ -278,6 +278,7 @@ $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dn
 
 if ($backup || $archive) {
     $part_size = 0;
+    $customer_status_condition = '';
 } else {
     // now it's time for script settings
     $smtp_options = array(
@@ -364,6 +365,8 @@ if (empty($fakedate)) {
 list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
+
+$customergroups = '';
 
 if ($backup || $archive) {
     $groupnames = '';
