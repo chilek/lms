@@ -108,6 +108,7 @@
 				<TR class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD class="valign-top">
 						{icon name="money" class="drag-icon"}
+						<input type="hidden" name="form[{$tariff.id}][tariffid]" value="{$tariff.tariffid}">
 						<A href="?m=tariffinfo&id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
 						{if ($tariff.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
 							{capture assign="reward_flags"}

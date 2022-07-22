@@ -146,7 +146,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                 $args = array(
                     SYSLOG::RES_PROMOASSIGN => $assignmentid,
                     SYSLOG::RES_PROMOSCHEMA => $schemaid,
-                    SYSLOG::RES_TARIFF => $form['tariffid'],
+                    SYSLOG::RES_TARIFF => intval($form['tariffid']),
                     SYSLOG::RES_PROMO => $promotionid,
                     'backwardperiod' => $backwardperiod,
                     'optional' => $optional,
