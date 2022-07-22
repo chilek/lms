@@ -247,6 +247,8 @@ version 28-git (????-??-??):
     notifications should be generated [chilan]
   - enhancement: added default flag to cash import sources [chilan]
   - enhancement: added 'trunk' flag for voip accounts [chilan]
+  - improvement: export: added %VALUEx symbol support which represents invoice position gross value
+    separated for all tax rates [chilan]
 
 version 27.0 (2021-08-20):
 
