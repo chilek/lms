@@ -519,7 +519,7 @@ $LMS->InitXajax();
 $hook_data = $LMS->executeHook(
     'customeredit_before_display',
     array(
-        'customerinfo' => $customerinfo,
+        'customerinfo' => isset($customerinfo) ? $customerinfo : array(),
         'smarty' => $SMARTY
     )
 );
