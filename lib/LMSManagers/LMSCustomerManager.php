@@ -1829,7 +1829,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $result['modifiedby'] = $user_manager->getUserName($result['modid']);
                 $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
                 $result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
-                $result['consentdate'] = $result['consentdate'] ? date('Y/m/d', $result['consentdate']) : '';
+                $result['consentdate'] = !empty($result['consentdate']) ? date('Y/m/d', $result['consentdate']) : '';
                 $result['up_logins'] = $this->db->GetRow('SELECT lastlogindate, lastloginip,
 					failedlogindate, failedloginip
 					FROM up_customers WHERE customerid = ?', array($result['id']));
