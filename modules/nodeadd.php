@@ -234,7 +234,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    if ($nodedata['netdev']) {
+    if (!empty($nodedata['netdev'])) {
         $ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
         $takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
 
