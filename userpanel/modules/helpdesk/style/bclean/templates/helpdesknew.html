@@ -18,7 +18,7 @@
 			</div>
 			<div class="modal-body">
 				<form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
-					{if count($queues) == 1}
+					{if $queues|size == 1}
 						<input type="hidden" name="helpdesk[queue]" value="{$queues[0].id}">
 					{else}
 					<div class="form-group">

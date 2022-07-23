@@ -2,7 +2,7 @@
 <form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
 {box title="New Request"}
 <table id="newrequest" width="100%" cellpadding="3" class="light">
-	{if count($queues) == 1}
+	{if $queues|size == 1}
 	<input type="hidden" name="helpdesk[queue]" value="{$queues[0].id}">
 	{else}
 	<tr class="light">

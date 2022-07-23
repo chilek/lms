@@ -237,6 +237,10 @@ if (!empty($_POST['inv'])) {
         $layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
     }
 
+    if ($which == DOC_ENTITY_DUPLICATE) {
+        $invoice['duplicate-date'] = time();
+    }
+
     Localisation::setUiLanguage($invoice['lang']);
     $document->Draw($invoice);
     Localisation::resetUiLanguage();
