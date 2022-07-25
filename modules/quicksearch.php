@@ -72,7 +72,7 @@ if (!empty($_POST['qs'])) {
             $search = $value;
         }
     }
-    $search = urldecode(trim($search));
+    $search = isset($search) ? urldecode(trim($search)) : '';
 } else {
     $search = urldecode(trim(isset($_GET['what']) ? $_GET['what'] : ''));
     $mode = isset($_GET['mode']) ? $_GET['mode'] : '';

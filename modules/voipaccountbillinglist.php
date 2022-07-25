@@ -40,7 +40,7 @@ function sessionHandler($item, $name)
     return $o;
 }
 
-if ($_POST['str']) {
+if (!empty($_POST['str'])) {
     $voipaccounts = $LMS->GetCustomerVoipAccounts($_POST['str']);
     $SMARTY->assign('voipaccounts', $voipaccounts);
     $content = $SMARTY->fetch('voipaccount/voipaccounts.html');
