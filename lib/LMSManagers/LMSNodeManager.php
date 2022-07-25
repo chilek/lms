@@ -589,6 +589,14 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 $nodelist['totaloff'] = $totaloff;
 
                 return $nodelist;
+            } else {
+                return array(
+                    'total' => 0,
+                    'order' => $order,
+                    'direction' => $direction,
+                    'totalon' => 0,
+                    'totaloff' => 0,
+                );
             }
         } else {
             return $this->db->getOne($sql);
