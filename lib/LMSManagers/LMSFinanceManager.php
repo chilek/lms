@@ -2455,7 +2455,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				a.name as rec_name, a.address AS rec_address,
 				a.house AS rec_house, a.flat AS rec_flat, a.country_id AS rec_country_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
-				c.street, c.building, c.apartment,
+				c.street, c.building, c.apartment, c.type AS customertype,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,

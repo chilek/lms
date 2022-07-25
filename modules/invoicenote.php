@@ -293,7 +293,7 @@ switch ($action) {
 
         if ($cnote['numberplanid'] && !isset($numberplans[$cnote['numberplanid']])) {
             $error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-            unset($customer);
+            unset($cnote['customerid']);
         }
 
         if ($numberplans && count($numberplans) && empty($cnote['numberplanid'])) {
@@ -627,7 +627,7 @@ switch ($action) {
             'paytime' => $cnote['paytime'],
             'paytype' => $cnote['paytype'],
             'flags' => (empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : DOC_FLAG_RECEIPT)
-                + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $customer['type'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
+                + (empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) || $invoice['customertype'] == CTYPES_COMPANY ? 0 : DOC_FLAG_TELECOM_SERVICE)
                 + ($use_current_customer_data
                     ? (isset($customer['flags'][CUSTOMER_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
                     : (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY]) ? DOC_FLAG_RELATED_ENTITY : 0)
