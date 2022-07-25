@@ -36,10 +36,6 @@ if (!$result) {
     $SESSION->redirect('?m=netnodelist');
 }
 
-if ($nodeinfo['ownerid']) {
-    $nodeinfo['owner'] = $LMS->getCustomerName($nodeinfo['ownerid']);
-}
-
 $SMARTY->assign('nodeinfo', $result);
 $SMARTY->assign('objectid', $result['id']);
 
