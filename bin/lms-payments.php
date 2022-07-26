@@ -609,6 +609,7 @@ $query = "SELECT
 			a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+			0 AS flags,
 			t.taxid AS taxid, '' as prodid,
 			COALESCE(voipcost.value, 0) AS value,
 			COALESCE(voipcost.value, 0) AS unitary_value,
