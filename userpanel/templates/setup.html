@@ -291,6 +291,7 @@
             <td class="text-center bold">{trans("Tip")}</td>
             <td class="text-center bold">{trans("Description")}</td>
             <td class="text-center bold">{trans("Enabled")}</td>
+            <td></td>
         </tr>
     </thead>
     <tbody>
@@ -321,12 +322,20 @@
                     <input type="checkbox" name="enabled_modules[{$menuitem.module}]" value="1" form="general-settings-form"
                         {if in_array($menuitem.module, $enabled_modules)} checked{/if}>
                 </td>
+                <td class="buttons">
+                    {button
+                        type='link'
+                        icon="edit"
+                        href="?m=userpanel&module={$menuitem.module}"
+                        tip="{trans('Configure Module: $a', $menuitem.module)}"
+                    }
+                </td>
             </tr>
         {/foreach}
     </tbody>
     <tfoot>
         <tr class="dark">
-            <td colspan="5" class="ftop bold text-center">
+            <td colspan="6" class="ftop bold text-center">
                 {trans("Total:")} {$total}
             </td>
             <td class="ftop buttons nobr">
