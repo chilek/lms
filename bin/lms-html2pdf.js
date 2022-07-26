@@ -76,12 +76,13 @@ async function readStream(stream) {
             await page.goto(url, {waitUntil: options.waitUntil});
         } else {
             const content = await readStream(process.stdin);
-            await page.setContent(content, {waitUntil: options.waitUntil});
+            await page.setContent(content, {waitUntil: options.waitUntil, timeout: 0});
         }
         var opts = {
             format: options.format,
             landscape: landscape,
-            printBackground: true
+            printBackground: true,
+            timeout: 0
         }
         if (outFile) {
             opts.path = outFile;
