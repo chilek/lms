@@ -1443,7 +1443,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     foreach ($headers->cc as $cc) {
                         $email = $cc->mailbox . '@' . $cc->host;
                         $message['cc'][$email] = array(
-                            'display' => iconv_mime_decode($cc->personal),
+                            'display' => isset($cc->personal) ? iconv_mime_decode($cc->personal) : '',
                             'address' => $email,
                         );
                     }
