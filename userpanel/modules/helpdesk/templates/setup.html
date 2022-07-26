@@ -24,7 +24,7 @@
 								{trans("Queues:")}
 							</td>
 							<td>
-								<select name="queues[]" multiple id="queues" size="20" {tip text="Helpdesk queues for tickets requested in Userpanel" class="lms-ui-multiselect"}>
+								<select name="queues[]" multiple required id="queues" size="20" {tip text="Helpdesk queues for tickets requested in Userpanel" class="lms-ui-multiselect"}>
 									{foreach $queuelist as $queue}
 										<option value="{$queue.id}"{if in_array($queue.id, $queues)} selected{/if}>{$queue.name}</option>
 									{/foreach}
@@ -47,7 +47,7 @@
 								{trans("Visible ticket sources:")}
 							</td>
 							<td>
-								<select name="sources[]" multiple id="sources" size="20" {tip text="Helpdesk visible ticket sources in Userpanel" class="lms-ui-multiselect"}>
+								<select name="sources[]" required multiple id="sources" size="20" {tip text="Helpdesk visible ticket sources in Userpanel" class="lms-ui-multiselect"}>
 									{foreach $_RT_SOURCES as $sourceidx => $source}
 										<option value="{$sourceidx}"{if in_array($sourceidx, $sources)} selected{/if}>{$source}</option>
 									{/foreach}
