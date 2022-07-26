@@ -483,7 +483,7 @@ switch ($action) {
     case 'setcustomer':
         $oldreg = $receipt['regid'];
         $oldtype = $receipt['type'];
-        $oldcid = $customer['id'];
+        $oldcid = isset($customer['id']) ? $customer['id'] : null;
         unset($receipt);
         unset($customer);
         unset($error);
@@ -935,11 +935,15 @@ if ($action != '') {
 switch ($receipt['type']) {
     case 'in':
         $layout['pagetitle'] = trans('New Cash-in Receipt');
-        $list = GetCustomerCovenants($customer['id']);
+        if (isset($customer['id'])) {
+            $list = GetCustomerCovenants($customer['id']);
+        }
         break;
     case 'out':
         $layout['pagetitle'] = trans('New Cash-out Receipt');
-        $list = GetCustomerNotes($customer['id']);
+        if (isset($customer['id'])) {
+            $list = GetCustomerNotes($customer['id']);
+        }
         break;
     default:
         $layout['pagetitle'] = trans('New Cash Receipt');
