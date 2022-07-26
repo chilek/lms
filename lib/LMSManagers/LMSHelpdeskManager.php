@@ -2150,7 +2150,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 if (isset($params['attachments']) && !empty($params['attachments'])) {
                     if ($notification_attachments) {
                         $attachments = $params['attachments'];
-                    } elseif ($params['contenttype'] == 'text/html') {
+                    } elseif (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
                         $attachments = array_filter($params['attachments'], function ($attachment) {
                             return isset($attachment['content-id']);
                         });
