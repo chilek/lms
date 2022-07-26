@@ -103,13 +103,9 @@
 								{trans("Default categories:")}
 							</td>
 							<td class="nobr">
+								<select class='lms-ui-advanced-select' name='lms_categories[]' multiple>
 								{foreach $categories as $category}
-									<label>
-										<input type="checkbox" name="lms_categories[{$category.id}]" value="1"
-											{if $category.checked > 0} checked{/if}>
-										{$category.name}
-									</label>
-									{if !$category@last}<br>{/if}
+									<option value='{$category.id}' {if $category.selected}selected{/if}>{$category.name}</option>
 								{/foreach}
 							</td>
 						</tr>

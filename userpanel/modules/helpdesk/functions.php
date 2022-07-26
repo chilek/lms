@@ -33,7 +33,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
         foreach ($categories as $category) {
             if (in_array($category['id'], $default_categories)) {
-                $category['checked'] = true;
+                $category['selected'] = true;
             }
             $ncategories[] = $category;
         }
@@ -86,8 +86,8 @@ if (defined('USERPANEL_SETUPMODE')) {
         );
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_userid\'', array($_POST['default_userid']));
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'lms_url\'', array($_POST['lms_url']));
-        $categories = array_keys((isset($_POST['lms_categories']) ? $_POST['lms_categories'] : array()));
-        $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_categories\'', array(implode(',', $categories)));
+        $categories = empty($_POST['lms_categories']) ? '' : implode(',', $_POST['lms_categories']);
+        $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_categories\'', array($categories));
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(intval($_POST['allow_reopen_tickets_newer_than']), 'userpanel' , 'allow_reopen_tickets_newer_than')
