@@ -810,7 +810,7 @@ function location_str($data)
     }
 
     if ($data['street_name']) {
-        $street = $data['street_type'] .' '. $data['street_name'];
+        $street = (isset($data['street_type']) ? $data['street_type'] . ' ' : '') . $data['street_name'];
         $location .= ($location ? ',' : '') . $street;
     }
 
