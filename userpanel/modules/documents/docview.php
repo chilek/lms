@@ -33,7 +33,7 @@ if (!empty($_GET['id'])) {
 		LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 		WHERE d.id = ?', array(intval($_GET['id'])));
 
-    if ($doc['customerid'] != $SESSION->id) {
+    if (empty($doc) || $doc['customerid'] != $SESSION->id) {
         die;
     }
 
