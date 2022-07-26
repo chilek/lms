@@ -69,17 +69,20 @@ if (defined('USERPANEL_SETUPMODE')) {
                 array(implode(';', $sources))
             );
         }
+        $ticket_from_selected_queues = empty($_POST['tickets_from_selected_queues']) ? 0 : 1;
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'tickets_from_selected_queues\'',
-            array(intval($_POST['tickets_from_selected_queues']))
+            array($ticket_from_selected_queues)
         );
+        $allow_message_add_to_closed_tickets = empty($_POST['allow_message_add_to_closed_tickets']) ? 0 : 1;
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'allow_message_add_to_closed_tickets\'',
-            array(intval($_POST['allow_message_add_to_closed_tickets']))
+            array($allow_message_add_to_closed_tickets)
         );
+        $limit_ticket_movements_to_selected_queues = empty($_POST['limit_ticket_movements_to_selected_queues']) ? 0 : 1;
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'limit_ticket_movements_to_selected_queues\'',
-            array(intval($_POST['limit_ticket_movements_to_selected_queues']))
+            array($limit_ticket_movements_to_selected_queues)
         );
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_userid\'', array($_POST['default_userid']));
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'lms_url\'', array($_POST['lms_url']));
