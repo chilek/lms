@@ -190,7 +190,7 @@ switch ($action) {
             }
             $DB->LockTables($tables);
 
-            if (!$note['number']) {
+            if (empty($note['number'])) {
                 $note['number'] = $LMS->GetNewDocumentNumber(array(
                     'doctype' => DOC_DNOTE,
                     'planid' => $note['numberplanid'],

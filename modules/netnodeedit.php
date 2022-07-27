@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$id = empty($_GET['id']) ? 0 : intval($_GET['id']);
 
 if (empty($id)) {
     $id = intval($_POST['id']);
