@@ -51,7 +51,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             SYSLOG::RES_STATE => $stateid,
             'zip' => $zip
         );
-        if ($zipcode === null) {
+        if (empty($zipcode)) {
             $this->db->Execute(
                 'INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
                 array_values($args)
