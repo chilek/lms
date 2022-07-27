@@ -1338,6 +1338,69 @@ class LMSSmartyPlugins
         return $script . '<div class="lms-ui-day-selection-wrapper">' . $result . '</div>';
     }
 
+    public static function taxrateSelectionFunction(array $params, Smarty_Internal_Template $template)
+    {
+        $default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate', 23.00);
+
+        $lms = LMS::getInstance();
+        $taxratelist = $lms->GetTaxes();
+
+        // search taxid using taxrate
+        foreach ($taxratelist as $idx => $tr) {
+            if ($tr['value'] === $default_taxrate) {
+                $default_taxid = $idx;
+                break;
+            }
+        }
+
+        $id = isset($params['id']) ? ' id="' . $params['id'] . '"' : null;
+        $name = isset($params['name']) ? ' name="' . $params['name'] . '"' : null;
+        $selected = isset($params['selected']) ? $params['selected'] : $default_taxid;
+        $value = empty($selected) ? null : ' value="' . $selected . '"';
+        $class = isset($params['class']) ? ' class="'. $params['class'] . '"' : null;
+        $customonchange = isset($params['customonchange']) ? ' onchange="'. $params['customonchange'] . '"' : null;
+        $form = isset($params['form']) ? ' form="'. $params['form'] . '"' : null;
+        $trigger = $params['trigger'] ?? null;
+        $tip = $params['tip'] ?? '— select tax rate —';
+        $tip_text = LMSSmartyPlugins::tipFunction(
+            array(
+                'text' => trans($tip),
+                'trigger' => $trigger,
+            ),
+            $template
+        );
+        $visible = isset($params['visible']) && !$params['visible'] ? ' style="display: none;"' : '';
+        $required = isset($params['required']) ? ' required' : null;
+
+        $icon = '<i class="' . (empty($params['icon']) ? 'lms-ui-icon-taxrate'
+                : (strpos($params['icon'], 'lms-ui-icon-') === 0 ? $params['icon'] : 'lms-ui-icon-' . $params['icon'])
+            ) . '"></i>';
+
+        $data_attributes = '';
+        foreach ($params as $attname => $attvalue) {
+            if (strpos($attname, 'data_') === 0) {
+                $data_attributes .= ' ' . str_replace('_', '-', $attname) . '="' . $attvalue . '"';
+            }
+        }
+
+        $data_attributes .= ' data-default-value="' . $selected . '"';
+
+        $options = '';
+        if (empty($taxratelist)) {
+            $options .= '<option selected value="">' . trans('— no tax rates defined —') . '</option>';
+        } else {
+            foreach ($taxratelist as $tax) {
+                $options .= '<option value="' . $tax['id'] . '" data-taxrate-value="' . $tax['value'] . '"'
+                    . LMSSmartyPlugins::tipFunction(array('text' => $tax['label']), $template)
+                    . ($tax['id'] == $selected ? ' selected' : null)
+                    . '>' . $tax['label'] . ' (' . $tax['value'] . '%)</option>';
+            }
+        }
+
+        return $icon . '<select ' . $id . $name . $value . $class . $form . $tip_text . $visible . $required
+            . $data_attributes . $customonchange . '>' . $options . '</select>';
+    }
+
     public static function resetToDefaultsFunction(array $params, Smarty_Internal_Template $template)
     {
         static $loaded = false;

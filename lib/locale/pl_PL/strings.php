@@ -1818,6 +1818,7 @@ $_LANG['Select section'] = 'Wybierz sekcję';
 $_LANG['Select sorting direction and criteria'] = 'Wybierz porządek sortowania i jego warunki';
 $_LANG['Select status'] = 'Wybierz status';
 $_LANG['Select Tax rate'] = 'Wybierz stawkę podatku';
+$_LANG['— no tax rates defined —'] = '— brak zdefiniowanych stawek podatkowych —';
 $_LANG['Select Tax value'] = 'Wybierz wartość podatku';
 $_LANG['Select ticket status'] = 'Wybierz status zgłoszenia';
 $_LANG['Select ticket uptime'] = 'Wybierz czas zgłoszenia';
