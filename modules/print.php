@@ -933,9 +933,15 @@ switch ($type) {
                 $rows++;
                 $page = $x;
 
-                if ($row['value']>0) {
+                if ($row['value'] > 0) {
+                    if (!isset($totals[$page]['income'])) {
+                        $totals[$page]['income'] = 0;
+                    }
                     $totals[$page]['income'] += $row['value'] * $row['currencyvalue'];
                 } else {
+                    if (!isset($totals[$page]['expense'])) {
+                        $totals[$page]['expense'] = 0;
+                    }
                     $totals[$page]['expense'] += -$row['value'] * $row['currencyvalue'];
                 }
 
@@ -945,9 +951,9 @@ switch ($type) {
             foreach ($totals as $page => $t) {
                 $pages[] = $page;
 
-                $totals[$page]['totalincome'] = $totals[$page-1]['totalincome'] + $t['income'];
-                $totals[$page]['totalexpense'] = $totals[$page-1]['totalexpense'] + $t['expense'];
-                $totals[$page]['rowstart'] = $totals[$page-1]['rowstart'] + $totals[$page-1]['rows'];
+                $totals[$page]['totalincome'] = (isset($totals[$page - 1]['totalincome']) ? $totals[$page - 1]['totalincome'] : 0) + $t['income'];
+                $totals[$page]['totalexpense'] = (isset($totals[$page - 1]['totalexpense']) ? $totals[$page - 1]['totalexpense'] : 0) + $t['expense'];
+                $totals[$page]['rowstart'] = isset($totals[$page - 1]) ? $totals[$page - 1]['rowstart'] + $totals[$page - 1]['rows'] : 0;
             }
 
             $SMARTY->assign('pages', $pages);
