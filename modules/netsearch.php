@@ -1,4 +1,3 @@
-<?php
 
 /*
  * LMS version 1.11-git
@@ -156,7 +155,6 @@ if (!isset($_GET['searchform']) && !empty($netsearch)) {
             $SESSION->restore('ndlsp', $_GET['page']);
         }
 
-        $SESSION->save('ndlsp', $page);
         $page = (! $_GET['page'] ? 1 : intval($_GET['page']));
         $netsearch['limit'] = intval(ConfigHelper::getConfig('phpui.networklist_pagelimit', $count));
         $netsearch['offset']= ($page - 1) * $netsearch['limit'];
