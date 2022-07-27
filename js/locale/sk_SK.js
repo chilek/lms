@@ -22,6 +22,7 @@
  *
  *  $Id$
  */
+
 $_LANG['billing'] = 'fakturácia';
 $_LANG['$a ($b addresses)'] = '$a ($b adresy)';
 $_LANG['$a addresses'] = '$a adresy';
@@ -37,7 +38,7 @@ $_LANG['30 days'] = '30 dní';
 $_LANG['365 days'] = '365 dní';
 $_LANG['7 days'] = '7 dní';
 $_LANG['About LMS:'] = 'Informácie o LMS:';
-$_LANG['About system:'] = 'Informácie o systéme:';
+$_LANG['About system'] = 'Informácie o systéme';
 $_LANG['Access denied!'] = 'Prístup zamietnutý!';
 $_LANG['Access rights:'] = 'Prístupové práva:';
 $_LANG['Account'] = '=Účet';
@@ -1103,7 +1104,7 @@ $_LANG['records $a - $b of $c'] = 'záznamy $a - $b z $c';
 $_LANG['Registered for:'] = 'Registrované na meno:';
 $_LANG['Register your installation today! ;-)'] = 'Zaregistrujte si vašu inštaláciu ešte dnes! ;-)';
 $_LANG['Registration ID:'] = 'Číslo registrácie:';
-$_LANG['Registration info:'] = 'Registračné informácie:';
+$_LANG['Registration info'] = 'Registračné informácie';
 $_LANG['Reload'] = 'Obnoviť';
 $_LANG['Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).'] = 'Typ obnovenia. Povolené hodnoty: exec - volanie príkazu (volanie iného skriptu alebo programu, najčastejšie s príkazom sudo - konfigurácia nižšie); sql - zápis do databázy SQL (viac dotazov musíte oddeliť medzerníkom).';
 $_LANG['Remove'] = 'Odstrániť';
@@ -1363,7 +1364,7 @@ $_LANG['Uptime:'] = 'Uptime:';
 $_LANG['URL:'] = 'URL:';
 $_LANG['URL of your homepage:'] = 'Vaša domovská stránka:';
 $_LANG['Use carriage return for indentation only. LMS will reformat paragraphs and break long lines.'] = 'Použite Enter len pre identifikáciu. LMS preformátuje odstavce a rozdelý dlhé riadky.';
-$_LANG['Useful Links:'] = 'Užitočné odkazy:';
+$_LANG['Useful Links'] = 'Užitočné odkazy';
 $_LANG['User'] = 'Užívateľ';
 $_LANG['User:'] = 'Užívateľ:';
 $_LANG['User-defined stats'] = 'Užívateľom definované štatistiky';
