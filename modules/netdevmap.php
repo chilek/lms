@@ -313,8 +313,8 @@ if ($type == 'openlayers') {
         $SMARTY->assign('lat', isset($devices[$netdevid]['lat']) ? $devices[$netdevid]['lat'] : null);
     } else if (isset($_GET['nodeid'])) {
         $nodeid = intval($_GET['nodeid']);
-        $SMARTY->assign('lon', isset($snodes[$nodeid]['lon']) ? $nodes[$nodeid]['lon'] : null);
-        $SMARTY->assign('lat', isset($snodes[$nodeid]['lat']) ? $nodes[$nodeid]['lat'] : null);
+        $SMARTY->assign('lon', isset($nodes[$nodeid]['lon']) ? $nodes[$nodeid]['lon'] : null);
+        $SMARTY->assign('lat', isset($nodes[$nodeid]['lat']) ? $nodes[$nodeid]['lat'] : null);
     } else {
         $SMARTY->assign('lon', isset($_GET['lon']) ? $_GET['lon'] : null);
         $SMARTY->assign('lat', isset($_GET['lat']) ? $_GET['lat'] : null);
