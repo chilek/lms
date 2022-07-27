@@ -36,6 +36,10 @@ $aee = ConfigHelper::getConfig(
 
 if (isset($_GET['id'])) {
     $event = $LMS->GetEvent($_GET['id']);
+    if (empty($event)) {
+        $SESSION->redirect('?m=eventlist');
+    }
+
     if (!empty($event['userlist'])) {
         $event['userlist'] = array_keys($event['userlist']);
     }
