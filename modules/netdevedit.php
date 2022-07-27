@@ -554,7 +554,7 @@ switch ($action) {
             } else if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']) &&
                 $LMS->GetNodeIPByID($_GET['ip']) != $nodeipdata['ipaddr']) {
                 $error['ipaddr'] = trans('IP address is in use!');
-            } else if ($LMS->IsIPGateway($nodedata['ipaddr'])) {
+            } else if ($LMS->IsIPGateway($nodeipdata['ipaddr'])) {
                 $error['ipaddr'] = trans('Specified IP address is network gateway!');
             }
         }

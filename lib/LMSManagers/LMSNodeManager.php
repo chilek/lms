@@ -63,9 +63,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
-            'invprojectid'      => $nodedata['invprojectid'],
+            'invprojectid'      => empty($nodedata['invprojectid']) ? null : $nodedata['invprojectid'],
             'authtype'          => $nodedata['authtype']   ? $nodedata['authtype']   : 0,
-            'address_id'        => ($nodedata['address_id'] >= 0) ? $nodedata['address_id'] : null,
+            'address_id'        => isset($nodedata['address_id']) && $nodedata['address_id'] >= 0 ? $nodedata['address_id'] : null,
             SYSLOG::RES_NODE    => $nodedata['id']
         );
 
