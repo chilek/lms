@@ -159,7 +159,7 @@ if (isset($netnodedata)) {
 
 $layout['pagetitle'] = trans('Net Device Node Edit: $a', $netnodedata['name']);
 
-if ($subtitle) {
+if (!empty($subtitle)) {
     $layout['pagetitle'] .= ' - ' . $subtitle;
 }
 
