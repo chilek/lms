@@ -613,7 +613,7 @@ $query = "SELECT
 			t.taxid AS taxid, '' as prodid,
 			COALESCE(voipcost.value, 0) AS value,
 			COALESCE(voipcost.value, 0) AS unitary_value,
-			COALESCE(voipcost.totaltime, 0) AS call_totaltime,
+			COALESCE(voipcost.totaltime, 0) AS call_time,
 			" . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
 			taxes.value AS taxrate,
             (CASE WHEN c.type = ?
@@ -1501,7 +1501,7 @@ foreach ($assigns as $assign) {
             $assign['description'],
             isset($assign['call_count']) && !empty($assign['call_count']) ? $assign['call_count'] : 0,
             isset($assign['call_fraction']) && mb_strlen($assign['call_fraction']) ? $assign['call_fraction'] : '',
-            isset($assign['call_totaltime']) ? ceil($assign['call_totaltime'] / 60) : '',
+            isset($assign['call_time']) ? ceil($assign['call_time'] / 60) : '',
             $assign['promotion_name'],
             $assign['promotion_schema_name'],
             empty($assign['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $assign['promotion_schema_length']),
