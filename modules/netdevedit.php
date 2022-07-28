@@ -397,6 +397,12 @@ switch ($action) {
 
     case 'formaddip':
         $subtitle = trans('New IP address');
+
+        if (!isset($_POST['ipadd'])) {
+            $edit = 'addip';
+            break;
+        }
+
         $nodeipdata = $_POST['ipadd'];
         $nodeipdata['ownerid'] = null;
         if (!empty($nodeipdata['macs'])) {
