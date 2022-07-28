@@ -637,7 +637,7 @@ class Utils
                                     $local['lokpraw_adSiedzKodPocztowy']
                                 ),
                                 'location_postoffice' => $local['lokpraw_adSiedzMiejscowoscPoczty_Nazwa']
-                                    == $local->dane['praw_adSiedzMiejscowosc_Nazwa'] ? ''
+                                    == $report['praw_adSiedzMiejscowosc_Nazwa'] ? ''
                                         : $local['lokpraw_adSiedzMiejscowoscPoczty_Nazwa'],
                                 'location_state' => empty($location) ? 0 : $location['location_state'],
                                 'location_city' => empty($location) ? 0 : $location['location_city'],
