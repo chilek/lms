@@ -271,7 +271,7 @@ if (!isset($_POST['k'])) {
 $SESSION->save('nslk', $k);
 
 // MAC address reformatting
-$nodesearch['mac'] = macformat($nodesearch['mac']);
+$nodesearch['mac'] = empty($nodesearch['mac']) ? '' : macformat($nodesearch['mac']);
 
 $LMS->InitXajax();
 
