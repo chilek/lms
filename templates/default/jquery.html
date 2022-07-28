@@ -62,6 +62,9 @@
 	$(function() {
 		{if isset($error) && is_array($error)}
 			{foreach $error as $k => $v}
+				{if is_array($v)}
+					{$v = ""}
+				{/if}
 				$('[name="{$k|replace:'"':'\"'}"]')
 					.attr('title', "{$v|replace:'"':'\"'}")
 					.addClass('lms-ui-error');
@@ -69,6 +72,9 @@
 		{/if}
 		{if isset($warning) && is_array($warning)}
 			{foreach $warning as $k => $v}
+				{if is_array($v)}
+					{$v = ""}
+				{/if}
 				var name = "{$k|replace:'"':'\"'}";
 				$('[name="' + name + '"]')
 					.attr('title', "{$v|replace:'"':'\"'}")
