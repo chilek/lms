@@ -373,6 +373,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     $privacy_condition = ' AND private = 1 AND userid = ' . $current_user_id;
                 }
                 break;
+            default:
+                $privacy_condition = '';
+                break;
         }
 
         if ($forward=='-1') {
