@@ -309,7 +309,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
 
             // insert optional string here (for now?) so we can easily see it in GUI
-            $customer = trim($lastname.' '.$name) . " [[<-- Customer | Oprional_string -->]] \n" . $optional_string;
+            $customer = trim($lastname . ' ' . $name)
+                . (empty($optional_string) ? '' : ' [[<-- Customer | Oprional_string -->]]: ' . $optional_string);
             $comment = trim($comment);
 
             $hash = md5(
