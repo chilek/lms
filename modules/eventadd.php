@@ -158,7 +158,7 @@ if (isset($_POST['event'])) {
         $event['overlapwarned'] = 1;
     }
 
-    if (!isset($event['customerid'])) {
+    if (!isset($event['customerid']) && isset($event['custid'])) {
         $event['customerid'] = $event['custid'];
     }
 
