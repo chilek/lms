@@ -2905,13 +2905,13 @@ class LMS
                 $headers['Date'] = date('r');
             }
 
-            if ($files || $headers['X-LMS-Format'] == 'html') {
+            if ($files || isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html') {
                 $boundary = '-LMS-' . str_replace(' ', '.', microtime());
                 $headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
                 $buf = "\nThis is a multi-part message in MIME format.\n\n";
                 $buf .= '--' . $boundary . "\n";
-                $buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
-                if ($headers['X-LMS-Format'] == 'html') {
+                $buf .= "Content-Type: text/" . (isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
+                if (isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html') {
                     $buf .= preg_replace('/\r?\n/', '', $body) . "\n";
                 } else {
                     $buf .= $body . "\n";
@@ -2922,7 +2922,7 @@ class LMS
                         $buf .= "Content-Transfer-Encoding: base64\n";
                         $buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
                         $buf .= "Content-Description:\n";
-                        if ($headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
+                        if (isset($headers['X-LMS-Format']) && $headers['X-LMS-Format'] == 'html' && isset($chunk['content-id'])) {
                             $buf .= "Content-ID: <" . $chunk['content-id'] . ">\n";
                             $buf .= "Content-Disposition: inline; filename=\"" . $chunk['filename'] . "\"\n\n";
                         } else {
