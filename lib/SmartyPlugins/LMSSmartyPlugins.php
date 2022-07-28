@@ -1362,7 +1362,7 @@ class LMSSmartyPlugins
         $form = isset($params['form']) ? ' form="'. $params['form'] . '"' : null;
         $trigger = $params['trigger'] ?? null;
         $tip = $params['tip'] ?? '— select tax rate —';
-        $tip_text = LMSSmartyPlugins::tipFunction(
+        $tip_text = self::tipFunction(
             array(
                 'text' => trans($tip),
                 'trigger' => $trigger,
@@ -1391,7 +1391,7 @@ class LMSSmartyPlugins
         } else {
             foreach ($taxratelist as $tax) {
                 $options .= '<option value="' . $tax['id'] . '" data-taxrate-value="' . $tax['value'] . '"'
-                    . LMSSmartyPlugins::tipFunction(array('text' => $tax['label']), $template)
+                    . self::tipFunction(array('text' => $tax['label']), $template)
                     . ($tax['id'] == $selected ? ' selected' : null)
                     . '>' . $tax['label'] . ' (' . $tax['value'] . '%)</option>';
             }
