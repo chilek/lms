@@ -161,7 +161,10 @@ function multiselect(options) {
 	var container = $('<div class="lms-ui-multiselect-container' + (tiny ? ' tiny' : '') +
 		(bottom ? ' bottom' : '') +
 		(old_class && old_class.length ? ' ' + old_class : '') + '"' + (old_element.is('[required]') ? ' required' : '') + '/>');
-	var launcher = $('<div class="lms-ui-multiselect-launcher" title="' + old_element.attr('title') + '" tabindex="0"/>')
+	var launcher = $('<div class="lms-ui-multiselect-launcher' +
+		(old_element.is('.lms-ui-warning') ? ' lms-ui-warning' : '') +
+		(old_element.is('.lms-ui-error') ? ' lms-ui-error' : '') +
+		'" title="' + old_element.attr('title') + '" tabindex="0"/>')
 		.attr('style', old_element.attr('style')).appendTo(container);
 
 	if (tiny) {
@@ -245,7 +248,9 @@ function multiselect(options) {
 				launcher.attr('title', selected_string);
 			} else {
 				launcher.find('.lms-ui-multiselect-launcher-label').html(selected_string);
-				launcher.attr('title', '');
+				if (!container.is('.lms-ui-warning') && !container.is('.lms-ui-error')) {
+					launcher.attr('title', '');
+				}
 			}
 			if (popup.is(':visible')) {
 				setTimeout(function() {

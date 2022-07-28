@@ -271,7 +271,7 @@ if (isset($_POST['document'])) {
         }
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $customer = $LMS->GetCustomer($document['customerid']);
         $time = time();
 
