@@ -121,6 +121,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             $value = str_replace(',', '.', isset($matches[$pattern['pvalue']]) ? preg_replace('/[\s]/', '', $matches[$pattern['pvalue']]) : '');
             $srcaccount = isset($pattern['srcaccount']) && isset($matches[$pattern['srcaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]) : '';
             $dstaccount = isset($pattern['dstaccount']) && isset($matches[$pattern['dstaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]) : '';
+		$optional_string = isset($matches[$pattern['optional_string']]) ? trim($matches[$pattern['optional_string']]) : '';
 
             if (!$pattern['pid']) {
                 if (!empty($pattern['pid_regexp'])) {
@@ -227,8 +228,19 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 );
                 if (!empty($uids) && count($uids) == 1) {
                     $id = $uids[0];
+				$found_by_name = true;
                 }
-                $found_by_name = true;
+		# if id is still not found try again with switched name/lastname strings
+		if (!$id) { # optionally add && $found_by_name == false? I personally use only id check
+			$uids = $this->db->GetCol(
+                    		'SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
+                    		array($name, $lastname) # switched strings here
+                	);
+		    	if (!empty($uids) && count($uids) == 1) {
+                    		$id = $uids[0];
+		    		$found_by_name = true;
+                	}
+		}
             } else {
                 $found_by_name = false;
             }
@@ -295,8 +307,9 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $variable = empty($variable) ? trans('none') : $variable;
                 $comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
             }
-
-            $customer = trim($lastname.' '.$name);
+		
+		# insert optional string here (for now?) so we can easily see it in GUI
+            $customer = trim($lastname.' '.$name) . " [[<-- Customer | Oprional_string -->]] \n" . $optional_string; 
             $comment = trim($comment);
 
             $hash = md5(
