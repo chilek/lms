@@ -1929,7 +1929,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($which & $type) {
                 $data['type'] = $type;
                 if ($type == DOC_ENTITY_DUPLICATE) {
-                    $data['duplicate-date'] = isset($doc['duplicate-date']) ? $doc['duplicate-data'] : time();
+                    $data['duplicate-date'] = isset($doc['duplicate-date']) ? $doc['duplicate-date'] : time();
                 }
                 $document->Draw($data);
                 $idx++;
