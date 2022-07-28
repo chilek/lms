@@ -118,7 +118,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         $args = array(
                         SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
                         SYSLOG::RES_NODE => $nodedata['id'],
-                        SYSLOG::RES_ASSIGN => $nodedata['assignmentid'],
+                        SYSLOG::RES_ASSIGN => $nodeassign['assignmentid'],
                         SYSLOG::RES_CUST => $nodedata['ownerid']
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
