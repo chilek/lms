@@ -613,6 +613,7 @@ $query = "SELECT
 			t.taxid AS taxid, '' as prodid,
 			COALESCE(voipcost.value, 0) AS value,
 			COALESCE(voipcost.value, 0) AS unitary_value,
+			COALESCE(voipcost.totaltime, 0) AS call_totaltime,
 			" . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
 			taxes.value AS taxrate,
             (CASE WHEN c.type = ?
@@ -648,6 +649,7 @@ $query = "SELECT
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
 			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
 				SELECT ROUND(sum(price), 2) AS value,
+					SUM(vc.billedtime) AS totaltime,
 					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
                     . "va.ownerid AS customerid,
 					a2.id AS assignmentid
@@ -1473,6 +1475,7 @@ foreach ($assigns as $assign) {
             '%desc',
             '%call_count',
             '%call_fraction',
+            '%call_time',
             '%promotion_name',
             '%promotion_schema_name',
             '%promotion_schema_length',
@@ -1498,6 +1501,7 @@ foreach ($assigns as $assign) {
             $assign['description'],
             isset($assign['call_count']) && !empty($assign['call_count']) ? $assign['call_count'] : 0,
             isset($assign['call_fraction']) && mb_strlen($assign['call_fraction']) ? $assign['call_fraction'] : '',
+            isset($assign['call_totaltime']) ? ceil($assign['call_totaltime'] / 60) : '',
             $assign['promotion_name'],
             $assign['promotion_schema_name'],
             empty($assign['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $assign['promotion_schema_length']),
