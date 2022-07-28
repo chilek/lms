@@ -952,7 +952,8 @@ switch ($type) {
                 $pages[] = $page;
 
                 $totals[$page]['totalincome'] = (isset($totals[$page - 1]['totalincome']) ? $totals[$page - 1]['totalincome'] : 0) + $t['income'];
-                $totals[$page]['totalexpense'] = (isset($totals[$page - 1]['totalexpense']) ? $totals[$page - 1]['totalexpense'] : 0) + $t['expense'];
+                $totals[$page]['totalexpense'] = (isset($totals[$page - 1]['totalexpense']) ? $totals[$page - 1]['totalexpense'] : 0)
+                    + (isset($t['expense']) ? $t['expense'] : 0);
                 $totals[$page]['rowstart'] = isset($totals[$page - 1]) ? $totals[$page - 1]['rowstart'] + $totals[$page - 1]['rows'] : 0;
             }
 
