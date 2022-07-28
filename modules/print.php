@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -515,7 +515,7 @@ switch ($type) {
                     $date['from'] = mktime(0, 0, 0, $month, $day, $year);
                 } else {
                     $from = date('Y/m/d', time());
-                    $date['from'] = mktime(0, 0, 0); //pocz�tek dnia dzisiejszego
+                    $date['from'] = mktime(0, 0, 0); //początek dnia dzisiejszego
                 }
 
                 $_GET['from'] = $date['from'];
@@ -915,13 +915,13 @@ switch ($type) {
             // (summaries and page size calculations)
             $maxrows = $rows * 2;   // dwie linie na rekord
             $counter = $maxrows;
-            $rows = 0;      // rzeczywista liczba rekord�w na stronie
+            $rows = 0;      // rzeczywista liczba rekordów na stronie
             $i = 1;
             $x = 1;
 
             foreach ($list as $row) {
-                // tutaj musimy troch� pokombinowa�, bo liczba
-                // rekord�w na stronie b�dzie zmienna
+                // tutaj musimy trochę pokombinować, bo liczba
+                // rekordów na stronie będzie zmienna
                 $tmp = is_array($row['title']) ? count($row['title']) : 2;
                 $counter -= max($tmp, 2);
                 if ($counter<0) {
