@@ -249,6 +249,9 @@ version 28-git (????-??-??):
   - enhancement: added 'trunk' flag for voip accounts [chilan]
   - improvement: export: added %VALUEx symbol support which represents invoice position gross value
     separated for all tax rates [chilan]
+  - improvement: added '%call_totaltime' subsctitution support in 'payments.invoice_billing_description'
+    configuration variable - it's replaced by total call time in minutes rounded upper
+    to full minutes [chilan]
 
 version 27.0 (2021-08-20):
 
