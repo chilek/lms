@@ -248,7 +248,7 @@ function multiselect(options) {
 				launcher.attr('title', selected_string);
 			} else {
 				launcher.find('.lms-ui-multiselect-launcher-label').html(selected_string);
-				if (!container.is('.lms-ui-warning') && !container.is('.lms-ui-error')) {
+				if (!launcher.is('.lms-ui-warning') && !launcher.is('.lms-ui-error')) {
 					launcher.attr('title', '');
 				}
 			}
