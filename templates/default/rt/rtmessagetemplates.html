@@ -1,7 +1,9 @@
-<SELECT class="template-selector" {tip text=$tip}{if isset($target)} data-target='{$target}'{/if}>
-	<OPTION value="0">{trans("— none —")}</OPTION>
+<select class="template-selector"
+	{tip text=$tip}
+	{if isset($target)} data-target='{$target}'{/if}>
+	<option value="0">{trans("— none —")}</option>
 	{foreach $templates as $template}
-		<OPTION value="{$template.id}" data-subject="{base64_encode($template.subject)}"
-				data-message="{base64_encode($template.message)}">{$template.name}</OPTION>
+		<option value="{$template.id}" data-subject="{base64_encode($template.subject)}"
+			data-message="{base64_encode($template.message)}">{$template.name}</option>
 	{/foreach}
-</SELECT>
+</select>
