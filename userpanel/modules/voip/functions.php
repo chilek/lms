@@ -229,12 +229,14 @@ function module_main()
         }
 
         $billings = $LMS->getVoipBillings($params);
+    } else {
+        $billings = null;
     }
 
     $pagin = new LMSPagination_ext();
     $pagin->setItemsPerPage(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
     $pagin->setItemsCount(empty($billings) ? 0 : count($billings));
-    $pagin->setCurrentPage(((!$_GET['page']) ? 1 : (int) $_GET['page']));
+    $pagin->setCurrentPage(empty($_GET['page']) ? 1 : intval($_GET['page']));
     $pagin->setRange(3);
 
     $SMARTY->assign('pagination', $pagin);
