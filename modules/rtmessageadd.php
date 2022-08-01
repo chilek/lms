@@ -867,7 +867,7 @@ if (!is_array($message['ticketid'])) {
             'contact' => $message['phonefrom'],
             'name' => trans('from message'),
             'source' => 'message',
-            'checked' => empty($contacts['phones']) ? 1 : 0,
+            'checked' => 1,
         );
     }
 
