@@ -4304,8 +4304,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
-        $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
-        $division = $division_manager->GetDivision($receipt['customer']['divisionid']);
+        if ($customer && !empty($customer['divisionid'])) {
+            $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $division = $division_manager->GetDivision($customer['divisionid']);
+        }
 
         $fullnumber = docnumber(array(
             'number' => $receipt['number'],
@@ -4328,22 +4330,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     ? $customer['city'] . ', ' : '') . $customer['address']) : '',
             'zip' => $customer ? $customer['zip'] : '',
             'city' => $customer ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city']) : '',
-            SYSLOG::RES_COUNTRY => $receipt['customer']['countryid'] ? $receipt['customer']['countryid'] : null,
-            SYSLOG::RES_DIV => $receipt['customer']['divisionid'],
-            'div_name' => ($division['name'] ? $division['name'] : ''),
-            'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
-            'div_address' => ($division['address'] ? $division['address'] : ''),
-            'div_city' => ($division['city'] ? $division['city'] : ''),
-            'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
-            'div_ten' => ($division['ten'] ? $division['ten'] : ''),
-            'div_regon' => ($division['regon'] ? $division['regon'] : ''),
-            'div_bank' => $division['bank'] ?: null,
-            'div_account' => ($division['account'] ? $division['account'] : ''),
-            'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
-            'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
-            'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
-            'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+            SYSLOG::RES_COUNTRY => $customer && !empty($customer['countryid']) ? $customer['countryid'] : null,
+            SYSLOG::RES_DIV => $customer ? $customer['divisionid'] : null,
+            'div_name' => !empty($division['name']) ? $division['name'] : '',
+            'div_shortname' => !empty($division['shortname']) ? $division['shortname'] : '',
+            'div_address' => !empty($division['address']) ? $division['address'] : '',
+            'div_city' => !empty($division['city']) ? $division['city'] : '',
+            'div_zip' => !empty($division['zip']) ? $division['zip'] : '',
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => isset($division['countryid']) ? $division['countryid'] : null,
+            'div_ten' => !empty($division['ten']) ? $division['ten'] : '',
+            'div_regon' => !empty($division['regon']) ? $division['regon'] : '',
+            'div_bank' => !empty($division['bank']) ? $division['bank'] : null,
+            'div_account' => !empty($division['account']) ? $division['account'] : '',
+            'div_inv_header' => !empty($division['inv_header']) ? $division['inv_header'] : '',
+            'div_inv_footer' => !empty($division['inv_footer']) ? $division['inv_footer'] : '',
+            'div_inv_author' => !empty($division['inv_author']) ? $division['inv_author'] : '',
+            'div_inv_cplace' => !empty($division['inv_cplace']) ? $division['inv_cplace'] : '',
             'closed' => $customer || $receipt['o_type'] != 'advance' ? 1 : 0,
             'fullnumber' => $fullnumber,
             'currency' => isset($receipt['currency']) ? $receipt['currency'] : Localisation::getCurrentCurrency(),
