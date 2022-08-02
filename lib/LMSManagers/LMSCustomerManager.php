@@ -308,7 +308,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 LEFT JOIN (
                     SELECT DISTINCT reference FROM documents
                 ) d3 ON d3.reference = d.id
-                JOIN numberplans ON numberplans.id = d.numberplanid
+                LEFT JOIN numberplans ON numberplans.id = d.numberplanid
                 LEFT JOIN vusers ON vusers.id = d.userid
                 WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
                 . ' d.customerid = ? AND d.type = ?'
