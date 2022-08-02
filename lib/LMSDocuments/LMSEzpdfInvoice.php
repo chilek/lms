@@ -1407,7 +1407,7 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_no_accountant()
     {
-        if ($this->data['dontpublish'] && !$this->data['cancelled']) {
+        if (!empty($this->data['dontpublish']) && !$this->data['cancelled']) {
             $this->backend->setColor(0.5, 0.5, 0.5);
             $this->backend->addText(80, 200, 50, trans('NO ACCOUNTANT DOCUMENT'), 0, 'left', -45);
             $this->backend->setColor(0, 0, 0);

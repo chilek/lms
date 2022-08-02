@@ -43,7 +43,7 @@
 				{if $invoice.cancelled}
 					<strong>{trans("CANCELLED")}</strong><br>
 				{/if}
-				{if $invoice.dontpublish}
+				{if !empty($invoice.dontpublish)}
 					<strong>{trans("NO ACCOUNTANT DOCUMENT")}</strong><br>
 				{/if}
 				<!--<strong>{*$type*}</strong>//-->
