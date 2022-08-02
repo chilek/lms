@@ -159,6 +159,8 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             $cityid = $m[1];
             $districtid = $m[2];
             $stateid = $m[3];
+        } else {
+            $cityid = $districtid = $stateid = null;
         }
 
         header('Content-Type: application/json');
