@@ -306,7 +306,7 @@ switch ($action) {
         $zip = $invoice['zip'];
         $city = $invoice['city'];
         $countryid = $invoice['countryid'];
-        $recipient_address = $invoice['recipient_address'];
+        $recipient_address = isset($invoice['recipient_address']) ? $invoice['recipient_address'] : null;
 
         unset($invoice);
         unset($error);
@@ -508,7 +508,7 @@ switch ($action) {
         }
 
         $args = array(
-            'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
             'customerid' => $invoice['customerid'],
             'division' => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
                 : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
@@ -583,7 +583,7 @@ switch ($action) {
 
         if (!$invoice['number']) {
             $invoice['number'] = $LMS->GetNewDocumentNumber(array(
-                'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+                'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
                 'planid' => $invoice['numberplanid'],
                 'cdate' => $invoice['cdate'],
                 'customerid' => $invoice['customerid'],
@@ -595,7 +595,7 @@ switch ($action) {
                 ||  ($invoice['oldnumber'] == $invoice['number'] && $invoice['oldcustomerid'] != $invoice['customerid'])
                 || $invoice['numberplanid'] != $invoice['oldnumberplanid']) && ($docid = $LMS->DocumentExists(array(
                     'number' => $invoice['number'],
-                    'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+                    'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
                     'planid' => $invoice['numberplanid'],
                     'cdate' => $invoice['cdate'],
                     'customerid' => $invoice['customerid'],
@@ -605,7 +605,7 @@ switch ($action) {
 
             if ($error) {
                 $invoice['number'] = $LMS->GetNewDocumentNumber(array(
-                    'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+                    'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
                     'planid' => $invoice['numberplanid'],
                     'cdate' => $invoice['cdate'],
                     'customerid' => $invoice['customerid'],
@@ -668,7 +668,7 @@ switch ($action) {
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],
         );
 
-        $args['type'] = $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
+        $args['type'] = isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
         $args['number'] = $invoice['number'];
         $args['fullnumber'] = docnumber(array(
             'number' => $invoice['number'],
