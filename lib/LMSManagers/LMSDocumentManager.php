@@ -370,7 +370,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 )' : '') . ')';
         }
 
-        if (!empty($where)) {
+        if (empty($where)) {
+            $where = '';
+        } else {
             $where = 'WHERE ' . implode(' AND ', $where);
         }
 
