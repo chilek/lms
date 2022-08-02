@@ -697,6 +697,8 @@ switch ($action) {
         $SESSION->remove('invoice', true);
         $SESSION->remove('invoicenewerror', true);
 
+        $contents = $customer = $error = $invoice = null;
+
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
 
