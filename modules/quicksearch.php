@@ -956,7 +956,7 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $username = $DB->Escape('%'.$ac[0].'%');
-            $domain   = $DB->Escape('%'.$ac[1].'%');
+            $domain   = isset($ac[1]) ? $DB->Escape('%'.$ac[1].'%') : null;
 
             $candidates = $DB->GetAll("(SELECT p.id, p.login, d.name AS domain, 0 AS type
 					FROM passwd p
