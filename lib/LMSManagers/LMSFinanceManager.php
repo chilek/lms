@@ -2677,7 +2677,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
 
                 $default_author = ConfigHelper::getConfig('invoices.default_author', 'user_issuer,user_name,division_author');
-                $default_author = preg_split('/([\s]+|[\s]*,[\s]*)/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
+                $default_author = preg_split('/[\s]*,[\s]*/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
                 $expositor = trans('system');
                 foreach ($default_author as $author) {
                     switch ($author) {
