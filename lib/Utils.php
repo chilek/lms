@@ -834,7 +834,11 @@ class Utils
             ),
             explode(
                 '|',
-                date('Y|m|d|j|N|D|l|w|M|F|y|H|h|i|s|H:i:s|Y-m-d|m/d/y|U|T|O|G|G|H:i|', $date)
+                date('Y|m|d|j|N|D|l|w|', $date)
+                . trans('<!month-name-short>' . date('M', $date))
+                . '|'
+                . trans('<!month-name-full>' . date('F', $date))
+                . date('|y|H|h|i|s|H:i:s|Y-m-d|m/d/y|U|T|O|G|G|H:i|', $date)
                 . sprintf('%03d', date('z', $date) + 1)
             ),
             $format
