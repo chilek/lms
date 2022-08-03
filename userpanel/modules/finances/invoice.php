@@ -203,7 +203,7 @@ if (!empty($_POST['inv'])) {
         }
     }
     Localisation::resetUiLanguage();
-} else {
+} elseif (isset($_GET['id'])) {
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
     if ($invoice['customerid'] != $SESSION->id) {
@@ -248,6 +248,8 @@ if (!empty($_POST['inv'])) {
     if (!$invoice['published']) {
         $LMS->PublishDocuments($invoice['id']);
     }
+} else {
+    die;
 }
 
 if (!is_null($attachment_name) && isset($docnumber)) {
