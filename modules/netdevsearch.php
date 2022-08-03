@@ -155,7 +155,7 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 
         foreach ($netdevlist as &$netdev) {
             $netdev['customlinks'] = array();
-            if (!$netdev['location'] && $netdev['ownerid']) {
+            if (!$netdev['location'] && !empty($netdev['ownerid'])) {
                 $netdev['location'] = $LMS->getAddressForCustomerStuff($netdev['ownerid']);
             }
             $netdev['terc'] = empty($netdev['state_ident']) ? null
