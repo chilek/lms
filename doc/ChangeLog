@@ -252,6 +252,8 @@ version 28-git (????-??-??):
   - improvement: added '%call_time' subsctitution support in 'payments.invoice_billing_description'
     configuration variable - it's replaced by total call time in minutes rounded upper
     to full minutes [chilan]
+  - enhancement: customer list: added customer group logical operator selection connecting selected
+    customer groups [chilan]
 
 version 27.0 (2021-08-20):
 
