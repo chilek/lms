@@ -144,7 +144,7 @@ if (isset($_POST['event'])) {
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => $event['userlist'],
+            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');
         $users = array_map(function ($userid) use ($users_by_id) {
