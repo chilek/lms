@@ -53,8 +53,10 @@ if (isset($_GET['s']) && isset($_GET['v'])) {
     if (isset($_GET['d'])) {
         $params['divisionid'] = $_GET['d'];
     }
-} else {
+} elseif (isset($_GET['id'])) {
     $params['id'] = $_GET['id'];
+} else {
+    $SESSION->redirect_to_history_entry();
 }
 
 if (!($id = $LMS->ConfigOptionExists($params))) {

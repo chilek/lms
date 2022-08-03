@@ -917,7 +917,7 @@ switch ($action) {
         break;
 }
 
-if (!isset($cashreglist)) {
+if (!isset($cashreglist) && isset($receipt['customerid'])) {
     $cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
 }
 

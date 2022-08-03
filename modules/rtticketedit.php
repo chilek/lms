@@ -354,7 +354,7 @@ if ($id && !isset($_POST['ticket'])) {
                     $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
                     $LMS->NotifyUsers(array(
-                        'queue' => $ticket['queue'],
+                        'queue' => $queue['id'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
                         'sms_body' => $sms_body,
