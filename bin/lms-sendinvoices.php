@@ -231,6 +231,8 @@ if (!$no_attachments) {
 
     // add LMS's custom plugins directory
     $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+
+    $SMARTY->muteUndefinedOrNullWarnings();
 }
 
 // Include required files (including sequence is important)
