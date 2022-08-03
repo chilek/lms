@@ -187,7 +187,11 @@ if (!empty($_POST['division'])) {
     if ($olddiv['location_city'] || $olddiv['location_street']) {
         $olddiv['teryt'] = true;
         if ($olddiv['location_city'] && $olddiv['location_street']) {
-            preg_match('/^(?<city>.+)\s*,\s*(?<address>.+)$/', location_str($olddiv), $m);
+            preg_match(
+                '/^(?<city>.+)\s*,\s*(?<address>.+)$/',
+                location_str(array('city_name' => $olddiv['location_city'], 'street_name' => $olddiv['location_street'])),
+                $m
+            );
             $olddiv['city'] = $m['city'];
             $oldciv['address'] = $m['address'];
         }
