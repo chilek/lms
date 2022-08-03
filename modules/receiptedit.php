@@ -217,7 +217,7 @@ switch ($action) {
             }
         }
 
-        $receipt['customerid'] = $_POST['customerid'];
+        $receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
         $receipt['template'] = $oldtemplate;
         $receipt['id'] = $id;
         $receipt['closed'] = $oldclosed;
@@ -280,7 +280,7 @@ switch ($action) {
             }
         }
 
-        if ($receipt['numberplanid'] && !$receipt['extnumber']) {
+        if ($receipt['numberplanid'] && empty($receipt['extnumber'])) {
             if (strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==false) {
                 $receipt['extended'] = true;
             }
@@ -312,7 +312,7 @@ switch ($action) {
             break;
         }
 
-        $cid = !empty($_GET['customerid']) ? $_GET['customerid'] : $_POST['customerid'];
+        $cid = !empty($_GET['customerid']) ? $_GET['customerid'] : (empty($_POST['customerid']) ? null : $_POST['customerid']);
 
         if (!$cid) {
             $cid = $oldcid;
@@ -414,7 +414,7 @@ switch ($action) {
             $args = array(
                 'type' => DOC_RECEIPT,
                 'number' => $receipt['number'],
-                'extnumber' => $receipt['extnumber'] ? $receipt['extnumber'] : '',
+                'extnumber' => !empty($receipt['extnumber']) ? $receipt['extnumber'] : '',
                 SYSLOG::RES_NUMPLAN => empty($receipt['numberplanid']) ? null : $receipt['numberplanid'],
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_CUST => $customer['id'],
