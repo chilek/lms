@@ -368,8 +368,10 @@ class LMSTcpdfTransferForm extends LMSDocument
         }
         if (!empty($customerinfo['accounts'])) {
             $account = $customerinfo['accounts'][0]['account'];
-        } else {
+        } elseif (!empty($customerinfo['account'])) {
             $account = bankaccount($data['customerid'], $customerinfo['account'], isset($data['export']) ? $data['export'] : false);
+        } else {
+            $account = null;
         }
         $this->data['account'] = $account;
         $this->data['name'] = $customerinfo['customername'];
