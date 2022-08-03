@@ -167,6 +167,7 @@ class LMSSmartyPlugins
 
         $label = isset($params['label']) ? $params['label'] : null;
         $name = isset($params['name']) ? $params['name'] : 'division';
+        $shortname = !empty($params['shortname']);
         $id = isset($params['id']) ? $params['id'] : $name;
         $icon = empty($params['icon']) ? null : $params['icon'];
         $selected = isset($params['selected']) ? $params['selected'] : null;
@@ -187,39 +188,38 @@ class LMSSmartyPlugins
         $result = '';
 
         if ($force_global_division_context) {
-            $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-            $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all"))
+            $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
+                . '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all"))
                 . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
-                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>';
-            $result .= ($label ? '</label>' : '');
-            $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
+                . ($label ? '</label>' : '')
+                . '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                 . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
                 . $layout['division'] . '">';
         } else {
             if (!empty($user_divisions) && count($user_divisions) > 1) {
-                $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '');
-                $result .= (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
-                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;');
-                $result .= '<select class="division-context" id="' . $id . '" name="' . $name . '" '
+                $result .= ($label ? '<label for="' . $name . '">' : '') . ($label ? trans($label) : '') . ($label ? '&nbsp;' : '')
+                    . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;')
+                    . '<select class="division-context" id="' . $id . '" name="' . ($shortname ? $user_divisions['shortname'] : $name) . '" '
                     . (empty($tip) ? '' : ' title="' . $tip . '"')
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '')
-                    . ($onchange ? ' onchange="' . $onchange . '"' : '')
-                    . '>';
-                $result .= '<option value=""' . (!$selected ? ' selected' : '') . '>— ' . trans("all") . ' —</option>';
+                    . ($onchange ? ' onchange="' . $onchange . '"' : '') . '>'
+                    . '<option value=""' . (!$selected ? ' selected' : '') . '>' . trans("— all —") . '</option>';
                 foreach ($user_divisions as $division) {
                     $result .= '<option value="' . $division['id'] . '"'
                         . ($selected == $division['id'] ? ' selected' : '') . '>' . htmlspecialchars($division['label']) . '</option>';
                 }
-                $result .= '</select>';
-                $result .= ($label ? '</label>' : '');
+                $result .= '</select>' . ($label ? '</label>' : '');
             } else {
                 $user_division = reset($user_divisions);
-                $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '');
-                $result .= '<span class="division-context bold">' . (!empty($user_divisions) ? $user_division['shortname'] : trans("all"));
-                $result .= (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
-                    || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>';
-                $result .= ($label ? '</label>' : '');
-                $result .= '<input type="hidden" class="division-context-selected" name="' . $name . '"'
+                $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
+                    . '<span class="division-context bold">'
+                    . (empty($user_divisions) ? trans("all") : ($shortname ? $user_division['shortname'] : $user_division['name']))
+                    . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
+                      || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
+                    . ($label ? '</label>' : '')
+                    . '<input type="hidden" class="division-context-selected" name="' . $name . '"'
                     . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="'
                     . $user_division['id'] . '">';
             }
