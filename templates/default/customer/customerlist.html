@@ -193,7 +193,9 @@
 			</label>
 
 			{if is_array($customergroups) && count($customergroups)}
-				{trans("Group")}
+				<label for="g[]">
+					{trans("Group")}
+				</label>
 				<select name="gop" onChange="document.choosefilter.submit();"
 					{tip text="logical operator" class="text-center"}>
 					<option value="AND"{if $filter.customergroupsqlskey == 'AND'} selected{/if}>{trans("and")}</option>
