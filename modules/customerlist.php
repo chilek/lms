@@ -67,6 +67,10 @@ if ($api) {
         $filter['network'] = $_GET['n'];
     }
 
+    if (isset($_GET['gop'])) {
+        $filter['customergroupsqlskey'] = $_GET['gop'];
+    }
+
     if (isset($_GET['g'])) {
         $filter['customergroup'] = Utils::filterIntegers($_GET['g']);
     }

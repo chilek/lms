@@ -194,18 +194,24 @@
 
 			{if is_array($customergroups) && count($customergroups)}
 				<label for="g[]">
-				{trans("Group")}
-				<input type="hidden" name="g[]" value="">
-				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("— all groups —")}">
-					{foreach $customergroups as $customergroup}
-					<OPTION value="{$customergroup.id}"
-						{if (is_array($filter.customergroup) && in_array($customergroup.id, $filter.customergroup))
-							|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"&hellip;":true}</OPTION>
-					{/foreach}
-				</SELECT>
+					{trans("Group")}
+					<select name="gop" onChange="document.choosefilter.submit();"
+						{tip text="logical operator" class="text-center"}>
+						<option value="AND"{if $filter.customergroupsqlskey == 'AND'} selected{/if}>{trans("and")}</option>
+						<option value="OR"{if $filter.customergroupsqlskey == 'OR'} selected{/if}>{trans("or")}</option>
+					</select>
+					<input type="hidden" name="g[]" value="">
+					<select size="1" name="g[]" onChange="document.choosefilter.submit();"
+						class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("— all groups —")}">
+						{foreach $customergroups as $customergroup}
+							<option value="{$customergroup.id}"
+								{if (is_array($filter.customergroup) && in_array($customergroup.id, $filter.customergroup))
+									|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"&hellip;":true}</option>
+						{/foreach}
+					</select>
 				</label>
 			{else}
-			      <input type="hidden" name="g[]" value="">
+				<input type="hidden" name="g[]" value="">
 			{/if}
 
 			{if !empty($nodegroups) && count($nodegroups)}

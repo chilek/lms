@@ -5552,3 +5552,5 @@ $_LANG['<!month-name-full>September'] = 'wrzesień';
 $_LANG['<!month-name-full>October'] = 'październik';
 $_LANG['<!month-name-full>November'] = 'listopad';
 $_LANG['<!month-name-full>December'] = 'grudzień';
+
+$_LANG['logical operator'] = 'operator logiczny';
