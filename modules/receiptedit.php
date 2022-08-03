@@ -190,7 +190,7 @@ switch ($action) {
         }
         break;
     case 'deletepos':
-        if (count($contents)) {
+        if (!empty($contents)) {
             foreach ($contents as $idx => $row) {
                 if ($row['posuid'] == $_GET['posuid']) {
                     unset($contents[$idx]);
