@@ -917,8 +917,8 @@ switch ($action) {
         break;
 }
 
-if (!isset($cashreglist) && isset($receipt['customerid'])) {
-    $cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
+if (!isset($cashreglist)) {
+    $cashreglist = $LMS->GetCashRegistries(isset($receipt['customerid']) ? $receipt['customerid'] : null);
 }
 
 $SESSION->save('receipt', $receipt, true);
