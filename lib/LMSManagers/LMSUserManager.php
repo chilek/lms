@@ -642,6 +642,10 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     public function PasswdExistsInHistory($id, $passwd)
     {
         $history = $this->db->GetAll('SELECT id, hash FROM passwdhistory WHERE userid = ? ORDER BY id DESC LIMIT ?', array($id, intval(ConfigHelper::getConfig('phpui.passwordhistory'))));
+        if (empty($history)) {
+            return false;
+        }
+
         foreach ($history as $h) {
             if (password_verify($passwd, $h['hash'])) {
                 return true;
