@@ -989,7 +989,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 
 $SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $receipt['regid'])));
-$SMARTY->assign('cashreglist', $cashreglist);
+$SMARTY->assign('cashreglist', empty($cashreglist) ? array() : $cashreglist);
 $SMARTY->assign('cashregcount', empty($cashreglist) ? 0 : count($cashreglist));
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
