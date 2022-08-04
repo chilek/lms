@@ -2967,6 +2967,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             $result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
+            $result['total'] = $result['value'];
 
             // NOTE: don't waste CPU/mem when printing history is not set:
             if (ConfigHelper::checkConfig('notes.print_balance')) {
