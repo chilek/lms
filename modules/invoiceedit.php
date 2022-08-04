@@ -95,6 +95,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     $invoice['oldcustomerid'] = $invoice['customerid'];
     $invoice['oldflags'] = $invoice['flags'];
     $invoice['oldcomment'] = $invoice['comment'];
+    $invoice['oldmemo'] = $invoice['memo'];
 
     $hook_data = array(
         'contents' => $invoicecontents,
@@ -297,6 +298,7 @@ switch ($action) {
         $oldcustomerid = $invoice['oldcustomerid'];
         $oldflags = $invoice['oldflags'];
         $oldcomment = $invoice['oldcomment'];
+        $oldmemo = $invoice['oldmemo'];
         $closed   = $invoice['closed'];
         $divisionid = $invoice['divisionid'];
         $name = $invoice['name'];
@@ -326,6 +328,7 @@ switch ($action) {
         $invoice['oldcustomerid'] = $oldcustomerid;
         $invoice['oldflags'] = $oldflags;
         $invoice['oldcomment'] = $oldcomment;
+        $invoice['oldmemo'] = $invoice['memo'] = $oldmemo;
         $invoice['divisionid'] = $divisionid;
         $invoice['name'] = $name;
         $invoice['address'] = $address;
