@@ -168,7 +168,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
         $result = array();
         $index = 0;
 
-        if ($stateid) {
+        if (!empty($stateid)) {
             $list = $DB->GetAll('SELECT id, name
                 FROM location_districts WHERE stateid = ?
                 ORDER BY name', array($stateid));
@@ -179,7 +179,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             );
         }
 
-        if ($districtid) {
+        if (!empty($districtid)) {
             $list = get_loc_cities($districtid);
             $result[] = array(
                 'type' => 'city',
@@ -188,7 +188,7 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             );
         }
 
-        if ($cityid) {
+        if (!empty($cityid)) {
             $list = get_loc_streets($cityid);
             $result[] = array(
                 'type' => 'street',
