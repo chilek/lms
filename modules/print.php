@@ -764,23 +764,23 @@ switch ($type) {
             access_denied();
         }
 
-        if ($_POST['from']) {
+        if (!empty($_POST['from'])) {
             list($year, $month, $day) = explode('/', $_POST['from']);
             $from = mktime(0, 0, 0, $month, $day, $year);
         } else {
             $from = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
         }
 
-        if ($_POST['to']) {
+        if (!empty($_POST['to'])) {
             list($year, $month, $day) = explode('/', $_POST['to']);
             $to = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
         }
 
-        $registry = intval($_POST['registry']);
-        $user = intval($_POST['user']);
-        $group = intval($_POST['group']);
+        $registry = isset($_POST['registry']) ? intval($_POST['registry']) : 0;
+        $user = isset($_POST['user']) ? intval($_POST['user']) : 0;
+        $group = isset($_POST['group']) ? intval($_POST['group']) : 0;
         $where = '';
 
         if ($registry) {
