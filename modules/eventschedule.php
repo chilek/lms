@@ -39,8 +39,8 @@ function hourRange($lower, $upper, $step)
 function parseWorkTimeHours($period)
 {
     list ($begin, $end) = explode('-', $period);
-    $parsed_begin = date_parse($begin);
-    $parsed_end = date_parse($end);
+    $parsed_begin = date_parse($begin . (strpos($begin, ':') === false ? ':00' : ''));
+    $parsed_end = date_parse($end . (strpos($end, ':') === false ? ':00' : ''));
 
     return array(
         'begin' => $parsed_begin['hour'] * 3600 + $parsed_begin['minute'] * 60,
