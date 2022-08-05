@@ -322,7 +322,7 @@ function module_main()
                     'customerid' => $SESSION->id,
                     'status' => $ticketdata['status'],
                     'categories' => $ticketdata['categorynames'],
-                    'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                    'priority' => !empty($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                     'subject' => $ticket['subject'],
                     'body' => $ticket['body'],
                 );
