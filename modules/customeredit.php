@@ -42,7 +42,6 @@ if (isset($_GET['search'])) {
         'network',
         'customergroup',
         'search',
-        'time',
         'sqlskey',
         'nodegroup',
         'division'

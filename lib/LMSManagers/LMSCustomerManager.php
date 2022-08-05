@@ -856,7 +856,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $flagsqlskey = 'AND';
         }
 
-        if (!is_array($flags) && !empty($flags)) {
+        if (!empty($flags) && !is_array($flags)) {
             $flags = array($flags);
         }
 
