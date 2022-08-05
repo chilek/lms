@@ -484,7 +484,7 @@ $queuelist = $LMS->GetQueueList(array('stats' => false));
 
 $queue = null;
 if (isset($_POST['event'])) {
-    $queue = $ticket['queue'];
+    $queue = isset($ticket['queue']) ? $ticket['queue'] : null;
     foreach ($categories as &$category) {
         $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
     }
