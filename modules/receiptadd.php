@@ -924,7 +924,7 @@ if (!isset($cashreglist)) {
 $SESSION->save('receipt', $receipt, true);
 $SESSION->save('receiptregid', $receipt['regid'], true);
 $SESSION->save('receipttype', $receipt['type'], true);
-$SESSION->save('receiptcontents', isset($contents) ? $contents : null, true);
+$SESSION->save('receiptcontents', isset($contents) ? $contents : array(), true);
 $SESSION->save('receiptcustomer', isset($customer) ? $customer : null, true);
 $SESSION->save('receiptadderror', isset($error) ? $error : null, true);
 
