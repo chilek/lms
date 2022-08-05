@@ -173,7 +173,7 @@ if (isset($_POST['event'])) {
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => $event['userlist'],
+            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
             'ignoredevent' => $event['id'],
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');
