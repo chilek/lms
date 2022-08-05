@@ -24,7 +24,10 @@
  *  $Id$
  */
 
-$addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : $_POST['instantpayment'];
+$addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : (isset($_POST['instantpayment']) ? $_POST['instantpayment'] : null);
+if (empty($addbalance)) {
+    $SESSION->redirect_to_history_entry();
+}
 
 foreach ($addbalance as $key => $value) {
     if (!is_array($value)) {
