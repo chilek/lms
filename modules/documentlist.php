@@ -31,7 +31,7 @@ if (!isset($_GET['init'])) {
 
     if (isset($_GET['t'])) {
         if (is_array($_GET['t'])) {
-            $filter['type'] = array_filter(Utils::filterIntegers($_GET['t']), function($type) {
+            $filter['type'] = array_filter(Utils::filterIntegers($_GET['t']), function ($type) {
                 return !empty($type);
             });
             if (empty($filter['type'])) {
