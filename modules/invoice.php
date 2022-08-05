@@ -1054,8 +1054,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $invoices[$invoiceid] = $invoice;
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";
                 $jpk_data .= "\t\t<P_3A>" . htmlspecialchars($invoice['name']) . "</P_3A>\n";
-                $jpk_data .= "\t\t<P_3B>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
-                    . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</P_3B>\n";
+                $jpk_data .= "\t\t<P_3B>" . (!empty($invoice['postoffice']) && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
+                    . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . (!empty($invoice['postoffice']) ? $invoice['postoffice'] : $invoice['city']) . "</P_3B>\n";
                 $jpk_data .= "\t\t<P_3C>" . htmlspecialchars($invoice['division_name']) . "</P_3C>\n";
                 $jpk_data .= "\t\t<P_3D>" . $invoice['division_address'] . ', '
                     . (empty($invoice['division_zip']) ? $invoice['division_city'] : $invoice['division_zip'] . ' ' . $invoice['division_city']) . "</P_3D>\n";
