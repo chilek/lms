@@ -209,13 +209,13 @@ function module_main()
                     if ($mailfname == 'queue') {
                         $mailfname = $LMS->GetQueueName($ticket['queue']);
                     }
-                    if ($mailfname == 'user') {
+                    if ($mailfname == 'user' && !empty($user)) {
                         $mailfname = $user['name'];
                     }
                     $mailfname = '"'.$mailfname.'"';
                 }
 
-                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
+                $mailfrom = $LMS->DetermineSenderEmail(empty($user) ? null : $user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
 
                 $ticketdata = $LMS->GetTicketContents($id);
 
