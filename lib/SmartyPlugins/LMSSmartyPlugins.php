@@ -264,12 +264,12 @@ class LMSSmartyPlugins
             if (!empty($params['selecttip'])) {
                 $result .= ' ' . self::tipFunction(array('text' => $params['selecttip']), $template);
             } else {
-                $result .= ' ' . self::tipFunction(array('text' => $firstoption . (empty($required) ? null : '(optional)')), $template);
+                $result .= ' ' . self::tipFunction(array('text' => $firstoption . (empty($required) ?: '(optional)')), $template);
             }
 
             $result .= '">' . PHP_EOL;
 
-            $result .= '<option value="0"' . (empty($params['selected']) ? ' selected' : null) . '>' . $firstoption . '</option>';
+            $result .= '<option value="0"' . (empty($params['selected']) ? ' selected' : '') . '>' . $firstoption . '</option>';
 
             foreach ($params['customers'] as $customer) {
                 $result .= '<option value="' . $customer['id'] . '"';
