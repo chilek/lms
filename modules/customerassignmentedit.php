@@ -194,7 +194,7 @@ if (isset($_POST['assignment'])) {
                 list($y, $m, $d) = explode('/', $a['at']);
                 if (checkdate($m, $d, $y)) {
                     $at = mktime(0, 0, 0, $m, $d, $y);
-                    if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
+                    if (empty($a['atwarning']) && $at < mktime(0, 0, 0)) {
                         $a['atwarning'] = true;
                         $error['at'] = trans('Incorrect date!');
                     }
