@@ -31,12 +31,11 @@ if (!isset($_GET['init'])) {
 
     if (isset($_GET['t'])) {
         if (is_array($_GET['t'])) {
-            $filter['type'] = Utils::filterIntegers($_GET['t']);
-            if (count($filter['type']) == 1) {
-                $first = reset($filter['type']);
-                if ($first == 0) {
-                    $filter['type'] = 0;
-                }
+            $filter['type'] = array_filter(Utils::filterIntegers($_GET['t']), function($type) {
+                return !empty($type);
+            });
+            if (empty($filter['type'])) {
+                $filter['type'] = 0;
             }
         } else {
             $filter['type'] = intval($_GET['t']);

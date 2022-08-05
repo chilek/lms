@@ -53,7 +53,7 @@
 		</TD>
 		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $filter.direction == "asc" && $filter.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "customer"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD class="text-right nobr">
-			{button icon="add" label="New Document" onclick="location.href = '?m=documentadd&cid={$filter.customer}&typeOD={$filter.type}';"}
+			{button icon="add" label="New Document" onclick="location.href = '?m=documentadd{if !empty($filter.customer)}&cid={$filter.customer}{/if}{if !empty($filter.type) && count($filter.type) == 1}&type={reset($filter.type)}{/if}';"}
 		</TD>
 	</TR>
 	<TR>
