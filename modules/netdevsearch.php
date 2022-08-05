@@ -161,8 +161,8 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
             $netdev['terc'] = empty($netdev['state_ident']) ? null
                 : $netdev['state_ident'] . $netdev['district_ident']
                 . $netdev['borough_ident'] . $netdev['borough_type'];
-            $netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
-            $netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
+            $netdev['simc'] = empty($netdev['city_ident']) ?: $netdev['city_ident'];
+            $netdev['ulic'] = empty($netdev['street_ident']) ?: $netdev['street_ident'];
             $netdev['filecontainers'] = isset($filecontainers[$netdev['id']])
                 ? explode(',', $filecontainers[$netdev['id']]['descriptions'])
                 : array();

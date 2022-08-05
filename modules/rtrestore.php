@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$maction = empty($_GET['maction']) ? null : $_GET['maction'];
-$taction = empty($_GET['taction']) ? null : $_GET['taction'];
-$qaction = empty($_GET['qaction']) ? null : $_GET['qaction'];
+$maction = empty($_GET['maction']) ?: $_GET['maction'];
+$taction = empty($_GET['taction']) ?: $_GET['taction'];
+$qaction = empty($_GET['qaction']) ?: $_GET['qaction'];
 
 if ($maction == 'restore') {
     $msg = intval($_GET['id']);

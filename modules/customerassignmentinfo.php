@@ -64,7 +64,7 @@ if (!empty($a['docnumber'])) {
        'number' => $a['docnumber'],
        'template' => $a['numtemplate'],
        'cdate' => $a['cdate'],
-       'customerid' => empty($a['customerid']) ? null : $a['customerid'],
+       'customerid' => empty($a['customerid']) ?: $a['customerid'],
     ));
     $a['document'] = trans(
         '$a no. $b issued on $c',

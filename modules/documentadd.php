@@ -299,7 +299,7 @@ if (isset($_POST['document'])) {
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array($document['type'],
                 $document['number'],
-                empty($document['numberplanid']) ? null : $document['numberplanid'],
+                empty($document['numberplanid']) ?: $document['numberplanid'],
                 $time,
                 isset($document['closed']) ? $time : 0,
                 isset($document['closed']) ? Auth::GetCurrentUser() : null,
@@ -328,8 +328,8 @@ if (isset($_POST['document'])) {
                 ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
                 isset($document['closed']) ? DOC_CLOSED : DOC_OPEN,
                 $fullnumber,
-                !isset($document['reference']) || empty($document['reference']) ? null : $document['reference']['id'],
-                empty($document['templ']) ? null : $document['templ'],
+                !isset($document['reference']) || empty($document['reference']) ?: $document['reference']['id'],
+                empty($document['templ']) ?: $document['templ'],
                 $commit_flags,
             )
         );
@@ -499,7 +499,7 @@ $SMARTY->assign('planDocumentType', isset($document['type']) ? $document['type']
 
 $docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : null);
 
-$references = empty($document['customerid']) ? null : $LMS->GetDocuments($document['customerid']);
+$references = empty($document['customerid']) ?: $LMS->GetDocuments($document['customerid']);
 $SMARTY->assign('references', $references);
 
 $layout['pagetitle'] = trans('New Document');
@@ -516,7 +516,7 @@ if (isset($document['customerid'])) {
     $numberplans = $LMS->GetNumberPlans(array(
         'doctype' => DOC_INVOICE,
         'cdate' => null,
-        'division' => empty($document['customerid']) ? null : $LMS->GetCustomerDivision($document['customerid']),
+        'division' => empty($document['customerid']) ?: $LMS->GetCustomerDivision($document['customerid']),
         'next' => false,
     ));
 } else {

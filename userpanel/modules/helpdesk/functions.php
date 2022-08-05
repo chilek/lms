@@ -215,7 +215,7 @@ function module_main()
                     $mailfname = '"'.$mailfname.'"';
                 }
 
-                $mailfrom = $LMS->DetermineSenderEmail(empty($user) ? null : $user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
+                $mailfrom = $LMS->DetermineSenderEmail(empty($user) ?: $user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
 
                 $ticketdata = $LMS->GetTicketContents($id);
 

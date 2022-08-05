@@ -169,7 +169,7 @@ class LMSSmartyPlugins
         $name = isset($params['name']) ? $params['name'] : 'division';
         $shortname = !empty($params['shortname']);
         $id = isset($params['id']) ? $params['id'] : $name;
-        $icon = empty($params['icon']) ? null : $params['icon'];
+        $icon = empty($params['icon']) ?: $params['icon'];
         $selected = isset($params['selected']) ? $params['selected'] : null;
         $superuser = isset($params['superuser']) && !empty($params['superuser']) ? $params['superuser'] : null;
         $onchange = isset($params['onchange']) && !empty($params['onchange']) ? $params['onchange'] : null;
@@ -237,7 +237,7 @@ class LMSSmartyPlugins
         $customername = !isset($params['customername']) || $params['customername'];
 
         $form = isset($params['form']) ? $params['form'] : null;
-        $icon = empty($params['icon']) ? null : $params['icon'];
+        $icon = empty($params['icon']) ?: $params['icon'];
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -1356,7 +1356,7 @@ class LMSSmartyPlugins
         $id = isset($params['id']) ? ' id="' . $params['id'] . '"' : null;
         $name = isset($params['name']) ? ' name="' . $params['name'] . '"' : null;
         $selected = isset($params['selected']) ? $params['selected'] : $default_taxid;
-        $value = empty($selected) ? null : ' value="' . $selected . '"';
+        $value = empty($selected) ?: ' value="' . $selected . '"';
         $class = isset($params['class']) ? ' class="'. $params['class'] . '"' : null;
         $customonchange = isset($params['customonchange']) ? ' onchange="'. $params['customonchange'] . '"' : null;
         $form = isset($params['form']) ? ' form="'. $params['form'] . '"' : null;

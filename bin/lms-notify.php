@@ -853,8 +853,8 @@ function send_sms($msgid, $cid, $phone, $data)
         WHERE messageid = ? AND customerid = ? AND id = ?",
         array(
             $result['status'],
-            empty($result['id']) ? null : $result['id'],
-            empty($result['errors']) ? null : implode(', ', $result['errors']),
+            empty($result['id']) ?: $result['id'],
+            empty($result['errors']) ?: implode(', ', $result['errors']),
             $msgid,
             $cid,
             $msgitemid,

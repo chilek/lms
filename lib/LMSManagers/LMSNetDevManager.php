@@ -81,7 +81,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         $args = array(
-            SYSLOG::RES_NETDEV => empty($devid) ? null : $devid,
+            SYSLOG::RES_NETDEV => empty($devid) ?: $devid,
             'linktype'         => $type,
             'linkradiosector'  => $radiosector,
             'linktechnology'   => $technology,
@@ -325,7 +325,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function NetDevUpdate($data)
     {
         $old_ownerid = $this->db->GetOne('SELECT ownerid FROM netdevices WHERE id = ?', array($data['id']));
-        $ownerid = empty($data['ownerid']) ? null: intval($data['ownerid']);
+        $ownerid = empty($data['ownerid']) ?: intval($data['ownerid']);
 
         $args = array();
 
@@ -407,7 +407,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $args['netdevicemodelid'] = !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null;
         }
         if (array_key_exists('ownerid', $data)) {
-            $args['ownerid'] = empty($data['ownerid']) ? null : $data['ownerid'];
+            $args['ownerid'] = empty($data['ownerid']) ?: $data['ownerid'];
         }
 
         if (empty($args)) {
@@ -895,8 +895,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 $netdev['terc'] = empty($netdev['state_ident']) ? null
                     : $netdev['state_ident'] . $netdev['district_ident']
                         . $netdev['borough_ident'] . $netdev['borough_type'];
-                $netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
-                $netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
+                $netdev['simc'] = empty($netdev['city_ident']) ?: $netdev['city_ident'];
+                $netdev['ulic'] = empty($netdev['street_ident']) ?: $netdev['street_ident'];
                 $netdev['filecontainers'] = isset($filecontainers[$netdev['id']]) ? $filecontainers[$netdev['id']] : array();
                 $netdev['lastonlinedate'] = lastonline_date($netdev['lastonline']);
             }

@@ -455,7 +455,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 					VALUES (?, ?, ?, ?, ?, ?)',
                     array(
                         $msgid,
-                        empty($customerid) ? null : $customerid,
+                        empty($customerid) ?: $customerid,
                         $destination,
                         isset($row['status']) ? $row['status'] : MSG_NEW,
                         isset($row['error']) ? $row['error'] : null,

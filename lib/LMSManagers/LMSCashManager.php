@@ -362,7 +362,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         'hash' => $hash,
                         SYSLOG::RES_CASHSOURCE => $sourceid,
                         SYSLOG::RES_SOURCEFILE => $sourcefileid,
-                        'srcaccount' => empty($srcaccount) ? null : $srcaccount,
+                        'srcaccount' => empty($srcaccount) ?: $srcaccount,
                     );
                     $res = $this->db->Execute('INSERT INTO cashimport (date, value, customer,
 						customerid, description, hash, sourceid, sourcefileid, srcaccount)

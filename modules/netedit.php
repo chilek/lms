@@ -216,7 +216,7 @@ if (isset($_POST['networkdata'])) {
                 $DB->Execute(
                     'UPDATE nodes SET ownerid = ? WHERE id = ?',
                     array(
-                        empty($networkdata['ownerid']) ? null : $networkdata['ownerid'],
+                        empty($networkdata['ownerid']) ?: $networkdata['ownerid'],
                         $vnetwork['nodeid'],
                     )
                 );
@@ -225,7 +225,7 @@ if (isset($_POST['networkdata'])) {
                     'INSERT INTO nodes (name, ownerid, netid) VALUES(?, ?, ?)',
                     array(
                         $networkdata['name'],
-                        empty($networkdata['ownerid']) ? null : $networkdata['ownerid'],
+                        empty($networkdata['ownerid']) ?: $networkdata['ownerid'],
                         $networkdata['id'],
                     )
                 );

@@ -513,8 +513,8 @@ switch ($action) {
         $args = array(
             'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
             'customerid' => $invoice['customerid'],
-            'division' => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
-                : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
+            'division' => $use_current_customer_data ? (empty($customer['divisionid']) ?: $customer['divisionid'])
+                : (empty($invoice['divisionid']) ?: $invoice['divisionid']),
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);
@@ -647,10 +647,10 @@ switch ($action) {
             'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],
             'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
                 : $invoice['city'],
-            SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
-                : (empty($invoice['countryid']) ? null : $invoice['countryid']),
-            SYSLOG::RES_DIV => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
-                : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
+            SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ?: $customer['countryid'])
+                : (empty($invoice['countryid']) ?: $invoice['countryid']),
+            SYSLOG::RES_DIV => $use_current_customer_data ? (empty($customer['divisionid']) ?: $customer['divisionid'])
+                : (empty($invoice['divisionid']) ?: $invoice['divisionid']),
             'div_name' => ($division['name'] ? $division['name'] : ''),
             'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
             'div_address' => ($division['address'] ? $division['address'] : ''),
@@ -668,7 +668,7 @@ switch ($action) {
             'comment' => ($invoice['comment'] ? $invoice['comment'] : null),
             'currency' => $invoice['currency'],
             'currencyvalue' => $invoice['currencyvalue'],
-            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],
+            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ?: $customer['documentmemo']) : $invoice['memo'],
         );
 
         $args['type'] = isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
@@ -743,7 +743,7 @@ switch ($action) {
                     'pdiscount' => str_replace(',', '.', $item['pdiscount']),
                     'vdiscount' => str_replace(',', '.', $item['vdiscount']),
                     'name' => $item['name'],
-                    SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
+                    SYSLOG::RES_TARIFF => empty($item['tariffid']) ?: $item['tariffid'],
                 );
                 $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
 					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)

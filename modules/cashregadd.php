@@ -49,8 +49,8 @@ if (isset($_POST['registry'])) {
         $args = array(
             'name' => $registry['name'],
             'description' => $registry['description'],
-            'in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['in_numberplanid']) ? null : $registry['in_numberplanid'],
-            'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
+            'in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['in_numberplanid']) ?: $registry['in_numberplanid'],
+            'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ?: $registry['out_numberplanid'],
             'disabled' => isset($registry['disabled']) ? 1 : 0,
         );
         $DB->Execute('INSERT INTO cashregs (name, description, in_numberplanid, out_numberplanid, disabled)

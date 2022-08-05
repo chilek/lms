@@ -290,10 +290,10 @@ if (isset($_POST['message'])) {
                         if (!ConfigHelper::checkConfig('rt.new_message_preserve_no_owner')) {
                             $message['owner'] = Auth::GetCurrentUser();
                         }
-                        $props['owner'] = empty($message['owner']) ? null : $message['owner'];
+                        $props['owner'] = empty($message['owner']) ?: $message['owner'];
                     }
                 } else {
-                    $props['owner'] = empty($message['owner']) ? null : $message['owner'];
+                    $props['owner'] = empty($message['owner']) ?: $message['owner'];
                 }
                 if ($message['cause'] != -1) {
                     $props['cause'] = $message['cause'];
@@ -308,10 +308,10 @@ if (isset($_POST['message'])) {
                     $props['queueid'] = $message['queueid'];
                 }
                 if ($message['verifierid'] != -1) {
-                    $props['verifierid'] = empty($message['verifierid']) ? null : $message['verifierid'];
+                    $props['verifierid'] = empty($message['verifierid']) ?: $message['verifierid'];
                 }
                 if ($message['deadline']) {
-                    $props['deadline'] = empty($message['deadline']) ? null : $deadline;
+                    $props['deadline'] = empty($message['deadline']) ?: $deadline;
                 }
             } else {
                 if (!ConfigHelper::checkConfig('rt.new_message_preserve_no_owner') && !$owner && empty($message['owner'])) {
@@ -319,13 +319,13 @@ if (isset($_POST['message'])) {
                 }
                 $props = array(
                     'queueid' => $message['queueid'],
-                    'owner' => empty($message['owner']) ? null : $message['owner'],
+                    'owner' => empty($message['owner']) ?: $message['owner'],
                     'cause' => $message['cause'],
                     'state' => $message['state'],
                     'source' => $message['source'],
                     'priority' => isset($message['priority']) ? $message['priority'] : null,
-                    'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
-                    'deadline' => empty($message['deadline']) ? null : $deadline,
+                    'verifierid' => empty($message['verifierid']) ?: $message['verifierid'],
+                    'deadline' => empty($message['deadline']) ?: $deadline,
                 );
             }
 
@@ -503,7 +503,7 @@ if (isset($_POST['message'])) {
 
                     $LMS->NotifyUsers(array(
                         'queue' => $queue['id'],
-                        'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
+                        'verifierid' => empty($message['verifierid']) ?: $message['verifierid'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
                         'sms_body' => $sms_body,

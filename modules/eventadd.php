@@ -217,8 +217,8 @@ if (isset($_POST['event'])) {
     $error = $hook_data['error'];
 
     if (!$error && !$warning) {
-        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
-        $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
+        $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ?: $event['address_id'];
+        $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ?: $event['nodeid'];
 
         switch ($event['helpdesk']) {
             case 'new':
@@ -235,8 +235,8 @@ if (isset($_POST['event'])) {
                 } else {
                     $ticket['requestor_userid'] = null;
                     $ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
-                    $ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
-                    $ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
+                    $ticket['requestor_mail'] = empty($ticket['requestor_mail']) ?: $ticket['requestor_mail'];
+                    $ticket['requestor_phone'] = empty($ticket['requestor_phone']) ?: $ticket['requestor_phone'];
                 }
 
                 if (empty($ticket['deadline'])) {

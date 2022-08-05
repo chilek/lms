@@ -665,7 +665,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'info'           => Utils::removeInsecureHtml($customeradd['info']),
             'notes'          => Utils::removeInsecureHtml($customeradd['notes']),
             'message'        => Utils::removeInsecureHtml($customeradd['message']),
-            'documentmemo'   => empty($customeradd['documentmemo']) ? null : Utils::removeInsecureHtml($customeradd['documentmemo']),
+            'documentmemo'   => empty($customeradd['documentmemo']) ?: Utils::removeInsecureHtml($customeradd['documentmemo']),
             'pin'            => $customeradd['pin'],
             'regon'          => $customeradd['regon'],
             'rbename'        => $customeradd['rbename'],
@@ -676,7 +676,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 ? strtotime('tomorrow', intval($customeradd['icexpires'])) - 1
                 : ($customeradd['icexpires'] === '-1' ? 0 : null),
             'cutoffstop'     => $customeradd['cutoffstop'],
-            SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
+            SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ?: $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
             'flags'          => $flags,
@@ -2004,7 +2004,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'lastname'       => $customerdata['lastname'],
             'name'           => $customerdata['name'],
             'message'        => Utils::removeInsecureHtml($customerdata['message']),
-            'documentmemo'   => empty($customerdata['documentmemo']) ? null : Utils::removeInsecureHtml($customerdata['documentmemo']),
+            'documentmemo'   => empty($customerdata['documentmemo']) ?: Utils::removeInsecureHtml($customerdata['documentmemo']),
             'pin'            => $pin,
             'pinlastchange'  => $pinlastchange,
             'regon'          => $customerdata['regon'],
@@ -2016,7 +2016,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'rbename'        => $customerdata['rbename'],
             'rbe'            => $customerdata['rbe'],
             'cutoffstop'     => $customerdata['cutoffstop'],
-            SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ? null : $customerdata['divisionid'],
+            SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ?: $customerdata['divisionid'],
             'paytime'        => $customerdata['paytime'],
             'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
             'flags'          => $flags,
@@ -3338,7 +3338,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $res = $this->db->Execute(
             'UPDATE customercalls SET notes = ? WHERE id = ?',
             array(
-                !isset($params['notes']) || empty($params['notes']) ? null : $params['notes'],
+                !isset($params['notes']) || empty($params['notes']) ?: $params['notes'],
                 $callid,
             )
         );

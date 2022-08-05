@@ -186,9 +186,9 @@ if ($locations) {
             }
             $args = array_merge($args, array(
                 'city' => isset($loc['city']) ? $loc['city'] : '',
-                'city_id'=> $city == null ? null : $city,
+                'city_id'=> $city == null ?: $city,
                 'street' => isset($loc['street']) ? $loc['street'] : (isset($loc['city']) ? '' : $v['location']),
-                'street_id' => $street == null ? null : $street,
+                'street_id' => $street == null ?: $street,
                 'house' => $house,
                 'flat' => $flat,
             ));

@@ -681,8 +681,8 @@ switch ($action) {
             'zip' => $use_current_customer_data ? $customer['zip'] : $cnote['zip'],
             'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
                 : $cnote['city'],
-            SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
-                : (empty($cnote['countryid']) ? null : $cnote['countryid']),
+            SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ?: $customer['countryid'])
+                : (empty($cnote['countryid']) ?: $cnote['countryid']),
             'reason' => $cnote['reason'],
             SYSLOG::RES_DIV => $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'],
             'div_name' => ($division['name'] ? $division['name'] : ''),
@@ -701,7 +701,7 @@ switch ($action) {
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
-            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $cnote['memo'],
+            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ?: $customer['documentmemo']) : $cnote['memo'],
         );
         $args['number'] = $cnote['number'];
         $args['fullnumber'] = docnumber(array(
@@ -772,7 +772,7 @@ switch ($action) {
                     'pdiscount' => str_replace(',', '.', $item['pdiscount']),
                     'vdiscount' => str_replace(',', '.', $item['vdiscount']),
                     'name' => $item['name'],
-                    SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
+                    SYSLOG::RES_TARIFF => empty($item['tariffid']) ?: $item['tariffid'],
                 );
                 $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
 					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)

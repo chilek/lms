@@ -1148,8 +1148,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                             AND destination = ?',
                         array(
                             $status,
-                            empty($errors) ? null : implode(', ', $errors),
-                            !is_array($result) || empty($result['id']) ? null : $result['id'],
+                            empty($errors) ?: implode(', ', $errors),
+                            !is_array($result) || empty($result['id']) ?: $result['id'],
                             $msgid,
                             $orig_destination,
                         )

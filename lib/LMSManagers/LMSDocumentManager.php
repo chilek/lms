@@ -832,7 +832,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if (!empty($selectedusers)) {
             $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
             $users = $user_manager->GetUsers(array(
-                'divisions' => empty($selecteddivisions) ? null : implode(',', $selecteddivisions),
+                'divisions' => empty($selecteddivisions) ?: implode(',', $selecteddivisions),
             ));
             if (empty($users)) {
                 $users = array();

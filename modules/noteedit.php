@@ -232,7 +232,7 @@ switch ($action) {
             $args = array(
                 'doctype' => DOC_DNOTE,
                 'customerid' => $note['customerid'],
-                'division' => (empty($note['divisionid']) ? null : $note['divisionid']),
+                'division' => (empty($note['divisionid']) ?: $note['divisionid']),
                 'next' => false,
             );
             $numberplans = $LMS->GetNumberPlans($args);

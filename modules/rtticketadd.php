@@ -177,12 +177,12 @@ if (isset($_POST['ticket'])) {
         } else {
             $ticket['requestor_userid'] = null;
             $ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
-            $ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
-            $ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
+            $ticket['requestor_mail'] = empty($ticket['requestor_mail']) ?: $ticket['requestor_mail'];
+            $ticket['requestor_phone'] = empty($ticket['requestor_phone']) ?: $ticket['requestor_phone'];
         }
 
-        $ticket['verifierid'] = empty($ticket['verifierid']) ? null : $ticket['verifierid'];
-        $ticket['deadline'] = empty($ticket['deadline']) ? null : $deadline;
+        $ticket['verifierid'] = empty($ticket['verifierid']) ?: $ticket['verifierid'];
+        $ticket['deadline'] = empty($ticket['deadline']) ?: $deadline;
 
         if (empty($ticket['type'])) {
             $ticket['type'] = null;

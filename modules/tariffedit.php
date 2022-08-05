@@ -62,7 +62,7 @@ if (isset($_POST['tariff'])) {
             'SELECT id FROM tariffs WHERE name = ? AND value = ?
 	        AND period = ? AND id <> ?',
             array($tariff['name'], str_replace(',', '.', $tariff['value']),
-            $tariff['period'] == '' ? null : $tariff['period'],
+            $tariff['period'] == '' ?: $tariff['period'],
              $tariff['id'])
         )
         ) {

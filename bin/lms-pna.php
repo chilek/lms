@@ -374,7 +374,7 @@ function convert_pna_to_teryt($data)
             } else {
                 preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', $from, $m);
                 $fromnumber = $m['number'];
-                $fromletter = empty($m['letter']) ? null : $m['letter'];
+                $fromletter = empty($m['letter']) ?: $m['letter'];
             }
 
             if (empty($to)) {
@@ -382,7 +382,7 @@ function convert_pna_to_teryt($data)
             } else {
                 preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', $to, $m);
                 $tonumber = $m['number'];
-                $toletter = empty($m['letter']) ? null : $m['letter'];
+                $toletter = empty($m['letter']) ?: $m['letter'];
             }
 
             $houses[] = array('fromnumber' => $fromnumber, 'fromletter' => $fromletter,

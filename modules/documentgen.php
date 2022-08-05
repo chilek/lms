@@ -313,7 +313,7 @@ if (isset($_POST['document'])) {
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber, template)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
                     $document['number'],
-                    empty($document['numberplanid']) ? null : $document['numberplanid'],
+                    empty($document['numberplanid']) ?: $document['numberplanid'],
                     $time,
                     $document['customerid'],
                     Auth::GetCurrentUser(),
@@ -339,7 +339,7 @@ if (isset($_POST['document'])) {
                     ($division['inv_author'] ? $division['inv_author'] : ''),
                     ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
                     $fullnumber,
-                    empty($document['templ']) ? null : $document['templ'],
+                    empty($document['templ']) ?: $document['templ'],
             ));
 
             $docid = $DB->GetLastInsertID('documents');

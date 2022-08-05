@@ -49,7 +49,7 @@ switch ($action) {
 
         $note['numberplanid'] = $LMS->getDefaultNumberPlanID(
             DOC_DNOTE,
-            empty($customer) ? null : $customer['divisionid']
+            empty($customer) ?: $customer['divisionid']
         );
 
         $note['currency'] = Localisation::getDefaultCurrency();

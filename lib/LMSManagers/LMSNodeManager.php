@@ -43,13 +43,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
             'ipaddr'            => $nodedata['ipaddr'],
-            'login'             => empty($nodedata['login']) ? null : $nodedata['login'],
+            'login'             => empty($nodedata['login']) ?: $nodedata['login'],
             'passwd'            => $nodedata['passwd'],
-            SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
+            SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ?: $nodedata['netdev'],
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
-            SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ? null : $nodedata['ownerid'],
+            SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ?: $nodedata['ownerid'],
             'info'              => Utils::removeInsecureHtml($nodedata['info']),
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
@@ -63,7 +63,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
-            'invprojectid'      => empty($nodedata['invprojectid']) ? null : $nodedata['invprojectid'],
+            'invprojectid'      => empty($nodedata['invprojectid']) ?: $nodedata['invprojectid'],
             'authtype'          => $nodedata['authtype']   ? $nodedata['authtype']   : 0,
             'address_id'        => isset($nodedata['address_id']) && $nodedata['address_id'] >= 0 ? $nodedata['address_id'] : null,
             SYSLOG::RES_NODE    => $nodedata['id']
@@ -577,8 +577,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                     $row['terc'] = empty($row['state_ident']) ? null
                         : $row['state_ident'] . $row['district_ident']
                         . $row['borough_ident'] . $row['borough_type'];
-                    $row['simc'] = empty($row['city_ident']) ? null : $row['city_ident'];
-                    $row['ulic'] = empty($row['street_ident']) ? null : $row['street_ident'];
+                    $row['simc'] = empty($row['city_ident']) ?: $row['city_ident'];
+                    $row['ulic'] = empty($row['street_ident']) ?: $row['street_ident'];
                 }
                 unset($row);
 
@@ -772,14 +772,14 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr'            => $nodedata['ipaddr'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
-            'login'             => empty($nodedata['login']) ? null : $nodedata['login'],
-            SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ? null : $nodedata['ownerid'],
+            'login'             => empty($nodedata['login']) ?: $nodedata['login'],
+            SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ?: $nodedata['ownerid'],
             'passwd'            => $nodedata['passwd'],
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
             'info'              => Utils::removeInsecureHtml($nodedata['info']),
-            SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
+            SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ?: $nodedata['netdev'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
             'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
                 (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),

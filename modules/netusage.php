@@ -167,7 +167,7 @@ function getNetworks($ip, $br, $host = null)
 if (isset($_GET['ajax'])) {
     $ip   = $_POST['ip'];
     $mask = intval($_POST['mask']);
-    $host = empty($_POST['host']) ? null : trim($_POST['host']);
+    $host = empty($_POST['host']) ?: trim($_POST['host']);
     $html = '';
 
     $SMARTY->assign('ip', $ip);

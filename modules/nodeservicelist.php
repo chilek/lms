@@ -108,10 +108,10 @@ if (!empty($nodes)) {
             'internet_mobile' => $internet_mobile,
             'tv' => $tv,
             'type' => $services[$nodeid]['customertype'],
-            'downrate' => empty($nodetariffs[$nodeid]['downrate']) ? null : $nodetariffs[$nodeid]['downrate'],
-            'downceil' => empty($nodetariffs[$nodeid]['downceil']) ? null : $nodetariffs[$nodeid]['downceil'] ,
-            'uprate' => empty($nodetariffs[$nodeid]['uprate']) ? null : $nodetariffs[$nodeid]['uprate'],
-            'upceil' => empty($nodetariffs[$nodeid]['upceil']) ? null : $nodetariffs[$nodeid]['upceil'],
+            'downrate' => empty($nodetariffs[$nodeid]['downrate']) ?: $nodetariffs[$nodeid]['downrate'],
+            'downceil' => empty($nodetariffs[$nodeid]['downceil']) ?: $nodetariffs[$nodeid]['downceil'] ,
+            'uprate' => empty($nodetariffs[$nodeid]['uprate']) ?: $nodetariffs[$nodeid]['uprate'],
+            'upceil' => empty($nodetariffs[$nodeid]['upceil']) ?: $nodetariffs[$nodeid]['upceil'],
         );
     }
     unset($node);

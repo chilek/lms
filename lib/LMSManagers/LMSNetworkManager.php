@@ -122,11 +122,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'dhcpstart' => $netadd['dhcpstart'],
             'dhcpend' => $netadd['dhcpend'],
             'notes' => $netadd['notes'],
-            'vlanid' => empty($netadd['vlanid']) ? null : intval($netadd['vlanid']),
+            'vlanid' => empty($netadd['vlanid']) ?: intval($netadd['vlanid']),
             SYSLOG::RES_HOST => $netadd['hostid'],
             'authtype' => $netadd['authtype'],
             'snat' => !empty($netadd['snat']) ? $netadd['snat'] : null,
-            'pubnetid' => empty($netadd['pubnetid']) ? null : $netadd['pubnetid'],
+            'pubnetid' => empty($netadd['pubnetid']) ?: $netadd['pubnetid'],
         );
         if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
 				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype, snat, pubnetid)
@@ -499,7 +499,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'address' => $networkdata['address'],
             'mask' => $networkdata['mask'],
             'interface' => strtolower($networkdata['interface']),
-            'vlanid' => empty($networkdata['vlanid']) ? null : intval($networkdata['vlanid']),
+            'vlanid' => empty($networkdata['vlanid']) ?: intval($networkdata['vlanid']),
             'gateway' => $networkdata['gateway'],
             'dns' => $networkdata['dns'],
             'dns2' => $networkdata['dns2'],
@@ -511,7 +511,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             SYSLOG::RES_HOST => $networkdata['hostid'],
             'authtype' => $networkdata['authtype'],
             'snat' => $networkdata['snatlong'],
-            'pubnetid' => empty($networkdata['pubnetid']) ? null : $networkdata['pubnetid'],
+            'pubnetid' => empty($networkdata['pubnetid']) ?: $networkdata['pubnetid'],
             SYSLOG::RES_NETWORK => $networkdata['id']
         );
 
@@ -1032,8 +1032,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 'id' => $props['id'],
                 'vlanid' => isset($props['vlanid']) ? $props['vlanid'] : null,
                 'description' => isset($props['description']) ? $props['description'] : null,
-                'customerid' => empty($props['customerid']) ? null : $props['customerid'],
-                'netnodeid' => empty($props['netnodeid']) ? null : $props['netnodeid'],
+                'customerid' => empty($props['customerid']) ?: $props['customerid'],
+                'netnodeid' => empty($props['netnodeid']) ?: $props['netnodeid'],
             );
 
             $vlaninfo = $this->GetVlanInfo($props['id']);

@@ -496,7 +496,7 @@ if (isset($_POST['ticket'])) {
         // setting status and the ticket owner
         $props = array(
             'queueid' => $ticketedit['queue'],
-            'owner' => empty($ticketedit['owner']) ? null : $ticketedit['owner'],
+            'owner' => empty($ticketedit['owner']) ?: $ticketedit['owner'],
             'cause' => $ticketedit['cause'],
             'state' => $ticketedit['state'],
             'subject' => $ticketedit['subject'],
@@ -504,24 +504,24 @@ if (isset($_POST['ticket'])) {
             'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
             'source' => $ticketedit['source'],
             'priority' => isset($ticketedit['priority']) ? $ticketedit['priority'] : null,
-            'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
-            'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
-            'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
-            'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
-            'verifierid' => empty($ticketedit['verifierid']) ? null : $ticketedit['verifierid'],
-            'verifier_rtime' => empty($ticketedit['verifier_rtime']) ? null : $ticketedit['verifier_rtime'],
-            'deadline' => empty($ticketedit['deadline']) ? null : $deadline,
-            'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
-            'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
-            'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
-            'requestor_userid' => empty($ticketedit['requestor_userid']) ? null : $ticketedit['requestor_userid'],
+            'address_id' => $ticketedit['address_id'] == -1 ?: $ticketedit['address_id'],
+            'nodeid' => empty($ticketedit['nodeid']) ?: $ticketedit['nodeid'],
+            'netnodeid' => empty($ticketedit['netnodeid']) ?: $ticketedit['netnodeid'],
+            'netdevid' => empty($ticketedit['netdevid']) ?: $ticketedit['netdevid'],
+            'verifierid' => empty($ticketedit['verifierid']) ?: $ticketedit['verifierid'],
+            'verifier_rtime' => empty($ticketedit['verifier_rtime']) ?: $ticketedit['verifier_rtime'],
+            'deadline' => empty($ticketedit['deadline']) ?: $deadline,
+            'service' => empty($ticketedit['service']) ?: $ticketedit['service'],
+            'type' => empty($ticketedit['type']) ?: $ticketedit['type'],
+            'invprojectid' => empty($ticketedit['invprojectid']) ?: $ticketedit['invprojectid'],
+            'requestor_userid' => empty($ticketedit['requestor_userid']) ?: $ticketedit['requestor_userid'],
             'requestor' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
                 || empty($ticketedit['requestor_name']) ? '' : $ticketedit['requestor_name'],
             'requestor_mail' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
-                || empty($ticketedit['requestor_mail']) ? null : $ticketedit['requestor_mail'],
+                || empty($ticketedit['requestor_mail']) ?: $ticketedit['requestor_mail'],
             'requestor_phone' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
-                || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
-            'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
+                || empty($ticketedit['requestor_phone']) ?: $ticketedit['requestor_phone'],
+            'parentid' => empty($ticketedit['parentid']) ?: $ticketedit['parentid'],
             'relatedtickets' => isset($ticketedit['relatedtickets']) ? $ticketedit['relatedtickets'] : array(),
         );
         $LMS->TicketChange($ticketedit['ticketid'], $props);
@@ -664,8 +664,8 @@ if (isset($_POST['ticket'])) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $ticketedit['queue'],
-                'oldqueue' => $ticket['queueid'] == $ticketedit['queue'] ? null : $ticket['queueid'],
-                'verifierid' => $verifierid == $ticketedit['verifierid'] ? null : $ticketedit['verifierid'],
+                'oldqueue' => $ticket['queueid'] == $ticketedit['queue'] ?: $ticket['queueid'],
+                'verifierid' => $verifierid == $ticketedit['verifierid'] ?: $ticketedit['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,

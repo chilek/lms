@@ -1097,7 +1097,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 isset($message['subject']) ? $message['subject'] : '',
                 $body,
                 isset($message['userid']) ? $message['userid'] : Auth::GetCurrentUser(),
-                empty($message['customerid']) ? null : $message['customerid'],
+                empty($message['customerid']) ?: $message['customerid'],
                 isset($message['mailfrom']) ? $message['mailfrom'] : '',
                 isset($message['inreplyto']) ? $message['inreplyto'] : null,
                 isset($message['messageid']) ? $message['messageid'] : $this->lastmessageid,
@@ -1133,11 +1133,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			requestor_userid, subject, state, owner, createtime, modtime, cause, creatorid, source, priority, address_id, nodeid,
 			netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
-            empty($ticket['customerid']) ? null : $ticket['customerid'],
+            empty($ticket['customerid']) ?: $ticket['customerid'],
             isset($ticket['requestor']) ? $ticket['requestor'] : null,
             isset($ticket['requestor_mail']) ? $ticket['requestor_mail'] : null,
             isset($ticket['requestor_phone']) ? $ticket['requestor_phone'] : null,
-            empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'],
+            empty($ticket['requestor_userid']) ?: $ticket['requestor_userid'],
             $ticket['subject'],
             isset($ticket['state']) && !empty($ticket['state']) ? $ticket['state'] : RT_NEW,
             isset($ticket['owner']) && !empty($ticket['owner']) ? $ticket['owner'] : null,
@@ -1156,7 +1156,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['service']) && !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
             isset($ticket['type']) && !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
             isset($ticket['invprojectid']) && !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
-            empty($ticket['parentid']) ? null : $ticket['parentid'],
+            empty($ticket['parentid']) ?: $ticket['parentid'],
         ));
 
         $id = $this->db->GetLastInsertID('rttickets');
@@ -1178,7 +1178,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
 				subject, body, mailfrom, phonefrom, messageid, replyto, headers, contenttype, extid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
-            empty($ticket['customerid']) ? null : $ticket['customerid'],
+            empty($ticket['customerid']) ?: $ticket['customerid'],
             $createtime,
             $ticket['subject'],
             $body,
@@ -1195,7 +1195,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, headers, type)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
-                empty($ticket['customerid']) ? null : $ticket['customerid'],
+                empty($ticket['customerid']) ?: $ticket['customerid'],
                 $createtime,
                 $ticket['subject'],
                 preg_replace("/\r/", "", $ticket['note']),
@@ -1847,7 +1847,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $props['requestor_userid'] = null;
             }
         } else {
-            $props['requestor_userid'] = empty($ticket['requestor_userid']) ? null : $ticket['requestor_userid'];
+            $props['requestor_userid'] = empty($ticket['requestor_userid']) ?: $ticket['requestor_userid'];
         }
 
         if (array_key_exists('requestor_phone', $props)) {

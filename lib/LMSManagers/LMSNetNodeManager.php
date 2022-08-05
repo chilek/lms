@@ -187,8 +187,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 $netnode['terc'] = empty($netnode['location_state_ident']) ? null
                     : $netnode['location_state_ident'] . $netnode['location_district_ident']
                     . $netnode['location_borough_ident'] . $netnode['location_borough_type'];
-                $netnode['simc'] = empty($netnode['location_city_ident']) ? null : $netnode['location_city_ident'];
-                $netnode['ulic'] = empty($netnode['location_street_ident']) ? null : $netnode['location_street_ident'];
+                $netnode['simc'] = empty($netnode['location_city_ident']) ?: $netnode['location_city_ident'];
+                $netnode['ulic'] = empty($netnode['location_street_ident']) ?: $netnode['location_street_ident'];
                 $netnode['filecontainers'] = isset($filecontainers[$netnode['id']]) ? $filecontainers[$netnode['id']] : array();
             }
             unset($netnode);
@@ -226,8 +226,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
             'invprojectid'    => intval($netnodedata['projectid']) ? $netnodedata['projectid'] : null,
             'info'        => $netnodedata['info'],
-            'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
-            'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
+            'admcontact' => empty($netnodedata['admcontact']) ?: $netnodedata['admcontact'],
+            'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ?: $netnodedata['lastinspectiontime'],
             'address_id'       => $address_id,
             'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
         );
@@ -272,10 +272,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $args['status'] = $netnodedata['status'];
         }
         if (array_key_exists('longitude', $netnodedata)) {
-            $args['longitude'] = empty($netnodedata['longitude']) ? null : str_replace(',', '.', $netnodedata['longitude']);
+            $args['longitude'] = empty($netnodedata['longitude']) ?: str_replace(',', '.', $netnodedata['longitude']);
         }
         if (array_key_exists('latitude', $netnodedata)) {
-            $args['latitude'] = empty($netnodedata['latitude']) ? null : str_replace(',', '.', $netnodedata['latitude']);
+            $args['latitude'] = empty($netnodedata['latitude']) ?: str_replace(',', '.', $netnodedata['latitude']);
         }
         if (array_key_exists('ownership', $netnodedata)) {
             $args['ownership'] = $netnodedata['ownership'];
@@ -299,13 +299,13 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             $args['info'] = $netnodedata['info'];
         }
         if (array_key_exists('admcontact', $netnodedata)) {
-            $args['admcontact'] = empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'];
+            $args['admcontact'] = empty($netnodedata['admcontact']) ?: $netnodedata['admcontact'];
         }
         if (array_key_exists('lastinspectiontime', $netnodedata)) {
-            $args['lastinspectiontime'] = empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'];
+            $args['lastinspectiontime'] = empty($netnodedata['lastinspectiontime']) ?: $netnodedata['lastinspectiontime'];
         }
         if (array_key_exists('ownerid', $netnodedata)) {
-            $args['ownerid'] = empty($netnodedata['ownerid']) || empty($netnodedata['ownership']) ? null : $netnodedata['ownerid'];
+            $args['ownerid'] = empty($netnodedata['ownerid']) || empty($netnodedata['ownership']) ?: $netnodedata['ownerid'];
         }
 
         if (empty($args)) {

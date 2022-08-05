@@ -231,7 +231,7 @@ if (isset($_POST['document'])) {
                         ? ($documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null)
                         : $document['auserid'],
                     $documentedit['number'],
-                    empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
+                    empty($documentedit['numberplanid']) ?: $documentedit['numberplanid'],
                     $fullnumber,
                     $documentedit['id'],
                     )

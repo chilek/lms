@@ -102,15 +102,15 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     }
 
     if (isset($_GET['u'])) {
-        $filter['customerid'] = $_GET['u'] == 'all' ? null : $_GET['u'];
+        $filter['customerid'] = $_GET['u'] == 'all' ?: $_GET['u'];
     }
 
     if (isset($_GET['type'])) {
-        $filter['type'] = $_GET['type'] == 'all' ? null : $_GET['type'];
+        $filter['type'] = $_GET['type'] == 'all' ?: $_GET['type'];
     }
 
     if (isset($_GET['privacy'])) {
-        $filter['privacy'] = $_GET['privacy'] == 'all' ? null : $_GET['privacy'];
+        $filter['privacy'] = $_GET['privacy'] == 'all' ?: $_GET['privacy'];
     }
 
     if (isset($_GET['closed'])) {

@@ -116,7 +116,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
         foreach ($_POST['customer'] as $idx => $id) {
             $DB->Execute(
                 'UPDATE cashimport SET customerid = ? WHERE id = ?',
-                array(empty($id) ? null : $id, $idx)
+                array(empty($id) ?: $id, $idx)
             );
             if ($SYSLOG) {
                 list ($sourceid, $sourcefileid) = array_values(

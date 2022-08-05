@@ -135,13 +135,13 @@ if (isset($_GET['ticketid'])) {
         // setting status and the ticket owner
         $props = array(
             'queueid' => $note['queueid'],
-            'owner' => empty($note['owner']) ? null : $note['owner'],
+            'owner' => empty($note['owner']) ?: $note['owner'],
             'cause' => $note['cause'],
             'state' => $note['state'],
             'source' => $note['source'],
             'priority' => isset($note['priority']) ? $note['priority'] : null,
-            'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
-            'deadline' => empty($note['deadline']) ? null : $deadline,
+            'verifierid' => empty($note['verifierid']) ?: $note['verifierid'],
+            'deadline' => empty($note['deadline']) ?: $deadline,
         );
 
         if ($note['category_change']) {
@@ -251,7 +251,7 @@ if (isset($_GET['ticketid'])) {
 
             $LMS->NotifyUsers(array(
                 'queue' => $queue['id'],
-                'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
+                'verifierid' => empty($note['verifierid']) ?: $note['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,

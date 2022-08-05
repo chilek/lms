@@ -176,7 +176,7 @@ if (isset($_POST['customeradd'])) {
         $ten_exists = $LMS->checkCustomerTenExistence(
             null,
             $customeradd['ten'],
-            $ten_existence_scope == 'global' ? null : $customeradd['divisionid']
+            $ten_existence_scope == 'global' ?: $customeradd['divisionid']
         );
         switch ($ten_existence_check) {
             case 'warning':
@@ -208,7 +208,7 @@ if (isset($_POST['customeradd'])) {
         $ssn_exists = $LMS->checkCustomerSsnExistence(
             null,
             $customeradd['ssn'],
-            $ssn_existence_scope == 'global' ? null : $customeradd['divisionid']
+            $ssn_existence_scope == 'global' ?: $customeradd['divisionid']
         );
         switch ($ssn_existence_check) {
             case 'warning':

@@ -41,7 +41,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         if ($net) {
             $args = array(
-                'netpasswd' => empty($passwd) ? null : $passwd,
+                'netpasswd' => empty($passwd) ?: $passwd,
                 SYSLOG::RES_USER => $id
             );
             $result = $this->db->Execute(
@@ -267,7 +267,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
             'passwd' => password_hash($user['password'], PASSWORD_DEFAULT),
-            'netpasswd' => empty($user['netpassword']) ? null : $user['netpassword'],
+            'netpasswd' => empty($user['netpassword']) ?: $user['netpassword'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
             'position' => $user['position'],

@@ -214,12 +214,12 @@ if ($msgitemid && $phone) {
             if (isset($externalmsgid)) {
                 $DB->Execute(
                     'UPDATE messageitems SET status = ?, externalmsgid = ?, error = ? WHERE id = ?',
-                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), $externalmsgid, empty($error) ? null : $error, $msgitemid)
+                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), $externalmsgid, empty($error) ?: $error, $msgitemid)
                 );
             } else {
                 $DB->Execute(
                     'UPDATE messageitems SET status = ?, error = ? WHERE id = ?',
-                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), empty($error) ? null : $error, $msgitemid)
+                    array((array_key_exists('ok', $options) ? MSG_SENT : MSG_ERROR), empty($error) ?: $error, $msgitemid)
                 );
             }
         }

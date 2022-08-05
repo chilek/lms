@@ -396,7 +396,7 @@ if (isset($_POST['assignment'])) {
         }
 
         $args = array(
-            SYSLOG::RES_TARIFF => empty($a['tariffid']) ? null : intval($a['tariffid']),
+            SYSLOG::RES_TARIFF => empty($a['tariffid']) ?: intval($a['tariffid']),
             SYSLOG::RES_CUST => $customer['id'],
             'attribute' => !empty($a['attribute']) ? $a['attribute'] : null,
             'period' => $period,

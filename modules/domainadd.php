@@ -86,7 +86,7 @@ if (isset($_POST['domainadd'])) {
         $DB->Execute(
             'INSERT INTO domains (name, ownerid, type, master, description, mxbackup) VALUES (?,?,?,?,?,?)',
             array($domainadd['name'],
-                    empty($domainadd['ownerid']) ? null : $domainadd['ownerid'],
+                    empty($domainadd['ownerid']) ?: $domainadd['ownerid'],
                     $domainadd['type'],
                     $domainadd['master'],
                     $domainadd['description'],

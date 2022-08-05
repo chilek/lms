@@ -805,7 +805,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
                                     SYSLOG::RES_LIAB => null,
                                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                                    'docid' => empty($data['docid']) ? null : $data['docid'],
+                                    'docid' => empty($data['docid']) ?: $data['docid'],
                                     'promotionschemaid' => $data['schemaid'],
                                     'commited' => $commited,
                                 );
@@ -885,7 +885,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             }
 
                             $args = array(
-                                SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : $tariffid,
+                                SYSLOG::RES_TARIFF  => empty($data['tariffid']) ?: $tariffid,
                                 SYSLOG::RES_CUST    => $data['customerid'],
                                 'period'            => $period,
                                 'backwardperiod'    => $data['backwardperiod'],
@@ -903,7 +903,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
                                 SYSLOG::RES_LIAB    => null,
                                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                                'docid'             => empty($data['docid']) ? null : $data['docid'],
+                                'docid'             => empty($data['docid']) ?: $data['docid'],
                                 'promotionschemaid' => $data['schemaid'],
                                 'commited'          => $commited,
                             );
@@ -926,7 +926,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     if ($__datefrom < $__dateto || !$__dateto) {
                         // creates assignment record for schema period
                         $args = array(
-                            SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
+                            SYSLOG::RES_TARIFF => empty($tariffid) ?: $tariffid,
                             SYSLOG::RES_CUST => $data['customerid'],
                             'period' => $period,
                             'backwardperiod' => $data['backwardperiod'],
@@ -942,9 +942,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'pdiscount' => 0,
                             'vdiscount' => str_replace(',', '.', (($use_discounts ? $tariff['value'] - $value : 0)) * (isset($val) && $val < 0 ? -1 : 1)),
                             'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
-                            SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
+                            SYSLOG::RES_LIAB => empty($lid) ?: $lid,
                             'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                            'docid' => empty($data['docid']) ? null : $data['docid'],
+                            'docid' => empty($data['docid']) ?: $data['docid'],
                             'promotionschemaid' => $data['schemaid'],
                             'commited' => $commited,
                         );
@@ -1045,7 +1045,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     $args = array(
-                        SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
+                        SYSLOG::RES_TARIFF  => empty($data['tariffid']) ?: intval($data['tariffid']),
                         SYSLOG::RES_CUST    => $data['customerid'],
                         'period'            => $data['period'],
                         'backwardperiod'    => 0,
@@ -1061,9 +1061,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'pdiscount'         => 0,
                         'vdiscount'         => $partial_vdiscount,
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
-                        SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+                        SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ?: $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                        'docid'             => empty($data['docid']) ? null : $data['docid'],
+                        'docid'             => empty($data['docid']) ?: $data['docid'],
                         'promotionschemaid' => null,
                         'commited'          => $commited,
                     );
@@ -1123,7 +1123,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
                     $args = array(
-                        SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
+                        SYSLOG::RES_TARIFF  => empty($data['tariffid']) ?: intval($data['tariffid']),
                         SYSLOG::RES_CUST    => $data['customerid'],
                         'period'            => $data['period'],
                         'backwardperiod'    => 0,
@@ -1139,9 +1139,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'pdiscount'         => 0,
                         'vdiscount'         => $partial_vdiscount,
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : null,
-                        SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+                        SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ?: $lid,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                        'docid'             => empty($data['docid']) ? null : $data['docid'],
+                        'docid'             => empty($data['docid']) ?: $data['docid'],
                         'promotionschemaid' => null,
                         'commited'          => $commited,
                     );
@@ -1185,7 +1185,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
 
                 $args = array(
-                    SYSLOG::RES_TARIFF => empty($data['tariffid']) ? null : intval($data['tariffid']),
+                    SYSLOG::RES_TARIFF => empty($data['tariffid']) ?: intval($data['tariffid']),
                     SYSLOG::RES_CUST => $data['customerid'],
                     'period' => $data['period'],
                     'backwardperiod'    => isset($data['backwardperiod']) ? 1 : 0,
@@ -1201,9 +1201,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'pdiscount' => str_replace(',', '.', $data['pdiscount']),
                     'vdiscount' => str_replace(',', '.', $data['vdiscount']),
                     'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
-                    SYSLOG::RES_LIAB => !isset($lid) || empty($lid) ? null : $lid,
+                    SYSLOG::RES_LIAB => !isset($lid) || empty($lid) ?: $lid,
                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : null,
-                    'docid' => empty($data['docid']) ? null : $data['docid'],
+                    'docid' => empty($data['docid']) ?: $data['docid'],
                     'promotionschemaid' => null,
                     'commited' => $commited,
                 );
@@ -2244,8 +2244,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
             'comment' => $comment,
-            'recipient_address_id' => empty($invoice['invoice']['recipient_address_id']) ? null : $invoice['invoice']['recipient_address_id'],
-            'post_address_id' => empty($invoice['invoice']['post_address_id']) ? null : $invoice['invoice']['post_address_id'],
+            'recipient_address_id' => empty($invoice['invoice']['recipient_address_id']) ?: $invoice['invoice']['recipient_address_id'],
+            'post_address_id' => empty($invoice['invoice']['post_address_id']) ?: $invoice['invoice']['post_address_id'],
             'currency' => isset($invoice['invoice']['currency']) ? $invoice['invoice']['currency'] : Localisation::getCurrentCurrency(),
             'currencyvalue' => isset($invoice['invoice']['currencyvalue']) ? $invoice['invoice']['currencyvalue'] : 1.0,
             'memo' => isset($invoice['customer']['documentmemo']) && !empty($invoice['customer']['documentmemo'])
@@ -2295,7 +2295,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'pdiscount' => $item['pdiscount'],
                 'vdiscount' => $item['vdiscount'],
                 'description' => $item['name'],
-                SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
+                SYSLOG::RES_TARIFF => empty($item['tariffid']) ?: $item['tariffid'],
             );
             $this->db->Execute('INSERT INTO invoicecontents (docid, itemid,
 				value, taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
@@ -3027,7 +3027,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'taxcategory' => $tariff['taxcategory'],
             'currency' => isset($tariff['currency']) ? $tariff['currency'] : Localisation::getCurrentCurrency(),
             'period' => $tariff['period'] ? $tariff['period'] : null,
-            SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
+            SYSLOG::RES_TAX => empty($tariff['taxid']) ?: $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
             'datefrom' => $tariff['from'] ? $tariff['from'] : 0,
             'dateto' => $tariff['to'] ? $tariff['to'] : 0,
@@ -3127,7 +3127,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'taxcategory' => $tariff['taxcategory'],
             'currency' => $tariff['currency'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
-            SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
+            SYSLOG::RES_TAX => empty($tariff['taxid']) ?: $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
             'datefrom' => $tariff['from'],
             'dateto' => $tariff['to'],
@@ -5056,7 +5056,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         ));
         $args[SYSLOG::RES_NUMPLAN] = $numplanid;
 
-        $args['recipient_address_id'] = empty($proforma['recipient_address_id']) ? null :
+        $args['recipient_address_id'] = empty($proforma['recipient_address_id']) ?:
             $location_manager->CopyAddress($proforma['recipient_address_id']);
 
         $this->db->Execute(

@@ -216,7 +216,7 @@ if (!isset($_POST['xjxfun'])) {
                 $ten_exists = $LMS->checkCustomerTenExistence(
                     $_GET['id'],
                     $customerdata['ten'],
-                    $ten_existence_scope == 'global' ? null : $customerdata['divisionid']
+                    $ten_existence_scope == 'global' ?: $customerdata['divisionid']
                 );
                 switch ($ten_existence_check) {
                     case 'warning':
@@ -246,7 +246,7 @@ if (!isset($_POST['xjxfun'])) {
                 $ssn_exists = $LMS->checkCustomerSsnExistence(
                     $_GET['id'],
                     $customerdata['ssn'],
-                    $ssn_existence_scope == 'global' ? null : $customerdata['divisionid']
+                    $ssn_existence_scope == 'global' ?: $customerdata['divisionid']
                 );
                 switch ($ssn_existence_check) {
                     case 'warning':

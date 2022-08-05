@@ -150,7 +150,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                     SYSLOG::RES_PROMO => $promotionid,
                     'backwardperiod' => $backwardperiod,
                     'optional' => $optional,
-                    'label' => empty($label) ? null : $label,
+                    'label' => empty($label) ?: $label,
                     'data' => $datastr
                 );
                 $SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -163,7 +163,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                 SYSLOG::RES_TARIFF => intval($form['tariffid']),
                 'backwardperiod' => $backwardperiod,
                 'optional' => $optional,
-                'label' => empty($label) ? null : $label,
+                'label' => empty($label) ?: $label,
                 'data' => $datastr,
                 'orderid' => empty($orderid) ? 1 : $orderid,
             );

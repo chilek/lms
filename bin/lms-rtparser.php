@@ -736,7 +736,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             $ticket_id = $LMS->TicketAdd(array(
                 'queue' => $queue,
                 'requestor' => empty($fromname) ? $mh_from : $fromname,
-                'requestor_mail' => empty($fromemail) ? null : $fromemail,
+                'requestor_mail' => empty($fromemail) ?: $fromemail,
                 'customerid' => $reqcustid,
                 'address_id' => $address_id,
                 'subject' => $mh_subject,

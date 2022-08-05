@@ -171,7 +171,7 @@ switch ($action) {
         if (!isset($_GET['clone'])) {
             $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
                 $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
-                empty($customer) ? null : $customer['divisionid']
+                empty($customer) ?: $customer['divisionid']
             );
         }
 
@@ -318,7 +318,7 @@ switch ($action) {
                 $itemdata['cashid'] = $id;
                 $itemdata['name'] = $cash['comment'];
                 $itemdata['taxid'] = $cash['taxid'];
-                $itemdata['servicetype'] = empty($_POST['l_servicetype'][$id]) ? null : $_POST['l_servicetype'][$id];
+                $itemdata['servicetype'] = empty($_POST['l_servicetype'][$id]) ?: $_POST['l_servicetype'][$id];
                 $itemdata['taxcategory'] = $_POST['l_taxcategory'][$id];
                 $itemdata['tax'] = isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['label'] : '';
                 $itemdata['discount'] = 0;

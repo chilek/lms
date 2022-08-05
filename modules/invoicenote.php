@@ -39,7 +39,7 @@ if (isset($_GET['id']) && $action == 'init') {
     } else {
         $cnote['numberplanid'] = $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
             DOC_CNOTE,
-            empty($invoice['divisionid']) ? null : $invoice['divisionid']
+            empty($invoice['divisionid']) ?: $invoice['divisionid']
         );
     }
 
@@ -644,8 +644,8 @@ switch ($action) {
             'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],
             'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
                 : $invoice['city'],
-            SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
-                : (empty($invoice['countryid']) ? null : $invoice['countryid']),
+            SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ?: $customer['countryid'])
+                : (empty($invoice['countryid']) ?: $invoice['countryid']),
             'reference' => $invoice['id'],
             'reason' => $cnote['reason'],
             SYSLOG::RES_DIV => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
@@ -669,7 +669,7 @@ switch ($action) {
             'post_address_id' => $invoice['post_address_id'],
             'currency' => $cnote['currency'],
             'currencyvalue' => $cnote['currencyvalue'],
-            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],
+            'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ?: $customer['documentmemo']) : $invoice['memo'],
         );
         $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype, flags,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
@@ -716,7 +716,7 @@ switch ($action) {
                 'pdiscount' => $item['pdiscount'],
                 'vdiscount' => $item['vdiscount'],
                 'description' => $item['name'],
-                SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
+                SYSLOG::RES_TARIFF => empty($item['tariffid']) ?: $item['tariffid'],
             );
             $DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -738,7 +738,7 @@ switch ($action) {
                     'comment' => $item['name'],
                     SYSLOG::RES_DOC => $id,
                     'itemid' => $idx,
-                    'servicetype' => empty($item['servicetype']) ? null : $item['servicetype'],
+                    'servicetype' => empty($item['servicetype']) ?: $item['servicetype'],
                 );
                 $DB->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, servicetype)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));

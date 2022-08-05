@@ -252,7 +252,7 @@ if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
                     $record['maxtime'],
                     $record['upload'],
                     $record['download'],
-                    $DB->Escape(empty($record['nodesessionid']) ? null : $record['nodesessionid'])
+                    $DB->Escape(empty($record['nodesessionid']) ?: $record['nodesessionid'])
                 );
             }
 
