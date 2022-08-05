@@ -808,6 +808,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $count = false;
         }
 
+        if (!isset($time)) {
+            $time = null;
+        }
+
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
