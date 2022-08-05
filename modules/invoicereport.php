@@ -393,14 +393,18 @@ if (isset($_POST['extended'])) {
     foreach ($totals as $page => $t) {
         $pages[] = $page;
 
-        $totals[$page]['alltotal_receipt'] = (isset($totals[$page - 1]['alltotal_receipt']) ? $totals[$page - 1]['alltotal_receipt'] : 0) + $t['total_receipt'];
-        $totals[$page]['allsumtax_receipt'] = (isset($totals[$page - 1]['allsumtax_receipt']) ? $totals[$page - 1]['allsumtax_receipt'] : 0) + $t['sumtax_receipt'];
+        $totals[$page]['alltotal_receipt'] = (isset($totals[$page - 1]['alltotal_receipt']) ? $totals[$page - 1]['alltotal_receipt'] : 0)
+            + (isset($t['total_receipt']) ? $t['total_receipt'] : 0);
+        $totals[$page]['allsumtax_receipt'] = (isset($totals[$page - 1]['allsumtax_receipt']) ? $totals[$page - 1]['allsumtax_receipt'] : 0)
+            + (isset($t['sumtax_receipt']) ? $t['sumtax_receipt'] : 0);
         $totals[$page]['alltotal'] = $totals[$page-1]['alltotal'] + $t['total'];
         $totals[$page]['allsumtax'] = $totals[$page-1]['allsumtax'] + $t['sumtax'];
 
         foreach ($taxeslist as $idx => $tax) {
-            $totals[$page]['allval_receipt'][$idx] = (isset($totals[$page - 1]['allval_receipt']) ? $totals[$page - 1]['allval_receipt'][$idx] : 0) + $t['val_receipt'][$idx];
-            $totals[$page]['alltax_receipt'][$idx] = (isset($totals[$page - 1]['alltax_receipt']) ? $totals[$page - 1]['alltax_receipt'][$idx] : 0) + $t['tax_receipt'][$idx];
+            $totals[$page]['allval_receipt'][$idx] = (isset($totals[$page - 1]['allval_receipt']) ? $totals[$page - 1]['allval_receipt'][$idx] : 0)
+                + (isset($t['val_receipt'][$idx]) ? $t['val_receipt'][$idx] : 0);
+            $totals[$page]['alltax_receipt'][$idx] = (isset($totals[$page - 1]['alltax_receipt']) ? $totals[$page - 1]['alltax_receipt'][$idx] : 0)
+                + (isset($t['tax_receipt'][$idx]) ? $t['tax_receipt'][$idx] : 0);
             $totals[$page]['allval'][$idx] = $totals[$page-1]['allval'][$idx] + $t['val'][$idx];
             $totals[$page]['alltax'][$idx] = $totals[$page-1]['alltax'][$idx] + $t['tax'][$idx];
         }
