@@ -1052,7 +1052,7 @@ switch ($mode) {
                     $name = $row['fullnumber'];
                     $name_class = '';
                     $description = truncate_str($row['customername'], 35);
-                    //$description = trans('Document id:') . ' ' . $row['id'];
+                    //$description = trans('Document ID:') . ' ' . $row['id'];
                     $description_class = '';
                     $action = '?m=customerinfo&id=' . $row['cid'];
 

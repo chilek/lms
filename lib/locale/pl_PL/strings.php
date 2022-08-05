@@ -3897,7 +3897,7 @@ $_LANG['Delete all'] = 'Usuń wszystkie';
 $_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zobowiązania?';
 
 $_LANG['Enter document number and press Enter'] = 'Wprowadź numer dokumentu i naciśnij Enter';
-$_LANG['Document id:'] = 'Id dokumentu:';
+$_LANG['Document ID:'] = 'ID dokumentu:';
 
 $_LANG['prefix'] = 'prefiks';
 $_LANG['Prefix:'] = 'Prefiks:';
@@ -4590,8 +4590,8 @@ $_LANG['Select reference document'] = 'Wybierz dokument odniesienia';
 $_LANG['Reference document:'] = 'Dokument odniesienia:';
 $_LANG['$a no. $b issued on $c'] = '$a nr $b z dnia $c';
 
-$_LANG['External ID:'] = 'Id zewnętrzne:';
-$_LANG['External ID'] = 'Id zewnętrzne';
+$_LANG['External ID:'] = 'ID zewnętrzne:';
+$_LANG['External ID'] = 'ID zewnętrzne';
 
 $_LANG['published document modification'] = 'modyfikowanie upublicznionych dokumentów';
 $_LANG['$a_clone'] = '$a_klon';

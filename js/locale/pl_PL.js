@@ -3896,7 +3896,7 @@ $_LANG['Delete all'] = 'Usuń wszystkie';
 $_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zobowiązania?';
 
 $_LANG['Enter document number and press Enter'] = 'Wprowadź numer dokumentu i naciśnij Enter';
-$_LANG['Document id:'] = 'Id dokumentu:';
+$_LANG['Document ID:'] = 'ID dokumentu:';
 
 $_LANG['prefix'] = 'prefiks';
 $_LANG['Prefix:'] = 'Prefiks:';
@@ -4557,8 +4557,8 @@ $_LANG['Determined GPS coordinates are not precise.\nDo you still want to use th
 
 
 $_LANG['Removed:'] = 'Usunięte:';
-$_LANG['Remover:'] = 'Usuwający:';
-$_LANG['Remove date:'] = 'Data usunięcia:';
+$_LANG['Remover'] = 'Usuwający';
+$_LANG['Remove date'] = 'Data usunięcia';
 $_LANG['Not removed'] = 'nieusunięte';
 $_LANG['Removed'] = 'usunięte';
 $_LANG['<!rt>Removed'] = 'Usunięte';
@@ -4589,8 +4589,8 @@ $_LANG['Select reference document'] = 'Wybierz dokument odniesienia';
 $_LANG['Reference document:'] = 'Dokument odniesienia:';
 $_LANG['$a no. $b issued on $c'] = '$a nr $b z dnia $c';
 
-$_LANG['External ID:'] = 'Id zewnętrzne:';
-$_LANG['External ID'] = 'Id zewnętrzne';
+$_LANG['External ID:'] = 'ID zewnętrzne:';
+$_LANG['External ID'] = 'ID zewnętrzne';
 
 $_LANG['published document modification'] = 'modyfikowanie upublicznionych dokumentów';
 $_LANG['$a_clone'] = '$a_klon';
@@ -5525,3 +5525,31 @@ $_LANG['<!subconsent-label>$a ($b)'] = '$a ($b)';
 $_LANG['<!billing-type>none'] = 'brak';
 $_LANG['<!billing-type>full'] = 'pełny';
 $_LANG['<!billing-type>simplified'] = 'uproszczony';
+
+$_LANG['<!month-name-short>Jan'] = 'sty';
+$_LANG['<!month-name-short>Feb'] = 'lut';
+$_LANG['<!month-name-short>Mar'] = 'mar';
+$_LANG['<!month-name-short>Apr'] = 'kwi';
+$_LANG['<!month-name-short>May'] = 'maj';
+$_LANG['<!month-name-short>Jun'] = 'cze';
+$_LANG['<!month-name-short>Jul'] = 'lip';
+$_LANG['<!month-name-short>Aug'] = 'sie';
+$_LANG['<!month-name-short>Sep'] = 'wrz';
+$_LANG['<!month-name-short>Oct'] = 'paź';
+$_LANG['<!month-name-short>Nov'] = 'lis';
+$_LANG['<!month-name-short>Dec'] = 'gru';
+
+$_LANG['<!month-name-full>January'] = 'styczeń';
+$_LANG['<!month-name-full>February'] = 'luty';
+$_LANG['<!month-name-full>March'] = 'marzec';
+$_LANG['<!month-name-full>April'] = 'kwiecień';
+$_LANG['<!month-name-full>May'] = 'maj';
+$_LANG['<!month-name-full>June'] = 'czerwiec';
+$_LANG['<!month-name-full>July'] = 'lipiec';
+$_LANG['<!month-name-full>August'] = 'sierpień';
+$_LANG['<!month-name-full>September'] = 'wrzesień';
+$_LANG['<!month-name-full>October'] = 'październik';
+$_LANG['<!month-name-full>November'] = 'listopad';
+$_LANG['<!month-name-full>December'] = 'grudzień';
+
+$_LANG['logical operator'] = 'operator logiczny';
