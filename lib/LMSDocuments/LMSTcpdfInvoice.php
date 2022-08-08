@@ -803,7 +803,7 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_expositor()
     {
-        if (!ConfigHelper::checkConfig('invoices.hide_expositor')) {
+        if (!ConfigHelper::checkConfig('invoices.hide_expositor') && !empty($this->data['expositor'])) {
             $this->backend->SetFont(null, '', 8);
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor: <b>$a</b>', $this->data['expositor']), 0, 1, 0, true, 'R');
         }
