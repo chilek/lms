@@ -64,12 +64,6 @@ if ($SESSION->is_set('trlp') && !isset($_GET['page'])) {
     $SESSION->restore('trlp', $_GET['page']);
 }
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = ConfigHelper::getConfig('phpui.taxratelist_pagelimit', $listdata['total']);
-$start = ($page - 1) * $pagelimit;
-
-$SESSION->save('trlp', $page);
-
 $layout['pagetitle'] = trans('Tax Rates List');
 
 $taxratelist = GetTaxRateList($o);
@@ -81,6 +75,11 @@ unset($taxratelist['order']);
 unset($taxratelist['direction']);
 
 $SESSION->add_history_entry();
+
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
+$pagelimit = ConfigHelper::getConfig('phpui.taxratelist_pagelimit', $listdata['total']);
+$start = ($page - 1) * $pagelimit;
+$SESSION->save('trlp', $page);
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

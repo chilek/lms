@@ -30,7 +30,7 @@ function GetDomainList($order = 'name,asc', $customer = '', $filtr = '')
 
     list($order, $direction) = sscanf($order, '%[^,],%s');
 
-    ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+    ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
     switch ($order) {
         case 'id':
@@ -101,12 +101,12 @@ function GetDomainFirstLetters($customer = '')
     return $list;
 }
 
-if (!isset($_GET['o'])) {
-    $SESSION->restore('dlo', $o);
-} else {
+if (isset($_GET['o'])) {
     $o = $_GET['o'];
+} else {
+    $SESSION->restore('dlo', $o);
 }
-$SESSION->save('dlo', $o);
+empty($o) ? $SESSION->save('dlo', 'name,asc') : $SESSION->save('dlo', $o);
 
 if (!isset($_GET['c'])) {
     $SESSION->restore('dlc', $c);

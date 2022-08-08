@@ -209,5 +209,5 @@ $SMARTY->assign('listdata', $listdata);
 //$SMARTY->assign('pagelimit',$pagelimit);
 //$SMARTY->assign('start', ($page - 1) * $pagelimit);
 //$SMARTY->assign('page', $page);
-$SMARTY->assign('transactions', $trans);
+empty($trans) ?: $SMARTY->assign('transactions', $trans);
 $SMARTY->display('archive/archiveview.html');

@@ -76,8 +76,8 @@ $layout['pagetitle'] = trans('Node Groups List');
 
 $nodegrouplist = GroupList();
 
-$listdata['total'] = $nodegrouplist['total'];
-$listdata['nodestotal'] = $nodegrouplist['nodestotal'];
+$listdata['total'] = empty($nodegrouplist['total']) ?: $nodegrouplist['total'];
+$listdata['nodestotal'] = empty($nodegrouplist['nodestotal']) ?: $nodegrouplist['nodestotal'];
 
 unset($nodegrouplist['total']);
 unset($nodegrouplist['nodestotal']);

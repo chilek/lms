@@ -140,4 +140,5 @@ if ($nodes) {
 $SMARTY->assign('devices', $devices);
 $SMARTY->assign('devlinks', $devlinks);
 $SMARTY->assign('nodes', $nodes);
-$SMARTY->assign('nodelinks', $nodelinks);
+
+empty($nodelinks) ?: $SMARTY->assign('nodelinks', $nodelinks);
