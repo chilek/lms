@@ -615,7 +615,6 @@ switch ($action) {
                 'planid' => $invoice['numberplanid'],
                 'cdate' => $invoice['cdate'],
                 'customerid' => $customer['id'],
-                'comment' => $invoice['comment'],
             ));
         } else {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
@@ -626,7 +625,6 @@ switch ($action) {
                     'planid' => $invoice['numberplanid'],
                     'cdate' => $invoice['cdate'],
                     'customerid' => $customer['id'],
-                    'comment' => $invoice['comment'],
                 ))) {
                 $error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
             }
