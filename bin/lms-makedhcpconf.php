@@ -181,11 +181,12 @@ foreach ($CONFIG as $key => $value) {
     }
 }
 
+/*
 $maxlease = $max_lease_time;
 if (!empty($maxlease)) {
     $header .= "max-lease-time " . $maxlease . ";\n\n";
 }
-
+*/
 
 $existing_networks = $DB->GetCol("SELECT name FROM networks");
 
@@ -272,6 +273,8 @@ if (!empty($CONFIG['dhcp']['options'])) {
 fwrite($fh, $prefix . "\n");
 
 $host_content = '';
+$line_prefix = '';
+$lastif = '';
 
 foreach ($networks as $networkid => $net) {
     $net_prefix = "";
