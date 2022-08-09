@@ -504,7 +504,7 @@ if (isset($_POST['event'])) {
 
     if (!empty($queuelist)) {
         $queue = ConfigHelper::getConfig('rt.default_queue');
-        if (preg_match('/^[0-9]+$/', $queue)) {
+        if (!empty($queue) && preg_match('/^[0-9]+$/', $queue)) {
             if (!$LMS->QueueExists($queue)) {
                 $queue = 0;
             }

@@ -169,8 +169,8 @@ $accountlist = $DB->GetAll('SELECT passwd.id, login, domains.name AS domain
 $layout['pagetitle'] = trans('New Alias');
 
 $SESSION->add_history_entry();
-$SESSION->save('aliasaccounts', $alias['accounts']);
-$SESSION->save('aliasmailforwards', $alias['mailforwards']);
+$SESSION->save('aliasaccounts', empty($alias['accounts']) ? null : $alias['accounts']);
+$SESSION->save('aliasmailforwards', empty($alias['mailforwards']) ? null : $alias['mailforwards']);
 
 $SMARTY->assign('alias', $alias);
 $SMARTY->assign('error', $error);

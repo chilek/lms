@@ -28,6 +28,10 @@ function GetTaxRateList($order = 'name,asc')
 {
     global $DB;
 
+    if (empty($order)) {
+        $order = 'name,asc';
+    }
+
     list($order,$direction) = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
