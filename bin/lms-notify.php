@@ -1900,7 +1900,7 @@ if (empty($types) || in_array('reminder', $types)) {
 if (empty($types) || in_array('income', $types)) {
     $days = $notifications['income']['days'];
     $incomes = $DB->GetAll(
-        "SELECT c.id, c.pin, cash.value, cash.currency, cash.time AS cdate,
+        "SELECT c.id, c.pin, SUM(cash.value) AS value, cash.currency, cash.time AS cdate,
         m.email, x.phone, divisions.account,
         " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
         b2.balance AS balance, b.balance AS totalbalance
@@ -1945,7 +1945,9 @@ if (empty($types) || in_array('income', $types)) {
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
-            . ($customergroups ?: ''),
+            . ($customergroups ?: '')
+        . " GROUP BY c.id, c.pin, cash.currency, cash.time, m.email, x.phone, divisions.account,
+            c.lastname, c.name, b2.balance, b.balance",
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
