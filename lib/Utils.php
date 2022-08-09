@@ -710,8 +710,8 @@ class Utils
                             $report['fiz_adSiedzKodPocztowy']
                         ),
                         'location_postoffice' => $report['fiz_adSiedzMiejscowoscPoczty_Nazwa']
-                        == $report->dane['adSiedzMiejscowosc_Nazwa'] ? ''
-                            : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
+                            == $report['fiz_adSiedzMiejscowosc_Nazwa'] ? ''
+                                : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
                         'location_state' => empty($location) ? 0 : $location['location_state'],
                         'location_city' => empty($location) ? 0 : $location['location_city'],
                         'location_street' => empty($location) ? 0 : $location['location_street'],
