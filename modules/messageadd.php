@@ -63,7 +63,9 @@ function GetRecipients($filter, $type = MSG_MAIL)
     } else {
         $customergroup = intval($filter['customergroup']);
     }
-    if (is_array($filter['nodegroup'])) {
+    if (empty($filter['nodegroup'])) {
+        $nodegroup = null;
+    } elseif (is_array($filter['nodegroup'])) {
         $nodegroup = implode(',', Utils::filterIntegers($filter['nodegroup']));
     } else {
         $nodegroup = intval($filter['nodegroup']);
@@ -91,6 +93,7 @@ function GetRecipients($filter, $type = MSG_MAIL)
     $expired_not_indebted = 0;
     $expired_indebted2 = 0;
     $expired_indebted3 = 0;
+    $contracts = 0;
 
     $expired_days = 0;
 
