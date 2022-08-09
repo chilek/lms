@@ -730,6 +730,7 @@ if (isset($_POST['message'])) {
             if (ConfigHelper::checkConfig('rt.quote_body', ConfigHelper::checkConfig('phpui.helpdesk_reply_body'))
                 || isset($_GET['citing'])) {
                 $body = explode("\n", textwrap(strip_tags($reply['body']), 74));
+                $message['body'] = '';
                 foreach ($body as $line) {
                     $message['body'] .= '> ' . $line . "\n";
                 }
