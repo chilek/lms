@@ -2352,15 +2352,39 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $body = $mail_body;
             $subject = $mail_subject;
 
-            $body = preg_replace('/%document/', $document['fullnumber'], $body);
-            $body = preg_replace('/%cdate-y/', date('Y', $document['cdate']), $body);
-            $body = preg_replace('/%cdate-m/', date('m', $document['cdate']), $body);
-            $body = preg_replace('/%cdate-d/', date('d', $document['cdate']), $body);
-            $body = preg_replace('/%type/', $DOCTYPES[$document['type']], $body);
-            $body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
-            $body = str_replace('\n', "\n", $body);
+            $body = preg_replace(
+                array(
+                    '%document',
+                    '%cdate-y',
+                    '%cdate-m',
+                    '%cdate-d',
+                    '%type',
+                    '%today',
+                    '\n',
+                ),
+                array(
+                    $document['fullnumber'],
+                    date('Y', $document['cdate']),
+                    date('m', $document['cdate']),
+                    date('d', $document['cdate']),
+                    $DOCTYPES[$document['type']],
+                    $year . '-' . $month . '-' . $day,
+                    "\n",
+                ),
+                $body
+            );
 
-            $subject = preg_replace('/%document/', $document['fullnumber'], $subject);
+            $subject = str_replace(
+                array(
+                    '%document',
+                    '%type',
+                ),
+                array(
+                    $document['fullnumber'],
+                    $DOCTYPES[$document['type']],
+                ),
+                $subject
+            );
 
             $doc['name'] = '"' . $doc['name'] . '"';
 
