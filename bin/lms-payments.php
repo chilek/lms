@@ -661,10 +661,14 @@ $query = "SELECT
 							vn.voip_account_id = vc.callervoipaccountid
 							AND
 							vn.phone = vc.caller
+							AND
+							vc.type = " . CALL_OUTGOING . "
 						) OR (
 							vn.voip_account_id = vc.calleevoipaccountid
 							AND
 							vn.phone = vc.callee
+							AND
+							vc.type = " . CALL_INCOMING . "
 						)
 					)
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
