@@ -361,10 +361,14 @@ switch ($mode) {
                         $description = trans('VoIP number:') . ' ' . htmlspecialchars($row['number']);
                         $name_class = '';
                         $icon = 'fa-fw lms-ui-icon-phone';
-                    } else {
+                    } elseif (isset($row['phone'])) {
                         $description = trans('Phone:') . ' ' . htmlspecialchars($row['phone']);
                         $name_class = '';
                         $icon = 'fa-fw lms-ui-icon-customer-status-connected';
+                    } else {
+                        $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
+                        $name_class = '';
+                        $icon = 'fa-fw lms-ui-icon-location';
                     }
                     $name_class .= $row['deleted'] ? ' blend' : '';
 
