@@ -223,7 +223,7 @@ function module_main()
             $params['o'] = 'begintime,desc';
         }
 
-        if ($_GET['mode'] == 'minibilling') {
+        if (isset($_GET['mode']) && $_GET['mode'] == 'minibilling') {
             require_once('minibilling.php');
             die;
         }
