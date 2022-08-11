@@ -42,7 +42,7 @@ if (isset($_GET['othersnetid']) && $othersnetid = $_GET['othersnetid']) {
 
 $nodegroup = $LMS->GetNodeGroup($id, isset($membersnetid) ? $membersnetid : 0);
 $nodes = $LMS->GetNodesWithoutGroup($id, isset($othersnetid) ? $othersnetid : 0);
-$nodescount = count($nodes);
+$nodescount = empty($nodes) ? 0 : count($nodes);
 
 $layout['pagetitle'] = trans('Group Info: $a', $nodegroup['name']);
 
