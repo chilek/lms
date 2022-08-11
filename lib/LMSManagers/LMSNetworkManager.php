@@ -303,6 +303,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $search['compareType'] = '=';
         }
 
+        if (empty($search['operatorType'])) {
+            $search['operatorType'] = 'AND';
+        }
+
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {

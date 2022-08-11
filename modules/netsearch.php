@@ -167,13 +167,17 @@ if (!isset($_GET['searchform']) && !empty($netsearch)) {
     if ($count == 1) {
         $SESSION->redirect('?m=netinfo&id=' . $netlist[0]['id']);
     } else {
-        $listdata['order'] = $netlist['order'];
-        $listdata['direction'] = $netlist['direction'];
-        $listdata['online'] = $netlist['online'];
-        $listdata['assigned'] = $netlist['assigned'];
-        $listdata['size'] = $netlist['size'];
+        if (empty($netlist)) {
+            $listdata = array();
+        } else {
+            $listdata['order'] = $netlist['order'];
+            $listdata['direction'] = $netlist['direction'];
+            $listdata['online'] = $netlist['online'];
+            $listdata['assigned'] = $netlist['assigned'];
+            $listdata['size'] = $netlist['size'];
 
-        unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
+            unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
+        }
 
         $pagination = LMSPaginationFactory::getPagination(
             $page,
