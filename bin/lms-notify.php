@@ -2391,6 +2391,7 @@ if (empty($types) || in_array('notes', $types)) {
         }
 
         $notifications['notes']['customers'] = array();
+        $idx = 0;
         foreach ($documents as $row) {
             $notifications['notes']['customers'][] = $row['id'];
             $row['doc_number'] = docnumber(array(
