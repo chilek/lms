@@ -2053,7 +2053,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             return $this->db->GetOne('SELECT COUNT(DISTINCT id) FROM (SELECT d.id
                 FROM documents d'
                 . ($join_cash ?
-                    'JOIN invoicecontents a ON (a.docid = d.id)
+                    ' JOIN invoicecontents a ON (a.docid = d.id)
                     LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid'
                     : '') . '
                 LEFT JOIN (
@@ -2075,6 +2075,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . (!empty($relatedentity) ? ' AND d.flags & ' . DOC_FLAG_RELATED_ENTITY . ' > 0' : '')
                 . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
                 . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
+                . ' GROUP BY d.id'
                 . (isset($having) ? $having : '') . ') a');
         }
 
