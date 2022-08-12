@@ -35,7 +35,7 @@ foreach ($addbalance as $key => $value) {
     }
 }
 
-$addbalance['value'] = str_replace(',', '.', $addbalance['value']);
+$addbalance['value'] = floatval(str_replace(',', '.', $addbalance['value']));
 
 $currenttime = false;
 if (isset($_POST['addbalance']) && !empty($addbalance['time'])) {
