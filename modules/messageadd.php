@@ -58,7 +58,9 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $state = intval($filter['state']);
     $network = intval($filter['network']);
-    if (is_array($filter['customergroup'])) {
+    if (empty($filter['customergroup'])) {
+        $customergroup = null;
+    } elseif (is_array($filter['customergroup'])) {
         $customergroup = implode(',', Utils::filterIntegers($filter['customergroup']));
     } else {
         $customergroup = intval($filter['customergroup']);
