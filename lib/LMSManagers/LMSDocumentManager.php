@@ -2352,7 +2352,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $body = $mail_body;
             $subject = $mail_subject;
 
-            $body = preg_replace(
+            $body = str_replace(
                 array(
                     '%document',
                     '%cdate-y',
