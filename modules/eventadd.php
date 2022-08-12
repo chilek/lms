@@ -480,6 +480,9 @@ unset($netdevlist['direction']);
 $invprojectlist = $LMS->GetProjects('name', array());
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+if (empty($categories)) {
+    $categories = array();
+}
 $queuelist = $LMS->GetQueueList(array('stats' => false));
 
 $queue = null;
