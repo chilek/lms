@@ -866,6 +866,7 @@ $_LANG['Enter beginning of DHCP range (optional)'] = 'Wprowadź początek zakres
 $_LANG['Enter/change your registration info'] = 'Wprowadź/zmień swoje dane rejestracyjne';
 $_LANG['Enter comma-separated list of hosts or networks (optional)'] = 'Wprowadź listę hostów lub sieci oddzielonych przecinkami (opcjonalnie)';
 $_LANG['Enter comment'] = 'Wprowadź komentarz';
+$_LANG['Customer Alternative name (brand, shortname, casualname)'] = 'Alternatywna nazwa klienta (marka, krótka nazwa, nazwa codzienna)';
 $_LANG['Enter contact phone'] = 'Wprowadź telefon kontaktowy';
 $_LANG['Enter country'] = 'Wprowadź kraj';
 $_LANG['Enter creditor name'] = 'Wprowadź nazwę wierzyciela';

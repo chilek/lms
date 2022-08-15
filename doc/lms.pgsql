@@ -294,6 +294,7 @@ CREATE TABLE customers (
 	extid varchar(32) DEFAULT '' NOT NULL,
 	lastname varchar(128)	DEFAULT '' NOT NULL,
 	name varchar(128)	DEFAULT '' NOT NULL,
+	altname varchar(128),
 	status smallint 	DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
 	ten varchar(50) 	DEFAULT '' NOT NULL,
@@ -4242,6 +4243,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022071800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022081500');
 
 COMMIT;

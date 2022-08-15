@@ -254,6 +254,7 @@ version 28-git (????-??-??):
     to full minutes [chilan]
   - enhancement: customer list: added customer group logical operator selection connecting selected
     customer groups [chilan]
+  - enhancement: introduced alternative name for customer (important for brands/shortnames/casual names) [interduo]
 
 version 27.0 (2021-08-20):
 

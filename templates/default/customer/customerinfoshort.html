@@ -17,7 +17,10 @@
 			{icon name="customer"}
 		</TD>
 		<TD>
-			<strong>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span class="alert">({trans("deleted customer")})</span>{/if}</strong>
+			<strong>{$customerinfo.customername|escape}
+			{if $customerinfo.altname}[{$customerinfo.altname|escape}]{/if}
+			({$customerinfo.id|string_format:"%04d"})
+			{if $customerinfo.deleted} <span class="alert">({trans("deleted customer")})</span>{/if}</strong>
 		</TD>
 	</TR>
     </THEAD>
