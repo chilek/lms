@@ -492,11 +492,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         } elseif (($data['at'] === 0 && $start_day >= date('j', mktime(12, 0, 0, $start_month + 1, 0, $start_year)))
                             || ($data['at'] > 0 && $start_day >= $data['at'])) {
                             $datefrom = mktime(0, 0, 0, $start_month + ($data['at'] === 0 ? 2 : 1), $data['at'], $start_year);
-                            if ($orig_datefrom > strtotime('today') && $start_day >= $data['at']) {
-                                $at = $orig_datefrom;
-                            } else {
-                                $at = $datefrom;
-                            }
+                            $at = $datefrom;
                         } elseif ($data['at'] === 0) {
                             $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
                             $at = $datefrom;
