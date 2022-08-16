@@ -25,8 +25,9 @@ $this->BeginTrans();
 
 $this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128)");
 
+$this->Execute("DROP VIEW customerview");
 $this->Execute("
-    CREATE OR REPLACE VIEW customerview AS
+    CREATE VIEW customerview AS
         SELECT c.*,
             cc.consentdate AS consentdate,
             cc.invoicenotice AS invoicenotice,
