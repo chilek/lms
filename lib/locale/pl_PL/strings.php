@@ -1871,6 +1871,7 @@ $_LANG['Specified address is not a network address, setting $a'] = 'Wybrany adre
 $_LANG['Specified domain contains forbidden characters!'] = 'Domena zawiera niepoprawne znaki!';
 $_LANG['Specified e-mail is not correct!'] = 'Wybrany e-mail nie jest poprawny!';
 $_LANG['Specified gateway address does not match with network address!'] = 'Określony adres bramy nie pokrywa się z adresem sieci!';
+$_LANG['Specified gateway address collides with existing node / network device IP address!'] = 'Podany adres bramy koliduje z istniejącym adresem IP komputera / urządzenia!';
 $_LANG['Specified ID is not proper or does not exist!'] = 'Podany identyfikator jest niepoprawny lub nie istnieje!';
 $_LANG['Specified IP address doesn\'t overlap with any network!'] = 'Wybrany adres IP nie pokrywa się z żadną siecią!';
 $_LANG['Specified IP address is in use!'] = 'Wybrany adres IP jest już w użyciu!';
