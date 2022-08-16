@@ -368,8 +368,6 @@ list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
 
-$customergroups = '';
-
 if ($backup || $archive) {
     $groupnames = '';
 } else {
@@ -415,6 +413,10 @@ if ($backup || $archive) {
     if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
         $part_offset = $part_number * $part_size;
     }
+}
+
+if (empty($customergroups)) {
+    $customergroups = '';
 }
 
 if (!$no_attachments) {
