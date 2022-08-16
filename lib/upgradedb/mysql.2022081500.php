@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128)"); 
+$this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128)");
 
 $this->Execute("
     CREATE VIEW customerview AS
