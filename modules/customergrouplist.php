@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,11 +28,13 @@ $layout['pagetitle'] = trans('Customer Groups List');
 
 $customergrouplist = $LMS->CustomergroupGetList();
 
-$listdata['total'] = $customergrouplist['total'];
-$listdata['totalcount'] = $customergrouplist['totalcount'];
-
-unset($customergrouplist['total']);
-unset($customergrouplist['totalcount']);
+if (empty($customergrouplist)) {
+    $listdata['total'] = $listdata['totalacount'] = 0;
+} else {
+    $listdata['total'] = $customergrouplist['total'];
+    $listdata['totalcount'] = $customergrouplist['totalcount'];
+    unset($customergrouplist['total'], $customergrouplist['totalcount']);
+}
 
 $SMARTY->assign('customergrouplist', $customergrouplist);
 $SMARTY->assign('listdata', $listdata);
