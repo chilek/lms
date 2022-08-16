@@ -103,7 +103,7 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
-				post_name, post_full_address AS post_address, deleted,
+				post_name, post_full_address AS post_address, deleted, altname,
 			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
 			    va.name AS location_name, va.address AS location_address,
 			    c.status, c.ten, c.ssn, c.info, c.notes
@@ -113,6 +113,7 @@ switch ($mode) {
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
 				WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'c.id = ' . $search : '1=0') : '1=0')
                     . (empty($properties) || isset($properties['name']) ? " OR LOWER(" . $DB->Concat('lastname', "' '", 'c.name') . ") ?LIKE? LOWER($sql_search) OR LOWER(" . $DB->Concat('c.name', "' '", 'lastname') . ") ?LIKE? LOWER($sql_search)" : '')
+                    . (empty($properties) || isset($properties['altname']) ? " OR LOWER(c.altname) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['address']) ? " OR LOWER(full_address) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['post_name']) ? " OR LOWER(post_name) ?LIKE? LOWER($sql_search)" : '')
                     . (empty($properties) || isset($properties['post_address']) ? " OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)" : '')
@@ -164,6 +165,8 @@ switch ($mode) {
                         //$description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['customername'])) {
                         $description = '';
+                    } else if ((empty($properties) || isset($properties['altname'])) && preg_match("~$search~i", $row['altname'])) {
+                        $description = trans('Alternative name') . htmlspecialchars($row['altname']);
                     } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
                         $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
                     } else if ((empty($properties) || isset($properties['post_name'])) && preg_match("~$search~i", $row['post_name'])) {
@@ -221,6 +224,9 @@ switch ($mode) {
         if (empty($properties) || isset($properties['name'])) {
             $s['customername'] = $search;
         }
+        if (empty($properties) || isset($properties['altname'])) {
+            $s['altname'] = $search;
+        }
         if (empty($properties) || isset($properties['address'])) {
             $s['full_address'] = $search;
         }
@@ -270,7 +276,7 @@ switch ($mode) {
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
             $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
-				post_name, post_full_address AS post_address, deleted, c.status,
+				post_name, post_full_address AS post_address, deleted, c.status, altname,
 			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
 				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
@@ -333,7 +339,7 @@ switch ($mode) {
                     . (empty($properties) || isset($properties['contact']) ? "cc.contact AS phone, " : '')
                     . (empty($properties) || isset($properties['account']) ? "vn.phone AS number, va.id AS voipaccountid, " : '')
                     . "full_address AS address,
-				post_name, post_full_address AS post_address, deleted,
+				post_name, post_full_address AS post_address, deleted, altname,
 			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
 				FROM customerview c "
                 . (empty($properties) || isset($properties['contact']) ?

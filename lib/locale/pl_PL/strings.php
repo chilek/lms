@@ -867,6 +867,7 @@ $_LANG['Enter/change your registration info'] = 'Wprowadź/zmień swoje dane rej
 $_LANG['Enter comma-separated list of hosts or networks (optional)'] = 'Wprowadź listę hostów lub sieci oddzielonych przecinkami (opcjonalnie)';
 $_LANG['Enter comment'] = 'Wprowadź komentarz';
 $_LANG['Customer Alternative name (brand, shortname, casual name)'] = 'Alternatywna nazwa klienta (marka, krótka nazwa, nazwa zwyczajowa)';
+$_LANG['<!qs>customer alternative name'] = 'alternatywna nazwa klienta';
 $_LANG['Enter contact phone'] = 'Wprowadź telefon kontaktowy';
 $_LANG['Enter country'] = 'Wprowadź kraj';
 $_LANG['Enter creditor name'] = 'Wprowadź nazwę wierzyciela';
