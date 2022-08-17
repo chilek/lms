@@ -90,13 +90,13 @@
 					</colgroup>
 					<tr>
 						<td>
-							<label for="customeradd[lastname]" class="nobr">
+							<label for="lastname" class="nobr">
 								<strong>{trans("Name/Surname")}</strong>
 							</label>
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" name="customeradd[lastname]" maxlength="128"
+								<input type="text" id="lastname" name="customeradd[lastname]" maxlength="128"
 									value="{$customeradd.lastname|escape}" required
 									{tip class="lms-ui-autogrow" trigger="lastname" bold=1}>
 								{hint content="Enter customer last name or company name"}
@@ -105,13 +105,13 @@
 					</tr>
 					<tr>
 						<td>
-							<label for="customeradd[name]" class="nobr">
+							<label for="name" class="nobr">
 								<strong>{trans("First name")}</strong>
 							</label>
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" name="customeradd[name]" maxlength="128" value="{$customeradd.name|escape}"
+								<input type="text" id="name" name="customeradd[name]" maxlength="128" value="{$customeradd.name|escape}"
 									{tip class="lms-ui-autogrow" trigger="name" bold=1}>
 								{hint content="Enter customer name"}
 							</div>
@@ -123,13 +123,13 @@
 				<table>
 					<tr>
 						<td>
-							<label for="customeradd[extid]" class="nobr bold">
+							<label for="extid" class="nobr bold">
 								{trans("External system identifier")}
 							</label>
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" class="lms-ui-autogrow" name="customeradd[extid]" value="{$customeradd.extid|escape}"
+								<input type="text" id="extid" class="lms-ui-autogrow" name="customeradd[extid]" value="{$customeradd.extid|escape}"
 									{tip trigger="extid"}>
 								{hint content="Enter customer identifier in external system (optional)"}
 							</div>
@@ -137,13 +137,13 @@
 					</tr>
 					<tr>
 						<td>
-								<label class="bold nobr" for="customeradd[altname]">
+								<label class="bold nobr" for="altname">
 									{trans("Alternative name")}
 								</label>
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" class="lms-ui-autogrow" name="customeradd[altname]" maxlength="128" value="{$customeradd.altname|escape}"}>
+								<input type="text" id="altname" class="lms-ui-autogrow" name="customeradd[altname]" maxlength="128" value="{$customeradd.altname|escape}"}>
 									{hint content="Customer Alternative name (brand, shortname, casual name)"}
 							</div>
 						</td>
