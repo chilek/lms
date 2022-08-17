@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -84,7 +84,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -93,7 +93,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -131,7 +131,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
@@ -368,8 +368,6 @@ list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
 
-$customergroups = '';
-
 if ($backup || $archive) {
     $groupnames = '';
 } else {
@@ -415,6 +413,10 @@ if ($backup || $archive) {
     if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
         $part_offset = $part_number * $part_size;
     }
+}
+
+if (empty($customergroups)) {
+    $customergroups = '';
 }
 
 if (!$no_attachments) {

@@ -5,8 +5,6 @@
  *
  *  (C) Copyright 2001-2022 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
  *  published by the Free Software Foundation.
@@ -21,21 +19,40 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$layout['pagetitle'] = trans('Customer Groups List');
+$this->BeginTrans();
 
-$customergrouplist = $LMS->CustomergroupGetList();
+$this->Execute(
+    "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
+    array(
+        'documents',
+        'type',
+        'phpui',
+        'document_type',
+    )
+);
 
-if (empty($customergrouplist)) {
-    $listdata['total'] = $listdata['totalacount'] = 0;
-} else {
-    $listdata['total'] = $customergrouplist['total'];
-    $listdata['totalcount'] = $customergrouplist['totalcount'];
-    unset($customergrouplist['total'], $customergrouplist['totalcount']);
-}
+$this->Execute(
+    "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
+    array(
+        'documents',
+        'margins',
+        'phpui',
+        'document_margins',
+    )
+);
 
-$SMARTY->assign('customergrouplist', $customergrouplist);
-$SMARTY->assign('listdata', $listdata);
-$SMARTY->display('customer/customergrouplist.html');
+$this->Execute(
+    "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
+    array(
+        'documents',
+        'cache',
+        'phpui',
+        'cache_documents',
+    )
+);
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022081700', 'dbversion'));
+
+$this->CommitTrans();

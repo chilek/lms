@@ -112,15 +112,23 @@ if (isset($_POST['netadd'])) {
     if ($netadd['wins'] != '' && !check_ip($netadd['wins'])) {
         $error['wins'] = trans('Incorrect WINS server IP address!');
     }
-    
+
     if ($netadd['gateway'] != '') {
         if (!check_ip($netadd['gateway'])) {
             $error['gateway'] = trans('Incorrect gateway IP address!');
-        } elseif (!isipin($netadd['gateway'], getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])), prefix2mask($netadd['prefix']))) {
-            $error['gateway'] = trans('Specified gateway address does not match with network address!');
+        } elseif ($netadd['prefix'] < 31) {
+            if (!isipin($netadd['gateway'], getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])), prefix2mask($netadd['prefix']))) {
+                $error['gateway'] = trans('Specified gateway address does not match with network address!');
+            }
+        } else {
+            $netaddr = ip_long(getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])));
+            $gateway = ip_long($netadd['gateway']);
+            if ($gateway < $netaddr || $gateway > $netaddr + 1) {
+                $error['gateway'] = trans('Specified gateway address does not match with network address!');
+            }
         }
     }
-    
+
     if ($netadd['dhcpstart'] != '') {
         if (!check_ip($netadd['dhcpstart'])) {
             $error['dhcpstart'] = trans('Incorrect IP address for DHCP range start!');
