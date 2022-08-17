@@ -103,8 +103,8 @@ $this->Execute("
             LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
             LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
             LEFT JOIN customerconsentview cc ON cc.customerid = c.id
-        WHERE c.type = 2;"
-);
+        WHERE c.type = 2;
+");
 
 $this->Execute("
     CREATE VIEW customeraddressview AS
