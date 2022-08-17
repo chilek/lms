@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -84,7 +84,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -93,7 +93,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -131,7 +131,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
