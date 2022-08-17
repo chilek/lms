@@ -134,9 +134,9 @@ function getNetworks($ip, $br, $host = null)
         $data =  array($ip_long, $br_long);
     }
 
-    $networks = LMSDB::GetInstance()->GetAll('
-        SELECT
-            n.address as ip_long, n.mask as mask_ip, 
+    $networks = LMSDB::GetInstance()->GetAll(
+        'SELECT
+            n.address as ip_long, n.mask as mask_ip,
             h.name as host, h.id as host_id, n.name as net_name
         FROM networks n
             LEFT JOIN hosts h ON n.hostid = h.id
@@ -195,8 +195,8 @@ if (isset($_GET['ajax'])) {
             $data[] = $host;
         }
 
-        $used_ips = $DB->GetAllByKey('
-            SELECT
+        $used_ips = $DB->GetAllByKey(
+            'SELECT
                 ipaddr as ip, nod.name, nd.name as netdev_name,
                 CASE WHEN nod.ownerid IS NULL THEN nd.id ELSE nod.id END as id
             FROM
