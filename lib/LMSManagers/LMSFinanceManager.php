@@ -368,7 +368,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($servicesassignments) {
             $total_value = 0;
             foreach ($servicesassignments as $idx => $row) {
-                $servicesassignments[$idx]['tarifftypename'] = $SERVICETYPES[$row['tarifftype']];
+                $servicesassignments[$idx]['tarifftypename'] = empty($row['tarifftype']) ? trans('undefined') : $SERVICETYPES[$row['tarifftype']];
                 $total_value += $row['sumvalue'];
             }
             $servicesassignments['total_value'] = $total_value;
