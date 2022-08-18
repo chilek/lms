@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -2491,7 +2491,7 @@ $_LANG['select numbering plan'] = 'wybierz plan numeracyjny';
 $_LANG['Customer has got unconfirmed documents!'] = 'Klient posiada niezatwierdzone dokumenty!';
 $_LANG['Documents:'] = 'Dokumenty:';
 $_LANG['Enable/disable MAC address checking'] = 'Włącz/wyłącz sprawdzanie MAC adresu';
-$_LANG['MAC checking'] = 'Sprawdzanie MAC\'a';
+$_LANG['MAC checking'] = 'Sprawdzanie MAC–a';
 $_LANG['IP'] = 'IP';
 $_LANG['MAC'] = 'MAC';
 $_LANG['Search:'] = 'Szukaj:';
