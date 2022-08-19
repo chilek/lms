@@ -674,7 +674,7 @@ class Utils
                         'lastname' => $report['fiz_nazwa'],
                         'name' => '',
                         'rbename' => $report['fizC_RodzajRejestru_Nazwa'],
-                        'rbe' => $report['fizC_numerwRejestrzeEwidencji'],
+                        'rbe' => $report['fizC_numerWRejestrzeEwidencji'],
                         'regon' => array_key_exists('fiz_regon9', $report)
                             ? $report['fiz_regon9']
                             : $report['fiz_regon14'],
