@@ -88,7 +88,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
         }
     }
     die;
-} elseif (isset($_GET['action']) && $_GET['action'] == 'delete') {
+} elseif (isset($_GET['action'], $_POST['marks']) && $_GET['action'] == 'delete') {
     if ($marks = $_POST['marks']) {
         foreach ($marks as $id) {
             $DB->Execute(
