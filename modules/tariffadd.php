@@ -262,7 +262,7 @@ if (isset($_POST['tariff'])) {
         $SESSION->redirect('?m=tariffinfo&id='.$LMS->TariffAdd($tariff));
     }
 
-    if (!is_array($tariff['tags'])) {
+    if (empty($tariff['tags']) || !is_array($tariff['tags'])) {
         $tariff['tags'] = array();
     }
     $tariff['tags'] = array_flip($tariff['tags']);
