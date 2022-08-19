@@ -2,7 +2,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1870,6 +1870,7 @@ $_LANG['Specified address is not a network address, setting $a'] = 'Wybrany adre
 $_LANG['Specified domain contains forbidden characters!'] = 'Domena zawiera niepoprawne znaki!';
 $_LANG['Specified e-mail is not correct!'] = 'Wybrany e-mail nie jest poprawny!';
 $_LANG['Specified gateway address does not match with network address!'] = 'Określony adres bramy nie pokrywa się z adresem sieci!';
+$_LANG['Specified gateway address collides with existing node / network device IP address!'] = 'Podany adres bramy koliduje z istniejącym adresem IP komputera / urządzenia!';
 $_LANG['Specified ID is not proper or does not exist!'] = 'Podany identyfikator jest niepoprawny lub nie istnieje!';
 $_LANG['Specified IP address doesn\'t overlap with any network!'] = 'Wybrany adres IP nie pokrywa się z żadną siecią!';
 $_LANG['Specified IP address is in use!'] = 'Wybrany adres IP jest już w użyciu!';
@@ -2489,7 +2490,7 @@ $_LANG['select numbering plan'] = 'wybierz plan numeracyjny';
 $_LANG['Customer has got unconfirmed documents!'] = 'Klient posiada niezatwierdzone dokumenty!';
 $_LANG['Documents:'] = 'Dokumenty:';
 $_LANG['Enable/disable MAC address checking'] = 'Włącz/wyłącz sprawdzanie MAC adresu';
-$_LANG['MAC checking'] = 'Sprawdzanie MAC\'a';
+$_LANG['MAC checking'] = 'Sprawdzanie MAC–a';
 $_LANG['IP'] = 'IP';
 $_LANG['MAC'] = 'MAC';
 $_LANG['Search:'] = 'Szukaj:';
