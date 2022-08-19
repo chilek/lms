@@ -3333,7 +3333,9 @@ if (!empty($intersect)) {
 
                     $all_customers = $DB->GetCol(
                         'SELECT c.id FROM customers c
-                        WHERE c.id IN (' . implode(',', $customers) . ')'
+                        WHERE '
+                        . ($customerid ? ' AND c.id = ' . $customerid : '1 = 1')
+                        . ' AND c.id IN (' . implode(',', $customers) . ')'
                         . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
                         . (empty($where_customers) ? '' : ' AND (' . implode(' AND ', $where_customers) . ')')
                     );
@@ -3670,6 +3672,7 @@ if (!empty($intersect)) {
                     $all_customers = $DB->GetCol(
                         'SELECT c.id FROM customers c
                         WHERE 1 = 1' . $customer_status_condition
+                        . ($customerid ? ' AND c.id = ' . $customerid : '')
                         . (empty($customers) ? '' : ' AND c.id NOT IN (' . implode(',', $customers) . ')')
                         . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
                         . (empty($where_customers) ? '' : ' AND (' . implode(' AND ', $where_customers) . ')')
