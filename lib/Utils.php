@@ -760,7 +760,7 @@ class Utils
                                         $local['lokfiz_adSiedzKodPocztowy']
                                     ),
                                     'location_postoffice' => $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa']
-                                        == $local->dane['fiz_adSiedzMiejscowosc_Nazwa'] ? ''
+                                        == $local['lokfiz_adSiedzMiejscowosc_Nazwa'] ? ''
                                             : $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa'],
                                     'location_state' => empty($location) ? 0 : $location['location_state'],
                                     'location_city' => empty($location) ? 0 : $location['location_city'],
