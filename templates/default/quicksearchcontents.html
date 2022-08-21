@@ -9,7 +9,7 @@
 	<select id="qs-customer-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which customer properties should be used during search")}">
 		<option value="id"{if !isset($qs_properties.customer) || isset($qs_properties.customer.id)} selected{/if}>{trans("<!qs>customer id")}</option>
 		<option value="name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.name)} selected{/if}>{trans("<!qs>customer name")}</option>
-		<option value="altname"{if !isset($qs_properties.customer.altname) || isset($qs_properties.customer.altname)} selected{/if}>{trans("<!qs>customer alternative name")}</option>
+		<option value="altname"{if !isset($qs_properties.customer) || isset($qs_properties.customer.altname)} selected{/if}>{trans("<!qs>customer alternative name")}</option>
 		<option value="address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.address)} selected{/if}>{trans("<!qs>address")}</option>
 		<option value="post_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_name)} selected{/if}>{trans("<!qs>post name")}</option>
 		<option value="post_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_address)} selected{/if}>{trans("<!qs>post address")}</option>
