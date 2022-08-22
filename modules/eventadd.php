@@ -271,7 +271,7 @@ if (isset($_POST['event'])) {
                         $mailfname = '';
                     }
 
-                    $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
+                    $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
 
                     $ticketdata = $LMS->GetTicketContents($event['ticketid']);
 
@@ -367,7 +367,7 @@ if (isset($_POST['event'])) {
                         'customerid' => $ticket['customerid'],
                         'status' => $ticketdata['status'],
                         'categories' => $ticketdata['categorynames'],
-                        'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                        'priority' => $ticketdata['priority'] ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                         'subject' => $ticket['subject'],
                         'body' => $ticket['body'],
                     );
