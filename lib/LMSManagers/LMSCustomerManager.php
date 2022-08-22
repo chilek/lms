@@ -788,6 +788,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $sqlskey Logical conjunction
      * @param int $nodegroup Node group
      * @param int $division Division id
+     * @param int $days Days after expiration
      * @param int $limit Limit
      * @param int $offset Offset
      * @param boolean $count Count flag
@@ -811,6 +812,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($time)) {
             $time = null;
+        }
+
+        if (!isset($days)) {
+            $days = 0;
         }
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
