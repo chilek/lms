@@ -2002,7 +2002,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         $args = array(
-            'extid'          => empty($customerdata['extid']) ? '' : $customerdata['extid'],
+            'extid'          => $customerdata['extid'],
             'status'         => $customerdata['status'],
             'type'           => empty($customerdata['type']) ? 0 : 1,
             'ten'            => $customerdata['ten'],
@@ -2012,7 +2012,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'notes'          => Utils::removeInsecureHtml($customerdata['notes']),
             'lastname'       => $customerdata['lastname'],
             'name'           => $customerdata['name'],
-            'altname'        => empty($customerdata['altname']) ? '' : $customerdata['altname'],
+            'altname'        => empty($customerdata['altname']) ? null : $customerdata['altname'],
             'message'        => Utils::removeInsecureHtml($customerdata['message']),
             'documentmemo'   => empty($customerdata['documentmemo']) ? null : Utils::removeInsecureHtml($customerdata['documentmemo']),
             'pin'            => $pin,
