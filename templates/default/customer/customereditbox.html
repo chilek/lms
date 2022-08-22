@@ -129,13 +129,13 @@
 				<table>
 					<tr>
 						<td>
-							<label for="customerdata[extid]" class="nobr bold">
-								{trans("External system identifier")}
+							<label for="extid">
+								<strong>{trans("External system identifier")}</strong>
 							</label>
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" class="lms-ui-autogrow" name="customerdata[extid]" value="{$customerinfo.extid|escape}"
+								<input type="text" id="extid" class="lms-ui-autogrow" name="customerdata[extid]" value="{$customerinfo.extid|escape}"
 									{tip trigger="extid"}>
 								{hint content="Enter customer identifier in external system (optional)"}
 							</div>
@@ -143,14 +143,14 @@
 					</tr>
 					<tr>
 						<td>
-								<label class="bold" for="customerdata[altname]">
-									{trans("Alternative name")}
-								</label>
+							<label for="altname">
+								<strong?{trans("Alternative name")}</strong>
+							</label>
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" class="lms-ui-autogrow" name="customerdata[altname]" maxlength="128" value="{$customerinfo.altname|escape}"}>
-									{hint content="Customer Alternative name (brand, shortname, casual name)"}
+								<input type="text" id="altname" class="lms-ui-autogrow" name="customerdata[altname]" maxlength="128" value="{$customerinfo.altname|escape}"}>
+								{hint content="Customer Alternative name (brand, shortname, casual name)"}
 							</div>
 						</td>
 					</tr>
