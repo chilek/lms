@@ -77,8 +77,10 @@ $args = array(
 );
 
 if ($c == 'date') {
-    list ($y, $m, $d) = explode('/', $s);
-    $args['datefrom'] = mktime(0, 0, 0, $m, $d, $y);
+    $args['datefrom'] = strtotime($s);
+    if ($args['datefrom'] === false) {
+        $args['datefrom'] = strtotime('today');
+    }
     $args['dateto'] = strtotime('tomorrow', $args['datefrom']) - 1;
 }
 
