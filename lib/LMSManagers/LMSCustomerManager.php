@@ -657,7 +657,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'extid'          => $customeradd['extid'],
             'name'           => $customeradd['name'],
             'lastname'       => $customeradd['lastname'],
-            'altname'        => empty($customeradd['altname']) ? '' : $customeradd['altname'],
+            'altname'        => empty($customeradd['altname']) ? null : $customeradd['altname'],
             'type'           => empty($customeradd['type']) ? 0 : 1,
             'ten'            => $customeradd['ten'],
             'ssn'            => $customeradd['ssn'],
@@ -1955,7 +1955,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function GetCustomerAltName($id)
     {
-        return empty($id) ?: $this->db->GetOne(
+        return empty($id) ? null : $this->db->GetOne(
             'SELECT altname FROM customers WHERE id = ?',
             array($id)
         );
