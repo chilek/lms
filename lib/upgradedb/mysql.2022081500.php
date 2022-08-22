@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -27,7 +27,7 @@ $this->Execute("DROP VIEW customerview");
 $this->Execute("DROP VIEW contractorview");
 $this->Execute("DROP VIEW customeraddressview");
 
-$this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128)");
+$this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128) DEFAULT NULL");
 
 $this->Execute("
     CREATE VIEW customerview AS
@@ -118,6 +118,6 @@ $this->Execute("
         WHERE c.type < 2;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022081500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022081800', 'dbversion'));
 
 $this->CommitTrans();
