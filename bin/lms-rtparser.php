@@ -667,9 +667,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $reqcustid = $DB->GetCol("SELECT c.id FROM customers c
             JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ? > 0)
             WHERE cc.contact = ?", array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS, $fromemail));
-        if (empty($reqcustid)) {
-            $reqcustid = 0;
-        } elseif (count($reqcustid) > 1) {
+        if (empty($reqcustid) || count($reqcustid) > 1) {
             $reqcustid = 0;
         } else {
             $reqcustid = reset($reqcustid);
