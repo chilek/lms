@@ -26,22 +26,8 @@ $this->BeginTrans();
 $this->Execute("DROP VIEW customerview");
 $this->Execute("DROP VIEW contractorview");
 $this->Execute("DROP VIEW customeraddressview");
-$this->Execute("DROP VIEW customerconsentview");
 
 $this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128)");
-
-$this->Execute("
-    CREATE VIEW customerconsentview AS
-        SELECT c.id AS customerid,
-            SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)  AS consentdate,
-            SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END) AS invoicenotice,
-            SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END) AS mailingnotice,
-            SUM(CASE WHEN cc.type = 8 THEN 1 ELSE 0 END) AS smsnotice,
-            SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END) AS einvoice
-        FROM customers c
-            LEFT JOIN customerconsents cc ON cc.customerid = c.id
-        GROUP BY c.id;
-");
 
 $this->Execute("
     CREATE VIEW customerview AS
