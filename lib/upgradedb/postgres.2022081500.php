@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -26,22 +26,8 @@ $this->BeginTrans();
 $this->Execute("DROP VIEW customerview");
 $this->Execute("DROP VIEW contractorview");
 $this->Execute("DROP VIEW customeraddressview");
-$this->Execute("DROP VIEW customerconsentview");
 
-$this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128)");
-
-$this->Execute("
-    CREATE VIEW customerconsentview AS
-        SELECT c.id AS customerid,
-            SUM(CASE WHEN cc.type = 1 THEN cc.cdate ELSE 0 END)::integer AS consentdate,
-            SUM(CASE WHEN cc.type = 2 THEN 1 ELSE 0 END)::smallint AS invoicenotice,
-            SUM(CASE WHEN cc.type = 3 THEN 1 ELSE 0 END)::smallint AS mailingnotice,
-            SUM(CASE WHEN cc.type = 8 THEN 1 ELSE 0 END)::smallint AS smsnotice,
-            SUM(CASE WHEN cc.type = 4 THEN 1 ELSE 0 END)::smallint AS einvoice
-        FROM customers c
-            LEFT JOIN customerconsents cc ON cc.customerid = c.id
-        GROUP BY c.id;
-");
+$this->Execute("ALTER TABLE customers ADD COLUMN altname varchar(128) DEFAULT NULL");
 
 $this->Execute("
     CREATE VIEW customerview AS
@@ -133,6 +119,6 @@ $this->Execute("
         WHERE c.type < 2;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022081500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022081800', 'dbversion'));
 
 $this->CommitTrans();
