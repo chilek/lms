@@ -294,7 +294,7 @@ CREATE TABLE customers (
 	extid varchar(32) DEFAULT '' NOT NULL,
 	lastname varchar(128)	DEFAULT '' NOT NULL,
 	name varchar(128)	DEFAULT '' NOT NULL,
-	altname varchar(128),
+	altname varchar(128)	DEFAULT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
 	ten varchar(50) 	DEFAULT '' NOT NULL,
