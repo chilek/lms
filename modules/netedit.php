@@ -146,8 +146,18 @@ if (isset($_POST['networkdata'])) {
     if ($networkdata['gateway']!='') {
         if (!check_ip($networkdata['gateway'])) {
             $error['gateway'] = trans('Incorrect gateway IP address!');
-        } else if (!isipin($networkdata['gateway'], getnetaddr($networkdata['address'], prefix2mask($networkdata['prefix'])), prefix2mask($networkdata['prefix']))) {
-            $error['gateway'] =  trans('Specified gateway address does not match with network address!');
+        } elseif ($networkdata['prefix'] < 31) {
+            if (!isipin($networkdata['gateway'], getnetaddr($networkdata['address'], prefix2mask($networkdata['prefix'])), prefix2mask($networkdata['prefix']))) {
+                $error['gateway'] = trans('Specified gateway address does not match with network address!');
+            }
+        } else {
+            $netaddr = ip_long(getnetaddr($networkdata['address'], prefix2mask($networkdata['prefix'])));
+            $gateway = ip_long($networkdata['gateway']);
+            if ($gateway < $netaddr || $gateway > $netaddr + 1) {
+                $error['gateway'] = trans('Specified gateway address does not match with network address!');
+            } elseif ($DB->GetOne('SELECT 1 FROM nodes WHERE ipaddr = ? OR ipaddr_pub = ?', array($gateway, $gateway))) {
+                $error['gateway'] = trans('Specified gateway address collides with existing node / network device IP address!');
+            }
         }
     }
 

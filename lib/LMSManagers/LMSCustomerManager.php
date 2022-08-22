@@ -657,6 +657,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'extid'          => $customeradd['extid'],
             'name'           => $customeradd['name'],
             'lastname'       => $customeradd['lastname'],
+            'altname'        => empty($customeradd['altname']) ? null : $customeradd['altname'],
             'type'           => empty($customeradd['type']) ? 0 : 1,
             'ten'            => $customeradd['ten'],
             'ssn'            => $customeradd['ssn'],
@@ -704,11 +705,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         $result = $this->db->Execute(
-            'INSERT INTO customers (extid, name, lastname, type,
+            'INSERT INTO customers (extid, name, lastname, altname, type,
             ten, ssn, status, creationdate,
             creatorid, info, notes, message, documentmemo, pin, pinlastchange, regon, rbename, rbe,
             ict, icn, icexpires, cutoffstop, divisionid, paytime, paytype, flags' . ($reuse_customer_id ? ', id' : ''). ')
-            VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
+            VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?, ?NOW?,
                     ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?' . ($reuse_customer_id ? ', ?' : '') . ')',
             array_values($args)
         );
@@ -787,6 +788,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $sqlskey Logical conjunction
      * @param int $nodegroup Node group
      * @param int $division Division id
+     * @param int $days Days after expiration
      * @param int $limit Limit
      * @param int $offset Offset
      * @param boolean $count Count flag
@@ -810,6 +812,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($time)) {
             $time = null;
+        }
+
+        if (!isset($days)) {
+            $days = 0;
         }
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
@@ -1823,7 +1829,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
         if ($result = $this->db->GetRow('SELECT c.*, '
                 . $this->db->Concat($capitalize_customer_names ? 'UPPER(c.lastname)' : 'c.lastname', "' '", 'c.name') . ' AS customername,
-			d.shortname AS division, d.label AS division_label, d.account
+			d.shortname AS division, d.label AS division_label, d.account, c.altname
 			FROM customer' . (defined('LMS-UI') ? '' : 'address') . 'view c
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 			WHERE c.id = ?', array($id))) {
@@ -1952,6 +1958,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
     }
 
+    public function GetCustomerAltName($id)
+    {
+        return empty($id) ? null : $this->db->GetOne(
+            'SELECT altname FROM customers WHERE id = ?',
+            array($id)
+        );
+    }
+
     /**
     * Updates customer
     *
@@ -2003,6 +2017,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'notes'          => Utils::removeInsecureHtml($customerdata['notes']),
             'lastname'       => $customerdata['lastname'],
             'name'           => $customerdata['name'],
+            'altname'        => empty($customerdata['altname']) ? null : $customerdata['altname'],
             'message'        => Utils::removeInsecureHtml($customerdata['message']),
             'documentmemo'   => empty($customerdata['documentmemo']) ? null : Utils::removeInsecureHtml($customerdata['documentmemo']),
             'pin'            => $pin,
@@ -2058,12 +2073,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         // UPDATE CUSTOMER FIELDS
         $res = $this->db->Execute(
-            'UPDATE customers SET extid=?, status=?, type=?,
-            ten=?, ssn=?, moddate=?NOW?, modid=?,
-            info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
-            deleted=0, message=?, documentmemo=?, pin=?, pinlastchange = ?, regon=?, ict=?, icn=?, icexpires = ?, rbename=?, rbe=?,
-            cutoffstop=?, divisionid=?, paytime=?, paytype=?, flags = ?
-            WHERE id=?',
+            'UPDATE customers SET extid = ?, status = ?, type = ?, ten = ?, ssn = ?, moddate = ?NOW?, modid = ?,
+            info = ?, notes = ?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name = ?, altname = ?,
+            deleted = 0, message = ?, documentmemo = ?, pin = ?, pinlastchange = ?, regon = ?, ict = ?, icn = ?, icexpires = ?,
+            rbename = ?, rbe = ?, cutoffstop = ?, divisionid = ?, paytime = ?, paytype = ?, flags = ?
+            WHERE id = ?',
             array_values($args)
         );
 

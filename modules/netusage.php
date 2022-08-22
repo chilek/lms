@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -55,7 +55,8 @@ class NetContainer
             32    => 27,
             16    => 28,
             8     => 29,
-            4     => 30
+            4     => 30,
+            2     => 31,
         );
     }
 
@@ -133,14 +134,16 @@ function getNetworks($ip, $br, $host = null)
         $data =  array($ip_long, $br_long);
     }
 
-    $networks = LMSDB::GetInstance()->GetAll('
-        SELECT
-            n.address as ip_long, n.mask as mask_ip, 
-            h.name as host, h.id as host_id, n.name as net_name                  
+    $networks = LMSDB::GetInstance()->GetAll(
+        'SELECT
+            n.address as ip_long, n.mask as mask_ip,
+            h.name as host, h.id as host_id, n.name as net_name
         FROM networks n
             LEFT JOIN hosts h ON n.hostid = h.id
         WHERE address >= ? AND address < ? ' . $sql . '
-        ORDER BY ip_long;', $data);
+        ORDER BY ip_long',
+        $data
+    );
 
     foreach ($networks as $k => $v) {
         $networks[$k]['ip']      = long_ip($networks[$k]['ip_long']);
@@ -192,8 +195,8 @@ if (isset($_GET['ajax'])) {
             $data[] = $host;
         }
 
-        $used_ips = $DB->GetAllByKey('
-            SELECT
+        $used_ips = $DB->GetAllByKey(
+            'SELECT
                 ipaddr as ip, nod.name, nd.name as netdev_name,
                 CASE WHEN nod.ownerid IS NULL THEN nd.id ELSE nod.id END as id
             FROM
@@ -203,14 +206,24 @@ if (isset($_GET['ajax'])) {
                 LEFT JOIN hosts h       ON h.id = net.hostid
             WHERE
                 nod.ipaddr >= ? AND
-                nod.ipaddr <= ? ' . ($host ? ' AND h.name ?LIKE? ?' : ''), 'ip', $data);
-
+                nod.ipaddr <= ? ' . ($host ? ' AND h.name ?LIKE? ?' : ''),
+            'ip',
+            $data
+        );
         $full_network = $DB->GetRow('SELECT * FROM networks WHERE name ?LIKE? ?', array($_POST['netname']));
+        if (!empty($full_network['gateway'])) {
+            $gateway_ip = ip_long($full_network['gateway']);
+            $used_ips[$gateway_ip] = array(
+                'ip' => $gateway_ip,
+                'netdev_name' => '',
+                'id' => 0,
+            );
+        }
 
         $SMARTY->assign('used_ips', $used_ips);
         $SMARTY->assign('pool', array('start'=>$ip_start, 'end'=>$ip_end));
-        $SMARTY->assign('network', $ip_start == $full_network['address'] ? 1 : 0);
-        $SMARTY->assign('broadcast', long_ip($ip_end) == getbraddr(long_ip($ip_start), $full_network['mask']) ? 1 : 0);
+        $SMARTY->assign('network', $mask < 31 && $ip_start == $full_network['address'] ? 1 : 0);
+        $SMARTY->assign('broadcast', $mask < 31 && long_ip($ip_end) == getbraddr(long_ip($ip_start), $full_network['mask']) ? 1 : 0);
         $SMARTY->assign('hostid', $full_network['id']);
 
         $html .= $SMARTY->fetch('net/network_container.html');

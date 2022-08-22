@@ -599,6 +599,8 @@ switch ($type) {
 
         $reportlist = array();
         if ($taxes = $LMS->GetTaxes($reportday, $reportday)) {
+            $total = array();
+
             foreach ($taxes as $taxidx => $tax) {
                 $list1 = $DB->GetAllByKey(
                     'SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, '
@@ -718,17 +720,18 @@ switch ($type) {
 
             switch ($order) {
                 case 'customername':
+                    $table = array();
                     foreach ($reportlist as $idx => $row) {
                         $table['idx'][] = $idx;
                         $table['customername'][] = $row['customername'];
                     }
-                    if (is_array($table)) {
+                    if (!empty($table)) {
                         array_multisort($table['customername'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
                         foreach ($table['idx'] as $idx) {
                             $tmplist[] = $reportlist[$idx];
                         }
                     }
-                    $reportlist = $tmplist;
+                    $reportlist = empty($tmplist) ? array() : $tmplist;
                     break;
                 default:
                     foreach ($reportlist as $idx => $row) {

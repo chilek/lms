@@ -74,6 +74,8 @@ interface LMSCustomerManagerInterface
 
     public function GetCustomer($id, $short = false);
 
+    public function GetCustomerAltName($id);
+
     public function customerUpdate($customerdata);
 
     public function deleteCustomer($id);

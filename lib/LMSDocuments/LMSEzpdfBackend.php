@@ -106,10 +106,10 @@ class LMSEzpdfBackend extends Cezpdf
     {
         header('Pragma: private');
         header('Cache-control: private, must-revalidate');
-        if (!is_null($filename)) {
+        if (!empty($filename)) {
             $options = array('Content-Disposition' => $filename);
+            $this->ezStream($options);
         }
-        $this->ezStream($options);
     }
 
     public function WriteToString()

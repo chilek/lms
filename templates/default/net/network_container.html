@@ -38,10 +38,12 @@
                         <a href="?m=netdevinfo&id={$used_ips[$i]['id']}" class="blend">
                             <img src="img/netdev.gif" alt=""> {$used_ips[$i]['netdev_name']}
                         </a>
-                    {else}
+                    {elseif !empty($used_ips[$i]['id'])}
                         <a href="?m=nodeinfo&id={$used_ips[$i]['id']}" class="blend">
                             <img src="img/node.gif" alt=""> {$used_ips[$i]['name']}
                         </a>
+                    {else}
+                        <img src="img/network.gif" alt=""> GATEWAY
                     {/if}
                 {else}
                     {$tmp = long_ip($i)}

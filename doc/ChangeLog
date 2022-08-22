@@ -254,6 +254,11 @@ version 28-git (????-??-??):
     to full minutes [chilan]
   - enhancement: customer list: added customer group logical operator selection connecting selected
     customer groups [chilan]
+  - devel/cleanup: renamed 'phpui.document_type' to 'documents.type' [chilan]
+  - devel/cleanup: renamed 'phpui.document_margins' to 'documents.margins' [chilan]
+  - devel/cleanup: renamed 'phpui.cache_documents' to 'documents.cache' [chilan]
+  - enhancement: introduced alternative name for customer
+    (important for brands/shortnames/casual names) [interduo]
   - enhancement: allow to notify by mail or sms about expired and near expiration
     SSL domain certificates [interduo]
 

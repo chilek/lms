@@ -674,7 +674,7 @@ class Utils
                         'lastname' => $report['fiz_nazwa'],
                         'name' => '',
                         'rbename' => $report['fizC_RodzajRejestru_Nazwa'],
-                        'rbe' => $report['fizC_numerwRejestrzeEwidencji'],
+                        'rbe' => $report['fizC_numerWRejestrzeEwidencji'],
                         'regon' => array_key_exists('fiz_regon9', $report)
                             ? $report['fiz_regon9']
                             : $report['fiz_regon14'],
@@ -760,7 +760,7 @@ class Utils
                                         $local['lokfiz_adSiedzKodPocztowy']
                                     ),
                                     'location_postoffice' => $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa']
-                                        == $local->dane['fiz_adSiedzMiejscowosc_Nazwa'] ? ''
+                                        == $local['lokfiz_adSiedzMiejscowosc_Nazwa'] ? ''
                                             : $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa'],
                                     'location_state' => empty($location) ? 0 : $location['location_state'],
                                     'location_city' => empty($location) ? 0 : $location['location_city'],

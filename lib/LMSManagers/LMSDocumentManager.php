@@ -2208,9 +2208,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 } else {
                     $contents = file_get_contents($filename);
                     if (preg_match('/html/i', $attachment['contenttype'])
-                        && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
-                        $margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
-                        if (ConfigHelper::getConfig('phpui.cache_documents')) {
+                        && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'))) == 'pdf') {
+                        $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+                        if (ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'))) {
                             $contents = html2pdf(
                                 $contents,
                                 $document['title'],

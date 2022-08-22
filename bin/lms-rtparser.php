@@ -664,11 +664,13 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         // find customerid
-        $reqcustid = $DB->GetOne("SELECT c.id FROM customers c
+        $reqcustid = $DB->GetCol("SELECT c.id FROM customers c
             JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ? > 0)
             WHERE cc.contact = ?", array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS, $fromemail));
-        if (empty($reqcustid)) {
+        if (empty($reqcustid) || count($reqcustid) > 1) {
             $reqcustid = 0;
+        } else {
+            $reqcustid = reset($reqcustid);
         }
 
         // get sender e-mail if not specified

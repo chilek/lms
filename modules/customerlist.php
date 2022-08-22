@@ -72,7 +72,7 @@ if ($api) {
     }
 
     if (isset($_GET['g'])) {
-        $filter['customergroup'] = Utils::filterIntegers($_GET['g']);
+        $filter['customergroup'] = Utils::filterIntegers(is_array($_GET['g']) ? $_GET['g'] : array($_GET['g']));
     }
 
     if (isset($_GET['ng']) && is_array($_GET['ng'])) {

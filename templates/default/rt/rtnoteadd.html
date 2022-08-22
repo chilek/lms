@@ -281,7 +281,7 @@
 <SCRIPT>
 
 	$(function() {
-		$('form[name="note"] [name="note[body]"]').focus();
+		$('[name="note[body]"]').focus();
 
 		$('[name="note[category_change]"]').change(function() {
 			if (parseInt($(this).val())) {

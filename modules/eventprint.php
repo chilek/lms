@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$date = $_GET['day'];
+$date = isset($_GET['day']) ? $_GET['day'] : 0;
 
 if (empty($date)) {
     $date = time();

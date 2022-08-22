@@ -37,7 +37,9 @@ abstract class LMSDocument
 
     public function Draw($data)
     {
-        ConfigHelper::setFilter($data['divisionid']);
+        if (isset($data['divisionid'])) {
+            ConfigHelper::setFilter($data['divisionid']);
+        }
 
         $this->data = $data;
     }
