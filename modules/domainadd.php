@@ -84,13 +84,15 @@ if (isset($_POST['domainadd'])) {
         $DB->BeginTrans();
 
         $DB->Execute(
-            'INSERT INTO domains (name, ownerid, type, master, description, mxbackup) VALUES (?,?,?,?,?,?)',
+            'INSERT INTO domains (name, ownerid, type, master, description, mxbackup, ssl, ssl_expirationdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             array($domainadd['name'],
                     empty($domainadd['ownerid']) ? null : $domainadd['ownerid'],
                     $domainadd['type'],
                     $domainadd['master'],
                     $domainadd['description'],
-                    empty($domainadd['mxbackup']) ? 0 : 1)
+                    empty($domainadd['mxbackup']) ? 0 : 1,
+                    empty($domainadd['ssl']) ? 'false' : 'true',
+                    empty(date_to_timestamp($domainadd['ssl_expirationdate'])) ? 0 : date_to_timestamp($domainadd['ssl_expirationdate']))
         );
 
         $lid = $DB->GetLastInsertID('domains');

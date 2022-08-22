@@ -204,19 +204,39 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
+        switch ($deleted) {
+            case 1:
+                $deletedfilter = ' deleted = 1 AND';
+                break;
+            case -1:
+                $deletedfilter = '';
+                break;
+            case 0:
+            default:
+                $deletedfilter = ' deleted = 0 AND';
+                break;
+        }
+
         $userlist = $this->db->GetAllByKey(
-            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-            accessfrom, accessto, rname, twofactorauth'
-            . ' FROM ' . (isset($superuser) ? 'vallusers' : 'vusers')
-            . ' WHERE deleted = 0'
-            . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
-            . (isset($divisions) && !empty($divisions) ? ' AND id IN 
+            'SELECT id, login, name, phone, email, lastlogindate, lastloginip, passwdexpiration, passwdlastchange,
+            access, accessfrom, accessto, rname, twofactorauth, ntype'
+            . ' FROM ' . (empty($superuser) ? 'vusers' : 'vallusers')
+            . ' WHERE '
+            . $deletedfilter
+            . ' (ntype & ?) > 0 AND rights ?LIKE? ?'
+            . (empty($userAccess) ? '' : ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)')
+            . (empty($email_address_set) ? '' : ' AND email <> \'\'')
+            . (empty($sms_number_set) ? '' : ' AND phone <> \'\'')
+            . (isset($divisions) && !empty($divisions) ? ' AND id IN
                 (SELECT userid
-                FROM userdivisions
-                WHERE divisionid IN (' . $divisions . ')
-                )' : '')
+                    FROM userdivisions
+                WHERE divisionid IN (' . $divisions . '))' : '')
             . ' ORDER BY login ASC',
-            'id'
+            'id',
+            array(
+                $ntype,
+                !empty($rights) ? '%%' : '%' . $rights . '%',
+            )
         );
 
         if ($userlist) {

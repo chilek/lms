@@ -2,6 +2,15 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+    span.warning {
+        color: brown;
+    }
+
+</style>
+
 {if $layout.module=="domainsearch"}{assign var=suffix value="&s=1"}{/if}
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
@@ -23,13 +32,16 @@
 		    <IMG src="img/empty.gif" alt="" height="16">
 		    <A href="?m={$layout.module}{$suffix}&amp;o=cnt{if $listdata.direction == "asc" && $listdata.order == "cnt"},desc{/if}">{trans("Accounts:")}</A> {if $listdata.order == "cnt"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
+		<td>
+			{icon name='ssl' label='SSL' tip='SSL certificate'}
+		</td>
 		<TD width="1%" NOWRAP>
 			<IMG src="img/empty.gif" alt="" height="16">
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
 	<TR>
-	        <TD colspan="6">
+		<td colspan="7">
 			<TABLE cellpadding="0" cellspacing="0" width="100%">
 				<TR>
 					<TD width="1%" NOWRAP>
@@ -61,14 +73,14 @@
 					</TD>
 		    		</TR>
 			</TABLE>
-		</TD>
+		</td>
 	</TR>
 	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
+	<tr>
+		<td class="lms-ui-pagination" colspan="7">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
     </THEAD>
     <TBODY>
@@ -93,6 +105,21 @@
 		<TD align="right" onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
 			{$domainlist[domainlist].cnt|default:0}
 		</TD>
+		<td>
+			{if $domainlist[domainlist].ssl}
+				{if !empty($domainlist[domainlist].ssl_expirationdate)}
+				    {$secstoexpiration = $domainlist[domainlist].ssl_expirationdate - $smarty.now}
+					{if ($secstoexpiration) <= 14*86400 && $secstoexpiration >= 0}
+						<span class="warning">{icon name='warning' tip='SSL certificate near expiration!'}</span>
+					{/if}
+					{if $domainlist[domainlist].ssl_expirationdate <= $smarty.now}
+						<span class="alert">{icon name='warning' tip='SSL certificate expired!'}</span>
+					{/if}
+				{else}
+				    {icon name="checked"}
+				{/if}
+			{/if}
+		</td>
 		<TD align="right" NOWRAP>
 			<A class="delete-domain" href="?m=domaindel&id={$domainlist[domainlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=domainedit&amp;id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
@@ -101,7 +128,7 @@
 	</TR>
 	{sectionelse}
 	<tr>
-		<td colspan="6" class="empty-table">
+		<td colspan="7" class="empty-table">
 			{trans("No such domains in database.")}
 		</td>
 	</tr>
@@ -109,16 +136,16 @@
     </TBODY>
     <TFOOT>
 	{if $listdata.total != 0}
-	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="6">
+	<tr>
+		<td class="lms-ui-pagination" colspan="7">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	{/if}
 	<TR>
-		<TD colspan="5" align="right">
+		<td colspan="6">
 			<B>{trans("Total:")} {sum array=$domainlist column="cnt"}</B>
-		</TD>
+		</td>
 		<TD align="right" nowrap>
 			<A href="?m=domainadd&amp;cid={$listdata.customer}">{trans("New Domain")} <IMG src="img/save.gif" alt=""></A>
 		</TD>

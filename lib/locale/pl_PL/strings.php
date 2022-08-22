@@ -83,6 +83,15 @@ $_LANG['Network address:'] = 'Adres sieci:';
 
 $_LANG['Service type'] = 'Typ usługi';
 $_LANG['Service types'] = 'Typy usług';
+$_LANG['SSL certificate'] = 'Certyfikat SSL';
+$_LANG['SSL certificate expiration date'] = 'Data wygaśnięcia certyfikatu SSL';
+$_LANG['SSL certificate expired!'] = 'Przeterminowany certyfikat SSL!';
+$_LANG['SSL certificate near expiration!'] = 'Certyfikat bliski wygaśnięciu!';
+$_LANG['Domains with expired SSL certs:'] = 'Domeny z przeterminowanymi certyfikatami:';
+$_LANG['Domains with SSL certs close to expiration:'] = 'Domeny z certyfikatami SSL bliskimi wygaśnięciu:';
+$_LANG['Notification for expired and nearly expired SSL certificates'] = 'Powiadomienie przeterminowanych lub bliską datą ważności certyfikatów SSL domen';
+$_LANG['E-mail notification for expired and nearly expired SSL domain certificates'] = 'Powiadomienie mailowe przeterminowanych lub z bliską datą ważności certyfikatów SSL domen';
+$_LANG['SMS notification for expired and nearly expired SSL domain certificates'] = 'Powiadomienie SMS przeterminowanych lub z bliską datą ważności certyfikatów SSL domen';
 
 $_LANG['Legal personality types'] = 'Typu osobowości prawnej';
 

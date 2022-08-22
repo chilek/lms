@@ -2,6 +2,15 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+    span.warning {
+        color: brown;
+    }
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
     <THEAD>
@@ -52,6 +61,31 @@
 			{if $domain.mxbackup}{trans("yes")}{else}{trans("no")}{/if}
 		</TD>
 	</TR>
+	<tr>
+		<td colspan="2" class="nobr bold">
+			{icon name="ssl" label="SSL certificate"}
+		</td>
+		<td>
+			{if $domain.ssl}{trans("yes")}{else}{trans("no")}{/if}
+				{if empty($domain.ssl_expirationdate)}
+					{$expirationdate = trans("unknown/other")}
+				{else}
+					{$expirationdate = $domain.ssl_expirationdate|date_format:"Y/m/d"}
+					{$secstoexpiration = $domain.ssl_expirationdate - $smarty.now}
+					{if ($secstoexpiration) <= 14*86400 && $secstoexpiration > 0}
+						<span class="warning">
+							{trans("SSL certificate near expiration!")}
+						</span>
+					{/if}
+					{if $domain.ssl_expirationdate <= $smarty.now}
+						<span class="alert">
+							{trans("SSL certificate expired!")}
+						</span>
+					{/if}
+				{/if}
+				({t a=$expirationdate}expires $a{/t})
+		</td>
+	</tr>
 	<TR>
 		<TD width="1%">
 			<img src="img/account.gif" alt="">

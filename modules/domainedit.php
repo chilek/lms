@@ -42,8 +42,11 @@ if ($id && !DomainExists($id)) {
     $SESSION->redirect_to_history_entry();
 }
 
-$domain = $DB->GetRow('SELECT id, name, ownerid, description, master, last_check, type, notified_serial, account, mxbackup
-	FROM domains WHERE id = ?', array($id));
+$domain = $DB->GetRow('
+	SELECT id, name, ownerid, description, master, last_check, 
+		type, notified_serial, account, mxbackup, ssl :: int, ssl_expirationdate
+	FROM domains 
+		WHERE id = ?', array($id));
 
 $layout['pagetitle'] = trans('Domain Edit: $a', $domain['name']);
 
@@ -97,7 +100,7 @@ if (isset($_POST['domain'])) {
         $DB->Execute(
             'UPDATE domains SET name = ?, ownerid = ?, description = ?,
 			master = ?, last_check = ?, type = ?, notified_serial = ?,
-			account = ?, mxbackup = ? WHERE id = ?',
+			account = ?, mxbackup = ?, ssl = ?, ssl_expirationdate = ? WHERE id = ?',
             array(  $domain['name'],
                 empty($domain['ownerid']) ? null : $domain['ownerid'],
                 $domain['description'],
@@ -107,6 +110,8 @@ if (isset($_POST['domain'])) {
                 $domain['notified_serial'],
                 $domain['account'],
                 empty($domain['mxbackup']) ? 0 : 1,
+                empty($domain['ssl']) ? 'false' : 'true',
+                empty($domain['ssl_expirationdate']) ? 0 : date_to_timestamp($domain['ssl_expirationdate']),
                 $domain['id']
                 )
         );

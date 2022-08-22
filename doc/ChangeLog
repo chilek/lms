@@ -254,6 +254,8 @@ version 28-git (????-??-??):
     to full minutes [chilan]
   - enhancement: customer list: added customer group logical operator selection connecting selected
     customer groups [chilan]
+  - enhancement: allow to notify by mail or sms about expired and near expiration
+    SSL domain certificates [interduo]
 
 version 27.0 (2021-08-20):
 

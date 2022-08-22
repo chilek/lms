@@ -353,6 +353,26 @@ $access->appendPermission(
     )
 );
 
+$access->appendPermission(
+    new Permission(
+        'ssl_expiration_alert_email',
+        '[lms-notify.php] ' . trans('E-mail notification for expired and nearly expired SSL domain certificates'),
+        null,
+        null,
+        array(),
+    )
+);
+
+$access->appendPermission(
+    new Permission(
+        'ssl_expiration_alert_sms',
+        '[lms-notify.php] ' . trans('SMS notification for expired and nearly expired SSL domain certificates'),
+        null,
+        null,
+        array(),
+    )
+);
+
 // read user-defined access rights table
 $custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
 if (!is_null($custom_access_table)) {

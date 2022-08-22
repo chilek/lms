@@ -67,6 +67,24 @@
 			<INPUT type="checkbox" name="domain[mxbackup]" value="1"{if $domain.mxbackup} checked{/if}>
 		</TD>
 	</TR>
+		<tr>
+		<td colspan="2" class="nobr bold">
+			{icon name="ssl" label="SSL certificate"}
+		</td>
+		<td>
+			<input type="checkbox" name="domain[ssl]"{if $domain.ssl} checked{/if}>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="nobr bold">
+			{icon name="ssl" label="SSL certificate expiration date"}
+		</td>
+		<td>
+			<input type="text" placeholder="{trans("yyyy/mm/dd")}" name="domain[ssl_expirationdate]" size="12"
+				{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}
+				value="{$domain.ssl_expirationdate|date_format:'Y/m/d'}">
+		</td>
+	</tr>
 	<TR>
 		<TD width="1%">
 			<img src="img/info.gif" alt="">

@@ -945,6 +945,104 @@ if (empty($allowed_customer_status)) {
 // ACTIONS
 // ------------------------------------------------------------------------
 
+// ssl expired and near expiration domain SSL certificate alert
+if (empty($types) || in_array('ssl_expiration_alert', $types)) {
+    $email_receipients = $LMS->getUserList(
+        array(
+            'userAccess'=> true,
+            'deleted' => false,
+            'short' => true,
+            'ntype' => MSG_MAIL,
+            'email_address_set' => true,
+            'rights' => 'ssl_expiration_alert_email',
+            'superuser' => true,
+        )
+    );
+
+    $sms_receipients = $LMS->getUserList(
+        array(
+            'userAccess'=> true,
+            'deleted' => false,
+            'short' => true,
+            'ntype' => MSG_SMS,
+            'sms_number_set' => true,
+            'rights' => 'ssl_expiration_alert_sms',
+            'superuser' => true,
+        )
+    );
+
+    $expired_certs = $DB->GetAll('
+        SELECT *
+        FROM domains
+            WHERE
+              ssl IS TRUE
+              AND ssl_expirationdate < ?NOW?
+    ');
+
+    $nearlyexpired_certs = $DB->GetAll('
+        SELECT *
+        FROM domains
+            WHERE 
+              ssl IS TRUE
+              AND (ssl_expirationdate - ?NOW? < 14 * 86400)
+              AND (ssl_expirationdate - ?NOW? > 0)
+    ');
+
+    //end script if there is no domains for notification
+    if ((empty($expired_certs) && empty($nearlyexpired_certs))
+        //end script if there is no users for notify
+        || (empty($email_receipients) && (empty($sms_receipients)))) {
+        die();
+    }
+
+    $subject = $notifications['ssl_expiration_alert']['subject'] ?? trans('Notification for expired and nearly expired SSL certificates');
+    $body = '';
+
+    if (!empty($expired_certs)) {
+        $body .= trans('Domains with expired SSL certs:') . PHP_EOL;
+        foreach ($expired_certs as $ec) {
+            $body .= '- ' . $ec['name'];
+            empty($ec['description']) ? '' : $body .= ' ' . trans("Description") . ' ' . $ec['description'];
+            empty($ec['ssl_expirationdate'] ? '' : $body .= ' ' . trans('expires $a', $ec['ssl_expirationdate']));
+            $body .= PHP_EOL;
+        }
+        $body .= PHP_EOL;
+    }
+
+    if (!empty($nearlyexpired_certs)) {
+        $body .= trans('Domains with SSL certs close to expiration') . PHP_EOL;
+        foreach ($nearlyexpired_certs as $ne) {
+            $body .= '- ' . $ne['name'];
+            empty($ne['description']) ? '' : $body .= trans("Description") . ' ' . $ne['description'];
+            empty($ne['ssl_expirationdate'] ? '' : $body .= ' ' . trans('expires $a', $ne['ssl_expirationdate']));
+            $body .= PHP_EOL;
+        }
+        $body .= PHP_EOL;
+    }
+
+    if (in_array('mail', $channels) && !empty($email_receipients)) {
+        foreach ($email_receipients as $user) {
+            if (!$quiet) {
+                printf("[ssl_expiration_alert/mail] %s (#%d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
+            }
+            if (!$debug) {
+                send_mail_to_user($user['email'], $user['name'], $subject, $body);
+            }
+        }
+    }
+
+    if (in_array('sms', $channels) && !empty($sms_receipients)) {
+        foreach ($sms_receipients as $user) {
+            if (!$quiet) {
+                printf("[ssl_expiration_alert/sms] %s (#%d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
+            }
+            if (!$debug) {
+                send_sms_to_user($user['phone'], $body);
+            }
+        }
+    }
+}
+
 // timetable
 if (empty($types) || in_array('timetable', $types)) {
     $days = $notifications['timetable']['days'];
