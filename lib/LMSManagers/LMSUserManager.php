@@ -204,22 +204,26 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
-        switch ($deleted) {
-            case 1:
-                $deletedfilter = ' deleted = 1 AND';
-                break;
-            case -1:
-                $deletedfilter = '';
-                break;
-            case 0:
-            default:
-                $deletedfilter = ' deleted = 0 AND';
-                break;
+        if (isset($deleted)) {
+            switch ($deleted) {
+                case 1:
+                    $deletedfilter = ' deleted = 1 AND';
+                    break;
+                case -1:
+                    $deletedfilter = '';
+                    break;
+                case 0:
+                default:
+                    $deletedfilter = ' deleted = 0 AND';
+                    break;
+            }
+        } else {
+            $deletedfilter = ' deleted = 0 AND';
         }
 
         $userlist = $this->db->GetAllByKey(
             'SELECT id, login, name, phone, email, lastlogindate, lastloginip, passwdexpiration, passwdlastchange,
-            access, accessfrom, accessto, rname, twofactorauth, ntype'
+                access, accessfrom, accessto, rname, twofactorauth, ntype'
             . ' FROM ' . (empty($superuser) ? 'vusers' : 'vallusers')
             . ' WHERE '
             . $deletedfilter
@@ -234,7 +238,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             . ' ORDER BY login ASC',
             'id',
             array(
-                $ntype,
+                isset($ntype) ? intval($ntype) : 1,
                 !empty($rights) ? '%%' : '%' . $rights . '%',
             )
         );

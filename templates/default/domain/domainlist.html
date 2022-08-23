@@ -6,7 +6,7 @@
 <style>
 
     span.warning {
-        color: brown;
+        color: orange;
     }
 
 </style>
@@ -35,13 +35,16 @@
 		<td>
 			{icon name='ssl' label='SSL' tip='SSL certificate'}
 		</td>
+		<td>
+			{icon name='timetable' label='Renewal' tip='Domain renewal date'}
+		</td>
 		<TD width="1%" NOWRAP>
 			<IMG src="img/empty.gif" alt="" height="16">
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
 		</TD>
 	</TR>
 	<TR>
-		<td colspan="7">
+		<td colspan="8">
 			<TABLE cellpadding="0" cellspacing="0" width="100%">
 				<TR>
 					<TD width="1%" NOWRAP>
@@ -77,7 +80,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<tr>
-		<td class="lms-ui-pagination" colspan="7">
+		<td class="lms-ui-pagination" colspan="8">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</td>
 	</tr>
@@ -120,6 +123,21 @@
 				{/if}
 			{/if}
 		</td>
+		<td>
+			{if $domainlist[domainlist].renewaldate}
+				{if !empty($domainlist[domainlist].renewaldate)}
+				    {$secstorenewal = $domainlist[domainlist].renewaldate - $smarty.now}
+					{if ($secstorenewal) <= 14*86400 && $secstorenewal >= 0}
+						<span class="warning">{icon name='warning' tip='Domain renewal date is coming!'}</span>
+					{/if}
+					{if $domainlist[domainlist].renewaldate <= $smarty.now}
+						<span class="alert">{icon name='warning' tip='Domain expired!'}</span>
+					{/if}
+				{else}
+				    {icon name="checked"}
+				{/if}
+			{/if}
+		</td>
 		<TD align="right" NOWRAP>
 			<A class="delete-domain" href="?m=domaindel&id={$domainlist[domainlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=domainedit&amp;id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
@@ -128,7 +146,7 @@
 	</TR>
 	{sectionelse}
 	<tr>
-		<td colspan="7" class="empty-table">
+		<td colspan="8" class="empty-table">
 			{trans("No such domains in database.")}
 		</td>
 	</tr>
@@ -137,13 +155,13 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<tr>
-		<td class="lms-ui-pagination" colspan="7">
+		<td class="lms-ui-pagination" colspan="8">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</td>
 	</tr>
 	{/if}
 	<TR>
-		<td colspan="6">
+		<td colspan="7">
 			<B>{trans("Total:")} {sum array=$domainlist column="cnt"}</B>
 		</td>
 		<TD align="right" nowrap>

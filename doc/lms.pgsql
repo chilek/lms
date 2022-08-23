@@ -2179,8 +2179,9 @@ CREATE TABLE domains (
 	notified_serial integer DEFAULT NULL,
 	account varchar(40) 	DEFAULT NULL,
 	mxbackup smallint	DEFAULT 0 NOT NULL,
-	ssl boolean DEFAULT NULL,
-	ssl_expirationdate integer DEFAULT 0,
+	ssl boolean,
+	ssl_expirationdate integer,
+	renewaldate integer,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );

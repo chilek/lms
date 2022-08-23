@@ -85,19 +85,25 @@
 		</TD>
 	</TR>
 	<tr>
-		<td colspan="2" class="nobr bold">
-			{icon name="ssl" label="SSL certificate"}
-		</td>
+		<td>{icon name='ssl'}</td>
+		<td class="bold">{trans('SSL certificate')}</td>
 		<td>
 			<input type="checkbox" name="domainadd[ssl]" {if $domainadd.ssl} checked{/if}>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" class="nobr bold">
-			{icon name="ssl" label="SSL certificate expiration date"}
-		</td>
+		<td>{icon name='ssl'}</td>
+		<td class="bold">{trans('SSL certificate expiration date')}</td>
 		<td>
 			<input type="text" placeholder="{trans("yyyy/mm/dd")}" name="domainadd[ssl_expirationdate]" size="12"
+				{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+		</td>
+	</tr>
+	<tr>
+		<td>{icon name='warning'}</td>
+		<td class="bold">{trans('Domain renewal date')}</td>
+		<td>
+			<input type="text" placeholder="{trans("yyyy/mm/dd")}" name="domainadd[renewaldate]" size="12"
 				{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</td>
 	</tr>

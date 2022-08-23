@@ -92,6 +92,10 @@ $_LANG['Domains with SSL certs close to expiration:'] = 'Domeny z certyfikatami 
 $_LANG['Notification for expired and nearly expired SSL certificates'] = 'Powiadomienie przeterminowanych lub bliską datą ważności certyfikatów SSL domen';
 $_LANG['E-mail notification for expired and nearly expired SSL domain certificates'] = 'Powiadomienie mailowe przeterminowanych lub z bliską datą ważności certyfikatów SSL domen';
 $_LANG['SMS notification for expired and nearly expired SSL domain certificates'] = 'Powiadomienie SMS przeterminowanych lub z bliską datą ważności certyfikatów SSL domen';
+$_LANG['Domain renewal date'] = 'Data odnowienia domeny (zarejestrowana do)';
+$_LANG['Domain renewal date is coming!'] = 'Domena bliska daty odnowienia!';
+$_LANG['Domain expired!'] = 'Domena wygaśnięta!';
+$_LANG['Renewal'] = 'Odnowienie';
 
 $_LANG['Legal personality types'] = 'Typu osobowości prawnej';
 

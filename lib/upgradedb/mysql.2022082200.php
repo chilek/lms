@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
-
-$this->Execute("ALTER TABLE domains ADD COLUMN ssl boolean DEFAULT NULL");
-$this->Execute("ALTER TABLE domains ADD COLUMN ssl_expirationdate int(11) DEFAULT '0'");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022082200', 'dbversion'));
-
-$this->CommitTrans();
+$this->Execute("ALTER TABLE domains ADD COLUMN ssl boolean");
+$this->Execute("ALTER TABLE domains ADD COLUMN ssl_expirationdate int(11)");
+$this->Execute("ALTER TABLE domains ADD COLUMN renewaldate int(11)");
