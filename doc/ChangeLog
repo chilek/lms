@@ -259,9 +259,11 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.cache_documents' to 'documents.cache' [chilan]
   - enhancement: introduced alternative name for customer
     (important for brands/shortnames/casual names) [interduo]
+  - improvement: '@' prefix in customer quick search field means force searching
+    by altname [chilan]
   - enhancement: allow to notify by mail or sms about expired and near expiration
-    SSL domain certificates [interduo]
-
+    domains and SSL domain certificates [interduo]
+    
 version 27.0 (2021-08-20):
 
   - enhancement: require user selection in event(add/edit) forms,
