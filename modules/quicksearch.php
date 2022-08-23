@@ -95,6 +95,12 @@ if ($resourceIdOnly) {
     $search = str_replace('#', '', $search);
 }
 
+$resourceKeyOnly = preg_match('/^@.+/', $search) > 0;
+if ($resourceKeyOnly) {
+    $search = str_replace('@', '', $search);
+    $sql_search = $DB->Escape("$search%");
+}
+
 switch ($mode) {
     case 'customer':
         if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
@@ -102,6 +108,10 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
+            if ($resourceKeyOnly) {
+                $properties = array('altname' => 'altname');
+            }
+
             $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
 				post_name, post_full_address AS post_address, deleted, altname,
 			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
