@@ -326,7 +326,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $DB->BeginTrans();
 
         // -1 is equal to no selected, then set null
-        if ($voipaccountdata['address_id'] < 0) {
+        if (isset($voipaccountdata['address_id']) && $voipaccountdata['address_id'] < 0) {
             $voipaccountdata['address_id'] = null;
         }
 
@@ -336,9 +336,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'passwd' => $voipaccountdata['passwd'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'access' => $voipaccountdata['access'],
-            'balance' => $voipaccountdata['balance']    ? $voipaccountdata['balance']    : ConfigHelper::getConfig('voip.default_cost_limit', 200),
+            'balance' => isset($voipaccountdata['balance']) ? $voipaccountdata['balance'] : ConfigHelper::getConfig('voip.default_cost_limit', 200),
             'flags' => $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
-            'cost_limit' => $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
+            'cost_limit' => isset($voipaccountdata['cost_limit']) ? $voipaccountdata['cost_limit'] : null,
             SYSLOG::RES_ADDRESS => $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
             'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
         );
