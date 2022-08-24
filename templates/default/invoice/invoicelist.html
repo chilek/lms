@@ -243,7 +243,7 @@
 			{foreach $invoice.customlinks as $link}
 				<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
-			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}
+			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO && !$invoice.closed}
 				{if ConfigHelper::checkPrivilege('finances_management') || ConfigHelper::checkPrivilege('financial_operations')}
 					{button type="link" icon="transform" href="?m=invoicenew&id={$invoice.id}&action=init"
 						tip="Convert to invoice"}
