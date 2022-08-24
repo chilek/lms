@@ -380,7 +380,13 @@ if (isset($_POST['extended'])) {
             }
             $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
             foreach ($taxeslist as $idx => $tax) {
+                if (!isset($totals[$page]['val_receipt'][$idx])) {
+                    $totals[$page]['val_receipt'][$idx] = 0;
+                }
                 $totals[$page]['val_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                if (!isset($totals[$page]['tax_receipt'][$idx])) {
+                    $totals[$page]['tax_receipt'][$idx] = 0;
+                }
                 $totals[$page]['tax_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
             }
         } else {
