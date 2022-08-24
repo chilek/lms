@@ -176,7 +176,7 @@ switch ($mode) {
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['customername'])) {
                         $description = '';
                     } else if ((empty($properties) || isset($properties['altname'])) && preg_match("~$search~i", $row['altname'])) {
-                        $description = trans('Alternative name') . htmlspecialchars($row['altname']);
+                        $description = trans('Alternative name:') . ' ' . htmlspecialchars($row['altname']);
                     } else if ((empty($properties) || isset($properties['address'])) && preg_match("~$search~i", $row['address'])) {
                         $description = trans('Address:') . ' ' . htmlspecialchars($row['address']);
                     } else if ((empty($properties) || isset($properties['post_name'])) && preg_match("~$search~i", $row['post_name'])) {

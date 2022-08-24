@@ -4022,6 +4022,7 @@ $_LANG['Add producer'] = 'Dodaj producenta';
 $_LANG['Model name'] = 'Nazwa modelu';
 $_LANG['Model list'] = 'Lista modeli';
 $_LANG['Alternative name'] = 'Alternatywna nazwa';
+$_LANG['Alternative name:'] = 'Alternatywna nazwa:';
 $_LANG['Network devices'] = 'Urządzenia sieciowe';
 $_LANG['Add model'] = 'Dodaj model';
 $_LANG['There are no models matching to defined filter or model list is empty'] = 'Brak modeli pasujących do zdefiniowanego filtra lub lista modeli jest pusta!';
