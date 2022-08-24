@@ -370,10 +370,16 @@ if ($AUTH->islogged) {
     }
     $module = $res['module'];
 
-    if (!$api && $module != 'logout') {
+    if ($module != 'logout') {
         if ($AUTH->requiredPasswordChange()) {
+            if ($api) {
+                die;
+            }
             $module = 'chpasswd';
         } elseif ($AUTH->requiredTwoFactorAuthChange()) {
+            if ($api) {
+                die;
+            }
             $module = 'twofactorauthedit';
         }
     }
