@@ -368,21 +368,39 @@ if (isset($_POST['extended'])) {
     foreach ($invoicelist as $row) {
         $invoicelist2[] = $row;
 
-        $page = ceil($i/$rows);
+        $page = ceil($i / $rows);
 
         if (!empty($row['flags'][DOC_FLAG_RECEIPT])) {
+            if (!isset($totals[$page]['total_receipt'])) {
+                $totals[$page]['total_receipt'] = 0;
+            }
             $totals[$page]['total_receipt'] += $row['brutto'] * $row['currencyvalue'];
+            if (!isset($totals[$page]['sumtax_receipt'])) {
+                $totals[$page]['sumtax_receipt'] = 0;
+            }
             $totals[$page]['sumtax_receipt'] += $row['tax'] * $row['currencyvalue'];
             foreach ($taxeslist as $idx => $tax) {
                 $totals[$page]['val_receipt'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
                 $totals[$page]['tax_receipt'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
             }
         } else {
+            if (!isset($totals[$page]['total'])) {
+                $totals[$page]['total'] = 0;
+            }
             $totals[$page]['total'] += $row['brutto'] * $row['currencyvalue'];
+            if (!isset($totals[$page]['sumtax'])) {
+                $totals[$page]['sumtax'] = 0;
+            }
             $totals[$page]['sumtax'] += $row['tax'] * $row['currencyvalue'];
 
             foreach ($taxeslist as $idx => $tax) {
+                if (!isset($totals[$page]['val'][$idx])) {
+                    $totals[$page]['val'][$idx] = 0;
+                }
                 $totals[$page]['val'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                if (!isset($totals[$page]['tax'][$idx])) {
+                    $totals[$page]['tax'][$idx] = 0;
+                }
                 $totals[$page]['tax'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
             }
         }
