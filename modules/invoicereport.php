@@ -403,11 +403,15 @@ if (isset($_POST['extended'])) {
                 if (!isset($totals[$page]['val'][$idx])) {
                     $totals[$page]['val'][$idx] = 0;
                 }
-                $totals[$page]['val'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                if (isset($row[$idx]['val'])) {
+                    $totals[$page]['val'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+                }
                 if (!isset($totals[$page]['tax'][$idx])) {
                     $totals[$page]['tax'][$idx] = 0;
                 }
-                $totals[$page]['tax'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+                if (isset($row[$idx]['tax'])) {
+                    $totals[$page]['tax'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
+                }
             }
         }
 
@@ -421,16 +425,20 @@ if (isset($_POST['extended'])) {
             + (isset($t['total_receipt']) ? $t['total_receipt'] : 0);
         $totals[$page]['allsumtax_receipt'] = (isset($totals[$page - 1]['allsumtax_receipt']) ? $totals[$page - 1]['allsumtax_receipt'] : 0)
             + (isset($t['sumtax_receipt']) ? $t['sumtax_receipt'] : 0);
-        $totals[$page]['alltotal'] = $totals[$page-1]['alltotal'] + $t['total'];
-        $totals[$page]['allsumtax'] = $totals[$page-1]['allsumtax'] + $t['sumtax'];
+        $totals[$page]['alltotal'] = (isset($totals[$page - 1]['alltotal']) ? $totals[$page - 1]['alltotal'] : 0)
+            + $t['total'];
+        $totals[$page]['allsumtax'] = (isset($totals[$page - 1]['allsumtax']) ? $totals[$page - 1]['allsumtax'] : 0)
+            + $t['sumtax'];
 
         foreach ($taxeslist as $idx => $tax) {
             $totals[$page]['allval_receipt'][$idx] = (isset($totals[$page - 1]['allval_receipt']) ? $totals[$page - 1]['allval_receipt'][$idx] : 0)
                 + (isset($t['val_receipt'][$idx]) ? $t['val_receipt'][$idx] : 0);
             $totals[$page]['alltax_receipt'][$idx] = (isset($totals[$page - 1]['alltax_receipt']) ? $totals[$page - 1]['alltax_receipt'][$idx] : 0)
                 + (isset($t['tax_receipt'][$idx]) ? $t['tax_receipt'][$idx] : 0);
-            $totals[$page]['allval'][$idx] = $totals[$page-1]['allval'][$idx] + $t['val'][$idx];
-            $totals[$page]['alltax'][$idx] = $totals[$page-1]['alltax'][$idx] + $t['tax'][$idx];
+            $totals[$page]['allval'][$idx] = (isset($totals[$page - 1]['allval'][$idx]) ? $totals[$page - 1]['allval'][$idx] : 0)
+                + $t['val'][$idx];
+            $totals[$page]['alltax'][$idx] = (isset($totals[$page - 1]['alltax'][$idx]) ? $totals[$page-1]['alltax'][$idx] : 0)
+                + $t['tax'][$idx];
         }
     }
 
