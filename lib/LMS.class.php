@@ -3631,6 +3631,12 @@ class LMS
         return $manager->getDocumentReferences($docid, $cashid);
     }
 
+    public function getDocumentType($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentType($docid);
+    }
+
     /*
      *  Location
      */

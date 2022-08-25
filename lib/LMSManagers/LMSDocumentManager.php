@@ -2736,4 +2736,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         return $documents;
     }
+
+    public function getDocumentType($docid)
+    {
+        return $this->db->GetOne('SELECT type FROM documents WHERE id = ?', array($docid));
+    }
 }

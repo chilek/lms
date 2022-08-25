@@ -103,4 +103,6 @@ interface LMSDocumentManagerInterface
     public function updateNumberPlan(array $numberplan);
 
     public function deleteNumberPlan($id);
+
+    public function getDocumentType($docid);
 }

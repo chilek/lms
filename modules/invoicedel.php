@@ -39,7 +39,7 @@ foreach ($ids as $id) {
         continue;
     }
 
-    if ($LMS->isDocumentReferenced($id)) {
+    if ($LMS->getDocumentType($id) != DOC_INVOICE_PRO && $LMS->isDocumentReferenced($id)) {
         continue;
     }
 
