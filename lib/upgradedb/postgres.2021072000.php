@@ -21,7 +21,7 @@
  *
  */
 
-define('DOC_FLAG_NET_ACCOUNT', 16);
+define('DOC_FLAG_NET_ACCOUNT_2021072000', 16);
 
 $this->BeginTrans();
 
@@ -69,12 +69,12 @@ $this->Execute(
         JOIN taxes t ON t.id = ic.taxid
         JOIN documents d ON d.id = ic.docid",
     array(
-        DOC_FLAG_NET_ACCOUNT,
-        DOC_FLAG_NET_ACCOUNT,
-        DOC_FLAG_NET_ACCOUNT,
-        DOC_FLAG_NET_ACCOUNT,
-        DOC_FLAG_NET_ACCOUNT,
-        DOC_FLAG_NET_ACCOUNT,
+        DOC_FLAG_NET_ACCOUNT_2021072000,
+        DOC_FLAG_NET_ACCOUNT_2021072000,
+        DOC_FLAG_NET_ACCOUNT_2021072000,
+        DOC_FLAG_NET_ACCOUNT_2021072000,
+        DOC_FLAG_NET_ACCOUNT_2021072000,
+        DOC_FLAG_NET_ACCOUNT_2021072000,
     )
 );
 

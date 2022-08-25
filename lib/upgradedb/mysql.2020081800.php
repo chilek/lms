@@ -21,7 +21,7 @@
  *
  */
 
-define('CCONSENT_MAILINGNOTICE', 3);
+define('CCONSENT_MAILINGNOTICE_2020081800', 3);
 define('CCONSENT_SMSNOTICE', 8);
 
 $this->BeginTrans();
@@ -33,7 +33,7 @@ $this->Execute(
 
 $this->Execute(
     "INSERT INTO customerconsents (customerid, type, cdate) (SELECT customerid, ?, cdate FROM customerconsents WHERE type = ?)",
-    array(CCONSENT_SMSNOTICE, CCONSENT_MAILINGNOTICE)
+    array(CCONSENT_SMSNOTICE, CCONSENT_MAILINGNOTICE_2020081800)
 );
 
 $this->Execute("DROP VIEW customeraddressview");
