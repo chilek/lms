@@ -132,8 +132,10 @@ if (isset($_POST['voipaccountedit'])) {
     }
 
     if (ConfigHelper::checkPrivilege('superuser')) {
-        $voipaccountinfo['balance'] = $voipaccountedit['balance'];
-        $voipaccountinfo['cost_limit'] = (strlen($voipaccountedit['cost_limit'])) ? $voipaccountedit['cost_limit'] : null;
+        $voipaccountinfo['balance'] = isset($voipaccountedit['balance'])
+            && is_numeric($voipaccountedit['cost_limit']) ? $voipaccountedit['balance'] : 0;
+        $voipaccountinfo['cost_limit'] = isset($voipaccountedit['cost_limit'])
+            && is_numeric($voipaccountedit['cost_limit']) ? $voipaccountedit['cost_limit'] : null;
     } else {
         $voipaccountedit['balance'] = $voipaccountinfo['balance'];
         $voipaccountedit['cost_limit'] = $voipaccountinfo['cost_limit'];
