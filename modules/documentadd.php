@@ -147,7 +147,7 @@ if (isset($_POST['document'])) {
             'customerid' => $document['customerid'],
         ));
 
-        if ($document['templ']) {
+        if (!empty($document['templ'])) {
             foreach ($documents_dirs as $doc) {
                 if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
                     $doc_dir = $doc;
