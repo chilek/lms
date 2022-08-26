@@ -57,8 +57,8 @@ if ($LMS->UserExists($id)) {
 
         if (!$error) {
             $oldpasswd = $LMS->DB->GetOne('SELECT passwd FROM users WHERE id = ?', array($id));
-            if (password_verify($passwd['password'], $oldpasswd)) {
-                $error['password'] = $error['confirm'] = trans('New password is the same as old password!');
+            if (password_verify($passwd['passwd'], $oldpasswd)) {
+                $error['passwd'] = $error['confirm'] = trans('New password is the same as old password!');
             }
             if (!$error) {
                 $LMS->SetUserPassword($id, $passwd['passwd'], $net);
