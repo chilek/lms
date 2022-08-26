@@ -785,11 +785,13 @@ CREATE TABLE voip_cdr (
 	fraction varchar(256) DEFAULT NULL,
 	prefix varchar(256) DEFAULT NULL,
 	prefixname varchar(256) DEFAULT NULL,
+	subtype smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)
 );
 CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
+CREATE INDEX voip_cdr_subtype_idx ON voip_cdr (subtype);
 
 /* --------------------------------------------------------
   Structure of table "voip_price_groups"
@@ -4243,6 +4245,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022081800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022082600');
 
 COMMIT;
