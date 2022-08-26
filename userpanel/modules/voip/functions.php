@@ -172,7 +172,7 @@ function module_main()
         if (empty($_GET['phone']) && count($user_acc_ids) > 1) {
             $params['id'] = $user_acc_ids;
         } else {
-            if (in_array($_GET['phone'], $phones)) {
+            if (!empty($_GET['phone']) && in_array($_GET['phone'], $phones)) {
                 $params['phone'] = $_GET['phone'];
             } else {
                 $params['id'] = $user_acc_ids;
