@@ -2929,6 +2929,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vaddresses a2 ON a2.id = d.post_address_id
 				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
+            $result['export'] = $result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'];
+
             $result['bankaccounts'] = $this->db->GetCol(
                 'SELECT contact FROM customercontacts
 				WHERE customerid = ? AND (type & ?) = ?',
