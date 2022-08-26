@@ -367,7 +367,7 @@ if (isset($_POST['event'])) {
                         'customerid' => $ticket['customerid'],
                         'status' => $ticketdata['status'],
                         'categories' => $ticketdata['categorynames'],
-                        'priority' => $ticketdata['priority'] ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
+                        'priority' => $ticketdata['priority'] && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                         'subject' => $ticket['subject'],
                         'body' => $ticket['body'],
                     );

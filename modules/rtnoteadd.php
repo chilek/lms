@@ -228,7 +228,7 @@ if (isset($_GET['ticketid'])) {
                 'customerid' => $ticket['customerid'],
                 'status' => $ticket['status'],
                 'categories' => $ticket['categorynames'],
-                'priority' => isset($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : '',
+                'priority' => isset($ticket['priority']) && is_numeric($ticket['priority']) ? $RT_PRIORITIES[$ticket['priority']] : '',
                 'deadline' => $ticket['deadline'],
                 'subject' => $ticket['subject'],
                 'body' => $note['body'],

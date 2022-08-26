@@ -322,7 +322,7 @@ function module_main()
                     'customerid' => $SESSION->id,
                     'status' => $ticketdata['status'],
                     'categories' => $ticketdata['categorynames'],
-                    'priority' => !empty($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
+                    'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                     'subject' => $ticket['subject'],
                     'body' => $ticket['body'],
                 );
@@ -493,7 +493,7 @@ function module_main()
                 'customerid' => $SESSION->id,
                 'status' => $ticketdata['status'],
                 'categories' => $ticketdata['categorynames'],
-                'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                 'subject' => $ticket['subject'],
                 'body' => $ticket['body'],
                 'attachments' => &$attachments,

@@ -319,7 +319,7 @@ if (isset($_POST['ticket'])) {
                     'categories' => $ticketdata['categorynames'],
                     'subject' => $ticket['subject'],
                     'body' => $ticket['body'],
-                    'priority' => $ticketdata['priority'] ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
+                    'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                     'deadline' => $ticketdata['deadline'],
                     'service' => $ticketdata['service'],
                     'type' => $ticketdata['type'],
