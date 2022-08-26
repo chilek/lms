@@ -791,6 +791,7 @@ CREATE TABLE voip_cdr (
 );
 CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
+CREATE INDEX voip_cdr_call_start_time_idx ON voip_cdr (call_start_time);
 CREATE INDEX voip_cdr_subtype_idx ON voip_cdr (subtype);
 
 /* --------------------------------------------------------
@@ -4245,6 +4246,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022082600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022082601');
 
 COMMIT;

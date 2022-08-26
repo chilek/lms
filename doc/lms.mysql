@@ -946,6 +946,7 @@ CREATE TABLE voip_cdr (
 	UNIQUE KEY voip_cdr_type_uniqueid_ukey (uniqueid, type),
 	KEY voip_cdr_caller_idx (caller),
 	KEY voip_cdr_callee_idx (callee),
+	KEY voip_cdr_call_start_time_idx (call_start_time),
 	KEY voip_cdr_subtype_idx (subtype),
 	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -4191,4 +4192,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022082600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022082601');
