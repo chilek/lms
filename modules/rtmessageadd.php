@@ -475,7 +475,7 @@ if (isset($_POST['message'])) {
                         'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
                         'status' => $ticketdata['status'],
                         'categories' => $ticketdata['categorynames'],
-                        'priority' => $ticketdata['priority'] && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
+                        'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                         'deadline' => $ticketdata['deadline'],
                         'subject' => $message['subject'],
                         'body' => $message['body'],
