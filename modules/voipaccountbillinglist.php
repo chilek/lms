@@ -84,7 +84,7 @@ $LMS->executeHook('voip_billing_preparation', array(
 $params['count'] = true;
 $total = intval($LMS->getVoipBillings($params));
 
-$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? 1 : intval($_POST['page'])) : intval($_GET['page']);
+$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? ($SESSION->is_set('valp') ? $SESSION->get('valp') : 1) : intval($_POST['page'])) : intval($_GET['page']);
 $limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
 $offset = ($page - 1) * $limit;
 
