@@ -116,16 +116,26 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         );
 
         if ($voipaccountlist) {
-            global $LMS;
+            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+            $addresses = array();
 
             foreach ($voipaccountlist as $k => $v) {
                 if (!$v['location'] && $v['ownerid']) {
-                    $voipaccountlist[$k]['location'] = $LMS->getAddressForCustomerStuff($v['ownerid']);
+                    if (!isset($addresses[$v['ownerid']])) {
+                        $addresses[$v['ownerid']] = $customer_manager->getAddressForCustomerStuff($v['ownerid']);
+                    }
+                    $voipaccountlist[$k]['location'] = $addresses[$v['ownerid']];
                 }
             }
         }
 
-        $tmp_phone_list = $this->db->GetAll('SELECT voip_account_id, phone FROM voip_numbers');
+        $tmp_phone_list = $this->db->GetAll(
+            'SELECT n.voip_account_id, n.phone
+            FROM voip_numbers n'
+            . (empty($search['ownerid']) ? '' : ' JOIN voipaccounts va ON va.id = n.voip_account_id
+                WHERE va.ownerid = ' . intval($search['ownerid']))
+        );
         $phone_list = array();
         if (!empty($tmp_phone_list)) {
             foreach ($tmp_phone_list as $k => $v) {
