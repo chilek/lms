@@ -223,11 +223,6 @@ function module_main()
             $params['o'] = 'begintime,desc';
         }
 
-        if (isset($_GET['mode']) && $_GET['mode'] == 'minibilling') {
-            require_once('minibilling.php');
-            die;
-        }
-
         $params['fvownerid'] = $SESSION->id;
 
         $plugin_manager->executeHook('voip_billing_preparation', array(
@@ -239,6 +234,11 @@ function module_main()
             'type' => isset($params['ftype']) ? $params['ftype'] : null,
             'status' => isset($params['fstatus']) ? $params['fstatus'] : null,
         ));
+
+        if (isset($_GET['mode']) && $_GET['mode'] == 'minibilling') {
+            require_once('minibilling.php');
+            die;
+        }
 
         $billings = $LMS->getVoipBillings($params);
     } else {
