@@ -61,11 +61,20 @@ $params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
 if (empty($params['frangefrom'])) {
     $params['frangefrom'] = date('Y/m/01');
 }
-$params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
-if (!empty($params['id'])) {
-    $params['fvownerid'] = $LMS->getVoipAccountOwner($params['id']);
+if (isset($_GET['init'])) {
+    $params['fvownerid'] = '';
 } else {
-    $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
+    $params['fvownerid'] = sessionHandler('fvownerid', 'fvownerid');
+}
+if (isset($params['fvownerid']) && empty($params['fvownerid'])) {
+    $params['id'] = null;
+} else {
+    $params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+    if (!empty($params['id'])) {
+        $params['fvownerid'] = $LMS->getVoipAccountOwner($params['id']);
+    } else {
+        $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
+    }
 }
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');

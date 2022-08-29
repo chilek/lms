@@ -226,7 +226,7 @@ $menu = array(
                 ),
                 'voipaccountlist' => array(
                     'name' => trans('Accounts List'),
-                    'link' => '?m=voipaccountlist',
+                    'link' => '?m=voipaccountlist&init=1',
                     'tip' => trans('List of Accounts'),
                     'prio' => 20,
                 ),
