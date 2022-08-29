@@ -71,20 +71,6 @@ $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
 
-$LMS->executeHook('voip_billing_preparaton', array(
-    'customerid' => $params['fownerid'],
-    'voipaccountid' => $params['id'],
-    'datefrom' => $params['frangefrom'],
-    'dateto' => $params['frangeto'],
-));
-
-$params['count'] = true;
-$total = intval($LMS->getVoipBillings($params));
-
-$page  = !isset($_GET['page']) ? 1 : intval($_GET['page']);
-$limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
-$offset = ($page - 1) * $limit;
-
 $LMS->executeHook('voip_billing_preparation', array(
     'customerid' => $params['fvownerid'],
     'voipaccountid' => $params['id'],
@@ -94,6 +80,13 @@ $LMS->executeHook('voip_billing_preparation', array(
     'type' => $params['ftype'],
     'status' => $params['fstatus'],
 ));
+
+$params['count'] = true;
+$total = intval($LMS->getVoipBillings($params));
+
+$page  = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+$limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
+$offset = ($page - 1) * $limit;
 
 $params['count'] = false;
 $params['offset'] = $offset;
