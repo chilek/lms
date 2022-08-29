@@ -261,6 +261,7 @@ version 28-git (????-??-??):
     (important for brands/shortnames/casual names) [interduo]
   - improvement: '@' prefix in customer quick search field means force searching
     by altname [chilan]
+  - improvement: day preselection for cutoffstop dates [chilan]
 
 version 27.0 (2021-08-20):
 
