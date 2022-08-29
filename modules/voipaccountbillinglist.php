@@ -62,16 +62,18 @@ if (empty($params['frangefrom'])) {
     $params['frangefrom'] = date('Y/m/01');
 }
 if (isset($_GET['init'])) {
-    $params['fvownerid'] = '';
+    $params['fvownerid'] = 0;
+    $params['fvoipaccid'] = 0;
 } else {
-    $params['fvownerid'] = sessionHandler('fvownerid', 'fvownerid');
+    $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
 }
-if (isset($params['fvownerid']) && empty($params['fvownerid'])) {
+if (isset($params['fvownerid']) && empty($params['fvownerid']) && !isset($_GET['fvoipaccid'])) {
     $params['id'] = null;
 } else {
     $params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
     if (!empty($params['id'])) {
         $params['fvownerid'] = $LMS->getVoipAccountOwner($params['id']);
+        $SESSION->save('vblfownerid', $params['fvownerid']);
     } else {
         $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
     }
