@@ -540,16 +540,24 @@
 									{trans("Cutoff suspending")}
 								</TD>
 								<TD>
-									<div class="valign-middle">
+									<div class="valign-middle nobr">
 										<label>
-											<input type="checkbox" name="customeradd[cutoffstopindefinitely]" value="1"
-												   onchange="$('#cutoffstop').parent().toggle(!this.checked);"
-													{if $customeradd.cutoffstopindefinitely} checked{/if}>
+											<input type="checkbox" name="customeradd[cutoffstopindefinitely]"
+												id="cutoffstopindefinitely" value="1"
+												{if $customeradd.cutoffstopindefinitely} checked{/if}>
 											{trans("indefinitely")}
-										</label>&nbsp;
+										</label>
+									</div>
+									<div class="valign-middle nobr cutoffstop">
 										<input type="text" name="customeradd[cutoffstop]" id="cutoffstop"
-											   {if $customeradd.cutoffstopindefinitely}style="display: none;"{elseif $customeradd.cutoffstop}value="{$customerinfo.cutoffstop}"{/if}
-											   size="10" {tip class="lms-ui-date" trigger="cutoffstop"}>
+											{if $customeradd.cutoffstopindefinitely} style="display: none;"
+											{elseif $customeradd.cutoffstop} value="{$customerinfo.cutoffstop}"
+											{/if}
+											size="10"
+											{tip class="lms-ui-date" trigger="cutoffstop"}>
+										{day_selection elem="#cutoffstop" days="3,7,10,14"}
+									</div>
+									<div class="valign-middle nobr">
 										{hint content="Select date of cutoff suspending (optional)"}
 									</div>
 								</TD>
@@ -780,6 +788,10 @@
 
 		$('#check-all-consents').change(function() {
 			$(this).closest('.lms-ui-multi-check').find(':radio').prop('checked', $(this).prop('checked'));
+		});
+
+		$('#cutoffstopindefinitely').change(function() {
+			$('.cutoffstop').toggle(!this.checked);
 		});
 	});
 
