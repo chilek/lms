@@ -228,6 +228,18 @@ function module_main()
             die;
         }
 
+        $params['fvownerid'] = $SESSION->id;
+
+        $plugin_manager->executeHook('voip_billing_preparation', array(
+            'customerid' => $params['fvownerid'],
+            'voipaccountid' => empty($params['id']) ? null : $params['id'],
+            'number' => empty($params['phone']) ? null : $params['phone'],
+            'datefrom' => isset($params['frangefrom']) ? $params['frangefrom'] : null,
+            'dateto' => isset($params['frangeto']) ? $params['frangeto'] : null,
+            'type' => isset($params['ftype']) ? $params['ftype'] : null,
+            'status' => isset($params['fstatus']) ? $params['fstatus'] : null,
+        ));
+
         $billings = $LMS->getVoipBillings($params);
     } else {
         $billings = null;
