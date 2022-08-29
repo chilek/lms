@@ -141,8 +141,8 @@ if (empty($order[1]) || $order[1] != 'desc') {
 $listdata['order'] = $order[0];
 $listdata['direction'] = $order[1];
 
-if (!empty($_GET['page'])) {
-    $listdata['page'] = (int) $_GET['page'];
+if (!empty($page)) {
+    $listdata['page'] = $page;
 }
 
 if (!empty($params['fvownerid'])) {
@@ -151,10 +151,6 @@ if (!empty($params['fvownerid'])) {
 
 if (!empty($params['fvoipaccid'])) {
     $listdata['fvoipaccid'] = $params['fvoipaccid'];
-}
-
-if ($SESSION->is_set('valp') && !isset($_GET['page'])) {
-    $SESSION->restore('valp', $_GET['page']);
 }
 
 $SESSION->save('valp', $page);
