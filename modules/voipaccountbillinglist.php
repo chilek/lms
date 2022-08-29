@@ -133,7 +133,7 @@ if (!empty($params['ftype'])) {
     }
 }
 
-$voipaccountlist = $LMS->GetVoipAccountList('owner', empty($params['fownerid']) ? null : array('ownerid' => $params['fownerid']), null);
+$voipaccountlist = $LMS->GetVoipAccountList('owner', empty($params['fvownerid']) ? null : array('ownerid' => $params['fvownerid']), null);
 unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);
 unset($voipaccountlist['direction']);
