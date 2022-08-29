@@ -262,6 +262,8 @@ version 28-git (????-??-??):
   - improvement: '@' prefix in customer quick search field means force searching
     by altname [chilan]
   - improvement: day preselection for cutoffstop dates [chilan]
+  - enhancement: added 'voip_billing_preparation' hook to allow plugins obtains billing records from
+    external sources and store them in local database [chilan]
 
 version 27.0 (2021-08-20):
 
