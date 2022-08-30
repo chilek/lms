@@ -179,6 +179,21 @@
 					size="10">
 			</td>
 		</tr>
+		<tr>
+			<td>
+				{icon name="service"}
+			</td>
+			<td>
+				<strong>{trans("Service start")}</strong>
+			</td>
+			<td>
+				<input type="text" name="document[startdate]" id="startdate"
+					value="{if $document.startdate}{$document.startdate}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter service start date in YYYY/MM/DD format (optional)" trigger="startdate"}
+					size="10">
+			</td>
+		</tr>
 		<tr{if $document.closed} style="display: none;"{/if}>
 			<td>
 				{icon name="period"}

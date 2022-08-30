@@ -88,7 +88,7 @@ if (isset($_POST['document'])) {
 
     if (empty($document['fromdate'])) {
         $document['fromdate'] = 0;
-    } elseif (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+    } elseif (!is_numeric($document['fromdate'])) {
         $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } elseif (!$allow_past_date && $document['fromdate'] < $today) {
         die('From date can not be earlier than current date!');
@@ -96,12 +96,22 @@ if (isset($_POST['document'])) {
 
     if (empty($document['todate'])) {
         $document['todate'] = 0;
-    } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
+    } elseif (!is_numeric($document['todate'])) {
         $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } elseif (!$allow_past_date && $document['todate'] < $today) {
         die('To date can not be earlier than current date!');
     } else {
         $document['todate'] = strtotime('tomorrow', $document['todate']) - 1;
+    }
+
+    if (empty($document['startdate'])) {
+        $document['startdate'] = 0;
+    } elseif (!is_numeric($document['startdate'])) {
+        $error['startdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } elseif (!empty($document['fromdate']) && $document['fromdate'] > $document['startdate']) {
+        $error['startdate'] = trans('Start date can not be earlier than "from" date!');
+    } elseif ($document['startdate'] < strtotime('today')) {
+        $error['startdate'] = trans('Start date can not be earlier than current date!');
     }
 
     if (!empty($document['todate']) && $document['fromdate'] > $document['todate']) {
@@ -110,7 +120,7 @@ if (isset($_POST['document'])) {
 
     if (empty($document['confirmdate'])) {
         $document['confirmdate'] = 0;
-    } elseif (!preg_match('/^[0-9]+$/', $document['confirmdate']) && !isset($document['closed'])) {
+    } elseif (!is_numeric($document['confirmdate']) && !isset($document['closed'])) {
         $error['confirmdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     }
 
@@ -367,6 +377,7 @@ if (isset($_POST['document'])) {
             } else {
                 $selected_assignment['datefrom'] = $from;
             }
+            $selected_assignment['datefrom'] = max($selected_assignment['datefrom'], $document['startdate']);
             $selected_assignment['dateto'] = $to;
 
             if (isset($document['closed'])) {

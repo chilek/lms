@@ -5214,6 +5214,10 @@ $_LANG['Enter date in YYYY/MM/DD format we wait for customer action till (option
 $_LANG['Warning! Customer submitted signed document scan. Consider to review it and then possibly confirm.'] = 'Uwaga! Klient przesłał skan podpisanego dokumentu. Rozważ ich przejrzenie i ewentualnie zatwierdzenie.';
 $_LANG['Warning! Customer action time limit is expired is expired!'] = 'Uwaga! Upłynął termin przeznaczony na działanie klienta!';
 
+$_LANG['Service start'] = 'Rozpoczęcie świadczenia usługi';
+$_LANG['Enter service start date in YYYY/MM/DD format (optional)'] = 'Wprowadź datę rozpoczęcia świadczenia usługi w formacie RRRR/MM/DD (opcjonalnie)';
+$_LANG['Start date can not be earlier than "from" date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty "od"!';
+$_LANG['Start date can not be earlier than current date!'] = 'Data rozpoczęcia świadczenia usługi nie może być wcześniejsza od daty bieżącej!';
 $_LANG['document form approval in customer panel using SMS authorization'] = 'zatwierdzanie przez panel klienta formy dokumentowej autoryzowanej przez SMS';
 $_LANG['document form approval in customer panel using scans'] = 'zatwierdzanie przez panel klienta formy dokumentowej w postaci skanów';
 $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
