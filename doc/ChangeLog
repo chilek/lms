@@ -266,6 +266,8 @@ version 28-git (????-??-??):
     external sources and store them in local database [chilan]
   - enhancement: new user permission 'hide_customer_sensitive_data' hides customer ssn
     and icn properties [chilan]
+  - enhancement: added service start date in new document form - it has impact on
+    "from" date of newly created assignments [chilan]
 
 version 27.0 (2021-08-20):
 
