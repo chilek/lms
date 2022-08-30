@@ -122,6 +122,10 @@ if (isset($_POST['document'])) {
         $selected_assignment['dateto'] = $document['todate'];
 
         $result = $LMS->ValidateAssignment($selected_assignment);
+        if (!empty($result['error'])) {
+            $error = array_merge($error, $result['error']);
+        }
+        unset($result['error']);
         extract($result);
 
         if (!$LMS->CheckSchemaModifiedValues($a)) {
