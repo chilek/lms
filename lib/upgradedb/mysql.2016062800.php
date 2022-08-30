@@ -23,8 +23,8 @@
 
 $this->BeginTrans();
 
-define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('voip', 'default_cost_limit', '200', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER));
+define('CONFIG_TYPE_POSITIVE_INTEGER_2016062800', 2);
+$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('voip', 'default_cost_limit', '200', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER_2016062800));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062800', 'dbversion'));
 

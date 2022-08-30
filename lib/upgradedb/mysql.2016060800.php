@@ -67,8 +67,8 @@ $this->Execute("ALTER TABLE voip_prefix_groups ENGINE = InnoDB;");
 $this->Execute("ALTER TABLE voip_prefixes ENGINE = InnoDB;");
 $this->Execute("ALTER TABLE voip_cdr ENGINE = InnoDB;");
 
-define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'billinglist_pagelimit', '100', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER));
+define('CONFIG_TYPE_POSITIVE_INTEGER_2016060800', 2);
+$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'billinglist_pagelimit', '100', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER_2016060800));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
 

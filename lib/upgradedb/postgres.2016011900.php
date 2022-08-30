@@ -23,9 +23,9 @@
 
 $this->BeginTrans();
 
-define('CONFIG_TYPE_MARGINS', 6);
+define('CONFIG_TYPE_MARGINS_2016011900', 6);
 
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'document_margins', '10,5,15,5', ?)", array(CONFIG_TYPE_MARGINS));
+$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'document_margins', '10,5,15,5', ?)", array(CONFIG_TYPE_MARGINS_2016011900));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016011900', 'dbversion'));
 
