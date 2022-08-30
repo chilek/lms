@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$id = empty($_GET['id']) ? null : intval($_GET['id']);
 
 if ($id) {
     if (!$DB->GetOne('SELECT 1 FROM zipcodes WHERE stateid=? LIMIT 1', array($id))) {

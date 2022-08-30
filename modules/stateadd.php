@@ -26,7 +26,7 @@
 
 $stateadd = isset($_POST['stateadd']) ? $_POST['stateadd'] : null;
 
-if (count($stateadd)) {
+if (!empty($stateadd)) {
     $stateadd['name'] = trim($stateadd['name']);
 
     if ($stateadd['name']=='' && $stateadd['description']=='') {
