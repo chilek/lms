@@ -32,8 +32,7 @@
 					<strong>{trans("Begin time")}</strong>
 				</td>
 				<td>
-					{$event.date|date_format:"Y-m-d (l)"}
-					{($event.date + $event.begintime)|date_format:"H:i"}
+					{sprintf("%s (%s) %s", $event.date|date_format:"Y-m-d", trans($event.date|date_format:"l"), ($event.date + $event.begintime)|date_format:"H:i")}
 				</td>
 			</tr>
 			{if $event.begintime != $event.endtime || $event.enddate > $event.date}
