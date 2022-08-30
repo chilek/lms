@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2019 LMS Developers
+ *  Copyright (C) 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -660,7 +660,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'altname'        => empty($customeradd['altname']) ? null : $customeradd['altname'],
             'type'           => empty($customeradd['type']) ? 0 : 1,
             'ten'            => $customeradd['ten'],
-            'ssn'            => $customeradd['ssn'],
+            'ssn'            => isset($customeradd['ssn']) ? $customeradd['ssn'] : '',
             'status'         => $customeradd['status'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => Utils::removeInsecureHtml($customeradd['info']),
@@ -671,11 +671,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'regon'          => $customeradd['regon'],
             'rbename'        => $customeradd['rbename'],
             'rbe'            => $customeradd['rbe'],
-            'ict'            => $customeradd['ict'],
-            'icn'            => $customeradd['icn'],
-            'icexpires'      => intval($customeradd['icexpires']) > 0
+            'ict'            => isset($customeradd['ict']) ? $customeradd['ict'] : 0,
+            'icn'            => isset($customeradd['icn']) ? $customeradd['icn'] : '',
+            'icexpires'      => isset($customeradd['icexpires']) ? (intval($customeradd['icexpires']) > 0
                 ? strtotime('tomorrow', intval($customeradd['icexpires'])) - 1
-                : ($customeradd['icexpires'] === '-1' ? 0 : null),
+                : ($customeradd['icexpires'] === '-1' ? 0 : null)) : null,
             'cutoffstop'     => $customeradd['cutoffstop'],
             SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
@@ -1990,19 +1990,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
-        $passwd = $this->db->GetRow('SELECT pin, pinlastchange FROM customers WHERE id = ?', array($customerdata['id']));
+        $customer = $this->db->GetRow('SELECT ssn, ict, icn, icexpires, pin, pinlastchange FROM customers WHERE id = ?', array($customerdata['id']));
 
         $unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true));
         if (empty($unsecure_pin_validity)) {
-            $pinlastchange = $passwd['pin'] == $customerdata['pin'] ? $passwd['pinlastchange'] : time();
+            $pinlastchange = $customer['pin'] == $customerdata['pin'] ? $customer['pinlastchange'] : time();
             $pin = $customerdata['pin'];
         } else {
             if (strlen($customerdata['pin'])) {
                 $pinlastchange = time();
                 $pin = $customerdata['pin'];
             } else {
-                $pinlastchange = $passwd['pinlastchange'];
-                $pin = $passwd['pin'];
+                $pinlastchange = $customer['pinlastchange'];
+                $pin = $customer['pin'];
             }
         }
 
@@ -2011,7 +2011,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'status'         => $customerdata['status'],
             'type'           => empty($customerdata['type']) ? 0 : 1,
             'ten'            => $customerdata['ten'],
-            'ssn'            => $customerdata['ssn'],
+            'ssn'            => isset($customerdata['ssn']) ? $customerdata['ssn'] : $customer['ssn'],
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => Utils::removeInsecureHtml($customerdata['info']),
             'notes'          => Utils::removeInsecureHtml($customerdata['notes']),
@@ -2023,11 +2023,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'pin'            => $pin,
             'pinlastchange'  => $pinlastchange,
             'regon'          => $customerdata['regon'],
-            'ict'            => $customerdata['ict'],
-            'icn'            => $customerdata['icn'],
-            'icexpires'      => intval($customerdata['icexpires']) > 0
+            'ict'            => isset($customerdata['ict']) ? $customerdata['ict'] : $customer['ict'],
+            'icn'            => isset($customerdata['icn']) ? $customerdata['icn'] : $customer['icn'],
+            'icexpires'      => isset($customerdata['icexpires']) ? (intval($customerdata['icexpires']) > 0
                 ? strtotime('tomorrow', intval($customerdata['icexpires'])) - 1
-                : ($customerdata['icexpires'] === '-1' ? 0 : null),
+                : ($customerdata['icexpires'] === '-1' ? 0 : null)) : $customer['icexpires'],
             'rbename'        => $customerdata['rbename'],
             'rbe'            => $customerdata['rbe'],
             'cutoffstop'     => $customerdata['cutoffstop'],

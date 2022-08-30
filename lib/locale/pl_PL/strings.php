@@ -5558,3 +5558,5 @@ $_LANG['<!month-name-full>November'] = 'listopad';
 $_LANG['<!month-name-full>December'] = 'grudzień';
 
 $_LANG['logical operator'] = 'operator logiczny';
+
+$_LANG['hide customer sensitive data'] = 'ukryj wrażliwe dane klientów';

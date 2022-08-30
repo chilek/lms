@@ -283,6 +283,9 @@ $access_table = array(
     'hide_finances' => array(
         'label' => trans('finances hiding'),
     ),
+    'hide_customer_sensitive_data' => array(
+        'label' => trans('hide customer sensitive data'),
+    ),
     'reports' => array(
         'label' => trans('reports'),
     ),

@@ -364,58 +364,62 @@
 									<COL style="width: 1%;">
 									<COL style="width: 99%;">
 								</COLGROUP>
-								<tr>
-									<td class="nobr" colspan="2" id="identity-document-box">
-										<fieldset>
-											<legend class="bold">
-												{trans("Identity document")}
-											</legend>
-											<div class="identity-document-properties">
-												<label class="identity-document-property">
-													<span>{trans("Type")}</span>
-													{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
-														tip="" trigger="ict"}
-												</label>
-												<label class="identity-document-property">
-													<span>{trans("Number")}</span>
-													{if $customerinfo.icnwarning}
-														<input type="hidden" name="customerdata[icnwarning]" value="1">
-													{/if}
-													<input type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30"
-														{tip trigger="icn"}>
-												</label>
-												<label class="identity-document-property">
-													<span>{trans("Expires")}</span>
-													<input type="text" value="{if $customerinfo.icexpires > 0}{$customerinfo.icexpires}{/if}"
-														name="customerdata[icexpires]" size="10" id="icexpires"
-														class="lms-ui-date lms-ui-date-unix"
-														{tip trigger="icexpires"}
-														{if $customerinfo.icexpires == -1}disabled{/if}>
-												</label>
-												<label>
-													<input type="checkbox" name="customerdata[icexpires]"
-														id="icexpires-indefinitely"
-														value="-1"{if $customerinfo.icexpires == -1} checked{/if}
-														{tip trigger="icexpires-indefinitely"}>
-													{trans("indefinitely")}
-												</label>
-											</div>
-										</fieldset>
-									</td>
-								</tr>
-								<TR>
-									<TD>{trans("SSN")}</TD>
-									<TD>
-										<input type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30"
-											{tip trigger="ssn"}>
-										{if $customerinfo.ssnwarning}
-											<input type="hidden" name="customerdata[ssnwarning]" value="1">
-										{/if}
-										{if $customerinfo.ssnexistencewarning}
-											<input type="hidden" name="customerdata[ssnexistencewarning]" value="1">
-										{/if}
-									</TD>
-								</TR>
+								{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+									<tr>
+										<td class="nobr" colspan="2" id="identity-document-box">
+											<fieldset>
+												<legend class="bold">
+													{trans("Identity document")}
+												</legend>
+												<div class="identity-document-properties">
+													<label class="identity-document-property">
+														<span>{trans("Type")}</span>
+														{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
+															tip="" trigger="ict"}
+													</label>
+													<label class="identity-document-property">
+														<span>{trans("Number")}</span>
+														{if $customerinfo.icnwarning}
+															<input type="hidden" name="customerdata[icnwarning]" value="1">
+														{/if}
+														<input type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30"
+															{tip trigger="icn"}>
+													</label>
+													<label class="identity-document-property">
+														<span>{trans("Expires")}</span>
+														<input type="text" value="{if $customerinfo.icexpires > 0}{$customerinfo.icexpires}{/if}"
+															name="customerdata[icexpires]" size="10" id="icexpires"
+															class="lms-ui-date lms-ui-date-unix"
+															{tip trigger="icexpires"}
+															{if $customerinfo.icexpires == -1}disabled{/if}>
+													</label>
+													<label>
+														<input type="checkbox" name="customerdata[icexpires]"
+															id="icexpires-indefinitely"
+															value="-1"{if $customerinfo.icexpires == -1} checked{/if}
+															{tip trigger="icexpires-indefinitely"}>
+														{trans("indefinitely")}
+													</label>
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{trans("SSN")}
+										</td>
+										<td>
+											<input type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30"
+												{tip trigger="ssn"}>
+											{if $customerinfo.ssnwarning}
+												<input type="hidden" name="customerdata[ssnwarning]" value="1">
+											{/if}
+											{if $customerinfo.ssnexistencewarning}
+												<input type="hidden" name="customerdata[ssnexistencewarning]" value="1">
+											{/if}
+										</td>
+									</tr>
+								{/if}
 								<TR>
 									<TD>{trans("TEN")}</TD>
 									<TD>

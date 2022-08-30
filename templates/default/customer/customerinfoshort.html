@@ -88,33 +88,49 @@
 	{/if}
 {/foreach}
 
-{if $customerinfo.icn != ""}
-	<TR>
-		<TD>
-			{icon name="user-id-number"}
-		</TD>
-		<TD class="nobr">
-			{trans("Identity type:")}: {trans($_IDENTITY_TYPES[$customerinfo.ict])}
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{icon name="user-id-number"}
-		</TD>
-		<TD class="nobr">
-			{trans("Identity number:")}: {$customerinfo.icn|escape}
-		</TD>
-	</TR>
-{/if}
-{if $customerinfo.ssn != ""}
-	<TR">
-		<TD>
-			{icon name="user-id-number"}
-		</TD>
-		<TD class="nobr">
-			{trans("SSN")}: {$customerinfo.ssn|escape}
-		</TD>
-	</TR>
+{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+	{if $customerinfo.icn != ""}
+		<tr>
+			<td>
+				{icon name="user-id-number"}
+			</td>
+			<td class="nobr">
+				{trans("Identity type:")}: {trans($_IDENTITY_TYPES[$customerinfo.ict])}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="user-id-number"}
+			</td>
+			<td class="nobr">
+				{trans("Identity number:")}: {$customerinfo.icn|escape}
+				{if $customerinfo.icexpires !== ''}
+					{if $customerinfo.icexpires > 0}
+						{textformat assign="icexpires"}
+							{strip}
+								<span{if $customerinfo.icexpires - time() < 31 * 86400} class="lms-ui-alert bold"{/if}>
+									{$customerinfo.icexpires|date_format:"Y-m-d"}
+								<span>
+							{/strip}
+						{/textformat}
+						({t a=$icexpires}expires $a{/t})
+					{elseif $customerinfo.icexpires === '0'}
+						({trans("never expires")})
+					{/if}
+				{/if}
+			</td>
+		</tr>
+	{/if}
+	{if $customerinfo.ssn != ""}
+		<tr>
+			<td>
+				{icon name="user-id-number"}
+			</td>
+			<td class="nobr">
+				{trans("SSN")}: {$customerinfo.ssn|escape}
+			</td>
+		</tr>
+	{/if}
 {/if}
 {if $customerinfo.ten != ""}
 	<TR>
