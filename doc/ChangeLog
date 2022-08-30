@@ -264,6 +264,8 @@ version 28-git (????-??-??):
   - improvement: day preselection for cutoffstop dates [chilan]
   - enhancement: added 'voip_billing_preparation' hook to allow plugins obtains billing records from
     external sources and store them in local database [chilan]
+  - enhancement: new user permission 'hide_customer_sensitive_data' hides customer ssn
+    and icn properties [chilan]
 
 version 27.0 (2021-08-20):
 
