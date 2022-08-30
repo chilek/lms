@@ -109,7 +109,7 @@ function moveTableLocation($DB, $table)
 
 // Address types
 define('POSTAL_ADDRESS', 0);
-define('BILLING_ADDRESS', 1);
+define('BILLING_ADDRESS_2017013100', 1);
 define('LOCATION_ADDRESS', 2);
 define('DEFAULT_LOCATION_ADDRESS', 3);
 
@@ -553,7 +553,7 @@ if ($customers_loc) {
 
             $address_id = $this->GetLastInsertID('addresses');
 
-            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id,type) VALUES (?,?,?)', array($v['id'], $address_id, BILLING_ADDRESS));
+            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id,type) VALUES (?,?,?)', array($v['id'], $address_id, BILLING_ADDRESS_2017013100));
         }
     }
 }

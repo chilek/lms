@@ -38,9 +38,6 @@ if (!defined('DOC_INVOICE_PRO')) {
 if (!defined('POSTAL_ADDRESS')) {
     define('POSTAL_ADDRESS', 0);
 }
-if (!defined('BILLING_ADDREESS')) {
-    define('BILLING_ADDRESS', 1);
-}
 if (!defined('LOCATION_ADDRESS')) {
     define('LOCATION_ADDRESS', 2);
 }
