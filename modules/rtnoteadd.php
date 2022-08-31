@@ -106,7 +106,7 @@ if (isset($_GET['ticketid'])) {
     if (!$error) {
         $messageid = '<msg.' . $ticket['queueid'] . '.' . $note['ticketid'] . '.'  . time() . '@rtsystem.' . gethostname() . '>';
 
-        $note['categories'] = is_array($note['categories']) ? array_flip($note['categories']) : array();
+        $note['categories'] = !empty($note['categories']) && is_array($note['categories']) ? array_flip($note['categories']) : array();
 
         $attachments = null;
         if (!empty($files)) {
