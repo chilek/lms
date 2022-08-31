@@ -110,9 +110,12 @@ if (isset($_POST['document'])) {
         $error['startdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
     } elseif (!empty($document['fromdate']) && $document['fromdate'] > $document['startdate']) {
         $error['startdate'] = trans('Start date can not be earlier than "from" date!');
-    } elseif ($document['startdate'] < strtotime('today')) {
+    }
+    /*
+    elseif ($document['startdate'] < strtotime('today')) {
         $error['startdate'] = trans('Start date can not be earlier than current date!');
     }
+    */
 
     if (!empty($document['todate']) && $document['fromdate'] > $document['todate']) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
@@ -377,7 +380,9 @@ if (isset($_POST['document'])) {
             } else {
                 $selected_assignment['datefrom'] = $from;
             }
-            $selected_assignment['datefrom'] = max($selected_assignment['datefrom'], $document['startdate']);
+            if (!empty($document['startdate'])) {
+                $selected_assignment['datefrom'] = $document['startdate'];
+            }
             $selected_assignment['dateto'] = $to;
 
             if (isset($document['closed'])) {
