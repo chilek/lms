@@ -108,10 +108,10 @@ if (isset($_POST['document'])) {
         $document['startdate'] = 0;
     } elseif (!is_numeric($document['startdate'])) {
         $error['startdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    /*
     } elseif (!empty($document['fromdate']) && $document['fromdate'] > $document['startdate']) {
         $error['startdate'] = trans('Start date can not be earlier than "from" date!');
     }
-    /*
     elseif ($document['startdate'] < strtotime('today')) {
         $error['startdate'] = trans('Start date can not be earlier than current date!');
     }
