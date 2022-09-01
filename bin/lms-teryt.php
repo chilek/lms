@@ -1051,7 +1051,7 @@ if (isset($options['update'])) {
         $key   = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz_gmi'];
         $rodz_mi = $row['rm'];
         $id    = $row['sym'];
-        $data  = $simc[$id];
+        $data  = isset($simc[$id]) ? $simc[$id] : null;
         $refid = $row['sympod'];
 
         if (!$terc[$key] && !$quiet) {
@@ -1060,7 +1060,7 @@ if (isset($options['update'])) {
 
         if ($refid == $id) {
             $refid = null;
-        } elseif (!$simc[$refid]) {
+        } elseif (!isset($simc[$refid])) {
             // refid not found (refered city is below this one), process later
             $cities_r[$refid][] = array(
                 'key'   => $key,
@@ -1086,7 +1086,7 @@ if (isset($options['update'])) {
             // mark data as valid
             $simc[$id]['valid'] = 1;
             $cities[$id] = $data['id'];
-        } elseif (!$refid || $simc[$row['sympod']]) {
+        } elseif (!$refid || isset($simc[$row['sympod']])) {
             // add new city
             $DB->Execute(
                 'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
@@ -1113,7 +1113,7 @@ if (isset($options['update'])) {
         if (isset($cities_r[$id])) {
             while ($elem = array_pop($cities_r[$id])) {
                 $rid  = $elem['sym'];
-                $data = $simc[$rid];
+                $data = isset($simc[$rid]) ? $simc[$rid] : null;
 
                 // entry exists
                 if ($data) {
@@ -1230,7 +1230,7 @@ if (isset($options['update'])) {
         $row['nazwa_1'] = trim($row['nazwa_1']);
         $row['nazwa_2'] = trim($row['nazwa_2']);
         $key    = $row['sym_ul'].':'.$row['sym'];
-        $data   = $ulic[$key];
+        $data   = isset($ulic[$key]) ? $ulic[$key] : null;
         $row['cecha'] = mb_strtolower($row['cecha']);
 
         if (isset($str_types[$row['cecha']])) {
