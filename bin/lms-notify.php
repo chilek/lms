@@ -3834,6 +3834,7 @@ if (!empty($intersect)) {
                                 $args = array(
                                     SYSLOG::RES_ASSIGN => null,
                                     SYSLOG::RES_CUST => null,
+                                    'settlement' => 1,
                                     'datefrom' => time(),
                                 );
                                 foreach ($all_customers as $cid) {
@@ -3860,7 +3861,7 @@ if (!empty($intersect)) {
                                                     }
 
                                                     if (!$debug) {
-                                                        $DB->Execute("UPDATE assignments SET datefrom = ?
+                                                        $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
                                                             WHERE id = ?", array($args['datefrom'], $aid));
                                                         if ($SYSLOG) {
                                                             $args[SYSLOG::RES_ASSIGN] = $aid;
