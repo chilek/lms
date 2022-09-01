@@ -45,11 +45,9 @@
 				</td>
 				<TD>
 					{if $event.enddate}
-					{$event.enddate|date_format:"Y-m-d (l)"}
-					{($event.enddate + $event.endtime)|date_format:"H:i"}
+						{sprintf("%s (%s) %s", $event.enddate|date_format:"Y-m-d", trans($event.enddate|date_format:"l"), ($event.enddate + $event.endtime)|date_format:"H:i")}
 					{else}
-					{$event.date|date_format:"Y-m-d (l)"}
-					{($event.date + $event.endtime)|date_format:"H:i"}
+						{sprintf("%s (%s) %s", $event.date|date_format:"Y-m-d", trans($event.date|date_format:"l"), ($event.date + $event.endtime)|date_format:"H:i")}
 					{/if}
 				</TD>
 			</tr>
