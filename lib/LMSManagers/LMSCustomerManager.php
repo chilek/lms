@@ -1152,7 +1152,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $withenddate = -1;
         }
 
-        if (is_array($search) && count($search)) {
+        if (!empty($search) && is_array($search)) {
             foreach ($search as $key => $value) {
                 if ($value != '') {
                     switch ($key) {

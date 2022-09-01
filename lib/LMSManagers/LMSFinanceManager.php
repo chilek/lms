@@ -4274,7 +4274,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $customer = isset($receipt['customer']) ? $receipt['customer'] : null;
         $contents = $receipt['contents'];
 
-        if (!$receipt['number']) {
+        if (empty($receipt['number'])) {
             $receipt['number'] = $document_manager->GetNewDocumentNumber(array(
                 'doctype' => DOC_RECEIPT,
                 'planid' => $receipt['numberplanid'],

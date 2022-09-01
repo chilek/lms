@@ -649,7 +649,7 @@ switch ($action) {
 
 $SESSION->save('receipt', $receipt, true);
 $SESSION->save('receiptcontents', $contents, true);
-$SESSION->save('receiptcustomer', $customer, true);
+$SESSION->save('receiptcustomer', empty($customer) ? null : $customer, true);
 $SESSION->save('receiptediterror', $error, true);
 
 if ($action != '') {

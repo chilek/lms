@@ -92,7 +92,7 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
         $numberplanadd['divisions'] = array();
     } else {
         $numberplanadd['divisions'] = array_flip($numberplanadd['divisions'] ?: array());
-        $numberplanadd['users'] = array_flip($numberplanadd['users'] ?: array());
+        $numberplanadd['users'] = array_flip(empty($numberplanadd['users']) ? array() : $numberplanadd['users']);
     }
 }
 

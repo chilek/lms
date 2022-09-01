@@ -225,7 +225,7 @@ if ($streetid) {
 		JOIN location_boroughs b ON (c.boroughid = b.id)
 		JOIN location_districts d ON (b.districtid = d.id)
 		WHERE c.id = ?', array($cityid));
-} else if (count($states)) {
+} elseif (!empty($states)) {
     $data['stateid'] = $states[key($states)]['id'];
 }
 

@@ -754,7 +754,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $selecteddivisions = Utils::filterIntegers(empty($numberplan['divisions']) ? array() : $numberplan['divisions']);
         $selectedusers = Utils::filterIntegers(empty($numberplan['users']) ? array() : $numberplan['users']);
 
-        if ($numberplan['doctype'] && $numberplan['isdefault']) {
+        if ($numberplan['doctype'] && !empty($numberplan['isdefault'])) {
             if (empty($selecteddivisions)) {
                 if (empty($selectedusers)) {
                     if ($this->db->GetOne(
