@@ -109,7 +109,7 @@ if ($receipt_type == 'pdf') {
     $document = new LMSHtmlReceipt($SMARTY);
 }
 
-if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks'])) {
+if (isset($_GET['print']) && $_GET['print'] == 'cached' && !empty($_POST['marks']) && count($_POST['marks'])) {
     $SESSION->restore('rlm', $rlm);
     $SESSION->remove('rlm');
 
