@@ -145,93 +145,101 @@ if (isset($_POST['customeradd'])) {
         Localisation::setSystemLanguage($billingCountryCode);
     }
 
-    $ic_expires = $customeradd['icexpires'] && $customeradd['icexpires'] < time();
-    if ($ic_expires) {
-        $identity_card_expiration_check = ConfigHelper::getConfig(
-            'phpui.customer_identity_card_expiration_check',
-            'none'
-        );
-        switch ($identity_card_expiration_check) {
-            case 'warning':
-                if (!isset($warnings['customeradd-icexpires-'])) {
-                    $warning['customeradd[icexpires]'] = trans('Customer identity card expired or expires soon!');
-                }
-                break;
-            case 'error':
-                $error['icexpires'] = trans('Customer identity card expired or expires soon!');
-                break;
+    if (isset($customeradd['icexpires'])) {
+        $ic_expires = $customeradd['icexpires'] && $customeradd['icexpires'] < time();
+        if ($ic_expires) {
+            $identity_card_expiration_check = ConfigHelper::getConfig(
+                'phpui.customer_identity_card_expiration_check',
+                'none'
+            );
+            switch ($identity_card_expiration_check) {
+                case 'warning':
+                    if (!isset($warnings['customeradd-icexpires-'])) {
+                        $warning['customeradd[icexpires]'] = trans('Customer identity card expired or expires soon!');
+                    }
+                    break;
+                case 'error':
+                    $error['icexpires'] = trans('Customer identity card expired or expires soon!');
+                    break;
+            }
         }
     }
 
-    if ($customeradd['ten'] != '') {
-        if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
-            $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-            $customeradd['tenwarning'] = 1;
+    if (isset($customeradd['ten'])) {
+        if ($customeradd['ten'] != '') {
+            if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
+                $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                $customeradd['tenwarning'] = 1;
+            }
+            $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
+            $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
+            if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
+                $ten_existence_scope = 'global';
+            }
+            $ten_exists = $LMS->checkCustomerTenExistence(
+                null,
+                $customeradd['ten'],
+                $ten_existence_scope == 'global' ? null : $customeradd['divisionid']
+            );
+            switch ($ten_existence_check) {
+                case 'warning':
+                    if (!isset($customeradd['tenexistencewarning']) && $ten_exists) {
+                        $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                        $customeradd['tenexistencewarning'] = 1;
+                    }
+                    break;
+                case 'error':
+                    if ($ten_exists) {
+                        $error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
+                    }
+                    break;
+            }
+        } elseif (isset($required_properties['ten'])) {
+            $error['ten'] = trans('Missed required TEN identifier!');
         }
-        $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
-        $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
-        if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
-            $ten_existence_scope = 'global';
-        }
-        $ten_exists = $LMS->checkCustomerTenExistence(
-            null,
-            $customeradd['ten'],
-            $ten_existence_scope == 'global' ? null : $customeradd['divisionid']
-        );
-        switch ($ten_existence_check) {
-            case 'warning':
-                if (!isset($customeradd['tenexistencewarning']) && $ten_exists) {
-                    $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-                    $customeradd['tenexistencewarning'] = 1;
-                }
-                break;
-            case 'error':
-                if ($ten_exists) {
-                    $error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
-                }
-                break;
-        }
-    } elseif (isset($required_properties['ten'])) {
-        $error['ten'] = trans('Missed required TEN identifier!');
     }
 
-    if ($customeradd['ssn'] != '') {
-        if (!isset($customeradd['ssnwarning']) && !check_ssn($customeradd['ssn'])) {
-            $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-            $customeradd['ssnwarning'] = 1;
+    if (isset($customeradd['ssn'])) {
+        if ($customeradd['ssn'] != '') {
+            if (!isset($customeradd['ssnwarning']) && !check_ssn($customeradd['ssn'])) {
+                $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                $customeradd['ssnwarning'] = 1;
+            }
+            $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
+            $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
+            if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
+                $ssb_existence_scope = 'global';
+            }
+            $ssn_exists = $LMS->checkCustomerSsnExistence(
+                null,
+                $customeradd['ssn'],
+                $ssn_existence_scope == 'global' ? null : $customeradd['divisionid']
+            );
+            switch ($ssn_existence_check) {
+                case 'warning':
+                    if (!isset($customeradd['ssnexistencewarning']) && $ssn_exists) {
+                        $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                        $customeradd['ssnexistencewarning'] = 1;
+                    }
+                    break;
+                case 'error':
+                    if ($ssn_exists) {
+                        $error['ssn'] = trans('Customer with specified Social Security Number already exists!');
+                    }
+                    break;
+            }
+        } elseif (isset($required_properties['ssn'])) {
+            $error['ssn'] = trans('Missed required SSN identifier!');
         }
-        $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
-        $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
-        if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
-            $ssb_existence_scope = 'global';
-        }
-        $ssn_exists = $LMS->checkCustomerSsnExistence(
-            null,
-            $customeradd['ssn'],
-            $ssn_existence_scope == 'global' ? null : $customeradd['divisionid']
-        );
-        switch ($ssn_existence_check) {
-            case 'warning':
-                if (!isset($customeradd['ssnexistencewarning']) && $ssn_exists) {
-                    $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-                    $customeradd['ssnexistencewarning'] = 1;
-                }
-                break;
-            case 'error':
-                if ($ssn_exists) {
-                    $error['ssn'] = trans('Customer with specified Social Security Number already exists!');
-                }
-                break;
-        }
-    } elseif (isset($required_properties['ssn'])) {
-        $error['ssn'] = trans('Missed required SSN identifier!');
     }
 
-    if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
-        $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
-        $icnwarning = 1;
-    } elseif ($customeradd['icn'] == '' && isset($required_properties['icn'])) {
-        $error['icn'] = trans('Missed required Identity Card Number!');
+    if (isset($customeradd['icn'])) {
+        if ($customeradd['icn'] != '' && $customeradd['ict'] == 0 && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
+            $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+            $icnwarning = 1;
+        } elseif ($customeradd['icn'] == '' && isset($required_properties['icn'])) {
+            $error['icn'] = trans('Missed required Identity Card Number!');
+        }
     }
 
     if ($customeradd['regon'] != '' && !check_regon($customeradd['regon'])) {

@@ -185,81 +185,87 @@ if (!isset($_POST['xjxfun'])) {
                 Localisation::setSystemLanguage($billingCountryCode);
             }
 
-            $ic_expires = $customerdata['icexpires'] > 0 && $customerdata['icexpires'] < time();
-            if ($ic_expires) {
-                $identity_card_expiration_check = ConfigHelper::getConfig(
-                    'phpui.customer_identity_card_expiration_check',
-                    'none'
-                );
-                switch ($identity_card_expiration_check) {
-                    case 'warning':
-                        if (!isset($warnings['customerdata-icexpires-'])) {
-                            $warning['customerdata[icexpires]'] = trans('Customer identity card expired or expires soon!');
-                        }
-                        break;
-                    case 'error':
-                        $error['icexpires'] = trans('Customer identity card expired or expires soon!');
-                        break;
+            if (isset($customerdata['icexpires'])) {
+                $ic_expires = $customerdata['icexpires'] > 0 && $customerdata['icexpires'] < time();
+                if ($ic_expires) {
+                    $identity_card_expiration_check = ConfigHelper::getConfig(
+                        'phpui.customer_identity_card_expiration_check',
+                        'none'
+                    );
+                    switch ($identity_card_expiration_check) {
+                        case 'warning':
+                            if (!isset($warnings['customerdata-icexpires-'])) {
+                                $warning['customerdata[icexpires]'] = trans('Customer identity card expired or expires soon!');
+                            }
+                            break;
+                        case 'error':
+                            $error['icexpires'] = trans('Customer identity card expired or expires soon!');
+                            break;
+                    }
                 }
             }
 
-            if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->getCustomerTen($_GET['id'])) {
-                if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
-                    $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-                    $tenwarning = 1;
-                }
-                $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
-                $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
-                if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
-                    $ten_existence_scope = 'global';
-                }
-                $ten_exists = $LMS->checkCustomerTenExistence(
-                    $_GET['id'],
-                    $customerdata['ten'],
-                    $ten_existence_scope == 'global' ? null : $customerdata['divisionid']
-                );
-                switch ($ten_existence_check) {
-                    case 'warning':
-                        if (!isset($customerdata['tenexistencewarning']) && $ten_exists) {
-                            $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-                            $tenexistencewarning = 1;
-                        }
-                        break;
-                    case 'error':
-                        if ($ten_exists) {
-                            $error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
-                        }
-                        break;
+            if (isset($customerdata['ten'])) {
+                if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->getCustomerTen($_GET['id'])) {
+                    if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
+                        $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                        $tenwarning = 1;
+                    }
+                    $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
+                    $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
+                    if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
+                        $ten_existence_scope = 'global';
+                    }
+                    $ten_exists = $LMS->checkCustomerTenExistence(
+                        $_GET['id'],
+                        $customerdata['ten'],
+                        $ten_existence_scope == 'global' ? null : $customerdata['divisionid']
+                    );
+                    switch ($ten_existence_check) {
+                        case 'warning':
+                            if (!isset($customerdata['tenexistencewarning']) && $ten_exists) {
+                                $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                                $tenexistencewarning = 1;
+                            }
+                            break;
+                        case 'error':
+                            if ($ten_exists) {
+                                $error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
+                            }
+                            break;
+                    }
                 }
             }
 
-            if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
-                if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
-                    $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-                    $ssnwarning = 1;
-                }
-                $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
-                $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
-                if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
-                    $ssn_existence_scope = 'global';
-                }
-                $ssn_exists = $LMS->checkCustomerSsnExistence(
-                    $_GET['id'],
-                    $customerdata['ssn'],
-                    $ssn_existence_scope == 'global' ? null : $customerdata['divisionid']
-                );
-                switch ($ssn_existence_check) {
-                    case 'warning':
-                        if (!isset($customerdata['ssnexistencewarning']) && $ssn_exists) {
-                            $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-                            $ssnexistencewarning = 1;
-                        }
-                        break;
-                    case 'error':
-                        if ($ssn_exists) {
-                            $error['ssn'] = trans('Customer with specified Social Security Number already exists!');
-                        }
-                        break;
+            if (isset($customerdata['ssn'])) {
+                if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
+                    if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
+                        $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                        $ssnwarning = 1;
+                    }
+                    $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
+                    $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
+                    if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
+                        $ssn_existence_scope = 'global';
+                    }
+                    $ssn_exists = $LMS->checkCustomerSsnExistence(
+                        $_GET['id'],
+                        $customerdata['ssn'],
+                        $ssn_existence_scope == 'global' ? null : $customerdata['divisionid']
+                    );
+                    switch ($ssn_existence_check) {
+                        case 'warning':
+                            if (!isset($customerdata['ssnexistencewarning']) && $ssn_exists) {
+                                $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                                $ssnexistencewarning = 1;
+                            }
+                            break;
+                        case 'error':
+                            if ($ssn_exists) {
+                                $error['ssn'] = trans('Customer with specified Social Security Number already exists!');
+                            }
+                            break;
+                    }
                 }
             }
 
@@ -267,9 +273,11 @@ if (!isset($_POST['xjxfun'])) {
                 $error['regon'] = trans('Incorrect Business Registration Number!');
             }
 
-            if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
-                $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
-                $icnwarning = 1;
+            if (isset($customerdata['icn'])) {
+                if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
+                    $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+                    $icnwarning = 1;
+                }
             }
 
             Localisation::resetSystemLanguage();
