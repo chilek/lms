@@ -371,7 +371,11 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         if (!strlen($mh_subject)) {
             $mh_subject = trans('(no subject)');
         }
-        $mh_references = iconv_mime_decode($headers['references']);
+        if (isset($headers['references'])) {
+            $mh_references = iconv_mime_decode($headers['references']);
+        } else {
+            $mh_references = '';
+        }
         $files = array();
         $attachments = array();
 
