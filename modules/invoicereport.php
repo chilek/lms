@@ -27,10 +27,11 @@
 $from = $_POST['from'];
 $to = $_POST['to'];
 
-switch (intval($_POST['customer_type'])) {
+$customer_type = isset($_POST['customer_type']) ? intval($_POST['customer_type']) : -1;
+switch ($customer_type) {
     case CTYPES_PRIVATE:
     case CTYPES_COMPANY:
-        $ctype = $_POST['customer_type'];
+        $ctype = $customer_type;
         break;
 
     default:
