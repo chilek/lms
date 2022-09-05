@@ -362,6 +362,34 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         $partdata = mailparse_msg_get_part_data($part);
         $headers = $partdata['headers'];
 
+        if (isset($headers['return-path'])) {
+            if (is_array($headers['return-path'])) {
+                $return_paths = $headers['return-path'];
+            } else {
+                $return_paths = array($return_paths);
+            }
+            $return_paths = array_filter($return_paths, function($var) {
+                return $var == '<>' || strtolower($var) == '<mailer-daemon>';
+            });
+            if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
+                mailparse_msg_free($mail);
+
+                if ($postid !== false && $postid !== null) {
+                    if ($rtparser_use_seen_flag) {
+                        imap_setflag_full($ih, $postid, "\\Seen");
+                    } else {
+                        imap_clearflag_full($ih, $postid, "\\Seen");
+                    }
+
+                    $postid = next($posts);
+                }
+
+                unset($buffer);
+
+                continue;
+            }
+        }
+
         $mh_from = iconv_mime_decode($headers['from']);
         $mh_to = iconv_mime_decode($headers['to']);
         $mh_cc = isset($headers['cc']) ? iconv_mime_decode($headers['cc']) : '';
