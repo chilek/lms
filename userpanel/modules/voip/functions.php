@@ -151,7 +151,7 @@ if (isset($_GET['record'])) {
 
 function module_main()
 {
-    global $LMS, $SMARTY, $SESSION;
+    global $LMS, $SMARTY, $SESSION, $plugin_manager;
 
     $phones = array();
     $params = array();
