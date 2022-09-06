@@ -446,9 +446,15 @@ if (empty($fh) || empty($fh_d) || empty($fh_n)) {
     die;
 }
 
-fwrite($fh, preg_replace("/\\\\n/", "\n", $script_begin));
-fwrite($fh_d, preg_replace("/\\\\n/", "\n", $script_begin_day));
-fwrite($fh_n, preg_replace("/\\\\n/", "\n", $script_begin_night));
+$uts = time();
+$date = date('Y-m-d H:i', $uts);
+
+$from = array('\\n', '%date', '%uts');
+$to = array("\n", $date, $uts);
+
+fwrite($fh, str_replace($from, $to, $script_begin));
+fwrite($fh_d, str_replace($from, $to, $script_begin_day));
+fwrite($fh_n, str_replace($from, $to, $script_begin_night));
 
 $x = XVALUE;
 $mark = XVALUE;
@@ -473,24 +479,24 @@ foreach ($channels as $channel) {
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
 
     $from = array('\\n', '%cid', '%cname', '%h', '%class',
-        '%uprate', '%upceil', '%downrate', '%downceil');
+        '%uprate', '%upceil', '%downrate', '%downceil', '%date', '%uts');
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts);
     $c_up = str_replace($from, $to, $c_up);
     $c_up_day = str_replace($from, $to, $c_up_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
     $c_up_night = str_replace($from, $to, $c_up_night);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts);
     $c_down = str_replace($from, $to, $c_down);
     $c_down_day = str_replace($from, $to, $c_down_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
     $c_down_night = str_replace($from, $to, $c_down_night);
 
     // ... and write to file
