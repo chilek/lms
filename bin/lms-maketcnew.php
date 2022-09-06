@@ -604,8 +604,10 @@ fclose($fh);
 fclose($fh_d);
 fclose($fh_n);
 
-chmod($script_file, intval($script_permission, 8));
-chmod($script_file_day, intval($script_permission, 8));
-chmod($script_file_night, intval($script_permission, 8));
+if ($script_permission != -1) {
+    chmod($script_file, intval($script_permission, 8));
+    chmod($script_file_day, intval($script_permission, 8));
+    chmod($script_file_night, intval($script_permission, 8));
+}
 
 ?>
