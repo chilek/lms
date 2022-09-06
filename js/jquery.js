@@ -313,7 +313,6 @@ function initAdvancedSelects(selector) {
 			if (typeof ($(this).attr('required')) !== 'undefined') {
 				$(this).next().toggleClass('lms-ui-error', RegExp("^0?$").test($(this).val()) || $(this).is('.lms-ui-error'));
 			}
-			$(this).next().find('.chosen-single.chosen-default').attr('href', '#');
 		});
 
 		$(this).on('chosen:showing_dropdown', function(e, data) {
