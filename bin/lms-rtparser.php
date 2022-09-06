@@ -368,7 +368,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             } else {
                 $return_paths = array($return_paths);
             }
-            $return_paths = array_filter($return_paths, function($var) {
+            $return_paths = array_filter($return_paths, function ($var) {
                 return $var == '<>' || strtolower($var) == '<mailer-daemon>';
             });
             if (!empty($return_paths) || isset($headers['auto-submitted']) && $headers['auto-submitted'] == 'auto-replied') {
