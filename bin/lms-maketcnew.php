@@ -341,10 +341,22 @@ foreach ($nodes as $node) {
     }
 
     list ($uprate, $downrate, $upceil, $downceil, $uprate_n, $downrate_n, $upceil_n, $downceil_n,
-        $climit, $plimit, $nodeid) =
-        array($node['uprate'], $node['downrate'], $node['upceil'], $node['downceil'],
-            $node['uprate_n'], $node['downrate_n'], $node['upceil_n'], $node['downceil_n'],
-            $node['climit'], $node['plimit'], $node['id']);
+        $climit, $plimit, $nodeid, $nodeip, $assignmentid) =
+        array(
+            $node['uprate'],
+            $node['downrate'],
+            $node['upceil'],
+            $node['downceil'],
+            $node['uprate_n'],
+            $node['downrate_n'],
+            $node['upceil_n'],
+            $node['downceil_n'],
+            $node['climit'],
+            $node['plimit'],
+            $node['id'],
+            $node['ip'],
+            $node['assignmentid']
+        );
 
     if (!$channelfound) { // channel (assignment) not found
         // mozliwe ze komputer jest juz przypisany do innego
@@ -401,18 +413,33 @@ foreach ($nodes as $node) {
         }
 
         // ...nie znaleziono komputera, tworzymy kanal
-        $channels[] = array('id' => $assignmentid, 'nodes' => array(), 'subs' => array(),
-            'cid' => $node['ownerid'], 'customer' => $node['customer'],
-            'uprate' => $uprate, 'upceil' => $upceil,
-            'downrate' => $downrate, 'downceil' => $downceil,
-            'uprate_n' => $uprate_n, 'upceil_n' => $upceil_n,
-            'downrate_n' => $downrate_n, 'downceil_n' => $downceil_n,
-            'climit' => $climit, 'plimit' => $plimit);
+        $channels[] = array(
+            'id' => $assignmentid,
+            'nodes' => array(),
+            'subs' => array(),
+            'cid' => $node['ownerid'],
+            'customer' => $node['customer'],
+            'uprate' => $uprate,
+            'upceil' => $upceil,
+            'downrate' => $downrate,
+            'downceil' => $downceil,
+            'uprate_n' => $uprate_n,
+            'upceil_n' => $upceil_n,
+            'downrate_n' => $downrate_n,
+            'downceil_n' => $downceil_n,
+            'climit' => $climit,
+            'plimit' => $plimit
+        );
         $j = count($channels) - 1;
     }
 
-    $channels[$j]['nodes'][] = array('id' => $nodeid, 'network' => $networkid, 'ip' => $ip,
-        'name' => $node['name'], 'mac' => $node['mac']);
+    $channels[$j]['nodes'][] = array(
+        'id' => $nodeid,
+        'network' => $networkid,
+        'ip' => $ip,
+        'name' => $node['name'],
+        'mac' => $node['mac']
+    );
 }
 
 if ($create_device_channels) {
@@ -423,16 +450,31 @@ if ($create_device_channels) {
 			AND n.netid IN (" . implode(',', array_keys($networks)) . ")");
 
     if (!empty($devices)) {
-        $channels[] = array('id' => '0', 'nodes' => array(), 'subs' => array(),
-            'cid' => '1', 'customer' => 'Devices', 'uprate' => '128', 'upceil' => '10000',
-            'downrate' => '128', 'downceil' => '10000',
-            'uprate_n' => '128', 'upceil_n' => '10000',
-            'downrate_n' => '128', 'downceil_n' => '10000',
-            'climit' => '0', 'plimit' => '0');
+        $channels[] = array(
+            'id' => '0',
+            'nodes' => array(),
+            'subs' => array(),
+            'cid' => '1',
+            'customer' => 'Devices',
+            'uprate' => '128',
+            'upceil' => '10000',
+            'downrate' => '128',
+            'downceil' => '10000',
+            'uprate_n' => '128',
+            'upceil_n' => '10000',
+            'downrate_n' => '128',
+            'downceil_n' => '10000',
+            'climit' => '0',
+            'plimit' => '0'
+        );
         foreach ($devices as $device) {
-            $channels[count($channels) - 1]['nodes'][] = array('id' => $device['id'],
-                'network' => $device['netid'], 'ip' => $device['ip'],
-                'name' => $device['name'], 'mac' => $device['mac']);
+            $channels[count($channels) - 1]['nodes'][] = array(
+                'id' => $device['id'],
+                'network' => $device['netid'],
+                'ip' => $device['ip'],
+                'name' => $device['name'],
+                'mac' => $device['mac']
+            );
         }
     }
 }
