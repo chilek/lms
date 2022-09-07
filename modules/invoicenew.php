@@ -429,6 +429,12 @@ switch ($action) {
             $invoice['sdate'] = $invoice['cdate'];
         }
 
+        $cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+
+        if ($LMS->CustomerExists($cid)) {
+            $customer = $LMS->GetCustomer($cid, true);
+        }
+
         if ($invoice['deadline']) {
             list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
@@ -442,7 +448,7 @@ switch ($action) {
         } else {
             if ($customer_paytime != -1) {
                 $paytime = $customer_paytime;
-            } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+            } elseif (!empty($customer) && ($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
 				WHERE id = ?', array($customer['divisionid']))) === null) {
                 $paytime = ConfigHelper::getConfig('invoices.paytime');
             }
@@ -452,8 +458,6 @@ switch ($action) {
         if ($invoice['deadline'] < $invoice['cdate']) {
             $error['deadline'] = trans('Deadline date should be later than consent date!');
         }
-
-        $cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
 
         if ($invoice['number']) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
@@ -471,10 +475,6 @@ switch ($action) {
 
         if (!isset($CURRENCIES[$invoice['currency']])) {
             $error['currency'] = trans('Invalid currency selection!');
-        }
-
-        if ($LMS->CustomerExists($cid)) {
-            $customer = $LMS->GetCustomer($cid, true);
         }
 
         if (empty($error)) {
@@ -760,7 +760,7 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 
 $args = array(
-    'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+    'doctype' => !empty($invoice['proforma']) ? DOC_INVOICE_PRO : DOC_INVOICE,
     'cdate' => date('Y/m', $invoice['cdate']),
 );
 if (isset($customer)) {
@@ -780,7 +780,7 @@ $SMARTY->assign('taxeslist', $taxeslist);
 
 if (isset($invoice['proformaid']) && !empty($invoice['proformaid'])) {
     $layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
-} elseif ($invoice['proforma']) {
+} elseif (!empty($invoice['proforma'])) {
     $layout['pagetitle'] = trans('New Pro Forma Invoice');
 } else {
     $layout['pagetitle'] = trans('New Invoice');
