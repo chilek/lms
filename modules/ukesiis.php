@@ -1574,8 +1574,14 @@ if ($netnodes) {
                             $set = 10;
                         }
                         if ($node['type'] == 0) {
+                            if (!isset($personalnodes[$node['servicetypes']][$set])) {
+                                $personalnodes[$node['servicetypes']][$set] = 0;
+                            }
                             $personalnodes[$node['servicetypes']][$set]++;
                         } else {
+                            if (!isset($commercialnodes[$node['servicetypes']][$set])) {
+                                $commercialnodes[$node['servicetypes']][$set] = 0;
+                            }
                             $commercialnodes[$node['servicetypes']][$set]++;
                         }
                         if ($node['downstream'] > $maxdownstream) {
@@ -1624,8 +1630,9 @@ if ($netnodes) {
                         'zas_ulic' => $teryt['address_symul'],
                         'zas_house' => str_replace(' ', '', $teryt['address_budynek']),
                         'zas_zip' => $teryt['location_zip'],
-                        'zas_latitude' => !strlen($netrange['latitude']) && !strlen($netnode['latitude'])
-                            ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['latitude']) ? $netnode['latitude'] : $netrange['latitude'])),
+                        'zas_latitude' => (!isset($netrange['latitude']) || !strlen($netrange['latitude']))
+                            && (!isset($netnode['latitude']) || !strlen($netnode['latitude']))
+                            ? '' : str_replace(',', '.', sprintf('%.6f', (!isset($netrange['latitude']) || !strlen($netrange['latitude'])) ? $netnode['latitude'] : $netrange['latitude'])),
                         'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
                             ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
                         'zas_tech' => $technology,
@@ -1775,9 +1782,9 @@ if ($netnodes) {
                     ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $range['location_street_name'],
                 'zas_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
                 'zas_house' => str_replace(' ', '', $netnode['address_budynek']),
-                'zas_zip' => $netnode['location_zip'],
-                'zas_latitude' => $netnode['latitude'],
-                'zas_longitude' => $netnode['longitude'],
+                'zas_zip' => isset($netnode['location_zip']) ? $netnode['location_zip'] : '',
+                'zas_latitude' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
+                'zas_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
                 'zas_tech' => $range_technology,
                 'zas_ltech' => $range_linktechnology,
                 'zas_phonepots' => 'Nie',
@@ -2193,7 +2200,7 @@ if ($netlinks) {
     foreach ($netlinks as $netlink) {
         if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
             if ($netlink['type'] == 1) {
-                $linktechnology = $netlink['technology'];
+                $linktechnology = empty($netlink['technology']) ? $netlink['technology'] : 0;
                 if (!$linktechnology) {
                     $linktechnology = 101;
                 }
