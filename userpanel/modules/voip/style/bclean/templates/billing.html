@@ -50,10 +50,10 @@
 				<INPUT TYPE="text" id="dateto" NAME="date_to" CLASS="lms-ui-date form-control m-1" VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
 			</div>
 			<div class="form-group">
-				<label for="exampleInputName2" class="m-2">
+				<label for="fdirection" class="m-2">
 					{trans("<!voip>Direction")}
 				</label>
-				<select name="fdirection" class="form-control">
+				<select name="fdirection" id="fdirection" class="form-control">
 					<option value="0">{trans("— all —")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_DIRECTION_INCOMING}"
 						{if $params.fdirection == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING} selected{/if}>{trans("<!voip>incoming")}</option>
@@ -62,10 +62,22 @@
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="exampleInputName2" class="m-2">
+				<label for="ftype" class="m-2">
+					{trans("<!voip>Type")}
+				</label>
+				<select name="ftype" id="ftype" class="form-control">
+					<option value="">{trans("— all —")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_CALL}" {if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_CALL} selected{/if}>{trans("<!voip>call")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_SMS}" {if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_SMS} selected{/if}>{trans("<!voip>SMS")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_MMS}" {if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_MMS} selected{/if}>{trans("<!voip>MMS")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}" {if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER} selected{/if}>{trans("<!voip>data transfer")}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="fstatus" class="m-2">
 					{trans("<!voip>Status")}
 				</label>
-				<select name="fstatus" class="form-control">
+				<select name="fstatus" id="fstatus" class="form-control">
 					<option value="0">{trans("— all —")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_STATUS_ANSWERED}"
 						{if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_ANSWERED} selected{/if}>{trans("answered")}</option>
@@ -103,6 +115,7 @@
 						<th>{trans("Call begin time:")}</th>
 						<th>{trans("Call answer time:")}</th>
 						<th>{trans("<!voip>Direction")}</th>
+						<th>{trans("<!voip>Type")}</th>
 						<th>{trans("<!voip>Status")}</th>
 						<th>{trans("Price:")}</th>
 						<th>{trans("Others:")}</th>
@@ -122,6 +135,17 @@
 								{trans("<!voip>incoming")}
 							{/if}
 						</TD>
+						<td>
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+								{trans("<!voip>call")}
+							{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+								{trans("<!voip>SMS")}
+							{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+								{trans("<!voip>MMS")}
+							{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+								{trans("<!voip>data transfer")}
+							{/if}
+						</td>
 						<TD>
 							{if $billings[i].status == $smarty.const.BILLING_RECORD_STATUS_BUSY}
 								{trans("<!voip>busy")}

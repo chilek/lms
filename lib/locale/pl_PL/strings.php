@@ -593,7 +593,13 @@ $_LANG['answered'] = 'odebrano';
 $_LANG['no answer'] = 'nie odebrano';
 $_LANG['<!voip>busy'] = 'zajęty';
 $_LANG['<!voip>Direction'] = 'Kierunek';
+$_LANG['<!voip>Type'] = 'Typ';
 $_LANG['<!voip>Status'] = 'Status';
+
+$_LANG['<!voip>call'] = 'połączenie';
+$_LANG['<!voip>SMS'] = 'SMS';
+$_LANG['<!voip>MMS'] = 'MMS';
+$_LANG['<!voip>data transfer'] = 'transmisja danych';
 
 $_LANG['ChangeLog'] = 'ChangeLog';
 $_LANG['Change password'] = 'Zmiana hasła';

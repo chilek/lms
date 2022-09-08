@@ -819,7 +819,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $where[] = 'call_start_time <= ' . mktime(23, 59, 59, $month, $day, $year);
         }
 
-        // CALL STATUS
+        // billing record statuses
         if (!empty($params['fstatus'])) {
             switch ($params['fstatus']) {
                 case BILLING_RECORD_STATUS_ANSWERED:
@@ -831,7 +831,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             }
         }
 
-        // CALL TYPE
+        // billing record directions
         if (!empty($params['fdirection'])) {
             switch ($params['fdirection']) {
                 case BILLING_RECORD_DIRECTION_OUTGOING:
@@ -841,7 +841,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             }
         }
 
-        $where_string = ($where) ? ' WHERE ' . implode(' AND ', $where) : '';
+        // billing record directions
+        if (isset($params['ftype']) && is_numeric($params['ftype'])) {
+            $where[] = 'cdr.type = ' . $params['ftype'];
+        }
+
+        $where_string = empty($where) ? '' : ' WHERE ' . implode(' AND ', $where);
 
         $DB = $this->db;
 

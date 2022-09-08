@@ -80,6 +80,7 @@ if (isset($params['fvownerid']) && empty($params['fvownerid']) && !isset($_GET['
 }
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['fdirection']      = sessionHandler('fdirection', 'vblfdirection');
+$params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
 
 $LMS->executeHook('voip_billing_preparation', array(
@@ -89,6 +90,7 @@ $LMS->executeHook('voip_billing_preparation', array(
     'datefrom' => $params['frangefrom'],
     'dateto' => $params['frangeto'],
     'direction' => $params['fdirection'],
+    'type' => $params['ftype'],
     'status' => $params['fstatus'],
 ));
 
@@ -115,7 +117,7 @@ if (!empty($params['frangeto'])) {
     $listdata['frangeto'] = date_to_timestamp($params['frangeto']);
 }
 
-// CALL STATUS
+// billing record statuses
 if (!empty($params['fstatus'])) {
     switch ($params['fstatus']) {
         case BILLING_RECORD_STATUS_ANSWERED:
@@ -127,7 +129,7 @@ if (!empty($params['fstatus'])) {
     }
 }
 
-// CALL TYPE
+// billing record directions
 if (!empty($params['fdirection'])) {
     switch ($params['fdirection']) {
         case BILLING_RECORD_DIRECTION_OUTGOING:
@@ -135,6 +137,11 @@ if (!empty($params['fdirection'])) {
             $listdata['fdirection'] = $params['fdirection'];
             break;
     }
+}
+
+// billing record types
+if (isset($params['ftype'])) {
+    $listdata['ftype'] = is_numeric($params['ftype']) ? $params['ftype'] : null;
 }
 
 $voipaccountlist = $LMS->GetVoipAccountList('owner', empty($params['fvownerid']) ? null : array('ownerid' => $params['fvownerid']), null);

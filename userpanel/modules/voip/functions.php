@@ -209,6 +209,10 @@ function module_main()
             }
         }
 
+        if (isset($_GET['ftype'])) {
+            $params['ftype'] = is_numeric($_GET['ftype']) ? $_GET['ftype'] : null;
+        }
+
         if (!empty($_GET['o'])) {
             $order = explode(',', $_GET['o']);
 
@@ -232,6 +236,7 @@ function module_main()
             'datefrom' => isset($params['frangefrom']) ? $params['frangefrom'] : null,
             'dateto' => isset($params['frangeto']) ? $params['frangeto'] : null,
             'direction' => isset($params['fdirection']) ? $params['fdirection'] : null,
+            'type' => isset($params['ftype']) ? $params['ftype'] : null,
             'status' => isset($params['fstatus']) ? $params['fstatus'] : null,
         ));
 
