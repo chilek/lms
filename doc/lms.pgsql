@@ -788,7 +788,7 @@ CREATE TABLE voip_cdr (
 	prefixname varchar(256) DEFAULT NULL,
 	incremental smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)
+	CONSTRAINT voip_cdr_direction_uniqueid_ukey UNIQUE (direction, uniqueid)
 );
 CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);

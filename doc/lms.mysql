@@ -944,7 +944,7 @@ CREATE TABLE voip_cdr (
 	prefixname          varchar(256)  DEFAULT NULL,
 	incremental         smallint      NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	UNIQUE KEY voip_cdr_type_uniqueid_ukey (uniqueid, type),
+	UNIQUE KEY voip_cdr_direction_uniqueid_ukey (uniqueid, direction),
 	KEY voip_cdr_caller_idx (caller),
 	KEY voip_cdr_callee_idx (callee),
 	KEY voip_cdr_call_start_time_idx (call_start_time),

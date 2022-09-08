@@ -24,6 +24,7 @@
 $this->BeginTrans();
 
 if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("ALTER TABLE voip_cdr DROP CONSTRAINT voip_cdr_type_uniqueid_ukey");
     $this->Execute("ALTER TABLE voip_cdr ADD COLUMN direction smallint");
     $this->Execute("UPDATE voip_cdr SET direction = type");
     $this->Execute("ALTER TABLE voip_cdr ALTER COLUMN direction SET NOT NULL");
@@ -34,6 +35,7 @@ if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("UPDATE voip_cdr SET incremental = subtype");
     $this->Execute("CREATE INDEX voip_cdr_incremental_idx ON voip_cdr (incremental)");
     $this->Execute("ALTER TABLE voip_cdr DROP COLUMN subtype");
+    $this->Execute("ALTER TABLE voip_cdr ADD CONSTRAINT voip_cdr_direction_uniqueid_ukey UNIQUE (uniqueid, direction)");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022090800', 'dbversion'));
