@@ -1,4 +1,3 @@
-<?php
 
 /*
  * LMS version 1.11-git
@@ -325,6 +324,7 @@ $_LANG['billing'] = 'billing';
 $_LANG['Billing'] = 'Billing';
 $_LANG['Billings'] = 'Billingi';
 $_LANG['Billing list'] = 'Lista billingów';
+$_LANG['<!voip>Billings'] = 'Billingi';
 $_LANG['Call begin time:'] = 'Czas połączenia:';
 $_LANG['Call answer time:'] = 'Czas rozmowy:';
 $_LANG['Call time:'] = 'Czas rozmowy:';
@@ -376,6 +376,7 @@ $_LANG['Name is already in use!'] = 'Nazwa jest obecnie używana!';
 $_LANG['Name is required!'] = 'Nazwa jest wymagana!';
 $_LANG['Incorrect format! Only values 0 to 9.'] = 'Niepoprawny format! Tylko znaki od 0 do 9.';
 $_LANG['Accounts List'] = 'Lista kont';
+$_LANG['<!voip>Accounts'] = 'Konta';
 $_LANG['hosting management'] = 'zarządzanie hostingiem';
 $_LANG['Account with that login name already exists in that domain!'] = 'Konto o podanej nazwie już istnieje w tej domenie!';
 $_LANG['Account with that login name exists!'] = 'Konto o podanej nazwie istnieje!';
@@ -1923,6 +1924,7 @@ $_LANG['Subscription List'] = 'Lista taryf';
 $_LANG['Subscription name required!'] = 'Nazwa taryfy jest wymagana!';
 $_LANG['Subscriptions and Network Finances Management'] = 'Taryfy i zarządzanie finansami sieci';
 $_LANG['Subscriptions List'] = 'Lista taryf';
+$_LANG['<!voip>Subscriptions'] = 'Taryfy';
 $_LANG['Subscription with assigned customers cannot be deleted!'] = 'Taryfa z przypisanymi klientami nie może zostać usunięta!';
 $_LANG['Subscription with specified name and value already exists!'] = 'Taryfa o określonej nazwie i kwocie już istnieje!';
 $_LANG['summaries hiding'] = 'ukrywanie zestawień';

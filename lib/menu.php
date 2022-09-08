@@ -225,19 +225,19 @@ $menu = array(
                     'prio' => 10,
                 ),
                 'voipaccountlist' => array(
-                    'name' => trans('Accounts List'),
+                    'name' => trans('<!voip>Accounts'),
                     'link' => '?m=voipaccountlist&init=1',
                     'tip' => trans('List of Accounts'),
                     'prio' => 20,
                 ),
                 'voipaccountbillinglist' => array(
-                    'name' => trans('Billing list'),
+                    'name' => trans('<!voip>Billings'),
                     'link' => '?m=voipaccountbillinglist',
                     'tip' => trans('Allows you to view billing list'),
                     'prio' => 30,
                 ),
                 'tarifflist' => array(
-                    'name' => trans('Subscription List'),
+                    'name' => trans('<!voip>Subscriptions'),
                     'link' => '?m=tarifflist&t=' . SERVICE_PHONE,
                     'tip' => trans('Phone tariff list'),
                     'prio' => 40,
