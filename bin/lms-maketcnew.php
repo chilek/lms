@@ -519,26 +519,27 @@ foreach ($channels as $channel) {
     $upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
     $downrate_n = $channel['downrate_n'];
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
+    $ips = implode(",", array_column($channel['nodes'], 'ip'));
 
     $from = array('\\n', '%cid', '%cname', '%h', '%class',
-        '%uprate', '%upceil', '%downrate', '%downceil', '%date', '%uts');
+        '%uprate', '%upceil', '%downrate', '%downceil', '%date', '%uts', '%assignmentid', '%ips');
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil, $date, $uts);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts, $channel['id'], $ips);
     $c_up = str_replace($from, $to, $c_up);
     $c_up_day = str_replace($from, $to, $c_up_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts, $channel['id'], $ips);
     $c_up_night = str_replace($from, $to, $c_up_night);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil, $date, $uts);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts, $channel['id'], $ips);
     $c_down = str_replace($from, $to, $c_down);
     $c_down_day = str_replace($from, $to, $c_down_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts, $channel['id'], $ips);
     $c_down_night = str_replace($from, $to, $c_down_night);
 
     // ... and write to file
