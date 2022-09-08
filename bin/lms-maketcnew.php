@@ -185,6 +185,7 @@ $script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
 $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
 $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
 $ignore_assignment_suspensions = ConfigHelper::checkConfig('tcnew.ignore_assignment_suspensions');
+$assignment_per_node = ConfigHelper::getConfig('tcnew.one_assignment_per_node_allowed', false);
 
 $host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
 
@@ -393,20 +394,36 @@ foreach ($nodes as $node) {
                 }
             }
 
-            // zobowiazanie nie znalezione, zwiekszamy kanal
+            // zobowiazanie nie znalezione, wyrzucamy błąd lub zwiekszamy kanal
+            // zachowanie sterowane zmienną tcnew.one_assignment_per_node_allowed
             if (!$subfound) {
-                $channels[$j]['uprate'] += $uprate;
-                $channels[$j]['upceil'] += $upceil;
-                $channels[$j]['downrate'] += $downrate;
-                $channels[$j]['downceil'] += $downceil;
-                $channels[$j]['uprate_n'] += $uprate_n;
-                $channels[$j]['upceil_n'] += $upceil_n;
-                $channels[$j]['downrate_n'] += $downrate_n;
-                $channels[$j]['downceil_n'] += $downceil_n;
-                $channels[$j]['climit'] += $climit;
-                $channels[$j]['plimit'] += $plimit;
-
                 $channels[$j]['subs'][] = $assignmentid;
+                switch ($assignment_per_node) {
+                    case false:
+                        $channels[$j]['uprate'] += $uprate;
+                        $channels[$j]['upceil'] += $upceil;
+                        $channels[$j]['downrate'] += $downrate;
+                        $channels[$j]['downceil'] += $downceil;
+                        $channels[$j]['uprate_n'] += $uprate_n;
+                        $channels[$j]['upceil_n'] += $upceil_n;
+                        $channels[$j]['downrate_n'] += $downrate_n;
+                        $channels[$j]['downceil_n'] += $downceil_n;
+                        $channels[$j]['climit'] += $climit;
+                        $channels[$j]['plimit'] += $plimit;
+                        break;
+                    case 'error':
+                        $exit1 = true;
+                        print('ERROR: ');
+                        // wyjdź i pokaż warning niżej
+                    case 'warning':
+                    default:
+                        print("Node has more than one internet assignments classified for QoS: NodeID: "
+                        . $chnode['id'] . ", AssignmentID:" . implode(',', $channels[$j]['subs']) . "\n");
+                        break;
+                }
+                if (!empty($exit1)) {
+                    exit(1);
+                }
             }
 
             continue;
