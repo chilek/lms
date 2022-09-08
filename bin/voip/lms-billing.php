@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,6 +26,7 @@
  */
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+
 $parameters = array(
     'C:' => 'config-file:',
     'q'  => 'quiet',
@@ -40,7 +41,7 @@ $parameters = array(
     'o:' => 'totaltime:',
     'r:' => 'caller:',
     's:' => 'startcall:',
-    't:' => 'type:',
+    't:' => 'direction:',
     'u:' => 'status:',
     'U:' => 'uniqueid:',
     'c:' => 'cache-dir:',
@@ -62,7 +63,7 @@ foreach ($short_to_longs as $short => $long) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-billing.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -71,7 +72,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-billing.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -90,7 +91,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-billing.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
@@ -136,7 +137,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -163,11 +164,11 @@ $db_buffor = new VoipDbBuffor(SqlProvider::getInstance());
 switch (strtolower($options['action'])) {
     case 'estimate':
         if (!isset($options['caller'])) {
-            die("Caller phone number isn't set.");
+            die("Caller phone number isn't set." . PHP_EOL);
         }
 
         if (!isset($options['callee'])) {
-            die("Callee phone number isn't set.");
+            die("Callee phone number isn't set." . PHP_EOL);
         }
 
         try {
@@ -180,7 +181,7 @@ switch (strtolower($options['action'])) {
             // if debug mode is set print value else change to miliseconds before print
             printf("%.0f", isset($options['debug']) ? $call_time . PHP_EOL : $call_time * 1000);
         } catch (Exception $e) {
-            echo $e->getMessage();
+            echo $e->getMessage() . PHP_EOL;
         }
         break;
 
@@ -218,7 +219,7 @@ switch (strtolower($options['action'])) {
                 $cdr['totaltime']   = $options['totaltime'];
                 $cdr['billedtime']  = $options['calltime'];
                 $cdr['call_status'] = $options['status'];
-                $cdr['call_type']   = $options['type'];
+                $cdr['call_type']   = $options['direction'];
                 $cdr['uniqueid']    = $options['uniqueid'];
 
                 $db_buffor->appendCdr($cdr);
@@ -231,11 +232,9 @@ switch (strtolower($options['action'])) {
         break;
 
     case 'refilltariffs':
-        $DB->Execute('DELETE FROM voip_rule_states;');
+        $DB->Execute('DELETE FROM voip_rule_states');
         break;
 
     default:
-        echo 'Unknow operation.' . PHP_EOL;
+        echo 'Unknown operation.' . PHP_EOL;
 }
-
-?>
