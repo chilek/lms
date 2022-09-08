@@ -98,8 +98,8 @@
             </th>
 
 			<th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=type{order_check category="type"}">{trans("<!voip>Direction")}</a>
-                {if $listdata.order == "type"}
+                <a href="?m=voipaccountbillinglist&amp;o=direction{order_check category="direction"}">{trans("<!voip>Direction")}</a>
+                {if $listdata.order == "direction"}
 					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
@@ -163,23 +163,23 @@
 					</span>
 
 					<span>{trans("<!voip>Direction")}</span>
-					<select size="1" name="ftype" form="choosefilter">
+					<select size="1" name="fdirection" form="choosefilter">
 						<option value="">{trans("— all —")}</option>
-						<option value="{$smarty.const.CALL_INCOMING}" {if $listdata.ftype == $smarty.const.CALL_INCOMING} selected{/if}>{trans("<!voip>incoming")}</option>
-						<option value="{$smarty.const.CALL_OUTGOING}" {if $listdata.ftype == $smarty.const.CALL_OUTGOING} selected{/if}>{trans("<!voip>outgoing")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_DIRECTION_INCOMING}" {if $listdata.fdirection == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING} selected{/if}>{trans("<!voip>incoming")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}" {if $listdata.fdirection == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING} selected{/if}>{trans("<!voip>outgoing")}</option>
 					</select>
 
 					<span>{trans("<!voip>Status")}</span>
 					<select size="1" name="fstatus"	form="choosefilter">
 						<option value="">{trans("— all —")}</option>
-						<option value="{$smarty.const.CALL_ANSWERED}"
-							{if $listdata.fstatus == $smarty.const.CALL_ANSWERED}selected{/if}>{trans("answered")}</option>
-						<option value="{$smarty.const.CALL_NO_ANSWER}"
-							{if $listdata.fstatus == $smarty.const.CALL_NO_ANSWER}selected{/if}>{trans("no answer")}</option>
-						<option value="{$smarty.const.CALL_BUSY}"
-							{if $listdata.fstatus == $smarty.const.CALL_BUSY}selected{/if}>{trans("<!voip>busy")}</option>
-						<option value="{$smarty.const.CALL_SERVER_FAILED}"
-							{if $listdata.fstatus == $smarty.const.CALL_SERVER_FAILED}selected{/if}>{trans("server error")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_STATUS_ANSWERED}"
+							{if $listdata.fstatus == $smarty.const.BILLING_RECORD_STATUS_ANSWERED} selected{/if}>{trans("answered")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_STATUS_NO_ANSWER}"
+							{if $listdata.fstatus == $smarty.const.BILLING_RECORD_STATUS_NO_ANSWER} selected{/if}>{trans("no answer")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_STATUS_BUSY}"
+							{if $listdata.fstatus == $smarty.const.BILLING_RECORD_STATUS_BUSY} selected{/if}>{trans("<!voip>busy")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}"
+							{if $listdata.fstatus == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED} selected{/if}>{trans("server error")}</option>
 					</select>
 					{button type="link" icon="next" onclick="$('#choosefilter').submit()"}
 				</div>
@@ -260,21 +260,21 @@
 				</td>
 
 				<td>
-					{if $record.type == $smarty.const.CALL_OUTGOING}
+					{if $record.direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
 						{trans("<!voip>outgoing")}
-					{elseif $record.type == $smarty.const.CALL_INCOMING}
+					{elseif $record.direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
 						{trans("<!voip>incoming")}
 					{/if}
 				</td>
 
 				<td nowrap>
-					{if $record.status == $smarty.const.CALL_BUSY}
+					{if $record.status == $smarty.const.BILLING_RECORD_STATUS_BUSY}
 						{trans("<!voip>busy")}
-					{elseif $record.status == $smarty.const.CALL_ANSWERED}
+					{elseif $record.status == $smarty.const.BILLING_RECORD_STATUS_ANSWERED}
 						{trans("answered")}
-					{elseif $record.status == $smarty.const.CALL_NO_ANSWER}
+					{elseif $record.status == $smarty.const.BILLING_RECORD_STATUS_NO_ANSWER}
 						{trans("no answer")}
-					{elseif $record.status == $smarty.const.CALL_SERVER_FAILED}
+					{elseif $record.status == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}
 						{trans("server error")}
 					{/if}
 				</td>

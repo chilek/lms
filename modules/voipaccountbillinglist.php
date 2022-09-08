@@ -79,7 +79,7 @@ if (isset($params['fvownerid']) && empty($params['fvownerid']) && !isset($_GET['
     }
 }
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
-$params['ftype']      = sessionHandler('ftype', 'vblftype');
+$params['fdirection']      = sessionHandler('fdirection', 'vblfdirection');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
 
 $LMS->executeHook('voip_billing_preparation', array(
@@ -88,7 +88,7 @@ $LMS->executeHook('voip_billing_preparation', array(
     'number' => null,
     'datefrom' => $params['frangefrom'],
     'dateto' => $params['frangeto'],
-    'type' => $params['ftype'],
+    'direction' => $params['fdirection'],
     'status' => $params['fstatus'],
 ));
 
@@ -118,21 +118,21 @@ if (!empty($params['frangeto'])) {
 // CALL STATUS
 if (!empty($params['fstatus'])) {
     switch ($params['fstatus']) {
-        case CALL_ANSWERED:
-        case CALL_NO_ANSWER:
-        case CALL_BUSY:
-        case CALL_SERVER_FAILED:
+        case BILLING_RECORD_STATUS_ANSWERED:
+        case BILLING_RECORD_STATUS_NO_ANSWER:
+        case BILLING_RECORD_STATUS_BUSY:
+        case BILLING_RECORD_STATUS_SERVER_FAILED:
             $listdata['fstatus'] = $params['fstatus'];
             break;
     }
 }
 
 // CALL TYPE
-if (!empty($params['ftype'])) {
-    switch ($params['ftype']) {
-        case CALL_OUTGOING:
-        case CALL_INCOMING:
-            $listdata['ftype'] = $params['ftype'];
+if (!empty($params['fdirection'])) {
+    switch ($params['fdirection']) {
+        case BILLING_RECORD_DIRECTION_OUTGOING:
+        case BILLING_RECORD_DIRECTION_INCOMING:
+            $listdata['fdirection'] = $params['fdirection'];
             break;
     }
 }

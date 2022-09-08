@@ -191,20 +191,20 @@ function module_main()
 
         if (!empty($_GET['fstatus'])) {
             switch ($_GET['fstatus']) {
-                case CALL_ANSWERED:
-                case CALL_NO_ANSWER:
-                case CALL_BUSY:
-                case CALL_SERVER_FAILED:
+                case BILLING_RECORD_STATUS_ANSWERED:
+                case BILLING_RECORD_STATUS_NO_ANSWER:
+                case BILLING_RECORD_STATUS_BUSY:
+                case BILLING_RECORD_STATUS_SERVER_FAILED:
                     $params['fstatus'] = $_GET['fstatus'];
                     break;
             }
         }
 
-        if (!empty($_GET['ftype'])) {
-            switch ($_GET['ftype']) {
-                case CALL_OUTGOING:
-                case CALL_INCOMING:
-                    $params['ftype'] = $_GET['ftype'];
+        if (!empty($_GET['fdirection'])) {
+            switch ($_GET['fdirection']) {
+                case BILLING_RECORD_DIRECTION_OUTGOING:
+                case BILLING_RECORD_DIRECTION_INCOMING:
+                    $params['fdirection'] = $_GET['fdirection'];
                     break;
             }
         }
@@ -231,7 +231,7 @@ function module_main()
             'number' => empty($params['phone']) ? null : $params['phone'],
             'datefrom' => isset($params['frangefrom']) ? $params['frangefrom'] : null,
             'dateto' => isset($params['frangeto']) ? $params['frangeto'] : null,
-            'type' => isset($params['ftype']) ? $params['ftype'] : null,
+            'direction' => isset($params['fdirection']) ? $params['fdirection'] : null,
             'status' => isset($params['fstatus']) ? $params['fstatus'] : null,
         ));
 

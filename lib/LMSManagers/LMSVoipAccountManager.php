@@ -776,6 +776,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 case 'callbegintime':
                 case 'callanswertime':
                 case 'status':
+                case 'direction':
                 case 'type':
                 case 'price':
                     $order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
@@ -821,21 +822,21 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         // CALL STATUS
         if (!empty($params['fstatus'])) {
             switch ($params['fstatus']) {
-                case CALL_ANSWERED:
-                case CALL_NO_ANSWER:
-                case CALL_BUSY:
-                case CALL_SERVER_FAILED:
+                case BILLING_RECORD_STATUS_ANSWERED:
+                case BILLING_RECORD_STATUS_NO_ANSWER:
+                case BILLING_RECORD_STATUS_BUSY:
+                case BILLING_RECORD_STATUS_SERVER_FAILED:
                     $where[] = 'cdr.status = ' . $params['fstatus'];
                     break;
             }
         }
 
         // CALL TYPE
-        if (!empty($params['ftype'])) {
-            switch ($params['ftype']) {
-                case CALL_OUTGOING:
-                case CALL_INCOMING:
-                    $where[] = 'cdr.type = ' . $params['ftype'];
+        if (!empty($params['fdirection'])) {
+            switch ($params['fdirection']) {
+                case BILLING_RECORD_DIRECTION_OUTGOING:
+                case BILLING_RECORD_DIRECTION_INCOMING:
+                    $where[] = 'cdr.direction = ' . $params['fdirection'];
                     break;
             }
         }
@@ -862,7 +863,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $bill_list = $DB->GetAll('SELECT
                                      cdr.id, caller, callee, price, call_start_time as begintime, cdr.uniqueid,
                                      totaltime as callbegintime, billedtime as callanswertime,
-                                     cdr.type as type, callervoipaccountid, calleevoipaccountid,
+                                     cdr.direction as direction, cdr.type AS type, callervoipaccountid, calleevoipaccountid,
                                      cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
 
                                      c1.name as caller_name, c1.lastname as caller_lastname, addr1.city as caller_city,

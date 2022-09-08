@@ -56,10 +56,10 @@
                 {trans("Flags:")}
             </td>
             <td class="nobr">
-				{if $cdr.caller_flags & CALL_FLAG_ADMIN_RECORDING}
+				{if $cdr.caller_flags & BILLING_RECORD_FLAG_ADMIN_RECORDING}
 					{trans("recording turned on")}<BR>
 
-					{if $cdr.caller_flags & CALL_FLAG_CUSTOMER_RECORDING}
+					{if $cdr.caller_flags & BILLING_RECORD_FLAG_CUSTOMER_RECORDING}
 						{trans("recorded call available for customer")}
 					{else}
 						{trans("recorded call unavailable for customer")}
@@ -115,10 +115,10 @@
                 {trans("Flags:")}
             </td>
             <td class="nobr">
-				{if $cdr.callee_flags & CALL_FLAG_ADMIN_RECORDING}
+				{if $cdr.callee_flags & BILLING_RECORD_FLAG_ADMIN_RECORDING}
 					- {trans("recording turned on")}<BR>
 
-					{if $cdr.callee_flags & CALL_FLAG_CUSTOMER_RECORDING}
+					{if $cdr.callee_flags & BILLING_RECORD_FLAG_CUSTOMER_RECORDING}
 						- {trans("recorded call available for customer")}
 					{else}
 						- {trans("recorded call unavailable for customer")}
@@ -183,11 +183,11 @@
                 {trans("<!voip>Status")}
             </td>
             <td class="nobr">
-				{if $cdr.status == $smarty.const.CALL_BUSY}
+				{if $cdr.status == $smarty.const.BILLING_RECORD_STATUS_BUSY}
 					{trans("<!voip>busy")}
-				{else if $cdr.status == $smarty.const.CALL_ANSWERED}
+				{else if $cdr.status == $smarty.const.BILLING_RECORD_STATUS_ANSWERED}
 					{trans("answered")}
-				{else if $cdr.status == $smarty.const.CALL_NO_ANSWER}
+				{else if $cdr.status == $smarty.const.BILLING_RECORD_STATUS_NO_ANSWER}
 					{trans("no answer")}
 				{/if}
             </td>

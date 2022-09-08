@@ -772,7 +772,8 @@ CREATE TABLE voip_cdr (
 	billedtime integer NOT NULL,
 	price numeric(12,5) NOT NULL,
 	status smallint NOT NULL,
-	type smallint NOT NULL,
+	direction smallint NOT NULL,
+	type smallint NOT NULL DEFAULT 0,
 	callervoipaccountid integer NULL
 		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	calleevoipaccountid integer NULL
@@ -785,14 +786,16 @@ CREATE TABLE voip_cdr (
 	fraction varchar(256) DEFAULT NULL,
 	prefix varchar(256) DEFAULT NULL,
 	prefixname varchar(256) DEFAULT NULL,
-	subtype smallint NOT NULL DEFAULT 0,
+	incremental smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)
 );
 CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller);
 CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee);
 CREATE INDEX voip_cdr_call_start_time_idx ON voip_cdr (call_start_time);
-CREATE INDEX voip_cdr_subtype_idx ON voip_cdr (subtype);
+CREATE INDEX voip_cdr_direction_idx ON voip_cdr (direction);
+CREATE INDEX voip_cdr_type_idx ON voip_cdr (type);
+CREATE INDEX voip_cdr_incremental_idx ON voip_cdr (incremental);
 
 /* --------------------------------------------------------
   Structure of table "voip_price_groups"
@@ -4246,6 +4249,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022082601');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022090800');
 
 COMMIT;
