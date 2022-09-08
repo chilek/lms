@@ -341,10 +341,22 @@ foreach ($nodes as $node) {
     }
 
     list ($uprate, $downrate, $upceil, $downceil, $uprate_n, $downrate_n, $upceil_n, $downceil_n,
-        $climit, $plimit, $nodeid) =
-        array($node['uprate'], $node['downrate'], $node['upceil'], $node['downceil'],
-            $node['uprate_n'], $node['downrate_n'], $node['upceil_n'], $node['downceil_n'],
-            $node['climit'], $node['plimit'], $node['id']);
+        $climit, $plimit, $nodeid, $nodeip, $assignmentid) =
+        array(
+            $node['uprate'],
+            $node['downrate'],
+            $node['upceil'],
+            $node['downceil'],
+            $node['uprate_n'],
+            $node['downrate_n'],
+            $node['upceil_n'],
+            $node['downceil_n'],
+            $node['climit'],
+            $node['plimit'],
+            $node['id'],
+            $node['ip'],
+            $node['assignmentid']
+        );
 
     if (!$channelfound) { // channel (assignment) not found
         // mozliwe ze komputer jest juz przypisany do innego
@@ -401,18 +413,33 @@ foreach ($nodes as $node) {
         }
 
         // ...nie znaleziono komputera, tworzymy kanal
-        $channels[] = array('id' => $assignmentid, 'nodes' => array(), 'subs' => array(),
-            'cid' => $node['ownerid'], 'customer' => $node['customer'],
-            'uprate' => $uprate, 'upceil' => $upceil,
-            'downrate' => $downrate, 'downceil' => $downceil,
-            'uprate_n' => $uprate_n, 'upceil_n' => $upceil_n,
-            'downrate_n' => $downrate_n, 'downceil_n' => $downceil_n,
-            'climit' => $climit, 'plimit' => $plimit);
+        $channels[] = array(
+            'id' => $assignmentid,
+            'nodes' => array(),
+            'subs' => array(),
+            'cid' => $node['ownerid'],
+            'customer' => $node['customer'],
+            'uprate' => $uprate,
+            'upceil' => $upceil,
+            'downrate' => $downrate,
+            'downceil' => $downceil,
+            'uprate_n' => $uprate_n,
+            'upceil_n' => $upceil_n,
+            'downrate_n' => $downrate_n,
+            'downceil_n' => $downceil_n,
+            'climit' => $climit,
+            'plimit' => $plimit
+        );
         $j = count($channels) - 1;
     }
 
-    $channels[$j]['nodes'][] = array('id' => $nodeid, 'network' => $networkid, 'ip' => $ip,
-        'name' => $node['name'], 'mac' => $node['mac']);
+    $channels[$j]['nodes'][] = array(
+        'id' => $nodeid,
+        'network' => $networkid,
+        'ip' => $ip,
+        'name' => $node['name'],
+        'mac' => $node['mac']
+    );
 }
 
 if ($create_device_channels) {
@@ -423,16 +450,31 @@ if ($create_device_channels) {
 			AND n.netid IN (" . implode(',', array_keys($networks)) . ")");
 
     if (!empty($devices)) {
-        $channels[] = array('id' => '0', 'nodes' => array(), 'subs' => array(),
-            'cid' => '1', 'customer' => 'Devices', 'uprate' => '128', 'upceil' => '10000',
-            'downrate' => '128', 'downceil' => '10000',
-            'uprate_n' => '128', 'upceil_n' => '10000',
-            'downrate_n' => '128', 'downceil_n' => '10000',
-            'climit' => '0', 'plimit' => '0');
+        $channels[] = array(
+            'id' => '0',
+            'nodes' => array(),
+            'subs' => array(),
+            'cid' => '1',
+            'customer' => 'Devices',
+            'uprate' => '128',
+            'upceil' => '10000',
+            'downrate' => '128',
+            'downceil' => '10000',
+            'uprate_n' => '128',
+            'upceil_n' => '10000',
+            'downrate_n' => '128',
+            'downceil_n' => '10000',
+            'climit' => '0',
+            'plimit' => '0'
+        );
         foreach ($devices as $device) {
-            $channels[count($channels) - 1]['nodes'][] = array('id' => $device['id'],
-                'network' => $device['netid'], 'ip' => $device['ip'],
-                'name' => $device['name'], 'mac' => $device['mac']);
+            $channels[count($channels) - 1]['nodes'][] = array(
+                'id' => $device['id'],
+                'network' => $device['netid'],
+                'ip' => $device['ip'],
+                'name' => $device['name'],
+                'mac' => $device['mac']
+            );
         }
     }
 }
@@ -446,9 +488,15 @@ if (empty($fh) || empty($fh_d) || empty($fh_n)) {
     die;
 }
 
-fwrite($fh, preg_replace("/\\\\n/", "\n", $script_begin));
-fwrite($fh_d, preg_replace("/\\\\n/", "\n", $script_begin_day));
-fwrite($fh_n, preg_replace("/\\\\n/", "\n", $script_begin_night));
+$uts = time();
+$date = date('Y-m-d H:i', $uts);
+
+$from = array('\\n', '%date', '%uts');
+$to = array("\n", $date, $uts);
+
+fwrite($fh, str_replace($from, $to, $script_begin));
+fwrite($fh_d, str_replace($from, $to, $script_begin_day));
+fwrite($fh_n, str_replace($from, $to, $script_begin_night));
 
 $x = XVALUE;
 $mark = XVALUE;
@@ -473,24 +521,24 @@ foreach ($channels as $channel) {
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
 
     $from = array('\\n', '%cid', '%cname', '%h', '%class',
-        '%uprate', '%upceil', '%downrate', '%downceil');
+        '%uprate', '%upceil', '%downrate', '%downceil', '%date', '%uts');
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts);
     $c_up = str_replace($from, $to, $c_up);
     $c_up_day = str_replace($from, $to, $c_up_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
     $c_up_night = str_replace($from, $to, $c_up_night);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts);
     $c_down = str_replace($from, $to, $c_down);
     $c_down_day = str_replace($from, $to, $c_down_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
     $c_down_night = str_replace($from, $to, $c_down_night);
 
     // ... and write to file
@@ -598,8 +646,10 @@ fclose($fh);
 fclose($fh_d);
 fclose($fh_n);
 
-chmod($script_file, intval($script_permission, 8));
-chmod($script_file_day, intval($script_permission, 8));
-chmod($script_file_night, intval($script_permission, 8));
+if ($script_permission != -1) {
+    chmod($script_file, intval($script_permission, 8));
+    chmod($script_file_day, intval($script_permission, 8));
+    chmod($script_file_night, intval($script_permission, 8));
+}
 
 ?>
