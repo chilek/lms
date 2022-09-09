@@ -186,6 +186,7 @@ $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channel
 $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
 $ignore_assignment_suspensions = ConfigHelper::checkConfig('tcnew.ignore_assignment_suspensions');
 $assignment_per_node = ConfigHelper::getConfig('tcnew.one_assignment_per_node_allowed', false);
+$mbit_rates = ConfigHelper::getConfig('tcnew.generate_mbit_rates', false);
 
 $host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
 
@@ -519,23 +520,48 @@ $x = XVALUE;
 $mark = XVALUE;
 
 // channels loop
-foreach ($channels as $channel) {
-    $c_up = $script_class_up;
+foreach ($channels as $key => $channel) {
     $c_down = $script_class_down;
-    $c_up_day = $script_class_up_day;
+    $c_up = $script_class_up;
+
     $c_down_day = $script_class_down_day;
-    $c_up_night = $script_class_up_night;
+    $c_up_day = $script_class_up_day;
+
     $c_down_night = $script_class_down_night;
+    $c_up_night = $script_class_up_night;
 
     // make rules...
-    $uprate = $channel['uprate'];
-    $upceil = (!$channel['upceil'] ? $uprate : $channel['upceil']);
     $downrate = $channel['downrate'];
     $downceil = (!$channel['downceil'] ? $downrate : $channel['downceil']);
-    $uprate_n = $channel['uprate_n'];
-    $upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
+    $uprate = $channel['uprate'];
+    $upceil = (!$channel['upceil'] ? $uprate : $channel['upceil']);
+
     $downrate_n = $channel['downrate_n'];
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
+    $uprate_n = $channel['uprate_n'];
+    $upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
+
+    if (!empty($mbit_rates)) {
+        $vars = array(
+            'downrate',
+            'downceil',
+            'uprate',
+            'upceil',
+            'downrate_n',
+            'downceil_n',
+            'uprate_n',
+            'upceil_n',
+        );
+        foreach ($vars as $v) {
+            $v_rounded = round($$v/1024, '3');
+            if ($mbit_rates == 'integer') {
+                $v_rounded = intval($v_rounded);
+                ($$v != 0 && $v_rounded == 0) ? $v_rounded = 1 : null;
+            }
+            ${$v} = $v_rounded;
+        }
+    }
+
     $ips = implode(",", array_column($channel['nodes'], 'ip'));
 
     $from = array('\\n', '%cid', '%cname', '%h', '%class',
