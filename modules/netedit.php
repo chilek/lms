@@ -276,7 +276,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 
 $layout['pagetitle'] = trans('Network Edit: $a', $network['name']);
 
-$SMARTY->assign('vlanlist', $LMS->GetVlanList());
+$SMARTY->assign('vlanlist', $LMS->GetVlanList(array('orderby' => 'vlanid')));
 $SMARTY->assign('unlockedit', true);
 $SMARTY->assign('network', $network);
 $SMARTY->assign('networks', $networks);

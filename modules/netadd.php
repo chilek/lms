@@ -67,7 +67,7 @@ if (isset($_POST['netadd'])) {
     } elseif (strtoupper($netadd['name']) == $DB->GetOne('SELECT name FROM networks WHERE name ?LIKE? ?', array($netadd['name']))) {
         $error['name'] = trans('Network name already exists!');
     }
-    
+
     if ($netadd['domain'] != '' && !preg_match('/^[.a-z0-9-]+$/i', $netadd['domain'])) {
         $error['domain'] = trans('Specified domain contains forbidden characters!');
     }
@@ -104,11 +104,11 @@ if (isset($_POST['netadd'])) {
     if ($netadd['dns'] != '' && !check_ip($netadd['dns'])) {
         $error['dns'] = trans('Incorrect DNS server IP address!');
     }
-    
+
     if ($netadd['dns2'] != '' && !check_ip($netadd['dns2'])) {
         $error['dns2'] = trans('Incorrect DNS server IP address!');
     }
-    
+
     if ($netadd['wins'] != '' && !check_ip($netadd['wins'])) {
         $error['wins'] = trans('Incorrect WINS server IP address!');
     }
@@ -136,7 +136,7 @@ if (isset($_POST['netadd'])) {
             $error['dhcpstart'] = trans('IP address for DHCP range start does not match with network address!');
         }
     }
-    
+
     if ($netadd['dhcpend'] != '') {
         if (!check_ip($netadd['dhcpend'])) {
             $error['dhcpend'] = trans('Incorrect IP address for DHCP range end!');
@@ -144,7 +144,7 @@ if (isset($_POST['netadd'])) {
             $error['dhcpend'] = trans('IP address for DHCP range end does not match with network address!');
         }
     }
-    
+
     if (!isset($error['dhcpstart']) && !isset($error['dhcpend'])) {
         if (($netadd['dhcpstart'] != '' && $netadd['dhcpend'] == '') || ($netadd['dhcpstart'] == '' && $netadd['dhcpend'] != '')) {
             $error['dhcpend'] = trans('Both IP addresses for DHCP range are required!');
@@ -193,7 +193,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-$SMARTY->assign('vlanlist', $LMS->GetVlanList());
+$SMARTY->assign('vlanlist', $LMS->GetVlanList(array('orderby' => 'vlanid')));
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
