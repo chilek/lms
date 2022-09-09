@@ -129,6 +129,10 @@ function initCustomerList(selector)
         }
 
         if (version === 2) {
+            input.on('invalid', function() {
+                return false;
+            });
+
             suggestionInput.one('focus', function() {
                 new AutoSuggest({
                     form: suggestionInput[0].form,

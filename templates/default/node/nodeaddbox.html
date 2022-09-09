@@ -595,6 +595,7 @@
 		$('#wholenetwork').change(function() {
 			var wholenetwork = $(this).prop('checked');
 			$('[name="nodedata[ipaddr]"],[name="nodedata[ipaddr_pub]"]').closest('tr').toggle(!wholenetwork);
+			$('[name="nodedata[ipaddr]"]').prop('required', !wholenetwork);
 		}).change();
 	});
 
