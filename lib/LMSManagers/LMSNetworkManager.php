@@ -737,7 +737,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         global $LMS;
 
-        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, vl.vlanid, inet_ntoa(ne.address) AS address,
+        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name,
+                vl.vlanid, vl.description AS vlandescription,
+                vl.customerid AS vlancustomerid,
+                inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
                 ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype, inet_ntoa(ne.snat) AS snat,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes, ne.pubnetid,
@@ -747,9 +750,16 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             LEFT JOIN vlans vl ON (vl.id = ne.vlanid)
             WHERE ne.id = ?', array($id));
 
-        if ($network['ownerid']) {
+        if (!empty($network['ownerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $network['customername'] = $customer_manager->GetCustomerName($network['ownerid']);
+        }
+
+        if (!empty($network['vlancustomerid'])) {
+            if (!isset($customer_manager)) {
+                $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+            }
+            $network['vlancustomername'] = $customer_manager->GetCustomerName($network['vlancustomerid']);
         }
 
         if ($network['pubnetid']) {

@@ -113,7 +113,16 @@
 				{/foreach}
 			</select>
 			{else}
-				{$network.vlanid}
+				({$network.vlanid})
+				{if $network.vlandescription}{strip}
+					,&nbsp;{$network.vlandescription|trunescape:45}
+				{/strip}{/if}
+				{if $network.vlancustomername}{strip}
+					,&nbsp;
+					<a href="?m=customerinfo&id={$network.vlancustomerid}">
+						{$network.vlancustomername|escape} (#{$network.vlancustomerid})
+					</a>
+				{/strip}{/if}
 			{/if}
 		</TD>
 	</TR>
