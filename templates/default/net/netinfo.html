@@ -105,12 +105,12 @@
 		<TD colspan="3">
 			{if $unlockedit}
 			<select name="networkdata[vlanid]" class="lms-ui-advanced-select">
-				{foreach $vlanlist as $v}
-				<option value="{$v.id}" {if $network.vlanid == $v.vlanid} selected{/if}>
-					(#{$v.vlanid}){if $v.description}, {$v.description|trunescape:45}{/if}{if $v.customername}, {$v.customername|escape} (#{$v.customerid}){/if}
-				</option>
-				{/foreach}
 				<option value="0"{if $network.vlanid == 0} selected{/if}>{trans("— none —")}</option>
+				{foreach $vlanlist as $v}
+					<option value="{$v.id}"{if $network.vlanid == $v.vlanid} selected{/if}>
+						({$v.vlanid}){if $v.description}, {$v.description|trunescape:45}{/if}{if $v.customername}, {$v.customername|escape} (#{$v.customerid}){/if}
+					</option>
+				{/foreach}
 			</select>
 			{else}
 				{$network.vlanid}
