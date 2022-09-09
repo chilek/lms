@@ -46,8 +46,8 @@
 			</TD>
 			<TD>
 				<select name="numberplanedit[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
-					{foreach $_DOCTYPES as $doctype => $item}
-						<option value="{$doctype}"{if $doctype == $numberplanedit.doctype} selected{/if}>{$item}</option>
+					{foreach Localisation::arraySort($_DOCTYPES) as $doctype => $item}
+						<option value="{$doctype}"{if $doctype == $numberplanedit.doctype} selected{/if}>{$item|escape}</option>
 					{/foreach}
 				</select>
 			</TD>
