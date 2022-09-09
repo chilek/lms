@@ -4,6 +4,14 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 
+<style>
+
+	#usertype {
+		margin-right: 0.8em;
+	}
+
+</style>
+
 <script>
 
 	{if $docid}
@@ -92,24 +100,24 @@
 					<span class="nobr">
 						{trans("User:")}
 						{if empty($users)}
-						<input type="hidden" name="usertype" value="">
-						<input type="hidden" name="u[]" value="0">
+							<input type="hidden" name="usertype" value="">
+							<input type="hidden" name="u[]" value="0">
 						{else}
-						<SELECT name="usertype" onChange="javascript:applyFilter();">
-							<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
-							<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
-							<option value="archiver"{if empty($filter.usertype) || $filter.usertype == 'archiver'} selected{/if}>{trans("archiver")}</option>
-						</SELECT>
+							<select name="usertype" id="usertype" onChange="javascript:applyFilter();">
+								<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
+								<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
+								<option value="archiver"{if empty($filter.usertype) || $filter.usertype == 'archiver'} selected{/if}>{trans("archiver")}</option>
+							</select>
 
-						<input type="hidden" name="u[]" value="0">
-						<SELECT name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
-							{foreach $users as $user}
-							<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
-							{/foreach}
-						</SELECT>
+							<input type="hidden" name="u[]" value="0">
+							<select name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
+								{foreach $users as $user}
+								<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
+								{/foreach}
+							</select>
+						{/if}
 					</span>
 
-					{/if}
 
 					<label>
 						{trans("Period:")}
