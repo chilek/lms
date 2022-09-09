@@ -476,9 +476,9 @@ function setunits($data)  // for traffic data
     return array($number, $unit);
 }
 
-function convert_to_units($value, $threshold = 5, $multiplier = 1000)
+function convert_to_units($value, $threshold = 5, $multiplier = 1000, $unit_suffix = 'bit')
 {
-    $unit_suffix = ($multiplier == 1024 ? 'ibit' : 'bit');
+    $unit_suffix = ($multiplier == 1024 ? 'i' : '') . $unit_suffix;
     $threshold = floatval($threshold);
     $multiplier = floatval($multiplier);
     if ($value < $multiplier * $multiplier * $threshold) {

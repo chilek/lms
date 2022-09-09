@@ -24,17 +24,7 @@
  *  $Id$
  */
 
-function smarty_modifier_duration_format($sec)
+function smarty_modifier_size_format($size)
 {
-    $d = floor($sec / 86400);
-    $h = floor(($sec - $d * 86400) / 3600);
-    $m = floor(($sec - $d * 86400 - $h * 3600) / 60);
-    $s = floor(($sec - $d * 86400 - $h * 3600 - $m * 60) / 60);
-    if ($sec < 60) {
-        return sprintf("%02ds", $s);
-    } elseif (empty($d)) {
-        return sprintf("%02d:%02d:%02d", $h, $m, $s);
-    } else {
-        return sprintf("%dd %02d:%02d:%02d", $d, $h, $m, $s);
-    }
+    return convert_to_units($size, 5, 1000, 'B');
 }

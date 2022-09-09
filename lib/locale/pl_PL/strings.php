@@ -603,6 +603,15 @@ $_LANG['<!voip>SMS'] = 'SMS';
 $_LANG['<!voip>MMS'] = 'MMS';
 $_LANG['<!voip>data transfer'] = 'transmisja danych';
 
+$_LANG['<!voip>outgoing call'] = 'połączenie wychodzące';
+$_LANG['<!voip>outgoing SMS'] = 'SMS wychodzący';
+$_LANG['<!voip>outgoing MMS'] = 'MMS wychodzący';
+$_LANG['<!voip>incoming call'] = 'połączenie przychodzące';
+$_LANG['<!voip>incoming SMS'] = 'SMS przychodzący';
+$_LANG['<!voip>incoming MMS'] = 'MMS przychodzący';
+$_LANG['<!voip>Total time'] = 'Czas całkowity';
+$_LANG['<!voip>Billed time'] = 'Czas billingowy';
+
 $_LANG['ChangeLog'] = 'ChangeLog';
 $_LANG['Change password'] = 'Zmiana hasła';
 $_LANG['Change registration info'] = 'Zmień dane rejestracyjne';

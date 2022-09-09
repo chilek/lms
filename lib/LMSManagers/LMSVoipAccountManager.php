@@ -773,8 +773,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 case 'caller':
                 case 'callee':
                 case 'begintime':
-                case 'callbegintime':
-                case 'callanswertime':
+                case 'totaltime':
+                case 'billedtime':
                 case 'status':
                 case 'direction':
                 case 'type':
@@ -867,7 +867,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         $bill_list = $DB->GetAll('SELECT
                                      cdr.id, caller, callee, price, call_start_time as begintime, cdr.uniqueid,
-                                     totaltime as callbegintime, billedtime as callanswertime,
+                                     totaltime, billedtime,
                                      cdr.direction as direction, cdr.type AS type, callervoipaccountid, calleevoipaccountid,
                                      cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
 

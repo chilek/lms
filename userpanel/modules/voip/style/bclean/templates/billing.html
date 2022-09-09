@@ -67,10 +67,14 @@
 				</label>
 				<select name="ftype" id="ftype" class="form-control">
 					<option value="">{trans("— all —")}</option>
-					<option value="{$smarty.const.BILLING_RECORD_TYPE_CALL}" {if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_CALL} selected{/if}>{trans("<!voip>call")}</option>
-					<option value="{$smarty.const.BILLING_RECORD_TYPE_SMS}" {if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_SMS} selected{/if}>{trans("<!voip>SMS")}</option>
-					<option value="{$smarty.const.BILLING_RECORD_TYPE_MMS}" {if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_MMS} selected{/if}>{trans("<!voip>MMS")}</option>
-					<option value="{$smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}" {if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER} selected{/if}>{trans("<!voip>data transfer")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_CALL}"
+						{if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_CALL} selected{/if}>{trans("<!voip>call")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_SMS}"
+						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_SMS} selected{/if}>{trans("<!voip>SMS")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_MMS}"
+						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_MMS} selected{/if}>{trans("<!voip>MMS")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}"
+						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER} selected{/if}>{trans("<!voip>data transfer")}</option>
 				</select>
 			</div>
 			<div class="form-group">
@@ -109,11 +113,11 @@
 			<TABLE CLASS="table table-striped table-sm table-condensed">
 				<thead>
 					<TR>
-						<th>{trans("<!voip>Begin time")}</th>
+						<th>{trans("Date")}</th>
 						<th>{trans("Caller:")}</th>
 						<th>{trans("Callee:")}</th>
-						<th>{trans("Call begin time:")}</th>
-						<th>{trans("Call answer time:")}</th>
+						<th>{trans("<!voip>Total time")}</th>
+						<th>{trans("<!voip>Billed time")}</th>
 						<th>{trans("<!voip>Direction")}</th>
 						<th>{trans("<!voip>Type")}</th>
 						<th>{trans("<!voip>Status")}</th>
@@ -126,24 +130,41 @@
 						<TD>{$billings[i].begintime|date_format:"Y-m-d H:i:s"}</TD>
 						<TD>{$billings[i].caller}</TD>
 						<TD>{$billings[i].callee}</TD>
-						<TD>{$billings[i].callbegintime|duration_format}</TD>
-						<TD>{$billings[i].callanswertime|duration_format}</TD>
-						<TD>
-							{if $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
-								{trans("<!voip>outgoing")}
-							{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
-								{trans("<!voip>incoming")}
-							{/if}
-						</TD>
 						<td>
 							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
-								{trans("<!voip>call")}
-							{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
-								{trans("<!voip>SMS")}
-							{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_MMS}
-								{trans("<!voip>MMS")}
-							{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+								{$billings[i].totaltime|duration_format}
+							{else}
+								-
+							{/if}
+						</td>
+						<td>
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+								{$billings[i].billedtime|duration_format}
+							{elseif $billings[i].type = $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+								{$billings[i].billedtime|size_format}
+							{else}
+								-
+							{/if}
+						</td>
+						<td colspan="2">
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
 								{trans("<!voip>data transfer")}
+							{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
+								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+									{trans("<!voip>outgoing call")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+									{trans("<!voip>outgoing SMS")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+									{trans("<!voip>outgoing MMS")}
+								{/if}
+							{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
+								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+									{trans("<!voip>incoming call")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+									{trans("<!voip>incoming SMS")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+									{trans("<!voip>incoming MMS")}
+								{/if}
 							{/if}
 						</td>
 						<TD>
@@ -159,10 +180,10 @@
 						</TD>
 						<TD>{$billings[i].price|money_format}</TD>
 						<TD STYLE="text-align: right; color: black;">
-							{if $billings[i].callanswertime}
+							{if !empty($billings[i].billedtime)}
 								{if $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
 									{assign var=flags value=$billings[i].caller_flags}
-								{else if $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
+								{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
 									{assign var=flags value=$billings[i].callee_flags}
 								{else}
 									{assign var=flags value=0}
