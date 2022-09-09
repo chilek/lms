@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE sourcefiles_id_seq;
@@ -54,7 +53,3 @@ $this->Execute("
     CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
     CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010122000', 'dbversion'));
-
-$this->CommitTrans();

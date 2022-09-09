@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE templates ALTER COLUMN name TYPE varchar(100)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020082500', 'dbversion'));
-
-$this->CommitTrans();

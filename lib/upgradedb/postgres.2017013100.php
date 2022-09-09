@@ -113,7 +113,6 @@ define('BILLING_ADDRESS_2017013100', 1);
 define('LOCATION_ADDRESS_2017013100', 2);
 define('DEFAULT_LOCATION_ADDRESS_2017013100', 3);
 
-$this->BeginTrans();
 
 $this->Execute("DROP SEQUENCE IF EXISTS addresses_id_seq;
                 CREATE SEQUENCE addresses_id_seq;
@@ -569,7 +568,3 @@ $this->Execute("DROP INDEX IF EXISTS netdevices_location_street_idx;");
 $this->Execute("DROP INDEX IF EXISTS netdevices_location_city_idx;");
 $this->Execute("DROP INDEX IF EXISTS voipaccounts_location_street_idx;");
 $this->Execute("DROP INDEX IF EXISTS voipaccounts_location_city_idx;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017013100', 'dbversion'));
-
-$this->CommitTrans();

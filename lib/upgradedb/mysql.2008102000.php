@@ -113,5 +113,3 @@ $this->Execute(
             !empty($account) ? $account : '',
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));

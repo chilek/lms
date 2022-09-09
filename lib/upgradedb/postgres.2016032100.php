@@ -21,11 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 define('CONFIG_TYPE_NONE_2016032100', 7);
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'default_teryt_city', 'false', ?)", array(CONFIG_TYPE_NONE_2016032100));
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016032100', 'dbversion'));
-
-$this->CommitTrans();

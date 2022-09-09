@@ -37,5 +37,3 @@ $this->Execute("
 	filename VARCHAR(255) NOT NULL, 
 	contenttype VARCHAR(255) NOT NULL)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004031100', 'dbversion'));

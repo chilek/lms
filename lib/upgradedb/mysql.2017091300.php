@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'google_recaptcha_sitekey', ''));
 $this->Execute("INSERT INTO uiconfig (section, var, value)
 	VALUES (?, ?, ?)", array('userpanel', 'google_recaptcha_secret', ''));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017091300', 'dbversion'));
-
-$this->CommitTrans();

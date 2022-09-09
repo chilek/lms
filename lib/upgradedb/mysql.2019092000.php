@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('voip_tariff_rules', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("DROP TABLE voip_tariff_rules");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019092000', 'dbversion'));
-
-$this->CommitTrans();

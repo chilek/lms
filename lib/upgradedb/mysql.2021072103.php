@@ -23,7 +23,6 @@
 
 define('DOC_FLAG_NET_ACCOUNT_2021072103', 16);
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('vinvoicecontents', LMSDB::RESOURCE_TYPE_VIEW)) {
     $this->Execute("DROP VIEW vinvoicecontents");
@@ -79,7 +78,3 @@ $this->Execute(
         DOC_FLAG_NET_ACCOUNT_2021072103,
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021072103', 'dbversion'));
-
-$this->CommitTrans();

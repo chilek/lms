@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE vlans (
@@ -42,7 +41,3 @@ $this->Execute("UPDATE networks SET vlanid = (SELECT id FROM vlans WHERE vlans.v
 
 $this->Execute("ALTER TABLE networks ADD CONSTRAINT networks_vlanid_fkey
                     FOREIGN KEY (vlanid) REFERENCES vlans (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020122200', 'dbversion'));
-
-$this->CommitTrans();

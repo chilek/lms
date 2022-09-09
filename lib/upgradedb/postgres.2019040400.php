@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD COLUMN archived smallint DEFAULT 0 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019040400', 'dbversion'));
-
-$this->CommitTrans();

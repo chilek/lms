@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE customerbalances ALTER COLUMN balance TYPE numeric(12,2)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020073100', 'dbversion'));
-
-$this->CommitTrans();

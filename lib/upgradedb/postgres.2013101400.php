@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD div_name TEXT NOT NULL DEFAULT ''"); // pełna nazwa firmy
 $this->Execute("ALTER TABLE documents ADD div_address VARCHAR (255) NOT NULL DEFAULT ''"); // adres firmy
@@ -67,7 +66,3 @@ if (!empty($dl)) {
         );
     }
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013101400', 'dbversion'));
-
-$this->CommitTrans();

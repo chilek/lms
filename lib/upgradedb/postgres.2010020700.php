@@ -22,7 +22,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE ewx_channels_id_seq;
@@ -41,7 +40,3 @@ $this->Execute("
 	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE;
     CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010020700', 'dbversion'));
-
-$this->CommitTrans();

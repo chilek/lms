@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE networks
 				ADD COLUMN hostid integer NULL
@@ -34,7 +33,3 @@ $this->Execute("ALTER TABLE networks
 
 $this->Execute("ALTER TABLE networks
 				ADD CONSTRAINT networks_address_key UNIQUE (address, hostid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013032100', 'dbversion'));
-
-$this->CommitTrans();

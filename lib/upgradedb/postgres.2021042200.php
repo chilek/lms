@@ -24,10 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets ALTER COLUMN requestor DROP NOT NULL");
 $this->Execute("ALTER TABLE rttickets ALTER COLUMN requestor SET DEFAULT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021042200', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$this->Execute("BEGIN;
+$this->Execute("
 	ALTER TABLE assignments ADD datefrom integer;
 	ALTER TABLE assignments ALTER datefrom SET DEFAULT 0;
 	UPDATE assignments SET datefrom=0;
@@ -34,6 +34,3 @@ $this->Execute("BEGIN;
 	UPDATE assignments SET dateto=0;
 	ALTER TABLE assignments ALTER dateto SET NOT NULL;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004031402', 'dbversion'));
-$this->Execute("COMMIT");

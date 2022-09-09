@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE cash ADD COLUMN linktechnology integer DEFAULT NULL;
 	CREATE INDEX cash_linktechnology_idx ON cash (linktechnology)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019041200', 'dbversion'));
-
-$this->CommitTrans();

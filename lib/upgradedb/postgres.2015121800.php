@@ -24,7 +24,6 @@
  * @author Maciej_Wawryk
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE usergroups_id_seq;
@@ -47,7 +46,3 @@ $this->Execute("
 	);
 	CREATE INDEX userassignments_userid_idx ON userassignments (userid)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015121800', 'dbversion'));
-
-$this->CommitTrans();

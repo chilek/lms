@@ -24,9 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets MODIFY priority tinyint(4) DEFAULT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021040900', 'dbversion'));
-
-$this->CommitTrans();

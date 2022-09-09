@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE invoicecontents ALTER COLUMN pdiscount TYPE numeric(5,2)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021061600', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW IF EXISTS customerview;
@@ -145,7 +144,3 @@ CREATE VIEW vdivisions AS
     FROM divisions d
         JOIN addresses a ON a.id = d.address_id;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017032000', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 
@@ -55,7 +54,3 @@ $this->Execute("
 	DROP SEQUENCE users_id_seq;
 	DROP TABLE users;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052600', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE tariffs ADD sh_limit integer DEFAULT NULL;
@@ -48,7 +47,3 @@ $this->Execute("
             	ftp_limit=0, mail_limit=0, sql_limit=0, quota_sh_limit=0, quota_www_limit=0,
 		quota_ftp_limit=0, quota_mail_limit=0, quota_sql_limit=0;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008022000', 'dbversion'));
-
-$this->CommitTrans();

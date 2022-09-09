@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netlinks ADD COLUMN srcradiosector int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE netlinks ADD COLUMN dstradiosector int(11) DEFAULT NULL");
@@ -32,7 +31,3 @@ $this->Execute("ALTER TABLE netlinks ADD INDEX srcradiosector (srcradiosector)")
 $this->Execute("ALTER TABLE netlinks ADD INDEX dstradiosector (dstradiosector)");
 $this->Execute("ALTER TABLE netlinks ADD FOREIGN KEY (srcradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE netlinks ADD FOREIGN KEY (dstradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040800', 'dbversion'));
-
-$this->CommitTrans();

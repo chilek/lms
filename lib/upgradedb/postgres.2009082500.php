@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 
@@ -42,7 +41,3 @@ SELECT c.* FROM customers c
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009082500', 'dbversion'));
-
-$this->CommitTrans();

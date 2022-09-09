@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE nodesessions_id_seq;
@@ -44,7 +43,3 @@ $this->Execute("
 	ALTER TABLE stats ADD COLUMN nodesessionid integer DEFAULT 0 NOT NULL;
 	CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042300', 'dbversion'));
-
-$this->CommitTrans();

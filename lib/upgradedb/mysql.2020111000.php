@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rtmessages ADD COLUMN contenttype varchar(255) DEFAULT 'text/plain'");
 $this->Execute("ALTER TABLE rtattachments ADD COLUMN cid varchar(255) DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020111000', 'dbversion'));
-
-$this->CommitTrans();

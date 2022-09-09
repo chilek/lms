@@ -25,7 +25,6 @@ define('DEFAULT_NUMBER_TEMPLATE_2021030900', '%N/LMS/%Y');
 
 $numberplans = $this->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 
-$this->BeginTrans();
 
 $this->LockTables("documents");
 
@@ -60,7 +59,3 @@ do {
 } while (!$stop);
 
 $this->UnLockTables("documents");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021030900', 'dbversion'));
-
-$this->CommitTrans();

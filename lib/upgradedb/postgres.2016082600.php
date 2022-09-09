@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE documentattachments_id_seq;
@@ -55,7 +54,3 @@ $this->Execute("
 	ALTER TABLE documentcontents DROP COLUMN contenttype;
 	ALTER TABLE documentcontents DROP COLUMN md5sum;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082600', 'dbversion'));
-
-$this->CommitTrans();

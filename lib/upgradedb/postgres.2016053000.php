@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE voip_prefixes_id_seq;
@@ -94,7 +93,3 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016053000', 'dbversion'));
-
-$this->CommitTrans();

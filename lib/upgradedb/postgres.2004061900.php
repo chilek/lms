@@ -24,7 +24,7 @@
  *  $Id$
  */
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE tariffs ADD upceil integer;
     ALTER TABLE tariffs ALTER upceil SET DEFAULT 0;
     UPDATE tariffs SET upceil=0;
@@ -47,6 +47,5 @@ $this->Execute("
 
     UPDATE tariffs SET upceil=uprate, downceil=downrate;
 
-    UPDATE dbinfo SET keyvalue = '2004061900' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

@@ -24,10 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netradiosectors ADD COLUMN frequency numeric(9,3) DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041001', 'dbversion'));
-
-$this->CommitTrans();

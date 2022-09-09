@@ -23,7 +23,6 @@
 
 // TERYT
 
-$this->BeginTrans();
 
 $this->Execute("
     -- wojewodztwa
@@ -187,7 +186,3 @@ $this->Execute("
         FROM nodes n
         JOIN macs m ON (n.id = m.nodeid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
-
-$this->CommitTrans();

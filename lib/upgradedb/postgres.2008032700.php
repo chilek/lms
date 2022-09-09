@@ -24,10 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE passwd ADD mail_bcc varchar(255) NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008032700', 'dbversion'));
-
-$this->CommitTrans();

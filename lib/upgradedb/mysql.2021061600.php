@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE invoicecontents MODIFY COLUMN pdiscount decimal(5,2) NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021061600', 'dbversion'));
-
-$this->CommitTrans();

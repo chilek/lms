@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE voip_cdr ALTER COLUMN status TYPE smallint USING type::smallint;
@@ -69,7 +68,3 @@ $this->Execute("
 
 define('CONFIG_TYPE_POSITIVE_INTEGER_2016060800', 2);
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'billinglist_pagelimit', '100', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER_2016060800));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
-
-$this->CommitTrans();

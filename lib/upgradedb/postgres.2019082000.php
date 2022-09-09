@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE countries ADD COLUMN ccode varchar(5)");
 
@@ -31,7 +30,3 @@ $this->Execute("UPDATE countries SET ccode = ? WHERE name = ?", array('ro_RO', '
 $this->Execute("UPDATE countries SET ccode = ? WHERE name = ?", array('sk_SK', 'Slovakia'));
 $this->Execute("UPDATE countries SET ccode = ? WHERE name = ?", array('en_US', 'USA'));
 $this->Execute("INSERT INTO countries (name, ccode) VALUES (?, ?)", array('Czech', 'cs_CZ'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019082000', 'dbversion'));
-
-$this->CommitTrans();

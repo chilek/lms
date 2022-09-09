@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('tariff_rule_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE tariffs DROP CONSTRAINT tariff_rule_id_fk");
@@ -34,7 +33,3 @@ $this->Execute(
     "ALTER TABLE tariffs ADD CONSTRAINT tariffs_voip_tariff_rule_id_fkey
     FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rule_groups (id) ON UPDATE CASCADE ON DELETE SET NULL"
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020082600', 'dbversion'));
-
-$this->CommitTrans();

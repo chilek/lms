@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customerbalances (
@@ -79,7 +78,3 @@ $this->Execute("
     CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
         EXECUTE PROCEDURE customerbalances_update() 
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019121800', 'dbversion'));
-
-$this->CommitTrans();

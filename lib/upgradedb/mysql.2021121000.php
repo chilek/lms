@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->Execute(
     "SELECT 1 FROM uiconfig WHERE section = ? AND var = ?",
@@ -32,7 +31,3 @@ if (!$this->Execute(
         array('userpanel', 'document_approval_customer_notification_attachments', '0', '', 0)
     );
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021121000', 'dbversion'));
-
-$this->CommitTrans();

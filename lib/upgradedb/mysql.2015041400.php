@@ -24,11 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netradiosectors CHANGE radius width decimal(9,2) DEFAULT 0 NOT NULL");
 $this->Execute("ALTER TABLE netradiosectors ADD COLUMN technology int(11) DEFAULT 0 NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041400', 'dbversion'));
-
-$this->CommitTrans();

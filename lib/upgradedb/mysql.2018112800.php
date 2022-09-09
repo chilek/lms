@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rtmessages MODIFY COLUMN type int(11) NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018112800', 'dbversion'));
-
-$this->CommitTrans();

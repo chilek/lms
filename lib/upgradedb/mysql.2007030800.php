@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE ewx_stm_nodes (
@@ -66,7 +65,3 @@ $this->Execute("
 	UNIQUE KEY nodeid (nodeid)
     ) ENGINE=MyISAM
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007030800', 'dbversion'));
-
-$this->CommitTrans();

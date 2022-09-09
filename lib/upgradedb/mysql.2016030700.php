@@ -26,12 +26,7 @@
  */
 
 
-$this->BeginTrans();
 
 define('CONFIG_TYPE_BOOLEAN_2016030700', 1);
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'cache_documents', 'false', ?)", array(CONFIG_TYPE_BOOLEAN_2016030700));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016030700', 'dbversion'));
-
-$this->CommitTrans();

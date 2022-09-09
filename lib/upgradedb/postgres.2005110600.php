@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 
@@ -52,7 +51,3 @@ $this->Execute("
 	    PRIMARY KEY (id)
     );
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005110600', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE filecontainers (
@@ -54,7 +53,3 @@ $this->Execute("
 		FOREIGN KEY (containerid) REFERENCES filecontainers (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018082300', 'dbversion'));
-
-$this->CommitTrans();

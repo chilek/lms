@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE TABLE voip_rules (
 	id int(11) NOT NULL AUTO_INCREMENT,
@@ -49,7 +48,3 @@ $this->Execute("CREATE TABLE voip_tariff_rules (
 	FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062401', 'dbversion'));
-
-$this->CommitTrans();

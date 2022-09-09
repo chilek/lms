@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE numberplanusers (
@@ -33,7 +32,3 @@ $this->Execute("
     );
     CREATE INDEX numberplanusers_userid_idx ON numberplanusers (userid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021020300', 'dbversion'));
-
-$this->CommitTrans();

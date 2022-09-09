@@ -24,9 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE nodesessions ADD terminatecause varchar(32) DEFAULT '' NOT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015031900', 'dbversion'));
-
-$this->CommitTrans();

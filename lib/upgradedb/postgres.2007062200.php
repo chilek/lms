@@ -24,12 +24,7 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("SELECT setval('events_id_seq', MAX(id)) FROM events");
 $this->Execute("ALTER TABLE events ALTER id DROP DEFAULT");
 $this->Execute("ALTER TABLE events ALTER id SET DEFAULT nextval('events_id_seq')");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007062200', 'dbversion'));
-
-$this->CommitTrans();

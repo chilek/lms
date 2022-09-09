@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE templates_id_seq;
@@ -34,7 +33,3 @@ $this->Execute("
 		UNIQUE (type, name)
 	);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013051700', 'dbversion'));
-
-$this->CommitTrans();

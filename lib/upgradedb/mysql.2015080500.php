@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE plicbdlocalisation (
@@ -36,7 +35,3 @@ $this->Execute("
 		FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015080500', 'dbversion'));
-
-$this->CommitTrans();

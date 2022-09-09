@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE documents ALTER COLUMN userid SET DEFAULT NULL");
@@ -78,7 +77,3 @@ if (!empty($userids)) {
     $this->Execute("UPDATE messages SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
     $this->Execute("UPDATE logtransactions SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101200', 'dbversion'));
-
-$this->CommitTrans();

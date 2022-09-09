@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE routednetworks (
@@ -37,7 +36,3 @@ $this->Execute("
             FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020091600', 'dbversion'));
-
-$this->CommitTrans();

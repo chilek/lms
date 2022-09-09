@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE records ADD COLUMN disabled boolean DEFAULT '0';
@@ -35,7 +34,3 @@ $this->Execute("
 	);
 	CREATE INDEX domainidmetaindex ON domainmetadata (domain_id);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015111300', 'dbversion'));
-
-$this->CommitTrans();

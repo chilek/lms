@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_rules ALTER COLUMN id SET DEFAULT nextval('voip_rules_id_seq'::text);
-			    ALTER TABLE voip_rule_groups ALTER COLUMN id SET DEFAULT nextval('voip_rule_groups_id_seq'::text);
-
-                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080801', 'dbversion'));
-
-$this->CommitTrans();
+			    ALTER TABLE voip_rule_groups ALTER COLUMN id SET DEFAULT nextval('voip_rule_groups_id_seq'::text);");

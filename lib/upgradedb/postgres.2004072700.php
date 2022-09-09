@@ -25,13 +25,12 @@
  */
 
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE rttickets ADD resolvetime integer;
     ALTER TABLE rttickets ALTER resolvetime SET DEFAULT 0;
     UPDATE rttickets SET resolvetime=0;
     UPDATE rttickets SET resolvetime=createtime WHERE state=2;
     ALTER TABLE rttickets ALTER resolvetime SET NOT NULL;
     
-    UPDATE dbinfo SET keyvalue = '2004072700' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

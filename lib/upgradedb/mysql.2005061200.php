@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE taxes (
@@ -69,7 +68,3 @@ $this->Execute("DROP TABLE temp_union");
 $this->Execute("ALTER TABLE cash DROP taxvalue");
 $this->Execute("ALTER TABLE tariffs DROP taxvalue");
 $this->Execute("ALTER TABLE invoicecontents DROP taxvalue");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005061200', 'dbversion'));
-
-$this->CommitTrans();

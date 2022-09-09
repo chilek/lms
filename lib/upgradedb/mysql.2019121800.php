@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE TABLE customerbalances (
@@ -76,7 +75,3 @@ $this->Execute("
             END IF;
         END
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019121800', 'dbversion'));
-
-$this->CommitTrans();

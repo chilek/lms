@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vusers");
 $this->Execute("
@@ -34,7 +33,3 @@ $this->Execute("
                                  WHERE ud2.userid = lms_current_user())
         GROUP BY u.id;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020081300', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users ADD COLUMN settings mediumtext NOT NULL DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020300', 'dbversion'));
-
-$this->CommitTrans();

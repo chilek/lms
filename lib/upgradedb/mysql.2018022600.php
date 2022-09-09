@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE records MODIFY COLUMN type varchar(10)");
 $this->Execute("ALTER TABLE records MODIFY COLUMN content varchar(65535)");
@@ -70,7 +69,3 @@ $this->Execute("
 		UNIQUE KEY name (name, algorithm)
 	) Engine=InnoDB
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022600', 'dbversion'));
-
-$this->CommitTrans();

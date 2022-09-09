@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE assignments ADD discount numeric(4,2);
@@ -32,6 +31,3 @@ $this->Execute("
     ALTER TABLE assignments ALTER discount SET NOT NULL;
     ALTER TABLE assignments ALTER discount SET DEFAULT 0;
 ");
-$this->Execute("UPDATE dbinfo SET keyvalue = '2005033000' WHERE keytype = 'dbversion'");
-
-$this->CommitTrans();

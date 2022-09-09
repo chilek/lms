@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('nodes.login', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("DROP VIEW vnodealltariffs");
@@ -118,7 +117,3 @@ if (!$this->ResourceExists('nodes.login', LMSDB::RESOURCE_TYPE_COLUMN)) {
                        OR (t1.nodeid IS NULL AND t2.nodeid IS NULL))
     ");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021022100', 'dbversion'));
-
-$this->CommitTrans();

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE passwd ADD quota_sh integer;
@@ -94,7 +93,3 @@ $this->Execute("
 	PRIMARY KEY (id),
 	UNIQUE(instanceid, var))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005033103', 'dbversion'));
-
-$this->CommitTrans();

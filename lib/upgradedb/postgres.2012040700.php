@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE SEQUENCE nodelocks_id_seq;
@@ -40,7 +39,3 @@ $this->Execute("
 			LEFT JOIN nodeassignments na ON na.assignmentid = a.id);
 	DROP TABLE assignmentlocks;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012040700', 'dbversion'));
-
-$this->CommitTrans();

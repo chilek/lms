@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE location_city_types_id_seq;
@@ -35,7 +34,3 @@ $this->Execute("
     ALTER TABLE location_cities ADD COLUMN type integer DEFAULT NULL
         CONSTRAINT location_cities_type_fkey REFERENCES location_city_types (id) ON DELETE CASCADE ON UPDATE CASCADE
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020092100', 'dbversion'));
-
-$this->CommitTrans();

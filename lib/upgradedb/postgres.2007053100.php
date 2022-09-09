@@ -24,13 +24,8 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE documents ADD COLUMN reason varchar(255)");
 $this->Execute("UPDATE documents SET reason = ''");
 $this->Execute("ALTER TABLE documents ALTER COLUMN reason SET NOT NULL");
 $this->Execute("ALTER TABLE documents ALTER COLUMN reason SET DEFAULT ''");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007053100', 'dbversion'));
-
-$this->CommitTrans();

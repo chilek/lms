@@ -28,4 +28,3 @@ $this->Execute("
 	ALTER TABLE users DROP zip1;
 	ALTER TABLE invoices DROP zip1;
 ");
-$this->Execute("UPDATE dbinfo SET keyvalue = '2005030100' WHERE keytype = 'dbversion'");

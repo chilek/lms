@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("CREATE SEQUENCE voip_number_assignments_id_seq");
 $this->Execute("CREATE TABLE voip_number_assignments (
@@ -30,7 +29,3 @@ $this->Execute("CREATE TABLE voip_number_assignments (
 	                assignment_id integer NOT NULL REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE,
                     PRIMARY KEY (id));
                 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016112800', 'dbversion'));
-
-$this->CommitTrans();

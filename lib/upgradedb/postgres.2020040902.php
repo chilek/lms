@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE uiconfig SET var = ? WHERE var = ?",
@@ -32,7 +31,3 @@ $this->Execute(
     "INSERT INTO uiconfig (section, var, value, description, type) VALUES (?, ?, ?, ?, ?)",
     array('userpanel', 'document_notification_mail_sender_name', '', '', 0)
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020040902', 'dbversion'));
-
-$this->CommitTrans();

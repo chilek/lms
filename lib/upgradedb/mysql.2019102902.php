@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vdivisions");
 $this->Execute("ALTER TABLE divisions ADD COLUMN bank varchar(100) DEFAULT NULL");
@@ -33,7 +32,3 @@ $this->Execute("
             JOIN vaddresses a ON a.id = d.address_id
 ");
 $this->Execute("ALTER TABLE documents ADD COLUMN div_bank varchar(100) DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019102902', 'dbversion'));
-
-$this->CommitTrans();

@@ -23,7 +23,6 @@
 
 define('DOC_FLAG_NET_ACCOUNT_2021121500', 16);
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW vinvoicecontents");
 
@@ -112,7 +111,3 @@ $this->Execute(
         DOC_FLAG_NET_ACCOUNT_2021121500,
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021121500', 'dbversion'));
-
-$this->CommitTrans();

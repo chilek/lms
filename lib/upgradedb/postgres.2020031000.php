@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('divisions.email', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("DROP VIEW vdivisions");
@@ -34,7 +33,3 @@ if (!$this->ResourceExists('divisions.email', LMSDB::RESOURCE_TYPE_COLUMN)) {
                 JOIN vaddresses a ON a.id = d.address_id"
     );
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020031000', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,14 +21,9 @@
  *
  */
 
-$this->BeginTrans();
 
 
 $this->Execute("ALTER TABLE liabilities ADD COLUMN netflag tinyint(1) DEFAULT 0 NOT NULL");
 $this->Execute("ALTER TABLE liabilities ADD COLUMN netvalue decimal(9,2) DEFAULT NULL");
 
 $this->Execute("UPDATE liabilities SET netvalue = ROUND(value / ((SELECT taxes.value FROM taxes WHERE taxes.id = taxid) / 100 + 1), 2) WHERE netvalue IS NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021052400', 'dbversion'));
-
-$this->CommitTrans();

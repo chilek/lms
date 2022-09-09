@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE twofactorauthtrusteddevices_id_seq;
@@ -36,7 +35,3 @@ $this->Execute("
         PRIMARY KEY (id)
     );
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019091600', 'dbversion'));
-
-$this->CommitTrans();

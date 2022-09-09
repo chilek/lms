@@ -22,7 +22,6 @@
  */
 
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customerview;");
 $this->Execute("DROP VIEW IF EXISTS contractorview;");
@@ -157,7 +156,3 @@ $this->Execute("
             LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
             LEFT JOIN addresses a ON n.address_id = a.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017013101', 'dbversion'));
-
-$this->CommitTrans();

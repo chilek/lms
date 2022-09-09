@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customersview");
 
@@ -35,7 +34,3 @@ $this->Execute("CREATE VIEW customersview AS
 			WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
 
 $this->Execute("UPDATE customers SET pin = CONCAT('0', pin) WHERE LENGTH(pin) < 4");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041100', 'dbversion'));
-
-$this->CommitTrans();

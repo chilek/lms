@@ -37,5 +37,3 @@ $this->Execute("CREATE VIEW customersview AS
 		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009082500', 'dbversion'));

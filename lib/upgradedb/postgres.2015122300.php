@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW customerview;
@@ -69,7 +68,3 @@ $this->Execute("
 		FROM customers c
 		WHERE c.type < 2;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122300', 'dbversion'));
-
-$this->CommitTrans();

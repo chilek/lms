@@ -23,9 +23,3 @@
  *
  *  $Id$
  */
-
-$this->BeginTrans();
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012011800', 'dbversion'));
-
-$this->CommitTrans();

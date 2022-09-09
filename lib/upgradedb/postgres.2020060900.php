@@ -21,9 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'startup_module', 'info')");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020060900', 'dbversion'));
-
-$this->CommitTrans();

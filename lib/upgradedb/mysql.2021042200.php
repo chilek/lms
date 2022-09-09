@@ -24,9 +24,5 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets MODIFY requestor varchar(255) DEFAULT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021042200', 'dbversion'));
-
-$this->CommitTrans();

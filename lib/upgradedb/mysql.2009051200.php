@@ -49,5 +49,3 @@ foreach (array(-1,-2,-3,-4,-5,-6,-7,-8, -9,-10) as $doctype) {
 8 - edit
 16 - delete
 */
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009051200', 'dbversion'));

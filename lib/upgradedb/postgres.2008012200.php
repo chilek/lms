@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE OR REPLACE FUNCTION mask2prefix(bigint) RETURNS smallint AS $$
@@ -57,7 +56,3 @@ $this->Execute("
 	split_part($1,'.',4)::int8;
     $$ LANGUAGE SQL IMMUTABLE;			       
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008012200', 'dbversion'));
-
-$this->CommitTrans();

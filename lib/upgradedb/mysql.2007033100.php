@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE TABLE imessengers (
@@ -41,7 +40,3 @@ $this->Execute("INSERT INTO imessengers (customerid, uid)
         SELECT id, im FROM customers WHERE im > 0");
     
 $this->Execute("ALTER TABLE customers DROP im");
-    
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007033100', 'dbversion'));
-
-$this->CommitTrans();

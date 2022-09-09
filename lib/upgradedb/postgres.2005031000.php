@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE sessions (
@@ -36,7 +35,3 @@ $this->Execute("
 	content text NOT NULL, 
 	PRIMARY KEY (id))
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005031000', 'dbversion'));
-
-$this->CommitTrans();

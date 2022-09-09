@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW vdivisions;
@@ -32,7 +31,3 @@ $this->Execute("
 		FROM divisions d
 			JOIN vaddresses a ON a.id = d.address_id
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018020800', 'dbversion'));
-
-$this->CommitTrans();

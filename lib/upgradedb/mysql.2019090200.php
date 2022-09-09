@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE nodelocks ADD COLUMN disabled tinyint(1) NOT NULL DEFAULT 0");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019090200', 'dbversion'));
-
-$this->CommitTrans();

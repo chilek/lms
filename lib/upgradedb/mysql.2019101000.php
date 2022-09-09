@@ -21,12 +21,7 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE filecontainers ADD COLUMN messageid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE filecontainers ADD CONSTRAINT filecontainers_messageid_fkey
 	FOREIGN KEY (messageid) REFERENCES messages (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019101000', 'dbversion'));
-
-$this->CommitTrans();

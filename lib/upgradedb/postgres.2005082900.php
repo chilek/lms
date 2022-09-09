@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     CREATE SEQUENCE hosts_id_seq;
@@ -41,7 +40,3 @@ $this->Execute("
     DROP TABLE daemonhosts;
     SELECT setval('hosts_id_seq', MAX(id)) FROM hosts;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005082900', 'dbversion'));
-
-$this->CommitTrans();

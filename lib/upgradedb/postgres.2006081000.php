@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 // REGON (Business Registration Number)
 $this->Execute("ALTER TABLE customers ADD COLUMN regon varchar(255)");
@@ -51,7 +50,3 @@ $this->Execute("ALTER TABLE nodes ALTER COLUMN location SET NOT NULL");
 // Account names (logins) will be unique only in one domain context
 $this->Execute("ALTER TABLE passwd DROP CONSTRAINT passwd_login_key");
 $this->Execute("ALTER TABLE passwd ADD UNIQUE (login, domainid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006081000', 'dbversion'));
-
-$this->CommitTrans();

@@ -25,7 +25,7 @@
  */
 
 $this->Execute("
-    BEGIN;
+    
     ALTER TABLE stats ADD down bigint;
     ALTER TABLE stats ADD up bigint;
     ALTER TABLE stats ALTER down SET DEFAULT 0;
@@ -37,6 +37,5 @@ $this->Execute("
     ALTER TABLE stats RENAME up TO upload;
     ALTER TABLE stats RENAME down TO download;
     
-    UPDATE dbinfo SET keyvalue = '2004071400' WHERE keytype = 'dbversion';
-    COMMIT;
+    
 ");

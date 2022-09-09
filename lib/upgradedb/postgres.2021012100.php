@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE vlans ALTER COLUMN customerid TYPE integer");
 
@@ -32,7 +31,3 @@ $this->Execute("ALTER TABLE vlans ADD CONSTRAINT vlans_netnodeid_fkey
 $this->Execute("ALTER TABLE vlans DROP CONSTRAINT vlans_ukey");
 $this->Execute("ALTER TABLE vlans ADD CONSTRAINT vlans_customerid_ukey UNIQUE (vlanid, customerid)");
 $this->Execute("ALTER TABLE vlans ADD CONSTRAINT vlans_netnodeid_ukey UNIQUE (vlanid, netnodeid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021012100', 'dbversion'));
-
-$this->CommitTrans();

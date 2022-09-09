@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 ALTER TABLE rtqueues ADD COLUMN newticketsubject varchar(255) NOT NULL DEFAULT '';
@@ -31,7 +30,3 @@ ALTER TABLE rtqueues ADD COLUMN newmessagebody text NOT NULL DEFAULT '';
 ALTER TABLE rtqueues ADD COLUMN resolveticketsubject varchar(255) NOT NULL DEFAULT '';
 ALTER TABLE rtqueues ADD COLUMN resolveticketbody text NOT NULL DEFAULT '';
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014020400', 'dbversion'));
-
-$this->CommitTrans();

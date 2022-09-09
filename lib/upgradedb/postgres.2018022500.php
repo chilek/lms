@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE pna ALTER COLUMN cityid DROP NOT NULL;
@@ -31,7 +30,3 @@ $this->Execute("
 	ALTER TABLE pna ADD CONSTRAINT pna_zip_cityid_streetid_fromnumber_tonumber_parity_key
 		UNIQUE (zip, cityid, cityname, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022500', 'dbversion'));
-
-$this->CommitTrans();

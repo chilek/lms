@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if ($this->ResourceExists('assignments.splitpayment', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE assignments DROP COLUMN splitpayment");
@@ -34,7 +33,3 @@ if (!$this->ResourceExists('tariffs.splitpayment', LMSDB::RESOURCE_TYPE_COLUMN))
 if (!$this->ResourceExists('liabilities.splitpayment', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE liabilities ADD COLUMN splitpayment smallint NOT NULL DEFAULT 0");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019110700', 'dbversion'));
-
-$this->CommitTrans();

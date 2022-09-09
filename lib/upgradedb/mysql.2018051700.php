@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rtqueues ADD COLUMN verifierid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE rtqueues ADD CONSTRAINT rtqueues_verifierid_fkey FOREIGN KEY (verifierid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018051700', 'dbversion'));
-
-$this->CommitTrans();

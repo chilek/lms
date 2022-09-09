@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE uiconfig DROP INDEX var");
 $this->Execute("ALTER TABLE uiconfig ADD UNIQUE var (section, var, userid)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2020080300', 'dbversion'));
-
-$this->CommitTrans();

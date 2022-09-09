@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE rttemplatetypes(
@@ -48,7 +47,3 @@ $this->Execute("
 			FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019042400', 'dbversion'));
-
-$this->CommitTrans();

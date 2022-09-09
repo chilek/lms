@@ -21,13 +21,8 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users
 			DROP COLUMN swekey_id,
 			DROP INDEX login,
 			ADD UNIQUE INDEX login (login)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016092600', 'dbversion'));
-
-$this->CommitTrans();

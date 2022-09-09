@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE invoicecontents ADD COLUMN discount numeric(4,2);
@@ -32,7 +31,3 @@ $this->Execute("
     ALTER TABLE invoicecontents ALTER discount SET NOT NULL;
     ALTER TABLE invoicecontents ALTER discount SET DEFAULT 0;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006020500', 'dbversion'));
-
-$this->CommitTrans();

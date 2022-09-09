@@ -24,7 +24,6 @@
 //define('CCONSENT_PHONE_BILLING', 11);
 //define('CCONSENT_FULL_PHONE_BILLING', 13);
 
-$this->BeginTrans();
 
 $this->Execute(
     "UPDATE customerconsents SET type = ? WHERE type = ?",
@@ -33,7 +32,3 @@ $this->Execute(
         11,
     )
 );
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022070401', 'dbversion'));
-
-$this->CommitTrans();

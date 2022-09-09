@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('zones', 'default_spf', '', '', '0')");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012050200', 'dbversion'));
-
-$this->CommitTrans();

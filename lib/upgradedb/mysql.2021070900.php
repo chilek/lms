@@ -21,10 +21,5 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE customercalls MODIFY COLUMN phone varchar(20) NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2021070900', 'dbversion'));
-
-$this->CommitTrans();

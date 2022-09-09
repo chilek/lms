@@ -21,11 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE rttickets ADD COLUMN type integer DEFAULT NULL");
 $this->Execute("ALTER TABLE rttickets ADD COLUMN service integer DEFAULT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018070600', 'dbversion'));
-
-$this->CommitTrans();

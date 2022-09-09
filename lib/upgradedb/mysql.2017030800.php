@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 CREATE VIEW vaddresses AS
@@ -137,7 +136,3 @@ CREATE VIEW vnetworks AS
         LEFT JOIN vaddresses a ON no.address_id = a.id
     WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017030800', 'dbversion'));
-
-$this->CommitTrans();

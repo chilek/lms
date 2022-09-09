@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE assignments ADD customerid integer;
@@ -67,7 +66,3 @@ $this->Execute("
 	ALTER TABLE userassignments ALTER customerid SET DEFAULT 0;
 	ALTER TABLE userassignments ADD UNIQUE (usergroupid, customerid);
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005052300', 'dbversion'));
-
-$this->CommitTrans();

@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE users CHANGE rights rights text NOT NULL DEFAULT ''");
 
@@ -83,7 +82,3 @@ foreach ((array) $users as $user) {
 
     $this->Execute("UPDATE users SET rights = ? WHERE id = ?", array(implode(',', $rights), $user['id']));
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015100100', 'dbversion'));
-
-$this->CommitTrans();

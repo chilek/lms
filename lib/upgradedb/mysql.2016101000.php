@@ -30,7 +30,6 @@ define('CONTACT_IM_GG', 512);
 define('CONTACT_IM_YAHOO', 1024);
 define('CONTACT_IM_SKYPE', 2048);
 
-$this->BeginTrans();
 
 $this->Execute("DROP VIEW IF EXISTS customermailsview");
 
@@ -64,7 +63,3 @@ if (!empty($ims)) {
 }
 
 $this->Execute("DROP TABLE imessengers");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016101000', 'dbversion'));
-
-$this->CommitTrans();

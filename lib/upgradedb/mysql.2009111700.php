@@ -27,5 +27,3 @@ $this->Execute("ALTER TABLE divisions ADD inv_paytype varchar(255) DEFAULT NULL"
 $this->Execute("ALTER TABLE invoicecontents CHANGE description description text DEFAULT '' NOT NULL");
 $this->Execute("ALTER TABLE receiptcontents CHANGE description description text DEFAULT '' NOT NULL");
 $this->Execute("ALTER TABLE cash CHANGE comment comment text DEFAULT '' NOT NULL");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111700', 'dbversion'));

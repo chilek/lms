@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE documentattachments (
@@ -49,7 +48,3 @@ $this->Execute("INSERT INTO documentattachments (docid, filename, contenttype, m
 $this->Execute("ALTER TABLE documentcontents DROP COLUMN filename");
 $this->Execute("ALTER TABLE documentcontents DROP COLUMN contenttype");
 $this->Execute("ALTER TABLE documentcontents DROP COLUMN md5sum");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082600', 'dbversion'));
-
-$this->CommitTrans();

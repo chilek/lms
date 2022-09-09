@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_cdr DROP CONSTRAINT voip_cdr_type_uniqueid_ukey");
@@ -37,7 +36,3 @@ if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE voip_cdr DROP COLUMN subtype");
     $this->Execute("ALTER TABLE voip_cdr ADD CONSTRAINT voip_cdr_direction_uniqueid_ukey UNIQUE (uniqueid, direction)");
 }
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022090800', 'dbversion'));
-
-$this->CommitTrans();

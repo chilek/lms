@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("
 	DROP VIEW vnetworks;
@@ -41,7 +40,3 @@ $this->Execute("
 		LEFT JOIN vaddresses a ON no.address_id = a.id
 		WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018081700', 'dbversion'));
-
-$this->CommitTrans();

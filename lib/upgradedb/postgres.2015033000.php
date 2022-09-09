@@ -24,11 +24,6 @@
  *  $Id$
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_location_city_fkey FOREIGN KEY (location_city) REFERENCES location_cities(id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_location_street_fkey FOREIGN KEY (location_street) REFERENCES location_streets(id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015033000', 'dbversion'));
-
-$this->CommitTrans();

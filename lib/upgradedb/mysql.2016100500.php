@@ -21,7 +21,6 @@
  *
  */
 
-$this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_numbers ADD COLUMN `index` smallint");
 
@@ -44,7 +43,3 @@ if ($numbers_list) {
 }
 
 $this->Execute("ALTER TABLE voip_numbers ADD CONSTRAINT vn_uniq_index UNIQUE (voip_account_id, `index`)");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016100500', 'dbversion'));
-
-$this->CommitTrans();

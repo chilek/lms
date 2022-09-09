@@ -25,4 +25,3 @@
  */
 
 $this->Execute("ALTER TABLE nodes ADD ipaddr_pub int(16) unsigned  DEFAULT '0' NOT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005042400', 'dbversion'));
