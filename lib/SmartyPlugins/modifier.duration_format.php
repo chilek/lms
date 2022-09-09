@@ -29,7 +29,7 @@ function smarty_modifier_duration_format($sec)
     $d = floor($sec / 86400);
     $h = floor(($sec - $d * 86400) / 3600);
     $m = floor(($sec - $d * 86400 - $h * 3600) / 60);
-    $s = floor(($sec - $d * 86400 - $h * 3600 - $m * 60) / 60);
+    $s = floor($sec - $d * 86400 - $h * 3600 - $m * 60);
     if ($sec < 60) {
         return sprintf("%02ds", $s);
     } elseif (empty($d)) {
