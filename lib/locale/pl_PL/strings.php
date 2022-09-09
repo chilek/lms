@@ -596,6 +596,7 @@ $_LANG['no answer'] = 'nie odebrano';
 $_LANG['<!voip>busy'] = 'zajęty';
 $_LANG['<!voip>Direction'] = 'Kierunek';
 $_LANG['<!voip>Type'] = 'Typ';
+$_LANG['<!voip>Direction/Type'] = 'Kierunek/Typ';
 $_LANG['<!voip>Status'] = 'Status';
 
 $_LANG['<!voip>call'] = 'połączenie';
