@@ -269,6 +269,7 @@ version 28-git (????-??-??):
   - enhancement: added service start date in new document form - it has impact on
     "from" date of newly created assignments [chilan]
   - enhancement: added billing record type support (call, sms, mms, data transfer) [chilan]
+  - enhancement: duration presentation format for billing records depends on their types [chilan]
 
 version 27.0 (2021-08-20):
 
