@@ -244,9 +244,12 @@
 		</TD>
 		<TD colspan="3">
 			{if $unlockedit}
-			<INPUT type="text" name="networkdata[snat]" value="{$network.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
+				<input type="text" name="networkdata[snat]" value="{$network.snat}"
+					{tip text="Enter network snat address(optional)" trigger="snat"}>
+			{elseif $network.snat != "0.0.0.0"}
+				{$network.snat}
 			{else}
-			{$network.snat}
+				{trans("— none —")}
 			{/if}
 		</TD>
 	</TR>
