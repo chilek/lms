@@ -110,7 +110,7 @@
 					(#{$v.vlanid}){if $v.description}, {$v.description|trunescape:45}{/if}{if $v.customername}, {$v.customername|escape} (#{$v.customerid}){/if}
 				</option>
 				{/foreach}
-				<option value="0" {if $network.vlanid == 0} selected{/if}>{trans("None")}</option>
+				<option value="0"{if $network.vlanid == 0} selected{/if}>{trans("— none —")}</option>
 			</select>
 			{else}
 				{$network.vlanid}
