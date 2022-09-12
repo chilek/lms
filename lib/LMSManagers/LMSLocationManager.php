@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -75,6 +75,11 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
     public function GetCountryStates()
     {
         return $this->db->GetAllByKey('SELECT id, name FROM states ORDER BY name', 'id');
+    }
+
+    public function getCountryStateIdByName($state_name)
+    {
+        return $this->db->GetOne('SELECT id FROM states WHERE LOWER(name) = LOWER(?)', array($state_name));
     }
 
     public function GetCountries()
