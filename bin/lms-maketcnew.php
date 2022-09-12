@@ -187,6 +187,10 @@ $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
 $ignore_assignment_suspensions = ConfigHelper::checkConfig('tcnew.ignore_assignment_suspensions');
 $assignment_per_node = ConfigHelper::getConfig('tcnew.one_assignment_per_node_allowed', false);
 $mbit_rates = ConfigHelper::getConfig('tcnew.generate_mbit_rates', false);
+$ceil_factor = ConfigHelper::getConfig(
+    'tcnew.ceil_bandwidth_overhead_factor',
+    '1.00'
+);
 
 $host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
 
@@ -559,6 +563,10 @@ foreach ($channels as $key => $channel) {
                 ($$v != 0 && $v_rounded == 0) ? $v_rounded = 1 : null;
             }
             ${$v} = $v_rounded;
+
+            if (strpos($v, 'ceil')) {
+                ${$v} = $ceil_factor * ${$v};
+            }
         }
     }
 
