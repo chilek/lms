@@ -465,7 +465,9 @@ switch ($action) {
         if (!empty($nodeipdata['macs'])) {
             foreach ($nodeipdata['macs'] as $key => $value) {
                 if (check_mac($value)) {
-                    if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
+                    if (in_array($value, $macs)) {
+                        $error['mac-input-' . $key] = trans('MAC address is in use!');
+                    } elseif ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                         if ($LMS->GetNodeIDByMAC($value)) {
                             $error['mac-input-' . $key] = trans('MAC address is in use!');
                         }
@@ -587,7 +589,9 @@ switch ($action) {
         $macs = array();
         foreach ($nodeipdata['macs'] as $key => $value) {
             if (check_mac($value)) {
-                if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
+                if (in_array($value, $macs)) {
+                    $error['mac-input-' . $key] = trans('MAC address is in use!');
+                } elseif ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                     if (($nodeid = $LMS->GetNodeIDByMAC($value)) != null && $nodeid != $_GET['ip']) {
                         $error['mac-input-' . $key] = trans('MAC address is in use!');
                     }
