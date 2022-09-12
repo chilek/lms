@@ -4672,7 +4672,7 @@ $_LANG['Enter Telecom Registry Number (optional)'] = 'Podaj numer w RPT (opcjona
 $_LANG['Telecom number:'] = 'Numer w RPT:';
 
 $_LANG['&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank\'s application.'] = '&nbsp;<BR>Skanuj i Płać<BR>Możesz zrobić przelew prosto i szybko za pomocą swojego telefonu.<BR>Aby zrobić przelew proszę zeskanować smartfonem QRcode w aplikacji Twojego banku.';
-$_LANG['QR Payment for Internet Invoice no.'] = 'QR Zaplata za Internet FV nr';
+$_LANG['QR Payment for Internet Invoice no. %number'] = 'QR Zapłata za Internet FV nr %number';
 
 $_LANG['Click here to autocomplete company data from GUS REGON database'] = 'Kliknij tutaj, aby uzupełnić automatycznie dane firmy z bazy danych GUS REGON';
 $_LANG['Click here to autocomplete zip code'] = 'Kliknij tutaj, aby automatycznie uzupełnić kod pocztowy';
