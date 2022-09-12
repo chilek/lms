@@ -270,6 +270,8 @@ version 28-git (????-??-??):
     "from" date of newly created assignments [chilan]
   - enhancement: added billing record type support (call, sms, mms, data transfer) [chilan]
   - enhancement: duration presentation format for billing records depends on their types [chilan]
+  - enhancement: 'invoices.qr2pay_comment' specifies format of QR2Pay comment on tcpdf invoices with translatable
+    'QR Payment for Internet Invoice no. %number' as default value [chilan]
 
 version 27.0 (2021-08-20):
 
