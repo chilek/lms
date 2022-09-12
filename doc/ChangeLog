@@ -274,6 +274,9 @@ version 28-git (????-??-??):
     with translatable 'QR Payment for Internet Invoice no. %number' as default value [chilan]
   - improvement: allow to narrow city search in choose location window to selected state
     and district [chilan]
+  - enhancement: 'phpui.default_address_state', 'phpui.default_billing_address_state',
+    'phpui.default_postal_address_state' and 'phpui.default_location_address_state'
+    control state preselection in location boxes and terit address popup window [chilan]
 
 version 27.0 (2021-08-20):
 
