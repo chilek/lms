@@ -67,6 +67,11 @@
 			if (data.hasOwnProperty('action')) {
 				search_update(data.action.cityid, data.action.districtid, data.action.stateid);
 			}
+		},
+		onAjax: function(uri) {
+			var stateid = parseInt($('#state_sel').val());
+			var districtid = parseInt($('#district_sel').val());
+			return uri + (stateid ? '&stateid=' + stateid : '') + (districtid ? '&districtid=' + districtid : '');
 		}
 	});
 
@@ -74,18 +79,27 @@
 {/if}
 
 <table id="location-table" cellpadding="3">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
 {if empty($states)}
-	<tr><td width="100%" align="center">
-		<b>{trans("Location database is empty.")}</b>
-	</td></tr>
+	<tr>
+		<td colspan="2" class="text-center">
+			<strong>{trans("Location database is empty.")}</strong>
+		</td>
+	</tr>
 {else}
 	<tr id="state">
-		<td width="1%">{trans("State")}:</td>
-		<td width="99%">
+		<td>{trans("State")}:</td>
+		<td>
 			<select id="state_sel" class="location-property-selection" name="state" {tip text="Select state"}>
-			{foreach from=$states item=item}
-				<option value="{$item.id}">{$item.name}</option>
-			{/foreach}
+				{if empty($data.stateid)}
+					<option value="0"></option>
+				{/if}
+				{foreach $states as $item}
+					<option value="{$item.id}">{$item.name}</option>
+				{/foreach}
 			</select>
 		</td>
 	</tr>
@@ -93,12 +107,12 @@
 		<td>{trans("District")}:</td>
 		<td>
 			<select id="district_sel" class="location-property-selection" name="district" {tip text="Select district"}>
-			{if !$data.districtid}
-				<option value="0"></option>
-			{/if}
-			{foreach from=$districts item=item}
-				<option value="{$item.id}">{$item.name}</option>
-			{/foreach}
+				{if empty($data.districtid)}
+					<option value="0"></option>
+				{/if}
+				{foreach $districts as $item}
+					<option value="{$item.id}">{$item.name}</option>
+				{/foreach}
 			</select>
 		</td>
 	</tr>
@@ -106,12 +120,12 @@
 		<td>{trans("City")}:</td>
 		<td>
 			<select id="city_sel" name="city" class="location-property-selection" {tip text="Select city"}>
-			{if !$data.cityid}
-				<option value="0"></option>
-			{/if}
-			{foreach from=$cities item=item}
-				<option value="{$item.id}">{$item.name}</option>
-			{/foreach}
+				{if empty($data.cityid)}
+					<option value="0"></option>
+				{/if}
+				{foreach $cities as $item}
+					<option value="{$item.id}">{$item.name}</option>
+				{/foreach}
 			</select>
 		</td>
 	</tr>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -109,7 +109,10 @@ if (isset($_GET['ajax']) && (isset($_POST['what']) || isset($_GET['what']))) {
             JOIN location_boroughs b ON (c.boroughid = b.id)
             JOIN location_districts d ON (b.districtid = d.id)
             JOIN location_states s ON (d.stateid = s.id)
-            WHERE c.name ?LIKE? ' . $DB->Escape("%$what%") . '
+            WHERE c.name ?LIKE? ' . $DB->Escape("%$what%")
+                . (isset($_GET['stateid']) ? ' AND s.id = ' . intval($_GET['stateid']) : '')
+                . (isset($_GET['districtid']) ? ' AND d.id = ' . intval($_GET['districtid']) : '')
+                . '
             ORDER BY c.name, b.type LIMIT '
             . intval(ConfigHelper::getConfig(
                 'phpui.location_autosuggest_max_length',
@@ -226,7 +229,8 @@ if ($streetid) {
 		JOIN location_districts d ON (b.districtid = d.id)
 		WHERE c.id = ?', array($cityid));
 } elseif (!empty($states)) {
-    $data['stateid'] = $states[key($states)]['id'];
+    //$data['stateid'] = $states[key($states)]['id'];
+    $data['stateid'] = 0;
 }
 
 if (!empty($data['stateid'])) {
