@@ -79,7 +79,17 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function getCountryStateIdByName($state_name)
     {
-        return $this->db->GetOne('SELECT id FROM states WHERE LOWER(name) = LOWER(?)', array($state_name));
+        $states = $this->db->GetAllByKey('SELECT id, LOWER(name) AS name FROM states', 'id');
+        if (empty($states)) {
+            return null;
+        }
+        $state_name = strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $state_name));
+        foreach ($states as $stateid => $state) {
+            if (iconv('UTF-8', 'ASCII//TRANSLIT', $state['name']) == $state_name) {
+                return $stateid;
+            }
+        }
+        return null;
     }
 
     public function GetCountries()
