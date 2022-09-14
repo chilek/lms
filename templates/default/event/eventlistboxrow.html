@@ -69,7 +69,7 @@
             {if $event.customername}
                 {hint mode="toggle" icon="customer" class="lms-ui-ignore-target-url"
                     url="?m=customerinfoshort&id={$event.customerid}"}
-                <a href="?m=customerinfo&id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</a>
+                <a href="?m=customerinfo&id={$event.customerid}">{$event.customername|trunescape:"30"}</a>
                 <br>
                 {if !empty($event.address_id)}
                     {icon name="location" label=$event.location}
