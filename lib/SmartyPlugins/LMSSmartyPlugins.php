@@ -1166,7 +1166,7 @@ class LMSSmartyPlugins
         $elemname = empty($params['elemname']) ? null : 'name="' . $params['elemname'] . '"';
         $onchange = empty($params['onchange']) ? null : 'onchange="' . $params['onchange'] . '"';
         $id = empty($params['id']) ? null : 'id="' . $params['id'] . '"';
-        $selected = empty(intval($params['selected'])) ? null : intval($params['selected']);
+        $selected = intval($params['selected']) ?: null;
 
         $tip = self::tipFunction(
             array(
