@@ -111,13 +111,13 @@
 								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')">
 								<option value="">{trans("— none —")}</option>
 								{foreach $netnodelist as $nn}
-									<option value="{$nn.id}"{if $nn.id == $event.netnodeid} selected{/if}>{$nn.name} (#{$nn.id})</option>
+									<option value="{$nn.id}"{if $nn.id == $event.netnodeid} selected{/if}>{$nn.name|escape} (#{$nn.id})</option>
 								{/foreach}
 							</select>
 						{else}
 							{foreach $netnodelist as $nn}
 								{if $nn.id == $netnodeid}
-									{$nn.name} (#{$nn.id})
+									{$nn.name|escape} (#{$nn.id})
 									<input type="hidden" name="event[netnodeid]" value="{$netnodeid}">
 								{/if}
 							{/foreach}
@@ -129,7 +129,7 @@
 						{if empty($netdevid)}
 							{include file="rt/rtnetdevs.html" form="event"}
 						{else}
-							{$netdevlist[0].name} (#{$netdevid})
+							{$netdevlist[0].name|escape} (#{$netdevid})
 							<input type="hidden" name="event[netdevid]" value="{$event.netdevid}">
 						{/if}
 					{/box_row}
