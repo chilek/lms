@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-function smarty_function_networkdeviceselection(array $params, Smarty_Internal_Template $template)
-{
+function smarty_function_network_device_selection(
+    array $params,
+    Smarty_Internal_Template $template
+) {
     return LMSSmartyPlugins::networkDeviceSelectionFunction($params, $template);
 }
