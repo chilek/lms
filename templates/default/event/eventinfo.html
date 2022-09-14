@@ -213,18 +213,18 @@
 				{if $event.netnode_name}
 					{icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
 					{if !empty($event.netnode_location)}
-						<br>{icon name="location"} {$event.netnode_location|escape}
+						<br>{icon name="location" label=$event.netnode_location}
 					{/if}
 				{else}
 					{if $event.customername}
-						{icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</A><br>
-					   {if !empty($event.address_id)}
-							{icon name="location"} {$event.location|escape}
-					   {elseif !empty($event.nodeid)}
-					   <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
-					   {else}
-						   {icon name="location"} {$event.customerlocation|escape}
-					   {/if}
+						{icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|trunescape:30}</A><br>
+						{if !empty($event.address_id)}
+							{icon name='location' label=$event.location}
+						{elseif !empty($event.nodeid)}
+							<a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
+						{else}
+							{icon name='location' label=$event.customerlocation}
+						{/if}
 					{/if}
 				{/if}
 			</td>
