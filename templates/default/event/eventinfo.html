@@ -227,9 +227,6 @@
 						{/if}
 					{/if}
 				{/if}
-				{if $event.netdevid}
-					{button type='link' icon='netdev' href="?m=netdevinfo&id={$event.netdevid}" label=$event.netdev_name}
-				{/if}
 			</td>
 		</tr>
 		{if !empty($event.netnodeid)}
@@ -244,6 +241,20 @@
 					{button type='link' href="?m=netnodeinfo&id={$event.netnodeid}"
 						label="{$event.netnode_name|escape} ({$event.netnode_location|escape})"}
 					</a>
+				</td>
+			</tr>
+		{/if}
+		{if !empty($event.netdevid)}
+			<tr>
+				<td class='nobr'>
+					{icon name='netdev'}
+				</td>
+				<td class="nobr bold">{trans('Network device')}
+				<td>
+					{button
+						type='link'
+						href="?m=netdevinfo&id={$event.netdevid}"
+						label=$event.netdevice_name}
 				</td>
 			</tr>
 		{/if}
