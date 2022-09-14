@@ -277,6 +277,8 @@ version 28-git (????-??-??):
   - enhancement: 'phpui.default_address_state', 'phpui.default_billing_address_state',
     'phpui.default_postal_address_state' and 'phpui.default_location_address_state'
     control state preselection in location boxes and terit address popup window [chilan]
+  - enhancement: allow to assign events with netnodes and netdevices [interduo]
+  - enhancement: implement {networkDeviceSelection} smarty function [interduo]
 
 version 27.0 (2021-08-20):
 

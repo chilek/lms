@@ -82,6 +82,7 @@ if (!empty($netdevlist)) {
     unset($netdev);
 }
 $SMARTY->assign('netdevlist', $netdevlist);
+$SMARTY->assign('netnodeevents', $LMS->GetEventList(array('netnodeid' => $id)));
 
 $queue = $LMS->GetQueueContents(array('removed' => 0, 'netnodeids' => $id, 'short' => 1));
 

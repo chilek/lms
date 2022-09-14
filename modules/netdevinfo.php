@@ -67,6 +67,8 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 
     include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
+    $SMARTY->assign('netdevevents', $LMS->GetEventList(array('netdevid' => $id)));
+
     $netdevconnected = $LMS->GetNetDevConnectedNames($id);
     $netcomplist = $LMS->GetNetdevLinkedNodes($id);
     $netdevlist = $LMS->GetNotConnectedDevices($id);

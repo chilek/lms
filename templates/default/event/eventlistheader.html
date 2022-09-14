@@ -16,7 +16,9 @@
     </td>
     <td></td>
     <td class="text-right">
-        {button icon="timetable" label="Show schedule" onclick="showSchedule();"}
+        {if $layout.module == 'eventlist'}
+            {button icon='timetable' label='Show schedule' onclick='showSchedule();'}
+        {/if}
     </td>
 </tr>
 {/block}

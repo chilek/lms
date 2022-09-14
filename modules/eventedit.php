@@ -102,6 +102,11 @@ switch ($action) {
 $params['withDeleted'] = 1;
 $userlist = $LMS->GetUserNames($params);
 
+$netdevices = $LMS->GetNetDevList();
+unset($netdevices['total'], $netdevices['order'], $netdevices['direction']);
+$SMARTY->assign('netdevices', $netdevices);
+$SMARTY->assign('netnodes', $LMS->GetNetNodes());
+
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
@@ -224,6 +229,9 @@ if (isset($_POST['event'])) {
         $event['enddate'] = $enddate;
         $event['endtime'] = $endtime;
         $event['helpdesk'] = $event['ticketid'] ?: null;
+        $event['netnodeid'] = empty($event['netnodeid']) ? null : $event['netnodeid'];
+        $event['netdevid'] = empty($event['netdevid']) ? null : $event['netdevid'];
+
         $LMS->EventUpdate($event);
 
         $hook_data = $LMS->executeHook(

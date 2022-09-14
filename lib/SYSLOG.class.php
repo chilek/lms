@@ -92,6 +92,7 @@ class SYSLOG
     const RES_NETDEV_MAC = 64;
     const RES_VOIP_ACCOUNT = 65;
     const RES_VOIP_ACCOUNT_NUMBER = 66;
+    const RES_NETNODE = 67;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -171,6 +172,7 @@ class SYSLOG
         self::RES_NETDEV_MAC => 'network device mac<!syslog>',
         self::RES_VOIP_ACCOUNT => 'VoIP account<!syslog>',
         self::RES_VOIP_ACCOUNT_NUMBER => 'VoIP account number<!syslog>',
+        self::RES_NETNODE => 'network node<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -239,6 +241,7 @@ class SYSLOG
         self::RES_NETDEV_MAC => 'networkdevicemacid',
         self::RES_VOIP_ACCOUNT => 'voipaccountid',
         self::RES_VOIP_ACCOUNT_NUMBER => 'voipnumberid',
+        self::RES_NETNODE => 'netnodeid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',

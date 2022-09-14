@@ -104,6 +104,36 @@
 						{/if}
 					{/box_row}
 
+					{$visibility=!empty($netnodelist)}
+					{box_row class="netnode-row" icon="netnode" label="Network node" visible=$visibility icon_class="fa-fw"}
+						{if empty($netnodeid)}
+							<select id="netnodeid" name="event[netnodeid]" class="netnode-list lms-ui-advanced-select" {tip text="Select network node"}
+								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')">
+								<option value="">{trans("— none —")}</option>
+								{foreach $netnodelist as $nn}
+									<option value="{$nn.id}"{if $nn.id == $event.netnodeid} selected{/if}>{$nn.name} (#{$nn.id})</option>
+								{/foreach}
+							</select>
+						{else}
+							{foreach $netnodelist as $nn}
+								{if $nn.id == $netnodeid}
+									{$nn.name} (#{$nn.id})
+									<input type="hidden" name="event[netnodeid]" value="{$netnodeid}">
+								{/if}
+							{/foreach}
+						{/if}
+					{/box_row}
+
+					{$visibility=!empty($netdevlist)}
+					{box_row icon="netdev" label="Device" field_id="eventnetdevs" icon_class="fa-fw" visible=$visibility}
+						{if empty($netdevid)}
+							{include file="rt/rtnetdevs.html" form="event"}
+						{else}
+							{$netdevlist[0].name} (#{$netdevid})
+							<input type="hidden" name="event[netdevid]" value="{$event.netdevid}">
+						{/if}
+					{/box_row}
+
 					{$visibility=!empty($nodes)}
 					{box_row class="node-row" icon="node" label="Node:" icon_class="fa-fw" visible=$visibility}
 						{if !empty($event.ticketid)}

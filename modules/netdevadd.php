@@ -220,10 +220,8 @@ if (isset($netdev)) {
         if (!$netdev['ownerid']) {
             $netdev['ownerid'] = '';
         }
-        $SMARTY->assign('netdev', $netdev);
-    } else {
-        $SMARTY->assign('netdev', array());
     }
+    $SMARTY->assign('netdev', array());
 }
 
 $layout['pagetitle'] = trans('New Device');

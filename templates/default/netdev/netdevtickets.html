@@ -3,10 +3,10 @@
     <THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="netdevticketpanel">
 		<TD class="bold">
-			{icon name="helpdesk" class="lms-ui-sortable-handle" label="Assigned tickets:"} ({$queue|size})
+			{icon name="helpdesk" class="lms-ui-sortable-handle" label="Tickets"} ({$queue|size})
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=rtticketadd&netdevid={$queue_netdevid}{if isset($netdev.netnode.id)}&netnodeid={$netdev.netnode.id}{/if}"><IMG src="img/save.gif" alt="{trans("Add new")}"> {trans("Add new")}</A>
+			{button type='link' href="?m=rtticketadd&netdevid={$queue_netdevid}" icon="add" tip="Add new" label="Add"}
 		</TD>
 	</TR>
     </THEAD>

@@ -1,0 +1,39 @@
+<!--// $Id$ //-->
+<table class="lmsbox lms-ui-sortable lms-ui-tab-container" id="netnodeevents">
+    <thead>
+	<tr class="hand lmsbox-titlebar" data-lmsbox-content="netnodeeventspanel">
+		<td class="bold">
+			{icon name='timetable' class='lms-ui-sortable-handle' label='Events'}
+			({$queue|size})
+		</td>
+		<td class="text-right nobr">
+			{button type='link' href="?m=eventadd&netnodeid={$nodeinfo.id}"
+				icon='add' tip='Add new' label='Add'}
+		</td>
+	</tr>
+    </thead>
+    <tbody>
+	<tr id="netnodeeventspanel" style="display: none;">
+		<td width="100%" colspan="2">
+			<table class="lmsbox-inner lms-ui-background-cycle">
+				<thead>
+					{include file='event/eventlistheader.html'}
+				</thead>
+				<tbody>
+					{foreach $netnodeevents as $event}
+						{include file='event/eventlistboxrow.html'}
+					{/foreach}
+				</tbody>
+			</table>
+		 </td>
+	</tr>
+    </tbody>
+</table>
+
+<script>
+
+    if (getCookie('netnodeeventspanel') == '1') {
+        $('#netnodeeventspanel').show();
+    }
+
+</script>
