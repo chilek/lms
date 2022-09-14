@@ -111,7 +111,7 @@ class LMSSmartyPlugins
             . ($visible ? '' : ' style="display: none;"')
             . ($disabled ? ' disabled' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
-            . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
+            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
 
@@ -1021,7 +1021,7 @@ class LMSSmartyPlugins
         // optional - text tip,
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
         // optional - text label
-        $label = isset($params['label']) ? trans($params['label']) : null;
+        $label = isset($params['label']) ? htmlspecialchars(trans($params['label'])) : null;
         // optional - if icon should have fixed width
         $fw = !isset($params['fw']) || !empty($params['fw']);
 
