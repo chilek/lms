@@ -252,10 +252,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vnodes n ON (e.nodeid = n.id)
 			LEFT JOIN customerview c ON (c.id = customerid)
 			LEFT JOIN vusers ON (vusers.id = userid)
-			LEFT JOIN rttickets as rtt ON (rtt.id = e.ticketid)
-			LEFT JOIN netnodes as nn ON (nn.id = e.netnodeid)
-			LEFT JOIN netdevices as nd ON (nd.id = e.netdevid)
-			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
+			LEFT JOIN rttickets rtt ON (rtt.id = e.ticketid)
+			LEFT JOIN netnodes nn ON (nn.id = e.netnodeid)
+			LEFT JOIN netdevices nd ON (nd.id = e.netdevid)
+			LEFT JOIN vaddresses vd ON (vd.id = nn.address_id)
 			WHERE e.id = ?', array($id));
 
         if (empty($event)) {
@@ -465,10 +465,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 			LEFT JOIN customerview c ON (events.customerid = c.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
-			LEFT JOIN rttickets as rtt ON (rtt.id = events.ticketid)
-			LEFT JOIN netnodes as nn ON (nn.id = events.netnodeid)
-			LEFT JOIN netdevices as nd ON (nd.id = events.netdevid)
-			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
+			LEFT JOIN rttickets rtt ON (rtt.id = events.ticketid)
+			LEFT JOIN netnodes nn ON (nn.id = events.netnodeid)
+			LEFT JOIN netdevices nd ON (nd.id = events.netdevid)
+			LEFT JOIN vaddresses vd ON (vd.id = nn.address_id)
             LEFT JOIN (
                 SELECT ' . $this->db->GroupConcat('contact', ', ') . ' AS customerphone, customerid
                 FROM customercontacts
