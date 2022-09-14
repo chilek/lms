@@ -31,8 +31,8 @@ $this->Execute("ALTER TABLE events ADD COLUMN netdevid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE events ADD CONSTRAINT event_netdevid_fkey
     FOREIGN KEY (netnodeid) REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$this->Execute("ALTER TABLE events ADD INDEX events_netnodeid_idx (netnodeid)");
-$this->Execute("ALTER TABLE events ADD INDEX events_netdevid_idx (netdevid)");
+$this->Execute("CREATE INDEX events_netnodeid_idx on events (netnodeid)");
+$this->Execute("CREATE INDEX events_netdevid_idx on events (netdevid)");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022091400', 'dbversion'));
 
