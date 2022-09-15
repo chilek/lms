@@ -1187,6 +1187,43 @@ class LMSSmartyPlugins
         return '<select ' . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
     }
 
+    public static function networkNodeSelectionFunction(
+        array $params,
+        $template
+    ) {
+        $LMS = LMS::getInstance();
+
+        static $netnodelist = array();
+        if (empty($netnodelist)) {
+            $netnodelist = $LMS->GetNetNodeList(array(), 'name,asc');
+            unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
+        }
+
+        $elemname = empty($params['elemname']) ? null : 'name="' . $params['elemname'] . '"';
+        $onchange = empty($params['onchange']) ? null : 'onchange="' . $params['onchange'] . '"';
+        $id = empty($params['id']) ? null : 'id="' . $params['id'] . '"';
+        $selected = intval($params['selected']) ?: null;
+
+        $tip = self::tipFunction(
+            array(
+                'text' => (empty($params['tip']) ?
+                    trans('Select network node') : $params['tip']),
+                'trigger' => $params['elemname'],
+            ),
+            $template
+        );
+
+        $class = 'class="netnode-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+
+        $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
+        foreach ($netnodelist as $item) {
+            $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>'
+                . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
+        }
+
+        return '<select ' . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
+    }
+
     public static function identityTypesFunction(array $params, $template)
     {
         static $identityTypes = array();

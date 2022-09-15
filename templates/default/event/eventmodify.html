@@ -107,13 +107,12 @@
 					{$visibility=!empty($netnodelist)}
 					{box_row class="netnode-row" icon="netnode" label="Network node" visible=$visibility icon_class="fa-fw"}
 						{if empty($netnodeid)}
-							<select id="netnodeid" name="event[netnodeid]" class="netnode-list lms-ui-advanced-select" {tip text="Select network node"}
-								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')">
-								<option value="">{trans("— none —")}</option>
-								{foreach $netnodelist as $nn}
-									<option value="{$nn.id}"{if $nn.id == $event.netnodeid} selected{/if}>{$nn.name|escape} (#{$nn.id})</option>
-								{/foreach}
-							</select>
+							{network_node_selection
+								id='netnodeid'
+								name='event[netnodeid]'
+								form='event'
+								selected=$event.netnodeid
+								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')"}
 						{else}
 							{foreach $netnodelist as $nn}
 								{if $nn.id == $netnodeid}

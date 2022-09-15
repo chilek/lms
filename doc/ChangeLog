@@ -278,7 +278,7 @@ version 28-git (????-??-??):
     'phpui.default_postal_address_state' and 'phpui.default_location_address_state'
     control state preselection in location boxes and terit address popup window [chilan]
   - enhancement: allow to assign events with netnodes and netdevices [interduo]
-  - enhancement: implement {networkDeviceSelection} smarty function [interduo]
+  - enhancement: implement {network_device_selection} & {network_node_selection} smarty function [interduo]
 
 version 27.0 (2021-08-20):
 
