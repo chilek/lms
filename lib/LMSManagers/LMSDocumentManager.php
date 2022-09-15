@@ -2189,10 +2189,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($id)
             );
 
-            $document_password = ConfigHelper::getConfig('phpui.document_password', '', true);
+            $document_password = ConfigHelper::getConfig('documents.protection_password', ConfigHelper::getConfig('phpui.document_password', '', true), true);
             $document_protection_command = ConfigHelper::getConfig(
-                'phpui.document_protection_command',
-                'qpdf --encrypt %password %password 256 -- %in-file -'
+                'documents.protection_command',
+                ConfigHelper::getConfig(
+                    'phpui.document_protection_command',
+                    'qpdf --encrypt %password %password 256 -- %in-file -'
+                )
             );
 
             foreach ($document['attachments'] as &$attachment) {
