@@ -34,6 +34,6 @@ $this->Execute("ALTER TABLE events ADD CONSTRAINT event_netdevid_fkey
 $this->Execute("CREATE INDEX events_netnodeid_idx on events (netnodeid)");
 $this->Execute("CREATE INDEX events_netdevid_idx on events (netdevid)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022091400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022091600', 'dbversion'));
 
 $this->CommitTrans();
