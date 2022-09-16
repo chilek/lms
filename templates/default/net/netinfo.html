@@ -48,7 +48,7 @@
 				<input type="text" name="networkdata[address]" value="{$network.address}" required
 					{tip text="Write down network address and select mask" trigger="address"}>
 				/
-				<select size="1" title="Prefixlen" name="networkdata[prefix]">
+				<select size="1" name="networkdata[prefix]" {tip text='Choose prefix'}>
 					{section name=prefixlist loop=$prefixlist.id}
 						<option value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}
 							>{$prefixlist.value[prefixlist]}</option>
