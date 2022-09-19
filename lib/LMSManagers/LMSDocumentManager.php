@@ -2400,7 +2400,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $mailto = implode(', ', $mailto);
             $mailto_qp_encoded = implode(', ', $mailto_qp_encoded);
 
-            if (!empty($quiet) || !empty($test)) {
+            if (empty($quiet) || !empty($test)) {
                 $msg = $document['title'] . ': ' . $mailto ;
                 switch ($type) {
                     case 'frontend':
@@ -2417,7 +2417,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
             }
 
-            if (!empty($test)) {
+            if (empty($test)) {
                 $files = array();
                 foreach ($document['attachments'] as $attachment) {
                     $files[] = array(
