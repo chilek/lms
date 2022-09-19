@@ -936,6 +936,18 @@ class LMS
         return $manager->getCustomerModificationInfo($customerid);
     }
 
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerExternalIDs($customerid, $serviceproviderid);
+    }
+
+    public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerExternalIDs($customerid, $customerextids, $only_passed_service_providers);
+    }
+
     /*
      * Customer groups
      */

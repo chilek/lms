@@ -284,6 +284,17 @@ CREATE TABLE divisions (
 );
 
 /* --------------------------------------------------------
+  Structure of table "serviceproviders" (serviceproviders)
+-------------------------------------------------------- */
+CREATE SEQUENCE serviceproviders_id_seq;
+DROP TABLE IF EXISTS serviceproviders;
+CREATE TABLE serviceproviders (
+	id integer DEFAULT nextval('serviceproviders_id_seq') NOT NULL,
+	name varchar(64) NOT NULL,
+	PRIMARY KEY (id)
+);
+
+/* --------------------------------------------------------
   Structure of table "customers" (customers)
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS customers_id_seq;
@@ -291,7 +302,6 @@ CREATE SEQUENCE customers_id_seq;
 DROP TABLE IF EXISTS customers CASCADE;
 CREATE TABLE customers (
 	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
-	extid varchar(32) DEFAULT '' NOT NULL,
 	lastname varchar(128)	DEFAULT '' NOT NULL,
 	name varchar(128)	DEFAULT '' NOT NULL,
 	altname varchar(128)	DEFAULT NULL,
@@ -329,6 +339,9 @@ CREATE TABLE customers (
 );
 CREATE INDEX customers_lastname_idx ON customers (lastname, name);
 
+/* --------------------------------------------------------
+  Structure of table "customerconsents" (customerconsents)
+-------------------------------------------------------- */
 DROP TABLE IF EXISTS customerconsents;
 CREATE TABLE customerconsents (
     customerid integer NOT NULL
@@ -339,6 +352,19 @@ CREATE TABLE customerconsents (
 );
 CREATE INDEX customerconsents_cdate_idx ON customerconsents (cdate);
 CREATE INDEX customerconsents_type_idx ON customerconsents (type);
+
+/* --------------------------------------------------------
+  Structure of table "customerextids" (customerextids)
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS customerextids CASCADE;
+CREATE TABLE customerextids (
+    customerid integer NOT NULL
+        CONSTRAINT customerextids_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    extid varchar(64) NOT NULL,
+    serviceproviderid integer DEFAULT NULL
+        CONSTRAINT customerextids_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT customerextids_customerid_extid_serviceproviderid_ukey UNIQUE (customerid, extid, serviceproviderid)
+);
 
 /* --------------------------------------------------------
   Structure of table "customernotes" (customernotes)
@@ -666,7 +692,10 @@ CREATE TABLE voipaccounts (
 	cost_limit	numeric(12,2) NULL DEFAULT NULL,
 	address_id integer
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    description text NOT NULL DEFAULT '',
+	description text NOT NULL DEFAULT '',
+	serviceproviderid integer DEFAULT NULL
+		CONSTRAINT voipaccounts_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -3094,13 +3123,15 @@ CREATE VIEW customerview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE NOT EXISTS (
         SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -3127,13 +3158,15 @@ CREATE VIEW contractorview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
@@ -3152,13 +3185,15 @@ CREATE VIEW customeraddressview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE c.type < 2;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
@@ -4249,6 +4284,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022091500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022091900');
 
 COMMIT;

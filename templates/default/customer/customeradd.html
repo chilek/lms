@@ -129,7 +129,8 @@
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" id="extid" class="lms-ui-autogrow" name="customeradd[extid]" value="{$customeradd.extid|escape}"
+								<input type="hidden" name="customeradd[extids][0][serviceproviderid]" value="0">
+								<input type="text" id="extid" class="lms-ui-autogrow" name="customeradd[extids][0][extid]" value="{$customeradd.extids[0].extid|escape}"
 									{tip trigger="extid"}>
 								{hint content="Enter customer identifier in external system (optional)"}
 							</div>
