@@ -54,7 +54,7 @@ if (isset($_POST['voipaccountedit'])) {
         }
     }
 
-    if ($voipaccountedit['login']=='') {
+    if (isset($voipaccountedit['login']) && $voipaccountedit['login'] == '') {
         $error['login'] = trans('VoIP account login is required!');
     } else {
         $loginids = $LMS->GetVoipAccountIDByLogin($voipaccountedit['login']);
@@ -142,7 +142,7 @@ if (isset($_POST['voipaccountedit'])) {
     }
 
     $voipaccountinfo['flags']   = $voipaccountedit['flags'] = $flags;
-    $voipaccountinfo['login']   = $voipaccountedit['login'];
+    $voipaccountinfo['login']   = isset($voipaccountedit['login']) ? $voipaccountedit['login'] : null;
     $voipaccountinfo['passwd']  = $voipaccountedit['passwd'];
     $voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
 
