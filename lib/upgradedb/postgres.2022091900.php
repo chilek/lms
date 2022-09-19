@@ -69,7 +69,7 @@ if ($this->ResourceExists('customers.extid', LMSDB::RESOURCE_TYPE_COLUMN)) {
         $records = array();
         $customer_count = count($customers);
         foreach ($customers as $customer) {
-            $records[] = '(' . $customer['id'] . ',' . $customer['extid'] . ')';
+            $records[] = '(' . $customer['id'] . ',' . $this->Escape($customer['extid']) . ')';
             $i++;
             $customer_count--;
             if ($i < 500 && $customer_count) {
