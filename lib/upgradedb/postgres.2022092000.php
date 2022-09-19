@@ -23,17 +23,17 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE events ADD COLUMN netnodeid int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE events ADD COLUMN netnodeid integer DEFAULT NULL");
 $this->Execute("ALTER TABLE events ADD CONSTRAINT event_netnodeid_fkey
     FOREIGN KEY (netnodeid) REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$this->Execute("ALTER TABLE events ADD COLUMN netdevid int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE events ADD COLUMN netdevid integer DEFAULT NULL");
 $this->Execute("ALTER TABLE events ADD CONSTRAINT event_netdevid_fkey
-    FOREIGN KEY (netnodeid) REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE");
+    FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$this->Execute("CREATE INDEX events_netnodeid_idx on events (netnodeid)");
-$this->Execute("CREATE INDEX events_netdevid_idx on events (netdevid)");
+$this->Execute("CREATE INDEX events_netnodeid_idx ON events (netnodeid)");
+$this->Execute("CREATE INDEX events_netdevid_idx ON events (netdevid)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022091600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022092000', 'dbversion'));
 
 $this->CommitTrans();
