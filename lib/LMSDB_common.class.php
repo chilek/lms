@@ -773,14 +773,21 @@ abstract class LMSDB_common implements LMSDBInterface
                     if (!empty($pendingupgrades)) {
                         sort($pendingupgrades);
                         foreach ($pendingupgrades as $upgrade) {
+                            $fname = $libdir . DIRECTORY_SEPARATOR . 'upgradedb'
+                                . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php';
                             $this->BeginTrans();
-                            include($libdir . DIRECTORY_SEPARATOR . 'upgradedb'
-                                . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
-                            $this->Execute(
-                                'UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',
-                                array($upgrade, 'dbversion')
-                            );
+                            include($fname);
                             $this->CommitTrans();
+                            if ($this->errors) {
+                                print 'Error in DB schema upgrade: ' . $fname . PHP_EOL;
+                                break;
+                            } else {
+                                $this->Execute(
+                                    'UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',
+                                    array($upgrade, 'dbversion')
+                                );
+                                print 'DB version is now: ' . $upgrade . PHP_EOL;
+                            }
                         }
                     }
 
