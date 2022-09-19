@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,8 +41,8 @@ if ($kind == 2) {
 			WHERE a.customergroupid = '.$group.' AND a.customerid = c.id)' : '')
         .' GROUP BY c.id, c.lastname, c.name, c.address, c.zip, c.city, d.account, d.name,
 			d.shortname, d.address, d.zip, d.city
-		HAVING COALESCE(SUM(cash.value), 0.00) < ? ORDER BY c.id',
-        array(str_replace(',', '.', $balance))
+		' . (isset($balance) ? ' HAVING COALESCE(SUM(cash.value), 0.00) < ' . str_replace(',', '.', $balance) : '')
+		. ' ORDER BY c.id'
     );
 } else {
     $list = $DB->GetCol(

@@ -528,7 +528,7 @@ switch ($type) {
 
                 break;
             case 2:
-                $balance = $_POST['balance'] ? $_POST['balance'] : 0;
+                $balance = isset($_POST['balance']) && strlen($_POST['balance']) ? floatval($_POST['balance']) : null;
                 $customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
                 $group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
                 $exclgroup = isset($_POST['groupexclude']) ? 1 : 0;
