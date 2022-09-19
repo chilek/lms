@@ -57,7 +57,8 @@ if (!$this->ResourceExists('customerextids', LMSDB::RESOURCE_TYPE_TABLE)) {
             extid varchar(64) NOT NULL,
             serviceproviderid integer DEFAULT NULL
                 CONSTRAINT customerextids_serviceproviderid_fkey REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
-            CONSTRAINT customerextids_customerid_extid_serviceproviderid_ukey UNIQUE (customerid, extid, serviceproviderid)"
+            CONSTRAINT customerextids_customerid_extid_serviceproviderid_ukey UNIQUE (customerid, extid, serviceproviderid)
+        )"
     );
 }
 

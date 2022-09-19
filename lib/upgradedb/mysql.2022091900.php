@@ -35,7 +35,8 @@ if (!$this->ResourceExists('serviceproviders', LMSDB::RESOURCE_TYPE_TABLE)) {
         "CREATE TABLE serviceproviders (
             id int(11) NOT NULL auto_increment,
             name varchar(64) NOT NULL,
-            PRIMARY KEY (id)"
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB"
     );
 }
 
