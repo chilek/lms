@@ -2117,7 +2117,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $customerdata['id'],
                 $customerdata['extids']
             );
-
         }
 
         return $res;
@@ -3480,7 +3479,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 $customerid,
                             )
                         );
-
                     } else {
                         $result = $this->db->Execute(
                             'UPDATE customerextids SET extid = ? WHERE customerid = ? AND serviceproviderid = ?',
