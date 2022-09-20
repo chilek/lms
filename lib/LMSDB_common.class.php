@@ -786,7 +786,8 @@ abstract class LMSDB_common implements LMSDBInterface
                                     'UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',
                                     array($upgrade, 'dbversion')
                                 );
-                                print 'DB version is now: ' . $upgrade . PHP_EOL;
+                                print 'Timestamp: ' . time() . ', DB version is now: '
+                                    . $upgrade . PHP_EOL;
                             }
                         }
                     }
