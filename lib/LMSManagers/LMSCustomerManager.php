@@ -2115,7 +2115,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
             $this->updateCustomerExternalIDs(
                 $customerdata['id'],
-                $customerdata['extids']
+                $customerdata['extids'],
+                true
             );
         }
 
