@@ -21,8 +21,9 @@
  *
  */
 
-
-$this->Execute("ALTER TABLE messageitems ALTER COLUMN externalmsgid DROP NOT NULL");
-$this->Execute("UPDATE messageitems SET externalmsgid = NULL WHERE externalmsgid = 0");
-$this->Execute("ALTER TABLE messageitems ALTER COLUMN externalmsgid TYPE varchar(64)");
-$this->Execute("ALTER TABLE messageitems ALTER COLUMN externalmsgid SET DEFAULT NULL");
+if (!$this->ResourceExists('messageitems.externalmsgid.varchar(26)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
+    $this->Execute("ALTER TABLE messageitems ALTER COLUMN externalmsgid DROP NOT NULL");
+    $this->Execute("UPDATE messageitems SET externalmsgid = NULL WHERE externalmsgid = 0");
+    $this->Execute("ALTER TABLE messageitems ALTER COLUMN externalmsgid TYPE varchar(64)");
+    $this->Execute("ALTER TABLE messageitems ALTER COLUMN externalmsgid SET DEFAULT NULL");
+}

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,6 +33,8 @@ interface LMSLocationManagerInterface
     public function UpdateCountryState($zip, $stateid);
 
     public function GetCountryStates();
+
+    public function getCountryStateIdByName($state_name);
 
     public function GetCountries();
 

@@ -21,10 +21,28 @@
  *
  */
 
+$this->BeginTrans();
 
-if (!$this->ResourceExists('voip_cdr_caller_idx', LMSDB::RESOURCE_TYPE_INDEX)) {
-    $this->Execute("CREATE INDEX voip_cdr_caller_idx ON voip_cdr (caller)");
-}
-if (!$this->ResourceExists('voip_cdr_callee_idx', LMSDB::RESOURCE_TYPE_INDEX)) {
-    $this->Execute("CREATE INDEX voip_cdr_callee_idx ON voip_cdr (callee)");
-}
+$this->Execute(
+    "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
+    array(
+        'documents',
+        'protection_command',
+        'phpui',
+        'document_protection_command',
+    )
+);
+
+$this->Execute(
+    "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
+    array(
+        'documents',
+        'protection_password',
+        'phpui',
+        'document_password',
+    )
+);
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022091500', 'dbversion'));
+
+$this->CommitTrans();

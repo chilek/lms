@@ -129,7 +129,8 @@
 						</td>
 						<td>
 							<div class="valign-middle">
-								<input type="text" id="extid" class="lms-ui-autogrow" name="customeradd[extid]" value="{$customeradd.extid|escape}"
+								<input type="hidden" name="customeradd[extids][0][serviceproviderid]" value="0">
+								<input type="text" id="extid" class="lms-ui-autogrow" name="customeradd[extids][0][extid]" value="{$customeradd.extids[0].extid|escape}"
 									{tip trigger="extid"}>
 								{hint content="Enter customer identifier in external system (optional)"}
 							</div>
@@ -383,14 +384,14 @@
 
 						{* if billing address is not set *}
 						{if $addr_found == 0}
-							{$tmp['location_address_type'] = $smarty.const.BILLING_ADDRESS}
-							{$tmp['prefix'] = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
-							{$tmp['location_street_name'] = ConfigHelper::getConfig('phpui.default_address')}
-							{$tmp['location_zip']        = ConfigHelper::getConfig('phpui.default_zip')}
-							{$tmp['location_city_name']  = ConfigHelper::getConfig('phpui.default_city')}
-							{$tmp['location_state']      = ConfigHelper::getConfig('phpui.default_stateid')}
-							{$tmp['location_country_id'] = ConfigHelper::getConfig('phpui.default_countryid')}
-							{$tmp['show'] = true}
+							{$tmp.location_address_type = $smarty.const.BILLING_ADDRESS}
+							{$tmp.location_state_name = $default_states[$smarty.const.BILLING_ADDRESS]}
+							{$tmp.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$tmp.location_street_name = ConfigHelper::getConfig('phpui.default_address')}
+							{$tmp.location_zip = ConfigHelper::getConfig('phpui.default_zip')}
+							{$tmp.location_city_name = ConfigHelper::getConfig('phpui.default_city')}
+							{$tmp.location_country_id = ConfigHelper::getConfig('phpui.default_countryid')}
+							{$tmp.show = true}
 							{$addr_counter = $addr_counter + 1}
 
 							{$tmp.hide_name=true}
@@ -426,8 +427,9 @@
 
 {*						 if postal address is not set*}
 						{if $addr_found == 0}
-							{$tmp['location_address_type'] = $smarty.const.POSTAL_ADDRESS}
-							{$tmp['prefix'] = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$tmp.location_address_type = $smarty.const.POSTAL_ADDRESS}
+							{$tmp.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$tmp.location_state_name = $default_states[$smarty.const.POSTAL_ADDRESS]}
 							{$addr_counter = $addr_counter + 1}
 							{location_box_expandable data=$tmp}
 						{/if}
@@ -456,6 +458,7 @@
 					</td>
 					<td>
 						{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+						{$v.location_state_name = $default_states[$smarty.const.LOCATION_ADDRESS]}
 						{$address_idx = $addr_counter}
 						{$v.default_type = 1}
 						{$v.delete_button = 1}

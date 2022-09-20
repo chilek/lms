@@ -2056,7 +2056,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
         $customeradd['countryid'] = 0;
         $customeradd['consents'] = array();
         $customeradd['paytime'] = -1;
-        $customeradd['extid'] = 0;
+        $customeradd['extids'] = array();
 
         $id = $LMS->CustomerAdd($customeradd);
         $LMS->AddAssignment(array(
