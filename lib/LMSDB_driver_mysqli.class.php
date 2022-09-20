@@ -476,6 +476,13 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
                     ) > 0;
                 }
                 break;
+            case LMSDB::RESOURCE_TYPE_INDEX:
+                return $this->GetOne(
+                    'SELECT COUNT(*) FROM information_schema.statistics
+                    WHERE table_schema = ? AND index_name = ?',
+                    array($this->_dbname, $name)
+                ) > 0;
+                break;
         }
     }
 }

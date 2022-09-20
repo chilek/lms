@@ -484,6 +484,12 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                     array($this->_dbname, $name)
                 ) > 0;
                 break;
+            case LMSDB::RESOURCE_TYPE_INDEX:
+                return $this->GetOne(
+                    'SELECT * FROM pg_indexes WHERE indexname = ?',
+                    array($name)
+                ) > 0;
+                break;
         }
     }
 }
