@@ -499,31 +499,31 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 if (isset($column_length)) {
                     if ($column_type == 'varchar') {
                         return $this->GetOne(
-                           'SELECT COUNT(*) FROM information_schema.columns
-                           WHERE table_catalog = ?
-                               AND table_name = ?
-                               AND column_name = ?
-                               AND udt_name = ?
-                               AND character_maximum_length = ?',
-                           array($this->_dbname, $table_name, $column_name, $column_type, $column_length)
+                            'SELECT COUNT(*) FROM information_schema.columns
+                            WHERE table_catalog = ?
+                                AND table_name = ?
+                                AND column_name = ?
+                                AND udt_name = ?
+                                AND character_maximum_length = ?',
+                            array($this->_dbname, $table_name, $column_name, $column_type, $column_length)
                         ) > 0;
                     } elseif ($column_type == 'numeric' && preg_match('/^(?<precision>[0-9]+)\s*,\s*(?<scale>[0-9]+)$/', $column_length, $m)) {
                         return $this->GetOne(
-                           'SELECT COUNT(*) FROM information_schema.columns
-                           WHERE table_catalog = ?
-                               AND table_name = ?
-                               AND column_name = ?
-                               AND udt_name = ?
-                               AND numeric_precision = ?
-                               AND numeric_scale = ?',
-                           array($this->_dbname, $table_name, $column_name, $column_type, $m['precision'], $m['scale'])
+                            'SELECT COUNT(*) FROM information_schema.columns
+                            WHERE table_catalog = ?
+                                AND table_name = ?
+                                AND column_name = ?
+                                AND udt_name = ?
+                                AND numeric_precision = ?
+                                AND numeric_scale = ?',
+                            array($this->_dbname, $table_name, $column_name, $column_type, $m['precision'], $m['scale'])
                         ) > 0;
                     }
                 } else {
                     return $this->GetOne(
-                       'SELECT COUNT(*) FROM information_schema.columns
-                       WHERE table_catalog = ? AND table_name = ? AND column_name = ? AND udt_name = ?',
-                       array($this->_dbname, $table_name, $column_name, $column_type)
+                        'SELECT COUNT(*) FROM information_schema.columns
+                        WHERE table_catalog = ? AND table_name = ? AND column_name = ? AND udt_name = ?',
+                        array($this->_dbname, $table_name, $column_name, $column_type)
                     ) > 0;
                 }
                 break;
