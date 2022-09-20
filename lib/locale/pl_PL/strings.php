@@ -2797,6 +2797,7 @@ $_LANG['Allows you to search for account, alias, domain'] = 'Wyszukiwanie kont, 
 $_LANG['Enter login or it\'s fragment'] = 'Wprowadź login lub jego fragment';
 $_LANG['Enter login (optional)'] = 'Wprowadź login (opcjonalnie)';
 $_LANG['Enter prefix'] = 'Wprowadź prefiks';
+$_LANG['Choose prefix'] = 'Wybierz prefiks';
 $_LANG['Enter account or alias name and press Enter'] = 'Wprowadź nazwę konta lub aliasu i naciśnij Enter';
 $_LANG['Enter domain name or it\'s fragment'] = 'Wprowadź nazwę domeny lub jej fragment';
 $_LANG['Find accounts matching the following search criteria:'] = 'Wyświetl konta spełniające następujące kryteria:';
