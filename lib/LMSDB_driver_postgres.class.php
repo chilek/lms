@@ -486,9 +486,46 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
                 break;
             case LMSDB::RESOURCE_TYPE_INDEX:
                 return $this->GetOne(
-                    'SELECT * FROM pg_indexes WHERE indexname = ?',
+                    'SELECT COUNT(*) FROM pg_indexes WHERE indexname = ?',
                     array($name)
                 ) > 0;
+                break;
+            case LMSDB::RESOURCE_TYPE_COLUMN_TYPE:
+                list ($table_name, $column_name, $column_type) = explode('.', $name);
+                if (preg_match('/^(?<type>[^\(]+)(?:\((?<length>[0-9]+)\))?$/', $column_type, $m)) {
+                    $column_type = $m['type'];
+                    $column_length = $m['length'];
+                }
+                if (isset($column_length)) {
+                    if ($column_type == 'varchar') {
+                        return $this->GetOne(
+                           'SELECT COUNT(*) FROM information_schema.columns
+                           WHERE table_catalog = ?
+                               AND table_name = ?
+                               AND column_name = ?
+                               AND udt_name = ?
+                               AND character_maximum_length = ?',
+                           array($this->_dbname, $table_name, $column_name, $column_type, $column_length)
+                        ) > 0;
+                    } elseif ($column_type == 'numeric' && preg_match('/^(?<precision>[0-9]+)\s*,\s*(?<scale>[0-9]+)$/', $column_length, $m)) {
+                        return $this->GetOne(
+                           'SELECT COUNT(*) FROM information_schema.columns
+                           WHERE table_catalog = ?
+                               AND table_name = ?
+                               AND column_name = ?
+                               AND udt_name = ?
+                               AND numeric_precision = ?
+                               AND numeric_scale = ?',
+                           array($this->_dbname, $table_name, $column_name, $column_type, $m['precision'], $m['scale'])
+                        ) > 0;
+                    }
+                } else {
+                    return $this->GetOne(
+                       'SELECT COUNT(*) FROM information_schema.columns
+                       WHERE table_catalog = ? AND table_name = ? AND column_name = ? AND udt_name = ?',
+                       array($this->_dbname, $table_name, $column_name, $column_type)
+                    ) > 0;
+                }
                 break;
         }
     }

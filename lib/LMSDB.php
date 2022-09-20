@@ -42,6 +42,7 @@ class LMSDB
     const RESOURCE_TYPE_COLUMN = 3;
     const RESOURCE_TYPE_CONSTRAINT = 4;
     const RESOURCE_TYPE_INDEX = 5;
+    const RESOURCE_TYPE_COLUMN_TYPE = 6;
 
     private static $db;
     
