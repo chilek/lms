@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-if (!$this->ResourceExists('voip_cdr_call_start_time_idx', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+if (!$this->ResourceExists('voip_cdr_call_start_time_idx', LMSDB::RESOURCE_TYPE_INDEX)) {
     $this->Execute("CREATE INDEX voip_cdr_call_start_time_idx ON voip_cdr (call_start_time)");
 }
 

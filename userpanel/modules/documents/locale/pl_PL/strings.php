@@ -126,12 +126,14 @@ $_LANG[
     'Supported substitutions:<br><br>'
     . '<strong>%cid%</strong> - customer identifier,<br>'
     . '<strong>%customername%</strong> - full customer name,<br>'
-    . '<strong>%docid%</strong> - document identifier.'
+    . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%document%</strong> - document number.'
 ] =
     'Obsługiwane symbole specjalne:<br><br>'
     . '<strong>%cid%</strong> - identyfikator klienta,<br>'
     . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
-    . '<strong>%docid%</strong> - identyfikator dokumentu.';
+    . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%document%</strong> - numer dokumentu.';
 
 $_LANG[
     'Supported substitutions:<br><br>'

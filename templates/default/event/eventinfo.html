@@ -221,7 +221,7 @@
 						{if !empty($event.address_id)}
 							{icon name='location' label=$event.location}
 						{elseif !empty($event.nodeid)}
-							{button type='link' icon='node' href="?m=nodeinfo&id={$event.nodeid}" label="{$event.nodelocation|escape}"}
+							{button type='link' icon='node' href="?m=nodeinfo&id={$event.nodeid}" label=$event.nodelocation}
 						{else}
 							{icon name='location' label=$event.customerlocation}
 						{/if}
