@@ -2423,7 +2423,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             array( $id )
         );
 
-        if (!$data) {
+        if (empty($data)) {
             return array();
         }
 
@@ -2697,27 +2697,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $customerid = intval($customerid);
 
         return $this->db->GetAllByKey(
-            'SELECT a.*, ca.type AS location_type FROM vaddresses a
-                JOIN customer_addresses ca ON ca.address_id = a.id
-                WHERE ca.customer_id = ? AND a.id ' . ($with ? '' : 'NOT') . ' IN (
-                    (
-                        SELECT DISTINCT (CASE WHEN nd.address_id IS NULL
-                                THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
-                                ELSE nd.address_id END
-                            ) AS address_id FROM netdevices nd
-                        LEFT JOIN customer_addresses ca ON ca.customer_id = nd.ownerid AND ca.type = ?
-                        LEFT JOIN customer_addresses ca2 ON ca2.customer_id = nd.ownerid AND ca.type = ?
-                        WHERE nd.ownerid = ?
-                    ) UNION (
-                        SELECT DISTINCT (CASE WHEN n.address_id IS NULL
-                                THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
-                                ELSE n.address_id END
-                            ) AS address_id FROM nodes n
-                        LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
-                        LEFT JOIN customer_addresses ca2 ON ca2.customer_id = n.ownerid AND ca.type = ?
-                        WHERE n.ownerid = ?
-                    )
-                )',
+            'SELECT
+                a.*,
+                ca.type AS location_type,
+                (CASE WHEN a.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt
+            FROM vaddresses a
+            JOIN customer_addresses ca ON ca.address_id = a.id
+            WHERE ca.customer_id = ? AND a.id ' . ($with ? '' : 'NOT') . ' IN (
+                (
+                    SELECT DISTINCT (CASE WHEN nd.address_id IS NULL
+                            THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
+                            ELSE nd.address_id END
+                        ) AS address_id FROM netdevices nd
+                    LEFT JOIN customer_addresses ca ON ca.customer_id = nd.ownerid AND ca.type = ?
+                    LEFT JOIN customer_addresses ca2 ON ca2.customer_id = nd.ownerid AND ca.type = ?
+                    WHERE nd.ownerid = ?
+                ) UNION (
+                    SELECT DISTINCT (CASE WHEN n.address_id IS NULL
+                            THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
+                            ELSE n.address_id END
+                        ) AS address_id FROM nodes n
+                    LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
+                    LEFT JOIN customer_addresses ca2 ON ca2.customer_id = n.ownerid AND ca.type = ?
+                    WHERE n.ownerid = ?
+                )
+            )',
             'id',
             array($customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid)
         );

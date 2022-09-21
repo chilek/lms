@@ -284,6 +284,16 @@ function CustomerAssignmentHelper(options) {
 		location_select.toggleClass('lms-ui-error', validationError)
 			.next().toggleClass('lms-ui-error', validationError)
 			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
+
+		var schemaId = $('#promotion-select').val();
+		var promotionTable = $('#schema' + schemaId);
+		var location = location_select.val();
+		promotionTable.find('.nodes select,.netdevnodes select').each(function() {
+			$(this).find('option').each(function() {
+				$(this).toggle(location == $(this).attr('data-location'));
+			});
+			$(this).trigger('lms:multiselect:updated');
+		});
 	}
 
 	this.updateDevices = function() {
@@ -427,10 +437,11 @@ function CustomerAssignmentHelper(options) {
 				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
 					$.each(data['with-end-points'], function(key, value) {
-						options += '<option value="' + value.location + '"' +
-							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						options += '<option value="' + location + '"' +
+							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
-							value.location + '</option>';
+							location + '</option>';
 						location_count++;
 					});
 					options += '</optgroup>';
@@ -438,10 +449,11 @@ function CustomerAssignmentHelper(options) {
 				if (data['without-end-points']) {
 					options += '<optgroup label="' + $t("without end-points") + '">';
 					$.each(data['without-end-points'], function(key, value) {
-						options += '<option value="' + value.location + '"' +
-							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						options += '<option value="' + location + '"' +
+							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
-							value.location + '</option>';
+							location + '</option>';
 						location_count++;
 					});
 					options += '</optgroup>';
