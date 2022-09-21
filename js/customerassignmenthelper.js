@@ -274,7 +274,7 @@ function CustomerAssignmentHelper(options) {
 		});
 	}
 
-    this.locationSelectionHandler = function() {
+	this.locationSelectionHandler = function() {
 		$('.schema-tariff-selection').trigger('change');
 		$('.schema-tariff-checkbox').trigger('change');
 
@@ -463,13 +463,14 @@ function CustomerAssignmentHelper(options) {
 				}
 				$('#recipient-select').html(options);
 
-				$('#a_promotions,#a_align_periods').show();
-
-                init_multiselects('select.lms-ui-multiselect-deferred:visible');
+				$('#a_align_periods').show();
 
 				$('#promotion-select').trigger('change');
+
 				tariffSelectionHandler();
-            }
+
+				init_multiselects('select.lms-ui-multiselect-deferred:visible');
+			}
 		});
     }
 
