@@ -780,7 +780,6 @@ abstract class LMSDB_common implements LMSDBInterface
                             $this->CommitTrans();
                             if ($this->errors) {
                                 print 'Error in DB schema upgrade: ' . $fname . PHP_EOL;
-                                $lastupgrade = $upgrade;
                                 break;
                             } else {
                                 $this->Execute(
@@ -789,6 +788,7 @@ abstract class LMSDB_common implements LMSDBInterface
                                 );
                                 print 'Timestamp: ' . time() . ', DB version is now: '
                                     . $upgrade . PHP_EOL;
+                                $lastupgrade = $upgrade;
                             }
                         }
                     }
