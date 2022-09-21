@@ -159,8 +159,15 @@ $CONFIG['database']['auto_update'] = true;
 foreach ($facilities as $facility) {
     switch ($facility) {
         case 'core':
+            $dbversion = $DB->GetOne("SELECT keyvalue FROM dbinfo WHERE keytype='dbversion'");
             $schema_version = $DB->UpgradeDb();
             echo 'DB schema version bumped to ' . $schema_version . PHP_EOL;
+            if ($dbversion != $schema_version) {
+            echo 'DB schema version bumped '
+                . ' from ' . $dbversion . ' to ' . $schema_version . PHP_EOL;
+            } else {
+                echo 'DB schema NOT bumped to ' . $schema_version . ' Current Version is ' . $dbversion . PHP_EOL;
+            }
             break;
         case 'plugins':
             $plugin_manager = new LMSPluginManager();
