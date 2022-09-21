@@ -290,7 +290,7 @@ function CustomerAssignmentHelper(options) {
 		var location = location_select.val();
 		promotionTable.find('.nodes select,.netdevnodes select').each(function() {
 			$(this).find('option').each(function() {
-				$(this).toggle(location == $(this).attr('data-location'));
+				$(this).toggle(location == '' || location == $(this).attr('data-location'));
 			});
 			$(this).trigger('lms:multiselect:updated');
 		});
