@@ -62,6 +62,8 @@ if (!isset($_POST['loginform']) && !empty($_POST)) {
     $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
     $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
     $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+    $filter['netnodeid'] = (isset($_POST['netnodeid']) && $LMS->NetNodeExists(intval($_POST['netnodeid']))) ? intval($_POST['netnodeid']) : null;
+    $filter['netdevid'] = (isset($_POST['netdevid']) && $LMS->NetDevExists(intval($_POST['netdevid']))) ? intval($_POST['netdevid']) : null;
 
     if (isset($_POST['switchToSchedule'])) {
         $SESSION->save('timetableFiler', $filter, true);
@@ -238,6 +240,8 @@ $SMARTY->assign('daylist', $daylist);
 $SMARTY->assign('date', $date);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
+$SMARTY->assign('netnodes', $LMS->GetNetNodes());
+$SMARTY->assign('netdevices', $LMS->GetNetDevList('name,asc', array('short' => true)));
 $SMARTY->assign('overdue_events_only', $overdue_events_only);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());

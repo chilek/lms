@@ -188,7 +188,7 @@
 						<strong>{trans("Customer")}</strong>
 					</td>
 					<td class="nobr">
-						<A href="?m=customerinfo&id={$event.customerid}">{$event.customername} (#{$event.customerid})</A>
+						{button type="link" icon="customer" href="?m=customerinfo&id={$event.customerid}" label="{$event.customername} (#{$event.customerid})"}
 						{if !empty($event.phones)}
 							<br>
 							{foreach $event.phones as $phone}
@@ -211,17 +211,17 @@
 			</td>
 			<td class="nobr">
 				{if $event.netnode_name}
-					{icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
+					{button type='link' icon='netnode' href="?m=netnodeinfo&id={$event.netnodeid}" label=$event.netnode_name}
 					{if !empty($event.netnode_location)}
-						<br>{icon name="location" label=$event.netnode_location}
+						<br>{icon name='location' label=$event.netnode_location}
 					{/if}
 				{else}
 					{if $event.customername}
-						{icon name="customer"} <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|trunescape:30}</A><br>
+						{button icon='customer' href="?m=customerinfo&amp;id={$event.customerid}" label="{$event.customername|trunescape:30}"}<br>
 						{if !empty($event.address_id)}
 							{icon name='location' label=$event.location}
 						{elseif !empty($event.nodeid)}
-							<a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
+							{button type='link' icon='node' href="?m=nodeinfo&id={$event.nodeid}" label=$event.nodelocation}
 						{else}
 							{icon name='location' label=$event.customerlocation}
 						{/if}
@@ -229,6 +229,35 @@
 				{/if}
 			</td>
 		</tr>
+		{if !empty($event.netnodeid)}
+			<tr>
+				<td>
+					{icon name='netnode'}
+				</td>
+				<td>
+					<strong>{trans('Network node')}</strong>
+				</td>
+				<td class="nobr">
+					{button type='link' href="?m=netnodeinfo&id={$event.netnodeid}"
+						label="{$event.netnode_name|escape} ({$event.netnode_location|escape})"}
+					</a>
+				</td>
+			</tr>
+		{/if}
+		{if !empty($event.netdevid)}
+			<tr>
+				<td class='nobr'>
+					{icon name='netdev'}
+				</td>
+				<td class="nobr bold">{trans('Network device')}
+				<td>
+					{button
+						type='link'
+						href="?m=netdevinfo&id={$event.netdevid}"
+						label=$event.netdevice_name}
+				</td>
+			</tr>
+		{/if}
 		{if !empty($event.nodeid)}
 			<tr>
 				<td>

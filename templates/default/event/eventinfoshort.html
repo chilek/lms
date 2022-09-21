@@ -208,7 +208,7 @@
         </TD>
         <TD class="nobr">
         {if $event.netnode_name}
-            {icon name="netnode"}<a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
+            {button type='link' icon='netnode' href="?m=netnodeinfo&id={$event.netnodeid}" label=$event.netnode_name}
             {if !empty($event.netnode_location)}<br>{$event.netnode_location|escape}{/if}
         {else}
             {if $event.customername}

@@ -743,63 +743,67 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         $where = array();
-        foreach ($search as $key => $value) {
-            switch ($key) {
-                case 'status':
-                    switch ($value) {
-                        case -1:
-                            break;
-                        case 100:
-                            $where[] = 'd.id IN (
-								SELECT netdevices.id FROM netdevices
-								LEFT JOIN vaddresses ON vaddresses.id = netdevices.address_id
-								LEFT JOIN netlinks ON netlinks.src = netdevices.id OR netlinks.dst = netdevices.id
-								WHERE address_id IS NULL OR vaddresses.city_id IS NULL
-								GROUP BY netdevices.id
-								HAVING COUNT(netlinks.id) >= 0
-							)';
-                            break;
-                        case 101:
-                            $where[] = '(no.lastonline IS NOT NULL AND (?NOW? - no.lastonline) <= ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . ')';
-                            break;
-                        case 102:
-                            $where[] = 'd.id NOT IN (SELECT DISTINCT src FROM netlinks) AND d.id NOT IN (SELECT DISTINCT dst FROM netlinks)';
-                            break;
-                        default:
-                            $where[] = 'd.status = ' . intval($value);
-                    }
-                    break;
-                case 'project':
-                    if ($value > 0) {
-                        $where[] = '(d.invprojectid = ' . intval($value)
-                        . ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid = ' . intval($value) . '))';
-                    } elseif ($value == -2) {
-                        $where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
-                    }
-                    break;
-                case 'netnode':
-                    if ($value > 0) {
-                        $where[] = 'd.netnodeid = ' . intval($value);
-                    } elseif ($value == -2) {
-                        $where[] = 'd.netnodeid IS NULL';
-                    }
-                    break;
-                case 'type':
-                    if (!empty($value)) {
-                        $where[] = 'm.type = ' . intval($value);
-                    }
-                    break;
-                case 'producer':
-                case 'model':
-                    if (!preg_match('/^-[0-9]+$/', $value)) {
-                        $where[] = "UPPER(TRIM(d.$key)) = UPPER(" . $this->db->Escape($value) . ")";
-                    } elseif ($value == -2) {
-                        $where[] = "d.$key = ''";
-                    }
-                    break;
-                case 'ownerid':
-                    $where[] = 'd.ownerid = ' . $value;
-                    break;
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($key) {
+                    case 'status':
+                        switch ($value) {
+                            case -1:
+                                break;
+                            case 100:
+                                $where[] = 'd.id IN (
+                                    SELECT netdevices.id FROM netdevices
+                                        LEFT JOIN vaddresses ON vaddresses.id = netdevices.address_id
+                                        LEFT JOIN netlinks ON netlinks.src = netdevices.id OR netlinks.dst = netdevices.id
+                                    WHERE 
+                                        address_id IS NULL OR vaddresses.city_id IS NULL
+                                        GROUP BY netdevices.id
+                                    HAVING COUNT(netlinks.id) >= 0
+                                )';
+                                break;
+                            case 101:
+                                $where[] = '(no.lastonline IS NOT NULL AND (?NOW? - no.lastonline) <= ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . ')';
+                                break;
+                            case 102:
+                                $where[] = 'd.id NOT IN (SELECT DISTINCT src FROM netlinks) AND d.id NOT IN (SELECT DISTINCT dst FROM netlinks)';
+                                break;
+                            default:
+                                $where[] = 'd.status = ' . intval($value);
+                        }
+                        break;
+                    case 'project':
+                        if ($value > 0) {
+                            $where[] = '(d.invprojectid = ' . intval($value)
+                            . ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid = ' . intval($value) . '))';
+                        } elseif ($value == -2) {
+                            $where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
+                        }
+                        break;
+                    case 'netnode':
+                        if ($value > 0) {
+                            $where[] = 'd.netnodeid = ' . intval($value);
+                        } elseif ($value == -2) {
+                            $where[] = 'd.netnodeid IS NULL';
+                        }
+                        break;
+                    case 'type':
+                        if (!empty($value)) {
+                            $where[] = 'm.type = ' . intval($value);
+                        }
+                        break;
+                    case 'producer':
+                    case 'model':
+                        if (!preg_match('/^-[0-9]+$/', $value)) {
+                            $where[] = "UPPER(TRIM(d.$key)) = UPPER(" . $this->db->Escape($value) . ")";
+                        } elseif ($value == -2) {
+                            $where[] = "d.$key = ''";
+                        }
+                        break;
+                    case 'ownerid':
+                        $where[] = 'd.ownerid = ' . $value;
+                        break;
+                }
             }
         }
 

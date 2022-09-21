@@ -404,7 +404,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function GetNetNodes()
     {
-        return $this->db->GetAll('SELECT * FROM netnodes ORDER BY name');
+        return $this->db->GetAllByKey('SELECT * FROM netnodes ORDER BY name', 'id');
     }
 
     /**

@@ -318,16 +318,13 @@
 			{/box_row}
 
 			{box_row icon="netnode" label="Network node" icon_class="fa-fw"}
-				<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}
-						onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
-					<OPTION value="">{trans("— none —")}</OPTION>
-					{foreach $netnodelist as $idx => $netnode}
-					<OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
-					{/foreach}
-				</SELECT>
+				{network_node_selection
+					elemname='ticket[netnodeid]'
+					onchange="xajax_netnode_changed($(this).val(), $('#ticketnetdevid').val(), 'ticket', 'ticketnetdevs', 'ticketnetdevid')"
+					selected=$ticket.netnodeid}
 			{/box_row}
 
-			{box_row icon="netdev" label="Device" field_id="rtnetdevs" icon_class="fa-fw"}
+			{box_row icon="netdev" label="Device" field_id="ticketnetdevs" icon_class="fa-fw"}
 				{include file="rt/rtnetdevs.html" form="ticket"}
 			{/box_row}
 

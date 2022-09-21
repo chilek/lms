@@ -61,8 +61,13 @@ function select_location($customerid, $address_id)
     return $JSResponse;
 }
 
-function netnode_changed($netnodeid, $netdevid)
-{
+function netnode_changed(
+    $netnodeid,
+    $netdevid,
+    $form = 'ticket',
+    $target_div = 'ticketnetdevs',
+    $target_selectid = 'ticketnetdevid'
+) {
     global $LMS, $SMARTY;
 
     $JSResponse = new xajaxResponse();
@@ -72,16 +77,20 @@ function netnode_changed($netnodeid, $netdevid)
         $search['netnode'] = $netnodeid;
     }
     $netdevlist = $LMS->GetNetDevList('name', $search);
-    unset($netdevlist['total']);
-    unset($netdevlist['order']);
-    unset($netdevlist['direction']);
+    unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
     $SMARTY->assign('netdevlist', $netdevlist);
-    $SMARTY->assign('ticket', array('netdevid' => $netdevid));
-    $SMARTY->assign('form', 'ticket');
+    $SMARTY->assign($form, array('netdevid' => $netdevid));
+    $SMARTY->assign('form', $form);
+
     $content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtnetdevs.html');
-    $JSResponse->assign('rtnetdevs', 'innerHTML', $content);
-    $JSResponse->script('initAdvancedSelects("#netdevid");');
+
+    $JSResponse->assign(
+        $target_div,
+        'innerHTML',
+        $content
+    );
+    $JSResponse->script('initAdvancedSelects("#' . $target_selectid . '");');
 
     return $JSResponse;
 }

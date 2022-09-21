@@ -104,6 +104,35 @@
 						{/if}
 					{/box_row}
 
+					{$visibility=!empty($netnodelist)}
+					{box_row class="netnode-row" icon="netnode" label="Network node" visible=$visibility icon_class="fa-fw"}
+						{if empty($netnodeid)}
+							{network_node_selection
+								id='netnodeid'
+								name='event[netnodeid]'
+								form='event'
+								selected=$event.netnodeid
+								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')"}
+						{else}
+							{foreach $netnodelist as $nn}
+								{if $nn.id == $netnodeid}
+									{$nn.name|escape} (#{$nn.id})
+									<input type="hidden" name="event[netnodeid]" value="{$netnodeid}">
+								{/if}
+							{/foreach}
+						{/if}
+					{/box_row}
+
+					{$visibility=!empty($netdevlist)}
+					{box_row icon="netdev" label="Device" field_id="eventnetdevs" icon_class="fa-fw" visible=$visibility}
+						{if empty($netdevid)}
+							{include file="rt/rtnetdevs.html" form="event"}
+						{else}
+							{$netdevlist[0].name|escape} (#{$netdevid})
+							<input type="hidden" name="event[netdevid]" value="{$event.netdevid}">
+						{/if}
+					{/box_row}
+
 					{$visibility=!empty($nodes)}
 					{box_row class="node-row" icon="node" label="Node:" icon_class="fa-fw" visible=$visibility}
 						{if !empty($event.ticketid)}

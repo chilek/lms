@@ -1,0 +1,31 @@
+<!--// $Id$ //-->
+<table class="lmsbox lms-ui-sortable lms-ui-tab-container" id="netdevevents" data-label="netdeveventspanel">
+    <thead>
+        <tr class="hand lmsbox-titlebar" data-lmsbox-content="netdeveventspanel">
+            <td class="bold">
+                {icon name='timetable' class='lms-ui-sortable-handle' label='Events'}
+                ({$queue|size})
+            </td>
+            <td class="text-right nobr">
+                {button href="?m=eventadd&netdevid={$netdev.id}{if $netdev.netnodeid}&netnodeid={$netdev.netnodeid}{/if}"
+                    icon='add' tip='Add new' label='Add' type='link'}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="netdeveventspanel" style="display: none;">
+            <td width="100%" colspan="2">
+                <table class="lmsbox-inner lms-ui-background-cycle">
+                    <thead>
+                        {include file='event/eventlistheader.html'}
+                    </thead>
+                    <tbody>
+                        {foreach $netdevevents as $event}
+                            {include file='event/eventlistboxrow.html'}
+                        {/foreach}
+                    </tbody>
+                </table>
+             </td>
+        </tr>
+    </tbody>
+</table>

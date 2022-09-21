@@ -63,22 +63,26 @@
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
         {if $event.netnode_name}
-        {icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-            {if !empty($event.netnode_location)}<br>{icon name="location"} {$event.netnode_location}{/if}
+            {button type='link' icon='netnode' href="?m=netnodeinfo&id={$event.netnodeid}" label=$event.netnode_name}
+            {if !empty($event.netnode_location)}<br>{icon name="location" label=$event.netnode_location}{/if}
         {else}
-        {if $event.customername}
-            {hint mode="toggle" icon="customer" class="lms-ui-ignore-target-url"
-                url="?m=customerinfoshort&id={$event.customerid}"}
-            <a href="?m=customerinfo&id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</a>
-            <br>
-        {if !empty($event.address_id)}
-            {icon name="location"} {$event.location|escape}
-        {elseif !empty($event.nodeid)}
-            <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
-        {else}
-            {icon name="location"} {$event.customerlocation|escape}
+            {if $event.customername}
+                {hint mode="toggle" icon="customer" class="lms-ui-ignore-target-url"
+                    url="?m=customerinfoshort&id={$event.customerid}"}
+                <a href="?m=customerinfo&id={$event.customerid}">{$event.customername|trunescape:"30"}</a>
+                <br>
+                {if !empty($event.address_id)}
+                    {icon name="location" label=$event.location}
+                {elseif !empty($event.nodeid)}
+                    {button type="link" href="?m=nodeinfo&id={$event.nodeid}" label=$event.nodelocation}
+                {else}
+                    {icon name="location" label=$event.customerlocation}
+                {/if}
+            {/if}
         {/if}
-        {/if}
+        {if $event.netdev_name}
+            {if $event.netnodeid}<br>{/if}
+            {button type='link' icon='netdevice' label=$event.netdev_name href="?m=netdevinfo&id={$event.netdevid}"}
         {/if}
     </TD>
     <TD class="text-right nobr">
