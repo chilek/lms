@@ -21,6 +21,7 @@
  *
  */
 
-
-$this->Execute("ALTER TABLE messageitems MODIFY COLUMN externalmsgid varchar(64) DEFAULT NULL");
-$this->Execute("UPDATE messageitems SET externalmsgid = NULL WHERE externalmsgid = ?", array('0'));
+if (!$this->ResourceExists('messageitems.externalmsgid.varchar(26)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
+    $this->Execute("ALTER TABLE messageitems MODIFY COLUMN externalmsgid varchar(64) DEFAULT NULL");
+    $this->Execute("UPDATE messageitems SET externalmsgid = NULL WHERE externalmsgid = ?", array('0'));
+}

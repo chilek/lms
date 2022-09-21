@@ -79,6 +79,7 @@
 						<td class="tab-beautify lmsbox-panels">
 							<div class="lmsbox-panel">
 								<table style="width: 100%;" cellpadding="3">
+									{block name="nodeedit-leftcolumn"}
 									<colgroup>
 										<col style="width: 1%;">
 										<col style="width: 1%;">
@@ -405,10 +406,12 @@
 											{/foreach}
 										</td>
 									</tr>
+									{/block}
 								</table>
 							</div>
 							<div class="lmsbox-panel">
 								<table style="width: 100%;" class="tab-beautify">
+									{block name="nodeedit-rightcolumn"}
 									<colgroup>
 										<col style="width: 1%;">
 										<col style="width: 1%;">
@@ -535,6 +538,7 @@
 											</div>
 										</td>
 									</tr>
+									{/block}
 								</table>
 							</div>
 						</td>

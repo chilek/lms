@@ -118,8 +118,9 @@
 											data-tariffnetvalue="{$tariff.netvalue}"
 											data-tariffnetflag="{$tariff.netflag}"
 											data-tarifftaxid="{$tariff.taxid}"
-											{if $tariff.id==$assignment.tariffid} selected{/if}
-											data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
+											{if $tariff.id == $assignment.tariffid} selected{/if}
+											data-valid="{$tariff.valid}"
+											{if !$tariff.valid} class="blend"{if !$assignment.alltariffs && $tariff.id != $assignment.tariffid} style="display: none;"{/if}{/if}>
 									{$tariff.name}
 									{$bracket_open = false}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}({moneyf($tariff.value, $tariff.currency)}{$bracket_open = true}{/if}{if $tariff.upceil || $tariff.downceil}{if $bracket_open}, {else}({$bracket_open = true}{/if}{convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if}{if $bracket_open}){/if}
@@ -302,6 +303,10 @@
 
 			if (serviceType) {
 				visible = visible && (!tariffType || serviceType === tariffType);
+			}
+
+			if (option.val() == tariff_select.val()) {
+				visible = true;
 			}
 
 			option.toggle(visible);

@@ -270,6 +270,15 @@ version 28-git (????-??-??):
     "from" date of newly created assignments [chilan]
   - enhancement: added billing record type support (call, sms, mms, data transfer) [chilan]
   - enhancement: duration presentation format for billing records depends on their types [chilan]
+  - enhancement: 'invoices.qr2pay_comment' specifies format of QR2Pay comment on tcpdf invoices
+    with translatable 'QR Payment for Internet Invoice no. %number' as default value [chilan]
+  - improvement: allow to narrow city search in choose location window to selected state
+    and district [chilan]
+  - enhancement: 'phpui.default_address_state', 'phpui.default_billing_address_state',
+    'phpui.default_postal_address_state' and 'phpui.default_location_address_state'
+    control state preselection in location boxes and terit address popup window [chilan]
+  - devel/cleanup: renamed 'phpui.document_password' and 'phpui.document_protection_command'
+    to 'documents.protection_password' and 'documents.protection_command' [chilan]
 
 version 27.0 (2021-08-20):
 

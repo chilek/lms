@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -934,6 +934,18 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerModificationInfo($customerid);
+    }
+
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerExternalIDs($customerid, $serviceproviderid);
+    }
+
+    public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerExternalIDs($customerid, $customerextids, $only_passed_service_providers);
     }
 
     /*
@@ -3645,6 +3657,12 @@ class LMS
     {
         $manager = $this->getLocationManager();
         return $manager->GetCountryStates();
+    }
+
+    public function getCountryStateIdByName($state_name)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->getCountryStateIdByName($state_name);
     }
 
     public function GetCountries()

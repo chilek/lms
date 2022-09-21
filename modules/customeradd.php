@@ -407,8 +407,35 @@ $hook_data = $LMS->executeHook(
 );
 $customeradd = $hook_data['customeradd'];
 
+$default_states = array();
+foreach (array(BILLING_ADDRESS, POSTAL_ADDRESS, LOCATION_ADDRESS) as $addressType) {
+    switch ($addressType) {
+        case BILLING_ADDRESS:
+            $variable_name = 'phpui.default_billing_address_state';
+            break;
+        case POSTAL_ADDRESS:
+            $variable_name = 'phpui.default_postal_address_state';
+            break;
+        case LOCATION_ADDRESS:
+            $variable_name = 'phpui.default_location_address_state';
+            break;
+    }
+    if (isset($variable_name)) {
+        $default_state = ConfigHelper::getConfig($variable_name, ConfigHelper::getConfig('phpui.default_address_state'));
+    } else {
+        $default_state = ConfigHelper::getConfig('phpui.default_address_state');
+    }
+    if (empty($default_state)) {
+        $default_states[$addressType] = '';
+    } else {
+        $default_states[$addressType] = $LMS->getCountryStateIdByName($default_state) ? $default_state : '';
+    }
+}
+
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign($LMS->getCustomerPinRequirements());
+
+$SMARTY->assign('default_states', $default_states);
 $SMARTY->assign('legal_person_required_properties', $legal_person_required_properties);
 $SMARTY->assign('natural_person_required_properties', $natural_person_required_properties);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));

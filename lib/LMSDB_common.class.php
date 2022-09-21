@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2022090800'); // here should be always the newest version of database!
+define('DBVERSION', '2022091900'); // here should be always the newest version of database!
 
 /**
  *
@@ -786,7 +786,9 @@ abstract class LMSDB_common implements LMSDBInterface
                                     'UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',
                                     array($upgrade, 'dbversion')
                                 );
-                                print 'DB version is now: ' . $upgrade . PHP_EOL;
+                                print 'Timestamp: ' . time() . ', DB version is now: '
+                                    . $upgrade . PHP_EOL;
+                                $lastupgrade = $upgrade;
                             }
                         }
                     }

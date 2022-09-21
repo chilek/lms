@@ -149,7 +149,9 @@ if (isset($_POST['nodeedit'])) {
         }
 
         if (check_mac($value)) {
-            if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
+            if (in_array($value, $macs)) {
+                $error['mac-input-' . $key] = trans('Specified MAC address is in use!');
+            } elseif ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                 if (($nodeid = $LMS->GetNodeIDByMAC($value)) != null && $nodeid != $nodeinfo['id']) {
                     $error['mac-input-' . $key] = trans('Specified MAC address is in use!');
                 }

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2021 LMS Developers
+ *  Copyright (C); 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -165,4 +165,8 @@ interface LMSCustomerManagerInterface
     public function addCustomerCallAssignment($customerid, $callid);
 
     public function getCustomerModificationInfo($customerid);
+
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null);
+
+    public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false);
 }

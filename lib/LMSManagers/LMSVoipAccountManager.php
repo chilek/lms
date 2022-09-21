@@ -349,7 +349,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'balance' => isset($voipaccountdata['balance']) ? $voipaccountdata['balance'] : ConfigHelper::getConfig('voip.default_cost_limit', 200),
             'flags' => $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
             'cost_limit' => isset($voipaccountdata['cost_limit']) ? $voipaccountdata['cost_limit'] : null,
-            SYSLOG::RES_ADDRESS => $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
+            SYSLOG::RES_ADDRESS => empty($voipaccountdata['address_id']) ? null : $voipaccountdata['address_id'],
             'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
         );
 

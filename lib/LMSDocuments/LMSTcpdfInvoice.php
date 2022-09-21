@@ -958,6 +958,8 @@ class LMSTcpdfInvoice extends LMSInvoice
             $payment_value = $this->data['value'];
         }
 
+        $qr2pay_comment = ConfigHelper::getConfig('invoices.qr2pay_comment', trans('QR Payment for Internet Invoice no. %number'));
+
         $this->backend->SetFont(null, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
         $tmp = preg_replace('/[^0-9]/', '', $this->data['division_ten'])
@@ -970,7 +972,15 @@ class LMSTcpdfInvoice extends LMSInvoice
             . '|'
             . mb_substr($this->data['division_shortname'], 0, 20)
             . '|'
-            . trans('QR Payment for Internet Invoice no.') . ' ' . $docnumber
+            . str_replace(
+                array(
+                    '%number',
+                ),
+                array(
+                    $docnumber,
+                ),
+                $qr2pay_comment
+            )
             . '|||';
         $style['position'] = 'R';
         $this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y, 30, 30, $style);

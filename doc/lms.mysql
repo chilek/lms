@@ -161,8 +161,10 @@ DROP TABLE IF EXISTS customercallassignments;
 DROP TABLE IF EXISTS customercalls;
 DROP TABLE IF EXISTS customerkarmalastchanges;
 DROP TABLE IF EXISTS customernotes;
+DROP TABLE IF EXISTS customerextids;
 DROP TABLE IF EXISTS customerconsents;
 DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS serviceproviders;
 DROP TABLE IF EXISTS divisions;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS location_buildings;
@@ -451,11 +453,20 @@ CREATE TABLE divisions (
 
 # --------------------------------------------------------
 #
+# Structure of table serviceproviders (serviceproviders)
+#
+CREATE TABLE serviceproviders (
+    id int(11) NOT NULL auto_increment,
+    name varchar(64) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+# --------------------------------------------------------
+#
 # Structure of table customers (customers)
 #
 CREATE TABLE customers (
   id int(11) 		NOT NULL auto_increment,
-  extid varchar(32)	NOT NULL DEFAULT '',
   lastname varchar(128) NOT NULL DEFAULT '',
   name varchar(128) 	NOT NULL DEFAULT '',
   altname varchar(128)  DEFAULT NULL,
@@ -509,6 +520,21 @@ CREATE TABLE customerconsents (
     KEY customerconsents_cdate_idx (cdate),
     KEY customerconsents_type_idx (type),
     UNIQUE KEY customerconsents_ukey (customerid, type)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customerextids (customerextids)
+#
+CREATE TABLE customerextids (
+    customerid int(11) NOT NULL,
+    extid varchar(64) NOT NULL,
+    serviceproviderid int(11) DEFAULT NULL,
+    CONSTRAINT customerextids_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT customerextids_serviceproviderid_fkey
+        FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE KEY customerextids_customerid_extid_serviceproviderid_ukey (customerid, extid, serviceproviderid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -830,7 +856,9 @@ CREATE TABLE voipaccounts (
 	flags			smallint      NOT NULL DEFAULT 0,
 	cost_limit		decimal(12,2) NULL DEFAULT NULL,
 	address_id      int(11)       NULL DEFAULT NULL,
-    description text NOT NULL DEFAULT '',
+	description text NOT NULL DEFAULT '',
+	serviceproviderid integer DEFAULT NULL,
+	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT voipaccounts_address_id_fkey
 		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -839,7 +867,9 @@ CREATE TABLE voipaccounts (
 	CONSTRAINT voipaccounts_creatorid_fkey
 		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT voipaccounts_modid_fkey
-		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_serviceproviderid_fkey
+		FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3323,13 +3353,15 @@ CREATE VIEW customerview AS
         a2.name as post_name, a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE NOT EXISTS (
         SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -3440,13 +3472,15 @@ CREATE VIEW contractorview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
@@ -3465,13 +3499,15 @@ CREATE VIEW customeraddressview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE c.type < 2;
 
 CREATE VIEW teryt_terc AS
@@ -4195,4 +4231,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022090800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022091900');

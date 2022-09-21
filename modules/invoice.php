@@ -1566,7 +1566,7 @@ if ($jpk) {
     // send jpk data to web browser
     if ($jpk_format == 'csv') {
         if (!class_exists('DOMDocument')) {
-                die('Fatal error! PHP XML exenstion is not installed!');
+                die('Fatal error! PHP XML extension is not installed!');
         }
         if (!class_exists('XSLTProcessor')) {
                 die('Fatal error! PHP XSLT extension is not installed!');
