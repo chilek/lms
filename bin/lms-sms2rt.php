@@ -375,11 +375,24 @@ if (($fh = fopen($message_file, "r")) != null) {
         if (!empty($customer['cid'])) {
             $info = $LMS->GetCustomer($customer['cid'], true);
 
-            $emails = array_map(function ($contact) {
+            $emails = array_map(
+                function ($contact) {
                     return $contact['fullname'];
-            }, $LMS->GetCustomerContacts($customer['cid'], CONTACT_EMAIL));
+                },
+                array_filter(
+                    $LMS->GetCustomerContacts($customer['cid'], CONTACT_EMAIL),
+                    function ($contact) {
+                        return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                    }
+                )
+            );
 
-            $all_phones = $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE);
+            $all_phones = array_filter(
+                $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                function ($contact) {
+                    return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                }
+            );
 
             $phones = array_map(function ($contact) {
                     return $contact['fullname'];

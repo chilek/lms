@@ -698,7 +698,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         // find customerid
         $reqcustid = $DB->GetCol("SELECT c.id FROM customers c
             JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ? > 0)
-            WHERE cc.contact = ?", array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS, $fromemail));
+            WHERE cc.contact = ?", array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_HELPDESK_NOTIFICATIONS, $fromemail));
         if (empty($reqcustid) || count($reqcustid) > 1) {
             $reqcustid = 0;
         } else {
@@ -862,12 +862,28 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             if ($ticket['customerid'] && $reqcustid) {
                 $info = $LMS->GetCustomer($ticket['customerid'], true);
 
-                $emails = array_map(function ($contact) {
-                    return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
-                $phones = array_map(function ($contact) {
-                    return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                $emails = array_map(
+                    function ($contact) {
+                        return $contact['fullname'];
+                    },
+                    array_filter(
+                        $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    )
+                );
+                $phones = array_map(
+                    function ($contact) {
+                        return $contact['fullname'];
+                    },
+                    array_filter(
+                        $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    )
+                );
 
                 if ($notify && $customerinfo) {
                     $params = array(

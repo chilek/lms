@@ -252,8 +252,13 @@ $CUSTOMERCONTACTTYPES = array(
                 ),
                 CONTACT_NOTIFICATIONS => array(
                     'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
-                    'tip' => trans('Check if send notification'),
+                    'tip' => trans('Check if send notifications'),
                     'alias' => 'notifications',
+                ),
+                CONTACT_HELPDESK_NOTIFICATIONS => array(
+                    'label' => $CONTACTTYPES[CONTACT_HELPDESK_NOTIFICATIONS],
+                    'tip' => trans('Check if send helpdesk notifications'),
+                    'alias' => 'helpdesk_notifications',
                 ),
                 CONTACT_DOCUMENTS => array(
                     'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
@@ -288,12 +293,17 @@ $CUSTOMERCONTACTTYPES = array(
                 ),
                 CONTACT_NOTIFICATIONS => array(
                     'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
-                    'tip' => trans('Check if send notification'),
+                    'tip' => trans('Check if send notifications'),
                     'alias' => 'notifications',
+                ),
+                CONTACT_HELPDESK_NOTIFICATIONS => array(
+                    'label' => $CONTACTTYPES[CONTACT_HELPDESK_NOTIFICATIONS],
+                    'tip' => trans('Check if send helpdesk notifications'),
+                    'alias' => 'helpdesk_notifications',
                 ),
                 CONTACT_TECHNICAL => array(
                     'label' => $CONTACTTYPES[CONTACT_TECHNICAL],
-                    'tip' => trans('Check if send technical notification'),
+                    'tip' => trans('Check if send technical notifications'),
                     'alias' => 'technical',
                 ),
                 CONTACT_DOCUMENTS => array(

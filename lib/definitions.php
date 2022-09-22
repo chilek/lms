@@ -883,6 +883,7 @@ define('CONTACT_IM_FACEBOOK', 4096);
 define('CONTACT_DISABLED', 16384);
 define('CONTACT_DOCUMENTS', 32768);
 define('CONTACT_REPRESENTATIVE', 65536);
+define('CONTACT_HELPDESK_NOTIFICATIONS', 131072);
 
 $CONTACTTYPES = array(
     CONTACT_MOBILE          =>  trans('mobile'),
@@ -897,6 +898,7 @@ $CONTACTTYPES = array(
     CONTACT_IM_FACEBOOK     =>  trans('Facebook'),
     CONTACT_DOCUMENTS       =>  trans('documents'),
     CONTACT_REPRESENTATIVE  =>  trans('representative'),
+    CONTACT_HELPDESK_NOTIFICATIONS =>  trans('helpdesk'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

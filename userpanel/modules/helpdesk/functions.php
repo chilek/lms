@@ -226,10 +226,23 @@ function module_main()
 
                 $info = $LMS->GetCustomer($SESSION->id, true);
 
-                $emails = array_map(function ($contact) {
+                $emails = array_map(
+                    function ($contact) {
                         return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL));
-                $all_phones = $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE);
+                    },
+                    array_filter(
+                        $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    )
+                );
+                $all_phones = array_filter(
+                    $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE),
+                    function ($contact) {
+                        return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                    }
+                );
                 $phones = array_map(function ($contact) {
                         return $contact['fullname'];
                 }, $all_phones);
@@ -457,12 +470,28 @@ function module_main()
             )) {
                 $info = $LMS->GetCustomer($SESSION->id, true);
 
-                $emails = array_map(function ($contact) {
+                $emails = array_map(
+                    function ($contact) {
                         return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL));
-                $phones = array_map(function ($contact) {
+                    },
+                    array_filter(
+                        $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    )
+                );
+                $phones = array_map(
+                    function ($contact) {
                         return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE));
+                    },
+                    array_filter(
+                        $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    )
+                );
 
                 $params = array(
                     'id' => $ticket['id'],

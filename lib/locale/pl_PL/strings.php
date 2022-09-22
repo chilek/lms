@@ -4182,8 +4182,9 @@ $_LANG['personal'] = 'osobiście';
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną, musi zostać zaznaczony adres e-mail, na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['cancellation of a traditional invoice (agreement on an electronic invoice)'] = 'rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną)';
-$_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
-$_LANG['Check if send technical notification'] = 'Zaznacz, jeżeli chcesz wysyłać informacje techniczne';
+$_LANG['Check if send notifications'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
+$_LANG['Check if send helpdesk notifications'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia helpdesk';
+$_LANG['Check if send technical notifications'] = 'Zaznacz, jeżeli chcesz wysyłać informacje techniczne';
 $_LANG['notifications'] = 'powiadomienia';
 $_LANG['technical'] = 'informacje techniczne';
 

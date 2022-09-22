@@ -304,12 +304,28 @@ if (isset($_POST['event'])) {
                     if ($ticket['customerid']) {
                         $info = $LMS->GetCustomer($ticket['customerid'], true);
 
-                        $emails = array_map(function ($contact) {
-                            return $contact['fullname'];
-                        }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
-                        $phones = array_map(function ($contact) {
-                            return $contact['fullname'];
-                        }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                        $emails = array_map(
+                            function ($contact) {
+                                return $contact['fullname'];
+                            },
+                            array_filter(
+                                $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+                                function ($contact) {
+                                    return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                                }
+                            )
+                        );
+                        $phones = array_map(
+                            function ($contact) {
+                                return $contact['fullname'];
+                            },
+                            array_filter(
+                                $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                                function ($contact) {
+                                    return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                                }
+                            )
+                        );
 
                         if (ConfigHelper::checkConfig(
                             'rt.notification_customerinfo',
