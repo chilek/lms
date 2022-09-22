@@ -85,6 +85,7 @@ if (isset($_POST['assignment'])) {
         $a['datefrom']   = $from;
         $a['dateto']     = $to;
         $a['count']      = $count;
+        $a['paytime']    = $paytime;
 
         $DB->BeginTrans();
 

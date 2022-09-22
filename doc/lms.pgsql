@@ -1074,6 +1074,7 @@ CREATE TABLE assignments (
 	settlement smallint	DEFAULT 0 NOT NULL,
 	pdiscount numeric(5,2)	DEFAULT 0 NOT NULL,
 	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
+	paytime smallint    DEFAULT NULL,
 	paytype smallint    DEFAULT NULL,
 	numberplanid integer DEFAULT NULL
 		REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -4290,6 +4291,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022092000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022092200');
 
 COMMIT;

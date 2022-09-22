@@ -589,10 +589,10 @@ function tariffSelectionHandler() {
 	}
 
 	if (val == -1) {
-		$('#a_numberplan,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
 		$('#a_properties').show();
 	} else {
-		$('#a_numberplan,#a_paytype,#a_address,#a_day').show();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day').show();
 		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();
