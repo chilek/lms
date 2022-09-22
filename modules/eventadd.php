@@ -466,9 +466,10 @@ if (isset($_POST['event'])) {
         $SMARTY->assign('ticket', $ticket);
     }
 } else {
-    if (isset($_GET['id']) && intval($_GET['id'])) {
+    $eventid = intval($_GET['id']);
+    if (!empty($eventid)) {
         // new event initialization during existing event clone
-        $event = $LMS->GetEvent($_GET['id']);
+        $event = $LMS->GetEvent($eventid);
         if (!empty($event['userlist'])) {
             $event['userlist'] = array_keys($event['userlist']);
         }
