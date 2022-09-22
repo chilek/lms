@@ -26,7 +26,7 @@
 
 $a = $DB->GetRow(
     'SELECT a.invoice, a.settlement,
-        a.numberplanid, a.paytype, n.template, n.period, a.attribute,
+        a.numberplanid, a.paytime, a.paytype, n.template, n.period, a.attribute,
         d.number AS docnumber, d.type AS doctype, d.cdate,
         n2.template AS numtemplate, a.customerid, a.separatedocument,
         t.value, t.flags,
