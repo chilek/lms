@@ -792,7 +792,7 @@ unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
-$invprojectlist = $LMS->GetProjects('name', array());
+$invprojectlist = $LMS->GetProjects();
 unset($invprojectlist['total']);
 unset($invprojectlist['order']);
 unset($invprojectlist['direction']);

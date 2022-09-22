@@ -405,7 +405,7 @@ unset($queue['watching']);
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 
-$projects = $LMS->GetProjects('name', array());
+$projects = $LMS->GetProjects();
 unset($projects['total']);
 unset($projects['order']);
 unset($projects['direction']);
