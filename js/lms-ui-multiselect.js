@@ -615,7 +615,7 @@ function multiselect(options) {
 	}
 
 	old_element.on('lms:multiselect:toggle_check_all', function(e, data) {
-		if (data.checked) {;
+		if (data.checked) {
 			multiselect.toggleCheckAll(true);
 		}
 		multiselect.refreshSelection();
