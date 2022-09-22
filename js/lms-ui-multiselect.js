@@ -614,6 +614,13 @@ function multiselect(options) {
 		checkAllElements();
 	}
 
+	old_element.on('lms:multiselect:toggle_check_all', function(e, data) {
+		if (data.checked) {;
+			multiselect.toggleCheckAll(true);
+		}
+		multiselect.refreshSelection();
+	});
+
 	this.refreshSelection = function() {
 		new_selected = this.generateSelectedString();
 	}

@@ -144,8 +144,8 @@ function CustomerAssignmentHelper(options) {
 	this.tariffSelectionHandler = function () {
 		var selected_tariff = $(this).find(':selected');
 		var assignment_id = selected_tariff.attr('data-assignment-id');
-		var tariffaccess = parseInt(selected_tariff.attr('data-tariffaccess'));
-		var tarifftype = parseInt(selected_tariff.attr('data-tarifftype'));
+		var tariffAccess = parseInt(selected_tariff.attr('data-tariffaccess'));
+		var tariffType = parseInt(selected_tariff.attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr.schema-tariff-container');
 		var period_tables = tr.find('.single-assignment[data-assignment-id]');
@@ -154,65 +154,41 @@ function CustomerAssignmentHelper(options) {
 
 		tr = tr.next('.customerdevices');
 
-		tr.toggle(tariffaccess != -1);
+		tr.toggle(tariffAccess != -1);
 		period_tables.hide();
 		period_tables.filter('[data-assignment-id="' + assignment_id + '"]').show();
 
-		switch (tarifftype) {
-			case helper.internetTariffType:
-				tr.find('div.nodes,div.netdevnodes').show();
-				tr.find('div.phones').hide();
-				break;
-			case helper.phoneTariffType:
-				tr.find('div.nodes,div.netdevnodes').hide();
-				tr.find('div.phones').show();
-				break;
-			default:
-				tr.find('div.nodes,div.netdevnodes,div.phones').hide();
-		}
+		tr.find('.nodes,.netdevnodes').toggle(tariffType == helper.internetTariffType);
+		tr.find('.phones').toggle(tariffType == helper.phoneTariffType);
 
-		init_multiselects('select.lms-ui-multiselect-deferred:visible');
-
-		var ms = [];
-		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
-		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
-		}
-        if (!ms.length) {
+		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : (tariffType == helper.internetTariffType ? '.nodes select,.netdevnodes select' : ''));
+		if (!selects.length) {
 			return;
 		}
-        $.each(ms, function(index, select) {
-			if (!select) {
-				return;
-			}
-        	var ms = select.data('multiselect-object');
-        	if (!ms) {
-        		return;
-        	}
-			ms.getOptions().each(function (key) {
+
+		init_multiselects(selects.filter(function() {
+			return $(this).is('.lms-ui-multiselect-deferred:visible') && !$(this).closest('.lms-ui-multiselect-container').length;
+		}));
+
+		selects.each(function() {
+			$(this).find('option').each(function() {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
-				if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
-					(location == location_select || !location_select.length)) {
-					ms.showOption(key);
-				} else {
-					ms.hideOption(key);
-				}
+				$(this).toggle(
+					((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+					(location == location_select || !location_select.length)
+				);
 			});
-			if ($('#check_all_terminals').prop('checked')) {
-				ms.toggleCheckAll(true);
-			}
-			ms.refreshSelection();
+			$(this).trigger('lms:multiselect:updated');
+			$(this).trigger('lms:multiselect:toggle_check_all', { checked: $('#check_all_terminals').prop('checked') });
 		});
 	}
 
 	this.tariffCheckboxHandler = function() {
 		var checked = this.checked;
 		var assignment_id = $(this).attr('data-assignment-id');
-		var tariffaccess = parseInt($(this).attr('data-tariffaccess'));
-		var tarifftype = parseInt($(this).attr('data-tarifftype'));
+		var tariffAccess = parseInt($(this).attr('data-tariffaccess'));
+		var tariffType = parseInt($(this).attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr.schema-tariff-container');
 		var period_table = tr.find('.single-assignment[data-assignment-id="' + assignment_id + '"]');
@@ -224,53 +200,33 @@ function CustomerAssignmentHelper(options) {
 		tr.toggle(checked);
 		period_table.toggle(checked);
 
-		switch (tarifftype) {
-			case helper.phoneTariffType:
-				tr.find('div.nodes,div.netdevnodes').hide();
-				tr.find('div.phones').show();
-				break;
-			default:
-				tr.find('div.nodes,div.netdevnodes').show();
-				tr.find('div.phones').hide();
-		}
+		tr.find('.nodes,.netdevnodes').toggle(tariffType != helper.phoneTariffType);
+		tr.find('.phones').toggle(tariffType == helper.phoneTariffType);
 
-		init_multiselects('select.lms-ui-multiselect-deferred:visible');
-
-		var ms = [];
-		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
-		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
-		}
-        if (!ms.length) {
+		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : '.nodes select,.netdevnodes select');
+		if (!selects.length) {
 			return;
 		}
-        $.each(ms, function(index, select) {
-			if (!select) {
-				return;
-			}
-        	var ms = select.data('multiselect-object');
-        	if (!ms) {
-        		return;
-        	}
-			ms.getOptions().each(function (key) {
+
+		init_multiselects(selects.filter(function() {
+			return $(this).is('.lms-ui-multiselect-deferred:visible') && !$(this).closest('.lms-ui-multiselect-container').length;
+		}));
+
+		selects.each(function() {
+			$(this).find('option').each(function() {
 				if (checked) {
 					var authtype = parseInt($(this).attr('data-tariffaccess'));
 					var location = $(this).attr('data-location');
-					if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
-						(location == location_select || !location_select.length)) {
-						ms.showOption(key);
-					} else {
-						ms.hideOption(key);
-					}
+					$(this).toggle(
+						((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+						(location == location_select || !location_select.length)
+					);
 				} else {
-					ms.hideOption(key);
+					$(this).hide();
 				}
 			});
-			if ($('#check_all_terminals').prop('checked')) {
-				ms.toggleCheckAll(true);
-			}
+			$(this).trigger('lms:multiselect:updated');
+			$(this).trigger('lms:multiselect:toggle_check_all', { checked: checked && $('#check_all_terminals').prop('checked') });
 		});
 	}
 
@@ -289,8 +245,18 @@ function CustomerAssignmentHelper(options) {
 		var promotionTable = $('#schema' + schemaId);
 		var location = location_select.val();
 		promotionTable.find('.nodes select,.netdevnodes select').each(function() {
+			var schemaTariffElement = $(this).closest('.customerdevices').siblings('.schema-tariff-container').find('.schema-tariff-checkbox,.schema-tariff-selection');
+			var tariffAccess = parseInt(
+				schemaTariffElement.is('.schema-tariff-checkbox') ?
+					schemaTariffElement.attr('data-tariffaccess') :
+					schemaTariffElement.find('option:selected').attr('data-tariffaccess')
+			);
 			$(this).find('option').each(function() {
-				$(this).toggle(location == '' || location == $(this).attr('data-location'));
+				var authtype = parseInt($(this).attr('data-tariffaccess'));
+				$(this).toggle(
+					((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+					(location == '' || location == $(this).attr('data-location'))
+				);
 			});
 			$(this).trigger('lms:multiselect:updated');
 		});
