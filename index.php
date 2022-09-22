@@ -116,8 +116,8 @@ if (!$api) {
     $db_upgrade_errors = $DB->getUpgradeErrors();
     if (!empty($db_upgrade_errors)) {
         die(
-            "Launch 'devel/upgradedb.php' script from your installation directory (recommended)'
-                . ' or add 'database.auto_update' configuration variable with value 'true' to lms.ini file (not recommended)<br>"
+            "Launch 'devel/upgradedb.php' script from your installation directory (recommended)"
+                . " or add 'database.auto_update' configuration variable with value 'true' to lms.ini file (not recommended)<br>"
         );
     }
 
