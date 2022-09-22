@@ -32,14 +32,22 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 $userid = Auth::GetCurrentUser();
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
+
+if (isset($_GET['netdevid']) && intval($_GET['netdevid'])) {
+    $netdevice = $LMS->GetNetDev($_GET['netdevid']);
+    if (!empty($netdevice['netnodeid'])) {
+        $ticket['netnodeid'] = $netdevice['netnodeid'];
+    }
+} else {
+    $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
+}
+
 if (!empty($ticket['netdevid'])) {
     $ticket['customerid'] = $LMS->getNetDevOwner($ticket['netdevid']);
 }
 if (!isset($ticket['customerid'])) {
     $ticket['customerid'] = isset($_GET['customerid']) && intval($_GET['customerid']) ? intval($_GET['customerid']) : '';
 }
-$ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 $ticket['parentid'] = isset($_GET['parentid']) ? intval($_GET['parentid']) : null;
 
