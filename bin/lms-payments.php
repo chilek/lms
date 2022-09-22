@@ -1679,7 +1679,7 @@ foreach ($assigns as $assign) {
 
             if (strlen($assign['a_paytime'])) {
                 $inv_paytime = $assign['a_paytime'];
-            } elseif ($assign['paytime'] >= 0)) {
+            } elseif ($assign['paytime'] >= 0) {
                 $inv_paytime = $assign['paytime'];
             } elseif (strlen($assign['d_paytime'])) {
                 $inv_paytime = $assign['d_paytime'];
