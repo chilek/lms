@@ -282,6 +282,8 @@ version 28-git (????-??-??):
   - enhancement: allow to assign events with netnodes and netdevices [interduo]
   - enhancement: implement {network_device_selection} & {network_node_selection} smarty function [interduo]
   - enhancement: added paytime/deadline property to assignments [chilan]
+  - enhancement: 'helpdesk' flag of email and mobile contacts controls if helpdesk notifications
+    are sent to customer [chilan]
 
 version 27.0 (2021-08-20):
 
