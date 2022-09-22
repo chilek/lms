@@ -281,6 +281,7 @@ version 28-git (????-??-??):
     to 'documents.protection_password' and 'documents.protection_command' [chilan]
   - enhancement: allow to assign events with netnodes and netdevices [interduo]
   - enhancement: implement {network_device_selection} & {network_node_selection} smarty function [interduo]
+  - enhancement: added paytime/deadline property to assignments [chilan]
 
 version 27.0 (2021-08-20):
 
