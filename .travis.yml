@@ -58,12 +58,20 @@ install:
   - composer install
 
 before_script:
-  - psql -c 'create database lms;' -U postgres
+  - psql -U postgres -c 'CREATE DATABASE lms;'
   - psql -U postgres -f doc/lms.pgsql
+  - psql -U postgres -f doc/lms-stable.pgsql
   - mysql -e 'CREATE DATABASE lms;'
   - mysql lms < doc/lms.mysql
-  - if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
-  - if find templates -type f -iname '*.html' | xargs devel/smartylint.php |grep -i "syntax error"; then exit 1; fi
+  - mysql lms < doc/lms-stable.mysql
+
+  - cd /var/www/html/lms/; for dir in 'backups cache documents templates_c userpanel/templates_c rtattachments js/xajax_js/deferred storage/rt storage/voipcalls storage/customercalls'; do mkdir -p $dir && chmod o-rwx -R $dir; done
+  - mkdir /etc/lms; cp samples/lms-pgsql-travis.ini /etc/lms/lms.ini
+  - php devel/upgradedb.php
+  - mkdir /etc/lms; cp samples/lms-mysql-travis.ini /etc/lms/lms.ini
+  - php devel/upgradedb.php
+  - if find . -mtime -1 -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
+  - if find templates -mtime -1 -type f -iname '*.html' | xargs devel/smartylint.php |grep -i "syntax error"; then exit 1; fi
   - ./vendor/bin/phpcs --standard=$PHPCS_STANDARD .
   - npm install -g jshint
   - jshint .
