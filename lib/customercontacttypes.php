@@ -430,7 +430,7 @@ foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
     $flags = array_flip(
         preg_split(
             '/([\s]+|[\s]*,[\s]*)/',
-            trim(ConfigHelper::getConfig('phpui.default_customer_' . $ctype . '_flags', '', true)),
+            trim(ConfigHelper::getConfig('phpui.default_customer_' . $ctype . '_flags', 'helpdesk_notifications')),
             -1,
             PREG_SPLIT_NO_EMPTY
         )
