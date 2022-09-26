@@ -21,7 +21,8 @@
  *
  */
 
-define('CONTACT_NOTIFICATIONS_2022092201', 32);
+define('CONTACT_MOBILE_2022092201', 1);
+define('CONTACT_EMAIL_2022092201', 8);
 define('CONTACT_HELPDESK_NOTIFICATIONS_2022092201', 131072);
 
 $this->BeginTrans();
@@ -30,7 +31,7 @@ $this->Execute(
     "UPDATE customercontacts SET type = type | ? WHERE (type & ?) > 0",
     array(
         CONTACT_HELPDESK_NOTIFICATIONS_2022092201,
-        CONTACT_NOTIFICATIONS_2022092201,
+        CONTACT_MOBILE_2022092201 | CONTACT_EMAIL_2022092201,
     )
 );
 
