@@ -73,6 +73,7 @@ before_script:
   - npm install -g jshint
   - jshint .
   #- ./vendor/bin/phpunit
+  - php -m
 
 script: true
 
