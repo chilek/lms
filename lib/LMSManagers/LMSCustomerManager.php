@@ -1476,24 +1476,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100)
                             END
                         ) * (
-                            CASE
-                                WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
-                                    CASE t.period
-                                        WHEN ' . YEARLY . ' THEN 1/12.0
-                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
-                                        ELSE 1
-                                    END
-                                ) ELSE (
-                                    CASE a.period
-                                        WHEN ' . YEARLY . ' THEN 1/12.0
-                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
-                                        WHEN ' . WEEKLY . ' THEN 4.0
-                                        WHEN ' . DAILY . ' THEN 30.0
-                                        ELSE 1
-                                    END
-                                )
+                            CASE WHEN a.period = ' . DISPOSABLE . ' THEN 0
+                            ELSE (
+                                CASE WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
+                                        CASE t.period
+                                            WHEN ' . YEARLY . ' THEN 1/12.0
+                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                            ELSE 1
+                                        END
+                                    ) ELSE (
+                                        CASE a.period
+                                            WHEN ' . YEARLY . ' THEN 1/12.0
+                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                            WHEN ' . WEEKLY . ' THEN 4.0
+                                            WHEN ' . DAILY . ' THEN 30.0
+                                            ELSE 1
+                                        END
+                                    )
+                                END
+                            )
                             END
                         ) * a.count
                     ) AS value
