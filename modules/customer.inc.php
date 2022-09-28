@@ -107,18 +107,35 @@ if (!isset($resource_tabs['customerevents']) || $resource_tabs['customerevents']
     $params = array(
         'customerid' => $customerid,
     );
-    if (isset($_GET['events-from-date'])) {
-        $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
-        $SMARTY->assign('events_from_date', $_GET['events-from-date']);
+
+    if (isset($_GET['clear-event-filter'])) {
+        $events_from_date = null;
+    } elseif (isset($_GET['events-from-date'])) {
+        $events_from_date = $_GET['events-from-date'];
+    } elseif ($SESSION->is_set('events_from_date')) {
+        $SESSION->restore('events_from_date', $events_from_date);
+    } else {
+        $events_from_date = null;
     }
-    $allevents = (isset($_GET['allevents']) && !empty($_GET['allevents']))
-        || ((!isset($_GET['allevents'])
-            && ConfigHelper::checkConfig(
-                'timetable.default_show_closed_events',
-                ConfigHelper::checkConfig('phpui.default_show_closed_events')
-            )
-        )
-    );
+    if (isset($events_from_date)) {
+        $params['datefrom'] = date_to_timestamp($events_from_date);
+        $SESSION->save('events_from_date', $events_from_date);
+    } else {
+        $SESSION->remove('events_from_date');
+    }
+    $SMARTY->assign('events_from_date', $events_from_date);
+
+    if (isset($_GET['allevents'])) {
+        $allevents = !empty($_GET['allevents']);
+    } elseif (isset($_GET['clear-event-filter']) || !$SESSION->is_set('allevents')) {
+        $allevents = ConfigHelper::checkConfig(
+            'timetable.default_show_closed_events',
+            ConfigHelper::checkConfig('phpui.default_show_closed_events')
+        );
+    } else {
+        $SESSION->restore('allevents', $allevents);
+    }
+    $SESSION->save('allevents', $allevents);
 
     if ($allevents) {
         $params['closed'] = '';
