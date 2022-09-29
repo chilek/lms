@@ -792,7 +792,19 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
             $message_id = $LMS->GetLastMessageID();
 
-            if ($autoreply) {
+            if ($autoreply && (empty($reqcustid) || $DB->GetOne(
+                'SELECT cc.id
+                FROM customercontacts cc
+                WHERE cc.customerid = ?
+                    AND (cc.type & ?) = ?
+                    AND cc.contact = ?',
+                array(
+                    $reqcustid,
+                    CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
+                    CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
+                    $fromemail,
+                )
+            ))) {
                 $autoreply_subject = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
