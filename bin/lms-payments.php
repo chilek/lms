@@ -655,7 +655,7 @@ $query = "SELECT
                     . "va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
-				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.type = " . BILLING_RECORD_DIRECTION_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.type = " . BILLING_RECORD_DIRECTION_INCOMING . "
+				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
 				JOIN voip_numbers vn ON vn.voip_account_id = va.id
 					AND (
 						(
@@ -663,13 +663,13 @@ $query = "SELECT
 							AND
 							vn.phone = vc.caller
 							AND
-							vc.type = " . BILLING_RECORD_DIRECTION_OUTGOING . "
+							vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . "
 						) OR (
 							vn.voip_account_id = vc.calleevoipaccountid
 							AND
 							vn.phone = vc.callee
 							AND
-							vc.type = " . BILLING_RECORD_DIRECTION_INCOMING . "
+							vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
 						)
 					)
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
