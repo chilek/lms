@@ -1834,6 +1834,7 @@ $_LANG['Select node, which you want to connect to device'] = 'Wybierz komputer, 
 $_LANG['Select node location'] = 'Wybierz lokalizację komputera';
 $_LANG['Select owner or \'SYSTEM ACCOUNT\' if you don\'t want to assign it to any customer'] = 'Wybierz właściciela lub "KONTO SYSTEMOWE" jeżeli nie chcesz go przypisywać do żadnego klienta';
 $_LANG['Select queue'] = 'Wybierz kolejkę';
+$_LANG['— Select queue —'] = '— Wybierz kolejkę —';
 $_LANG['Select results sorting order'] = 'Wybierz porządek sortowania wyników';
 $_LANG['Select section'] = 'Wybierz sekcję';
 $_LANG['Select sorting direction and criteria'] = 'Wybierz porządek sortowania i jego warunki';

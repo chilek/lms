@@ -49,6 +49,7 @@ if (!$categories) {
 
 $allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
 $empty_category_warning = ConfigHelper::checkConfig('rt.empty_category_warning', ConfigHelper::checkConfig('phpui.helpdesk_empty_category_warning', true));
+$queue_web = ConfigHelper::getConfig('rt.default_queue_web', ConfigHelper::getConfig('rt.default_queue'));
 
 if (isset($_POST['ticket'])) {
     $ticket = $_POST['ticket'];
@@ -475,11 +476,10 @@ if (isset($_POST['ticket'])) {
 } else {
     $queuelist = $LMS->GetQueueList(array('stats' => false));
     if (!$queue && !empty($queuelist)) {
-        $queue = ConfigHelper::getConfig('rt.default_queue');
-        if (!empty($queue) && preg_match('/^[0-9]+$/', $queue)) {
-            if (!$LMS->QueueExists($queue)) {
-                $queue = 0;
-            }
+        if (preg_match('/^[0-9]+$/', $queue_web)) {
+            if (!$LMS->QueueExists($queue_web)) {
+                $queue = "0";
+	    }
         } else {
             $queue = $LMS->GetQueueIdByName($queue);
         }
@@ -491,16 +491,22 @@ if (isset($_POST['ticket'])) {
                 $firstqueue = null;
             }
             if (!isset($firstqueue)) {
-                $queue = 0;
+                $queue = "0";
+            }
+        } else {
+            $queue_web_exists = $LMS->QueueExists($queue_web);
+            if ($queue_web_exists) {
+                $queue = $queue_web;
+                $SMARTY->assign('default_queue_web', $queue_web);
+            } else {
+                $queue = "0";
             }
         }
-        if (!$queue) {
-            $firstqueue = reset($queuelist);
-            $queue = $firstqueue['id'];
-        }
-        $ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
-        if (($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) || $firstqueue['newticketsmsbody']) {
-            $ticket['customernotify'] = 1;
+        if ($queue) {
+            $ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
+            if (($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) || $firstqueue['newticketsmsbody']) {
+                $ticket['customernotify'] = 1;
+            }
         }
     } elseif ($queue) {
         $queuedata = $LMS->GetQueue($queue);
