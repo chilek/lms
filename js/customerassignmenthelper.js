@@ -144,8 +144,8 @@ function CustomerAssignmentHelper(options) {
 	this.tariffSelectionHandler = function () {
 		var selected_tariff = $(this).find(':selected');
 		var assignment_id = selected_tariff.attr('data-assignment-id');
-		var tariffaccess = parseInt(selected_tariff.attr('data-tariffaccess'));
-		var tarifftype = parseInt(selected_tariff.attr('data-tarifftype'));
+		var tariffAccess = parseInt(selected_tariff.attr('data-tariffaccess'));
+		var tariffType = parseInt(selected_tariff.attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr.schema-tariff-container');
 		var period_tables = tr.find('.single-assignment[data-assignment-id]');
@@ -154,65 +154,41 @@ function CustomerAssignmentHelper(options) {
 
 		tr = tr.next('.customerdevices');
 
-		tr.toggle(tariffaccess != -1);
+		tr.toggle(tariffAccess != -1);
 		period_tables.hide();
 		period_tables.filter('[data-assignment-id="' + assignment_id + '"]').show();
 
-		switch (tarifftype) {
-			case helper.internetTariffType:
-				tr.find('div.nodes,div.netdevnodes').show();
-				tr.find('div.phones').hide();
-				break;
-			case helper.phoneTariffType:
-				tr.find('div.nodes,div.netdevnodes').hide();
-				tr.find('div.phones').show();
-				break;
-			default:
-				tr.find('div.nodes,div.netdevnodes,div.phones').hide();
-		}
+		tr.find('.nodes,.netdevnodes').toggle(tariffType == helper.internetTariffType);
+		tr.find('.phones').toggle(tariffType == helper.phoneTariffType);
 
-		init_multiselects('select.lms-ui-multiselect-deferred:visible');
-
-		var ms = [];
-		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
-		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
-		}
-        if (!ms.length) {
+		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : (tariffType == helper.internetTariffType ? '.nodes select,.netdevnodes select' : ''));
+		if (!selects.length) {
 			return;
 		}
-        $.each(ms, function(index, select) {
-			if (!select) {
-				return;
-			}
-        	var ms = select.data('multiselect-object');
-        	if (!ms) {
-        		return;
-        	}
-			ms.getOptions().each(function (key) {
+
+		init_multiselects(selects.filter(function() {
+			return $(this).is('.lms-ui-multiselect-deferred:visible') && !$(this).closest('.lms-ui-multiselect-container').length;
+		}));
+
+		selects.each(function() {
+			$(this).find('option').each(function() {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
-				if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
-					(location == location_select || !location_select.length)) {
-					ms.showOption(key);
-				} else {
-					ms.hideOption(key);
-				}
+				$(this).toggle(
+					((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+					(location == location_select || !location_select.length)
+				);
 			});
-			if ($('#check_all_terminals').prop('checked')) {
-				ms.toggleCheckAll(true);
-			}
-			ms.refreshSelection();
+			$(this).trigger('lms:multiselect:updated');
+			$(this).trigger('lms:multiselect:toggle_check_all', { checked: $('#check_all_terminals').prop('checked') });
 		});
 	}
 
 	this.tariffCheckboxHandler = function() {
 		var checked = this.checked;
 		var assignment_id = $(this).attr('data-assignment-id');
-		var tariffaccess = parseInt($(this).attr('data-tariffaccess'));
-		var tarifftype = parseInt($(this).attr('data-tarifftype'));
+		var tariffAccess = parseInt($(this).attr('data-tariffaccess'));
+		var tariffType = parseInt($(this).attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr.schema-tariff-container');
 		var period_table = tr.find('.single-assignment[data-assignment-id="' + assignment_id + '"]');
@@ -224,57 +200,37 @@ function CustomerAssignmentHelper(options) {
 		tr.toggle(checked);
 		period_table.toggle(checked);
 
-		switch (tarifftype) {
-			case helper.phoneTariffType:
-				tr.find('div.nodes,div.netdevnodes').hide();
-				tr.find('div.phones').show();
-				break;
-			default:
-				tr.find('div.nodes,div.netdevnodes').show();
-				tr.find('div.phones').hide();
-		}
+		tr.find('.nodes,.netdevnodes').toggle(tariffType != helper.phoneTariffType);
+		tr.find('.phones').toggle(tariffType == helper.phoneTariffType);
 
-		init_multiselects('select.lms-ui-multiselect-deferred:visible');
-
-		var ms = [];
-		if (tarifftype == helper.phoneTariffType) {
-			ms.push(tr.find('div.phones .lms-ui-multiselect-container'));
-		} else {
-			ms.push(tr.find('div.nodes .lms-ui-multiselect-container'));
-			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect-container'));
-		}
-        if (!ms.length) {
+		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : '.nodes select,.netdevnodes select');
+		if (!selects.length) {
 			return;
 		}
-        $.each(ms, function(index, select) {
-			if (!select) {
-				return;
-			}
-        	var ms = select.data('multiselect-object');
-        	if (!ms) {
-        		return;
-        	}
-			ms.getOptions().each(function (key) {
+
+		init_multiselects(selects.filter(function() {
+			return $(this).is('.lms-ui-multiselect-deferred:visible') && !$(this).closest('.lms-ui-multiselect-container').length;
+		}));
+
+		selects.each(function() {
+			$(this).find('option').each(function() {
 				if (checked) {
 					var authtype = parseInt($(this).attr('data-tariffaccess'));
 					var location = $(this).attr('data-location');
-					if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
-						(location == location_select || !location_select.length)) {
-						ms.showOption(key);
-					} else {
-						ms.hideOption(key);
-					}
+					$(this).toggle(
+						((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+						(location == location_select || !location_select.length)
+					);
 				} else {
-					ms.hideOption(key);
+					$(this).hide();
 				}
 			});
-			if ($('#check_all_terminals').prop('checked')) {
-				ms.toggleCheckAll(true);
-			}
+			$(this).trigger('lms:multiselect:updated');
+			$(this).trigger('lms:multiselect:toggle_check_all', { checked: checked && $('#check_all_terminals').prop('checked') });
 		});
 	}
 
-    this.locationSelectionHandler = function() {
+	this.locationSelectionHandler = function() {
 		$('.schema-tariff-selection').trigger('change');
 		$('.schema-tariff-checkbox').trigger('change');
 
@@ -284,6 +240,26 @@ function CustomerAssignmentHelper(options) {
 		location_select.toggleClass('lms-ui-error', validationError)
 			.next().toggleClass('lms-ui-error', validationError)
 			.attr('title', validationError ? errorMessage : null).removeAttr('data-tooltip');
+
+		var schemaId = $('#promotion-select').val();
+		var promotionTable = $('#schema' + schemaId);
+		var location = location_select.val();
+		promotionTable.find('.nodes select,.netdevnodes select').each(function() {
+			var schemaTariffElement = $(this).closest('.customerdevices').siblings('.schema-tariff-container').find('.schema-tariff-checkbox,.schema-tariff-selection');
+			var tariffAccess = parseInt(
+				schemaTariffElement.is('.schema-tariff-checkbox') ?
+					schemaTariffElement.attr('data-tariffaccess') :
+					schemaTariffElement.find('option:selected').attr('data-tariffaccess')
+			);
+			$(this).find('option').each(function() {
+				var authtype = parseInt($(this).attr('data-tariffaccess'));
+				$(this).toggle(
+					((authtype && (authtype & tariffAccess)) || !tariffAccess) &&
+					(location == '' || location == $(this).attr('data-location'))
+				);
+			});
+			$(this).trigger('lms:multiselect:updated');
+		});
 	}
 
 	this.updateDevices = function() {
@@ -332,15 +308,13 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.nodes, function(key, node) {
 							var location = String(node.location);
-							if (location.length > 50) {
-								location = location.substr(0, 50) + '...';
-							}
+							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
 								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
 								' data-tariffaccess="' + node.authtype + '"' +
-								' data-location="' + node.location + '"' +
+								' data-location="' + location + '"' +
 								' data-html-content="<strong>' + node.name + '</strong>' +
 								' (' + nodeid + ')' + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
@@ -362,15 +336,13 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.netdevnodes, function(key, node) {
 							var location = String(node.location);
-							if (location.length > 50) {
-								location = location.substr(0, 50) + '...';
-							}
+							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
 								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
 								' data-tariffaccess="' + node.authtype + '"' +
-								' data-location="' + node.location + '"' +
+								' data-location="' + location + '"' +
 								' data-html-content="<strong>' + node.name + '</strong>' +
 								' (' + nodeid + ')' + ' / ' + node.netdev_name + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
@@ -392,14 +364,12 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.voipaccounts, function(key, account) {
 							var location = String(account.location);
-							if (location.length > 50) {
-								location = location.substr(0, 50) + '...';
-							}
+							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
 							$.each(account.phones, function(key, phone) {
 								options += '<option value="' + phone.id + '"' +
 									(("sphones" in selected) && (schemaid in selected.sphones) && (label in selected.sphones[schemaid]) &&
 									(selected.sphones[schemaid][label].indexOf(phone.id) > -1) ? ' selected' : '') +
-									' data-location="' + account.location + '"' +
+									' data-location="' + location + '"' +
 									' data-html-content="<strong>' + phone.phone + '</strong>' +
 									' / ' + account.login + (location.length ? ' / ' + location : '') + '"';
 								options += '>';
@@ -427,10 +397,11 @@ function CustomerAssignmentHelper(options) {
 				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
 					$.each(data['with-end-points'], function(key, value) {
-						options += '<option value="' + value.location + '"' +
-							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						options += '<option value="' + location + '"' +
+							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
-							value.location + '</option>';
+							location + '</option>';
 						location_count++;
 					});
 					options += '</optgroup>';
@@ -438,10 +409,11 @@ function CustomerAssignmentHelper(options) {
 				if (data['without-end-points']) {
 					options += '<optgroup label="' + $t("without end-points") + '">';
 					$.each(data['without-end-points'], function(key, value) {
-						options += '<option value="' + value.location + '"' +
-							(("location" in selected) && selected.location == value.location ? ' selected' : '') +
+						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						options += '<option value="' + location + '"' +
+							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
-							value.location + '</option>';
+							location + '</option>';
 						location_count++;
 					});
 					options += '</optgroup>';
@@ -463,13 +435,14 @@ function CustomerAssignmentHelper(options) {
 				}
 				$('#recipient-select').html(options);
 
-				$('#a_promotions,#a_align_periods').show();
-
-                init_multiselects('select.lms-ui-multiselect-deferred:visible');
+				$('#a_align_periods').show();
 
 				$('#promotion-select').trigger('change');
+
 				tariffSelectionHandler();
-            }
+
+				init_multiselects('select.lms-ui-multiselect-deferred:visible');
+			}
 		});
     }
 
@@ -610,10 +583,10 @@ function tariffSelectionHandler() {
 	}
 
 	if (val == -1) {
-		$('#a_numberplan,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day,#a_options,#a_existingassignments').hide();
 		$('#a_properties').show();
 	} else {
-		$('#a_numberplan,#a_paytype,#a_address,#a_day').show();
+		$('#a_numberplan,#a_paytime,#a_paytype,#a_address,#a_day').show();
 		$('#backward-period').toggle(val != -2 || !promotion_select);
 		if ((val == -2 && promotion_select) || (val != -2)) {
 			$('#a_options,#a_properties,#a_existingassignments').show();

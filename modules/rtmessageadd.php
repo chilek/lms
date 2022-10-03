@@ -415,11 +415,24 @@ if (isset($_POST['message'])) {
                 if ($ticketdata['customerid']) {
                     $info = $LMS->GetCustomer($ticketdata['customerid'], true);
 
-                    $emails = array_map(function ($contact) {
-                        return $contact['fullname'];
-                    }, $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_EMAIL));
+                    $emails = array_map(
+                        function ($contact) {
+                            return $contact['fullname'];
+                        },
+                        array_filter(
+                            $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_EMAIL),
+                            function ($contact) {
+                                return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                            }
+                        )
+                    );
 
-                    $all_phones = $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE);
+                    $all_phones = array_filter(
+                        $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    );
 
                     $phones = array_map(function ($contact) {
                         return $contact['fullname'];
@@ -716,7 +729,7 @@ if (isset($_POST['message'])) {
             }
 
             if ((!isset($message['destination']) || !$message['destination']) && !$reply['userid']) {
-                $message['destination'] = $LMS->GetCustomerEmail($message['customerid'], 0, CONTACT_DISABLED);
+                $message['destination'] = $LMS->GetCustomerEmail($message['customerid'], CONTACT_HELPDESK_NOTIFICATIONS, CONTACT_DISABLED);
                 if (!empty($message['destination'])) {
                     $message['destination'] = implode(',', $message['destination']);
                 }
@@ -785,7 +798,7 @@ if (!is_array($message['ticketid'])) {
             $customercontacts = array();
         }
         foreach ($customercontacts as &$customercontact) {
-            if (($customercontact['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+            if (($customercontact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS) {
                 $customercontact['checked'] = 0;
                 $customercontact['display'] = $customercontact['name'];
                 $customercontact['source'] = 'customer';
@@ -878,7 +891,7 @@ if (!is_array($message['ticketid'])) {
             $customercontacts = array();
         }
         foreach ($customercontacts as &$customercontact) {
-            if (($customercontact['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS) {
+            if (($customercontact['type'] & (CONTACT_HELPDESK_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_HELPDESK_NOTIFICATIONS) {
                 $customercontact['checked'] = 0;
                 $contacts['phones'][$customercontact['contact']] = $customercontact;
             }

@@ -217,6 +217,19 @@ if (isset($_POST['assignment'])) {
         }
     }
 
+    if (isset($a['paytime'])) {
+        if (empty($a['paytime'])) {
+            $paytime = 0;
+        } elseif (preg_match('/^[\-]?[0-9]+$/', $a['paytime'])) {
+            $paytime = intval($a['paytime']);
+            if ($paytime == -1) {
+                $paytime = null;
+            }
+        } else {
+            $error['paytime'] = trans('Invalid deadline format!');
+        }
+    }
+
     if (empty($a['datefrom'])) {
         $from = 0;
     } elseif (!preg_match('/^[0-9]+$/', $a['datefrom'])) {
@@ -412,6 +425,7 @@ if (isset($_POST['assignment'])) {
             'vdiscount' => str_replace(',', '.', $a['vdiscount']),
             SYSLOG::RES_LIAB => $a['liabilityid'],
             SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : null,
+            'paytime' => isset($paytime) ? $paytime : null,
             'paytype' => !empty($a['paytype']) ? $a['paytype'] : null,
             'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : null,
             SYSLOG::RES_ASSIGN => $a['id']
@@ -420,7 +434,7 @@ if (isset($_POST['assignment'])) {
         $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?,
             backwardperiod=?, at=?, count=?,
 			invoice=?, separatedocument=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
-			liabilityid=?, numberplanid=?, paytype=?, recipient_address_id=?
+			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id=?
 			WHERE id=?', array_values($args));
         if ($SYSLOG) {
             $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -488,7 +502,7 @@ if (isset($_POST['assignment'])) {
 } else {
     $a = $DB->GetRow(
         'SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
-        a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
+        a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytime, a.paytype,
         a.invoice, a.separatedocument,
         liabilities.type,
         (CASE WHEN liabilityid IS NULL

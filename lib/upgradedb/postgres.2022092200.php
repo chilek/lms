@@ -21,7 +21,10 @@
  *
  */
 
-if (!$this->ResourceExists('messageitems.externalmsgid.varchar(64)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE messageitems MODIFY COLUMN externalmsgid varchar(64) DEFAULT NULL");
-    $this->Execute("UPDATE messageitems SET externalmsgid = NULL WHERE externalmsgid = ?", array('0'));
-}
+$this->BeginTrans();
+
+$this->Execute("ALTER TABLE assignments ADD COLUMN paytime smallint DEFAULT NULL");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022092200', 'dbversion'));
+
+$this->CommitTrans();

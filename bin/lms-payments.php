@@ -499,10 +499,10 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		END) AS netflag,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
 		t.description AS description, a.id AS assignmentid,
-		c.divisionid, c.paytype, c.flags AS customerflags,
-		a.paytype AS a_paytype, a.numberplanid, a.attribute,
+		c.divisionid, c.paytime, c.paytype, c.flags AS customerflags,
+		a.paytime AS a_paytime, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+		d.inv_paytime AS d_paytime, d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		t.flags,
 		(CASE WHEN cc1.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
 		(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS mail_marketing,
@@ -573,7 +573,8 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
         . ($tariff_tags ?: '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
     $doms[] = 0;
@@ -605,10 +606,10 @@ $query = "SELECT
 			t.type AS tarifftype,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
-			c.divisionid, c.paytype, c.flags AS customerflags,
-			a.paytype AS a_paytype, a.numberplanid, a.attribute,
+			c.divisionid, c.paytype, c.paytime, c.flags AS customerflags,
+			a.paytime AS a_paytime, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+			d.inv_paytime AS d_paytime, d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			0 AS flags,
 			t.taxid AS taxid, '' as prodid,
 			COALESCE(voipcost.value, 0) AS value,
@@ -654,7 +655,7 @@ $query = "SELECT
                     . "va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
-				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.type = " . BILLING_RECORD_DIRECTION_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.type = " . BILLING_RECORD_DIRECTION_INCOMING . "
+				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
 				JOIN voip_numbers vn ON vn.voip_account_id = va.id
 					AND (
 						(
@@ -662,13 +663,13 @@ $query = "SELECT
 							AND
 							vn.phone = vc.caller
 							AND
-							vc.type = " . BILLING_RECORD_DIRECTION_OUTGOING . "
+							vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . "
 						) OR (
 							vn.voip_account_id = vc.calleevoipaccountid
 							AND
 							vn.phone = vc.callee
 							AND
-							vc.type = " . BILLING_RECORD_DIRECTION_INCOMING . "
+							vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
 						)
 					)
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
@@ -738,7 +739,8 @@ $query = "SELECT
         . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
         . ($tariff_tags ?: '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
     $query,
@@ -973,6 +975,7 @@ $telecom_services = array();
 $currencies = array();
 $netflags = array();
 $doctypes = array();
+$paytimes = array();
 $paytypes = array();
 $addresses = array();
 $numberplans = array();
@@ -1612,6 +1615,9 @@ foreach ($assigns as $assign) {
     if (!isset($doctypes[$cid])) {
         $doctypes[$cid] = 0;
     }
+    if (!isset($paytimes[$cid])) {
+        $paytimes[$cid] = null;
+    }
     if (!isset($paytypes[$cid])) {
         $paytypes[$cid] = 0;
     }
@@ -1671,6 +1677,16 @@ foreach ($assigns as $assign) {
                 $inv_paytype = $paytype;
             }
 
+            if (strlen($assign['a_paytime'])) {
+                $inv_paytime = $assign['a_paytime'];
+            } elseif ($assign['paytime'] >= 0) {
+                $inv_paytime = $assign['paytime'];
+            } elseif (strlen($assign['d_paytime'])) {
+                $inv_paytime = $assign['d_paytime'];
+            } else {
+                $inv_paytime = $deadline;
+            }
+
             if ($assign['numberplanid']) {
                 $plan = $assign['numberplanid'];
             } elseif ($assign['tariffnumberplanid']) {
@@ -1679,7 +1695,9 @@ foreach ($assigns as $assign) {
                 $plan = isset($plans[$divid][$assign['invoice']]) ? $plans[$divid][$assign['invoice']] : 0;
             }
 
-            if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
+            if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice']
+                || !isset($paytimes[$cid]) || $paytimes[$cid] != $inv_paytime
+                || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
                 || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
                 if (!array_key_exists($plan, $numbertemplates)) {
@@ -1720,19 +1738,10 @@ foreach ($assigns as $assign) {
                             countryid, divisionid, paytime, documentmemo, flags, type
 						FROM customeraddressview WHERE id = ?", array($cid));
 
-                if (!isset($divisions[$customer['divisionid']])) {
-                    $divisions[$customer['divisionid']] = $LMS->GetDivision($customer['divisionid']);
+                if (!isset($divisions[$assign['divisionid']])) {
+                    $divisions[$assign['divisionid']] = $LMS->GetDivision($assign['divisionid']);
                 }
-                $division = $divisions[$customer['divisionid']];
-
-                $paytime = $customer['paytime'];
-                if ($paytime == -1) {
-                    if (isset($division['inv_paytime'])) {
-                        $paytime = $division['inv_paytime'];
-                    } else {
-                        $paytime = $deadline;
-                    }
-                }
+                $division = $divisions[$assign['divisionid']];
 
                 $fullnumber = docnumber(array(
                     'number' => $newnumber,
@@ -1781,7 +1790,7 @@ foreach ($assigns as $assign) {
                         $customer['ssn'],
                         $issuetime,
                         $saledate,
-                        $paytime,
+                        $inv_paytime,
                         $inv_paytype,
                         ($division['name'] ? $division['name'] : ''),
                         ($division['shortname'] ? $division['shortname'] : ''),
@@ -1817,6 +1826,7 @@ foreach ($assigns as $assign) {
                 $netflags[$cid] = $netflag;
                 $doctypes[$cid] = $assign['invoice'];
                 //$LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
+                $paytimes[$cid] = $inv_paytime;
                 $paytypes[$cid] = $inv_paytype;
                 $addresses[$cid] = $assign['recipient_address_id'];
                 $numberplans[$cid] = $plan;

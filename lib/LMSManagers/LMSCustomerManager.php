@@ -225,6 +225,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     GROUP BY docid
                 ) tv ON tv.docid = cash.docid
                 WHERE cust.id = ? AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . $totime . ')
+                    OR (cash.type = 0 AND cash.value > 0 AND cash.time < ' . $totime . ')
                     OR (cash.type = 0 AND cash.time +
                         ((CASE cust.paytime WHEN -1
                             THEN
@@ -1433,6 +1434,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     GROUP BY docid
                 ) tv ON tv.docid = cash.docid
                 WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . ($time ?: time()) . ')
+                    OR (cash.type = 0 AND cash.value > 0 AND cash.time < ' . ($time ?: time()) . ')
                     OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
                         (CASE WHEN divisions.inv_paytime IS NULL THEN '
                             . ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0))
@@ -1474,24 +1476,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                 ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100)
                             END
                         ) * (
-                            CASE
-                                WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
-                                    CASE t.period
-                                        WHEN ' . YEARLY . ' THEN 1/12.0
-                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
-                                        ELSE 1
-                                    END
-                                ) ELSE (
-                                    CASE a.period
-                                        WHEN ' . YEARLY . ' THEN 1/12.0
-                                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
-                                        WHEN ' . QUARTERLY . ' THEN 1/3.0
-                                        WHEN ' . WEEKLY . ' THEN 4.0
-                                        WHEN ' . DAILY . ' THEN 30.0
-                                        ELSE 1
-                                    END
-                                )
+                            CASE WHEN a.period = ' . DISPOSABLE . ' THEN 0
+                            ELSE (
+                                CASE WHEN a.period <> ' . DISPOSABLE . ' AND t.period > 0 AND t.period <> a.period THEN (
+                                        CASE t.period
+                                            WHEN ' . YEARLY . ' THEN 1/12.0
+                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                            ELSE 1
+                                        END
+                                    ) ELSE (
+                                        CASE a.period
+                                            WHEN ' . YEARLY . ' THEN 1/12.0
+                                            WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                                            WHEN ' . QUARTERLY . ' THEN 1/3.0
+                                            WHEN ' . WEEKLY . ' THEN 4.0
+                                            WHEN ' . DAILY . ' THEN 30.0
+                                            ELSE 1
+                                        END
+                                    )
+                                END
+                            )
                             END
                         ) * a.count
                     ) AS value
@@ -2115,7 +2120,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
             $this->updateCustomerExternalIDs(
                 $customerdata['id'],
-                $customerdata['extids']
+                $customerdata['extids'],
+                true
             );
         }
 
@@ -2422,7 +2428,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             array( $id )
         );
 
-        if (!$data) {
+        if (empty($data)) {
             return array();
         }
 
@@ -2696,27 +2702,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $customerid = intval($customerid);
 
         return $this->db->GetAllByKey(
-            'SELECT a.*, ca.type AS location_type FROM vaddresses a
-                JOIN customer_addresses ca ON ca.address_id = a.id
-                WHERE ca.customer_id = ? AND a.id ' . ($with ? '' : 'NOT') . ' IN (
-                    (
-                        SELECT DISTINCT (CASE WHEN nd.address_id IS NULL
-                                THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
-                                ELSE nd.address_id END
-                            ) AS address_id FROM netdevices nd
-                        LEFT JOIN customer_addresses ca ON ca.customer_id = nd.ownerid AND ca.type = ?
-                        LEFT JOIN customer_addresses ca2 ON ca2.customer_id = nd.ownerid AND ca.type = ?
-                        WHERE nd.ownerid = ?
-                    ) UNION (
-                        SELECT DISTINCT (CASE WHEN n.address_id IS NULL
-                                THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
-                                ELSE n.address_id END
-                            ) AS address_id FROM nodes n
-                        LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
-                        LEFT JOIN customer_addresses ca2 ON ca2.customer_id = n.ownerid AND ca.type = ?
-                        WHERE n.ownerid = ?
-                    )
-                )',
+            'SELECT
+                a.*,
+                ca.type AS location_type,
+                (CASE WHEN a.city_id IS NOT NULL THEN 1 ELSE 0 END) AS teryt
+            FROM vaddresses a
+            JOIN customer_addresses ca ON ca.address_id = a.id
+            WHERE ca.customer_id = ? AND a.id ' . ($with ? '' : 'NOT') . ' IN (
+                (
+                    SELECT DISTINCT (CASE WHEN nd.address_id IS NULL
+                            THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
+                            ELSE nd.address_id END
+                        ) AS address_id FROM netdevices nd
+                    LEFT JOIN customer_addresses ca ON ca.customer_id = nd.ownerid AND ca.type = ?
+                    LEFT JOIN customer_addresses ca2 ON ca2.customer_id = nd.ownerid AND ca.type = ?
+                    WHERE nd.ownerid = ?
+                ) UNION (
+                    SELECT DISTINCT (CASE WHEN n.address_id IS NULL
+                            THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
+                            ELSE n.address_id END
+                        ) AS address_id FROM nodes n
+                    LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
+                    LEFT JOIN customer_addresses ca2 ON ca2.customer_id = n.ownerid AND ca.type = ?
+                    WHERE n.ownerid = ?
+                )
+            )',
             'id',
             array($customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid)
         );

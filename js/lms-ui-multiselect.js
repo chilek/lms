@@ -289,7 +289,8 @@ function multiselect(options) {
 			var disabled = $(this).is(':disabled');
 			var crossed = $(this).attr('data-crossed');
 			var blend = $(this).attr('data-blend');
-			var class_name = 'visible' + (exclusive === '' ? ' exclusive' : '');
+			var class_name = ($(this).css('display') == 'none' ? '' : 'visible') +
+				(exclusive === '' ? ' exclusive' : '');
 
 			var data = '';
 			$.each($(this).data(), function (key, value) {
@@ -596,11 +597,11 @@ function multiselect(options) {
 	}
 
 	this.showOption = function(index) {
-		$(all_items.get(index)).show().addClass('visible');
+		$(all_items.get(index)).addClass('visible');
 	}
 
 	this.hideOption = function(index) {
-		$(all_items.get(index)).removeClass('selected').hide().removeClass('visible')
+		$(all_items.get(index)).removeClass('selected').removeClass('visible')
 			.find('input:checkbox').prop('checked', false);
 		updateCheckAll();
 	}
@@ -612,6 +613,13 @@ function multiselect(options) {
 		checkall.find('.checkall').prop('checked', checked);
 		checkAllElements();
 	}
+
+	old_element.on('lms:multiselect:toggle_check_all', function(e, data) {
+		if (data.checked) {
+			multiselect.toggleCheckAll(true);
+		}
+		multiselect.refreshSelection();
+	});
 
 	this.refreshSelection = function() {
 		new_selected = this.generateSelectedString();

@@ -252,8 +252,13 @@ $CUSTOMERCONTACTTYPES = array(
                 ),
                 CONTACT_NOTIFICATIONS => array(
                     'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
-                    'tip' => trans('Check if send notification'),
+                    'tip' => trans('Check if send notifications'),
                     'alias' => 'notifications',
+                ),
+                CONTACT_HELPDESK_NOTIFICATIONS => array(
+                    'label' => $CONTACTTYPES[CONTACT_HELPDESK_NOTIFICATIONS],
+                    'tip' => trans('Check if send helpdesk notifications'),
+                    'alias' => 'helpdesk_notifications',
                 ),
                 CONTACT_DOCUMENTS => array(
                     'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
@@ -288,12 +293,17 @@ $CUSTOMERCONTACTTYPES = array(
                 ),
                 CONTACT_NOTIFICATIONS => array(
                     'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
-                    'tip' => trans('Check if send notification'),
+                    'tip' => trans('Check if send notifications'),
                     'alias' => 'notifications',
+                ),
+                CONTACT_HELPDESK_NOTIFICATIONS => array(
+                    'label' => $CONTACTTYPES[CONTACT_HELPDESK_NOTIFICATIONS],
+                    'tip' => trans('Check if send helpdesk notifications'),
+                    'alias' => 'helpdesk_notifications',
                 ),
                 CONTACT_TECHNICAL => array(
                     'label' => $CONTACTTYPES[CONTACT_TECHNICAL],
-                    'tip' => trans('Check if send technical notification'),
+                    'tip' => trans('Check if send technical notifications'),
                     'alias' => 'technical',
                 ),
                 CONTACT_DOCUMENTS => array(
@@ -420,14 +430,14 @@ foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
     $flags = array_flip(
         preg_split(
             '/([\s]+|[\s]*,[\s]*)/',
-            trim(ConfigHelper::getConfig('phpui.default_customer_' . $ctype . '_flags', '', true)),
+            trim(ConfigHelper::getConfig('phpui.default_customer_' . $ctype . '_flags', 'helpdesk_notifications')),
             -1,
             PREG_SPLIT_NO_EMPTY
         )
     );
     if (!empty($flags)) {
         foreach ($type['ui']['flags'] as $flagvalue => $flag) {
-            if (isset($flags[$flag['alias']])) {
+            if (isset($flag['alias']) && isset($flags[$flag['alias']])) {
                 $contact_default_flags[$ctype][$flagvalue] = $flagvalue;
             }
         }

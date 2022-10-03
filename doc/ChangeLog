@@ -279,6 +279,11 @@ version 28-git (????-??-??):
     control state preselection in location boxes and terit address popup window [chilan]
   - devel/cleanup: renamed 'phpui.document_password' and 'phpui.document_protection_command'
     to 'documents.protection_password' and 'documents.protection_command' [chilan]
+  - enhancement: allow to assign events with netnodes and netdevices [interduo]
+  - enhancement: implement {network_device_selection} & {network_node_selection} smarty function [interduo]
+  - enhancement: added paytime/deadline property to assignments [chilan]
+  - enhancement: 'helpdesk' flag of email and mobile contacts controls if helpdesk notifications
+    are sent to customer [chilan]
 
 version 27.0 (2021-08-20):
 

@@ -73,6 +73,17 @@
 			<TD class="bold nobr">{trans("Numbering Plan:")}</TD>
 			<TD class="nobr">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
 		</TR>
+		<tr>
+			<td>
+				{icon name="deadline"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Deadline")}</strong>
+			</td>
+			<td class="nobr">
+				{if strlen($assignment.paytime)}{trans($assignment.paytime)}&nbsp;{trans("days")}{else}{trans("default")}{/if}
+			</td>
+		</tr>
 		<TR>
 			<TD>
 				{icon name="print"}
@@ -99,7 +110,7 @@
 				{elseif $assignment.invoice == $smarty.const.DOC_DNOTE}
 				{trans("debit note")}
 				{else}
-				{trans("no")}
+				{trans("without document")}
 				{/if}
 			</TD>
 		</TR>

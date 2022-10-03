@@ -656,6 +656,32 @@
 								</TD>
 							</TR>
 
+							<tr id="a_paytime" style="display: none;">
+								<td>
+									{icon name="deadline"}
+								</td>
+								<td>
+									<strong>{trans("Deadline")}</strong>
+								</td>
+								<td>
+									<div class="valign-middle">
+										<select name="{$variable_prefix}[paytime]"{if isset($variables.paytime)} data-value="{$variables.paytime}"{/if}
+											{tip class="lms-ui-combobox" trigger="paytime"}>
+											<option value="-1"{if !isset($variables.paytime) || $variables.paytime == -1} selected{/if}>— {trans("default")} —</option>
+											<option value="0"{if isset($variables.paytime) && strlen($variables.paytime) && $variables.paytime == 0} selected{/if}>0</option>
+											<option value="7"{if $variables.paytime == 7} selected{/if}>7</option>
+											<option value="10"{if $variables.paytime == 10} selected{/if}>10</option>
+											<option value="14"{if $variables.paytime == 14} selected{/if}>14</option>
+											<option value="21"{if $variables.paytime == 21} selected{/if}>21</option>
+											<option value="30"{if $variables.paytime == 30} selected{/if}>30</option>
+											<option value="60"{if $variables.paytime == 60} selected{/if}>60</option>
+											<option value="90"{if $variables.paytime == 90} selected{/if}>90</option>
+										</select>
+										{hint content="Select default deadline in days"}
+									</div>
+								</td>
+							</tr>
+
 							<TR id="a_paytype" style="display: none;">
 								<TD>
 									{icon name="paytype"}

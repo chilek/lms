@@ -1444,6 +1444,7 @@ if (empty($types) || in_array('debtors', $types)) {
                 GROUP BY docid
             ) tv ON tv.docid = cash.docid
             WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+                OR (cash.type = 0 AND cash.value > 0 AND cash.time < $currtime)
                 OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
                     (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) + ?) * 86400 < $currtime)))
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
@@ -1673,6 +1674,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 GROUP BY docid
             ) tv ON tv.docid = cash.docid
             WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+                OR (cash.type = 0 AND cash.value > 0 AND cash.time < $currtime)
                 OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
                     (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < $currtime)))
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
@@ -1922,6 +1924,7 @@ if (empty($types) || in_array('income', $types)) {
                 GROUP BY docid
             ) tv ON tv.docid = cash.docid
             WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+                OR (cash.type = 0 AND cash.value > 0 AND cash.time < $currtime)
                 OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
                     (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END)) * 86400 < $currtime)))
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)

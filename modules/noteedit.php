@@ -161,7 +161,7 @@ switch ($action) {
         }
 
         $note['customerid'] = $_POST['customerid'];
-
+        $note['divisionid'] = $LMS->GetCustomerDivision($note['customerid']);
 
         if (($note['numberplanid'] && !$LMS->checkNumberPlanAccess($note['numberplanid']))
             || ($note['oldnumberplanid'] && !$LMS->checkNumberPlanAccess($note['oldnumberplanid']))) {
@@ -429,7 +429,7 @@ switch ($action) {
 
 $SESSION->save('note', $note);
 $SESSION->save('notecontents', $contents);
-$SESSION->save('notecustomer', $customer);
+$SESSION->save('notecustomer', empty($customer) ? array() : $customer);
 $SESSION->save('noteediterror', $error);
 
 if ($action && !$error) {
@@ -459,6 +459,6 @@ $SMARTY->assign('planDocumentType', DOC_DNOTE);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
-$SMARTY->assign('customer', $customer);
+$SMARTY->assign('customer', empty($customer) ? array() : $customer);
 $SMARTY->assign('note', $note);
 $SMARTY->display('note/noteedit.html');

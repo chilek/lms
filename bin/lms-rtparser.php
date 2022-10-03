@@ -696,9 +696,15 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
         }
 
         // find customerid
-        $reqcustid = $DB->GetCol("SELECT c.id FROM customers c
-            JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ? > 0)
-            WHERE cc.contact = ?", array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS, $fromemail));
+        $reqcustid = $DB->GetCol(
+            "SELECT c.id FROM customers c
+            JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+            WHERE cc.contact = ?",
+            array(
+                CONTACT_EMAIL,
+                $fromemail,
+            )
+        );
         if (empty($reqcustid) || count($reqcustid) > 1) {
             $reqcustid = 0;
         } else {
@@ -786,7 +792,19 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
 
             $message_id = $LMS->GetLastMessageID();
 
-            if ($autoreply) {
+            if ($autoreply && (empty($reqcustid) || $DB->GetOne(
+                'SELECT cc.id
+                FROM customercontacts cc
+                WHERE cc.customerid = ?
+                    AND (cc.type & ?) = ?
+                    AND cc.contact = ?',
+                array(
+                    $reqcustid,
+                    CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
+                    CONTACT_EMAIL | CONTACT_HELPDESK_NOTIFICATIONS,
+                    $fromemail,
+                )
+            ))) {
                 $autoreply_subject = preg_replace_callback(
                     '/%(\\d*)tid/',
                     function ($m) use ($ticket_id) {
@@ -862,12 +880,28 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             if ($ticket['customerid'] && $reqcustid) {
                 $info = $LMS->GetCustomer($ticket['customerid'], true);
 
-                $emails = array_map(function ($contact) {
-                    return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
-                $phones = array_map(function ($contact) {
-                    return $contact['fullname'];
-                }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                $emails = array_map(
+                    function ($contact) {
+                        return $contact['fullname'];
+                    },
+                    array_filter(
+                        $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    )
+                );
+                $phones = array_map(
+                    function ($contact) {
+                        return $contact['fullname'];
+                    },
+                    array_filter(
+                        $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                        function ($contact) {
+                            return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                        }
+                    )
+                );
 
                 if ($notify && $customerinfo) {
                     $params = array(

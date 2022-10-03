@@ -1335,11 +1335,22 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function documentCommitParseNotificationMail($string, $data)
     {
         $customerinfo = $data['customerinfo'];
-        $string = str_replace('%cid%', $customerinfo['id'], $string);
-        $string = str_replace('%customername%', $customerinfo['customername'], $string);
         $document = $data['document'];
-        $string = str_replace('%docid%', $document['id'], $string);
-        return $string;
+        return str_replace(
+            array(
+                '%cid%',
+                '%customername%',
+                '%docid%',
+                '%document%',
+            ),
+            array(
+                $customerinfo['id'],
+                $customerinfo['customername'],
+                $document['id'],
+                $document['fullnumber'],
+            ),
+            $string
+        );
     }
 
     public function documentCommitParseNotificationRecipient($string, $data)
@@ -1365,7 +1376,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $docs = $this->db->GetAllByKey(
-            'SELECT d.id, d.customerid, dc.fromdate AS datefrom,
+            'SELECT d.id, d.customerid, d.fullnumber, dc.fromdate AS datefrom,
 					d.reference, d.commitflags, d.confirmdate, d.closed,
 					u.email AS creatoremail,
 					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
@@ -1473,6 +1484,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'customerinfo' => $customerinfo,
                             'document' => array(
                                 'id' => $docid,
+                                'fullnumber' => $doc['fullnumber'],
                             ),
                         )
                     );
@@ -1482,6 +1494,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'customerinfo' => $customerinfo,
                             'document' => array(
                                 'id' => $docid,
+                                'fullnumber' => $doc['fullnumber'],
                             ),
                         )
                     );
@@ -1621,6 +1634,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'customerinfo' => $customerinfo,
                             'document' => array(
                                 'id' => $docid,
+                                'fullnumber' => $doc['fullnumber'],
                             ),
                         )
                     );
@@ -1630,6 +1644,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'customerinfo' => $customerinfo,
                             'document' => array(
                                 'id' => $docid,
+                                'fullnumber' => $doc['fullnumber'],
                             ),
                         )
                     );

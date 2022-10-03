@@ -187,12 +187,28 @@ if (isset($_GET['ticketid'])) {
                 if ($ticket['customerid']) {
                     $info = $LMS->GetCustomer($ticket['customerid'], true);
 
-                    $emails = array_map(function ($contact) {
+                    $emails = array_map(
+                        function ($contact) {
                             return $contact['fullname'];
-                    }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
-                    $phones = array_map(function ($contact) {
+                        },
+                        array_filter(
+                            $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+                            function ($contact) {
+                                return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                            }
+                        )
+                    );
+                    $phones = array_map(
+                        function ($contact) {
                             return $contact['fullname'];
-                    }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                        },
+                        array_filter(
+                            $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                            function ($contact) {
+                                return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                            }
+                        )
+                    );
 
                     $params = array(
                         'id' => $note['ticketid'],

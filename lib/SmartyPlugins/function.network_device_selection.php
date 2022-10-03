@@ -1,9 +1,11 @@
 <?php
 
-/*
+/**
  * LMS version 1.11-git
  *
  *  (C) Copyright 2001-2022 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -19,9 +21,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
+ *  $Id$
  */
 
-if (!$this->ResourceExists('messageitems.externalmsgid.varchar(64)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE messageitems MODIFY COLUMN externalmsgid varchar(64) DEFAULT NULL");
-    $this->Execute("UPDATE messageitems SET externalmsgid = NULL WHERE externalmsgid = ?", array('0'));
+function smarty_function_network_device_selection(
+    array $params,
+    Smarty_Internal_Template $template
+) {
+    return LMSSmartyPlugins::networkDeviceSelectionFunction($params, $template);
 }

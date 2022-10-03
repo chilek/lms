@@ -77,8 +77,6 @@ if ($api) {
 
     if (isset($_GET['ng']) && is_array($_GET['ng'])) {
         $filter['nodegroup'] = Utils::filterIntegers($_GET['ng']);
-    } else {
-        $filter['nodegroup'] = '';
     }
 
     if (isset($_GET['d'])) {
@@ -91,8 +89,6 @@ if ($api) {
 
     if (isset($_GET['flags'])) {
         $filter['flags'] = $_GET['flags'];
-    } else {
-        $filter['flags'] = array();
     }
 
     if (isset($_GET['page'])) {

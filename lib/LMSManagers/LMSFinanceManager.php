@@ -793,6 +793,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                                     'settlement' => 0,
                                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
+                                    'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
                                     'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
                                     'datefrom' => $datefrom,
                                     'dateto' => $partial_dateto,
@@ -891,6 +892,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                                 'settlement'        => 0,
                                 SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
+                                'paytime'           => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
                                 'paytype'           => !empty($data['paytype']) ? $data['paytype'] : null,
                                 'datefrom'          => $partial_datefrom,
                                 'dateto'            => $_dateto,
@@ -932,6 +934,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                             'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && ($idx == 1 || !$align_periods) ? 1 : 0,
                             SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
+                            'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
                             'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
                             'datefrom' => $__datefrom,
                             'dateto' => $__dateto,
@@ -1051,6 +1054,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                         'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
+                        'paytime'           => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
                         'paytype'           => !empty($data['paytype']) ? $data['paytype'] : null,
                         'datefrom'          => $data['datefrom'],
                         'dateto'            => $partial_dateto,
@@ -1129,6 +1133,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                         'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
+                        'paytime'           => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
                         'paytype'           => !empty($data['paytype']) ? $data['paytype'] : null,
                         'datefrom'          => $partial_datefrom,
                         'dateto'            => $data['dateto'],
@@ -1191,6 +1196,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                     'settlement' => !isset($data['settlement']) || $data['settlement'] != 1 ? 0 : 1,
                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
+                    'paytime' => !empty($data['paytime']) && $data['paytime'] != -1 ? $data['paytime'] : null,
                     'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
                     'datefrom' => $data['datefrom'],
                     'dateto' => $data['dateto'],
@@ -1226,9 +1232,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'INSERT INTO assignments
                 (tariffid, customerid, period, backwardperiod, at, count, invoice, separatedocument,
                 settlement, numberplanid,
-                paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
+                paytime, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
                 docid, promotionschemaid, commited)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -1430,6 +1436,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
+        if (isset($a['paytime'])) {
+            if (empty($a['paytime'])) {
+                $paytime = 0;
+            } elseif (preg_match('/^[\-]?[0-9]+$/', $a['paytime'])) {
+                $paytime = intval($a['paytime']);
+            } else {
+                $error['paytime'] = trans('Invalid deadline format!');
+            }
+        }
+
         if (isset($a['datefrom'])) {
             if (empty($a['datefrom'])) {
                 $from = 0;
@@ -1578,7 +1594,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (!isset($schemaid)) {
             $schemaid = null;
         }
-        $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count'));
+        $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count', 'paytime'));
 
         return $result;
     }

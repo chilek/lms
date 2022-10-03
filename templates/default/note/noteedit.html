@@ -6,6 +6,7 @@
 
 <form name="setcustomer" id="setcustomer" method="POST" action="?m=noteedit&action=setcustomer">
 	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="note[id]" value="{$note.id}">
 	<input type="hidden" name="note[number]" value="{$note.number}">
 	<input type="hidden" name="note[numberplanid]" value="{$note.numberplanid}">
 	<input type="hidden" name="note[template]" value="{$note.template}">

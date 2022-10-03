@@ -111,7 +111,7 @@ class LMSSmartyPlugins
             . ($visible ? '' : ' style="display: none;"')
             . ($disabled ? ' disabled' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
-            . ($label ? '<span class="lms-ui-label">' . $label . '</span>' : '') . '
+            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
 
@@ -1021,7 +1021,7 @@ class LMSSmartyPlugins
         // optional - text tip,
         $tip = isset($params['tip']) ? trans($params['tip']) : null;
         // optional - text label
-        $label = isset($params['label']) ? trans($params['label']) : null;
+        $label = isset($params['label']) ? htmlspecialchars(trans($params['label'])) : null;
         // optional - if icon should have fixed width
         $fw = !isset($params['fw']) || !empty($params['fw']);
 
@@ -1150,6 +1150,78 @@ class LMSSmartyPlugins
 			<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans('<!netdevtype>— undefined —') . '</option>'
             . $options
             . '</select>';
+    }
+
+    public static function networkDeviceSelectionFunction(array $params, $template)
+    {
+        $LMS = LMS::getInstance();
+
+        static $netdevicelist = array();
+        if (empty($netdevicelist)) {
+            $netdevicelist = $LMS->GetNetDevList();
+        }
+
+        unset($netdevicelist['total'], $netdevicelist['order'], $netdevicelist['direction']);
+
+        $elemname = empty($params['elemname']) ? null : 'name="' . $params['elemname'] . '"';
+        $onchange = empty($params['onchange']) ? null : 'onchange="' . $params['onchange'] . '"';
+        $id = empty($params['id']) ? null : 'id="' . $params['id'] . '"';
+        $selected = intval($params['selected']) ?: null;
+
+        $tip = self::tipFunction(
+            array(
+                'text' => (empty($params['tip']) ? trans('Select network device') : $params['tip']),
+                'trigger' => $params['elemname'],
+            ),
+            $template
+        );
+
+        $class = 'class="netdev-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+
+        $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
+        foreach ($netdevicelist as $item) {
+            $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>'
+                . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
+        }
+
+        return '<select ' . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
+    }
+
+    public static function networkNodeSelectionFunction(
+        array $params,
+        $template
+    ) {
+        $LMS = LMS::getInstance();
+
+        static $netnodelist = array();
+        if (empty($netnodelist)) {
+            $netnodelist = $LMS->GetNetNodeList(array(), 'name,asc');
+            unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
+        }
+
+        $elemname = empty($params['elemname']) ? null : 'name="' . $params['elemname'] . '"';
+        $onchange = empty($params['onchange']) ? null : 'onchange="' . $params['onchange'] . '"';
+        $id = empty($params['id']) ? null : 'id="' . $params['id'] . '"';
+        $selected = intval($params['selected']) ?: null;
+
+        $tip = self::tipFunction(
+            array(
+                'text' => (empty($params['tip']) ?
+                    trans('Select network node') : $params['tip']),
+                'trigger' => $params['elemname'],
+            ),
+            $template
+        );
+
+        $class = 'class="netnode-list lms-ui-advanced-select ' . (!empty($params['class']) ? $params['class'] : null) . '"';
+
+        $options = '<option value=""' . (!$selected ? ' selected' : '') . '> ' . trans("— none —") . '</option>';
+        foreach ($netnodelist as $item) {
+            $options .= '<option value="' . $item['id'] . '"' . ($selected == $item['id'] ? ' selected' : '') . '>'
+                . trans($item['name']) . ' (#' . $item['id'] . ')</option>';
+        }
+
+        return '<select ' . $elemname . $onchange . $id . $class . $tip . '>' . $options . '</select>';
     }
 
     public static function identityTypesFunction(array $params, $template)

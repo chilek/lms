@@ -21,7 +21,19 @@
  *
  */
 
-if (!$this->ResourceExists('messageitems.externalmsgid.varchar(64)', LMSDB::RESOURCE_TYPE_COLUMN_TYPE)) {
-    $this->Execute("ALTER TABLE messageitems MODIFY COLUMN externalmsgid varchar(64) DEFAULT NULL");
-    $this->Execute("UPDATE messageitems SET externalmsgid = NULL WHERE externalmsgid = ?", array('0'));
-}
+define('CONTACT_NOTIFICATIONS_2022092201', 32);
+define('CONTACT_HELPDESK_NOTIFICATIONS_2022092201', 131072);
+
+$this->BeginTrans();
+
+$this->Execute(
+    "UPDATE customercontacts SET type = type | ? WHERE (type & ?) > 0",
+    array(
+        CONTACT_HELPDESK_NOTIFICATIONS_2022092201,
+        CONTACT_NOTIFICATIONS_2022092201,
+    )
+);
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022092201', 'dbversion'));
+
+$this->CommitTrans();

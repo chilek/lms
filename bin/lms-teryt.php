@@ -1555,6 +1555,12 @@ if (isset($options['merge'])) {
             echo 'found' . PHP_EOL;
         }
 
+        if (!isset($idents['streetid'])) {
+            $idents['streetid'] = null;
+        }
+        if (!isset($idents['streetname'])) {
+            $idents['streetname'] = null;
+        }
         $DB->Execute(
             "UPDATE addresses SET state_id = ?, city_id = ?, street_id = ?, street = ? WHERE id = ?",
             array($idents['stateid'], $idents['cityid'], $idents['streetid'], $idents['streetname'], $a['id'])

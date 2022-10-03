@@ -347,7 +347,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'access' => $voipaccountdata['access'],
             'balance' => isset($voipaccountdata['balance']) ? $voipaccountdata['balance'] : ConfigHelper::getConfig('voip.default_cost_limit', 200),
-            'flags' => $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
+            'flags' => isset($voipaccountdata['flags']) ? $voipaccountdata['flags'] : ConfigHelper::getConfig('voip.default_account_flags', 0),
             'cost_limit' => isset($voipaccountdata['cost_limit']) ? $voipaccountdata['cost_limit'] : null,
             SYSLOG::RES_ADDRESS => empty($voipaccountdata['address_id']) ? null : $voipaccountdata['address_id'],
             'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
@@ -371,6 +371,10 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
             $phone_index = 0;
             $phones = array();
+
+            if (!isset($voipaccountdata['numbers'])) {
+                $voipaccountdata['numbers'] = array();
+            }
 
             foreach ($voipaccountdata['numbers'] as $number) {
                 $phones[] = '(' . $id . ", '" . $number['phone'] . "'," . (++$phone_index) . ", " . $this->db->Escape($number['info']) . ")";
