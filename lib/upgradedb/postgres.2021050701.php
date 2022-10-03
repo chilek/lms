@@ -23,6 +23,13 @@
 
 $this->BeginTrans();
 
+if ($this->ResourceExists(
+    'customerassignments_customergroupid_key',
+    LMSDB::RESOURCE_TYPE_CONSTRAINT
+)) {
+    $this->Execute('ALTER TABLE customerassignments DROP CONSTRAINT customerassignments_customergroupid_key;');
+}
+
 if (!$this->ResourceExists('vcustomerassignments', LMSDB::RESOURCE_TYPE_VIEW)) {
     $this->Execute("
         ALTER TABLE customerassignments ADD COLUMN startdate integer DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer;
@@ -30,7 +37,6 @@ if (!$this->ResourceExists('vcustomerassignments', LMSDB::RESOURCE_TYPE_VIEW)) {
         CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate);
         CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate);
         ALTER TABLE customerassignments ADD CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate);
-        ALTER TABLE customerassignments DROP CONSTRAINT customerassignments_customergroupid_key;
         CREATE VIEW vcustomerassignments AS
             SELECT ca.*
             FROM customerassignments ca
