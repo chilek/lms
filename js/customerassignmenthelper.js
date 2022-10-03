@@ -308,15 +308,13 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.nodes, function(key, node) {
 							var location = String(node.location);
-							if (location.length > 50) {
-								location = location.substr(0, 50) + '...';
-							}
+							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
 								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
 								' data-tariffaccess="' + node.authtype + '"' +
-								' data-location="' + node.location + '"' +
+								' data-location="' + location + '"' +
 								' data-html-content="<strong>' + node.name + '</strong>' +
 								' (' + nodeid + ')' + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
@@ -338,15 +336,13 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.netdevnodes, function(key, node) {
 							var location = String(node.location);
-							if (location.length > 50) {
-								location = location.substr(0, 50) + '...';
-							}
+							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
 								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
 								' data-tariffaccess="' + node.authtype + '"' +
-								' data-location="' + node.location + '"' +
+								' data-location="' + location + '"' +
 								' data-html-content="<strong>' + node.name + '</strong>' +
 								' (' + nodeid + ')' + ' / ' + node.netdev_name + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
@@ -368,14 +364,12 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.voipaccounts, function(key, account) {
 							var location = String(account.location);
-							if (location.length > 50) {
-								location = location.substr(0, 50) + '...';
-							}
+							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
 							$.each(account.phones, function(key, phone) {
 								options += '<option value="' + phone.id + '"' +
 									(("sphones" in selected) && (schemaid in selected.sphones) && (label in selected.sphones[schemaid]) &&
 									(selected.sphones[schemaid][label].indexOf(phone.id) > -1) ? ' selected' : '') +
-									' data-location="' + account.location + '"' +
+									' data-location="' + location + '"' +
 									' data-html-content="<strong>' + phone.phone + '</strong>' +
 									' / ' + account.login + (location.length ? ' / ' + location : '') + '"';
 								options += '>';
