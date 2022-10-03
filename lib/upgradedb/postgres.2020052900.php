@@ -28,8 +28,10 @@ function parseCssProperties($text)
     $properties = explode(';', $text);
     if (!empty($properties)) {
         foreach ($properties as $property) {
-            list ($name, $value) = explode(':', $property);
-            $result[$name] = $value;
+            $components = explode(':', $property);
+            if (count($components) >= 2) {
+                $result[$components[0]] = $components[1];
+            }
         }
     }
     return $result;

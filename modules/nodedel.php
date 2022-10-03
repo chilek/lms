@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,7 @@
 $nodeid = intval($_GET['id']);
 
 if (!$LMS->NodeExists($nodeid)) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 } else {
     $owner = $LMS->GetNodeOwner($nodeid);
 
@@ -46,9 +46,5 @@ if (!$LMS->NodeExists($nodeid)) {
 
     $LMS->executeHook('nodedel_after_submit', $plugin_data);
 
-    if ($SESSION->is_set('backto')) {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
-    } else {
-        $SESSION->redirect('?m=customerinfo&id='.$owner);
-    }
+    $SESSION->redirect_to_history_entry('?m=customerinfo&id=' . $owner);
 }

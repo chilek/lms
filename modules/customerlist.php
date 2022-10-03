@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,7 +41,7 @@ if ($api) {
     echo json_encode(array_values($customerlist));
     die;
 } else {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 
     $divisionContext = $SESSION->get('division_context', true);
     if (!isset($divisionContext)) {
@@ -67,12 +67,16 @@ if ($api) {
         $filter['network'] = $_GET['n'];
     }
 
-    if (isset($_GET['g'])) {
-        $filter['customergroup'] = Utils::filterIntegers($_GET['g']);
+    if (isset($_GET['gop'])) {
+        $filter['customergroupsqlskey'] = $_GET['gop'];
     }
 
-    if (isset($_GET['ng'])) {
-        $filter['nodegroup'] = $_GET['ng'];
+    if (isset($_GET['g'])) {
+        $filter['customergroup'] = Utils::filterIntegers(is_array($_GET['g']) ? $_GET['g'] : array($_GET['g']));
+    }
+
+    if (isset($_GET['ng']) && is_array($_GET['ng'])) {
+        $filter['nodegroup'] = Utils::filterIntegers($_GET['ng']);
     }
 
     if (isset($_GET['d'])) {
@@ -85,8 +89,6 @@ if ($api) {
 
     if (isset($_GET['flags'])) {
         $filter['flags'] = $_GET['flags'];
-    } else {
-        $filter['flags'] = array();
     }
 
     if (isset($_GET['page'])) {

@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'C:' => 'config-file:',
@@ -521,9 +521,9 @@ function commit_cashimport()
 		WHERE i.closed = 0 AND i.customerid <> 0');
 
     if (!empty($imports)) {
-        $idate  = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
+        $idate  = ConfigHelper::checkConfig('finances.cashimport_use_idate');
 
-        $icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
+        $icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
 
         foreach ($imports as $import) {
             $DB->BeginTrans();

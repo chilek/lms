@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -226,11 +226,13 @@ function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches)
     $DB = LMSDB::getInstance();
 
     $idents = $DB->GetAll(
-        "
-		SELECT s.id as streetid, " . $subcities['cityid'] . " AS cityid,
+        "SELECT s.id as streetid, ld.stateid, " . $subcities['cityid'] . " AS cityid,
 			(" . $DB->Concat('t.name', "' '", '(CASE WHEN s.name2 IS NULL THEN s.name ELSE ' . $DB->Concat('s.name2', "' '", 's.name') . ' END)') . ") AS streetname
 		FROM location_streets s
 		JOIN location_street_types t ON t.id = s.typeid
+		JOIN location_cities c ON c.id = " . $subcities['cityid'] . "
+		JOIN location_boroughs lb ON lb.id = c.boroughid
+		JOIN location_districts ld ON ld.id = lb.districtid
 		WHERE
 			((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
 			AND s.cityid IN (" . $subcities['cities'] . ")",
@@ -262,11 +264,13 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
 
     if ($city && $street) {
         $idents = $DB->GetAll("
-			SELECT s.id as streetid, s.cityid,
+			SELECT s.id as streetid, ld.stateid, s.cityid,
 				(" . $DB->Concat('t.name', "' '", '(CASE WHEN s.name2 IS NULL THEN s.name ELSE ' . $DB->Concat('s.name2', "' '", 's.name') . ' END)') . ") AS streetname
 			FROM location_streets s
 			JOIN location_street_types t ON t.id = s.typeid
 			JOIN location_cities c ON (s.cityid = c.id)
+			JOIN location_boroughs lb ON lb.id = c.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
 			WHERE
 				((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
 				AND c.name ?LIKE? ?
@@ -281,13 +285,21 @@ function getIdents($city = null, $street = null, $only_unique_city_matches = fal
             return array();
         }
     } elseif ($city) {
-        $cityids = $DB->GetCol("SELECT id FROM location_cities WHERE name ?LIKE? ?", array($city));
-        if (empty($cityids)) {
+        $cities = $DB->GetAll(
+            "SELECT c.id, ld.stateid
+            FROM location_cities c
+            JOIN location_boroughs lb ON lb.id = c.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            WHERE c.name ?LIKE? ?",
+            array($city)
+        );
+        if (empty($cities)) {
             return array();
         }
-        if (($only_unique_city_matches && count($cityids) == 1) || !$only_unique_city_matches) {
+        if (($only_unique_city_matches && count($cities) == 1) || !$only_unique_city_matches) {
             return array(
-                'cityid' => $cityids[0],
+                'cityid' => $cities[0]['id'],
+                'stateid' => $cities[0]['stateid'],
             );
         } else {
             return array();
@@ -353,8 +365,8 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2020.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2020.zip');
+define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2021.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2021.zip');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -411,7 +423,7 @@ if (empty($teryt_dir)) {
     die;
 }
 
-$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2020.csv';
+$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2021.csv';
 
 //==============================================================================
 // Download required files
@@ -435,7 +447,7 @@ function get_teryt_file($ch, $type, $outfile)
         11 => 'listopada',
         12 => 'grudnia',
     );
-    $date = strftime('%d') . ' ' . $month_names[intval(strftime('%m'))] . ' ' . strftime('%Y');
+    $date = date('d') . ' ' . $month_names[intval(date('m'))] . ' ' . date('Y');
 
     $continue = false;
     do {
@@ -458,7 +470,8 @@ function get_teryt_file($ch, $type, $outfile)
                 return false;
             } else {
                 curl_setopt_array($ch, array(
-                    CURLOPT_URL => 'http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
+                    CURLOPT_URL => 'https://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
+                    CURLOPT_REFERER => 'https://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
                     CURLOPT_POST => true,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_POSTFIELDS => array(
@@ -517,7 +530,7 @@ if (isset($options['fetch'])) {
     $ch = curl_init();
 
     $file_counter = 0;
-    $teryt_filename_suffix = '_' . strftime('%d%m%Y');
+    $teryt_filename_suffix = '_' . date('dmY');
     foreach ($teryt_files as $file) {
         $res = get_teryt_file($ch, $file['type'], $teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . $teryt_filename_suffix . '.zip');
         if ($res) {
@@ -585,7 +598,13 @@ if (isset($options['fetch'])) {
         }
     }
 
-    $ctx = stream_context_create();
+    $ctx = stream_context_create(
+        array(
+            'ssl'  => array(
+                'verify_peer' => false,
+            ),
+        )
+    );
 
     if (!$quiet) {
         echo 'Downloading ' . BUILDING_BASE_ZIP_URL . ' file...' . PHP_EOL;
@@ -1032,7 +1051,7 @@ if (isset($options['update'])) {
         $key   = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz_gmi'];
         $rodz_mi = $row['rm'];
         $id    = $row['sym'];
-        $data  = $simc[$id];
+        $data  = isset($simc[$id]) ? $simc[$id] : null;
         $refid = $row['sympod'];
 
         if (!$terc[$key] && !$quiet) {
@@ -1041,7 +1060,7 @@ if (isset($options['update'])) {
 
         if ($refid == $id) {
             $refid = null;
-        } elseif (!$simc[$refid]) {
+        } elseif (!isset($simc[$refid])) {
             // refid not found (refered city is below this one), process later
             $cities_r[$refid][] = array(
                 'key'   => $key,
@@ -1067,7 +1086,7 @@ if (isset($options['update'])) {
             // mark data as valid
             $simc[$id]['valid'] = 1;
             $cities[$id] = $data['id'];
-        } elseif (!$refid || $simc[$row['sympod']]) {
+        } elseif (!$refid || isset($simc[$row['sympod']])) {
             // add new city
             $DB->Execute(
                 'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
@@ -1094,7 +1113,7 @@ if (isset($options['update'])) {
         if (isset($cities_r[$id])) {
             while ($elem = array_pop($cities_r[$id])) {
                 $rid  = $elem['sym'];
-                $data = $simc[$rid];
+                $data = isset($simc[$rid]) ? $simc[$rid] : null;
 
                 // entry exists
                 if ($data) {
@@ -1211,7 +1230,7 @@ if (isset($options['update'])) {
         $row['nazwa_1'] = trim($row['nazwa_1']);
         $row['nazwa_2'] = trim($row['nazwa_2']);
         $key    = $row['sym_ul'].':'.$row['sym'];
-        $data   = $ulic[$key];
+        $data   = isset($ulic[$key]) ? $ulic[$key] : null;
         $row['cecha'] = mb_strtolower($row['cecha']);
 
         if (isset($str_types[$row['cecha']])) {
@@ -1536,9 +1555,15 @@ if (isset($options['merge'])) {
             echo 'found' . PHP_EOL;
         }
 
+        if (!isset($idents['streetid'])) {
+            $idents['streetid'] = null;
+        }
+        if (!isset($idents['streetname'])) {
+            $idents['streetname'] = null;
+        }
         $DB->Execute(
-            "UPDATE addresses SET city_id = ?, street_id = ?, street = ? WHERE id = ?",
-            array($idents['cityid'], $idents['streetid'], $idents['streetname'], $a['id'])
+            "UPDATE addresses SET state_id = ?, city_id = ?, street_id = ?, street = ? WHERE id = ?",
+            array($idents['stateid'], $idents['cityid'], $idents['streetid'], $idents['streetname'], $a['id'])
         );
 
         $updated++;

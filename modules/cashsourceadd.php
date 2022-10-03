@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,13 +46,18 @@ if ($sourceadd) {
         $error['account'] = trans('Wrong account number!');
     }
 
+    if (isset($sourceadd['isdefault']) && $DB->GetOne('SELECT id FROM cashsources WHERE isdefault = ?', array(1))) {
+        $error['isdefault'] = trans('Only one cash import source can be set as default!');
+    }
+
     if (!$error) {
         $args = array(
             'name' => $sourceadd['name'],
             'description' => $sourceadd['description'],
             'account' => $sourceadd['account'],
+            'isdefault' => isset($sourceadd['isdefault']) ? 1 : 0,
         );
-        $DB->Execute('INSERT INTO cashsources (name, description, account) VALUES (?, ?, ?)', array_values($args));
+        $DB->Execute('INSERT INTO cashsources (name, description, account, isdefault) VALUES (?, ?, ?, ?)', array_values($args));
 
         if ($SYSLOG) {
             $args[SYSLOG::RES_CASHSOURCE] = $DB->GetLastInsertID('cashsources');
@@ -70,7 +75,7 @@ if ($sourceadd) {
 
 $layout['pagetitle'] = trans('Cash Import Source New');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourceadd', $sourceadd);

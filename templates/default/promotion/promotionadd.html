@@ -2,52 +2,82 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="post" name="promotionadd" action="?m=promotionadd">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 1%;">
-			{icon name="money"}
-		</TD>
-		<TD style="width: 1%;" class="bold">
-			{trans("Name:")}
-		</TD>
-		<TD style="width: 98%;">
-			<INPUT type="text" name="promotion[name]" value="{$promotion.name}" size="40" {tip text="Enter promotion name" trigger="name" bold=1}>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD style="width: 1%;">
-			{icon name="optional-info"}
-		</TD>
-		<TD style="width: 1%;" class="bold">
-			{trans("Description:")}
-		</TD>
-		<TD style="width: 98%;">
-			<TEXTAREA name="promotion[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$promotion.description}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="lms-ui-box-buttons" colspan="3">
-			{button icon="save" label="Submit" onclick="document.promotionadd.submit();"}
-			{button icon="cancel" label="Cancel" href="?m=promotionlist"}
-			<label>
-				<INPUT type="checkbox" name="promotion[reuse]" value="ON" id="reuse" {if $promotion.reuse} checked{/if}>
-				{trans("Display this form again, when this promotion is saved")}
-			</label>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE></FORM>
+<h1>{$layout.pagetitle}</h1>
+
+<form method="post" name="promotionadd" id="promotionadd" action="?m=promotionadd">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<thead>
+		<TR>
+			<td>
+				{icon name="money"}
+			</td>
+			<td>
+				<strong>{trans("Name")}</strong>
+			</td>
+			<td>
+				<input type="text" name="promotion[name]" value="{$promotion.name|escape}" size="40" form="promotionadd"
+					{tip text="Enter promotion name" trigger="name" bold=1}
+					required>
+			</td>
+		</TR>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="period"}
+			</td>
+			<td>
+				<strong>{trans("Period")}</strong>
+			</td>
+			<td>
+				{trans("from")}
+				<input type="text" name="promotion[datefrom]" form="promotionadd"
+					value="{if $promotion.datefrom}{$promotion.datefrom}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"}>
+				{trans("to")}
+				<input type="text" name="promotion[dateto]" form="promotionadd"
+					value="{if $promotion.dateto}{$promotion.dateto}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}" size="10"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="optional-info"}
+			</td>
+			<td>
+				<strong>{trans("Description")}</strong>
+			</td>
+			<td>
+				<textarea name="promotion[description]" cols="50" rows="5" form="promotionadd"
+					{tip text="Enter additional information (optional)"}>{$promotion.description|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="lms-ui-box-buttons" colspan="3">
+				{button type="submit" icon="save" label="Submit" form="promotionadd"}
+				{button icon="cancel" label="Cancel" href="?m=promotionlist"}
+				<label>
+					<input type="checkbox" name="promotion[reuse]" value="ON" id="reuse" form="promotionadd"
+						{if $promotion.reuse} checked{/if}>
+					{trans("Display this form again, when this promotion is saved")}
+				</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
 <script>
 
-	document.forms['promotionadd'].elements['promotion[name]'].focus();
+	$('[name="promotion[name]"]').focus();
 
 </script>
 {/block}

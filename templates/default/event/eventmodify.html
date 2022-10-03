@@ -1,6 +1,8 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))}
+{$hide_deleted_users = ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users'))}
 	<!--// $Id$ //-->
 	{$xajax}
 	{if empty($event.ticketid)}
@@ -40,8 +42,13 @@
 					{block name="eventmodify_left_panel"}
 
 					{box_row icon="uptime" label="Time:" icon_class="fa-fw"}
+						{if $layout.module == 'eventadd'}
+							{$allow_past_date = ConfigHelper::checkConfig('timetable.allow_past_events', ConfigHelper::checkConfig('phpui.timetable_allow_past_events', true))}
+						{else}
+							{$allow_past_date = true}
+						{/if}
 						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays
-							allow_past_date=ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'))}
+							allow_past_date=$allow_past_date}
 					{/box_row}
 
 					{box_row icon="description" label="Description:" icon_class="fa-fw"}
@@ -64,11 +71,13 @@
 					{/box_row}
 
 					{box_row icon="type" label="Type:" icon_class="fa-fw"}
-						<SELECT name="event[type]" size="1">
-							{foreach from=$_EVENTTYPES key=key item=type}
-								<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
+						<select name="event[type]" size="1">
+							{foreach $_EVENTTYPES as $idx => $eventtype}
+								<option value="{$idx}"
+									{if $idx == $event.type || (!$event.type && $idx == $smarty.const.EVENT_OTHER)} selected{/if}
+									>{$eventtype.label}</option>
 							{/foreach}
-						</SELECT>
+						</select>
 					{/box_row}
 
 					{box_row icon="customer" label="Customer:" icon_class="fa-fw"}
@@ -95,11 +104,40 @@
 						{/if}
 					{/box_row}
 
+					{$visibility=!empty($netnodelist)}
+					{box_row class="netnode-row" icon="netnode" label="Network node" visible=$visibility icon_class="fa-fw"}
+						{if empty($netnodeid)}
+							{network_node_selection
+								id='netnodeid'
+								name='event[netnodeid]'
+								form='event'
+								selected=$event.netnodeid
+								onchange="xajax_netnode_changed($(this).val(), $('#eventnetdevid').val(), 'event', 'eventnetdevs', 'eventnetdevid')"}
+						{else}
+							{foreach $netnodelist as $nn}
+								{if $nn.id == $netnodeid}
+									{$nn.name|escape} (#{$nn.id})
+									<input type="hidden" name="event[netnodeid]" value="{$netnodeid}">
+								{/if}
+							{/foreach}
+						{/if}
+					{/box_row}
+
+					{$visibility=!empty($netdevlist)}
+					{box_row icon="netdev" label="Device" field_id="eventnetdevs" icon_class="fa-fw" visible=$visibility}
+						{if empty($netdevid)}
+							{include file="rt/rtnetdevs.html" form="event"}
+						{else}
+							{$netdevlist[0].name|escape} (#{$netdevid})
+							<input type="hidden" name="event[netdevid]" value="{$event.netdevid}">
+						{/if}
+					{/box_row}
+
 					{$visibility=!empty($nodes)}
 					{box_row class="node-row" icon="node" label="Node:" icon_class="fa-fw" visible=$visibility}
 						{if !empty($event.ticketid)}
 							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
-								<option value="">{trans("- none -")}</option>
+								<option value="">{trans("— none —")}</option>
 								{foreach $nodes as $node}
 									<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
 								{/foreach}
@@ -115,27 +153,29 @@
 					{/box_row}
 
 					{box_row icon="user" label="Users:" field_class="multiselect" icon_class="fa-fw"}
-						<SELECT name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple data-default-value="{trans("- select user -")}"
-								data-shorten-to-default-value="false" {if !empty(ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
+						<select name="event[userlist][]" class="lms-ui-advanced-select" id="userlist" multiple
+								{if ConfigHelper::checkConfig('timetable.event_user_required', ConfigHelper::checkConfig('phpui.event_user_required'))}required{/if}>
 							{foreach $userlist as $user}
+								{if (!is_array($event.userlist) || !in_array($user.id, $event.userlist))
+									&& ($hide_disabled_users && !$user.access
+										|| $hide_deleted_users && $user.deleted)}
+									{continue}
+								{/if}
 								{if $layout.module == 'eventadd'}
-									{if $user.access}
-										<OPTION value="{$user.id}"
-											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
-												{$user.rname|trunescape:40} ({$user.login})
-										</OPTION>
-									{/if}
+									<option value="{$user.id}"
+										class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+										{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+											{$user.rname|trunescape:40} ({$user.login})
+									</option>
 								{else}
-									{if $user.access || (is_array($event.userlist) && in_array($user.id, $event.userlist))}
-										<OPTION value="{$user.id}"
-											{if !$user.access} data-crossed{/if}
-											{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
-												{$user.rname|trunescape:40} ({$user.login})
-										</OPTION>
-									{/if}
+									<option value="{$user.id}"
+										class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+										{if is_array($event.userlist) && in_array($user.id, $event.userlist)}selected{/if}>
+											{$user.rname|trunescape:40} ({$user.login})
+									</option>
 								{/if}
 							{/foreach}
-						</SELECT>
+						</select>
 						<br>
 						<label>
 							<input type="radio" name="event[usergroup]" id="usergroup_me" value="-1" onChange="xajax_getUsersForGroup(-1)"{if $event.usergroup == -1} checked{/if}>
@@ -304,7 +344,7 @@
 
 		function update_user_selection(users) {
 			var userms = $('#userlist').val();
-			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type') == 'filter'}
+			{if ConfigHelper::getConfig('timetable.event_usergroup_selection_type', ConfigHelper::getConfig('phpui.event_usergroup_selection_type')) == 'filter'}
 				$("#userlist").val( users );
 			{else}
 				var users2 = jQuery.unique([].concat.apply(users, userms));
@@ -322,25 +362,22 @@
 			{/if}
 		{/if}
 
-		var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
-			change: function (event, ui) {
-				xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
-			}
+		initAdvancedSelects('#customer_addresses');
+		$('#customer_addresses').chosen().change(function() {
+			xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
 		});
 
-		customer_addresses.init();
-
 		{if $layout.module == 'eventedit'}
-		function change_customer(customer_selector, address_selector) {
-			getCustomerAddresses($(customer_selector).val(), function (addresses) {
-				customer_addresses.setAddressList(addresses);
-				if (Object.keys(addresses).length == 1) {
-					$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-					customer_addresses.refresh();
-				}
-				xajax_select_location($(customer_selector).val(), $(address_selector).val());
-			});
-		}
+			function change_customer(customer_selector, address_selector) {
+				getCustomerAddresses($(customer_selector).val(), function (addresses) {
+					setAddressList('#customer_addresses', addresses);
+					if (Object.keys(addresses).length == 1) {
+						$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+						updateAdvancedSelects('#customer_addresses');
+					}
+					xajax_select_location($(customer_selector).val(), $(address_selector).val());
+				});
+			}
 		{/if}
 		//initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
 

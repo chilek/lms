@@ -48,7 +48,7 @@
 				<input type="text" name="networkdata[address]" value="{$network.address}" required
 					{tip text="Write down network address and select mask" trigger="address"}>
 				/
-				<select size="1" title="Prefixlen" name="networkdata[prefix]">
+				<select size="1" name="networkdata[prefix]" {tip text='Choose prefix'}>
 					{section name=prefixlist loop=$prefixlist.id}
 						<option value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}
 							>{$prefixlist.value[prefixlist]}</option>
@@ -105,15 +105,26 @@
 		<TD colspan="3">
 			{if $unlockedit}
 			<select name="networkdata[vlanid]" class="lms-ui-advanced-select">
+				<option value="0"{if $network.vlanid == 0} selected{/if}>{trans("— none —")}</option>
 				{foreach $vlanlist as $v}
-				<option value="{$v.id}" {if $network.vlanid == $v.vlanid} selected{/if}>
-					(#{$v.vlanid}){if $v.description}, {$v.description|truncate:'20':''}{/if}{if $v.customername}, {$v.customername}{/if}
-				</option>
+					<option value="{$v.id}"{if $network.vlanid == $v.vlanid} selected{/if}>
+						({$v.vlanid}){if $v.description}, {$v.description|trunescape:45}{/if}{if $v.customername}, {$v.customername|escape} (#{$v.customerid}){/if}
+					</option>
 				{/foreach}
-				<option value="0" {if $network.vlanid == 0} selected{/if}>{trans("None")}</option>
 			</select>
 			{else}
-				{$network.vlanid}
+				{strip}
+					({$network.vlanid})
+					{if $network.vlandescription}
+						,&nbsp;{$network.vlandescription|trunescape:45}
+					{/if}
+					{if $network.vlancustomername}{strip}
+						,&nbsp;
+						<a href="?m=customerinfo&id={$network.vlancustomerid}">
+							{$network.vlancustomername|escape} (#{$network.vlancustomerid})
+						</a>
+					{/if}
+				{/strip}
 			{/if}
 		</TD>
 	</TR>
@@ -194,7 +205,7 @@
 		<TD colspan="3">
 			{if $unlockedit}
 			<select size="1" name="networkdata[pubnetid]" {tip text="Assign public network (optional)"}>
-				<option value="0">{trans("- select public network -")}</option>
+				<option value="0">{trans("— select public network —")}</option>
 				{foreach $networks as $net}
 				{if $net.id neq $network.id}
 				<option value="{$net.id}" {if $network.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
@@ -204,7 +215,7 @@
 			{elseif $network.pubnetid}
 			{$network.pubnet.name} ({$network.pubnet.address}/{$network.pubnet.prefix})
 			{else}
-			{trans("- none -")}
+			{trans("— none —")}
 			{/if}
 		</TD>
 	</TR>
@@ -216,7 +227,7 @@
 		<TD colspan="3">
 			{if $unlockedit}
 			<select size="1" name="networkdata[hostid]" {tip text="Select host" trigger="hostid"}>
-				<option value="0">{trans("- none -")}</option>
+				<option value="0">{trans("— none —")}</option>
 				{foreach $hostlist as $host}
 				<option value="{$host.id}"{if $host.id == $network.hostid} selected{/if}>{$host.name}</option>
 				{/foreach}
@@ -233,9 +244,12 @@
 		</TD>
 		<TD colspan="3">
 			{if $unlockedit}
-			<INPUT type="text" name="networkdata[snat]" value="{$network.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
+				<input type="text" name="networkdata[snat]" value="{$network.snat}"
+					{tip text="Enter network snat address(optional)" trigger="snat"}>
+			{elseif $network.snat != "0.0.0.0" && !empty($network.snat)}
+				{$network.snat}
 			{else}
-			{$network.snat}
+				{trans("— none —")}
 			{/if}
 		</TD>
 	</TR>

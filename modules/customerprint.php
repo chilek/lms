@@ -91,17 +91,16 @@ switch ($type) {
                 case CSTATUS_WAITING:
                     $state_labels[] = trans('Awaiting');
                     break;
+                case 51:
                 case CSTATUS_DISCONNECTED:
                     $state_labels[] = trans('Disconnected<!status>');
                     break;
+                case 63:
                 case CSTATUS_CONNECTED:
                     $state_labels[] = trans('Connected<!status>');
                     break;
                 case CSTATUS_DEBT_COLLECTION:
                     $state_labels[] = trans('Debt Collection<!status>');
-                    break;
-                case 51:
-                    $state_labels[] = trans('Disconnected<!status>');
                     break;
                 case 52:
                 case 57:
@@ -116,9 +115,6 @@ switch ($type) {
                     break;
                 case 61:
                     $state_labels[] = trans('Expiring Contracts');
-                    break;
-                case 63:
-                    $state_labels[] = trans('Connected<!status>');
                     break;
                 case -1:
                     $state_labels[] = trans('Without Nodes');
@@ -672,7 +668,7 @@ switch ($type) {
         $content .= "\t</Jednostka>\n";
         $content .= "</Operator>\n";
 
-        $attachment_name = strftime('TRANSGUS-%Y-%m-%d-%H-%M-%S.xml');
+        $attachment_name = 'TRANSGUS-' . date('Y-m-d-H-i-s') . '.xml';
 
         header('Content-Type: text/xml');
         header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
@@ -693,7 +689,7 @@ switch ($type) {
             $statyears[] = $i;
         }
         for ($i=1; $i<13; $i++) {
-            $months[$i] = strftime('%B', mktime(0, 0, 0, $i, 1));
+            $months[$i] = date('F', mktime(0, 0, 0, $i, 1));
         }
 
         if (!ConfigHelper::checkConfig('phpui.big_networks')) {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,6 +30,12 @@ if (isset($_POST['deleted'])) {
     $filter['deleted'] = true;
 }
 
+if (isset($_POST['deleted_tickets'])) {
+    $filter['deleted_tickets'] = $_POST['deleted_tickets'];
+} elseif (!isset($filter['deleted_tickets'])) {
+    $filter['deleted_tickets'] = true;
+}
+
 $SESSION->saveFilter($filter);
 
 $filter['stats'] = true;
@@ -38,7 +44,7 @@ $queues = $LMS->GetQueueList($filter);
 
 $layout['pagetitle'] = trans('Queues List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SESSION->remove('backid');
 

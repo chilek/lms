@@ -31,7 +31,7 @@ if (!preg_match('/^[0-9]+$/', $_GET['id'])) {
 }
 
 $cdr = $DB->GetRow('SELECT
-						c.id, caller, callee, call_start_time, totaltime, billedtime, price, c.status, c.type, 
+						c.id, caller, callee, call_start_time, totaltime, billedtime, price, c.status, c.direction, c.type,
 						callervoipaccountid, calleevoipaccountid, caller_flags, callee_flags, caller_prefix_group, callee_prefix_group,
 						a1.ownerid AS callerownerid, ' . $DB->Concat('c1.lastname', "' '", 'c1.name') . ' AS callercustomername,
 						a2.ownerid AS calleeownerid, ' . $DB->Concat('c2.lastname', "' '", 'c2.name') . ' AS calleecustomername

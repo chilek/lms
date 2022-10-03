@@ -31,7 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -181,11 +181,12 @@ foreach ($CONFIG as $key => $value) {
     }
 }
 
+/*
 $maxlease = $max_lease_time;
 if (!empty($maxlease)) {
     $header .= "max-lease-time " . $maxlease . ";\n\n";
 }
-
+*/
 
 $existing_networks = $DB->GetCol("SELECT name FROM networks");
 
@@ -272,6 +273,8 @@ if (!empty($CONFIG['dhcp']['options'])) {
 fwrite($fh, $prefix . "\n");
 
 $host_content = '';
+$line_prefix = '';
+$lastif = '';
 
 foreach ($networks as $networkid => $net) {
     $net_prefix = "";
@@ -285,7 +288,9 @@ foreach ($networks as $networkid => $net) {
         $lastif = $net['interface'];
         $line_prefix = "\t";
     } else {
-        $line_prefix = '';
+        if (!empty($net['interface']) && !empty($lastif) && strcmp($lastif, $net['interface'])) {
+            $line_prefix = '';
+        }
     }
 
     // TODO: lease time for network set by LMS-UI
@@ -392,7 +397,7 @@ foreach ($networks as $networkid => $net) {
         $net_prefix .= $line_prefix . "\tdefault-lease-time " . $default_lease . ";\n";
     }
     if ($max_lease != $max_lease_time) {
-        $net_prefix .= $line_prefix . "\ttmax-lease-time " . $max_lease . ";\n";
+        $net_prefix .= $line_prefix . "\tmax-lease-time " . $max_lease . ";\n";
     }
     foreach ($options as $name => $value) {
         $net_prefix .= $line_prefix . "\toption " . $name . " " . $value . ";\n";

@@ -326,6 +326,12 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 case MSG_DELIVERED:
                     $where[] = 'x.delivered = x.cnt';
                     break;
+                case MSG_CANCELLED:
+                    $where[] = 'x.cancelled = x.cnt';
+                    break;
+                case MSG_BOUNCED:
+                    $where[] = 'x.bounced = x.cnt';
+                    break;
             }
         }
 
@@ -339,9 +345,11 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				JOIN (
 					SELECT i.messageid,
 						COUNT(*) AS cnt,
-						COUNT(CASE WHEN i.status = '.MSG_SENT.' THEN 1 ELSE NULL END) AS sent,
-						COUNT(CASE WHEN i.status = '.MSG_DELIVERED.' THEN 1 ELSE NULL END) AS delivered,
-						COUNT(CASE WHEN i.status = '.MSG_ERROR.' THEN 1 ELSE NULL END) AS error
+						COUNT(CASE WHEN i.status = ' . MSG_SENT . ' THEN 1 ELSE NULL END) AS sent,
+						COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
+						COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
+						COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
+						COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
 					FROM messageitems i
 					LEFT JOIN (
 						SELECT DISTINCT a.customerid FROM vcustomerassignments a
@@ -361,9 +369,11 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 			JOIN (
 				SELECT i.messageid,
 					COUNT(*) AS cnt,
-					COUNT(CASE WHEN i.status = '.MSG_SENT.' THEN 1 ELSE NULL END) AS sent,
-					COUNT(CASE WHEN i.status = '.MSG_DELIVERED.' THEN 1 ELSE NULL END) AS delivered,
-					COUNT(CASE WHEN i.status = '.MSG_ERROR.' THEN 1 ELSE NULL END) AS error
+					COUNT(CASE WHEN i.status = ' . MSG_SENT . ' THEN 1 ELSE NULL END) AS sent,
+					COUNT(CASE WHEN i.status = ' . MSG_DELIVERED . ' THEN 1 ELSE NULL END) AS delivered,
+					COUNT(CASE WHEN i.status = ' . MSG_ERROR . ' THEN 1 ELSE NULL END) AS error,
+					COUNT(CASE WHEN i.status = ' . MSG_CANCELLED . ' THEN 1 ELSE NULL END) AS cancelled,
+					COUNT(CASE WHEN i.status = ' . MSG_BOUNCED . ' THEN 1 ELSE NULL END) AS bounced
 				FROM messageitems i
 				LEFT JOIN (
 					SELECT DISTINCT a.customerid FROM vcustomerassignments a
@@ -412,7 +422,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             $params['body'],
             isset($params['userid']) ? $params['userid'] : Auth::GetCurrentUser(),
             $params['type'] == MSG_MAIL && isset($params['sender']) ? '"' . $params['sender']['name'] . '" <' . $params['sender']['mail'] . '>' : '',
-            $params['contenttype'],
+            isset($params['contenttype']) ? $params['contenttype'] : 'text/plain',
         ));
 
         $result['id'] = $msgid  = $this->db->GetLastInsertID('messages');
@@ -441,9 +451,16 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             foreach ($row['destination'] as $destination) {
                 $this->db->Execute(
                     'INSERT INTO messageitems (messageid, customerid,
-					destination, status)
-					VALUES (?, ?, ?, ?)',
-                    array($msgid, empty($customerid) ? null : $customerid, $destination, MSG_NEW)
+					destination, status, error, externalmsgid)
+					VALUES (?, ?, ?, ?, ?, ?)',
+                    array(
+                        $msgid,
+                        empty($customerid) ? null : $customerid,
+                        $destination,
+                        isset($row['status']) ? $row['status'] : MSG_NEW,
+                        isset($row['error']) ? $row['error'] : null,
+                        isset($row['externalmsgid']) && !empty($row['externalmsgid']) ? $row['externalmsgid'] : null,
+                    )
                 );
                 if (!isset($msgitems[$customerid])) {
                     $msgitems[$customerid] = array();

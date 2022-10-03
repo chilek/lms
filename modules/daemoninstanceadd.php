@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,25 +30,25 @@ if ($instance) {
     foreach ($instance as $idx => $key) {
         $instance[$idx] = trim($key);
     }
-    
+
     if ($instance['name']=='' && $instance['description']=='' && $instance['module']=='' & $instance['crontab']=='') {
         $SESSION->redirect('?m=hostlist');
     }
-    
+
     if ($instance['name'] == '') {
         $error['name'] = trans('Instance name is required!');
     } elseif ($DB->GetOne('SELECT id FROM daemoninstances WHERE name=? AND hostid=?', array($instance['name'], $instance['hostid']))) {
         $error['name'] = trans('Instance with specified name exists on that host!');
     }
-    
+
     if ($instance['module'] == '') {
         $error['module'] = trans('Instance module is required!');
     }
-        
+
     if (!$instance['hostid']) {
         $error['hostid'] = trans('Instance host is required!');
     }
-    
+
     if ($instance['crontab'] != '' && !preg_match('/^[0-9\/\*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/*,-]+[ \t][0-9\/\*,-]+[ \t][0-9\/\*,-]+$/', $instance['crontab'])) {
         $error['crontab'] = trans('Incorrect crontab format!');
     }
@@ -122,7 +122,7 @@ $instance['hostid'] = isset($instance['hostid']) ? $instance['hostid'] : $_GET['
 
 $layout['pagetitle'] = trans('New Instance');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', $instance);

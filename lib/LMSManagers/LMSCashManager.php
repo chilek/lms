@@ -60,7 +60,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         $ln = 0;
         $sum = array();
         $data = array();
+        $error = array();
         $syslog_records = array();
+
+        $sourcefileid = null;
 
         foreach ($file as $line) {
             $id = null;
@@ -111,13 +114,14 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
 
             $name = isset($matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
-            $customername = preg_replace('/[\s]{2,}/', ' ', $name);
             $lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
+            $customername = preg_replace('/[\s]{2,}/', ' ', (empty($lastname) ? '' : $lastname . ' ') . $name);
             $comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
             $time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
             $value = str_replace(',', '.', isset($matches[$pattern['pvalue']]) ? preg_replace('/[\s]/', '', $matches[$pattern['pvalue']]) : '');
-            $srcaccount = isset($matches[$pattern['srcaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]) : '';
-            $dstaccount = isset($matches[$pattern['dstaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]) : '';
+            $srcaccount = isset($pattern['srcaccount']) && isset($matches[$pattern['srcaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]) : '';
+            $dstaccount = isset($pattern['dstaccount']) && isset($matches[$pattern['dstaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]) : '';
+            $optional_string = isset($pattern['optional_string'], $matches[$pattern['optional_string']]) ? trim($matches[$pattern['optional_string']]) : '';
 
             if (!$pattern['pid']) {
                 if (!empty($pattern['pid_regexp'])) {
@@ -136,18 +140,40 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             // seek invoice number
             if (!$id && !empty($pattern['invoice_regexp'])) {
                 if (preg_match($pattern['invoice_regexp'], $theline, $matches)) {
-                    $invid = $matches[$pattern['pinvoice_number']];
-                    $invyear = $matches[$pattern['pinvoice_year']];
-                    $invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
-
-                    if ($invid && $invyear) {
-                        $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
-                        $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+                    if (!isset($pattern['pinvoice_year']) || !isset($pattern['pinvoice_month']) || !isset($pattern['pinvoice_number'])) {
                         $id = $this->db->GetOne(
-                            'SELECT customerid FROM documents
-								WHERE number=? AND cdate>? AND cdate<? AND type IN (?,?)',
-                            array($invid, $from, $to, DOC_INVOICE, DOC_CNOTE)
+                            'SELECT customerid
+                            FROM documents
+                            WHERE LOWER(fullnumber) = LOWER(?)
+                                AND type IN ?',
+                            array(
+                                $matches[1],
+                                array(DOC_INVOICE, DOC_CNOTE)
+                            )
                         );
+                    } else {
+                        $invnumber = $matches[$pattern['pinvoice_number']];
+                        $invyear = $matches[$pattern['pinvoice_year']];
+                        $invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
+
+                        if ($invnumber && $invyear) {
+                            $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
+                            $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+                            $id = $this->db->GetOne(
+                                'SELECT customerid
+                                FROM documents
+                                WHERE number = ?
+                                    AND cdate > ?
+                                    AND cdate < ?
+                                    AND type IN ?',
+                                array(
+                                    $invnumber,
+                                    $from,
+                                    $to,
+                                    array(DOC_INVOICE, DOC_CNOTE)
+                                )
+                            );
+                        }
                     }
                 }
             }
@@ -174,13 +200,19 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         // then we matched customer by source account
                         if (!isset($unique_source_accounts)) {
                             $days = intval(ConfigHelper::getConfig($config_section . '.source_account_match_threshold_days'));
-                            $unique_source_accounts = $this->db->GetAll(
-                                'SELECT customerid, MIN(srcaccount) AS srcaccount
-                                FROM cashimport
-                                WHERE customerid IS NOT NULL AND srcaccount IS NOT NULL
-                                    ' . ($days ? ' AND date >= ?NOW? - ' . $days . ' * 86400' : '') . '
-                                GROUP BY customerid
-                                HAVING COUNT(DISTINCT srcaccount) = 1'
+                            $unique_source_accounts = $this->db->GetALl(
+                                'SELECT i.customerid, i.srcaccount
+                                FROM cashimport i
+                                JOIN (
+                                    SELECT i2.srcaccount
+                                    FROM cashimport i2
+                                    WHERE i2.customerid IS NOT NULL AND i2.srcaccount IS NOT NULL
+                                        ' . ($days ? ' AND i2.date >= ?NOW? - ' . $days . ' * 86400' : '') . '
+                                    GROUP BY i2.srcaccount
+                                    HAVING COUNT(DISTINCT i2.customerid) = 1
+                                ) i3 ON i3.srcaccount = i.srcaccount
+                                WHERE i.customerid IS NOT NULL AND i.srcaccount IS NOT NULL
+                                    ' . ($days ? ' AND i.date >= ?NOW? - ' . $days . ' * 86400' : '')
                             );
                             if (empty($unique_source_accounts)) {
                                 $unique_source_accounts = array();
@@ -200,10 +232,21 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     'SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
                     array($lastname, $name)
                 );
-                if (count($uids) == 1) {
+                if (!empty($uids) && count($uids) == 1) {
                     $id = $uids[0];
+                    $found_by_name = true;
                 }
-                $found_by_name = true;
+                // if id is still not found try again with switched name/lastname strings
+                if (!$id) { // optionally add && $found_by_name == false? I personally use only id check
+                    $uids = $this->db->GetCol(
+                        'SELECT id FROM customers WHERE UPPER(lastname) = UPPER(?) and UPPER(name) = UPPER(?)',
+                        array($name, $lastname) // switched strings here
+                    );
+                    if (!empty($uids) && count($uids) == 1) {
+                        $id = $uids[0];
+                        $found_by_name = true;
+                    }
+                }
             } else {
                 $found_by_name = false;
             }
@@ -271,7 +314,9 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 $comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
             }
 
-            $customer = trim($lastname.' '.$name);
+            // insert optional string here (for now?) so we can easily see it in GUI
+            $customer = trim($lastname . ' ' . $name)
+                . (empty($optional_string) ? '' : ' [[<-- Customer | Oprional_string -->]]: ' . $optional_string);
             $comment = trim($comment);
 
             $hash = md5(
@@ -287,7 +332,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
                 if (!$this->db->GetOne('SELECT id FROM cashimport WHERE hash = ?', array($hash))) {
                     // Add file
-                    if (!$sourcefileid) {
+                    if (!isset($sourcefileid)) {
                         $args = array(
                             'name' => $filename,
                             'idate' => isset($filemtime) ? $filemtime : time(),
@@ -328,7 +373,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     $res = $this->db->Execute('INSERT INTO cashimport (date, value, customer,
 						customerid, description, hash, sourceid, sourcefileid, srcaccount)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-                    if ($res && $this->sylog) {
+                    if ($res && $this->syslog) {
                         $args[SYSLOG::RES_CASHIMPORT] = $this->db->GetLastInsertID('cashimport');
                         $syslog_records[] = array(
                             'resource' => SYSLOG::RES_CASHIMPORT,
@@ -359,7 +404,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
         }
 
         if ($sourcefileid) {
-            if ($error['sum']) {
+            if (isset($error['sum'])) {
                 $this->db->Execute('DELETE FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
                 $this->db->Execute('DELETE FROM sourcefiles WHERE id = ?', array($sourcefileid));
             } else {

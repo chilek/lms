@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$state = $DB->GetRow('SELECT * FROM states WHERE id=?', array($_GET['id']));
+$state = $DB->GetRow('SELECT * FROM states WHERE id = ?', array($_GET['id']));
 
 $name = $state['name'];
 
 $stateedit = isset($_POST['stateedit']) ? $_POST['stateedit'] : null;
 
-if (count($stateedit)) {
+if (!empty($stateedit)) {
     $stateedit['name'] = trim($stateedit['name']);
     $stateedit['description'] = trim($stateedit['description']);
     $stateedit['id'] = $state['id'];
@@ -59,7 +59,7 @@ if (count($stateedit)) {
 
 $layout['pagetitle'] = trans('State Edit: $a', $name);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('stateedit', $state);
 $SMARTY->assign('error', $error);

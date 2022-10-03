@@ -25,7 +25,7 @@
  */
 
 $_LANG['Documents to review'] = 'Dokumenty do przejrzenia';
-$_LAMG['Documents which require your review'] = 'Dokumenty, które wymagają przejrzenia';
+$_LANG['Documents which require your review'] = 'Dokumenty, które wymagają przejrzenia';
 $_LANG['Document management'] = 'Zarządzanie dokumentami';
 $_LANG['This module allows to view documents'] = 'Moduł pozwala przeglądać dokumenty';
 
@@ -52,7 +52,7 @@ $_LANG['Enter document notification mail sender name'] = 'Wprowadź nazwę nadaw
 $_LANG['Enter document notification mail sender address'] = 'Wprowadź adres nadawcy listu z powiadomieniem o dokumencie';
 
 $_LANG['Signed document scan operator notifications'] = 'Powiadomienia operatora o skanie podpisanego dokumentu';
-$_LANG['Enter signed document scan operator notification mail recipient'] = 'Wprowadź odbiorcę listu z powiadomieniem operatora o skanie podpisanego dokumentu';
+$_LANG['Enter signed document scan operator notification mail recipients separated by commas'] = 'Wprowadź odbiorców listu (oddzielone przecinkami) z powiadomieniem operatora o skanie podpisanego dokumentu';
 $_LANG['Enter signed document scan operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o skanie podpisanego dokumentu';
 $_LANG['Enter signed document scan operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o skanie podpisanego dokumentu';
 $_LANG['Signed document scan customer notifications'] = 'Powiadomienia klienta o skanie podpisanego dokumentu';
@@ -62,11 +62,11 @@ $_LANG['Document approval customer notifications'] = 'Powiadomienia klienta o za
 $_LANG['Enter document approval customer notification mail subject'] = 'Wprowadź temat listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
 $_LANG['Enter document approval customer notification mail body'] = 'Wprowadź treść listu z powiadomieniem klienta o zatwierdzeniu dokumentu';
 $_LANG['Document approval operator notifications'] = 'Powiadomienia operatora o zatwierdzeniu dokumentu';
-$_LANG['Enter document approval operator notification mail recipient address'] = 'Wprowadź adres e-mail odbiorcy listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
+$_LANG['Enter document approval operator notification mail recipient addresses separated by commas'] = 'Wprowadź adresy e-mail (oddzielone przecinkami) odbiorców listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 $_LANG['Enter document approval operator notification mail subject'] = 'Wprowadź temat listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 $_LANG['Enter document approval operator notification mail body'] = 'Wprowadź treść listu z powiadomieniem operatora o zatwierdzeniu dokumentu';
 
-$_LANG['Recipient e-mail address'] = 'Adres e-mail odbiorcy';
+$_LANG['Recipient e-mail addresses'] = 'Adresy e-mail odbiorców';
 $_LANG['Mail subject'] = 'Temat listu';
 $_LANG['Mail body'] = 'Treść listu';
 
@@ -126,12 +126,14 @@ $_LANG[
     'Supported substitutions:<br><br>'
     . '<strong>%cid%</strong> - customer identifier,<br>'
     . '<strong>%customername%</strong> - full customer name,<br>'
-    . '<strong>%docid%</strong> - document identifier.'
+    . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%document%</strong> - document number.'
 ] =
     'Obsługiwane symbole specjalne:<br><br>'
     . '<strong>%cid%</strong> - identyfikator klienta,<br>'
     . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
-    . '<strong>%docid%</strong> - identyfikator dokumentu.';
+    . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%document%</strong> - numer dokumentu.';
 
 $_LANG[
     'Supported substitutions:<br><br>'
@@ -139,3 +141,18 @@ $_LANG[
 ] =
     'Obsługiwane symbole specjalne:<br><br>'
     . '<strong>%password%</strong> - zastępowany jest hasłem jednorazowym SMS-em wysyłanym do klienta.';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%creatoremail%</strong> - document creator e-mail address.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%creatoremail%</strong> - adres e-mail twórcy dokumentu.';
+
+$_LANG['Send document to customer'] = 'Wyślij dokument do klienta';
+
+$_LANG['One from files is too large!'] = 'Zbyt duży rozmiar jednego z plików!';
+$_LANG['One from files has invalid type!'] = 'Jeden z plików ma nieprawidłowy typ!';
+$_LANG['Invalid file type: $a'] = 'Nieprawidłowy typ pliku: $a';
+$_LANG['Total file size is too large!'] = 'Zbyt duży całkowity rozmiar plików!';
+$_LANG['<!documents>Submit'] = 'Wyślij';

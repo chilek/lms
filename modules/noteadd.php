@@ -60,8 +60,6 @@ switch ($action) {
         $itemdata = r_trim($_POST);
 
         $itemdata['value'] = f_round($itemdata['value']);
-        $itemdata['description'] = $itemdata['description'];
-        $itemdata['servicetype'] = $itemdata['servicetype'];
 
         if ($itemdata['value'] > 0 && $itemdata['description'] != '') {
             $itemdata['posuid'] = (string) getmicrotime();
@@ -185,9 +183,14 @@ switch ($action) {
             }
 
             $DB->BeginTrans();
-            $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions'));
+            $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions',
+                'addresses', 'customers', 'customer_addresses');
+            if (ConfigHelper::getConfig('database.type') != 'postgres') {
+                $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
+            }
+            $DB->LockTables($tables);
 
-            if (!$note['number']) {
+            if (empty($note['number'])) {
                 $note['number'] = $LMS->GetNewDocumentNumber(array(
                     'doctype' => DOC_DNOTE,
                     'planid' => $note['numberplanid'],

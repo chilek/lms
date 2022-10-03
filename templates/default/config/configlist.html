@@ -76,11 +76,11 @@
 
 </style>
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 
 <form name="configform" id="configform" method="POST" action="?m=config"></form>
 
-<TABLE id="configlist-datatable" class="lmsbox lms-ui-multi-check lms-ui-datatable lms-ui-datatable-column-search"
+<table id="configlist-datatable" class="lmsbox lms-ui-multi-check lms-ui-datatable lms-ui-datatable-column-search"
 		data-state-duration='-1'
 		data-order='[[ 1, "asc" ]]'
 		data-page-length="{$pagelimit}"
@@ -88,545 +88,545 @@
 		data-search-columns='[ {if !empty($section)}{ "search": "{$section}" }{else}null{/if}, {if !empty($name)}{ "search": "{$name}" }{else}null{/if}, null, null, {if !empty($scope)}{ "search": "{$scope}" }{else}null{/if}, {if !empty($user)}{ "search": "{$user}" }{else}null{/if}, {if !empty($division)}{ "search": "{$division}" }{else}null{/if}, null ]'
 		data-empty-table-message='{t a="?m=configload"}No configuration options in database.<br>Click <A href="$a">here</A> to import them from lms.ini.{/t}'
 		style="display: none;" width="100%">
-    <COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 93%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-    </COLGROUP>
-    <THEAD>
-	<TR>
-		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="section-filter">
-			<span>{trans("Section:")}</span>
-			{icon name="url" class="lms-ui-button-section-link" tip="Copy link"
-				data_clipboard_text="{$url}?m=configlist&s=%section%"}
-		</TH>
-		<TH scope="col" class="valign-bottom bold nobr" data-filter-id="name-filter">
-			{trans("Name:")}
-		</TH>
-		<TH scope="col" class="text-center valign-bottom">
-			{trans("Value:")}
-		</TH>
-		<TH scope="col" class="text-center valign-bottom">
-			{trans("Comment:")}
-		</TH>
-		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="type-filter">
-			{trans("Scope:")}
-		</TH>
-		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="user-filter">
-			{trans("User:")}
-		</TH>
-		<TH scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="division-filter">
-			{trans("Division:")}
-		</TH>
-		<TH scope="col" class="text-right valign-bottom nobr" data-searchable="false" data-sortable="false">
-			<div id="command-buttons">
-				{button icon="add" label="Add option" class="configadd"}
-			</div>
-		</TH>
-	</TR>
-    </THEAD>
-    <TBODY>
-	{foreach $configlist as $config}
-	<TR class="{if $config.disabled} blend{/if}" data-name="{$config.section}.{$config.var}" data-target-url="?m=configedit&id={$config.id}">
-		<TD>
-			{$config.section}
-		</TD>
-		<TD class="bold">
-			{$config.var}
-		</TD>
-		<TD>
-			{$config.value|escape}
-		</TD>
-		<TD>
-			{$config.description|truncate:5000:"&hellip;"}
-			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"&hellip;"}</p>{/if}
-		</TD>
-		<TD>
-			{trans($config.reftypedescription)}
-		</TD>
-		<TD>
-			{if $config.userid}{$config.rusername} ({$config.login}){else}{trans('<!filter>- none -')}{/if}
-		</TD>
-		<TD>
-			{if $config.divisionid}{$config.shortname|escape}{else}{trans('<!filter>- none -')}{/if}
-		</TD>
-		<TD class="lms-ui-buttons text-right nobr">
-			{if $config.disabled}
-				{button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$config.id}&statuschange=1"}
-			{else}
-				{button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$config.id}&statuschange=1"}
-			{/if}
-			{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
-				data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}{if $config.userid}&u={$config.userid}{/if}{if $config.divisionid}&d={$config.divisionid}{/if}"}
-			{if empty($config.configid)}
-				{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}"}
-			{/if}
-			{button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$config.id}"}
-			{button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$config.id}"}
-			<input type="checkbox" name="marks[{$config.id}]" value="{$config.id}" form="configform" class="lms-ui-multi-check">
-		</TD>
-	</TR>
-	{/foreach}
-    </TBODY>
-    <TFOOT>
-	<TR>
-		<TD colspan="8" class="text-right bold">
-			<div class="row-container">
-				<div class="row-container-actions">
-					<fieldset id="clone" style="display: none;">
-						<legend>{trans('Cloning')}</legend>
-						<div id="clone-container">
-							<div class="clone-container-section-input" style="display: none;">
-								<div>
-									{trans('Target section')}
-								</div>
-								<div>
-									<input type="text" id="section-name-input" {tip text="Enter new section name"}>
-								</div>
-							</div>
-
-							<div class="clone-container-section-select" style="display: none;">
-								<div>
-									{trans('Target section')}
-								</div>
-								<div>
-									<SELECT size="1" id="section-name-select" {tip class="lms-ui-combobox" text="Select section" trigger="section"}>
-										<OPTION value="samesection" selected>{trans('to_the_source_sections')}</OPTION>
-										{foreach $sections as $section}
-											<OPTION value="{$section}">{$section}</OPTION>
-										{/foreach}
-									</SELECT>
-								</div>
-							</div>
-
-							<div class="clone-container-user" style="display: none;">
-								<div>
-									{trans('Target user')}
-								</div>
-								<div>
-									<SELECT size="1" id="user-name" {tip text="Select user" trigger="user"}>
-										{foreach $users as $user}
-											<OPTION value="{$user.id}">{$user.login} / {$user.rname|escape}</OPTION>
-										{/foreach}
-									</SELECT>
-								</div>
-							</div>
-
-							<div class="clone-container-division" style="display: none;">
-								<div>
-									{trans('Target division')}
-								</div>
-								<div>
-									<SELECT size="1" id="division-name" {tip text="Select user" trigger="division"}>
-										{foreach $divisions as $division}
-											<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
-										{/foreach}
-									</SELECT>
-								</div>
-							</div>
-
-							<div class="withchildbindings" style="display: none;">
-								<label for="withchildbindings">{trans('With child bindings')}</label>
-								<input type="checkbox" id="withchildbindings">
-							</div>
-
-							<div class="withparentbindings" style="display: none;">
-								<label>{trans('Create the missing parent bindings')}
-									<input type="checkbox" id="withparentbindings">
-								</label>
-							</div>
-
-							<div class="override">
-								<label>{trans('Override existing')}
-									<input type="checkbox" id="override">
-								</label>
-							</div>
-
-							<div>
-								{button icon="clone" label="Clone selected" id="clone-configs"}
-							</div>
-						</div>
-					</fieldset>
-					<fieldset id="export" style="display: none;">
-						<legend>{trans("Export")}</legend>
-						<div id="export-container">
-							<div>
-								<label>ini
-									<input type="radio" name="export_filetype" id="export_ini" value="ini" checked>
-								</label>
-								<label>sql
-									<input type="radio" name="export_filetype" id="export_sql" value="sql">
-								</label>
-							</div>
-
-							<div>
-								{button icon="importsource" label="Export selected" id="export-configs"}
-							</div>
-						</div>
-					</fieldset>
+    <colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 93%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+    </colgroup>
+    <thead>
+		<tr>
+			<th scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="section-filter">
+				<span>{trans("Section:")}</span>
+				{icon name="url" class="lms-ui-button-section-link" tip="Copy link"
+					data_clipboard_text="{$url}?m=configlist&s=%section%"}
+			</th>
+			<th scope="col" class="valign-bottom bold nobr" data-filter-id="name-filter">
+				{trans("Name:")}
+			</th>
+			<th scope="col" class="text-center valign-bottom">
+				{trans("Value:")}
+			</th>
+			<th scope="col" class="text-center valign-bottom">
+				{trans("Comment:")}
+			</th>
+			<th scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="type-filter">
+				{trans("Scope:")}
+			</th>
+			<th scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="user-filter">
+				{trans("User:")}
+			</th>
+			<th scope="col" class="valign-bottom nobr" data-searchable="true" data-select-value="true" data-filter-id="division-filter">
+				{trans("Division:")}
+			</th>
+			<th scope="col" class="text-right valign-bottom nobr" data-searchable="false" data-sortable="false">
+				<div id="command-buttons">
+					{button icon="add" label="Add option" class="configadd"}
 				</div>
-				<div class="row-container-buttons">
-					<div>
-						{button icon="delete" label="Delete selected" id="delete-configs"}
+			</th>
+		</tr>
+    </thead>
+    <tbody>
+		{foreach $configlist as $config}
+		<tr class="{if $config.disabled} blend{/if}" data-name="{$config.section}.{$config.var}" data-target-url="?m=configedit&id={$config.id}&action=init">
+			<td>
+				{$config.section}
+			</td>
+			<td class="bold">
+				{$config.var}
+			</td>
+			<td>
+				{$config.value|escape}
+			</td>
+			<td>
+				{$config.description|truncate:5000:"&hellip;"}
+				{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"&hellip;"}</p>{/if}
+			</td>
+			<td>
+				{trans($config.reftypedescription)}
+			</td>
+			<td>
+				{if $config.userid}{$config.rusername} ({$config.login}){else}{trans('<!filter>— none —')}{/if}
+			</td>
+			<td>
+				{if $config.divisionid}{$config.shortname|escape}{else}{trans('<!filter>— none —')}{/if}
+			</td>
+			<td class="lms-ui-buttons text-right nobr">
+				{if $config.disabled}
+					{button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$config.id}&statuschange=1"}
+				{else}
+					{button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$config.id}&statuschange=1"}
+				{/if}
+				{icon name="url" class="lms-ui-button-clipboard lms-ui-static" tip="Copy link"
+					data_clipboard_text="{$url}?m=configedit&s={$config.section}&v={$config.var}{if $config.userid}&u={$config.userid}{/if}{if $config.divisionid}&d={$config.divisionid}{/if}"}
+				{if empty($config.configid)}
+					{button type="link" icon="clone" tip="Clone" href="?m=configadd&id={$config.id}&action=init"}
+				{/if}
+				{button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$config.id}"}
+				{button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$config.id}&action=init"}
+				<input type="checkbox" name="marks[{$config.id}]" value="{$config.id}" form="configform" class="lms-ui-multi-check">
+			</td>
+		</tr>
+		{/foreach}
+    </tbody>
+    <tfoot>
+		<tr>
+			<td colspan="8" class="text-right bold">
+				<div class="row-container">
+					<div class="row-container-actions">
+						<fieldset id="clone" style="display: none;">
+							<legend>{trans('Cloning')}</legend>
+							<div id="clone-container">
+								<div class="clone-container-section-input" style="display: none;">
+									<div>
+										{trans('Target section')}
+									</div>
+									<div>
+										<input type="text" id="section-name-input" {tip text="Enter new section name"}>
+									</div>
+								</div>
+
+								<div class="clone-container-section-select" style="display: none;">
+									<div>
+										{trans('Target section')}
+									</div>
+									<div>
+										<select size="1" id="section-name-select" {tip class="lms-ui-combobox" text="Select section" trigger="section"}>
+											<option value="samesection" selected>{trans('to_the_source_sections')}</option>
+											{foreach $sections as $section}
+												<option value="{$section}">{$section}</option>
+											{/foreach}
+										</select>
+									</div>
+								</div>
+
+								<div class="clone-container-user" style="display: none;">
+									<div>
+										{trans('Target user')}
+									</div>
+									<div>
+										<select size="1" id="user-name" {tip text="Select user" trigger="user"}>
+											{foreach $users as $user}
+												<option value="{$user.id}">{$user.login} / {$user.rname|escape}</option>
+											{/foreach}
+										</select>
+									</div>
+								</div>
+
+								<div class="clone-container-division" style="display: none;">
+									<div>
+										{trans('Target division')}
+									</div>
+									<div>
+										<select size="1" id="division-name" {tip text="Select user" trigger="division"}>
+											{foreach $divisions as $division}
+												<option value="{$division.id}">{$division.label|escape}</option>
+											{/foreach}
+										</select>
+									</div>
+								</div>
+
+								<div class="withchildbindings" style="display: none;">
+									<label for="withchildbindings">{trans('With child bindings')}</label>
+									<input type="checkbox" id="withchildbindings">
+								</div>
+
+								<div class="withparentbindings" style="display: none;">
+									<label>{trans('Create the missing parent bindings')}
+										<input type="checkbox" id="withparentbindings">
+									</label>
+								</div>
+
+								<div class="override">
+									<label>{trans('Override existing')}
+										<input type="checkbox" id="override">
+									</label>
+								</div>
+
+								<div>
+									{button icon="clone" label="Clone selected" id="clone-configs"}
+								</div>
+							</div>
+						</fieldset>
+						<fieldset id="export" style="display: none;">
+							<legend>{trans("Export")}</legend>
+							<div id="export-container">
+								<div>
+									<label>ini
+										<input type="radio" name="export_filetype" id="export_ini" value="ini" checked>
+									</label>
+									<label>sql
+										<input type="radio" name="export_filetype" id="export_sql" value="sql">
+									</label>
+								</div>
+
+								<div>
+									{button icon="importsource" label="Export selected" id="export-configs"}
+								</div>
+							</div>
+						</fieldset>
 					</div>
-					<div>
-						{button icon="url" label="Copy as links" id="copy-links-configs" data_clipboard_text=""}
-					</div>
-					<div>
-						<label>{trans("Check All")}
-							<INPUT type="checkbox" id="checkall" class="lms-ui-multi-check-all">
-						</label>
+					<div class="row-container-buttons">
+						<div>
+							{button icon="delete" label="Delete selected" id="delete-configs"}
+						</div>
+						<div>
+							{button icon="url" label="Copy as links" id="copy-links-configs" data_clipboard_text=""}
+						</div>
+						<div>
+							<label>{trans("Check All")}
+								<INPUT type="checkbox" id="checkall" class="lms-ui-multi-check-all">
+							</label>
+						</div>
 					</div>
 				</div>
-			</div>
-		</TD>
-	</TR>
-    </TFOOT>
-</TABLE>
+			</td>
+		</tr>
+    </tfoot>
+</table>
 
 <script>
 
-	$(function() {
-		var withchildbindings = $('#withchildbindings');
-		withchildbindings.prop('checked', true);
-		var withparentbindings = $('#withparentbindings');
-		withparentbindings.prop('checked', true);
-		var override = $('#override');
-		override.prop('checked', true);
+$(function() {
+	var withchildbindings = $('#withchildbindings');
+	withchildbindings.prop('checked', true);
+	var withparentbindings = $('#withparentbindings');
+	withparentbindings.prop('checked', true);
+	var override = $('#override');
+	override.prop('checked', true);
 
-		$('.configadd').click(function() {
-			var select = $('thead tr select', $(this).closest('table'));
-			href = '?m=configadd';
-			if (select.prop('selectedIndex')) {
-				href += '&section=' + select.val();
-			}
-			window.location.href = href;
-		});
-
-		$('.delete-config').click(function() {
-			var name = $(this).closest('tr').attr('data-name');
-			confirmDialog($t("Are you sure, you want to delete option \'$a\' from database?\n\nIf option has related options this action will remove all of them.", name), this).done(function() {
-					location.href = $(this).attr('href');
-				});
-			return false;
-		});
-
-		$('#delete-configs').click(function() {
-			if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
-				alertDialog($t("No option has been selected!"), this);
-				return;
-			}
-			confirmDialog($t("Are you sure, you want to delete all selected options from database?"), this).done(function () {
-				document.configform.action="?m=configdel";
-				document.configform.submit();
-				return;
-			});
-		});
-
-		$('#export-configs').click(function() {
-			if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
-				alertDialog($t("No option has been selected!"), this);
-				return;
-			} else {
-				var type_filer = $('#type-filter').val();
-				var user_filer = $('#user-filter').val();
-				var division_filer = $('#division-filter').val();
-				var fileType = $('input[name="export_filetype"]:checked').val();
-				var export_args = '';
-
-				if (typeof(type_filer) === 'undefined'
-						|| (
-								type_filer === $t("global value")
-								&& (
-										typeof(division_filer) === 'undefined'
-										|| division_filer === $t("<!filter>- none -")
-										|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
-								)
-								&& (
-										typeof(user_filer) === 'undefined'
-										|| user_filer === $t("<!filter>- none -")
-										|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
-								)
-						)
-				) {
-					var export_type_filter = $t("global value");
-					export_args += '&source-type=' + export_type_filter + '';
-				}
-
-				if (type_filer === $t("division value")
-					&& division_filer != $t("<!filter>- none -")
-					&& division_filer.length > 0
-					&& (
-						typeof(user_filer) === 'undefined'
-						|| user_filer === $t("<!filter>- none -")
-						|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
-					)
-				) {
-					export_args += '&source-division=' + division_filer + '';
-				}
-
-				if (type_filer === $t("user in division value")
-						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
-						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0) {
-					export_args += '&source-division=' + division_filer + '';
-					export_args += '&source-user=' + user_filer + '';
-				}
-
-				if (type_filer === $t("user value")
-					&& user_filer !== $t("<!filter>- none -")
-					&& user_filer.length > 0
-					&& (
-						typeof(division_filer) === 'undefined'
-						|| division_filer === $t("<!filter>- none -")
-						|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
-					)
-				) {
-					export_args += '&source-user=' + user_filer + '';
-				}
-
-				export_args += '&fileType=' + fileType + '';
-
-				document.configform.action = '?m=configexport' + export_args + '';
-				document.configform.submit();
-				return;
-			}
-		});
-
-		$('#clone-configs').click(function() {
-			if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
-				alertDialog($t("No option has been selected!"), this);
-				return;
-			}
-
-			var section_name_input = $('#section-name-input');
-			var section_name_input_visible = section_name_input.is(':visible');
-
-			var section_name_select = $('#section-name-select');
-			var section_name_select_input = section_name_select.find('input.scombobox-value');
-			var section_name_select_visible = section_name_select.is(':visible');
-
-			var user_name = $('#user-name');
-			var user_name_visible = user_name.is(':visible');
-
-			var division_name = $('#division-name');
-			var division_name_visible = division_name.is(':visible');
-
-			var withchildbindings_visible = withchildbindings.is(':visible');
-			var withparentbindings_visible = withparentbindings.is(':visible');
-			var override_visible = override.is(':visible');
-
-			var args = '';
-
-			if (section_name_input_visible) {
-				var section_name_input_val = section_name_input.val();
-				if (!section_name_input_val.length) {
-					alertDialog($t("Section name can't be empty"), this);
-					return false;
-				}
-				if (!section_name_input_val.match(/^[a-z0-9_-]+$/)) {
-					alertDialog($t("Section name contains forbidden characters!"), this);
-					return false;
-				}
-
-				if (section_name_input_val.length) {
-					args += '&target-section=' + section_name_input_val + '';
-				}
-
-			}
-
-			if (section_name_select_visible) {
-				var section_name_select_input_val = section_name_select_input.val();
-
-				if (!section_name_select_input_val.length) {
-					alertDialog($t("Section name can't be empty"), this);
-					return false;
-				}
-				if (!section_name_select_input_val.match(/^[a-z0-9_-]+$/)) {
-					alertDialog($t("Section name contains forbidden characters!"), this);
-					return false;
-				}
-
-				if (section_name_select_input_val.length) {
-					args += '&target-section=' + section_name_select_input_val + '';
-				}
-			}
-
-			if (user_name_visible) {
-				var user_id = user_name.val();
-				if (user_id) {
-					args += '&target-user=' + user_id + '';
-				}
-			}
-
-			if (division_name_visible) {
-				var division_id = division_name.val();
-				if (division_id) {
-					args += '&target-division=' + division_id + '';
-				}
-			}
-
-			if (withchildbindings_visible) {
-				if ($(withchildbindings).is(':checked')) {
-					args += '&withchildbindings=1';
-				}
-			}
-
-			if (withparentbindings_visible) {
-				if ($(withparentbindings).is(':checked')) {
-					args += '&withparentbindings=1';
-				}
-			}
-
-			if (override_visible) {
-				if ($(override).is(':checked')) {
-					args += '&override=1';
-				}
-			}
-
-			confirmDialog($t("Are you sure, you want to clone all selected options?"), this).done(function () {
-				document.configform.action = '?m=configadd' + args + '';
-				document.configform.submit();
-				return;
-			});
-		});
-
-		function toggleActions() {
-			$('#export, #clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
-			{if !empty($configlist)}
-				var type_filer = $('#type-filter').val();
-				var user_filer = $('#user-filter').val();
-				var division_filer = $('#division-filter').val();
-
-				if (typeof(type_filer) === 'undefined'
-					|| (
-						type_filer === $t("global value")
-						&& (
-							typeof(division_filer) === 'undefined'
-							|| division_filer === $t("<!filter>- none -")
-							|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
-						)
-						&& (
-							typeof(user_filer) === 'undefined'
-							|| user_filer === $t("<!filter>- none -")
-							|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
-						)
-					)
-				) {
-					$('#export, #clone, .clone-container-section-input, .withchildbindings').show();
-					$('.clone-container-section-select, .clone-container-user, .clone-container-division, .withparentbindings, .override').hide();
-					return;
-				}
-
-				if (type_filer === $t("division value")
-					&& division_filer != $t("<!filter>- none -")
-					&& division_filer.length > 0
-					&& (
-						typeof(user_filer) === 'undefined'
-						|| user_filer === $t("<!filter>- none -")
-						|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
-					)
-				) {
-					$('#export, #clone, .clone-container-section-select, .clone-container-division, .withchildbindings, .withparentbindings, .override').show();
-					$('.clone-container-section-input, .clone-container-user').hide();
-					return;
-				}
-
-				if (type_filer === $t("user in division value")
-						&& division_filer != $t("<!filter>- none -") && division_filer.length > 0
-						&& user_filer !== $t("<!filter>- none -") && user_filer.length > 0) {
-					$('#export, #clone, .clone-container-user, .clone-container-section-select, .clone-container-division, .withparentbindings, .override').show();
-					$('.clone-container-section-input, .withchildbindings').hide();
-					return;
-				}
-
-				if (type_filer === $t("user value")
-					&& user_filer !== $t("<!filter>- none -")
-					&& user_filer.length > 0
-					&& (
-						typeof(division_filer) === 'undefined'
-						|| division_filer === $t("<!filter>- none -")
-						|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
-					)
-				) {
-					$('#export, #clone, .clone-container-section-select, .clone-container-user, .withparentbindings, .override').show();
-					$('.clone-container-section-input, .clone-container-division, .withchildbindings').hide();
-					return;
-				}
-			{/if}
+	$('.configadd').click(function() {
+		var select = $('thead tr select', $(this).closest('table'));
+		href = '?m=configadd&action=init';
+		if (select.prop('selectedIndex')) {
+			href += '&section=' + select.val();
 		}
+		window.location.href = href;
+	});
 
-		$('#type-filter').change(function() {
-			toggleActions();
-		})
-		$('#user-filter').change(function() {
-			toggleActions();
-		})
-		$('#division-filter').change(function() {
-			toggleActions();
-		})
+	$('.delete-config').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to delete option \'$a\' from database?\n\nIf option has related options this action will remove all of them.", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+		return false;
+	});
 
-		toggleActions();
-
-		$('[data-filter-id="section-filter"]').off('click');
-
-		new ClipboardJS('.lms-ui-button-section-link', {
-			text: function(trigger) {
-				var copylink = "";
-
-				var section = $('#section-filter').val();
-				if (section && section.length) {
-					copylink += $(trigger).attr('data-clipboard-text').replace('%section%', section);
-				}
-
-				var name = $('#name-filter').val();
-				if (name && name.length) {
-					copylink += "&v="+name;
-				}
-
-				var scope = $('#type-filter').val();
-				if (scope && scope.length) {
-					copylink += "&sc="+encodeURIComponent(scope);
-				}
-
-				var user = $('#user-filter').val();
-				if (user && user.length) {
-					copylink += "&u="+encodeURIComponent(user);
-				}
-
-				var division = $('#division-filter').val();
-				if (division && division.length) {
-					copylink += "&d="+encodeURIComponent(division);
-				}
-
-				return copylink;
-			}
-		});
-
-		$('#configlist-datatable').DataTable().order.listener('span', 0);
-		$('#copy-links-configs').click(function() {
-			if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
-				alertDialog($t("No option has been selected!"), this);
-				return;
-			}
-		});
-
-		new ClipboardJS('#copy-links-configs', {
-			text: function(trigger) {
-				var checkedRows = $(trigger).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked');
-				var checkedClipboardText = '';
-				checkedRows.each(function() {
-					checkedClipboardText += $(this).closest('td').find('.lms-ui-button-clipboard').attr('data-clipboard-text') + '\n';
-				});
-				$(trigger).attr('data-clipboard-text', checkedClipboardText);
-				return $(trigger).attr('data-clipboard-text');
-			}
+	$('#delete-configs').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t("No option has been selected!"), this);
+			return;
+		}
+		confirmDialog($t("Are you sure, you want to delete all selected options from database?"), this).done(function () {
+			document.configform.action="?m=configdel";
+			document.configform.submit();
+			return;
 		});
 	});
+
+	$('#export-configs').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t("No option has been selected!"), this);
+			return;
+		} else {
+			var type_filer = $('#type-filter').val();
+			var user_filer = $('#user-filter').val();
+			var division_filer = $('#division-filter').val();
+			var fileType = $('input[name="export_filetype"]:checked').val();
+			var export_args = '';
+
+			if (typeof(type_filer) === 'undefined'
+					|| (
+							type_filer === $t("global value")
+							&& (
+									typeof(division_filer) === 'undefined'
+									|| division_filer === $t("<!filter>— none —")
+									|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+							)
+							&& (
+									typeof(user_filer) === 'undefined'
+									|| user_filer === $t("<!filter>— none —")
+									|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+							)
+					)
+			) {
+				var export_type_filter = $t("global value");
+				export_args += '&source-type=' + export_type_filter + '';
+			}
+
+			if (type_filer === $t("division value")
+				&& division_filer != $t("<!filter>— none —")
+				&& division_filer.length > 0
+				&& (
+					typeof(user_filer) === 'undefined'
+					|| user_filer === $t("<!filter>— none —")
+					|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+				)
+			) {
+				export_args += '&source-division=' + division_filer + '';
+			}
+
+			if (type_filer === $t("user in division value")
+					&& division_filer != $t("<!filter>— none —") && division_filer.length > 0
+					&& user_filer !== $t("<!filter>— none —") && user_filer.length > 0) {
+				export_args += '&source-division=' + division_filer + '';
+				export_args += '&source-user=' + user_filer + '';
+			}
+
+			if (type_filer === $t("user value")
+				&& user_filer !== $t("<!filter>— none —")
+				&& user_filer.length > 0
+				&& (
+					typeof(division_filer) === 'undefined'
+					|| division_filer === $t("<!filter>— none —")
+					|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+				)
+			) {
+				export_args += '&source-user=' + user_filer + '';
+			}
+
+			export_args += '&fileType=' + fileType + '';
+
+			document.configform.action = '?m=configexport' + export_args + '';
+			document.configform.submit();
+			return;
+		}
+	});
+
+	$('#clone-configs').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t("No option has been selected!"), this);
+			return;
+		}
+
+		var section_name_input = $('#section-name-input');
+		var section_name_input_visible = section_name_input.is(':visible');
+
+		var section_name_select = $('#section-name-select');
+		var section_name_select_input = section_name_select.find('input.scombobox-value');
+		var section_name_select_visible = section_name_select.is(':visible');
+
+		var user_name = $('#user-name');
+		var user_name_visible = user_name.is(':visible');
+
+		var division_name = $('#division-name');
+		var division_name_visible = division_name.is(':visible');
+
+		var withchildbindings_visible = withchildbindings.is(':visible');
+		var withparentbindings_visible = withparentbindings.is(':visible');
+		var override_visible = override.is(':visible');
+
+		var args = '';
+
+		if (section_name_input_visible) {
+			var section_name_input_val = section_name_input.val();
+			if (!section_name_input_val.length) {
+				alertDialog($t("Section name can't be empty"), this);
+				return false;
+			}
+			if (!section_name_input_val.match(/^[a-z0-9_-]+$/)) {
+				alertDialog($t("Section name contains forbidden characters!"), this);
+				return false;
+			}
+
+			if (section_name_input_val.length) {
+				args += '&target-section=' + section_name_input_val + '';
+			}
+
+		}
+
+		if (section_name_select_visible) {
+			var section_name_select_input_val = section_name_select_input.val();
+
+			if (!section_name_select_input_val.length) {
+				alertDialog($t("Section name can't be empty"), this);
+				return false;
+			}
+			if (!section_name_select_input_val.match(/^[a-z0-9_-]+$/)) {
+				alertDialog($t("Section name contains forbidden characters!"), this);
+				return false;
+			}
+
+			if (section_name_select_input_val.length) {
+				args += '&target-section=' + section_name_select_input_val + '';
+			}
+		}
+
+		if (user_name_visible) {
+			var user_id = user_name.val();
+			if (user_id) {
+				args += '&target-user=' + user_id + '';
+			}
+		}
+
+		if (division_name_visible) {
+			var division_id = division_name.val();
+			if (division_id) {
+				args += '&target-division=' + division_id + '';
+			}
+		}
+
+		if (withchildbindings_visible) {
+			if ($(withchildbindings).is(':checked')) {
+				args += '&withchildbindings=1';
+			}
+		}
+
+		if (withparentbindings_visible) {
+			if ($(withparentbindings).is(':checked')) {
+				args += '&withparentbindings=1';
+			}
+		}
+
+		if (override_visible) {
+			if ($(override).is(':checked')) {
+				args += '&override=1';
+			}
+		}
+
+		confirmDialog($t("Are you sure, you want to clone all selected options?"), this).done(function () {
+			document.configform.action = '?m=configadd' + args + '';
+			document.configform.submit();
+			return;
+		});
+	});
+
+	function toggleActions() {
+		$('#export, #clone, .clone-container-section-input, .clone-container-section-select, .clone-container-user, .withchildbindings, .withparentbindings, .override').hide();
+		{if !empty($configlist)}
+			var type_filer = $('#type-filter').val();
+			var user_filer = $('#user-filter').val();
+			var division_filer = $('#division-filter').val();
+
+			if (typeof(type_filer) === 'undefined'
+				|| (
+					type_filer === $t("global value")
+					&& (
+						typeof(division_filer) === 'undefined'
+						|| division_filer === $t("<!filter>— none —")
+						|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+					)
+					&& (
+						typeof(user_filer) === 'undefined'
+						|| user_filer === $t("<!filter>— none —")
+						|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+					)
+				)
+			) {
+				$('#export, #clone, .clone-container-section-input, .withchildbindings').show();
+				$('.clone-container-section-select, .clone-container-user, .clone-container-division, .withparentbindings, .override').hide();
+				return;
+			}
+
+			if (type_filer === $t("division value")
+				&& division_filer != $t("<!filter>— none —")
+				&& division_filer.length > 0
+				&& (
+					typeof(user_filer) === 'undefined'
+					|| user_filer === $t("<!filter>— none —")
+					|| (typeof(user_filer) !== 'undefined' && user_filer.length === 0)
+				)
+			) {
+				$('#export, #clone, .clone-container-section-select, .clone-container-division, .withchildbindings, .withparentbindings, .override').show();
+				$('.clone-container-section-input, .clone-container-user').hide();
+				return;
+			}
+
+			if (type_filer === $t("user in division value")
+					&& division_filer != $t("<!filter>— none —") && division_filer.length > 0
+					&& user_filer !== $t("<!filter>— none —") && user_filer.length > 0) {
+				$('#export, #clone, .clone-container-user, .clone-container-section-select, .clone-container-division, .withparentbindings, .override').show();
+				$('.clone-container-section-input, .withchildbindings').hide();
+				return;
+			}
+
+			if (type_filer === $t("user value")
+				&& user_filer !== $t("<!filter>— none —")
+				&& user_filer.length > 0
+				&& (
+					typeof(division_filer) === 'undefined'
+					|| division_filer === $t("<!filter>— none —")
+					|| (typeof(division_filer) !== 'undefined' && division_filer.length === 0)
+				)
+			) {
+				$('#export, #clone, .clone-container-section-select, .clone-container-user, .withparentbindings, .override').show();
+				$('.clone-container-section-input, .clone-container-division, .withchildbindings').hide();
+				return;
+			}
+		{/if}
+	}
+
+	$('#type-filter').change(function() {
+		toggleActions();
+	})
+	$('#user-filter').change(function() {
+		toggleActions();
+	})
+	$('#division-filter').change(function() {
+		toggleActions();
+	})
+
+	toggleActions();
+
+	$('[data-filter-id="section-filter"]').off('click');
+
+	new ClipboardJS('.lms-ui-button-section-link', {
+		text: function(trigger) {
+			var copylink = "";
+
+			var section = $('#section-filter').val();
+			if (section && section.length) {
+				copylink += $(trigger).attr('data-clipboard-text').replace('%section%', section);
+			}
+
+			var name = $('#name-filter').val();
+			if (name && name.length) {
+				copylink += "&v="+name;
+			}
+
+			var scope = $('#type-filter').val();
+			if (scope && scope.length) {
+				copylink += "&sc="+encodeURIComponent(scope);
+			}
+
+			var user = $('#user-filter').val();
+			if (user && user.length) {
+				copylink += "&u="+encodeURIComponent(user);
+			}
+
+			var division = $('#division-filter').val();
+			if (division && division.length) {
+				copylink += "&d="+encodeURIComponent(division);
+			}
+
+			return copylink;
+		}
+	});
+
+	$('#configlist-datatable').DataTable().order.listener('span', 0);
+	$('#copy-links-configs').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t("No option has been selected!"), this);
+			return;
+		}
+	});
+
+	new ClipboardJS('#copy-links-configs', {
+		text: function(trigger) {
+			var checkedRows = $(trigger).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked');
+			var checkedClipboardText = '';
+			checkedRows.each(function() {
+				checkedClipboardText += $(this).closest('td').find('.lms-ui-button-clipboard').attr('data-clipboard-text') + '\n';
+			});
+			$(trigger).attr('data-clipboard-text', checkedClipboardText);
+			return $(trigger).attr('data-clipboard-text');
+		}
+	});
+});
 
 </script>
 {/block}

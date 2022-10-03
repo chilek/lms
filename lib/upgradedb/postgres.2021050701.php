@@ -29,8 +29,8 @@ if (!$this->ResourceExists('vcustomerassignments', LMSDB::RESOURCE_TYPE_VIEW)) {
         ALTER TABLE customerassignments ADD COLUMN enddate integer DEFAULT 0 NOT NULL;
         CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate);
         CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate);
-        ALTER TABLE customerassignments DROP CONSTRAINT customerassignments_customergroupid_key;
         ALTER TABLE customerassignments ADD CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate);
+        ALTER TABLE customerassignments DROP CONSTRAINT customerassignments_customergroupid_key;
         CREATE VIEW vcustomerassignments AS
             SELECT ca.*
             FROM customerassignments ca

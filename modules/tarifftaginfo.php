@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,11 +34,11 @@ $tarifftag = $LMS->TarifftagGet($id);
 
 $tariffs = $LMS->GetTariffWithoutTagNames($id);
 
-$tariffscount = count($tariffs);
+$tariffscount = empty($tariffs) ? 0 : count($tariffs);
 
 $layout['pagetitle'] = trans('Tag Info: $a', $tarifftag['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('tarifftag', $tarifftag);
 $SMARTY->assign('tariffs', $tariffs);

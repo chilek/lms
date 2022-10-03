@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,7 @@ $alias = $DB->GetRow('SELECT a.id, a.login, a.domainid, d.name AS domain
 		WHERE a.id = ?', array(intval($_GET['id'])));
 
 if (!$alias) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $alias['accounts'] = $DB->GetAllByKey('SELECT p.id, p.login, d.name AS domain
@@ -51,7 +51,7 @@ if (count($mailforwards)) {
 
 $layout['pagetitle'] = trans('Alias Info: $a', $alias['login'] .'@'. $alias['domain']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('alias', $alias);
 $SMARTY->display('alias/aliasinfo.html');

@@ -146,7 +146,7 @@ function multiselect(options) {
 	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
 	var maxVisible = typeof options.maxVisible !== 'undefined' ? parseInt(options.maxVisible) : 0;
 	var substMessage = typeof options.substMessage !== 'undefined' ? options.substMessage
-		: '- $a options selected -';
+		: '— $a options selected —';
 	var tooltipMessage = typeof options.tooltipMessage !== 'undefined' ? options.tooltipMessage : '';
 
 	var old_element = $('#' + elemid);
@@ -161,7 +161,10 @@ function multiselect(options) {
 	var container = $('<div class="lms-ui-multiselect-container' + (tiny ? ' tiny' : '') +
 		(bottom ? ' bottom' : '') +
 		(old_class && old_class.length ? ' ' + old_class : '') + '"' + (old_element.is('[required]') ? ' required' : '') + '/>');
-	var launcher = $('<div class="lms-ui-multiselect-launcher" title="' + old_element.attr('title') + '" tabindex="0"/>')
+	var launcher = $('<div class="lms-ui-multiselect-launcher' +
+		(old_element.is('.lms-ui-warning') ? ' lms-ui-warning' : '') +
+		(old_element.is('.lms-ui-error') ? ' lms-ui-error' : '') +
+		'" title="' + old_element.attr('title') + '" tabindex="0"/>')
 		.attr('style', old_element.attr('style')).appendTo(container);
 
 	if (tiny) {
@@ -245,7 +248,9 @@ function multiselect(options) {
 				launcher.attr('title', selected_string);
 			} else {
 				launcher.find('.lms-ui-multiselect-launcher-label').html(selected_string);
-				launcher.attr('title', '');
+				if (!launcher.is('.lms-ui-warning') && !launcher.is('.lms-ui-error')) {
+					launcher.attr('title', '');
+				}
 			}
 			if (popup.is(':visible')) {
 				setTimeout(function() {
@@ -283,7 +288,9 @@ function multiselect(options) {
 			var selected = $(this).is(':selected');
 			var disabled = $(this).is(':disabled');
 			var crossed = $(this).attr('data-crossed');
-			var class_name = 'visible' + (exclusive === '' ? ' exclusive' : '');
+			var blend = $(this).attr('data-blend');
+			var class_name = ($(this).css('display') == 'none' ? '' : 'visible') +
+				(exclusive === '' ? ' exclusive' : '');
 
 			var data = '';
 			$.each($(this).data(), function (key, value) {
@@ -294,10 +301,11 @@ function multiselect(options) {
 			});
 
 			list += '<li class="' + class_name + (selected ? ' selected' : '') +
-				(disabled ? ' blend disabled' : '') + '"' + data + '>';
+				(blend || disabled ? ' blend' : '') + (disabled ? ' disabled' : '') + '"' + data + '>';
 
 			list += '<input type="checkbox" value="' + $(this).val() + '" class="' + class_name +
-				'"' + (selected ? ' checked' : '') + (disabled ? ' disabled' : '') + '/>';
+				'"' + (selected ? ' checked' : '') +
+				(blend ? ' blend' : '') + (disabled ? ' disabled' : '') + '/>';
 
 			var text = $(this).attr('data-html-content');
 			if (!text) {
@@ -305,7 +313,8 @@ function multiselect(options) {
 			} else {
 				text = text.trim();
 			}
-			list += '<span '+ (crossed === '' ? ' class="lms-ui-crossed"' : '')+'>' + text + '</span>';
+			list += '<span class="'+ (blend === '' ? ' lms-ui-disabled' : '') +
+				(crossed === '' ? ' lms-ui-crossed' : '') + '">' + text + '</span>';
 
 			list += '</li>';
 		});
@@ -588,11 +597,11 @@ function multiselect(options) {
 	}
 
 	this.showOption = function(index) {
-		$(all_items.get(index)).show().addClass('visible');
+		$(all_items.get(index)).addClass('visible');
 	}
 
 	this.hideOption = function(index) {
-		$(all_items.get(index)).removeClass('selected').hide().removeClass('visible')
+		$(all_items.get(index)).removeClass('selected').removeClass('visible')
 			.find('input:checkbox').prop('checked', false);
 		updateCheckAll();
 	}
@@ -604,6 +613,13 @@ function multiselect(options) {
 		checkall.find('.checkall').prop('checked', checked);
 		checkAllElements();
 	}
+
+	old_element.on('lms:multiselect:toggle_check_all', function(e, data) {
+		if (data.checked) {
+			multiselect.toggleCheckAll(true);
+		}
+		multiselect.refreshSelection();
+	});
 
 	this.refreshSelection = function() {
 		new_selected = this.generateSelectedString();

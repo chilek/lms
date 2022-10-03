@@ -361,7 +361,9 @@ function writesyslog($message, $type)
             // the log to standard error, and use a user defined
             // logging mechanism
             openlog('lms-php', LOG_PID | LOG_NDELAY, LOG_AUTH);
-            syslog($type, $message.' (at '.$access.' from '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_USER_AGENT'].'))');
+            syslog($type, $message . ' (at ' . $access . ' from '
+                . (empty($_SERVER['REMOTE_ADDR']) ? 'backend' : $_SERVER['REMOTE_ADDR'])
+                . (isset($_SERVER['HTTP_USER_AGENT']) ? ' (' . $_SERVER['HTTP_USER_AGENT'] . '))' : ''));
             closelog();
             break;
         default:
@@ -474,9 +476,9 @@ function setunits($data)  // for traffic data
     return array($number, $unit);
 }
 
-function convert_to_units($value, $threshold = 5, $multiplier = 1000)
+function convert_to_units($value, $threshold = 5, $multiplier = 1000, $unit_suffix = 'bit')
 {
-    $unit_suffix = ($multiplier == 1024 ? 'ibit' : 'bit');
+    $unit_suffix = ($multiplier == 1024 ? 'i' : '') . $unit_suffix;
     $threshold = floatval($threshold);
     $multiplier = floatval($multiplier);
     if ($value < $multiplier * $multiplier * $threshold) {
@@ -600,7 +602,7 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
     );
 
     // time conversion specifiers
-    return strftime($result, $cdate);
+    return Utils::strftime($result, $cdate);
 }
 
 // our finance round
@@ -808,7 +810,7 @@ function location_str($data)
     }
 
     if ($data['street_name']) {
-        $street = $data['street_type'] .' '. $data['street_name'];
+        $street = (isset($data['street_type']) ? $data['street_type'] . ' ' : '') . $data['street_name'];
         $location .= ($location ? ',' : '') . $street;
     }
 
@@ -906,7 +908,7 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
         $html2pdf->pdf->setFontSubsetting(false);
 
         if ($id) {
-            $info = $DB->GetRow('SELECT di.name, di.description FROM divisions di
+            $info = $DB->GetRow('SELECT di.name, di.description, d.ssn FROM divisions di
 				LEFT JOIN documents d ON (d.divisionid = di.id)
 				WHERE d.id = ?', array($id));
         }
@@ -996,11 +998,6 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
             }
         }
 
-        $password = ConfigHelper::getConfig('phpui.document_password', '', true);
-        if (!empty($password)) {
-            $html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', $password, '1');
-        }
-
         // cache pdf file
         if ($md5sum) {
             $html2pdf->Output(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum . '.pdf', 'F');
@@ -1054,14 +1051,14 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
                     );
                 }
 
+                if (function_exists('mb_convert_encoding')) {
+                    $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+                } else {
+                    $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
+                }
+
                 switch ($dest) {
                     case 'D':
-                        if (function_exists('mb_convert_encoding')) {
-                            $filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
-                        } else {
-                            $filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
-                        }
-
                         header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
                         //header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
                         header('Pragma: public');
@@ -1070,7 +1067,7 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
                         // force download dialog
                         header('Content-Type: application/pdf');
                         // use the Content-Disposition header to supply a recommended filename
-                        header('Content-Disposition: attachment; filename="' . basename($name) . '"');
+                        header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
                         header('Content-Transfer-Encoding: binary');
 
                         echo $content;
@@ -1087,7 +1084,7 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
                         header('Pragma: public');
                         header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
                         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-                        header('Content-Disposition: inline; filename="' . basename($name) . '"');
+                        header('Content-Disposition: inline; filename="' . basename($filename) . '"');
 
                         echo $content;
 
@@ -1206,11 +1203,10 @@ function iban_check_account($country, $length, $account)
 
 function generate_random_string($length = 10, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 {
-    srand();
     $charactersLength = strlen($characters);
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
+        $randomString .= $characters[random_int(0, $charactersLength - 1)];
     }
     return $randomString;
 }
@@ -1379,7 +1375,11 @@ function handle_file_uploads($elemid, &$error)
             }
             unset($file);
             $$elemid = $fileupload[$elemid];
+        } else {
+            $$elemid = array();
         }
+    } else {
+        $$elemid = array();
     }
     return compact('fileupload', 'tmppath', $elemid);
 }
@@ -1457,6 +1457,36 @@ function geocode($location)
         'status' => $status,
         'error' => isset($page['error_message']) ? $page['error_message'] : '',
         'accuracy' => $accuracy,
+        'latitude' => $latitude,
+        'longitude' => $longitude,
+        'raw-result' => $page,
+    );
+}
+
+function osm_geocode($params)
+{
+    $address = array();
+    foreach ($params as $name => $value) {
+        $address[] = $name . '=' . urlencode($value);
+    }
+    $link = "https://nominatim.openstreetmap.org/search?" . implode('&', $address) . '&format=json&limit=1';
+
+    $context = stream_context_create(array(
+        'http' => array(
+            'header' => array(
+                'User-Agent: PHP/' . PHP_VERSION,
+            ),
+        ),
+    ));
+
+    if (($res = @file_get_contents($link, false, $context)) === false) {
+        return null;
+    }
+
+    $page = json_decode($res, true);
+    $latitude = str_replace(',', '.', $page[0]['lat']);
+    $longitude = str_replace(',', '.', $page[0]['lon']);
+    return array(
         'latitude' => $latitude,
         'longitude' => $longitude,
         'raw-result' => $page,

@@ -2,15 +2,15 @@
 <TR class="highlight event-single{if $event.closed} blend{/if}{if $event.wholeday} event-whole-day{/if}{if $event.multiday} event-multi-day{/if}"
     data-event-id="{$event.id}"
     data-popup-menu-title="{t a=$event.id|string_format:"#%06d"}Event $a{/t}">
-	<td style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold {if !$event.closed || ($event.closed && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))) || ConfigHelper::checkPrivilege('superuser')}event-single-sortable-handler{/if}">
-        {$_EVENTTYPES[$event.type]}
-            {if $_EVENTTYPES[$event.type]}
+	<td style="min-width: 90px; {if isset($_EVENTTYPES[$event.type])} {$_EVENTTYPES[$event.type].style}{/if}" class="text-center bold {if !$event.closed || ($event.closed && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('timetable.allow_modify_closed_events_newer_than', ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)))) || ConfigHelper::checkPrivilege('superuser')}event-single-sortable-handler{/if}">
+        {$_EVENTTYPES[$event.type].label}
+        {if isset($_EVENTTYPES[$event.type])}
             <br>
         {/if}
         {if $event.ticketid}
             {hint mode="toggle" url="?m=rtticketinfo&id={$event.ticketid}" icon="info"
-                class="event-info-short-button fa-xs" style="{if isset($_EVENTSTYLES[$event.type])}{$_EVENTSTYLES[$event.type]}{/if}"}
-            <a href="?m=rtticketview&id={$event.ticketid}" style="{if isset($_EVENTSTYLES[$event.type])}{$_EVENTSTYLES[$event.type]}{/if}">
+                class="event-info-short-button fa-xs" style="{if isset($_EVENTTYPES[$event.type])}{$_EVENTTYPES[$event.type].style}{/if}"}
+            <a href="?m=rtticketview&id={$event.ticketid}" style="{if isset($_EVENTTYPES[$event.type])}{$_EVENTTYPES[$event.type].style}{/if}">
                 #{$event.ticketid}
             </a>
         {/if}
@@ -19,17 +19,17 @@
         {if $event.endtime == 86400}
             {trans("whole day")}
         {else}
-            {($event.date + $event.begintime)|date_format:"%H:%M"}
+            {($event.date + $event.begintime)|date_format:"H:i"}
             {if $event.begintime != $event.endtime}
-                - {($event.date + $event.endtime)|date_format:"%H:%M"}
+                - {($event.date + $event.endtime)|date_format:"H:i"}
             {/if}
             {if $event.multiday}<br>{trans("multi day")}{/if}
         {/if}
         {if $overdue == 1}
-            <br>{$event.date|date_format:"%x"}
+            <br>{$event.date|date_format:"Y-m-d"}
         {/if}
         {$imadded=0}
-        {$user_row_limit = intval(ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4))}
+        {$user_row_limit = intval(ConfigHelper::getConfig('timetable.row_user_limit', ConfigHelper::getConfig('phpui.timetable_user_row_limit', 4)))}
         {if !empty($event.userlist)}
             {if !$user_row_limit || count($event.userlist) <= $user_row_limit}
                 {foreach $event.userlist as $user}
@@ -56,27 +56,33 @@
                 {$event.title|escape}
             </span>
         </a>
-        {if !ConfigHelper::checkConfig('phpui.timetable_hide_description')}{if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}{/if}
+        {if !ConfigHelper::checkConfig('timetable.hide_description', ConfigHelper::checkConfig('phpui.timetable_hide_description'))}
+            {if $event.description != ''}<br>{icon name="description"} {$event.description}{/if}
+        {/if}
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br>{icon name="note"} {$event.note|escape}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
         {if $event.netnode_name}
-        {icon name="netnode"} <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-            {if !empty($event.netnode_location)}<br>{icon name="location"} {$event.netnode_location}{/if}
+            {button type='link' icon='netnode' href="?m=netnodeinfo&id={$event.netnodeid}" label=$event.netnode_name}
+            {if !empty($event.netnode_location)}<br>{icon name="location" label=$event.netnode_location}{/if}
         {else}
-        {if $event.customername}
-            {hint mode="toggle" icon="customer" class="lms-ui-ignore-target-url"
-                url="?m=customerinfoshort&id={$event.customerid}"}
-            <a href="?m=customerinfo&id={$event.customerid}">{$event.customername|truncate:"30":"&hellip;":true}</a>
-            <br>
-        {if !empty($event.address_id)}
-            {icon name="location"} {$event.location|escape}
-        {elseif !empty($event.nodeid)}
-            <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation|escape}</a>
-        {else}
-            {icon name="location"} {$event.customerlocation|escape}
+            {if $event.customername}
+                {hint mode="toggle" icon="customer" class="lms-ui-ignore-target-url"
+                    url="?m=customerinfoshort&id={$event.customerid}"}
+                <a href="?m=customerinfo&id={$event.customerid}">{$event.customername|trunescape:"30"}</a>
+                <br>
+                {if !empty($event.address_id)}
+                    {icon name="location" label=$event.location}
+                {elseif !empty($event.nodeid)}
+                    {button type="link" href="?m=nodeinfo&id={$event.nodeid}" label=$event.nodelocation}
+                {else}
+                    {icon name="location" label=$event.customerlocation}
+                {/if}
+            {/if}
         {/if}
-        {/if}
+        {if $event.netdev_name}
+            {if $event.netnodeid}<br>{/if}
+            {button type='link' icon='netdevice' label=$event.netdev_name href="?m=netdevinfo&id={$event.netdevid}"}
         {/if}
     </TD>
     <TD class="text-right nobr">
@@ -85,7 +91,7 @@
                 {if !isset($eventlist_mode)}
                     <a href="#" class="lms-ui-button" title="{trans("Show in timetable")}"
                        data-title="{trans("Show in timetable")}"
-                       onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
+                       onclick="location.href = '?m=eventlist&year={date('Y', $event.date)}&month={date('m', $event.date)}&day={date('d', $event.date)}';">
                         {icon name="timetable"}
                     </a>
                 {/if}
@@ -97,7 +103,7 @@
                 {if ConfigHelper::checkPrivilege('timetable_management')}
                     {button type="link" icon="clone" href="?m=eventadd&id={$event.id}" tip="Clone"}
                     {if ($event.closed)}
-                        {$allow_modify = intval(ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800))}
+                        {$allow_modify = intval(ConfigHelper::getConfig('timetable.allow_modify_closed_events_newer_than', ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)))}
                         {if !$allow_modify || ($smarty.now - $event.closeddate < $allow_modify) || ConfigHelper::checkPrivilege('superuser')}
                             {button type="link" icon="open" href="?m=eventedit&id={$event.id}&action=open{if isset($backid)}&backid={$backid}{/if}" tip="Open"}
                         {/if}

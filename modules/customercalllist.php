@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,7 +34,7 @@ if (isset($_GET['reset'])) {
     $SESSION->redirect('?m=customercalllist');
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (isset($_GET['page'])) {
     $page = intval($_GET['page']);
@@ -124,6 +124,8 @@ if (isset($_POST['phone'])) {
     $phone = intval($_GET['p']);
 } elseif ($SESSION->is_set('customer_call_list_phone')) {
     $SESSION->restore('customer_call_list_phone', $phone);
+} else {
+    $phone = null;
 }
 
 if (isset($_POST['datefrom'])) {
@@ -132,6 +134,8 @@ if (isset($_POST['datefrom'])) {
     $datefrom = intval($_GET['df']);
 } elseif ($SESSION->is_set('customer_call_list_datefrom')) {
     $SESSION->restore('customer_call_list_datefrom', $datefrom);
+} else {
+    $datefrom = 0;
 }
 
 if (isset($_POST['dateto'])) {
@@ -140,6 +144,8 @@ if (isset($_POST['dateto'])) {
     $dateto = intval($_GET['dt']);
 } elseif ($SESSION->is_set('customer_call_list_dateto')) {
     $SESSION->restore('customer_call_list_dateto', $dateto);
+} else {
+    $dateto = 0;
 }
 
 if ($cid && !$LMS->CustomerExists($cid)) {
@@ -237,5 +243,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 $SMARTY->assign('pagination', $pagination);
+
+$layout['pagetitle'] = trans('Customer Phone Calls');
 
 $SMARTY->display('customer/customercalllist.html');

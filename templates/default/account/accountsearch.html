@@ -36,7 +36,7 @@
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[type]" {tip text="Select account type"}>
-				<OPTION VALUE="0">{trans("- all types -")}</OPTION>
+				<OPTION VALUE="0">{trans("— all types —")}</OPTION>
 				{foreach $_ACCOUNTTYPES as $typeidx => $type}
 				<OPTION VALUE="{$typeidx}">{$type.label}</OPTION>
 				{/foreach}
@@ -49,7 +49,7 @@
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
-    				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
+    				<OPTION VALUE="">{trans("— all owners —")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
 				{foreach from=$customerlist item=item}
 				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:"&hellip;":true} ({$item.id|string_format:"%04d"})</OPTION>
@@ -79,7 +79,7 @@
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT size="1" name="search[kind]">
-                        	<OPTION value="0">{trans("- all -")}</OPTION>
+                        	<OPTION value="0">{trans("— all —")}</OPTION>
 			        <OPTION value="1">{trans("expired")}</OPTION>
 				<OPTION value="2">{trans("active")}</OPTION>
 			</SELECT>
@@ -134,7 +134,7 @@ $(function() {
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
-    				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
+    				<OPTION VALUE="">{trans("— all owners —")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM DOMAIN")}</OPTION>
 				{foreach from=$customerlist item=item}
 				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:"&hellip;":true} ({$item.id|string_format:"%04d"})</OPTION>
@@ -184,7 +184,7 @@ $(function() {
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[ownerid]" {tip text="Select owner"}>
-    				<OPTION VALUE="">{trans("- all owners -")}</OPTION>
+    				<OPTION VALUE="">{trans("— all owners —")}</OPTION>
 				<OPTION VALUE="0">{trans("SYSTEM ACCOUNT")}</OPTION>
 				{foreach from=$customerlist item=item}
 				<OPTION VALUE="{$item.id}">{$item.customername|truncate:40:"&hellip;":true} ({$item.id|string_format:"%04d"})</OPTION>

@@ -104,7 +104,7 @@ $where = array();
 if (!empty($type)) {
     $where[] = '(s.type & ' . intval($type) . ') > 0';
 }
-$where[] = 's.start > ' . $datefrom . ' AND s.stop < ' . $dateto;
+$where[] = 's.start > ' . $datefrom . ' AND s.start <= ' . $dateto . ' AND s.stop < ' . $dateto;
 
 if (!empty($filtertype)) {
     switch ($filtertype) {
@@ -170,8 +170,8 @@ $SMARTY->assign('page', $page);
 
 $SMARTY->assign('filtertype', $filtertype);
 $SMARTY->assign('filtervalue', $filtervalue);
-$SMARTY->assign('datefrom', $datefrom ? strftime('%Y/%m/%d %H:%M', $datefrom) : '');
-$SMARTY->assign('dateto', $dateto ? strftime('%Y/%m/%d %H:%M', $dateto) : '');
+$SMARTY->assign('datefrom', $datefrom ? date('Y/m/d H:i', $datefrom) : '');
+$SMARTY->assign('dateto', $dateto ? date('Y/m/d H:i', $dateto) : '');
 $SMARTY->assign('type', $type);
 
 $SMARTY->assign('nodesessions', $nodesessions);

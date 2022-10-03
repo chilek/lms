@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'C:' => 'config-file:',
@@ -170,10 +170,10 @@ if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
-$month = intval(strftime("%m", time()));
-$year = strftime("%Y", time());
-$yearday = strftime("01/%m", time());
-$mday = strftime("%s", mktime(0, 0, 0, $month, 1, $year));
+$month = intval(date('m'));
+$year = date('Y');
+$yearday = date('01/m');
+$mday = mktime(0, 0, 0, $month, 1, $year);
 
 /* ********************************************************************
    We should have all hard work here which is being done by our script!
@@ -247,30 +247,35 @@ function send_email($msgid, $cid, $rmail, $rname, $subject, $body)
     }
     return($result);
 }
+
 function send_sms($msgid, $cid, $phone, $data)
 {
-        global $LMS, $DB;
-        $DB->Execute(
-            "INSERT INTO messageitems
-                (messageid, customerid, destination, status)
-                VALUES (?, ?, ?, ?)",
-            array($msgid, $cid, $phone, 1)
-        );
+    global $LMS, $DB;
 
-        $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
-        $query = "UPDATE messageitems
-                SET status = ?, lastdate = ?NOW?, error = ?
-                WHERE messageid = ? AND customerid = ?";
+    $DB->Execute(
+        "INSERT INTO messageitems
+            (messageid, customerid, destination, status)
+            VALUES (?, ?, ?, ?)",
+        array($msgid, $cid, $phone, 1)
+    );
 
-    if (preg_match("/[^0-9]/", $result)) {
-            $DB->Execute($query, array(3, $result, $msgid, $cid));
-    } elseif ($result == 2) { // MSG_SENT
-            $DB->Execute($query, array($result, null, $msgid, $cid));
-    }
-    return($result);
+    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
+
+    $DB->Execute(
+        "UPDATE messageitems
+        SET status = ?, externalmsgid = ?, lastdate = ?NOW?, error = ?
+        WHERE messageid = ? AND customerid = ?",
+        array(
+            $result['status'],
+            empty($result['id']) ? null : $result['id'],
+            empty($result['errors']) ? null : implode(', ', $result['errors']),
+            $msgid,
+            $cid,
+        )
+    );
+
+    return $result;
 }
-
-
 
 function send_message($mode, $id, $message, $msgid, $oplata = 0)
 {

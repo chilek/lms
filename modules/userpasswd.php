@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -57,7 +57,7 @@ if ($LMS->UserExists($id)) {
 
         if (!$error) {
             $LMS->SetUserPassword($id, $passwd['passwd'], $net);
-            header('Location: ?'. $SESSION->get('backto'));
+            $SESSION->redirect_to_history_entry();
         }
     }
 

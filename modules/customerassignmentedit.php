@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,19 +25,42 @@
  */
 
 // get customer name and check privileges using customerview
-$customer = $DB->GetRow('SELECT a.customerid AS id, c.divisionid, '
-    .$DB->Concat('c.lastname', "' '", 'c.name').' AS name
-    FROM assignments a
-    JOIN customerview c ON (c.id = a.customerid)
-    WHERE a.id = ?', array($_GET['id']));
-
-if (!$customer) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+$aids = isset($_POST['customerassignments']) ? $_POST['customerassignments'] : array($_GET['id']);
+$aids = Utils::filterIntegers($aids);
+if (empty($aids)) {
+    $SESSION->redirect_to_history_entry();
 }
 
-if ($_GET['action'] == 'suspend') {
-    $LMS->SuspendAssignment($_GET['id'], $_GET['suspend']);
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+if (count($aids) == 1) {
+    $aid = reset($aids);
+    $customer = $DB->GetRow(
+        'SELECT a.customerid AS id, c.divisionid, '
+        . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS name
+        FROM assignments a
+        JOIN customerview c ON (c.id = a.customerid)
+        WHERE a.id = ?',
+        array($aid)
+    );
+    if (!$customer) {
+        $SESSION->redirect_to_history_entry();
+    }
+} else {
+    if ($DB->GetOne(
+        'SELECT COUNT(a.id)
+        FROM assignments a
+        JOIN customerview c ON c.id = a.customerid
+        WHERE a.id IN ?',
+        array($aids)
+    ) != count($aids)) {
+        $SESSION->redirect_to_history_entry();
+    }
+}
+
+if (isset($_GET['action']) && $_GET['action'] == 'suspend') {
+    foreach ($aids as $aid) {
+        $LMS->toggleAssignmentSuspension($aid);
+    }
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_POST['assignment'])) {
@@ -64,7 +87,7 @@ if (isset($_POST['assignment'])) {
             $at = sprintf('%d', $a['at']);
 
             if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0) {
-                $at = strftime('%u', time());
+                $at = date('N', time());
             }
 
             if ($at < 1 || $at > 7) {
@@ -171,7 +194,7 @@ if (isset($_POST['assignment'])) {
                 list($y, $m, $d) = explode('/', $a['at']);
                 if (checkdate($m, $d, $y)) {
                     $at = mktime(0, 0, 0, $m, $d, $y);
-                    if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
+                    if (empty($a['atwarning']) && $at < mktime(0, 0, 0)) {
                         $a['atwarning'] = true;
                         $error['at'] = trans('Incorrect date!');
                     }
@@ -191,6 +214,19 @@ if (isset($_POST['assignment'])) {
             $count = floatval($a['count']);
         } else {
             $error['count'] = trans('Incorrect count format! Numeric value required!');
+        }
+    }
+
+    if (isset($a['paytime'])) {
+        if (empty($a['paytime'])) {
+            $paytime = 0;
+        } elseif (preg_match('/^[\-]?[0-9]+$/', $a['paytime'])) {
+            $paytime = intval($a['paytime']);
+            if ($paytime == -1) {
+                $paytime = null;
+            }
+        } else {
+            $error['paytime'] = trans('Invalid deadline format!');
         }
     }
 
@@ -232,13 +268,13 @@ if (isset($_POST['assignment'])) {
         if ($a['name'] == '') {
             $error['name'] = trans('Liability name is required!');
         }
-        if (!$a['value'] && !$a['netflag']) {
+        if (!$a['value'] && empty($a['netflag'])) {
             $error['value'] = trans('Liability value is required!');
-        } elseif (!$a['netvalue'] && $a['netflag']) {
+        } elseif (!$a['netvalue'] && !empty($a['netflag'])) {
             $error['netvalue'] = trans('Liability value is required!');
-        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && !$a['netflag']) {
+        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && empty($a['netflag'])) {
             $error['value'] = trans('Incorrect value!');
-        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && $a['netflag']) {
+        } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && !empty($a['netflag'])) {
             $error['netvalue'] = trans('Incorrect value!');
         } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
             $error['value'] = trans('Value less than discount are not allowed!');
@@ -389,6 +425,7 @@ if (isset($_POST['assignment'])) {
             'vdiscount' => str_replace(',', '.', $a['vdiscount']),
             SYSLOG::RES_LIAB => $a['liabilityid'],
             SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : null,
+            'paytime' => isset($paytime) ? $paytime : null,
             'paytype' => !empty($a['paytype']) ? $a['paytype'] : null,
             'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : null,
             SYSLOG::RES_ASSIGN => $a['id']
@@ -397,7 +434,7 @@ if (isset($_POST['assignment'])) {
         $DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?,
             backwardperiod=?, at=?, count=?,
 			invoice=?, separatedocument=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
-			liabilityid=?, numberplanid=?, paytype=?, recipient_address_id=?
+			liabilityid=?, numberplanid=?, paytime = ?, paytype=?, recipient_address_id=?
 			WHERE id=?', array_values($args));
         if ($SYSLOG) {
             $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -456,7 +493,7 @@ if (isset($_POST['assignment'])) {
 
         $DB->CommitTrans();
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     $a['alltariffs'] = isset($a['alltariffs']);
@@ -465,7 +502,7 @@ if (isset($_POST['assignment'])) {
 } else {
     $a = $DB->GetRow(
         'SELECT a.id AS id, a.customerid, a.tariffid, a.period, a.backwardperiod,
-        a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
+        a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytime, a.paytype,
         a.invoice, a.separatedocument,
         liabilities.type,
         (CASE WHEN liabilityid IS NULL
@@ -498,7 +535,6 @@ if (isset($_POST['assignment'])) {
 
     $a['pdiscount'] = floatval($a['pdiscount']);
     $a['vdiscount'] = floatval($a['vdiscount']);
-    $a['attribute'] = $a['attribute'];
     if (!empty($a['pdiscount'])) {
         $a['discount'] = $a['pdiscount'];
         $a['discount_type'] = DISCOUNT_PERCENTAGE;
@@ -508,10 +544,8 @@ if (isset($_POST['assignment'])) {
     }
 
     switch ($a['period']) {
-        case QUARTERLY:
-            $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
-            break;
         case HALFYEARLY:
+        case QUARTERLY:
             $a['at'] = sprintf('%02d/%02d', $a['at']%100, $a['at']/100+1);
             break;
         case YEARLY:
@@ -537,7 +571,7 @@ if (isset($_POST['assignment'])) {
     $a['phones'] = $DB->GetCol('SELECT number_id FROM voip_number_assignments WHERE assignment_id=?', array($a['id']));
 
     if (empty($a['currency'])) {
-        $a['currency'] = $_default_currency;
+        $a['currency'] = Localisation::getDefaultCurrency();
     }
 
     if (empty($a['pdiscount']) && empty($a['vdiscount'])) {
@@ -548,7 +582,7 @@ if (isset($_POST['assignment'])) {
 
 $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $LMS->executeHook(
     'customerassignmentedit_before_display',
@@ -575,10 +609,15 @@ $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
-$defaultTaxId = $defaultTaxId[0]['id'];
+$defaultTaxIds = $LMS->GetTaxes(null, null, true);
+if (is_array($defaultTaxIds)) {
+    $defaultTaxId = reset($defaultTaxIds);
+    $defaultTaxId = $defaultTaxId['id'];
+} else {
+    $defaultTaxId = 0;
+}
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
-if (is_array($a['nodes'])) {
+if (!empty($a['nodes']) && is_array($a['nodes'])) {
     $a['nodes'] = array_flip($a['nodes']);
 }
 $SMARTY->assign('assignment', $a);

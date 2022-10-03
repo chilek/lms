@@ -142,7 +142,7 @@ class AccessRights
             } else {
                 foreach ($menuperms['allow_menu_items'] as $menukey => $menuitem) {
                     if (is_int($menuitem)) {
-                        if ($menuitem == Permission::MENU_ALL) {
+                        if ($menuitem == Permission::MENU_ALL && isset($all_menus[$menukey])) {
                             $menuperms['allow_menu_items'][$menukey] = $all_menus[$menukey];
                         }
                     }

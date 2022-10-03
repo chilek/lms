@@ -3,6 +3,8 @@
 |
 {trans("Date")}
 |
+{trans("Source")}
+|
 {trans("Liability")}
 |
 {trans("Income")}
@@ -11,6 +13,8 @@
 |
 {trans("After")}
 |
+{trans("Customer ID")}
+|
 {trans("Customer")}
 |
 {trans("Description")}
@@ -18,7 +22,9 @@
 {foreach $balancelist as $item}{strip}
 {counter}
 |
-{$item.time|date_format:"%d.%m.%Y"}
+{$item.time|date_format:"d.m.Y"}
+|
+{$item.sourcename}
 |
 {if $item.covenant}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
 |
@@ -27,6 +33,8 @@
 {if !$item.covenant && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}
 |
 {if $item.covenant}-{else}{moneyf($item.after)}{/if}
+|
+{$item.customerid}
 |
 {$item.customername|truncate:25:"..."}
 |

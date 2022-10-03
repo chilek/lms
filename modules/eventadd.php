@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,8 +29,8 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
-$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
+$allow_empty_categories = ConfigHelper::checkConfig('rt.allow_empty_categories', ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories'));
+$empty_category_warning = ConfigHelper::checkConfig('rt.empty_category_warning', ConfigHelper::checkConfig('phpui.helpdesk_empty_category_warning', true));
 
 if (isset($_GET['ticketid']) && !empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
@@ -41,14 +41,29 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 }
 
 $userlist = $LMS->GetUserNames();
+$SMARTY->assign('netnodelist', $LMS->GetNetNodes());
 
-if ($SESSION->is_set('backto', true)) {
-    $backto = $SESSION->get('backto', true);
-} elseif ($SESSION->is_set('backto')) {
-    $backto = $SESSION->get('backto');
-} else {
-    $backto = 'm=eventlist';
+if (!empty($_GET['netnodeid'])) {
+    $netnodeid = intval($_GET['netnodeid']);
+    if (!empty($netnodeid)) {
+        $SMARTY->assign('netnodeid', $netnodeid);
+        $search['netnode'] = $netnodeid;
+        $search['short'] = true;
+    }
 }
+
+$netdevlist = $LMS->GetNetDevList('name,asc', $search);
+unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
+$SMARTY->assign('netdevlist', $netdevlist);
+
+if (!empty($_GET['netdevid'])) {
+    $netdevid = intval($_GET['netdevid']);
+    if (!empty($netdevid)) {
+        $SMARTY->assign('netdevid', intval($_GET['netdevid']));
+    }
+}
+
+$backto = $SESSION->get_history_entry('m=eventlist');
 if (preg_match('/m=rtticketview/', $backto)) {
     $backid = '';
 } else {
@@ -91,9 +106,24 @@ if (isset($_POST['event'])) {
         }
 
         if (!empty($date)) {
-            $allow_past_events = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.timetable_allow_past_events', 'true'));
+            $allow_past_events = ConfigHelper::checkConfig('timetable.allow_past_events', ConfigHelper::checkConfig('phpui.timetable_allow_past_events', true));
             if (!$allow_past_events && $date + $begintime < time()) {
                 $error['begin'] = trans('Events which begin in the past are not allowed!');
+            }
+
+            $distant_event_day_trigger = intval(ConfigHelper::getConfig('timetable.distant_event_day_trigger', ConfigHelper::getConfig('phpui.timetable_distant_event_day_trigger', 0, true), true));
+            $distant_event_restriction = ConfigHelper::getConfig('timetable.distant_event_restriction', ConfigHelper::getConfig('phpui.timetable_distant_event_restriction', 'none'));
+            if ($distant_event_restriction != 'none' && $distant_event_day_trigger && $date >= time() + $distant_event_day_trigger * 86400) {
+                switch ($distant_event_restriction) {
+                    case 'error':
+                        $error['begin'] = trans('Event too distant in time!');
+                        break;
+                    case 'warning':
+                        if (!isset($warnings['event-begin-'])) {
+                            $warning['event[begin]'] = trans('Event too distant in time!');
+                        }
+                        break;
+                }
             }
         }
     }
@@ -128,13 +158,13 @@ if (isset($_POST['event'])) {
         $error['end'] = trans('End time must not precede start time!');
     }
 
-    if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
+    if (ConfigHelper::checkConfig('timetable.event_overlap_warning', ConfigHelper::checkConfig('phpui.event_overlap_warning'))
         && !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
             'date' => $date,
             'begintime' => $begintime,
             'enddate' => $enddate,
             'endtime' => $endtime,
-            'users' => $event['userlist'],
+            'users' => isset($event['userlist']) ? $event['userlist'] : array(),
         )))) {
         $users_by_id = Utils::array_column($userlist, 'rname', 'id');
         $users = array_map(function ($userid) use ($users_by_id) {
@@ -148,7 +178,7 @@ if (isset($_POST['event'])) {
         $event['overlapwarned'] = 1;
     }
 
-    if (!isset($event['customerid'])) {
+    if (!isset($event['customerid']) && isset($event['custid'])) {
         $event['customerid'] = $event['custid'];
     }
 
@@ -206,7 +236,7 @@ if (isset($_POST['event'])) {
     $ticket = $hook_data['ticket'];
     $error = $hook_data['error'];
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
         $event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
@@ -241,10 +271,13 @@ if (isset($_POST['event'])) {
 
                 $event['ticketid'] = $LMS->TicketAdd($ticket);
 
-                if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
+                if (ConfigHelper::checkConfig(
+                    'rt.new_ticket_notify',
+                    ConfigHelper::checkConfig('phpui.newticket_notify', true)
+                )) {
                     $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
-                    $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+                    $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
                     if (!empty($helpdesk_sender_name)) {
                         $mailfname = $helpdesk_sender_name;
 
@@ -258,7 +291,7 @@ if (isset($_POST['event'])) {
                         $mailfname = '';
                     }
 
-                    $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
+                    $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
 
                     $ticketdata = $LMS->GetTicketContents($event['ticketid']);
 
@@ -271,27 +304,52 @@ if (isset($_POST['event'])) {
                     if ($ticket['customerid']) {
                         $info = $LMS->GetCustomer($ticket['customerid'], true);
 
-                        $emails = array_map(function ($contact) {
-                            return $contact['fullname'];
-                        }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
-                        $phones = array_map(function ($contact) {
-                            return $contact['fullname'];
-                        }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                        $emails = array_map(
+                            function ($contact) {
+                                return $contact['fullname'];
+                            },
+                            array_filter(
+                                $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL),
+                                function ($contact) {
+                                    return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                                }
+                            )
+                        );
+                        $phones = array_map(
+                            function ($contact) {
+                                return $contact['fullname'];
+                            },
+                            array_filter(
+                                $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                                function ($contact) {
+                                    return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                                }
+                            )
+                        );
 
-                        if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                        if (ConfigHelper::checkConfig(
+                            'rt.notification_customerinfo',
+                            ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
+                        )) {
                             $params = array(
-                                'id' => $id,
+                                'id' => $event['ticketid'],
                                 'customerid' => $ticket['customerid'],
                                 'customer' => $info,
                                 'emails' => $emails,
                                 'phones' => $phones,
                             );
                             $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-                                ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'),
+                                ConfigHelper::getConfig(
+                                    'rt.notification_mail_body_customerinfo_format',
+                                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')
+                                ),
                                 $params
                             );
                             $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-                                ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'),
+                                ConfigHelper::getConfig(
+                                    'rt.notification_sms_body_customerinfo_format',
+                                    ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')
+                                ),
                                 $params
                             );
                         }
@@ -329,7 +387,12 @@ if (isset($_POST['event'])) {
                                 $LMS->SendMail($email, $custmail_headers, $custmail_body);
                             }
                         }
-                    } elseif (!empty($requestor) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                    } elseif (!empty($requestor)
+                        && ConfigHelper::checkConfig(
+                            'rt.notification_customerinfo',
+                            ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
+                        )
+                    ) {
                         $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
                         $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;
                     }
@@ -340,15 +403,15 @@ if (isset($_POST['event'])) {
                         'customerid' => $ticket['customerid'],
                         'status' => $ticketdata['status'],
                         'categories' => $ticketdata['categorynames'],
-                        'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                        'priority' => isset($ticketdata['priority']) && is_numeric($ticketdata['priority']) ? $RT_PRIORITIES[$ticketdata['priority']] : trans('undefined'),
                         'subject' => $ticket['subject'],
                         'body' => $ticket['body'],
                     );
-                    $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+                    $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
                     $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
-                    $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+                    $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
                     $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
-                    $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
+                    $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
                     $LMS->NotifyUsers(array(
                         'queue' => $ticket['queue'],
@@ -406,6 +469,9 @@ if (isset($_POST['event'])) {
     if (isset($_GET['id']) && intval($_GET['id'])) {
         // new event initialization during existing event clone
         $event = $LMS->GetEvent($_GET['id']);
+        if (!empty($event['userlist'])) {
+            $event['userlist'] = array_keys($event['userlist']);
+        }
         if (!empty($event['ticketid'])) {
             $event['helpdesk'] = 'assign';
             $eventticketid = $event['ticketid'];
@@ -432,29 +498,23 @@ if (isset($_POST['event'])) {
     $SMARTY->assign('backurl', $backurl);
 }
 
-$netnodelist = $LMS->GetNetNodeList(array(), 'name');
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
-
 if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
     $search = array('netnode' => $ticket['netnodeid']);
 } else {
     $search = array();
 }
-$netdevlist = $LMS->GetNetDevList('name', $search);
-unset($netdevlist['total']);
-unset($netdevlist['order']);
-unset($netdevlist['direction']);
 
 $invprojectlist = $LMS->GetProjects('name', array());
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+if (empty($categories)) {
+    $categories = array();
+}
 $queuelist = $LMS->GetQueueList(array('stats' => false));
 
 $queue = null;
 if (isset($_POST['event'])) {
-    $queue = $ticket['queue'];
+    $queue = isset($ticket['queue']) ? $ticket['queue'] : null;
     foreach ($categories as &$category) {
         $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
     }
@@ -474,7 +534,7 @@ if (isset($_POST['event'])) {
 
     if (!empty($queuelist)) {
         $queue = ConfigHelper::getConfig('rt.default_queue');
-        if (preg_match('/^[0-9]+$/', $queue)) {
+        if (!empty($queue) && preg_match('/^[0-9]+$/', $queue)) {
             if (!$LMS->QueueExists($queue)) {
                 $queue = 0;
             }
@@ -516,7 +576,7 @@ if (isset($eventticketid)) {
     $event['ticketid'] = $eventticketid;
     $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
-    $event['customername'] = $event['ticket']['customername'];
+    $event['customername'] = isset($event['ticket']['customername']) ? $event['ticket']['customername'] : '';
     if (ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event')) {
         $event['title'] = $event['ticket']['name'];
         $message = $LMS->GetFirstMessage($event['ticketid']);
@@ -546,10 +606,6 @@ if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
 
 $layout['pagetitle'] = trans('New Event');
 
-if (!isset($_GET['ticketid'])) {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-}
-
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 
 if (!isset($event['usergroup'])) {
@@ -561,14 +617,12 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 }
 
-$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
+$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size')));
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
-$SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->display('event/eventmodify.html');

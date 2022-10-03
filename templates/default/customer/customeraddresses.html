@@ -1,8 +1,8 @@
 {if !isset($class)}
     {$class = ""}
 {/if}
-<select id="{$id}" name="{$name}" {tip trigger=$trigger} class="{$class}">
-    <option value="-1">---</option>
+<select id="{$id}" name="{$name}" {tip trigger=$trigger class="lms-ui-customer-address-select {$class}"}>
+    <option value="-1">—</option>
     {if isset($addresses) && !empty($addresses)}
         {foreach $addresses as $address_id => $address}
             {if $address.location_address_type == $smarty.const.POSTAL_ADDRESS}
@@ -21,7 +21,7 @@
             <option value="{$address_id}" data-territ="{if empty($address.teryt)}0{else}1{/if}" data-icon="{$icon}"
                     {if (isset($selected_address_id) && $selected_address_id == $address_id)
                         || (!isset($selected_address_id) && (!isset($preselection) || $preselection) && isset($address.default_address))} selected{/if}
-                >{$address.location|escape}</option>
+            >{$address.location|escape}</option>
         {/foreach}
     {/if}
 </select>

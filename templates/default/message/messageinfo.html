@@ -60,7 +60,7 @@
 			{trans("Creation date:")}
 		</TD>
 		<TD>
-			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$message.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 	</TR>
 {if $message.sender}
@@ -148,7 +148,12 @@
 			<A href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction == "asc" && $listdata.order == "destination"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order == "destination"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")} ({trans("Error message")})</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<a href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">
+				{trans("Status")} ({trans("Description")})
+			</a>
+			{if $listdata.order == "status"}
+				<img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{trans("Last read on:")}
@@ -166,14 +171,14 @@
 			<span class="bold">{trans("Filter:")}</span>
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 			<SELECT size="1" name="cat">
-				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter category —")}</OPTION>
 				<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
 				<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
 				<OPTION value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
 			</SELECT>&nbsp;
 			{trans("Status:")}
 			<SELECT size="1" name="status">
-				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</OPTION>
+				<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("— all statuses —")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
 			{*
 				<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
@@ -181,6 +186,8 @@
 				<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} SELECTED{/if}>{trans("delivered<!plural>")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_CANCELLED}"{if $listdata.status == $smarty.const.MSG_CANCELLED} selected{/if}>{trans("cancelled<!plural>")}</OPTION>
+				<OPTION value="{$smarty.const.MSG_BOUNCED}"{if $listdata.status == $smarty.const.MSG_BOUNCED} selected{/if}>{trans("bounced<!plural>")}</OPTION>
 			</SELECT>
 			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
@@ -197,7 +204,21 @@
     <TBODY>
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
-	<TR class="{if $item.body}showitem{/if} {if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-itemid="{$item.id}">
+	<TR class="highlight{if $item.body} showitem{/if} {strip}
+			{if $item.status == $smarty.const.MSG_ERROR}
+				lms-ui-message-error
+			{elseif $item.status == $smarty.const.MSG_SENT}
+				lms-ui-message-sent
+			{elseif $item.status == $smarty.const.MSG_DELIVERED}
+				lms-ui-message-delivered
+			{elseif $item.status == $smarty.const.MSG_CANCELLED}
+				lms-ui-message-cancelled
+			{elseif $item.status == $smarty.const.MSG_BOUNCED}
+				lms-ui-message-bounced
+			{else}
+				lms-ui-message-new
+			{/if}
+		{/strip}" data-itemid="{$item.id}">
 		<TD class="nobr valign-top">
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"&hellip;":true} ({$item.customerid|string_format:"%04d"})</A>
@@ -222,19 +243,25 @@
 		<TD class="text-right valign-top">
 			{if $item.status == $smarty.const.MSG_SENT}
 				{trans("sent")}
+				{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_ERROR}
-				{trans("errornous")}{if $item.error} ({$item.error|escape}){/if}
+				{trans("errornous")}
+				{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_DELIVERED}
-				{trans("delivered")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
+				{trans("delivered")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+			{elseif $item.status == $smarty.const.MSG_CANCELLED}
+				{trans("cancelled")} ({$item.lastdate|date_format:"Y-m-d H:i"})
+			{elseif $item.status == $smarty.const.MSG_BOUNCED}
+				{trans("bounced")} ({$item.lastdate|date_format:"Y-m-d H:i"})
 			{else}
 				{trans("waiting")}
 			{/if}
 		</TD>
 		<TD class="text-right valign-top">
-			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 		</TD>
 		<TD class="text-right">
-			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.status == $smarty.const.MSG_DELIVERED && $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 		</TD>
 		<TD class="text-right nobr valign-top">
 			{if $item.body}

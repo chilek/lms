@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,9 +28,13 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
+if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = '';
+}
+
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
-//define('K_TCPDF_EXTERNAL_CONFIG', true);
+define('K_TCPDF_EXTERNAL_CONFIG', true);
 define('K_TCPDF_CALLS_IN_HTML', true);
 ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
@@ -84,7 +88,7 @@ $composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/");
 }
 
 // Do some checks and load config defaults
@@ -109,6 +113,13 @@ if (!$api) {
     // Call any of upgrade process before anything else
 
     $layout['dbschversion'] = $DB->UpgradeDb();
+    $db_upgrade_errors = $DB->getUpgradeErrors();
+    if (!empty($db_upgrade_errors)) {
+        die(
+            "Launch 'devel/upgradedb.php' script from your installation directory (recommended)"
+                . " or add 'database.auto_update' configuration variable with value 'true' to lms.ini file (not recommended)<br>"
+        );
+    }
 
     // Initialize templates engine (must be before locale settings)
     $SMARTY = new LMSSmarty;
@@ -132,6 +143,8 @@ if (!$api) {
     $SMARTY->setMergeCompiledIncludes(true);
 
     $SMARTY->setDefaultResourceType('extendsall');
+
+    $SMARTY->muteUndefinedOrNullWarnings();
 
     // uncomment this line if you're not gonna change template files no more
     //$SMARTY->compile_check = false;
@@ -166,10 +179,15 @@ $SESSION = new Session(
 // new browser tab can be opened as hidden or tabid of new tab can be not initialised
 // so we have to be careful and handle 'backto' session variable in special way and
 // correct this variable when new tab id has been determined before the moment
-if (isset($_GET['oldtabid']) && isset($_GET['tabid']) && isset($_POST['oldbackto']) && isset($_POST['backto'])
-    && preg_match('/^[0-9]+$/', $_GET['oldtabid'])
-    && preg_match('/^[0-9]+$/', $_GET['tabid'])) {
-    $SESSION->fixBackTo($_GET['oldtabid'], $_POST['oldbackto'], $_GET['tabid'], $_POST['backto']);
+if (isset($_GET['old_tab_id'], $_GET['tab_id'], $_POST['old_history_entry'], $_POST['history_entry'])
+    && preg_match('/^[0-9]+$/', $_GET['old_tab_id'])
+    && preg_match('/^[0-9]+$/', $_GET['tab_id'])) {
+    $SESSION->historyQuirks(array(
+        'old_tab_id' => $_GET['old_tab_id'],
+        'old_history_entry' => isset($_POST['old_history_entry']) ? $_POST['old_history_entry'] : null,
+        'tab_id' => $_GET['tab_id'],
+        'history_entry' => isset($_POST['history_entry']) ? $_POST['history_entry'] : null,
+    ));
     //$SESSION->close();
     header('Content-Type: application/json');
     die('[]');
@@ -348,15 +366,20 @@ if ($AUTH->islogged) {
     $res = $LMS->ExecHook('module_load_before', array('module' => $module));
     if (array_key_exists('abort', $res) && $res['abort']) {
         $SESSION->close();
-        $DB->Destroy();
         die;
     }
     $module = $res['module'];
 
     if ($module != 'logout') {
         if ($AUTH->requiredPasswordChange()) {
+            if ($api) {
+                die;
+            }
             $module = 'chpasswd';
         } elseif ($AUTH->requiredTwoFactorAuthChange()) {
+            if ($api) {
+                die;
+            }
             $module = 'twofactorauthedit';
         }
     }
@@ -384,8 +407,9 @@ if ($AUTH->islogged) {
             $SYSLOG->NewTransaction($module);
         }
 
-        // everyone should have access to documentation
+        // everyone should have access to documentation and authentication configuration
         $rights[] = 'documentation';
+        $rights[] = 'auth';
 
         $access->applyMenuPermissions($menu, $rights);
 
@@ -395,7 +419,7 @@ if ($AUTH->islogged) {
             $SESSION->save('module', $module);
 
             if (!$api) {
-                $SMARTY->assign('url', 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST']
+                $SMARTY->assign('url', 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST']
                     . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1));
 
                 // get all persistent filters

@@ -95,7 +95,7 @@
 			{if $customerlist[customerlist].account}
 				<img src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt=""
 					class="lms-ui-hint-rollover"
-					data-url="?m=customerinfoshort&id={$customerlist[customerlist].id}">
+					data-url="?m=nodelistshort&id={$customerlist[customerlist].id}">
 			{/if}
 		</TD>
 		<TD class="text-right valign-top nobr">
@@ -227,7 +227,19 @@
 				<select class="lms-ui-multiselect-deferred" name="consents[]" data-separator="<hr>"
 						id="customerconsents" style="display: none;" multiple>
 					{foreach $_CCONSENTS as $type => $consent}
-						<option value="{$type}">{$consent.label}</option>
+						{if !is_array($consent)}
+							{continue}
+						{/if}
+						{if $consent.type == 'selection'}
+							{foreach $consent.values as $subtype => $subconsent}
+								{if !isset($subconsent.name)}
+									{continue}
+								{/if}
+								<option value="{$subtype}">{t a=$consent.label b=$subconsent.label}$a ($b){/t}</option>
+							{/foreach}
+						{else}
+							<option value="{$type}">{$consent.label}</option>
+						{/if}
 					{/foreach}
 				</select>
 				{foreach $_CUSTOMERCONTACTTYPES as $contacttypeidx => $contacttype}
@@ -290,12 +302,27 @@
 
 			switch (oper) {
 				case 1:
+					var selectedCustomerGroups = $('#customergroups').val();
+					if (!selectedCustomerGroups.length) {
+						alertDialog($t("<!customersearch>No customer groups were selected!"), $('#customergroups').closest('.lms-ui-multiselect-container'));
+						return false;
+					}
 					action = '?m=customergroup&oper=addtogroups';
 					break;
 				case 0:
+					var selectedCustomerGroups = $('#customergroups').val();
+					if (!selectedCustomerGroups.length) {
+						alertDialog($t("<!customersearch>No customer groups were selected!"), $('#customergroups').closest('.lms-ui-multiselect-container'));
+						return false;
+					}
 					action = '?m=customergroup&oper=removefromgroups';
 					break;
 				case 2:
+					var selectedCustomerGroups = $('#customergroups').val();
+					if (!selectedCustomerGroups.length) {
+						alertDialog($t("<!customersearch>No customer groups were selected!"), $('#customergroups').closest('.lms-ui-multiselect-container'));
+						return false;
+					}
 					action = '?m=customergroup&oper=changegroups';
 					break;
 				case 3:
@@ -308,6 +335,13 @@
 						alertDialog($t("<!customersearch>Customer group with specified name already exists!"), $('#newcustomergroup'));
 						return false;
 					}
+					{literal}
+					if (!newgroup.match(/^[\._\-0-9\p{L}]+$/iu)) {
+						alertDialog($t("Invalid chars in group name!"), $('#newcustomergroup'));
+						return false;
+					}
+					{/literal}
+
 					action = '?m=customergroup&oper=addtogroups';
 					break;
 			}

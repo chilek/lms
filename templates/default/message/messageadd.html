@@ -89,7 +89,7 @@
 	}
 
 	function messageTemplatesReceived(templates) {
-		var options = '<OPTION value="0">' + $t("- none -") + '</OPTION>';
+		var options = '<OPTION value="0">' + $t("— none —") + '</OPTION>';
 		if (templates) {
 			for (i = 0; i < templates.length; i++) {
 				options += '<option value="' + templates[i].id + '">' + templates[i].name + '</option>';
@@ -196,7 +196,7 @@
 						{else}
 							{trans("Node:")}
 							<select name="message[nodeid]">
-								<option value="">{trans("- none -")}</option>
+								<option value="">{trans("— none —")}</option>
 								{foreach $nodes as $node}
 									<option value="{$node.id}"{if $node.id == $message.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
 								{/foreach}
@@ -228,30 +228,48 @@
 						<tr>
 							<td class="nobr" rowspan="3">{trans("Status")}</td>
 							<td rowspan="3">
-								<select name="message[group]" {tip trigger="group" text="Select recipients group"}>
-									<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
-									{foreach $_CSTATUSES as $statusidx => $status}
-										<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
-									{/foreach}
-									<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
-									<option value="51"{if $message.group == "51"} selected{/if}>{trans("with disconnected nodes")}</option>
-									<option value="52"{if $message.group == "52"} selected{/if}>{trans("in debt")}</option>
-									<option value="61"{if $message.group == "61"} selected{/if}>{trans("in debt (expired)")}</option>
-									<option value="64"{if $message.group == "64"} selected{/if}>{trans("in debt (expired by more than 30 days)")}</option>
-									<option value="65"{if $message.group == "65"} selected{/if}>{trans("in debt (expired by more than 60 days)")}</option>
-									<option value="57"{if $message.group == "57"} selected{/if}>{trans("in debt above 100%")}</option>
-									<option value="62"{if $message.group == "62"} selected{/if}>{trans("in debt above 100% (expired)")}</option>
-									<option value="58"{if $message.group == "58"} selected{/if}>{trans("in debt above 200%")}</option>
-									<option value="63"{if $message.group == "63"} selected{/if}>{trans("in debt above 200% (expired)")}</option>
-									<option value="53"{if $message.group == "53"} selected{/if}>{trans("not in debt")}</option>
-									<option value="60"{if $message.group == "60"} selected{/if}>{trans("not in debt (expired)")}</option>
-									<option value="59"{if $message.group == "59"} selected{/if}>{trans("opened documents")}</option>
+								<select name="message[state]" {tip trigger="state"}>
+									<option value="0"{if !$message.state} selected{/if}>{trans("— all customers —")}</option>
+									<optgroup label="Status">
+										{foreach $_CSTATUSES as $statusidx => $status}
+											<option value="{$statusidx}"{if $message.state == $statusidx} selected{/if}>{$status.plurallabel}</option>
+										{/foreach}
+									</optgroup>
+									<optgroup label="{trans("Customers")}">
+										<option value="50"{if $message.state == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
+									</optgroup>
+									<optgroup label="{trans("Nodes")}">
+										<option value="51"{if $message.state == "51"} selected{/if}>{trans("with disconnected nodes")}</option>
+									</optgroup>
+									<optgroup label="{trans("Finances")}">
+										{if !ConfigHelper::checkPrivilege('hide_finances')}
+											<option value="52"{if $message.state == "52"} selected{/if}>{trans("in debt")}</option>
+											<option value="161"{if $message.state == "161"} selected{/if}>{trans("in debt (expired)")}</option>
+											<option value="164"{if $message.state == "64"} selected{/if}>{trans("in debt (expired by more than 30 days)")}</option>
+											<option value="165"{if $message.state == "65"} selected{/if}>{trans("in debt (expired by more than 60 days)")}</option>
+											<option value="57"{if $message.state == "57"} selected{/if}>{trans("in debt above 100%")}</option>
+											<option value="162"{if $message.state == "162"} selected{/if}>{trans("in debt above 100% (expired)")}</option>
+											<option value="58"{if $message.state == "58"} selected{/if}>{trans("in debt above 200%")}</option>
+											<option value="163"{if $message.state == "163"} selected{/if}>{trans("in debt above 200% (expired)")}</option>
+											<option value="153"{if $message.state == "153"} selected{/if}>{trans("not in debt")}</option>
+											<option value="160"{if $message.state == "160"} selected{/if}>{trans("not in debt (expired)")}</option>
+										{/if}
+									</optgroup>
+									<optgroup label="{trans("Documents")}">
+										<option value="159"{if $message.state == "159"} selected{/if}>{trans("unapproved documents")}</option>
+										<option value="59"{if $filter.state == 59} selected{/if}>{trans("without contracts")}</option>
+										<option value="76"{if $filter.state == 76} selected{/if}>{trans("without active contracts")}</option>
+										<option value="60"{if $filter.state == 60} selected{/if}>{trans("with expired contracts")}</option>
+										<option value="77"{if $filter.state == 77} selected{/if}>{trans("with expired, active contracts")}</option>
+										<option value="61"{if $filter.state == 61} selected{/if}>{trans("with expiring contracts")}</option>
+										<option value="78"{if $filter.state == 78} selected{/if}>{trans("with expiring, active contracts")}</option>
+									</optgroup>
 								</select>
 							</td>
 							<td class="nobr">{trans("Group")}</td>
 							<td class="multiselect">
 								<select name="message[customergroup][]" multiple class="lms-ui-multiselect"
-									{tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
+									{tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("— all groups —")}">
 									{foreach $customergroups as $customergroup}
 										<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}
 											>{$customergroup.name|trunescape:30}</option>
@@ -261,7 +279,7 @@
 							<td class="nobr">{trans("Network")}</td>
 							<td>
 								<select name="message[network]" {tip trigger="network" text="Select IP network"}>
-									<option value="0">{trans("- all networks -")}</option>
+									<option value="0">{trans("— all networks —")}</option>
 									{foreach $networks as $network}
 										<option value="{$network.id}"{if $message.network == $network.id} selected{/if}
 											>{$network.name|trunescape:30}</option>
@@ -271,7 +289,7 @@
 							<td class="nobr">{trans("Tariff type")}</td>
 							<td>
 								<select name="message[tarifftype]" {tip trigger="network"}>
-									<option value="0">{trans("- all -")}</option>
+									<option value="0">{trans("— all —")}</option>
 									{foreach $_SERVICETYPES as $key => $type}
 										<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
 									{/foreach}
@@ -280,19 +298,19 @@
 						</tr>
 						<tr>
 							<td class="nobr">{trans("Node Group<!short>")}</td>
-							<td>
-								<select size="1" name="message[nodegroup]" {tip trigger="nodegroup"}>
-									<option value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</option>
+							<td class="multiselect">
+								<select size="1" name="message[nodegroup][]" multiple class="lms-ui-multiselect"
+									{tip trigger="nodegroup"} data-default-value="{trans("— all groups —")}">
 									{foreach $nodegroups as $nodegroup}
-										<option value="{$nodegroup.id}"{if $message.nodegroup == $nodegroup.id} selected{/if}
-											>{$nodegroup.name|truncate:30:"&hellip;":true}</option>
+										<option value="{$nodegroup.id}"{if isset($message.nodegroup) && in_array($nodegroup.id, $message.nodegroup)} selected{/if}
+											>{$nodegroup.name|trunescape:30}</option>
 									{/foreach}
 								</select>
 							</td>
 							<td class="nobr">{trans("Link type")}</td>
 							<td>
 								<select size="1" name="message[linktype]" {tip trigger="linktype"}>
-									<option value="">{trans("- all -")}</option>
+									<option value="">{trans("— all —")}</option>
 									{foreach $_LINKTYPES as $type => $label}
 										<option value="{$type}">{$label}</option>
 									{/foreach}
@@ -315,7 +333,7 @@
 							</td>
 							<td colspan="7" class="nobr">
 								<select name="message[netdev]" id="netdev" {tip class="lms-ui-advanced-select" trigger="netdev" text="Select network device"}>
-									<option value="">{trans("- none -")}</option>
+									<option value="">{trans("— none —")}</option>
 									{foreach $netdevices as $netdev}
 										<option value="{$netdev.id}"{if isset($message.netdev) && $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
 									{/foreach}
@@ -477,14 +495,14 @@
 			</td>
 			<td>
 				<select size="4" name="message[users][]" id="user-selection" multiple class="lms-ui-multiselect"
-						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+						data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 					{foreach $users as $user}
 						<option value="{$user.id}"{if isset($message.users) && in_array($user.id, $message.users)} selected{/if}>{$user.name|trunescape:30}</option>
 					{/foreach}
 				</select>
 				<strong>{trans("user group")}</strong>
 				<select name="message[usergroup]" id="usergroup-selection">
-					<option value="" data-users="[{implode(',', array_keys($users))}]">{trans("- all -")}</option>
+					<option value="" data-users="[{implode(',', array_keys($users))}]">{trans("— all —")}</option>
 					{foreach $usergroups as $usergroup}
 						<option value="{$usergroup.id}" data-users="[{$usergroup.users}]"
 							{if $message.usergroup == $usergroup.id} selected{/if}>{$usergroup.name}</option>
@@ -527,7 +545,7 @@
 			<td>
 				<select name="message[tmplid]" id="msgtmplid" {tip class="lms-ui-advanced-select" trigger="msgtmplid" text="Select message template"}
 						onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
-					<option value="0">{trans("- none -")}</option>
+					<option value="0">{trans("— none —")}</option>
 					{foreach $messagetemplates as $msgtmpl}
 						<option value="{$msgtmpl.id}"{if $message.tmplid == $msgtmpl.id} selected{/if}>{$msgtmpl.name}</option>
 					{/foreach}
@@ -540,6 +558,7 @@
 			Supported substitutions/variables:<br>
 			<strong>%customer</strong> - customer first name and last name or name,<br>
 			<strong>%balance</strong>, <strong>%totalsaldo</strong>, <strong>%totalB</strong> - customer total balance,<br>
+			<strong>%commented_balance</strong> - customer total balance as absolute value with text comment explaining customer billing status,<br>
 			<strong>%b</strong> - customer expired liability balance amount to pay,<br>
 			<strong>%totalb</strong> - customer total balance amount to pay,<br>
 			<strong>%B</strong>, <strong>%saldo</strong> - customer expired liability balance,<br>
@@ -771,9 +790,7 @@
 			).done(function (data) {
 				var confirmThreshold = {intval(ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50))};
 				if (data.recipients <= confirmThreshold) {
-					if (data.recipients > 0) {
-						$('#message').submit();
-					}
+					$('#message').submit();
 				} else {
 					var violationType = '{ConfigHelper::getConfig('phpui.send_message_limit_violation_type', 'warning')}';
 					switch (violationType) {

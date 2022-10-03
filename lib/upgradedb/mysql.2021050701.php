@@ -28,8 +28,8 @@ if (!$this->ResourceExists('vcustomerassignments', LMSDB::RESOURCE_TYPE_VIEW)) {
     $this->Execute("ALTER TABLE customerassignments ADD COLUMN enddate int(11) DEFAULT 0 NOT NULL");
     $this->Execute("CREATE INDEX customerassignments_startdate_idx ON customerassignments (startdate)");
     $this->Execute("CREATE INDEX customerassignments_enddate_idx ON customerassignments (enddate)");
-    $this->Execute("ALTER TABLE customerassignments DROP CONSTRAINT customerassignment");
     $this->Execute("ALTER TABLE customerassignments ADD CONSTRAINT customerassignments_customergroupid_ukey UNIQUE (customergroupid, customerid, enddate)");
+    $this->Execute("ALTER TABLE customerassignments DROP CONSTRAINT customerassignment");
     $this->Execute("
         CREATE VIEW vcustomerassignments AS
             SELECT ca.*

@@ -38,7 +38,7 @@
 						<strong>{trans("Filter:")}</strong>
 						<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 						<SELECT size="1" name="cat">
-							<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
+							<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("— select filter category —")}</OPTION>
 							<OPTION value="subject"{if $listdata.cat == "subject"} SELECTED{/if}>{trans("subject")}</OPTION>
 							<OPTION value="name"{if $listdata.cat == "name"} SELECTED{/if}>{trans("customer name")}</OPTION>
 							<OPTION value="customerid"{if $listdata.cat == "customerid"} SELECTED{/if}>{trans("customer ID")}</OPTION>
@@ -51,7 +51,7 @@
 					<label>
 						{trans("Type:")}
 						<SELECT size="1" name="type">
-							<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all types -")}</OPTION>
+							<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("— all types —")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_MAIL}"{if $listdata.type == $smarty.const.MSG_MAIL} SELECTED{/if}>{trans("email")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_SMS}"{if $listdata.type == $smarty.const.MSG_SMS} SELECTED{/if}>{trans("sms")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_ANYSMS}"{if $listdata.type == $smarty.const.MSG_ANYSMS} SELECTED{/if}>{trans("any sms")}</OPTION>
@@ -63,7 +63,7 @@
 					<label>
 						{trans("Status:")}
 						<SELECT size="1" name="status">
-							<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("- all statuses -")}</OPTION>
+							<OPTION value=""{if !$listdata.status} SELECTED{/if}>{trans("— all statuses —")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_NEW}"{if $listdata.status == $smarty.const.MSG_NEW} SELECTED{/if}>{trans("waiting<!plural>")}</OPTION>
 						{*
 							<OPTION value="{$smarty.const.MSG_DRAFT}"{if $listdata.status == $smarty.const.MSG_DRAFT} SELECTED{/if}>{trans("drafts")}</OPTION>
@@ -71,6 +71,8 @@
 							<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
 							<OPTION value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} SELECTED{/if}>{trans("delivered<!plural>")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_CANCELLED}"{if $listdata.status == $smarty.const.MSG_CANCELLED} selected{/if}>{trans("cancelled<!plural>")}</OPTION>
+							<OPTION value="{$smarty.const.MSG_BOUNCED}"{if $listdata.status == $smarty.const.MSG_BOUNCED} selected{/if}>{trans("bounced<!plural>")}</OPTION>
 						</SELECT>
 						<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 					</label>
@@ -90,12 +92,28 @@
     <TBODY class="lms-ui-multi-check">
 	<form method="post" name="messages">
 	{foreach $messagelist as $message}
-	<TR class="highlight{if $message.error > 0} lms-ui-alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}"
+	<TR class="highlight {strip}
+			{if $message.error > 0}
+				lms-ui-message-error
+			{elseif $message.error}
+				blendalert
+			{elseif $message.delivered == $message.cnt}
+				lms-ui-message-delivered
+			{elseif $message.sent == $message.cnt}
+				lms-ui-message-sent
+			{elseif $message.cancelled == $message.cnt}
+				lms-ui-message-cancelled
+			{elseif $message.bounced == $message.cnt}
+				lms-ui-message-bounced
+			{else}
+				lms-ui-message-new
+			{/if}
+		{/strip}"
 		data-target-url="?m=messageinfo&id={$message.id}"
 		data-popup-menu-title="{t a=$message.id|string_format:"%d"}Message #$a{/t}"
 	>
 		<TD class="nobr">
-			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
+			{$message.cdate|date_format:"Y-m-d H:i"}
 		</TD>
 		<TD class="text-center nobr">
 			{if $message.type == $smarty.const.MSG_MAIL}

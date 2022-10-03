@@ -156,7 +156,7 @@ function init_multiselects(selector) {
 				bottom: lmsSettings.multiSelectPopupOnBottom,
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,
-				substMessage: '- $a options selected -',
+				substMessage: '— $a options selected —',
 				tooltipMessage: $(this).attr('data-tooltip-message')
 			});
 		});
@@ -254,6 +254,8 @@ function init_datepickers(selector) {
 	$(selector).each(function() {
 		var unix = $(this).hasClass('unix') || $(this).hasClass('lms-ui-date-unix');
 		var yearRange = $(this).attr('data-year-range');
+		var minDate = $(this).attr('data-min-date');
+		var maxDate = $(this).attr('data-max-date');
 		var value = $(this).val();
 		var dt = null;
 		if (unix) {
@@ -276,6 +278,12 @@ function init_datepickers(selector) {
 		if (yearRange) {
 			options.yearRange = yearRange;
 		}
+		if (minDate) {
+			options.minDate = new Date(minDate);
+		}
+		if (maxDate) {
+			options.minDate = new Date(maxDate);
+		}
 		$(this).wrap('<div class="lms-ui-date-container"/>');
 		$(this).datepicker(options).attr("autocomplete", 'off')
 		if (unix) {
@@ -291,6 +299,12 @@ function init_datepickers(selector) {
 
 function initAdvancedSelects(selector) {
 	$(selector).each(function () {
+		if ($(this).is('.lms-ui-customer-address-select')) {
+			$(this).find('option[data-icon]').each(function () {
+				$(this).html('<i class="' + $(this).attr('data-icon') + '"></i>&nbsp;' + $(this).html());
+			});
+		}
+
 		if ($(this).next('.chosen-container').length) {
 			$(this).trigger('chosen:updated');
 			return;
@@ -301,8 +315,8 @@ function initAdvancedSelects(selector) {
 			}
 		});
 
-		$(this).on('chosen:showing_dropdown', function(e) {
-			var dropdown = $(this).next().find('.chosen-drop');
+		$(this).on('chosen:showing_dropdown', function(e, data) {
+			var dropdown = data.chosen.dropdown;
 			dropdown.position({
 				my: "left top",
 				at: "left bottom",
@@ -331,6 +345,82 @@ function updateAdvancedSelects(selector) {
 	$(selector).each(function() {
 		$(this).trigger('chosen:updated');
 	});
+}
+
+function activateAdvancedSelect(selector) {
+	$(selector).trigger('chosen:activate');
+}
+
+function setAddressList(selector, address_list, preselection) {
+	var icon;
+	var select = $(selector);
+
+	preselection = typeof(preselection) !== 'undefined' && preselection;
+
+	var addresses = [];
+	$.each(address_list, function (key, value) {
+		addresses.push(value);
+	});
+	addresses.sort(function (a, b) {
+		var a_city = a.location_city_name.toLowerCase();
+		var b_city = b.location_city_name.toLowerCase();
+		if (a_city > b_city) {
+			return 1;
+		} else if (a_city < b_city) {
+			return -1;
+		}
+		var a_street = a.location_street_name;
+		var b_street = b.location_street_name;
+		if (a_street && !b_street) {
+			return -1;
+		} else if (b_street && !a_street) {
+			return 1;
+		} else if (!a_street && !b_street) {
+			return 0;
+		}
+		a_street = a_street.toLowerCase();
+		b_street = b_street.toLowerCase();
+		if (a_street > b_street) {
+			return 1;
+		} else if (a_street < b_street) {
+			return -1;
+		}
+		return 0;
+	});
+	var html = '<option value="-1">---</option>';
+	$.each(addresses, function () {
+		switch (this.location_address_type) {
+			case "0":
+				icon = "lms-ui-icon-mail fa-fw";
+				break; // postal address
+			case "1":
+				icon = "lms-ui-icon-home fa-fw";
+				break; // billing address
+			case "2":
+				icon = "lms-ui-icon-customer-location fa-fw";
+				break; // location/recipient address
+			case "3":
+				icon = "lms-ui-icon-default-customer-location fa-fw";
+				break; // default location address
+			case "4":
+				icon = "lms-ui-icon-document fa-fw";
+				break; // invoice address
+
+			default:
+				icon = "";
+		}
+
+		html += '<option value="' + this.address_id + '" data-icon="' + icon + '"' +
+			' data-territ="' + this.teryt + '"' +
+			(preselection && this.hasOwnProperty('default_address') ? ' selected' : '') + '>' +
+			this.location + '</option>';
+	});
+
+	select.html(html);
+	select.find('option[data-icon]').each(function() {
+		$(this).html('<i class="' + $(this).attr('data-icon') + '"></i>&nbsp;' + $(this).html());
+	});
+	updateAdvancedSelects(select);
 }
 
 function init_comboboxes(selector) {
@@ -373,6 +463,12 @@ function init_comboboxes(selector) {
 			}
 		}, 'lms-ui');
 	}
+}
+
+function updateComboBoxes(selector) {
+	$(selector).each(function() {
+		$(this).scombobox('val', $(this).val());
+	});
 }
 
 function init_datatables(selector) {
@@ -438,7 +534,7 @@ function init_datatables(selector) {
 						});
 						if (selectValues.length > 1) {
 							content = '<select' + ($(th).attr('data-filter-id') ? ' id="' + $(th).attr('data-filter-id') + '"' : '') +
-								'><option value="">' + $t('- any -') + '</option>';
+								'><option value="">' + $t('— any —') + '</option>';
 							selectValues.sort().forEach(function (value, index) {
 								content += '<option value="' + value + '">' + value + '</option>';
 							});
@@ -1274,8 +1370,8 @@ $(function() {
 			$(from).val(sprintf("%04d/%02d/%02d %02d:%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate(), 0, 0));
 			$(to).val(sprintf("%04d/%02d/%02d %02d:%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate(), 23, 59));
 		} else {
-			$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
-			$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+			$(from).datepicker("setDate", new Date(fromdate.getFullYear(), fromdate.getMonth(), fromdate.getDate()));
+			$(to).datepicker("setDate", new Date(todate.getFullYear(), todate.getMonth(), todate.getDate()));
 		}
 
 		$(from).trigger('change');
@@ -2052,14 +2148,23 @@ $(function() {
 		var button = $(this);
 		form.submit(function() {
 			if (!$(this).attr('data-form-validation-failed')) {
-				button.attr('disabled', 'disabled');
+				button.prop('disabled', !form.is('[target="_blank"]'));
 			}
 			$(this).removeAttr('data-form-validation-failed');
 		}).on('lms:form_validation_failed', function() {
 			$(this).attr('data-form-validation-failed', true);
-			button.removeAttr('disabled');
+			button.prop('disabled', false);
 		});
 	});
+
+	window.addEventListener('message', function(e) {
+		if (e.data.hasOwnProperty('targetValue') && e.data.hasOwnProperty('targetSelector')) {
+			var elem = $(e.data.targetSelector);
+			elem.val(e.data.targetValue);
+			updateAdvancedSelects(elem);
+			activateAdvancedSelect(elem);
+		}
+	}, false);
 
 	initAutoGrow('.lms-ui-autogrow');
 });

@@ -244,21 +244,31 @@ $CUSTOMERCONTACTTYPES = array(
             'flags' => array(
                 CONTACT_MOBILE => array(
                     'label' => $CONTACTTYPES[CONTACT_MOBILE],
+                    'alias' => 'mobile',
                 ),
                 CONTACT_FAX => array(
                     'label' => $CONTACTTYPES[CONTACT_FAX],
+                    'alias' => 'fax',
                 ),
                 CONTACT_NOTIFICATIONS => array(
                     'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
-                    'tip' => trans('Check if send notification'),
+                    'tip' => trans('Check if send notifications'),
+                    'alias' => 'notifications',
+                ),
+                CONTACT_HELPDESK_NOTIFICATIONS => array(
+                    'label' => $CONTACTTYPES[CONTACT_HELPDESK_NOTIFICATIONS],
+                    'tip' => trans('Check if send helpdesk notifications'),
+                    'alias' => 'helpdesk_notifications',
                 ),
                 CONTACT_DOCUMENTS => array(
                     'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
                     'tip' => trans('Check if contact should be printed on documents'),
+                    'alias' => 'documents',
                 ),
                 CONTACT_DISABLED => array(
                     'label' => $CONTACTTYPES[CONTACT_DISABLED],
                     'tip' => trans('Not visible by the customer in electronic Customer Service Representative'),
+                    'alias' => 'disabled',
                 ),
             ),
         ),
@@ -279,22 +289,32 @@ $CUSTOMERCONTACTTYPES = array(
                 CONTACT_INVOICES => array(
                     'label' => $CONTACTTYPES[CONTACT_INVOICES],
                     'tip' => trans('Check if sent electronic invoices on this email'),
+                    'alias' => 'invoices',
                 ),
                 CONTACT_NOTIFICATIONS => array(
                     'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
-                    'tip' => trans('Check if send notification'),
+                    'tip' => trans('Check if send notifications'),
+                    'alias' => 'notifications',
+                ),
+                CONTACT_HELPDESK_NOTIFICATIONS => array(
+                    'label' => $CONTACTTYPES[CONTACT_HELPDESK_NOTIFICATIONS],
+                    'tip' => trans('Check if send helpdesk notifications'),
+                    'alias' => 'helpdesk_notifications',
                 ),
                 CONTACT_TECHNICAL => array(
                     'label' => $CONTACTTYPES[CONTACT_TECHNICAL],
-                    'tip' => trans('Check if send technical notification'),
+                    'tip' => trans('Check if send technical notifications'),
+                    'alias' => 'technical',
                 ),
                 CONTACT_DOCUMENTS => array(
                     'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
                     'tip' => trans('Check if contact should be printed on documents'),
+                    'alias' => 'documents',
                 ),
                 CONTACT_DISABLED => array(
                     'label' => $CONTACTTYPES[CONTACT_DISABLED],
                     'tip' => trans('Not visible by the customer in electronic Customer Service Representative'),
+                    'alias' => 'disabled',
                 ),
             ),
         ),
@@ -404,8 +424,29 @@ foreach ($CUSTOMERCONTACTTYPES as $contact_type => $contact_type_description) {
     }
 }
 
+$contact_default_flags = array();
+foreach ($CUSTOMERCONTACTTYPES as $ctype => $type) {
+    $contact_default_flags[$ctype] = array();
+    $flags = array_flip(
+        preg_split(
+            '/([\s]+|[\s]*,[\s]*)/',
+            trim(ConfigHelper::getConfig('phpui.default_customer_' . $ctype . '_flags', 'helpdesk_notifications')),
+            -1,
+            PREG_SPLIT_NO_EMPTY
+        )
+    );
+    if (!empty($flags)) {
+        foreach ($type['ui']['flags'] as $flagvalue => $flag) {
+            if (isset($flag['alias']) && isset($flags[$flag['alias']])) {
+                $contact_default_flags[$ctype][$flagvalue] = $flagvalue;
+            }
+        }
+    }
+}
+
 global $SMARTY;
 
 if (isset($SMARTY)) {
     $SMARTY->assign('_CUSTOMERCONTACTTYPES', $CUSTOMERCONTACTTYPES);
+    $SMARTY->assign('contact_default_flags', $contact_default_flags);
 }

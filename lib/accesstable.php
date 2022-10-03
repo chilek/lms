@@ -147,7 +147,7 @@ $access_table = array(
     ),
     'node_management' => array(
         'label' => trans('nodes management'),
-        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|routednetworks$',
+        'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn|sessionlist|session)|choose(mac|ip|location|gpscoords|netdevice)|ping)|customeraddresses|routednetworks$',
         'allow_menu_items' => array(
             'nodes' => Permission::MENU_ALL,
         ),
@@ -261,7 +261,7 @@ $access_table = array(
         'label' => trans('summaries hiding'),
     ),
     'voip_account_management' => array(
-        'label' => trans('voip accounts management'),
+        'label' => trans('VoIP accounts management'),
         'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit|rules))$',
         'allow_menu_items' => array(
             'VoIP' => Permission::MENU_ALL,
@@ -282,6 +282,9 @@ $access_table = array(
     ),
     'hide_finances' => array(
         'label' => trans('finances hiding'),
+    ),
+    'hide_customer_sensitive_data' => array(
+        'label' => trans('hide customer sensitive data'),
     ),
     'reports' => array(
         'label' => trans('reports'),
@@ -339,8 +342,18 @@ $access->appendPermission(
         array(
             'documentation' => Permission::MENU_ALL,
         )
-    ),
-    'full_access'
+    )
+);
+$access->appendPermission(
+    new Permission(
+        'auth',
+        null,
+        null,
+        null,
+        array(
+            'auth' => Permission::MENU_ALL,
+        )
+    )
 );
 
 // read user-defined access rights table

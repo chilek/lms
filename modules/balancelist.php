@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -69,10 +69,13 @@ $SESSION->save('blge', $ge);
 
 $SESSION->save('bls', $s);
 
-if (($c == 'cdate' || $c == 'month') && $s) {
-    if (preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})(?:\/(?<day>[0-9]{2}))?$/', $s, $m)) {
+if (($c == 'cdate' || $c == 'month' || $c == 'year') && $s) {
+    if (preg_match('/^(?<year>[0-9]{4})(?:\/(?<month>[0-9]{2})(?:\/(?<day>[0-9]{2}))?)?$/', $s, $m)) {
         if (!isset($m['day'])) {
             $m['day'] = 1;
+        }
+        if (!isset($m['month'])) {
+            $m['month'] = 1;
         }
         if (checkdate($m['month'], $m['day'], $m['year'])) {
             $s = $date = mktime(0, 0, 0, $m['month'], $m['day'], $m['year']);
@@ -185,7 +188,7 @@ $SESSION->restore('blt', $listdata['to']);
 
 $layout['pagetitle'] = trans('Balance Sheet');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('balancelist', $balancelist);
 $SMARTY->assign('listdata', $listdata);

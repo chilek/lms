@@ -52,6 +52,8 @@ interface LMSFinanceManagerInterface
 
     public function SuspendAssignment($id, $suspend = true);
 
+    public function toggleAssignmentSuspension($id);
+
     public function GetTradeDocumentArchiveStats($ids);
 
     public function DeleteArchiveTradeDocument($id);

@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,12 +25,96 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+// REPLACE THIS WITH PATH TO YOUR CONFIG FILE
 
-$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+// PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
+// *EXACTLY* WHAT ARE YOU DOING!!!
+// *******************************************************************
+
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+
+$parameters = array(
+    'config-file:' => 'C:',
+    'quiet' => 'q',
+    'help' => 'h',
+    'version' => 'v',
+);
+
+$long_to_shorts = array();
+foreach ($parameters as $long => $short) {
+    $long = str_replace(':', '', $long);
+    if (isset($short)) {
+        $short = str_replace(':', '', $short);
+    }
+    $long_to_shorts[$long] = $short;
+}
+
+$options = getopt(
+    implode(
+        '',
+        array_filter(
+            array_values($parameters),
+            function ($value) {
+                return isset($value);
+            }
+        )
+    ),
+    array_keys($parameters)
+);
+
+foreach (array_flip(array_filter($long_to_shorts, function ($value) {
+    return isset($value);
+})) as $short => $long) {
+    if (array_key_exists($short, $options)) {
+        $options[$long] = $options[$short];
+        unset($options[$short]);
+    }
+}
+
+if (array_key_exists('version', $options)) {
+    print <<<EOF
+callcenter.php
+(C) 2001-2022 LMS Developers
+
+EOF;
+    exit(0);
+}
+
+if (array_key_exists('help', $options)) {
+    print <<<EOF
+callcenter.php
+(C) 2001-2022 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
+-h, --help                      print this help and exit;
+-v, --version                   print version info and exit;
+-q, --quiet                     suppress any output, except errors;
+
+EOF;
+    exit(0);
+}
+
+$quiet = array_key_exists('quiet', $options);
+if (!$quiet) {
+    print <<<EOF
+callcenter.php
+(C) 2001-2022 LMS Developers
+
+EOF;
+}
+
+if (array_key_exists('config-file', $options)) {
+    $CONFIG_FILE = $options['config-file'];
+} else {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+}
+
+if (!$quiet) {
+    echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
+}
 
 if (!is_readable($CONFIG_FILE)) {
-    die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+    die('Unable to read configuration file [' . $CONFIG_FILE . ']!');
 }
 
 define('CONFIG_FILE', $CONFIG_FILE);
@@ -51,7 +135,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/");
 }
 
 // Init database
@@ -85,44 +169,86 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 /* CODE */
 
-$creatorid = ConfigHelper::getConfig('callcenter.queueuser');
+$user = ConfigHelper::getConfig('callcenter.default_user');
+if (!empty($user)) {
+    $userid = $LMS->getUserIDByLogin($user);
+    if (empty($userid)) {
+        if (!preg_match('/^[0-9]+$/', $user) || !$LMS->userExists($user)) {
+            $user = null;
+        }
+    } else {
+        $user = $userid;
+    }
+}
 
-$hostname = "{".ConfigHelper::getConfig('callcenter.hostname')."}INBOX";
-$username = ConfigHelper::getConfig('callcenter.user');
-$password = ConfigHelper::getConfig('callcenter.pass');
+$queue = ConfigHelper::getConfig('callcenter.default_queue');
+if (empty($queue)) {
+    echo 'Warning: missed \'default_queue\' configuration variable!' . PHP_EOL;
+}
+$queueid = $LMS->GetQueueIdByName($queue);
+if (empty($queueid)) {
+    if (!preg_match('/^[0-9]+$/', $queue) || !$LMS->QueueExists($queue)) {
+        echo 'Warning: couldn\'t find default queue!' . PHP_EOL;
+        $queue = null;
+    }
+} else {
+    $queue = $queueid;
+}
 
-$rt_dir = ConfigHelper::getConfig('rt.mail_dir', STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt');
+$category = ConfigHelper::getConfig('callcenter.default_category');
+$categoryid = $LMS->GetCategoryIdByName($category);
+if (empty($categoryid)) {
+    if (!preg_match('/^[0-9]+$/', $category) || !$LMS->CategoryExists($category)) {
+        echo 'Warning: couldn\'t find default category!' . PHP_EOL;
+        $category = null;
+    }
+} else {
+    $category = $categoryid;
+}
+
+$folder = ConfigHelper::getConfig('callcenter.folder', 'INBOX');
+$hostname = "{" . ConfigHelper::getConfig('callcenter.server', ConfigHelper::getConfig('callcenter.hostname')) . "}" . $folder;
+$username = ConfigHelper::getConfig('callcenter.username', ConfigHelper::getConfig('callcenter.user'));
+$password = ConfigHelper::getConfig('callcenter.password', ConfigHelper::getConfig('callcenter.pass'));
+
+$rt_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'rt';
 $storage_dir_permission = intval(ConfigHelper::getConfig('storage.dir_permission', ConfigHelper::getConfig('rt.mail_dir_permission', '0700')), 8);
 $storage_dir_owneruid = ConfigHelper::getConfig('storage.dir_owneruid', 'root');
 $storage_dir_ownergid = ConfigHelper::getConfig('storage.dir_ownergid', 'root');
 
-$inbox  = imap_open($hostname, $username, $password) or die('Cannot connect to mail: ' . imap_last_error());
-$emails = imap_search($inbox, 'ALL FROM "'.ConfigHelper::getConfig('callcenter.mailfrom').'"');
+$rtmessages_extid_exists = $DB->ResourceExists('rtmessages.extid', LMSDB::RESOURCE_TYPE_COLUMN);
 
-if ($emails) {
+$inbox = @imap_open($hostname, $username, $password);
+if ($inbox === false) {
+    die('Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
+}
+
+$emails = imap_search($inbox, 'ALL FROM "' . ConfigHelper::getConfig('callcenter.sender_email', ConfigHelper::getConfig('callcenter.mailfrom')) . '"');
+
+if (!empty($emails)) {
     foreach ($emails as $email_number) {
         $structure     = imap_fetchstructure($inbox, $email_number);
         $attachments = array();
 
         if (isset($structure->parts) && count($structure->parts)) {
             for ($i = 0; $i < count($structure->parts); $i++) {
-                $attachments[$i] = array(
+                $attachment = array(
                     'is_attachment' => false,
-                    'filename'         => '',
-                    'name'             => '',
-                    'contenttype'     => 'audio/wav',
-                    'attachment'     => ''
+                    'filename' => '',
+                    'name' => '',
+                    'contenttype' => 'audio/wav',
+                    'attachment' => ''
                 );
 
                 if ($structure->parts[$i]->ifdparameters) {
                     foreach ($structure->parts[$i]->dparameters as $object) {
                         if (strtolower($object->attribute) == 'filename') {
-                            $attachments[$i]['is_attachment']   = true;
-                            $attachments[$i]['filename']        = $object->value;
+                            $attachment['is_attachment'] = true;
+                            $attachment['filename'] = $object->value;
                         }
                     }
                 }
-                if ($structure->parts[$i]->type==0) {
+                if (!$structure->parts[$i]->type) {
                     foreach ($structure->parts[$i]->parameters as $object) {
                         $uid = imap_fetchbody($inbox, $email_number, 1);
                         $uid = explode('<UniqueID>', $uid);
@@ -131,34 +257,48 @@ if ($emails) {
                     }
                 }
 
-                if ($attachments[$i]['is_attachment']) {
-                    $attachments[$i]['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
+                if ($attachment['is_attachment']) {
+                    $attachment['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
                     if ($structure->parts[$i]->encoding == 3) {
-                        $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
+                        $attachment['attachment'] = base64_decode($attachment['attachment']);
                     } elseif ($structure->parts[$i]->encoding == 4) {
-                        $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
+                        $attachment['attachment'] = quoted_printable_decode($attachment['attachment']);
                     }
+                    $attachments[] = $attachment;
                 }
             }
         }
-        if (count($attachments)!=0  and !empty($uid)) {
+        if (count($attachments) && !empty($uid)) {
             foreach ($attachments as $at) {
-                if ($at['is_attachment'] == 1  && !empty($rt_dir)) {
-                    $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr ['.$uid.']';
-                    $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
+                if ($at['is_attachment'] && !empty($rt_dir)) {
+                    $subject = 'Zgłoszenie telefoniczne z E-Południe Call Center nr [' . $uid . ']';
+                    if ($rtmessages_extid_exists) {
+                        $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE extid = ?', array($uid));
+                    } else {
+                        $message = null;
+                    }
                     if (empty($message)) {
+                        $message = $DB->GetRow('SELECT id, ticketid FROM rtmessages WHERE subject = ?', array($subject));
+                    }
+                    if (empty($message)) {
+                        if (empty($queue)) {
+                            die('Fatal error: missed \'default_queue\' configuration variable!' . PHP_EOL);
+                        }
+
                         $DB->Execute(
                             'INSERT INTO rttickets (queueid, customerid, requestor, subject,
-                            state, owner, createtime, cause, creatorid)
-                            VALUES (?, ?, ?, ?, 0, ?, ?NOW?, ?, ?)',
+                            state, owner, createtime, cause, source, creatorid)
+                            VALUES (?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)',
                             array(
-                                1,
-                                0,
+                                $queue,
+                                null,
                                 '',
                                 $subject,
-                                '',
-                                '',
-                                $creatorid
+                                RT_NEW,
+                                null,
+                                RT_CAUSE_OTHER,
+                                RT_SOURCE_CALLCENTER,
+                                $user,
                             )
                         );
                         $id = $DB->GetLastInsertID('rttickets');
@@ -170,15 +310,23 @@ if ($emails) {
                             VALUES (?, ?, ?NOW?, ?, ?, ?)',
                             array(
                                 $id,
-                                0,
+                                null,
                                 $subject,
                                 $body,
-                                ''
+                                '',
                             )
                         );
                         $message['id'] = $DB->GetLastInsertID('rtmessages');
 
-                        $DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)', array($id, 1));
+                        if (!empty($category)) {
+                            $DB->Execute(
+                                'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+                                array(
+                                    $id,
+                                    $category,
+                                )
+                            );
+                        }
 
                         $message['ticketid'] = $id;
                     }
@@ -203,8 +351,12 @@ if ($emails) {
 
                         $DB->Execute(
                             'INSERT INTO rtattachments (messageid, filename, contenttype)
-                            VALUES (?,?,?)',
-                            array($message['id'], $at['filename'], $at['contenttype'])
+                            VALUES (?, ?, ?)',
+                            array(
+                                $message['id'],
+                                $at['filename'],
+                                $at['contenttype'],
+                            )
                         );
 
                         imap_delete($inbox, $email_number);

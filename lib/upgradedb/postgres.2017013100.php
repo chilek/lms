@@ -108,10 +108,10 @@ function moveTableLocation($DB, $table)
 }
 
 // Address types
-define('POSTAL_ADDRESS', 0);
-define('BILLING_ADDRESS', 1);
-define('LOCATION_ADDRESS', 2);
-define('DEFAULT_LOCATION_ADDRESS', 3);
+define('POSTAL_ADDRESS_2017013100', 0);
+define('BILLING_ADDRESS_2017013100', 1);
+define('LOCATION_ADDRESS_2017013100', 2);
+define('DEFAULT_LOCATION_ADDRESS_2017013100', 3);
 
 $this->BeginTrans();
 
@@ -204,10 +204,10 @@ if ($locations) {
                 $ADDRESSES[$v['ownerid']][$tmp] = $addr_id;
 
                 if (isset($customer_nodes[ $v['ownerid'] ])) {
-                    $type = LOCATION_ADDRESS;
+                    $type = LOCATION_ADDRESS_2017013100;
                 } else {
                     $customer_nodes[ $v['ownerid'] ] = 1;
-                    $type = DEFAULT_LOCATION_ADDRESS;
+                    $type = DEFAULT_LOCATION_ADDRESS_2017013100;
                 }
 
                 $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
@@ -313,10 +313,10 @@ if ($locations) {
                 $ADDRESSES[$v['ownerid']][$tmp] = $addr_id;
 
                 if (isset($customer_nodes[ $v['ownerid'] ])) {
-                    $type = LOCATION_ADDRESS;
+                    $type = LOCATION_ADDRESS_2017013100;
                 } else {
                     $customer_nodes[ $v['ownerid'] ] = 1;
-                    $type = DEFAULT_LOCATION_ADDRESS;
+                    $type = DEFAULT_LOCATION_ADDRESS_2017013100;
                 }
 
                 $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
@@ -419,10 +419,10 @@ if ($locations) {
                 $ADDRESSES[$v['ownerid']][$tmp] = $addr_id;
 
                 if (isset($customer_nodes[ $v['ownerid'] ])) {
-                    $type = LOCATION_ADDRESS;
+                    $type = LOCATION_ADDRESS_2017013100;
                 } else {
                     $customer_nodes[ $v['ownerid'] ] = 1;
-                    $type = DEFAULT_LOCATION_ADDRESS;
+                    $type = DEFAULT_LOCATION_ADDRESS_2017013100;
                 }
 
                 $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
@@ -499,7 +499,7 @@ if ($customers_loc) {
             $this->Execute('INSERT INTO addresses (name, city, street, zip, country_id, house, flat)
                             VALUES (?, ?, ?, ?, ?, ?, ?)', array($post_name,$post_city,$post_street,$post_zip,$post_countryid,$post_building,$post_apartment));
 
-            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?)', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS));
+            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?)', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS_2017013100));
         }
 
         /* --- BILLING ADDRESS --- */
@@ -553,7 +553,7 @@ if ($customers_loc) {
 
             $address_id = $this->GetLastInsertID('addresses');
 
-            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id,type) VALUES (?,?,?)', array($v['id'], $address_id, BILLING_ADDRESS));
+            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id,type) VALUES (?,?,?)', array($v['id'], $address_id, BILLING_ADDRESS_2017013100));
         }
     }
 }

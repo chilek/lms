@@ -51,7 +51,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             );
         } else {
             $args = array(
-                'passwd' => crypt($passwd),
+                'passwd' => password_hash($passwd, PASSWORD_DEFAULT),
                 'passwdforcechange' => 0,
                 SYSLOG::RES_USER => $id
             );
@@ -60,7 +60,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 WHERE id = ?',
                 array_values($args)
             );
-            $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
+            $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, password_hash($passwd, PASSWORD_DEFAULT)));
         }
         if ($result && $this->syslog) {
             unset($args['passwd']);
@@ -131,7 +131,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         extract($params);
 
         return $this->db->GetAll(
-            'SELECT id, login, name, rname, login,
+            'SELECT id, login, name, rname, login, deleted,
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
             FROM vusers
             WHERE deleted = 0'
@@ -204,77 +204,34 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
-        if (isset($superuser)) {
-            $userlist = $this->db->GetAllByKey(
-                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-                accessfrom, accessto, rname, twofactorauth
-            FROM vallusers
-            WHERE deleted = 0'
-                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
-                    FROM userdivisions
-                    WHERE divisionid IN (' . $divisions . ')
-                    )' : '') .
-                ' ORDER BY login ASC',
-                'id'
-            );
-        } else {
-            $userlist = $this->db->GetAllByKey(
-                'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-                    accessfrom, accessto, rname, twofactorauth
-                FROM vusers
-                WHERE deleted = 0'
-                . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
-                . (isset($divisions) && !empty($divisions) ? ' AND id IN (SELECT userid
-                        FROM userdivisions
-                        WHERE divisionid IN (' . $divisions . ')
-                        )' : '') .
-                ' ORDER BY login ASC',
-                'id'
-            );
-        }
+        $userlist = $this->db->GetAllByKey(
+            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+            accessfrom, accessto, rname, twofactorauth'
+            . ' FROM ' . (isset($superuser) ? 'vallusers' : 'vusers')
+            . ' WHERE deleted = 0'
+            . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
+            . (isset($divisions) && !empty($divisions) ? ' AND id IN 
+                (SELECT userid
+                FROM userdivisions
+                WHERE divisionid IN (' . $divisions . ')
+                )' : '')
+            . ' ORDER BY login ASC',
+            'id'
+        );
 
         if ($userlist) {
             foreach ($userlist as &$row) {
                 if ($row['id'] == Auth::GetCurrentUser()) {
                     $row['lastlogindate'] = $this->auth->last;
-                    $row['lastlogindate'] = $this->auth->last;
-                    $row['lastloginip'] = $this->auth->lastip;
                     $row['lastloginip'] = $this->auth->lastip;
                 }
 
-                if ($row['accessfrom']) {
-                    $row['accessfrom'] = date('Y/m/d', $row['accessfrom']);
-                } else {
-                    $row['accessfrom'] = '-';
-                }
-
-                if ($row['accessto']) {
-                    $row['accessto'] = date('Y/m/d', $row['accessto']);
-                } else {
-                    $row['accessto'] = '-';
-                }
-
-                if ($row['lastlogindate']) {
-                    $row['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
-                } else {
-                    $row['lastlogin'] = '-';
-                }
-
-                if ($row['passwdlastchange']) {
-                    $row['passwdlastchange'] = date('Y/m/d H:i', $row['passwdlastchange']);
-                } else {
-                    $row['passwdlastchange'] = '-';
-                }
-
-                if (check_ip($row['lastloginip'])) {
-                    // moved to '?m=dns&revdns=1&api=1'
-                    //$row['lastloginhost'] = gethostbyaddr($row['lastloginip']);
-                    $row['lastloginhost'] = '-';
-                } else {
-                    $row['lastloginhost'] = '-';
-                    $row['lastloginip'] = '-';
-                }
+                $row['accessfrom'] = ($row['accessfrom'] ? date('Y/m/d', $row['accessfrom']) : '-');
+                $row['accessto'] = ($row['accessto'] ? date('Y/m/d', $row['accessto']) : '-');
+                $row['lastlogin'] = ($row['lastlogindate'] ? date('Y/m/d H:i', $row['lastlogindate']) : '-');
+                $row['lastloginip'] = check_ip($row['lastloginip']) ? $row['lastloginip'] : '-';
+                $row['passwdlastchange'] = ($row['passwdlastchange'] ? date('Y/m/d H:i', $row['passwdlastchange']) : '-');
+                $row['lastloginhost'] = '-';
             }
             unset($row);
         }
@@ -309,7 +266,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'lastname' => Utils::removeInsecureHtml($user['lastname']),
             'issuer' => Utils::removeInsecureHtml($user['issuer']),
             'email' => $user['email'],
-            'passwd' => crypt($user['password']),
+            'passwd' => password_hash($user['password'], PASSWORD_DEFAULT),
             'netpasswd' => empty($user['netpassword']) ? null : $user['netpassword'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
@@ -685,8 +642,12 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     public function PasswdExistsInHistory($id, $passwd)
     {
         $history = $this->db->GetAll('SELECT id, hash FROM passwdhistory WHERE userid = ? ORDER BY id DESC LIMIT ?', array($id, intval(ConfigHelper::getConfig('phpui.passwordhistory'))));
+        if (empty($history)) {
+            return false;
+        }
+
         foreach ($history as $h) {
-            if (crypt($passwd, $h['hash']) == $h['hash']) {
+            if (password_verify($passwd, $h['hash'])) {
                 return true;
             }
         }
@@ -705,7 +666,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 'SELECT passwd FROM users WHERE id = ?',
                 array(Auth::GetCurrentUser())
             );
-            return crypt($password, $dbpasswd) == $dbpasswd;
+            return password_verify($password, $dbpasswd);
         }
     }
 

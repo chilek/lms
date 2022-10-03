@@ -48,9 +48,22 @@
         font-weight: bold;
         text-decoration: none;
       }
+      &.disabled-result {
+        color: @blend;
+      }
+    }
+  }
+  &.lms-ui-customer-address-select {
+    .chosen-single span {
+      padding-top: 1px;
+      padding-bottom: 1px;
+    }
+    .chosen-results li {
+      padding: 3px 6px;
     }
   }
   .chosen-drop {
+    display: none;
     background-color: @lucid;
     width: auto;
     min-width: 15em;
@@ -66,6 +79,10 @@
     background-position-x: -12px;
     background-position-y: -2px;
   }
+}
+
+.chosen-with-drop .chosen-drop {
+  display: block;
 }
 
 .chosen-container-single {
@@ -103,14 +120,29 @@
       }
     }
   }
-  &.lms-ui-warning .chosen-single {
-    border: @warning-outline;
-    background-color: @warning-background;
-    box-shadow: @warning-box-shadow;
-    &:focus {
-      border: @warning-outline-focus;
+  &.lms-ui-warning {
+    .chosen-single {
+      border: @warning-outline;
       background-color: @warning-background;
-      box-shadow: @warning-box-shadow-focus;
+      box-shadow: @warning-box-shadow;
+
+      &:focus {
+        border: @warning-outline-focus;
+        background-color: @warning-background;
+        box-shadow: @warning-box-shadow-focus;
+      }
+    }
+  }
+
+  &.lms-ui-distinguished {
+    .chosen-single {
+      border: @warning-outline;
+      box-shadow: @warning-box-shadow;
+
+      &:focus {
+        border: @warning-outline-focus;
+        box-shadow: @warning-box-shadow-focus;
+      }
     }
   }
 
@@ -172,14 +204,29 @@
       }
     }
   }
-  &.lms-ui-warning .chosen-choices {
-    border: @warning-outline;
-    background-color: @warning-background;
-    box-shadow: @warning-box-shadow;
-    &:focus {
-      border: @warning-outline-focus;
+  &.lms-ui-warning {
+    .chosen-choices {
+      border: @warning-outline;
       background-color: @warning-background;
-      box-shadow: @warning-box-shadow-focus;
+      box-shadow: @warning-box-shadow;
+
+      &:focus {
+        border: @warning-outline-focus;
+        background-color: @warning-background;
+        box-shadow: @warning-box-shadow-focus;
+      }
+    }
+  }
+
+  &.lms-ui-distinguished {
+    .chosen-choices {
+      border: @warning-outline;
+      box-shadow: @warning-box-shadow;
+
+      &:focus {
+        border: @warning-outline-focus;
+        box-shadow: @warning-box-shadow-focus;
+      }
     }
   }
 

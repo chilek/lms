@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,12 +44,7 @@ if (isset($_GET['action'])) {
             break;
         case 'unlink':
             $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
-            $backto = $SESSION->get('backto');
-            if (empty($backto)) {
-                $SESSION->redirect('?m=rtqueuelist');
-            } else {
-                $SESSION->redirect('?' . $backto);
-            }
+            $SESSION->redirect_to_history_entry('m=rtqueuelist');
             break;
     }
 }
@@ -63,12 +58,7 @@ if (!empty($_GET['ticketid']) && isset($_GET['ticketwatching'])) {
         $LMS->changeTicketWatching($_GET['ticketid'], 0);
     }
 
-    $backto = $SESSION->get('backto');
-    if (empty($backto)) {
-        $SESSION->redirect('?m=rtticketinfo&id=' . $_GET['ticketid']);
-    } else {
-        $SESSION->redirect('?' . $backto);
-    }
+    $SESSION->redirect_to_history_entry('m=rtticketinfo&id=' . $_GET['ticketid']);
 }
 
 // queue id's
@@ -221,10 +211,12 @@ if (isset($_GET['todate'])) {
 }
 
 // user watching tickets
-if ($_GET['watching'] == '1') {
-    $filter['watching'] = 1;
-} elseif (isset($_GET['watching'])) {
-    unset($filter['watching']);
+if (isset($_GET['watching'])) {
+    if ($_GET['watching'] == '1') {
+        $filter['watching'] = 1;
+    } else {
+        unset($filter['watching']);
+    }
 }
 
 // types
@@ -266,8 +258,11 @@ if (isset($_GET['d'])) {
 if (isset($_GET['s'])) {
     $filter['state'] = $_GET['s'];
 } elseif (!isset($filter['state'])) {
-    $filter['state'] = ConfigHelper::getConfig('phpui.ticketlist_status');
-    if (strlen($filter['state'])) {
+    $filter['state'] = ConfigHelper::getConfig(
+        'rt.ticketlist_status',
+        ConfigHelper::getConfig('phpui.ticketlist_status')
+    );
+    if (isset($filter['state']) && strlen($filter['state'])) {
         $filter['state'] = explode(',', $filter['state']);
     }
 }
@@ -293,8 +288,11 @@ if (isset($_GET['priority'])) {
         $filter['priority'] = Utils::filterIntegers(array($_GET['priority']));
     }
 } elseif (!isset($filter['priority'])) {
-    $filter['priority'] = ConfigHelper::getConfig('phpui.ticketlist_priority');
-    if (strlen($filter['priority'])) {
+    $filter['priority'] = ConfigHelper::getConfig(
+        'rt.ticketlist_priority',
+        ConfigHelper::getConfig('phpui.ticketlist_priority')
+    );
+    if (isset($filter['priority']) && strlen($filter['priority'])) {
         $filter['priority'] = explode(',', $filter['priority']);
     }
 }
@@ -355,7 +353,10 @@ $filter['count'] = true;
 
 $filter['total'] = intval($LMS->GetQueueContents($filter));
 
-$filter['limit'] = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
+$filter['limit'] = intval(ConfigHelper::getConfig(
+    'rt.ticketlist_pagelimit',
+    ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total'])
+));
 $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
 if ($filter['offset'] > $filter['total']) {
     $filter['page'] = 1;
@@ -372,7 +373,7 @@ $pagination = LMSPaginationFactory::getPagination(
     ConfigHelper::checkConfig('phpui.short_pagescroller')
 );
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $filter['direction'] = $queue['direction'];
 $filter['order'] = $queue['order'];
@@ -425,6 +426,6 @@ $SMARTY->assign('projects', $projects);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('users', $LMS->GetUserNames(array('withDeleted' => 1)));
 
 $SMARTY->display('rt/rtqueueview.html');

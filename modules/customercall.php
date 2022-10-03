@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,7 @@
 if (isset($_GET['delete'])) {
     if (ConfigHelper::checkPrivilege('customer_call_management')) {
         $LMS->deleteCustomerCall($_GET['cid'], $_GET['id']);
-        $SESSION->redirect('?' . $SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     } else {
         access_denied();
     }

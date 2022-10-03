@@ -86,7 +86,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    if ($nodedata['wholenetwork'] && empty($nodedata['netid'])) {
+    if (isset($nodedata['wholenetwork']) && $nodedata['wholenetwork'] && empty($nodedata['netid'])) {
         $error['netid'] = trans('Please choose network');
     }
 
@@ -151,7 +151,9 @@ if (isset($_POST['nodedata'])) {
         }
 
         if (check_mac($value)) {
-            if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
+            if (in_array($value, $macs)) {
+                $error['mac-input-' . $key] = trans('Specified MAC address is in use!');
+            } elseif ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                 if ($LMS->GetNodeIDByMAC($value)) {
                     $error['mac-input-' . $key] = trans('Specified MAC address is in use!');
                 }
@@ -234,7 +236,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    if ($nodedata['netdev']) {
+    if (!empty($nodedata['netdev'])) {
         $ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
         $takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
 
@@ -323,7 +325,7 @@ if (isset($_POST['nodedata'])) {
 
         $nodeid = $LMS->NodeAdd($nodedata);
 
-        if (is_array($nodedata['nodegroup']) && count($nodedata['nodegroup'])) {
+        if (isset($nodedata['nodegroup']) && is_array($nodedata['nodegroup']) && count($nodedata['nodegroup'])) {
             foreach ($nodedata['nodegroup'] as $nodegroupid) {
                 $DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
 					VALUES (?, ?)', array($nodeid, intval($nodegroupid)));
@@ -366,6 +368,22 @@ if (isset($_POST['nodedata'])) {
 
     if (ConfigHelper::checkConfig('phpui.default_node_check_mac')) {
         $nodedata['chkmac'] = 1;
+    }
+
+    $nodedata['authtype'] = 0;
+    $auth_types = ConfigHelper::getConfig('phpui.default_node_auth_types');
+    if (!empty($auth_types)) {
+        $auth_types = preg_split('/([\s]+|[\s]*,[\s]*)/', strtolower($auth_types), -1, PREG_SPLIT_NO_EMPTY);
+        if (!empty($auth_types)) {
+            foreach ($auth_types as $auth_type) {
+                foreach ($SESSIONTYPES as $idx => $sessiontype) {
+                    if ($sessiontype['alias'] == $auth_type) {
+                        $nodedata['authtype'] |= $idx;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     // check if customer address is selected or if default location address exists
@@ -431,7 +449,7 @@ if (!empty($nodedata['ownerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('networks', $LMS->GetNetworks(true));
+$SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodedata', $nodedata);
 $SMARTY->display('node/nodeadd.html');

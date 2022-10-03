@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$action = $_GET['action'];
-$id = $_GET['id'];
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+$id = isset($_GET['id']) ? $_GET['id'] : 0;
 
-$addvlan = $_POST['addvlan'];
+$addvlan = isset($_POST['addvlan']) ? $_POST['addvlan'] : array();
 $layout['pagetitle'] = trans('VLAN List');
 
-$params['orderby'] = $_GET['orderby'];
+$params['orderby'] = isset($_GET['orderby']) ? $_GET['orderby'] : null;
 
 $vlanlist = $LMS->GetVlanList($params);
 $netnodelist = $LMS->GetNetNodes();
@@ -64,4 +64,5 @@ $SMARTY->assign('action', $action);
 $SMARTY->assign('vlanlist', $vlanlist);
 $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('pagetitle', $layout['pagetitle']);
+$SMARTY->assign('pagelimit', ConfigHelper::getConfig('phpui.vlanlist_pagelimit', 100));
 $SMARTY->display('vlan/vlanlist.html');

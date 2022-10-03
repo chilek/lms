@@ -22,7 +22,7 @@
 				</label>
 				{if count($customer_phone_list) > 1}
 					<SELECT NAME="phone" CLASS="form-control" id="phonelabel">
-						<OPTION VALUE="0">{trans("- all -")}</OPTION>
+						<OPTION VALUE="0">{trans("— all —")}</OPTION>
 							{foreach $customer_phone_list as $phone}
 							<OPTION VALUE="{$phone}"{if $params.phone == $phone} SELECTED{/if}>{$phone}</OPTION>
 							{/foreach}
@@ -50,26 +50,48 @@
 				<INPUT TYPE="text" id="dateto" NAME="date_to" CLASS="lms-ui-date form-control m-1" VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
 			</div>
 			<div class="form-group">
-				<label for="exampleInputName2" class="m-2">
-					{trans("Connection type:")}
+				<label for="fdirection" class="m-2">
+					{trans("<!voip>Direction")}
 				</label>
-				<SELECT NAME="ftype" CLASS="form-control">
-					<OPTION VALUE="0">{trans("- all -")}</OPTION>
-					<OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
-					<OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
-				</SELECT>
+				<select name="fdirection" id="fdirection" class="form-control">
+					<option value="0">{trans("— all —")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_DIRECTION_INCOMING}"
+						{if $params.fdirection == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING} selected{/if}>{trans("<!voip>incoming")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}"
+						{if $params.fdirection == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING} selected{/if}>{trans("<!voip>outgoing")}</option>
+				</select>
 			</div>
 			<div class="form-group">
-				<label for="exampleInputName2" class="m-2">
-					{trans("Status:")}
+				<label for="ftype" class="m-2">
+					{trans("<!voip>Type")}
 				</label>
-				<SELECT NAME="fstatus" CLASS="form-control">
-					<OPTION VALUE="0">{trans("- all -")}</OPTION>
-					<OPTION VALUE="{CALL_ANSWERED}"      {if $params.fstatus == CALL_ANSWERED}  SELECTED{/if}>{trans("answered")}</OPTION>
-					<OPTION VALUE="{CALL_NO_ANSWER}"     {if $params.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
-					<OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
-					<OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
-				</SELECT>
+				<select name="ftype" id="ftype" class="form-control">
+					<option value="">{trans("— all —")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_CALL}"
+						{if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_CALL} selected{/if}>{trans("<!voip>call")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_SMS}"
+						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_SMS} selected{/if}>{trans("<!voip>SMS")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_MMS}"
+						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_MMS} selected{/if}>{trans("<!voip>MMS")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}"
+						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER} selected{/if}>{trans("<!voip>data transfer")}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="fstatus" class="m-2">
+					{trans("<!voip>Status")}
+				</label>
+				<select name="fstatus" id="fstatus" class="form-control">
+					<option value="0">{trans("— all —")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_STATUS_ANSWERED}"
+						{if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_ANSWERED} selected{/if}>{trans("answered")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_STATUS_NO_ANSWER}"
+						{if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_NO_ANSWER} selected{/if}>{trans("no answer")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_STATUS_BUSY}"
+						{if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_BUSY} selected{/if}>{trans("<!voip>busy")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}"
+						{if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED} selected{/if}>{trans("server error")}</option>
+				</select>
 			</div>
 			{button type="submit" id="billing" class="btn btn-danger m-2" icon="search" label="Search"}
 			{button type="submit" id="minibilling" class="btn btn-secondary m-2" icon="phone" label="Minibilling"}
@@ -91,58 +113,87 @@
 			<TABLE CLASS="table table-striped table-sm table-condensed">
 				<thead>
 					<TR>
-						<th>{trans("Begin time:<!voip>")}</th>
+						<th>{trans("Date")}</th>
 						<th>{trans("Caller:")}</th>
 						<th>{trans("Callee:")}</th>
-						<th>{trans("Call begin time:")}</th>
-						<th>{trans("Call answer time:")}</th>
-						<th>{trans("Connection type:")}</th>
-						<th>{trans("Status:")}</th>
+						<th>{trans("<!voip>Total time")}</th>
+						<th>{trans("<!voip>Billed time")}</th>
+						<th>{trans("<!voip>Direction")}</th>
+						<th>{trans("<!voip>Type")}</th>
+						<th>{trans("<!voip>Status")}</th>
 						<th>{trans("Price:")}</th>
 						<th>{trans("Others:")}</th>
 					</TR>
 				</thead>
 				{section name=i loop=$billings start=(($pagination->getCurrentPage()-1)*$pagination->getItemsPerPage()) max=$pagination->getItemsPerPage()}
 					<TR>
-						<TD>{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}</TD>
+						<TD>{$billings[i].begintime|date_format:"Y-m-d H:i:s"}</TD>
 						<TD>{$billings[i].caller}</TD>
 						<TD>{$billings[i].callee}</TD>
-						<TD>{$billings[i].callbegintime|duration_format}</TD>
-						<TD>{$billings[i].callanswertime|duration_format}</TD>
-						<TD>
-							{if $billings[i].type == CALL_OUTGOING}
-								{trans("outgoing")}
-							{elseif $billings[i].type == CALL_INCOMING}
-								{trans("incoming")}
+						<td>
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+								{$billings[i].totaltime|duration_format}
+							{else}
+								-
 							{/if}
-						</TD>
+						</td>
+						<td>
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+								{$billings[i].billedtime|duration_format}
+							{elseif $billings[i].type = $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+								{$billings[i].billedtime|size_format}
+							{else}
+								-
+							{/if}
+						</td>
+						<td colspan="2">
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+								{trans("<!voip>data transfer")}
+							{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
+								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+									{trans("<!voip>outgoing call")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+									{trans("<!voip>outgoing SMS")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+									{trans("<!voip>outgoing MMS")}
+								{/if}
+							{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
+								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+									{trans("<!voip>incoming call")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+									{trans("<!voip>incoming SMS")}
+								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_MMS}
+									{trans("<!voip>incoming MMS")}
+								{/if}
+							{/if}
+						</td>
 						<TD>
-							{if $billings[i].status == CALL_BUSY}
-								{trans("busy<!voip>")}
-							{elseif $billings[i].status == CALL_ANSWERED}
+							{if $billings[i].status == $smarty.const.BILLING_RECORD_STATUS_BUSY}
+								{trans("<!voip>busy")}
+							{elseif $billings[i].status == $smarty.const.BILLING_RECORD_STATUS_ANSWERED}
 								{trans("answered")}
-							{elseif $billings[i].status == CALL_NO_ANSWER}
+							{elseif $billings[i].status == $smarty.const.BILLING_RECORD_STATUS_NO_ANSWER}
 								{trans("no answer")}
-							{elseif $billings[i].status == CALL_SERVER_FAILED}
+							{elseif $billings[i].status == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}
 								{trans("server error")}
 							{/if}
 						</TD>
 						<TD>{$billings[i].price|money_format}</TD>
 						<TD STYLE="text-align: right; color: black;">
-							{if $billings[i].callanswertime}
-								{if $billings[i].type == CALL_OUTGOING}
+							{if !empty($billings[i].billedtime)}
+								{if $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
 									{assign var=flags value=$billings[i].caller_flags}
-								{else if $billings[i].type == CALL_INCOMING}
+								{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
 									{assign var=flags value=$billings[i].callee_flags}
 								{else}
 									{assign var=flags value=0}
 								{/if}
-								{if $flags & CALL_FLAG_CUSTOMER_RECORDING}
+								{if $flags & $smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING}
 									{documentview id="{$billings[i].id}"
-                                                                  type="audio/mp3"
-                                                                  name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
-                                                                  url="?m=voip&record={$billings[i].id}"
-                                                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
+										type="audio/mp3"
+										name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"Y-m-d H:i:s"}"
+										url="?m=voip&record={$billings[i].id}"
+										text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
 								{/if}
 							{/if}
 						</TD>
@@ -303,7 +354,7 @@
          * \param  int/string customer flags
          */
         function updateRecordingRadioBtn( flags ) {
-            if (flags & {CALL_FLAG_CUSTOMER_RECORDING}) {
+            if (flags & {$smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING}) {
                 $( '#callrecordyes' ).prop( 'checked', true );
             } else {
                 $( '#callrecordno' ).prop( 'checked', true );

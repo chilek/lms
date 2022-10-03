@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -90,7 +90,7 @@ if (isset($setwarnings['mcustomerid'])) {
     $SESSION->save('warnon', $warnon);
     $SESSION->save('warnoff', $warnoff);
 
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_GET['search'])) {

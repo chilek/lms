@@ -75,9 +75,9 @@ switch ($_GET['action']) {
         $flags = $LMS->DB->GetOne('SELECT flags FROM voipaccounts WHERE id = ?', array($id));
 
         if ($rec) {
-            $flags |= CALL_FLAG_CUSTOMER_RECORDING;
+            $flags |= VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING;
         } else {
-            $flags &= ~(CALL_FLAG_CUSTOMER_RECORDING);
+            $flags &= ~(VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING);
         }
         $LMS->DB->Execute('UPDATE voipaccounts SET flags = ? WHERE id = ?', array($flags, $id));
 
@@ -151,7 +151,7 @@ if (isset($_GET['record'])) {
 
 function module_main()
 {
-    global $LMS, $SMARTY, $SESSION;
+    global $LMS, $SMARTY, $SESSION, $plugin_manager;
 
     $phones = array();
     $params = array();
@@ -172,7 +172,7 @@ function module_main()
         if (empty($_GET['phone']) && count($user_acc_ids) > 1) {
             $params['id'] = $user_acc_ids;
         } else {
-            if (in_array($_GET['phone'], $phones)) {
+            if (!empty($_GET['phone']) && in_array($_GET['phone'], $phones)) {
                 $params['phone'] = $_GET['phone'];
             } else {
                 $params['id'] = $user_acc_ids;
@@ -191,22 +191,26 @@ function module_main()
 
         if (!empty($_GET['fstatus'])) {
             switch ($_GET['fstatus']) {
-                case CALL_ANSWERED:
-                case CALL_NO_ANSWER:
-                case CALL_BUSY:
-                case CALL_SERVER_FAILED:
+                case BILLING_RECORD_STATUS_ANSWERED:
+                case BILLING_RECORD_STATUS_NO_ANSWER:
+                case BILLING_RECORD_STATUS_BUSY:
+                case BILLING_RECORD_STATUS_SERVER_FAILED:
                     $params['fstatus'] = $_GET['fstatus'];
                     break;
             }
         }
 
-        if (!empty($_GET['ftype'])) {
-            switch ($_GET['ftype']) {
-                case CALL_OUTGOING:
-                case CALL_INCOMING:
-                    $params['ftype'] = $_GET['ftype'];
+        if (!empty($_GET['fdirection'])) {
+            switch ($_GET['fdirection']) {
+                case BILLING_RECORD_DIRECTION_OUTGOING:
+                case BILLING_RECORD_DIRECTION_INCOMING:
+                    $params['fdirection'] = $_GET['fdirection'];
                     break;
             }
+        }
+
+        if (isset($_GET['ftype'])) {
+            $params['ftype'] = is_numeric($_GET['ftype']) ? $_GET['ftype'] : null;
         }
 
         if (!empty($_GET['o'])) {
@@ -223,18 +227,33 @@ function module_main()
             $params['o'] = 'begintime,desc';
         }
 
-        if ($_GET['mode'] == 'minibilling') {
+        $params['fvownerid'] = $SESSION->id;
+
+        $plugin_manager->executeHook('voip_billing_preparation', array(
+            'customerid' => $params['fvownerid'],
+            'voipaccountid' => empty($params['id']) ? null : $params['id'],
+            'number' => empty($params['phone']) ? null : $params['phone'],
+            'datefrom' => isset($params['frangefrom']) ? $params['frangefrom'] : null,
+            'dateto' => isset($params['frangeto']) ? $params['frangeto'] : null,
+            'direction' => isset($params['fdirection']) ? $params['fdirection'] : null,
+            'type' => isset($params['ftype']) ? $params['ftype'] : null,
+            'status' => isset($params['fstatus']) ? $params['fstatus'] : null,
+        ));
+
+        if (isset($_GET['mode']) && $_GET['mode'] == 'minibilling') {
             require_once('minibilling.php');
             die;
         }
 
         $billings = $LMS->getVoipBillings($params);
+    } else {
+        $billings = null;
     }
 
     $pagin = new LMSPagination_ext();
     $pagin->setItemsPerPage(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
     $pagin->setItemsCount(empty($billings) ? 0 : count($billings));
-    $pagin->setCurrentPage(((!$_GET['page']) ? 1 : (int) $_GET['page']));
+    $pagin->setCurrentPage(empty($_GET['page']) ? 1 : intval($_GET['page']));
     $pagin->setRange(3);
 
     $SMARTY->assign('pagination', $pagin);

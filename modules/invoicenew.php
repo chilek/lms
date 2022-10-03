@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -140,7 +140,6 @@ switch ($action) {
             $invoice['netflag'] = ConfigHelper::checkConfig('invoices.default_net_account');
         }
         $invoice['number'] = '';
-        $invoice['numberplanid'] = null;
 
         if (ConfigHelper::checkConfig('invoices.force_telecom_service_flag')) {
             $invoice['flags'][DOC_FLAG_TELECOM_SERVICE] = time() < mktime(0, 0, 0, 7, 1, 2021) ? 1 : 0;
@@ -156,19 +155,25 @@ switch ($action) {
         if (isset($_GET['id'])) {
             $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
         } else {
-            if (isset($customer) && $customer['paytime'] != -1) {
-                $paytime = $customer['paytime'];
-            } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
-				WHERE id = ?', array($customer['divisionid']))) === null) {
+            if (isset($customer)) {
+                if ($customer['paytime'] != -1) {
+                    $paytime = $customer['paytime'];
+                } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+                     WHERE id = ?', array($customer['divisionid']))) === null) {
+                    $paytime = ConfigHelper::getConfig('invoices.paytime');
+                }
+            } else {
                 $paytime = ConfigHelper::getConfig('invoices.paytime');
             }
             $invoice['deadline'] = $currtime + $paytime * 86400;
         }
 
-        $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
-            $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
-            empty($customer) ? null : $customer['divisionid']
-        );
+        if (!isset($_GET['clone'])) {
+            $invoice['numberplanid'] = $LMS->getDefaultNumberPlanID(
+                $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+                empty($customer) ? null : $customer['divisionid']
+            );
+        }
 
         $hook_data = array(
             'invoice' => $invoice,
@@ -342,7 +347,7 @@ switch ($action) {
         break;
 
     case 'setcustomer':
-        $customer_paytime = $customer['paytime'];
+        $customer_paytime = isset($customer) ? $customer['paytime'] : -1;
 
         unset($invoice);
         unset($customer);
@@ -424,6 +429,12 @@ switch ($action) {
             $invoice['sdate'] = $invoice['cdate'];
         }
 
+        $cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+
+        if ($LMS->CustomerExists($cid)) {
+            $customer = $LMS->GetCustomer($cid, true);
+        }
+
         if ($invoice['deadline']) {
             list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
@@ -437,7 +448,7 @@ switch ($action) {
         } else {
             if ($customer_paytime != -1) {
                 $paytime = $customer_paytime;
-            } elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+            } elseif (!empty($customer) && ($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
 				WHERE id = ?', array($customer['divisionid']))) === null) {
                 $paytime = ConfigHelper::getConfig('invoices.paytime');
             }
@@ -447,8 +458,6 @@ switch ($action) {
         if ($invoice['deadline'] < $invoice['cdate']) {
             $error['deadline'] = trans('Deadline date should be later than consent date!');
         }
-
-        $cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
 
         if ($invoice['number']) {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
@@ -468,10 +477,6 @@ switch ($action) {
             $error['currency'] = trans('Invalid currency selection!');
         }
 
-        if ($LMS->CustomerExists($cid)) {
-            $customer = $LMS->GetCustomer($cid, true);
-        }
-
         if (empty($error)) {
             // finally check if selected customer can use selected numberplan
             $args = array(
@@ -488,7 +493,7 @@ switch ($action) {
                 unset($customer);
             }
 
-            if (count($numberplans) && empty($invoice['numberplanid'])) {
+            if ($numberplans && count($numberplans) && empty($invoice['numberplanid'])) {
                 $error['numberplanid'] = trans('Select numbering plan');
             }
         }
@@ -557,7 +562,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($invoice['numberplanid'])) {
+        if ($numberplans && count($numberplans) && empty($invoice['numberplanid'])) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -584,7 +589,12 @@ switch ($action) {
         }
 
         $DB->BeginTrans();
-        $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions', 'addresses');
+        $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
+            'addresses', 'customers', 'customer_addresses');
+        if (ConfigHelper::getConfig('database.type') != 'postgres') {
+            $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
+        }
+
         if ($SYSLOG) {
             $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
         }
@@ -605,7 +615,6 @@ switch ($action) {
                 'planid' => $invoice['numberplanid'],
                 'cdate' => $invoice['cdate'],
                 'customerid' => $customer['id'],
-                'comment' => $invoice['comment'],
             ));
         } else {
             if (!preg_match('/^[0-9]+$/', $invoice['number'])) {
@@ -616,7 +625,6 @@ switch ($action) {
                     'planid' => $invoice['numberplanid'],
                     'cdate' => $invoice['cdate'],
                     'customerid' => $customer['id'],
-                    'comment' => $invoice['comment'],
                 ))) {
                 $error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
             }
@@ -687,6 +695,8 @@ switch ($action) {
         $SESSION->remove('invoice', true);
         $SESSION->remove('invoicenewerror', true);
 
+        $contents = $customer = $error = $invoice = null;
+
         if (isset($_GET['print'])) {
             $which = isset($_GET['which']) ? $_GET['which'] : 0;
 
@@ -696,8 +706,9 @@ switch ($action) {
         if (isset($_POST['reuse']) || isset($_GET['print'])) {
             $SESSION->redirect('?m=invoicenew&action=init');
         } else {
-            $SESSION->redirect('?' . $SESSION->get('backto'));
+            $SESSION->redirect_to_history_entry();
         }
+
         break;
 }
 
@@ -706,14 +717,15 @@ $SESSION->save('invoicecontents', isset($contents) ? $contents : null, true);
 $SESSION->save('invoicecustomer', isset($customer) ? $customer : null, true);
 $SESSION->save('invoicenewerror', isset($error) ? $error : null, true);
 
-
-if ($action && !$error) {
+if ($action && (!isset($error) || !$error)) {
     // redirect needed because we don't want to destroy contents of invoice in order of page refresh
     $SESSION->redirect('?m=invoicenew');
 }
 
 $covenantlist = array();
-$list = GetCustomerCovenants($customer['id'], $invoice['currency']);
+if (isset($customer)) {
+    $list = GetCustomerCovenants($customer['id'], $invoice['currency']);
+}
 
 if (isset($list)) {
     if ($contents) {
@@ -748,7 +760,7 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 
 $args = array(
-    'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+    'doctype' => !empty($invoice['proforma']) ? DOC_INVOICE_PRO : DOC_INVOICE,
     'cdate' => date('Y/m', $invoice['cdate']),
 );
 if (isset($customer)) {
@@ -768,7 +780,7 @@ $SMARTY->assign('taxeslist', $taxeslist);
 
 if (isset($invoice['proformaid']) && !empty($invoice['proformaid'])) {
     $layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
-} elseif ($invoice['proforma']) {
+} elseif (!empty($invoice['proforma'])) {
     $layout['pagetitle'] = trans('New Pro Forma Invoice');
 } else {
     $layout['pagetitle'] = trans('New Invoice');

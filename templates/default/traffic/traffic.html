@@ -111,7 +111,7 @@
 			{trans("From")}
 		</td>
 		<TD class="nobr">
-			<input type="text" id="datefrom" name="from" size="20" maxlength="20" value="{$starttime|date_format:"%Y/%m/%d %H:%M"}"
+			<input type="text" id="datefrom" name="from" size="20" maxlength="20" value="{$starttime|date_format:"Y/m/d H:i"}"
 					{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 		</TD>
 	</TR>
@@ -123,7 +123,7 @@
 			{trans("To")}
 		</td>
 		<TD class="nobr">
-			<input type="text" id="dateto" name="to" size="20" maxlength="20" value="{$endtime|date_format:"%Y/%m/%d %H:%M"}"
+			<input type="text" id="dateto" name="to" size="20" maxlength="20" value="{$endtime|date_format:"Y/m/d H:i"}"
 				{tip class="lms-ui-datetime" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 		</TD>
 	</TR>
@@ -144,7 +144,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" NAME="net">
-				<OPTION VALUE="0">{trans("- all -")}</OPTION>
+				<OPTION VALUE="0">{trans("— all —")}</OPTION>
 				{section name="netlist" loop=$netlist}
 				<OPTION VALUE="{$netlist[netlist].id}" {if $netlist[netlist].id == $trafficnet}SELECTED{/if}>{$netlist[netlist].name|truncate:30:"&hellip;":true}</OPTION>
 				{/section}
@@ -160,7 +160,7 @@
 		</TD>
 		<TD>
 			{customerlist form="traffic" customers=$customers selectname="custid" version=2
-				inputname="customerid" firstoption="- all customers -"}
+				inputname="customerid" firstoption="— all customers —"}
 		</TD>
 	</TR>
 	<TR {tip text="Select results sorting order"}>

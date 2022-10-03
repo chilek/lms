@@ -35,7 +35,7 @@ $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIREC
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
 //define('K_TCPDF_EXTERNAL_CONFIG', true);
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 // find alternative config files:
 if (is_readable('lms.ini')) {

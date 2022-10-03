@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,12 +31,11 @@ if (!isset($_GET['init'])) {
 
     if (isset($_GET['t'])) {
         if (is_array($_GET['t'])) {
-            $filter['type'] = Utils::filterIntegers($_GET['t']);
-            if (count($filter['type']) == 1) {
-                $first = reset($filter['type']);
-                if ($first == 0) {
-                    $filter['type'] = 0;
-                }
+            $filter['type'] = array_filter(Utils::filterIntegers($_GET['t']), function ($type) {
+                return !empty($type);
+            });
+            if (empty($filter['type'])) {
+                $filter['type'] = 0;
             }
         } else {
             $filter['type'] = intval($_GET['t']);
@@ -185,7 +184,7 @@ unset($documentlist['direction']);
 
 $layout['pagetitle'] = trans('Documents List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if ($docid = $SESSION->get('documentprint')) {
     $SMARTY->assign('docid', $docid);

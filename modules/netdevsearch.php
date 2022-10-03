@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,10 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 
     $DB = LMSDB::getInstance();
 
-    list($order,$direction) = sscanf($order, '%[^,],%s');
+    if (!isset($order)) {
+        $order = 'name,asc';
+    }
+    list ($order, $direction) = sscanf($order, '%[^,],%s');
 
     ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -152,7 +155,7 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 
         foreach ($netdevlist as &$netdev) {
             $netdev['customlinks'] = array();
-            if (!$netdev['location'] && $netdev['ownerid']) {
+            if (!$netdev['location'] && !empty($netdev['ownerid'])) {
                 $netdev['location'] = $LMS->getAddressForCustomerStuff($netdev['ownerid']);
             }
             $netdev['terc'] = empty($netdev['state_ident']) ? null
@@ -176,7 +179,7 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
     return $netdevlist;
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (isset($_POST['search'])) {
         $netdevsearch = $_POST['search'];

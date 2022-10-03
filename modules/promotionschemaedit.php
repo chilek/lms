@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2021 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ $action = !empty($_GET['action']) ? $_GET['action'] : null;
 
 if ($action == 'tariff' && !empty($_POST['form'])) {
     $form = $_POST['form'];
-    $assignmentid = intval($_GET['aid']);
+    $assignmentid = isset($_GET['aid']) ? intval($_GET['aid']) : null;
 
     $data = array();
     $regexp = '/^(' . ($assignmentid ? 'tariffval|tariffperiod' : 'value|period') .')([0-9]+)$/';
@@ -146,7 +146,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
                 $args = array(
                     SYSLOG::RES_PROMOASSIGN => $assignmentid,
                     SYSLOG::RES_PROMOSCHEMA => $schemaid,
-                    SYSLOG::RES_TARIFF => $form['tariffid'],
+                    SYSLOG::RES_TARIFF => intval($form['tariffid']),
                     SYSLOG::RES_PROMO => $promotionid,
                     'backwardperiod' => $backwardperiod,
                     'optional' => $optional,
@@ -178,14 +178,14 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
             }
         }
 
-        $data['tags'] = $_POST['form']['tags'];
-        $data['alltariffs'] = $_POST['form']['alltariffs'];
+        $data['tags'] = isset($_POST['form']['tags']) ? $_POST['form']['tags'] : array();
+        $data['alltariffs'] = isset($_POST['form']['alltariffs']);
         $SESSION->save('psdform', $data);
         $SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);
     }
 
     $data = $_POST['form'];
-    $data['aid'] = $assignmentid ? $assignmentid : null;
+    $data['aid'] = $assignmentid ?: null;
 
     $SMARTY->assign('formdata', $data);
     $SMARTY->assign('error', $error);
@@ -210,8 +210,8 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
     $DB->Execute('DELETE FROM promotionassignments WHERE id = ?', array($aid));
 
     $data['servicetype'] = $_POST['form']['servicetype'];
-    $data['tags'] = $_POST['form']['tags'];
-    $data['alltariffs'] = $_POST['form']['alltariffs'];
+    $data['tags'] = isset($_POST['form']['tags']) ? $_POST['form']['tags'] : array();
+    $data['alltariffs'] = empty($_POST['form']['alltariffs']) ? 0 : 1;
     $SESSION->save('psdform', $data);
     $SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);
 } else if ($action == 'tariff-reorder') {
@@ -291,6 +291,10 @@ if (isset($_POST['schema'])) {
         }
     }
 
+    if (!empty($schema['dateto']) && !empty($schema['datefrom']) && $schema['dateto'] < $schema['datefrom']) {
+        $error['dateto'] = trans('Incorrect date range!');
+    }
+
     if (!$error && !$warning) {
         $DB->BeginTrans();
 
@@ -299,10 +303,16 @@ if (isset($_POST['schema'])) {
             'description' => $schema['description'],
             'data' => empty($oldschema['assignmentcount']) || ConfigHelper::checkPrivilege('superuser') ? implode(';', $data) : $oldschema['data'],
             'length' => $length,
+            'datefrom' => $schema['datefrom'] ?: 0,
+            'dateto' => $schema['dateto'] ? strtotime('tomorrow', $schema['dateto']) - 1 : 0,
             SYSLOG::RES_PROMOSCHEMA => $schema['id'],
         );
-        $DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?, length = ?
-			WHERE id = ?', array_values($args));
+        $DB->Execute(
+            'UPDATE promotionschemas
+            SET name = ?, description = ?, data = ?, length = ?, datefrom = ?, dateto = ?
+            WHERE id = ?',
+            array_values($args)
+        );
 
         if ($SYSLOG) {
             $args[SYSLOG::RES_PROMO] = $oldschema['promotionid'];

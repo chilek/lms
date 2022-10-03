@@ -63,6 +63,8 @@ $(function () {
                 getNumberPlans(planElem, documentType, customerId, cdate);
             });
         }
+
+        getNumberPlans(planElem, $(doctypeElemId).val(), $(customerElemId).val(), $(cdateElemId).val());
     });
 
     function getNumberPlans(planElem, documentType, customerId, cdate) {
@@ -89,7 +91,7 @@ $(function () {
 
                 if(!$.isEmptyObject(data)) {
                     if (Object.keys(data).length > 1) {
-                        options += '<option value="" disabled selected hidden>' + $t('- select -') + '</option>';
+                        options += '<option value="" disabled selected hidden>' + $t('— select —') + '</option>';
                     }
                     $.each(data, function(key, item) {
                         options += '<option value="' + item.id + '"' + (parseInt(item.isdefault) !== 0 ? ' selected' : '');
@@ -98,7 +100,7 @@ $(function () {
                         options += '</option>';
                     });
                 } else {
-                    options += '<option value="" selected>' + $t('- select -') + '</option>';
+                    options += '<option value="" selected>' + $t('— select —') + '</option>';
                 }
                 html += options;
                 selectElem.html(html);

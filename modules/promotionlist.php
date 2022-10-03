@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Promotions List');
+$layout['pagetitle'] = trans('Promotion List');
 
 $promolist = $DB->GetAll('SELECT p.id, p.name, p.description, p.datefrom, p.dateto, disabled, deleted,
 			(SELECT COUNT(*) FROM promotionschemas
@@ -44,7 +44,7 @@ $promolist = $DB->GetAll('SELECT p.id, p.name, p.description, p.datefrom, p.date
 
 $listdata['total'] = empty($promolist) ? 0 : count($promolist);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('promotionlist', $promolist);
 $SMARTY->assign('listdata', $listdata);

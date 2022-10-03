@@ -35,6 +35,7 @@ DROP VIEW IF EXISTS vnodealltariffs;
 DROP VIEW IF EXISTS customerconsentview;
 DROP VIEW IF EXISTS vcustomerassignments;
 
+DROP TABLE IF EXISTS up_sessions;
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
@@ -160,8 +161,10 @@ DROP TABLE IF EXISTS customercallassignments;
 DROP TABLE IF EXISTS customercalls;
 DROP TABLE IF EXISTS customerkarmalastchanges;
 DROP TABLE IF EXISTS customernotes;
+DROP TABLE IF EXISTS customerextids;
 DROP TABLE IF EXISTS customerconsents;
 DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS serviceproviders;
 DROP TABLE IF EXISTS divisions;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS location_buildings;
@@ -450,13 +453,23 @@ CREATE TABLE divisions (
 
 # --------------------------------------------------------
 #
+# Structure of table serviceproviders (serviceproviders)
+#
+CREATE TABLE serviceproviders (
+    id int(11) NOT NULL auto_increment,
+    name varchar(64) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+# --------------------------------------------------------
+#
 # Structure of table customers (customers)
 #
 CREATE TABLE customers (
   id int(11) 		NOT NULL auto_increment,
-  extid varchar(32)	NOT NULL DEFAULT '',
   lastname varchar(128) NOT NULL DEFAULT '',
   name varchar(128) 	NOT NULL DEFAULT '',
+  altname varchar(128)  DEFAULT NULL,
   status smallint 	NOT NULL DEFAULT '0',
   type smallint		NOT NULL DEFAULT '0',
   ten varchar(50) 	NOT NULL DEFAULT '',
@@ -476,6 +489,7 @@ CREATE TABLE customers (
   deleted tinyint(1) 	NOT NULL DEFAULT '0',
   message text 		NOT NULL,
   pin varchar(255)	NOT NULL DEFAULT '0',
+  pinlastchange int(11) NOT NULL DEFAULT 0,
   cutoffstop int(11) 	NOT NULL DEFAULT '0',
   divisionid int(11)   	DEFAULT NULL,
   paytime smallint	NOT NULL DEFAULT '-1',
@@ -506,6 +520,21 @@ CREATE TABLE customerconsents (
     KEY customerconsents_cdate_idx (cdate),
     KEY customerconsents_type_idx (type),
     UNIQUE KEY customerconsents_ukey (customerid, type)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customerextids (customerextids)
+#
+CREATE TABLE customerextids (
+    customerid int(11) NOT NULL,
+    extid varchar(64) NOT NULL,
+    serviceproviderid int(11) DEFAULT NULL,
+    CONSTRAINT customerextids_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT customerextids_serviceproviderid_fkey
+        FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE KEY customerextids_customerid_extid_serviceproviderid_ukey (customerid, extid, serviceproviderid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -827,7 +856,9 @@ CREATE TABLE voipaccounts (
 	flags			smallint      NOT NULL DEFAULT 0,
 	cost_limit		decimal(12,2) NULL DEFAULT NULL,
 	address_id      int(11)       NULL DEFAULT NULL,
-    description text NOT NULL DEFAULT '',
+	description text NOT NULL DEFAULT '',
+	serviceproviderid integer DEFAULT NULL,
+	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT voipaccounts_address_id_fkey
 		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -836,7 +867,9 @@ CREATE TABLE voipaccounts (
 	CONSTRAINT voipaccounts_creatorid_fkey
 		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT voipaccounts_modid_fkey
-		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_serviceproviderid_fkey
+		FOREIGN KEY (serviceproviderid) REFERENCES serviceproviders (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -927,7 +960,8 @@ CREATE TABLE voip_cdr (
 	billedtime          int(11)       NOT NULL,
 	price               decimal(12,5) NOT NULL,
 	status              smallint      NOT NULL,
-	type                smallint      NOT NULL,
+	direction           smallint      NOT NULL,
+	type                smallint      NOT NULL DEFAULT 0,
 	callervoipaccountid int(11)       NULL,
 	calleevoipaccountid int(11)       NULL,
 	caller_flags        smallint      NOT NULL DEFAULT '0',
@@ -935,8 +969,18 @@ CREATE TABLE voip_cdr (
 	caller_prefix_group varchar(100)  NULL,
 	callee_prefix_group varchar(100)  NULL,
 	uniqueid            varchar(20)   NOT NULL,
+	fraction            varchar(256)  DEFAULT NULL,
+	prefix              varchar(256)  DEFAULT NULL,
+	prefixname          varchar(256)  DEFAULT NULL,
+	incremental         smallint      NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
-	UNIQUE KEY (uniqueid),
+	UNIQUE KEY voip_cdr_direction_uniqueid_ukey (uniqueid, direction),
+	KEY voip_cdr_caller_idx (caller),
+	KEY voip_cdr_callee_idx (callee),
+	KEY voip_cdr_call_start_time_idx (call_start_time),
+	KEY voip_cdr_direction_idx (direction),
+	KEY voip_cdr_type_idx (type),
+	KEY voip_cdr_incremental_idx (incremental),
 	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -1039,6 +1083,7 @@ CREATE TABLE voip_numbers (
 	voip_account_id int(11) NOT NULL,
 	phone varchar(20) NOT NULL,
 	number_index smallint NULL,
+	info varchar(255) DEFAULT NULL,
 	tariff_id int(11),
 	UNIQUE(phone),
 	UNIQUE(voip_account_id, number_index),
@@ -1124,6 +1169,8 @@ CREATE TABLE promotionschemas (
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     deleted tinyint(1)  DEFAULT 0 NOT NULL,
     length tinyint(1)   DEFAULT NULL,
+    datefrom int(11)    DEFAULT 0 NOT NULL,
+    dateto   int(11)    DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY promotionid (promotionid, name),
     FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1167,6 +1214,7 @@ CREATE TABLE assignments (
 	settlement tinyint(1) NOT NULL DEFAULT '0',
 	pdiscount decimal(5,2) NOT NULL DEFAULT '0',
 	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
+	paytime smallint DEFAULT NULL,
 	paytype smallint DEFAULT NULL,
 	numberplanid int(11) DEFAULT NULL,
 	attribute varchar(255) DEFAULT NULL,
@@ -1264,6 +1312,7 @@ CREATE TABLE cashsources (
 	description text		DEFAULT NULL,
 	account varchar(48)     NOT NULL DEFAULT '',
 	deleted smallint		NOT NULL DEFAULT 0,
+	isdefault smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
@@ -2144,6 +2193,7 @@ CREATE TABLE rtmessages (
   deltime int(11) NOT NULL DEFAULT '0',
   deluserid int(11) DEFAULT NULL,
   contenttype varchar(255) DEFAULT 'text/plain',
+  extid varchar(64)	DEFAULT NULL,
   PRIMARY KEY  (id),
   INDEX ticketid (ticketid),
   CONSTRAINT rtmessages_ticketid_fkey
@@ -2476,15 +2526,23 @@ CREATE TABLE events (
     moduserid int(11) DEFAULT NULL,
     type smallint NOT NULL DEFAULT 1,
     nodeid int(11) DEFAULT NULL,
+    netnodeid int(11) DEFAULT NULL,
+    netdevid int(11) DEFAULT NULL,
     ticketid int(11) DEFAULT NULL,
 	address_id int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     INDEX date (date),
+    INDEX events_netnodeid_idx (netnodeid),
+    INDEX events_netdevid_idx (netdevid),
     KEY nodeid (nodeid),
 	CONSTRAINT events_nodeid_fkey
 		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT events_ticketid_fkey
 		FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT events_netnodeid_fkey
+		FOREIGN KEY (netnodeid) REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT events_netdevices_fkey
+		FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT events_address_id_fkey
 		FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	CONSTRAINT events_customerid_fkey
@@ -2632,7 +2690,8 @@ CREATE TABLE ewx_pt_config (
 CREATE TABLE dbinfo (
   keytype varchar(255) NOT NULL DEFAULT '',
   keyvalue varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY  (keytype)
+  PRIMARY KEY  (keytype),
+  UNIQUE KEY dbinfo_keytype_ukey (keytype)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2716,7 +2775,7 @@ CREATE TABLE messageitems (
 	status 		smallint	DEFAULT '0' NOT NULL,
 	error 		text		DEFAULT NULL,
 	lastreaddate 	int(11)		DEFAULT '0' NOT NULL,
-	externalmsgid	int(11)		DEFAULT '0' NOT NULL,
+	externalmsgid	varchar(64) DEFAULT NULL,
     body 		text		DEFAULT NULL,
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
@@ -3045,6 +3104,23 @@ CREATE TABLE up_info_changes (
 
 # --------------------------------------------------------
 #
+# Structure of table up_sessions
+#
+CREATE TABLE up_sessions (
+	id varchar(50) NOT NULL DEFAULT '',
+	customerid int(11) NOT NULL,
+	ctime int(11) NOT NULL DEFAULT 0,
+	mtime int(11) NOT NULL DEFAULT 0,
+	atime int(11) NOT NULL DEFAULT 0,
+	vdata text NOT NULL,
+	content mediumtext NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT up_sessions_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Functions and Views
 #
 CREATE VIEW vcustomerassignments AS
@@ -3286,13 +3362,15 @@ CREATE VIEW customerview AS
         a2.name as post_name, a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE NOT EXISTS (
         SELECT 1 FROM vcustomerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -3317,64 +3395,75 @@ CREATE VIEW vallusers AS
 	FROM users;
 
 CREATE VIEW vinvoicecontents AS
-    (
-        SELECT ic.*,
-            1 AS netflag,
-            ROUND(ic.value, 2) AS netprice,
-            ROUND(ic.value * (1 + (t.value / 100)), 2) AS grossprice,
-            ROUND(ic.value * ABS(ic.count), 2) AS netvalue,
-            ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / 100, 2) AS taxvalue,
-            ROUND(ROUND(ic.value * ABS(ic.count), 2) * (1 + (t.value / 100)), 2) AS grossvalue,
-            (ic.count - ic2.count) AS diff_count,
-            (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
-            (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
-            (ROUND(ic.value, 2) - ROUND(ic2.value, 2)) AS diff_netprice,
-            (ROUND(ic.value * (1 + (t.value / 100)), 2) - ROUND(ic2.value * (1 + (t.value / 100)), 2)) AS diff_grossprice,
-            (ROUND(ic.value * ABS(ic.count), 2) - ROUND(ic2.value * ABS(ic2.count), 2)) AS diff_netvalue,
-            (ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / 100, 2)
-                - ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * t.value / 100, 2)) AS diff_taxvalue,
-            (ROUND(ROUND(ic.value * ABS(ic.count), 2) * (1 + (t.value / 100)), 2)
-                - ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * (1 + (t.value / 100)), 2)) AS diff_grossvalue,
-            (CASE WHEN t.reversecharge = 1 THEN -2 ELSE (
-                CASE WHEN t.taxed = 0 THEN -1 ELSE t.value END
-            ) END) AS taxrate
-        FROM invoicecontents ic
-        JOIN taxes t ON t.id = ic.taxid
-        JOIN documents d ON d.id = ic.docid
-        LEFT JOIN documents d2 ON d2.id = d.reference
-        LEFT JOIN invoicecontents ic2 ON ic2.docid = d2.id AND ic2.itemid = ic.itemid
-        WHERE (d.flags & 16) > 0
-    ) UNION (
-        SELECT ic.*,
-            0 AS netflag,
-            ROUND(ic.value / (1 + (t.value / 100)), 2) AS netprice,
-            ROUND(ic.value, 2) AS grossprice,
-            (ROUND(ic.value * ABS(ic.count), 2)
-                - ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)) AS netvalue,
-            ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2) AS taxvalue,
-            ROUND(ic.value * ABS(ic.count), 2) AS grossvalue,
-            (ic.count - ic2.count) AS diff_count,
-            (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
-            (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
-            (ROUND(ic.value / (1 + (t.value / 100)), 2) - ROUND(ic2.value / (1 + (t.value / 100)), 2)) AS diff_netprice,
-            (ROUND(ic.value, 2) - ROUND(ic2.value, 2)) AS diff_grossprice,
-            (ROUND(ic.value * ABS(ic.count), 2)
-                - ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
-                - ROUND(ic2.value * ABS(ic2.count), 2)
-                + ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * t.value / (100 + t.value), 2)) AS diff_netvalue,
-            (ROUND(ROUND(ic.value * ABS(ic.count), 2) * t.value / (100 + t.value), 2)
-                - ROUND(ROUND(ic2.value * ABS(ic2.count), 2) * t.value / (100 + t.value), 2)) AS diff_taxvalue,
-            (ROUND(ic.value * ABS(ic.count), 2) - ROUND(ic2.value * ABS(ic2.count), 2)) AS diff_grossvalue,
-            (CASE WHEN t.reversecharge = 1 THEN -2 ELSE (
-                CASE WHEN t.taxed = 0 THEN -1 ELSE t.value END
-            ) END) AS taxrate
-        FROM invoicecontents ic
-        JOIN taxes t ON t.id = ic.taxid
-        JOIN documents d ON d.id = ic.docid
-        LEFT JOIN documents d2 ON d2.id = d.reference
-        LEFT JOIN invoicecontents ic2 ON ic2.docid = d2.id AND ic2.itemid = ic.itemid
-        WHERE (d.flags & 16) = 0
-    );
+    SELECT ic.docid AS docid, ic.itemid AS itemid, ic.value AS value, ic.pdiscount AS pdiscount,
+        ic.taxid AS taxid, ic.prodid AS prodid, ic.content AS content, ic.count AS count, ic.description AS description,
+        ic.tariffid AS tariffid, ic.vdiscount AS vdiscount, ic.taxcategory AS taxcategory, ic.period AS period,
+        (CASE WHEN (d.flags & 16) > 0 THEN 1 ELSE 0 END) AS netflag,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(ic.value, 2)
+            ELSE
+                ROUND((ic.value / (1 + (t.value / 100))), 2)
+        END) AS netprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * (1 + (t.value / 100))), 2)
+            ELSE
+                ROUND(ic.value, 2)
+        END) AS grossprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * ABS(ic.count)), 2)
+            ELSE
+                (ROUND((ic.value * ABS(ic.count)), 2) - ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)), 2))
+        END) AS netvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / 100), 2)
+            ELSE
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)), 2)
+        END) AS taxvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ROUND((ic.value * ABS(ic.count)), 2) * (1 + (t.value / 100))), 2)
+            ELSE
+                ROUND((ic.value * ABS(ic.count)), 2)
+        END) AS grossvalue,
+        (ic.count - ic2.count) AS diff_count,
+        (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
+        (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+            ELSE
+                ROUND((ic.value / (1 + (t.value / 100))),2) - ROUND((ic2.value / (1 + (t.value / 100))), 2)
+        END) AS diff_netprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * (1 + (t.value / 100))),2) - ROUND((ic2.value * (1 + (t.value / 100))) ,2)
+            ELSE
+                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+        END) AS diff_grossprice,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
+            ELSE
+                ((ROUND((ic.value * ABS(ic.count)), 2) - ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)),2)) - ROUND((ic2.value * ABS(ic2.count)), 2)) + ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)) ,2)
+        END) AS diff_netvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / 100),2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / 100), 2)
+            ELSE
+                ROUND(((ROUND((ic.value * ABS(ic.count)), 2) * t.value) / (100 + t.value)),2) - ROUND(((ROUND((ic2.value * ABS(ic2.count)), 2) * t.value) / (100 + t.value)), 2)
+        END) AS diff_taxvalue,
+        (CASE WHEN (d.flags & 16) > 0 THEN
+                ROUND((ROUND((ic.value * ABS(ic.count)), 2) * (1 + (t.value / 100))),2) - ROUND((ROUND((ic2.value * ABS(ic2.count)), 2) * (1 + (t.value / 100))), 2)
+            ELSE
+                ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
+        END) AS diff_grossvalue,
+        (CASE WHEN t.reversecharge = 1
+            THEN -2
+            ELSE (CASE WHEN t.taxed = 0
+                THEN -1
+                ELSE t.value
+            END)
+        END) AS taxrate
+    FROM invoicecontents ic
+    JOIN taxes t ON t.id = ic.taxid
+    JOIN documents d ON d.id = ic.docid
+    LEFT JOIN documents d2 ON d2.id = d.reference
+    LEFT JOIN invoicecontents ic2 ON ic2.docid = d2.id AND ic2.itemid = ic.itemid;
 
 CREATE VIEW contractorview AS
     SELECT c.*,
@@ -3392,13 +3481,15 @@ CREATE VIEW contractorview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
@@ -3417,13 +3508,15 @@ CREATE VIEW customeraddressview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice
+        a2.postoffice AS post_postoffice,
+        ce.extid AS extid
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
         LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
         LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
         LEFT JOIN customerconsentview cc ON cc.customerid = c.id
+        LEFT JOIN customerextids ce ON ce.customerid = c.id AND ce.serviceproviderid IS NULL
     WHERE c.type < 2;
 
 CREATE VIEW teryt_terc AS
@@ -3610,7 +3703,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','balancelist_pagelimit','100','',0),
 ('phpui','invoicelist_pagelimit','100','',0),
 ('phpui','debitnotelist_pagelimit','100','',0),
-('phpui','ticketlist_pagelimit','100','',0),
+('rt','ticketlist_pagelimit','100','',0),
 ('phpui','accountlist_pagelimit','100','',0),
 ('phpui','domainlist_pagelimit','100','',0),
 ('phpui','aliaslist_pagelimit','100','',0),
@@ -3630,7 +3723,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','reload_execcmd','/bin/true','',0),
 ('phpui','reload_sqlquery','','',0),
 ('phpui','lastonline_limit','600','',0),
-('phpui','timetable_days_forward','7','',0),
+('timetable','default_forward_day_limit','7','',0),
 ('phpui','gd_translate_to','ISO-8859-2','',0),
 ('phpui','check_for_updates_period','86400','',0),
 ('phpui','homedir_prefix','/home/','',0),
@@ -3643,31 +3736,31 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','allow_mac_sharing','false','',0),
 ('phpui','big_networks','true','',0),
 ('phpui','short_pagescroller','true','',0),
-('phpui','helpdesk_stats','true','',0),
-('phpui','helpdesk_customerinfo','true','',0),
-('phpui','helpdesk_customerinfo_mail_body','--
+('rt','show_stats','true','',0),
+('rt','notification_customerinfo','true','',0),
+('rt','notification_mail_body_customerinfo_format','--
 Klient: %custname ID: %cid
 Adres: %address
 E-mail: %email
 Telefon: %phone','',0),
-('phpui','helpdesk_customerinfo_sms_body','Klient: %custname ID: %cid Adres: %address Telefon: %phone','',0),
-('phpui','helpdesk_backend_mode','false','',0),
-('phpui','helpdesk_sender_name','','',0),
-('phpui','helpdesk_reply_body','false','',0),
-('phpui','helpdesk_notification_mail_subject','[RT#%tid] %subject','',0),
-('phpui','helpdesk_notification_mail_body','%body
+('rt','notification_sms_body_customerinfo_format','Klient: %custname ID: %cid Adres: %address Telefon: %phone','',0),
+('rt','backend_mode','false','',0),
+('rt','sender_name','','',0),
+('rt','quote_body','false','',0),
+('rt','notification_mail_subject','[RT#%tid] %subject','',0),
+('rt','notification_mail_body','%body
 
 URL: %url
 
 %customerinfo','',0),
-('phpui','helpdesk_notification_sms_body','[RT#%tid] %subject: %body %customerinfo','',0),
+('rt','notification_sms_body','[RT#%tid] %subject: %body %customerinfo','',0),
 ('phpui','use_invoices','false','',0),
-('phpui','ticket_template_file','rtticketprint.html','',0),
+('rt','ticket_template_file','rtticketprint.html','',0),
 ('phpui','use_current_payday','false','',0),
 ('phpui','default_monthly_payday','','',0),
-('phpui','newticket_notify','true','',0),
+('rt','new_ticket_notify','true','',0),
 ('phpui','to_words_short_version','false','',0),
-('phpui','ticketlist_status','','',0),
+('rt','ticketlist_status','','',0),
 ('phpui','ewx_support','false','',0),
 ('phpui','invoice_check_payment','false','',0),
 ('phpui','note_check_payment','false','',0),
@@ -3679,12 +3772,12 @@ URL: %url
 ('phpui','logging','false','',0),
 ('phpui','hide_toolbar','false','',0),
 ('phpui','add_customer_group_required','false','',0),
-('phpui','document_margins','10,5,15,5','',0),
+('documents','margins','10,5,15,5','',0),
 ('phpui', 'quicksearch_limit', '15','', 0),
 ('phpui', 'ping_type', '1','', 0),
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
-('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('timetable', 'event_usergroup_selection_type', 'update', '', 0),
 ('phpui', 'force_global_division_context', 'false', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
@@ -3783,6 +3876,7 @@ URL: %url
 ('userpanel', 'document_approval_customer_notification_mail_format', 'text', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_subject', '', '', 0),
 ('userpanel', 'document_approval_customer_notification_mail_body', '', '', 0),
+('userpanel', 'document_approval_customer_notification_attachments', '0', '', 0),
 ('userpanel', 'document_approval_customer_onetime_password_sms_body', '', '', 0),
 ('userpanel', 'google_recaptcha_sitekey', '', '', 0),
 ('userpanel', 'google_recaptcha_secret', '', '', 0),
@@ -3801,6 +3895,7 @@ URL: %url
 ('userpanel', 'pin_validation', 'true', '', 0),
 ('userpanel', 'show_all_assignments', 'false', '', 0),
 ('userpanel', 'allowed_document_types', '', '', 0),
+('userpanel', 'allowed_customer_status', '', '', 0),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -4145,4 +4240,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2021072900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022092201');

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -69,12 +69,6 @@ foreach ($nodeinfo['macs'] as $key => $value) {
 
 $nodeinfo['macs'] = $macs;
 
-if (!isset($_GET['ownerid'])) {
-    $SESSION->save('backto', $SESSION->get('backto') . '&ownerid=' . $customerid);
-} else {
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-}
-
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
 if (isset($_POST['nodeedit'])) {
@@ -91,7 +85,7 @@ if (isset($_POST['nodeedit'])) {
     }
 
     if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '' && !isset($nodeedit['wholenetwork'])) {
-        $SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
+        $SESSION->redirect_to_history_entry();
     }
 
     if (isset($nodeedit['wholenetwork'])) {
@@ -155,7 +149,9 @@ if (isset($_POST['nodeedit'])) {
         }
 
         if (check_mac($value)) {
-            if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
+            if (in_array($value, $macs)) {
+                $error['mac-input-' . $key] = trans('Specified MAC address is in use!');
+            } elseif ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                 if (($nodeid = $LMS->GetNodeIDByMAC($value)) != null && $nodeid != $nodeinfo['id']) {
                     $error['mac-input-' . $key] = trans('Specified MAC address is in use!');
                 }
@@ -327,14 +323,14 @@ if (isset($_POST['nodeedit'])) {
         );
         $nodeedit = $hook_data['nodeedit'];
 
-        $SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
+        $SESSION->redirect_to_history_entry();
     }
 
     $nodeinfo['name'] = $nodeedit['name'];
     $nodeinfo['macs'] = $nodeedit['macs'];
     $nodeinfo['ipaddr'] = $nodeedit['ipaddr'];
     $nodeinfo['netid'] = $nodeedit['netid'];
-    $nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'];
+    $nodeinfo['wholenetwork'] = isset($nodeedit['wholenetwork']) ? $nodeedit['wholenetwork'] : null;
     $nodeinfo['ipaddr_pub'] = $nodeedit['ipaddr_pub'];
     $nodeinfo['pubnetid'] = $nodeedit['pubnetid'];
     $nodeinfo['passwd'] = $nodeedit['passwd'];
@@ -343,10 +339,11 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['chkmac'] = $nodeedit['chkmac'];
     $nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
     $nodeinfo['port'] = $nodeedit['port'];
-    $nodeinfo['stateid'] = $nodeedit['stateid'];
+    $nodeinfo['stateid'] = isset($nodeedit['stateid']) ? $nodeedit['stateid'] : null;
     $nodeinfo['latitude'] = $nodeedit['latitude'];
     $nodeinfo['longitude'] = $nodeedit['longitude'];
     $nodeinfo['invprojectid'] = $nodeedit['invprojectid'];
+    $nodeinfo['authtype'] = $nodeedit['authtype'];
     $nodeinfo['info'] = $nodeedit['info'];
     $nodeinfo['wysiwyg'] = $nodeedit['wysiwyg'];
 
@@ -368,10 +365,18 @@ if (empty($nodeinfo['macs'])) {
     $nodeinfo['macs'][] = '';
 }
 
-include(MODULES_DIR . '/customer.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
 
 if (!isset($resource_tabs['nodeassignments']) || $resource_tabs['nodeassignments']) {
-    $nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
+    $nodeassignments = array();
+    if (!empty($customernodes) && !empty($assignments)) {
+        foreach ($customernodes as $node) {
+            $assigns = $LMS->GetNodeCustomerAssignments($node['id'], $assignments);
+            if (!empty($assigns)) {
+                $nodeassignments[$node['id']] = $assigns[$node['id']];
+            }
+        }
+    }
     $SMARTY->assign('nodeassignments', $nodeassignments);
 }
 
@@ -395,6 +400,10 @@ $hook_data = $LMS->executeHook(
 $nodeinfo = $hook_data['nodeedit'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
+
+$history_entry = $SESSION->get_history_entry();
+$backurl = $history_entry ? '?' . $history_entry : '?m=nodelist';
+$SMARTY->assign('backurl', $backurl);
 
 if (!empty($nodeinfo['ownerid'])) {
     $addresses = $LMS->getCustomerAddresses($nodeinfo['ownerid']);
@@ -427,6 +436,5 @@ if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
-$SMARTY->assign('nodeauthtype', $nodeauthtype);
 $SMARTY->assign('nodeedit_sortable_order', $SESSION->get_persistent_setting('nodeedit-sortable-order'));
 $SMARTY->display('node/nodeedit.html');

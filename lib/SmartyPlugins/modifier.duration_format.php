@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,12 +26,15 @@
 
 function smarty_modifier_duration_format($sec)
 {
-    $H = floor($sec / 3600);
-    $m = ($sec / 60) % 60;
-    $s = $sec % 60;
+    $d = floor($sec / 86400);
+    $h = floor(($sec - $d * 86400) / 3600);
+    $m = floor(($sec - $d * 86400 - $h * 3600) / 60);
+    $s = floor($sec - $d * 86400 - $h * 3600 - $m * 60);
     if ($sec < 60) {
         return sprintf("%02ds", $s);
+    } elseif (empty($d)) {
+        return sprintf("%02d:%02d:%02d", $h, $m, $s);
     } else {
-        return sprintf("%02d:%02d:%02d", $H, $m, $s);
+        return sprintf("%dd %02d:%02d:%02d", $d, $h, $m, $s);
     }
 }

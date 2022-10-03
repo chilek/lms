@@ -69,12 +69,14 @@
 				$.ajax({
 					method: "POST",
 					url: '?m=documents&smsauth=1&send=1',
+					dataType: "json",
 					data: {
 						documentid: parseInt($('#authcode-dialog .documentid').val())
 					},
-					success: function (data) {
-						if (data.length) {
-							$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error').html(data).show();
+					success: function(result) {
+						if (result.errors.length) {
+							$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error')
+								.html(result.errors.join('<br>')).show();
 						} else {
 							$('#authcode-status').removeClass('authcode-error').addClass('authcode-alert')
 								.html("{trans("Authorization code has been sent to you mobile phone.")}").show();
@@ -88,16 +90,19 @@
 					$.ajax({
 						method: "POST",
 						url: $(this).attr('action'),
+						dataType: "json",
 						data: {
 							code: $('#authcode').val(),
 							documentid: parseInt($('#authcode-dialog .documentid').val())
 						},
-						success: function(data) {
-							if (data.length) {
-								$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error').html(data).show();
+						success: function(result) {
+							if (result.errors.length) {
+								$('#authcode-status').removeClass('authcode-alert').addClass('authcode-error')
+									.html(result.errors.join('<br>')).show();
 							} else {
+								result.info.unshift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
 								$('#authcode-status').removeClass('authcode-error').addClass('authcode-alert')
-									.html("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}").show();
+									.html(result.info.join('<br>')).show();
 								$('#authcode').remove();
 								$('[for="authcode"]').remove();
 								$('#authcode-dialog .submit-button').remove();
@@ -134,7 +139,10 @@
 							<label for="scans"><strong>{trans("Select scan file:")}</strong></label>
 						</td>
 						<td>
-							<input type="file" name="files[]" id="scans" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+							<input type="file" name="files[]" id="scans"
+								{userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"}
+								accept="application/pdf,image/jpeg,image/png"
+								multiple />
 							<div id="file-status" style="display: none;">
 								{if isset($error.files)}
 									{$error.files}
@@ -163,19 +171,24 @@
 		<script>
 
 			$(function() {
-				function check_file_sizes() {
-					var attachments = $('#scans').get(0);
+				function check_file_attachments() {
+					var scans = $('#scans');
 					$('#file-status').hide().text();
-					if (attachments.files.length) {
+					if (scans.get(0).files.length) {
 						var error = '';
 						var post_max_size = parseInt($('#post_max_size').val());
 						var upload_max_filesize = parseInt($('#upload_max_filesize').val());
 						var total_size = 0;
-						$.each(attachments.files, function (index, file) {
+						var acceptedFileTypes = scans.attr('accept').split(',');
+						$.each(scans.get(0).files, function (index, file) {
 							if (upload_max_filesize && file.size > upload_max_filesize) {
 								error = '{trans("One from files is too large!")}';
 							}
 							total_size += file.size;
+
+							if (acceptedFileTypes.indexOf(file.type) == -1) {
+								error = '{trans("One from files has invalid type!")}';
+							}
 						});
 						if (post_max_size && total_size > post_max_size) {
 							error = '{trans("Total file size is too large!")}';
@@ -189,11 +202,11 @@
 				}
 
 				$('#scans').change(function() {
-					check_file_sizes();
+					check_file_attachments();
 				});
 
 				$('#newscan-dialog .submit-button').click(function() {
-					if (check_file_sizes()) {
+					if (check_file_attachments()) {
 						document.newscan.submit();
 					}
 				});
@@ -229,11 +242,11 @@
 			onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong></td>
 		<td class="nobr">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
-		<td class="nobr">{$doc.cdate|date_format:"%d.%m.%Y"}</td>
+		<td class="nobr">{$doc.cdate|date_format:"Y-m-d"}</td>
 		<td class="nobr">
 		{if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
-			{if $doc.fromdate}{$doc.fromdate|date_format:"%d.%m.%Y"}{/if}
-			{if $doc.todate} - {$doc.todate|date_format:"%d.%m.%Y"}{else}{if $doc.fromdate} - {/if}{trans("indefinitely")}{/if}
+			{if $doc.fromdate}{$doc.fromdate|date_format:"Y-m-d"}{/if}
+			{if $doc.todate} - {$doc.todate|date_format:"Y-m-d"}{else}{if $doc.fromdate} - {/if}{trans("indefinitely")}{/if}
 		{/if}
 		</td>
 		<td class="nobr" align="right">

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (isset($_POST['search'])) {
     $search = $_POST['search'];
@@ -33,22 +33,6 @@ if (isset($_POST['search'])) {
         $search['tariffs'] = implode(",", $search['tariffs']);
     }
 
-    if ($search['createdfrom']) {
-        list($year, $month, $day) = explode('/', $search['createdfrom']);
-        $search['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
-    }
-    if ($search['createdto']) {
-        list($year, $month, $day) = explode('/', $search['createdto']);
-        $search['createdto'] = mktime(23, 59, 59, $month, $day, $year);
-    }
-    if ($search['deletedfrom']) {
-        list($year, $month, $day) = explode('/', $search['deletedfrom']);
-        $search['deletedfrom'] = mktime(0, 0, 0, $month, $day, $year);
-    }
-    if ($search['deletedto']) {
-        list($year, $month, $day) = explode('/', $search['deletedto']);
-        $search['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
-    }
     if ($search['balance_date']) {
         list ($year, $month, $day) = explode('/', $search['balance_date']);
         $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
@@ -63,6 +47,14 @@ if (!isset($search)) {
 
 if (isset($search['balance_date']) && !empty($search['balance_date'])) {
     $time = intval($search['balance_date']);
+}
+
+if (isset($search['balance_days'])) {
+    if (strlen($search['balance_days'])) {
+        $days = intval($search['balance_days']);
+    } else {
+        $days = -1;
+    }
 }
 
 if (!isset($_GET['o'])) {
@@ -117,7 +109,7 @@ $SESSION->save('cslkarma', $karma);
 if (!isset($_POST['n'])) {
     $SESSION->restore('csln', $network);
 } else if ($_POST['n'] == 'all') {
-        $network = array();
+    $network = array();
 } else {
     $network = Utils::filterIntegers($_POST['n']);
 }
@@ -125,6 +117,8 @@ $SESSION->save('csln', $network);
 
 if (!isset($_POST['g'])) {
     $SESSION->restore('cslg', $customergroup);
+} else if ($_POST['g'] == 'all') {
+    $customergroup = array();
 } else {
     if (count($_POST['g']) == 1 && intval($_POST['g'][0]) <= 0) {
         $customergroup = reset($_POST['g']);
@@ -140,6 +134,13 @@ if (!isset($_POST['cgk'])) {
     $customergroupsqlskey = $_POST['cgk'];
 }
 $SESSION->save('cslcgk', $customergroupsqlskey);
+
+if (!isset($_POST['cgnot'])) {
+    $SESSION->restore('cslcgnot', $customergroupnegation);
+} else {
+    $customergroupnegation = true;
+}
+$SESSION->save('cslcgnot', $customergroupnegation);
 
 if (!isset($_POST['k'])) {
     $SESSION->restore('cslk', $sqlskey);
@@ -164,11 +165,18 @@ $SESSION->save('csld', $division);
 
 if (isset($_GET['search'])) {
     $layout['pagetitle'] = trans('Customer Search Results');
+    if (!isset($time)) {
+        $time = null;
+    }
+    if (!isset($days)) {
+        $days = null;
+    }
     $customerlist = $LMS->GetCustomerList(compact(
         "order",
         "state",
         "statesqlskey",
         "customergroupsqlskey",
+        "customergroupnegation",
         "flags",
         "flagsqlskey",
         "consents",
@@ -177,6 +185,7 @@ if (isset($_GET['search'])) {
         "customergroup",
         "search",
         "time",
+        "days",
         "sqlskey",
         "nodegroup",
         "division"
@@ -266,6 +275,7 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('k', $sqlskey);
     $SMARTY->assign('sk', $statesqlskey);
     $SMARTY->assign('cgk', $customergroupsqlskey);
+    $SMARTY->assign('cgnot', $customergroupnegation);
     $SMARTY->assign('fk', $flagsqlskey);
     $SMARTY->assign('karma', $karma);
     $SMARTY->display('customer/customersearch.html');

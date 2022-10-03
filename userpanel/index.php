@@ -28,8 +28,11 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('session.name', 'LMSSESSIONID');
-ini_set('error_reporting', E_ALL & ~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+
+if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = '';
+}
 
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
@@ -110,6 +113,8 @@ try {
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
 
+$SMARTY->muteUndefinedOrNullWarnings();
+
 // test for proper version of Smarty
 
 if (constant('Smarty::SMARTY_VERSION')) {
@@ -129,7 +134,7 @@ $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Redirect to SSL
 $_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
-if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
+if ($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
      header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
      exit(0);
 }
@@ -187,7 +192,7 @@ if (!is_null($enabled_modules)) {
 
 $modules_dirs = array(USERPANEL_MODULES_DIR);
 $modules_dirs = $plugin_manager->executeHook('userpanel_modules_dir_initialized', $modules_dirs);
-$USERPANEL->setModuleDirectories($modules_dir);
+$USERPANEL->setModuleDirectories($modules_dirs);
 
 foreach ($modules_dirs as $suspected_module_dir) {
     $dh  = opendir($suspected_module_dir);
@@ -242,6 +247,14 @@ $plugin_manager->executeHook('userpanel_smarty_initialized', $SMARTY);
 
 if ($SESSION->islogged) {
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
+    if ($SESSION->isPasswdChangeRequired) {
+        if ($module != 'info' && $_GET['f'] != 'updatepinform') {
+            $SESSION->close();
+            header('Location: ?m=info&f=updatepinform');
+            die;
+        }
+        $SMARTY->assign('passwd_change_required', true);
+    }
 
     if (isset($USERPANEL->MODULES[$module])) {
         $USERPANEL->MODULES[$module]['selected'] = true;
@@ -301,13 +314,13 @@ if ($SESSION->islogged) {
         $SMARTY->display('error.html');
     }
 
-    if (!isset($_SESSION['lastmodule']) || $_SESSION['lastmodule'] != $module) {
-        $_SESSION['lastmodule'] = $module;
+    if (!$SESSION->is_set('lastmodule') || $SESSION->get('lastmodule') != $module) {
+        $SESSION->save('lastmodule', $module);
     }
 } else {
-        $SMARTY->assign('error', $SESSION->error);
-        $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
-        $SMARTY->display('login.html');
+    $SMARTY->assign('error', $SESSION->error);
+    $SMARTY->assign('target', '?' . $_SERVER['QUERY_STRING']);
+    $SMARTY->display('login.html');
 }
 
-$DB->Destroy();
+$SESSION->close();

@@ -4,6 +4,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <style>
+
 	.customerassignment-header {
 		display: flex;
 		flex-direction: column;
@@ -47,7 +48,6 @@
         display: flex;
     }
 
-
 </style>
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
@@ -71,7 +71,7 @@
 						</div>
 						<div class="customerassignment-header-cell">
 							<select name="assignment[servicetype]" id="servicetype">
-								<option value="0">{trans("- all -")}</option>
+								<option value="0">{trans("— all —")}</option>
 								{foreach $_SERVICETYPES as $type => $label}
 									<option value="{$type}"{if $assignment.servicetype == $type} selected{/if}>{$label}</option>
 								{/foreach}
@@ -100,11 +100,11 @@
 							<input type="hidden" value="" name="assignment[tarifftype]" id="tarifftype">
 							<select id="tariff-select" name="assignment[tariffid]" {tip class="lms-ui-advanced-select" text="Select liability type" trigger="tariffid"}>
 								{block name="customerassignmentsedit-special-tariffs"}
-								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
-								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
+								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>— {trans("tariffless liability")} —</option>
+								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("— all liabilities suspended —")}</option>
 
 								{if !empty($promotions)}
-									<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>- {trans("per promotion schema")} -</option>
+									<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>— {trans("per promotion schema")} —</option>
 								{/if}
 
 								{/block}
@@ -118,8 +118,9 @@
 											data-tariffnetvalue="{$tariff.netvalue}"
 											data-tariffnetflag="{$tariff.netflag}"
 											data-tarifftaxid="{$tariff.taxid}"
-											{if $tariff.id==$assignment.tariffid} selected{/if}
-											data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
+											{if $tariff.id == $assignment.tariffid} selected{/if}
+											data-valid="{$tariff.valid}"
+											{if !$tariff.valid} class="blend"{if !$assignment.alltariffs && $tariff.id != $assignment.tariffid} style="display: none;"{/if}{/if}>
 									{$tariff.name}
 									{$bracket_open = false}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}({moneyf($tariff.value, $tariff.currency)}{$bracket_open = true}{/if}{if $tariff.upceil || $tariff.downceil}{if $bracket_open}, {else}({$bracket_open = true}{/if}{convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if}{if $bracket_open}){/if}
@@ -302,6 +303,10 @@
 
 			if (serviceType) {
 				visible = visible && (!tariffType || serviceType === tariffType);
+			}
+
+			if (option.val() == tariff_select.val()) {
+				visible = true;
 			}
 
 			option.toggle(visible);

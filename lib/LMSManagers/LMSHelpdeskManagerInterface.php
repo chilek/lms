@@ -53,7 +53,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetQueueEmail($id);
 
-    public function GetQueueStats($id);
+    public function GetQueueStats($id, $deleted_tickets = true);
 
     public function GetCategory($id);
 
@@ -150,4 +150,10 @@ interface LMSHelpdeskManagerInterface
     public function getTicketImageGalleries(&$ticket);
 
     public function cleanupTicketSubject($subject);
+
+    public function isCategoryAssignedToTicket($categoryid, $ticketid);
+
+    public function assignCategoryToTicket($categoryid, $ticketid);
+
+    public function deleteTicket($ticketid);
 }

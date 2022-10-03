@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -85,5 +85,5 @@ if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 
     $SESSION->redirect('?m=nodegroupinfo&id='.$to);
 } else {
-    header('Location: ?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }

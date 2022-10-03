@@ -26,7 +26,7 @@
 
 $a = $DB->GetRow(
     'SELECT a.invoice, a.settlement,
-        a.numberplanid, a.paytype, n.template, n.period, a.attribute,
+        a.numberplanid, a.paytime, a.paytype, n.template, n.period, a.attribute,
         d.number AS docnumber, d.type AS doctype, d.cdate,
         n2.template AS numtemplate, a.customerid, a.separatedocument,
         t.value, t.flags,
@@ -55,7 +55,7 @@ $a = $DB->GetRow(
     )
 );
 
-if ($a['template']) {
+if (!empty($a['template'])) {
     $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';
 }
 
@@ -74,7 +74,7 @@ if (!empty($a['docnumber'])) {
     );
 }
 
-$a['paytypename'] = $PAYTYPES[$a['paytype']];
+$a['paytypename'] = !empty($a['paytype']) && isset($PAYTYPES[$a['paytype']]) ? $PAYTYPES[$a['paytype']] : '';
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->display('customer/customerassignmentinfoshort.html');

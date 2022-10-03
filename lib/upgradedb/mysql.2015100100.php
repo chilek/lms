@@ -64,7 +64,7 @@ $rightmap = array(
 );
 
 $users = $this->GetAll("SELECT id, rights FROM users");
-foreach ($users as $user) {
+foreach ((array) $users as $user) {
     $mask = $user['rights'];
     $len = strlen($mask);
     $bin = '';

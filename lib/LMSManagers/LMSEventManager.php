@@ -47,14 +47,19 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             SYSLOG::RES_ADDRESS => empty($event['address_id']) ? null : $event['address_id'],
             SYSLOG::RES_NODE => $event['nodeid'],
             SYSLOG::RES_TICKET => empty($event['ticketid']) ? null : $event['ticketid'],
+            SYSLOG::RES_NETNODE => empty($event['netnodeid']) ?
+                null : $event['netnodeid'],
+            SYSLOG::RES_NETDEV => empty($event['netdevid']) ?
+                null : $event['netdevid'],
         );
 
         $this->db->BeginTrans();
 
         $this->db->Execute(
             'INSERT INTO events (title, description, date, begintime, enddate,
-				endtime, userid, creationdate, private, closed, customerid, type, address_id, nodeid, ticketid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?)',
+                endtime, userid, creationdate, private, closed, customerid, type, address_id, nodeid,
+                ticketid, netnodeid, netdevid)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -82,8 +87,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         if (!empty($event['ticketid'])) {
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-            $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
             $messagebody = trans('Assigned event ($a) was created.', $a = $id);
 
             $helpdesk_manager->TicketMessageAdd(array(
@@ -118,14 +123,19 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             SYSLOG::RES_TICKET => empty($event['helpdesk']) ? null : $event['helpdesk'],
             'moddate' => time(),
             'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::getCurrentUser(),
+            SYSLOG::RES_NETNODE => empty($event['netnodeid']) ?
+                null : $event['netnodeid'],
+            SYSLOG::RES_NETDEV => empty($event['netdevid']) ?
+                null : $event['netdevid'],
             SYSLOG::RES_EVENT => $event['id'],
         );
 
         $this->db->BeginTrans();
 
         $this->db->Execute(
-            'UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?,
-				note=?, closed = ?, customerid=?, type=?, address_id=?, nodeid=?, ticketid=?, moddate = ?, moduserid = ? WHERE id=?',
+            'UPDATE events SET title = ?, description = ?, date = ?, begintime = ?, enddate = ?, endtime = ?, private = ?,
+                note = ?, closed = ?, customerid = ?, type = ?, address_id = ?, nodeid = ?, ticketid = ?, moddate = ?, moduserid = ?,
+                netnodeid = ?, netdevid = ? WHERE id = ?',
             array_values($args)
         );
 
@@ -167,8 +177,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         if (!empty($event['helpdesk'])) {
             $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-            $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-            $messageid = '<msg.' . $ticketsqueue . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+            $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+            $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['helpdesk'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
             $messagebody = trans('Assigned event ($a) was modified.', $a = $event['id']);
 
             $helpdesk_manager->TicketMessageAdd(array(
@@ -211,8 +221,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
             if (!empty($event['ticketid'])) {
                 $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache);
-                $ticketsqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
-                $messageid = '<msg.' . $ticketsqueue . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
+                $ticketqueue = $helpdesk_manager->GetQueueByTicketId($event['ticketid']);
+                $messageid = '<msg.' . $ticketqueue['id'] . '.' . $event['ticketid'] . '.' . time() . '@rtsystem.' . gethostname() . '>';
                 $messagebody = trans('Assigned event ($a) was deleted.', $a = $id);
 
                 $helpdesk_manager->TicketMessageAdd(array(
@@ -227,10 +237,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     public function GetEvent($id)
     {
-        $event = $this->db->GetRow('SELECT e.id AS id, title, description, note, userid, e.creationdate,
-			e.customerid, date, begintime, enddate, endtime, private, closed, e.type, '
+        $event = $this->db->GetRow('SELECT e.id AS id, title, e.description, note, userid, e.creationdate,
+			e.customerid, date, begintime, enddate, endtime, private, closed, e.type,'
             . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
-			nn.id AS netnode_id, nn.name AS netnode_name, vd.address AS netnode_location,
+			e.netnodeid, nn.name AS netnode_name, vd.address AS netnode_location,
+			e.netdevid, nd.name AS netdevice_name,
 			vusers.name AS username, e.moddate, e.moduserid, e.closeddate, e.closeduserid,
 			e.address_id, va.location, e.nodeid, n.name AS node_name, n.location AS node_location, '
             . $this->db->Concat('c.city', "', '", 'c.address') . ' AS customerlocation,
@@ -241,10 +252,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vnodes n ON (e.nodeid = n.id)
 			LEFT JOIN customerview c ON (c.id = customerid)
 			LEFT JOIN vusers ON (vusers.id = userid)
-			LEFT JOIN rttickets as rtt ON (rtt.id = e.ticketid)
-			LEFT JOIN netnodes as nn ON (nn.id = rtt.netnodeid)
-			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
+			LEFT JOIN rttickets rtt ON (rtt.id = e.ticketid)
+			LEFT JOIN netnodes nn ON (nn.id = e.netnodeid)
+			LEFT JOIN netdevices nd ON (nd.id = e.netdevid)
+			LEFT JOIN vaddresses vd ON (vd.id = nn.address_id)
 			WHERE e.id = ?', array($id));
+
+        if (empty($event)) {
+            return array();
+        }
 
         if (!empty($event['customerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache);
@@ -270,10 +286,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
 
         $event['helpdesk'] = !empty($event['ticketid']);
-        $event['userlist'] = $this->db->GetCol('SELECT userid AS id
-			FROM vusers, eventassignments
-			WHERE vusers.id = userid
-			AND eventid = ?', array($id));
+
+        $event['userlist'] = $this->db->GetAllByKey(
+            'SELECT u.id, u.rname, u.name, u.login
+            FROM vusers u
+            JOIN eventassignments a ON a.userid = u.id
+            WHERE a.eventid = ?',
+            'id',
+            array($id)
+        );
         if (empty($event['userlist'])) {
             $event['userlist'] = array();
         }
@@ -302,6 +323,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
      *          2 = private events assigned to current user,
      *      singleday - only one day presentation - helpfull for event print for given day
      *      closed - event close flag (default: '' = any value): single integer value or empty string,
+     *      netnodeid - event with assigned network node,
+     *      netdevid - event with assigned network device,
      *      count - count records only or return selected record interval
      *          true - count only,
      *          false - get records,
@@ -342,15 +365,30 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $day = date('j', $t);
         }
 
+        $current_user_id = intval(Auth::GetCurrentUser());
+
+        $event_user_assignments = ConfigHelper::checkConfig('timetable.use_event_assignments_for_privacy_flag');
+
         switch ($privacy) {
             case 0:
-                $privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval(Auth::GetCurrentUser()) . '))';
+                if ($event_user_assignments) {
+                    $privacy_condition = ' AND (private = 0 OR (private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))))';
+                } else {
+                    $privacy_condition = ' AND (private = 0 OR (private = 1 AND userid = ' . $current_user_id . '))';
+                }
                 break;
             case 1:
-                $privacy_condition = 'private = 0';
+                $privacy_condition = ' AND private = 0';
                 break;
             case 2:
-                $privacy_condition = 'private = 1 AND userid = ' . intval(Auth::GetCurrentUser());
+                if ($event_user_assignments) {
+                    $privacy_condition = ' AND private = 1 AND (userid = ' . $current_user_id . ' OR EXISTS (SELECT 1 FROM eventassignments WHERE eventassignments.eventid = events.id AND eventassignments.userid = ' . $current_user_id . '))';
+                } else {
+                    $privacy_condition = ' AND private = 1 AND userid = ' . $current_user_id;
+                }
+                break;
+            default:
+                $privacy_condition = '';
                 break;
         }
 
@@ -371,11 +409,14 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $closedfilter = '';
         }
 
+        $netdevfilter = empty($netdevid) ? '' : ' AND events.netdevid = ' . intval($netdevid);
+        $netnodefilter = empty($netnodeid) ? '' : ' AND events.netnodeid = ' . intval($netnodeid);
+
         if (!isset($userid) || empty($userid)) {
             $userfilter = '';
         } else {
             if (is_array($userid)) {
-                if ($userand) {
+                if (!empty($userand)) {
                     $userfilter = ' AND (EXISTS (SELECT COUNT(userid), eventid FROM eventassignments WHERE eventid = events.id AND userid IN ('
                         . implode(',', $userid) . ') GROUP BY eventid HAVING(COUNT(eventid) = ' . count($userid) . '))
                         ' . (in_array('-1', $userid) ? ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)' : '') . ')';
@@ -401,10 +442,12 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 				LEFT JOIN customerview c ON (events.customerid = c.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
-				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
                 . $privacy_condition
                 . ($customerid ? ' AND events.customerid = '.intval($customerid) : '')
                 . $userfilter
+                . $netnodefilter
+                . $netdevfilter
                 . $overduefilter
                 . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
                 . $closedfilter,
@@ -413,28 +456,31 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         }
 
         $list = $this->db->GetAll(
-            'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, events.customerid AS customerid, closed, events.type, '
-                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername, nn.id AS netnode_id, nn.name AS netnode_name, vd.address AS netnode_location,
+            'SELECT events.id AS id, title, note, events.description, date, begintime, enddate, endtime, events.customerid AS customerid, closed, events.type, '
+                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername, events.netnodeid, nn.name AS netnode_name, vd.address AS netnode_location,
 				userid, vusers.name AS username, ' . $this->db->Concat('c.city', "', '", 'c.address').' AS customerlocation, closeddate,
-				events.address_id, va.location, events.nodeid as nodeid, vn.location AS nodelocation, ticketid, cc.customerphone
+				events.address_id, va.location, events.nodeid as nodeid, vn.location AS nodelocation, ticketid, events.netdevid, nd.name AS netdev_name, cc.customerphone
 			FROM events
 			LEFT JOIN vaddresses va ON va.id = events.address_id
 			LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 			LEFT JOIN customerview c ON (events.customerid = c.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
-			LEFT JOIN rttickets as rtt ON (rtt.id = events.ticketid)
-			LEFT JOIN netnodes as nn ON (nn.id = rtt.netnodeid)
-			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
+			LEFT JOIN rttickets rtt ON (rtt.id = events.ticketid)
+			LEFT JOIN netnodes nn ON (nn.id = events.netnodeid)
+			LEFT JOIN netdevices nd ON (nd.id = events.netdevid)
+			LEFT JOIN vaddresses vd ON (vd.id = nn.address_id)
             LEFT JOIN (
                 SELECT ' . $this->db->GroupConcat('contact', ', ') . ' AS customerphone, customerid
                 FROM customercontacts
                 WHERE type & ? > 0 AND type & ? = 0
                 GROUP BY customerid
             ) cc ON cc.customerid = c.id
-			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?))'
             . $privacy_condition
             .($customerid ? ' AND events.customerid = '.intval($customerid) : '')
             . $userfilter
+            . $netnodefilter
+            . $netdevfilter
             . $overduefilter
             . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
             . $closedfilter
@@ -529,9 +575,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 break;
         }
 
-        $datefrom = intval($search['datefrom']);
-        $dateto = intval($search['dateto']);
-        $ticketid = intval($search['ticketid']);
+        $datefrom = isset($search['datefrom']) ? intval($search['datefrom']) : 0;
+        $dateto = isset($search['dateto']) ? intval($search['dateto']) : 0;
+        $ticketid = isset($search['ticketid']) ? intval($search['ticketid']) : 0;
 
         $list = $this->db->GetAll(
             'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid,'
@@ -552,7 +598,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             array(Auth::GetCurrentUser())
         );
 
-        if ($search['userid']) {
+        if (isset($search['userid'])) {
             if (is_array($search['userid'])) {
                 $users = array_filter($search['userid'], 'is_natural');
             } else {
@@ -616,7 +662,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 }
             }
 
-            if ($search['userid']) {
+            if (isset($search['userid'])) {
                 return $list3;
             } else {
                 return $list2;

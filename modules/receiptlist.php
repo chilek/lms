@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -80,7 +80,7 @@ if (isset($_POST['to'])) {
         if (empty($to)) {
             $error['dateto'] = trans('Invalid date format!');
         } else {
-            $to += 86399;
+            $to = strtotime('tomorrow', $to) - 1;
         }
     }
 } elseif ($SESSION->is_set('rlt')) {
@@ -143,8 +143,8 @@ $SESSION->restore('rlf', $listdata['from']);
 $SESSION->restore('rlt', $listdata['to']);
 $SESSION->restore('rla', $listdata['advances']);
 
-$listdata['order'] = $receiptlist['order'];
-$listdata['direction'] = $receiptlist['direction'];
+$listdata['order'] = isset($receiptlist['order']) ? $receiptlist['order'] : null;
+$listdata['direction'] = isset($receiptlist['direction']) ? $receiptlist['direction'] : null;
 $listdata['totalincome'] = $summary['totalincome'];
 $listdata['totalexpense'] = $summary['totalexpense'];
 $listdata['regid'] = $regid;
@@ -182,7 +182,7 @@ $logentry = $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ?
 
 $layout['pagetitle'] = trans('Cash Registry: $a', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));
 
-$SESSION->save('backto', 'm=receiptlist&regid='.$regid);
+$SESSION->add_history_entry();
 
 if ($receipt = $SESSION->get('receiptprint', true)) {
     $SMARTY->assign('receipt', $receipt);

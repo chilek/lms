@@ -24,6 +24,20 @@
  * $Id$
  */
 
+$__ui_lang = substr(Localisation::getCurrentUiLanguage(), 0, 2);
+$software_documentation_url = str_replace(
+    '%lang%',
+    $__ui_lang,
+    LMS::SOFTWARE_DOCUMENTATION_URL
+);
+if (!preg_match('/^https?:\/\//', $software_documentation_url) && !is_dir($software_documentation_url)) {
+    $software_documentation_url = str_replace(
+        '%lang%',
+        'en',
+        LMS::SOFTWARE_DOCUMENTATION_URL
+    );
+}
+
 $menu = array(
         'admin' => array(
             'name' => trans('Administration'),
@@ -211,19 +225,19 @@ $menu = array(
                     'prio' => 10,
                 ),
                 'voipaccountlist' => array(
-                    'name' => trans('Accounts List'),
-                    'link' => '?m=voipaccountlist',
+                    'name' => trans('<!voip>Accounts'),
+                    'link' => '?m=voipaccountlist&init=1',
                     'tip' => trans('List of Accounts'),
                     'prio' => 20,
                 ),
                 'voipaccountbillinglist' => array(
-                    'name' => trans('Billing list'),
+                    'name' => trans('<!voip>Billings'),
                     'link' => '?m=voipaccountbillinglist',
                     'tip' => trans('Allows you to view billing list'),
                     'prio' => 30,
                 ),
                 'tarifflist' => array(
-                    'name' => trans('Subscription List'),
+                    'name' => trans('<!voip>Subscriptions'),
                     'link' => '?m=tarifflist&t=' . SERVICE_PHONE,
                     'tip' => trans('Phone tariff list'),
                     'prio' => 40,
@@ -376,7 +390,7 @@ $menu = array(
                     'prio' => 20,
                 ),
                 'paymentlist' => array(
-                    'name' => trans('Payments List'),
+                    'name' => trans('Payment List'),
                     'link' => '?m=paymentlist',
                     'tip' => trans('List of standing payments'),
                     'prio' => 30,
@@ -424,7 +438,7 @@ $menu = array(
                     'prio' => 100,
                 ),
                 'notelist' => array(
-                    'name' => trans('Debit Notes List'),
+                    'name' => trans('Debit Note List'),
                     'link' => '?m=notelist',
                     'tip' => trans('List of debit notes'),
                     'prio' => 110,
@@ -459,23 +473,23 @@ $menu = array(
                     'tip' => trans('Financial data export to external systems'),
                     'prio' => 160,
                 ),
-                'print' => array(
-                    'name' => trans('Reports'),
-                    'link' => '?m=print',
-                    'tip' => trans('Lists and reports printing'),
+                'tarifftaglist' => array(
+                    'name' => trans('Tags list'),
+                    'link' => '?m=tarifftaglist',
+                    'tip' => trans('Tags list'),
                     'prio' => 170,
                 ),
                 'tarifftagadd' => array(
                     'name' => trans('New tag'),
                     'link' => '?m=tarifftagadd',
                     'tip' => trans('Allows you to add new tag'),
-                    'prio' => 140,
+                    'prio' => 180,
                 ),
-                'tarifftaglist' => array(
-                    'name' => trans('Tags list'),
-                    'link' => '?m=tarifftaglist',
-                    'tip' => trans('Tags list'),
-                    'prio' => 150,
+                'print' => array(
+                    'name' => trans('Reports'),
+                    'link' => '?m=print',
+                    'tip' => trans('Lists and reports printing'),
+                    'prio' => 190,
                 ),
             ),
         ),
@@ -692,7 +706,7 @@ $menu = array(
                     'prio' => 20,
                 ),
                 'rtcategorylist' => array(
-                    'name' => trans('Categories List'),
+                    'name' => trans('Category List'),
                     'link' => '?m=rtcategorylist',
                     'tip' => trans('List of categories'),
                     'prio' => 30,
@@ -886,9 +900,7 @@ $menu = array(
         'documentation' => array(
             'name' => trans('Documentation'),
             'css' => 'lms-ui-icon-documentation',
-            'link' => (is_dir('doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . Localisation::getCurrentUiLanguage())
-                ? 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . Localisation::getCurrentUiLanguage() . DIRECTORY_SEPARATOR
-                : 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR),
+            'link' => $software_documentation_url,
             'tip' => trans('Documentation'),
             'accesskey' => 'h',
             'prio' => 70,

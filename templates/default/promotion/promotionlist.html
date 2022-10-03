@@ -41,29 +41,29 @@
     <TBODY>
 	{foreach $promotionlist as $promo}
 	<TR class="highlight {if $promo.disabled} blend{/if}{if $promo.deleted} lms-ui-resource-deleted{/if}" data-name="{$promo.name}">
-		<TD nowrap onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
-			{icon name="money"} <B>{$promo.name}</B>
+		<td class="nobr" data-target-url="?m=promotioninfo&id={$promo.id}">
+			{icon name="money"} <strong>{$promo.name|escape}</strong>
 			{if $promo.datefrom || $promo.dateto}
 				{if $promo.datefrom}
-				({trans("from:")} {$promo.datefrom|date_format:"%Y/%m/%d"}{if !$promo.dateto}){/if}
+					({trans("from")} {$promo.datefrom|date_format:"Y-m-d"}{if !$promo.dateto}){/if}
 				{/if}
 				{if $promo.dateto}
-				{if !$promo.datefrom}({/if}{trans("to:")} {$promo.dateto|date_format:"%Y/%m/%d"})
+					{if !$promo.datefrom}({/if}{trans("to")} {$promo.dateto|date_format:"Y-m-d"})
 				{/if}
 			{/if}
-		</TD>
+		</td>
 		<TD class="text-right">
 			({$promo.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
-			{$promo.description}
-		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
+		<td data-target-url="?m=promotioninfo&id={$promo.id}">
+			{$promo.description|escape}
+		</td>
+		<td class="text-right" data-target-url="?m=promotioninfo&id={$promo.id}">
 			{$promo.scs|default:"-"}
-		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
+		</td>
+		<td class="text-right" data-target-url="?m=promotioninfo&id={$promo.id}">
 			{$promo.tariffs|default:"-"}
-		</TD>
+		</td>
 		<TD class="text-right nobr">
 			{$promo.assignments|default:"-"}
 		</TD>

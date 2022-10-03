@@ -687,7 +687,8 @@
 
 .lms-ui-icon-usergroup,
 .lms-ui-icon-ugroup,
-.lms-ui-icon-ug {
+.lms-ui-icon-ug,
+.lms-ui-icon-tag {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -974,9 +975,9 @@
 .lms-ui-icon-netdevon {
   .lms-ui-icon-netdevice;
   text-stroke-width: 1px;
-  text-stroke-color: gold;
+  text-stroke-color: limegreen;
   -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: gold;
+  -webkit-text-stroke-color: limegreen;
 }
 
 .lms-ui-icon-netdevunk {
@@ -1123,7 +1124,8 @@
 }
 
 .lms-ui-icon-calendar,
-.lms-ui-icon-timetable {
+.lms-ui-icon-timetable,
+.lms-ui-icon-billing {
   .fa-icon;
   .fas;
   .lms-ui-icon;
@@ -1150,12 +1152,13 @@
   }
 }
 
-.lms-ui-icon-reload {
+.lms-ui-icon-reload,
+.lms-ui-icon-factory-reset {
   .fa-icon;
   .fas;
   .lms-ui-icon;
   &:before {
-    content: @fa-var-sync;
+    content: @fa-var-sync-alt;
   }
 }
 
@@ -1816,6 +1819,8 @@
 }
 
 .lms-ui-icon-mac,
+.lms-ui-icon-producer,
+.lms-ui-icon-model,
 .lms-ui-icon-hardware {
   .fa-icon;
   .fas;
@@ -2023,3 +2028,33 @@
 .fa-beat {
   animation:fa-beat 5s ease infinite;
 }
+
+.lms-ui-icon-barcode {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-barcode;
+  }
+}
+
+.lms-ui-icon-fiberoptic,
+.lms-ui-icon-fiber-optic,
+.lms-ui-icon-fibre-optic {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-lightbulb;
+  }
+}
+
+.lms-ui-icon-tv {
+  .fa-icon;
+  .fas;
+  .lms-ui-icon;
+  &:before {
+    content: @fa-var-tv;
+  }
+}
+

@@ -262,7 +262,7 @@ if (isset($_POST['tariff'])) {
         $SESSION->redirect('?m=tariffinfo&id='.$LMS->TariffAdd($tariff));
     }
 
-    if (!is_array($tariff['tags'])) {
+    if (empty($tariff['tags']) || !is_array($tariff['tags'])) {
         $tariff['tags'] = array();
     }
     $tariff['tags'] = array_flip($tariff['tags']);
@@ -282,7 +282,7 @@ if (isset($_POST['tariff'])) {
         $tariff[$type['alias'] . '_limit'] = 0;
         $tariff['quota_' . $type['alias'] . '_limit'] = 0;
     }
-    if ($_GET['t']) {
+    if (!empty($_GET['t'])) {
         $tariff['type'] = intval($_GET['t']);
     } else {
         $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));

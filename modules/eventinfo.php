@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,8 +34,7 @@ $userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
 
 $layout['pagetitle'] = trans('Event Info');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('event', $event);
 $SMARTY->assign('userlist', $userlist);

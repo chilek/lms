@@ -82,7 +82,7 @@
 		<tr>
 			<td>
 				<select name="p_id" style="min-width:250px;" onchange="document.producer.submit();" {tip text="Select producer" trigger="p_id"}>
-					<option value="">- {trans("none")} -</option>
+					<option value="">{trans("— none —")}</option>
 					{section name="producerlist" loop=$producerlist}
 					<option value="{$producerlist[producerlist].id}"{if $listdata.pid == $producerlist[producerlist].id} selected{/if}>
 						{$producerlist[producerlist].name}

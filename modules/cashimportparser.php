@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,11 +42,13 @@ if (isset($_POST['fileupload'])) {
     if (empty($files)) {
         $error['files'] = trans('No files selected!');
     } else {
+/*
         foreach ($files as $file) {
             if (strpos(mime_content_type($tmppath . DIRECTORY_SEPARATOR . $file['name']), 'text') !== 0) {
                 $error['files'] = trans('Non plain text file detected!');
             }
         }
+ */
         if (isset($error['files'])) {
             include(MODULES_DIR . DIRECTORY_SEPARATOR . 'cashimport.php');
             die;
@@ -66,6 +68,10 @@ if (isset($_POST['fileupload'])) {
     }
 
     $SMARTY->clearAssign('fileupload');
+
+    if (ConfigHelper::checkConfig('cashimport.autocommit')) {
+        $LMS->CashImportCommit();
+    }
 
     include(MODULES_DIR . DIRECTORY_SEPARATOR . 'cashimport.php');
     die;
@@ -89,7 +95,7 @@ if (isset($_POST['fileupload'])) {
 
 $layout['pagetitle'] = trans('Cash Operations Import');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count

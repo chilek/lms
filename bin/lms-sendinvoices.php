@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL & ~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -84,7 +84,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -93,7 +93,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -131,7 +131,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
@@ -231,6 +231,8 @@ if (!$no_attachments) {
 
     // add LMS's custom plugins directory
     $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+
+    $SMARTY->muteUndefinedOrNullWarnings();
 }
 
 // Include required files (including sequence is important)
@@ -278,6 +280,7 @@ $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dn
 
 if ($backup || $archive) {
     $part_size = 0;
+    $customer_status_condition = '';
 } else {
     // now it's time for script settings
     $smtp_options = array(
@@ -286,8 +289,8 @@ if ($backup || $archive) {
         'user' => ConfigHelper::getConfig('sendinvoices.smtp_username', ConfigHelper::getConfig('sendinvoices.smtp_user')),
         'pass' => ConfigHelper::getConfig('sendinvoices.smtp_password', ConfigHelper::getConfig('sendinvoices.smtp_pass')),
         'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth_type', ConfigHelper::getConfig('sendinvoices.smtp_auth')),
-        'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer', true)),
-        'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer_name', true)),
+        'ssl_verify_peer' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer', true),
+        'ssl_verify_peer_name' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_verify_peer_name', true),
         'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
     );
 
@@ -412,6 +415,10 @@ if ($backup || $archive) {
     }
 }
 
+if (empty($customergroups)) {
+    $customergroups = '';
+}
+
 if (!$no_attachments) {
     $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 }
@@ -442,7 +449,7 @@ if ($backup || $archive) {
                 die;
             }
 
-            $part_size = floor(($percent * $count) / 100);
+            $part_size = ceil(($percent * $count) / 100);
             $part_offset = $part_number * $part_size;
             if ((!$part_offset && $part_number) || $part_offset >= $count) {
                 die;
@@ -453,20 +460,23 @@ if ($backup || $archive) {
 
 $ignore_send_date = isset($options['ignore-send-date']) || ConfigHelper::checkConfig('sendinvoices.ignore_send_date');
 
-$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . "
-		FROM documents d
-		LEFT JOIN customeraddressview c ON c.id = d.customerid"
-        . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
-        . " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
-            . $customer_status_condition
-            . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
-            . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
-            . ($archive ? " AND d.archived = 0" : '') . "
-			AND d.cdate >= $daystart AND d.cdate <= $dayend"
-            . ($customergroups ?: '')
-        . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
+$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid,
+            d.type AS doctype, d.archived,
+            d.senddate, n.template" . ($backup || $archive ? '' : ', m.email') . ",
+            (CASE WHEN EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0) THEN 1 ELSE 0 END) AS documentreferenced
+    FROM documents d
+    LEFT JOIN customeraddressview c ON c.id = d.customerid"
+    . ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+        FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
+    . " LEFT JOIN numberplans n ON n.id = d.numberplanid
+    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
+        . $customer_status_condition
+        . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
+        . " AND c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
+        . ($archive ? " AND d.archived = 0" : '') . "
+        AND d.cdate >= $daystart AND d.cdate <= $dayend"
+        . ($customergroups ?: '')
+    . " ORDER BY d.number" . (!empty($part_size) ? " LIMIT $part_size OFFSET $part_offset" : '');
 $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -54,8 +54,7 @@ unset($userslist['total']);
 $SESSION->save('uldiv', $selectedDivision);
 $SESSION->save('uldiv', $selectedDivision, true);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('userslist', $userslist);
 $SMARTY->assign('selectedDivision', $selectedDivision);

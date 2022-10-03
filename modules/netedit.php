@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ if (!$LMS->NetworkExists($_GET['id'])) {
 
 if (isset($_GET['id']) && isset($_GET['networkset'])) {
     $LMS->NetworkSet($_GET['id']);
-    $SESSION->redirect('?' . $SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if ($SESSION->is_set('ntlp.'.$_GET['id']) && ! isset($_GET['page'])) {
@@ -78,8 +78,8 @@ if (isset($_POST['networkdata'])) {
             if ($LMS->NetworkOverlaps($networkdata['address'], prefix2mask($networkdata['prefix']), $networkdata['hostid'], $networkdata['id'])) {
                 $error['address'] = trans('Specified IP address overlaps with other network!');
             } else {
-                if (($networkdata['perfix'] < 31 && $network['assigned'] > $networkdata['size'] - 2)
-                    || ($networkdata['perfix'] == 31 && $network['assigned'] > $networkdata['size'])) {
+                if (($networkdata['prefix'] < 31 && $network['assigned'] > $networkdata['size'] - 2)
+                    || ($networkdata['prefix'] == 31 && $network['assigned'] > $networkdata['size'])) {
                     $error['address'] = trans('New network is too small!');
                 } else {
                     $node = $DB->GetRow(
@@ -146,8 +146,18 @@ if (isset($_POST['networkdata'])) {
     if ($networkdata['gateway']!='') {
         if (!check_ip($networkdata['gateway'])) {
             $error['gateway'] = trans('Incorrect gateway IP address!');
-        } else if (!isipin($networkdata['gateway'], getnetaddr($networkdata['address'], prefix2mask($networkdata['prefix'])), prefix2mask($networkdata['prefix']))) {
-            $error['gateway'] =  trans('Specified gateway address does not match with network address!');
+        } elseif ($networkdata['prefix'] < 31) {
+            if (!isipin($networkdata['gateway'], getnetaddr($networkdata['address'], prefix2mask($networkdata['prefix'])), prefix2mask($networkdata['prefix']))) {
+                $error['gateway'] = trans('Specified gateway address does not match with network address!');
+            }
+        } else {
+            $netaddr = ip_long(getnetaddr($networkdata['address'], prefix2mask($networkdata['prefix'])));
+            $gateway = ip_long($networkdata['gateway']);
+            if ($gateway < $netaddr || $gateway > $netaddr + 1) {
+                $error['gateway'] = trans('Specified gateway address does not match with network address!');
+            } elseif ($DB->GetOne('SELECT 1 FROM nodes WHERE ipaddr = ? OR ipaddr_pub = ?', array($gateway, $gateway))) {
+                $error['gateway'] = trans('Specified gateway address collides with existing node / network device IP address!');
+            }
         }
     }
 
@@ -266,7 +276,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 
 $layout['pagetitle'] = trans('Network Edit: $a', $network['name']);
 
-$SMARTY->assign('vlanlist', $LMS->GetVlanList());
+$SMARTY->assign('vlanlist', $LMS->GetVlanList(array('orderby' => 'vlanid')));
 $SMARTY->assign('unlockedit', true);
 $SMARTY->assign('network', $network);
 $SMARTY->assign('networks', $networks);

@@ -54,7 +54,7 @@
 					</TD>
 					<TD colspan="2">
 						<SELECT size="1" name="division" {tip text="Select division"}>
-							<OPTION value="0">- {trans("all")} -</OPTION>
+							<OPTION value="0">{trans("— all —")}</OPTION>
 							{foreach $divisions as $division}
 								<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
 							{/foreach}
@@ -98,7 +98,7 @@
 					</TD>
 					<TD width="1%">
 						<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
-					    		<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
+					    		<OPTION VALUE="0">{trans("— select registry —")}</OPTION>
 						        {foreach from=$cashreglist item=c}
 							<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"&hellip;":true} ({$c.id|string_format:"%04d"})</OPTION>
 						        {/foreach}
@@ -129,7 +129,7 @@
 					</TD>
 					<TD width="93%">
 						<SELECT size="1" name="user" {tip text="You can select user to limit results"}>
-							<OPTION value="">{trans("- all users -")}</OPTION>
+							<OPTION value="">{trans("— all users —")}</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].name|truncate:40:"&hellip;":true}</OPTION>
 							{/section}

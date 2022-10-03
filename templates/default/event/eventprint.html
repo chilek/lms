@@ -7,10 +7,11 @@
 	</COLGROUP>
 	<TR>
 		<TD class="text-left nobr">
-			<H1>{$layout.pagetitle}: {$date|date_format:"%x (%A)"}</H1>
+			<H1>{$layout.pagetitle}: {t a=trans($date|date_format:"l") b=$date|date_format:"Y-m-d"}<!date-format>$a, $b{/t}</H1>
 		</TD>
 		<TD class="text-right">
-			LMS {$layout.lmsv} @ {$layout.hostname} {$smarty.now|date_format:"%A %e %B %Y"}<BR>
+			LMS {$layout.lmsv} @ {$layout.hostname}
+			{t a=trans($smarty.now|date_format:"l") b=$smart.now|date_format:"Y-m-d"}<!date-format>$a, $b{/t}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
@@ -51,15 +52,15 @@
 			{if $event.endtime == 86400}
 				{trans("whole day")}
 			{else}
-				{($date + $event.begintime)|date_format:"%H:%M"}
+				{($date + $event.begintime)|date_format:"H:i"}
 				{if $event.begintime != $event.endtime}
-					- {($date + $event.endtime)|date_format:"%H:%M"}
+					- {($date + $event.endtime)|date_format:"H:i"}
 				{/if}
 				{if $event.multiday}<br>{trans("multi day")}{/if}
 			{/if}
 		</TD>
 		<TD class="text-center">
-			{$_EVENTTYPES[$event.type]}
+			{$_EVENTTYPES[$event.type].label}
 		</TD>
 		<TD class="text-center">{if $event.ticketid>0}#{$event.ticketid}{/if}</TD>
 		<TD class="text-left">
@@ -73,9 +74,9 @@
 			{/foreach}
 		</TD>
 		<TD class="valign-top text-center nobr">
-		{if $event.netnode_id}
-			{trans("Network node:")}<br>
-			{$event.netnode_name}<br>{$event.netnode_location}
+		{if $event.netnodeid}
+			{icon name='netnode' label=$event.netnode_name}
+			{icon name='location' label=$event.netnode_location}
 		{else}
 			{$event.customername|truncate:"40":"&hellip;":true}{if !empty($event.customerid)} ({$event.customerid}){/if}<BR>
 			{if !empty($event.address_id)}
@@ -86,6 +87,9 @@
 				{$event.customerlocation}
 			{/if}
 			<br>{$event.customerphone}
+		{/if}
+		{if $event.netdevid}
+			{icon name='netdevice' label=$event.netdev_name}
 		{/if}
 		</TD>
 	</TR>

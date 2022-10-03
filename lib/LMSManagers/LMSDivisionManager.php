@@ -66,7 +66,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         extract($params);
 
-        if (isset($order) && is_null($order)) {
+        if (!isset($order) || empty($order)) {
             $order = 'shortname,asc';
         }
 
@@ -100,14 +100,10 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
     {
         extract($params);
 
-        if (isset($offset)) {
-            $offset = $offset;
-        } else {
+        if (!isset($offset)) {
             $offset = null;
         }
-        if (isset($limit)) {
-            $limit = $limit;
-        } else {
+        if (!isset($limit)) {
             $limit = null;
         }
 

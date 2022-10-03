@@ -41,7 +41,7 @@ switch ($type) {
         $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
         $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
         $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
-        
+
         if ($queue) {
             $where[] = 'queueid = '.$queue;
         }
@@ -50,9 +50,11 @@ switch ($type) {
         }
         $catids = is_array($categories) ? Utils::filterIntegers($categories) : null;
         if (!empty($catids)) {
-            $where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
-        } else {
-            $where[] = 'tc.categoryid IS NULL';
+            if (count($catids) == 1 && $catids[0] == -1) {
+                $where[] = 'tc.categoryid IS NULL';
+            } else {
+                $where[] = 'tc.categoryid IN (' . implode(',', $catids) . ')';
+            }
         }
 
         if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
@@ -66,7 +68,7 @@ switch ($type) {
                 }
             }
         }
-    
+
         if (!empty($datefrom)) {
             $datefrom=date_to_timestamp($datefrom);
             $where[] = 'rttickets.createtime >= '.$datefrom;
@@ -103,7 +105,7 @@ switch ($type) {
 				    WHERE cause = 2'
                 .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
                 .' GROUP BY customerid', 'customerid');
-            
+
             foreach ($list as $idx => $row) {
                 $list[$idx]['customer'] = isset($customer[$row['customerid']]) ? $customer[$row['customerid']]['total'] : null;
                 $list[$idx]['company'] = isset($company[$row['customerid']]) ? $company[$row['customerid']]['total'] : 0;
@@ -117,7 +119,7 @@ switch ($type) {
         $SMARTY->display('rt/rtprintstats.html');
         break;
 
-    case 'ticketslist':
+    case 'ticketlist':
         /******************************************/
 
         $days     = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
@@ -127,6 +129,7 @@ switch ($type) {
         $removed  = isset($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
         $subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
         $extended = !empty($_GET['extended']) ? true : (!empty($_POST['extended']) ? true : false);
+        $comment_details = !empty($_GET['comment-details']) || !empty($_POST['comment-details']);
         $categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
         $datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
         $dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
@@ -217,7 +220,8 @@ switch ($type) {
                 . ')';
         }
 
-        $list = $DB->GetAllByKey('SELECT t.id, t.createtime, t.customerid, t.subject, t.requestor, '
+        $list = $DB->GetAllByKey('SELECT t.id, t.createtime, t.resolvetime, t.deadline, t.customerid, t.subject,
+            t.requestor, t.requestor_mail, '
             .$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername '
             .(!empty($_POST['contacts']) || !empty($_GET['contacts'])
                 ? ', COALESCE(va.city, c.city) AS city, COALESCE(va.address, c.address) AS address,
@@ -240,16 +244,72 @@ switch ($type) {
 
         if ($list && $extended) {
             $tickets = implode(',', array_keys($list));
-            if ($content = $DB->GetAll('SELECT body, ticketid, createtime, rtmessages.type AS note
-				FROM rtmessages
-				WHERE ticketid in (' . $tickets . ')
-			        ORDER BY createtime')) {
+            if ($content = $DB->GetAll('SELECT m.id, subject, body, ticketid, createtime,
+                    m.type, m.type AS note,
+                    contenttype, '
+                    . $DB->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
+                    userid, vusers.name AS username, customerid, mailfrom, phonefrom
+                FROM rtmessages m
+                LEFT JOIN customers ON customers.id = customerid
+                LEFT JOIN vusers ON vusers.id = userid
+                WHERE ticketid in (' . $tickets . ')
+                ORDER BY createtime')) {
                 foreach ($content as $idx => $row) {
-                    $list[$row['ticketid']]['content'][] = array(
-                        'body' => trim($row['body']),
-                        'note' => $row['note'],
-                    );
+                    $body = $row['body'];
+                    if ($comment_details) {
+                        $list[$row['ticketid']]['content'][$row['id']] = array(
+                            'subject' => $row['subject'],
+                            'body' => $body,
+                            'note' => $row['note'],
+                            'createtime' => $row['createtime'],
+                            'type' => $row['type'],
+                            'contenttype' => $row['contenttype'],
+                            'userid' => $row['userid'],
+                            'username' => $row['username'],
+                            'customerid' => $row['customerid'],
+                            'customername' => $row['customername'],
+                            'mailfrom' => $row['mailfrom'],
+                            'phonefrom' => $row['phonefrom'],
+                            'attachments' => array(),
+                        );
+                    } else {
+                        $list[$row['ticketid']]['content'][$row['id']] = array(
+                            'subject' => $row['subject'],
+                            'body' => $body,
+                            'note' => $row['note'],
+                            'contenttype' => $row['contenttype'],
+                            'attachments' => array(),
+                        );
+                    }
                     unset($content[$idx]);
+                }
+                $attachments = $DB->GetAll(
+                    'SELECT m.ticketid, a.messageid, a.filename, a.contenttype, a.cid
+                    FROM rtattachments a
+                    JOIN rtmessages m ON m.id = a.messageid
+                    WHERE m.ticketid IN (' . $tickets . ') AND a.cid <> ?',
+                    array('')
+                );
+                if (!empty($attachments)) {
+                    foreach ($attachments as $attachment) {
+                        $message = &$list[$attachment['ticketid']]['content'][$attachment['messageid']];
+                        if ($message['contenttype'] == 'text/html') {
+                            if (!isset($url_prefix)) {
+                                $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+                                    . $_SERVER['HTTP_HOST'] . substr(
+                                        $_SERVER['REQUEST_URI'],
+                                        0,
+                                        strrpos($_SERVER['REQUEST_URI'], '/') + 1
+                                    );
+                            }
+                            $message['body'] = str_ireplace(
+                                '"CID:' . $attachment['cid'] . '"',
+                                '"' . $url_prefix . '?m=rtmessageview&api=1&cid=' . $attachment['cid']
+                                    . '&tid=' . $attachment['ticketid']. '&mid=' . $attachment['messageid']. '"',
+                                $message['body']
+                            );
+                        }
+                    }
                 }
             }
         }
@@ -257,6 +317,8 @@ switch ($type) {
         $layout['pagetitle'] = trans('List of Requests');
 
         $SMARTY->assign('list', $list);
+        $SMARTY->assign('comment_details', $comment_details);
+
         $SMARTY->display($extended ? 'rt/rtprinttickets-ext.html' : 'rt/rtprinttickets.html');
         break;
 

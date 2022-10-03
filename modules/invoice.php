@@ -29,7 +29,7 @@ use setasign\Fpdi\PdfParser\StreamReader;
 
 function invoice_body($document, $invoice)
 {
-    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.use_customer_lang', true))) {
+    if (ConfigHelper::checkConfig('invoices.use_customer_lang', true)) {
         Localisation::setUiLanguage($invoice['lang']);
     }
     $document->Draw($invoice);
@@ -167,10 +167,11 @@ function escapeJpkText($text)
     }
 }
 
-switch (intval($_GET['customertype'])) {
+$customertype = isset($_GET['customertype']) ? intval($_GET['customertype']) : -1;
+switch ($customertype) {
     case CTYPES_PRIVATE:
     case CTYPES_COMPANY:
-        $ctype = $_GET['customertype'];
+        $ctype = $customertype;
         break;
 
     default:
@@ -282,7 +283,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     $datefrom = intval($_GET['from']);
     $dateto = intval($_GET['to']);
-    $einvoice = intval($_GET['einvoice']);
+    $einvoice = isset($_GET['einvoice']) ? intval($_GET['einvoice']) : 0;
+    $related_documents = isset($_GET['related-documents']);
+
     $documents = $DB->GetAllByKey(
         'SELECT
             d.id, d.type,
@@ -346,6 +349,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         'id',
         array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE)
     );
+
     if (empty($documents)) {
         if ($jpk) {
             echo trans('No documents to JPK export!');
@@ -371,7 +375,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-            $jpk_vat_version = ($dateto < mktime(0, 0, 0, 10, 1, 2020) ? 3 : 4);
+            if ($dateto < mktime(0, 0, 0, 10, 1, 2020)) {
+                $jpk_vat_version = 3;
+            } elseif ($dateto < mktime(0, 0, 0, 1, 1, 2022)) {
+                $jpk_vat_version = 4;
+            } else {
+                $jpk_vat_version = 5;
+            }
         } else {
             // if date from for report is earlier than 2 XII 2019
             //$jpk_fa_version = $datefrom < mktime(0, 0, 0, 12, 2, 2019) ? 2 : 3;
@@ -384,12 +394,19 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "<JPK xmlns=\"" . ($jpk_fa_version == 2 ? 'http://jpk.mf.gov.pl/wzor/2019/03/21/03211/' : 'http://jpk.mf.gov.pl/wzor/2019/09/27/09271/')
                 . "\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
         } else {
-            if ($jpk_vat_version == 3) {
-                $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2017/11/13/1113/\""
-                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
-            } else {
-                $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/05/08/9393/\""
-                    . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2020/03/11/eD/DefinicjeTypy/\">\n";
+            switch ($jpk_vat_version) {
+                case 3:
+                    $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2017/11/13/1113/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
+                    break;
+                case 4:
+                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2020/05/08/9393/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2020/03/11/eD/DefinicjeTypy/\">\n";
+                    break;
+                case 5:
+                    $jpk_data .= "<JPK xmlns=\"http://crd.gov.pl/wzor/2021/12/27/11148/\""
+                        . " xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2021/06/08/eD/DefinicjeTypy/\">\n";
+                    break;
             }
         }
 
@@ -425,20 +442,25 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_VAT (3)\" wersjaSchemy=\"1-1\">JPK_VAT</KodFormularza>\n";
                 $jpk_data .= "\t\t<WariantFormularza>3</WariantFormularza>\n";
                 $jpk_data .= "\t\t<CelZlozenia>0</CelZlozenia>\n";
-                $jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
-                $jpk_data .= "\t\t<DataOd>" . strftime('%Y-%m-%d', $datefrom) . "</DataOd>\n";
-                $jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
+                $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
+                $jpk_data .= "\t\t<DataOd>" . date('Y-m-d', $datefrom) . "</DataOd>\n";
+                $jpk_data .= "\t\t<DataDo>" . date('Y-m-d', $dateto) . "</DataDo>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
             } else {
-                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
-                $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
-                $jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
+                if ($jpk_vat_version == 4) {
+                    $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (1)\" wersjaSchemy=\"1-2E\">JPK_VAT</KodFormularza>\n";
+                    $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
+                } else {
+                    $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_V7M (2)\" wersjaSchemy=\"1-0E\">JPK_VAT</KodFormularza>\n";
+                    $jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+                }
+                $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
                 $jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
                 $jpk_data .= "\t\t<CelZlozenia poz=\"P_7\">1</CelZlozenia>\n";
                 $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
                         : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
-                $jpk_data .= "\t\t<Rok>" . strftime('%Y', $datefrom) . "</Rok>\n";
-                $jpk_data .= "\t\t<Miesiac>" . strftime('%m', $datefrom) . "</Miesiac>\n";
+                $jpk_data .= "\t\t<Rok>" . date('Y', $datefrom) . "</Rok>\n";
+                $jpk_data .= "\t\t<Miesiac>" . date('m', $datefrom) . "</Miesiac>\n";
             }
             $tns = '';
         } else {
@@ -453,9 +475,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $tns = 'etd:';
 
             $jpk_data .= "\t\t<CelZlozenia>1</CelZlozenia>\n";
-            $jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
-            $jpk_data .= "\t\t<DataOd>" . strftime('%Y-%m-%d', $datefrom) . "</DataOd>\n";
-            $jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
+            $jpk_data .= "\t\t<DataWytworzeniaJPK>" . date('Y-m-d') . 'T' . date('H:i:s') . "</DataWytworzeniaJPK>\n";
+            $jpk_data .= "\t\t<DataOd>" . date('Y-m-d', $datefrom) . "</DataOd>\n";
+            $jpk_data .= "\t\t<DataDo>" . date('Y-m-d', $dateto) . "</DataDo>\n";
             $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
                     : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
         }
@@ -512,12 +534,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 }
                 if (empty($division['naturalperson'])) {
                     $jpk_data .= "\t\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
-                    $jpk_data .= "\t\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
+                    $jpk_data .= "\t\t\t<PelnaNazwa>" . (isset($division['name']) ? htmlspecialchars($division['name']) : '') . "</PelnaNazwa>\n";
                 } else {
                     $jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
                     $jpk_data .= "\t\t\t<etd:ImiePierwsze>" . htmlspecialchars($division['firstname']) . "</etd:ImiePierwsze>\n";
                     $jpk_data .= "\t\t\t<etd:Nazwisko>" . htmlspecialchars($division['lastname']) . "</etd:Nazwisko>\n";
-                    $jpk_data .= "\t\t\t<etd:DataUrodzenia>" . strftime('%Y-%m-%d', $division['birthdate']) . "</etd:DataUrodzenia>\n";
+                    $jpk_data .= "\t\t\t<etd:DataUrodzenia>" . date('Y-m-d', $division['birthdate']) . "</etd:DataUrodzenia>\n";
                 }
                 $jpk_data .= "\t\t\t<Email>" . $division['email'] . "</Email>\n";
                 if (empty($division['naturalperson'])) {
@@ -551,6 +573,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $invoiceid,
             $jpk ? LMSFinanceManager::INVOICE_CONTENT_DETAIL_GENERAL : LMSFinanceManager::INVOICE_CONTENT_DETAIL_MORE
         ));
+        if ($invoice['doctype'] == DOC_INVOICE && isset($invoice['invoice'])) {
+            unset($invoice['invoice']);
+        }
+
         if (count($ids) == 1) {
             $docnumber = docnumber(array(
                 'number' => $invoice['number'],
@@ -575,24 +601,41 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
 
             if ($jpk_type == 'vat') {
+                $ue = $foreign = false;
+                $ten = preg_replace('/[\s\-]/', '', $invoice['ten']);
+                if (!empty($ten)) {
+                    if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $ten, $m)) {
+                        $ue = true;
+                    } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
+                        $foreign = true;
+                    }
+                }
+
                 // JPK body positions (sale)
                 $jpk_data .= "\t<SprzedazWiersz>\n";
 
                 $jpk_data .= "\t\t<LpSprzedazy>" . $jpkrow . "</LpSprzedazy>\n";
                 $jpkrow++;
-                $ten = empty($invoice['ten']) ? 'brak' : preg_replace('/[\s\-]/', '', $invoice['ten']);
-                $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
+                if ($ue) {
+                    $jpk_data .= "\t\t<KodKrajuNadaniaTIN>" . $m['country'] . "</KodKrajuNadaniaTIN>\n";
+                    $jpk_data .= "\t\t<NrKontrahenta>" . $m['ten'] . "</NrKontrahenta>\n";
+                } else {
+                    if (empty($ten)) {
+                        $ten = 'brak';
+                    }
+                    $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
+                }
                 $jpk_data .= "\t\t<NazwaKontrahenta>" . escapeJpkText($invoice['name']) . "</NazwaKontrahenta>\n";
                 if ($jpk_vat_version == 3) {
                     $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
                         . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</AdresKontrahenta>\n";
                 }
                 $jpk_data .= "\t\t<DowodSprzedazy>" . $invoice['fullnumber'] . "</DowodSprzedazy>\n";
-                $jpk_data .= "\t\t<DataWystawienia>" . strftime('%Y-%m-%d', $invoice['cdate']) . "</DataWystawienia>\n";
+                $jpk_data .= "\t\t<DataWystawienia>" . date('Y-m-d', $invoice['cdate']) . "</DataWystawienia>\n";
                 //if ($invoice['cdate'] != $invoice['sdate'])
-                $jpk_data .= "\t\t<DataSprzedazy>" . strftime('%Y-%m-%d', $invoice['sdate']) . "</DataSprzedazy>\n";
+                $jpk_data .= "\t\t<DataSprzedazy>" . date('Y-m-d', $invoice['sdate']) . "</DataSprzedazy>\n";
 
-                if ($jpk_vat_version == 4) {
+                if ($jpk_vat_version >= 4) {
                     if (!empty($invoice['flags'][DOC_FLAG_RECEIPT])) {
                         $jpk_data .= "\t\t<TypDokumentu>FP</TypDokumentu>\n";
                     }
@@ -613,23 +656,29 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     }
 
                     if (!empty($invoice['flags'][DOC_FLAG_TELECOM_SERVICE])) {
-                        $jpk_data .= "\t\t<EE>1</EE>\n";
+                        if ($jpk_vat_version == 4) {
+                            $jpk_data .= "\t\t<EE>1</EE>\n";
+                        } else {
+                            $jpk_data .= "\t\t<WSTO_EE>1</WSTO_EE>\n";
+                        }
                     }
 
                     if (!empty($invoice['flags'][DOC_FLAG_RELATED_ENTITY])) {
                         $jpk_data .= "\t\t<TP>1</TP>\n";
                     }
 
-                    $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
-                    if ($splitpayment) {
-                        $jpk_data .= "\t\t<MPP>1</MPP>\n";
+                    if ($jpk_vat_version == 4) {
+                        $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                        if ($splitpayment) {
+                            $jpk_data .= "\t\t<MPP>1</MPP>\n";
+                        }
                     }
                 }
 
                 $ue = $foreign = false;
                 if (!empty($invoice['ten'])) {
                     $ten = str_replace('-', '', $invoice['ten']);
-                    if (preg_match('/^[A-Z]{2}[0-9]+$/', $ten)) {
+                    if (preg_match('/^[A-Z]{2}[A-Z0-9]+$/', $ten)) {
                         $ue = true;
                     } elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid']) {
                         $foreign = true;
@@ -1001,12 +1050,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 if ($jpk_fa_version == 3) {
                     $jpk_data .= "\t\t<KodWaluty>" . (isset($invoice['currency']) ? $invoice['currency'] : 'PLN') . "</KodWaluty>\n";
                 }
-                $jpk_data .= "\t\t<P_1>" . strftime('%Y-%m-%d', $invoice['cdate']) . "</P_1>\n";
+                $jpk_data .= "\t\t<P_1>" . date('Y-m-d', $invoice['cdate']) . "</P_1>\n";
                 $invoices[$invoiceid] = $invoice;
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";
                 $jpk_data .= "\t\t<P_3A>" . htmlspecialchars($invoice['name']) . "</P_3A>\n";
-                $jpk_data .= "\t\t<P_3B>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
-                    . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</P_3B>\n";
+                $jpk_data .= "\t\t<P_3B>" . (!empty($invoice['postoffice']) && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
+                    . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . (!empty($invoice['postoffice']) ? $invoice['postoffice'] : $invoice['city']) . "</P_3B>\n";
                 $jpk_data .= "\t\t<P_3C>" . htmlspecialchars($invoice['division_name']) . "</P_3C>\n";
                 $jpk_data .= "\t\t<P_3D>" . $invoice['division_address'] . ', '
                     . (empty($invoice['division_zip']) ? $invoice['division_city'] : $invoice['division_zip'] . ' ' . $invoice['division_city']) . "</P_3D>\n";
@@ -1017,7 +1066,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t\t<P_4B>" . preg_replace('/[\s\-]/', '', $invoice['division_ten']) . "</P_4B>\n";
                 }
                 if (!empty($invoice['ten'])) {
-                    if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[0-9]+)$/', $invoice['ten'], $m)) {
+                    if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[A-Z0-9]+)$/', $invoice['ten'], $m)) {
                         if (preg_match('/^[1-9]((\d[1-9])|([1-9]\d))\d{7}$/', $m['ten'])) {
                             $jpk_data .= "\t\t<P_5A>" . $m['country'] . "</P_5A>\n";
                             $jpk_data .= "\t\t<P_5B>" . $m['ten'] . "</P_5B>\n";
@@ -1250,7 +1299,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         'customerid' => $invoice['customerid'],
                         ));
                         $jpk_data .= "\t\t<NrFaKorygowanej>" . $invoice['invoice']['fullnumber'] . "</NrFaKorygowanej>\n";
-                        $jpk_data .= "\t\t<OkresFaKorygowanej>" . strftime('%Y-%m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>\n";
+                        $jpk_data .= "\t\t<OkresFaKorygowanej>" . date('Y-m', $invoice['invoice']['sdate']) . "</OkresFaKorygowanej>\n";
                 }
                 $jpk_data .= "\t</Faktura>\n";
             }
@@ -1258,11 +1307,47 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             foreach (array_keys($DOCENTITIES) as $type) {
                 if ($which & $type) {
                     $i++;
-                    if ($i == $count) {
+                    if ($i == $count || ($related_documents && $invoice_type == 'pdf')) {
                         $invoice['last'] = true;
                     }
                     $invoice['type'] = $type;
                     invoice_body($document, $invoice);
+                }
+            }
+
+            if ($invoice_type == 'pdf' && $related_documents) {
+                if (!isset($fpdi)) {
+                    $fpdi = new LMSFpdiBackend;
+                    $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+                }
+
+                $fpdi->AppendPage($document->WriteToString());
+                $document = new $classname(trans('Invoices'));
+
+                $docrefs = $LMS->getDocumentReferences($invoiceid);
+                if (empty($docrefs)) {
+                    continue;
+                }
+
+                $document_attachment_files = array();
+                foreach ($docrefs as $docid => $docref) {
+                    $referenced_document = $LMS->GetDocumentFullContents($docid);
+                    if (empty($referenced_document)) {
+                        continue;
+                    }
+                    foreach ($referenced_document['attachments'] as $attachment) {
+                        $document_attachment_files[] = array(
+                            'contenttype' => $attachment['contenttype'],
+                            'filename' => $attachment['filename'],
+                            'data' => $attachment['contents'],
+                        );
+                    }
+                }
+
+                foreach ($document_attachment_files as $document_attachment_file) {
+                    if (preg_match('/pdf$/', $document_attachment_file['contenttype'])) {
+                        $fpdi->AppendPage($document_attachment_file['data']);
+                    }
                 }
             }
         }
@@ -1270,11 +1355,16 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     if ($jpk) {
         if ($jpk_type == 'vat') {
-            if ($jpk_vat_version == 4) {
+            if ($jpk_vat_version >= 4) {
                 $declaration .= "\t<Deklaracja>\n";
                 $declaration .= "\t\t<Naglowek>\n";
-                $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (21)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-2E\">VAT-7</KodFormularzaDekl>\n";
-                $declaration .= "\t\t\t<WariantFormularzaDekl>21</WariantFormularzaDekl>\n";
+                if ($jpk_vat_version == 4) {
+                    $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (21)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-2E\">VAT-7</KodFormularzaDekl>\n";
+                    $declaration .= "\t\t\t<WariantFormularzaDekl>21</WariantFormularzaDekl>\n";
+                } else {
+                    $declaration .= "\t\t\t<KodFormularzaDekl kodSystemowy=\"VAT-7 (22)\" kodPodatku=\"VAT\" rodzajZobowiazania=\"Z\" wersjaSchemy=\"1-0E\">VAT-7</KodFormularzaDekl>\n";
+                    $declaration .= "\t\t\t<WariantFormularzaDekl>22</WariantFormularzaDekl>\n";
+                }
                 $declaration .= "\t\t</Naglowek>\n";
                 $declaration .= "\t\t<PozycjeSzczegolowe>\n";
                 $p_38 = 0;
@@ -1296,7 +1386,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t<LiczbaWierszySprzedazy>" . count($ids) . "</LiczbaWierszySprzedazy>\n";
             $jpk_data .= "\t\t<PodatekNalezny>" . str_replace(',', '.', sprintf('%.2f', $totaltax)) . "</PodatekNalezny>\n";
             $jpk_data .= "\t</SprzedazCtrl>\n";
-            if ($jpk_vat_version == 4) {
+            if ($jpk_vat_version >= 4) {
                 $jpk_data .= "\t<ZakupCtrl>\n";
                 $jpk_data .= "\t\t<LiczbaWierszyZakupow>0</LiczbaWierszyZakupow>\n";
                 $jpk_data .= "\t\t<PodatekNaliczony>0</PodatekNaliczony>\n";
@@ -1463,10 +1553,10 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 } elseif ($jpk) {
     if ($jpk_type == 'fa') {
         $attachment_name = 'JPK_FA_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
-            . '_' . strftime('%Y-%m-%d-%H-%M-%S') . '.xml';
+            . '_' . date('Y-m-d-H-i-s') . '.xml';
     } else {
         $attachment_name = 'JPK_VAT_' . date('Y-m-d', $datefrom) . '_' . date('Y-m-d', $dateto)
-            . '_' . strftime('%Y-%m-%d-%H-%M-%S') . '.' . ($jpk_format == 'xml' ? 'xml' : 'csv');
+            . '_' . date('Y-m-d-H-i-s') . '.' . ($jpk_format == 'xml' ? 'xml' : 'csv');
     }
 } else {
     $attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
@@ -1476,7 +1566,7 @@ if ($jpk) {
     // send jpk data to web browser
     if ($jpk_format == 'csv') {
         if (!class_exists('DOMDocument')) {
-                die('Fatal error! PHP XML exenstion is not installed!');
+                die('Fatal error! PHP XML extension is not installed!');
         }
         if (!class_exists('XSLTProcessor')) {
                 die('Fatal error! PHP XSLT extension is not installed!');
@@ -1500,7 +1590,11 @@ if ($jpk) {
 
     echo $jpk_data;
 } else {
-    $document->WriteToBrowser($attachment_name);
+    if ($invoice_type == 'pdf' && isset($fpdi) && $related_documents) {
+        $fpdi->WriteToBrowser($attachment_name);
+    } else {
+        $document->WriteToBrowser($attachment_name);
+    }
 }
 
 if (!$dontpublish && isset($ids) && !empty($ids)) {

@@ -332,7 +332,7 @@
 					</div>
 					<select size="1" id="queue-verifierid" form="queue-form" class="lms-ui-box-field-value"
 							name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
-						<option value="">- {trans("select user")} -</option>
+						<option value="">{trans("— select user —")}</option>
 						{foreach $userlist as $user}
 							<option value="{$user.id}" {if $user.id == $queue.verifierid} selected{/if}>{$user.rname|escape}
 								({$user.login})
@@ -458,7 +458,7 @@
 										{capture assign="tip"}
 											{trans("Body of mail sent after new ticket is created")}
 											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title,<br><strong>%body</strong> - new ticket body.<br>")}
 										{/capture}
 										<textarea name="queue[newticketbody]" rows="10" form="queue-form"
 											class="lms-ui-box-field-value"
@@ -494,7 +494,7 @@
 										{capture assign="tip"}
 											{trans("Body of mail sent after new message is added")}
 											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title,<br><strong>%body</strong> - new message body.<br>")}
 										{/capture}
 										<textarea name="queue[newmessagebody]" rows="10" form="queue-form"
 											class="lms-ui-box-field-value"
@@ -530,7 +530,7 @@
 										{capture assign="tip"}
 											{trans("Body of mail sent after ticket is resolved")}
 											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title,<br><strong>%body</strong> - ticket last message body.<br>")}
 										{/capture}
 										<textarea name="queue[resolveticketbody]" rows="10" form="queue-form"
 												  class="lms-ui-box-field-value"
@@ -552,7 +552,7 @@
 										{capture assign="tip"}
 											{trans("SMS sent after new ticket is created")}
 											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title,<br><strong>%body</strong> - new ticket body.<br>")}
 										{/capture}
 										<textarea name="queue[newticketsmsbody]" rows="10" form="queue-form"
 											class="lms-ui-box-field-value"
@@ -570,7 +570,7 @@
 										{capture assign="tip"}
 											{trans("SMS sent after new message is added")}
 											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title,<br><strong>%body</strong> - new message body.<br>")}
 										{/capture}
 										<textarea name="queue[newmessagesmsbody]" rows="10" form="queue-form"
 											class="lms-ui-box-field-value"
@@ -588,7 +588,7 @@
 										{capture assign="tip"}
 											{trans("SMS sent after ticket is resolved")}
 											<br>
-											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title.<br>")}
+											{trans("<!customer-notification-body>The following special symbols are supported:<br><strong>%tid</strong> - ticket identifier,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer PIN,<br><strong>%customername</strong> - customer full name,<br><strong>%title</strong> - ticket title,<br><strong>%body</strong> - ticket last message body.<br>")}
 										{/capture}
 										<textarea name="queue[resolveticketsmsbody]" rows="10" form="queue-form"
 											class="lms-ui-box-field-value"
@@ -673,15 +673,24 @@
 			});
 		}
 
-		$('#checkall').click(function() {
+		$('#checkall').change(function() {
 			$('#categories option').attr('selected', $(this).prop('checked')).trigger('chosen:updated');
+			$('.category-checkbox').prop('checked', $(this).prop('checked'));
 		});
 
 		var categories = $('#categories option');
-		$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
-		$('#categories').change(function() {
+		if (categories.length) {
 			$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
-		});
+			$('#categories').change(function() {
+				$('#checkall').prop('checked', categories.length == categories.filter(':selected').length);
+			});
+		} else {
+			categories = $('.category-checkbox')
+			$('#checkall').prop('checked', categories.length == categories.filter(':checked').length);
+			categories.change(function() {
+				$('#checkall').prop('checked', categories.length == categories.filter(':checked').length);
+			});
+		}
 
 		$('#delete-rtqueue').click(function() {
 			var name = $(this).attr('data-name');

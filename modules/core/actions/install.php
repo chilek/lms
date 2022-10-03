@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-if ($DB->GetOne('SELECT COUNT(id) FROM users')==0) {
+if (!$DB->GetOne('SELECT COUNT(id) FROM users')) {
     // adding default admin
     $DB->Execute(
         'INSERT INTO users (login, name, passwd) VALUES(?, ?, ?)',
-        array('admin', 'Administrator', crypt('admin'))
+        array('admin', 'Administrator', password_hash('admin', PASSWORD_DEFAULT))
     );
 
     // redirect to login page

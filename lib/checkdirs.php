@@ -65,7 +65,7 @@ if (!is_writable($rt_dir)) {
     $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $rt_dir;
     $startup_errors[] = 'chmod -R 755 ' . $rt_dir;
     if ($selinux_active) {
-        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($rt_dir, '/') . '/[^\.].*"';
+        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($rt_dir, '/') . '(/.*)?"';
         $selinux_error = true;
     }
 }
@@ -80,7 +80,7 @@ if (!is_writable($voip_call_dir)) {
     $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $voip_call_dir;
     $startup_errors[] = 'chmod -R 755 ' . $voip_call_dir;
     if ($selinux_active) {
-        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($voip_call_dir, '/') . '/[^\.].*"';
+        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($voip_call_dir, '/') . '(/.*)?"';
         $selinux_error = true;
     }
 }
@@ -95,7 +95,7 @@ if (!is_writable($customer_call_dir)) {
     $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $customer_call_dir;
     $startup_errors[] = 'chmod -R 755 ' . $customer_call_dir;
     if ($selinux_active) {
-        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($customer_call_dir, '/') . '/[^\.].*"';
+        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($customer_call_dir, '/') . '(/.*)?"';
         $selinux_error = true;
     }
 }

@@ -156,7 +156,6 @@ if (!isset($_GET['searchform']) && !empty($netsearch)) {
             $SESSION->restore('ndlsp', $_GET['page']);
         }
 
-        $SESSION->save('ndlsp', $page);
         $page = (! $_GET['page'] ? 1 : intval($_GET['page']));
         $netsearch['limit'] = intval(ConfigHelper::getConfig('phpui.networklist_pagelimit', $count));
         $netsearch['offset']= ($page - 1) * $netsearch['limit'];
@@ -168,13 +167,17 @@ if (!isset($_GET['searchform']) && !empty($netsearch)) {
     if ($count == 1) {
         $SESSION->redirect('?m=netinfo&id=' . $netlist[0]['id']);
     } else {
-        $listdata['order'] = $netlist['order'];
-        $listdata['direction'] = $netlist['direction'];
-        $listdata['online'] = $netlist['online'];
-        $listdata['assigned'] = $netlist['assigned'];
-        $listdata['size'] = $netlist['size'];
+        if (empty($netlist)) {
+            $listdata = array();
+        } else {
+            $listdata['order'] = $netlist['order'];
+            $listdata['direction'] = $netlist['direction'];
+            $listdata['online'] = $netlist['online'];
+            $listdata['assigned'] = $netlist['assigned'];
+            $listdata['size'] = $netlist['size'];
 
-        unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
+            unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
+        }
 
         $pagination = LMSPaginationFactory::getPagination(
             $page,
@@ -194,6 +197,6 @@ if (!isset($_GET['searchform']) && !empty($netsearch)) {
 
     $SESSION->remove('ndlsp');
     $SMARTY->assign('autosuggest_placement', ConfigHelper::getConfig('phpui.default_autosuggest_placement'));
-    $SMARTY->assign('k', $k);
+    //$SMARTY->assign('k', $k);
     $SMARTY->display('net/netsearch.html');
 }

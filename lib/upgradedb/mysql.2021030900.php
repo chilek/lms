@@ -21,7 +21,7 @@
  *
  */
 
-define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
+define('DEFAULT_NUMBER_TEMPLATE_2021030900', '%N/LMS/%Y');
 
 $numberplans = $this->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 
@@ -42,7 +42,7 @@ do {
             if ($doc['numberplanid']) {
                 $template = $numberplans[$doc['numberplanid']]['template'];
             } else {
-                $template = DEFAULT_NUMBER_TEMPLATE;
+                $template = DEFAULT_NUMBER_TEMPLATE_2021030900;
             }
             $fullnumber = docnumber(array(
                 'number' => $doc['number'],

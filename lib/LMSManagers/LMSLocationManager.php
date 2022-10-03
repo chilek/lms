@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -51,7 +51,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             SYSLOG::RES_STATE => $stateid,
             'zip' => $zip
         );
-        if ($zipcode === null) {
+        if (empty($zipcode)) {
             $this->db->Execute(
                 'INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
                 array_values($args)
@@ -75,6 +75,21 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
     public function GetCountryStates()
     {
         return $this->db->GetAllByKey('SELECT id, name FROM states ORDER BY name', 'id');
+    }
+
+    public function getCountryStateIdByName($state_name)
+    {
+        $states = $this->db->GetAllByKey('SELECT id, LOWER(name) AS name FROM states', 'id');
+        if (empty($states)) {
+            return null;
+        }
+        $state_name = strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $state_name));
+        foreach ($states as $stateid => $state) {
+            if (iconv('UTF-8', 'ASCII//TRANSLIT', $state['name']) == $state_name) {
+                return $stateid;
+            }
+        }
+        return null;
     }
 
     public function GetCountries()
@@ -120,6 +135,8 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $args['location_state']  = null;
             $args['location_city']   = null;
             $args['location_street'] = null;
+        } else {
+            $args = $this->fixTerritAddress($args);
         }
 
         // if any value is non empty then do insert
@@ -130,18 +147,19 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                   street_id,house,flat,zip,postoffice,country_id)
                                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
                 array(
-                                    $args['location_name']        ? $args['location_name']        : null,
-                                    $args['location_state_name']  ? $args['location_state_name']  : null,
-                                    $args['location_state']       ? $args['location_state']       : null,
-                                    $args['location_city_name']   ? $args['location_city_name']   : null,
-                                    $args['location_city']        ? $args['location_city']        : null,
-                                    $args['location_street_name'] ? $args['location_street_name'] : null,
-                                    $args['location_street']      ? $args['location_street']      : null,
-                                    $args['location_house']       ? $args['location_house']       : null,
-                                    $args['location_flat']        ? $args['location_flat']        : null,
-                                    $args['location_zip']         ? $args['location_zip']         : null,
-                                    $args['location_postoffice']  ? $args['location_postoffice']  : null,
-                $args['location_country_id']  ? $args['location_country_id']  : null)
+                    $args['location_name']        ? $args['location_name']        : null,
+                    isset($args['location_state_name']) && $args['location_state_name']  ? $args['location_state_name']  : null,
+                    $args['location_state']       ? $args['location_state']       : null,
+                    $args['location_city_name']   ? $args['location_city_name']   : null,
+                    $args['location_city']        ? $args['location_city']        : null,
+                    $args['location_street_name'] ? $args['location_street_name'] : null,
+                    $args['location_street']      ? $args['location_street']      : null,
+                    $args['location_house']       ? $args['location_house']       : null,
+                    $args['location_flat']        ? $args['location_flat']        : null,
+                    $args['location_zip']         ? $args['location_zip']         : null,
+                    $args['location_postoffice']  ? $args['location_postoffice']  : null,
+                    $args['location_country_id']  ? $args['location_country_id']  : null,
+                )
             );
 
             return $this->db->GetLastInsertID('addresses');
@@ -226,6 +244,8 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $args['location_state']  = null;
             $args['location_city']   = null;
             $args['location_street'] = null;
+        } else {
+            $args = $this->fixTerritAddress($args);
         }
 
         // if any value is non empty then do insert
@@ -237,19 +257,20 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                    flat = ?, zip = ?, postoffice = ?, country_id = ?
                                 WHERE id = ?',
                 array(
-                                   $args['location_name']        ? $args['location_name']        : null,
-                                   $args['location_state_name']  ? $args['location_state_name']  : null,
-                                   $args['location_state']       ? $args['location_state']       : null,
-                                   $args['location_city_name']   ? $args['location_city_name']   : null,
-                                   $args['location_city']        ? $args['location_city']        : null,
-                                   $args['location_street_name'] ? $args['location_street_name'] : null,
-                                   $args['location_street']      ? $args['location_street']      : null,
-                                   $args['location_house']       ? $args['location_house']       : null,
-                                   $args['location_flat']        ? $args['location_flat']        : null,
-                                   $args['location_zip']         ? $args['location_zip']         : null,
-                                   $args['location_postoffice']  ? $args['location_postoffice']  : null,
-                                   $args['location_country_id']  ? $args['location_country_id']  : null,
-                $args['address_id'])
+                    $args['location_name'] ? $args['location_name'] : null,
+                    isset($args['location_state_name']) && $args['location_state_name'] ? $args['location_state_name'] : null,
+                    $args['location_state'] ? $args['location_state'] : null,
+                    $args['location_city_name'] ? $args['location_city_name'] : null,
+                    $args['location_city'] ? $args['location_city'] : null,
+                    $args['location_street_name'] ? $args['location_street_name'] : null,
+                    $args['location_street'] ? $args['location_street'] : null,
+                    $args['location_house'] ? $args['location_house'] : null,
+                    $args['location_flat'] ? $args['location_flat'] : null,
+                    $args['location_zip'] ? $args['location_zip'] : null,
+                    $args['location_postoffice'] ? $args['location_postoffice'] : null,
+                    $args['location_country_id'] ? $args['location_country_id'] : null,
+                    $args['address_id'],
+                )
             );
             return true;
         } else if (isset($args['address_id'])) {
@@ -341,10 +362,20 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $args['location_country'] = null;
         }
 
-        $tmp = array($args['location_name']     , $args['location_state_name'], $args['location_state'],
-                     $args['location_city_name'], $args['location_city']      , $args['location_street_name'],
-                     $args['location_street']   , $args['location_house']     , $args['location_flat'],
-                     $args['location_zip']      , $args['location_postoffice'], $args['location_country_id']);
+        $tmp = array(
+            $args['location_name'],
+            isset($args['location_state_name']) ? $args['location_state_name'] : '',
+            $args['location_state'],
+            $args['location_city_name'],
+            $args['location_city'],
+            $args['location_street_name'],
+            $args['location_street'],
+            $args['location_house'],
+            $args['location_flat'],
+            $args['location_zip'],
+            $args['location_postoffice'],
+            $args['location_country_id'],
+        );
 
         if (array_filter($tmp)) {
             return true;
@@ -389,14 +420,23 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     public function GetAddress($address_id)
     {
-        return $this->db->GetRow('SELECT a.*, ls.name AS state_name,
-				ld.name AS district_name, lb.name AS borough_name,
-				lc.name AS city_name FROM vaddresses a
-			LEFT JOIN location_cities lc ON lc.id = a.city_id
-			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-			LEFT JOIN location_districts ld ON ld.id = lb.districtid
-			LEFT JOIN location_states ls ON ls.id = ld.stateid
-			WHERE a.id = ?', array($address_id));
+        return $this->db->GetRow(
+            'SELECT a.*,
+                c.name AS country_name,
+                ls.name AS state_name,
+                ld.name AS district_name, lb.name AS borough_name,
+                lc.name AS city_name,
+                ' . $this->db->Concat('(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . ' AS simple_street_name
+            FROM vaddresses a
+            LEFT JOIN location_cities lc ON lc.id = a.city_id
+            LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+            LEFT JOIN location_districts ld ON ld.id = lb.districtid
+            LEFT JOIN location_states ls ON ls.id = ld.stateid
+            LEFT JOIN countries c ON c.id = a.country_id
+            LEFT JOIN location_streets lst ON lst.id = a.street_id
+            WHERE a.id = ?',
+            array($address_id)
+        );
     }
 
     public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS)
@@ -446,6 +486,64 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $street['location_street_name'] = implode(' ', $street_parts);
         }
         return array_merge($result, $street);
+    }
+
+    private function fixTerritAddress(array $address)
+    {
+        // exceptional query for cities with subcities
+        $v = $this->db->GetRow(
+            'SELECT lb.name AS location_city_name,
+                lb.name AS location_borough_name,
+                ld.name AS location_district_name,
+                lst.name AS location_street_name,
+                (' . $this->db->Concat('t.name', "' '", '(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . ') AS location_street_name
+            FROM location_cities lc
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            JOIN location_states ls ON ls.id = ld.stateid
+            JOIN location_boroughs lb2 ON lb2.districtid = lb.districtid AND lb2.type IN (8, 9)
+            JOIN location_cities lc2 ON lc2.boroughid = lb2.id
+            JOIN location_streets lst ON lst.cityid = lc2.id AND lst.id = ?
+            JOIN location_street_types t ON t.id = lst.typeid
+            WHERE lc.id = ?
+                AND lb.type = 1',
+            array(
+                empty($address['location_street']) ? 0 : $address['location_street'],
+                $address['location_city'],
+            )
+        );
+
+        if (!empty($v)) {
+            $v = array_merge($address, $v);
+            return $v;
+        }
+
+        $v = $this->db->GetRow(
+            'SELECT lc.name AS location_city_name,
+                lb.name AS location_borough_name,
+                ld.name AS location_district_name,
+                ls.name AS location_state_name,
+                (' . $this->db->Concat('t.name', "' '", '(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . ') AS location_street_name
+            FROM location_cities lc
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            JOIN location_states ls ON ls.id = ld.stateid
+            LEFT JOIN location_streets lst ON lst.cityid = lc.id AND lst.id = ?
+            LEFT JOIN location_street_types t ON t.id = lst.typeid
+            WHERE lc.id = ?',
+            array(
+                empty($address['location_street']) ? 0 : $address['location_street'],
+                $address['location_city'],
+            )
+        );
+
+        if (empty($v)) {
+            $v = $address;
+        } else {
+            $v = array_merge($address, $v);
+        }
+
+        return $v;
     }
 
     public function GetZipCode(array $params)

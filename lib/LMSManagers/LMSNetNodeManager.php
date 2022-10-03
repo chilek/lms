@@ -29,16 +29,31 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function GetNetNodeList($search, $order)
     {
+        $order = isset($order) ? $order : 'name,asc';
+
         list ($order, $dir) = sscanf($order, '%[^,],%s');
         ($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
         $short = isset($search['short']) && !empty($search['short']);
 
+        if (isset($search['count'])) {
+            $count = $search['count'];
+        } else {
+            $count = false;
+        }
+        if (isset($search['offset'])) {
+            $offset = $search['offset'];
+        } else {
+            $offset = null;
+        }
+        if (isset($search['limit'])) {
+            $limit = $search['limit'];
+        } else {
+            $limit = null;
+        }
+
         switch ($order) {
             case 'id':
                 $ostr = 'ORDER BY n.id';
-                break;
-            case 'name':
-                $ostr = 'ORDER BY n.name';
                 break;
             case 'type':
                 $ostr = 'ORDER BY n.type';
@@ -49,6 +64,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             case 'lastinspectiontime':
                 $ostr = 'ORDER BY n.lastinspectiontime';
                 break;
+            case 'name':
             default:
                 $ostr = 'ORDER BY n.name';
                 break;
@@ -101,41 +117,62 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             }
         }
 
-        $nlist = $this->db->GetAllByKey(
-            'SELECT n.id, n.name' . ($short ? ''
+        if ($count) {
+            return $this->db->GetOne(
+                'SELECT COUNT(n.id)
+                FROM netnodes n
+                    LEFT JOIN divisions d ON d.id = n.divisionid
+                    LEFT JOIN vaddresses addr        ON addr.id = n.address_id
+                    LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
+                    LEFT JOIN location_streets lst  ON lst.id = addr.street_id
+                    LEFT JOIN location_cities lc    ON lc.id = addr.city_id
+                    LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+                    LEFT JOIN location_districts ld ON ld.id = lb.districtid
+                    LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+                . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
+            );
+        } else {
+            $nlist = $this->db->GetAllByKey(
+                'SELECT n.id, n.name' . ($short ? ''
                     : ', n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
-				n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
-				lc.ident AS location_city_ident,
-				lc.ident AS location_city_ident,
-				(CASE WHEN lst.ident IS NULL
-					THEN (CASE WHEN addr.street = \'\' THEN \'99999\' ELSE \'99998\' END)
-					ELSE lst.ident END) AS location_street_ident,
-				lb.id AS location_borough, lb.name AS location_borough_name, lb.ident AS location_borough_ident,
-				lb.type AS location_borough_type,
-				ld.id AS location_district, ld.name AS location_district_name, ld.ident AS location_district_ident,
-				ls.id AS location_state, ls.name AS location_state_name, ls.ident AS location_state_ident,
-				addr.location, addr.name as location_name,
-				addr.city as location_city_name, addr.street as location_street_name,
-				addr.city_id as location_city, addr.street_id as location_street,
-				addr.house as location_house, addr.flat as location_flat') . '
-			FROM netnodes n
-				LEFT JOIN divisions d ON d.id = n.divisionid
-				LEFT JOIN vaddresses addr        ON addr.id = n.address_id
-				LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
-				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
-				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
-				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
-				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
-            . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where)) . ' ' . $ostr . ' ' . $dir,
-            'id'
-        );
+                    n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
+                    lc.ident AS location_city_ident,
+                    (CASE WHEN lst.ident IS NULL
+                        THEN (CASE WHEN addr.street = \'\' THEN \'99999\' ELSE \'99998\' END)
+                        ELSE lst.ident END) AS location_street_ident,
+                    lb.id AS location_borough, lb.name AS location_borough_name, lb.ident AS location_borough_ident,
+                    lb.type AS location_borough_type,
+                    ld.id AS location_district, ld.name AS location_district_name, ld.ident AS location_district_ident,
+                    ls.id AS location_state, ls.name AS location_state_name, ls.ident AS location_state_ident,
+                    addr.location, addr.name as location_name,
+                    addr.city as location_city_name, addr.street as location_street_name,
+                    addr.city_id as location_city, addr.street_id as location_street,
+                    addr.house as location_house, addr.flat as location_flat') . '
+                FROM netnodes n
+                LEFT JOIN divisions d ON d.id = n.divisionid
+                LEFT JOIN vaddresses addr        ON addr.id = n.address_id
+                LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
+                LEFT JOIN location_streets lst  ON lst.id = addr.street_id
+                LEFT JOIN location_cities lc    ON lc.id = addr.city_id
+                LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+                LEFT JOIN location_districts ld ON ld.id = lb.districtid
+                LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+                . (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where))
+                . ' ' . $ostr . ' ' . $dir
+                . (isset($limit) ? ' LIMIT ' . $limit : '')
+                . (isset($offset) ? ' OFFSET ' . $offset : ''),
+                'id'
+            );
+        }
 
         if (!$short && $nlist) {
-            $filecontainers = $this->db->GetAllByKey('SELECT fc.netnodeid
-			FROM filecontainers fc
-			WHERE fc.netnodeid IS NOT NULL
-			GROUP BY fc.netnodeid', 'netnodeid');
+            $filecontainers = $this->db->GetAllByKey(
+                'SELECT fc.netnodeid
+                FROM filecontainers fc
+                WHERE fc.netnodeid IS NOT NULL
+                GROUP BY fc.netnodeid',
+                'netnodeid'
+            );
 
             if (!empty($filecontainers)) {
                 if (!isset($file_manager)) {
@@ -367,7 +404,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
     public function GetNetNodes()
     {
-        return $this->db->GetAll('SELECT * FROM netnodes ORDER BY name');
+        return $this->db->GetAllByKey('SELECT * FROM netnodes ORDER BY name', 'id');
     }
 
     /**

@@ -95,6 +95,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
     $invoice['oldcustomerid'] = $invoice['customerid'];
     $invoice['oldflags'] = $invoice['flags'];
     $invoice['oldcomment'] = $invoice['comment'];
+    $invoice['oldmemo'] = $invoice['memo'];
 
     $hook_data = array(
         'contents' => $invoicecontents,
@@ -297,6 +298,7 @@ switch ($action) {
         $oldcustomerid = $invoice['oldcustomerid'];
         $oldflags = $invoice['oldflags'];
         $oldcomment = $invoice['oldcomment'];
+        $oldmemo = $invoice['oldmemo'];
         $closed   = $invoice['closed'];
         $divisionid = $invoice['divisionid'];
         $name = $invoice['name'];
@@ -306,7 +308,7 @@ switch ($action) {
         $zip = $invoice['zip'];
         $city = $invoice['city'];
         $countryid = $invoice['countryid'];
-        $recipient_address = $invoice['recipient_address'];
+        $recipient_address = isset($invoice['recipient_address']) ? $invoice['recipient_address'] : null;
 
         unset($invoice);
         unset($error);
@@ -326,6 +328,7 @@ switch ($action) {
         $invoice['oldcustomerid'] = $oldcustomerid;
         $invoice['oldflags'] = $oldflags;
         $invoice['oldcomment'] = $oldcomment;
+        $invoice['oldmemo'] = $invoice['memo'] = $oldmemo;
         $invoice['divisionid'] = $divisionid;
         $invoice['name'] = $name;
         $invoice['address'] = $address;
@@ -397,9 +400,9 @@ switch ($action) {
         if ($invoice['deadline']) {
             list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
             if (checkdate($dmonth, $dday, $dyear)) {
-                $olddday = date('d', $invoice['oldddate']);
-                $olddmonth = date('m', $invoice['oldddate']);
-                $olddyear = date('Y', $invoice['oldddate']);
+                $olddday = date('d', $invoice['olddeadline']);
+                $olddmonth = date('m', $invoice['olddeadline']);
+                $olddyear = date('Y', $invoice['olddeadline']);
 
                 if ($olddday != $dday || $olddmonth != $dmonth || $olddyear != $dyear) {
                     $invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
@@ -425,14 +428,14 @@ switch ($action) {
         }
 
         $args = array(
-            'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
             'customerid' => $invoice['customerid'],
             'division' => $invoice['divisionid'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($invoice['numberplanid']) && $invoice['numberplanid'] != 0) {
+        if ($numberplans && count($numberplans) && empty($invoice['numberplanid']) && $invoice['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -489,6 +492,18 @@ switch ($action) {
             $error['currency'] = trans('Invalid currency selection!');
         }
 
+        $currtime = time();
+        $cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
+        $sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
+        $deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
+        $comment = $invoice['comment'] ? $invoice['comment'] : null;
+        $paytime = round(($deadline - $cdate) / 86400);
+        $iid   = $invoice['id'];
+
+        if ($deadline < $cdate) {
+            break;
+        }
+
         $use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
 
         if ($use_current_customer_data) {
@@ -496,7 +511,7 @@ switch ($action) {
         }
 
         $args = array(
-            'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
             'customerid' => $invoice['customerid'],
             'division' => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
                 : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
@@ -504,7 +519,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($invoice['numberplanid'])) {
+        if ($numberplans && count($numberplans) && empty($invoice['numberplanid'])) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -548,14 +563,6 @@ switch ($action) {
             $LMS->UpdateDocumentPostAddress($invoice['id'], $invoice['customerid']);
         }
 
-        $currtime = time();
-        $cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
-        $sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
-        $deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
-        $comment = $invoice['comment'] ? $invoice['comment'] : null;
-        $paytime = round(($deadline - $cdate) / 86400);
-        $iid   = $invoice['id'];
-
         $invoice['currencyvalue'] = $LMS->getCurrencyValue(
             $invoice['currency'],
             strtotime('yesterday', min($sdate, $cdate, time()))
@@ -579,7 +586,7 @@ switch ($action) {
 
         if (!$invoice['number']) {
             $invoice['number'] = $LMS->GetNewDocumentNumber(array(
-                'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+                'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
                 'planid' => $invoice['numberplanid'],
                 'cdate' => $invoice['cdate'],
                 'customerid' => $invoice['customerid'],
@@ -591,7 +598,7 @@ switch ($action) {
                 ||  ($invoice['oldnumber'] == $invoice['number'] && $invoice['oldcustomerid'] != $invoice['customerid'])
                 || $invoice['numberplanid'] != $invoice['oldnumberplanid']) && ($docid = $LMS->DocumentExists(array(
                     'number' => $invoice['number'],
-                    'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+                    'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
                     'planid' => $invoice['numberplanid'],
                     'cdate' => $invoice['cdate'],
                     'customerid' => $invoice['customerid'],
@@ -601,7 +608,7 @@ switch ($action) {
 
             if ($error) {
                 $invoice['number'] = $LMS->GetNewDocumentNumber(array(
-                    'doctype' => $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+                    'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
                     'planid' => $invoice['numberplanid'],
                     'cdate' => $invoice['cdate'],
                     'customerid' => $invoice['customerid'],
@@ -664,7 +671,7 @@ switch ($action) {
             'memo' => $use_current_customer_data ? (empty($customer['documentmemo']) ? null : $customer['documentmemo']) : $invoice['memo'],
         );
 
-        $args['type'] = $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
+        $args['type'] = isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
         $args['number'] = $invoice['number'];
         $args['fullnumber'] = docnumber(array(
             'number' => $invoice['number'],
@@ -701,7 +708,7 @@ switch ($action) {
                         $args = array(
                             SYSLOG::RES_CASH => $cashid,
                             SYSLOG::RES_DOC => $iid,
-                            SYSLOG::RES_CUST => $customer['id'],
+                            SYSLOG::RES_CUST => $invoice['customerid'],
                         );
                         $SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
                     }
@@ -710,7 +717,7 @@ switch ($action) {
                 foreach ($itemids as $itemid) {
                     $args = array(
                         SYSLOG::RES_DOC => $iid,
-                        SYSLOG::RES_CUST => $customer['id'],
+                        SYSLOG::RES_CUST => $invoice['customerid'],
                         'itemid' => $itemid,
                     );
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
@@ -742,7 +749,7 @@ switch ($action) {
 					taxid, taxcategory, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
-                    $args[SYSLOG::RES_CUST] = $customer['id'];
+                    $args[SYSLOG::RES_CUST] = $invoice['customerid'];
                     $SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
                 }
 
@@ -864,7 +871,7 @@ if (isset($customer)) {
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('planDocumentType', $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
+$SMARTY->assign('planDocumentType', isset($invoice['proforma']) && $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE);
 
 $total_value = 0;
 if (!empty($contents)) {

@@ -1,6 +1,4 @@
-<SELECT name="{$form}[netdevid]" id="netdevid" {tip class="lms-ui-advanced-select" text="Select network device (optional)" trigger="netdevid"}>
-    <OPTION value="">{trans("- none -")}</OPTION>
-    {foreach $netdevlist as $netdev}
-    <OPTION value="{$netdev.id}"{if $netdev.id == $ticket.netdevid} selected{/if}>{$netdev.name} ({$netdev.id})</OPTION>
-    {/foreach}
-</SELECT>
+{$elemname=$form|cat:'[netdevid]'}
+{$elemid=$form|cat:'netdevid'}
+
+{network_device_selection elemname=$elemname id=$elemid selected=$ticket.netdevid}

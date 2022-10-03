@@ -5,6 +5,8 @@
 {$xajax}
 
 {$group_action=is_array($message.ticketid)}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
+{$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
 
 <style>
 
@@ -103,8 +105,13 @@
 
 	{box_buttons}
 		{button type="submit" icon="save" accesskey="s" label="Submit/Send"}
-		{button icon="cancel" onclick="location.href = '?m=rtticketview&id={$message.ticketid}';"
-			label="Cancel"}
+		{if $group_action}
+			{button icon="cancel" onclick="location.href = '?m=rtqueueview';"
+				label="Cancel"}
+		{else}
+			{button icon="cancel" onclick="location.href = '?m=rtticketview&id={$message.ticketid}';"
+				label="Cancel"}
+		{/if}
 	{/box_buttons}
 {/box_container}
 
@@ -162,7 +169,7 @@
 			{box_row icon="status" icon_class="fa-fw" label="Status"}
 				<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
 					{if $group_action}
-					<option value="-1"{if $message.state == -1} selected{/if}>{trans("- no changes -")}</option>
+					<option value="-1"{if $message.state == -1} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					{foreach $_RT_STATES as $stateidx => $state}
 					<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
@@ -177,7 +184,7 @@
 
 			{box_row icon="watch" icon_class="fa-fw" label="Obserwowanie zgłoszeń"}
 				<SELECT size="1" name="message[watching]">
-					<option value="-100" selected>{trans("- no changes -")}</option>
+					<option value="-100" selected>{trans("— no changes —")}</option>
 					<option value="1">{trans("Start watching")}</option>
 					<option value="0">{trans("Stop watching")}</option>
 				</SELECT>
@@ -186,7 +193,7 @@
 			{box_row icon="cause" icon_class="fa-fw" label="Cause"}
 				<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
 					{if $group_action}
-					<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
+					<option value="-1"{if $message.cause == -1} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
 					<OPTION value="1" {if $message.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
@@ -197,7 +204,7 @@
 {if !$group_action}
 			{box_row icon="source" icon_class="fa-fw" label="Ticket source"}
 				<SELECT size="1" name="message[source]" {tip text="Select ticket source" trigger="source"}>
-					{foreach $_RT_SOURCES as $sourceidx => $status}
+					{foreach Localisation::arraySort($_RT_SOURCES) as $sourceidx => $status}
 					<OPTION value="{$sourceidx}"{if $message.source == $sourceidx} selected{/if}>{$status}</OPTION>
 					{/foreach}
 				</SELECT>
@@ -207,7 +214,7 @@
 			{box_row icon="priority" icon_class="fa-fw" label="Priority"}
 				<SELECT size="1" name="message[priority]" {tip text="Set ticket priority" trigger="priority"}>
 					{if $group_action}
-					<option value="-100"{if $message.priority == -100} selected{/if}>{trans("- no changes -")}</option>
+					<option value="-100"{if $message.priority == -100} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
 					<OPTION value="{$priorityidx}"{if $message.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
@@ -221,7 +228,7 @@
 					{tip text="Select queue" trigger="queue" class="lms-ui-advanced-select"}
 					onchange="xajax_queue_changed($(this).val(), $('#rtverifiers select').val())">
 					{if $group_action}
-						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
+						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("— no changes —")}</option>
 					{/if}
 					{foreach $queuelist as $item}
 						<option value="{$item.id}"
@@ -233,17 +240,22 @@
 
 			{box_row icon="owner" icon_class="fa-fw" label="Owner"}
 				<select size="1" name="message[owner]" {tip text="Select user" trigger="owner" class="lms-ui-advanced-select"}>
-					<option value="0">- {trans("select user")} -</option>
+					<option value="0">{trans("— select user —")}</option>
 					{if $group_action}
-						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("- no changes -")}</option>
+						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("— no changes —")}</option>
 					{/if}
 					{foreach $userlist as $user}
-						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-							|| $user.id == $message.owner}
-							<option value="{$user.id}"{if !$user.access} class="blend"{/if}
-								{if $user.id == $message.owner}selected{/if}>{$user.rname|escape} ({$user.login})</option>
+						{if $user.id != $message.owner
+							&& ($hide_disabled_users && !$user.access
+								|| $hide_deleted_users && $user.deleted)}
+							{continue}
 						{/if}
+						<option value="{$user.id}"
+							class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+							{if $user.id == $message.owner} selected{/if}
+						>{strip}
+							{$user.rname|trunescape:40} ({$user.login})
+						{/strip}</option>
 					{/foreach}
 				</select>
 				&nbsp;
@@ -257,18 +269,22 @@
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<select size="1" name="message[verifierid]"
 						{tip text="Select user" trigger="verifierid" class="lms-ui-advanced-select"}>
-						<option value="0">- {trans("select user")} -</option>
+						<option value="0">{trans("— select user —")}</option>
 						{if $group_action}
-							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
+							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("— no changes —")}</option>
 						{/if}
 						{foreach $userlist as $user}
-							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-								|| $user.id == $message.verifierid}
-								<option value="{$user.id}"{if !$user.access} class="blend"{/if}
-									{if $user.id == $message.verifierid} selected{/if}
-									>{$user.rname|escape} ({$user.login})</option>
+							{if $user.id != $message.verifierid
+								&& ($hide_disabled_users && !$user.access
+									|| $hide_deleted_users && $user.deleted)}
+								{continue}
 							{/if}
+							<option value="{$user.id}"
+								class="{if !$user.access} lms-ui-disabled{/if}{if $user.deleted} lms-ui-crossed{/if}"
+								{if $user.id == $message.verifierid} selected{/if}
+							>{strip}
+								{$user.rname|trunescape:40} ({$user.login})
+							{/strip}</option>
 						{/foreach}
 					</select>
 				{else}
@@ -278,21 +294,23 @@
 			{/box_row}
 
 			{box_row icon="deadline" icon_class="fa-fw" label="<!rt>Deadline"}
-				{if $group_action || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-					<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
+				{if $group_action
+					|| ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'))
+					|| !$ticket.verifierid || $ticket.verifierid == $layout.logid}
+					<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"Y/m/d H:i"}{/if}"
 							SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 				{else}
-					<INPUT TYPE="hidden" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}">
-					<span title="{trans("Only verifier can change this")}">{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{else}{trans("<!rt>- none -")}{/if}</span>
+					<INPUT TYPE="hidden" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"Y/m/d H:i"}{/if}">
+					<span title="{trans("Only verifier can change this")}">{if $message.deadline}{$message.deadline|date_format:"Y-m-d H:i"}{else}{trans("<!rt>— none —")}{/if}</span>
 				{/if}
 			{/box_row}
 
 			{box_row icon="queue" icon_class="fa-fw" label="Category changes"}
 				<SELECT name="message[category_change]" {tip text="Select category change type" trigger="category_change"}>
-					<option value="0"{if $message.category_change == 0} selected{/if}>{trans("- no changes -")}</option>
-					<option value="1"{if $message.category_change == 1} selected{/if}>{trans("- replace -")}</option>
-					<option value="2"{if $message.category_change == 2} selected{/if}>{trans("- append -")}</option>
-					<option value="3"{if $message.category_change == 3} selected{/if}>{trans("- remove -")}</option>
+					<option value="0"{if $message.category_change == 0} selected{/if}>{trans("— no changes —")}</option>
+					<option value="1"{if $message.category_change == 1} selected{/if}>{trans("— replace —")}</option>
+					<option value="2"{if $message.category_change == 2} selected{/if}>{trans("— append —")}</option>
+					<option value="3"{if $message.category_change == 3} selected{/if}>{trans("— remove —")}</option>
 				</SELECT>
 			{/box_row}
 

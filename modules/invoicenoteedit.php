@@ -94,18 +94,32 @@ if (isset($_GET['id']) && $action == 'edit') {
         $nitem['taxid']     = $item['taxid'];
         $nitem['servicetype'] = $item['servicetype'];
         $nitem['taxcategory'] = $item['taxcategory'];
+        $nitem['itemid'] = $item['itemid'];
         $cnotecontents[$item['itemid']] = $nitem;
     }
 
     $cnote['oldcdate'] = $cnote['cdate'];
     $cnote['oldsdate'] = $cnote['sdate'];
-    $cnote['olddeadline'] = $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
+    $cnote['olddeadline'] = $cnote['deadline'] = strtotime('today + ' . ($cnote['paytime'] + 1) . ' days', $cnote['cdate']) - 1;
     $cnote['oldnumber'] = $cnote['number'];
     $cnote['oldnumberplanid'] = $cnote['numberplanid'];
     $cnote['oldcustomerid'] = $cnote['customerid'];
     $cnote['oldflags'] = $cnote['flags'];
     $cnote['oldcurrency'] = $cnote['currency'];
     $cnote['oldcurrencyvalue'] = $cnote['currencyvalue'];
+
+    //old header values
+    $cnote['oldheader'] = array(
+        'sdate' => date("Y/m/d", $cnote['sdate']),
+        'flags' => serialize($cnote['flags']),
+        'netflag' => $cnote['netflag'],
+        'paytype' => $cnote['paytype'],
+        'deadline' => date("Y/m/d", intval($cnote['deadline'])),
+        'recipient_address_id' => $cnote['recipient_address_id'],
+        'use_current_customer_data' => isset($cnote['use_current_customer_data']),
+        'reason' => $cnote['reason'],
+    );
+    $cnote['content_diff'] = 1;
 
     $hook_data = array(
         'contents' => $cnotecontents,
@@ -156,6 +170,7 @@ switch ($action) {
         $oldflags = $cnote['oldflags'];
         $oldcurrency = $cnote['oldcurrency'];
         $oldcurrencyvalue = $cnote['oldcurrencyvalue'];
+        $oldHeader = $cnote['oldheader'];
 
         $oldcnote = $cnote;
         $cnote = null;
@@ -234,16 +249,16 @@ switch ($action) {
         }
 
         if ($cnote['deadline']) {
-            list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
-            if (checkdate($dmonth, $dday, $dyear)) {
-                $cnote['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
-            } else {
+            $deadline = strtotime($cnote['deadline'] . ' + 1 day') - 1;
+            if (empty($deadline)) {
                 $error['deadline'] = trans('Incorrect date format!');
-                $cnote['deadline'] = $currtime;
+                $cnote['deadline'] = strtotime('tomorrow') - 1;
                 break;
+            } else {
+                $cnote['deadline'] = $deadline;
             }
         } else {
-            $cnote['deadline'] = $currtime;
+            $cnote['deadline'] = strtotime('tomorrow') - 1;
         }
 
         if ($cnote['deadline'] < $cnote['cdate']) {
@@ -261,6 +276,26 @@ switch ($action) {
             $customer = $LMS->GetCustomer($cnote['customerid'], true);
         }
 
+        //new header values
+        $cnote['newheader'] = array(
+            'sdate' => date("Y/m/d", $cnote['sdate']),
+            'flags' => serialize(array(
+                DOC_FLAG_RECEIPT => empty($cnote['flags'][DOC_FLAG_RECEIPT]) ? 0 : 1,
+                DOC_FLAG_TELECOM_SERVICE => empty($cnote['flags'][DOC_FLAG_TELECOM_SERVICE]) ? 0 : 1,
+                DOC_FLAG_RELATED_ENTITY => empty($cnote['flags'][DOC_FLAG_RELATED_ENTITY]) ? 0 : 1,
+            )),
+            'netflag' => $cnote['netflag'],
+            'paytype' => $cnote['paytype'],
+            'deadline' => date("Y/m/d", $cnote['deadline']),
+            'recipient_address_id' => $_POST['cnote[recipient_address_id]'],
+            'use_current_customer_data' => isset($cnote['use_current_customer_data']),
+            'reason' => $cnote['reason'],
+        );
+        $cnote['content_diff'] = 1;
+
+        //old header values
+        $cnote['oldheader'] = $oldHeader;
+
         $divisionid = $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'];
 
         $args = array(
@@ -271,7 +306,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($cnote['numberplanid']) && $cnote['numberplanid'] != 0) {
+        if ($numberplans && count($numberplans) && empty($cnote['numberplanid']) && $cnote['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -331,8 +366,13 @@ switch ($action) {
         $paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
         $iid   = $cnote['id'];
 
+        if ($deadline < $cdate) {
+            break;
+        }
+
         $invoicecontents = $cnote['invoice']['content'];
         $cnotecontents = $cnote['content'];
+        $oldcnotecontents = $contents;
         $newcontents = r_trim($_POST);
 
         foreach ($contents as $idx => $item) {
@@ -470,6 +510,41 @@ switch ($action) {
             $contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
         }
 
+        $headerDiff = array();
+        if (isset($cnote['oldheader']) && isset($cnote['newheader'])) {
+            $headerDiff = array_diff_assoc($cnote['oldheader'], $cnote['newheader']);
+        }
+        if (!isset($cnote['newheader']) || empty($headerDiff)) {
+            $contentDiff = false;
+            foreach ($oldcnotecontents as $item) {
+                $idx = $item['itemid'];
+
+                $itemContentDiff = ($oldcnotecontents[$idx]['deleted'] != $contents[$idx]['deleted']
+                    || f_round($oldcnotecontents[$idx]['s_valuebrutto']) !== f_round($contents[$idx]['s_valuebrutto'])
+                    || f_round($oldcnotecontents[$idx]['s_valuenetto']) !== f_round($contents[$idx]['s_valuenetto'])
+                    || f_round($oldcnotecontents[$idx]['count'], 3) !== f_round($contents[$idx]['count'], 3)
+                    || $oldcnotecontents[$idx]['content'] != $contents[$idx]['content']
+                    || f_round($oldcnotecontents[$idx]['discount']) !== f_round($contents[$idx]['discount'])
+                    || f_round($oldcnotecontents[$idx]['discount_type']) !== f_round($contents[$idx]['discount_type'])
+                    || intval($oldcnotecontents[$idx]['taxid']) !== intval($contents[$idx]['taxid'])
+                    || intval($oldcnotecontents[$idx]['taxcategory']) !== intval($contents[$idx]['taxcategory'])
+                    || intval($oldcnotecontents[$idx]['servicetype']) !== intval($contents[$idx]['servicetype'])
+                    || $oldcnotecontents[$idx]['prodid'] != $contents[$idx]['prodid']
+                    || $oldcnotecontents[$idx]['name'] != $contents[$idx]['name']
+                    || intval($oldcnotecontents[$idx]['tariffid']) !== intval($contents[$idx]['tariffid'])
+                );
+
+                if ($itemContentDiff) {
+                    $contentDiff = true;
+                    break;
+                }
+            }
+            $cnote['content_diff'] = $contentDiff ? 1 : 0;
+            if (empty($cnote['content_diff'])) {
+                break;
+            }
+        }
+
         if (($cnote['numberplanid'] && !$LMS->checkNumberPlanAccess($cnote['numberplanid']))
             || ($cnote['oldnumberplanid'] && !$LMS->checkNumberPlanAccess($cnote['oldnumberplanid']))) {
             $cnote['numberplanid'] = $cnote['oldnumberplanid'];
@@ -490,7 +565,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($cnote['numberplanid'])) {
+        if ($numberplans && count($numberplans) && empty($cnote['numberplanid'])) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 

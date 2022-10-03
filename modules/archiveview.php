@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -64,7 +64,7 @@ function GetPropertyValues($resource, $propname, $propvalue)
             . (strlen($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
     } else {
         $options = '<SELECT size="1" name="propertyvalue" id="propertyvalue">';
-        $options .= '<OPTION value="">' . trans('- all -') . '</OPTION>';
+        $options .= '<OPTION value="">' . trans('— all —') . '</OPTION>';
         foreach ($values as $value) {
             $data = array('resource' => $resource, 'name' => $propname, 'value' => $value);
             $SYSLOG->DecodeMessageData($data);
@@ -83,7 +83,7 @@ $LMS->RegisterXajaxFunction(array('GetPropertyNames', 'GetPropertyValues'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $limit = ConfigHelper::getConfig('phpui.archiveview_limit', 100);
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (isset($_POST['search'])) {
     $s = $_POST['search'];
@@ -159,8 +159,6 @@ $SESSION->save('arvpv', $propertyvalue);
 
 $page = isset($_GET['page']) ? intval($_GET['page']) : 0;
 
-unset($invoicelist['page']);
-
 $listdata['page'] = $page;
 $listdata['user'] = $user;
 $listdata['users'] = $DB->GetAllByKey('SELECT id, login FROM users ORDER BY login', 'id');
@@ -211,5 +209,5 @@ $SMARTY->assign('listdata', $listdata);
 //$SMARTY->assign('pagelimit',$pagelimit);
 //$SMARTY->assign('start', ($page - 1) * $pagelimit);
 //$SMARTY->assign('page', $page);
-$SMARTY->assign('transactions', $trans);
+$SMARTY->assign('transactions', empty($trans) ? null : $trans);
 $SMARTY->display('archive/archiveview.html');

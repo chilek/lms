@@ -10,6 +10,20 @@
 	{tab_header content_id="messagespanel"}
 		{tab_header_cell icon="lms-ui-icon-message"}
 			<strong>{trans("Customer Messages:")}</strong>
+			{capture assign="message_hint"}
+				<strong>{trans("Message status color markings:")}</strong>
+				<br><br>
+				<span class="lms-ui-message-new"><strong>{trans("new/waiting")}</strong></span>
+				<br>
+				<span class='lms-ui-message-sent'><strong>{trans("sent")}</strong></span>
+				<br>
+				<span class='lms-ui-message-delivered'><strong>{trans("delivered")}</strong></span>
+				<br>
+				<span class='lms-ui-message-cancelled'><strong>{trans("cancelled")}</strong></span>
+				<br>
+				<span class='lms-ui-message-error'><strong>{trans("error")}</strong></span>
+			{/capture}
+			{hint text=$message_hint}
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A href="?m=messageadd&customerid={$customerinfo.id}">{trans("New Message")} &raquo;</A>
@@ -58,9 +72,23 @@
 				</THEAD>
 				<TBODY>
 				{foreach $messagelist as $item}
-				<TR class="{if $item.status==$smarty.const.MSG_ERROR} lms-ui-alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
+				<TR class="{strip}
+					{if $item.status == $smarty.const.MSG_ERROR}
+						lms-ui-message-error
+					{elseif $item.status == $smarty.const.MSG_SENT}
+						lms-ui-message-sent
+					{elseif $item.status == $smarty.const.MSG_DELIVERED}
+						lms-ui-message-delivered
+					{elseif $item.status == $smarty.const.MSG_CANCELLED}
+						lms-ui-message-cancelled
+					{elseif $item.status == $smarty.const.MSG_BOUNCED}
+						lms-ui-message-bounced
+					{else}
+						lms-ui-message-new
+					{/if}
+				{/strip}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
-						{$item.cdate|date_format:"%Y/%m/%d"}
+						{$item.cdate|date_format:"Y-m-d"}
 					</TD>
 					<TD class="bold" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{if $item.type == $smarty.const.MSG_MAIL}
@@ -75,23 +103,25 @@
 						{$item.subject|escape}
 					</TD>
 					<TD class="text-center nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
-						<a href="?m=userinfo&id={$item.userid}">{$item.username|escape}</a>
+						{if $item.userid}
+							<a href="?m=userinfo&id={$item.userid}">{$item.username|escape}</a>
+						{/if}
 					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.destination}
 					</TD>
 					<TD class="text-right nobr">
-						{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+						{if $item.lastreaddate}{$item.lastreaddate|date_format:"Y-m-d H:i"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
 						{if $item.status == $smarty.const.MSG_DELIVERED
-							&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+							&& $item.lastdate}{$item.lastdate|date_format:"Y-m-d H:i"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
 						{if $item.files}
 							{button class="toggle-file-list" type="link" icon="attachment" tip="Show file list" resourceid={$item.filecontainerid}}
 						{/if}
-						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}"
+						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}&customerid={$customerinfo.id}"
 							tip="Delete"}
 						{button type="link" icon="resend" href="?m=messageadd&customerid={$customerinfo.id}&messageid={$item.id}" tip="Resend"}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"

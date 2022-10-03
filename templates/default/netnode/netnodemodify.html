@@ -68,7 +68,7 @@
 					data-alt-field="#projectid-value"
 					data-alt-invalid-field="#project-value"
 					{tip class="lms-ui-combobox" text="Select project for this node" trigger="project"}>
-					<option value="0"{if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
+					<option value="0"{if !$netdev.invprojectid} selected{/if}>{trans("— none —")}</option>
 					{foreach $NNprojects as $project}
 						<option value="{$project.id}"
 							{if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</option>
@@ -87,7 +87,7 @@
 			{/box_row}
 
 			{box_row id="ownername" icon="division" icon_class="fa-fw" label="Owner identifier"}
-				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|escape}"
+				<input type="text" name="netnode[coowner]" size="30" value="{$netnode.coowner|default:""|escape}"
 					{tip trigger="coowner" text="Enter co-owner name"}>
 			{/box_row}
 
@@ -141,19 +141,21 @@
 				<span class="lms-ui-button" id="set_gps">
 					{trans("Determine GPS coordinates automatically")}
 				</span>
+				&nbsp;
+				{reset_to_defaults target="#longitude,#latitude"}
 			{/box_row}
 
 			{box_row icon="location" icon_class="fa-fw" label="GPS longitude"}
 				<input id="longitude" type="text" name="netnode[longitude]" value="{$netnode.longitude}"
 					{tip text="Enter node longitude (optional)" trigger="longitude"}>
-				{button type="link" icon="map" tip="Click to select gps coordinates from map"
+				{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 					onclick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"}
 			{/box_row}
 
 			{box_row icon="location" icon_class="fa-fw" label="GPS latitude"}
 				<input id="latitude" type="text" name="netnode[latitude]" value="{$netnode.latitude}"
 					{tip text="Enter node latitude (optional)" trigger="latitude"}>
-				{button type="link" icon="map" tip="Click to select gps coordinates from map"
+				{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 					onclick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"}
 			{/box_row}
 
@@ -186,7 +188,7 @@
 
 			{box_row icon="note" icon_class="fa-fw" label="Note"}
 				<textarea id="info" name="netnode[info]"
-					{tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info|escape}</textarea>
+					{tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info|default:""|escape}</textarea>
 			{/box_row}
 
 			{box_row icon="calendar" icon_class="fa-fw" label="Last inspection"}
@@ -210,7 +212,7 @@
 
 <script>
 
-	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+	initAdvancedSelects('#customer_addresses');
 
 	$(function() {
 		$('[name="netnode[name]"]').focus();
@@ -272,11 +274,9 @@
 		$('#ownership').change();
 
 		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
-			customer_addresses.setAddressList( addresses );
+			setAddressList('#customer_addresses', addresses);
 		});
 	};
-
-	customer_addresses.init();
 
 </script>
 {/block}

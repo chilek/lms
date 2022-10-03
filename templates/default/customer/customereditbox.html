@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+{$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
 {$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
 {if !$pin_tip}
 	{if $pin_min_size == $pin_max_size}
@@ -6,6 +7,13 @@
 	{else}
 		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
 	{/if}
+{/if}
+{if !empty($unsecure_pin_validity)}
+	{capture assign="pin_tip"}{strip}
+		{$pin_tip}
+		<br><br>
+		<strong>{trans("If you leave this field empty, then PIN will not change!")}</strong>
+	{/strip}{/capture}
 {/if}
 <script type="text/javascript" src="js/location_box_expandable.js"></script>
 <style>
@@ -69,6 +77,8 @@
 
 </style>
 
+{include file="customer/customercompanyselectiondialog.html"}
+
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
 <INPUT type="hidden" name="customerdata[id]" value="{$customerinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
@@ -119,13 +129,29 @@
 				<table>
 					<tr>
 						<td>
+							<label for="extid">
+								<strong>{trans("External system identifier")}</strong>
+							</label>
+						</td>
+						<td>
 							<div class="valign-middle">
-								<label for="customerdata[extid]">
-									<strong>{trans("External system identifier")}</strong>
-									<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid|escape}"
-										{tip trigger="extid"}>
-								</label>
+								<input type="hidden" name="customerdata[extids][0][serviceproviderid]" value="0">
+								<input type="text" id="extid" class="lms-ui-autogrow" name="customerdata[extids][0][extid]" value="{$customerinfo.extids[0].extid|escape}"
+									{tip trigger="extid"}>
 								{hint content="Enter customer identifier in external system (optional)"}
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="altname">
+								<strong>{trans("Alternative name")}</strong>
+							</label>
+						</td>
+						<td>
+							<div class="valign-middle">
+								<input type="text" id="altname" class="lms-ui-autogrow" name="customerdata[altname]" maxlength="128" value="{$customerinfo.altname|escape}"}>
+								{hint content="Customer Alternative name (brand, shortname, casual name)"}
 							</div>
 						</td>
 					</tr>
@@ -320,8 +346,9 @@
 						</TD>
 						<TD>
 							<div class="valign-middle">
-								<input type="text" required name="customerdata[pin]" size="{$pin_max_size}"
-									value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip trigger="pin"}>
+								<input type="text" {if empty($unsecure_pin_validity)} required{/if}
+									name="customerdata[pin]" size="{$pin_max_size}"
+									value="{if $customerinfo.pin && (empty($unsecure_pin_validity) || !$customerinfo.secure_pin)}{$customerinfo.pin}{/if}" {tip trigger="pin"}>
 								{button type="link" icon="next" id="randomize" tip="Generate PIN"}
 								{hint text=$pin_tip}
 							</div>
@@ -338,58 +365,62 @@
 									<COL style="width: 1%;">
 									<COL style="width: 99%;">
 								</COLGROUP>
-								<tr>
-									<td class="nobr" colspan="2" id="identity-document-box">
-										<fieldset>
-											<legend class="bold">
-												{trans("Identity document")}
-											</legend>
-											<div class="identity-document-properties">
-												<label class="identity-document-property">
-													<span>{trans("Type")}</span>
-													{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
-														tip="" trigger="ict"}
-												</label>
-												<label class="identity-document-property">
-													<span>{trans("Number")}</span>
-													{if $customerinfo.icnwarning}
-														<input type="hidden" name="customerdata[icnwarning]" value="1">
-													{/if}
-													<input type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30"
-														{tip trigger="icn"}>
-												</label>
-												<label class="identity-document-property">
-													<span>{trans("Expires")}</span>
-													<input type="text" value="{if $customerinfo.icexpires > 0}{$customerinfo.icexpires}{/if}"
-														name="customerdata[icexpires]" size="10" id="icexpires"
-														class="lms-ui-date lms-ui-date-unix"
-														{tip trigger="icexpires"}
-														{if $customerinfo.icexpires == -1}disabled{/if}>
-												</label>
-												<label>
-													<input type="checkbox" name="customerdata[icexpires]"
-														id="icexpires-indefinitely"
-														value="-1"{if $customerinfo.icexpires == -1} checked{/if}
-														{tip trigger="icexpires-indefinitely"}>
-													{trans("indefinitely")}
-												</label>
-											</div>
-										</fieldset>
-									</td>
-								</tr>
-								<TR>
-									<TD>{trans("SSN")}</TD>
-									<TD>
-										<input type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30"
-											{tip trigger="ssn"}>
-										{if $customerinfo.ssnwarning}
-											<input type="hidden" name="customerdata[ssnwarning]" value="1">
-										{/if}
-										{if $customerinfo.ssnexistencewarning}
-											<input type="hidden" name="customerdata[ssnexistencewarning]" value="1">
-										{/if}
-									</TD>
-								</TR>
+								{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+									<tr>
+										<td class="nobr" colspan="2" id="identity-document-box">
+											<fieldset>
+												<legend class="bold">
+													{trans("Identity document")}
+												</legend>
+												<div class="identity-document-properties">
+													<label class="identity-document-property">
+														<span>{trans("Type")}</span>
+														{identitytypes elemname="customerdata[ict]" selected=$customerinfo.ict
+															tip="" trigger="ict"}
+													</label>
+													<label class="identity-document-property">
+														<span>{trans("Number")}</span>
+														{if $customerinfo.icnwarning}
+															<input type="hidden" name="customerdata[icnwarning]" value="1">
+														{/if}
+														<input type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30"
+															{tip trigger="icn"}>
+													</label>
+													<label class="identity-document-property">
+														<span>{trans("Expires")}</span>
+														<input type="text" value="{if $customerinfo.icexpires > 0}{$customerinfo.icexpires}{/if}"
+															name="customerdata[icexpires]" size="10" id="icexpires"
+															class="lms-ui-date lms-ui-date-unix"
+															{tip trigger="icexpires"}
+															{if $customerinfo.icexpires == -1}disabled{/if}>
+													</label>
+													<label>
+														<input type="checkbox" name="customerdata[icexpires]"
+															id="icexpires-indefinitely"
+															value="-1"{if $customerinfo.icexpires == -1} checked{/if}
+															{tip trigger="icexpires-indefinitely"}>
+														{trans("indefinitely")}
+													</label>
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{trans("SSN")}
+										</td>
+										<td>
+											<input type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30"
+												{tip trigger="ssn"}>
+											{if $customerinfo.ssnwarning}
+												<input type="hidden" name="customerdata[ssnwarning]" value="1">
+											{/if}
+											{if $customerinfo.ssnexistencewarning}
+												<input type="hidden" name="customerdata[ssnexistencewarning]" value="1">
+											{/if}
+										</td>
+									</tr>
+								{/if}
 								<TR>
 									<TD>{trans("TEN")}</TD>
 									<TD>
@@ -458,7 +489,7 @@
 										<div class="valign-middle">
 											<select name="customerdata[paytime]" data-value="{$customerinfo.paytime}"
 												{tip class="lms-ui-combobox" trigger="paytime"}>
-												<option value="-1"{if $customerinfo.paytime == -1} selected{/if}>- {trans("default")} -</option>
+												<option value="-1"{if $customerinfo.paytime == -1} selected{/if}>— {trans("default")} —</option>
 												<option value="0"{if $customerinfo.paytime == 0} selected{/if}>0</option>
 												<option value="7"{if $customerinfo.paytime == 7} selected{/if}>7</option>
 												<option value="10"{if $customerinfo.paytime == 10} selected{/if}>10</option>
@@ -489,17 +520,21 @@
 										{trans("Cutoff suspending")}
 									</TD>
 									<TD>
-										<div class="valign-middle">
-
+										<div class="valign-middle nobr">
 											<label>
-												<input type="checkbox" name="customerdata[cutoffstopindefinitely]" value="1"
-													onchange="$('#cutoffstop').parent().toggle(!this.checked);"
+												<input type="checkbox" name="customerdata[cutoffstopindefinitely]"
+													id="cutoffstopindefinitely" value="1"
 													{if $customerinfo.cutoffstopindefinitely} checked{/if}>
 												{trans("indefinitely")}
 											</label>&nbsp;
+										</div>
+										<div class="valign-middle nobr cutoffstop">
 											<input type="text" name="customerdata[cutoffstop]" id="cutoffstop"
 												{if $customerinfo.cutoffstopindefinitely}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if}
 												size="10" {tip class="lms-ui-date" trigger="cutoffstop"}>
+											{day_selection elem="#cutoffstop" days="3,7,10,14"}
+										</div>
+										<div class="valign-middle nobr">
 											{hint content="Select date of cutoff suspending (optional)"}
 										</div>
 									</TD>
@@ -514,26 +549,49 @@
 						<TD>
 							<TABLE cellpadding="0" class="lms-ui-separated-rows">
 								<tbody class="lms-ui-multi-check">
-									<TR>
-										<TD>
-											<strong>{trans("Consents")}</strong>
-										</TD>
-										<TD>
-											<input type="checkbox" class="lms-ui-multi-check-all" value="1">
-										</TD>
-									</TR>
+									<tr>
+										<td>
+											<label for="check-all-consents">
+												<strong>{trans("Consents")}</strong>
+											</label>
+										</td>
+										<td>
+											<input type="checkbox" class="lms-ui-multi-check-all"
+												id="check-all-consents" value="1">
+										</td>
+									</tr>
 									{block name="customereditbox-options"}
 										{foreach $_CCONSENTS as $type => $consent}
-											<TR>
-												<TD>
-													<span class="consent-label">{$consent.label}</span>
-												</TD>
-												<TD>
-													<input type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
-														value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
-														{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
-												</TD>
-											</TR>
+											{if !is_array($consent)}
+												{continue}
+											{/if}
+											{if $consent.type == 'selection'}
+												{foreach $consent.values as $subtype => $subconsent}
+													<tr>
+														<td>
+															<label class="consent-label" for="chkconsent{$subtype}">
+																{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
+															</label>
+														</td>
+														<td>
+															<input type="radio" name="customerdata[consents][{$type}]" id="chkconsent{$subtype}"
+																value="{$subtype}"
+																{if isset($customerinfo.consents[$type]) && $customerinfo.consents[$type] == $subtype} checked{/if}>
+														</td>
+													</tr>
+												{/foreach}
+											{else}
+												<tr>
+													<td>
+														<span class="consent-label">{$consent.label}</span>
+													</td>
+													<td>
+														<input type="checkbox" name="customerdata[consents][{$type}]" id="chkconsent{$type}"
+															value="{$smarty.now}"{if isset($customerinfo.consents[$type])} checked{/if}
+															{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
+													</td>
+												</tr>
+											{/if}
 										{/foreach}
 									{/block}
 								</tbody>
@@ -558,7 +616,7 @@
 							<div class="valign-middle">
 								<textarea name="customerdata[info]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}
-									>{$customerinfo.info|escape}</textarea>
+									>{$customerinfo.info|default:""|escape}</textarea>
 								{hint content="Enter additional information (optional)"}
 							</div>
 						</TD>
@@ -570,7 +628,7 @@
 						<TD>
 							<div class="valign-middle">
 								<textarea name="customerdata[message]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
-									{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</textarea>
+									{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|default:""|escape}</textarea>
 								{hint content="Enter notice contents (optional)"}
 							</div>
 						</TD>
@@ -583,7 +641,7 @@
 							<div class="valign-middle">
 								<textarea name="customerdata[notes]" class="lms-ui-wysiwyg-editor" cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}
-									>{$customerinfo.notes|escape}</textarea>
+									>{$customerinfo.notes|default:""|escape}</textarea>
 								{hint content="Enter notes (optional)"}
 							</div>
 						</TD>
@@ -597,7 +655,7 @@
 								<textarea name="customerdata[documentmemo]" class="lms-ui-wysiwyg-editor"
 									cols="60" rows="10"
 									{if isset($customerinfo.wysiwyg.documentmemo)} data-wysiwyg="{$customerinfo.wysiwyg.documentmemo}"{/if}
-									>{$customerinfo.documentmemo|escape}</textarea>
+									>{$customerinfo.documentmemo|default:""|escape}</textarea>
 								{hint content="Enter document memo (optional)"}
 							</div>
 						</TD>
@@ -737,6 +795,14 @@
 				});
 				return false;
 			}
+		});
+
+		$('#check-all-consents').change(function() {
+			$(this).closest('.lms-ui-multi-check').find(':radio').prop('checked', $(this).prop('checked'));
+		});
+
+		$('#cutoffstopindefinitely').change(function() {
+			$('.cutoffstop').toggle(!this.checked);
 		});
 	});
 

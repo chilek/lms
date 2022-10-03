@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -77,9 +77,11 @@ $args = array(
 );
 
 if ($c == 'date') {
-    list ($y, $m, $d) = explode('/', $s);
-    $args['datefrom'] = mktime(0, 0, 0, $m, $d, $y);
-    $args['dateto'] = $args['datefrom'] + 86399;
+    $args['datefrom'] = strtotime($s);
+    if ($args['datefrom'] === false) {
+        $args['datefrom'] = strtotime('today');
+    }
+    $args['dateto'] = strtotime('tomorrow', $args['datefrom']) - 1;
 }
 
 $total = intval($LMS->GetMessageList($args));
@@ -114,7 +116,7 @@ $listdata['total'] = $total;
 
 $SESSION->save('mlp', $page);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagination', $pagination);

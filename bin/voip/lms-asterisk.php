@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'C:' => 'config-file:',
@@ -202,7 +202,7 @@ if (!empty($accounts)) {
             $prio = 1;
             fprintf($fhei, "\nexten => _%s,%d,Set(CDR(exten)=\${EXTEN})\n", $phone, $prio++);
             fprintf($fhei, "exten => _%s,%d,Set(CDR(accountcode)=\${CALLERID(num)})\n", $phone, $prio++);
-            if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING)) {
+            if ($flags & (BILLING_RECORD_FLAG_ADMIN_RECORDING | BILLING_RECORD_FLAG_CUSTOMER_RECORDING)) {
                 fprintf($fhei, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $phone, $prio++);
             }
             fprintf($fhei, "exten => _%s,%d,Dial(SIP/%s,30)\n", $phone, $prio++, $login);
@@ -222,7 +222,7 @@ if (!empty($accounts)) {
             $prio = 1;
             fprintf($fheo, "exten => _+.,%d,Goto(outgoing-lms-%s,\${EXTEN:1},1)\n", $prio++, $phone);
             $prio = 1;
-            if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING)) {
+            if ($flags & (BILLING_RECORD_FLAG_ADMIN_RECORDING | BILLING_RECORD_FLAG_CUSTOMER_RECORDING)) {
                 fprintf($fheo, "exten => _X.,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $prio++);
             }
             fprintf($fheo, "exten => _X.,%d,Set(CDR(accountcode)=%s)\n", $prio++, $phone);
@@ -231,7 +231,7 @@ if (!empty($accounts)) {
             if (isset($boroughs[$boroughid])) {
                 foreach ($boroughs[$boroughid] as $number => $record) {
                     $prio = 1;
-                    if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING)) {
+                    if ($flags & (BILLING_RECORD_FLAG_ADMIN_RECORDING | BILLING_RECORD_FLAG_CUSTOMER_RECORDING)) {
                         fprintf(
                             $fheo,
                             "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n",

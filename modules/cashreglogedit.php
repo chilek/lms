@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,12 +27,12 @@
 $reglog = $DB->GetRow('SELECT * FROM cashreglog WHERE id = ?', array(intval($_GET['id'])));
 
 $regid = $reglog['regid'];
-$reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
+$reglog['time'] = date('Y/m/d H:i', $reglog['time']);
 
 if (!$regid) {
         $SESSION->redirect('?m=cashreglist');
 }
-    
+
 if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<256) {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
@@ -41,7 +41,7 @@ if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', arra
 
 if (isset($_POST['reglog'])) {
     $reglog = $_POST['reglog'];
-    
+
     foreach ($reglog as $key => $value) {
             $reglog[$key] = trim($value);
     }
@@ -78,7 +78,7 @@ if (isset($_POST['reglog'])) {
             $SYSLOG->AddMessage(SYSLOG::RES_CASHREGHIST, SYSLOG::OPER_UPDATE, $args);
         }
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 }
 

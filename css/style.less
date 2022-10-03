@@ -556,7 +556,12 @@ A {
 			text-decoration: none;
 		}
 	}
+
+    &[href^="mailto:"] {
+      font-family: 'Fira Code', monospace;
+    }
 }
+
 TR,.lms-ui-tab-table-row {
 	&.blend A {
 		color: @blend;
@@ -640,6 +645,9 @@ input[type="button"] {
 input[type="text"][disabled] {
 	border: @form-disabled-element-borrder;
 	background-color: transparent;
+	& + label {
+		color: @blend;
+	}
 }
 
 input[type="radio"] {
@@ -691,6 +699,14 @@ input {
 			box-shadow: @warning-box-shadow-focus;
 		}
 	}
+	&.lms-ui-distinguished {
+		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
+		&:focus {
+			border: @warning-outline-focus;
+			box-shadow: @warning-box-shadow-focus;
+		}
+	}
 	&[type="checkbox"],
 	&[type="radio"] {
 		&.alert,
@@ -702,7 +718,8 @@ input {
 				box-shadow: @error-radiocheckbox-box-shadow-focus;
 			}
 		}
-		&.lms-ui-warning {
+		&.lms-ui-warning,
+		&.lms-ui-distinguished {
 			outline: none;
 			box-shadow: @warning-radiocheckbox-box-shadow;
 			&:focus {
@@ -765,7 +782,8 @@ textarea {
 		}
 	}
 
-	&.lms-ui-warning {
+	&.lms-ui-warning,
+	&.lms-ui-distinguished {
 		border: @warning-outline;
 		box-shadow: @warning-box-shadow;
 		background-color: @warning-background;
@@ -819,6 +837,15 @@ select {
 		border: @warning-outline;
 		box-shadow: @warning-box-shadow;
 		background-color: @warning-background;
+		&:focus {
+			border: @warning-outline-focus;
+			box-shadow: @warning-box-shadow-focus;
+			outline: none;
+		}
+	}
+	&.lms-ui-distinguished {
+		border: @warning-outline;
+		box-shadow: @warning-box-shadow;
 		&:focus {
 			border: @warning-outline-focus;
 			box-shadow: @warning-box-shadow-focus;
@@ -2021,6 +2048,14 @@ table.dataTable {
 			box-shadow: @warning-box-shadow-focus !important;
 		}
 	}
+	&.lms-ui-distinguished {
+		border: @warning-outline !important;
+		box-shadow: @warning-box-shadow !important;
+		&:focus {
+			border: @warning-outline-focus !important;
+			box-shadow: @warning-box-shadow-focus !important;
+		}
+	}
 }
 
 .lms-ui-menu-item-icon {
@@ -2062,6 +2097,7 @@ div.lms-ui-filter-container {
 	div.lms-ui-filter-definition {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
 		white-space: normal;
 		max-width: 80%;
 		& > *,
@@ -2594,6 +2630,16 @@ fieldset {
 	}
 }
 
+.lms-ui-day-selection-wrapper {
+	display: inline;
+	.lms-ui-button.lms-ui-button-day-selection {
+		margin-top: 0;
+		@media screen and (min-width: @mobile-max-width + 1px) {
+			min-height: 1.8em;
+		}
+	}
+}
+
 .lms-ui-karma-container {
 	display: inline-block;
 	.lms-ui-karma-button,
@@ -2613,4 +2659,42 @@ fieldset {
 		width: 5em;
 		display: inline-block;
 	}
+}
+
+.lms-ui-fileview-dialog .ui-dialog-content {
+	display: flex;
+	object,
+	img {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.lms-ui-message-new {
+	color: inherit;
+}
+
+.lms-ui-message-delivered {
+	color: green;
+}
+
+.lms-ui-message-sent {
+	color: @blend;
+}
+
+.lms-ui-message-cancelled {
+	color: @warning-text;
+}
+
+.lms-ui-message-error,
+.lms-ui-message-bounced {
+	color: @error-text;
+}
+
+.lms-ui-font-smaller {
+	font-size: 80%;
+}
+
+span.division-context {
+	margin-left: 0.5em;
 }

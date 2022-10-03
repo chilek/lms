@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -167,15 +167,20 @@ if (empty($cashimport_server) || empty($cashimport_username) || empty($cashimpor
     die("Fatal error: mailbox credentials are not set!" . PHP_EOL);
 }
 
-$cashimport_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.use_seen_flag', true));
+$cashimport_use_seen_flag = ConfigHelper::checkConfig($config_section . '.use_seen_flag', true);
+$cashimport_sender_email = ConfigHelper::getConfig($config_section . '.sender_email', '', true);
 $cashimport_folder = ConfigHelper::getConfig($config_section . '.folder', 'INBOX');
 
 $ih = @imap_open("{" . $cashimport_server . "}" . $cashimport_folder, $cashimport_username, $cashimport_password);
 if (!$ih) {
-    die("Cannot connect to mail server!" . PHP_EOL);
+    die('Cannot connect to mail server: ' . imap_last_error() . '!' . PHP_EOL);
 }
 
-$posts = imap_search($ih, $cashimport_use_seen_flag ? 'UNSEEN' : 'ALL');
+$posts = imap_search(
+    $ih,
+    ($cashimport_use_seen_flag ? 'UNSEEN' : 'ALL')
+        . ($cashimport_sender_email ? ' FROM "' . $cashimport_sender_email . '"' : '')
+);
 if (empty($posts)) {
     imap_close($ih);
     die;

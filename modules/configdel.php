@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,5 +42,7 @@ if (isset($_GET['id'])) {
     }
 }
 
-$backurl = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '?m=configlist';
-$SESSION->redirect($backurl);
+if ($SESSION->get_history_entry() != 'm=configlist') {
+    $SESSION->remove_history_entry();
+}
+$SESSION->redirect_to_history_entry();

@@ -67,61 +67,80 @@ function module_main()
         )) {
             if (isset($_GET['smsauth'])) {
                 if ($sms_active) {
+                    $errors = array();
+                    $info = array();
+
+                    header('Content-Type: application/json');
+
                     if (isset($_GET['send'])) {
-                        if (!isset($_SESSION['session_smsauthcode']) || time() - $_SESSION['session_smsauthcode_timestamp'] > 60) {
-                            $_SESSION['session_smsauthcode'] = $sms_authcode = strval(rand(10000000, 99999999));
-                            $_SESSION['session_smsauthcode_timestamp'] = time();
+                        if (!$SESSION->is_set('smsauthcode') || time() - $SESSION->get('smsauthcode_timestamp') > 60) {
+                            $sms_authcode = strval(rand(10000000, 99999999));
+                            $SESSION->save('smsauthcode', $sms_authcode);
+                            $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
-                            $error = array();
                             foreach ($sms_recipients as $sms_recipient) {
                                 $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
-                                if (is_string($res)) {
-                                    $error[] = $res;
+                                if ($res['status'] == MSG_ERROR) {
+                                    $errors = array_merge($errors, $res['errors']);
                                 }
                             }
-                            if ($error) {
-                                echo implode('<br>', $error);
-                            }
                         } else {
-                            if (isset($_SESSION['session_smsauthcode'])) {
-                                echo trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
+                            if ($SESSION->is_set('smsauthcode')) {
+                                $errors[] = trans('Your previous authorization code is still valid. Please wait a minute until it expires.');
                             } else {
-                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+                                $SESSION->remove('smsauthcode');
+                                $SESSION->remove('smsauthcode_timestamp');
                             }
                         }
                     } elseif (isset($_GET['check'])) {
-                        if (isset($_SESSION['session_smsauthcode']) && time() - $_SESSION['session_smsauthcode_timestamp'] < 5 * 60) {
-                            if ($_POST['code'] == $_SESSION['session_smsauthcode']) {
-                                unset($_SESSION['session_smsauthcode'], $_SESSION['session_smsauthcode_timestamp']);
+                        if ($SESSION->is_set('smsauthcode') && time() - $SESSION->get('smsauthcode_timestamp') < 5 * 60) {
+                            if (trim($_POST['code']) == $SESSION->get('smsauthcode')) {
+                                $SESSION->remove('smsauthcode');
+                                $SESSION->remove('smsauthcode_timestamp');
 
                                 // commit customer document only if it's owned by this customer
                                 // and is prepared for customer action
-                                $LMS->CommitDocuments(array($documentid), true);
+                                $result = $LMS->CommitDocuments(array($documentid), true);
+                                $errors = array_merge($errors, $result['errors']);
+                                $info = array_merge($info, $result['info']);
                             } else {
-                                echo trans('Authorization code you entered is invalid!');
+                                $errors[] = trans('Authorization code you entered is invalid!');
                             }
                         } else {
-                            echo trans('Your authorization code has expired! Try again in a moment.');
+                            $errors[] = trans('Your authorization code has expired! Try again in a moment.');
                         }
                     }
                 }
-                die;
+                $SESSION->close();
+                die(json_encode(compact('errors', 'info')));
             } elseif ($scan_active) {
                 $files = array();
                 $error = null;
 
                 if (isset($_FILES['files'])) {
+                    $allowed_file_types = array(
+                        'application/pdf' => true,
+                        'image/jpeg' => true,
+                        'image/png' => true,
+                    );
                     foreach ($_FILES['files']['name'] as $fileidx => $filename) {
                         if (!empty($filename)) {
                             if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
-                                $files[] = array(
-                                    'tmpname' => null,
-                                    'filename' => $filename,
-                                    'name' => $_FILES['files']['tmp_name'][$fileidx],
-                                    'type' => $_FILES['files']['type'][$fileidx],
-                                    'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
-                                    'attachmenttype' => -1,
-                                );
+                                if (isset($allowed_file_types[$_FILES['files']['type'][$fileidx]])) {
+                                    $files[] = array(
+                                        'tmpname' => null,
+                                        'filename' => $filename,
+                                        'name' => $_FILES['files']['tmp_name'][$fileidx],
+                                        'type' => $_FILES['files']['type'][$fileidx],
+                                        'md5sum' => md5($_FILES['files']['tmp_name'][$fileidx]),
+                                        'attachmenttype' => -1,
+                                    );
+                                } else {
+                                    if (isset($error['files'])) {
+                                        $error['files'] .= "\n";
+                                    }
+                                    $error['files'] .= trans('Invalid file type: $a', $filename);
+                                }
                             } else { // upload errors
                                 if (isset($error['files'])) {
                                     $error['files'] .= "\n";
@@ -186,12 +205,32 @@ function module_main()
                                                 ),
                                             )
                                         );
-                                        $LMS->SendMail($mail_recipient, array(
+
+                                        $document = $DB->GetRow(
+                                            'SELECT u.email AS creatoremail
+                                            FROM users u
+                                            JOIN documents d ON d.userid = u.id
+                                            WHERE d.id = ?
+                                                AND (u.ntype & ?) > 0
+                                                AND u.email <> ?',
+                                            array(
+                                                $documentid,
+                                                MSG_MAIL,
+                                                '',
+                                            )
+                                        );
+
+                                        $headers = array(
                                             'From' => ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>',
-                                            'To' => $mail_recipient,
                                             'Subject' => $mail_subject,
                                             'X-LMS-Format' => $mail_format,
-                                        ), $mail_body);
+                                        );
+                                        foreach (explode(',', $LMS->documentCommitParseNotificationRecipient($mail_recipient, $document)) as $recipient) {
+                                            if (!empty($recipient) && check_email($recipient)) {
+                                                $headers['To'] = $recipient;
+                                                $LMS->SendMail($recipient, $headers, $mail_body);
+                                            }
+                                        }
                                     }
 
                                     $mail_format = ConfigHelper::getConfig('userpanel.signed_document_scan_customer_notification_mail_format', 'text');
@@ -417,6 +456,8 @@ if (defined('USERPANEL_SETUPMODE')) {
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject', '', true),
                 'document_approval_customer_notification_mail_body' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body', '', true),
+                'document_approval_customer_notification_attachments' =>
+                    ConfigHelper::checkConfig('userpanel.document_approval_customer_notification_attachments'),
                 'document_approval_customer_onetime_password_sms_body' =>
                     ConfigHelper::getConfig('userpanel.document_approval_customer_onetime_password_sms_body', '', true),
             )
@@ -447,20 +488,21 @@ if (defined('USERPANEL_SETUPMODE')) {
             'new_document_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'new_document_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
             'new_document_customer_notification_sms_body' => CONFIG_TYPE_RICHTEXT,
-            'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_RICHTEXT,
+            'signed_document_scan_operator_notification_mail_recipient' => CONFIG_TYPE_EMAILS,
             'signed_document_scan_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_operator_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'signed_document_scan_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'signed_document_scan_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
-            'document_approval_operator_notification_mail_recipient' => CONFIG_TYPE_EMAIL,
+            'document_approval_operator_notification_mail_recipient' => CONFIG_TYPE_EMAILS,
             'document_approval_operator_notification_mail_format' => CONFIG_TYPE_NONE,
             'document_approval_operator_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'document_approval_operator_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_format' => CONFIG_TYPE_NONE,
             'document_approval_customer_notification_mail_subject' => CONFIG_TYPE_RICHTEXT,
             'document_approval_customer_notification_mail_body' => CONFIG_TYPE_RICHTEXT,
+            'document_approval_customer_notification_attachments' => CONFIG_TYPE_BOOLEAN,
             'document_approval_customer_onetime_password_sms_body' => CONFIG_TYPE_RICHTEXT,
         );
 
@@ -483,6 +525,17 @@ if (defined('USERPANEL_SETUPMODE')) {
                     break;
                 case CONFIG_TYPE_EMAIL:
                     $value = check_email($moduleconfig[$variable]) ? $moduleconfig[$variable] : '';
+                    break;
+                case CONFIG_TYPE_EMAILS:
+                    $emails = array();
+                    foreach (explode(',', $moduleconfig[$variable]) as $email) {
+                        $email = trim($email);
+                        if (!strlen($email) || !check_email($email) && !preg_match('/^%[a-z_]+%$/', $email)) {
+                            continue;
+                        }
+                        $emails[] = $email;
+                    }
+                    $value = implode(',', $emails);
                     break;
                 case CONFIG_TYPE_NONE:
                     $mail_format = str_replace('_mail_format', '_mail_body', $variable);

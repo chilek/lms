@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -120,7 +120,7 @@ if (isset($_POST['queue'])) {
         }
 
         foreach ($categories as $category) {
-            if ($category['checked']) {
+            if (!empty($category['checked'])) {
                 $DB->Execute(
                     'INSERT INTO rtqueuecategories (queueid, categoryid) VALUES (?, ?)',
                     array($id, $category['id'])
@@ -142,7 +142,7 @@ if (isset($_POST['queue'])) {
 
 $layout['pagetitle'] = trans('New Queue');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('categories', $categories);

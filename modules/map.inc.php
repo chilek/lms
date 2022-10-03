@@ -43,8 +43,8 @@ if ($devices) {
     $time_now = time();
 
     foreach ($devices as $devidx => $device) {
-        if (empty($device['location']) &&  $acc['ownerid']) {
-            $devices[$devidx]['location'] = $LMS->getAddressForCustomerStuff($acc['ownerid']);
+        if (empty($device['location']) && $device['ownerid']) {
+            $devices[$devidx]['location'] = $LMS->getAddressForCustomerStuff($device['ownerid']);
         }
         $devices[$devidx]['name'] = trim($device['name'], ' "');
         if ($device['lastonline']) {
@@ -89,6 +89,8 @@ if ($devices) {
             $devlinks[$devlinkidx]['speedname'] = trans("Link speed:")." ".$LINKSPEEDS[$devlink['speed']];
         }
     }
+} else {
+    $devlinks = null;
 }
 
 $nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude AS lat, n.longitude AS lon 
@@ -140,4 +142,4 @@ if ($nodes) {
 $SMARTY->assign('devices', $devices);
 $SMARTY->assign('devlinks', $devlinks);
 $SMARTY->assign('nodes', $nodes);
-$SMARTY->assign('nodelinks', $nodelinks);
+$SMARTY->assign('nodelinks', empty($nodelinks) ? null : $nodelinks);

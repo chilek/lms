@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ $account = $DB->GetRow('SELECT p.id, p.login, d.name AS domain
 		WHERE p.id = ?', array($id));
 
 if (!$account) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_POST['passwd'])) {
@@ -49,10 +49,10 @@ if (isset($_POST['passwd'])) {
     if (!$error) {
         $DB->Execute(
             'UPDATE passwd SET password = ? WHERE id = ?',
-            array(crypt($account['passwd1']), $id)
+            array(password_hash($account['passwd1'], PASSWORD_DEFAULT), $id)
         );
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 }
 

@@ -75,11 +75,11 @@ class VoipDbBuffor
         $cdr['call_status'] = $this->parseCallStatus($cdr['call_status']);
 
         switch ($cdr['call_type']) {
-            case CALL_INCOMING: //no payments for incoming call
+            case BILLING_RECORD_DIRECTION_INCOMING: //no payments for incoming call
                 $cdr['price'] = 0;
                 break;
 
-            case CALL_OUTGOING:
+            case BILLING_RECORD_DIRECTION_OUTGOING:
                 if (isset($cdr['billedtime']) && $cdr['billedtime'] > 0) {
                     $info  = $this->estimate->getCallCost($cdr['caller'], $cdr['callee'], $cdr['billedtime']);
 
@@ -176,7 +176,7 @@ class VoipDbBuffor
         //insert cdr records
         $DB->Execute('INSERT INTO voip_cdr
                          (caller, callee, call_start_time, totaltime, billedtime,
-                          price, status, type, callervoipaccountid, calleevoipaccountid, caller_flags,
+                          price, status, direction, callervoipaccountid, calleevoipaccountid, caller_flags,
                           callee_flags, caller_prefix_group, callee_prefix_group, uniqueid)
                       VALUES ' . implode(',', $insert));
 
@@ -237,11 +237,11 @@ class VoipDbBuffor
     public function parseCallType($type)
     {
         if (preg_match("/incoming/i", $type)) {
-            return CALL_INCOMING;
+            return BILLING_RECORD_DIRECTION_INCOMING;
         }
 
         if (preg_match("/outgoing/i", $type)) {
-            return CALL_OUTGOING;
+            return BILLING_RECORD_DIRECTION_OUTGOING;
         }
 
         return 'incorrect';
@@ -257,19 +257,19 @@ class VoipDbBuffor
     public function parseCallStatus($type)
     {
         if (preg_match("/busy/i", $type)) {
-            return CALL_BUSY;
+            return BILLING_RECORD_STATUS_BUSY;
         }
 
         if (preg_match("/answered/i", $type)) {
-            return CALL_ANSWERED;
+            return BILLING_RECORD_STATUS_ANSWERED;
         }
 
         if (preg_match("/(noanswer|no answer)/i", $type)) {
-            return CALL_NO_ANSWER;
+            return BILLING_RECORD_STATUS_NO_ANSWER;
         }
 
         if (preg_match("/fail/i", $type)) {
-            return CALL_SERVER_FAILED;
+            return BILLING_RECORD_STATUS_SERVER_FAILED;
         }
 
         return 'incorect';

@@ -50,7 +50,7 @@
 						<label>
 							{trans("Division")}
 							<select name="divisionid" form="numberplanlist" data-default-value="0">
-								<option value="0">{trans("- any -")}</option>
+								<option value="0">{trans("— any —")}</option>
 								{foreach $divisions as $division}
 									<option value="{$division.id}"{if $division.id == $divisionid} selected{/if}
 										>{$division.label|escape}</option>
@@ -60,7 +60,7 @@
 						<label>
 							{trans("User")}
 							<select name="userid" form="numberplanlist" data-default-value="0">
-								<option value="0">{trans("- any -")}</option>
+								<option value="0">{trans("— any —")}</option>
 								{foreach $users as $user}
 									<option value="{$user.id}"{if $user.id == $userid} selected{/if}
 										>{$user.rname|escape} ({$user.login})</option>
@@ -70,7 +70,7 @@
 						<label>
 							{trans("Type")}
 							<select name="type" form="numberplanlist" data-default-value="0">
-								<option value="0">{trans("- any -")}</option>
+								<option value="0">{trans("— any —")}</option>
 								{foreach Localisation::arraySort($_DOCTYPES) as $key => $label}
 									<option value="{$key}"{if $key == $type} selected{/if}
 									>{$label|escape}</option>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -187,7 +187,11 @@ if (!empty($_POST['division'])) {
     if ($olddiv['location_city'] || $olddiv['location_street']) {
         $olddiv['teryt'] = true;
         if ($olddiv['location_city'] && $olddiv['location_street']) {
-            preg_match('/^(?<city>.+)\s*,\s*(?<address>.+)$/', location_str($olddiv), $m);
+            preg_match(
+                '/^(?<city>.+)\s*,\s*(?<address>.+)$/',
+                location_str(array('city_name' => $olddiv['location_city'], 'street_name' => $olddiv['location_street'])),
+                $m
+            );
             $olddiv['city'] = $m['city'];
             $oldciv['address'] = $m['address'];
         }
@@ -203,8 +207,7 @@ if (Localisation::getCurrentSystemLanguage() == 'pl_PL') {
 $usersList = $LMS->GetUserList(array('superuser' => 1));
 unset($usersList['total']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('backto', $_SERVER['QUERY_STRING'], true);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('division', !empty($division) ? $division : $olddiv);
 $SMARTY->assign('division_users', $divisionUsers);

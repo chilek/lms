@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,7 +28,7 @@ function GetSourceList()
 {
     $DB = LMSDB::getInstance();
 
-    $list = $DB->GetAll("SELECT id, name, description, account, deleted FROM cashsources ORDER BY name");
+    $list = $DB->GetAll("SELECT * FROM cashsources ORDER BY name");
     return $list;
 }
 
@@ -46,7 +46,7 @@ $layout['pagetitle'] = trans('Cash Import Source List');
 
 $sourcelist = GetSourceList();
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('sourcelist', $sourcelist);
 $SMARTY->display('cash/cashsourcelist.html');

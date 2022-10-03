@@ -37,9 +37,9 @@
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
 		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
         zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
-        multiSelectPopupOnBottom: {if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.multiselect_popup_on_bottom', 'true'))}true{else}false{/if},
+        multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom', true)}true{else}false{/if},
 		multiSelectMaxVisible: '{intval(ConfigHelper::getConfig('phpui.multiselect_max_visible', 5))}',
-        eventTimeStep: {ConfigHelper::getConfig('phpui.event_time_step', 30)},
+        eventTimeStep: {ConfigHelper::getConfig('timetable.event_time_step', ConfigHelper::getConfig('phpui.event_time_step', 30))},
 		openCalendarOnInputClick: {if ConfigHelper::checkConfig('phpui.open_calendar_on_input_click')}true{else}false{/if},
 		uploadedImageMaxSize: {intval(ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0))},
 		monthlyPeriod: {$smarty.const.MONTHLY},
@@ -51,7 +51,7 @@
 		tooltipsEnabled = false;
 	}
 
-	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
+	{if ConfigHelper::checkConfig('phpui.disable_mobile_tooltips', true)}
 	$(function() {
 		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			$('[title]').removeAttr('title');
@@ -62,6 +62,9 @@
 	$(function() {
 		{if isset($error) && is_array($error)}
 			{foreach $error as $k => $v}
+				{if is_array($v)}
+					{$v = ""}
+				{/if}
 				$('[name="{$k|replace:'"':'\"'}"]')
 					.attr('title', "{$v|replace:'"':'\"'}")
 					.addClass('lms-ui-error');
@@ -69,6 +72,9 @@
 		{/if}
 		{if isset($warning) && is_array($warning)}
 			{foreach $warning as $k => $v}
+				{if is_array($v)}
+					{$v = ""}
+				{/if}
 				var name = "{$k|replace:'"':'\"'}";
 				$('[name="' + name + '"]')
 					.attr('title', "{$v|replace:'"':'\"'}")
@@ -84,12 +90,12 @@
 <script src="js/lms-ui-deferred-submit.js"></script>
 <script src="js/lms-ui-persistent-filter.js"></script>
 <script src="js/lms-ui-dialog.js"></script>
-<script src="js/lms-ui-iconselectmenu.js"></script>
 <script src="js/lms-ui-multiselect.js"></script>
 <script src="js/lms-ui-dragslider.js"></script>
 <script src="js/lms-ui-datepicker.js"></script>
 <script src="js/lms-ui-combobox.js"></script>
 <script src="js/lms-ui-fileupload.js"></script>
+<script src="js/lms-ui-fileview.js"></script>
 <script src="js/lms-ui-karma.js"></script>
 <script>
 

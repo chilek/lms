@@ -209,6 +209,8 @@ if ( typeof $ !== 'undefined' ) {
 
             var box = $( this ).closest( ".lms-ui-address-box" );
 
+			var addressType = parseInt(box.closest('.location-box-expandable').find('[data-address="address_type"]').val());
+
             // if teryt checkbox is not checked during teryt button click then
             // we check it automatically for user convenience
             if ( ! box.find("input[data-address='teryt-checkbox']").is(':checked') ) {
@@ -224,7 +226,8 @@ if ( typeof $ !== 'undefined' ) {
             var street = box.find("input[data-address='street-hidden']").val();
 
 			openPopupWindow({
-				url: '?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
+				url: '?m=chooselocation' + (addressType ? '&addresstype=' + addressType : '') +
+					'&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
 				selector: this,
 				title: $t("Choose TERRIT location"),
 				onLoaded: function() {
@@ -879,10 +882,18 @@ function GusApiFinished(fieldPrefix, details) {
 }
 
 function osm_get_zip_code(search, on_success) {
+	var street;
+	if (search.street.length) {
+		var chunks = search.street.split(' ');
+		chunks.shift();
+		street = chunks.join(' ') + ' ';
+	} else {
+		street = '';
+	}
 	var data = {
 		format: 'json',
 		city: search.city,
-		street: search.house + (search.street.length ? ' ' + search.street : ''),
+		street: street + search.house,
 		addressdetails: 1
 	}
 	if (search.countryid.length) {

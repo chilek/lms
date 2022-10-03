@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,41 +24,23 @@
  *  $Id$
  */
 
-if ($SESSION->is_set('backtoStack', true)) {
-    $backtoStack = $SESSION->get('backtoStack', true);
-    $queryString = $_SERVER['QUERY_STRING'];
-    $backto = end($backtoStack);
-    if (!in_array($queryString, $backtoStack) && $queryString != $backto) {
-        $backtoStack[] = $queryString;
-        $SESSION->save('backtoStack', $backtoStack, true);
-    } else {
-        $pos = array_search($queryString, $backtoStack);
-        $backtoStack = array_slice($backtoStack, 0, $pos);
-        $backto = end($backtoStack);
-        $backtoStack[] = $queryString;
-        $SESSION->save('backtoStack', $backtoStack, true);
-    }
-} elseif ($SESSION->is_set('backto')) {
-    $backtoStack = $SESSION->get('backtoStack') ?: array();
-    $queryString = $_SERVER['QUERY_STRING'];
-    $backto = end($backtoStack);
-    if (!in_array($queryString, $backtoStack) && $queryString != $backto) {
-        $backtoStack[] = $queryString;
-        $SESSION->save('backtoStack', $backtoStack);
-    } else {
-        $pos = array_search($queryString, $backtoStack);
-        $backtoStack = array_slice($backtoStack, 0, $pos);
-        $backto = end($backtoStack);
-        $backtoStack[] = $queryString;
-        $SESSION->save('backtoStack', $backtoStack);
-    }
-} else {
-    $backto = '';
+$error = array();
+$action = ($_GET['action'] ?? ($_POST['action'] ?? null));
+
+switch ($action) {
+    case 'init':
+        $SESSION->add_history_entry();
+        break;
+    case 'cancel':
+        if ($SESSION->get_history_entry() != 'm=configlist') {
+            $SESSION->remove_history_entry();
+            $SESSION->redirect_to_history_entry();
+        }
+        break;
+    case 'save':
+            $SESSION->remove_history_entry();
+        break;
 }
-$backurl = $backto ? '?' . $backto : '?m=configlist';
-$SMARTY->assign('backurl', $backurl);
-$SESSION->save('backto', $backurl);
-$SESSION->save('backto', $backurl, true);
 
 if (isset($_GET['s']) && isset($_GET['v'])) {
     $params = array(
@@ -71,17 +53,19 @@ if (isset($_GET['s']) && isset($_GET['v'])) {
     if (isset($_GET['d'])) {
         $params['divisionid'] = $_GET['d'];
     }
-} else {
+} elseif (isset($_GET['id'])) {
     $params['id'] = $_GET['id'];
+} else {
+    $SESSION->redirect_to_history_entry();
 }
 
 if (!($id = $LMS->ConfigOptionExists($params))) {
-    $SESSION->redirect($backurl);
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_GET['statuschange'])) {
     $LMS->toggleConfigOption($id);
-    $SESSION->redirect($backurl);
+    $SESSION->redirect_to_history_entry();
 }
 
 $config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
@@ -147,7 +131,7 @@ if (isset($_POST['config'])) {
     }
 
     $option = $cfg['section'] . '.' . $cfg['var'];
-    if (!isset($config['reftype']) || empty($config['reftype'])) {
+    if (empty($config['reftype'])) {
         if ($cfg['type'] == CONFIG_TYPE_AUTO) {
             $cfg['type'] = $LMS->GetConfigDefaultType($option);
         }
@@ -162,12 +146,12 @@ if (isset($_POST['config'])) {
     }
 
     if (!empty($cfg['reftype'])) {
-        if (!isset($cfg['refconfigid']) || empty($cfg['refconfigid'])) {
+        if (empty($cfg['refconfigid'])) {
             $error['refconfigid'] = trans('Referenced option does not exists!');
         }
         switch ($cfg['reftype']) {
             case 'division':
-                if (!isset($cfg['divisionid']) || empty($cfg['divisionid'])) {
+                if (empty($cfg['divisionid'])) {
                     $error['divisionid'] = trans('Division is required!');
                 }
                 $refOption = $LMS->GetConfigVariable($cfg['refconfigid']);
@@ -176,10 +160,10 @@ if (isset($_POST['config'])) {
                 }
                 break;
             case 'divisionuser':
-                if (!isset($cfg['userid']) || empty($cfg['userid'])) {
+                if (empty($cfg['userid'])) {
                     $error['userid'] = trans('User is required!');
                 }
-                if (!isset($cfg['divisionid']) || empty($cfg['divisionid'])) {
+                if (empty($cfg['divisionid'])) {
                     $error['divisionid'] = trans('Division is required!');
                 }
                 $refOption = $LMS->GetConfigVariable($cfg['refconfigid']);
@@ -188,11 +172,11 @@ if (isset($_POST['config'])) {
                 }
                 $divisionaccess = $LMS->CheckDivisionsAccess(array('divisions' => $cfg['divisionid'], 'user_id' => $cfg['userid']));
                 if (!$divisionaccess) {
-                    $error['userid'] = trans('User is not asigned to the division!');
+                    $error['userid'] = trans('User is not assigned to the division!');
                 }
                 break;
             case 'user':
-                if (!isset($cfg['userid']) || empty($cfg['userid'])) {
+                if (empty($cfg['userid'])) {
                     $error['userid'] = trans('User is required!');
                 }
                 $refOption = $LMS->GetConfigVariable($cfg['refconfigid']);
@@ -229,11 +213,7 @@ if (isset($_POST['config'])) {
             $configid = $LMS->editConfigOption($args);
             $DB->CommitTrans();
         }
-        if ($SESSION->is_set('backto', true)) {
-            $SESSION->redirect($SESSION->get('backto', true));
-        } elseif ($SESSION->is_set('backto')) {
-            $SESSION->redirect($SESSION->get('backto'));
-        }
+        $SESSION->redirect_to_history_entry();
     }
     $config = $cfg;
 }

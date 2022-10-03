@@ -23,17 +23,17 @@
     <THEAD>
         <TR{if $day == $today} class="superdark"{/if}>
             <TD class="bold nobr">
-                {icon name="timetable" label="{$day|date_format:"%A"} ({$day|date_format:"%x"})"}
+                {icon name="timetable" label="{t a=trans($day|date_format:"l") b=$day|date_format:"Y-m-d"}<!date-format>\$a (\$b){/t}"}
             </TD>
             <TD colspan="3">
-                {if $getHolidays[$day]}
+                {if isset($getHolidays[$day]) && $getHolidays[$day]}
                 <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>
                 {/if}
-                {button type="link" href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}" icon="next"}
+                {button type="link" href="?m=eventsearch&datefrom={$day|date_format:"Y/m/d"}&dateto={$day|date_format:"Y/m/d"}" icon="next"}
             </TD>
             <TD colspan="2" class="text-right nobr">
                 <div class="no-print">
-					{button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"%d"}&month={$day|date_format:"%m"}&year={$day|date_format:"%Y"}';"
+					{button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"d"}&month={$day|date_format:"m"}&year={$day|date_format:"Y"}';"
 						external=true label="Add Event"}
 					{button icon="print" onclick="window.location.href='?m=eventprint&day={$day}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}';"
 						external=true label="Print"}

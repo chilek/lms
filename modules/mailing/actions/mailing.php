@@ -88,7 +88,7 @@ if (isset($_POST['mailing'])) {
     $mailing = $_POST['mailing'];
 
     if ($mailing['group'] < 0 || $mailing['group'] > 6) {
-        $error['group'] = trans('Incorrect customers group!');
+        $error['group'] = trans('Incorrect recipient group!');
     }
 
     if ($mailing['sender']=='') {

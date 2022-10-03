@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -87,7 +87,7 @@ function GetConfigList()
             'helpdesk_stats' => 'Adds helpdesk requests causes stats on ticket view and print pages. Default: true',
             'helpdesk_customerinfo' => 'Adds customer basic information on ticket view and in notifications. Default: true',
             'ticket_template_file' => 'Helpdesk ticket printout template file. Default: rtticketprint.html',
-            'ticketlist_status' => 'Default status filter setting on tickets list. For allowed values see html source code. Default: not set',
+            'ticketlist_status' => 'Default status filter setting on tickets list. For allowed values see HTML source code. Default: not set',
             'use_invoices' => 'Makes option "with invoice" checked by default. Default: false',
             'default_module' => 'Start-up module (filename from /modules without .php). Default: welcome',
             'default_assignment_period' => 'Default period value for assignment. Default: 0',
@@ -124,7 +124,7 @@ function GetConfigList()
             'content_type' => 'Content-type for document. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".',
             'attachment_name' => 'File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.',
             'type' => 'Documents type. You can use "html" or "pdf". Default: html.',
-            'print_balance_history' => 'If true on invoice (html) will be printed history of financial operations on customer account. Default: not set.',
+            'print_balance_history' => 'If true on invoice (HTML) will be printed history of financial operations on customer account. Default: not set.',
             'print_balance_history_limit' => 'Number of Records on customer balance list on invoice. Specify last x records. Default: 10.',
             'default_printpage' => 'Coma-separated list of default invoice printout pages. You can use "original", "copy", "duplicate". Default: "original,copy".',
             'radius' => 'Enable RADIUS support. Default: 1',
@@ -132,6 +132,10 @@ function GetConfigList()
             'paytime' => 'Default documents paytime in days. Default: 14',
             'paytype' => 'Default invoices paytype. Default: "1" (cash)',
             'customer_bankaccount' => 'Show bankaccount on invoice. Default: 0',
+        ),
+        'timetable' => array(
+            'default_forward_day_limit' => 'Number of days (including current day) on timetable. Default: 7.',
+            'event_max_userlist_size' => 'Automatically adjusts the size of the selection list to the number of users when set to 0.',
         ),
         'notes' => array(
             'template_file' => 'Debit note template file. Default: "note.html". Should be placed in templates directory.',
@@ -146,6 +150,22 @@ function GetConfigList()
             'attachment_name' => 'File name for saving document printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print document, and prompt for save on disk. Default: empty.',
             'type' => 'Documents type. You can use "html" or "pdf". Default: html.',
         ),
+        'rt' => array(
+            'backend_mode' => 'When enabled, all messages in helpdesk system (except those sent to requester) will be sent to mail server corresponding queue address. lms-rtparser script should be running on server. Messages won\'t be written directly to database, but on solely responsibility of rtparser script. Default: disabled.',
+            'new_ticket_notify' => 'When enabled, system will sent notification to all users with rights for current queue after new ticket creation. Default: disabled.',
+            'notification_customerinfo' => 'Adds customer basic information on ticket view and in notifications. Default: true',
+            'notification_mail_subject' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',
+            'notification_mail_body' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',
+            'notification_sms_body' => 'Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information',
+            'notification_mail_body_customerinfo_format' => 'Template for user email notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mails ; %phone - phones',
+            'notification_sms_body_customerinfo_format' => 'Template for user sms notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mails ; %phone - phones',
+            'quote_body' => 'Adds body of message in ticket reply. Default: false',
+            'sender_name' => 'Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.',
+            'show_stats' => 'Adds helpdesk requests causes stats on ticket view and print pages. Default: true',
+            'ticket_template_file' => 'Helpdesk ticket printout template file. Default: rtticketprint.html',
+            'ticketlist_pagelimit' => 'Limit of records displayed on one page in tickets (requests) list. Default: 100.',
+            'ticketlist_status' => 'Default status filter setting on tickets list. For allowed values see HTML source code. Default: not set',
+        ),
         'mail' => array(
             'debug_email' => 'E-mail address for debugging - messages from \'Mailing\' module will be sent at this address, instead to real users.',
             'smtp_port' => 'SMTP settings.',
@@ -157,7 +177,7 @@ function GetConfigList()
             'backend' => 'Mail backend settings. Available options: pear or phpmailer.',
             'phpmailer_from' => 'E-mail address from which we send mail.',
             'phpmailer_from_name' => 'E-mail address name from which we send mail.',
-            'phpmailer_is_html' => 'Email message in html format.',
+            'phpmailer_is_html' => 'Email message in HTML format.',
             'smtp_secure' => 'Security protocol. Available options: ssl or tls.',
         ),
         'sms' => array(
@@ -198,7 +218,7 @@ function GetConfigList()
     if ($config) {
         $markdown_documentation = Utils::LoadMarkdownDocumentation();
 
-        foreach ($config as $idx => &$item) {
+        foreach ($config as &$item) {
             if (isset($markdown_documentation[$item['section']][$item['var']])) {
                 $item['description'] = Utils::MarkdownToHtml($markdown_documentation[$item['section']][$item['var']]);
             } else if (isset($configuration_variables[$item['section']][$item['var']])) {
@@ -237,17 +257,17 @@ $configlist = GetConfigList();
 
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($configlist));
 
-$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']), true);
-$SESSION->save('backtoStack', array($_SERVER['QUERY_STRING']));
+$SESSION->add_history_entry();
 
+$LMS = LMS::getInstance();
 $SMARTY->assign('users', $LMS->getUsers(array('superuser' => 1)));
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
-$SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');
-$SMARTY->assign('division', isset($_GET['d']) ? $_GET['d'] : '');
-$SMARTY->assign('user', isset($_GET['u']) ? $_GET['u'] : '');
-$SMARTY->assign('scope', isset($_GET['sc']) ? $_GET['sc'] : '');
-$SMARTY->assign('name', isset($_GET['v']) ? $_GET['v'] : '');
+$SMARTY->assign('section', $_GET['s'] ?? '');
+$SMARTY->assign('division', $_GET['d'] ?? '');
+$SMARTY->assign('user', $_GET['u'] ?? '');
+$SMARTY->assign('scope', $_GET['sc'] ?? '');
+$SMARTY->assign('name', $_GET['v'] ?? '');
 $SMARTY->display('config/configlist.html');

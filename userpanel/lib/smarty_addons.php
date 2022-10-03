@@ -29,7 +29,11 @@
 function _smarty_block_box($params, $content, $template, &$repeat)
 {
     if (!$repeat && isset($content)) {
-        $title = trans(array_merge(array($params['title']), $params));
+        if (isset($params['title'])) {
+            $title = trans(array_merge(array($params['title']), $params));
+        } else {
+            $title = '';
+        }
 
         $style = ConfigHelper::getConfig('userpanel.style', 'default');
 
@@ -75,7 +79,7 @@ function _smarty_function_body($params, $template)
 function _smarty_function_userpaneltip($params, $template)
 {
     $repeat = false;
-    $text = trans(array_merge(array($params['text']), $params));
+    $text = trans(array_merge(isset($params['test']) ? array($params['text']) : array(), $params));
 
     $tpl = $template->getTemplateVars('error');
     if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {
@@ -99,7 +103,9 @@ function _smarty_function_userpaneltip($params, $template)
 
     if (ConfigHelper::getConfig('userpanel.style') == 'bclean') {
         $result = ' class="' . (empty($class) ? '' : $class)
-            . (isset($params['trigger']) && isset($tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+            . (isset($params['trigger']) && isset($tpl[$params['trigger']])
+                ? (isset($params['bold']) && $params['bold'] ? ' alert bold' : ' alert')
+                : (isset($params['bold']) && $params['bold'] ? ' bold' : ''))
             . '" ';
     } elseif (ConfigHelper::getConfig('userpanel.hint') == 'classic') {
         if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {
@@ -150,14 +156,14 @@ function _smarty_function_img($params, $template)
     $result .= 'src="'.$file.'" ';
 
     $repeat = false;
-    if ($alt = $params['alt']) {
-        $result .= 'alt="'.trans($alt).'" ';
+    if (isset($params['alt'])) {
+        $result .= 'alt="' . trans($params['alt']) . '" ';
     } else {
         $result .= 'alt="" ';
     }
 
-    if ($text = $params['text']) {
-        $text = trans(array_merge(array($text), $params));
+    if (isset($params['text'])) {
+        $text = trans(array_merge(array($params['text']), $params));
 
         $tpl = $template->getTemplateVars('error');
         $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
@@ -190,11 +196,11 @@ function _smarty_function_img($params, $template)
     if ($params['height']) {
         $result .= 'height="'.$params['height'].'" ';
     }
-    if ($params['style']) {
-        $result .= 'style="'.$params['style'].'" ';
+    if (isset($params['style'])) {
+        $result .= 'style="' . $params['style'] . '" ';
     }
-    if ($params['border']) {
-        $result .= 'border="'.$params['border'].'" ';
+    if (isset($params['border'])) {
+        $result .= 'border="' . $params['border'] . '" ';
     }
 
     $result .= '/>';

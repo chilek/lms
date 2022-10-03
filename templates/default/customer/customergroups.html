@@ -35,7 +35,7 @@
 							{trans("ID:")}
 						</div>
 						<div class="lms-ui-tab-table-column datefrom">
-							{trans("Od")}
+							{trans("From")}
 						</div>
 					</div>
 				</div>
@@ -69,7 +69,7 @@
 						</div>
 						<div class="lms-ui-tab-table-column datefrom">
 							{if $customergroup.startdate}
-								{$customergroup.startdate|date_format:"%Y/%m/%d %H:%M"}
+								{$customergroup.startdate|date_format:"Y-m-d H:i"}
 							{else}
 								-
 							{/if}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,11 +42,11 @@ if (isset($_GET['othersnetid']) && $othersnetid = $_GET['othersnetid']) {
 
 $nodegroup = $LMS->GetNodeGroup($id, isset($membersnetid) ? $membersnetid : 0);
 $nodes = $LMS->GetNodesWithoutGroup($id, isset($othersnetid) ? $othersnetid : 0);
-$nodescount = count($nodes);
+$nodescount = empty($nodes) ? 0 : count($nodes);
 
 $layout['pagetitle'] = trans('Group Info: $a', $nodegroup['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('nodegroup', $nodegroup);
 $SMARTY->assign('nodes', $nodes);

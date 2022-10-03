@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -80,7 +80,20 @@ if ($api) {
         'ownership' => $w,
         'divisionid' => $d,
     );
+
+    $search['count'] = true;
+    $total = intval($LMS->GetNetNodeList($search, $o));
+
+    $limit = intval(ConfigHelper::getConfig('phpui.netnodelist_pagelimit', $total));
+    if ($SESSION->is_set('nnlp') && !isset($_GET['page'])) {
+        $SESSION->restore('nnlp', $_GET['page']);
+    }
+    $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+    $offset = ($page - 1) * $limit;
+    $search['offset'] = $offset;
+    $search['limit'] = $limit;
 }
+$search['count'] = false;
 $nlist = $LMS->GetNetNodeList($search, $o);
 
 if (!$api) {
@@ -91,28 +104,23 @@ if (!$api) {
     $listdata['direction'] = $nlist['direction'];
 }
 
-unset($nlist['total']);
-unset($nlist['order']);
-unset($nlist['direction']);
-
 if ($api) {
     header('Content-Type: application/json');
     echo json_encode(array_values($nlist));
 } else {
-    $total = $listdata['total'];
-
-    $limit = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
-    if ($SESSION->is_set('nnlp') && !isset($_GET['page'])) {
-        $SESSION->restore('nnlp', $_GET['page']);
-    }
-    $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
-    $offset = ($page - 1) * $pagelimit;
-
     $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
+    $listdata['total'] = $total;
+    $listdata['order'] = $nlist['order'];
+    $listdata['direction'] = $nlist['direction'];
+
+    unset($nlist['total'], $nlist['order'], $nlist['direction']);
+
+    $total = $listdata['total'];
 
     $SESSION->save('nnlp', $page);
 
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 
     $SMARTY->assign('nlist', $nlist);
     $SMARTY->assign('pagination', $pagination);

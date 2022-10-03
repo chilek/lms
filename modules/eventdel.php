@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -37,17 +37,15 @@ if ($id) {
 }
 
 
-if ($SESSION->is_set('backto', true)) {
-    $backto = '?' . $SESSION->get('backto', true);
-} else {
-    $backto = '?' . $SESSION->get('backto');
-}
+$backto = $SESSION->remove_history_entry();
 
 if (!empty($backto)) {
     if (strpos($backto, 'm=rtticketview') !== false) {
         $SESSION->redirect($backto);
     } elseif (strpos($backto, 'm=eventinfo') !== false) {
         $SESSION->redirect('?m=eventlist');
+    } else {
+        $SESSION->redirect('?' . $backto);
     }
 }
 

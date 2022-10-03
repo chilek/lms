@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $taxrateadd = isset($_POST['taxrateadd']) ? $_POST['taxrateadd'] : null;
 
-if (count($taxrateadd)) {
+if (is_array($taxrateadd) && count($taxrateadd)) {
     foreach ($taxrateadd as $idx => $key) {
         $taxrateadd[$idx] = trim($key);
     }
@@ -34,7 +34,7 @@ if (count($taxrateadd)) {
     if ($taxrateadd['label']=='' && $taxrateadd['value']=='') {
         $SESSION->redirect('?m=taxratelist');
     }
-    
+
     if ($taxrateadd['label'] == '') {
         $error['label'] = trans('Tax rate label is required!');
     } elseif (strlen($taxrateadd['label'])>16) {
@@ -51,7 +51,7 @@ if (count($taxrateadd)) {
     if (!$taxrateadd['taxed']) {
         $taxrateadd['taxed'] = 0;
     }
-        
+
     if (!$taxrateadd['taxed'] && $taxrateadd['value']!=0) {
         $error['value'] = trans('Incorrect tax rate percentage value (non-zero value and taxing not checked)!');
     }
@@ -73,7 +73,7 @@ if (count($taxrateadd)) {
     } else {
         $validto = 0;
     }
-    
+
     if (!$error) {
         $args = array(
             'label' => $taxrateadd['label'],
@@ -103,7 +103,7 @@ if (count($taxrateadd)) {
 
 $layout['pagetitle'] = trans('New Tax Rate');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('taxrateadd', $taxrateadd);
 $SMARTY->assign('error', $error);

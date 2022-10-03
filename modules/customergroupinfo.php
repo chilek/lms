@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,11 +44,11 @@ if (isset($_GET['othersnetid']) && $othersnetid = $_GET['othersnetid']) {
 
 $customergroup = $LMS->CustomergroupGet($id, isset($membersnetid) ? $membersnetid : 0);
 $customers = $LMS->GetCustomerWithoutGroupNames($id, isset($othersnetid) ? $othersnetid : 0);
-$customerscount = count($customers);
+$customerscount = empty($customers) ? 0 : count($customers);
 
 $layout['pagetitle'] = trans('Group Info: $a', $customergroup['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('customergroup', $customergroup);
 $SMARTY->assign('customers', $customers);

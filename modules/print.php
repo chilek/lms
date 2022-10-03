@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -230,8 +230,10 @@ switch ($type) {
 
         if ($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid,
                     c.value AS value, c.currency, c.currencyvalue,
-					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
+					taxes.label AS taxlabel, c.customerid, comment, c.type AS type,
+                    cs.name AS sourcename
 					FROM cash c
+					LEFT JOIN cashsources cs ON cs.id = c.sourceid
 					LEFT JOIN taxes ON (taxid = taxes.id) '
                     .($group ? 'LEFT JOIN vcustomerassignments a ON (c.customerid = a.customerid)  ' : '')
                     .'WHERE time <= ? '
@@ -268,7 +270,9 @@ switch ($type) {
                 $list[$x]['currencyvalue'] = $row['currencyvalue'];
                 $list[$x]['taxlabel'] = $row['taxlabel'];
                 $list[$x]['time'] = $row['time'];
+                $list[$x]['sourcename'] = $row['sourcename'];
                 $list[$x]['comment'] = $row['comment'];
+                $list[$x]['customerid'] = $row['customerid'];
                 $list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
 
                 if ($row['customerid'] && $row['type']==0) {
@@ -463,22 +467,25 @@ switch ($type) {
 
         $layout['pagetitle'] = trans('Invoices');
 
-        header('Location: ?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . $_GET['jpk'] : '')
-            . (isset($_GET['jpk_format']) ? '&jpk_format=' . $_GET['jpk_format'] : '')
-            .$type
-            .'&from='.$date['from']
-            .'&to='.$date['to']
-            .(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
-            .(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
-            .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
-            .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
-                . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
-            .(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
-            .(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]='
-                . implode('&numberplanid[]=', Utils::filterIntegers($_POST['numberplan'])) : '')
-            .(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
-            .(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
-            .(!empty($_POST['manualissued']) ? '&manualissued=1' : ''));
+        header(
+            'Location: ?m=invoice&fetchallinvoices=1' . (isset($_GET['jpk']) ? '&jpk=' . $_GET['jpk'] : '')
+                . (isset($_GET['jpk_format']) ? '&jpk_format=' . $_GET['jpk_format'] : '')
+                .$type
+                .'&from='.$date['from']
+                .'&to='.$date['to']
+                .(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
+                .(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
+                .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
+                .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
+                    . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
+                .(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
+                .(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]='
+                    . implode('&numberplanid[]=', Utils::filterIntegers($_POST['numberplan'])) : '')
+                .(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
+                .(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
+                .(!empty($_POST['manualissued']) ? '&manualissued=1' : '')
+                . (isset($_POST['related-documents']) ? '&related-documents=1' : '')
+        );
         break;
 
     case 'transferforms':
@@ -508,7 +515,7 @@ switch ($type) {
                     $date['from'] = mktime(0, 0, 0, $month, $day, $year);
                 } else {
                     $from = date('Y/m/d', time());
-                    $date['from'] = mktime(0, 0, 0); //pocz�tek dnia dzisiejszego
+                    $date['from'] = mktime(0, 0, 0); //początek dnia dzisiejszego
                 }
 
                 $_GET['from'] = $date['from'];
@@ -521,7 +528,7 @@ switch ($type) {
 
                 break;
             case 2:
-                $balance = $_POST['balance'] ? $_POST['balance'] : 0;
+                $balance = isset($_POST['balance']) && strlen($_POST['balance']) ? floatval($_POST['balance']) : null;
                 $customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
                 $group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
                 $exclgroup = isset($_POST['groupexclude']) ? 1 : 0;
@@ -592,6 +599,8 @@ switch ($type) {
 
         $reportlist = array();
         if ($taxes = $LMS->GetTaxes($reportday, $reportday)) {
+            $total = array();
+
             foreach ($taxes as $taxidx => $tax) {
                 $list1 = $DB->GetAllByKey(
                     'SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, '
@@ -711,17 +720,18 @@ switch ($type) {
 
             switch ($order) {
                 case 'customername':
+                    $table = array();
                     foreach ($reportlist as $idx => $row) {
                         $table['idx'][] = $idx;
                         $table['customername'][] = $row['customername'];
                     }
-                    if (is_array($table)) {
+                    if (!empty($table)) {
                         array_multisort($table['customername'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
                         foreach ($table['idx'] as $idx) {
                             $tmplist[] = $reportlist[$idx];
                         }
                     }
-                    $reportlist = $tmplist;
+                    $reportlist = empty($tmplist) ? array() : $tmplist;
                     break;
                 default:
                     foreach ($reportlist as $idx => $row) {
@@ -757,23 +767,23 @@ switch ($type) {
             access_denied();
         }
 
-        if ($_POST['from']) {
+        if (!empty($_POST['from'])) {
             list($year, $month, $day) = explode('/', $_POST['from']);
             $from = mktime(0, 0, 0, $month, $day, $year);
         } else {
             $from = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
         }
 
-        if ($_POST['to']) {
+        if (!empty($_POST['to'])) {
             list($year, $month, $day) = explode('/', $_POST['to']);
             $to = mktime(23, 59, 59, $month, $day, $year);
         } else {
             $to = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
         }
 
-        $registry = intval($_POST['registry']);
-        $user = intval($_POST['user']);
-        $group = intval($_POST['group']);
+        $registry = isset($_POST['registry']) ? intval($_POST['registry']) : 0;
+        $user = isset($_POST['user']) ? intval($_POST['user']) : 0;
+        $group = isset($_POST['group']) ? intval($_POST['group']) : 0;
         $where = '';
 
         if ($registry) {
@@ -908,13 +918,13 @@ switch ($type) {
             // (summaries and page size calculations)
             $maxrows = $rows * 2;   // dwie linie na rekord
             $counter = $maxrows;
-            $rows = 0;      // rzeczywista liczba rekord�w na stronie
+            $rows = 0;      // rzeczywista liczba rekordów na stronie
             $i = 1;
             $x = 1;
 
             foreach ($list as $row) {
-                // tutaj musimy troch� pokombinowa�, bo liczba
-                // rekord�w na stronie b�dzie zmienna
+                // tutaj musimy trochę pokombinować, bo liczba
+                // rekordów na stronie będzie zmienna
                 $tmp = is_array($row['title']) ? count($row['title']) : 2;
                 $counter -= max($tmp, 2);
                 if ($counter<0) {
@@ -926,9 +936,15 @@ switch ($type) {
                 $rows++;
                 $page = $x;
 
-                if ($row['value']>0) {
+                if ($row['value'] > 0) {
+                    if (!isset($totals[$page]['income'])) {
+                        $totals[$page]['income'] = 0;
+                    }
                     $totals[$page]['income'] += $row['value'] * $row['currencyvalue'];
                 } else {
+                    if (!isset($totals[$page]['expense'])) {
+                        $totals[$page]['expense'] = 0;
+                    }
                     $totals[$page]['expense'] += -$row['value'] * $row['currencyvalue'];
                 }
 
@@ -938,9 +954,10 @@ switch ($type) {
             foreach ($totals as $page => $t) {
                 $pages[] = $page;
 
-                $totals[$page]['totalincome'] = $totals[$page-1]['totalincome'] + $t['income'];
-                $totals[$page]['totalexpense'] = $totals[$page-1]['totalexpense'] + $t['expense'];
-                $totals[$page]['rowstart'] = $totals[$page-1]['rowstart'] + $totals[$page-1]['rows'];
+                $totals[$page]['totalincome'] = (isset($totals[$page - 1]['totalincome']) ? $totals[$page - 1]['totalincome'] : 0) + $t['income'];
+                $totals[$page]['totalexpense'] = (isset($totals[$page - 1]['totalexpense']) ? $totals[$page - 1]['totalexpense'] : 0)
+                    + (isset($t['expense']) ? $t['expense'] : 0);
+                $totals[$page]['rowstart'] = isset($totals[$page - 1]) ? $totals[$page - 1]['rowstart'] + $totals[$page - 1]['rows'] : 0;
             }
 
             $SMARTY->assign('pages', $pages);

@@ -21,16 +21,11 @@
  *
  */
 
-/**
- * @author Maciej_Wawryk
- */
-
-
 $this->BeginTrans();
 
-define('CONFIG_TYPE_BOOLEAN', 1);
+define('CONFIG_TYPE_BOOLEAN_2016020500', 1);
 
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'helpdesk_notify', 'false', ?)", array(CONFIG_TYPE_BOOLEAN));
+$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'helpdesk_notify', 'false', ?)", array(CONFIG_TYPE_BOOLEAN_2016020500));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020500', 'dbversion'));
 

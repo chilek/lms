@@ -21,10 +21,8 @@
 				{t a=$count}Assigned network devices ($a){/t}
 			</td>
 			<td class="text-right nobr">
-				<a href="#" id="new-net-dev" onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')">
-					{trans("Add devices to node")}
-					{icon name="next"}
-				</a>
+				{button type='link' icon='add' id='new-net-dev' label='Add'
+					onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')"}
 			</td>
 		</TR>
 	</thead>
@@ -129,7 +127,7 @@
 		var options = document.getElementById('devnodeslinktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('{trans("- unknown -")}', 0));
+		options.add(new Option('{trans("— unknown —")}', 0));
 		switch (linktype) {
 			case 0:
 				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}

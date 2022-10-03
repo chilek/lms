@@ -28,11 +28,12 @@ $layout['pagetitle'] = trans('Tags list');
 
 $tarifftaglist = $LMS->TarifftagGetList();
 
-$listdata['total'] = $tarifftaglist['total'];
-$listdata['totalcount'] = $tarifftaglist['totalcount'];
+$listdata['total'] = empty($tarifftaglist) ? 0 : $tarifftaglist['total'];
+$listdata['totalcount'] = empty($tarifftaglist) ? 0 : $tarifftaglist['totalcount'];
 
-unset($tarifftaglist['total']);
-unset($tarifftaglist['totalcount']);
+if (!empty($tarifftaglist)) {
+    unset($tarifftaglist['total'], $tarifftaglist['totalcount']);
+}
 
 $SMARTY->assign('tarifftaglist', $tarifftaglist);
 $SMARTY->assign('listdata', $listdata);

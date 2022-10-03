@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,9 +23,10 @@
  *
  *  $Id$
  */
-$maction = ($_GET['maction']);
-$taction = ($_GET['taction']);
-$qaction = ($_GET['qaction']);
+
+$maction = empty($_GET['maction']) ? null : $_GET['maction'];
+$taction = empty($_GET['taction']) ? null : $_GET['taction'];
+$qaction = empty($_GET['qaction']) ? null : $_GET['qaction'];
 
 if ($maction == 'restore') {
     $msg = intval($_GET['id']);

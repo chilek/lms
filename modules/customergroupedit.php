@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,10 +32,16 @@ if (isset($_POST['customerassignments'])) {
     $oper = $_POST['oper'];
     $customerassignments = $_POST['customerassignments'];
     if (isset($customerassignments['membersnetid']) && $oper=='2') {
-        $SESSION->redirect('?'.preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->get('backto')).'&membersnetid='.$customerassignments['membersnetid']);
+        $SESSION->redirect(
+            '?' . preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->remove_history_entry())
+                . '&membersnetid=' . $customerassignments['membersnetid']
+        );
     }
     if (isset($customerassignments['othersnetid']) && $oper=='3') {
-        $SESSION->redirect('?'.preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->get('backto')).'&othersnetid='.$customerassignments['othersnetid']);
+        $SESSION->redirect(
+            '?' . preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->remove_history_entry())
+                . '&othersnetid=' . $customerassignments['othersnetid']
+        );
     }
 }
 
@@ -76,7 +82,7 @@ if (isset($_POST['customergroup'])) {
 }
 
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('customergroup', $customergroup);
 $SMARTY->assign('error', $error);

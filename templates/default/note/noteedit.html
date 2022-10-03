@@ -6,6 +6,7 @@
 
 <form name="setcustomer" id="setcustomer" method="POST" action="?m=noteedit&action=setcustomer">
 	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="note[id]" value="{$note.id}">
 	<input type="hidden" name="note[number]" value="{$note.number}">
 	<input type="hidden" name="note[numberplanid]" value="{$note.numberplanid}">
 	<input type="hidden" name="note[template]" value="{$note.template}">
@@ -57,7 +58,7 @@
 			</td>
 			<td class="nobr">
 				{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-					<input type="text" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"%Y/%m/%d"}"
+					<input type="text" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"Y/m/d"}"
 						size="10" form="setcustomer" placeholder="{trans("yyyy/mm/dd")}"
 						{tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}
 					>
@@ -65,10 +66,10 @@
 						<input type="hidden" name="note[cdatewarning]" value="1" form="setcustomer">
 					{/if}
 				{else}
-					<input type="hidden" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"%Y/%m/%d"}"
+					<input type="hidden" name="note[cdate]" id="cdate" value="{$note.cdate|date_format:"Y/m/d"}"
 						form="setcustomer"
 					>
-					{$note.cdate|date_format:"%Y/%m/%d"}
+					{$note.cdate|date_format:"Y-m-d"}
 				{/if}
 			</td>
 		</tr>
@@ -80,7 +81,7 @@
 				<input type="text" name="note[paytime]" value="{$note.paytime}"
 					size="10" form="setcustomer" {tip text="Enter deadline in days (optional)"}
 				>
-				({($note.cdate + $note.paytime * 86400)|date_format:"%Y/%m/%d"})
+				({($note.cdate + $note.paytime * 86400)|date_format:"Y-m-d"})
 			</td>
 		</tr>
 		<tr>
@@ -186,7 +187,7 @@
 					{if isset($_SERVICETYPES[$item.servicetype])}
 						{$_SERVICETYPES[$item.servicetype]}
 					{else}
-						{trans("- none -")}
+						{trans("— none —")}
 					{/if}
 				</td>
 				<td class="text-right nobr">
@@ -229,7 +230,7 @@
 			</td>
 			<td class="text-right">
 				<select name="servicetype" form="additem" {tip text="Select type" trigger="type"}>
-					<option value="">{trans("- none -")}</option>
+					<option value="">{trans("— none —")}</option>
 					{foreach $_SERVICETYPES as $servicetype => $label}
 						<option value="{$servicetype}">{$label}</option>
 					{/foreach}

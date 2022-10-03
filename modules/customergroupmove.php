@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -79,7 +79,7 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
 
     $DB->CommitTrans();
 
-    $SESSION->redirect('?m=customergroupinfo&id='.$to);
+    $SESSION->redirect('?m=customergroupinfo&id=' . $to);
 } else {
-    header('Location: ?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }

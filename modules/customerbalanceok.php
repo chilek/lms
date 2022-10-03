@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,7 +40,7 @@ if ($LMS->CustomerExists($customerid)) {
                 $customerid,
                 trans('Accounted'))
         );
-    
+
         $DB->Execute(
             'UPDATE documents SET closed = 1 
 			WHERE customerid = ? AND type IN (?, ?) AND closed = 0',
@@ -51,4 +51,4 @@ if ($LMS->CustomerExists($customerid)) {
     }
 }
 
-header('Location: ?'.$SESSION->get('backto'));
+$SESSION->redirect_to_history_entry();

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -95,7 +95,7 @@ function GetAccountList($search, $customer = null, $type = null, $kind = null, $
         .$where
         .($sqlord != '' ? $sqlord : ''));
 
-    $list['total'] = count($list);
+    $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['type'] = $type;
     $list['kind'] = $kind;
@@ -106,7 +106,7 @@ function GetAccountList($search, $customer = null, $type = null, $kind = null, $
     return $list;
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $search = array();
 

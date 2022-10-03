@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -88,7 +88,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
         }
     }
     die;
-} elseif (isset($_GET['action']) && $_GET['action'] == 'delete') {
+} elseif (isset($_GET['action'], $_POST['marks']) && $_GET['action'] == 'delete') {
     if ($marks = $_POST['marks']) {
         foreach ($marks as $id) {
             $DB->Execute(
@@ -273,7 +273,7 @@ if ($importlist = $DB->GetAll('SELECT i.*, c.divisionid
     }
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count

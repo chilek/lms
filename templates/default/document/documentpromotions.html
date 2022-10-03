@@ -79,7 +79,8 @@
 		});
 	});
 
-	if (getCookie('documentpromotionpanel') == '1')
-		$('#documentpromotionpanel').show();
+	(function() {
+		$("#documentpromotionpanel").toggle(getStorageItem("documentpromotionpanel", "local") == "1");
+	})();
 
 </script>

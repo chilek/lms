@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,17 +28,13 @@ $voipaccountid = intval($_GET['id']);
 $voipaccountlogin = $LMS->GetVoipAccountLogin($voipaccountid);
 
 if (!$LMS->VoipAccountExists($voipaccountid)) {
-    $layout['pagetitle'] = trans('Delete Voip Account $a', $voipaccountlogin);
-    $body = '<P>' . trans('Incorrect ID number') . '</P>';
-    $body .= '<A HREF="?' . $SESSION->get('backto') . '">' . trans('Back') . '</A></P>';
+    $layout['pagetitle'] = trans('Delete VoIP Account $a', $voipaccountlogin);
+    $body = '<p>' . trans('Incorrect ID number') . '</p>';
+    $body .= '<a href="?' . $SESSION->get_history_entry() . '">' . trans('Back') . '</a></p>';
     $SMARTY->assign('body', $body);
     $SMARTY->display('dialog.html');
 } else {
     $owner = $LMS->GetVoipAccountOwner($voipaccountid);
     $LMS->DeleteVoipAccount($voipaccountid);
-    if ($SESSION->is_set('backto')) {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
-    } else {
-        $SESSION->redirect('?m=customerinfo&id=' . $owner);
-    }
+    $SESSION->redirect_to_history_entry('m=customerinfo&id=' . $owner);
 }

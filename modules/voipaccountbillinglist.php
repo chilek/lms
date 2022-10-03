@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,7 +40,7 @@ function sessionHandler($item, $name)
     return $o;
 }
 
-if ($_POST['str']) {
+if (!empty($_POST['str'])) {
     $voipaccounts = $LMS->GetCustomerVoipAccounts($_POST['str']);
     $SMARTY->assign('voipaccounts', $voipaccounts);
     $content = $SMARTY->fetch('voipaccount/voipaccounts.html');
@@ -50,25 +50,54 @@ if ($_POST['str']) {
 
 $layout['pagetitle'] = trans('Billing list');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $params = array();
 $params['o']          = sessionHandler('o', 'vblo');
-$params['id']         = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+if (!isset($params['o'])) {
+    $params['o'] = 'login,asc';
+}
 $params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
 if (empty($params['frangefrom'])) {
     $params['frangefrom'] = date('Y/m/01');
 }
-$params['fvownerid'] = sessionHandler('fvownerid', 'vblfvownerid');
-$params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+if (isset($_GET['init'])) {
+    $params['fvownerid'] = 0;
+    $params['fvoipaccid'] = 0;
+} else {
+    $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
+}
+if (isset($params['fvownerid']) && empty($params['fvownerid']) && !isset($_GET['fvoipaccid'])) {
+    $params['id'] = null;
+} else {
+    $params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+    if (!empty($params['id'])) {
+        $params['fvownerid'] = $LMS->getVoipAccountOwner($params['id']);
+        $SESSION->save('vblfownerid', $params['fvownerid']);
+    } else {
+        $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
+    }
+}
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
+$params['fdirection']      = sessionHandler('fdirection', 'vblfdirection');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
+
+$LMS->executeHook('voip_billing_preparation', array(
+    'customerid' => $params['fvownerid'],
+    'voipaccountid' => $params['id'],
+    'number' => null,
+    'datefrom' => $params['frangefrom'],
+    'dateto' => $params['frangeto'],
+    'direction' => $params['fdirection'],
+    'type' => $params['ftype'],
+    'status' => $params['fstatus'],
+));
 
 $params['count'] = true;
 $total = intval($LMS->getVoipBillings($params));
 
-$page  = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? ($SESSION->is_set('valp') ? $SESSION->get('valp') : 1) : intval($_POST['page'])) : intval($_GET['page']);
 $limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
 $offset = ($page - 1) * $limit;
 
@@ -88,29 +117,34 @@ if (!empty($params['frangeto'])) {
     $listdata['frangeto'] = date_to_timestamp($params['frangeto']);
 }
 
-// CALL STATUS
+// billing record statuses
 if (!empty($params['fstatus'])) {
     switch ($params['fstatus']) {
-        case CALL_ANSWERED:
-        case CALL_NO_ANSWER:
-        case CALL_BUSY:
-        case CALL_SERVER_FAILED:
+        case BILLING_RECORD_STATUS_ANSWERED:
+        case BILLING_RECORD_STATUS_NO_ANSWER:
+        case BILLING_RECORD_STATUS_BUSY:
+        case BILLING_RECORD_STATUS_SERVER_FAILED:
             $listdata['fstatus'] = $params['fstatus'];
             break;
     }
 }
 
-// CALL TYPE
-if (!empty($params['ftype'])) {
-    switch ($params['ftype']) {
-        case CALL_OUTGOING:
-        case CALL_INCOMING:
-            $listdata['ftype'] = $params['ftype'];
+// billing record directions
+if (!empty($params['fdirection'])) {
+    switch ($params['fdirection']) {
+        case BILLING_RECORD_DIRECTION_OUTGOING:
+        case BILLING_RECORD_DIRECTION_INCOMING:
+            $listdata['fdirection'] = $params['fdirection'];
             break;
     }
 }
 
-$voipaccountlist = $LMS->GetVoipAccountList('owner', null, null);
+// billing record types
+if (isset($params['ftype'])) {
+    $listdata['ftype'] = is_numeric($params['ftype']) ? $params['ftype'] : null;
+}
+
+$voipaccountlist = $LMS->GetVoipAccountList('owner', empty($params['fvownerid']) ? null : array('ownerid' => $params['fvownerid']), null);
 unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);
 unset($voipaccountlist['direction']);
@@ -125,16 +159,16 @@ if (empty($order[1]) || $order[1] != 'desc') {
 $listdata['order'] = $order[0];
 $listdata['direction'] = $order[1];
 
-if (!empty($_GET['page'])) {
-    $listdata['page'] = (int) $_GET['page'];
+if (!empty($page)) {
+    $listdata['page'] = $page;
 }
 
-if ($params['id'] != null) {
-    $listdata['fvoipaccid'] = $params['id'];
+if (!empty($params['fvownerid'])) {
+    $listdata['fvownerid'] = $params['fvownerid'];
 }
 
-if ($SESSION->is_set('valp') && !isset($_GET['page'])) {
-    $SESSION->restore('valp', $_GET['page']);
+if (!empty($params['fvoipaccid'])) {
+    $listdata['fvoipaccid'] = $params['fvoipaccid'];
 }
 
 $SESSION->save('valp', $page);

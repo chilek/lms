@@ -27,7 +27,7 @@
                         {icon name="vlan" label="VLAN ID"}
                     </td>
                     <td>
-                        <input type="text" id="dialog-vlanid" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
+                        <input type="number" min="0" max="4096" step="1" id="dialog-vlanid" name="addvlan[vlanid]" value="{$vlaninfo.vlanid}" required>
                     </td>
                 </tr>
                 <tr>
@@ -52,7 +52,7 @@
                     </td>
                     <td>
                         <select name="addvlan[netnodeid]" class="lms-ui-advanced-select" id="dialog-netnode_selector">
-                            <option value="">{trans("- none -")}</option>
+                            <option value="">{trans("— none —")}</option>
                             {foreach $netnodelist as $nn}
                                 <option value="{$nn.id}" {if $nn.id == $vlaninfo.netnodeid} selected{/if}>{$nn.name|escape} ({$nn.id})</option>
                             {/foreach}

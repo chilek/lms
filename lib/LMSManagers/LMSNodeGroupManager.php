@@ -124,4 +124,75 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
         $this->db->UnLockTables();
         $this->db->CommitTrans();
     }
+
+    public function getNodeGroupIdByName($group_name)
+    {
+        return $this->db->GetOne('SELECT id FROM nodegroups WHERE name = ?', array($group_name));
+    }
+
+    public function addNodeGroupAssignment(array $params)
+    {
+        if (!$this->db->GetOne(
+            'SELECT 1 FROM nodegroupassignments
+             WHERE nodegroupid = ? AND nodeid = ?',
+            array(
+                $params['nodegroupid'],
+                $params['nodeid'],
+            )
+        )) {
+            $args = array(
+                SYSLOG::RES_NODEGROUP => $params['nodegroupid'],
+                SYSLOG::RES_NODE => $params['nodeid'],
+            );
+            $this->db->Execute(
+                'INSERT INTO nodegroupassignments
+                (nodegroupid, nodeid) VALUES (?, ?)',
+                array_values($args)
+            );
+            $id = $this->db->GetLastInsertID('nodegroupassignments');
+            if ($this->syslog) {
+                $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+                $node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $args[SYSLOG::RES_CUST] = $node_manager->GetNodeOwner($params['nodeid']);
+                $this->syslog->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
+            }
+            return $id;
+        } else {
+            return null;
+        }
+    }
+
+    public function deleteNodeGroupAssignment(array $params)
+    {
+        if (($id = $this->db->GetOne(
+            'SELECT id FROM nodegroupassignments
+            WHERE nodegroupid = ? AND nodeid = ?',
+            array(
+                $params['nodegroupid'],
+                $params['nodeid'],
+            )
+        )) > 0) {
+            $args = array(
+                SYSLOG::RES_NODEGROUP => $params['nodegroupid'],
+                SYSLOG::RES_NODE => $params['nodeid'],
+            );
+            $res = $this->db->Execute(
+                'DELETE FROM nodegroupassignments
+                WHERE nodegroupid = ? AND nodeid = ?',
+                array(
+                    $params['nodegroupid'],
+                    $params['nodeid'],
+                )
+            );
+            if ($res && $this->syslog) {
+                $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+                $node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
+                $args[SYSLOG::RES_CUST] = $node_manager->GetNodeOwner($params['nodeid']);
+                $this->syslog->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
+            }
+            return $res;
+        } else {
+            return null;
+        }
+    }
 }

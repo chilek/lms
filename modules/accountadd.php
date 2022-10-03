@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -151,7 +151,7 @@ if (isset($_POST['account'])) {
         $args = array(
             'ownerid' => empty($account['ownerid']) ? null : $account['ownerid'],
             'login' => $account['login'],
-            'password' => crypt($account['passwd1']),
+            'password' => password_hash($account['passwd1'], PASSWORD_DEFAULT),
             'home' => $account['home'],
             'expdate' => $account['expdate'],
             'domainid' => $account['domainid'],
@@ -214,7 +214,7 @@ if (isset($_POST['account'])) {
 
 $layout['pagetitle'] = trans('New Account');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (!isset($account['type'])) {
     $account['type'] = 32767;

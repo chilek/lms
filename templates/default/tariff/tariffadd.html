@@ -188,7 +188,7 @@
 													{foreach $taxeslist as $tax}
 														<option value="{$tax.id}"{if $tax.value == $default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</option>
 													{foreachelse}
-														<option value="">{trans("- no tax rates defined -")}</option>
+														<option value="">{trans("— no tax rates defined —")}</option>
 													{/foreach}
 												</select>
 												{foreach $taxeslist as $tax}
@@ -250,7 +250,7 @@
 											</td>
 											<td>
 												<select name="tariff[numberplanid]" {tip text="Select numbering plan"}>
-													<option value=""{if !$tariff.numberplanid} selected{/if}>- {trans("default")} -</option>
+													<option value=""{if !$tariff.numberplanid} selected{/if}>— {trans("default")} —</option>
 													{foreach $numberplanlist as $plan}
 													{assign var=period value=$plan.period}
 													<option value="{$plan.id}"{if $plan.id == $tariff.numberplanid} selected{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</option>
@@ -263,7 +263,7 @@
 												{icon name="id"}
 											</td>
 											<td>
-												{trans("Product id:")}
+												{trans("Product ID:")}
 											</td>
 											<td>
 												<input type="text" size="8" name="tariff[prodid]" value="{$tariff.prodid}" {tip text="Enter Product id number (optional)" trigger="prodid"}>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -57,15 +57,13 @@ if ($LMS->UserExists($id)) {
 
         if (!$error) {
             $oldpasswd = $LMS->DB->GetOne('SELECT passwd FROM users WHERE id = ?', array($id));
-            list (, $alg, $salt) = explode('$', $oldpasswd);
-            $newpasswd = crypt($passwd['password'], '$' . $alg . '$' . $salt . '$');
-            if ($newpasswd == $oldpasswd) {
-                $error['password'] = $error['confirm'] = trans('New password is the same as old password!');
+            if (password_verify($passwd['passwd'], $oldpasswd)) {
+                $error['passwd'] = $error['confirm'] = trans('New password is the same as old password!');
             }
             if (!$error) {
                 $LMS->SetUserPassword($id, $passwd['passwd'], $net);
                 $SESSION->remove('session_passwdrequiredchange');
-                $SESSION->redirect('?' . $SESSION->get('backto'));
+                $SESSION->redirect_to_history_entry();
             }
         }
     }

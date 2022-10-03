@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,7 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
     'config-file:' => 'C:',
@@ -45,6 +45,7 @@ $parameters = array(
     'division:' => null,
     'customergroups:' => 'g:',
     'customer-status:' => null,
+    'tariff-tags:' => null,
 );
 
 $long_to_shorts = array();
@@ -81,7 +82,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -90,7 +91,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -108,6 +109,9 @@ lms-payments.php
                                 should be assigned
     --customer-status=<status1,status2,...>
                                 take assignment of customers with specified status only
+    --tariff-tags=<tariff-tag1,tariff-tag-2,...>
+                                create financial charges using only tariffs which have
+                                assigned specified tariff tags
 
 EOF;
     exit(0);
@@ -117,7 +121,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-payments.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
@@ -143,11 +147,17 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
+$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('DOC_DIR', $CONFIG['directories']['doc_dir']);
+define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
+define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 
@@ -167,7 +177,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -197,6 +207,7 @@ $sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
 $paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
 $comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attribute subscription for period %period");
 $backward_comment = ConfigHelper::getConfig('payments.backward_comment', $comment);
+$backward_on_the_last_day = ConfigHelper::checkConfig('payments.backward_on_the_last_day');
 $s_comment = ConfigHelper::getConfig('payments.settlement_comment', $comment);
 $s_backward_comment = ConfigHelper::getConfig('payments.settlement_backward_comment', $s_comment);
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
@@ -208,11 +219,14 @@ $delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.de
 $prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_only');
 $prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
 $customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
+$tariff_tags = ConfigHelper::getConfig('payments.tariff_tags', '', true);
 
 $reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig('payments.reward_penalty_deadline_grace_days'));
 
-$force_telecom_service_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.force_telecom_service_flag', 'true'));
+$force_telecom_service_flag = ConfigHelper::checkConfig('invoices.force_telecom_service_flag', true);
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
+
+$billing_document_template = ConfigHelper::getConfig('payments.billing_document_template', '');
 
 $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
@@ -240,8 +254,8 @@ if (empty($fakedate)) {
 $issuetime = isset($issuedate) ? strtotime($issuedate) : $currtime;
 list ($year, $month, $dom) = explode('/', date('Y/n/j', $currtime));
 list ($backward_year, $backward_month) = explode('/', date('Y/m', strtotime($year . '/' . $month. '/' . $dom . ' - 1 month')));
-$weekday = strftime('%u', $currtime);
-$yearday = strftime('%j', $currtime);
+$weekday = date('N', $currtime);
+$yearday = sprintf('%03d', date('z', $currtime) + 1);
 $last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
 
 if (is_leap_year($year) && $yearday > 31 + 28) {
@@ -265,60 +279,61 @@ if ($month > 6) {
 $date_format = ConfigHelper::getConfig('payments.date_format', '%Y/%m/%d');
 
 $forward_periods = array(
-    DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
-    WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom+6, $year)),
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, $dom-1, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, $dom-1, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, $dom-1, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year+1)),
-    DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
+    DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
+    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom+6, $year)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+1, $dom-1, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+3, $dom-1, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+6, $dom-1, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year+1)),
+    DISPOSABLE => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
 $forward_aligned_periods = array(
     DAILY      => $forward_periods[DAILY],
     WEEKLY     => $forward_periods[WEEKLY],
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year+1)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year+1)),
     DISPOSABLE => $forward_periods[DISPOSABLE],
 );
 
+$d = $dom + ($backward_on_the_last_day ? 1 : 0);
 $backward_periods = array(
-    DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, $dom, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, $dom, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-    DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year))
+    DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    WEEKLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-7, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month-1, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month-3, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month-6, $d, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d, $year-1)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year)),
+    DISPOSABLE => Utils::strftime($date_format, mktime(12, 0, 0, $month, $d-1, $year))
 );
 
 $last_sunday = strtotime('last Sunday '.date("Y-m-d"));
 
 $backward_aligned_periods = array(
     DAILY      => $backward_periods[DAILY],
-    WEEKLY     => strftime($date_format, $last_sunday-518400)                        .' - '.strftime($date_format, $last_sunday),
-    MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, 1, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, 1, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, 1, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
-    YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    WEEKLY     => Utils::strftime($date_format, $last_sunday-518400)                        .' - '.Utils::strftime($date_format, $last_sunday),
+    MONTHLY    => Utils::strftime($date_format, mktime(12, 0, 0, $month-1, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    QUARTERLY  => Utils::strftime($date_format, mktime(12, 0, 0, $month-3, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month-6, 1, $year))  .' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+    YEARLY     => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year-1)).' - '.Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
     DISPOSABLE => $backward_periods[DISPOSABLE]
 );
 
 // Special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 // assignment is made not January, the 1st:
 
-$current_month = strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
-$previous_month = strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, 0, $year));
-$current_period = strftime("%m/%Y", mktime(12, 0, 0, $month, 1, $year));
-$next_period = strftime("%m/%Y", mktime(12, 0, 0, $month + 1, 1, $year));
-$prev_period = strftime("%m/%Y", mktime(12, 0, 0, $month - 1, 1, $year));
+$current_month = Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
+$previous_month = Utils::strftime($date_format, mktime(12, 0, 0, $month - 1, 1, $year))." - ".Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year));
+$current_period = date('m/Y', mktime(12, 0, 0, $month, 1, $year));
+$next_period = date('m/Y', mktime(12, 0, 0, $month + 1, 1, $year));
+$prev_period = date('m/Y', mktime(12, 0, 0, $month - 1, 1, $year));
 
 // sale date setting
 $saledate = $issuetime;
 if ($sdate_next) {
-    $saledate = strftime("%s", mktime(12, 0, 0, $month + 1, 1, $year));
+    $saledate = mktime(12, 0, 0, $month + 1, 1, $year);
 }
 
 // calculate start and end of numbering period
@@ -333,17 +348,17 @@ function get_period($period)
 
     switch ($period) {
         case DAILY:
-            $start = strftime("%s", mktime(0, 0, 0, $month, $dom, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $month, $dom + 1, $year));
+            $start = mktime(0, 0, 0, $month, $dom, $year);
+            $end = mktime(0, 0, 0, $month, $dom + 1, $year);
             break;
         case WEEKLY:
             $startweek = $dom - $weekday + 1;
-            $start = strftime("%s", mktime(0, 0, 0, $month, $startweek, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $month, $startweek + 7, $year));
+            $start = mktime(0, 0, 0, $month, $startweek, $year);
+            $end = mktime(0, 0, 0, $month, $startweek + 7, $year);
             break;
         case MONTHLY:
-            $start = strftime("%s", mktime(0, 0, 0, $month, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $month + 1, 1, $year));
+            $start = mktime(0, 0, 0, $month, 1, $year);
+            $end = mktime(0, 0, 0, $month + 1, 1, $year);
             break;
         case QUARTERLY:
             if ($month <= 3) {
@@ -355,8 +370,8 @@ function get_period($period)
             } else {
                 $startmonth = 10;
             }
-            $start = strftime("%s", mktime(0, 0, 0, $startmonth, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $startmonth + 3, 1, $year));
+            $start = mktime(0, 0, 0, $startmonth, 1, $year);
+            $end = mktime(0, 0, 0, $startmonth + 3, 1, $year);
             break;
         case HALFYEARLY:
             if ($month <= 6) {
@@ -364,16 +379,16 @@ function get_period($period)
             } else {
                 $startmonth = 7;
             }
-            $start = strftime("%s", mktime(0, 0, 0, $startmonth, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, $startmonth + 6, 1, $year));
+            $start = mktime(0, 0, 0, $startmonth, 1, $year);
+            $end = mktime(0, 0, 0, $startmonth + 6, 1, $year);
             break;
         case CONTINUOUS:
-            $start = strftime("%s", mktime(0, 0, 0, 1, 1, 1970));
-            $end = strftime("%s", mktime(0, 0, 0, $month, $dom + 1, $year));
+            $start = mktime(0, 0, 0, 1, 1, 1970);
+            $end = mktime(0, 0, 0, $month, $dom + 1, $year);
             break;
         default:
-            $start = strftime("%s", mktime(0, 0, 0, 1, 1, $year));
-            $end = strftime("%s", mktime(0, 0, 0, 1, 1, $year + 1));
+            $start = mktime(0, 0, 0, 1, 1, $year);
+            $end = mktime(0, 0, 0, 1, 1, $year + 1);
     }
     return array('start' => $start, 'end' => $end);
 }
@@ -430,6 +445,40 @@ if (!empty($customergroups)) {
     $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
 }
 
+// prepare tariff tags in sql query
+if (isset($options['tariff-tags'])) {
+    $tariff_tags = $options['tariff-tags'];
+}
+if (!empty($tariff_tags)) {
+    $ORs = preg_split("/([\s]+|[\s]*,[\s]*)/", mb_strtoupper($tariff_tags), -1, PREG_SPLIT_NO_EMPTY);
+    $tariff_tags_ORs = array();
+    foreach ($ORs as $OR) {
+        $ANDs = preg_split("/([\s]*\+[\s]*)/", $OR, -1, PREG_SPLIT_NO_EMPTY);
+        $tariff_tag_ANDs_regular = array();
+        $tariff_tag_ANDs_inversed = array();
+        foreach ($ANDs as $AND) {
+            if (strpos($AND, '!') === false) {
+                $tariff_tag_ANDs_regular[] = $AND;
+            } else {
+                $tariff_tag_ANDs_inversed[] = substr($AND, 1);
+            }
+        }
+        $tariff_tag_ORs[] = '('
+            . (empty($tariff_tag_ANDs_regular) ? '1 = 1' : "EXISTS (SELECT COUNT(*) FROM tarifftags
+                JOIN tariffassignments ON tariffassignments.tarifftagid = tarifftags.id
+                WHERE tariffassignments.tariffid = t.id
+                AND UPPER(tarifftags.name) IN ('" . implode("', '", $tariff_tag_ANDs_regular) . "')
+                HAVING COUNT(*) = " . count($tariff_tag_ANDs_regular) . ')')
+            . (empty($tariff_tag_ANDs_inversed) ? '' : " AND NOT EXISTS (SELECT COUNT(*) FROM tarifftags
+                JOIN tariffassignments ON tariffassignments.tarifftagid = tarifftags.id
+                WHERE tariffassignments.tariffid = t.id
+                AND UPPER(tarifftags.name) IN ('" . implode("', '", $tariff_tag_ANDs_inversed) . "')
+                HAVING COUNT(*) > 0)")
+            . ')';
+    }
+    $tariff_tags = ' AND (a.tariffid IS NULL OR (' . implode(' OR ', $tariff_tag_ORs) . '))';
+}
+
 $test = array_key_exists('test', $options);
 if ($test) {
     echo "WARNING! You are using test mode." . PHP_EOL;
@@ -450,10 +499,10 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 		END) AS netflag,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxcategory ELSE l.taxcategory END) AS taxcategory,
 		t.description AS description, a.id AS assignmentid,
-		c.divisionid, c.paytype, c.flags AS customerflags,
-		a.paytype AS a_paytype, a.numberplanid, a.attribute,
+		c.divisionid, c.paytime, c.paytype, c.flags AS customerflags,
+		a.paytime AS a_paytime, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+		d.inv_paytime AS d_paytime, d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		t.flags,
 		(CASE WHEN cc1.type IS NULL THEN 0 ELSE 1 END) AS einvoice,
 		(CASE WHEN cc2.type IS NULL THEN 0 ELSE 1 END) AS mail_marketing,
@@ -523,7 +572,9 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
+        . ($tariff_tags ?: '')
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, currency, netflag, value DESC, a.id";
 $doms = array($dom);
 if ($last_dom) {
     $doms[] = 0;
@@ -544,29 +595,38 @@ $services = $DB->GetAll(
 );
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
+$billing_invoice_separate_fractions = ConfigHelper::checkConfig('payments.billing_invoice_separate_fractions');
+$empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 
 $query = "SELECT
-			a.id, a.tariffid, a.customerid,
+			a.id, a.tariffid, a.customerid, a.recipient_address_id,
 			(CASE WHEN ca2.address_id IS NULL THEN ca1.address_id ELSE ca2.address_id END) AS post_address_id,
 			a.period, a.backwardperiod, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, c.type AS customertype,
-			(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE l.type END) AS tarifftype,
+			t.type AS tarifftype,
 			t.taxcategory AS taxcategory,
 			t.description AS description, a.id AS assignmentid,
-			c.divisionid, c.paytype, c.flags AS customerflags,
-			a.paytype AS a_paytype, a.numberplanid, a.attribute,
+			c.divisionid, c.paytype, c.paytime, c.flags AS customerflags,
+			a.paytime AS a_paytime, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			p.name AS promotion_name, ps.name AS promotion_schema_name, ps.length AS promotion_schema_length,
-			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+			d.inv_paytime AS d_paytime, d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+			0 AS flags,
 			t.taxid AS taxid, '' as prodid,
-			voipcost.value,
-			(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
-            (CASE WHEN c.type = ? THEN 0 ELSE (CASE WHEN a.liabilityid IS NULL
-                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
-            END) END) AS splitpayment,
-            (CASE WHEN a.liabilityid IS NULL
-                THEN (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END)
-                ELSE (CASE WHEN l.flags & ? > 0 THEN 1 ELSE 0 END)
+			COALESCE(voipcost.value, 0) AS value,
+			COALESCE(voipcost.value, 0) AS unitary_value,
+			COALESCE(voipcost.totaltime, 0) AS call_time,
+			" . ($billing_invoice_separate_fractions ? ' COALESCE(voipcost.call_count, 0) AS call_count, COALESCE(voipcost.call_fraction, \'\') AS call_fraction , ' : '') . "
+			taxes.value AS taxrate,
+            (CASE WHEN c.type = ?
+                THEN 0
+                ELSE (CASE WHEN t.flags & ? > 0
+                    THEN 1
+                    ELSE 0
+                END)
+            END) AS splitpayment,
+            (CASE WHEN t.flags & ? > 0
+                THEN 1
+                ELSE 0
             END) AS netflag,
 			t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
@@ -578,37 +638,78 @@ $query = "SELECT
 					tariffid    IS NULL   AND
 					liabilityid IS NULL   AND
 					datefrom <= $currtime AND
-					(dateto > $currtime OR dateto = 0)) AS allsuspended
+					(dateto > $currtime OR dateto = 0)) AS allsuspended,
+			(CASE WHEN EXISTS (SELECT 1 FROM customerconsents cc WHERE cc.customerid = c.id AND cc.type IN ?) THEN 1 ELSE 0 END) AS billingconsent
 			FROM assignments a
+            JOIN tariffs t ON t.id = a.tariffid
+            JOIN taxes ON taxes.id = t.taxid
             LEFT JOIN promotionschemas ps ON ps.id = a.promotionschemaid
             LEFT JOIN promotions p ON p.id = ps.promotionid
 			JOIN customers c ON (a.customerid = c.id)
             LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c.id AND ca1.type = " . BILLING_ADDRESS . "
             LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c.id AND ca2.type = " . POSTAL_ADDRESS . "
-			JOIN (
-				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
+			" . ($empty_billings ? 'LEFT ' : '') . "JOIN (
+				SELECT ROUND(sum(price), 2) AS value,
+					SUM(vc.billedtime) AS totaltime,
+					" . ($billing_invoice_separate_fractions ? ' COUNT(vc.*) AS call_count, vc.fraction AS call_fraction, ' : '')
+                    . "va.ownerid AS customerid,
 					a2.id AS assignmentid
 				FROM voip_cdr vc
-				JOIN voipaccounts va ON vc.callervoipaccountid = va.id
-				JOIN voip_numbers vn ON vn.voip_account_id = va.id AND vn.phone = vc.caller
+				JOIN voipaccounts va ON va.id = vc.callervoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . " OR va.id = vc.calleevoipaccountid AND vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
+				JOIN voip_numbers vn ON vn.voip_account_id = va.id
+					AND (
+						(
+							vn.voip_account_id = vc.callervoipaccountid
+							AND
+							vn.phone = vc.caller
+							AND
+							vc.direction = " . BILLING_RECORD_DIRECTION_OUTGOING . "
+						) OR (
+							vn.voip_account_id = vc.calleevoipaccountid
+							AND
+							vn.phone = vc.callee
+							AND
+							vc.direction = " . BILLING_RECORD_DIRECTION_INCOMING . "
+						)
+					)
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
 				JOIN assignments a2 ON a2.id = vna.assignment_id
-				WHERE
-					vc.call_start_time >= (CASE a2.period
-						WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
-						WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
-						WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
-						WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
-						WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
-					END) AND
-					vc.call_start_time < (CASE a2.period
-						WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
-						WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
-					END)
-				GROUP BY va.ownerid, a2.id
+				WHERE (
+					(
+						vc.call_start_time >= (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
+							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+						END)
+						AND
+						vc.call_start_time < (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+						END)
+					) OR (
+						vc.call_start_time + totaltime >= (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year-1) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
+							WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+						END)
+						AND
+						vc.call_start_time + totaltime < (CASE a2.period
+							WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+							WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
+						END)
+					)
+				)
+				GROUP BY va.ownerid, a2.id" . ($billing_invoice_separate_fractions ? ', vc.fraction' : '') . "
 			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
 			LEFT JOIN (
 				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', ', ') . " AS phones
@@ -616,20 +717,6 @@ $query = "SELECT
 				LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
 				GROUP BY vna2.assignment_id
 			) voipphones ON voipphones.assignment_id = a.id
-            LEFT JOIN (
-                SELECT tariffs.*,
-                    taxes.value AS taxrate,
-                    (CASE WHEN tariffs.flags & ? > 0 THEN tariffs.netvalue ELSE tariffs.value END) AS tvalue
-                FROM tariffs
-                JOIN taxes ON taxes.id = tariffs.taxid
-            ) t ON a.tariffid = t.id
-            LEFT JOIN (
-                SELECT liabilities.*,
-                    taxes.value AS taxrate,
-                    (CASE WHEN liabilities.flags & ? > 0 THEN liabilities.netvalue ELSE liabilities.value END) AS lvalue
-                FROM liabilities
-                JOIN taxes ON taxes.id = liabilities.taxid
-            ) l ON a.liabilityid = l.id
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE " . ($customerid ? 'c.id = ' . $customerid : '1 = 1')
            . $customer_status_condition
@@ -651,19 +738,18 @@ $query = "SELECT
 			WHEN " . MONTHLY . ' THEN ' . mktime(0, 0, 0, $month - 1, 1, $year)
         . " END))))"
         . ($customergroups ? str_replace('%customerid_alias%', 'c.id', $customergroups) : '')
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
+        . ($tariff_tags ?: '')
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytime, c.paytime, d.inv_paytime,
+        a.paytype, c.paytype, d.inv_paytype, a.numberplanid, a.separatedocument, currency, netflag, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll(
     $query,
     array(
         CTYPES_PRIVATE,
         TARIFF_FLAG_SPLIT_PAYMENT,
-        LIABILITY_FLAG_SPLIT_PAYMENT,
         TARIFF_FLAG_NET_ACCOUNT,
-        LIABILITY_FLAG_NET_ACCOUT,
         1,
-        TARIFF_FLAG_NET_ACCOUNT,
-        LIABILITY_FLAG_NET_ACCOUT,
+        array(CCONSENT_FULL_PHONE_BILLING, CCONSENT_SIMPLIFIED_PHONE_BILLING),
         SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime,
@@ -673,40 +759,43 @@ $billings = $DB->GetAll(
 $assigns = array();
 
 if ($billings) {
-    // intelligent merge of service and billing assignment records
-    $billing_idx = 0;
-    $billing_count = count($billings);
-    foreach ($services as $service_idx => &$service) {
-        $assigns[] = $service;
-        if ($billing_idx == $billing_count || $service['tarifftype'] != SERVICE_PHONE) {
-            continue;
-        }
+    if (empty($services)) {
+        $assigns = $billings;
+    } else {
+        // intelligent merge of service and billing assignment records
+        $billing_idx = 0;
+        $billing_count = count($billings);
+        foreach ($services as $service_idx => &$service) {
+            $assigns[] = $service;
+            if ($billing_idx == $billing_count || $service['tarifftype'] != SERVICE_PHONE) {
+                continue;
+            }
 
-        $service_customerid = $service['customerid'];
+            $service_customerid = $service['customerid'];
 
-        while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] < $service_customerid) {
-            $billing_idx++;
-        }
-        if ($billing_idx === $billing_count) {
-            continue;
-        }
+            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] < $service_customerid) {
+                $billing_idx++;
+            }
+            if ($billing_idx === $billing_count) {
+                continue;
+            }
 
-        $old_billing_idx = $billing_idx;
+            $old_billing_idx = $billing_idx;
 
-        while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid
-            && $service['id'] != $billings[$billing_idx]['id']) {
-            $billing_idx++;
-        }
+            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid
+                && $service['id'] != $billings[$billing_idx]['id']) {
+                $billing_idx++;
+            }
 
-        if ($billing_idx == $billing_count || $billings[$billing_idx]['customerid'] != $service_customerid) {
+            while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid) {
+                $assigns[] = $billings[$billing_idx];
+                //$billing_idx = $old_billing_idx;
+                $billing_idx++;
+            }
             $billing_idx = $old_billing_idx;
-            continue;
-        } else {
-            $assigns[] = $billings[$billing_idx];
-            $billing_idx++;
         }
+        unset($service);
     }
-    unset($service);
 } else {
     $assigns = $services;
 }
@@ -886,6 +975,7 @@ $telecom_services = array();
 $currencies = array();
 $netflags = array();
 $doctypes = array();
+$paytimes = array();
 $paytypes = array();
 $addresses = array();
 $numberplans = array();
@@ -921,7 +1011,7 @@ if (!empty($assigns)) {
         if (isset($reward_to_check[$cid]) || ($assign['flags'] & TARIFF_FLAG_REWARD_PENALTY_ON_TIME_PAYMENTS)) {
             $reward_to_check[$cid] = $cid;
         }
-        if ($reward_to_check[$cid]) {
+        if (isset($reward_to_check[$cid]) && $reward_to_check[$cid]) {
             if (!isset($reward_period_to_check[$cid])) {
                 $reward_period_to_check[$cid] = DAILY;
             }
@@ -946,20 +1036,22 @@ if (!empty($assigns)) {
     $rewards = array();
     foreach ($reward_to_check as $cid) {
         $period_start = $period_starts[$reward_period_to_check[$cid]];
-        $balance = $LMS->GetCustomerBalance($cid, $period_start);
-        if ($balance < 0) {
+        $balance = $LMS->GetCustomerBalance($cid, $period_start, $reward_penalty_deadline_grace_days);
+        if (!isset($balance)) {
+            $balance = 0;
+        } elseif ($balance < 0) {
             $rewards[$cid] = false;
             continue;
         }
         $history = $DB->GetAll(
-            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS time,
+            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
                 d.id AS docid,
                 (c.value * c.currencyvalue) AS value
             FROM cash c
             LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
             WHERE c.customerid = ?
-                AND c.time > ? AND c.time < ?
-            ORDER BY time',
+                AND c.time >= ? AND c.time < ?
+            ORDER BY deadline',
             array(
                 $reward_penalty_deadline_grace_days,
                 array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO),
@@ -972,21 +1064,24 @@ if (!empty($assigns)) {
         if (!empty($history)) {
             foreach ($history as &$record) {
                 if (!empty($record['docid'])) {
-                    $record['time'] = mktime(
+                    $record['deadline'] = mktime(
                         23,
                         59,
                         59,
-                        date('m', $record['time']),
-                        date('d', $record['time']),
-                        date('Y', $record['time'])
+                        date('m', $record['deadline']),
+                        date('d', $record['deadline']),
+                        date('Y', $record['deadline'])
                     ) + 1;
                 }
             }
             unset($record);
             usort($history, function ($a, $b) {
-                return $a['time'] - $b['time'];
+                return $a['deadline'] - $b['deadline'];
             });
             foreach ($history as $record) {
+                if ($record['deadline'] >= $period_end) {
+                    break;
+                }
                 $balance += $record['value'];
                 if (empty($record['docid'])) {
                     continue;
@@ -1196,12 +1291,137 @@ if (empty($assigns)) {
     die;
 }
 
+$document_dirs = array(DOC_DIR);
+$document_dirs = $LMS->executeHook('documents_dir_initialized', $document_dirs);
+
+function GetBillingTemplates($document_dirs)
+{
+    $docengines = array();
+
+    foreach ($document_dirs as $doc_dir) {
+        if ($dirs = getdir($doc_dir . DIRECTORY_SEPARATOR . 'templates', '^[a-z0-9_-]+$')) {
+            foreach ($dirs as $dir) {
+                $infofile = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                    . $dir . DIRECTORY_SEPARATOR . 'info.php';
+                if (file_exists($infofile)) {
+                    unset($engine);
+                    include($infofile);
+                    $engine['doc_dir'] = $doc_dir;
+                    if (isset($engine['type'])) {
+                        if (!is_array($engine['type'])) {
+                            $engine['type'] = array($engine['type']);
+                        }
+                        $intersect = array_intersect($engine['type'], array(DOC_BILLING));
+                        if (!empty($intersect)) {
+                            $docengines[$dir] = $engine;
+                        }
+                    } else {
+                        $docengines[$dir] = $engine;
+                    }
+                }
+            }
+        }
+    }
+
+    return $docengines;
+}
+
+$billing_document_engines = GetBillingTemplates($document_dirs);
+
+if (!empty($billing_document_engines)) {
+    if (empty($billing_document_template)) {
+        if (count($billing_document_engines) == 1) {
+            $billing_document_template = reset($billing_document_engines);
+            $billing_document_template['dir'] = key($billing_document_engines);
+            unset($billing_document_engines);
+        }
+    } else {
+        foreach ($billing_document_engines as $dir => $engine) {
+            if ($engine['name'] == $billing_document_template) {
+                $billing_document_template = $engine;
+                $billing_document_template['dir'] = $dir;
+                break;
+            }
+        }
+    }
+}
+
+if (!empty($billing_document_template)) {
+    $billing_plans = array();
+    $billing_periods = array(
+        0 => YEARLY,
+    );
+    $results = $DB->GetAll(
+        "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault
+        FROM numberplans n
+        LEFT JOIN numberplanassignments a ON (a.planid = n.id)
+        WHERE doctype = ?",
+        array(
+            DOC_BILLING,
+        )
+    );
+    if (!empty($results)) {
+        foreach ($results as $row) {
+            if ($row['isdefault']) {
+                $billing_plans[$row['divid']] = $row['id'];
+            }
+            $billing_periods[$row['id']] = $row['period'] ? $row['period'] : YEARLY;
+        }
+    }
+
+    $barcode = new \Com\Tecnick\Barcode\Barcode();
+
+    // Initialize templates engine (must be before locale settings)
+    $SMARTY = new LMSSmarty;
+
+    // test for proper version of Smarty
+
+    if (defined('Smarty::SMARTY_VERSION')) {
+        $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+    } else {
+        $ver_chunks = null;
+    }
+    if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+        die('Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.' . PHP_EOL);
+    }
+
+    define('SMARTY_VERSION', $ver_chunks[0]);
+
+    // add LMS's custom plugins directory
+    $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+
+    // Set some template and layout variables
+
+    $SMARTY->setTemplateDir(null);
+/*
+    $custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
+    if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
+        && !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)) {
+        $SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
+    }
+    $SMARTY->AddTemplateDir(
+        array(
+            SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
+            SMARTY_TEMPLATES_DIR,
+        )
+    );
+*/
+    $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
+
+    $layout = array();
+
+    $SMARTY->assignByRef('layout', $layout);
+}
+
+$invoices_with_billings = array();
+
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
     $divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
     $assign['value'] = floatval($assign['value']);
-    if (empty($assign['value'])) {
+
+    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
     }
 
@@ -1238,7 +1458,7 @@ foreach ($assigns as $assign) {
     if (!$assign['suspended'] && $assign['allsuspended']) {
         $assign['value'] = $assign['value'] * $suspension_percentage / 100;
     }
-    if (empty($assign['value'])) {
+    if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
     }
 
@@ -1260,6 +1480,9 @@ foreach ($assigns as $assign) {
             '%tariff',
             '%attribute',
             '%desc',
+            '%call_count',
+            '%call_fraction',
+            '%call_time',
             '%promotion_name',
             '%promotion_schema_name',
             '%promotion_schema_length',
@@ -1283,6 +1506,9 @@ foreach ($assigns as $assign) {
             $assign['name'],
             $assign['attribute'],
             $assign['description'],
+            isset($assign['call_count']) && !empty($assign['call_count']) ? $assign['call_count'] : 0,
+            isset($assign['call_fraction']) && mb_strlen($assign['call_fraction']) ? $assign['call_fraction'] : '',
+            isset($assign['call_time']) ? ceil($assign['call_time'] / 60) : '',
             $assign['promotion_name'],
             $assign['promotion_schema_name'],
             empty($assign['promotion_schema_length']) ? trans('indefinite period') : trans('$a months', $assign['promotion_schema_length']),
@@ -1315,10 +1541,10 @@ foreach ($assigns as $assign) {
                 $first_aligned_partial_period = array(
                     DAILY => $forward_periods[DAILY],
                     WEEKLY => $forward_periods[WEEKLY],
-                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
-                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
-                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
-                    YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
+                    MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
+                    QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
+                    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
+                    YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, $datefrom[2], $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
                     DISPOSABLE => $forward_periods[DISPOSABLE],
                 );
                 $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
@@ -1328,10 +1554,10 @@ foreach ($assigns as $assign) {
                     $last_aligned_partial_period = array(
                         DAILY => $forward_periods[DAILY],
                         WEEKLY => $forward_periods[WEEKLY],
-                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
-                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
-                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
-                        YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
+                        MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year)),
+                        QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 2, intval($dateto[2]), $year)),
+                        HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month + 5, intval($dateto[2]), $year)),
+                        YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $month, 1, $year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $month, intval($dateto[2]), $year + 1)),
                         DISPOSABLE => $forward_periods[DISPOSABLE],
                     );
                     $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
@@ -1345,10 +1571,10 @@ foreach ($assigns as $assign) {
                 $first_aligned_partial_period = array(
                     DAILY => $forward_periods[DAILY],
                     WEEKLY => $forward_periods[WEEKLY],
-                    MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 1, 0, $backward_year)),
-                    QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 3, 0, $backward_year)),
-                    HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 6, 0, $backward_year)),
-                    YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, 0, $backward_year + 1)),
+                    MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 1, 0, $backward_year)),
+                    QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 3, 0, $backward_year)),
+                    HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 6, 0, $backward_year)),
+                    YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, $datefrom[2], $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 0, $backward_year + 1)),
                     DISPOSABLE => $forward_periods[DISPOSABLE],
                 );
                 $desc = str_replace('%aligned_partial_period', $first_aligned_partial_period[$p], $desc);
@@ -1358,10 +1584,10 @@ foreach ($assigns as $assign) {
                     $last_aligned_partial_period = array(
                         DAILY => $forward_periods[DAILY],
                         WEEKLY => $forward_periods[WEEKLY],
-                        MONTHLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year)),
-                        QUARTERLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 2, intval($dateto[2]), $backward_year)),
-                        HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month + 5, intval($dateto[2]), $backward_year)),
-                        YEARLY => strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year + 1)),
+                        MONTHLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year)),
+                        QUARTERLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 2, intval($dateto[2]), $backward_year)),
+                        HALFYEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month + 5, intval($dateto[2]), $backward_year)),
+                        YEARLY => Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, 1, $backward_year)) . ' - ' . Utils::strftime($date_format, mktime(12, 0, 0, $backward_month, intval($dateto[2]), $backward_year + 1)),
                         DISPOSABLE => $forward_periods[DISPOSABLE],
                     );
                     $desc = str_replace('%aligned_partial_period', $last_aligned_partial_period[$p], $desc);
@@ -1389,6 +1615,9 @@ foreach ($assigns as $assign) {
     if (!isset($doctypes[$cid])) {
         $doctypes[$cid] = 0;
     }
+    if (!isset($paytimes[$cid])) {
+        $paytimes[$cid] = null;
+    }
     if (!isset($paytypes[$cid])) {
         $paytypes[$cid] = 0;
     }
@@ -1396,7 +1625,7 @@ foreach ($assigns as $assign) {
         $numberplans[$cid] = 0;
     }
 
-    if ($assign['unitary_value'] != 0) {
+    if ($assign['unitary_value'] != 0 || $empty_billings && $assign['liabilityid'] == 'set') {
         $price = $assign['unitary_value'];
         $currency = $assign['currency'];
         $netflag = intval($assign['netflag']);
@@ -1448,6 +1677,16 @@ foreach ($assigns as $assign) {
                 $inv_paytype = $paytype;
             }
 
+            if (strlen($assign['a_paytime'])) {
+                $inv_paytime = $assign['a_paytime'];
+            } elseif ($assign['paytime'] >= 0) {
+                $inv_paytime = $assign['paytime'];
+            } elseif (strlen($assign['d_paytime'])) {
+                $inv_paytime = $assign['d_paytime'];
+            } else {
+                $inv_paytime = $deadline;
+            }
+
             if ($assign['numberplanid']) {
                 $plan = $assign['numberplanid'];
             } elseif ($assign['tariffnumberplanid']) {
@@ -1456,7 +1695,9 @@ foreach ($assigns as $assign) {
                 $plan = isset($plans[$divid][$assign['invoice']]) ? $plans[$divid][$assign['invoice']] : 0;
             }
 
-            if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
+            if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice']
+                || !isset($paytimes[$cid]) || $paytimes[$cid] != $inv_paytime
+                || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
                 || $currencies[$cid] != $currency || $netflags[$cid] != $netflag) {
                 if (!array_key_exists($plan, $numbertemplates)) {
@@ -1497,19 +1738,10 @@ foreach ($assigns as $assign) {
                             countryid, divisionid, paytime, documentmemo, flags, type
 						FROM customeraddressview WHERE id = ?", array($cid));
 
-                if (!isset($divisions[$customer['divisionid']])) {
-                    $divisions[$customer['divisionid']] = $LMS->GetDivision($customer['divisionid']);
+                if (!isset($divisions[$assign['divisionid']])) {
+                    $divisions[$assign['divisionid']] = $LMS->GetDivision($assign['divisionid']);
                 }
-                $division = $divisions[$customer['divisionid']];
-
-                $paytime = $customer['paytime'];
-                if ($paytime == -1) {
-                    if (isset($division['inv_paytime'])) {
-                        $paytime = $division['inv_paytime'];
-                    } else {
-                        $paytime = $deadline;
-                    }
-                }
+                $division = $divisions[$assign['divisionid']];
 
                 $fullnumber = docnumber(array(
                     'number' => $newnumber,
@@ -1558,7 +1790,7 @@ foreach ($assigns as $assign) {
                         $customer['ssn'],
                         $issuetime,
                         $saledate,
-                        $paytime,
+                        $inv_paytime,
                         $inv_paytype,
                         ($division['name'] ? $division['name'] : ''),
                         ($division['shortname'] ? $division['shortname'] : ''),
@@ -1576,7 +1808,7 @@ foreach ($assigns as $assign) {
                         ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
                         $fullnumber,
                         $recipient_address_id,
-                        $LMS->CopyAddress($assign['post_address_id']),
+                        empty($assign['post_address_id']) ? null : $LMS->CopyAddress($assign['post_address_id']),
                         $currency,
                         $currencyvalues[$currency],
                         empty($customer['documentmemo']) ? null : $customer['documentmemo'],
@@ -1594,6 +1826,7 @@ foreach ($assigns as $assign) {
                 $netflags[$cid] = $netflag;
                 $doctypes[$cid] = $assign['invoice'];
                 //$LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
+                $paytimes[$cid] = $inv_paytime;
                 $paytypes[$cid] = $inv_paytype;
                 $addresses[$cid] = $assign['recipient_address_id'];
                 $numberplans[$cid] = $plan;
@@ -1720,6 +1953,199 @@ foreach ($assigns as $assign) {
                             )
                         );
                     }
+
+                    if (!empty($billing_document_template) && !empty($assign['billingconsent']) && !isset($invoices_with_billings[$invoices[$cid]])) {
+                        $billing_plan = isset($billing_plans[$divid]) ? $billing_plans[$divid] : 0;
+                        if (!isset($numbertemplates[$billing_plan])) {
+                            $numbertemplates[$billing_plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($billing_plan));
+                        }
+                        $customernumber = !empty($numbertemplates[$billing_plan]) && preg_match('/%[0-9]*C/', $numbertemplates[$billing_plan]);
+                        if (($customernumber && !isset($customernumbers[DOC_BILLING][$billing_plan][$cid]))
+                            || (!$customernumber && !isset($numbers[DOC_BILLING][$billing_plan]))) {
+                            $period = get_period($billing_periods[$billing_plan]);
+                            $query = "SELECT MAX(number) AS number FROM documents
+                                WHERE cdate >= ? AND cdate <= ? AND type = ? AND numberplanid "
+                                . ($billing_plan ? '= ' . $billing_plan : 'IS NULL');
+                            if ($customernumber) {
+                                $query .= ' AND customerid = ' . $cid;
+                            }
+                            $maxnumber = (($number = $DB->GetOne(
+                                $query,
+                                array($period['start'], $period['end'], DOC_BILLING)
+                            )) != 0 ? $number : 0);
+                            if ($customernumber) {
+                                $customernumbers[DOC_BILLING][$billing_plan][$cid] = $newnumber = $maxnumber + 1;
+                            } else {
+                                $numbers[DOC_BILLING][$billing_plan] = $newnumber = $maxnumber + 1;
+                            }
+                        } else {
+                            if ($customernumber) {
+                                $newnumber = $customernumbers[DOC_BILLING][$billing_plan][$cid] + 1;
+                                $customernumbers[DOC_BILLING][$billing_plan][$cid] = $newnumber;
+                            } else {
+                                $newnumber = $numbers[DOC_BILLING][$billing_plan] + 1;
+                                $numbers[DOC_BILLING][$billing_plan] = $newnumber;
+                            }
+                        }
+
+                        $fullnumber = docnumber(array(
+                            'number' => $newnumber,
+                            'template' => $numbertemplates[$billing_plan],
+                            'cdate' => $issuetime,
+                            'customerid' => $cid,
+                        ));
+
+                        $DB->Execute(
+                            "INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
+                                customerid, name, address, zip, city, ten, ssn, cdate,
+                                div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+                                div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+                                reference, template, closed)
+                                VALUES (?, ?, ?, ?, ?,
+                                    ?, ?, ?, ?, ?, ?, ?, ?,
+                                    ?, ?, ?, ?, ?, ?, ?, ?,
+                                    ?, ?, ?, ?, ?, ?, ?,
+                                    ?, ?, ?)",
+                            array(
+                                $newnumber,
+                                $billing_plan ? $billing_plan : null,
+                                DOC_BILLING,
+                                $customer['countryid'] ? $customer['countryid'] : null,
+                                $customer['divisionid'],
+                                $cid,
+                                $customer['lastname'] . ' ' . $customer['name'],
+                                ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+                                    ? $customer['city'] . ', ' : '') . $customer['address'],
+                                $customer['zip'] ? $customer['zip'] : null,
+                                $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
+                                $customer['ten'],
+                                $customer['ssn'],
+                                $issuetime,
+                                $division['name'] ? $division['name'] : '',
+                                $division['shortname'] ? $division['shortname'] : '',
+                                $division['address'] ? $division['address'] : '',
+                                $division['city'] ? $division['city'] : '',
+                                $division['zip'] ? $division['zip'] : '',
+                                $division['countryid'] ? $division['countryid'] : null,
+                                $division['ten'] ? $division['ten'] : '',
+                                $division['regon'] ? $division['regon'] : '',
+                                $division['bank'] ?: null,
+                                $division['account'] ? $division['account'] : '',
+                                $division['inv_header'] ? $division['inv_header'] : '',
+                                $division['inv_footer'] ? $division['inv_footer'] : '',
+                                $division['inv_author'] ? $division['inv_author'] : '',
+                                $division['inv_cplace'] ? $division['inv_cplace'] : '',
+                                $fullnumber,
+                                $invoices[$cid],
+                                $billing_document_template['name'],
+                                DOC_CLOSED,
+                            )
+                        );
+                        $billing_docid = $DB->GetLastInsertID('documents');
+
+                        switch ($assign['period']) {
+                            case YEARLY:
+                                $datefrom = mktime(0, 0, 0, $month, 1, $year - 1);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case HALFYEARLY:
+                                $datefrom = mktime(0, 0, 0, $month - 6, 1, $year);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case QUARTERLY:
+                                $datefrom = mktime(0, 0, 0, $month - 3, 1, $year);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case MONTHLY:
+                                $datefrom = mktime(0, 0, 0, $month-1, 1, $year);
+                                $dateto = mktime(0, 0, 0, $month, 1, $year) - 1;
+                                break;
+                            case DISPOSABLE:
+                                $datefrom = $currtime;
+                                $dateto = strtotime('+ 1 day', $currtime) - 1;
+                                break;
+                        }
+
+                        $DB->Execute(
+                            "INSERT INTO documentcontents
+                            (docid, title, fromdate, todate)
+                            VALUES (?, ?, ?, ?)",
+                            array(
+                                $billing_docid,
+                                $billing_document_template['title'],
+                                $datefrom,
+                                $dateto,
+                            )
+                        );
+
+                        $invoices_with_billings[$invoices[$cid]] = $billing_docid;
+
+                        if (!$test) {
+                            $bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $fullnumber), -1, -30, 'black');
+
+                            $document = array(
+                                'customerid' => $cid,
+                                'type' => DOC_BILLING,
+                                'cdate' => $issuetime,
+                                'title' => $billing_document_template['title'],
+                                'number' => $newnumber,
+                                'numberplanid' => $billing_plan,
+                                'templ' => $billing_document_template['name'],
+                                'fromdate' => $datefrom,
+                                'todate' => $dateto,
+                                'confirmdate' => 0,
+                                'reference' => $invoices[$cid],
+                                'barcode' => base64_encode($bobj->getPngData()),
+                                'numbers' => preg_split('/\s*,\s*/', $assign['phones']),
+                            );
+
+                            $doc_dir = $billing_document_template['doc_dir'];
+                            $template_dir = $billing_document_template['doc_dir'] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+
+                            $engine = $billing_document_template;
+
+                            // run template engine
+                            if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                                . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
+                                include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+                                    . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
+                            } else {
+                                include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
+                                    . DIRECTORY_SEPARATOR . 'engine.php');
+                            }
+
+                            $files = array();
+
+                            if ($output) {
+                                $file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
+                                file_put_contents($file, $output);
+
+                                $md5sum = md5_file($file);
+                                $path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
+                                $docfile = array(
+                                    'md5sum' => $md5sum,
+                                    'type' => $engine['content_type'],
+                                    'filename' => $engine['output'],
+                                    'tmpname' => $file,
+                                    'attachmenttype' => 1,
+                                    'path' => $path,
+                                    'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+                                );
+                                $files[] = $docfile;
+                            } else {
+                                die('Fatal error: Problem during billing document generation!' . PHP_EOL);
+                            }
+
+                            $error = $LMS->AddDocumentFileAttachments($files);
+                            if (empty($error)) {
+                                $LMS->AddDocumentAttachments($billing_docid, $files);
+                            }
+
+                            if (file_exists($file)) {
+                                @unlink($file);
+                            }
+                        }
+                    }
                 }
             }
         } else {
@@ -1750,10 +2176,12 @@ foreach ($assigns as $assign) {
         if ($assign['settlement'] && $assign['datefrom']) {
             $alldays = 1;
 
-            $diffdays = sprintf("%d", round(($today - $assign['datefrom']) / 86400));
-            $period_start = mktime(0, 0, 0, $month, $dom - $diffdays, $year);
-            $period_end = mktime(0, 0, 0, $month, $dom - 1, $year);
-            $period = strftime($date_format, $period_start) . " - " . strftime($date_format, $period_end);
+            $backward_correction = $backward_on_the_last_day ? 1 : 0;
+            $backward_correction = empty($assign['backwardperiod']) ? 0 : $backward_correction;
+            $diffdays = sprintf("%d", round(($today - $assign['datefrom']) / 86400)) + $backward_correction;
+            $period_start = mktime(0, 0, 0, $month, $dom - $diffdays + $backward_correction, $year);
+            $period_end = mktime(0, 0, 0, $month, $dom - 1 + $backward_correction, $year);
+            $period = Utils::strftime($date_format, $period_start) . " - " . Utils::strftime($date_format, $period_end);
 
             switch ($assign['period']) {
                 case WEEKLY:
@@ -1765,7 +2193,7 @@ foreach ($assigns as $assign) {
                     $m = $month;
                     $y = $year;
                     $partial_price = 0;
-                    $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+                    $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
                     while ($diffdays) {
                         if ($d - $diffdays <= 0) {
                             $partial_price += ($d - 1) * $price / $month_days;
@@ -1775,10 +2203,10 @@ foreach ($assigns as $assign) {
                             $diffdays = 0;
                         }
                         $date = mktime(0, 0, 0, $m, 0, $y);
-                        $month_days = strftime("%d", $date);
+                        $month_days = date('d', $date);
                         $d = $month_days + 1;
-                        $m = strftime("%m", $date);
-                        $y = strftime("%Y", $date);
+                        $m = date('m', $date);
+                        $y = date('Y', $date);
                     }
                     break;
                 case QUARTERLY:
@@ -1794,7 +2222,7 @@ foreach ($assigns as $assign) {
 
             $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 2);
 
-            if (floatval($price)) {
+            if (floatval($partial_price)) {
                 //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
 
                 if (empty($assign['backwardperiod'])) {
@@ -1834,6 +2262,13 @@ foreach ($assigns as $assign) {
                     $sdesc
                 );
 
+                $partial_value = round($partial_price * $assign['count'], 2);
+                if ($netflag) {
+                    $partial_grossvalue = $partial_value + round($partial_value * ($assign['taxrate'] / 100), 2);
+                } else {
+                    $partial_grossvalue = $partial_value;
+                }
+
                 if ($assign['invoice']) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $tmp_itemid = 0;
@@ -1860,13 +2295,6 @@ foreach ($assigns as $assign) {
                                 )
                             );
                         }
-                    }
-
-                    $partial_value = round($partial_price * $assign['count'], 2);
-                    if ($netflag) {
-                        $partial_grossvalue = $partial_value + round($partial_value * ($assign['taxrate'] / 100), 2);
-                    } else {
-                        $partial_grossvalue = $partial_value;
                     }
 
                     if ($tmp_itemid != 0) {
@@ -1960,7 +2388,7 @@ foreach ($assigns as $assign) {
                 }
 
                 if (!$quiet) {
-                    echo 'CID : ' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                    echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                 }
             }
 
@@ -2022,5 +2450,3 @@ if ($test) {
 } else {
     $DB->CommitTrans();
 }
-
-$DB->Destroy();

@@ -46,7 +46,7 @@
 							<label>
 								<strong>{trans("Filter:")}</strong>
 								<SELECT name="filtertype">
-									<OPTION value="">{trans("- none -")}</OPTION>
+									<OPTION value="">{trans("— none —")}</OPTION>
 									<OPTION value="ip"{if $filtertype == 'ip'} selected{/if}>{trans("IP Address:")}</OPTION>
 									<OPTION value="mac"{if $filtertype == 'mac'} selected{/if}>{trans("MAC:")}</OPTION>
 									<OPTION value="customer"{if $filtertype == 'customer'} selected{/if}>{trans("Customer:")}</OPTION>
@@ -63,7 +63,7 @@
 							<label>
 								{trans("Type:")}
 								<SELECT name="type">
-									<OPTION value="0">{trans("- all -")}</OPTION>
+									<OPTION value="0">{trans("— all —")}</OPTION>
 									{foreach $_SESSIONTYPES as $typeidx => $typeval}
 									<OPTION value="{$typeidx}"{if $type == $typeidx} selected{/if}>{$typeval.label}</OPTION>
 									{/foreach}
@@ -95,7 +95,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="fleft fbt bold">{trans("IP Address:")}</td>
+			<td class="fbt bold">{trans("IP Address:")}</td>
 			<td class="fbt">{trans("Customer:")}</td>
 			<td class="fbt">{trans("MAC:")}</td>
 			<td class="fbt">{trans("Type:")}</td>
@@ -104,7 +104,7 @@
 			<td class="fbt bold">{trans("Time Duration:")}</td>
 			<td class="fbt bold">{trans("Terminate Cause:")}</td>
 			<td class="fbt">{trans("Downloaded:")}</td>
-			<td class="fright fbt">{trans("Uploaded:")}</td>
+			<td class="fbt">{trans("Uploaded:")}</td>
 		</tr>
 		{if $listdata.total != 0}
 		<TR>
@@ -126,8 +126,8 @@
 	<tbody>
 		{section name=nodesession loop=$nodesessions start=$start max=$pagelimit}
 		{assign var=session value=$nodesessions[nodesession]}
-		<tr>
-			<td class="fleft bold nobr">
+		<tr class="highlight">
+			<td class="bold nobr">
 				{if $session.nodeid}<a href="?m=nodeinfo&id={$session.nodeid}">{/if}
 				{long_ip($session.ipaddr)}
 				{if $session.nodeid}</a>{/if}
@@ -137,7 +137,15 @@
 				<a href="?m=customerinfo&id={$session.customerid}">{$session.lastname} {$session.name}</a>
 				{else}-{/if}
 			</td>
-			<td class="nobr">{$session.mac}</td>
+			<td>
+				{$session.mac}
+				{$producer = EtherCodes::GetProducer($session.mac)}
+				{if $producer}
+					<span class="lms-ui-font-smaller">
+						({$producer})
+					</span>
+				{/if}
+			</td>
 			<td class="nobr">
 				{$unknowntype=1}{$firsttype=1}
 				{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}
@@ -150,17 +158,17 @@
 				{if $unknowntype}-{/if}
 			</td>
 			<td class="nobr">
-				<span class="bold">{$session.start|date_format:"%Y.%m.%d"}</span> {$session.start|date_format:"%H:%M:%S"}
+				<span class="bold">{$session.start|date_format:"Y.m.d"}</span> {$session.start|date_format:"H:i:s"}
 			</td>
 			<td class="nobr">
 				{if $session.stop}
-				<span class="bold">{$session.stop|date_format:"%Y.%m.%d"}</span> {$session.stop|date_format:"%H:%M:%S"}
+				<span class="bold">{$session.stop|date_format:"Y.m.d"}</span> {$session.stop|date_format:"H:i:s"}
 				{else}-{/if}
 			</td>
 			<TD class="bold nobr">{$session.duration}</TD>
 			<TD class="bold nobr">{$session.terminatecause}</TD>
 			<TD class="nobr">{$session.download}</TD>
-			<TD class="fright nobr">{$session.upload}</TD>
+			<TD class="nobr">{$session.upload}</TD>
 		</tr>
 		{sectionelse}
 		<tr>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -62,17 +62,25 @@ if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
 }
 $customerid = $nodeinfo['ownerid'];
 
-include(MODULES_DIR . '/customer.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'customer.inc.php');
 
 if (!isset($resource_tabs['nodeassignments']) || $resource_tabs['nodeassignments']) {
-    $nodeassignments = $LMS->GetNodeCustomerAssignments($nodeid, $assignments);
+    $nodeassignments = array();
+    if (!empty($customernodes) && !empty($assignments)) {
+        foreach ($customernodes as $node) {
+            $assigns = $LMS->GetNodeCustomerAssignments($node['id'], $assignments);
+            if (!empty($assigns)) {
+                $nodeassignments[$node['id']] = $assigns[$node['id']];
+            }
+        }
+    }
     $SMARTY->assign('nodeassignments', $nodeassignments);
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (!isset($_GET['ownerid'])) {
-    $SESSION->save('backto', $SESSION->get('backto') . '&ownerid=' . $customerid);
+    $SESSION->add_history_entry($SESSION->remove_history_entry() . '&ownerid=' . $customerid);
 }
 
 if ($nodeinfo['netdev'] == 0) {

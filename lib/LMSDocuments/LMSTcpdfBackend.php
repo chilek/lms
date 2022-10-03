@@ -42,7 +42,7 @@ class LMSTcpdfBackend extends LMSTCPDF
 
         $this->SetProducer('LMS Developers');
         $this->SetSubject($title);
-        $this->SetCreator('LMS ' . $layout['lmsv']);
+        $this->SetCreator('LMS' . (isset($layout['lmsv']) ? ' ' . $layout['lmsv'] : ''));
         $this->SetDisplayMode('fullwidth', 'SinglePage', 'UseNone');
 
         $this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
@@ -51,7 +51,7 @@ class LMSTcpdfBackend extends LMSTCPDF
         $this->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $this->setLanguageArray($l);
+        //$this->setLanguageArray($l);
 
         /* disable font subsetting to improve performance */
         $this->setFontSubsetting(true);
@@ -78,6 +78,6 @@ class LMSTcpdfBackend extends LMSTCPDF
 
     public function WriteToString()
     {
-        return $this->Output(null, 'S');
+        return $this->Output('', 'S');
     }
 }

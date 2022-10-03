@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Event Search');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 if (!isset($_POST['event'])) {
        $event = array();
@@ -47,7 +47,7 @@ if (!isset($_POST['event'])) {
 if (isset($_POST['event'])) {
     $event = $_POST['event'];
 
-    if ($event['ticketid']) {
+    if (!empty($event['ticketid'])) {
         $event['ticketid'] = intval($event['ticketid']);
     }
 
@@ -61,10 +61,10 @@ if (isset($_POST['event'])) {
         $event['dateto'] = mktime(0, 0, 0, $month, $day, $year);
     }
 
-    if ($event['custid']) {
-        $event['customerid'] = $event['custid'];
+    if (!empty($event['custid'])) {
+        $event['customerid'] = intval($event['custid']);
     }
-        
+
     $eventlist = $LMS->EventSearch($event);
     $daylist = array();
 
@@ -75,10 +75,10 @@ if (isset($_POST['event'])) {
             }
         }
     }
-        
+
     $SMARTY->assign('eventlist', $eventlist);
     $SMARTY->assign('daylist', $daylist);
-    $SMARTY->assign('getHolidays', getHolidays($year));
+    $SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
     $SMARTY->display('event/eventsearchresults.html');
     $SESSION->close();
     die;

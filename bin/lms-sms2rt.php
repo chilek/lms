@@ -31,7 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL & ~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $http_mode = isset($_SERVER['HTTP_HOST']);
 
@@ -198,9 +198,15 @@ if (!empty($service)) {
     LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $service));
 }
 $prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
-$newticket_notify = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', true));
-$helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
-$helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+$newticket_notify = ConfigHelper::checkConfig(
+    'rt.new_ticket_notify',
+    ConfigHelper::checkConfig('phpui.newticket_notify', true)
+);
+$helpdesk_customerinfo = ConfigHelper::checkConfig(
+    'rt.notification_customerinfo',
+    ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
+);
+$helpdesk_sendername = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
 
 $detect_customer_location_address = ConfigHelper::checkConfig($config_section . '.detect_customer_location_address');
 
@@ -279,8 +285,11 @@ if (($fh = fopen($message_file, "r")) != null) {
         if (preg_match("/^From: ([[:digit:]]{3,15})$/", $line, $matches) && $phone == null) {
             $phone = $matches[1];
         }
-        if (preg_match("/^Received: (.*)$/", $line, $matches) && $date == null) {
+        if (preg_match("/^Received: (.*)$/", $line, $matches) && !isset($date)) {
             $date = strtotime($matches[1]);
+            if ($date === false) {
+                $date = null;
+            }
         }
         if (preg_match("/^Alphabet:.*UCS2?$/", $line)) {
             $ucs = true;
@@ -332,6 +341,7 @@ if (($fh = fopen($message_file, "r")) != null) {
 
     $tid = $LMS->TicketAdd(array(
         'queue' => $queueid,
+        'createtime' => isset($date) ? $date : null,
         'requestor' => $requestor,
         'requestor_phone' => empty($phone) ? null : $phone,
         'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
@@ -365,11 +375,24 @@ if (($fh = fopen($message_file, "r")) != null) {
         if (!empty($customer['cid'])) {
             $info = $LMS->GetCustomer($customer['cid'], true);
 
-            $emails = array_map(function ($contact) {
+            $emails = array_map(
+                function ($contact) {
                     return $contact['fullname'];
-            }, $LMS->GetCustomerContacts($customer['cid'], CONTACT_EMAIL));
+                },
+                array_filter(
+                    $LMS->GetCustomerContacts($customer['cid'], CONTACT_EMAIL),
+                    function ($contact) {
+                        return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                    }
+                )
+            );
 
-            $all_phones = $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE);
+            $all_phones = array_filter(
+                $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE),
+                function ($contact) {
+                    return $contact['type'] & CONTACT_HELPDESK_NOTIFICATIONS;
+                }
+            );
 
             $phones = array_map(function ($contact) {
                     return $contact['fullname'];
@@ -388,8 +411,20 @@ if (($fh = fopen($message_file, "r")) != null) {
                     'phones' => $phones,
                     'categories' => $cats,
                 );
-                $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-                $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
+                $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                    ConfigHelper::getConfig(
+                        'rt.notification_mail_body_customerinfo_format',
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body')
+                    ),
+                    $params
+                );
+                $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                    ConfigHelper::getConfig(
+                        'rt.notification_sms_body_customerinfo_format',
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body')
+                    ),
+                    $params
+                );
             }
 
             if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
@@ -422,6 +457,7 @@ if (($fh = fopen($message_file, "r")) != null) {
                     trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
                     $custmail_body
                 );
+                $custmail_body = str_replace('%body', $message, $custmail_body);
                 $custmail_headers = array(
                     'From' => $headers['From'],
                     'Reply-To' => $headers['From'],
@@ -449,6 +485,7 @@ if (($fh = fopen($message_file, "r")) != null) {
                     trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
                     $custsms_body
                 );
+                $custsms_body = str_replace('%body', $message, $custsms_body);
 
                 foreach ($mobile_phones as $phone) {
                     $LMS->SendSMS($phone['contact'], $custsms_body);
@@ -463,18 +500,18 @@ if (($fh = fopen($message_file, "r")) != null) {
             'id' => $tid,
             'queue' => $queuedata['name'],
             'messageid' => isset($msgid) ? $msgid : null,
-            'customerid' => $customer['cid'],
+            'customerid' => empty($customer) ? null : $customer['cid'],
             'status' => $RT_STATES[RT_NEW],
             'categories' => $cats,
             'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
             'body' => $message,
             'url' => $lms_url . '?m=rtticketview&id=',
         );
-        $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+        $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_subject', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject')), $params);
         $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
-        $message = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+        $message = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_mail_body', ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body')), $params);
         $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
-        $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
+        $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
         $LMS->NotifyUsers(array(
             'queue' => $queueid,
@@ -490,5 +527,3 @@ if (($fh = fopen($message_file, "r")) != null) {
 if ($http_mode) {
     @unlink($message_file);
 }
-
-$DB->Destroy();

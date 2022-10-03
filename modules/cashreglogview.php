@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -60,7 +60,7 @@ function GetCashLog($order = 'time,asc', $regid = 0)
         array($regid)
     );
 
-    $list['total'] = count($list);
+    $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['direction'] = $direction;
 
@@ -112,7 +112,7 @@ $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('crlp', $page);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $layout['pagetitle'] = trans('Cash History of Registry:').
         ' <A href="?m=receiptlist&regid='.$regid.'">'.$DB->GetOne('SELECT name FROM cashregs WHERE id = ?', array($regid)).'</A>';

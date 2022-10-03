@@ -40,7 +40,7 @@
 			{trans("Date:")}
 		</TD>
 		<TD class="nobr">
-			{$message.createtime|date_format:"%Y/%m/%d %H:%M.%S"}
+			{$message.createtime|date_format:"Y-m-d H:i:s"}
 		</TD>
 	</TR>
 	<TR>
@@ -178,10 +178,10 @@
 
 		</TD>
 		<TD class="nobr bold">
-			{trans("Remove date:")}
+			{trans("Remove date")}
 		</TD>
 		<TD>
-			{$message.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
+			{$message.deltime|date_format:"Y-m-d H:i:s"}
 		</TD>
 	</TR>
 	{/if}

@@ -35,10 +35,14 @@ $USERPANEL->AddModule(
 );
 
 require_once('UserpanelNoticeHandler.php');
-$notice_handler = new UserpanelNoticeHandler($DB, $SMARTY, $SESSION->id);
+$notice_handler = new UserpanelNoticeHandler($DB, $SMARTY, isset($SESSION->id) ? $SESSION->id : null);
 
 $USERPANEL->registerCallback('notices', function ($db, $smarty, $mod_dir) use ($notice_handler) {
     $urgent_notice = $notice_handler->getUrgentNotice();
+    if (empty($urgent_notice)) {
+        return '';
+    }
+
     $notice_handler->markNoticeAsRead($urgent_notice['id']);
     $smarty->assign('urgent_notice', $urgent_notice);
 

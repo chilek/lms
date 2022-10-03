@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,9 +35,6 @@ $layout['pagetitle'] = trans('Documents Generator');
 if (isset($_POST['document'])) {
     $document = $_POST['document'];
 
-    $oldfromdate = $document['fromdate'];
-    $oldtodate = $document['todate'];
-
     if (!$document['type']) {
         $error['type'] = trans('Document type is required!');
     }
@@ -62,29 +59,30 @@ if (isset($_POST['document'])) {
         $error['number'] = trans('Document with specified number exists!');
     }
 
-    if ($document['fromdate']) {
-        $date = explode('/', $document['fromdate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    $allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true);
+    if (!$allow_past_date) {
+        $today = strtotime('today');
+    }
+
+    if (empty($document['fromdate'])) {
         $document['fromdate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['fromdate'])) {
+        $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } elseif (!$allow_past_date && $document['fromdate'] < $today) {
+        die('From date can not be earlier than current date!');
     }
 
-    if ($document['todate']) {
-        $date = explode('/', $document['todate']);
-        if (checkdate($date[1], $date[2], $date[0])) {
-            $document['todate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-        } else {
-            $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-        }
-    } else {
+    if (empty($document['todate'])) {
         $document['todate'] = 0;
+    } elseif (!preg_match('/^[0-9]+$/', $document['todate'])) {
+        $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+    } elseif (!$allow_past_date && $document['todate'] < $today) {
+        die('To date can not be earlier than current date!');
+    } else {
+        $document['todate'] = strtotime('tomorrow', $document['todate']) - 1;
     }
 
-    if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0) {
+    if (!empty($document['todate']) && $document['fromdate'] > $document['todate']) {
         $error['todate'] = trans('Start date can\'t be greater than end date!');
     }
 
@@ -92,22 +90,16 @@ if (isset($_POST['document'])) {
     $network = $_POST['network'];
     $customergroup = $_POST['customergroup'];
     switch ($state) {
+        case CSTATUS_DISCONNECTED:
+        case 51:
+        case 52:
+        case CSTATUS_CONNECTED:
         case 0:
             $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
         case CSTATUS_INTERESTED:
         case CSTATUS_WAITING:
             $customerlist = $LMS->GetCustomerList(compact("state"));
-            break;
-        case CSTATUS_CONNECTED:
-        case CSTATUS_DISCONNECTED:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
-            break;
-        case 51:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
-            break;
-        case 52:
-            $customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
             break;
         case -1:
             if ($customerlist = $LMS->GetCustomerList(compact("customergroup"))) {
@@ -157,7 +149,16 @@ if (isset($_POST['document'])) {
     }
     if (isset($document['attachments']) && !empty($document['attachments'])) {
         foreach ($document['attachments'] as $attachment => $value) {
-            $filename = $engine['attachments'][$attachment];
+            if (isset($engine['attachments'][$attachment])) {
+                $filename = $engine['attachments'][$attachment];
+            } else {
+                foreach ($engine['attachments'] as $idx => $file) {
+                    if ($file['label'] == $attachment) {
+                        break;
+                    }
+                }
+                $filename = $engine['attachments'][$idx]['name'];
+            }
             if ($filename[0] != DIRECTORY_SEPARATOR) {
                 $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
             }
@@ -209,6 +210,10 @@ if (isset($_POST['document'])) {
         if ($document['templ']) {
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+
+            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+                $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+            }
         }
 
         foreach ($customerlist as $idx => $gencust) {
@@ -384,9 +389,6 @@ if (isset($_POST['document'])) {
 
         die;
     } else {
-        $document['fromdate'] = $oldfromdate;
-        $document['todate'] = $oldtodate;
-
         if ($document['templ']) {
             foreach ($documents_dirs as $doc) {
                 if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
@@ -401,6 +403,10 @@ if (isset($_POST['document'])) {
 
             // read template information
             include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+            if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+                $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+            }
+
             // set some variables
             $SMARTY->assign('document', $document);
 
@@ -431,13 +437,12 @@ if (isset($_POST['document'])) {
 
 $SMARTY->setDefaultResourceType('extendsall');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
 
 if (!$rights) {
-    $SMARTY->display('noaccess.html');
-    die;
+    access_denied();
 }
 
 if (!isset($document['numberplanid'])) {

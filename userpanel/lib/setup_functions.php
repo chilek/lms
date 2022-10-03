@@ -36,7 +36,8 @@ function userpanel_style_change()
 
 function module_setup()
 {
-    global $SMARTY, $DB, $USERPANEL, $layout, $LMS;
+    global $SMARTY, $DB, $USERPANEL, $layout, $LMS, $CSTATUSES;
+
     $layout['pagetitle'] = trans('Userpanel Configuration');
     $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header', ''));
     $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo', ''));
@@ -51,6 +52,14 @@ function module_setup()
     $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
     $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', 1));
+
+    $allowed_customer_status =
+        Utils::determineAllowedCustomerStatus(ConfigHelper::getConfig('userpanel.allowed_customer_status', ''), -1);
+    if ($allowed_customer_status === -1) {
+        $allowed_customer_status = array_keys($CSTATUSES);
+    }
+    $SMARTY->assign('allowed_customer_status', $allowed_customer_status);
+
     $SMARTY->assign('force_ssl', ConfigHelper::getConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl', 1)));
     $SMARTY->assign('google_recaptcha_sitekey', ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey', ''));
     $SMARTY->assign('google_recaptcha_secret', ConfigHelper::getConfig('userpanel.google_recaptcha_secret', ''));
@@ -80,11 +89,13 @@ function module_setup()
 
 function module_submit_setup()
 {
-    global $DB, $LMS;
+    global $DB, $LMS, $CSTATUSES;
+
     if (!isset($_POST['hint'])) {
         module_setup();
         return;
     }
+
     // write main configuration
     if ($test = $DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'hint'")) {
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'hint'", array($_POST['hint']));
@@ -160,6 +171,29 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'auth_type'", array($_POST['auth_type']));
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'auth_type', ?)", array($_POST['auth_type']));
+    }
+
+    $allowed_customer_status = array();
+    if (isset($_POST['allowed_customer_status'])) {
+        foreach ($_POST['allowed_customer_status'] as $statusidx) {
+            if (isset($CSTATUSES[$statusidx])) {
+                $allowed_customer_status[] = $CSTATUSES[$statusidx]['alias'];
+            }
+        }
+        if (count($allowed_customer_status) == count($CSTATUSES)) {
+            $allowed_customer_status = array();
+        }
+    }
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'allowed_customer_status'")) {
+        $DB->Execute(
+            "UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'allowed_customer_status'",
+            array(implode(',', $allowed_customer_status))
+        );
+    } else {
+        $DB->Execute(
+            "INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'allowed_customer_status', ?)",
+            array(implode(',', $allowed_customer_status))
+        );
     }
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'force_ssl'")) {

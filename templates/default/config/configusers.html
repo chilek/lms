@@ -1,77 +1,80 @@
-<TABLE class="lmsbox lms-ui-background-cycle">
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 98%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-    </COLGROUP>
-    <THEAD>
-    <TR style="background-color: #B6A688;">
+<table class="lmsbox lms-ui-background-cycle">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 98%;">
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+    </colgroup>
+    <thead>
+    <tr style="background-color: #B6A688;">
         <td class="bold" colspan="4">
             #4  {trans("User configuration variable parameters")} ({trans('overwrite parameters from panel #3 (if exists) and panel #2 and panel #1')})
         </td>
         <td>
-            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=user" icon="add" label="Add" tip="Add config for user"}
+            {button type="link-button" href="?m=configadd&refconfigid={$config.id}&reftype=user&action=init" icon="add" label="Add" tip="Add config for user"}
         </td>
-    </TR>
-    <TR>
-        <TD class="nobr bold">
+    </tr>
+    <tr>
+        <td class="nobr bold">
             <strong>{trans("Login:")}</strong>
-        </TD>
+        </td>
         <td class="nobr bold">
             {trans("First/last name:")}
         </td>
-        <TD class="nobr bold">
+        <td class="nobr bold">
             {trans("Comment:")}
-        </TD>
-        <TD class="nobr bold">
+        </td>
+        <td class="nobr bold">
             {trans("Value:")}
-        </TD>
-        <TD>
+        </td>
+        <td>
             &nbsp;
-        </TD>
-    </TR>
-    </THEAD>
-    <TBODY>
-    {foreach $relatedoptions.users as $relatedoption}
-        <TR class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
-            <TD class="nobr">
-                <strong>{$relatedoption.login}</strong><BR>
-            </TD>
-            <TD class="nobr">
-                {$relatedoption.name}
-            </TD>
-            <TD class="nobr">
-                {$relatedoption.description}
-            </TD>
-            <TD class="nobr">
-                {$relatedoption.value}
-            </TD>
-            <TD class="lms-ui-buttons text-right nobr">
-                {if $relatedoption.disabled}
-                    {button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
-                {else}
-                    {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
-                {/if}
-                {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoption.id}"}
-                {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}"}
-            </TD>
-        </TR>
-        {foreachelse}
-        <TR>
-            <TD COLSPAN="5" class="empty-table" align="center">
-                <strong>{trans("No data")}</strong>
-            </TD>
-        </TR>
-    {/foreach}
-    </TBODY>
-</TABLE>
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+        {foreach $relatedoptions.users as $relatedoption}
+            <tr class="highlight {if $relatedoption.disabled} blend{/if}" data-target-url="?m=configedit&id={$relatedoption.id}">
+                <td class="nobr">
+                    <strong>{$relatedoption.login}</strong><BR>
+                </td>
+                <td class="nobr">
+                    {$relatedoption.name}
+                </td>
+                <td class="nobr">
+                    {$relatedoption.description}
+                </td>
+                <td class="nobr">
+                    {$relatedoption.value}
+                </td>
+                <td class="lms-ui-buttons text-right nobr">
+                    {if $relatedoption.disabled}
+                        {button type="link" icon="disconnected" tip="Enable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
+                    {else}
+                        {button type="link" icon="connected" tip="Disable" href="?m=configedit&id={$relatedoption.id}&statuschange=1"}
+                    {/if}
+                    {button type="link" icon="delete" class="delete-config" tip="Delete" href="?m=configdel&id={$relatedoption.id}"}
+                    {button type="link" icon="edit" tip="Edit" href="?m=configedit&id={$relatedoption.id}&action=init"}
+                </td>
+            </tr>
+            {foreachelse}
+            <tr>
+                <td COLSPAN="5" class="empty-table" align="center">
+                    <strong>{trans("No data")}</strong>
+                </td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+
 <script>
-    $('.delete-config').click(function() {
-        confirmDialog($t("Are you sure, you want to delete?"), this).done(function() {
-            location.href = $(this).attr('href');
-        });
-        return false;
+
+$('.delete-config').click(function() {
+    confirmDialog($t("Are you sure, you want to delete?"), this).done(function() {
+        location.href = $(this).attr('href');
     });
+    return false;
+});
+
 </script>

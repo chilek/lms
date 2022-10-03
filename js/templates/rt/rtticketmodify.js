@@ -24,11 +24,9 @@
 
 $(function() {
 	$('[name="ticket[requestor_userid]').change(function () {
-		if ($(this).val() == '0') {
-			$('.indicated-person').show();
-		} else {
-			$('.indicated-person').hide();
-		}
+		var disabled = $(this).val() != '0';
+		$('.indicated-person').find('input').prop('disabled', disabled)
+			.end().find('label').toggleClass('lms-ui-disabled', disabled);
 	}).change();
 
 	$('[name="ticket[owner]"]').change(function() {
@@ -73,17 +71,17 @@ $(function() {
 
 function change_customer(customer_selector, address_selector) {
 	getCustomerAddresses($(customer_selector).val(), function (addresses) {
-		customer_addresses.setAddressList(addresses);
+		setAddressList('#customer_addresses', addresses);
 		if (Object.keys(addresses).length == 1) {
 			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-			customer_addresses.refresh();
+			updateAdvancedSelects('#customer_addresses');
 		}
 		xajax_select_location($(customer_selector).val(), $(address_selector).val());
 	});
 }
 
 function update_nodes(data) {
-	var options = '<option value="">' + $t('- none -') + '</option>';
+	var options = '<option value="">' + $t('— none —') + '</option>';
 	$.each(data, function (k, v) {
 		options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
 	});
@@ -91,12 +89,9 @@ function update_nodes(data) {
 	$('.node-row').toggle(data.length > 0);
 }
 
-var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
-	change: function (event, ui) {
-		xajax_select_location($('[name="ticket[custid]"]').val(), $(this).val());
-	}
-});
-
 function initCustomerSelection() {
-	customer_addresses.init();
+	initAdvancedSelects('#customer_addresses');
+	$('#customer_addresses').chosen().change(function() {
+		xajax_select_location($('[name="ticket[custid]"]').val(), $(this).val());
+	});
 }

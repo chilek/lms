@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -114,9 +114,9 @@ if (isset($_GET['attachmentaction'])) {
             break;
     }
     if (isset($_GET['restore']) && !empty($_GET['restore'])) {
-        $SESSION->redirect('?' . $SESSION->get('backto').'&restore=1&resourceid=' . $_GET['resourceid']);
+        $SESSION->redirect('?' . $SESSION->remove_history_entry() . '&restore=1&resourceid=' . $_GET['resourceid']);
     } else {
-        $SESSION->redirect('?' . $SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 }
 
@@ -159,13 +159,13 @@ if (isset($_POST['upload'])) {
         }
 
         if (isset($upload['restore']) && !empty($upload['restore'])) {
-            die(json_encode(array('url' => '?' . $SESSION->get('backto').'&restore=1&resourceid=' . $attachmentresourceid)));
+            die(json_encode(array('url' => '?' . $SESSION->remove_history_entry() . '&restore=1&resourceid=' . $attachmentresourceid)));
         } else {
-            die(json_encode(array('url' => '?' . $SESSION->get('backto'))));
+            die(json_encode(array('url' => '?' . $SESSION->remove_history_entry())));
         }
     }
 
     die('{}');
 }
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();

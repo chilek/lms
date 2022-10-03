@@ -36,6 +36,9 @@ if (isset($_GET['template'])) {
     // read template information
     if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
+        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+        }
         if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
             . $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
             header('Content-Type: text/javascript');
@@ -46,19 +49,28 @@ if (isset($_GET['template'])) {
     die;
 }
 
-function GenerateAttachmentHTML($template_dir, $engine, $selected)
+function GenerateAttachmentHTML($template_dir, $engine, $selected = null)
 {
     $output = array();
     if (isset($engine['attachments']) && !empty($engine['attachments']) && is_array($engine['attachments'])) {
-        foreach ($engine['attachments'] as $label => $file) {
-            if ($file[0] != DIRECTORY_SEPARATOR) {
-                $file = $template_dir . DIRECTORY_SEPARATOR . $file;
+        foreach ($engine['attachments'] as $idx => $file) {
+            if (is_array($file)) {
+                $file['checked'] = isset($selected) ? isset($selected[$file['label']]) : $file['checked'];
+            } else {
+                $file = array(
+                    'name' => $file,
+                    'label' => $idx,
+                    'checked' => isset($selected[$idx]),
+                );
             }
-            if (is_readable($file)) {
+            if ($file['name'] != DIRECTORY_SEPARATOR) {
+                $file['name'] = $template_dir . DIRECTORY_SEPARATOR . $file['name'];
+            }
+            if (is_readable($file['name'])) {
                 $output[] = '<label>'
-                . '<input type="checkbox" value="1" name="document[attachments][' . $label . ']"'
-                    . (isset($selected[$label]) ? ' checked' : '') . '>'
-                . $label
+                . '<input type="checkbox" value="1" name="document[attachments][' . htmlspecialchars($file['label']) . ']"'
+                    . ($file['checked'] ? ' checked' : '') . '>'
+                . $file['label']
                 . '</label>';
             }
         }
@@ -83,6 +95,9 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
     // read template information
     if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
         include($file);
+        if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+            $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+        }
     }
 
     // call plugin
@@ -98,7 +113,7 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
         }
     }
 
-    $attachment_content = GenerateAttachmentHTML($template_dir, $engine, array());
+    $attachment_content = GenerateAttachmentHTML($template_dir, $engine);
     $JSResponse->assign('attachment-cell', 'innerHTML', $attachment_content);
     if (empty($attachment_content)) {
         $JSResponse->script('$("#attachment-row").hide()');
@@ -137,6 +152,9 @@ function GetDocumentTemplates($rights, $type = null)
                 if (file_exists($infofile)) {
                     unset($engine);
                     include($infofile);
+                    if (isset($engine['vhosts']) && isset($engine['vhosts'][$_SERVER['HTTP_HOST']])) {
+                        $engine = array_merge($engine, $engine['vhosts'][$_SERVER['HTTP_HOST']]);
+                    }
                     if (isset($engine['type'])) {
                         if (!is_array($engine['type'])) {
                             $engine['type'] = array($engine['type']);
@@ -155,7 +173,12 @@ function GetDocumentTemplates($rights, $type = null)
     ob_end_clean();
 
     if (!empty($docengines)) {
-        ksort($docengines);
+        uasort($docengines, function ($a, $b) {
+            if ($a['title'] == $b['title']) {
+                return 0;
+            }
+            return $a['title'] < $b['title'] ? -1 : 1;
+        });
     }
 
     return $docengines;
@@ -166,7 +189,16 @@ function GetTemplates($doctype, $doctemplate, $JSResponse)
     global $SMARTY;
 
     $DB = LMSDB::getInstance();
-    $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
+    $rights = $DB->GetCol(
+        'SELECT doctype
+        FROM docrights
+        WHERE userid = ?
+            AND (rights & ?) > 0',
+        array(
+            Auth::GetCurrentUser(),
+            DOCRIGHT_CREATE,
+        )
+    );
     $docengines = GetDocumentTemplates($rights, $doctype);
     $document['templ'] = $doctemplate;
     $SMARTY->assign('docengines', $docengines);
@@ -217,7 +249,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
     $SMARTY->assign('cid', $customerid);
     $SMARTY->assign('document', array('reference' => ''));
 
-    $references = $LMS->GetDocuments($customerid);
+    $references = $LMS->GetDocuments($customerid, null, isset($doctemplate));
 
     if (!empty($doctemplate)) {
         ob_start();
@@ -248,11 +280,22 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse)
                             unset($references[$idx]);
                         }
                     }
+                } else {
+                    foreach ($references as $idx => $reference) {
+                        if ($reference['doctype'] >= 0) {
+                            unset($references[$idx]);
+                        }
+                    }
                 }
+
                 break;
             }
         }
         ob_end_clean();
+    }
+
+    if (!empty($references)) {
+        $references = array_reverse($references);
     }
 
     $SMARTY->assign('references', $references);

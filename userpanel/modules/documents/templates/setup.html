@@ -49,7 +49,7 @@
 							</td>
 							<td class="nobr">
 								<select name="moduleconfig[allowed_document_types][]" id="allowed_document_types"
-									class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+									class="lms-ui-multiselect" multiple data-default-value="{trans("— all —")}">
 									{foreach Localisation::arraySort($_DOCTYPES) as $doctype => $label}
 										<option value="{$doctype}"
 											{if isset($moduleconfig.allowed_document_types[$doctype])} selected{/if}>{$label}</option>
@@ -172,7 +172,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="new_document_customer_notification_mail_subject">
-													{trans("Mail subject:")}
+													{trans("Mail subject")}
 												</label>
 											</td>
 											<td>
@@ -189,7 +189,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="new_document_customer_notification_mail_body">
-													{trans("Mail body:")}
+													{trans("Mail body")}
 												</label>
 											</td>
 											<td>
@@ -230,7 +230,14 @@
 							<br>
 							<strong>%cid%</strong> - customer identifier,<br>
 							<strong>%customername%</strong> - full customer name,<br>
-							<strong>%docid%</strong> - document identifier.
+							<strong>%docid%</strong> - document identifier,<br>
+							<strong>%document%</strong> - document number.
+						{/strip}{/capture}
+
+						{capture assign="recipient_hint"}{strip}
+							Supported substitutions:<br>
+							<br>
+							<strong>%creatoremail%</strong> - document creator e-mail address.
 						{/strip}{/capture}
 
 						<tr>
@@ -243,7 +250,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="signed_document_scan_operator_notification_mail_recipient">
-													{trans("Mail recipient:")}
+													{trans("Recipient e-mail addresses")}
 												</label>
 											</td>
 											<td>
@@ -251,13 +258,14 @@
 													name="moduleconfig[signed_document_scan_operator_notification_mail_recipient]"
 													id="signed_document_scan_operator_notification_mail_recipient"
 													value="{$moduleconfig.signed_document_scan_operator_notification_mail_recipient}"
-													{tip text="Enter signed document scan operator notification mail recipient"}>
+													{tip text="Enter signed document scan operator notification mail recipients separated by commas"}>
+												{hint mode="toggle" content=$recipient_hint}
 											</td>
 										</tr>
 										<tr>
 											<td class="nobr">
 												<label for="signed_document_scan_operator_notification_mail_subject">
-													{trans("Mail subject:")}
+													{trans("Mail subject")}
 												</label>
 											</td>
 											<td>
@@ -274,7 +282,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="signed_document_scan_operator_notification_mail_body">
-													{trans("Mail body:")}
+													{trans("Mail body")}
 												</label>
 											</td>
 											<td>
@@ -304,7 +312,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="signed_document_scan_customer_notification_mail_subject">
-													{trans("Mail subject:")}
+													{trans("Mail subject")}
 												</label>
 											</td>
 											<td>
@@ -321,7 +329,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="signed_document_scan_customer_notification_mail_body">
-													{trans("Mail body:")}
+													{trans("Mail body")}
 												</label>
 											</td>
 											<td>
@@ -351,7 +359,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="document_approval_operator_notification_mail_recipient">
-													{trans("Recipient e-mail address")}
+													{trans("Recipient e-mail addresses")}
 												</label>
 											</td>
 											<td>
@@ -359,7 +367,8 @@
 													name="moduleconfig[document_approval_operator_notification_mail_recipient]"
 													id="document_approval_operator_notification_mail_recipient"
 													value="{$moduleconfig.document_approval_operator_notification_mail_recipient}"
-													{tip text="Enter document approval operator notification mail recipient address"}>
+													{tip text="Enter document approval operator notification mail recipient addresses separated by commas"}>
+												{hint mode="toggle" content=$recipient_hint}
 											</td>
 										</tr>
 										<tr>
@@ -412,7 +421,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="document_approval_customer_notification_mail_subject">
-													{trans("Mail subject:")}
+													{trans("Mail subject")}
 												</label>
 											</td>
 											<td>
@@ -429,7 +438,7 @@
 										<tr>
 											<td class="nobr">
 												<label for="document_approval_customer_notification_mail_body">
-													{trans("Mail body:")}
+													{trans("Mail body")}
 												</label>
 											</td>
 											<td>
@@ -442,6 +451,18 @@
 													>{$moduleconfig.document_approval_customer_notification_mail_body}</textarea>
 													{hint mode="toggle" content=$hint}
 												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="nobr">
+												<label for="document_approval_customer_notification_attachments">
+													{trans("Send document to customer")}
+												</label>
+											</td>
+											<td>
+												<input type="checkbox" name="moduleconfig[document_approval_customer_notification_attachments]"
+													id="document_approval_customer_notification_attachments"
+													{if !empty($moduleconfig.document_approval_customer_notification_attachments)} checked{/if}>
 											</td>
 										</tr>
 									</table>

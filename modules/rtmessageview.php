@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,7 +35,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
         $filename = urldecode($_GET['file']);
         $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename));
     } else {
-        $cid = urldecode($_GET['cid']);
+        $filename = $cid = urldecode($_GET['cid']);
         $attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND cid = ?', array(intval($_GET['mid']), $cid));
     }
 
@@ -68,7 +68,7 @@ if (isset($_GET['file']) || isset($_GET['cid'])) {
 }
 
 if (!isset($_GET['id'])) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 $message = $LMS->GetMessage($_GET['id']);
@@ -108,7 +108,7 @@ if (!$message['customerid'] && !$message['userid'] && !$message['mailfrom'] && !
 
 $layout['pagetitle'] = trans('Ticket Review');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('message', $message);
 $SMARTY->display('rt/rtmessageview.html');

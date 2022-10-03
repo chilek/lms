@@ -101,4 +101,8 @@ interface LMSNodeManagerInterface
     public function addNodeRoutedNetworks(array $params);
 
     public function deleteNodeRoutedNetworks(array $params);
+
+    public function GetNodeSessions($nodeid);
+
+    public function getRadiusParams(array $params);
 }

@@ -74,7 +74,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         //$this->backend->text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, substr($tmp,0,17),350*$scale);
         //$this->backend->text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
         $this->backend->text_autosize(15*$scale+$x, 683*$scale+$y, 30*$scale, format_bankaccount($account, $this->data['export']), 350*$scale);
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+        if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
             $value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
             $value = $this->data['total'];
@@ -85,7 +85,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->text_autosize(15*$scale+$x, 356*$scale+$y, 30*$scale, $this->data['address'], 350*$scale);
         $this->backend->text_autosize(15*$scale+$x, 322*$scale+$y, 30*$scale, $this->data['zip'].' '.$this->data['city'], 350*$scale);
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+        if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
             $this->backend->text_autosize(15*$scale+$x, 215*$scale+$y, 30*$scale, trans('Payment for liabilities'), 350*$scale);
         } else {
             $tmp = docnumber(array(
@@ -128,7 +128,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->text_autosize(15*$scale+$x, 555*$scale+$y, 30*$scale, format_bankaccount($account, $this->data['export']), 950*$scale);
         $this->backend->addtext(330*$scale+$x, 495*$scale+$y, 30*$scale, 'X');
         $this->backend->text_autosize(550*$scale+$x, 495*$scale+$y, 30*$scale, "*".number_format($this->data['total'], 2, ',', '')."*", 400*$scale);
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+        if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
             $value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
             $value = $this->data['total'];
@@ -145,7 +145,7 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $payment_title = ConfigHelper::getConfig('invoices.payment_title', null, true);
         if (empty($payment_title)) {
-            if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+            if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
                 $payment_title = trans('Payment for liabilities');
             } else {
                 $tmp = docnumber(array(
@@ -260,7 +260,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             Localisation::setSystemLanguage($this->data['lang']);
             $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans('TEN') . ' ' . format_ten($this->data['ten'], $this->data['export']));
             Localisation::setSystemLanguage($currentSystemLanguage);
-        } else if (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
+        } else if (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
             $y=$y-$this->backend->text_align_left($x, $y, $font_size, trans('SSN').' '.$this->data['ssn']);
         }
         $y=$y-$this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Customer No.: $a', sprintf('%04d', $this->data['customerid'])) . '</b>');
@@ -292,7 +292,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
         $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
+        if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<b>' . $account_text . '</b>';
         }
 
@@ -387,7 +387,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             $y = $y - $this->backend->text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))) {
+        if (ConfigHelper::checkConfig('invoices.post_address', true)) {
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
                     'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
@@ -471,7 +471,7 @@ class LMSEzpdfInvoice extends LMSInvoice
     {
         $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
         $hide_prodid = ConfigHelper::checkConfig('invoices.hide_prodid');
-        $show_tax_category = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_tax_category', 'true')) && !empty($this->data['taxcategories']);
+        $show_tax_category = ConfigHelper::checkConfig('invoices.show_tax_category', true) && !empty($this->data['taxcategories']);
 
         $this->backend->setlinestyle(0.5);
         $this->backend->line($x, $y, $x + $width, $y);
@@ -1321,9 +1321,8 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_expositor($x, $y)
     {
-        $expositor = empty($this->data['issuer']) ? (empty($this->data['user']) ? $this->data['division_author'] : $this->data['user']) : $this->data['issuer'];
         if (!ConfigHelper::checkConfig('invoices.hide_expositor')) {
-            $y = $y - $this->backend->text_align_right($x, $y, 10, trans('Expositor:') . ' ' . (empty($expositor) ? trans('system') : $expositor));
+            $y = $y - $this->backend->text_align_right($x, $y, 10, trans('Expositor: <b>$a</b>', $this->data['expositor']));
         }
         return $y;
     }
@@ -1408,7 +1407,7 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_no_accountant()
     {
-        if ($this->data['dontpublish'] && !$this->data['cancelled']) {
+        if (!empty($this->data['dontpublish']) && !$this->data['cancelled']) {
             $this->backend->setColor(0.5, 0.5, 0.5);
             $this->backend->addText(80, 200, 50, trans('NO ACCOUNTANT DOCUMENT'), 0, 'left', -45);
             $this->backend->setColor(0, 0, 0);
@@ -1456,10 +1455,10 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->check_page_length($top);
         $top = $this->invoice_to_pay(30, $top);
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+        if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+        if (ConfigHelper::checkConfig('invoices.show_balance', true)
             || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $top = $this->invoice_balance(30, $top);
         }
@@ -1472,7 +1471,10 @@ class LMSEzpdfInvoice extends LMSInvoice
         $top = $this->invoice_footnote(30, $top, 530, 10);
 
         $this->backend->check_page_length($top);
-        $this->invoice_memo(30, $top);
+
+        if (ConfigHelper::checkConfig('invoices.show_memo', true)) {
+            $this->invoice_memo(30, $top);
+        }
 
         $page = $this->backend->ezStopPageNumbers(1, 1, $page);
 
@@ -1524,7 +1526,10 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $top = $this->invoice_comment(470, $top);
         $top = $this->invoice_footnote(470, $top, 90, 8);
-        $this->invoice_memo(30, $top);
+
+        if (ConfigHelper::checkConfig('invoices.show_memo', true)) {
+            $this->invoice_memo(30, $top);
+        }
 
         $return = $this->new_invoice_data(30, $top, 430, 6, 1);
         $top = $return[2] + 5 - 40;
@@ -1532,16 +1537,16 @@ class LMSEzpdfInvoice extends LMSInvoice
         $top = $return[2] - 0;
         $top = $this->invoice_to_pay(30, $top);
 
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_pricing_method', true))) {
+        if (ConfigHelper::checkConfig('invoices.show_pricing_method', true)) {
             $top = $this->invoice_pricing_method(30, $top);
         }
-        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance', true))
+        if (ConfigHelper::checkConfig('invoices.show_balance', true)
             || ConfigHelper::checkConfig('invoices.show_expired_balance')) {
             $top = $this->invoice_balance(30, $top);
         }
 
         $this->backend->check_page_length($top, 200);
-        if ($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
+        if ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true)) {
             $lms = LMS::getInstance();
             if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
                 $this->invoice_main_form_fill(187, 3, 0.4);

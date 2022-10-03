@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $schema = $DB->GetRow(
     'SELECT
-        s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length,
+        s.id, s.name, s.description, s.data, s.disabled, s.deleted, s.length, s.datefrom, s.dateto,
         p.id AS pid, p.name AS promotion,
         COUNT(a.id) AS assignments
     FROM promotionschemas s
@@ -122,7 +122,7 @@ $tariffs = $DB->GetAllByKey(
 
 $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SESSION->restore('psdform', $formdata);
 $SESSION->remove('psdform');

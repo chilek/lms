@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -392,11 +392,17 @@ switch ($action) {
             $LMS->IPSetU($_GET['id'], $_GET['access']);
         }
 
-        header('Location: ?' . $SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
         break;
 
     case 'formaddip':
         $subtitle = trans('New IP address');
+
+        if (!isset($_POST['ipadd'])) {
+            $edit = 'addip';
+            break;
+        }
+
         $nodeipdata = $_POST['ipadd'];
         $nodeipdata['ownerid'] = null;
         if (!empty($nodeipdata['macs'])) {
@@ -438,7 +444,7 @@ switch ($action) {
                 $error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
             } else if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid'])) {
                 $error['ipaddr'] = trans('Specified IP address is in use!');
-            } else if ($LMS->IsIPGateway($nodedata['ipaddr'])) {
+            } else if ($LMS->IsIPGateway($nodeipdata['ipaddr'])) {
                 $error['ipaddr'] = trans('Specified IP address is network gateway!');
             }
         }
@@ -456,16 +462,20 @@ switch ($action) {
         }
 
         $macs = array();
-        foreach ($nodeipdata['macs'] as $key => $value) {
-            if (check_mac($value)) {
-                if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
-                    if ($LMS->GetNodeIDByMAC($value)) {
+        if (!empty($nodeipdata['macs'])) {
+            foreach ($nodeipdata['macs'] as $key => $value) {
+                if (check_mac($value)) {
+                    if (in_array($value, $macs)) {
                         $error['mac-input-' . $key] = trans('MAC address is in use!');
+                    } elseif ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
+                        if ($LMS->GetNodeIDByMAC($value)) {
+                            $error['mac-input-' . $key] = trans('MAC address is in use!');
+                        }
                     }
+                    $macs[] = $value;
+                } elseif ($value != '') {
+                    $error['mac-input-' . $key] = trans('Incorrect MAC address!');
                 }
-                $macs[] = $value;
-            } elseif ($value != '') {
-                $error['mac-input-' . $key] = trans('Incorrect MAC address!');
             }
         }
         $nodeipdata['macs'] = $macs;
@@ -516,7 +526,7 @@ switch ($action) {
         }
 
         foreach ($nodeipdata as $key => $value) {
-            if (!is_array($value)) {
+            if (isset($value) && !is_array($value)) {
                 $nodeipdata[$key] = trim($value);
             }
         }
@@ -554,7 +564,7 @@ switch ($action) {
             } else if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']) &&
                 $LMS->GetNodeIPByID($_GET['ip']) != $nodeipdata['ipaddr']) {
                 $error['ipaddr'] = trans('IP address is in use!');
-            } else if ($LMS->IsIPGateway($nodedata['ipaddr'])) {
+            } else if ($LMS->IsIPGateway($nodeipdata['ipaddr'])) {
                 $error['ipaddr'] = trans('Specified IP address is network gateway!');
             }
         }
@@ -579,7 +589,9 @@ switch ($action) {
         $macs = array();
         foreach ($nodeipdata['macs'] as $key => $value) {
             if (check_mac($value)) {
-                if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
+                if (in_array($value, $macs)) {
+                    $error['mac-input-' . $key] = trans('MAC address is in use!');
+                } elseif ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
                     if (($nodeid = $LMS->GetNodeIDByMAC($value)) != null && $nodeid != $_GET['ip']) {
                         $error['mac-input-' . $key] = trans('MAC address is in use!');
                     }
@@ -774,8 +786,8 @@ if (isset($netdev)) {
 } else {
     $netdev = $LMS->GetNetDev($id);
 
-    if (preg_match('/^[0-9]+$/', $netdev['producerid'])
-        && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
+    if (isset($netdev['producerid']) && preg_match('/^[0-9]+$/', $netdev['producerid'])
+        && isset($netdev['modelid']) && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
         $netdev['producer'] = $netdev['producerid'];
         $netdev['model'] = $netdev['modelid'];
     }
@@ -824,9 +836,7 @@ if (!empty($netdev['ownerid'])) {
 }
 
 $netdevips       = $LMS->GetNetDevIPs($id);
-if ($netdev['ports'] > $netdev['takenports']) {
-    $nodelist        = $LMS->GetUnlinkedNodes();
-}
+$nodelist        = $netdev['ports'] > (isset($netdev['takenports']) ? $netdev['takenports'] : $LMS->CountNetDevLinks($id)) ? $LMS->GetUnlinkedNodes() : array();
 $netdevconnected = $LMS->GetNetDevConnectedNames($id);
 $netcomplist     = $LMS->GetNetDevLinkedNodes($id);
 $netdevlist      = $LMS->GetNotConnectedDevices($id);
@@ -867,8 +877,8 @@ $SMARTY->assign('netcomplist', $netcomplist);
 $SMARTY->assign('nodelist', $nodelist);
 $SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $netdev['id']));
 $SMARTY->assign('radiosectors', $LMS->GetRadioSectors($netdev['id']));
-$SMARTY->assign('netdevcontype', $netdevcontype);
-$SMARTY->assign('netdevauthtype', $netdevauthtype);
+$SMARTY->assign('netdevcontype', isset($netdevcontype) ? $netdevcontype : null);
+$SMARTY->assign('netdevauthtype', isset($netdevauthtype) ? $netdevauthtype : null);
 $SMARTY->assign('netdevips', $netdevips);
 $SMARTY->assign('restnetdevlist', $netdevlist);
 $SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
@@ -909,7 +919,7 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevedit.html');
         break;
     case 'ip':
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
+        $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevvipedit_sortable_order', $SESSION->get_persistent_setting('netdevipedit-sortable-order'));
 
@@ -920,7 +930,7 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevipedit.html');
         break;
     case 'addip':
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
+        $SMARTY->assign('networks', $LMS->GetNetworks());
         $SMARTY->assign('netdevvipadd_sortable_order', $SESSION->get_persistent_setting('netdevipadd-sortable-order'));
         $SMARTY->display('netdev/netdevipadd.html');
         break;

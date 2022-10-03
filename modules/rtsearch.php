@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -96,6 +96,11 @@ function RTSearch($search, $order = 'createtime,desc')
             $where[] = 't.state = '.intval($search['state']);
         }
     }
+
+    if (isset($search['source']) && strlen($search['source'])) {
+        $where[] = 't.source = ' . intval($search['source']);
+    }
+
     if (!empty($search['priority'])) {
         if ($search['priority'] == '-101') {
             $where[] = 't.priority IS NULL';
@@ -104,7 +109,10 @@ function RTSearch($search, $order = 'createtime,desc')
         }
     }
     if (!empty($search['email'])) {
-        $where[] = 'requestor ?LIKE? '.$DB->Escape('%'.$search['email'].'%');
+        $where[] = 'requestor_mail ?LIKE? '.$DB->Escape('%' . $search['email'] . '%');
+    }
+    if (!empty($search['phone'])) {
+        $where[] = 'requestor_phone ?LIKE? '.$DB->Escape('%' . $search['phone'] . '%');
     }
     if (!empty($search['uptime'])) {
         $where[] = '(resolvetime-t.createtime > '.intval($search['uptime'])
@@ -121,7 +129,7 @@ function RTSearch($search, $order = 'createtime,desc')
             } else {
                 $where_queue = '(t.queueid = ' . intval($search['queue']);
             }
-            $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+            $user_permission_checks = ConfigHelper::checkConfig('rt.additional_user_permission_checks', ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks'));
             $userid = Auth::GetCurrentUser();
             $where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
         }
@@ -241,10 +249,10 @@ function RTSearch($search, $order = 'createtime,desc')
 
     if ($result) {
         foreach ($result as &$ticket) {
-            if (!$ticket['custid']) {
-                list ($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
+            if (!isset($ticket['custid']) || !$ticket['custid']) {
+                list ($ticket['requestor'], $ticket['requestor_mail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
             } else {
-                list ($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
+                list ($ticket['requestor_mail']) = sscanf($ticket['req'], "<%[^>]");
             }
 
             if (!empty($ticket['deadline'])) {
@@ -334,7 +342,10 @@ if (isset($search) || isset($_GET['s'])) {
         $search['total'] = intval(RTSearch($search, $o));
 
         $search['page'] = intval((! isset($_GET['page']) ? 1 : $_GET['page']));
-        $search['limit'] = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total']));
+        $search['limit'] = intval(ConfigHelper::getConfig(
+            'rt.ticketlist_pagelimit',
+            ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total'])
+        ));
         $search['offset'] = ($search['page'] - 1) * $search['limit'];
 
         $search['count'] = false;
@@ -354,7 +365,7 @@ if (isset($search) || isset($_GET['s'])) {
         unset($queue['order']);
         unset($queue['direction']);
 
-        $SESSION->save('rtp', $page);
+        $SESSION->save('rtp', isset($page) ? $page : 0);
         $SESSION->save('rtsearch', $search);
 
         $SMARTY->assign('pagination', $pagination);
@@ -402,7 +413,7 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction('netnode_changed');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
 unset($netnodelist['total']);

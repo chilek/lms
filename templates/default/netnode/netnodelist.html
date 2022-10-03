@@ -50,7 +50,7 @@
 			{if $divisions}
 			{trans("Division:")}
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1" {if $listdata.divisionid==-1} SELECTED {/if} >- {trans("all")} -</OPTION>
+				<OPTION VALUE="-1" {if $listdata.divisionid==-1} SELECTED {/if} >{trans("— all —")}</OPTION>
 				{foreach $divisions as $division}
 					<OPTION VALUE="{$division.id}"{if $listdata.divisionid == $division.id} SELECTED{/if} >{$division.label|escape}</OPTION>
 				{/foreach}
@@ -58,23 +58,23 @@
 			{/if}
 			{trans("Type:")}
 			<input type="hidden" name="t" value="-1">
-			<SELECT SIZE="1" NAME="t[]" ONCHANGE="document.choosefilter.submit();" multiple class="lms-ui-multiselect" data-default-value="- {trans("all")} -">
-				<option value="-1"{if is_array($listdata.type) && in_array(-1, $listdata.type)} selected{/if} data-exclusive>- {trans("all")} -</option>
+			<SELECT SIZE="1" NAME="t[]" ONCHANGE="document.choosefilter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
+				<option value="-1"{if is_array($listdata.type) && in_array(-1, $listdata.type)} selected{/if} data-exclusive>{trans("— all —")}</option>
 				{foreach $_NETELEMENTTYPES as $idx => $type}
 					<OPTION VALUE="{$idx}"{if is_array($listdata.type) && in_array($idx, $listdata.type)} selected{/if}>{$type}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Status")}:
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>- {trans("all")} -</OPTION>
+				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>{trans("— all —")}</OPTION>
 				{foreach $_NETELEMENTSTATUSES as $idx => $status}
 					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Project:")}
 			<input type="hidden" name="p" value="-1">
-			<SELECT SIZE="1" NAME="p[]" ONCHANGE="document.choosefilter.submit();" multiple class="lms-ui-multiselect" data-default-value="- {trans("all")} -">
-				<OPTION VALUE="-2"{if is_array($listdata.invprojectid) && in_array(-2, $listdata.invprojectid)} selected{/if} data-exclusive>- {trans("without project")} -</OPTION>
+			<SELECT SIZE="1" NAME="p[]" ONCHANGE="document.choosefilter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
+				<OPTION VALUE="-2"{if is_array($listdata.invprojectid) && in_array(-2, $listdata.invprojectid)} selected{/if} data-exclusive>— {trans("without project")} —</OPTION>
 				{foreach $NNprojects as $project}
 					<OPTION VALUE="{$project.id}"{if is_array($listdata.invprojectid) && in_array($project.id, $listdata.invprojectid)} selected{/if}
 						>{$project.name|escape}</OPTION>
@@ -82,7 +82,7 @@
 			</SELECT>
 			{trans("Ownership:")}
 			<SELECT SIZE="1" NAME="w" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1" {if !$listdata.ownership == -1 } SELECTED {/if}>- {trans("all")} -</OPTION>
+				<OPTION VALUE="-1" {if !$listdata.ownership == -1 } SELECTED {/if}>{trans("— all —")}</OPTION>
 				{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
 				<OPTION VALUE="{$idx}"{if $listdata.ownership == $idx} SELECTED {/if}>{$ownership}</OPTION>
 				{/foreach}
@@ -100,8 +100,7 @@
 	{/if}
     </THEAD>
     <TBODY>
-	{$nlist2 = array_slice($nlist, $start, $pagelimit)}
-	{foreach $nlist2 as $item}
+	{foreach $nlist as $item}
 	<TR class="highlight" data-target-url="?m=netnodeinfo&id={$item.id}" data-name="{$item.name}">
 		<TD class="valign-top">
 			<IMG src="img/netnode.png" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
@@ -116,12 +115,12 @@
 			{/if}
 		</TD>
 		<TD class="text-center">
-			{if ($item.invprojectid==1)}{trans("- none -")}{else}{$item.project|escape}{/if}
+			{if ($item.invprojectid==1)}{trans("— none —")}{else}{$item.project|escape}{/if}
 		</TD>
 		<TD class="nobr text-center">
 			({$item.id|string_format:"%04d"})
 		</TD>
-		<TD class="text-center">{$item.lastinspectiontime|date_format:"%x"}</TD>
+		<TD class="text-center">{$item.lastinspectiontime|date_format:"Y-m-d"}</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $item.filecontainers}
 				{foreach $item.filecontainers as $filecontainer}

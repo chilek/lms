@@ -79,6 +79,7 @@
 						<td class="tab-beautify lmsbox-panels">
 							<div class="lmsbox-panel">
 								<table style="width: 100%;" cellpadding="3">
+									{block name="nodeedit-leftcolumn"}
 									<colgroup>
 										<col style="width: 1%;">
 										<col style="width: 1%;">
@@ -96,14 +97,14 @@
 											<div>
 												<select size="1" name="nodeedit[netid]"
 													{tip class="lms-ui-advanced-select" trigger="netid"}>
-													<option value="0">{trans("- automatic selection -")}</option>
+													<option value="0">{trans("— automatic selection —")}</option>
 													{foreach $networks as $net}
 														<option value="{$net.id}" data-pubnetid="{$net.pubnetid}"
 															{if $net.id == $nodeinfo.netid} selected{/if}
 															{if $net.disabled == 1} class="lms-ui-alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
 													{/foreach}
 												</select>
-												{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only')) && ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
+												{if ConfigHelper::checkConfig('phpui.show_assigned_networks_only') && ConfigHelper::checkConfig('phpui.public_ip', true)}
 													<script>
 
 														$('[name="nodeedit[netid]"]').change(function() {
@@ -149,7 +150,7 @@
 										</td>
 									</tr>
 
-									{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
+									{if ConfigHelper::checkConfig('phpui.public_ip', true)}
 										<tr>
 											<td>
 												{icon name="routed"}
@@ -197,7 +198,7 @@
 											{trans("<!node>Login")}
 										</td>
 										<td>
-											<input type="text" name="nodeedit[login]" value="{$nodeinfo.login|escape}"
+											<input type="text" name="nodeedit[login]" value="{$nodeinfo.login|default:""|escape}"
 												{tip trigger="login"}>
 										</td>
 									</tr>
@@ -231,9 +232,8 @@
 														onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);"}
 
 													<select size="1" name="nodeedit[netdev]" id="netdev" {tip trigger="netdev" class="lms-ui-advanced-select"}
-															{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}
-															onchange="change_netdevice(this.options[this.selectedIndex].value);">
-														<option value="0"{if !$nodeinfo.netdev} selected{/if}>- {trans("no device")} -</option>
+															{if ConfigHelper::checkConfig('phpui.node_to_network_device_connection_required')} required{/if}>
+														<option value="0"{if !$nodeinfo.netdev} selected{/if}>— {trans("no device")} —</option>
 														{foreach $netdevices as $netdev}
 															<option value="{$netdev.id}"
 																{if $nodeinfo.netdev == $netdev.id} selected{/if}
@@ -261,7 +261,7 @@
 													<select name="nodeedit[radiosector]" id="radiosector"
 														{tip trigger="radiosector" text="Select radio sector"}
 														{if $nodeinfo.linktype != $smarty.const.LINKTYPE_WIRELESS} style="display: none;"{/if}>
-														<option value="0">- {trans("none")} -</option>
+														<option value="0">{trans("— none —")}</option>
 														{foreach $nodeinfo.radiosectors as $radiosector}
 															<option value="{$radiosector.id}"
 																{if $radiosector.id == $nodeinfo.linkradiosector} selected{/if}
@@ -271,7 +271,7 @@
 
 													<select name="nodeedit[linktechnology]" id="linktechnology"
 														{tip trigger="linktechnology" text="Select link technology"}>
-														<option value="0">{trans("- unknown -")}</option>
+														<option value="0">{trans("— unknown —")}</option>
 														{foreach $_LINKTECHNOLOGIES[$nodeinfo.linktype] as $linktechnologyidx => $linktechnology}
 															<option value="{$linktechnologyidx}"
 																{if $linktechnologyidx == $nodeinfo.linktechnology} selected{/if}
@@ -302,7 +302,7 @@
 										<td>
 											<select name="nodeedit[invprojectid]" id="project" value="{$nodeinfo.invprojectid}">
 												<option value="-2" {if $nodeinfo.invprojectid == '-2'} selected{/if}
-													>- {trans("none")} -</option>
+													>{trans("— none —")}</option>
 												<option value="-1" {if $nodeinfo.invprojectid == '-1'} selected{/if}
 													>{trans("New project")}</option>
 												<option value="1" {if $nodeinfo.invprojectid == '1'} selected{/if}
@@ -313,7 +313,7 @@
 														>{$project.name|escape}</option>
 												{/foreach}
 											</select>
-											<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname|escape}"
+											<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname|default:""|escape}"
 												{tip text="Enter new project name" trigger="projectname" } id="projectname"
 												{if !isset($nodeinfo.invprojectid) || $nodeinfo.invprojectid != -1} style="display: none;"{/if}>
 										</td>
@@ -406,10 +406,12 @@
 											{/foreach}
 										</td>
 									</tr>
+									{/block}
 								</table>
 							</div>
 							<div class="lmsbox-panel">
 								<table style="width: 100%;" class="tab-beautify">
+									{block name="nodeedit-rightcolumn"}
 									<colgroup>
 										<col style="width: 1%;">
 										<col style="width: 1%;">
@@ -424,6 +426,8 @@
 											<span class="lms-ui-button" id="set_gps">
 												{trans("Determine GPS coordinates automatically")}
 											</span>
+											&nbsp;
+											{reset_to_defaults target="#longitude,#latitude"}
 										</td>
 									</tr>
 
@@ -438,7 +442,7 @@
 											<input type="text" id="longitude" name="nodeedit[longitude]"
 												value="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}"
 												{tip trigger="longitude"}>
-											{button type="link" icon="map" tip="Click to select gps coordinates from map"
+											{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 												onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);"}
 										</td>
 									</tr>
@@ -454,7 +458,7 @@
 											<input type="text" id="latitude" name="nodeedit[latitude]"
 												value="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}"
 												{tip trigger="latitude"}>
-											{button type="link" icon="map" tip="Click to select gps coordinates from map"
+											{button type="link" icon="map" tip="Click to select GPS coordinates from map"
 												onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);"}
 										</td>
 									</tr>
@@ -534,6 +538,7 @@
 											</div>
 										</td>
 									</tr>
+									{/block}
 								</table>
 							</div>
 						</td>
@@ -544,7 +549,7 @@
 		<tr>
 			<td class="lms-ui-box-buttons" colspan="3">
 				{button type="submit" icon="save" label="Submit"}
-				{button icon="cancel" label="Cancel" href="?m=nodeinfo&id={$nodeinfo.id}"}
+				{button icon="cancel" label="Cancel" href="{$backurl}"}
 			</td>
 		</tr>
     </tbody>
@@ -604,7 +609,7 @@
 		$('#netdev').change(function() {
 			if (parseInt($('#linktype').val()) == {$smarty.const.LINKTYPE_WIRELESS}) {
 				$('#linktype,#radiosector,#linktechnology,#linkspeed').prop('disabled', true);
-				xajax_getRadioSectors(id, $('#linktechnology').val());
+				xajax_getRadioSectors($(this).val(), $('#linktechnology').val());
 			}
 		});
 
@@ -612,7 +617,7 @@
 			linktype = parseInt($(this).val());
 			var select = $('#linktechnology');
 			var selected = parseInt($('#netdev').val());
-			var html = '<option value="0">{trans("- unknown -")}</option>';
+			var html = '<option value="0">{trans("— unknown —")}</option>';
 			switch (linktype) {
 				case 0:
 				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE] as $linktechnologyidx => $linktechnology}
@@ -655,13 +660,14 @@
 		$('#wholenetwork').change(function() {
 			var wholenetwork = $(this).prop('checked');
 			$('[name="nodeedit[ipaddr]"],[name="nodeedit[ipaddr_pub]"]').closest('tr').toggle(!wholenetwork);
+			$('[name="nodeedit[ipaddr]"]').prop('required', !wholenetwork);
 		}).change();
 	});
 
 	function radio_sectors_received(radiosectors) {
 		var select = $('#radiosector');
 		var oldValue = select.val();
-		var html = '<option value="0">- {trans("none")} -</option>';
+		var html = '<option value="0">{trans("— none —")}</option>';
 		if (radiosectors !== null) {
 			$.each(radiosectors, function(index, elem) {
 				html += '<option value="' + elem.id + '"' + (elem.id == oldValue ? ' selected' : '') + '>' + elem.name + '</option>';
@@ -673,17 +679,15 @@
 
 	xajax_getRadioSectors({$nodeinfo.netdev}, {$nodeinfo.linktechnology});
 
-    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+    initAdvancedSelects('#customer_addresses');
 
     /*!
      * \brief Update addresses list on customer input change.
      */
     function customer_change() {
         getCustomerAddresses( $("#customerid_input").val(), function(addresses) {
-            customer_addresses.setAddressList(addresses);
+            setAddressList('#customer_addresses', addresses);
         });
     }
-
-    customer_addresses.init();
 
 </script>

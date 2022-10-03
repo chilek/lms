@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,7 @@ function GetInstanceList($hostid)
     global $DB;
 
     $where = $hostid ? 'WHERE hostid = '.intval($hostid) : '';
-        
+
     return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description, 
 			module, crontab, priority, disabled, hosts.name AS hostname
 			FROM daemoninstances LEFT JOIN hosts ON hosts.id = hostid '
@@ -45,10 +45,10 @@ if (!isset($_GET['id'])) {
     $hostid = $_GET['id'];
 }
 $SESSION->save('dilh', $hostid);
-        
+
 $instancelist = GetInstanceList($hostid);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('instancelist', $instancelist);
 $SMARTY->assign('hostid', $hostid);

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,10 @@ function GetTaxRateList($order = 'name,asc')
 {
     global $DB;
 
+    if (empty($order)) {
+        $order = 'name,asc';
+    }
+
     list($order,$direction) = sscanf($order, '%[^,],%s');
 
     ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
@@ -45,7 +49,7 @@ function GetTaxRateList($order = 'name,asc')
     }
 
     $list = $DB->GetAll('SELECT * FROM taxes'.($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = empty($list) ? 0 : count($list);
     $list['order'] = $order;
     $list['direction'] = $direction;
@@ -60,6 +64,17 @@ if (!isset($_GET['o'])) {
 }
 $SESSION->save('trlo', $o);
 
+$layout['pagetitle'] = trans('Tax Rates List');
+
+$taxratelist = GetTaxRateList($o);
+
+$listdata['total'] = $taxratelist['total'];
+$listdata['order'] = $taxratelist['order'];
+$listdata['direction'] = $taxratelist['direction'];
+unset($taxratelist['total']);
+unset($taxratelist['order']);
+unset($taxratelist['direction']);
+
 if ($SESSION->is_set('trlp') && !isset($_GET['page'])) {
     $SESSION->restore('trlp', $_GET['page']);
 }
@@ -70,17 +85,7 @@ $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('trlp', $page);
 
-$layout['pagetitle'] = trans('Tax Rates List');
-
-$taxratelist = GetTaxRateList($o);
-$listdata['total'] = $taxratelist['total'];
-$listdata['order'] = $taxratelist['order'];
-$listdata['direction'] = $taxratelist['direction'];
-unset($taxratelist['total']);
-unset($taxratelist['order']);
-unset($taxratelist['direction']);
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

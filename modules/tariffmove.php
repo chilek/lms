@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ if ($LMS->TariffExists($from) && $LMS->TariffExists($to) && $_GET['is_sure'] == 
     if ($network) {
             $net = $LMS->GetNetworkParams($network);
     }
-    
+
     if ($ids = $DB->GetCol('SELECT assignments.id AS id FROM assignments, customerview c '
             .($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
             .'WHERE customerid = c.id AND deleted = 0 AND tariffid = '.$from
@@ -52,7 +52,7 @@ if ($LMS->TariffExists($from) && $LMS->TariffExists($to) && $_GET['is_sure'] == 
         }
     }
 
-    $SESSION->redirect('?m=tariffinfo&id='.$to.($network ? '&netid='.$network : ''));
+    $SESSION->redirect('?m=tariffinfo&id=' . $to . ($network ? '&netid=' . $network : ''));
 } else {
-    header("Location: ?".$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }

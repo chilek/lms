@@ -42,10 +42,10 @@ $this->Execute(
         (SELECT u.id, d.id FROM users u, divisions d)'
 );
 
-define('CONFIG_TYPE_BOOLEAN', 1);
+define('CONFIG_TYPE_BOOLEAN_2020081200', 1);
 $this->Execute(
     "INSERT INTO uiconfig (section, var, value, type) VALUES (?, ?, ?, ?)",
-    array('phpui', 'force_global_division_context', 'false', CONFIG_TYPE_BOOLEAN)
+    array('phpui', 'force_global_division_context', 'false', CONFIG_TYPE_BOOLEAN_2020081200)
 );
 
 $this->Execute("DROP VIEW customerview");

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,23 +26,27 @@
 
 function GroupList()
 {
-    global $DB;
-    
-    if ($nodegrouplist = $DB->GetAll('SELECT id, name, description, prio,
-	    	        (SELECT COUNT(*)
-	                FROM nodegroupassignments
-	                WHERE nodegroupid = nodegroups.id
-			) AS nodescount
-	                FROM nodegroups ORDER BY prio ASC, name ASC')) {
-            $nodegrouplist['total'] = count($nodegrouplist);
-            $nodegrouplist['nodestotal'] = 0;
-        
-        foreach ($nodegrouplist as $idx => $row) {
-            $nodegrouplist['nodestotal'] += $row['nodescount'];
+    $DB = LMSDB::getInstance();
+ 
+    if ($nodegrouplist = $DB->GetAll(
+        'SELECT id, name, description, prio,
+        (SELECT COUNT(*)
+            FROM nodegroupassignments
+            WHERE nodegroupid = nodegroups.id
+        ) AS nodescount
+        FROM nodegroups ORDER BY prio ASC, name ASC'
+    )) {
+        $nodegrouplist['total'] = count($nodegrouplist);
+        $nodegrouplist['nodestotal'] = 0;
+
+        foreach ($nodegrouplist as $row) {
+            if (is_array($row)) {
+                $nodegrouplist['nodestotal'] += $row['nodescount'];
+            }
         }
     }
 
-        return $nodegrouplist;
+    return $nodegrouplist;
 }
 
 if (isset($_POST['nodegroupids'])) {
@@ -72,8 +76,8 @@ $layout['pagetitle'] = trans('Node Groups List');
 
 $nodegrouplist = GroupList();
 
-$listdata['total'] = $nodegrouplist['total'];
-$listdata['nodestotal'] = $nodegrouplist['nodestotal'];
+$listdata['total'] = empty($nodegrouplist) ? 0 : $nodegrouplist['total'];
+$listdata['nodestotal'] = empty($nodegrouplist) ? 0 : $nodegrouplist['nodestotal'];
 
 unset($nodegrouplist['total']);
 unset($nodegrouplist['nodestotal']);

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,6 @@
 
 class Session
 {
-
     public $SID = null;         // session unique ID
     public $_version = '1.11-git';      // library version
     public $_revision = '$Revision$';   // library revision
@@ -46,8 +45,11 @@ class Session
                         // garbage collector procedure
 
     private $tabId = null;
-    private static $oldBackTo = '';
-    private static $backTo = '';
+
+    const HISTORY_SIZE = 10;
+
+    private static $oldHistoryEntry = '';
+    private static $historyEntry = '';
 
     public function __construct(&$DB, $timeout = 0, $settings_timeout = 0)
     {
@@ -97,7 +99,11 @@ class Session
 
     public function restore_user_settings($force_settings_restore = false)
     {
-        $settings = $this->DB->GetRow('SELECT settings, persistentsettings FROM users WHERE login = ?', array($this->_content['session_login']));
+        if (isset($this->_content['session_login'])) {
+            $settings = $this->DB->GetRow('SELECT settings, persistentsettings FROM users WHERE login = ?', array($this->_content['session_login']));
+        } else {
+            $settings = null;
+        }
         if (!empty($settings)) {
             if (isset($settings['persistentsettings'])) {
                 $this->_persistent_settings = unserialize($settings['persistentsettings']);
@@ -117,33 +123,45 @@ class Session
     // new browser tab can be opened as hidden or tabid of new tab can be not initialised
     // so we have to be careful and handle 'backto' session variable in special way and
     // correct this variable when new tab id has been determined before the moment
-    public static function getOldBackTo()
+    public static function getOldHistoryEntry()
     {
-        return self::$oldBackTo;
+        return self::$oldHistoryEntry;
     }
 
-    public static function getBackTo()
+    public static function getHistoryEntry()
     {
-        return self::$backTo;
+        return self::$historyEntry;
     }
 
-    public function fixBackTo($oldTabId, $oldBackTo, $newTabId, $newBackTo)
+    public function historyQuirks(array $params)
     {
+        extract($params);
+
         $this->DB->BeginTrans();
         $this->DB->LockTables('sessions');
 
         $content = $this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID));
         $content = unserialize($content);
 
-        if (isset($content['tabs'][$oldTabId]['backto'])) {
-            if ($content['tabs'][$oldTabId]['backto'] != $oldBackTo) {
-                $content['tabs'][$oldTabId]['backto'] = $oldBackTo;
+        if (!isset($content['tabs'][$params['tab_id']])) {
+            $content['tabs'][$params['tab_id']] = array();
+        }
+
+        if (isset($params['old_history_entry'], $params['history_entry'])) {
+            if (isset($content['tabs'][$params['old_tab_id']]['history'])) {
+                $old_history_entry = array_pop($content['tabs'][$params['old_tab_id']]['history']);
+                if ($old_history_entry != $params['old_history_entry']) {
+                    array_push($content['tabs'][$params['old_tab_id']]['history'], $params['old_history_entry']);
+                } else {
+                    array_push($content['tabs'][$params['old_tab_id']]['history'], $old_history_entry);
+                }
             }
+            if (!isset($content['tabs'][$params['tab_id']]['history'])) {
+                $content['tabs'][$params['tab_id']]['history'] = array();
+            }
+            array_pop($content['tabs'][$params['tab_id']]['history']);
+            array_push($content['tabs'][$params['tab_id']]['history'], $params['history_entry']);
         }
-        if (!isset($content['tabs'][$newTabId])) {
-            $content['tabs'][$newTabId] = array();
-        }
-        $content['tabs'][$newTabId]['backto'] = $newBackTo;
 
         $this->DB->Execute('UPDATE sessions SET content = ? WHERE id = ?', array(serialize($content), $this->SID));
 
@@ -153,11 +171,11 @@ class Session
 
     public function save($variable, $content, $tab = false)
     {
+        if ($variable == 'backto') {
+            $this->add_history_entry(preg_replace('/^\?/', '', $content));
+            return;
+        }
         if ($tab) {
-            if ($variable === 'backto') {
-                self::$oldBackTo = $this->_tab_content[$this->tabId]['backto'];
-                self::$backTo = $content;
-            }
             if (!isset($this->_tab_content[$this->tabId])) {
                 $this->_tab_content[$this->tabId] = array();
             }
@@ -213,6 +231,9 @@ class Session
 
     public function get($variable, $tab = false)
     {
+        if ($variable == 'backto') {
+            return $this->get_history_entry();
+        }
         if ($tab) {
             if (isset($this->_tab_content[$this->tabId][$variable])) {
                 return $this->_tab_content[$this->tabId][$variable];
@@ -230,6 +251,9 @@ class Session
 
     public function remove($variable, $tab = false)
     {
+        if ($variable == 'backto') {
+            return $this->remove_history_entry();
+        }
         if ($tab) {
             if (isset($this->_tab_content[$this->tabId][$variable])) {
                 unset($this->_tab_content[$this->tabId][$variable]);
@@ -253,10 +277,73 @@ class Session
 
     public function is_set($variable, $tab = false)
     {
+        if ($variable == 'backto') {
+            $entry = $this->get_history_entry();
+            return !empty($entry);
+        }
         if ($tab) {
             return isset($this->_tab_content[$this->tabId][$variable]);
         } else {
             return isset($this->_content[$variable]);
+        }
+    }
+
+    public function add_history_entry($entry = null)
+    {
+        if (!isset($entry)) {
+            $entry = $_SERVER['QUERY_STRING'];
+        }
+        if (!isset($this->_tab_content[$this->tabId]['history'])) {
+            $this->_tab_content[$this->tabId]['history'] = array();
+        }
+        self::$oldHistoryEntry = end($this->_tab_content[$this->tabId]['history']);
+        self::$historyEntry = $entry;
+        if (!isset($this->_tab_content[$this->tabId])) {
+            $this->_tab_content[$this->tabId] = array();
+        }
+        $last_entry = end($this->_tab_content[$this->tabId]['history']);
+        if (empty($last_entry) || $last_entry != $entry) {
+            array_push($this->_tab_content[$this->tabId]['history'], $entry);
+        }
+        $this->_tab_content[$this->tabId]['history'] =
+            array_slice($this->_tab_content[$this->tabId]['history'], self::HISTORY_SIZE * -1);
+
+        if ($this->autoupdate) {
+            $this->_saveSession();
+        } else {
+            $this->_updated = true;
+        }
+    }
+
+    public function redirect_to_history_entry($default = null)
+    {
+        if (isset($this->_tab_content[$this->tabId]['history'])) {
+            $url = array_pop($this->_tab_content[$this->tabId]['history']);
+            $this->close();
+            header('Location: ?' . $url);
+            die;
+        } elseif (isset($default)) {
+            $this->close();
+            header('Location: ?' . $default);
+            die;
+        }
+    }
+
+    public function remove_history_entry()
+    {
+        if (isset($this->_tab_content[$this->tabId]['history'])) {
+            return array_pop($this->_tab_content[$this->tabId]['history']);
+        } else {
+            return null;
+        }
+    }
+
+    public function get_history_entry($default = null)
+    {
+        if (isset($this->_tab_content[$this->tabId]['history'])) {
+            return end($this->_tab_content[$this->tabId]['history']);
+        } else {
+            return $default;
         }
     }
 
@@ -300,12 +387,11 @@ class Session
     public function _saveSession()
     {
         static $session_variables = array('session_id' => true, 'session_login' => true,
-            'session_target_login' => true,
-            'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
-            'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
-            'session_passwdrequiredchange' => true, 'session_authcoderequired' => true,
-            'session_twofactorauthrequirechange' => true, 'session_passverified' => true,
-            'tabs' => true, 'prepared_persistent_filters' => true);
+            'session_target_login' => true, 'session_logname' => true, 'session_last' => true,
+            'session_lastip' => true, 'session_smsauthenticated' => true, 'backto' => true,
+            'history' => true, 'lastmodule' => true, 'session_passwdrequiredchange' => true,
+            'session_authcoderequired' => true, 'session_twofactorauthrequirechange' => true,
+            'session_passverified' => true, 'tabs' => true, 'prepared_persistent_filters' => true);
 
         if ($this->autoupdate || $this->_updated) {
             $content = array_merge($this->_content, array('tabs' => $this->_tab_content));
@@ -322,7 +408,10 @@ class Session
             $this->DB->BeginTrans();
             $this->DB->LockTables('sessions');
 
-            $content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
+            $sid = $this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID));
+            if (!empty($sid)) {
+                $content = unserialize($sid);
+            }
             if (is_array($content['tabs']) && (!is_array($session_content['tabs']) || (is_array($content['tabs']) && count($content['tabs']) > count($session_content['tabs'])))) {
                 $session_content['tabs'] = $content['tabs'];
             }
@@ -335,10 +424,12 @@ class Session
             $this->DB->UnLockTables();
             $this->DB->CommitTrans();
 
-            $this->DB->Execute(
-                'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
-                array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
-            );
+            if (isset($this->_content['session_login'])) {
+                $this->DB->Execute(
+                    'UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
+                    array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login'])
+                );
+            }
         }
     }
 

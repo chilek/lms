@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -75,43 +75,21 @@ if ($action == 'delete') {
 } elseif (!empty($_POST['marks']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($_GET['groupid'])))) {
     foreach ($_POST['marks'] as $mark) {
         if ($action == 'unsetgroup') {
-            $params = array(
-            SYSLOG::RES_NODEGROUP => intval($_GET['groupid']),
-            SYSLOG::RES_NODE => $mark
-            );
-            if ($SYSLOG) {
-                $id = $DB->GetOne('SELECT id FROM nodegroupassignments WHERE nodegroupid=? AND nodeid=?', array_values($params));
-                $args = $params;
-                $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
-            }
-            $DB->Execute('DELETE FROM nodegroupassignments
-					WHERE nodegroupid = ? AND nodeid = ?', $params);
+            $LMS->deleteNodeGroupAssignment(array(
+                'nodeid' => $mark,
+                'nodegroupid' => intval($_GET['groupid']),
+            ));
         } elseif ($action == 'setgroup') {
-            if (!$DB->GetOne(
-                'SELECT 1 FROM nodegroupassignments
-					WHERE nodegroupid = ? AND nodeid = ?',
-                array(intval($_GET['groupid']), $mark)
-            )) {
-                $params = array(
-                SYSLOG::RES_NODEGROUP => intval($_GET['groupid']),
-                SYSLOG::RES_NODE => $mark
-                );
-                $DB->Execute('INSERT INTO nodegroupassignments 
-					(nodegroupid, nodeid) VALUES (?, ?)', array_values($params));
-                if ($SYSLOG) {
-                    $id = $DB->GetLastInsertID('nodegroupassignments');
-                    $args = $params;
-                    $args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
-                    $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
-                }
-            }
+            $LMS->addNodeGroupAssignment(array(
+                'nodeid' => $mark,
+                'nodegroupid' => intval($_GET['groupid']),
+            ));
         }
     }
 } elseif (isset($_POST['nodeassignments']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($_GET['id']))) {
     $oper = $_POST['oper'];
     $nodeassignments = $_POST['nodeassignments'];
-    
+
     if (isset($nodeassignments['gmnodeid']) && $oper=='0') {
         foreach ($nodeassignments['gmnodeid'] as $nodeid) {
             $params = array(
@@ -142,10 +120,16 @@ if ($action == 'delete') {
             }
         }
     } elseif (isset($nodeassignments['membersnetid']) && $oper=='2') {
-        $SESSION->redirect('?'.preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->get('backto')).'&membersnetid='.$nodeassignments['membersnetid']);
+        $SESSION->redirect(
+            '?' . preg_replace('/&membersnetid=[0-9]+/', '', $SESSION->remove_history_entry())
+            . '&membersnetid=' . $nodeassignments['membersnetid']
+        );
     } elseif (isset($nodeassignments['othersnetid']) && $oper=='3') {
-        $SESSION->redirect('?'.preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->get('backto')).'&othersnetid='.$nodeassignments['othersnetid']);
+        $SESSION->redirect(
+            '?' . preg_replace('/&othersnetid=[0-9]+/', '', $SESSION->remove_history_entry())
+            . '&othersnetid=' . $nodeassignments['othersnetid']
+        );
     }
 }
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$SESSION->redirect_to_history_entry();

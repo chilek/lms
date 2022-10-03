@@ -108,7 +108,7 @@
 				this.find(cp + cdisplay).attr('tabindex', opts.tabindex);
 			}
 			if (this.find(cp + cvalue).length == 0) {
-				this.append('<input class="' + pname + cvalue + '" type="hidden" />');
+				this.append('<input class="' + pname + cvalue + '" type="hidden"' + ($select.attr('form') ? ' form="' + $select.attr('form') + '"' : '') + ' />');
 			}
 			if (this.find(cp + cdisplay).is(':disabled') || opts.disabled) {
 				this.find(cp + cddback + ', ' + cp + cddarr).hide();
@@ -164,7 +164,7 @@
 		 * @returns {Object} jQuery object
 		 */
 		fill: function (data, appendMode) {
-			var $options = this.find('select').children('option, optgroup');
+			var $options = this.find('select').children('option, optgroup').filter(':not(:disabled)');
 			// don't ever rely on div content, always use select options instead
 			var $div = this.find('.' + pname + clist),
 				$select = this.find('select');
@@ -175,7 +175,7 @@
 				if (opts.removeDuplicates) {
 					removeDupsjQ($options);
 					purifyOptions($options);
-					$options = this.find('select').children('option, optgroup'); // update after removal
+					$options = this.find('select').children('option, optgroup').filter(':not(:disabled)'); // update after removal
 				}
 				if ($options.length == 0) {
 					// TODO restore, using $p.data(pname).key if provided instead
@@ -210,6 +210,10 @@
 						}
 						$div.append($p);
 					});
+					if ($options.filter(':selected').prop('disabled')) {
+						$(opts.altField).val('');
+						$(opts.altInvalidField).val('');
+					}
 				}
 			} else { // fill directly from given data
 				if (opts.removeDuplicates) {
@@ -235,7 +239,7 @@
 				opts.callback.func.apply(this, opts.callback.args);
 				this.data(pname + '-init', false);
 			}
-			$options = this.find('select').children('option'); // update
+			$options = this.find('select').children('option').filter(':not(:disabled)'); // update
 			if (!opts.empty) {
 				if (mode != 'checkboxes') {
 					this[pname]('val', $options.filter('option:selected:last').val());

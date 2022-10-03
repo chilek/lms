@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -73,7 +73,7 @@ if (is_array($taxrateedit) && count($taxrateedit)) {
     if (!$taxrateedit['taxed']) {
         $taxrateedit['taxed'] = 0;
     }
-        
+
     if (!$taxrateedit['taxed'] && $taxrateedit['value']!=0) {
         $error['value'] = trans('Incorrect tax rate percentage value (non-zero value and taxing not checked)!');
     }
@@ -123,11 +123,8 @@ if (is_array($taxrateedit) && count($taxrateedit)) {
 
 $layout['pagetitle'] = trans('Tax Rate Edit: $a', $label);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('taxrateedit', $taxrate);
 $SMARTY->assign('error', $error);
 $SMARTY->display('taxrate/taxrateedit.html');
-
-?>
-<?php

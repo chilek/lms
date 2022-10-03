@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-define('DBVERSION', '2021082800'); // here should be always the newest version of database!
+// here should be always the newest version of database!
+define('DBVERSION', '2022092201');
 
 /**
  *
@@ -76,6 +77,8 @@ abstract class LMSDB_common implements LMSDBInterface
     protected $debug = false;
 
     protected $_warnings = true;
+
+    private $_upgrade_errors = array();
 
     /**
      * Connects to database.
@@ -561,9 +564,9 @@ abstract class LMSDB_common implements LMSDBInterface
                 $inputarray[$k] = $this->_quote_value($v);
             }
 
-            $query = str_replace('%', '%%', $query); //escape params like %some_value%
+            $query = str_replace('%', '[lms_percentage_placeholder]', $query); //escape params like %some_value%
             $query = vsprintf(str_replace('?', '%s', $query), $inputarray);
-            $query = str_replace('%%', '%', $query);
+            $query = str_replace('[lms_percentage_placeholder]', '%', $query);
         }
 
         return $query;
@@ -713,51 +716,84 @@ abstract class LMSDB_common implements LMSDBInterface
 
     public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null)
     {
+        static $dbversions = null;
+
         $this->DisableWarnings();
 
+        if (!isset($dbversions)) {
+            $result = $this->GetAll('SELECT * FROM dbinfo WHERE keytype ?LIKE? ?', array('dbversion%'));
+            if (empty($result)) {
+                $result = array();
+            }
+            $dbversions = Utils::array_column($result, 'keyvalue', 'keytype');
+        }
+
         $lastupgrade = null;
-        if ($dbversion = $this->GetOne(
-            'SELECT keyvalue FROM dbinfo WHERE keytype = ?',
-            array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass))
-        )) {
+        $keytype = 'dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass);
+        if (isset($dbversions[$keytype])) {
+            $dbversion = $dbversions[$keytype];
             if ($dbver > $dbversion) {
-                set_time_limit(0);
+                if (isset($GLOBALS['CONFIG']['database']['auto_update']) && ConfigHelper::checkValue($GLOBALS['CONFIG']['database']['auto_update'])) {
+                    $old_locale = setlocale(LC_NUMERIC, '0');
+                    setlocale(LC_NUMERIC, 'C');
 
-                if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
-					WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')) > 1) {
-                    $this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
-                }
+                    set_time_limit(0);
 
-                $lastupgrade = $dbversion;
+                    if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
+                        WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')) > 1) {
+                        $this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
+                    }
 
-                if (is_null($libdir)) {
-                    $libdir = LIB_DIR;
-                }
+                    $lastupgrade = $dbversion;
 
-                $filename_prefix = $this->_dbtype == LMSDB::POSTGRESQL ? 'postgres' : 'mysql';
+                    if (is_null($libdir)) {
+                        $libdir = LIB_DIR;
+                    }
 
-                $pendingupgrades = array();
-                $upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb', '^' . $filename_prefix . '\.[0-9]{10}\.php$');
-                if (!empty($upgradelist)) {
-                    foreach ($upgradelist as $upgrade) {
-                        $upgradeversion = preg_replace('/^' . $filename_prefix . '\.([0-9]{10})\.php$/', '\1', $upgrade);
+                    $filename_prefix = $this->_dbtype == LMSDB::POSTGRESQL ? 'postgres' : 'mysql';
 
-                        if ($upgradeversion > $dbversion && $upgradeversion <= $dbver) {
-                            $pendingupgrades[] = $upgradeversion;
+                    $pendingupgrades = array();
+                    $upgradelist = getdir(
+                        $libdir . DIRECTORY_SEPARATOR . 'upgradedb',
+                        '^' . $filename_prefix . '\.[0-9]{10}\.php$'
+                    );
+                    if (!empty($upgradelist)) {
+                        foreach ($upgradelist as $upgrade) {
+                            $upgradeversion = preg_replace(
+                                '/^' . $filename_prefix . '\.([0-9]{10})\.php$/',
+                                '\1',
+                                $upgrade
+                            );
+
+                            if ($upgradeversion > $dbversion && $upgradeversion <= $dbver) {
+                                $pendingupgrades[] = $upgradeversion;
+                            }
                         }
                     }
-                }
 
-                if (!empty($pendingupgrades)) {
-                    sort($pendingupgrades);
-                    foreach ($pendingupgrades as $upgrade) {
-                        include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
-                        if (empty($this->errors)) {
-                            $lastupgrade = $upgrade;
-                        } else {
-                            break;
+                    if (!empty($pendingupgrades)) {
+                        sort($pendingupgrades);
+                        foreach ($pendingupgrades as $upgrade) {
+                            include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
+                            if (empty($this->errors)) {
+                                $lastupgrade = $upgrade;
+                            } else {
+                                break;
+                            }
                         }
                     }
+
+                    setlocale(LC_NUMERIC, $old_locale);
+                } else {
+                    $lastupgrade = $dbversion;
+
+                    if (empty($pluginclass)) {
+                        $error_message = 'CORE';
+                    } else {
+                        $error_message = "Plugin '" . $pluginclass . "'";
+                    }
+                    $this->_upgrade_errors[] = $error_message . " database schema could be updated"
+                        . " from version '" . $dbversion . "' to '" . $dbver . "'<br>";
                 }
             }
         } else {
@@ -804,5 +840,10 @@ abstract class LMSDB_common implements LMSDBInterface
         $this->EnableWarnings();
 
         return isset($lastupgrade) ? $lastupgrade : $dbver;
+    }
+
+    public function getUpgradeErrors()
+    {
+        return $this->_upgrade_errors;
     }
 }

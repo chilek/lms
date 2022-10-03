@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,10 @@
  *  $Id$
  */
 
-$addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : $_POST['instantpayment'];
+$addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : (isset($_POST['instantpayment']) ? $_POST['instantpayment'] : null);
+if (empty($addbalance)) {
+    $SESSION->redirect_to_history_entry();
+}
 
 foreach ($addbalance as $key => $value) {
     if (!is_array($value)) {
@@ -32,7 +35,7 @@ foreach ($addbalance as $key => $value) {
     }
 }
 
-$addbalance['value'] = str_replace(',', '.', $addbalance['value']);
+$addbalance['value'] = floatval(str_replace(',', '.', $addbalance['value']));
 
 $currenttime = false;
 if (isset($_POST['addbalance']) && !empty($addbalance['time'])) {
@@ -65,6 +68,9 @@ if (!$addbalance['type']) {
     $addbalance['sourceid'] = null;
     $addbalance['value'] *= -1;
 } else {
+    if (!isset($addbalance['sourceid'])) {
+        $addbalance['sourceid'] = null;
+    }
     $addbalance['servicetype'] = null;
     $addbalance['taxid'] = 0;
 }
@@ -168,12 +174,18 @@ if (isset($addbalance['mcustomerid'])) {
     $addbalance['type'] = '1';
 
     if ($addbalance['value'] != 0) {
-        $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
-        if (!isset($addbalance['currencyvalue'])) {
-            die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+        if (isset($addbalance['currency'])) {
+            $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
+            if (!isset($addbalance['currencyvalue'])) {
+                die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+            }
+        } else {
+            $addbalance['currency'] = Localisation::getCurrentCurrency();
+            $addbalance['currencyvalue'] = 1.0;
         }
+
         $LMS->AddBalance($addbalance);
     }
 }
 
-header('Location: ?'.$SESSION->get('backto'));
+$SESSION->redirect_to_history_entry();

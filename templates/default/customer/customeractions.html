@@ -27,12 +27,27 @@
 					    <i class="lms-ui-icon-money"></i>
 					</TD>
 					<TD style="width: 98%;">
-						{trans("Cutoff suspending:")}
-						<label>
-							<input type="checkbox" name="cutoffstopindefinitely" value="1" onchange="$('#cutoffstop').css('display', this.checked ? 'none' : '');"{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)} checked{/if}>
-							{trans("indefinitely")}
-						</label>&nbsp;
-						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip class="lms-ui-date" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+						<div class="valign-middle nobr">
+							{trans("Cutoff suspending:")}
+							<label>
+								<input type="checkbox" name="cutoffstopindefinitely"
+									id="cutoffstopindefinitely" value="1"
+									{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)} checked{/if}>
+								{trans("indefinitely")}
+							</label>
+						</div>
+						<div class="valign-middle nobr cutoffstop">
+							<input type="text" name="cutoffstop" id="cutoffstop"
+								{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)} style="display: none;"
+								{elseif $customerinfo.cutoffstop} value="{$customerinfo.cutoffstop|date_format:"Y/m/d"}"
+								{/if}
+								size="10"
+								{tip class="lms-ui-date" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+							{day_selection elem="#cutoffstop" days="3,7,10,14"}
+						</div>
+						<div class="valign-middle nobr">
+							{hint content="Select date of cutoff suspending (optional)"}
+						</div>
 					</TD>
 					<TD width="1%" class="nobr text-right">
 						<A href="javascript:document.cutoffstopaction.submit()">{trans("Submit")} <i class="lms-ui-icon-save"></i></a>
@@ -66,17 +81,25 @@
 	</TR>
     </TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('customeractionpanel') == '1')
-	document.getElementById('customeractionpanel').style.display = '';
 
-function switchbox(id) {
-	var elem = document.getElementById(id);
-	if ((elem.name == 'setwarnings[warnon]') && elem.checked)
-		document.warningaction.elements['setwarnings[warnoff]'].checked = false;
-	if ((elem.name == 'setwarnings[warnoff]') && elem.checked)
-		document.warningaction.elements['setwarnings[warnon]'].checked = false;
-}
-//-->
-</SCRIPT>
+<script>
+
+	$("#customeractionpanel").toggle(getStorageItem("customeractionpanel", "local") == "1");
+
+	function switchbox(id) {
+		var elem = document.getElementById(id);
+		if ((elem.name == 'setwarnings[warnon]') && elem.checked) {
+			document.warningaction.elements['setwarnings[warnoff]'].checked = false;
+		}
+		if ((elem.name == 'setwarnings[warnoff]') && elem.checked) {
+			document.warningaction.elements['setwarnings[warnon]'].checked = false;
+		}
+	}
+
+	$(function() {
+		$('#cutoffstopindefinitely').change(function() {
+			$('.cutoffstop').toggle(!this.checked);
+		});
+	});
+
+</script>

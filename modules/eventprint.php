@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$date = $_GET['day'];
+$date = isset($_GET['day']) ? $_GET['day'] : 0;
 
 if (empty($date)) {
     $date = time();
@@ -38,8 +38,8 @@ $eventlist = $LMS->GetEventList(
         'month' => $month,
         'day' => $day,
         'forward' => 1,
-        'userid' => $_GET['a'],
-        'type' => $_GET['t'],
+        'userid' => isset($_GET['a']) ? $_GET['a'] : 0,
+        'type' => isset($_GET['t']) ? $_GET['t'] : 0,
         'customerid' => $_GET['u'],
         'privacy' => $_GET['privacy'],
         'closed' => $_GET['closed'],
@@ -52,7 +52,7 @@ $eventlist = $LMS->GetEventList(
 
 $layout['pagetitle'] = trans('Timetable');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('eventlist', $eventlist);
 $SMARTY->assign('date', $date);

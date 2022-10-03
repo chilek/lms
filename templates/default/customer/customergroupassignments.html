@@ -38,7 +38,7 @@
 					<TD style="width: 100%;" class="text-center">
 						{trans("Network:")}
 						<SELECT size="1" name="customerassignments[membersnetid]" onchange="javascript:changeMembersNetwork();">
-						 	<OPTION value="0" {if !$membersnetid}selected{/if}>{trans("- all networks -")}</OPTION>
+						 	<OPTION value="0" {if !$membersnetid}selected{/if}>{trans("— all networks —")}</OPTION>
 							{section name=networks loop=$networks}
 							<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $membersnetid}selected{/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 							{/section}
@@ -88,7 +88,7 @@
 					<TD style="width: 100%;" class="text-center">
 						{trans("Network:")}
 						<SELECT size="1" name="customerassignments[othersnetid]" onchange="javascript:changeOthersNetwork();">
-							<OPTION value="0" {if !$othersnetid}selected{/if}>{trans("- all networks -")}</OPTION>
+							<OPTION value="0" {if !$othersnetid}selected{/if}>{trans("— all networks —")}</OPTION>
 							{section name=networks loop=$networks}
 							<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $othersnetid}selected{/if}>{$networks[networks].name|truncate:30:"&hellip;":true}</OPTION>
 							{/section}

@@ -17,7 +17,7 @@
 {tab_container id="attachmentbox-{$attachmenttype}"}
     {tab_header content_id="attachmentpanel-{$attachmenttype}"}
         {tab_header_cell icon="lms-ui-icon-fileupload"}
-            <strong>{t a=$filecontainers[$attachmenttype].prefix b=$filecontainers[$attachmenttype].containers|@count|default:"0"}$a ($b):{/t}</strong>
+            <strong>{t a=$filecontainers[$attachmenttype].prefix b=$filecontainers[$attachmenttype].containers|size}$a ($b):{/t}</strong>
         {/tab_header_cell}
     {/tab_header}
 
@@ -52,7 +52,7 @@
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
                         <div class="lms-ui-tab-table-column date">
-                            {$container.creationdate|date_format:"%Y/%m/%d %H:%M:%S"}
+                            {$container.creationdate|date_format:"Y/m/d H:i:s"}
                         </div>
                         <div class="lms-ui-tab-table-column creator">
                             <a href="?m=userinfo&id={$container.creatorid}">{$container.creatorname}</a>

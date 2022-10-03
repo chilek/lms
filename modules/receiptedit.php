@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
 			    WHERE documents.id = ? AND type = ?', array($_GET['id'], DOC_RECEIPT));
 
     if (!$receipt) {
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     $i = 1;
@@ -190,7 +190,7 @@ switch ($action) {
         }
         break;
     case 'deletepos':
-        if (count($contents)) {
+        if (!empty($contents)) {
             foreach ($contents as $idx => $row) {
                 if ($row['posuid'] == $_GET['posuid']) {
                     unset($contents[$idx]);
@@ -217,7 +217,7 @@ switch ($action) {
             }
         }
 
-        $receipt['customerid'] = $_POST['customerid'];
+        $receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
         $receipt['template'] = $oldtemplate;
         $receipt['id'] = $id;
         $receipt['closed'] = $oldclosed;
@@ -280,7 +280,7 @@ switch ($action) {
             }
         }
 
-        if ($receipt['numberplanid'] && !$receipt['extnumber']) {
+        if ($receipt['numberplanid'] && empty($receipt['extnumber'])) {
             if (strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==false) {
                 $receipt['extended'] = true;
             }
@@ -312,7 +312,7 @@ switch ($action) {
             break;
         }
 
-        $cid = !empty($_GET['customerid']) ? $_GET['customerid'] : $_POST['customerid'];
+        $cid = !empty($_GET['customerid']) ? $_GET['customerid'] : (empty($_POST['customerid']) ? null : $_POST['customerid']);
 
         if (!$cid) {
             $cid = $oldcid;
@@ -414,7 +414,7 @@ switch ($action) {
             $args = array(
                 'type' => DOC_RECEIPT,
                 'number' => $receipt['number'],
-                'extnumber' => $receipt['extnumber'] ? $receipt['extnumber'] : '',
+                'extnumber' => !empty($receipt['extnumber']) ? $receipt['extnumber'] : '',
                 SYSLOG::RES_NUMPLAN => empty($receipt['numberplanid']) ? null : $receipt['numberplanid'],
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_CUST => $customer['id'],
@@ -649,7 +649,7 @@ switch ($action) {
 
 $SESSION->save('receipt', $receipt, true);
 $SESSION->save('receiptcontents', $contents, true);
-$SESSION->save('receiptcustomer', $customer, true);
+$SESSION->save('receiptcustomer', empty($customer) ? null : $customer, true);
 $SESSION->save('receiptediterror', $error, true);
 
 if ($action != '') {

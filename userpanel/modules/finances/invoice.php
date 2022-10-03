@@ -203,7 +203,7 @@ if (!empty($_POST['inv'])) {
         }
     }
     Localisation::resetUiLanguage();
-} else {
+} elseif (isset($_GET['id'])) {
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
     if ($invoice['customerid'] != $SESSION->id) {
@@ -217,7 +217,7 @@ if (!empty($_POST['inv'])) {
             header('Content-Disposition: inline; filename=' . $invoice['filename']);
             echo $invoice['data'];
         }
-        $SESSION->close();
+        //$SESSION->close();
         die;
     }
 
@@ -237,6 +237,10 @@ if (!empty($_POST['inv'])) {
         $layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
     }
 
+    if ($which == DOC_ENTITY_DUPLICATE) {
+        $invoice['duplicate-date'] = time();
+    }
+
     Localisation::setUiLanguage($invoice['lang']);
     $document->Draw($invoice);
     Localisation::resetUiLanguage();
@@ -244,6 +248,8 @@ if (!empty($_POST['inv'])) {
     if (!$invoice['published']) {
         $LMS->PublishDocuments($invoice['id']);
     }
+} else {
+    die;
 }
 
 if (!is_null($attachment_name) && isset($docnumber)) {

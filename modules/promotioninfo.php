@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,7 +42,7 @@ if (!$promotion) {
 
 $promotion['schemas'] = $DB->GetAllByKey(
     'SELECT
-        s.name, s.disabled, s.description, s.id, s.deleted,
+        s.name, s.disabled, s.description, s.id, s.deleted, s.datefrom, s.dateto,
         COUNT(a.id) AS assignments
     FROM promotionschemas s
     LEFT JOIN assignments a ON a.promotionschemaid = s.id
@@ -69,7 +69,7 @@ if (!empty($promotion['schemas'])) {
 
 $layout['pagetitle'] = trans('Promotion Info: $a', $promotion['name']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('promotion', $promotion);
 $SMARTY->display('promotion/promotioninfo.html');

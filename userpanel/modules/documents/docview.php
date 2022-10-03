@@ -33,7 +33,7 @@ if (!empty($_GET['id'])) {
 		LEFT JOIN divisions ds ON (ds.id = d.divisionid)
 		WHERE d.id = ?', array(intval($_GET['id'])));
 
-    if ($doc['customerid'] != $SESSION->id) {
+    if (empty($doc) || $doc['customerid'] != $SESSION->id) {
         die;
     }
 
@@ -79,7 +79,7 @@ if (!empty($_GET['id'])) {
             header('Content-Length: ' . filesize($filename_pdf));
             header('Accept-Ranges: bytes');
             readfile($filename_pdf);
-        } elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+        } elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type'))) == 'pdf') {
             if ($doc['type'] == DOC_CONTRACT) {
                 $subject = trans('Contract');
                 $title = trans('Contract No. $a', $docnumber);
@@ -98,8 +98,8 @@ if (!empty($_GET['id'])) {
             readfile($filename);
             $htmlbuffer = ob_get_contents();
             ob_end_clean();
-            $margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
-            html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false, $copy);
+            $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+            html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, !empty($_GET['save']), $copy);
         } else {
             header('Content-Type: '.$doc['contenttype']);
 

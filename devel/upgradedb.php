@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 ini_set('max_execution_time', 0);
 ini_set('memory_limit', -1);
 
@@ -50,19 +50,19 @@ foreach ($short_to_longs as $short => $long) {
     }
 }
 
-if (array_key_exists('version', $options)) {
+if (isset($options['version'])) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
 }
 
-if (array_key_exists('help', $options)) {
+if (isset($options['help'])) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -76,16 +76,16 @@ EOF;
     exit(0);
 }
 
-$quiet = array_key_exists('quiet', $options);
+$quiet = isset($options['quiet']);
 if (!$quiet) {
     print <<<EOF
 upgradedb.php
-(C) 2001-2019 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
 
-if (array_key_exists('config-file', $options)) {
+if (isset($options['config-file'])) {
     $CONFIG_FILE = $options['config-file'];
 } else {
     $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
@@ -124,7 +124,7 @@ $composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More information at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Do some checks and load config defaults
@@ -153,6 +153,9 @@ if (isset($options['update-order'])) {
     $facilities = array('core', 'plugins');
 }
 
+// force database auto update as we require it here
+$CONFIG['database']['auto_update'] = true;
+
 foreach ($facilities as $facility) {
     switch ($facility) {
         case 'core':
@@ -164,7 +167,7 @@ foreach ($facilities as $facility) {
             $plugin_info = $plugin_manager->getAllPluginInfo();
             if (!empty($plugin_info)) {
                 foreach ($plugin_info as $plugin) {
-                    if ($plugin['dbcurrschversion']) {
+                    if (isset($plugin['dbcurrschversion'])) {
                         echo 'Plugin ' . $plugin['name'] . ' DB schema version bumped to ' . $plugin['dbcurrschversion'] . PHP_EOL;
                     }
                 }
@@ -181,5 +184,3 @@ if (!empty($errors)) {
         echo $error['error'] . PHP_EOL;
     }
 }
-
-?>

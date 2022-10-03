@@ -191,7 +191,7 @@ function additem(&$content, $item)
         $content = array();
     }
 
-    if ($i == $x) {
+    if (isset($i) && isset($x) && $i == $x) {
         $content[] = $item;
     }
 }
@@ -483,7 +483,7 @@ switch ($action) {
     case 'setcustomer':
         $oldreg = $receipt['regid'];
         $oldtype = $receipt['type'];
-        $oldcid = $customer['id'];
+        $oldcid = isset($customer['id']) ? $customer['id'] : null;
         unset($receipt);
         unset($customer);
         unset($error);
@@ -918,13 +918,13 @@ switch ($action) {
 }
 
 if (!isset($cashreglist)) {
-    $cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
+    $cashreglist = $LMS->GetCashRegistries(isset($receipt['customerid']) ? $receipt['customerid'] : null);
 }
 
 $SESSION->save('receipt', $receipt, true);
 $SESSION->save('receiptregid', $receipt['regid'], true);
 $SESSION->save('receipttype', $receipt['type'], true);
-$SESSION->save('receiptcontents', isset($contents) ? $contents : null, true);
+$SESSION->save('receiptcontents', isset($contents) ? $contents : array(), true);
 $SESSION->save('receiptcustomer', isset($customer) ? $customer : null, true);
 $SESSION->save('receiptadderror', isset($error) ? $error : null, true);
 
@@ -935,11 +935,15 @@ if ($action != '') {
 switch ($receipt['type']) {
     case 'in':
         $layout['pagetitle'] = trans('New Cash-in Receipt');
-        $list = GetCustomerCovenants($customer['id']);
+        if (isset($customer['id'])) {
+            $list = GetCustomerCovenants($customer['id']);
+        }
         break;
     case 'out':
         $layout['pagetitle'] = trans('New Cash-out Receipt');
-        $list = GetCustomerNotes($customer['id']);
+        if (isset($customer['id'])) {
+            $list = GetCustomerNotes($customer['id']);
+        }
         break;
     default:
         $layout['pagetitle'] = trans('New Cash Receipt');
@@ -983,10 +987,14 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
 
+if (empty($cashreglist)) {
+    $cashreglist = array();
+}
+
 $SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $receipt['regid'])));
 $SMARTY->assign('cashreglist', $cashreglist);
-$SMARTY->assign('cashregcount', empty($cashreglist) ? 0 : count($cashreglist));
+$SMARTY->assign('cashregcount', count($cashreglist));
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);

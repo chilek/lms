@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,18 +26,14 @@
 
 $id = intval($_GET['id']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
+$SESSION->add_history_entry();
 
 $result = $LMS->GetNetNode($id);
 
+$layout['pagetitle'] = trans('Net Device Node Info: $a', $result['name']);
+
 if (!$result) {
     $SESSION->redirect('?m=netnodelist');
-}
-
-if ($nodeinfo['ownerid']) {
-    $nodeinfo['owner'] = $LMS->getCustomerName($nodeinfo['ownerid']);
 }
 
 $SMARTY->assign('nodeinfo', $result);
@@ -86,13 +82,17 @@ if (!empty($netdevlist)) {
     unset($netdev);
 }
 $SMARTY->assign('netdevlist', $netdevlist);
+$SMARTY->assign('netnodeevents', $LMS->GetEventList(array('netnodeid' => $id)));
 
 $queue = $LMS->GetQueueContents(array('removed' => 0, 'netnodeids' => $id, 'short' => 1));
 
 $SMARTY->assign('queue', $queue);
 
 $start = 0;
-$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total);
+$pagelimit = ConfigHelper::getConfig(
+    'rt.ticketlist_pagelimit',
+    ConfigHelper::getConfig('phpui.ticketlist_pagelimit', empty($queue) ? -1 : count($queue))
+);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('pagelimit', $pagelimit);
 

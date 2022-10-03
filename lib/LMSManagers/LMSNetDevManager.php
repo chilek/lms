@@ -426,14 +426,14 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         $args[SYSLOG::RES_NETDEV] = $data['id'];
 
-        if ($data['address_id'] && $data['address_id'] < 0) {
+        if (isset($data['address_id']) && $data['address_id'] && $data['address_id'] < 0) {
             $data['address_id'] = null;
         }
 
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         if ($data['ownerid']) {
-            if ($data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
+            if (isset($data['address_id']) && $data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
                 $location_manager->DeleteAddress($data['address_id']);
             }
 
@@ -445,7 +445,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 )
             );
         } else {
-            if (!$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
+            if (!isset($data['address_id']) || !$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id']))) {
                 $address_id = $location_manager->InsertAddress($data);
 
                 $this->db->Execute(
@@ -469,11 +469,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 if (!empty($nodeassigns)) {
                     foreach ($nodeassigns as $nodeassign) {
                         $args = array(
-                        SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
-                        SYSLOG::RES_NETDEV => $data['id'],
-                        SYSLOG::RES_NODE => $nodedata['id'],
-                        SYSLOG::RES_ASSIGN => $nodedata['assignmentid'],
-                        SYSLOG::RES_CUST => $nodedata['ownerid']
+                            SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                            SYSLOG::RES_NETDEV => $data['id'],
+                            SYSLOG::RES_NODE => $nodeassign['id'],
+                            SYSLOG::RES_ASSIGN => $nodeassign['assignmentid'],
+                            SYSLOG::RES_CUST => $ownerid,
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
@@ -556,7 +556,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
             // EtherWerX support (devices have some limits)
             // We must to replace big ID with smaller (first free)
-            if ($id > 99999 && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+            if ($id > 99999 && ConfigHelper::checkConfig('phpui.ewx_support')) {
                 $this->db->BeginTrans();
                 $this->db->LockTables('ewx_channels');
 
@@ -682,6 +682,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevList($order = 'name,asc', $search = array())
     {
+        if (empty($order)) {
+            $order = 'name,asc';
+        }
         if (isset($search['count'])) {
             $count = $search['count'];
         } else {
@@ -731,69 +734,76 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             case 'type':
                 $sqlord = ' ORDER BY t.name';
                 break;
+            case 'customername':
+                $sqlord = ' ORDER BY customername';
+                break;
             default:
                 $sqlord = ' ORDER BY name';
                 break;
         }
 
         $where = array();
-        foreach ($search as $key => $value) {
-            switch ($key) {
-                case 'status':
-                    switch ($value) {
-                        case -1:
-                            break;
-                        case 100:
-                            $where[] = 'd.id IN (
-								SELECT netdevices.id FROM netdevices
-								LEFT JOIN vaddresses ON vaddresses.id = netdevices.address_id
-								LEFT JOIN netlinks ON netlinks.src = netdevices.id OR netlinks.dst = netdevices.id
-								WHERE address_id IS NULL OR vaddresses.city_id IS NULL
-								GROUP BY netdevices.id
-								HAVING COUNT(netlinks.id) >= 0
-							)';
-                            break;
-                        case 101:
-                            $where[] = '(no.lastonline IS NOT NULL AND (?NOW? - no.lastonline) <= ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . ')';
-                            break;
-                        case 102:
-                            $where[] = 'd.id NOT IN (SELECT DISTINCT src FROM netlinks) AND d.id NOT IN (SELECT DISTINCT dst FROM netlinks)';
-                            break;
-                        default:
-                            $where[] = 'd.status = ' . intval($value);
-                    }
-                    break;
-                case 'project':
-                    if ($value > 0) {
-                        $where[] = '(d.invprojectid = ' . intval($value)
-                        . ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid = ' . intval($value) . '))';
-                    } elseif ($value == -2) {
-                        $where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
-                    }
-                    break;
-                case 'netnode':
-                    if ($value > 0) {
-                        $where[] = 'd.netnodeid = ' . intval($value);
-                    } elseif ($value == -2) {
-                        $where[] = 'd.netnodeid IS NULL';
-                    }
-                    break;
-                case 'type':
-                    if (!empty($type)) {
-                        $where[] = 'm.type = ' . intval($type);
-                    }
-                    break;
-                case 'producer':
-                case 'model':
-                    if (!preg_match('/^-[0-9]+$/', $value)) {
-                        $where[] = "UPPER(TRIM(d.$key)) = UPPER(" . $this->db->Escape($value) . ")";
-                    } elseif ($value == -2) {
-                        $where[] = "d.$key = ''";
-                    }
-                    break;
-                case 'ownerid':
-                    $where[] = 'd.ownerid = ' . $value;
-                    break;
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($key) {
+                    case 'status':
+                        switch ($value) {
+                            case -1:
+                                break;
+                            case 100:
+                                $where[] = 'd.id IN (
+                                    SELECT netdevices.id FROM netdevices
+                                        LEFT JOIN vaddresses ON vaddresses.id = netdevices.address_id
+                                        LEFT JOIN netlinks ON netlinks.src = netdevices.id OR netlinks.dst = netdevices.id
+                                    WHERE 
+                                        address_id IS NULL OR vaddresses.city_id IS NULL
+                                        GROUP BY netdevices.id
+                                    HAVING COUNT(netlinks.id) >= 0
+                                )';
+                                break;
+                            case 101:
+                                $where[] = '(no.lastonline IS NOT NULL AND (?NOW? - no.lastonline) <= ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . ')';
+                                break;
+                            case 102:
+                                $where[] = 'd.id NOT IN (SELECT DISTINCT src FROM netlinks) AND d.id NOT IN (SELECT DISTINCT dst FROM netlinks)';
+                                break;
+                            default:
+                                $where[] = 'd.status = ' . intval($value);
+                        }
+                        break;
+                    case 'project':
+                        if ($value > 0) {
+                            $where[] = '(d.invprojectid = ' . intval($value)
+                            . ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid = ' . intval($value) . '))';
+                        } elseif ($value == -2) {
+                            $where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
+                        }
+                        break;
+                    case 'netnode':
+                        if ($value > 0) {
+                            $where[] = 'd.netnodeid = ' . intval($value);
+                        } elseif ($value == -2) {
+                            $where[] = 'd.netnodeid IS NULL';
+                        }
+                        break;
+                    case 'type':
+                        if (!empty($value)) {
+                            $where[] = 'm.type = ' . intval($value);
+                        }
+                        break;
+                    case 'producer':
+                    case 'model':
+                        if (!preg_match('/^-[0-9]+$/', $value)) {
+                            $where[] = "UPPER(TRIM(d.$key)) = UPPER(" . $this->db->Escape($value) . ")";
+                        } elseif ($value == -2) {
+                            $where[] = "d.$key = ''";
+                        }
+                        break;
+                    case 'ownerid':
+                        $where[] = 'd.ownerid = ' . $value;
+                        break;
+                }
             }
         }
 
@@ -810,17 +820,20 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			    LEFT JOIN vaddresses addr       ON d.address_id = addr.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes n            ON n.id = d.netnodeid
+				LEFT JOIN netdevicemodels m     ON m.id = d.netdevicemodelid
 				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid
+				LEFT JOIN customers cu ON cu.id = d.ownerid '
                 . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : ''));
         }
 
         $netdevlist = $this->db->GetAll('SELECT d.id, d.name' . ($short ? '' : ',
 				d.description, d.producer, d.model, m.type AS devtype, t.name AS devtypename,
-				d.serialnumber, d.ports, d.ownerid,
+				d.serialnumber, d.ports, d.ownerid,' .
+                $this->db->Concat('cu.lastname', "' '", 'cu.name') . ' AS customername,
 				d.invprojectid, p.name AS project, d.status,
 				(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid IS NOT NULL)
 				+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
@@ -854,7 +867,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid
+				LEFT JOIN customers cu ON cu.id = d.ownerid '
                 . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
                 . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -1082,7 +1096,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNetDev($id)
     {
         $result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
-				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid,
+				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid, ndm.type AS typeid, ndt.name AS type,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
 				lt.name AS street_type, lc.name AS city_name,
 				lb.name AS borough_name, lb.type AS borough_type,
@@ -1096,6 +1110,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM netdevices d
 				LEFT JOIN netdevicemodels ndm      ON ndm.id = d.netdevicemodelid
+				LEFT JOIN netdevicetypes ndt       ON ndm.type = ndt.id
 				LEFT JOIN vaddresses addr          ON addr.id = d.address_id
 				LEFT JOIN nastypes t               ON (t.id = d.nastype)
 				LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
@@ -1121,13 +1136,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $result['takenports']   = $this->CountNetDevLinks($id);
         $result['radiosectors'] = $this->db->GetAll('SELECT * FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id));
 
-        if ($result['guaranteeperiod'] != null && $result['guaranteeperiod'] != 0) {
+        if (isset($result['guaranteeperiod']) && $result['guaranteeperiod'] != 0) {
             $result['guaranteetime'] = strtotime('+' . $result['guaranteeperiod'] . ' month', $result['purchasetime']); // transform to UNIX timestamp
-        } elseif ($result['guaranteeperiod'] == null) {
+        } elseif (!isset($result['guaranteeperiod'])) {
             $result['guaranteeperiod'] = -1;
         }
 
-        if ($result['ownerid']) {
+        if (!empty($result['ownerid'])) {
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['owner'] = $customer_manager->getCustomerName($result['ownerid']);
         }
@@ -1257,7 +1272,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         if (!empty($producerid)) {
             return $this->db->GetAll(
-                'SELECT m.id, m.name, m.type, t.name AS typename
+                'SELECT m.id, m.name, m.type, t.id AS typeid, t.name AS typename
                 FROM netdevicemodels m
                 LEFT JOIN netdevicetypes t ON t.id = m.type
                 ORDER BY m.name ASC',
@@ -1265,7 +1280,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             );
         }
 
-        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name, m.type, t.name AS typename
+        $models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name, m.type,
+                t.id AS typeid, t.name AS typename
 			FROM netdevicemodels m
 			JOIN netdeviceproducers p ON p.id = m.netdeviceproducerid
 			LEFT JOIN netdevicetypes t ON t.id = m.type
@@ -1324,6 +1340,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         }
 
         return $list;
+    }
+
+    public function getNetDevTypes()
+    {
+        return $this->db->GetAllByKey(
+            'SELECT t.id, t.name
+            FROM netdevicetypes t
+            ORDER BY t.name',
+            'id'
+        );
     }
 
     public function GetRadioSectors($netdevid, $technology = 0)

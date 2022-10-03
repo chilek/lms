@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+$id = empty($_GET['id']) ? null : intval($_GET['id']);
 
 if ($id) {
     if (!$DB->GetOne('SELECT 1 FROM zipcodes WHERE stateid=? LIMIT 1', array($id))) {
@@ -36,4 +36,4 @@ if ($id) {
     }
 }
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$SESSION->redirect_to_history_entry();

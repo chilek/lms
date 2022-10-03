@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,8 +29,8 @@ $name = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($sourcefi
 
 if (!$name) {
     $layout['pagetitle'] = trans('Removing package "$a"', $name);
-    $body = '<P>'.trans('Specified ID is not proper or does not exist!').'</P>';
-    $body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('Back').'</A></P>';
+    $body = '<p>' . trans('Specified ID is not proper or does not exist!') . '</p>';
+    $body .= '<a href="?' . $SESSION->get_history_entry() . '">' . trans('Back') . '</a></p>';
     $SMARTY->assign('body', $body);
     $SMARTY->display('dialog.html');
 } else {

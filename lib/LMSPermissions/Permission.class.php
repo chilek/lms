@@ -96,4 +96,20 @@ class Permission
             'deny_menu_items' => $this->deny_menu_items,
         );
     }
+
+    public function addMenuPermissions(array $menuPermissions)
+    {
+        if (isset($menuPermissions['allow_menu_items'])) {
+            $this->allow_menu_items = array_merge($this->allow_menu_items, $menuPermissions['allow_menu_items']);
+        }
+        if (isset($menuPermissions['deny_menu_items'])) {
+            $this->deny_menu_items = array_merge($this->deny_menu_items, $menuPermissions['deny_menu_items']);
+        }
+    }
+
+    public function setMenuPermissions(array $menuPermissions)
+    {
+        $this->allow_menu_items = isset($menuPermissions['allow_menu_items']) ? $menuPermissions['allow_menu_items'] : array();
+        $this->deny_menu_items = isset($menuPermissions['deny_menu_items']) ? $menuPermissions['deny_menu_items'] : array();
+    }
 }

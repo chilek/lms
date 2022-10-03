@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -106,7 +106,7 @@ if (is_array($numberplanedit) && count($numberplanedit)) {
 
 $layout['pagetitle'] = trans('Numbering Plan Edit: $a', $template);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $divisions = $LMS->GetDivisions();
 $users = getUsers($divisions, $numberplan['divisions']);

@@ -21,8 +21,12 @@
  *
  */
 
-define('DOC_INVOICE', 1);
-define('DOC_CNOTE', 3);
+if (!defined('DOC_INVOICE')) {
+    define('DOC_INVOICE', 1);
+}
+if (!defined('DOC_CNOTE')) {
+    define('DOC_CNOTE', 3);
+}
 
 $this->BeginTrans();
 

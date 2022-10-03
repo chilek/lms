@@ -83,10 +83,10 @@
 					{/if}
 				</TD>
 				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
-					{if $taxratelist[taxratelist].validfrom}{$taxratelist[taxratelist].validfrom|date_format:"%x"}{/if}
+					{if $taxratelist[taxratelist].validfrom}{$taxratelist[taxratelist].validfrom|date_format:"Y-m-d"}{/if}
 				</TD>
 				<TD class="text-center nobr" data-target-url="?m=taxrateedit&id={$taxratelist[taxratelist].id}">
-					{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
+					{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"Y-m-d"}{/if}
 				</TD>
 				<td class="text-right nobr">
 					{button type="link" icon="delete" tip="Delete" class="delete-taxrate" data_resource_id=$taxratelist[taxratelist].id}

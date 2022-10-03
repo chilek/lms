@@ -47,8 +47,21 @@ if (ConfigHelper::checkConfig('privileges.superuser')) {
     $SMARTY->assign('regdata', $LMS->GetRegisterData());
 }
 
-$SMARTY->assign('_dochref', is_dir('doc/html/' . Localisation::getCurrentUiLanguage())
-    ? 'doc/html/' . Localisation::getCurrentUiLanguage() . DIRECTORY_SEPARATOR : 'doc/html/en/');
+$__ui_lang = substr(Localisation::getCurrentUiLanguage(), 0, 2);
+$software_documentation_url = str_replace(
+    '%lang%',
+    $__ui_lang,
+    LMS::SOFTWARE_DOCUMENTATION_URL
+);
+if (!preg_match('/^https?:\/\//', $software_documentation_url) && !is_dir($software_documentation_url)) {
+    $software_documentation_url = str_replace(
+        '%lang%',
+        'en',
+        LMS::SOFTWARE_DOCUMENTATION_URL
+    );
+}
+
+$SMARTY->assign('_dochref', $software_documentation_url);
 $SMARTY->assign('rtstats', $LMS->RTStats());
 
 if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_sysinfo')) {

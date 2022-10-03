@@ -123,13 +123,29 @@
 				<table>
 					<tr>
 						<td>
+							<label for="extid">
+								<strong>{trans("External system identifier")}</strong>
+							</label>
+						</td>
+						<td>
 							<div class="valign-middle">
-								<label>
-									<strong>{trans("External system identifier")}</strong>
-									<input type="text" size="20" maxlength="20" name="customeradd[extid]" value="{$customeradd.extid|escape}"
-										{tip trigger="extid"}>
-								</label>
+								<input type="hidden" name="customeradd[extids][0][serviceproviderid]" value="0">
+								<input type="text" id="extid" class="lms-ui-autogrow" name="customeradd[extids][0][extid]" value="{$customeradd.extids[0].extid|escape}"
+									{tip trigger="extid"}>
 								{hint content="Enter customer identifier in external system (optional)"}
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="altname">
+								<strong>{trans("Alternative name")}</strong>
+							</label>
+						</td>
+						<td>
+							<div class="valign-middle">
+								<input type="text" id="altname" class="lms-ui-autogrow" name="customeradd[altname]" maxlength="128" value="{$customeradd.altname|escape}"}>
+								{hint content="Customer Alternative name (brand, shortname, casual name)"}
 							</div>
 						</td>
 					</tr>
@@ -160,12 +176,28 @@
 						</select>
 					</TD>
 				</TR>
+				<tr>
+					<td>
+						{icon name="tag"}
+					</td>
+					<td>
+						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
+							multiple>
+							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
+							<option value="{$cflag}"
+								{if is_array($customeradd.flags) && in_array($cflag, $customeradd.flags)} selected{/if}
+									title="{$flag.tip}">{$flag.label}
+							</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
 				{if $divisions}
-				<TR>
-					<TD>
+				<tr>
+					<td>
 						{icon name="division"}
-					</TD>
-					<TD>
+					</td>
+					<td>
 						<select size="1" name="customeradd[divisionid]" {tip trigger="divisionid"}>
 							{foreach $divisions as $item}
 								{if !$item.status}
@@ -173,8 +205,8 @@
 								{/if}
 							{/foreach}
 						</select>
-					</TD>
-				</TR>
+					</td>
+				</tr>
 				{/if}
 				{if $groups}
 				<TR>
@@ -183,7 +215,7 @@
 					</TD>
 					<TD>
 						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
-							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
+							<OPTION VALUE="0">{trans("… select group …")}</OPTION>
 							{foreach $groups as $group}
 							<OPTION VALUE="{$group.id}" {if $customeradd.group == $group.id}SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
 							{/foreach}
@@ -213,22 +245,128 @@
 						</div>
 					</TD>
 				</TR>
-				<TR>
-					<TD>
-						{icon name="legal-personality"}
-					</TD>
-					<TD>
-						<select name="customeradd[flags][]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
-								multiple>
-							{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
-								<option value="{$cflag}"
-										{if is_array($customeradd.flags) && in_array($cflag, $customeradd.flags)} selected{/if}
-										title="{$flag.tip}"
-								>{$flag.label}</option>
-							{/foreach}
-						</select>
-					</TD>
-				</TR>
+				{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+					<tr>
+						<td>{trans("SSN")}</td>
+						<td>
+							<input type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]"
+								{tip trigger="ssn"}>
+							{if $customeradd.ssnwarning}
+								<input type="hidden" name="customeradd[ssnwarning]" value="1">
+							{/if}
+							{if $customeradd.ssnexistencewarning}
+								<input type="hidden" name="customeradd[ssnexistencewarning]" value="1">
+							{/if}
+						</td>
+					</tr>
+				{/if}
+				<tr>
+					<td>{trans("TEN")}</td>
+					<td>
+						<input type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]"
+							{tip trigger="ten"}>
+						{if $customeradd.tenwarning}
+							<input type="hidden" name="customeradd[tenwarning]" value="1">
+						{/if}
+						{if $customeradd.tenexistencewarning}
+							<input type="hidden" name="customeradd[tenexistencewarning]" value="1">
+						{/if}
+						{button type="link" icon="division" class="gusapi-button"
+							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
+							tip="Click here to autocomplete company data from GUS REGON database"}
+					</td>
+				</tr>
+				<tr>
+					<td>{trans("REGON")}</td>
+					<td>
+						<input type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]"
+							{tip trigger="regon"}>
+						{button type="link" icon="division" class="gusapi-button"
+							data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
+							tip="Click here to autocomplete company data from GUS REGON database"}
+					</td>
+				</tr>
+				{if !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
+					<tr>
+						<td class="valign-top">
+							{icon name="user-id-number"}
+						</td>
+						<td class="cell-flex">
+							<div>
+								<table width="100%">
+									<colgroup>
+										<col style="width: 1%;">
+										<col style="width: 99%;">
+									</colgroup>
+									<tr>
+										<td class="nobr" colspan="2" id="identity-document-box">
+											<fieldset>
+												<legend class="bold">
+													{trans("Identity document")}
+												</legend>
+												<div class="identity-document-properties">
+													<label class="identity-document-property">
+														<span>{trans("Type")}</span>
+														{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
+															tip="" trigger="ict"}
+													</label>
+													<label class="identity-document-property">
+														<span>{trans("Number")}</span>
+														{if $customerinfo.icnwarning}
+															<input type="hidden" name="customeradd[icnwarning]" value="1">
+														{/if}
+														<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
+															{tip trigger="icn"}>
+													</label>
+													<label class="identity-document-property">
+														<span>{trans("Expires")}</span>
+														<input type="text" value="{if $customeradd.icexpires > 0}{$customeradd.icexpires}{/if}"
+															name="customeradd[icexpires]" size="10" id="icexpires"
+															class="lms-ui-date lms-ui-date-unix"
+															{tip trigger="icexpires"}
+															{if $customeradd.icexpires == -1} disabled{/if}>
+													</label>
+													<label>
+														<input type="checkbox" name="customeradd[icexpires]"
+															id="icexpires-indefinitely"
+															value="-1"
+															{if $customeradd.icexpires == -1} checked{/if}
+															{tip trigger="icexpires-indefinitely"}>
+														{trans("indefinitely")}
+													</label>
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				{/if}
+				<tr>
+					<td>{trans("RBE Name:")}</td>
+					<td>
+						<div class="valign-middle">
+							<textarea name="customeradd[rbename]" cols="45" rows="4"
+								{tip trigger="rbename"}
+								>{$customeradd.rbename|escape}</textarea>
+							{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>{trans("RBE")}</td>
+					<td>
+						<div class="valign-middle">
+							<input type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]"
+								{tip trigger="rbe"}>
+							{button type="link" icon="division" class="gusapi-button"
+								data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
+								tip="Click here to autocomplete company data from GUS REGON database"}
+							{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
+						</div>
+					</td>
+				</tr>
 				{$addr_counter = 0}
 				<tr>
 					<td class="valign-top">{icon name="home" tip="billing address"}</td>
@@ -246,14 +384,14 @@
 
 						{* if billing address is not set *}
 						{if $addr_found == 0}
-							{$tmp['location_address_type'] = $smarty.const.BILLING_ADDRESS}
-							{$tmp['prefix'] = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
-							{$tmp['location_street_name'] = ConfigHelper::getConfig('phpui.default_address')}
-							{$tmp['location_zip']        = ConfigHelper::getConfig('phpui.default_zip')}
-							{$tmp['location_city_name']  = ConfigHelper::getConfig('phpui.default_city')}
-							{$tmp['location_state']      = ConfigHelper::getConfig('phpui.default_stateid')}
-							{$tmp['location_country_id'] = ConfigHelper::getConfig('phpui.default_countryid')}
-							{$tmp['show'] = true}
+							{$tmp.location_address_type = $smarty.const.BILLING_ADDRESS}
+							{$tmp.location_state_name = $default_states[$smarty.const.BILLING_ADDRESS]}
+							{$tmp.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$tmp.location_street_name = ConfigHelper::getConfig('phpui.default_address')}
+							{$tmp.location_zip = ConfigHelper::getConfig('phpui.default_zip')}
+							{$tmp.location_city_name = ConfigHelper::getConfig('phpui.default_city')}
+							{$tmp.location_country_id = ConfigHelper::getConfig('phpui.default_countryid')}
+							{$tmp.show = true}
 							{$addr_counter = $addr_counter + 1}
 
 							{$tmp.hide_name=true}
@@ -289,8 +427,9 @@
 
 {*						 if postal address is not set*}
 						{if $addr_found == 0}
-							{$tmp['location_address_type'] = $smarty.const.POSTAL_ADDRESS}
-							{$tmp['prefix'] = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$tmp.location_address_type = $smarty.const.POSTAL_ADDRESS}
+							{$tmp.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$tmp.location_state_name = $default_states[$smarty.const.POSTAL_ADDRESS]}
 							{$addr_counter = $addr_counter + 1}
 							{location_box_expandable data=$tmp}
 						{/if}
@@ -319,6 +458,7 @@
 					</td>
 					<td>
 						{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+						{$v.location_state_name = $default_states[$smarty.const.LOCATION_ADDRESS]}
 						{$address_idx = $addr_counter}
 						{$v.default_type = 1}
 						{$v.delete_button = 1}
@@ -365,123 +505,6 @@
 				</tr>
 				<TR>
 					<TD class="valign-top">
-						{icon name="user-id-number"}
-					</TD>
-					<TD class="cell-flex">
-						<div>
-							<TABLE width="100%">
-								<COLGROUP>
-									<COL style="width: 1%;">
-									<COL style="width: 99%;">
-								</COLGROUP>
-								<tr>
-									<td class="nobr" colspan="2" id="identity-document-box">
-										<fieldset>
-											<legend class="bold">
-												{trans("Identity document")}
-											</legend>
-											<div class="identity-document-properties">
-												<label class="identity-document-property">
-													<span>{trans("Type")}</span>
-													{identitytypes elemname="customeradd[ict]" selected=$customerinfo.ict
-														tip="" trigger="ict"}
-												</label>
-												<label class="identity-document-property">
-													<span>{trans("Number")}</span>
-													{if $customerinfo.icnwarning}
-														<input type="hidden" name="customeradd[icnwarning]" value="1">
-													{/if}
-													<input type="text" value="{$customeradd.icn}" name="customeradd[icn]" size="30"
-															{tip trigger="icn"}>
-												</label>
-												<label class="identity-document-property">
-													<span>{trans("Expires")}</span>
-													<input type="text" value="{if $customeradd.icexpires > 0}{$customeradd.icexpires}{/if}"
-														name="customeradd[icexpires]" size="10" id="icexpires"
-														class="lms-ui-date lms-ui-date-unix"
-														{tip trigger="icexpires"}
-														{if $customeradd.icexpires == -1}disabled{/if}>
-												</label>
-												<label>
-													<input type="checkbox" name="customeradd[icexpires]"
-														id="icexpires-indefinitely"
-														value="-1"{if $customeradd.icexpires == -1}checked{/if}
-														{tip trigger="icexpires-indefinitely"}>
-													{trans("indefinitely")}
-												</label>
-											</div>
-										</fieldset>
-									</td>
-								</tr>
-								<TR>
-									<TD>{trans("SSN")}</TD>
-									<TD>
-										<input type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]"
-											{tip trigger="ssn"}>
-										{if $customeradd.ssnwarning}
-											<input type="hidden" name="customeradd[ssnwarning]" value="1">
-										{/if}
-										{if $customeradd.ssnexistencewarning}
-											<input type="hidden" name="customeradd[ssnexistencewarning]" value="1">
-										{/if}
-									</TD>
-								</TR>
-								<TR>
-									<TD>{trans("TEN")}</TD>
-									<TD>
-										<input type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]"
-											{tip trigger="ten"}>
-										{if $customeradd.tenwarning}
-											<input type="hidden" name="customeradd[tenwarning]" value="1">
-										{/if}
-										{if $customeradd.tenexistencewarning}
-											<input type="hidden" name="customeradd[tenexistencewarning]" value="1">
-										{/if}
-										{button type="link" icon="division" class="gusapi-button"
-											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_TEN
-											tip="Click here to autocomplete company data from GUS REGON database"}
-									</TD>
-								</TR>
-								<TR>
-									<TD>{trans("REGON")}</TD>
-									<TD>
-										<input type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]"
-											{tip trigger="regon"}>
-										{button type="link" icon="division" class="gusapi-button"
-											data_type=Utils::GUS_REGON_API_SEARCH_TYPE_REGON
-											tip="Click here to autocomplete company data from GUS REGON database"}
-									</TD>
-								</TR>
-								<TR>
-									<TD>{trans("RBE Name:")}</TD>
-									<TD>
-										<div class="valign-middle">
-											<textarea name="customeradd[rbename]" cols="45" rows="4"
-												{tip trigger="rbename"}
-												>{$customeradd.rbename|escape}</textarea>
-											{hint content="Enter National Court Register / Register of Business Entities Name (optional)"}
-										</div>
-									</TD>
-								</TR>
-								<TR>
-									<TD>{trans("RBE")}</TD>
-									<TD>
-										<div class="valign-middle">
-											<input type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]"
-												{tip trigger="rbe"}>
-											{button type="link" icon="division" class="gusapi-button"
-												data_type=Utils::GUS_REGON_API_SEARCH_TYPE_RBE
-												tip="Click here to autocomplete company data from GUS REGON database"}
-											{hint content="Enter National Court Register / Register of Business Entities Number (optional)"}
-										</div>
-									</TD>
-								</TR>
-							</TABLE>
-						</div>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="valign-top">
 						{icon name="paytype"}
 					</TD>
 					<TD>
@@ -494,7 +517,7 @@
 									<div class="valign-middle">
 										<select name="customeradd[paytime]" {if isset($customeradd.paytime)}data-value="{$customeradd.paytime}"{/if}
 											{tip class="lms-ui-combobox" trigger="paytime"}>
-											<option value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime == -1} selected{/if}>- {trans("default")} -</option>
+											<option value="-1"{if !isset($customeradd.paytime) || $customeradd.paytime == -1} selected{/if}>— {trans("default")} —</option>
 											<option value="0"{if isset($customeradd.paytime) && $customeradd.paytime == 0} selected{/if}>0</option>
 											<option value="7"{if $customeradd.paytime == 7} selected{/if}>7</option>
 											<option value="10"{if $customeradd.paytime == 10} selected{/if}>10</option>
@@ -525,16 +548,24 @@
 									{trans("Cutoff suspending")}
 								</TD>
 								<TD>
-									<div class="valign-middle">
+									<div class="valign-middle nobr">
 										<label>
-											<input type="checkbox" name="customeradd[cutoffstopindefinitely]" value="1"
-												   onchange="$('#cutoffstop').parent().toggle(!this.checked);"
-													{if $customeradd.cutoffstopindefinitely} checked{/if}>
+											<input type="checkbox" name="customeradd[cutoffstopindefinitely]"
+												id="cutoffstopindefinitely" value="1"
+												{if $customeradd.cutoffstopindefinitely} checked{/if}>
 											{trans("indefinitely")}
-										</label>&nbsp;
+										</label>
+									</div>
+									<div class="valign-middle nobr cutoffstop">
 										<input type="text" name="customeradd[cutoffstop]" id="cutoffstop"
-											   {if $customeradd.cutoffstopindefinitely}style="display: none;"{elseif $customeradd.cutoffstop}value="{$customerinfo.cutoffstop}"{/if}
-											   size="10" {tip class="lms-ui-date" trigger="cutoffstop"}>
+											{if $customeradd.cutoffstopindefinitely} style="display: none;"
+											{elseif $customeradd.cutoffstop} value="{$customerinfo.cutoffstop}"
+											{/if}
+											size="10"
+											{tip class="lms-ui-date" trigger="cutoffstop"}>
+										{day_selection elem="#cutoffstop" days="3,7,10,14"}
+									</div>
+									<div class="valign-middle nobr">
 										{hint content="Select date of cutoff suspending (optional)"}
 									</div>
 								</TD>
@@ -549,26 +580,49 @@
 					<TD>
 						<TABLE cellpadding="0" class="lms-ui-separated-rows">
 							<tbody class="lms-ui-multi-check">
-								<TR>
-									<TD class="bold">
-										{trans("Consents")}
-									</TD>
-									<TD>
-										<INPUT type="checkbox" class="lms-ui-multi-check-all" value="1">
-									</TD>
-								</TR>
+								<tr>
+									<td class="bold">
+										<label for="check-all-consents">
+											{trans("Consents")}
+										</label>
+									</td>
+									<td>
+										<input type="checkbox" class="lms-ui-multi-check-all"
+											id="check-all-consents" value="1">
+									</td>
+								</tr>
 								{block name="customeradd-options"}
 									{foreach $_CCONSENTS as $type => $consent}
-										<TR>
-											<TD>
-												<span class="consent-label">{$consent.label}</span>
-											</TD>
-											<TD>
-												<INPUT type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"
-													value="{$smarty.now}"{if isset($customeradd.consents[$type])} checked{/if}
-													{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
-											</TD>
-										</TR>
+										{if !is_array($consent)}
+											{continue}
+										{/if}
+										{if $consent.type == 'selection'}
+											{foreach $consent.values as $subtype => $subconsent}
+												<tr>
+													<td>
+														<label class="consent-label" for="chkconsent{$subtype}">
+															{t a=$consent.label b=$subconsent.label}<!subconsent-label>$a ($b){/t}
+														</label>
+													</td>
+													<td>
+														<input type="radio" name="customeradd[consents][{$type}]" id="chkconsent{$subtype}"
+															value="{$subtype}"
+															{if isset($customeradd.consents[$type]) && $customeradd.consents[$type] == $subtype} checked{/if}>
+													</td>
+												</tr>
+											{/foreach}
+										{else}
+											<tr>
+												<td>
+													<span class="consent-label">{$consent.label}</span>
+												</td>
+												<td>
+													<input type="checkbox" name="customeradd[consents][{$type}]" id="chkconsent{$type}"
+														value="{$smarty.now}"{if isset($customeradd.consents[$type])} checked{/if}
+														{tip trigger="chkconsent"|cat:$type class="lms-ui-multi-check"}>
+												</td>
+											</tr>
+										{/if}
 									{/foreach}
 								{/block}
 							</tbody>
@@ -591,7 +645,7 @@
 						<div class="valign-middle">
 							<textarea rows="10" cols="60" name="customeradd[info]" class="lms-ui-wysiwyg-editor"
 								{if isset($customeradd.wysiwyg.info)} data-wysiwyg="{$customeradd.wysiwyg.info}"{/if}
-								>{$customeradd.info|escape}</textarea>
+								>{$customeradd.info|default:""|escape}</textarea>
 							{hint content="Enter additional information (optional)"}
 						</div>
 					</TD>
@@ -602,7 +656,7 @@
 						<div class="valign-middle">
 							<textarea rows="10" cols="60" name="customeradd[message]" class="lms-ui-wysiwyg-editor"
 								{if isset($customeradd.wysiwyg.message)} data-wysiwyg="{$customeradd.wysiwyg.message}"{/if}
-								>{$customeradd.message|escape}</textarea>
+								>{$customeradd.message|default:""|escape}</textarea>
 							{hint content="Enter notice contents (optional)"}
 						</div>
 					</TD>
@@ -613,7 +667,7 @@
 						<div class="valign-middle">
 							<textarea rows="10" cols="60" name="customeradd[notes]" class="lms-ui-wysiwyg-editor"
 								{if isset($customeradd.wysiwyg.notes)} data-wysiwyg="{$customeradd.wysiwyg.notes}"{/if}
-								>{$customeradd.notes|escape}</textarea>
+								>{$customeradd.notes|default:""|escape}</textarea>
 							{hint content="Enter notes (optional)"}
 						</div>
 					</TD>
@@ -625,7 +679,7 @@
 							<textarea name="customeradd[documentmemo]" class="lms-ui-wysiwyg-editor"
 								cols="60" rows="10"
 								{if isset($customeradd.wysiwyg.documentmemo)} data-wysiwyg="{$customeradd.wysiwyg.documentmemo}"{/if}
-								>{$customeradd.documentmemo|escape}</textarea>
+								>{$customeradd.documentmemo|default:""|escape}</textarea>
 							{hint content="Enter document memo (optional)"}
 						</div>
 					</TD>
@@ -667,6 +721,21 @@
 	$(function() {
 		$('form[name="customeradd"] [name="customeradd[lastname]"]').focus();
 
+		var legal_person_required_properties = [];
+		var natural_person_required_properties = [];
+
+		{if !empty($legal_person_required_properties)}
+			{foreach $legal_person_required_properties as $index => $property}
+				legal_person_required_properties.push('{$index}');
+			{/foreach}
+		{/if}
+
+		{if !empty($natural_person_required_properties)}
+			{foreach $natural_person_required_properties as $index => $property}
+				natural_person_required_properties.push('{$index}');
+			{/foreach}
+		{/if}
+
 		$('[name="customeradd[pin]"]').change(function() {
 			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{str_replace("'", "\'", $pin_allowed_characters)}')) {
 				this.setCustomValidity('');
@@ -703,7 +772,12 @@
 		});
 
 		$('[name="customeradd[type]"]').change(function() {
-			$('[name="customeradd[name]"]').prop('required', $('#private').prop('checked'));
+			var isPrivate = $('#private').prop('checked');
+			$('[name="customeradd[name]"]').prop('required', isPrivate);
+			var required_properties = isPrivate ? natural_person_required_properties : legal_person_required_properties;
+			$.each(['ten', 'ssn', 'icn'], function(index, property) {
+				$('[name="customeradd[' + property + ']"]').prop('required', required_properties.indexOf(property) !== -1);
+			});
 		}).change();
 
 		$('#randomize').click(function() {
@@ -719,6 +793,14 @@
 		if (!$('[name="customeradd[pin]"]').val().length) {
 			$('#randomize').click();
 		}
+
+		$('#check-all-consents').change(function() {
+			$(this).closest('.lms-ui-multi-check').find(':radio').prop('checked', $(this).prop('checked'));
+		});
+
+		$('#cutoffstopindefinitely').change(function() {
+			$('.cutoffstop').toggle(!this.checked);
+		});
 	});
 
 </script>

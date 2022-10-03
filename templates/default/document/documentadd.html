@@ -79,7 +79,7 @@
 			<td>
 				<select size="1" name="document[type]" id="doctype" onchange="DocTypeChanged();"
 						{tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
-					<option value="0">{trans("select type")}</option>
+					<option value="0">{trans("— select type —")}</option>
 					{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 						{if $key < 0 && in_array($key, $docrights)}
 							<option value="{$key}"{if $document.type==$key} selected{/if}>{$item}</option>
@@ -162,17 +162,35 @@
 				<strong>{trans("Period:")}</strong>
 			</td>
 			<td>
+				{$allow_past_date = ConfigHelper::checkConfig('documents.allow_past_date', true)}
 				{trans("from:")}
 				<input type="text" name="document[fromdate]" id="fromdate"
 					value="{if $document.fromdate}{$document.fromdate}{/if}"
 					placeholder="{trans("yyyy/mm/dd")}"
 					{tip class="lms-ui-date lms-ui-date-unix" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"}
+					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
 					size="10">&nbsp;
 				{trans("to:")}
 				<input type="text" name="document[todate]" id="todate"
 					value="{if $document.todate}{$document.todate}{/if}"
 					placeholder="{trans("yyyy/mm/dd")}"
 					{tip class="lms-ui-date lms-ui-date-unix" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"}
+					{if !$allow_past_date}data-min-date="{date('Y-m-d')}"{/if}
+					size="10">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="service"}
+			</td>
+			<td>
+				<strong>{trans("Service start")}</strong>
+			</td>
+			<td>
+				<input type="text" name="document[startdate]" id="startdate"
+					value="{if $document.startdate}{$document.startdate}{/if}"
+					placeholder="{trans("yyyy/mm/dd")}"
+					{tip class="lms-ui-date lms-ui-date-unix" text="Enter service start date in YYYY/MM/DD format (optional)" trigger="startdate"}
 					size="10">
 			</td>
 		</tr>

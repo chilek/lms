@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: domainlist.php,v 1.34 2012/01/02 11:01:34 alec Exp $
+ *  $Id$
  */
 
 function GetDomainList($order = 'name,asc', $customer = '', $filtr = '')
@@ -153,7 +153,7 @@ $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('dlp', $page);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

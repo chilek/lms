@@ -91,42 +91,45 @@ if (isset($_POST['voipaccountdata'])) {
     }
 
     if ($voipaccountdata['login']=='') {
-        $error['login'] = trans('Voip account login is required!');
+        $error['login'] = trans('VoIP account login is required!');
     } elseif (strlen($voipaccountdata['login']) > 32) {
-        $error['login'] = trans('Voip account login is too long (max.32 characters)!');
+        $error['login'] = trans('VoIP account login is too long (max.32 characters)!');
     } elseif ($LMS->GetVoipAccountIDByLogin($voipaccountdata['login'])) {
         $error['login'] = trans('Specified login is in use!');
-    } elseif (!preg_match('/^[_a-z0-9-]+$/i', $voipaccountdata['login'])) {
+    } elseif (!preg_match('/' . ConfigHelper::getConfig('voip.account_login_regexp', '^[_a-z0-9-]+$') . '/i', $voipaccountdata['login'])) {
         $error['login'] = trans('Specified login contains forbidden characters!');
     }
 
+    $password_max_length = intval(ConfigHelper::getConfig('voip.account_password_max_length', 32));
     if ($voipaccountdata['passwd']=='') {
-        $error['passwd'] = trans('Voip account password is required!');
-    } elseif (strlen($voipaccountdata['passwd']) > 32) {
-        $error['passwd'] = trans('Voip account password is too long (max.32 characters)!');
-    } elseif (!preg_match('/^[_a-z0-9-@%]+$/i', $voipaccountdata['passwd'])) {
+        $error['passwd'] = trans('VoIP account password is required!');
+    } elseif (strlen($voipaccountdata['passwd']) > $password_max_length) {
+        $error['passwd'] = trans('VoIP account password is too long (max. $a characters)!', $password_max_length);
+    } elseif (!preg_match('/' . ConfigHelper::getConfig('voip.account_password_regexp', '^[_a-z0-9-@%]+$') . '/i', $voipaccountdata['passwd'])) {
         $error['passwd'] = trans('Specified password contains forbidden characters!');
     }
 
-    foreach ($voipaccountdata['phone'] as $k => $phone) {
-        if (!strlen($phone)) {
-            $error['phone'.$k] = trans('Voip account phone number is required!');
-        } elseif (strlen($phone) > 32) {
-            $error['phone'.$k] = trans('Voip account phone number is too long (max.32 characters)!');
-        } elseif ($LMS->GetVoipAccountIDByPhone($phone)) {
-            $error['phone'.$k] = trans('Specified phone is in use!');
-        } elseif (!preg_match('/^C?[0-9]+$/', $phone)) {
-            $error['phone'.$k] = trans('Specified phone number contains forbidden characters!');
+    foreach ($voipaccountdata['numbers'] as $k => $number) {
+        if (!strlen($number['phone'])) {
+            $error['phone-number-' . $k] = trans('VoIP account phone number is required!');
+        } elseif (strlen($number['phone']) > 32) {
+            $error['phone-number-' . $k] = trans('VoIP account phone number is too long (max.32 characters)!');
+        } elseif ($LMS->GetVoipAccountIDByPhone($number['phone'])) {
+            $error['phone-number-' . $k] = trans('Specified phone is in use!');
+        } elseif (!preg_match('/^C?[0-9]+$/', $number['phone'])) {
+            $error['phone-number-' . $k] = trans('Specified phone number contains forbidden characters!');
         }
     }
 
-    if (!isset($voipaccountdata['balance'])) {
+    if (!isset($voipaccountdata['balance']) || !is_numeric($voipaccountdata['balance'])) {
         $voipaccountdata['balance'] = 0;
     } elseif ($voipaccountdata['balance'] < 0) {
         $error['balance'] = trans('Account balance must be positive!');
     }
 
-    if ($voipaccountdata['cost_limit'] < 0) {
+    if (!isset($voipaccountdata['cost_limit']) || !is_numeric($voipaccountdata['cost_limit'])) {
+        $voipaccountdata['cost_limit'] = null;
+    } elseif ($voipaccountdata['cost_limit'] < 0) {
         $error['cost_limit'] = trans('Cost limit must be positive!');
     }
 
@@ -142,7 +145,7 @@ if (isset($_POST['voipaccountdata'])) {
             $error['voipaccountdata[customerid]'] = trans('Selected customer is not connected!');
             $error['voipaccountdata[ownerid]'] = trans('Selected customer is not connected!');
         } elseif ($status == CSTATUS_WAITING) { // awaiting
-            $error['voipaccountdata[customerid]'] = trans('Voip account owner is not connected!');
+            $error['voipaccountdata[customerid]'] = trans('VoIP account owner is not connected!');
             $error['voipaccountdata[ownerid]'] = trans('Selected customer is not connected!');
         }
     }
@@ -171,12 +174,17 @@ if (isset($_POST['voipaccountdata'])) {
 
     if (!$error) {
         $voipaccountdata['flags'] = 0;
-        if (isset($voipaccountdata['admin_record_flag'])) {
-            $voipaccountdata['flags'] |= CALL_FLAG_ADMIN_RECORDING;
+
+        if (isset($voipaccountdata[VOIP_ACCOUNT_FLAG_ADMIN_RECORDING])) {
+            $voipaccountdata['flags'] |= VOIP_ACCOUNT_FLAG_ADMIN_RECORDING;
         }
 
-        if (isset($voipaccountdata['customer_record_flag'])) {
-            $voipaccountdata['flags'] |= CALL_FLAG_CUSTOMER_RECORDING;
+        if (isset($voipaccountdata[VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING])) {
+            $voipaccountdata['flags'] |= VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING;
+        }
+
+        if (isset($voipaccountdata[VOIP_ACCOUNT_FLAG_TRUNK])) {
+            $voipaccountdata['flags'] |= VOIP_ACCOUNT_FLAG_TRUNK;
         }
 
         $voipaccountid = $LMS->VoipAccountAdd($voipaccountdata);
@@ -199,11 +207,9 @@ if (isset($_POST['voipaccountdata'])) {
     }
 }
 
-$layout['pagetitle'] = trans('New Voip Account');
+$layout['pagetitle'] = trans('New VoIP Account');
 
-if (!ConfigHelper::checkConfig('phpui.big_networks')) {
-    $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+$SMARTY->assign('customers', ConfigHelper::checkConfig('phpui.big_networks') ? array() : $LMS->GetCustomerNames());
 
 if (!empty($voipaccountdata['ownerid']) && $LMS->CustomerExists($voipaccountdata['ownerid']) && ($customerid = $voipaccountdata['ownerid'])) {
     include(MODULES_DIR.'/customer.inc.php');
@@ -220,7 +226,6 @@ $hook_data = $plugin_manager->executeHook(
 $voipaccountdata = $hook_data['voipaccountdata'];
 
 $SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers"));
-$SMARTY->assign('customers', $customers);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('voipaccountdata', $voipaccountdata);
 $SMARTY->display('voipaccount/voipaccountadd.html');

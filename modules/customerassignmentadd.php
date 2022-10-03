@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ $customer = $DB->GetRow('SELECT id, divisionid, '
 	FROM customerview WHERE id = ?', array($_GET['id']));
 
 if (!$customer) {
-    $SESSION->redirect('?'.$SESSION->get('backto'));
+    $SESSION->redirect_to_history_entry();
 }
 
 if (isset($_POST['assignment'])) {
@@ -39,7 +39,7 @@ if (isset($_POST['assignment'])) {
     $result = $LMS->ValidateAssignment($a);
     extract($result);
     if (empty($a['taxid'])) {
-        $error['taxid'] = trans('- no tax rates defined -');
+        $error['taxid'] = trans('— no tax rates defined —');
     }
 
     if (isset($schemaid) && !$LMS->CheckSchemaModifiedValues($a)) {
@@ -48,7 +48,7 @@ if (isset($_POST['assignment'])) {
 
     // try to restrict node assignment sharing
     if ($a['tariffid'] > 0 && isset($a['nodes']) && !empty($a['nodes'])) {
-        $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'], $a['nodes'], $from, $to);
+        $restricted_nodes = $LMS->CheckNodeTariffRestrictions(isset($a['id']) ? $a['id'] : null, $a['nodes'], $from, $to);
         $node_multi_tariff_restriction = ConfigHelper::getConfig(
             'phpui.node_multi_tariff_restriction',
             '',
@@ -85,12 +85,13 @@ if (isset($_POST['assignment'])) {
         $a['datefrom']   = $from;
         $a['dateto']     = $to;
         $a['count']      = $count;
+        $a['paytime']    = $paytime;
 
         $DB->BeginTrans();
 
         $LMS->UpdateExistingAssignments($a);
 
-        if (is_array($a['sassignmentid'][$schemaid])) {
+        if (isset($a['sassignmentid'][$schemaid]) && is_array($a['sassignmentid'][$schemaid])) {
             $modifiedvalues = $a['values'][$schemaid];
             $counts = $a['counts'][$schemaid];
             $backwardperiods = $a['backwardperiods'][$schemaid];
@@ -129,7 +130,7 @@ if (isset($_POST['assignment'])) {
             )
         );
 
-        $SESSION->redirect('?'.$SESSION->get('backto'));
+        $SESSION->redirect_to_history_entry();
     }
 
     $a['alltariffs'] = isset($a['alltariffs']);
@@ -153,7 +154,7 @@ if (isset($_POST['assignment'])) {
         }
     }
     $a['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
-    $a['align-periods'] = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.default_assignment_align_periods', true));
+    $a['align-periods'] = ConfigHelper::checkConfig('phpui.default_assignment_align_periods', true);
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
         $a['period'] = $default_assignment_period;
@@ -184,13 +185,19 @@ if (isset($_POST['assignment'])) {
         $a['existing_assignments']['operation'] = EXISTINGASSIGNMENT_KEEP;
     }
 
+    if (isset($_GET['nodeid']) && ($nodeid = intval($_GET['nodeid'])) > 0) {
+        $a['nodes'] = array(
+            $nodeid => $nodeid,
+        );
+    }
+
     $a['count'] = 1;
     $a['currency'] = Localisation::getDefaultCurrency();
 }
 
 $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $LMS->executeHook(
     'customerassignmentadd_before_display',
@@ -218,8 +225,13 @@ $SMARTY->assign('assignment', $a);
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$defaultTaxId = array_values($LMS->GetTaxes(null, null, true));
-$defaultTaxId = $defaultTaxId[0]['id'];
+$defaultTaxIds = $LMS->GetTaxes(null, null, true);
+if (is_array($defaultTaxIds)) {
+    $defaultTaxId = reset($defaultTaxIds);
+    $defaultTaxId = $defaultTaxId['id'];
+} else {
+    $defaultTaxId = 0;
+}
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], true, false));
 $SMARTY->assign('customerinfo', $customer);

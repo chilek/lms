@@ -286,7 +286,7 @@
 									<label>
 										{trans("of selected user:")}
 										<select id="from-user" name="useradd[src_userid]">
-											<option value="">{trans("<!access-rights>- empty -")}</option>
+											<option value="">{trans("<!access-rights>— empty —")}</option>
 											{foreach $users as $user}
 												<option value="{$user.id}"
 														{if isset($useradd.src_userid) && $useradd.src_userid == $user.id} selected{/if}>{$user.rname|escape} ({$user.login})</option>
@@ -330,7 +330,7 @@
 			<td>
 				<select size="4" name="useradd[usergroups][]" id="usergroups" multiple
 					{tip text="Select user groups" class="lms-ui-multiselect" trigger="usergroups"}
-					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 					{foreach $usergroups as $group}
 						<option value="{$group.id}"{if isset($selectedusergroups[$group.id])} selected{/if}>{$group.name}</option>
 					{/foreach}
@@ -346,7 +346,7 @@
 			<td>
 				<select size="4" name="useradd[customergroups][]" id="customergroups" multiple
 					{tip text="Select customer groups" class="lms-ui-multiselect" trigger="customergroups"}
-					data-default-value="{trans("- none -")}" data-shorten-to-default-value="false">
+					data-default-value="{trans("— none —")}" data-shorten-to-default-value="false">
 					{foreach $customergroups as $group}
 						<option value="{$group.id}"{if isset($selectedgroups[$group.id])} selected{/if}>{$group.name}</option>
 					{/foreach}
@@ -363,7 +363,7 @@
 				<td>
 					<select size="4" name="useradd[divisions][]" id="divisions" multiple
 						{tip text="Select divisions" class="lms-ui-multiselect" trigger="division"}
-						data-default-value="{trans("- none -")}" data-shorten-to-default-value="false" required>
+						data-default-value="{trans("— none —")}" data-shorten-to-default-value="false" required>
 						{foreach $divisions as $division}
 							<option value="{$division.id}" {if isset($useradd.divisions) && in_array($division.id, $useradd.divisions)} selected{/if}>
 								{$division.label|trunescape:30}

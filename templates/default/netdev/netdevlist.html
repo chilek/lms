@@ -12,30 +12,34 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="95%">
-			<IMG src="img/netdev.gif" ALT="">
+			{icon name="netdev"}
 			<A href="?m=netdevlist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<br>
-			<IMG src="img/producer.gif" ALT="">
+			{icon name="type"}
 			<a href="?m=netdevlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type")}</a> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="producer"}
 			<A href="?m=netdevlist&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			{icon name="model"}
 			<A href="?m=netdevlist&o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<td width="1%" class="nobr valign-top">
-			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">
-				{trans("Location:")}
-			</A>
+		    {icon name="location"}
+			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location")}</A>
 			{if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<TD width="1%" class="nobr align-left valign-top">
-			<A href="?m=netdevlist&amp;o=netnode{if $listdata.direction == "asc" && $listdata.order == "netnode"},desc{/if}">{trans("Network node:")}</A> {if $listdata.order == "netnode"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="netnode"}
+			<A href="?m=netdevlist&amp;o=netnode{if $listdata.direction == "asc" && $listdata.order == "netnode"},desc{/if}">{trans("Network node")}</A> {if $listdata.order == "netnode"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br>
+			{icon name="customer"}
+			<A href="?m=netdevlist&amp;o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("Customer")}</A> {if $listdata.order == "customername"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="text-right valign-top">
-			<A href="?m=netdevlist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		<TD width="1%" class="text-right valign-top nobr">
+			{icon name="id"} <A href="?m=netdevlist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
-			<IMG src="img/port.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=ports{if $listdata.direction == "asc" && $listdata.order == "ports"},desc{/if}">{trans("Number of ports:")}</A> {if $listdata.order == "ports"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="port"}<A href="?m=netdevlist&amp;o=ports{if $listdata.direction == "asc" && $listdata.order == "ports"},desc{/if}">{trans("Number of ports:")}</A> {if $listdata.order == "ports"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			(<A href="?m=netdevlist&amp;o=takenports{if $listdata.direction == "asc" && $listdata.order == "takenports"},desc{/if}">{trans("Ports used:")}</A>{if $listdata.order == "takenports"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})<BR>
-			<IMG src="img/serialnumber.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=serialnumber{if $listdata.direction == "asc" && $listdata.order == "serialnumber"},desc{/if}">{trans("Serial number:")}</A> {if $listdata.order == "serialnumber"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			{icon name="serial"}<A href="?m=netdevlist&amp;o=serialnumber{if $listdata.direction == "asc" && $listdata.order == "serialnumber"},desc{/if}">{trans("Serial number")}</A> {if $listdata.order == "serialnumber"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<td width="1%" class="text-right nobr bold">
 			{trans("Total:")} {$listdata.total|default:"0"}
@@ -43,10 +47,9 @@
 	</TR>
 	<TR>
 		<TD colspan="6">
-			<span class="bold">{trans("Filter:")}</span>
 			{trans("Status")}:
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>- {trans("all")} -</OPTION>
+				<OPTION VALUE="-1" {if $listdata.status == -1}  SELECTED {/if}>{trans("— all —")}</OPTION>
 				{foreach $_NETELEMENTSTATUSES as $idx => $status}
 					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
 				{/foreach}
@@ -56,16 +59,16 @@
 			</SELECT>
 			{trans("Project:")}
 			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>— {trans("without project")} —</OPTION>
 				{foreach $NNprojects as $project}
 					<OPTION value="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name|escape}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Network node:")}
 			<SELECT NAME="n" ONCHANGE="document.choosefilter.submit();" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}>
-				<OPTION VALUE="-1"{if $listdata.netnode == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.netnode == -2} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.netnode == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.netnode == -2} selected{/if}>{trans("— none —")}</OPTION>
 				{foreach $netnodes as $netnode}
 				<OPTION VALUE="{$netnode.id}"{if $listdata.netnode == $netnode.id} selected{/if}>{$netnode.name}</OPTION>
 				{/foreach}
@@ -74,16 +77,16 @@
 			{networkDeviceTypes elemname="type" selected=$listdata.type onchange="document.choosefilter.submit();"}
 			{trans("Producer:")}
 			<SELECT SIZE="1" NAME="producer" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.producer == -2} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.producer == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.producer == -2} selected{/if}>{trans("— none —")}</OPTION>
 				{foreach $producers as $producer}
 				<OPTION VALUE="{$producer}"{if $listdata.producer == $producer} selected{/if}>{$producer}</OPTION>
 				{/foreach}
 			</SELECT>
 			{trans("Model:")}
 			<SELECT SIZE="1" NAME="model" ONCHANGE="document.choosefilter.submit();">
-				<OPTION VALUE="-1"{if $listdata.model == -1} selected{/if}>- {trans("all")} -</OPTION>
-				<OPTION VALUE="-2"{if $listdata.model == -2} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION VALUE="-1"{if $listdata.model == -1} selected{/if}>{trans("— all —")}</OPTION>
+				<OPTION VALUE="-2"{if $listdata.model == -2} selected{/if}>{trans("— none —")}</OPTION>
 				{foreach $models as $model}
 				<OPTION VALUE="{$model}"{if $listdata.model == $model} selected{/if}>{$model}</OPTION>
 				{/foreach}
@@ -112,11 +115,11 @@
 				<i class="lms-ui-icon-netdevunk"></i>
 			{/if}
 			<A href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
-					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}">
+					title="{$netdev.description|replace:"\n":"<br>"|default:trans("— no description —")}">
 				<B>{$netdev.name}</B></A>
 			<br>
 			{if $netdev.producer}
-				<IMG src="img/producer.gif" ALT="">
+				{icon name="type"}
 				{if $netdev.devtypename}
 					{trans($netdev.devtypename)}
 				{/if}
@@ -127,7 +130,7 @@
 		</TD>
 		<TD class="nobr valign-top">
 			{if $netdev.location}
-				{$netdev.location}
+				{icon name="location" label=$netdev.location}
 				{if $netdev.borough_name}
 					<div class="blend">
 						({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
@@ -141,7 +144,9 @@
 						({$netnodes[$netnodeid].location_state_name} / {$netnodes[$netnodeid].location_district_name} / {$_BOROUGHTYPES[$netnodes[$netnodeid].location_borough_type]} {$netnodes[$netnodeid].location_borough_name})
 					</div>
 				{/if}
-
+			{/if}
+			{if $netdev.ownerid}
+				<div>{button type="link" icon="customer" label=$netdev.customername href="?m=customerinfo&id={$netdev.ownerid}"}</div>
 			{/if}
 		</TD>
 		<TD class="nobr valign-top">
@@ -152,8 +157,8 @@
 			({$netdev.id|string_format:"%04d"})
 		</TD>
 		<TD class="nobr">
-			<IMG src="img/port.gif" ALT=""> {$netdev.ports} ({$netdev.takenports})<BR>
-			<IMG src="img/serialnumber.gif" ALT=""> {$netdev.serialnumber}
+			{icon name="port" label="{$netdev.ports} ({$netdev.takenports})"}<br>
+			{icon name="serialnumber" label=$netdev.serialnumber}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $netdev.filecontainers}
@@ -185,10 +190,12 @@
 				</a>
 				{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
-			{button type="link" icon="delete" class="delete-netdev" tip="Delete" href="?m=netdevdel&id={$netdev.id}&is_sure=1"}
-			{button type="link" icon="edit" tip="Edit" href="?m=netdevedit&id={$netdev.id}"}
-			{button type="link" icon="clone" tip="Clone" href="?m=netdevadd&id={$netdev.id}&clone=1"}
-			{button type="link" icon="info" tip="Info" href="?m=netdevinfo&id={$netdev.id}"}
+			{buttons}
+				{button type="link" icon="delete" class="delete-netdev" tip="Delete" href="?m=netdevdel&id={$netdev.id}&is_sure=1"}
+				{button type="link" icon="edit" tip="Edit" href="?m=netdevedit&id={$netdev.id}"}
+				{button type="link" icon="clone" tip="Clone" href="?m=netdevadd&id={$netdev.id}&clone=1"}
+				{button type="link" icon="info" tip="Info" href="?m=netdevinfo&id={$netdev.id}"}
+			{/buttons}
 		</TD>
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdev.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}

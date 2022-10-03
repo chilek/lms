@@ -296,24 +296,24 @@ $allradiosectors = $DB->GetAllByKey("SELECT * FROM netradiosectors ORDER BY id",
 
 
 $teryt_cities = $DB->GetAllByKey(
-    "
-	SELECT lc.id AS cityid,
+    "SELECT lc.id AS cityid,
 			ls.name AS area_woj,
 			ld.name AS area_pow,
 			lb.name AS area_gmi,
 			(" . $DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type') . ") AS area_terc,
 			lc.name AS area_city,
 			lc.ident AS area_simc,
-			p.zip AS location_zip
+			p.zip AS location_zip,
+			(CASE WHEN EXISTS (SELECT 1 FROM location_streets lst WHERE lst.cityid = lc.id) THEN 1 ELSE 0 END) AS with_streets
 		FROM location_cities lc
 		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 		LEFT JOIN location_districts ld ON ld.id = lb.districtid
 		LEFT JOIN location_states ls ON ls.id = ld.stateid
-		LEFT JOIN location_streets lst ON lst.cityid = lc.id
 		LEFT JOIN (
 			SELECT pna.cityid, pna.streetid, " . $DB->GroupConcat('pna.zip', ',', true) . " AS zip FROM pna
 			WHERE pna.streetid IS NULL
-			GROUP BY pna.cityid, pna.streetid HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
+			GROUP BY pna.cityid, pna.streetid
+			HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
 		) p ON p.cityid = lc.id
 		JOIN (
 			SELECT DISTINCT city_id FROM addresses
@@ -414,9 +414,9 @@ if ($customer_netdevices) {
 			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.zip ELSE asrc.zip END) AS location_zip
 		FROM netlinks nl
 		JOIN netdevices ndsrc ON ndsrc.id = nl.src
-		JOIN addresses asrc ON asrc.id = ndsrc.address_id
+		LEFT JOIN addresses asrc ON asrc.id = ndsrc.address_id
 		JOIN netdevices nddst ON nddst.id = nl.dst
-		JOIN addresses adst ON adst.id = nddst.address_id
+		LEFT JOIN addresses adst ON adst.id = nddst.address_id
 		JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
 			OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
 		LEFT JOIN netradiosectors rs ON (ndsrc.ownerid IS NULL AND rs.id = nl.srcradiosector)
@@ -1038,8 +1038,15 @@ if ($netnodes) {
 
         if (empty($netnode['location_street_name'])) {
             // no street specified for address
-            $netnode['address_ulica'] = "BRAK ULICY";
-            $netnode['address_symul'] = "99999";
+            if (strlen(trim($netnode['address_budynek']))
+                && (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets']))) {
+                $netnode['address_ulica'] = "BRAK ULICY";
+                $netnode['address_symul'] = "99999";
+            } else {
+                $netnode['address_ulica'] = '';
+                $netnode['address_symul'] = '';
+                $netnode['address_budynek'] = '';
+            }
         } elseif (!isset($netnode['address_symul'])) {
             // specified street is from outside teryt
             $netnode['address_ulica'] = "ul. SPOZA ZAKRESU";
@@ -1384,11 +1391,17 @@ if ($netnodes) {
             $teryt['location_zip'] = empty($range['location_zip']) ? $teryt['location_zip'] : $range['location_zip'];
 
             if (empty($range['location_street_name'])) {
-                $teryt['address_ulica'] = "BRAK ULICY";
-                $teryt['address_symul'] = "99999";
+                if (!isset($teryt_cities[$range['location_city']]) || empty($teryt['with_streets'])) {
+                    $teryt['address_ulica'] = "BRAK ULICY";
+                    $teryt['address_symul'] = "99999";
+                } else {
+                    $teryt['address_ulica'] = '';
+                    $teryt['address_symul'] = '';
+                    $teryt['address_budynek'] = '';
+                }
             } else {
                 if (!isset($teryt['address_symul'])) {
-                    if ($DB->GetOne("SELECT COUNT(*) FROM location_streets WHERE cityid = ?", array($range['location_city']))) {
+                    if (isset($teryt_cities[$range['location_city']]) && !empty($teryt['with_streets'])) {
                         $teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
                         $teryt['address_symul'] = "99998";
                     } else {
@@ -1561,8 +1574,14 @@ if ($netnodes) {
                             $set = 10;
                         }
                         if ($node['type'] == 0) {
+                            if (!isset($personalnodes[$node['servicetypes']][$set])) {
+                                $personalnodes[$node['servicetypes']][$set] = 0;
+                            }
                             $personalnodes[$node['servicetypes']][$set]++;
                         } else {
+                            if (!isset($commercialnodes[$node['servicetypes']][$set])) {
+                                $commercialnodes[$node['servicetypes']][$set] = 0;
+                            }
                             $commercialnodes[$node['servicetypes']][$set]++;
                         }
                         if ($node['downstream'] > $maxdownstream) {
@@ -1611,8 +1630,9 @@ if ($netnodes) {
                         'zas_ulic' => $teryt['address_symul'],
                         'zas_house' => str_replace(' ', '', $teryt['address_budynek']),
                         'zas_zip' => $teryt['location_zip'],
-                        'zas_latitude' => !strlen($netrange['latitude']) && !strlen($netnode['latitude'])
-                            ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['latitude']) ? $netnode['latitude'] : $netrange['latitude'])),
+                        'zas_latitude' => (!isset($netrange['latitude']) || !strlen($netrange['latitude']))
+                            && (!isset($netnode['latitude']) || !strlen($netnode['latitude']))
+                            ? '' : str_replace(',', '.', sprintf('%.6f', (!isset($netrange['latitude']) || !strlen($netrange['latitude'])) ? $netnode['latitude'] : $netrange['latitude'])),
                         'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
                             ? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
                         'zas_tech' => $technology,
@@ -1762,9 +1782,9 @@ if ($netnodes) {
                     ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $range['location_street_name'],
                 'zas_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
                 'zas_house' => str_replace(' ', '', $netnode['address_budynek']),
-                'zas_zip' => $netnode['location_zip'],
-                'zas_latitude' => $netnode['latitude'],
-                'zas_longitude' => $netnode['longitude'],
+                'zas_zip' => isset($netnode['location_zip']) ? $netnode['location_zip'] : '',
+                'zas_latitude' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
+                'zas_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
                 'zas_tech' => $range_technology,
                 'zas_ltech' => $range_linktechnology,
                 'zas_phonepots' => 'Nie',
@@ -2028,7 +2048,7 @@ if ($netdevices) {
                             }
 
                             $processed_netlinks[$netnodelinkid] = true;
-                            $netnodes[$netdevnetnode]['distports']++;
+                            //$netnodes[$netdevnetnode]['distports']++;
                             $foreign = false;
 
                             if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2) {
@@ -2106,7 +2126,7 @@ if ($netdevices) {
                         }
 
                         $processed_netlinks[$netnodelinkid] = true;
-                        $netnodes[$netdevnetnode]['distports']++;
+                        //$netnodes[$netdevnetnode]['distports']++;
                         $foreign = false;
 
                         if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$srcnetnode]['ownership'] < 2) {
@@ -2180,7 +2200,7 @@ if ($netlinks) {
     foreach ($netlinks as $netlink) {
         if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
             if ($netlink['type'] == 1) {
-                $linktechnology = $netlink['technology'];
+                $linktechnology = empty($netlink['technology']) ? $netlink['technology'] : 0;
                 if (!$linktechnology) {
                     $linktechnology = 101;
                 }

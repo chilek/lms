@@ -287,6 +287,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 
                 $rectax[$item['taxid']]['tax'] -= $refitemtax;
                 $rectax[$item['taxid']]['val'] -= $refitemval;
+                $rectax[$item['taxid']]['sum'] -= $refitemsum;
                 $rec['brutto'] -= $refitemsum;
             }
 
@@ -296,6 +297,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 
             $rectax[$taxid]['tax'] += $tax;
             $rectax[$taxid]['val'] += $val;
+            $rectax[$taxid]['sum'] += $sum;
             $rec['brutto'] += $sum;
 
             if ($row['docid'] != $items[$idx+1]['docid']) {
@@ -340,6 +342,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
                     $line = str_replace('%TAXED'.$v, form_num($taxes[$id]['taxed']), $line);
                     $line = str_replace('%VAT'.$v, form_num($tax['tax']), $line);
                     $line = str_replace('%NETTO'.$v, form_num($tax['val']), $line);
+                    $line = str_replace('%VALUE'.$v, form_num($tax['sum']), $line);
 
                     $netto_v += $tax['val'];
                     $tax_v += $tax['tax'];
@@ -350,6 +353,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
                     $line = str_replace('%VAT'.$x, '0.00', $line);
                     $line = str_replace('%NETTO'.$x, '0.00', $line);
                     $line = str_replace('%TAXED'.$x, '0.00', $line);
+                    $line = str_replace('%VALUE'.$x, '0.00', $line);
                 }
 
                 $line = str_replace('%VAT', form_num($tax_v), $line);

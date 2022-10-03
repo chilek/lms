@@ -41,7 +41,7 @@
 							<B>{trans("Filter:")} </B>
 							{trans("Owner:")}
 							<SELECT size="1" name="c" OnChange="document.filter.submit();">
-								<OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
+								<OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("— all owners —")}</OPTION>
 			        				<OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM DOMAIN")}</OPTION>
 								{foreach from=$customerlist item=customer}
 				    					<OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"&hellip;":true}</OPTION>
@@ -49,7 +49,7 @@
 							</SELECT>
 							&nbsp;{trans("Name:")}
 							<SELECT size="1" name="f" OnChange="document.filter.submit();">
-								<OPTION value=""{if $listdata.name == ""} SELECTED{/if}>{trans("- all -")}</OPTION>
+								<OPTION value=""{if $listdata.name == ""} SELECTED{/if}>{trans("— all —")}</OPTION>
 								{foreach from=$domaincount item=item key=key}
 				    					<OPTION value="{$key}"{if $key == $listdata.name} SELECTED{/if}>{$key}...</OPTION>
 								{/foreach}

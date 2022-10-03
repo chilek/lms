@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,9 +27,10 @@
 $proforma = isset($_GET['proforma']) ? 1 : 0;
 
 $layout['pagetitle'] = $proforma ? trans('Pro Forma Invoice List') : trans('Invoices List');
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SESSION->restore('ilm', $marks);
+
 if (isset($_POST['marks'])) {
     foreach ($_POST['marks'] as $id => $mark) {
         $marks[$id] = $mark;
@@ -61,6 +62,19 @@ if (isset($_POST['cat'])) {
 } else {
     $SESSION->restore('ilc', $c);
 }
+
+if (isset($_POST['customer'])) {
+    $cid = intval($_POST['customer']);
+} else {
+    if (!empty($_GET['customer'])) {
+        $cid = intval($_GET['customer']);
+    } else {
+        $SESSION->restore('ilcu', $cid);
+    }
+}
+
+$SESSION->save('ilcu', $cid);
+
 if (!isset($c)) {
     $c="month";
 }
@@ -146,16 +160,20 @@ if (isset($_POST['search'])) {
 $SESSION->save('ilre', $re);
 
 if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
-    list($year, $month, $day) = explode('/', $s);
+    list ($year, $month, $day) = explode('/', $s);
     $s = mktime(0, 0, 0, $month, $day, $year);
 } elseif ($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s)) {
-    list($year, $month) = explode('/', $s);
-        $s = mktime(0, 0, 0, $month, 1, $year);
+    list ($year, $month) = explode('/', $s);
+    $s = mktime(0, 0, 0, $month, 1, $year);
+} elseif ($c == 'year' && $s && preg_match('/^[0-9]{4}$/', $s)) {
+    $year = intval($s);
+    $s = mktime(0, 0, 0, 1, 1, $year);
 }
 
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma,
-    'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re, 'count' => true)));
+    'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re, 'count' => true,
+    'customer' => $cid)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
@@ -168,7 +186,7 @@ $offset = ($page - 1) * $limit;
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
     'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset,
     'proforma' => $proforma, 'splitpayment' => $sp, 'withreceipt' => $wr, 'telecomservice' => $ts, 'relatedentity' => $re,
-    'notsent' => $ns, 'count' => false));
+    'notsent' => $ns, 'count' => false, 'customer' => $cid));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -184,6 +202,7 @@ $SESSION->restore('ilsp', $listdata['splitpayment']);
 $SESSION->restore('ilwr', $listdata['withreceipt']);
 $SESSION->restore('ilts', $listdata['telecomservice']);
 $SESSION->restore('ilre', $listdata['relatedentity']);
+$SESSION->restore('ilcu', $listdata['customer']);
 
 $listdata['total'] = $total;
 $listdata['order'] = $invoicelist['order'];

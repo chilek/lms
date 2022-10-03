@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,7 +34,7 @@ if (isset($_POST['config'])) {
     foreach ($configedit as $idx => $key) {
         $configedit[$idx] = trim($key);
     }
-    
+
     if ($configedit['var'] == '') {
         $error['var'] = trans('Option name is required!');
     } elseif ($config['var']!=$configedit['var']) {
@@ -42,7 +42,7 @@ if (isset($_POST['config'])) {
             $error['var'] = trans('Option with specified name exists in that instance!');
         }
     }
-    
+
     if (!isset($configedit['disabled'])) {
         $configedit['disabled'] = 0;
     }
@@ -91,7 +91,7 @@ $instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS host
 
 $layout['pagetitle'] = trans('Option Edit: $a/$b/$c', $config['var'], $instance['name'], $instance['hostname']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);

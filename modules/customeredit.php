@@ -42,7 +42,6 @@ if (isset($_GET['search'])) {
         'network',
         'customergroup',
         'search',
-        'time',
         'sqlskey',
         'nodegroup',
         'division'
@@ -83,13 +82,7 @@ if (isset($_GET['search'])) {
         }
     }
 
-    if ($SESSION->is_set('backto', true)) {
-        $SESSION->redirect('?' . $SESSION->get('backto', true));
-    } elseif ($SESSION->is_set('backto')) {
-        $SESSION->redirect('?' . $SESSION->get('backto'));
-    } else {
-        $SESSION->redirect('?m=customerlist');
-    }
+    $SESSION->redirect_to_history_entry('m=customerlist');
 }
 
 if (isset($_GET['oper'])) {
@@ -134,27 +127,8 @@ if (!isset($_POST['xjxfun'])) {
     } elseif (!$exists) {
         $SESSION->redirect('?m=customerlist');
     } else {
-        if ($SESSION->is_set('backto', true)) {
-            $backto = $SESSION->get('backto', true);
-        } elseif ($SESSION->is_set('backto')) {
-            $backto = $SESSION->get('backto');
-        } else {
-            $backto = '';
-        }
-        $backurl = $backto ? '?' . $backto : '?m=customerlist';
-
-        $pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
-        if (!$pin_min_size) {
-            $pin_min_size = 4;
-        }
-        $pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
-        if (!$pin_max_size) {
-            $pin_max_size = 6;
-        }
-        if ($pin_min_size > $pin_max_size) {
-            $pin_max_size = $pin_min_size;
-        }
-        $pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+        $history_entry = $SESSION->get_history_entry();
+        $backurl = $history_entry ? '?' . $history_entry : '?m=customerlist';
 
         if (isset($_POST['customerdata'])) {
             $customerdata = $_POST['customerdata'];
@@ -211,81 +185,87 @@ if (!isset($_POST['xjxfun'])) {
                 Localisation::setSystemLanguage($billingCountryCode);
             }
 
-            $ic_expires = $customerdata['icexpires'] > 0 && $customerdata['icexpires'] < time();
-            if ($ic_expires) {
-                $identity_card_expiration_check = ConfigHelper::getConfig(
-                    'phpui.customer_identity_card_expiration_check',
-                    'none'
-                );
-                switch ($identity_card_expiration_check) {
-                    case 'warning':
-                        if (!isset($warnings['customerdata-icexpires-'])) {
-                            $warning['customerdata[icexpires]'] = trans('Customer identity card expired or expires soon!');
-                        }
-                        break;
-                    case 'error':
-                        $error['icexpires'] = trans('Customer identity card expired or expires soon!');
-                        break;
+            if (isset($customerdata['icexpires'])) {
+                $ic_expires = $customerdata['icexpires'] > 0 && $customerdata['icexpires'] < time();
+                if ($ic_expires) {
+                    $identity_card_expiration_check = ConfigHelper::getConfig(
+                        'phpui.customer_identity_card_expiration_check',
+                        'none'
+                    );
+                    switch ($identity_card_expiration_check) {
+                        case 'warning':
+                            if (!isset($warnings['customerdata-icexpires-'])) {
+                                $warning['customerdata[icexpires]'] = trans('Customer identity card expired or expires soon!');
+                            }
+                            break;
+                        case 'error':
+                            $error['icexpires'] = trans('Customer identity card expired or expires soon!');
+                            break;
+                    }
                 }
             }
 
-            if ($customerdata['ten'] != '') {
-                if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
-                    $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-                    $tenwarning = 1;
-                }
-                $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
-                $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
-                if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
-                    $ten_existence_scope = 'global';
-                }
-                $ten_exists = $LMS->checkCustomerTenExistence(
-                    $_GET['id'],
-                    $customerdata['ten'],
-                    $ten_existence_scope == 'global' ? null : $customerdata['divisionid']
-                );
-                switch ($ten_existence_check) {
-                    case 'warning':
-                        if (!isset($customerdata['tenexistencewarning']) && $ten_exists) {
-                            $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-                            $tenexistencewarning = 1;
-                        }
-                        break;
-                    case 'error':
-                        if ($ten_exists) {
-                            $error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
-                        }
-                        break;
+            if (isset($customerdata['ten'])) {
+                if ($customerdata['ten'] != '' && $customerdata['ten'] != $LMS->getCustomerTen($_GET['id'])) {
+                    if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
+                        $warning['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+                        $tenwarning = 1;
+                    }
+                    $ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
+                    $ten_existence_scope = ConfigHelper::getConfig('phpui.customer_ten_existence_scope', 'global');
+                    if (preg_match('/^(global|division)$/', $ten_existence_scope)) {
+                        $ten_existence_scope = 'global';
+                    }
+                    $ten_exists = $LMS->checkCustomerTenExistence(
+                        $_GET['id'],
+                        $customerdata['ten'],
+                        $ten_existence_scope == 'global' ? null : $customerdata['divisionid']
+                    );
+                    switch ($ten_existence_check) {
+                        case 'warning':
+                            if (!isset($customerdata['tenexistencewarning']) && $ten_exists) {
+                                $warning['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                                $tenexistencewarning = 1;
+                            }
+                            break;
+                        case 'error':
+                            if ($ten_exists) {
+                                $error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
+                            }
+                            break;
+                    }
                 }
             }
 
-            if ($customerdata['ssn'] != '') {
-                if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
-                    $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-                    $ssnwarning = 1;
-                }
-                $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
-                $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
-                if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
-                    $ssn_existence_scope = 'global';
-                }
-                $ssn_exists = $LMS->checkCustomerSsnExistence(
-                    $_GET['id'],
-                    $customerdata['ssn'],
-                    $ssn_existence_scope == 'global' ? null : $customerdata['divisionid']
-                );
-                switch ($ssn_existence_check) {
-                    case 'warning':
-                        if (!isset($customerdata['ssnexistencewarning']) && $ssn_exists) {
-                            $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-                            $ssnexistencewarning = 1;
-                        }
-                        break;
-                    case 'error':
-                        if ($ssn_exists) {
-                            $error['ssn'] = trans('Customer with specified Social Security Number already exists!');
-                        }
-                        break;
+            if (isset($customerdata['ssn'])) {
+                if ($customerdata['ssn'] != '' && $customerdata['ssn'] != $LMS->getCustomerSsn($_GET['id'])) {
+                    if (!isset($customerdata['ssnwarning']) && !check_ssn($customerdata['ssn'])) {
+                        $warning['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+                        $ssnwarning = 1;
+                    }
+                    $ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
+                    $ssn_existence_scope = ConfigHelper::getConfig('phpui.customer_ssn_existence_scope', 'global');
+                    if (preg_match('/^(global|division)$/', $ssn_existence_scope)) {
+                        $ssn_existence_scope = 'global';
+                    }
+                    $ssn_exists = $LMS->checkCustomerSsnExistence(
+                        $_GET['id'],
+                        $customerdata['ssn'],
+                        $ssn_existence_scope == 'global' ? null : $customerdata['divisionid']
+                    );
+                    switch ($ssn_existence_check) {
+                        case 'warning':
+                            if (!isset($customerdata['ssnexistencewarning']) && $ssn_exists) {
+                                $warning['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+                                $ssnexistencewarning = 1;
+                            }
+                            break;
+                        case 'error':
+                            if ($ssn_exists) {
+                                $error['ssn'] = trans('Customer with specified Social Security Number already exists!');
+                            }
+                            break;
+                    }
                 }
             }
 
@@ -293,21 +273,21 @@ if (!isset($_POST['xjxfun'])) {
                 $error['regon'] = trans('Incorrect Business Registration Number!');
             }
 
-            if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
-                $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
-                $icnwarning = 1;
+            if (isset($customerdata['icn'])) {
+                if ($customerdata['icn'] != '' && $customerdata['ict'] == 0 && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
+                    $warning['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+                    $icnwarning = 1;
+                }
             }
 
             Localisation::resetSystemLanguage();
 
-            if ($customerdata['pin'] == '') {
-                $error['pin'] = trans('PIN code is required!');
-            } elseif ((!ConfigHelper::checkConfig('phpui.validate_changed_pin') || $customerdata['pin'] != $LMS->getCustomerPin($_GET['id']))
-                && !validate_random_string($customerdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
-                $error['pin'] = trans('Incorrect PIN code!');
+            $pin_check_result = $LMS->checkCustomerPin($customerdata['id'], $customerdata['pin']);
+            if (is_string($pin_check_result)) {
+                $error['pin'] = $pin_check_result;
             }
 
-            if ($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) {
+            if ($customerdata['status'] == CSTATUS_INTERESTED && $LMS->GetCustomerNodesNo($customerdata['id'])) {
                 $error['status'] = trans('Interested customers can\'t have computers!');
             }
 
@@ -321,7 +301,7 @@ if (!isset($_POST['xjxfun'])) {
 
             $customer_invoice_notice_consent_check = ConfigHelper::getConfig('phpui.customer_invoice_notice_consent_check', 'error');
             if ($customer_invoice_notice_consent_check != 'none') {
-                if ($customerdata['emails']) {
+                if (isset($customerdata['emails']) && $customerdata['emails']) {
                     foreach ($customerdata['emails'] as $idx => $val) {
                         if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
                             $emaileinvoice = true;
@@ -346,7 +326,7 @@ if (!isset($_POST['xjxfun'])) {
             } elseif ($customerdata['cutoffstop'] == '') {
                 $cutoffstop = 0;
             } elseif ($cutoffstop = date_to_timestamp($customerdata['cutoffstop'])) {
-                $cutoffstop += 86399;
+                $cutoffstop = strtotime('tomorrow', $cutoffstop) - 1;
             } else {
                 $error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
             }
@@ -390,17 +370,17 @@ if (!isset($_POST['xjxfun'])) {
 
                 $LMS->CustomerUpdate($customerdata);
 
-                    $hook_data = $LMS->executeHook(
-                        'customeredit_after_submit',
-                        array(
-                            'customerdata' => $customerdata,
-                        )
-                    );
-                        $customerdata = $hook_data['customerdata'];
-                        $id = $hook_data['id'];
+                $hook_data = $LMS->executeHook(
+                    'customeredit_after_submit',
+                    array(
+                        'customerdata' => $customerdata,
+                    )
+                );
+                $customerdata = $hook_data['customerdata'];
+                $id = isset($hook_data['id']) ? $hook_data['id'] : null;
 
                 if ($SYSLOG) {
-                        $contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
+                    $contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
                     if (!empty($contactids)) {
                         foreach ($contactids as $contactid) {
                             $args = array(
@@ -447,7 +427,7 @@ if (!isset($_POST['xjxfun'])) {
                                 'contact' => $contact['contact'],
                                 'name' => $contact['name'],
                                 'type' => $contact['type'],
-                                'properties' => serialize($contact['properties']),
+                                'properties' => isset($contact['properties']) ? serialize($contact['properties']) : null,
                             );
                             $SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
                         }
@@ -455,6 +435,7 @@ if (!isset($_POST['xjxfun'])) {
                 }
                 $DB->CommitTrans();
 
+                $SESSION->remove_history_entry();
                 $SESSION->redirect($backurl);
             } else {
                 $olddata = $LMS->GetCustomer($_GET['id']);
@@ -486,7 +467,7 @@ if (!isset($_POST['xjxfun'])) {
                     $customerinfo['cutoffstop'] = 0;
                     $customerinfo['cutoffstopindefinitely'] = 1;
                 } else {
-                    $customerinfo['cutoffstop'] = strftime('%Y/%m/%d', $customerinfo['cutoffstop']);
+                    $customerinfo['cutoffstop'] = date('Y/m/d', $customerinfo['cutoffstop']);
                 }
             } else {
                 $customerinfo['cutoffstop'] = 0;
@@ -545,14 +526,14 @@ $LMS->InitXajax();
 $hook_data = $LMS->executeHook(
     'customeredit_before_display',
     array(
-        'customerinfo' => $customerinfo,
+        'customerinfo' => isset($customerinfo) ? $customerinfo : array(),
         'smarty' => $SMARTY
     )
 );
 $customerinfo = $hook_data['customerinfo'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
+$SMARTY->assign($LMS->getCustomerPinRequirements());
 $SMARTY->assign('customerinfo', $customerinfo);
 $SMARTY->assign('divisions', $LMS->GetDivisions(array('userid' => Auth::GetCurrentUser())));
 $SMARTY->assign('recover', ($action == 'recover' ? 1 : 0));

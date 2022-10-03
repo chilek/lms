@@ -21,7 +21,7 @@
             {icon name="timetable"}
         </TD>
         <TD class="bold">
-            {trans("Title:")}
+            {trans("Title")}
         </TD>
         <TD class="bold">
             {$event.title|escape}
@@ -34,11 +34,11 @@
             {icon name="uptime"}
         </TD>
         <TD class="bold nobr">
-            {trans("Begin time:")}
+            {trans("Begin time")}
         </TD>
         <TD>
-            {$event.date|date_format:"%x (%A)"}
-            {($event.date + $event.begintime)|date_format:"%H:%M"}
+            {$event.date|date_format:"Y-m-d (l)"}
+            {($event.date + $event.begintime)|date_format:"H:i"}
         </TD>
     </TR>
     {if $event.begintime != $event.endtime || $event.enddate > $event.date}
@@ -47,15 +47,15 @@
                 {icon name="uptime"}
             </TD>
             <TD class="bold nobr">
-                {trans("End time:")}
+                {trans("End time")}
             </TD>
             <TD>
                 {if $event.enddate}
-                    {$event.enddate|date_format:"%x (%A)"}
-                    {($event.enddate + $event.endtime)|date_format:"%H:%M"}
+                    {$event.enddate|date_format:"Y-m-d (l)"}
+                    {($event.enddate + $event.endtime)|date_format:"H:i"}
                 {else}
-                    {$event.date|date_format:"%x (%A)"}
-                    {($event.date + $event.endtime)|date_format:"%H:%M"}
+                    {$event.date|date_format:"Y-m-d (l)"}
+                    {($event.date + $event.endtime)|date_format:"H:i"}
                 {/if}
             </TD>
         </TR>
@@ -66,7 +66,7 @@
                 {icon name="description"}
             </TD>
             <TD class="bold nobr">
-                {trans("Description:")}
+                {trans("Description")}
             </TD>
             <TD>
                 <div class="fall superlight eventinfoshort-textbox">
@@ -80,10 +80,10 @@
             {icon name="type"}
         </TD>
         <TD class="bold">
-            {trans("Type:")}
+            {trans("Type")}
         </TD>
         <TD class="nobr">
-            {$_EVENTTYPES[$event.type]}
+            {$_EVENTTYPES[$event.type].label}
         </TD>
     </TR>
     <TR>
@@ -91,7 +91,7 @@
             {icon name="status"}
         </TD>
         <TD class="bold">
-            {trans("Availability:")}
+            {trans("Availability")}
         </TD>
         <TD class="nobr">
             {if $event.private}{trans("private")}{else}{trans("public")}{/if}
@@ -102,7 +102,7 @@
             {icon name="user"}
         </TD>
         <TD class="bold">
-            {trans("Created by:")}
+            {trans("Created by")}
         </TD>
         <TD class="nobr">
             <A href="?m=userinfo&id={$event.userid}">{$event.username|escape}</A>
@@ -114,10 +114,10 @@
                 {icon name="uptime"}
             </TD>
             <TD class="bold">
-                {trans("Creation time:")}
+                {trans("Creation time")}
             </TD>
             <TD>
-                {$event.creationdate|date_format:"%x (%X)"}
+                {$event.creationdate|date_format:"Y-m-d (H:i:s)"}
             </TD>
         </TR>
     {/if}
@@ -127,7 +127,7 @@
                 {icon name="user"}
             </TD>
             <TD class="bold">
-                {trans("Last modified by:")}
+                {trans("Last modified by")}
             </TD>
             <TD class="nobr">
                 <A href="?m=userinfo&id={$event.moduserid}">{$event.modusername|escape}</A>
@@ -140,10 +140,10 @@
                 {icon name="uptime"}
             </TD>
             <TD class="bold">
-                {trans("Last modification time:")}
+                {trans("Last modification time")}
             </TD>
             <TD>
-                {$event.moddate|date_format:"%x (%X)"}
+                {$event.moddate|date_format:"Y-m-d (H:i:s)"}
             </TD>
         </TR>
     {/if}
@@ -169,7 +169,7 @@
                 {trans("Closed time")}:
             </TD>
             <TD>
-                {$event.closeddate|date_format:"%x (%X)"}
+                {$event.closeddate|date_format:"Y-m-d (H:i:s)"}
             </TD>
         </TR>
     {/if}
@@ -179,7 +179,7 @@
 	        {icon name="customer"}
         </TD>
         <TD class="valign-top bold">
-            {trans("Customer:")}
+            {trans("Customer")}
         </TD>
         <TD class="nobr">
             <A href="?m=customerinfo&id={$event.customerid}">
@@ -204,11 +204,11 @@
             {icon name="location"}
         </TD>
         <TD class="bold">
-            {trans("Location:")}
+            {trans("Location")}
         </TD>
         <TD class="nobr">
         {if $event.netnode_name}
-            {icon name="netnode"}<a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name|escape}</a>
+            {button type='link' icon='netnode' href="?m=netnodeinfo&id={$event.netnodeid}" label=$event.netnode_name}
             {if !empty($event.netnode_location)}<br>{$event.netnode_location|escape}{/if}
         {else}
             {if $event.customername}
@@ -230,7 +230,7 @@
                 {icon name="node"}
             </TD>
             <TD class="bold">
-                {trans("Node:")}
+                {trans("Node")}
             </TD>
             <TD class="nobr">
                 <a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location|escape}</a>
@@ -243,7 +243,7 @@
                 {icon name="note"}
             </TD>
             <TD class="bold nobr">
-                {trans("Note:")}
+                {trans("Note")}
             </TD>
             <TD>
                 <div class="fall superlight eventinfoshort-textbox">
@@ -258,11 +258,11 @@
                 {icon name="user"}
             </TD>
             <TD class="bold">
-                {trans("Users:")}
+                {trans("Users")}
             </TD>
             <TD class="nobr">
-                {foreach $event.userlist as $userid}
-                    <A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname|escape}</A><BR>
+                {foreach $event.userlist as $userid => $user}
+                    <a href="?m=userinfo&id={$userid}">{$user.rname|escape}</a><br>
                 {/foreach}
             </TD>
         </TR>
@@ -273,7 +273,7 @@
                 {icon name="helpdesk"}
             </TD>
             <TD class="bold">
-                {trans("Helpdesk assignment:")}
+                {trans("Helpdesk assignment")}
             </TD>
             <TD>
 		    <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a> ({$_RT_STATES[$event.ticket.state].label})

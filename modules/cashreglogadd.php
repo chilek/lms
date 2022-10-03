@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', arra
 
 if (isset($_POST['reglog'])) {
     $reglog = $_POST['reglog'];
-    
+
     foreach ($reglog as $key => $value) {
             $reglog[$key] = trim($value);
     }
@@ -95,7 +95,7 @@ $reglog['regid'] = $regid;
 
 $layout['pagetitle'] = trans('New Cash History Entry');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('reglog', $reglog);
 $SMARTY->assign('error', $error);

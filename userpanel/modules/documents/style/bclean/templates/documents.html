@@ -32,7 +32,7 @@
 				<div class="alert" role="alert" style="display: none;">
 				</div>
 				<div class="form-group">
-					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode">
+					<form method="post" action="?m=documents&smsauth=1&check=1" name="authcode" id="authcode-form">
 						<label for="authcode" class="font-weight-bold">{trans("Enter code:")}</label>
 						<input type=text" name="authcode" id="authcode" autocomplete="off"
 							   placeholder="{trans("... which you received on your mobile phone")}"
@@ -42,7 +42,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" formnovalidate=true}
+				{button class="btn btn-danger submit-button" accesskey="S" icon="submit" label="{trans("<!helpdesk>Submit")}" form="authcode-form" formnovalidate=true}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
@@ -60,9 +60,12 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<form method="post" action="?m=documents" name="newscan" enctype="multipart/form-data">
+					<form method="post" action="?m=documents" id="newscan-form" name="newscan" enctype="multipart/form-data">
 						<label for="scans" class="font-weight-bold">{trans("Select scan file:")}</label>
-						<input type="file" name="files[]" id="scans" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+						<input type="file" name="files[]" id="scans"
+							{userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"}
+							accept="application/pdf,image/jpeg,image/png"
+							multiple>
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
 						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
 						<div id="file-status" class="alert alert-danger"{if !isset($error.files)} style="display: none;"{/if}>
@@ -81,7 +84,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				{button type="submit" class="btn btn-danger" formnovalidate=true accesskey="S" icon="submit" label="<!helpdesk>Submit"}
+				{button class="btn btn-danger submit-button" form="newscan-form" formnovalidate=true accesskey="S" icon="submit" label="<!documents>Submit" disabled=true}
 				{button class="btn btn-secondary" data_dismiss="modal" icon="close" label="Close"}
 			</div>
 		</div>
@@ -104,14 +107,14 @@
 			<tr class="align-middle p-2 {if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)}text-muted{/if}">
 				<td>{number number=$doc.number template=$doc.template time=$doc.cdate}</td>
 				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
-				<td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
+				<td>{$doc.cdate|date_format:"Y-m-d"}</td>
 				<td>
 					{if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
 						{if $doc.fromdate}
-							{$doc.fromdate|date_format:"%d.%m.%Y"}
+							{$doc.fromdate|date_format:"Y-m-d"}
 						{/if}
 						{if $doc.todate}
-							- {$doc.todate|date_format:"%d.%m.%Y"}
+							- {$doc.todate|date_format:"Y-m-d"}
 						{else}
 							{if $doc.fromdate}
 								-
@@ -184,19 +187,24 @@
 		$('#newscan-dialog').modal('show');
 		{/if}
 
-		function check_file_sizes() {
-			var scans = $('#scans').get(0);
+		function check_file_attachments() {
+			var scans = $('#scans');
 			$('#file-status').hide().text();
-			if (scans.files.length) {
+			if (scans.get(0).files.length) {
 				var error = '';
 				var post_max_size = parseInt($('#post_max_size').val());
 				var upload_max_filesize = parseInt($('#upload_max_filesize').val());
 				var total_size = 0;
-				$.each(scans.files, function (index, file) {
+				var acceptedFileTypes = scans.attr('accept').split(',');
+				$.each(scans.get(0).files, function (index, file) {
 					if (upload_max_filesize && file.size > upload_max_filesize) {
 						error = '{trans("One from files is too large!")}';
 					}
 					total_size += file.size;
+
+					if (acceptedFileTypes.indexOf(file.type) == -1) {
+						error = '{trans("One from files has invalid type!")}';
+					}
 				});
 				if (post_max_size && total_size > post_max_size) {
 					error = '{trans("Total file size is too large!")}';
@@ -205,16 +213,18 @@
 					$('#file-status').text(error).show();
 					return false;
 				}
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 		}
 
 		$('#scans').change(function() {
-			check_file_sizes();
+			$('#newscan-dialog .submit-button').prop('disabled', !check_file_attachments());
 		});
 
 		$('#newscan-dialog .submit-button').click(function() {
-			if (check_file_sizes()) {
+			if (check_file_attachments()) {
 				document.newscan.submit();
 			}
 		});
@@ -229,12 +239,14 @@
 			$.ajax({
 				method: "POST",
 				url: '?m=documents&smsauth=1&send=1',
+				dataType: 'json',
 				data: {
 					documentid: parseInt($('#authcode-dialog .documentid').val())
 				},
-				success: function (data) {
-					if (data.length) {
-						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+				success: function(result) {
+					if (result.errors.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger')
+							.html(result.errors.join('<br>')).show();
 					} else {
 						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
 							.html("{trans("Authorization code has been sent to you mobile phone.")}").show();
@@ -258,16 +270,19 @@
 			$.ajax({
 				method: "POST",
 				url: $(this).attr('action'),
+				dataType: "json",
 				data: {
 					code: $('#authcode').val(),
 					documentid: parseInt($('#authcode-dialog .documentid').val())
 				},
-				success: function(data) {
-					if (data.length) {
-						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger').html(data).show();
+				success: function(result) {
+					if (result.errors.length) {
+						$('#authcode-dialog .alert').removeClass('alert-primary').addClass('alert-danger')
+							.html(result.errors.join('<br>')).show();
 					} else {
+						result.info.unshift("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}");
 						$('#authcode-dialog .alert').removeClass('alert-danger').addClass('alert-primary')
-							.html("{trans("Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.")}").show();
+							.html(result.info.join('<br>')).show();
 						$('#authcode-dialog').find('.documentid').siblings().hide().end().end().find('.submit-button').remove();
 					}
 					$('#authcode-dialog .submit-button').removeAttr('disabled');

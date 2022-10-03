@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -67,16 +67,20 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 
     include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
+    $SMARTY->assign('netdevevents', $LMS->GetEventList(array('netdevid' => $id)));
+
     $netdevconnected = $LMS->GetNetDevConnectedNames($id);
     $netcomplist = $LMS->GetNetdevLinkedNodes($id);
     $netdevlist = $LMS->GetNotConnectedDevices($id);
 
     if ($netdev['ports'] > $netdev['takenports']) {
         $nodelist = $LMS->GetUnlinkedNodes();
+    } else {
+        $nodelist = array();
     }
     $netdevips = $LMS->GetNetDevIPs($id);
 
-    $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+    $SESSION->add_history_entry();
 
     $layout['pagetitle'] = trans('Device Info: $a $b $c', $netdev['name'], $netdev['producer'], $netdev['model']);
 
@@ -104,13 +108,15 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
     $queue = $LMS->GetQueueContents(array('netdevids' => $id, 'short'=> 1));
 
     $start = 0;
-    $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
+    $pagelimit = ConfigHelper::getConfig(
+        'rt.ticketlist_pagelimit',
+        ConfigHelper::getConfig('phpui.ticketlist_pagelimit', isset($queue['total']) ? $queue['total'] : null)
+    );
 
     $SMARTY->assign('netdev', $netdev);
     $SMARTY->assign('start', $start);
     $SMARTY->assign('pagelimit', $pagelimit);
     $SMARTY->assign('queue', $queue);
-    $SMARTY->assign('queue_count', $queue_count);
     $SMARTY->assign('queue_netdevid', $id);
     $SMARTY->assign('objectid', $netdev['id']);
     $SMARTY->assign('restnetdevlist', $netdevlist);

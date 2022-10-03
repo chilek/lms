@@ -37,6 +37,11 @@
         visibility: hidden;
     }
 
+    .phone-table .phone-number,
+    .phone-table .phone-info {
+        width: 10em;
+    }
+
 </style>
 
 <form name="voipaccountadd" id="voipaccountadd" method="post" action="?m=voipaccountadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
@@ -55,7 +60,7 @@
                     {trans("Login:")}
                 </td>
                 <td>
-                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" {tip text="Enter voip account login" trigger="login" bold=1}>
+                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" {tip text="Enter VoIP account login" trigger="login" bold=1}>
                 </td>
             </tr>
             {/block}
@@ -93,7 +98,17 @@
                                                 <td style="padding: 0;" class="valign-top">
                                                     <table id="phone_numbers_table" class="phone-table">
                                                         <tr>
-                                                            <td><input type="tel" name="voipaccountdata[phone][0]" value="{$voipaccountdata.phone[0]}" {tip trigger="phone0"}></td>
+                                                            <td>
+                                                                <input type="tel" name="voipaccountdata[numbers][0][phone]"
+                                                                    value="{$voipaccountdata.numbers[0].phone}"
+                                                                    class="phone-number" placeholder="{trans("<!phone>number")}"
+                                                                    {tip trigger="phone-number-0"}>
+                                                                <input type="search" name="voipaccountdata[numbers][0][info]"
+                                                                    value="{$voipaccountdata.numbers[0].info|default:""|escape}"
+                                                                    class="phone-info" placeholder="{trans("description")}"
+                                                                    autocomplete="off"
+                                                                    {tip trigger="phone-info-0"}>
+                                                            </td>
                                                             <td>
                                                                 <div>
                                                                     {$pool_number_select}
@@ -106,7 +121,16 @@
                                                             {foreach $voipaccountdata['phone'] as $k => $phone}
                                                                 {if $phone@first || $phone==''}{continue}{/if}
                                                                 <tr class="row">
-                                                                    <td><input type="tel" name="voipaccountdata[phone][{$k}]" value="{$phone}" {tip trigger="phone{$k}"}></td>
+                                                                    <td>
+                                                                        <input type="tel" name="voipaccountdata[numbers][{$k}][phone]"
+                                                                            value="{$v.phone}" placeholder="{trans("<!phone>number")}"
+                                                                            {tip trigger="phone-number-{$k}"}>
+                                                                        <input type="search" name="voipaccountdata[numbers][{$k}][info]"
+                                                                            value="{$v.info|default:""|escape}"
+                                                                            class="phone-info" placeholder="{trans("description")}"
+                                                                            autocomplete="off"
+                                                                            {tip trigger="phone-info-{$k}"}>
+                                                                    </td>
                                                                     <td><div>{$pool_number_select} {$remove_number}</div></td>
                                                                 </tr>
                                                             {/foreach}
@@ -170,7 +194,7 @@
                                                         selected=$voipaccountdata.ownerid
                                                         selectname="voipaccountdata[customerid]"
                                                         inputname="voipaccountdata[ownerid]"
-                                                        selecttip="Assign voip account to customer"
+                                                        selecttip="Assign VoIP account to customer"
                                                         customOnChange="change_customer();"
                                                         required=true
                                                         version=2
@@ -196,11 +220,25 @@
                                                     {trans("Settings:")}
                                                 </td>
                                                 <td>
-                                                    <input id="admin_record" type="checkbox" name="voipaccountdata[admin_record_flag]" value="yes">
-                                                    <label for="admin_record">{trans("recording for operator")}</label><br>
+                                                    <label>
+                                                        <input type="checkbox" name="voipaccountdata[{$smarty.const.VOIP_ACCOUNT_FLAG_ADMIN_RECORDING}]" value="yes"
+                                                            {if $voipaccountdata.flags & $smarty.const.VOIP_ACCOUNT_FLAG_ADMIN_RECORDING} checked{/if}>
+                                                        {trans("recording for operator")}
+                                                    </label>
+                                                    <br>
 
-                                                    <input id="customer_record" type="checkbox" name="voipaccountdata[customer_record_flag]" value="yes">
-                                                    <label for="customer_record">{trans("recording for customer")}</label>
+                                                    <label>
+                                                        <input type="checkbox" name="voipaccountdata[{$smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING}]" value="yes"
+                                                            {if $voipaccountdata.flags & $smarty.const.VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING} checked{/if}>
+                                                        {trans("recording for customer")}
+                                                    </label>
+                                                    <br>
+
+                                                    <label>
+                                                        <input type="checkbox" name="voipaccountdata[{$smarty.const.VOIP_ACCOUNT_FLAG_TRUNK}]" value="yes"
+                                                            {if $voipaccountdata.flags & $smarty.const.VOIP_ACCOUNT_FLAG_TRUNK} checked{/if}>
+                                                        {trans("<!voip-account>trunk")}
+                                                    </label>
                                                 </td>
                                             </tr>
                                         {/block}
@@ -232,18 +270,23 @@
                     </table>
                 </td>
             </tr>
-            {block name="voipaccountaddbox-buttons"}
             <tr>
-                <td class="text-right" colspan="2">
-                    <a href="javascript:document.voipaccountadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
-                    &nbsp;
-                    <a href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
-                    <br>
-                    <input type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" {if $voipaccountdata.reuse}checked{/if}>
-                    <label for="reuse">{trans("Display this form again, when this voip account is saved")}</label>
+                <td class="lms-ui-box-buttons" colspan="2">
+                    {block name="voipaccountaddbox-buttons"}
+                        {button type="submit" class="lms-ui-button-submit" accesskey="s" label="Submit" icon="save" form="voipaccountadd"}
+                        {button href="?m=voipaccountinfo&id={$voipaccountinfo.id}" label="Cancel" icon="cancel"}
+
+                        {button type="link-button" href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}"
+                            label="Cancel" icon="cancel"}
+                        <br>
+                        <label>
+                            <input type="checkbox" name="voipaccountdata[reuse]" value="ON"
+                                {if $voipaccountdata.reuse}checked{/if}>
+                            {trans("Display this form again, when this VoIP account is saved")}
+                        </label>
+                    {/block}
                 </td>
             </tr>
-            {/block}
         </tbody>
     </table>
 </form>
@@ -252,7 +295,7 @@
 
     var remove_number      = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
-    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+    initAdvancedSelects("#customer_addresses");
 
     function checkIfTerritLocation() {
         {if ConfigHelper::checkConfig('phpui.teryt_required')}
@@ -269,12 +312,17 @@
     $( function() {
         $('#voip-login').focus();
 
+        $('[name="voipaccountdata[ownerid]"]').on('invalid', function(e) {
+            e.preventDefault();
+        });
+
         var i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
 
         $('#add_number').on('click', function () {
             var table = $('#phone_numbers_table');
-            var i = table.find('[type="tel"]').length + 1;
-            var phone_number_input = '<input type="tel" name="voipaccountdata[phone][' + i +']" {tip trigger="phone"}>';
+            var i = table.find('[type="tel"]').length;
+            var phone_number_input = '<input type="tel" name="voipaccountdata[numbers][' + i +'][phone]" class="phone-number" placeholder="{trans("<!phone>number")}" {tip trigger="phone-number"}>' +
+                '<input type="search" name="voipaccountdata[numbers][' + i + '][info]" class="phone-info" placeholder="{trans("description")}" autocomplete="off" {tip trigger="phone-info"}>';
             table.append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
             var numbers = table.find('.remove-number');
             numbers.toggleClass('lms-ui-visibility-hidden', numbers.length < 2);
@@ -318,19 +366,18 @@
      */
     function change_customer() {
         getCustomerAddresses($('[name="voipaccountdata[ownerid]"]').val(), function(addresses) {
-            customer_addresses.setAddressList( addresses );
+            setAddressList("#customer_addresses", addresses);
             checkIfTerritLocation();
         });
     }
 
     getCustomerAddresses( {intval($voipaccountdata.ownerid)}, function(addresses) {
-        customer_addresses.setAddressList( addresses );
+        setAddressList("#customer_addresses", addresses);
 
         {if $voipaccountdata.address_id}
-        $( '#customer_addresses' ).val( {$voipaccountdata.address_id} );
+            $('#customer_addresses').val({$voipaccountdata.address_id});
+            updateAdvancedSelects("#customer_addresses");
         {/if}
-
-        customer_addresses.init();
 
         checkIfTerritLocation();
     });

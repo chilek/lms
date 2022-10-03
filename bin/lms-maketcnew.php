@@ -31,7 +31,7 @@
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 define('XVALUE', 100);
 
@@ -184,6 +184,7 @@ $script_plimit = ConfigHelper::getConfig('tcnew.plimit', '', true);
 $script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
 $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
 $all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
+$ignore_assignment_suspensions = ConfigHelper::checkConfig('tcnew.ignore_assignment_suspensions');
 
 $host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
 
@@ -222,7 +223,7 @@ $customergroups = preg_split('/(\s+|\s*,\s*)/', $customergroups, -1, PREG_SPLIT_
 if (empty($customergroups)) {
     $customerids = array();
 } else {
-    $customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM vcustomerassignments a
+    $customerids = $DB->GetCol("SELECT DISTINCT a.customerid FROM vcustomerassignments a
 		JOIN customergroups g ON g.id = a.customergroupid
 		WHERE UPPER(g.name) IN ('" . implode("','", array_map('mb_strtoupper', $customergroups)) . "')");
 }
@@ -249,16 +250,18 @@ $query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
 	TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
 	FROM nodeassignments na
 	JOIN assignments a ON (na.assignmentid = a.id)
-	LEFT JOIN (
+	" . ($ignore_assignment_suspensions
+        ? ''
+        : "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
 		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
 		GROUP BY customerid
-	) s ON s.customerid = a.customerid
+	) s ON s.customerid = a.customerid") . "
 	JOIN tariffs t ON (a.tariffid = t.id)
 	JOIN vnodes n ON (na.nodeid = n.id)
 	JOIN customers c ON (a.customerid = c.id)
-	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
 		AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -281,12 +284,14 @@ if ($all_assignments) {
 		a.id AS assignmentid, a.customerid,
 		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
 	FROM assignments a
-	LEFT JOIN (
+	" . ($ignore_assignment_suspensions
+        ? ''
+        : "LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
 		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
 		GROUP BY customerid
-	) s ON s.customerid = a.customerid
+	) s ON s.customerid = a.customerid") . "
 	JOIN tariffs t ON t.id = a.tariffid
 	JOIN customers c ON c.id = a.customerid
 	JOIN (
@@ -297,7 +302,7 @@ if ($all_assignments) {
 		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
 			OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
 	) n ON n.ownerid = c.id
-	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+	WHERE " . ($ignore_assignment_suspensions ? '' : "s.allsuspended IS NULL AND a.suspended = 0 AND ") . "a.commited = 1
 		AND n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
 		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
 		AND a.datefrom <= ?NOW?
@@ -336,10 +341,22 @@ foreach ($nodes as $node) {
     }
 
     list ($uprate, $downrate, $upceil, $downceil, $uprate_n, $downrate_n, $upceil_n, $downceil_n,
-        $climit, $plimit, $nodeid) =
-        array($node['uprate'], $node['downrate'], $node['upceil'], $node['downceil'],
-            $node['uprate_n'], $node['downrate_n'], $node['upceil_n'], $node['downceil_n'],
-            $node['climit'], $node['plimit'], $node['id']);
+        $climit, $plimit, $nodeid, $nodeip, $assignmentid) =
+        array(
+            $node['uprate'],
+            $node['downrate'],
+            $node['upceil'],
+            $node['downceil'],
+            $node['uprate_n'],
+            $node['downrate_n'],
+            $node['upceil_n'],
+            $node['downceil_n'],
+            $node['climit'],
+            $node['plimit'],
+            $node['id'],
+            $node['ip'],
+            $node['assignmentid']
+        );
 
     if (!$channelfound) { // channel (assignment) not found
         // mozliwe ze komputer jest juz przypisany do innego
@@ -396,18 +413,33 @@ foreach ($nodes as $node) {
         }
 
         // ...nie znaleziono komputera, tworzymy kanal
-        $channels[] = array('id' => $assignmentid, 'nodes' => array(), 'subs' => array(),
-            'cid' => $node['ownerid'], 'customer' => $node['customer'],
-            'uprate' => $uprate, 'upceil' => $upceil,
-            'downrate' => $downrate, 'downceil' => $downceil,
-            'uprate_n' => $uprate_n, 'upceil_n' => $upceil_n,
-            'downrate_n' => $downrate_n, 'downceil_n' => $downceil_n,
-            'climit' => $climit, 'plimit' => $plimit);
+        $channels[] = array(
+            'id' => $assignmentid,
+            'nodes' => array(),
+            'subs' => array(),
+            'cid' => $node['ownerid'],
+            'customer' => $node['customer'],
+            'uprate' => $uprate,
+            'upceil' => $upceil,
+            'downrate' => $downrate,
+            'downceil' => $downceil,
+            'uprate_n' => $uprate_n,
+            'upceil_n' => $upceil_n,
+            'downrate_n' => $downrate_n,
+            'downceil_n' => $downceil_n,
+            'climit' => $climit,
+            'plimit' => $plimit
+        );
         $j = count($channels) - 1;
     }
 
-    $channels[$j]['nodes'][] = array('id' => $nodeid, 'network' => $networkid, 'ip' => $ip,
-        'name' => $node['name'], 'mac' => $node['mac']);
+    $channels[$j]['nodes'][] = array(
+        'id' => $nodeid,
+        'network' => $networkid,
+        'ip' => $ip,
+        'name' => $node['name'],
+        'mac' => $node['mac']
+    );
 }
 
 if ($create_device_channels) {
@@ -418,16 +450,31 @@ if ($create_device_channels) {
 			AND n.netid IN (" . implode(',', array_keys($networks)) . ")");
 
     if (!empty($devices)) {
-        $channels[] = array('id' => '0', 'nodes' => array(), 'subs' => array(),
-            'cid' => '1', 'customer' => 'Devices', 'uprate' => '128', 'upceil' => '10000',
-            'downrate' => '128', 'downceil' => '10000',
-            'uprate_n' => '128', 'upceil_n' => '10000',
-            'downrate_n' => '128', 'downceil_n' => '10000',
-            'climit' => '0', 'plimit' => '0');
+        $channels[] = array(
+            'id' => '0',
+            'nodes' => array(),
+            'subs' => array(),
+            'cid' => '1',
+            'customer' => 'Devices',
+            'uprate' => '128',
+            'upceil' => '10000',
+            'downrate' => '128',
+            'downceil' => '10000',
+            'uprate_n' => '128',
+            'upceil_n' => '10000',
+            'downrate_n' => '128',
+            'downceil_n' => '10000',
+            'climit' => '0',
+            'plimit' => '0'
+        );
         foreach ($devices as $device) {
-            $channels[count($channels) - 1]['nodes'][] = array('id' => $device['id'],
-                'network' => $device['netid'], 'ip' => $device['ip'],
-                'name' => $device['name'], 'mac' => $device['mac']);
+            $channels[count($channels) - 1]['nodes'][] = array(
+                'id' => $device['id'],
+                'network' => $device['netid'],
+                'ip' => $device['ip'],
+                'name' => $device['name'],
+                'mac' => $device['mac']
+            );
         }
     }
 }
@@ -441,9 +488,15 @@ if (empty($fh) || empty($fh_d) || empty($fh_n)) {
     die;
 }
 
-fwrite($fh, preg_replace("/\\\\n/", "\n", $script_begin));
-fwrite($fh_d, preg_replace("/\\\\n/", "\n", $script_begin_day));
-fwrite($fh_n, preg_replace("/\\\\n/", "\n", $script_begin_night));
+$uts = time();
+$date = date('Y-m-d H:i', $uts);
+
+$from = array('\\n', '%date', '%uts');
+$to = array("\n", $date, $uts);
+
+fwrite($fh, str_replace($from, $to, $script_begin));
+fwrite($fh_d, str_replace($from, $to, $script_begin_day));
+fwrite($fh_n, str_replace($from, $to, $script_begin_night));
 
 $x = XVALUE;
 $mark = XVALUE;
@@ -468,24 +521,24 @@ foreach ($channels as $channel) {
     $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
 
     $from = array('\\n', '%cid', '%cname', '%h', '%class',
-        '%uprate', '%upceil', '%downrate', '%downceil');
+        '%uprate', '%upceil', '%downrate', '%downceil', '%date', '%uts');
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts);
     $c_up = str_replace($from, $to, $c_up);
     $c_up_day = str_replace($from, $to, $c_up_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
     $c_up_night = str_replace($from, $to, $c_up_night);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate, $upceil, $downrate, $downceil);
+        $uprate, $upceil, $downrate, $downceil, $date, $uts);
     $c_down = str_replace($from, $to, $c_down);
     $c_down_day = str_replace($from, $to, $c_down_day);
 
     $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n, $date, $uts);
     $c_down_night = str_replace($from, $to, $c_down_night);
 
     // ... and write to file
@@ -593,8 +646,10 @@ fclose($fh);
 fclose($fh_d);
 fclose($fh_n);
 
-chmod($script_file, intval($script_permission, 8));
-chmod($script_file_day, intval($script_permission, 8));
-chmod($script_file_night, intval($script_permission, 8));
+if ($script_permission != -1) {
+    chmod($script_file, intval($script_permission, 8));
+    chmod($script_file_day, intval($script_permission, 8));
+    chmod($script_file_night, intval($script_permission, 8));
+}
 
 ?>

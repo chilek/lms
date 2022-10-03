@@ -85,8 +85,6 @@ switch ($action) {
         $itemdata = r_trim($_POST);
 
         $itemdata['value'] = f_round($itemdata['value']);
-        $itemdata['description'] = $itemdata['description'];
-        $itemdata['servicetype'] = $itemdata['servicetype'];
 
         if ($itemdata['value'] > 0 && $itemdata['description'] != '') {
             $itemdata['posuid'] = (string) getmicrotime();
@@ -163,7 +161,7 @@ switch ($action) {
         }
 
         $note['customerid'] = $_POST['customerid'];
-
+        $note['divisionid'] = $LMS->GetCustomerDivision($note['customerid']);
 
         if (($note['numberplanid'] && !$LMS->checkNumberPlanAccess($note['numberplanid']))
             || ($note['oldnumberplanid'] && !$LMS->checkNumberPlanAccess($note['oldnumberplanid']))) {
@@ -179,7 +177,7 @@ switch ($action) {
         );
         $numberplans = $LMS->GetNumberPlans($args);
 
-        if (count($numberplans) && empty($note['numberplanid']) && $note['numberplanid'] != 0) {
+        if ($numberplans && count($numberplans) && empty($note['numberplanid']) && $note['numberplanid'] != 0) {
             $error['numberplanid'] = trans('Select numbering plan');
         }
 
@@ -239,7 +237,7 @@ switch ($action) {
             );
             $numberplans = $LMS->GetNumberPlans($args);
 
-            if (count($numberplans) && empty($note['numberplanid'])) {
+            if ($numberplans && count($numberplans) && empty($note['numberplanid'])) {
                 $error['numberplanid'] = trans('Select numbering plan');
             }
 
@@ -247,6 +245,13 @@ switch ($action) {
 
             $DB->BeginTrans();
             $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
+            $DB->BeginTrans();
+            $tables = array('documents', 'cash', 'debitnotecontents', 'numberplans',
+                'addresses', 'customers', 'customer_addresses');
+            if (ConfigHelper::getConfig('database.type') != 'postgres') {
+                $tables = array_merge($tables, array('addresses a', 'customers c', 'customer_addresses ca'));
+            }
+            $DB->LockTables($tables);
 
             if (!$note['number']) {
                 $note['number'] = $LMS->GetNewDocumentNumber(array(
@@ -424,7 +429,7 @@ switch ($action) {
 
 $SESSION->save('note', $note);
 $SESSION->save('notecontents', $contents);
-$SESSION->save('notecustomer', $customer);
+$SESSION->save('notecustomer', empty($customer) ? array() : $customer);
 $SESSION->save('noteediterror', $error);
 
 if ($action && !$error) {
@@ -454,6 +459,6 @@ $SMARTY->assign('planDocumentType', DOC_DNOTE);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
-$SMARTY->assign('customer', $customer);
+$SMARTY->assign('customer', empty($customer) ? array() : $customer);
 $SMARTY->assign('note', $note);
 $SMARTY->display('note/noteedit.html');

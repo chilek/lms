@@ -387,7 +387,7 @@ class Localisation
         }
 
         for ($i = 1, $len = count($args); $i <= $len; $i++) {
-            $content = str_replace('$' . chr(97 + $i - 1), $args[$i - 1], $content);
+            $content = str_replace('$' . chr(97 + $i - 1), isset($args[$i - 1]) ? $args[$i - 1] : '-', $content);
         }
 
         $content = preg_replace('/<![^>]+>/', '', $content);

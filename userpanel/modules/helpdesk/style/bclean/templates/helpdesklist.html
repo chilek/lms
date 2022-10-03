@@ -33,7 +33,7 @@
 				<td>
 					<span {if $helpdesklist[helpdesklist].state == $smarty.const.RT_RESOLVED}style="color:grey"{/if}>{$helpdesklist[helpdesklist].subject|escape}</span>
 					<br>
-					<small class="text-muted">{trans("Date:")} {$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"} &nbsp; {trans("Last modified:")} {$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</small>
+					<small class="text-muted">{trans("Date:")} {$helpdesklist[helpdesklist].createtime|date_format:"Y-m-d H:i"} &nbsp; {trans("Last modified:")} {$helpdesklist[helpdesklist].lastmod|date_format:"Y-m-d H:i"}</small>
 				</td>
 			</tr>
 		{sectionelse}

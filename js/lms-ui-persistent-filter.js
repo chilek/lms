@@ -36,7 +36,7 @@ $(function() {
 		var filterId = div.attr('data-filter-id');
 		var formData;
 		if (filterId) {
-			var form = div.closest('form');
+			var form = div.is('[form]') ? $('#' + div.attr('form')) : div.closest('form');
 			formData = new FormData(form.get(0));
 			form.find('.no-persistent-filter-field').each(function() {
 				formData.delete($(this).attr('name'));
@@ -60,7 +60,7 @@ $(function() {
 					result = result[filterId];
 				}
 				result.unshift({
-					text: $t('<!filter>- none -'),
+					text: $t('<!filter>— none —'),
 					value: -1
 				})
 				selectelem.scombobox('fill', result);
@@ -104,7 +104,7 @@ $(function() {
 					result = result[filterId];
 				}
 				result.unshift({
-					text: $t('<!filter>- none -'),
+					text: $t('<!filter>— none —'),
 					value: -1
 				})
 				selectelem.scombobox('fill', result);

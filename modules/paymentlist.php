@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Payments List');
+$layout['pagetitle'] = trans('Payment List');
 
 $paymentlist = $LMS->GetPaymentList();
 
@@ -32,7 +32,7 @@ $listdata['total'] = $paymentlist['total'];
 
 unset($paymentlist['total']);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $SMARTY->assign('paymentlist', $paymentlist);
 $SMARTY->assign('listdata', $listdata);

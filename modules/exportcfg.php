@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,13 +26,13 @@
 
 /* variables used in *record options below
 
-%CLARION_DATE - data w formacie Clarion tj. ilo¶æ dni od 28.12.1800
-%DATE - data w formacie okre¶lonym zmienn± $date_format
-%NUMBER - ca³y numer dokumentu
+%CLARION_DATE - data w formacie Clarion tj. liczba dni od 28.12.1800
+%DATE - data w formacie okreÅ›lonym zmiennÄ… $date_format
+%NUMBER - caÅ‚y numer dokumentu
 %N - numer dokumentu (liczba)
-%UID - ID u¿ytkownika
-%UID4 - ID u¿ytkownika w formacie '%04d', czyli np. 0016
-%CUSTOMER - nazwa/nazwisko i imiê
+%UID - ID uÅ¼ytkownika
+%UID4 - ID uÅ¼ytkownika w formacie '%04d', czyli np. 0016
+%CUSTOMER - nazwa/nazwisko i imiÄ™
 %CID - ID klienta
 %CID4 - ID klienta w formacie '%04d', czyli np. 0016
 %ADDRESS - adres klienta: ulica
@@ -40,12 +40,12 @@
 %CITY - miasto
 %TEN - nip
 %I - kolejny numer wiersza (rekordu) w pliku exportu
-%TYPE - typ operacji: 3-KP, 4-KW, 5-przelew-wp³ata, 6-przelew-wyp³ata
+%TYPE - typ operacji: 3-KP, 4-KW, 5-przelew-wpÅ‚ata, 6-przelew-wypÅ‚ata
 %CASHREG - nazwa rejestru kasowego
 %DESC - opis pozycji dokumentu/operacji (nie dotyczy faktur)
 %VALUE - kwota operacji (brutto)
-%ABSVALUE - kwota operacji bez znaku (warto¶æ bezwzglêdna)
-%DEADLINE - termin p³atno¶ci faktury w formacie $date_format
+%ABSVALUE - kwota operacji bez znaku (wartoÅ›Ä‡ bezwzglÄ™dna)
+%DEADLINE - termin pÅ‚atnoÅ›ci faktury w formacie $date_format
 
 */
 
@@ -61,24 +61,24 @@ $inv_filename = 'export.txt';
 $cnote_type = '1'; // typ dokumentu: korekta (zmienna %TYPE)
 $invoice_type = '0'; // typ dokumentu: faktura (zmienna %TYPE)
 
-/* Zmienne dotycz±ce tylko exportu faktur
+/* Zmienne dotyczÄ…ce tylko exportu faktur
 
-%NETTO - warto¶æ netto (suma)
-%VAT - warto¶æ podatku (suma)
+%NETTO - wartoÅ›Ä‡ netto (suma)
+%VAT - wartoÅ›Ä‡ podatku (suma)
 
 %VATPx - stawka podatku
-%NETTOx - warto¶æ netto
-%VATx - warto¶æ podatku
+%NETTOx - wartoÅ›Ä‡ netto
+%VATx - wartoÅ›Ä‡ podatku
 
 %TAXEDx - czy dana stawka podatkowa jest zwolniona, w sumie to tylko jedna kombinacja
-    taxed=1 i VATP=0.00 ma sens, no ale skoro juz jestesmy porzadni to niech tak bedzie
+    taxed=1 i VATP=0.00 ma sens, ale skoro juÅ¼ jesteÅ›my porzÄ…dni to niech tak bÄ™dzie
 
-UWAGA: x zastêpujemy cyfr± od 1 do 8, która oznacza kolejn± stawkê,
+UWAGA: x zastÄ™pujemy cyfrÄ… od 1 do 8, ktÃ³ra oznacza kolejnÄ… stawkÄ™,
        np. %VATP1, %VATP2 itd.
 
 */
 
-// dla wygody (d³ugi) rekord mo¿e byæ tablic± z dowoln± liczb± elementów
+// dla wygody (dÅ‚ugi) rekord moÅ¼e byÄ‡ tablicÄ… z dowolnÄ… liczbÄ… elementÃ³w
 $inv_record[0] = '%I,"%DATE","%NUMBER",%TYPE,"%DEADLINE",%VALUE,%NETTO,%VAT,';
 $inv_record[1] = '"%CID","%CUSTOMER","%ADDRESS","%ZIP","%CITY","%TEN"';
 
@@ -87,6 +87,6 @@ $inv_record[1] = '"%CID","%CUSTOMER","%ADDRESS","%ZIP","%CITY","%TEN"';
 $cash_filename = 'export.txt';
 $cash_in_type = '3'; // typ dokumentu (zmienna %TYPE)
 $cash_out_type = '4'; // typ dokumentu (zmienna %TYPE)
-$default_customer = ''; // domy¶lna warto¶æ zmiennej %CUSTOMER gdy pole jest puste (np. przeniesienie ¶rodków)
+$default_customer = ''; // domyÅ›lna wartoÅ›Ä‡ zmiennej %CUSTOMER gdy pole jest puste (np. przeniesienie Å›rodkÃ³w)
 
 $cash_record = '%I,%DATE,%ABSVALUE,"%NUMBER","%UID4",%TYPE,"%CASHREG","%CID4","%CUSTOMER","%DESC"';

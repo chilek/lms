@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -92,16 +92,16 @@ if (!empty($numberplanadd) && count($numberplanadd)) {
         $numberplanadd['divisions'] = array();
     } else {
         $numberplanadd['divisions'] = array_flip($numberplanadd['divisions'] ?: array());
-        $numberplanadd['users'] = array_flip($numberplanadd['users'] ?: array());
+        $numberplanadd['users'] = array_flip(empty($numberplanadd['users']) ? array() : $numberplanadd['users']);
     }
 }
 
 $layout['pagetitle'] = trans('New Numbering Plan');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->add_history_entry();
 
 $divisions = $LMS->GetDivisions(array('status' => 0));
-$users = getUsers($divisions, $numberplanadd['divisions']);
+$users = getUsers($divisions, isset($numberplanadd['divisions']) ? $numberplanadd['divisions'] : array());
 
 $SMARTY->assign('numberplanadd', $numberplanadd);
 $SMARTY->assign('divisions', $divisions);
