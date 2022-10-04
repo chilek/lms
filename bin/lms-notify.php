@@ -3438,7 +3438,7 @@ if (!empty($intersect)) {
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
                                         if (!$quiet) {
-                                            printf("[block/assignment-invoice] Customer: #%d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                            printf("[block/assignment-invoice] Customer: #%d, Assignment: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
                                         }
 
                                         if (empty($action_params)) {
