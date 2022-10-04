@@ -3438,7 +3438,7 @@ if (!empty($intersect)) {
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
                                         if (!$quiet) {
-                                            printf("[block/assignment-invoice] CustomerID: #%d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                            printf("[block/assignment-invoice] Customer: #%d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
                                         }
 
                                         if (empty($action_params)) {
@@ -3490,7 +3490,7 @@ if (!empty($intersect)) {
 
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
-                                            printf("[block/customer-status] CustomerID: #%d" . PHP_EOL, $custid);
+                                            printf("[block/customer-status] Customer: #%d" . PHP_EOL, $custid);
                                         }
 
                                         if (!$debug) {
@@ -3524,7 +3524,7 @@ if (!empty($intersect)) {
                                         array($cid)
                                     )) {
                                         if (!$quiet) {
-                                            printf("[block/all-assignment-suspension] CustomerID: #%d" . PHP_EOL, $cid);
+                                            printf("[block/all-assignment-suspension] Customer: #%d" . PHP_EOL, $cid);
                                         }
 
                                         if (!$debug) {
@@ -3813,7 +3813,7 @@ if (!empty($intersect)) {
 
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
-                                            printf("[unblock/customer-status] CustomerID: #%d" . PHP_EOL, $custid);
+                                            printf("[unblock/customer-status] Customer: #%d" . PHP_EOL, $custid);
                                         }
 
                                         if (!$debug) {
