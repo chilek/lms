@@ -377,7 +377,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             }
 
             foreach ($voipaccountdata['numbers'] as $number) {
-                $phones[] = '(' . $id . ", '" . $number['phone'] . "'," . (++$phone_index) . ", " . $this->db->Escape($number['info']) . ")";
+                $phones[] = '(' . $id . ', ' . $this->db->Escape($number['phone']) . ', ' . (++$phone_index) . ', ' . $this->db->Escape($number['info']) . ')';
 
                 if ($this->syslog) {
                     $args = array(
