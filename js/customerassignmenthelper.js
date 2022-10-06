@@ -364,7 +364,7 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.voipaccounts, function(key, account) {
 							var location = String(account.location);
-							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
+							location = account.teryt == '1' ? $t('$a (TERRIT)', location) : location;
 							$.each(account.phones, function(key, phone) {
 								options += '<option value="' + phone.id + '"' +
 									(("sphones" in selected) && (schemaid in selected.sphones) && (label in selected.sphones[schemaid]) &&
