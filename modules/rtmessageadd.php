@@ -858,13 +858,15 @@ if (!is_array($message['ticketid'])) {
             }
         }
 
-        $contacts['mails'][$reply['replyto']] = array(
-            'contact' => $reply['replyto'],
-            'name' => trans('from message "Reply" header'),
-            'display' => '',
-            'source' => 'reply-to',
-            'checked' => $customer_mails ? 0 : 1,
-        );
+        if (!empty($reply['replyto'])) {
+            $contacts['mails'][$reply['replyto']] = array(
+                'contact' => $reply['replyto'],
+                'name' => trans('from message "Reply" header'),
+                'display' => '',
+                'source' => 'reply-to',
+                'checked' => $customer_mails ? 0 : 1,
+            );
+        }
     }
 
     // collect phone numbers from ticket, message to which you reply and customer mobile phone contacts
