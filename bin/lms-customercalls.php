@@ -438,7 +438,7 @@ foreach ($dirs as $dir) {
             }
         }
 
-        chmod($dst_file, $storage_dir_permission);
+        chmod($dst_file, $storage_dir_permission & 0666);
         chown($dst_file, $storage_dir_owneruid);
         chgrp($dst_file, $storage_dir_ownergid);
 
