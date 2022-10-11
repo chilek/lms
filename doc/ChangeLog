@@ -284,6 +284,7 @@ version 28-git (????-??-??):
   - enhancement: added paytime/deadline property to assignments [chilan]
   - enhancement: 'helpdesk' flag of email and mobile contacts controls if helpdesk notifications
     are sent to customer [chilan]
+  - enhancement: customer search by popular assignment properties [chilan]
 
 version 27.0 (2021-08-20):
 
