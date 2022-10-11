@@ -650,6 +650,26 @@ input[type="text"][disabled] {
 	}
 }
 
+input[type="checkbox"][disabled] {
+	background-color: transparent;
+	& + label {
+		color: @blend;
+	}
+}
+
+input[type="radio"][disabled] {
+	background-color: transparent;
+	& + label {
+		color: @blend;
+	}
+}
+
+select[disabled] {
+	& + label {
+		color: @blend;
+	}
+}
+
 input[type="radio"] {
     vertical-align: text-bottom;
 }

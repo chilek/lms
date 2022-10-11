@@ -1149,6 +1149,37 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
         }
 
+        if (isset($search['assignment'])) {
+            if (is_array($search['assignment'])) {
+                $assignment_properties = $search['assignment'];
+            }
+            unset($search['assignment']);
+        }
+
+        if (isset($assignment) && $assignment_properties) {
+            $where_assignments = array();
+            foreach ($assignment_properties as $key => $value) {
+                switch ($key) {
+                    case 'at':
+                        if (strlen($value)) {
+                            $where_assignments[] = 'a.at = ' . intval($value);
+                        }
+                        break;
+                    case 'period':
+                        if (is_numeric($value)) {
+                            $where_assignments[] = 'a.period = ' . intval($value);
+                        }
+                        break;
+                    case 'backwardperiod':
+                        $where_assignments[] = 'a.backwardperiod = ' . intval($value);
+                        break;
+                }
+            }
+            if (!empty($where_assignments)) {
+                $assignment .= ' AND ' . (implode(' AND ', $where_assignments));
+            }
+        }
+
         if (isset($network) && $network) {
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
             $net = $network_manager->getNetworkParams($network);

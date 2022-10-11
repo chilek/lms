@@ -30,6 +30,26 @@
 		margin-left: 0.5em;
 	}
 
+	#assignment-properties {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#assignment-properties > div {
+		display: flex;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+
+	.reverse-elements {
+		display: flex;
+		flex-direction: row-reverse;
+	}
+
+	.reverse-elements > :not(:first-child) {
+		margin-right: 0.5em;
+	}
+
 </style>
 
 <script>
@@ -463,6 +483,41 @@
 				size="5" placeholder="{trans("days")}" style="display: none;" pattern="[0-9]+">
 		</TD>
 	</TR>
+	<tr>
+		<td></td>
+		<td>
+			<div id="assignment-properties">
+				<div>
+					<div class="reverse-elements">
+						<select id="assignment-period" size="1" name="search[assignment][period]" disabled
+							{tip text="Select time period to account liability"}>
+							<option value="">{trans("— all —")}</option>
+							{foreach $_PERIODS as $key => $item}
+								<option value="{$key}">{$item}</option>
+							{/foreach}
+						</select>
+						<label for="assignment-period">
+							{trans("Accounting")}
+						</label>
+					</div>
+					<input type="checkbox" id="backward-period" name="search[assignment][backwardperiod]" value="1" disabled>
+					<label for="backward-period" {tip text="Check if tariff should be accounted backward"}>
+						{trans("<!assignment>backward")}
+					</label>
+				</div>
+				<div>
+					<input id="a-day-of-month" type="text" name="search[assignment][at]"
+						value="" size="8" disabled
+						{tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"}>
+					<input type="checkbox" id="last-day-of-month" name="search[assignment][at]" value="0"
+						disabled>
+					<label for="last-day-of-month">
+						{trans("last day of month")}
+					</label>
+				</div>
+			</div>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="modified-date"} {trans("Created:")}
@@ -727,6 +782,15 @@
 		$('[name="s[]"]').change(function() {
 			var disabled = $(this).val().indexOf('71') === -1;
 			$('[name="search[balance_days]"]').prop('disabled', disabled).closest('label').toggleClass('lms-ui-disabled', disabled);
+		});
+
+		$('#assignment-selector').change(function() {
+			$('#assignment-properties').find('select,input').prop('disabled', !parseInt($(this).val()));
+			$('#last-day-of-month').prop('disabled', parseInt($(this).val()) != {$smarty.const.MONTHLY});
+		});
+
+		$('#assignment-period').change(function() {
+			$('#last-day-of-month').prop('disabled', parseInt($(this).val()) != {$smarty.const.MONTHLY});
 		});
 	});
 
