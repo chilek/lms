@@ -701,18 +701,21 @@ if (isset($_POST['message'])) {
 
             if (!empty($reply['cc'])) {
                 foreach ($reply['cc'] as &$cc) {
-                    $cc['contact'] = $cc['address'];
-                    $cc['source'] = 'carbon-copy';
+                    if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc['address'], $m)) {
+                        $cc['contact'] = $m['mail'];
+                        $cc['display'] = isset($m['name']) ? $m['name'] : '';
+                        $cc['source'] = 'carbon-copy';
+                    }
                 }
                 unset($cc);
 
                 $message['mailfrom'] = array_merge($message['mailfrom'], $reply['cc']);
             }
 
-            if (!empty($reply['replyto'])) {
-                $message['mailfrom'][$reply['replyto']] = array(
-                    'contact' => $reply['replyto'],
-                    'display' => '',
+            if (!empty($reply['replyto']) && preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $reply['replyto'], $m)) {
+                $message['mailfrom'][$m['mail']] = array(
+                    'contact' => $m['mail'],
+                    'display' => isset($m['name']) ? $m['name'] : '',
                     'source' => 'reply-to',
                 );
             }
@@ -824,21 +827,24 @@ if (!is_array($message['ticketid'])) {
 
         if (!empty($reply['cc'])) {
             foreach ($reply['cc'] as $cc) {
-                $contacts['mails'][$cc['address']] = array(
-                    'contact' => $cc['address'],
-                    'name' => trans('from message "Copy" header'),
-                    'display' => '',
-                    'source' => 'carbon-copy',
-                    'checked' => $customer_mails ? 0 : 1,
-                );
+                if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc['address'], $m)) {
+                    $contacts['mails'][$m['mail']] = array(
+                        'contact' => $m['mail'],
+                        'name' => trans('from message "Copy" header'),
+                        'display' => isset($m['name']) ? $m['name'] : '',
+                        'source' => 'carbon-copy',
+                        'checked' => $customer_mails ? 0 : 1,
+                    );
+                }
             }
         }
 
-        if (!empty($reply['replyto'])) {
-            $contacts['mails'][$reply['replyto']] = array(
-                'contact' => $reply['replyto'],
+        if (!empty($reply['replyto'])
+            && preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $reply['replyto'], $m)) {
+            $contacts['mails'][$m['mail']] = array(
+                'contact' => $m['mail'],
                 'name' => trans('from message "Reply" header'),
-                'display' => '',
+                'display' => isset($m['name']) ? $m['name'] : '',
                 'source' => 'reply-to',
                 'checked' => $customer_mails ? 0 : 1,
             );
