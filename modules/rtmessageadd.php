@@ -818,30 +818,6 @@ if (!is_array($message['ticketid'])) {
         );
     }
 
-    if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
-        $customer_mails = !empty($contacts['mails']);
-        foreach ($message['mailfrom'] as $address) {
-            switch ($address['source']) {
-                case 'carbon-copy':
-                    $contact_name = trans('from message "Copy" header');
-                    break;
-                case 'reply-to':
-                    $contact_name = trans('from message "Reply" header');
-                    break;
-                default:
-                    $contact_name = trans('from message "From" header');
-                    break;
-            }
-            $contacts['mails'][$address['contact']] = array(
-                'contact' => $address['contact'],
-                'name' => $contact_name,
-                'display' => $address['display'],
-                'source' => $address['source'],
-                'checked' => $customer_mails ? 0 : 1,
-            );
-        }
-    }
-
     if (isset($message['inreplyto']) && !empty($message['inreplyto'])) {
         $reply = $LMS->GetMessage($message['inreplyto']);
         $customer_mails = !empty($contacts['mails']);
@@ -864,6 +840,30 @@ if (!is_array($message['ticketid'])) {
                 'name' => trans('from message "Reply" header'),
                 'display' => '',
                 'source' => 'reply-to',
+                'checked' => $customer_mails ? 0 : 1,
+            );
+        }
+    }
+
+    if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
+        $customer_mails = !empty($contacts['mails']);
+        foreach ($message['mailfrom'] as $address) {
+            switch ($address['source']) {
+                case 'carbon-copy':
+                    $contact_name = trans('from message "Copy" header');
+                    break;
+                case 'reply-to':
+                    $contact_name = trans('from message "Reply" header');
+                    break;
+                default:
+                    $contact_name = trans('from message "From" header');
+                    break;
+            }
+            $contacts['mails'][$address['contact']] = array(
+                'contact' => $address['contact'],
+                'name' => $contact_name,
+                'display' => $address['display'],
+                'source' => $address['source'],
                 'checked' => $customer_mails ? 0 : 1,
             );
         }
