@@ -819,7 +819,7 @@ if (!is_array($message['ticketid'])) {
     }
 
     if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
-        $customer_mails = !empty($contact['mails']);
+        $customer_mails = !empty($contacts['mails']);
         foreach ($message['mailfrom'] as $address) {
             switch ($address['source']) {
                 case 'carbon-copy':
@@ -844,7 +844,7 @@ if (!is_array($message['ticketid'])) {
 
     if (isset($message['inreplyto']) && !empty($message['inreplyto'])) {
         $reply = $LMS->GetMessage($message['inreplyto']);
-        $customer_mails = !empty($contact['mails']);
+        $customer_mails = !empty($contacts['mails']);
 
         if (!empty($reply['cc'])) {
             foreach ($reply['cc'] as $cc) {
