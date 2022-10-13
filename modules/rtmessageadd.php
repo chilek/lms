@@ -821,38 +821,8 @@ if (!is_array($message['ticketid'])) {
         );
     }
 
-    if (isset($message['inreplyto']) && !empty($message['inreplyto'])) {
-        $reply = $LMS->GetMessage($message['inreplyto']);
-        $customer_mails = !empty($contacts['mails']);
-
-        if (!empty($reply['cc'])) {
-            foreach ($reply['cc'] as $cc) {
-                if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc['address'], $m)) {
-                    $contacts['mails'][$m['mail']] = array(
-                        'contact' => $m['mail'],
-                        'name' => trans('from message "Copy" header'),
-                        'display' => isset($m['name']) ? $m['name'] : '',
-                        'source' => 'carbon-copy',
-                        'checked' => $customer_mails ? 0 : 1,
-                    );
-                }
-            }
-        }
-
-        if (!empty($reply['replyto'])
-            && preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $reply['replyto'], $m)) {
-            $contacts['mails'][$m['mail']] = array(
-                'contact' => $m['mail'],
-                'name' => trans('from message "Reply" header'),
-                'display' => isset($m['name']) ? $m['name'] : '',
-                'source' => 'reply-to',
-                'checked' => $customer_mails ? 0 : 1,
-            );
-        }
-    }
-
+    $from_mail_addresses = false;
     if (isset($message['mailfrom']) && !empty($message['mailfrom'])) {
-        $customer_mails = !empty($contacts['mails']);
         foreach ($message['mailfrom'] as $address) {
             switch ($address['source']) {
                 case 'carbon-copy':
@@ -870,9 +840,56 @@ if (!is_array($message['ticketid'])) {
                 'name' => $contact_name,
                 'display' => $address['display'],
                 'source' => $address['source'],
-                'checked' => $customer_mails ? 0 : 1,
+                'checked' => 0,
             );
+            if ($address['source'] == 'mailfrom') {
+                $from_mail_addresses = true;
+            }
         }
+    }
+
+    $replyto_cc_mail_addresses = false;
+    if (isset($message['inreplyto']) && !empty($message['inreplyto'])) {
+        $reply = $LMS->GetMessage($message['inreplyto']);
+
+        if (!empty($reply['cc'])) {
+            foreach ($reply['cc'] as $cc) {
+                if (preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $cc['address'], $m)) {
+                    $contacts['mails'][$m['mail']] = array(
+                        'contact' => $m['mail'],
+                        'name' => trans('from message "Copy" header'),
+                        'display' => isset($m['name']) ? $m['name'] : '',
+                        'source' => 'carbon-copy',
+                        'checked' => 1,
+                    );
+                    $replyto_cc_mail_addresses = true;
+                }
+            }
+        }
+
+        if (!empty($reply['replyto'])
+            && preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $reply['replyto'], $m)) {
+            $contacts['mails'][$m['mail']] = array(
+                'contact' => $m['mail'],
+                'name' => trans('from message "Reply" header'),
+                'display' => isset($m['name']) ? $m['name'] : '',
+                'source' => 'reply-to',
+                'checked' => 1,
+            );
+            $replyto_cc_mail_addresses = true;
+        }
+    }
+
+    if ($replyto_cc_mail_addresses && $from_mail_addresses) {
+        $contacts['mails'] = array_map(
+            function ($contact) {
+                if ($contact['source'] == 'mailfrom') {
+                    $contact['checked'] = 0;
+                }
+                return $contact;
+            },
+            $contacts['mails']
+        );
     }
 
     // collect phone numbers from ticket, message to which you reply and customer mobile phone contacts
