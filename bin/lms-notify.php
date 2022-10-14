@@ -975,7 +975,6 @@ if (empty($types) || in_array('timetable', $types)) {
                 LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
                 WHERE closed = 0
                     AND date <= ? AND enddate + 86400 >= ?
-                    AND begintime <= ? AND (endtime = 0 OR endtime >= ?)
                     AND ((private = 1 AND (events.userid = ? OR eventassignments.userid = ?))
                         OR (private = 0 AND eventassignments.userid = ?)
                         OR (private = 0 AND eventassignments.userid IS NULL)
@@ -984,8 +983,6 @@ if (empty($types) || in_array('timetable', $types)) {
                 array(
                     $daystart,
                     $dayend,
-                    $time,
-                    $time,
                     $user['id'],
                     $user['id'],
                     $user['id']
