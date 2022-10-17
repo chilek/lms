@@ -428,6 +428,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         // Create assignments according to promotion schema
         if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
             $force_at_next_day = ConfigHelper::checkConfig('phpui.promotion_force_at_next_day');
+            $force_current_period_settlement_at_same_day = ConfigHelper::checkConfig('promotions.force_current_period_settlement_at_same_day');
 
             $now = strtotime('now');
 
@@ -771,8 +772,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                                 $partial_at = $data['at'];
                             } else {
-                                if ($force_at_next_day && $idx == 1) {
-                                    $partial_at = date('d', strtotime('tomorrow', $orig_datefrom));
+                                if ($idx == 1 && ($force_at_next_day || $force_current_period_settlement_at_same_day)) {
+                                    if ($force_current_period_settlement_at_same_day) {
+                                        $partial_at = $orig_datefrom <= $now ? date('d') : $dom;
+                                    } elseif ($force_at_next_day) {
+                                        $partial_at = date('d', strtotime('tomorrow', $orig_datefrom));
+                                    }
                                 } else {
                                     $partial_at = $orig_datefrom <= $now ? date('d', strtotime('tomorrow')) : $dom;
                                 }
