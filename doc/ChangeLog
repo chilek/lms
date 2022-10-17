@@ -289,6 +289,26 @@ version 28-git (????-??-??):
   - improvement: 'promotions.force_current_period_settlement_at_same_day' configuration variable
     with 'false' as default value controls accounting day of current period settlement
     assignment [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_activation_at_next_day'
+    to 'promotions.activation_at_next_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_activation_at_same_day'
+    to 'promotions.activation_at_same_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_allow_modify_values_for_privileged_user'
+    to 'promotions.allow_modify_values_for_privileged_user' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_force_at_next_day'
+    to 'promotions.force_at_next_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_preserve_at_day'
+    to 'promotions.preserve_at_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_schema_all_terminal_check'
+    to 'promotions.schema_all_terminal_check' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_schema_name_limit'
+    to 'promotions.schema_name_limit' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_show_period_values'
+    to 'promotions.show_period_values' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_tariff_duplicates'
+    to 'promotions.tariff_duplicates' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_use_discounts'
+    to 'promotions.use_discounts' [chilan]
 
 version 27.0 (2021-08-20):
 

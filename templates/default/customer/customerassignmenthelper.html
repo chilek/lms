@@ -1,5 +1,5 @@
-{$promotion_show_period_values = ConfigHelper::checkConfig('phpui.promotion_show_period_values')}
-{$promotion_schema_name_limit = intval(ConfigHelper::getConfig('phpui.promotion_schema_name_limit', 40))}
+{$promotion_show_period_values = ConfigHelper::checkConfig('promotions.show_period_values', ConfigHelper::checkConfig('phpui.promotion_show_period_values'))}
+{$promotion_schema_name_limit = intval(ConfigHelper::getConfig('promotions.schema_name_limit', ConfigHelper::getConfig('phpui.promotion_schema_name_limit', 40)))}
 
 <style>
 

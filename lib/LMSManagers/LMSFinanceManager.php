@@ -427,7 +427,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         // Create assignments according to promotion schema
         if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
-            $force_at_next_day = ConfigHelper::checkConfig('phpui.promotion_force_at_next_day');
+            $force_at_next_day = ConfigHelper::checkConfig('promotions.force_at_next_day', ConfigHelper::checkConfig('phpui.promotion_force_at_next_day'));
             $force_current_period_settlement_at_same_day = ConfigHelper::checkConfig('promotions.force_current_period_settlement_at_same_day');
 
             $now = strtotime('now');
@@ -452,7 +452,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $orig_datefrom = $datefrom = $data['datefrom'];
             $cday        = date('d', $datefrom);
 
-            $use_discounts = ConfigHelper::checkConfig('phpui.promotion_use_discounts');
+            $use_discounts = ConfigHelper::checkConfig(
+                'promotions.use_discounts',
+                ConfigHelper::checkConfig('phpui.promotion_use_discounts')
+            );
 
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
@@ -472,10 +475,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         // sometimes we want to have activation issued in the last day
                         // of given month instead first day of next month
                         // to fullfill strange tax rules
-                        $activation_at_same_day = ConfigHelper::checkConfig('phpui.promotion_activation_at_same_day');
+                        $activation_at_same_day = ConfigHelper::checkConfig('promotions.activation_at_same_day', ConfigHelper::checkConfig('phpui.promotion_activation_at_same_day'));
                         // payday is before the start of the period
                         // set activation payday to next month's payday
-                        $activation_at_next_day = ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true);
+                        $activation_at_next_day = ConfigHelper::getConfig('promotions.activation_at_next_day', ConfigHelper::getConfig('phpui.promotion_activation_at_next_day', '', true));
                         if ($force_at_next_day) {
                             $datefrom = strtotime('tomorrow', $datefrom);
                             if ($activation_at_next_day == 'business') {
@@ -630,8 +633,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     $datefrom  = !empty($_datefrom) ? $_datefrom : $datefrom;
                     $_datefrom = 0;
-                    $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day', true) && $data['at'] !== '')
-                                               ? $data['at'] : $this->CalcAt($period, $datefrom);
+                    $at        = (ConfigHelper::checkConfig(
+                        'promotions.preserve_at_day',
+                        ConfigHelper::checkConfig('phpui.promotion_preserve_at_day', true)
+                    ) && $data['at'] !== '') ? $data['at'] : $this->CalcAt($period, $datefrom);
 
                     $length    = isset($data_schema[$idx - 1]) ? $data_schema[$idx - 1] : null;
                     $month     = date('n', $datefrom);
@@ -1606,7 +1611,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function CheckSchemaModifiedValues($data)
     {
-        if (ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user')
+        if (ConfigHelper::checkConfig('promotions.allow_modify_values_for_privileged_user', ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user'))
             && ConfigHelper::checkPrivilege('promotion_management')) {
             return true;
         }
@@ -4689,7 +4694,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             $superuser = ConfigHelper::checkPrivilege('superuser');
-            $allow_modify_values_for_privileged_user = ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user');
+            $allow_modify_values_for_privileged_user = ConfigHelper::checkConfig(
+                'promotions.allow_modify_values_for_privileged_user',
+                ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user')
+            );
             $promotion_management = ConfigHelper::checkPrivilege('promotion_management');
 
             foreach ($promotion_schema_assignments as $assign) {

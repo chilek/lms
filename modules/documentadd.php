@@ -480,7 +480,10 @@ if (isset($_POST['document'])) {
     }
 
     $document['assignment']['check_all_terminals'] =
-        ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+        ConfigHelper::checkConfig(
+            'promotions.schema_all_terminal_check',
+            ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check')
+        );
 
     $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
     $existing_assignment_operation_map = array(
