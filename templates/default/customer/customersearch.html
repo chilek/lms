@@ -792,6 +792,10 @@
 		$('#assignment-period').change(function() {
 			$('#last-day-of-month').prop('disabled', parseInt($(this).val()) != {$smarty.const.MONTHLY});
 		});
+
+		$('#last-day-of-month').change(function() {
+			$('#a-day-of-month').prop('disabled', $(this).prop('checked'));
+		});
 	});
 
 </script>
