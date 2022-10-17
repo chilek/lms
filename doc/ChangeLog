@@ -280,11 +280,15 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.document_password' and 'phpui.document_protection_command'
     to 'documents.protection_password' and 'documents.protection_command' [chilan]
   - enhancement: allow to assign events with netnodes and netdevices [interduo]
-  - enhancement: implement {network_device_selection} & {network_node_selection} smarty function [interduo]
+  - enhancement: implement {network_device_selection} & {network_node_selection} smarty
+    function [interduo]
   - enhancement: added paytime/deadline property to assignments [chilan]
   - enhancement: 'helpdesk' flag of email and mobile contacts controls if helpdesk notifications
     are sent to customer [chilan]
   - enhancement: customer search by popular assignment properties [chilan]
+  - improvement: 'promotions.force_current_period_settlement_at_same_day' configuration variable
+    with 'false' as default value controls accounting day of current period settlement
+    assignment [chilan]
 
 version 27.0 (2021-08-20):
 
