@@ -57,7 +57,7 @@ if (isset($_GET['premac'])) {
     });
 }
 
-if (isset($_GET['prename']) && preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $_GET['prename'])) {
+if (isset($_GET['prename']) && preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $_GET['prename'])) {
     $nodedata['name'] = $_GET['prename'];
 }
 
@@ -94,7 +94,7 @@ if (isset($_POST['nodedata'])) {
         $error['name'] = trans('Node name is required!');
     } else if (strlen($nodedata['name']) > 32) {
         $error['name'] = trans('Node name is too long (max. 32 characters)!');
-    } else if (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $nodedata['name'])) {
+    } else if (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodedata['name'])) {
         $error['name'] = trans('Specified name contains forbidden characters!');
     } else if ($LMS->GetNodeIDByName($nodedata['name']) || $LMS->GetNodeIDByNetName($nodedata['name'])) {
         $error['name'] = trans('Specified name is in use!');
@@ -176,7 +176,7 @@ if (isset($_POST['nodedata'])) {
     if ($login_length = strlen($nodedata['login'])) {
         if ($login_length > 32) {
             $error['login'] = trans('Login is too long (max. 32 characters)!');
-        } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9-.]+$') . '/i', $nodedata['login'])) {
+        } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodedata['login'])) {
             $error['login'] = trans('Specified login contains forbidden characters!');
         } elseif ($LMS->GetNodeIDByLogin($nodedata['login'])) {
             $error['login'] = trans('Specified login is in use!');
