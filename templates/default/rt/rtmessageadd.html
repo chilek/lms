@@ -416,6 +416,7 @@
 			$('[name="message[body]"]').val(message);
 		});
 
+		{if !$group_action}
 		$('#message-form').submit(function() {
 			var errorMessages = [];
 			var errorElem = null;
@@ -433,6 +434,7 @@
 				return false;
 			}
 		});
+		{/if}
 
 		{if isset($citing)}
 		var textarea = $('[name="message[body]"]');
