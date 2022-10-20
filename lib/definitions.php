@@ -954,6 +954,8 @@ $LINKTECHNOLOGIES = array(
         50 => '(EURO)DOCSIS 1.x',
         51 => '(EURO)DOCSIS 2.x',
         52 => '(EURO)DOCSIS 3.x',
+        53 => 'COAXDATA',
+        54 => 'ATV',
     ),
     1 => array(
         100 => 'WiFi - 2,4 GHz',
@@ -971,6 +973,8 @@ $LINKTECHNOLOGIES = array(
         112 => 'LTE',
         113 => 'UMTS',
         114 => 'DMS',
+        115 => 'FWA',
+        116 => '5G',
     ),
     2 => array(
         200 => 'CWDM',
@@ -989,6 +993,7 @@ $LINKTECHNOLOGIES = array(
         250 => '(EURO)DOCSIS 1.x',
         251 => '(EURO)DOCSIS 2.x',
         252 => '(EURO)DOCSIS 3.x',
+        253 => 'ATV',
     ),
 );
 
