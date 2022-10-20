@@ -162,8 +162,15 @@ if ($bandwidths) {
             'private' => 0,
             'bussiness' => 0,
         ),
-        '>= 100 Mbit/s < 1 Gbit/s' => array(
+        '>= 100 Mbit/s < 300 Mbit/s' => array(
             'min' => 100000,
+            'max' => 300000,
+            'total' => 0,
+            'private' => 0,
+            'bussiness' => 0,
+        ),
+        '>= 300 Mbit/s < 1 Gbit/s' => array(
+            'min' => 300000,
             'max' => 1000000,
             'total' => 0,
             'private' => 0,
