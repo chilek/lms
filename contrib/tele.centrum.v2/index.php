@@ -103,8 +103,8 @@ if (!empty($_POST)) {
         $ticket['mailfrom'] = '';
         $ticket['owner'] = null;
         // if valid user found in db
-        if (isset($ticket['othercustomer']) or !$result) {
-            $ticket['customerid'] = 0;
+        if (isset($ticket['othercustomer']) || empty($result)) {
+            $ticket['customerid'] = null;
             if ($ticket['odblokowanie_komunikatu'] == 'tak') {
                 $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
                 $ticket['body'] = 'Prośba o odblokowanie internetu.' . PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
