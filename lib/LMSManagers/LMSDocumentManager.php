@@ -223,7 +223,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				FROM documentcontents
 				JOIN documents d ON (d.id = documentcontents.docid)
 				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
-				JOIN vusers u ON u.id = d.userid
+				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN vusers u2 ON u2.id = d.cuserid
 				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 				LEFT JOIN (
@@ -264,7 +264,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
 			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
-			JOIN vusers u ON u.id = d.userid
+			LEFT JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN vusers u3 ON u3.id = d.auserid
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
