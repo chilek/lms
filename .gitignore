@@ -2,6 +2,7 @@
 assets/*
 templates_c/*
 userpanel/templates_c/*
+contrib/tele.centrum.v2/templates_c/*
 lib/Smarty/*
 nbproject/private
 lms.ini
