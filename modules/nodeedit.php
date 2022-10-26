@@ -202,10 +202,38 @@ if (isset($_POST['nodeedit'])) {
     if (strlen($nodeedit['passwd']) > 32) {
         $error['passwd'] = trans('Password is too long (max. 32 characters)!');
     } elseif (!strlen($nodeedit['passwd']) && $password_required != 'none') {
-        if ($password_required == 'error' || $password_required == 'true') {
-            $error['passwd'] = trans('Password is required!');
-        } elseif ($password_required == 'warning' && !isset($warnings['nodeedit-passwd-'])) {
-            $warning['nodeedit[passwd]'] = trans('Password is empty!');
+        $auth_types = ConfigHelper::getConfig('phpui.node_password_required_for_auth_types', 'all');
+        if ($auth_types == 'all') {
+            $auth_types = null;
+        } else {
+            $auth_types = preg_split("/([\s]+|[\s]*,[\s]*)/", $auth_types, -1, PREG_SPLIT_NO_EMPTY);
+            if (empty($auth_types)) {
+                $auth_types = null;
+            } else {
+                $all_auth_types = Utils::array_column($SESSIONTYPES, 'alias');
+                $auth_types = array_intersect($all_auth_types, $auth_types);
+                if (empty($auth_types)) {
+                    $auth_types = null;
+                }
+            }
+        }
+        if (empty($auth_types)) {
+            $requiring_auth_type = true;
+        } else {
+            $requiring_auth_type = false;
+            foreach ($nodeedit['authtype'] as $val) {
+                if (isset($auth_types[$val])) {
+                    $requiring_auth_type = true;
+                    break;
+                }
+            }
+        }
+        if ($requiring_auth_type) {
+            if ($password_required == 'error' || $password_required == 'true') {
+                $error['passwd'] = trans('Password is required!');
+            } elseif ($password_required == 'warning' && !isset($warnings['nodeedit-passwd-'])) {
+                $warning['nodeedit[passwd]'] = trans('Password is empty!');
+            }
         }
     }
 
