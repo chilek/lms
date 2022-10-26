@@ -309,6 +309,8 @@ version 28-git (????-??-??):
     to 'promotions.tariff_duplicates' [chilan]
   - devel/cleanup: renamed 'phpui.promotion_use_discounts'
     to 'promotions.use_discounts' [chilan]
+  - enhancement: 'phpui.node_password_required_for_auth_type' controls which authentication/access types
+    set for nodes require node password to be specified ('all' as default value) [chilan]
 
 version 27.0 (2021-08-20):
 
