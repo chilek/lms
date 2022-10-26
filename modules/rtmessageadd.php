@@ -745,12 +745,16 @@ if (isset($_POST['message'])) {
 
             if (ConfigHelper::checkConfig('rt.quote_body', ConfigHelper::checkConfig('phpui.helpdesk_reply_body'))
                 || isset($_GET['citing'])) {
-                $body = explode("\n", textwrap(strip_tags($reply['body']), 74));
                 $message['body'] = '';
-                foreach ($body as $line) {
-                    $message['body'] .= '> ' . $line . "\n";
+                if ($message['contenttype'] == 'text/html') {
+                    $message['body'] = '<br><blockquote>' . $reply['body'] . '</blockquote>';
+                } else {
+                    $body = explode("\n", textwrap(strip_tags($reply['body']), 74));
+                    foreach ($body as $line) {
+                        $message['body'] .= '> ' . $line . "\n";
+                    }
+                    $message['body'] .= "\n";
                 }
-                $message['body'] .= "\n";
             }
         } else {
             $reply = $LMS->GetFirstMessage($ticketid);

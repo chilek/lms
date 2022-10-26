@@ -770,13 +770,19 @@ code {
   padding: 0.1rem 0.2rem;
 }
 .mce-content-body:not([dir=rtl]) blockquote {
+/*
   border-left: 2px solid #ccc;
-  margin-left: 1.5rem;
+*/
+  border-left: 2px solid #929292 !important;
+  margin-left: 0.5rem !important;
   padding-left: 1rem;
 }
 .mce-content-body[dir=rtl] blockquote {
+/*
   border-right: 2px solid #ccc;
-  margin-right: 1.5rem;
+*/
+  border-left: 2px solid #929292 !important;
+  margin-right: 0.5rem !important;
   padding-right: 1rem;
 }
 p {
