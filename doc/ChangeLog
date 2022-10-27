@@ -311,6 +311,7 @@ version 28-git (????-??-??):
     to 'promotions.use_discounts' [chilan]
   - enhancement: 'phpui.node_password_required_for_auth_type' controls which authentication/access types
     set for nodes require node password to be specified ('all' as default value) [chilan]
+  - improvement: some invoice item visibility depends on invoice pay type [chilan]
 
 version 27.0 (2021-08-20):
 
