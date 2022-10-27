@@ -38,7 +38,7 @@ $payment_value = str_replace(',', '.', trim($tranferform_common_data['customerin
 $tranferform_custom_data = array(
     'title' => $payment_title,
     'value' => $payment_value,
-    'paytype' => 8, // only to hide deadline
+    'paytype' => PAYTYPE_PAID, // only to hide deadline
     'barcode' => $payment_title,
 );
 

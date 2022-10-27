@@ -1051,7 +1051,7 @@ class LMSSmartyPlugins
         static $paytypes = array();
 
         if (empty($paytypes)) {
-            $paytypes = Localisation::arraySort($GLOBALS['PAYTYPES']);
+            $paytypes = Localisation::arraySort(Utils::array_column($GLOBALS['PAYTYPES'], 'label'));
         }
 
         $elemname = $params['elemname'];

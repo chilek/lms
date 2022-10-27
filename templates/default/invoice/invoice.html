@@ -66,14 +66,16 @@
 					{trans("Sale date:")}
 					<br>
 				{/if}
-				{if $use_alert_color}
-					<span style="color: red; font-weight: bold;">
+				{if ($_PAYTYPES[$invoice.paytype].invoice_items & smarty.const.INVOICE_ITEM_DEADLINE)}
+					{if $use_alert_color}
+						<span style="color: red; font-weight: bold;">
+					{/if}
+					{trans("Deadline:")}
+					{if $use_alert_color}
+						</span>
+					{/if}
+					<br>
 				{/if}
-				{trans("Deadline:")}
-				{if $use_alert_color}
-					</span>
-				{/if}
-				<br>
 				{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}
 					{trans("Payment type:")}
 				{/if}
@@ -526,17 +528,19 @@
 
 	<table width="100%" cellpadding="3">
 		<tr>
-			<td width="50%" align="left" class="hdf">
-				{if $invoice.rebate}
-					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-					{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
-					{if $use_alert_color && !$show_balance_summary}</span>{/if}
-				{else}
-					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-					{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
-					{if $use_alert_color && !$show_balance_summary}</span>{/if}
-				{/if}
-			</td>
+			{if ($_PAYTYPES[$invoice.paytype].invoice_items & smarty.const.INVOICE_ITEM_TO_PAY)}
+				<td width="50%" align="left" class="hdf">
+					{if $invoice.rebate}
+						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+						{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
+						{if $use_alert_color && !$show_balance_summary}</span>{/if}
+					{else}
+						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+						{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
+						{if $use_alert_color && !$show_balance_summary}</span>{/if}
+					{/if}
+				</td>
+			{/if}
 			<td width="50%" align="right" rowspan="2">
 				{if !ConfigHelper::checkConfig('invoices.hide_expositor')}
 					{t a=$invoice.expositor}Expositor: <b>$a</b>{/t}

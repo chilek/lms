@@ -204,7 +204,7 @@ if (!empty($divisionid)) {
 
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
-$paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
+$paytype = ConfigHelper::getConfig('payments.paytype', PAYTYPE_TRANSFER);
 $comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attribute subscription for period %period");
 $backward_comment = ConfigHelper::getConfig('payments.backward_comment', $comment);
 $backward_on_the_last_day = ConfigHelper::checkConfig('payments.backward_on_the_last_day');

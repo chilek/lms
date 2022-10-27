@@ -851,18 +851,67 @@ $SERVICETYPES = array(
     SERVICE_TRANSMISSION => ConfigHelper::getConfig('tarifftypes.transmission', trans('transmission')),
 );
 
+define('INVOICE_ITEM_DEADLINE', 1);
+define('INVOICE_ITEM_TO_PAY', 2);
+define('INVOICE_ITEM_TRANSFER_FORM', 4);
+
+define('PAYTYPE_CASH', 1);
+define('PAYTYPE_TRANSFER', 2);
+define('PAYTYPE_TRANSFER_CASH', 3);
+define('PAYTYPE_CARD', 4);
+define('PAYTYPE_COMPENSATION', 5);
+define('PAYTYPE_BARTER', 6);
+define('PAYTYPE_CONTRACT', 7);
+define('PAYTYPE_PAID', 8);
+define('PAYTYPE_CASH_ON_DELIVERY', 9);
+define('PAYTYPE_INSTALMENTS', 10);
+define('PAYTYPE_BANK_LOAN', 11);
+
 $PAYTYPES = array(
-    1   => 'cash',
-    2   => 'transfer',
-    3   => 'transfer/cash',
-    4   => 'card',
-    5   => 'compensation',
-    6   => 'barter',
-    7   => 'contract',
-    8   => 'paid',
-    9   => 'cash on delivery',
-    10  => 'instalments',
-    11  => 'bank loan',
+    PAYTYPE_CASH => array(
+        'label' => 'cash',
+        'invoice_items' => 0,
+    ),
+    PAYTYPE_TRANSFER => array(
+        'label' => 'transfer',
+        'invoice_items' => INVOICE_ITEM_DEADLINE | INVOICE_ITEM_TO_PAY | INVOICE_ITEM_TRANSFER_FORM,
+    ),
+    PAYTYPE_TRANSFER_CASH  => array(
+        'label' => 'transfer/cash',
+        'invoice_items' => INVOICE_ITEM_DEADLINE | INVOICE_ITEM_TO_PAY | INVOICE_ITEM_TRANSFER_FORM,
+    ),
+    PAYTYPE_CARD => array(
+        'label' => 'card',
+        'invoice_items' => 0,
+    ),
+    PAYTYPE_COMPENSATION => array(
+        'label' => 'compensation',
+        'invoice_items' => 0,
+    ),
+    PAYTYPE_BARTER => array(
+        'label' => 'barter',
+        'invoice_items' => 0,
+    ),
+    PAYTYPE_CONTRACT => array(
+        'label' => 'contract',
+        'invoice_items' => INVOICE_ITEM_DEADLINE | INVOICE_ITEM_TO_PAY | INVOICE_ITEM_TRANSFER_FORM,
+    ),
+    PAYTYPE_PAID => array(
+        'label' => 'paid',
+        'invoice_items' => 0,
+    ),
+    PAYTYPE_CASH_ON_DELIVERY  => array(
+        'label' => 'cash on delivery',
+        'invoice_items' => INVOICE_ITEM_DEADLINE | INVOICE_ITEM_TO_PAY | INVOICE_ITEM_TRANSFER_FORM,
+    ),
+    PAYTYPE_INSTALMENTS => array(
+        'label' => 'instalments',
+        'invoice_items' => INVOICE_ITEM_DEADLINE | INVOICE_ITEM_TO_PAY | INVOICE_ITEM_TRANSFER_FORM,
+    ),
+    PAYTYPE_BANK_LOAN => array(
+        'label' => 'bank loan',
+        'invoice_items' => INVOICE_ITEM_DEADLINE | INVOICE_ITEM_TO_PAY | INVOICE_ITEM_TRANSFER_FORM,
+    ),
 );
 
 // Contact types

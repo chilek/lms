@@ -209,6 +209,8 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_dates($x, $y)
     {
+        global $PAYTYPES;
+
         $font_size = 12;
         $this->backend->text_align_right($x, $y, $font_size, trans('Settlement date:').' ');
         $y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['cdate']));
@@ -216,22 +218,24 @@ class LMSEzpdfInvoice extends LMSInvoice
             $this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
             $y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['sdate']));
         }
-        $this->backend->text_align_right(
-            $x,
-            $y,
-            $font_size,
-            ($this->use_alert_color ? '<c:color:255,0,0>' : '')
-            . trans('Deadline:').' '
-            . ($this->use_alert_color ? '</c:color>' : '')
-        );
-        $y = $y - $this->backend->text_align_left(
-            $x,
-            $y,
-            $font_size,
-            ($this->use_alert_color ? '<c:color:255,0,0>' : '')
-            . date("Y/m/d", $this->data['pdate'])
-            . ($this->use_alert_color ? '</c:color>' : '')
-        );
+        if ($PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_DEADLINE) {
+            $this->backend->text_align_right(
+                $x,
+                $y,
+                $font_size,
+                ($this->use_alert_color ? '<c:color:255,0,0>' : '')
+                . trans('Deadline:') . ' '
+                . ($this->use_alert_color ? '</c:color>' : '')
+            );
+            $y = $y - $this->backend->text_align_left(
+                $x,
+                $y,
+                $font_size,
+                ($this->use_alert_color ? '<c:color:255,0,0>' : '')
+                . date("Y/m/d", $this->data['pdate'])
+                . ($this->use_alert_color ? '</c:color>' : '')
+            );
+        }
         if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
             $this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
             $y = $y - $this->backend->text_align_left($x, $y, $font_size, trans($this->data['paytypename']));
@@ -1186,6 +1190,10 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_to_pay($x, $y)
     {
+        if (!$PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_TO_PAY) {
+            return;
+        }
+
         $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
 
         if (isset($this->data['rebate'])) {
@@ -1494,6 +1502,8 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     public function invoice_body_ft0100()
     {
+        global $PAYTYPES;
+
         if (!empty($this->data['div_ccode'])) {
             Localisation::setSystemLanguage($this->data['div_ccode']);
         }
@@ -1546,7 +1556,8 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
 
         $this->backend->check_page_length($top, 200);
-        if ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true)) {
+        if (($PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_TRANSFER_FORM)
+            && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))) {
             $lms = LMS::getInstance();
             if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {
                 $this->invoice_main_form_fill(187, 3, 0.4);

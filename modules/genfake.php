@@ -2184,7 +2184,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
 
         $inv['number'] = 0;
         $inv['paytime'] = 14;
-        $inv['paytype'] = 1; // cash
+        $inv['paytype'] = PAYTYPE_CASH;
         $inv['numberplanid'] = $numberplanid;
         $inv['type'] = DOC_INVOICE;
         $inv['cdate'] = time() - ($_GET['i']+1) * 86400;

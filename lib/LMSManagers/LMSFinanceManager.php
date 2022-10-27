@@ -2731,7 +2731,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $result['expositor'] = $expositor;
             }
 
-            $result['paytypename'] = $PAYTYPES[$result['paytype']];
+            $result['paytypename'] = $PAYTYPES[$result['paytype']]['label'];
 
             // for backward compat.
             $result['totalg'] = round(($result['value'] - floor($result['value'])) * 100);

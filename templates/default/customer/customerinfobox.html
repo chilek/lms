@@ -376,8 +376,8 @@
 													</td>
 													<td>
 														{assign var=paytype value=$customerinfo.paytype}
-														{if $_PAYTYPES.$paytype}
-															{trans($_PAYTYPES.$paytype)}
+														{if isset($_PAYTYPES[$paytype])}
+															{trans($_PAYTYPES[$paytype].label)}
 														{else}
 															{trans("default")}
 														{/if}
