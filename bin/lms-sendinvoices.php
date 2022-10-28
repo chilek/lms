@@ -368,10 +368,13 @@ list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
 
-if ($backup || $archive) {
+if ($archive) {
     $groupnames = '';
 } else {
 // prepare customergroups in sql query
+    if ($backup) {
+        $customergroups = null;
+    }
     if (isset($options['customergroups'])) {
         $customergroups = $options['customergroups'];
     }
@@ -405,13 +408,15 @@ if ($backup || $archive) {
         $customergroups = ' AND (' . implode(' OR ', $customergroup_ORs) . ')';
     }
 
-    $test = array_key_exists('test', $options);
-    if ($test) {
-        echo "WARNING! You are using test mode." . PHP_EOL;
-    }
+    if (!$backup) {
+        $test = array_key_exists('test', $options);
+        if ($test) {
+            echo "WARNING! You are using test mode." . PHP_EOL;
+        }
 
-    if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
-        $part_offset = $part_number * $part_size;
+        if (!empty($part_size) && preg_match('/^[0-9]+$/', $part_size)) {
+            $part_offset = $part_number * $part_size;
+        }
     }
 }
 
