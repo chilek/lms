@@ -102,7 +102,7 @@ if (!empty($_POST['marks'])) {
                     if ($i) {
                         $htmlbuffer .= "\n</page>\n";
                     }
-                 } else {
+                } else {
                     if ($htmls && !$pdfs && $i) {
                         echo '<div style="page-break-after: always;">&nbsp;</div>';
                     }
