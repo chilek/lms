@@ -25,6 +25,9 @@
  *  $Id$
  */
 
+use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;
+
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 $parameters = array(
@@ -43,6 +46,7 @@ $parameters = array(
     'backup' => 'b',
     'archive' => 'a',
     'output-directory:' => 'o:',
+    'single-file' => null,
     'no-attachments' => 'n',
     'customerid:' => null,
     'division:' => null,
@@ -112,6 +116,8 @@ lms-sendinvoices.php
 -b, --backup                    make financial document file backup
 -a, --archive                   archive financial documents in documents directory
 -o, --output-directory=/path    output directory for document backup
+    --single-file               all invoices, credit notes, pro formas, debit notes and other documents
+                                are merge to single file
 -n, --no-attachments            dont attach documents
     --customerid=<id>           limit invoices to specifed customer
     --division=<shortname>
@@ -277,6 +283,10 @@ if (!$no_attachments) {
 
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
+
+$single_file = isset($options['single-file']);
+$invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
+$document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true)));
 
 if ($backup || $archive) {
     $part_size = 0;
@@ -486,6 +496,12 @@ $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {
     if ($backup) {
+        $single_file = $single_file && $invoice_type == 'pdf' && $document_type == 'pdf';
+        if ($single_file) {
+            $fpdi = new LMSFpdiBackend();
+            $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+        }
+
         foreach ($docs as $doc) {
             $doc['invoice_filename'] = $invoice_filename;
             $doc['dnote_filename'] = $dnote_filename;
@@ -493,11 +509,56 @@ if (!empty($docs)) {
             if (!$quiet) {
                 echo "Document " . $document['filename'] . " backed up." . PHP_EOL;
             }
-            if (!$test) {
-                $fh = fopen($output_dir . DIRECTORY_SEPARATOR . $document['filename'], 'w');
-                fwrite($fh, $document['data'], strlen($document['data']));
-                fclose($fh);
+
+            $referenced_documents = array();
+            $files = array();
+
+            if (!$no_attachments && !empty($doc['documentreferenced'])) {
+                $docrefs = $LMS->getDocumentReferences($doc['id']);
+
+                if (!empty($docrefs)) {
+                    foreach ($docrefs as $docid => $docref) {
+                        $referenced_document = $LMS->GetDocumentFullContents($docid);
+                        if (empty($referenced_document)) {
+                            continue;
+                        }
+                        foreach ($referenced_document['attachments'] as $attachment) {
+                            $files[] = array(
+                                'content_type' => $attachment['contenttype'],
+                                'filename' => $attachment['filename'],
+                                'data' => $attachment['contents'],
+                            );
+                        }
+                        $referenced_documents[] = $docid;
+                    }
+                }
             }
+
+            if (!$test) {
+                if ($single_file) {
+                    $fpdi->AppendPage($document['data']);
+                } else {
+                    $fh = fopen($output_dir . DIRECTORY_SEPARATOR . $document['filename'], 'w');
+                    fwrite($fh, $document['data'], strlen($document['data']));
+                    fclose($fh);
+                }
+
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        if ($single_file) {
+                            $fpdi->AppendPage($file['data']);
+                        } else {
+                            $fh = fopen($output_dir . DIRECTORY_SEPARATOR . $file['filename'], 'w');
+                            fwrite($fh, $file['data'], strlen($file['data']));
+                            fclose($fh);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$test && $single_file) {
+            $fpdi->WriteToFile($output_dir . DIRECTORY_SEPARATOR . 'output.pdf');
         }
     } elseif ($archive) {
         foreach ($docs as $doc) {

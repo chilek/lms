@@ -91,4 +91,9 @@ class LMSFpdiBackend extends Fpdi
     {
         return $this->Output('', 'S');
     }
+
+    public function WriteToFile($filename)
+    {
+        return $this->Output($filename, 'F');
+    }
 }

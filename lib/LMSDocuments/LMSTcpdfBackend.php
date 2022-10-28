@@ -80,4 +80,9 @@ class LMSTcpdfBackend extends LMSTCPDF
     {
         return $this->Output('', 'S');
     }
+
+    public function WriteToFile($filename)
+    {
+        $this->Output($filename, 'F');
+    }
 }
