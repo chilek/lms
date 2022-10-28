@@ -65,7 +65,12 @@ class LMSFpdiBackend extends Fpdi
                 $size = $this->getTemplateSize($templateId);
 
                 // create a page (landscape or portrait depending on the imported page size)
-                $this->AddPage($size['orientation'], $size);
+                if ($size['w'] > $size['h']) {
+                    $this->AddPage('L', array($size['w'], $size['h']));
+                } else {
+                    $this->AddPage('P', array($size['w'], $size['h']));
+                }
+                //$this->AddPage($size['orientation'], $size);
 
                 // use the imported page
                 $this->useTemplate($templateId);

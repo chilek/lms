@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,105 +24,106 @@
  *  $Id$
  */
 
-use setasign\Fpdi\Tcpdf\Fpdi;
-use setasign\Fpdi\PdfParser\StreamReader;
-
 if (!empty($_POST['marks'])) {
+    $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type')));
+    $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+
     $marks = array();
     foreach ($_POST['marks'] as $id => $mark) {
         $marks[] = intval($mark);
     }
 
-    if ($list = $DB->GetCol('SELECT d.id FROM documentcontents c
-		JOIN documents d ON (d.id = c.docid)
-		JOIN docrights r ON (r.doctype = d.type)
-		WHERE c.docid IN ('.implode(',', $marks).')
-			AND r.userid = ? AND (r.rights & 1) = 1', array(Auth::GetCurrentUser()))) {
-        $list = $DB->GetAll('SELECT filename, contenttype, md5sum FROM documentattachments
-			WHERE docid IN (' . implode(',', $list) . ')');
+    if ($list = $DB->GetCol(
+        'SELECT d.id FROM documentcontents c
+                JOIN documents d ON (d.id = c.docid)
+                JOIN docrights r ON (r.doctype = d.type)
+               WHERE c.docid IN ?
+                       AND r.userid = ?
+                       AND (r.rights & ?) > 0',
+        array(
+            $marks,
+            Auth::GetCurrentUser(),
+            DOCRIGHT_VIEW,
+        )
+    )) {
+        $list = $DB->GetAll(
+            'SELECT filename, contenttype, md5sum
+            FROM documentattachments
+            WHERE docid IN ?
+            ORDER BY type DESC',
+            array(
+                $list,
+            )
+        );
 
-        $html = $pdf = $other = false;
+        $htmls = $pdfs = $others = 0;
         foreach ($list as $doc) {
             $ctype = $doc['contenttype'];
-            if (!$html && !$pdf) {
-                if (preg_match('/html$/i', $ctype)) {
-                    $html = true;
-                } elseif (preg_match('/pdf$/i', $ctype)) {
-                    $pdf = true;
-                } else {
-                    $other = true;
-                    break;
-                }
-            } else if (($html && !preg_match('/html$/i', $ctype))
-                    || ($pdf && !preg_match('/pdf$/i', $ctype))) {
-                    $other = true;
-                    break;
+
+            if (preg_match('/html$/i', $ctype)) {
+                $htmls++;
+            } elseif (preg_match('/pdf$/i', $ctype)) {
+                $pdfs++;
+            } else {
+                $others++;
             }
         }
 
-        if ($other && count($list) > 1) {
+        if ($others && count($list) > 1 || $htmls && $pdfs && $document_type != 'pdf') {
             die('Currently you can only print many documents of type text/html or application/pdf!');
         }
 
-        $ctype = $list[0]['contenttype'];
+        $pdf = $pdfs || $htmls && $document_type == 'pdf';
 
-        if (!$html) {
-            header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename='.$list[0]['filename']);
+        if ($pdf || $others) {
+            header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename=' . $list[0]['filename']);
             header('Pragma: public');
-            if ($pdf) {
-                $pdf = new Fpdi();
-                $pdf->setPrintHeader(false);
-                $pdf->setPrintFooter(false);
-            }
         }
-        header('Content-Type: '.$ctype);
 
-        if ($html && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true))) == 'pdf') {
+        header('Content-Type: ' . ($pdf ? 'application/pdf' : $list[0]['contenttype']));
+
+        if ($pdf && count($list) > 1) {
+            $fpdi = new LMSFpdiBackend();
+        }
+
+        if ($htmls && !$pdfs && $document_type == 'pdf') {
             $htmlbuffer = null;
         }
+
         $i = 0;
         foreach ($list as $doc) {
-            // we can display only documents with the same content type
-//          if ($doc['contenttype'] != $ctype)
-//              continue;
-
             $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
             if (file_exists($filename)) {
-                if ($html && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true))) == 'pdf') {
-                    if ($i > 0) {
+                if ($htmls && !$pdfs && $document_type == 'pdf') {
+                    if ($i) {
                         $htmlbuffer .= "\n<page>\n";
                     }
-                    ob_start();
-                    readfile($filename);
-                    $htmlbuffer .= ob_get_contents();
-                    ob_end_clean();
-                    if ($i > 0) {
+                    $htmlbuffer .= file_get_contents($filename);
+                    if ($i) {
                         $htmlbuffer .= "\n</page>\n";
                     }
-                } else {
-                    if ($i && preg_match('/html/i', $doc['contenttype'])) {
+                 } else {
+                    if ($htmls && !$pdfs && $i) {
                         echo '<div style="page-break-after: always;">&nbsp;</div>';
                     }
 
-                    if ($pdf) {
-                        $pageCount = $pdf->setSourceFile($filename);
-                        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                            // import a page
-                            $templateId = $pdf->importPage($pageNo);
-                            // get the size of the imported page
-                            $size = $pdf->getTemplateSize($templateId);
+                    if ($pdf && count($list) > 1) {
+                        $content = file_get_contents($filename);
 
-                            // create a page (landscape or portrait depending on the imported page size)
-                            if ($size['w'] > $size['h']) {
-                                $pdf->AddPage('L', array($size['w'], $size['h']));
-                            } else {
-                                $pdf->AddPage('P', array($size['w'], $size['h']));
-                            }
-                            //$pdf->AddPage($size['orientation'], $size);
-
-                            // use the imported page
-                            $pdf->useTemplate($templateId);
+                        if (preg_match('/html$/i', $doc['contenttype'])) {
+                            $content = html2pdf(
+                                $content,
+                                trans('Document'),
+                                null,
+                                null,
+                                null,
+                                'P',
+                                $margins,
+                                'S'
+                            );
                         }
+
+                        $fpdi->AppendPage($content);
                     } else {
                         readfile($filename);
                     }
@@ -130,8 +131,8 @@ if (!empty($_POST['marks'])) {
             }
             $i++;
         }
-        if ($html && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true))) == 'pdf') {
-            $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+
+        if ($htmls && !$pdfs && $document_type == 'pdf') {
             html2pdf(
                 $htmlbuffer,
                 trans('Document'),
@@ -141,9 +142,9 @@ if (!empty($_POST['marks'])) {
                 'P',
                 $margins
             );
-        } elseif ($pdf) {
+        } elseif ($pdf && count($list) > 1) {
             // Output the new PDF
-            $pdf->Output();
+            $fpdi->WriteToBrowser();
         }
         die;
     }
