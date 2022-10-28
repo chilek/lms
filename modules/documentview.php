@@ -87,7 +87,7 @@ if (!empty($_POST['marks'])) {
         }
 
         if ($htmls && !$pdfs && $document_type == 'pdf') {
-            $htmlbuffer = null;
+            $htmlbuffer = '';
         }
 
         $i = 0;
