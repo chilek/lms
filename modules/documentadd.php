@@ -433,6 +433,7 @@ if (isset($_POST['document'])) {
         if (!isset($document['reuse'])) {
             if (isset($_GET['print'])) {
                 $SESSION->save('documentprint', $docid);
+                $SESSION->save('document-with-attachments', isset($_POST['with-attachments']));
             }
 
             $SESSION->redirect('?m=documentlist&c=' . $document['customerid']);

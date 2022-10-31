@@ -188,7 +188,9 @@ $SESSION->add_history_entry();
 
 if ($docid = $SESSION->get('documentprint')) {
     $SMARTY->assign('docid', $docid);
+    $SMARTY->assign('attachments', $SESSION->get('document-with-attachments'));
     $SESSION->remove('documentprint');
+    $SESSION->remove('document-with-attachments');
 }
 
 if ($filter['total']) {

@@ -24,33 +24,49 @@
  *  $Id$
  */
 
+$docids = array();
+
 if (!empty($_POST['marks'])) {
-    $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type')));
-    $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
-
-    $marks = array();
     foreach ($_POST['marks'] as $id => $mark) {
-        $marks[] = intval($mark);
+        if (is_numeric($mark)) {
+            $docids[] = intval($mark);
+        }
     }
+} elseif (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    if (!$LMS->DocumentExists($_GET['id'])) {
+        $SMARTY->assign('message', trans('Document does not exist!'));
+        access_denied();
+    }
+    $docids[] = intval($_GET['id']);
+}
 
+if (!empty($docids)) {
     if ($list = $DB->GetCol(
-        'SELECT d.id FROM documentcontents c
-            JOIN documents d ON (d.id = c.docid)
-            JOIN docrights r ON (r.doctype = d.type)
-            WHERE c.docid IN ?
-                AND r.userid = ?
-                AND (r.rights & ?) > 0',
+        'SELECT d.id FROM documents d
+        JOIN docrights r ON (r.doctype = d.type)
+        WHERE d.id IN ?
+            AND d.type < 0
+            AND r.userid = ?
+            AND (r.rights & ?) > 0',
         array(
-            $marks,
+            $docids,
             Auth::GetCurrentUser(),
             DOCRIGHT_VIEW,
         )
     )) {
+        $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type')));
+        $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
+
+        $attachments = isset($_GET['attachments']) || isset($_POST['attachments']);
+        $attachmentid = isset($_GET['attachmentid']) && is_numeric($_GET['attachmentid']) ? intval($_GET['attachmentid']) : null;
+
         $list = $DB->GetAll(
             'SELECT filename, contenttype, md5sum
             FROM documentattachments
-            WHERE docid IN ?
-            ORDER BY docid ASC, type DESC',
+            WHERE docid IN ?'
+                . ($attachments || !empty($attachmentid) ? '' : ' AND type = 1')
+                . (empty($attachmentid) ? '' : ' AND id = ' . $attachmentid)
+            . ' ORDER BY docid ASC, type DESC',
             array(
                 $list,
             )
@@ -93,46 +109,57 @@ if (!empty($_POST['marks'])) {
         $i = 0;
         foreach ($list as $doc) {
             $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
-            if (file_exists($filename)) {
-                if ($htmls && !$pdfs && $document_type == 'pdf') {
-                    if ($i) {
-                        $htmlbuffer .= "\n<page>\n";
+
+            $cached_pdf = false;
+            if ($pdf && file_exists($filename . '.pdf')) {
+                $filename .= '.pdf';
+                $cached_pdf = true;
+            } elseif (!file_exists($filename)) {
+                $filename = null;
+            }
+            if (!isset($filename)) {
+                continue;
+            }
+
+            if (!$cached_pdf && $htmls && !$pdfs && $document_type == 'pdf') {
+                if ($i) {
+                    $htmlbuffer .= "\n<page>\n";
+                }
+                $htmlbuffer .= file_get_contents($filename);
+                if ($i) {
+                    $htmlbuffer .= "\n</page>\n";
+                }
+            } else {
+                if (!$cached_pdf && $htmls && !$pdfs && $i) {
+                    echo '<div style="page-break-after: always;">&nbsp;</div>';
+                }
+
+                if ($pdf && count($list) > 1) {
+                    $content = file_get_contents($filename);
+
+                    if (!$cached_pdf && preg_match('/html$/i', $doc['contenttype'])) {
+                        $content = html2pdf(
+                            $content,
+                            trans('Document'),
+                            null,
+                            null,
+                            null,
+                            'P',
+                            $margins,
+                            'S'
+                        );
                     }
-                    $htmlbuffer .= file_get_contents($filename);
-                    if ($i) {
-                        $htmlbuffer .= "\n</page>\n";
-                    }
+
+                    $fpdi->AppendPage($content);
                 } else {
-                    if ($htmls && !$pdfs && $i) {
-                        echo '<div style="page-break-after: always;">&nbsp;</div>';
-                    }
-
-                    if ($pdf && count($list) > 1) {
-                        $content = file_get_contents($filename);
-
-                        if (preg_match('/html$/i', $doc['contenttype'])) {
-                            $content = html2pdf(
-                                $content,
-                                trans('Document'),
-                                null,
-                                null,
-                                null,
-                                'P',
-                                $margins,
-                                'S'
-                            );
-                        }
-
-                        $fpdi->AppendPage($content);
-                    } else {
-                        readfile($filename);
-                    }
+                    readfile($filename);
                 }
             }
+
             $i++;
         }
 
-        if ($htmls && !$pdfs && $document_type == 'pdf') {
+        if ($htmls && !$pdfs && $document_type == 'pdf' && strlen($htmlbuffer)) {
             html2pdf(
                 $htmlbuffer,
                 trans('Document'),
@@ -148,86 +175,6 @@ if (!empty($_POST['marks'])) {
         }
         die;
     }
-} elseif ($doc = $DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid, n.template
-	FROM documents d
-	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-	JOIN docrights r ON (r.doctype = d.type)
-	WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0', array(intval($_GET['id']), Auth::GetCurrentUser(), DOCRIGHT_VIEW))) {
-    $docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
-		ORDER BY type DESC', 'id', array($_GET['id']));
-    $attachmentid = isset($_GET['attachmentid']) ? intval($_GET['attachmentid']) : null;
-    if ($attachmentid) {
-        $docattach = $docattachments[$attachmentid];
-    } else {
-        $docattach = reset($docattachments);
-    }
-    $doc['md5sum'] = $docattach['md5sum'];
-    $doc['filename'] = $docattach['filename'];
-    $doc['contenttype'] = $docattach['contenttype'];
-
-    $docnumber = docnumber(array(
-        'number' => $doc['number'],
-        'template' => $doc['template'],
-        'cdate' => $doc['cdate'],
-        'customerid' => $doc['customerid'],
-    ));
-    $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
-    if (file_exists($filename)) {
-        $filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';
-        if (file_exists($filename_pdf)) {
-            header('Content-type: application/pdf');
-            header('Content-Disposition: inline; filename="' . $docnumber . '.pdf"');
-            header('Content-Transfer-Encoding: binary');
-            header('Content-Length: ' . filesize($filename_pdf));
-            header('Accept-Ranges: bytes');
-            readfile($filename_pdf);
-        } elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true))) == 'pdf') {
-            if ($doc['type'] == DOC_CONTRACT) {
-                $subject = trans('Contract');
-                $title = trans('Contract No. $a', $docnumber);
-            } elseif ($doc['type'] == DOC_ANNEX) {
-                $subject = trans('Annex');
-                $title = trans('Annex No. $a', $docnumber);
-            } else {
-                $subject = trans('Document');
-                $title = $docnumber;
-            }
-
-            ob_start();
-            readfile($filename);
-            $htmlbuffer = ob_get_contents();
-            ob_end_clean();
-            $margins = explode(",", ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
-            if (ConfigHelper::checkConfig('documents.cache', ConfigHelper::checkConfig('phpui.cache_documents'))) {
-                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, !empty($_GET['save']), false, $doc['md5sum']);
-            } else {
-                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, !empty($_GET['save']));
-            }
-        } else {
-            header('Content-Type: ' . $doc['contenttype']);
-
-            $pdf = preg_match('/pdf/i', $doc['contenttype']);
-            if (isset($_GET['save'])) {
-                header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
-            } else {
-                if (!preg_match('/^text/i', $doc['contenttype'])) {
-                    if ($pdf) {
-                        header('Content-Disposition: inline; filename="' . $doc['filename'] . '"');
-                        header('Content-Transfer-Encoding: binary');
-                        header('Content-Length: ' . filesize($filename) . ' bytes');
-                    } else {
-                        header('Content-Disposition: attachment; filename="' . $doc['filename'] . '"');
-                    }
-                    header('Pragma: public');
-                }
-            }
-
-            readfile($filename);
-        }
-    }
-    die;
-} elseif (!$LMS->DocumentExists(!$_GET['id'])) {
-    $SMARTY->assign('message', trans('Document does not exist!'));
 }
 
-$SMARTY->display('noaccess.html');
+access_denied();

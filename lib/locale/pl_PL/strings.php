@@ -536,6 +536,7 @@ $_LANG['Attach stats'] = 'Dołącz statystyki';
 $_LANG['Attachment:'] = 'Załącznik:';
 $_LANG['Attachments:'] = 'Załączniki:';
 $_LANG['Attachments'] = 'Załączniki';
+$_LANG['attachments'] = 'załączniki';
 $_LANG['Avg. monthly income:'] = 'Śr. mies. przychód:';
 $_LANG['awaiting'] = 'oczekujący';
 $_LANG['Awaiting'] = 'oczekujący';

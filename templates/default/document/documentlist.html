@@ -10,12 +10,29 @@
 		margin-right: 0.8em;
 	}
 
+	#buttons tr:first-child td {
+		padding-bottom: 0.15em;
+	}
+
+	#buttons tr:not(:first-child):not(:last-child) td {
+		padding-top: 0.15em;
+		padding-bottom: 0.15em;
+	}
+
+	#buttons tr:last-child td {
+		padding-top: 0.15em;
+	}
+
+	#buttons tr td > *:not(:first-child) {
+		margin-left: 0.3em;
+	}
+
 </style>
 
 <script>
 
 	{if $docid}
-	window.open('?m=documentview&id={$docid}');
+	window.open('?m=documentview&id={$docid}{if $attachments}&attachments=1{/if}');
 	{/if}
 
 	function toggle_all_attachments(docid) {
@@ -311,11 +328,10 @@
 	<TR>
 		<TD COLSPAN="5">
 			{if $documentlist|size}
-			<TABLE WIDTH="100%">
+			<TABLE WIDTH="100%" id="buttons">
 				<TR>
 					<TD class="nobr">
 						{button icon="mail" label="Send documents" id="send-documents"}
-						{button icon="print" label="Print" id="print-documents"}
 						{button icon="confirm" label="Confirm" id="confirm-documents"}
 						{button icon="archive" label="Archive" id="archive-documents"}
 						{button icon="delete" label="Delete" id="delete-documents"}
@@ -327,6 +343,15 @@
 						</label>
 					</TD>
 				</TR>
+				<tr>
+					<td colspan="2">
+						{button icon="print" label="Print" id="print-documents"}
+						<label>
+							<input type="checkbox" name="attachments" value="1" form="page-form">
+							{trans("attachments")}
+						</label>
+					</td>
+				</tr>
 			</TABLE>
 			{/if}
 		</TD>
