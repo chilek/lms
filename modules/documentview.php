@@ -35,11 +35,11 @@ if (!empty($_POST['marks'])) {
 
     if ($list = $DB->GetCol(
         'SELECT d.id FROM documentcontents c
-                JOIN documents d ON (d.id = c.docid)
-                JOIN docrights r ON (r.doctype = d.type)
-               WHERE c.docid IN ?
-                       AND r.userid = ?
-                       AND (r.rights & ?) > 0',
+            JOIN documents d ON (d.id = c.docid)
+            JOIN docrights r ON (r.doctype = d.type)
+            WHERE c.docid IN ?
+                AND r.userid = ?
+                AND (r.rights & ?) > 0',
         array(
             $marks,
             Auth::GetCurrentUser(),
@@ -50,7 +50,7 @@ if (!empty($_POST['marks'])) {
             'SELECT filename, contenttype, md5sum
             FROM documentattachments
             WHERE docid IN ?
-            ORDER BY type DESC',
+            ORDER BY docid ASC, type DESC',
             array(
                 $list,
             )
