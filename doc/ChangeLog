@@ -314,8 +314,8 @@ version 28-git (????-??-??):
   - improvement: some invoice item visibility depends on invoice pay type [chilan]
   - enhancement: lms-sendinvoices.php backend script supports --single-file parameter which causes making
     backup to single 'output.pdf' file in directory specified with --output-directory parameter [chilan]
-  - improvement: document html/pdf attachments are merged before printing in document lists
-    (handle pdf and html attachment merging) [chilan]
+  - improvement: document html/pdf attachments are merged (optionally) before printing in document lists
+    and document add form (handle pdf and html attachment merging) [chilan]
 
 version 27.0 (2021-08-20):
 
