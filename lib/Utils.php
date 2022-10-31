@@ -674,8 +674,8 @@ class Utils
                     $details = array(
                         'lastname' => $report['fiz_nazwa'],
                         'name' => '',
-                        'rbename' => $report['fizC_RodzajRejestru_Nazwa'],
-                        'rbe' => $report['fizC_numerWRejestrzeEwidencji'],
+                        'rbename' => isset($report['fizC_RodzajRejestru_Nazwa']) ? $report['fizC_RodzajRejestru_Nazwa'] : '',
+                        'rbe' => isset($report['fizC_numerWRejestrzeEwidencji']) ? $report['fizC_numerWRejestrzeEwidencji'] : '',
                         'regon' => array_key_exists('fiz_regon9', $report)
                             ? $report['fiz_regon9']
                             : $report['fiz_regon14'],
@@ -715,7 +715,7 @@ class Utils
                                 : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
                         'location_state' => empty($location) ? 0 : $location['location_state'],
                         'location_city' => empty($location) ? 0 : $location['location_city'],
-                        'location_street' => empty($location) ? 0 : $location['location_street'],
+                        'location_street' => empty($location) || empty($location['location_street']) ? 0 : $location['location_street'],
                     );
 
                     $details['addresses'] = $addresses;
@@ -765,7 +765,7 @@ class Utils
                                             : $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa'],
                                     'location_state' => empty($location) ? 0 : $location['location_state'],
                                     'location_city' => empty($location) ? 0 : $location['location_city'],
-                                    'location_street' => empty($location) ? 0 : $location['location_street'],
+                                    'location_street' => empty($location) || empty($location['location_street']) ? 0 : $location['location_street'],
                                 );
 
                                 $details['addresses'] = $addresses;

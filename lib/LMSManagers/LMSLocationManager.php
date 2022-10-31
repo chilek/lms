@@ -468,7 +468,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             return null;
         }
         if (empty($ulic)) {
-            return compact('city');
+            return $result;
         }
         $street = $this->db->GetRow(
             'SELECT id AS location_street, cecha, nazwa_1, nazwa_2
