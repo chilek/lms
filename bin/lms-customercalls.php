@@ -401,7 +401,30 @@ foreach ($dirs as $dir) {
         } else {
             $cmd = str_replace(
                 array('%i', '%o'),
-                array($src_file, $dst_file),
+                array(
+                    str_replace(
+                        array(
+                            '(',
+                            ')',
+                        ),
+                        array(
+                            '\\(',
+                            '\\)',
+                        ),
+                        $src_file
+                    ),
+                    str_replace(
+                        array(
+                            '(',
+                            ')',
+                        ),
+                        array(
+                            '\\(',
+                            '\\)',
+                        ),
+                        $dst_file
+                    ),
+                ),
                 $convert_command
             );
             $ret = 0;
@@ -424,7 +447,30 @@ foreach ($dirs as $dir) {
             } else {
                 $cmd = str_replace(
                     array('%i', '%o'),
-                    array($src_file, $dst_file),
+                    array(
+                        str_replace(
+                            array(
+                                '(',
+                                ')',
+                            ),
+                            array(
+                                '\\(',
+                                '\\)',
+                            ),
+                            $src_file
+                        ),
+                        str_replace(
+                            array(
+                                '(',
+                                ')',
+                            ),
+                            array(
+                                '\\(',
+                                '\\)',
+                            ),
+                            $dst_file
+                        ),
+                    ),
                     $duration_command
                 );
                 $ret = 0;
