@@ -1050,6 +1050,24 @@ CREATE TABLE promotionassignments (
 );
 CREATE INDEX promotionassignments_tariffid_idx ON promotionassignments (tariffid);
 
+/* --------------------------------------------------------
+  Structure of table "promotionattachments"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS promotionattachments_id_seq;
+CREATE SEQUENCE promotionattachments_id_seq;
+DROP TABLE IF EXISTS promotionattachments CASCADE;
+CREATE TABLE promotionattachments (
+    id integer DEFAULT nextval('promotionattachments_id_seq'::text) NOT NULL,
+    filename varchar(255) NOT NULL,
+    label varchar(255) NOT NULL,
+    checked smallint DEFAULT 0,
+    promotionid integer DEFAULT NULL
+        CONSTRAINT promotionattachments_promotionid_fkey REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    promotionschemaid integer DEFAULT NULL
+        CONSTRAINT promotionattachments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
+
 /* ----------------------------------------------------
  Structure of table "assignments"
 ---------------------------------------------------*/
@@ -4291,6 +4309,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022101700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022110200');
 
 COMMIT;

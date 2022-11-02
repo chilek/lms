@@ -12,6 +12,9 @@ bin/voip/templates_c/*
 storage/rt/*
 storage/voipcalls/*
 storage/customercalls/*
+storage/customercalls/*
+storage/promotions/*
+storage/promotionschemas/*
 documents/*
 !documents/templates
 cache/*

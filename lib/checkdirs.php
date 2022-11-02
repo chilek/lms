@@ -100,6 +100,36 @@ if (!is_writable($customer_call_dir)) {
     }
 }
 
+$promotion_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions';
+
+if (!is_dir($promotion_dir)) {
+    $startup_errors[] = 'mkdir ' . $promotion_dir;
+}
+
+if (!is_writable($promotion_dir)) {
+    $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $promotion_dir;
+    $startup_errors[] = 'chmod -R 755 ' . $promotion_dir;
+    if ($selinux_active) {
+        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($promotion_dir, '/') . '(/.*)?"';
+        $selinux_error = true;
+    }
+}
+
+$promotionschema_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotionschemas';
+
+if (!is_dir($promotionschema_dir)) {
+    $startup_errors[] = 'mkdir ' . $promotionschema_dir;
+}
+
+if (!is_writable($promotionschema_dir)) {
+    $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $promotionschema_dir;
+    $startup_errors[] = 'chmod -R 755 ' . $promotionschema_dir;
+    if ($selinux_active) {
+        $startup_errors[] = 'semanage fcontext -a -t httpd_sys_rw_content_t "' . rtrim($promotionschema_dir, '/') . '(/.*)?"';
+        $selinux_error = true;
+    }
+}
+
 if (!is_dir(DOC_DIR)) {
     $startup_errors[] = 'mkdir ' . DOC_DIR;
 }
