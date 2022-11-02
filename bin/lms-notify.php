@@ -1063,6 +1063,10 @@ if (empty($types) || in_array('timetable', $types)) {
 // documents
 if (empty($types) || in_array('documents', $types)) {
     $days = $notifications['documents']['days'];
+
+    $start = strtotime('+ ' . $days . ' days', $daystart);
+    $end = strtotime('+ 1 day', $start);
+
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
             b.balance, m.email, x.phone, d.number, n.template, d.cdate, d.confirmdate AS deadline
@@ -1085,8 +1089,8 @@ if (empty($types) || in_array('documents', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND d.closed = 0
-            AND d.confirmdate >= $daystart + ? * 86400
-            AND d.confirmdate < $daystart + (? + 1) * 86400"
+            AND d.confirmdate >= ?
+            AND d.confirmdate < ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -1098,8 +1102,8 @@ if (empty($types) || in_array('documents', $types)) {
             $required_phone_contact_flags,
             DOC_CONTRACT,
             DOC_ANNEX,
-            $days,
-            $days
+            $start,
+            $end,
         )
     );
 
@@ -1242,6 +1246,10 @@ if (empty($types) || in_array('documents', $types)) {
 if (empty($types) || in_array('contracts', $types)) {
     $expiration_type = ConfigHelper::getConfig($config_section . '.expiration_type', 'assignments');
     $days = $notifications['contracts']['days'];
+
+    $start = strtotime('+ ' . $days . ' days', $daystart);
+    $end = strtotime('+ 1 day', $start);
+
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
             SUM(value * currencyvalue) AS balance, d.cdate, d.dateto AS deadline,
@@ -1254,12 +1262,12 @@ if (empty($types) || in_array('contracts', $types)) {
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
-                HAVING MAX(a.dateto) >= $daystart + $days * 86400 AND MAX(a.dateto) < $daystart + ($days + 1) * 86400
+                HAVING MAX(a.dateto) >= ? AND MAX(a.dateto) < ?
             ) d ON d.customerid = c.id" :
             "JOIN (
                 SELECT DISTINCT customerid, documents.id, documents.cdate, dc.todate AS dateto FROM documents
                 JOIN documentcontents dc ON dc.docid = documents.id
-                WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
+                WHERE dc.todate >= ? AND dc.todate < ?
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
             ) d ON d.customerid = c.id") . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1274,19 +1282,21 @@ if (empty($types) || in_array('contracts', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE "
             . ($expiration_type == 'assignments' ? '1 = 1' : 'NOT EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0)')
-            . $customer_status_condition . " AND d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
+            . $customer_status_condition . " AND d.dateto >= ? AND d.dateto < ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
         . " GROUP BY c.id, c.pin, c.lastname, c.name, d.cdate, d.dateto, m.email, x.phone",
         array(
+            $start,
+            $end,
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
-            $days,
-            $days
+            $start,
+            $end,
         )
     );
 
@@ -1898,6 +1908,10 @@ if (empty($types) || in_array('reminder', $types)) {
 // Income as result of customer payment
 if (empty($types) || in_array('income', $types)) {
     $days = $notifications['income']['days'];
+
+    $start = strtotime('+ ' . $days . ' days', $daystart);
+    $end = strtotime('+ 1 day', $start);
+
     $incomes = $DB->GetAll(
         "SELECT c.id, c.pin, SUM(cash.value) AS value, cash.currency, cash.time AS cdate,
         m.email, x.phone, divisions.account,
@@ -1941,7 +1955,7 @@ if (empty($types) || in_array('income', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition
-            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
+            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= ? AND cash.time < ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -1960,8 +1974,8 @@ if (empty($types) || in_array('income', $types)) {
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
-            $days,
-            $days,
+            $start,
+            $end,
         )
     );
 
