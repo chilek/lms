@@ -176,7 +176,6 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{button id="send-documents" icon="mail" label="Send documents" data_send_documents="{$customerinfo.senddocuments}"}
-				{button id="print-docs" icon="print" label="Print"}
 				{button id="confirm-docs" icon="confirm" label="Confirm"}
 				{button id="archive-docs" icon="archive" label="Archive"}
 				{button id="delete-docs" icon="delete" label="Delete"}
@@ -185,6 +184,15 @@
 				<label>
 					{trans("Check All")}
 					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
+				</label>
+			{/tab_buttons}
+		{/tab_button_panel}
+		{tab_button_panel}
+			{tab_buttons}
+				{button id="print-docs" icon="print" label="Print"}
+				<label>
+					<input type="checkbox" name="attachments" value="1" form="customerdocuments-form">
+					{trans("attachments")}
 				</label>
 			{/tab_buttons}
 		{/tab_button_panel}
