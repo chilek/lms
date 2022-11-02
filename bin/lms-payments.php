@@ -1967,7 +1967,7 @@ foreach ($assigns as $assign) {
                                     $cid,
                                     $desc,
                                     null,
-                                    null,
+                                    0,
                                     $linktechnology,
                                     $assign['tarifftype'],
                                 )
