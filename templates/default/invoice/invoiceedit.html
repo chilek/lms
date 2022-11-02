@@ -120,7 +120,7 @@
 				<td class="nobr">
 					<select name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
 						{foreach Localisation::arraySort(Utils::array_column($_PAYTYPES, 'label')) as $key => $item}
-							<option value="{$key}"{if $invoice.paytype == $key} selected{/if}>{trans($item.label)}</option>
+							<option value="{$key}"{if $invoice.paytype == $key} selected{/if}>{trans($item)}</option>
 						{/foreach}
 					</select>
 				</td>
