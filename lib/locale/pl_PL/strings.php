@@ -1632,6 +1632,7 @@ $_LANG['Path to file was not specified: $a'] = 'Ścieżka do pliku nie została 
 $_LANG['Payment:'] = 'Płatność:';
 $_LANG['Payment'] = 'Płatność';
 $_LANG['payment'] = 'płatność';
+$_LANG['Payment Cleared'] = 'Płatność rozliczona';
 $_LANG['Payment day:'] = 'Dzień zapłaty:';
 $_LANG['Payment Edit: $a'] = 'Edycja płatności: $a';
 $_LANG['Payment for invoice No. $a'] = 'Zapłata za fakturę nr $a';

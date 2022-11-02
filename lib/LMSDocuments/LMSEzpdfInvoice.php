@@ -235,6 +235,15 @@ class LMSEzpdfInvoice extends LMSInvoice
                 . date("Y/m/d", $this->data['pdate'])
                 . ($this->use_alert_color ? '</c:color>' : '')
             );
+        } else {
+            $y = $y - $this->backend->text_align_left(
+                $x,
+                $y,
+                $font_size,
+                ($this->use_alert_color ? '<c:color:255,0,0>' : '')
+                . trans('Payment Cleared')
+                . ($this->use_alert_color ? '</c:color>' : '')
+            );
         }
         if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
             $this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
