@@ -23,21 +23,23 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-    CREATE TABLE promotionattachments (
-        id int(11) NOT NULL auto_increment,
-        filename varchar(255) NOT NULL,
-        label varchar(255) NOT NULL,
-        checked smallint DEFAULT 0,
-        promotionid int(11) DEFAULT NULL,
-        promotionschemaid int(11) DEFAULT NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT promotionattachments_promotionid_fkey
-            FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        CONSTRAINT promotionattachments_promotionschemaid_fkey
-            FOREIGN KEY (promotionschemaid) REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE
-    ) ENGINE=InnoDB
-");
+if (!$this->ResourceExists('promotionattachments', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE TABLE promotionattachments (
+            id int(11) NOT NULL auto_increment,
+            filename varchar(255) NOT NULL,
+            label varchar(255) NOT NULL,
+            checked smallint DEFAULT 0,
+            promotionid int(11) DEFAULT NULL,
+            promotionschemaid int(11) DEFAULT NULL,
+            PRIMARY KEY (id),
+            CONSTRAINT promotionattachments_promotionid_fkey
+                FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+            CONSTRAINT promotionattachments_promotionschemaid_fkey
+                FOREIGN KEY (promotionschemaid) REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022110200', 'dbversion'));
 

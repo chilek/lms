@@ -23,22 +23,23 @@
 
 $this->BeginTrans();
 
-$this->Execute("CREATE SEQUENCE promotionattachments_id_seq");
+if (!$this->ResourceExists('promotionattachments', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("CREATE SEQUENCE promotionattachments_id_seq");
 
-$this->Execute("
-    CREATE TABLE promotionattachments (
-        id integer DEFAULT nextval('promotionattachments_id_seq'::text) NOT NULL,
-        filename varchar(255) NOT NULL,
-        label varchar(255) NOT NULL,
-        checked smallint DEFAULT 0,
-        promotionid integer DEFAULT NULL
-            CONSTRAINT promotionattachments_promotionid_fkey REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        promotionschemaid integer DEFAULT NULL
-            CONSTRAINT promotionattachments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        PRIMARY KEY (id)
-    )
-");
-
+    $this->Execute("
+        CREATE TABLE promotionattachments (
+            id integer DEFAULT nextval('promotionattachments_id_seq'::text) NOT NULL,
+            filename varchar(255) NOT NULL,
+            label varchar(255) NOT NULL,
+            checked smallint DEFAULT 0,
+            promotionid integer DEFAULT NULL
+                CONSTRAINT promotionattachments_promotionid_fkey REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+            promotionschemaid integer DEFAULT NULL
+                CONSTRAINT promotionattachments_promotionschemaid_fkey REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE,
+            PRIMARY KEY (id)
+        )
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022110200', 'dbversion'));
 
