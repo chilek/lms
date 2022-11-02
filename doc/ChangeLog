@@ -316,6 +316,8 @@ version 28-git (????-??-??):
     backup to single 'output.pdf' file in directory specified with --output-directory parameter [chilan]
   - improvement: document html/pdf attachments are merged (optionally) before printing in document lists
     and document add form (handle pdf and html attachment merging) [chilan]
+  - enhancement: invoices with 'barter', 'cash', 'compensation', 'paid' and 'card' auto auto-paid
+    in lms-payments.php script [chilan]
 
 version 27.0 (2021-08-20):
 
