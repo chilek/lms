@@ -5256,7 +5256,7 @@ class LMS
                     if (is_string($res)) {
                         $msg = trans('Error sending mail: $a', $res);
                         if ($type == 'backend') {
-                            fprintf(STDERR, $msg . $eol);
+                            fwrite(STDERR, $msg . $eol);
                         } else {
                             echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
                             flush();
