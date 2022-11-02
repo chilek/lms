@@ -318,8 +318,8 @@ version 28-git (????-??-??):
     and document add form (handle pdf and html attachment merging) [chilan]
   - enhancement: invoices with 'barter', 'cash', 'compensation', 'paid' and 'card' auto auto-paid
     in lms-payments.php script [chilan]
-  - improvement: 'documents.default_with_attachments' configuration variable controls if document
-    is printed by default with all attachments [chilan]
+  - improvement: 'documents.default_all_attachments' configuration variable with 'false' as default value
+    controls if document is printed by default with all attachments [chilan]
 
 version 27.0 (2021-08-20):
 
