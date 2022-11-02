@@ -150,7 +150,13 @@ if (!empty($docids)) {
                         );
                     }
 
-                    $fpdi->AppendPage($content);
+                    try {
+                        $fpdi->AppendPage($content);
+                    } catch (Exception $e) {
+                        if ($e->getCode() == 267) {
+                            // This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)
+                        }
+                    }
                 } else {
                     readfile($filename);
                 }
