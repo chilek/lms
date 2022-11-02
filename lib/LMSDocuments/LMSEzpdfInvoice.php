@@ -1190,6 +1190,8 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_to_pay($x, $y)
     {
+        global $PAYTYPES;
+
         if (!$PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_TO_PAY) {
             return;
         }
