@@ -4,7 +4,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 
-{$default_with_attachments = ConfigHelper::checkConfig('documents.default_with_attachments')}
+{$default_all_attachments = ConfigHelper::checkConfig('documents.default_all_attachments')}
 
 <style>
 
@@ -286,7 +286,7 @@
 					{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 				{/if}
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
-					{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_with_attachments}&attachments=1{/if}{/capture}
+					{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{/if}{/capture}
 					{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url=$url external=true
 						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
