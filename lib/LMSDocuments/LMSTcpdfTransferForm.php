@@ -329,7 +329,7 @@ class LMSTcpdfTransferForm extends LMSDocument
 
         /* deadline */
         $paytype = $this->data['paytype'];
-        if ($PAYTYPES[$paytype]['invoice_items'] & INVOICE_ITEM_DEADLINE) {
+        if ($PAYTYPES[$paytype]['features'] & INVOICE_FEATURE_DEADLINE) {
             $this->backend->SetFont(null, '', 8);
             $this->backend->MultiCell(135 - 70, 10, trans('Deadline:') . ' ' . date("d.m.Y", $this->data['pdate']) . ' r.', 0, 'R', false, 1, 66.25 + 68.5, 69, true, 0, false, true, 10, 'M');
         }

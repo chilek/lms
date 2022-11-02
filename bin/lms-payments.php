@@ -1952,6 +1952,27 @@ foreach ($assigns as $assign) {
                                 $assign['tarifftype'],
                             )
                         );
+
+                        if ($PAYTYPES[$inv_paytype]['features'] & INVOICE_FEATURE_AUTO_PAYMENT) {
+                            $DB->Execute(
+                                "INSERT INTO cash (type, time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                array(
+                                    1,
+                                    $issuetime,
+                                    $grossvalue,
+                                    $currency,
+                                    $currencyvalues[$currency],
+                                    null,
+                                    $cid,
+                                    $desc,
+                                    null,
+                                    null,
+                                    $linktechnology,
+                                    $assign['tarifftype'],
+                                )
+                            );
+                        }
                     }
 
                     if (!empty($billing_document_template) && !empty($assign['billingconsent']) && !isset($invoices_with_billings[$invoices[$cid]])) {

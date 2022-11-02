@@ -66,7 +66,7 @@
 					{trans("Sale date:")}
 					<br>
 				{/if}
-				{if ($_PAYTYPES[$invoice.paytype].invoice_items & smarty.const.INVOICE_ITEM_DEADLINE) > 0}
+				{if ($_PAYTYPES[$invoice.paytype].features & smarty.const.INVOICE_FEATURE_DEADLINE) > 0}
 					{if $use_alert_color}
 						<span style="color: red; font-weight: bold;">
 					{/if}
@@ -528,7 +528,7 @@
 
 	<table width="100%" cellpadding="3">
 		<tr>
-			{if ($_PAYTYPES[$invoice.paytype].invoice_items & smarty.const.INVOICE_ITEM_TO_PAY) > 0}
+			{if ($_PAYTYPES[$invoice.paytype].features & smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
 				<td width="50%" align="left" class="hdf">
 					{if $invoice.rebate}
 						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}

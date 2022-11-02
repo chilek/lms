@@ -218,7 +218,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             $this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
             $y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['sdate']));
         }
-        if ($PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_DEADLINE) {
+        if ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_DEADLINE) {
             $this->backend->text_align_right(
                 $x,
                 $y,
@@ -1192,7 +1192,7 @@ class LMSEzpdfInvoice extends LMSInvoice
     {
         global $PAYTYPES;
 
-        if (!$PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_TO_PAY) {
+        if (!$PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY) {
             return;
         }
 
@@ -1558,7 +1558,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
 
         $this->backend->check_page_length($top, 200);
-        if (($PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_TRANSFER_FORM)
+        if (($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
             && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))) {
             $lms = LMS::getInstance();
             if ($lms->checkCustomerConsent($this->data['customerid'], CCONSENT_TRANSFERFORM)) {

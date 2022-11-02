@@ -613,7 +613,7 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         global $PAYTYPES;
 
-        if (!($PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_TO_PAY)) {
+        if (!($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TO_PAY)) {
             return;
         }
 
@@ -789,7 +789,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         global $PAYTYPES;
 
         $this->backend->SetFont(null, '', 8);
-        if ($PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_DEADLINE) {
+        if ($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_DEADLINE) {
             if ($this->use_alert_color) {
                     $this->backend->SetTextColorArray(array(255, 0, 0));
             }
@@ -1181,7 +1181,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->invoice_memo();
         }
 
-        if (($PAYTYPES[$this->data['paytype']]['invoice_items'] & INVOICE_ITEM_TRANSFER_FORM)
+        if (($PAYTYPES[$this->data['paytype']]['features'] & INVOICE_FEATURE_TRANSFER_FORM)
             && ($this->data['customerbalance'] < 0 || ConfigHelper::checkConfig('invoices.always_show_form', true))
             && !isset($this->data['rebate'])) {
             /* FT-0100 form */
