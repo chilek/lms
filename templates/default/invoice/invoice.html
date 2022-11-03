@@ -69,11 +69,11 @@
 				{if $use_alert_color}
 					<span style="color: red; font-weight: bold;">
 				{/if}
-				{if ($_PAYTYPES[$invoice.paytype].features & smarty.const.INVOICE_FEATURE_DEADLINE) > 0}
+				{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_DEADLINE) > 0}
 					{trans("Deadline:")}
 				{else}
 					{trans("Payment Cleared")}
-				{if}
+				{/if}
 				{if $use_alert_color}
 					</span>
 				{/if}
@@ -92,7 +92,7 @@
 					{$invoice.sdate|date_format:"Y-m-d"}
 					<br>
 				{/if}
-				{if ($_PAYTYPES[$invoice.paytype].features & smarty.const.INVOICE_FEATURE_DEADLINE) > 0}
+				{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_DEADLINE) > 0}
 					{if $use_alert_color}
 						<span style="color: red; font-weight: bold;">
 					{/if}
@@ -534,7 +534,7 @@
 
 	<table width="100%" cellpadding="3">
 		<tr>
-			{if ($_PAYTYPES[$invoice.paytype].features & smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
+			{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
 				<td width="50%" align="left" class="hdf">
 					{if $invoice.rebate}
 						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
