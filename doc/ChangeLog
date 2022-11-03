@@ -320,6 +320,8 @@ version 28-git (????-??-??):
     in lms-payments.php script [chilan]
   - improvement: 'documents.default_all_attachments' configuration variable with 'false' as default value
     controls if document is printed by default with all attachments [chilan]
+  - improvement: 'phpui.default_taxlabel' (without default value) allows to preselect tax rate basing
+    on label; it takes precedence before 'phpui.default_taxrate' [chilan]
 
 version 27.0 (2021-08-20):
 
