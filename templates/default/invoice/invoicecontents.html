@@ -404,8 +404,12 @@
                         </td>
                         <td class="text-right nobr">
                             <select size="1" id="tax" name="taxid" {tip text="Select Tax rate"}>
-                                {foreach item=tax from=$taxeslist}
-                                    <option value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</option>
+                                {foreach $taxeslist as $tax}
+                                    <option value="{$tax.id}"
+                                        {if $itemdata.taxid && $itemdata.taxid == $tax.id
+                                            || (!$itemdata.taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+                                                || !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
+                                        >{$tax.label}</option>
                                 {/foreach}
                             </select>
 

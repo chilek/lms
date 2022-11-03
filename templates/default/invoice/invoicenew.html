@@ -30,7 +30,8 @@
 </script>
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 {if isset($customer.id)}
 	{$customerid = $customer.id}

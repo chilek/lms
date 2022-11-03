@@ -4056,16 +4056,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTaxes($from = null, $to = null, $default = null)
     {
-        $from = $from ? $from : mktime(0, 0, 0);
-        $to = $to ? $to : mktime(23, 59, 59);
+        $from = $from ?: mktime(0, 0, 0);
+        $to = $to ?: mktime(23, 59, 59);
 
         $default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate');
+        $default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel');
 
         return $this->db->GetAllByKey(
             'SELECT id, value, label, taxed FROM taxes
             WHERE (validfrom = 0 OR validfrom <= ?)
-            AND (validto = 0 OR validto >= ?)'
-            . ($default && isset($default_taxrate) ? ' AND value = ' . $default_taxrate : '')
+                AND (validto = 0 OR validto >= ?)'
+                . ($default && (
+                    isset($default_taxlabel)
+                        ? ' AND label = ' . $this->db->Escape($default_taxlabel)
+                        : (isset($default_taxrate) ? ' AND value = ' . $default_taxrate : '')
+                ))
             . ' ORDER BY value',
             'id',
             array($from, $to)

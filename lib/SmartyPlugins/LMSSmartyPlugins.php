@@ -1413,15 +1413,26 @@ class LMSSmartyPlugins
     public static function taxrateSelectionFunction(array $params, Smarty_Internal_Template $template)
     {
         $default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate', 23.00);
+        $default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel');
 
         $lms = LMS::getInstance();
         $taxratelist = $lms->GetTaxes();
 
-        // search taxid using taxrate
-        foreach ($taxratelist as $idx => $tr) {
-            if ($tr['value'] === $default_taxrate) {
-                $default_taxid = $idx;
-                break;
+        if (isset($default_taxlabel)) {
+            // search taxid using tax label
+            foreach ($taxratelist as $idx => $tr) {
+                if ($tr['label'] === $default_taxlabel) {
+                    $default_taxid = $idx;
+                    break;
+                }
+            }
+        } else {
+            // search taxid using tax value
+            foreach ($taxratelist as $idx => $tr) {
+                if ($tr['value'] === $default_taxrate) {
+                    $default_taxid = $idx;
+                    break;
+                }
             }
         }
 

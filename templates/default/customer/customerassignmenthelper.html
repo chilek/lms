@@ -121,6 +121,9 @@
 
 </style>
 
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
+
 {if isset($promotion_only)}
 <select id="tariff-select" name="{$variable_prefix}[tariffid]" style="display: none;">
 <option value="-2"></option>
@@ -599,8 +602,12 @@
 								</TD>
 								<TD>
 									<SELECT SIZE="1" id="tax" name="{$variable_prefix}[taxid]" {tip text="Select Tax value" trigger="taxid"}>
-										{foreach item=tax from=$taxeslist}
-										<OPTION value="{$tax.id}"{if ($variables.taxid && $tax.id == $variables.taxid) || (!$variables.taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
+										{foreach $taxeslist as $tax}
+										<optionN value="{$tax.id}"
+											{if $variables.taxid && $tax.id == $variables.taxid
+												|| (!$variables.taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+													|| !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
+											>{$tax.label}</optionN>
 										{/foreach}
 									</SELECT>
 									{foreach $taxeslist as $tax}

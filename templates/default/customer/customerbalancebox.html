@@ -3,7 +3,8 @@
 {css}
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 <FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
 </FORM>
@@ -464,8 +465,12 @@
 						<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
 						{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
 						<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
-							{foreach item=tax from=$taxeslist}
-							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
+							{foreach $taxeslist as $tax}
+								<option value="{$tax.id}"
+									{if $taxid && $tax.id == $taxid
+										|| (!$taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+											|| !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
+									>{$tax.label}</option>
 							{/foreach}
 						</SELECT>
 					</div>
