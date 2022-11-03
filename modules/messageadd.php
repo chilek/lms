@@ -822,15 +822,19 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $customers = array();
             if (!empty($message['customers'])) {
                 foreach ($message['customers'] as $customerid => &$customer) {
-                    $msg_idx = $message['type'] == MSG_SMS ? 'phones' : 'emails';
-                    if (!empty($customer[$msg_idx])) {
-                        foreach ($customer[$msg_idx] as $contactid => $contact) {
-                            if (!empty($contact)) {
-                                $customers[] = $customerid;
-                            } else {
-                                unset($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'][$contactid]);
+                    if ($message['type'] == MSG_SMS || $message['type'] == MSG_MAIL) {
+                        $msg_idx = $message['type'] == MSG_SMS ? 'phones' : 'emails';
+                        if (!empty($customer[$msg_idx])) {
+                            foreach ($customer[$msg_idx] as $contactid => $contact) {
+                                if (!empty($contact)) {
+                                    $customers[] = $customerid;
+                                } else {
+                                    unset($customer[$message['type'] == MSG_SMS ? 'phones' : 'emails'][$contactid]);
+                                }
                             }
                         }
+                    } else {
+                        $customers[] = $customerid;
                     }
                 }
                 unset($customer);
