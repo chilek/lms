@@ -384,6 +384,17 @@ class LMSSmartyPlugins
             }
         }
 
+        $item_custom_contents = array();
+        $new_item_custom_content = '';
+        foreach ($params as $key => $value) {
+            switch ($key) {
+                case 'item_custom_contents':
+                case 'new_item_custom_content':
+                    $$key = $value;
+                    break;
+            }
+        }
+
         $form = isset($params['form']) ? $params['form'] : null;
         $accept = !empty($params['accept']) ? $params['accept'] : null;
         $multiple = isset($params['multiple']) ? ConfigHelper::checkValue($params['multiple']) : true;
@@ -423,14 +434,16 @@ class LMSSmartyPlugins
 			<div class="fileupload-files">';
         if (!empty($fileupload) && isset($fileupload[$id])) {
             foreach ($fileupload[$id] as $fileidx => $file) {
-                $result .= '<div>
-					<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>
-						' . $file['name'] . ' (' . $file['sizestr'] . ')
-					</a>
-					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
-					<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
-					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
-				</div>';
+                $result .= '<div class="fileupload-file">
+                    <div class="fileupload-file-info">
+                        <a href="#" class="file-delete"><i class="fas fa-trash"></i></a>
+                            <span>' . $file['name'] . ' (' . $file['sizestr'] . ')</span>
+                        <input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+                        <input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+                        <input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
+                    </div>
+                    ' . (isset($item_custom_contents[$fileidx]) ? '<div class="fileupload-file-options">' . $item_custom_contents[$fileidx] . '</div>' : '') . '
+                </div>';
             }
         }
         $result .= '</div>
@@ -442,7 +455,10 @@ class LMSSmartyPlugins
 		</div>';
         $result .= '<script>
 			$(function() {
-				new lmsFileUpload("' . $id . '"' . ($form ? ', "' . $form . '"' : '') . ');
+				new lmsFileUpload(
+                    "' . $id . '", "' . ($form ?: '') . '"'
+                    . ', "' . (!empty($item_custom_contents) ? base64_encode(json_encode($item_custom_contents)) : '') . '"'
+                    . ', "' . (strlen($new_item_custom_content) ? base64_encode($new_item_custom_content) : '') . '");
 			});
 		</script>';
 

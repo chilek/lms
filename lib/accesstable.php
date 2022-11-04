@@ -84,7 +84,7 @@ $access_table = array(
     ),
     'promotion_management' => array(
         'label' => trans('promotion management'),
-        'allow_regexp' => '^(promotion|promotionschema)(list|edit|add|del|set|info|clone)$',
+        'allow_regexp' => '^(promotion|promotionschema)(list|edit|add|del|set|info|clone|attachmentview)$',
         'allow_menu_items' => array(
             'config' => array(
                 'promotionlist',
@@ -193,7 +193,7 @@ $access_table = array(
     ),
     'configuration' => array(
         'label' => trans('configuration'),
-        'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone)))$',
+        'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone|attachmentview)))$',
         'allow_menu_items' => array(
             'config' => array('settings', 'configimport', 'configadd', 'taxratelist', 'numberplanlist', 'statelist', 'divisionlist', 'hostlist', 'cashsourcelist', 'promotionlist'),
         ),

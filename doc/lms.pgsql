@@ -1059,6 +1059,7 @@ DROP TABLE IF EXISTS promotionattachments CASCADE;
 CREATE TABLE promotionattachments (
     id integer DEFAULT nextval('promotionattachments_id_seq'::text) NOT NULL,
     filename varchar(255) NOT NULL,
+    contenttype varchar(255) NOT NULL,
     label varchar(255) NOT NULL,
     checked smallint DEFAULT 0,
     promotionid integer DEFAULT NULL
@@ -4309,6 +4310,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022110200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022110400');
 
 COMMIT;

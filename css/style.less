@@ -1388,6 +1388,34 @@ IMG		{ vertical-align: middle; border: 0; }
 			margin-top: 0.3em;
 			margin-bottom: 0.3em;
 		}
+
+		.fileupload-file {
+			display: flex;
+			flex-direction: column;
+			width: fit-content;
+		}
+
+		.fileupload-file-info {
+			display: flex;
+			align-items: center;
+
+			.file-delete {
+				margin-right: 0.7em;
+			}
+		}
+
+		.fileupload-file-options {
+			display: flex;
+			align-items: center;
+			margin-top: 0.5em;
+			justify-content: space-between;
+		}
+
+		.fileupload-file-options input[type="text"] {
+			margin-left: 1em;
+			flex-grow: 1;
+			min-width: 17em;
+		}
 	}
 }
 

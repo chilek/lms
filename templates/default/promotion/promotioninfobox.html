@@ -1,4 +1,23 @@
 <!-- $Id$ -->
+<style>
+
+	#attachment-list {
+		margin-right: 1em;
+		width: auto;
+	}
+
+	#attachment-list thead,
+	#attachment-list tbody {
+		border-width: 1px;
+		border-style: dotted;
+	}
+
+	#attachment-list tbody {
+		border-top-style: none;
+	}
+
+</style>
+
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -54,6 +73,49 @@
 						<tr><td class="fall superlight">
 							{$promotion.description|escape|replace:"\n":"<BR>"}
 						</td></tr>
+					</table>
+				</td>
+			</tr>
+		{/if}
+		{if !empty($promotion.attachments)}
+			<tr>
+				<td class="valign-top">
+					{icon name="attachment"}
+				</td>
+				<td colspan="2">
+					<table class="lmsbox" id="attachment-list">
+						<thead>
+							<tr>
+								<td class="bold nobr">
+									{trans("File name")}
+								</td>
+								<td class="bold nobr">
+									{trans("Text label")}
+								</td>
+								<td class="bold nobr">
+									{trans("Default checked")}
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							{foreach $promotion.attachments as $attachmentid => $attachment}
+								<tr>
+									<td>
+										{documentview id="{$promotion.id}-{$attachment.id}" type=$attachment.contenttype name=$attachment.filename
+											url="?m=promotionattachmentview&id={$promotion.id}&attachmentid={$attachment.id}" external=true
+											text="{$attachment.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/', $attachment.contenttype)} xls{/if}\"></i>"}
+									</td>
+									<td>
+										{$attachment.label|escape}
+									</td>
+									<td>
+										{if !empty($attachment.checked)}
+											{icon name="checked"}
+										{/if}
+									</td>
+								</tr>
+							{/foreach}
+						</tbody>
 					</table>
 				</td>
 			</tr>

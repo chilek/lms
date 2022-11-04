@@ -4,6 +4,32 @@
 <!-- $Id$ -->
 <h1>{$layout.pagetitle}</h1>
 
+<style>
+
+	.promoattachrow a:nth-child(2) {
+		margin-left: 0.5em;
+	}
+
+	.promotion-attachment {
+		display: flex;
+		flex-direction: column;
+		width: fit-content;
+	}
+
+	.promotion-attachment-options {
+		display: flex;
+		align-items: center;
+		margin-top: 0.5em;
+		justify-content: space-between;
+	}
+
+	.promotion-attachment-options input[type="text"] {
+		margin-left: 1em;
+		flex-grow: 1;
+	}
+
+</style>
+
 <form method="post" name="promotionedit" id="promotionedit" action="?m=promotionedit&id={$promotion.id}">
 </form>
 
@@ -65,6 +91,81 @@
 			</td>
 		</tr>
 		<tr>
+			<td>
+				{icon name="import"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("New files")}</strong>
+			</td>
+			<td>
+				{$item_custom_contents = array()}
+				{foreach $fileupload.attachments as $fileidx => $file}
+					{capture assign="item_custom_content"}{strip}
+						<label>
+							<input type="checkbox" name="fileupload[attachments][{$fileidx}][checked]"
+								value="1" form="promotionedit" {if $file.checked} checked{/if}>
+							{trans("default checked")}
+						</label>
+						<input size="10" type="text" name="fileupload[attachments][{$fileidx}][label]"
+							value="{$file.label}" form="promotionedit" placeholder="{trans("text label")}">
+					{/strip}{/capture}
+					{$item_custom_contents[] = $item_custom_content}
+				{/foreach}
+				{capture assign="new_item_custom_content"}{strip}
+					<label>
+						<input type="checkbox" name="fileupload[attachments][%idx%][checked]"
+							   value="1" form="promotionedit">
+						{trans("default checked")}
+					</label>
+					<input size="10" type="text" name="fileupload[attachments][%idx%][label]"
+						value="" form="promotionedit" placeholder="{trans("text label")}">
+				{/strip}{/capture}
+				{fileupload id="attachments" fileupload=$fileupload form="promotionedit"
+					item_custom_contents=$item_custom_contents
+					new_item_custom_content=$new_item_custom_content}
+			</td>
+		</tr>
+		{if !empty($promotion.attachments)}
+			<tr>
+				<td class="valign-top">
+					{icon name="import"}
+				</td>
+				<td class="valign-top nobr">
+					<strong>{trans("Attached files")}</strong>
+				</td>
+				<td>
+					{foreach $promotion.attachments as $promoattach}
+						<div class="promotion-attachment">
+							<div class="promoattachrow{if $promoattach.type <= 0} promoattach{if $promotion.attachments[$promoattach.id].deleted} blend crossed{/if}{/if}">
+								<a href="#">
+									<i class="fa-fw lms-ui-icon-{if $promotion.attachments[$promoattach.id].deleted}cancel{else}delete{/if}"
+										{if $promoattach.type == 1} style="visibility: hidden;"{/if}></i>
+								</a>
+								{$class = ""}
+								{if $promotion.attachments[$promoattach.id].deleted}
+									{$class = "blend"}
+								{/if}
+								{documentview id="{$promotion.id}-{$promoattach.id}" type=$promoattach.contenttype name=$promoattach.filename
+									url="?m=promotionattachmentview&id={$promotion.id}&attachmentid={$promoattach.id}" external=true class=$class
+									text="{$promoattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$promoattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/', $promoattach.contenttype)} xls{/if}\"></i>"}
+								<input type="hidden" name="promotion[attachments][{$promoattach.id}][deleted]"
+									value="{$promotion.attachments[$promoattach.id].deleted}" form="promotionedit">
+							</div>
+							<div class="promotion-attachment-options">
+								<label>
+									<input type="checkbox" name="promotion[attachments][{$promoattach.id}][checked]"
+										value="1"{if $promoattach.checked} checked{/if} form="promotionedit">
+									{trans("default checked")}
+								</label>
+								<input size="10" type="text" name="promotion[attachments][{$promoattach.id}][label]"
+									value="{$promoattach.label}" form="promotionedit" placeholder="{trans("text label")}">
+							</div>
+						</div>
+					{/foreach}
+				</td>
+			</tr>
+		{/if}
+		<tr>
 			<td class="lms-ui-box-buttons" colspan="3">
 				{button type="submit" icon="save" label="Submit" form="promotionedit"}
 				{button icon="cancel" label="Cancel" href="?m=promotionlist"}
@@ -76,6 +177,20 @@
 <script>
 
 	$('[name="promotion[name]"]').focus();
+
+	$(function() {
+		$('.promoattach').on('click', function() {
+			var elem = $(this).closest('.promotion-attachment');
+			elem.toggleClass('blend crossed')
+				.find('.lms-ui-button').toggleClass('blend').end()
+				.find('input:not([type="hidden"])').prop('disabled', function() {
+					return !$(this).prop('disabled');
+				});
+			elem.find('i').toggleClass('lms-ui-icon-delete').toggleClass('lms-ui-icon-cancel');
+			elem.find('input[type="hidden"]').val(elem.hasClass('blend') ? 1 : 0);
+			return false;
+		});
+	});
 
 </script>
 {/block}

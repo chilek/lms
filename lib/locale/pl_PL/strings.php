@@ -764,6 +764,8 @@ $_LANG['waiting'] = 'oczekujące';
 $_LANG['waiting, without nodes'] = 'oczekujące, bez komputerów';
 $_LANG['Deadline'] = 'Termin płatności';
 $_LANG['Deadline:'] = 'Termin płatności:';
+$_LANG['default checked'] = 'domyślnie zaznaczone';
+$_LANG['Default checked'] = 'Domyślnie zaznaczone';
 $_LANG['Default invoice issuer'] = 'Domyślna osoba tworząca fakturę';
 $_LANG['Default placement of suggestion window (left/right/top/bottom)'] = 'Domyślne umiejscowienie okna sugestii (left/right/top/bottom)';
 $_LANG['Default zip code, city, street, used while inserting new customer. Useful if you add majority of customers with the same street.'] = 'Domyślny kod pocztowy, miasto, ulica pod czas dodawania nowego klienta. Przydatne, gdy mamy wielu klientów na tej samej ulicy.';
@@ -4410,7 +4412,9 @@ $_LANG['Your browser does not support the video element.'] = 'Twoja przeglądark
 
 $_LANG['more document attachments'] = 'więcej załączników dokumentu';
 $_LANG['New files:'] = 'Nowe pliki:';
+$_LANG['New files'] = 'Nowe pliki';
 $_LANG['Attached files:'] = 'Załączone pliki:';
+$_LANG['Attached files'] = 'Załączone pliki';
 $_LANG['Files:'] = 'Pliki:';
 
 $_LANG['Select files'] = 'Wybierz pliki';
@@ -5344,6 +5348,8 @@ $_LANG['hide customer list'] = 'ukryj listę klientów';
 $_LANG['Cannot open event - event closed too long ago.'] = 'Nie można otworzyć zdarzenia - zostało ono zamknięte zbyt dawno.';
 
 $_LANG['Text label:'] = 'Etykieta tekstowa:';
+$_LANG['Text label'] = 'Etykieta tekstowa';
+$_LANG['text label'] = 'etykieta tekstowa';
 $_LANG['Enter text label under which division is visible in user interface'] = 'Podaj etykietę tekstową, pod jaką widoczna jest firma w interfejsie użytkownika';
 
 $_LANG['Add Scans'] = 'Dodaj skany';
@@ -5354,6 +5360,7 @@ $_LANG['Recognised document number:'] = 'Rozpoznany numer dokumentu:';
 $_LANG['Matched documents:'] = 'Dopasowane dokumenty:';
 $_LANG['No matched documents!'] = 'Brak dopasowanych dokumentów!';
 $_LANG['File name:'] = 'Nazwa pliku:';
+$_LANG['File name'] = 'Nazwa pliku';
 $_LANG['$a issued on $b for $c'] = '$a z dnia $b dla $c';
 $_LANG['$a issued on $b for $c (already assigned)'] = '$a z dnia $b dla $c (już przypisany)';
 $_LANG['No PHP Imagick extension installed!'] = 'Brak zainstalowanego rozszerzenia PHP Imagick!';

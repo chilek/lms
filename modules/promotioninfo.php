@@ -40,6 +40,16 @@ if (!$promotion) {
     $SESSION->redirect('?m=promotionlist');
 }
 
+$promotion['attachments'] = $DB->GetAllByKey(
+    'SELECT *
+    FROM promotionattachments
+    WHERE promotionid = ?',
+    'id',
+    array(
+        $_GET['id'],
+    )
+);
+
 $promotion['schemas'] = $DB->GetAllByKey(
     'SELECT
         s.name, s.disabled, s.description, s.id, s.deleted, s.datefrom, s.dateto,

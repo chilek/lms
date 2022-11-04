@@ -22,7 +22,7 @@
  *  $Id$
  */
 
-function lmsFileUpload(elemid, formid) {
+function lmsFileUpload(elemid, formid, item_custom_contents, new_item_custom_content) {
 	var elem = $("#" + elemid);
 	var formelem = typeof(formid) != 'undefined' ? $('#' + formid) : $(this).closest("form");
 	var formdata = new FormData(formelem.get(0));
@@ -65,16 +65,20 @@ function lmsFileUpload(elemid, formid) {
 					$.each(data.files, function(key) {
 						var size = get_size_unit(files[key].size);
 						var fileListItem = $('<div class="fileupload-file">' +
-							'<a href="#" class="file-delete"><i class="fas fa-trash"></i></a>&nbsp;' +
-							(files[key].imgElem ? '<a href="#" class="file-preview"><i class="fas fa-search"></i></a>&nbsp;' : '') +
-							'<a href="#" class="file-view"><i class="fas fa-eye"></i></a>&nbsp;' +
-							files[key].name + ' (' + size.size + ' ' + size.unit + ')' +
-							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
-								' value="' + files[key].name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
-							'<input type="hidden" class="fileupload-file-size" name="fileupload[' + elemid + '][' + (count + key) + '][size]"' +
-								' value="' + files[key].size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
-							'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
-								' value="' + files[key].type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+							'<div class="fileupload-file-info">' +
+								'<a href="#" class="file-delete"><i class="fas fa-trash"></i></a>&nbsp;' +
+								(files[key].imgElem ? '<a href="#" class="file-preview"><i class="fas fa-search"></i></a>&nbsp;' : '') +
+								'<a href="#" class="file-view"><i class="fas fa-eye"></i></a>&nbsp;' +
+								files[key].name + ' (' + size.size + ' ' + size.unit + ')' +
+								'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][name]"' +
+									' value="' + files[key].name + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+								'<input type="hidden" class="fileupload-file-size" name="fileupload[' + elemid + '][' + (count + key) + '][size]"' +
+									' value="' + files[key].size + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+								'<input type="hidden" name="fileupload[' + elemid + '][' + (count + key) + '][type]"' +
+									' value="' + files[key].type + '" ' + (formid ? ' form="' + formid + '"' : '') + '>' +
+							'</div>' +
+							(new_item_custom_content.length ? '<div class="fileupload-file-options">' +
+								Base64.decode(new_item_custom_content).replaceAll('%idx%', count + key) + '</div>': '') +
 						'</div>').appendTo(fileupload_files);
 						fileListItem.find('.file-preview').tooltip({
 							items: 'a',
@@ -88,7 +92,7 @@ function lmsFileUpload(elemid, formid) {
 							lmsFileView(files[key]);
 						});
 						fileListItem.find('.file-delete').click(function() {
-							$(this).parent().remove();
+							$(this).closest('.fileupload-file').remove();
 						});
 					});
 				}
@@ -247,6 +251,6 @@ function lmsFileUpload(elemid, formid) {
 		formdata.delete(elemid + '[]');
 	});
 	elem.find(".file-delete").click(function() {
-		$(this).parent().remove();
+		$(this).closest('.fileupload-file').remove();
 	});
 }

@@ -5210,7 +5210,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function getPromotion($id)
     {
-        return $this->db->GetRow(
+        $promotion = $this->db->GetRow(
             'SELECT p.*, a.assignmentcount
             FROM promotions p
             LEFT JOIN (
@@ -5222,5 +5222,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             WHERE p.id = ?',
             array($id)
         );
+
+        $promotion['attachments'] = $this->db->GetAllByKey(
+            'SELECT *, 0 AS deleted
+            FROM promotionattachments
+            WHERE promotionid = ?',
+            'id',
+            array($id)
+        );
+        if (empty($promotion['attachments'])) {
+            $promotion['attachments'] = array();
+        }
+
+        return $promotion;
     }
 }
