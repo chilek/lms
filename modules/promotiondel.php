@@ -81,6 +81,22 @@ if ($id) {
         }
     }
     if (empty($assignments)) {
+        $attachments = $DB->GetAll(
+            'SELECT *
+            FROM promotionattachments
+            WHERE promotionid = ?',
+            array(
+                $id,
+            )
+        );
+        if (!empty($attachments)) {
+            $promo_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions' . DIRECTORY_SEPARATOR . $id;
+            foreach ($attachments as $attachment) {
+                $filename = $promo_dir . DIRECTORY_SEPARATOR . $attachment['filename'];
+                @unlink($filename);
+            }
+            rrmdir($promo_dir);
+        }
         $DB->Execute('DELETE FROM promotions WHERE id = ?', array($id));
     } else {
         $DB->Execute('UPDATE promotions SET deleted = 1 WHERE id = ?', array($id));

@@ -132,11 +132,14 @@ if ($promotion) {
             array_values($args)
         );
 
+        $promo_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions';
+        $stat = stat($promo_dir);
+        $promo_dir .= DIRECTORY_SEPARATOR . $promotionid;
+
         if (isset($promotion['attachments']) && is_array($promotion['attachments'])) {
             foreach ($promotion['attachments'] as $attachmentid => $attachment) {
                 if ($attachment['deleted']) {
-                    $filename = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions'
-                        . DIRECTORY_SEPARATOR . $promotionid . DIRECTORY_SEPARATOR . $attachments[$attachmentid]['filename'];
+                    $filename = $promo_dir . DIRECTORY_SEPARATOR . $attachments[$attachmentid]['filename'];
                     @unlink($filename);
                     $DB->Execute('DELETE FROM promotionattachments WHERE id = ?', array($attachmentid));
                 } else {
@@ -152,9 +155,6 @@ if ($promotion) {
             }
         }
 
-        $promo_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions';
-        $stat = stat($promo_dir);
-        $promo_dir .= DIRECTORY_SEPARATOR . $promotionid;
         if (!is_dir($promo_dir)) {
             @mkdir($promo_dir, 0700);
         }
