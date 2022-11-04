@@ -64,6 +64,16 @@ $schema['periods'][] = trans('Months $a-', $mon);
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
+$schema['attachments'] = $DB->GetAllByKey(
+    'SELECT *
+    FROM promotionattachments
+    WHERE promotionschemaid = ?',
+    'id',
+    array(
+        $_GET['id'],
+    )
+);
+
 $schema['tariffs'] = $DB->GetAll(
     'SELECT t.name, t.value, t.type,
         a.tariffid, a.id, a.data, a.backwardperiod, a.optional, a.label,

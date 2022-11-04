@@ -187,6 +187,8 @@ if ($promotion) {
     } else {
         foreach ($attachments as $attachmentid => &$attachment) {
             $attachment['deleted'] = $promotion['attachments'][$attachmentid]['deleted'];
+            $attachment['checked'] = isset($promotion['attachments'][$attachmentid]['checked']) ? 1 : 0;
+            $attachment['label'] = $promotion['attachments'][$attachmentid]['label'];
         }
         unset($attachment);
         $promotion['attachments'] = $attachments;

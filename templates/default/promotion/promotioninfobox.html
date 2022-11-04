@@ -102,7 +102,7 @@
 								<tr>
 									<td>
 										{documentview id="{$promotion.id}-{$attachment.id}" type=$attachment.contenttype name=$attachment.filename
-											url="?m=promotionattachmentview&id={$promotion.id}&attachmentid={$attachment.id}" external=true
+											url="?m=promotionattachmentview&promotionid={$promotion.id}&attachmentid={$attachment.id}" external=true
 											text="{$attachment.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$attachment.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/', $attachment.contenttype)} xls{/if}\"></i>"}
 									</td>
 									<td>

@@ -39,8 +39,13 @@ if (empty($attachment)) {
     die;
 }
 
-$file = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions' . DIRECTORY_SEPARATOR . $attachment['promotionid']
-    . DIRECTORY_SEPARATOR . $attachment['filename'];
+if (isset($_GET['promotionid'])) {
+    $file = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions' . DIRECTORY_SEPARATOR
+        . $attachment['promotionid'] . DIRECTORY_SEPARATOR . $attachment['filename'];
+} else {
+    $file = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotionschemas' . DIRECTORY_SEPARATOR
+        . $attachment['promotionschemaid'] . DIRECTORY_SEPARATOR . $attachment['filename'];
+}
 if (file_exists($file)) {
     if (isset($_GET['thumbnail']) && ($width = intval($_GET['thumbnail'])) > 0
         && class_exists('Imagick') && strpos($attachment['contenttype'], 'image/') === 0) {

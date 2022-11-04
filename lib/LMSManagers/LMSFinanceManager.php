@@ -5195,7 +5195,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function getPromotionSchema($id)
     {
-        return $this->db->GetRow(
+        $schema = $this->db->GetRow(
             'SELECT s.*, a.assignmentcount
             FROM promotionschemas s
             LEFT JOIN (
@@ -5206,6 +5206,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             WHERE s.id = ?',
             array($id)
         );
+
+        $schema['attachments'] = $this->db->GetAllBykey(
+            'SELECT *
+            FROM promotionattachments
+            WHERE promotionschemaid = ?',
+            'id',
+            array($id)
+        );
+        if (empty($schema['attachments'])) {
+            $schema['attachments'] = array();
+        }
+
+        return $schema;
     }
 
     public function getPromotion($id)

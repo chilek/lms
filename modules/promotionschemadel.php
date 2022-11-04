@@ -66,6 +66,23 @@ if ($SYSLOG) {
 }
 
 if (empty($schema['assignments'])) {
+    $attachments = $DB->GetAll(
+        'SELECT *
+        FROM promotionattachments
+        WHERE promotionschemaid = ?',
+        array(
+            $id,
+        )
+    );
+    if (!empty($attachments)) {
+        $schema_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotionschemas' . DIRECTORY_SEPARATOR . $id;
+        foreach ($attachments as $attachment) {
+            $filename = $schema_dir . DIRECTORY_SEPARATOR . $attachment['filename'];
+            @unlink($filename);
+        }
+        rrmdir($schema_dir);
+    }
+
     $DB->Execute('DELETE FROM promotionschemas WHERE id = ?', array($id));
 } else {
     $DB->Execute('UPDATE promotionschemas SET deleted = 1 WHERE id = ?', array($id));

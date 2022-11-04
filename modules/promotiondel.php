@@ -82,10 +82,17 @@ if ($id) {
     }
     if (empty($assignments)) {
         $attachments = $DB->GetAll(
-            'SELECT *
-            FROM promotionattachments
-            WHERE promotionid = ?',
+            'SELECT a.*
+            FROM promotionattachments a
+            WHERE a.promotionid = ?
+                OR a.promotionschemaid IN (
+                    SELECT s.id
+                    FROM promotionschemas s
+                    WHERE s.id = a.promotionschemaid
+                        AND s.promotionid = ?
+                )',
             array(
+                $id,
                 $id,
             )
         );
