@@ -457,7 +457,6 @@ class LMSSmartyPlugins
 			$(function() {
 				new lmsFileUpload(
                     "' . $id . '", "' . ($form ?: '') . '"'
-                    . ', "' . (!empty($item_custom_contents) ? base64_encode(json_encode($item_custom_contents)) : '') . '"'
                     . ', "' . (strlen($new_item_custom_content) ? base64_encode($new_item_custom_content) : '') . '");
 			});
 		</script>';
