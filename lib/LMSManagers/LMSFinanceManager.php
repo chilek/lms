@@ -4064,13 +4064,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         return $this->db->GetAllByKey(
             'SELECT id, value, label, taxed FROM taxes
-            WHERE (validfrom = 0 OR validfrom <= ?)
+            WHERE validfrom <= ?
                 AND (validto = 0 OR validto >= ?)'
-                . ($default && (
+                . ($default ? (
                     isset($default_taxlabel)
                         ? ' AND label = ' . $this->db->Escape($default_taxlabel)
                         : (isset($default_taxrate) ? ' AND value = ' . $default_taxrate : '')
-                ))
+                ) : '')
             . ' ORDER BY value',
             'id',
             array($from, $to)
