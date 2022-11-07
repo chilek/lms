@@ -114,7 +114,7 @@ if ($id) {
             }
             rrmdir($promo_dir);
             foreach (array_keys($schemaids) as $chemaid) {
-                rmmdir($schema_dir . DIRECTORY_SEPARATOR . $schemaid);
+                rrmdir($schema_dir . DIRECTORY_SEPARATOR . $schemaid);
             }
         }
         $DB->Execute('DELETE FROM promotions WHERE id = ?', array($id));
