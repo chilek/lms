@@ -29,6 +29,7 @@ function array_provider_filter($provider)
     static $all_providers = array(
         'google' => true,
         'siis' => true,
+        'osm' => true,
     );
     return isset($all_providers[$provider]);
 }
