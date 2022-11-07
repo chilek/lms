@@ -35,6 +35,8 @@ if (isset($_POST['document'])) {
 
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
+    $error = array();
+
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
         $error['customer'] = trans('Customer not selected!');
         $error['customerid'] = trans('Customer not selected!');
@@ -546,6 +548,27 @@ if (isset($document['customerid'])) {
 } else {
     $promotions = $numberplans = null;
 }
+
+$promotionattachments = array();
+foreach ($promotions as $promotionid => $promotion) {
+    foreach ($promotion['schemas'] as $schemaid => $schema) {
+        if (!isset($promotionattachments[$schemaid])) {
+            $promotionattachments[$schemaid] = array(
+                'promotions' => array(),
+                'promotionschemas' => array(),
+            );
+        }
+        $promotionattachments[$schemaid]['promotions'] = array_merge(
+            $promotionattachments[$schemaid]['promotions'],
+            $promotion['attachments']
+        );
+        $promotionattachments[$schemaid]['promotionschemas'] = array_merge(
+            $promotionattachments[$schemaid]['promotionschemas'],
+            $schema['attachments']
+        );
+    }
+}
+$SMARTY->assign('promotionattachments', $promotionattachments);
 
 $SMARTY->assign('promotions', $promotions);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());

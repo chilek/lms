@@ -119,6 +119,23 @@
 		padding-left: 0;
 	}
 
+	#attachments {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.promotion-attachments {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.promotion-attachments ul {
+		margin-block-start: 0.3em;
+		margin-block-end: 0.3em;
+		list-style: none;
+		padding-inline-start: 0;
+	}
+
 </style>
 
 {$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
@@ -197,6 +214,20 @@
 									<i id="promotion-schema-info" class="lms-ui-icon-info"></i>
 								</TD>
 							</TR>
+							<tr id="a_attachments" style="display: none;">
+								<td class="valign-top">
+									{icon name="attachment"}
+								</td>
+								<td class="valign-top">
+									<strong>
+										{trans("Attachments")}
+									</strong>
+								</td>
+								<td>
+									<div id="promotion-attachments">
+									</div>
+								</td>
+							</tr>
 							<tr id="a_location" style="display: none;">
 								<td>
 									{icon name="location"}

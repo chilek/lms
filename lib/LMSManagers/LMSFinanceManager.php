@@ -4604,6 +4604,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         foreach ($promotions as $promotionid => &$promotion) {
             $promotion['schemas'] = array();
+            $promotion['attachments'] = array();
         }
         unset($promotion);
 
@@ -4638,8 +4639,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $period_labels[] = trans('Months $a-', $month);
                 }
 
-                $promotions[$promotion_schema['promotionid']]['schemas'][$promotion_schema['id']] =
-                array(
+                $promotions[$promotion_schema['promotionid']]['schemas'][$promotion_schema['id']] = array(
                     'id' => $promotion_schema['id'],
                     'name' => $promotion_schema['name'],
                     'valid' => $promotion_schema['valid'],
@@ -4649,7 +4649,28 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'tariffs' => $promotion_schema['tariffs'],
                     'period_labels' => $period_labels,
                     'items' => array(),
+                    'attachments' => array(),
                 );
+            }
+        }
+
+        $promotion_attachments = $this->db->GetAll(
+            'SELECT a.*, COALESCE(a.promotionid, s.promotionid) AS promotionid
+            FROM promotionattachments a
+            LEFT JOIN promotionschemas s ON s.id = a.promotionschemaid'
+        );
+        if (!empty($promotion_attachments)) {
+            foreach ($promotion_attachments as $attachment) {
+                if (empty($attachment['promotionschemaid'])) {
+                    if (isset($promotions[$attachment['promotionid']])) {
+                        $promotions[$attachment['promotionid']]['attachments'][$attachment['id']] = $attachment;
+                    }
+                } else {
+                    if (isset($promotions[$attachment['promotionid']]['schemas'][$attachment['promotionschemaid']])) {
+                        $promotions[$attachment['promotionid']]['schemas'][$attachment['promotionschemaid']]['attachments'][$attachment['id']] =
+                            $attachment;
+                    }
+                }
             }
         }
 

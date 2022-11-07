@@ -37,14 +37,35 @@ function CustomerAssignmentHelper(options) {
 		if ('variablePrefix' in options) {
 			this.variablePrefix = options.variablePrefix;
 		} else {
-			this.variablePrefix = tariffTypes;
+			this.variablePrefix = 'assignment';
 		}
-    } else {
+
+		if ('promotionAttachments' in options) {
+			this.promotionAttachments = options.promotionAttachments;
+		} else {
+			this.promotionAttachments = {};
+		}
+
+		if ('assignmentPromotionAttachments' in options) {
+			this.assignmentPromotionAttachments = options.assignmentPromotionAttachments;
+		} else {
+			this.assignmentPromotionAttachments = {};
+		}
+
+		if ('assignmentPromotionSchemaAttachments' in options) {
+			this.assignmentPromotionSchemaAttachments = options.assignmentPromotionSchemaAttachments;
+		} else {
+			this.assignmentPromotionSchemaAttachments = {};
+		}
+	} else {
 		this.customerid = 0;
 		this.selected = {};
 		this.internetTariffType = 0;
 		this.phoneTariffType = 0;
 		this.tariffTypes = {};
+		this.promotionAttachments = {};
+		this.assignmentPromotionAttachments = {};
+		this.assignmentPromotionSchemaAttachments = {};
 		this.variablePrefix = 'assignment';
     }
 
@@ -123,12 +144,14 @@ function CustomerAssignmentHelper(options) {
 	}
 
 	this.promotionSelectionHandler = function() {
-		$('#a_location,#a_check_all_terminals,#a_options,#a_existingassignments,#a_properties').toggle(parseInt($(this).val()) != 0);
-		$('#backward-period').toggle(parseInt($(this).val()) == 0);
+		var schemaId = parseInt($(this).val());
+
+		$('#a_location,#a_check_all_terminals,#a_options,#a_existingassignments,#a_properties').toggle(schemaId != 0);
+		$('#backward-period').toggle(!schemaId);
 
 		$('.promotion-table').hide();
 
-		$("#schema" + $(this).val()).show();
+		$("#schema" + schemaId).show();
 
 		var selected_option = $('option:selected', this);
 		var schema_title = selected_option.attr('title');
@@ -137,6 +160,61 @@ function CustomerAssignmentHelper(options) {
 			(promo_title && promo_title.length ? promo_title : '-') + '<hr>' + (schema_title && schema_title.length ? schema_title : '-'));
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
+
+		var html = '';
+
+		if (helper.promotionAttachments.hasOwnProperty(schemaId) && !$.isEmptyObject(helper.promotionAttachments[schemaId].promotions)) {
+			html += '<div class="promotion-attachments">' +
+				'<strong>' + $t("from promotion") + '</strong>' +
+				'<ul>';
+
+			$.each(helper.promotionAttachments[schemaId].promotions, function (index, attachment) {
+				html +=
+					'<li>' +
+						'<label>' +
+							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
+								' value="0">' +
+							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
+								' value="' + attachment.id + '"' +
+								(helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionAttachments[attachment.id] == attachment.id
+									|| !helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+							'<span>' +
+								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
+							'</span>' +
+						'</label>' +
+					'</li>';
+			});
+
+			html += '</ul></div>';
+		}
+
+		if (helper.promotionAttachments.hasOwnProperty(schemaId) && !$.isEmptyObject(helper.promotionAttachments[schemaId].promotionschemas)) {
+			html += '<div class="promotion-attachments">' +
+				'<strong>' + $t("from promotion schema") + '</strong>' +
+				'<ul>';
+
+			$.each(helper.promotionAttachments[schemaId].promotionschemas, function (index, attachment) {
+				html +=
+					'<li>' +
+						'<label>' +
+							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
+								' value="0">' +
+							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
+								' value="' + attachment.id + '"' +
+								(helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id
+									|| !helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+							'<span>' +
+								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
+							'</span>' +
+						'</label>' +
+					'</li>';
+			});
+
+			html += '</ul></div>';
+		}
+
+		$('#promotion-attachments').html(html);
+		$('#a_attachments').toggle($('#tariff-select').val() == -2 && typeof(promotionAttachments) != 'undefined' && html.length > 0);
 
 		$('#location-select').trigger('change');
 	}
