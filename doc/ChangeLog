@@ -322,6 +322,8 @@ version 28-git (????-??-??):
     controls if document is printed by default with all attachments [chilan]
   - improvement: 'phpui.default_taxlabel' (without default value) allows to preselect tax rate basing
     on label; it takes precedence before 'phpui.default_taxrate' [chilan]
+  - enhancement: added promotion and promotionschema attachments support; file can be selected
+    from new document form [chilan]
 
 version 27.0 (2021-08-20):
 
