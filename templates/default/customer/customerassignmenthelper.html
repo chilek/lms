@@ -634,11 +634,11 @@
 								<TD>
 									<SELECT SIZE="1" id="tax" name="{$variable_prefix}[taxid]" {tip text="Select Tax value" trigger="taxid"}>
 										{foreach $taxeslist as $tax}
-										<optionN value="{$tax.id}"
+										<option value="{$tax.id}"
 											{if $variables.taxid && $tax.id == $variables.taxid
 												|| (!$variables.taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
 													|| !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
-											>{$tax.label}</optionN>
+											>{$tax.label}</option>
 										{/foreach}
 									</SELECT>
 									{foreach $taxeslist as $tax}
