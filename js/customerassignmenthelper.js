@@ -176,8 +176,8 @@ function CustomerAssignmentHelper(options) {
 								' value="0">' +
 							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
 								' value="' + attachment.id + '"' +
-								(helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionAttachments[attachment.id] == attachment.id
-									|| !helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+								(helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
+									!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
 							'<span>' +
 								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
 							'</span>' +
@@ -201,8 +201,8 @@ function CustomerAssignmentHelper(options) {
 								' value="0">' +
 							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
 								' value="' + attachment.id + '"' +
-								(helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id
-									|| !helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+								(helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
+									!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
 							'<span>' +
 								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
 							'</span>' +
