@@ -324,6 +324,11 @@ version 28-git (????-??-??):
     on label; it takes precedence before 'phpui.default_taxrate' [chilan]
   - enhancement: added promotion and promotionschema attachments support; file can be selected
     from new document form [chilan]
+  - improvement: 'customercalls.utc_datetime' with 'false' as default value controls if date time
+    encoded in customer call file name is stored in UTC and thus should be converted to local time [chilan]
+  - improvement: 'customercalls.operator_number_pattern' without default value controls if source
+    or destination number is matched by this regular expression to determine if it's outgoing or incoming
+    call [chilan]
 
 version 27.0 (2021-08-20):
 
