@@ -184,6 +184,7 @@ $local_number_pattern = ConfigHelper::getConfig(
     $config_section . '.local_number_pattern',
     '^(?<prefix>48)?(?<number>[0-9]{9})$'
 );
+$utc_datetime_ = ConfigHelper::checkConfig($config_section . '.utc_datetime');
 
 if (!is_dir($customer_call_dir)) {
     die('Fatal error: customer call directory does not exist!' . PHP_EOL);
@@ -306,6 +307,10 @@ foreach ($dirs as $dir) {
             $dt = strtotime($m['datetime']);
         } else {
             $dt = mktime($m['hour'], $m['minute'], $m['second'], $m['month'], $m['day'], $m['year']);
+        }
+
+        if ($utc_datetime) {
+            $dt = strtotime(date('Y/m/d H:i:s', $dt) . ' UTC');
         }
 
         $duration = -1;
