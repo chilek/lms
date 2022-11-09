@@ -845,4 +845,9 @@ class Utils
             $format
         );
     }
+
+    public static function isPrivateNetwork($ip)
+    {
+        return preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.64\.|100\.68\.)/', $ip) > 0;
+    }
 }
