@@ -184,7 +184,8 @@ $local_number_pattern = ConfigHelper::getConfig(
     $config_section . '.local_number_pattern',
     '^(?<prefix>48)?(?<number>[0-9]{9})$'
 );
-$utc_datetime_ = ConfigHelper::checkConfig($config_section . '.utc_datetime');
+$operator_number_pattern = ConfigHelper::getConfig($config_section . '.operator_number_pattern');
+$utc_datetime = ConfigHelper::checkConfig($config_section . '.utc_datetime');
 
 if (!is_dir($customer_call_dir)) {
     die('Fatal error: customer call directory does not exist!' . PHP_EOL);
@@ -323,6 +324,11 @@ foreach ($dirs as $dir) {
         }
 
         $src = normalizePhoneNumber($m['src']);
+        $dst = normalizePhoneNumber($m['dst']);
+
+        $userid = null;
+        $outgoing = null;
+
         if (preg_match('/' . $local_number_pattern . '/', $src, $mn) && isset($mn['prefix'])) {
             $src_prefix = $mn['prefix'];
             $src_number = $mn['number'];
@@ -331,7 +337,6 @@ foreach ($dirs as $dir) {
             $src_number = $src;
         }
 
-        $dst = normalizePhoneNumber($m['dst']);
         if (preg_match('/' . $local_number_pattern . '/', $dst, $mn) && isset($mn['prefix'])) {
             $dst_prefix = $mn['prefix'];
             $dst_number = $mn['number'];
@@ -340,20 +345,34 @@ foreach ($dirs as $dir) {
             $dst_number = $dst;
         }
 
-        $userid = null;
-        $outgoing = null;
+        if (!empty($operator_number_pattern)) {
+            if (preg_match('/' . $opertor_number_pattern . '/', $src)) {
+                $outgoing = true;
+            } elseif (preg_match('/' . $operator_number_pattern . '/', $dst)) {
+                $outgoing = false;
+            }
+        }
+
         if (!empty($src_prefix) && isset($users[$src_prefix . $src_number])) {
             $userid = $users[$src_prefix . $src_number];
-            $outgoing = true;
+            if (!isset($outgoing)) {
+                $outgoing = true;
+            }
         } elseif (isset($users[$src_number])) {
             $userid = $users[$src_number];
-            $outgoing = true;
+            if (!isset($outgoing)) {
+                $outgoing = true;
+            }
         } elseif (!empty($dst_prefix) && isset($users[$dst_prefix . $dst_number])) {
             $userid = $users[$dst_prefix . $dst_number];
-            $outgoing = false;
+            if (!isset($outgoing)) {
+                $outgoing = false;
+            }
         } elseif (isset($users[$dst_number])) {
             $userid = $users[$dst_number];
-            $outgoing = false;
+            if (!isset($outgoing)) {
+                $outgoing = false;
+            }
         }
 
         if (!isset($outgoing)) {
