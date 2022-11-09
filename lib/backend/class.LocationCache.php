@@ -104,8 +104,9 @@ class LocationCache
                 if (isset($this->city_by_id[ $id ])) {
                     return $this->city_by_id[ $id ];
                 } else {
+                    //'SELECT lc.id, ' . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
                     $this->city_by_id = $this->DB->GetAllByKey(
-                        'SELECT lc.id, ' . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
+                        'SELECT lc.id, ' . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lc.ident') . ' AS terc_simc,
 							lc.cityid FROM location_cities lc
 						JOIN location_boroughs lb ON lb.id = lc.boroughid
 						JOIN location_districts ld ON ld.id = lb.districtid
@@ -154,8 +155,9 @@ class LocationCache
                 if (isset($this->city_by_ident[ $terc . '|' . $simc ])) {
                     return $this->city_by_ident[ $terc . '|' . $simc ];
                 } else {
+                    //'SELECT lc.id, ' . $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
                     $this->city_by_ident = $this->DB->GetAllByKey(
-                        'SELECT lc.id, ' . $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
+                        'SELECT lc.id, ' . $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', "'|'", 'lc.ident') . ' AS terc_simc,
 							lc.cityid FROM location_cities lc
 						JOIN location_boroughs lb ON lb.id = lc.boroughid
 						JOIN location_districts ld ON ld.id = lb.districtid
@@ -310,9 +312,10 @@ class LocationCache
                 $this->city_by_ident[ $v['terc_simc'] ] = $v;
             }
         } else {
+            //. $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type', "'|'", 'lc.ident')
             $this->city_by_ident = $this->DB->GetAllByKey(
                 'SELECT lc.id, '
-                    . $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type', "'|'", 'lc.ident')
+                    . $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', "'|'", 'lc.ident')
                     . ' AS terc_simc, lc.cityid FROM location_cities lc
 				JOIN location_boroughs lb ON lb.id = lc.boroughid
 				JOIN location_districts ld ON ld.id = lb.districtid
@@ -336,9 +339,10 @@ class LocationCache
                 $this->city_by_id[ $v['id'] ] = $v;
             }
         } else {
+            //. $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident')
             $this->city_by_id = $this->DB->GetAllByKey(
                 'SELECT lc.id, '
-                    . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident')
+                    . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lc.ident')
                     . ' AS terc_simc, lc.cityid FROM location_cities lc
 				JOIN location_boroughs lb ON lb.id = lc.boroughid
 				JOIN location_districts ld ON ld.id = lb.districtid

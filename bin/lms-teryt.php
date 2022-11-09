@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -77,7 +77,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
     exit(0);
@@ -86,7 +86,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini alternate config file (default: /etc/lms/lms.ini);
 -h, --help                         print this help and exit;
@@ -110,7 +110,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2022 LMS Developers
 
 EOF;
 }
@@ -156,7 +156,7 @@ try {
     $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
     trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
+    // can't work without database
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
@@ -197,6 +197,43 @@ function parse_teryt_building_row($row)
     } else {
         return null;
     }
+}
+
+function dbf_to_utf8($src)
+{
+    return str_replace(
+        array(
+            "\xC2\xB9",
+            "\xC3\xAA",
+            "\xC4\x99",
+            "\xC2\xB3",
+            "\xC3\xB1",
+            "\xC3\xB3",
+            "\xC2\x9C",
+            "\xC2\x9F",
+            "\xC2\xBF",
+            "\xC2\x8C",
+            "\xC2\xA3",
+            "\xC2\x8F",
+            "\xC2\xAF",
+        ),
+        array(
+            'ą',
+            'ę',
+            'ę',
+            'ł',
+            'ń',
+            'ó',
+            'ś',
+            'ź',
+            'ż',
+            'Ś',
+            'Ł',
+            'Ź',
+            'Ż',
+        ),
+        $src
+    );
 }
 
 /*!
@@ -365,8 +402,8 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2021.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2021.zip');
+define('BUILDING_BASE_ZIP_NAME', 'PRG-punkty_adresowe_shp.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://integracja.gugik.gov.pl/PRG/pobierz.php?adresy_zbiorcze_shp');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -621,15 +658,11 @@ if (isset($options['fetch'])) {
     if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME) === true) {
         $numFiles = $zip->numFiles;
 
-        if ($numFiles == 1) {
-            $building_base_name = $zip->getNameIndex(0);
-            $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
-        } else if ($numFiles > 1) {
-            $fh = fopen($building_base_name, 'w');
-            for ($i = 0; $i < $numFiles; ++$i) {
-                fwrite($fh, $zip->getFromIndex($i));
+        for ($i = 0; $i < $numFiles; ++$i) {
+            $filename = $zip->getNameIndex($i);
+            if (strpos($filename, 'PRG_PunktyAdresowe_POLSKA') === 0) {
+                $zip->extractTo($teryt_dir, $filename);
             }
-            fclose($fh);
         }
 
         unset($numFiles);
@@ -1333,120 +1366,147 @@ if (isset($options['buildings'])) {
         echo 'Parsing file...' . PHP_EOL;
     }
 
-    while (!feof($fh)) {
-        $lines = preg_split('/\r?\n/', fread($fh, 4096));
-        $lines = str_replace("'", '', $lines);
+    $proj4 = new \proj4php\Proj4php();
 
-        // try to join previous line
-        if (substr_count($lines[0], ';') == 11 && substr_count($previous_line, ';') == 11) {
-            array_unshift($lines, $previous_line);
-        } else {
-            $lines[0] = $previous_line . $lines[0];
+    $projEPSG2180 = new \proj4php\Proj('EPSG:2180', $proj4);
+    $projWGS84 = new \proj4php\Proj('EPSG:4326', $proj4);
+
+    $Shapefile = new \Shapefile\ShapefileReader(
+        $teryt_dir . DIRECTORY_SEPARATOR . 'PRG_PunktyAdresowe_POLSKA.shp',
+        array(
+            \Shapefile\Shapefile::OPTION_DBF_IGNORED_FIELDS => array(
+                'SIMC_NAZWA',
+                'ULIC_NAZWA',
+                'LAYER',
+                'PATH',
+            ),
+        )
+    );
+
+    $totalRecords = $Shapefile->getTotRecords();
+    $steps = ceil($totalRecords / 10000);
+    $step = 0;
+    $i = 0;
+
+    while ($Geometry = $Shapefile->fetchRecord()) {
+        if (!$quiet && !($i % 10000)) {
+            printf("%.2f%%\r", ($step * 100) / $steps);
         }
+        if (!($i % 10000) || $i >= $totalRecords) {
+            $step++;
 
-        end($lines);
-        $k = key($lines);
-        $previous_line = $lines[ $k ];
-        unset($lines[ $k ]);
-
-        // insert loaded data to database
-        foreach ($lines as $line) {
-            $l = str_getcsv($line, ';');
-            if (empty($l)) {
-                fwrite($stderr, 'error: can\'t parse row '. $line . PHP_EOL);
-                continue;
+            if ($to_insert) {
+                $DB->Execute(
+                    'INSERT INTO location_buildings
+                    (city_id, street_id, building_num, zip, latitude, longitude, updated)
+                    VALUES ' . implode(',', $to_insert)
+                );
+                $to_insert = array();
             }
 
-            $v = parse_teryt_building_row($l);
-
-            if (empty($v)) {
-                fwrite($stderr, 'error: can\'t parse row '. $line . PHP_EOL);
-                continue;
+            if ($to_update) {
+                $DB->Execute('UPDATE location_buildings SET updated = 1 WHERE id in (' . implode(',', $to_update) . ')');
+                $to_update = array();
             }
-
-            if ($v['woj'] == 'ID' || $v['woj'] == 'wojewodztwo') {
-                continue;
-            }
-
-            if (isset($state_list)) {
-                $state_ident = $state_name_to_ident[mb_strtoupper($v['woj'])];
-
-                if (!isset($state_list[intval($state_ident)])) {
-                    continue;
-                }
-            }
-
-            if (!preg_match('#^[0-9a-zA-Z-, /łŁ]*$#', $v['building_num'])) {
-                fwrite($stderr, 'warning: house number contains incorrect characters in row ' . $line . PHP_EOL);
-                continue;
-            }
-
-            $terc = $v['terc'];
-            $simc = $v['simc'];
-            $ulic = $v['ulic'];
-
-            $city = $location_cache->getCityByIdent($terc, $simc);
-
-            if (!$city) {
-                fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database in row ' . $line . PHP_EOL);
-                continue;
-            }
-
-            if ($ulic == '' || $city == '99999') {
-                $street = array('id' => '0');
-            } else {
-                $street = $location_cache->getStreetByIdent($city['id'], $ulic);
-                if (empty($street)) {
-                    fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database in row ' . $line . PHP_EOL);
-                    continue;
-                }
-            }
-            $building = $location_cache->buildingExists($city['id'], $street['id'], $v['building_num']);
-
-            if ($building) {
-                $fields_to_update = array();
-
-                if ($building['latitude'] != $v['latitude']) {
-                    $fields_to_update[] = 'latitude = ' . ($v['latitude'] ? $v['latitude'] : 'null');
-                }
-
-                if ($building['longitude'] != $v['longitude']) {
-                    $fields_to_update[] = 'longitude = ' . ($v['longitude'] ? $v['longitude'] : 'null');
-                }
-
-                if ($fields_to_update) {
-                    $DB->Execute('UPDATE location_buildings SET updated = 1, '.implode(',', $fields_to_update).' WHERE id = '.$building['id']);
-                } else {
-                    $to_update[] = $building['id'];
-                }
-            } else {
-                $data = array();
-                $data[] = $city['id'];
-                $data[] = $street['id']      ? $street['id']              : 'null';
-                $data[] = $v['building_num'] ? "'".$v['building_num']."'" : 'null';
-                $data[] = $v['latitude']     ? $v['latitude']             : 'null';
-                $data[] = $v['longitude']    ? $v['longitude']            : 'null';
-                $data[] = 1;
-
-                $to_insert[] = '('.implode(',', $data).')';
-            }
-        }
-
-        if ($to_insert) {
-            $DB->Execute('INSERT INTO location_buildings (city_id,street_id,building_num,latitude,longitude,updated) VALUES '.implode(',', $to_insert));
-            $to_insert = array();
-        }
-
-        if ($to_update) {
-            $DB->Execute('UPDATE location_buildings SET updated = 1 WHERE id in ('.implode(',', $to_update).')');
-            $to_update = array();
-        }
-
-        // location building database creation progress
-        if (!$quiet) {
-            printf("%.2f%%\r", ($i * 100) / $steps);
         }
         $i++;
+
+        if ($Geometry->isDeleted()) {
+            continue;
+        }
+
+        $address = $Geometry->getDataArray();
+
+        if (isset($state_list) && !isset($state_list[intval(substr($address['TERYT'], 0, 2))])) {
+            continue;
+        }
+
+        $coords = $Geometry->getArray();
+        $pointSrc = new \proj4php\Point($coords['x'], $coords['y'], $projEPSG2180);
+        $pointDest = $proj4->transform($projWGS84, $pointSrc);
+        list ($longitude, $latitude, ) = $pointDest->toArray();
+        $coords = compact('longitude', 'latitude');
+
+        $v = array_merge($address, $coords);
+
+        $v['NUMER'] = dbf_to_utf8($v['NUMER']);
+        if (!preg_match('#^[0-9a-zA-Z-, /łŁ]*$#', $v['NUMER'])) {
+            fwrite($stderr, 'warning: house number contains incorrect characters: ' . $v['NUMER'] . PHP_EOL);
+            continue;
+        }
+
+        $terc = $v['TERYT'];
+        $simc = $v['SIMC_ID'];
+        $ulic = $v['ULIC_ID'];
+
+        $city = $location_cache->getCityByIdent($terc, $simc);
+
+        if (!$city) {
+            fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database in row!' . PHP_EOL);
+            continue;
+        }
+
+        if ($ulic == '' || $city == '99999') {
+            $street = array('id' => '0');
+        } else {
+            $street = $location_cache->getStreetByIdent($city['id'], $ulic);
+            if (empty($street)) {
+                fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database in row!' . PHP_EOL);
+                continue;
+            }
+        }
+        $building = $location_cache->buildingExists($city['id'], $street['id'], $v['NUMER']);
+
+        if ($building) {
+            $fields_to_update = array();
+
+            if ($building['zip'] != $v['PNA']) {
+                $fields_to_update[] = 'zip = ' . ($v['PNA'] ? $DB->Escape($v['PNA']) : 'null');
+            }
+
+            if ($building['latitude'] != $v['latitude']) {
+                $fields_to_update[] = 'latitude = ' . ($v['latitude'] ?: 'null');
+            }
+
+            if ($building['longitude'] != $v['longitude']) {
+                $fields_to_update[] = 'longitude = ' . ($v['longitude'] ?: 'null');
+            }
+
+            if (!empty($fields_to_update)) {
+                $DB->Execute('UPDATE location_buildings SET updated = 1, ' . implode(',', $fields_to_update) . ' WHERE id = ' . $building['id']);
+            } else {
+                $to_update[] = $building['id'];
+            }
+        } else {
+            $data = array();
+            $data[] = $city['id'];
+            $data[] = $street['id'] ?: 'null';
+            $data[] = $v['building_num'] ? $DB->Escape($v['NUMER']) : 'null';
+            $data[] = $v['PNA'] ? $DB->Escape($v['PNA']) : 'null';
+            $data[] = $v['latitude'] ?: 'null';
+            $data[] = $v['longitude'] ?: 'null';
+            $data[] = 1;
+
+            $to_insert[] = '(' . implode(',', $data) . ')';
+        }
+
+        if (!(($i - 1) % 10000) || ($i - 1) >= $totalRecords) {
+            $step++;
+
+            if ($to_insert) {
+                $DB->Execute(
+                    'INSERT INTO location_buildings
+                    (city_id, street_id, building_num, zip, latitude, longitude, updated)
+                    VALUES ' . implode(',', $to_insert)
+                );
+                $to_insert = array();
+            }
+
+            if ($to_update) {
+                $DB->Execute('UPDATE location_buildings SET updated = 1 WHERE id in (' . implode(',', $to_update) . ')');
+                $to_update = array();
+            }
+        }
     }
 
     echo "\r";

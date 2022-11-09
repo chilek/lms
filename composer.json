@@ -145,7 +145,9 @@
         "rzani/zbar-qrdecoder": "^2",
         "dragonbe/vies": "*",
         "ezyang/htmlpurifier": "^4",
-        "phpoffice/phpspreadsheet": "*"
+        "phpoffice/phpspreadsheet": "*",
+        "gasparesganga/php-shapefile": "^3.4",
+        "proj4php/proj4php": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
