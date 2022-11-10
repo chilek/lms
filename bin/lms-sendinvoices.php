@@ -43,7 +43,7 @@ $parameters = array(
     'backup' => 'b',
     'archive' => 'a',
     'output-directory:' => 'o:',
-    'single-file' => null,
+    'output-file:' => null,
     'no-attachments' => 'n',
     'customerid:' => null,
     'division:' => null,
@@ -113,8 +113,8 @@ lms-sendinvoices.php
 -b, --backup                    make financial document file backup
 -a, --archive                   archive financial documents in documents directory
 -o, --output-directory=/path    output directory for document backup
-    --single-file               all invoices, credit notes, pro formas, debit notes and other documents
-                                are merge to single file
+    --output-file=/file/name    all invoices, credit notes, pro formas, debit notes and other documents
+                                are merged to single file with specified name
 -n, --no-attachments            dont attach documents
     --customerid=<id>           limit invoices to specifed customer
     --division=<shortname>
@@ -144,8 +144,10 @@ if ($backup) {
     if (isset($options['output-directory'])) {
         $output_dir = $options['output-directory'];
         if (!is_dir($output_dir)) {
-            die("Output directory does not exist!" . PHP_EOL);
+            die('Output directory does not exist!' . PHP_EOL);
         }
+    } elseif (isset($options['output-file'])) {
+        $output_file = $options['output-file'];
     } else {
         $output_dir = getcwd();
     }
@@ -281,7 +283,6 @@ if (!$no_attachments) {
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
 
-$single_file = isset($options['single-file']);
 $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true)));
 
@@ -493,8 +494,8 @@ $docs = $DB->GetAll($query, $args);
 
 if (!empty($docs)) {
     if ($backup) {
-        $single_file = $single_file && $invoice_type == 'pdf' && $document_type == 'pdf';
-        if ($single_file) {
+        $output_file = isset($output_file) && $invoice_type == 'pdf' && $document_type == 'pdf' ? $output_file : null;
+        if (isset($output_file)) {
             $fpdi = new LMSFpdiBackend();
             $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
         }
@@ -532,7 +533,7 @@ if (!empty($docs)) {
             }
 
             if (!$test) {
-                if ($single_file) {
+                if (isset($output_file)) {
                     $fpdi->AppendPage($document['data']);
                 } else {
                     $fh = fopen($output_dir . DIRECTORY_SEPARATOR . $document['filename'], 'w');
@@ -542,7 +543,7 @@ if (!empty($docs)) {
 
                 if (!empty($files)) {
                     foreach ($files as $file) {
-                        if ($single_file) {
+                        if (isset($output_file)) {
                             $fpdi->AppendPage($file['data']);
                         } else {
                             $fh = fopen($output_dir . DIRECTORY_SEPARATOR . $file['filename'], 'w');
@@ -554,8 +555,8 @@ if (!empty($docs)) {
             }
         }
 
-        if (!$test && $single_file) {
-            $fpdi->WriteToFile($output_dir . DIRECTORY_SEPARATOR . 'output.pdf');
+        if (!$test && isset($output_file)) {
+            $fpdi->WriteToFile($output_file);
         }
     } elseif ($archive) {
         foreach ($docs as $doc) {
