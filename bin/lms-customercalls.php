@@ -346,7 +346,7 @@ foreach ($dirs as $dir) {
         }
 
         if (!empty($operator_number_pattern)) {
-            if (preg_match('/' . $opertor_number_pattern . '/', $src)) {
+            if (preg_match('/' . $operator_number_pattern . '/', $src)) {
                 $outgoing = true;
             } elseif (preg_match('/' . $operator_number_pattern . '/', $dst)) {
                 $outgoing = false;
