@@ -2437,6 +2437,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             if (empty($test)) {
                 $files = array();
                 foreach ($document['attachments'] as $attachment) {
+                    $extension = '';
+
                     if (!empty($attachment['type'])) {
                         $filename = str_replace(
                             array(
@@ -2454,7 +2456,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             $attachment_filename
                         );
 
-                        $extension = '';
                         if (!preg_match('/\.[[:alnum:]]+$/i', $filename)) {
                             if (preg_match('/(?<extension>\.[[:alnum:]]+)$/i', $attachment['filename'], $m)) {
                                 $extension = $m['extension'];

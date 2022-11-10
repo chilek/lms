@@ -523,6 +523,8 @@ if (!empty($docs)) {
                             continue;
                         }
                         foreach ($referenced_document['attachments'] as $attachment) {
+                            $extension = '';
+
                             if (!empty($attachment['type'])) {
                                 $filename = str_replace(
                                     array(
@@ -540,7 +542,6 @@ if (!empty($docs)) {
                                     $document_attachment_filename
                                 );
 
-                                $extension = '';
                                 if (!preg_match('/\.[[:alnum:]]+$/i', $filename)) {
                                     if (preg_match('/(?<extension>\.[[:alnum:]]+)$/i', $attachment['filename'], $m)) {
                                         $extension = $m['extension'];
