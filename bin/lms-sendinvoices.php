@@ -283,6 +283,8 @@ if (!$no_attachments) {
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
 
+$document_attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
+
 $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 $document_type = strtolower(ConfigHelper::getConfig('documents.type', ConfigHelper::getConfig('phpui.document_type', '', true)));
 
@@ -521,9 +523,38 @@ if (!empty($docs)) {
                             continue;
                         }
                         foreach ($referenced_document['attachments'] as $attachment) {
+                            if (!empty($attachment['type'])) {
+                                $filename = str_replace(
+                                    array(
+                                        '%filename',
+                                        '%type',
+                                        '%document',
+                                        '%docid'
+                                    ),
+                                    array(
+                                        $attachment['filename'],
+                                        $DOCTYPES[$referenced_document['type']],
+                                        $referenced_document['fullnumber'],
+                                        $docid,
+                                    ),
+                                    $document_attachment_filename
+                                );
+
+                                $extension = '';
+                                if (!preg_match('/\.[[:alnum:]]+$/i', $filename)) {
+                                    if (preg_match('/(?<extension>\.[[:alnum:]]+)$/i', $attachment['filename'], $m)) {
+                                        $extension = $m['extension'];
+                                    } elseif (preg_match('#/(?<extension>[[:alnum:]]+)$#i', $attachment['contenttype'], $m)) {
+                                        $extension = '.' . $m['extension'];
+                                    }
+                                }
+                            } else {
+                                $filename = $attachment['filename'];
+                            }
+
                             $files[] = array(
                                 'content_type' => $attachment['contenttype'],
-                                'filename' => $attachment['filename'],
+                                'filename' => preg_replace('/[^[:alnum:]_\.]/i', '_', $filename) . $extension,
                                 'data' => $attachment['contents'],
                             );
                         }

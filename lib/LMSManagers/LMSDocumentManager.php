@@ -2360,6 +2360,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $from = "$sender_name <$from>";
         }
 
+        $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
+
         foreach ($docs as $doc) {
             $document = $this->GetDocumentFullContents($doc['id']);
             if (empty($document)) {
@@ -2435,9 +2437,38 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             if (empty($test)) {
                 $files = array();
                 foreach ($document['attachments'] as $attachment) {
+                    if (!empty($attachment['type'])) {
+                        $filename = str_replace(
+                            array(
+                                '%filename',
+                                '%type',
+                                '%document',
+                                '%docid'
+                            ),
+                            array(
+                                $attachment['filename'],
+                                $DOCTYPES[$document['type']],
+                                $document['fullnumber'],
+                                $doc['id'],
+                            ),
+                            $attachment_filename
+                        );
+
+                        $extension = '';
+                        if (!preg_match('/\.[[:alnum:]]+$/i', $filename)) {
+                            if (preg_match('/(?<extension>\.[[:alnum:]]+)$/i', $attachment['filename'], $m)) {
+                                $extension = $m['extension'];
+                            } elseif (preg_match('#/(?<extension>[[:alnum:]]+)$#i', $attachment['contenttype'], $m)) {
+                                $extension = '.' . $m['extension'];
+                            }
+                        }
+                    } else {
+                        $filename = $attachment['filename'];
+                    }
+
                     $files[] = array(
                         'content_type' => $attachment['contenttype'],
-                        'filename' => $attachment['filename'],
+                        'filename' => preg_replace('/[^[:alnum:]_\.]/i', '_', $filename) . $extension,
                         'data' => $attachment['contents'],
                     );
                 }
