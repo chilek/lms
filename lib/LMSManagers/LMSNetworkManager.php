@@ -451,18 +451,47 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         $cnetaddr = ip_long($network);
         $cbroadcast = ip_long(getbraddr($network, $mask));
 
-        return $this->db->GetOne('SELECT 1 FROM networks
-			WHERE id != ? AND hostid = ? AND (
-				address = ? OR broadcast(address, inet_aton(mask)) = ?
-				OR (address > ? AND broadcast(address, inet_aton(mask)) < ?) 
-				OR (address < ? AND broadcast(address, inet_aton(mask)) > ?) 
-			)', array(
+        if (Utils::isPrivateAddress($network)) {
+            return $this->db->GetOne(
+                'SELECT 1 FROM networks
+                WHERE id <> ?
+                    AND hostid = ?
+                    AND (
+                        address = ? OR broadcast(address, inet_aton(mask)) = ?
+                            OR (address > ? AND broadcast(address, inet_aton(mask)) < ?)
+                            OR (address < ? AND broadcast(address, inet_aton(mask)) > ?)
+                    )',
+                array(
                     intval($ignorenet),
                     intval($hostid),
-                    $cnetaddr, $cbroadcast,
-                    $cnetaddr, $cbroadcast,
-                    $cnetaddr, $cbroadcast
-        ));
+                    $cnetaddr,
+                    $cbroadcast,
+                    $cnetaddr,
+                    $cbroadcast,
+                    $cnetaddr,
+                    $cbroadcast,
+                )
+            );
+        } else {
+            return $this->db->GetOne(
+                'SELECT 1 FROM networks
+                WHERE id <> ?
+                    AND (
+                        address = ? OR broadcast(address, inet_aton(mask)) = ?
+                            OR (address > ? AND broadcast(address, inet_aton(mask)) < ?)
+                            OR (address < ? AND broadcast(address, inet_aton(mask)) > ?)
+                    )',
+                array(
+                    intval($ignorenet),
+                    $cnetaddr,
+                    $cbroadcast,
+                    $cnetaddr,
+                    $cbroadcast,
+                    $cnetaddr,
+                    $cbroadcast,
+                )
+            );
+        }
     }
 
     public function NetworkShift($netid, $network = '0.0.0.0', $mask = '0.0.0.0', $shift = 0)
