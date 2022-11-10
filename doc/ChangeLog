@@ -330,6 +330,8 @@ version 28-git (????-??-??):
     or destination number is matched by this regular expression to determine if it's outgoing or incoming
     call [chilan]
   - improvement: network forms: public network overlaps generate warning instead error [chilan]
+  - enhancement: 'phpui.zipcode_provider' supports multi provider specification (providers are separated
+    by white characters or commas); added 'prg' provider support [chilan]
 
 version 27.0 (2021-08-20):
 
