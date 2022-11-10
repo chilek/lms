@@ -329,6 +329,7 @@ version 28-git (????-??-??):
   - improvement: 'customercalls.operator_number_pattern' without default value controls if source
     or destination number is matched by this regular expression to determine if it's outgoing or incoming
     call [chilan]
+  - improvement: network forms: public network overlaps generate warning instead error [chilan]
 
 version 27.0 (2021-08-20):
 
