@@ -36,7 +36,7 @@
 		helpdeskWysiwygEditor: {if ConfigHelper::getConfig('rt.default_editor') == 'wysiwyg'}true{else}false{/if},
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
 		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
-        zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
+        zipCodeBackend: JSON.parse('{json_encode(preg_split("/([\s]+|[\s]*,[\s]*)/", strtolower(ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')), -1, PREG_SPLIT_NO_EMPTY))}'),
         multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom', true)}true{else}false{/if},
 		multiSelectMaxVisible: '{intval(ConfigHelper::getConfig('phpui.multiselect_max_visible', 5))}',
         eventTimeStep: {ConfigHelper::getConfig('timetable.event_time_step', ConfigHelper::getConfig('phpui.event_time_step', 30))},

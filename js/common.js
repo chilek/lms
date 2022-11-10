@@ -906,6 +906,8 @@ function osm_get_zip_code(search, on_success) {
 		if (typeof(on_success) == 'function') {
 			if (data.length && data[0].hasOwnProperty('address') && data[0].address.hasOwnProperty('postcode')) {
 				on_success(data[0].address.postcode);
+			} else {
+				on_success('');
 			}
 		}
 	});
@@ -913,7 +915,18 @@ function osm_get_zip_code(search, on_success) {
 
 function pna_get_zip_code(search, on_success) {
 	$.ajax({
-		url: '?m=zipcode&api=1',
+		url: '?m=zipcode&api=1&provider=pna',
+		data: search
+	}).done(function(data) {
+		if (typeof(on_success) == 'function') {
+			on_success(data);
+		}
+	});
+}
+
+function prg_get_zip_code(search, on_success) {
+	$.ajax({
+		url: '?m=zipcode&api=1&provider=prg',
 		data: search
 	}).done(function(data) {
 		if (typeof(on_success) == 'function') {
