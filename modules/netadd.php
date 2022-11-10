@@ -84,7 +84,11 @@ if (isset($_POST['netadd'])) {
             $netadd['address'] = getnetaddr($netadd['address'], prefix2mask($netadd['prefix']));
         } else {
             if ($LMS->NetworkOverlaps($netadd['address'], prefix2mask($netadd['prefix']), $netadd['hostid'])) {
-                $error['address'] = trans('Specified IP address overlaps with other network!');
+                if (Utils::isPrivateAddress($netadd['address'])) {
+                    $error['address'] = trans('Specified IP address overlaps with other network!');
+                } elseif (!isset($warnings['netadd-address-'])) {
+                    $warning['netadd[address]'] = trans('Specified IP address overlaps with other network!');
+                }
             }
         }
     }
@@ -174,11 +178,12 @@ if (isset($_POST['netadd'])) {
         }
     }
 
-    if (!$error) {
+    if (!$error && !$warning) {
         $SESSION->redirect('?m=netinfo&id='.$LMS->NetworkAdd($netadd));
     }
 
     $SMARTY->assign('error', $error);
+    $SMARTY->assign('warning', $warning);
     $SMARTY->assign('netadd', $netadd);
 } elseif (isset($_GET['ownerid'])) {
     if ($LMS->CustomerExists($_GET['ownerid']) == true) {
