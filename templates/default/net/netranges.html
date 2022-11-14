@@ -1,0 +1,313 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+
+<h1>{$layout.pagetitle}</h1>
+
+<style>
+
+    div.lms-ui-filter-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    div.lms-ui-filter-container div.lms-ui-filter-definition {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        white-space: normal;
+    }
+
+    div.lms-ui-filter-container div.lms-ui-filter-definition > .filter-item {
+        margin: 0.2em;
+        display: inline-flex;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    div.lms-ui-filter-container div.lms-ui-filter-definition > .filter-item > :not(:last-child) {
+        margin-right: 0.5em;
+    }
+
+    div.lms-ui-filter-container div.lms-ui-filter-definition .filter-button {
+        cursor: pointer;
+    }
+
+    div.lms-ui-filter-container div.lms-ui-filter-definition .filter-button:not(:last-child) {
+        margin-left: 0.5em;
+    }
+
+</style>
+
+<form name="netranges" id="netranges" method="POST">
+    <input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox lms-ui-background-cycle">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+    </colgroup>
+    <thead>
+        <tr>
+            <td colspan="2">
+                <div class="lms-ui-filter-container">
+                    <div class="lms-ui-filter-definition">
+                        {icon name="filter"}
+                        <label class="filter-item">
+                            <span>{trans("State")}</span>
+                            <select name="location_stateid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                data-placeholder="{trans("— none —")}"
+                                data-options='{ "allow_single_deselect": true }'>
+                                <option value=""></option>
+                                {foreach $boroughs as $state}
+                                    <option value="{$state.id}"{if $state.id == $location_stateid} selected{/if}
+                                        >{$state.label|escape}</option>
+                                {/foreach}
+                            </select>
+                        </label>
+                        <label class="filter-item"{if empty($location_stateid)} style="display: none;"{/if}>
+                            <span>{trans("District")}</span>
+                            <select name="location_districtid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                data-placeholder="{trans("— none —")}"
+                                data-options='{ "allow_single_deselect": true }'>
+                                <option value=""></option>
+                                {if !empty($location_stateid)}
+                                    {foreach $boroughs["id-"|cat:$location_stateid].districts as $district}
+                                        <option value="{$district.id}"{if $district.id == $location_districtid} selected{/if}
+                                            >{$district.label|escape}</option>
+                                    {/foreach}
+                                {/if}
+                            </select>
+                        </label>
+                        <label class="filter-item"{if empty($location_districtid)} style="display: none;"{/if}>
+                            <span>{trans("Commune")}</span>
+                            <select name="location_boroughid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                data-placeholder="{trans("— none —")}"
+                                data-options='{ "allow_single_deselect": true }'>
+                                <option value=""></option>
+                                {if !empty($location_districtid)}
+                                    {foreach $boroughs["id-"|cat:$location_stateid].districts["id-"|cat:$location_districtid].boroughs as $borough}
+                                        <option value="{$borough.id}"{if $borough.id == $location_boroughid} selected{/if}
+                                            >{$borough.label|escape}</option>
+                                    {/foreach}
+                                {/if}
+                            </select>
+                        </label>
+                        <label class="filter-item"{if empty($location_boroughid)} style="display: none;"{/if}>
+                            <span>{trans("City")}</span>
+                            <select name="location_cityid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                data-placeholder="{trans("— none —")}"
+                                data-options='{ "allow_single_deselect": true }'>
+                                <option value=""></option>
+                                {if !empty($location_boroughid)}
+                                    {foreach $cities as $city}
+                                        <option value="{$city.id}"{if $city.id == $location_cityid} selected{/if}
+                                            >{$city.label|escape}</option>
+                                    {/foreach}
+                                {/if}
+                            </select>
+                        </label>
+                        <label class="filter-item"{if empty($location_cityid)} style="display: none;"{/if}>
+                            <span>{trans("Street")}</span>
+                            <select name="location_streetid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                data-placeholder="{trans("— none —")}"
+                                data-options='{ "allow_single_deselect": true }'>
+                                <option value=""></option>
+                                {if !empty($location_cityid)}
+                                    {foreach $streets as $street}
+                                        <option value="{$street.id}"{if $street.id == $location_streetid} selected{/if}
+                                            >{$street.label|escape}</option>
+                                    {/foreach}
+                                {/if}
+                            </select>
+                        </label>
+                        <label class="filter-item"{if empty($location_cityid) || !empty($streets) && empty($location_streetid)} style="display: none;"{/if}>
+                            <span>{trans("Numbers")}</span>
+                            <select name="location_number_parity" form="netranges" class="filter-element">
+                                <option value="">{trans("— any —")}</option>
+                                <option value="odd"{if $location_number_parity == 'odd'} selected{/if}>{trans("odd")}</option>
+                                <option value="even"{if $location_number_parity == 'even'} selected{/if}>{trans("even")}</option>
+                            </select>
+                        </label>
+                        {icon name="clear" class="filter-button" id="clear-filter"}
+                        {icon name="next" class="filter-button" id="apply-filter"}
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {if $pagination->getTotal() != 0}
+            <tr>
+                <td class="lms-ui-pagination" colspan="2">
+                    {include file="pagination.html"}
+                </td>
+            </tr>
+        {/if}
+        <tr>
+            <td>
+                <strong>{trans("Location")}</strong>
+                <br>
+                <strong>{trans("Territory unit")}</strong>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $buildings as $building}
+            <tr class="highlight">
+                <td>
+                    {$building.zip} {$building.city|escape},
+                    {if strlen($building.rstreet)}
+                        {$building.rstreet|escape}
+                    {/if}
+                    {$building.building_num|escape}
+                    <br>
+                    <span class="blend">
+                        ({$building.state|escape} / {$building.district|escape} / {$_BOROUGHTYPES[$building.boroughtype]} {$building.borough|escape})
+                    </span>
+                </td>
+                <td>
+                </td>
+            </tr>
+        {foreachelse}
+            <tr>
+                <td colspan="2" class="empty-table">
+                    {trans("No such buildings matching search criteria or list is empty.")}
+                </td>
+            </tr>
+        {/foreach}
+    </tbody>
+    <tfoot>
+        {if $pagination->getTotal() != 0}
+            <tr>
+                <td class="lms-ui-pagination" colspan="2">
+                    {include file="pagination.html"}
+                </td>
+            </tr>
+        {/if}
+    </tfoot>
+</table>
+
+<script>
+
+    $(function() {
+        var boroughs = JSON.parse('{json_encode($boroughs, JSON_FORCE_OBJECT)}');
+
+        $('.filter-element').change(function() {
+            var filterElements = $('.filter-element').filter('select');
+            var elem;
+            if ($(this).val() == '') {
+                for (var i = 0; i < filterElements.length; i++) {
+                    if ($(filterElements.get(i)).is($(this))) {
+                        break;
+                    }
+                }
+                for (var j = i + 1; j < filterElements.length; j++) {
+                    elem = $(filterElements.get(j));
+                    elem.html('<option value="">{trans("— none —")}</option>');
+                    elem.val('');
+                    elem.closest('.filter-item').hide();
+                    if (elem.is('.lms-ui-advanced-select')) {
+                        updateAdvancedSelects(elem);
+                    }
+                }
+            } else {
+                for (var i = 0; i < filterElements.length; i++) {
+                    if ($(filterElements.get(i)).is($(this))) {
+                        break;
+                    }
+                }
+                if (i < filterElements.length - 1) {
+                    elem = $(filterElements.get(i + 1));
+                    var elemName = elem.attr('name');
+                    var html ='<option value="">{trans("— none —")}</option>';
+                    var options = [];
+                    switch ($(this).attr('name')) {
+                        case 'location_stateid':
+                            options = boroughs["id-" + $(this).val()].districts;
+                            break;
+                        case 'location_districtid':
+                            options = boroughs["id-" + $('[name="location_stateid"]').val()].districts["id-" + $(this).val()].boroughs;
+                            break;
+                        case 'location_boroughid':
+                            $.ajax({
+                                method: "GET",
+                                dataType: "json",
+                                data: {
+                                    api: 1,
+                                    boroughid: $(this).val()
+                                },
+                                success: function(options) {
+                                    $.each(options, function(id, option) {
+                                        html += '<option value="' + option.id + '">' + escapeHtml(option.label) + '</option>';
+                                    });
+                                    elem.html(html);
+                                    updateAdvancedSelects(elem);
+                                    elem.closest('.filter-item').show();
+                                }
+                            });
+                            break;
+                        case 'location_cityid':
+                            $.ajax({
+                                method: "GET",
+                                dataType: "json",
+                                data: {
+                                    api: 1,
+                                    cityid: $(this).val()
+                                },
+                                success: function(options) {
+                                    $.each(options, function(id, option) {
+                                        html += '<option value="' + option.id + '">' + escapeHtml(option.rlabel) + '</option>';
+                                    });
+                                    elem.html(html);
+                                    updateAdvancedSelects(elem);
+                                    elem.closest('.filter-item').show();
+                                    elem.closest('.filter-item').next().toggle(!options.length || elem.val() != '').find('.filter-element').val('');
+                                }
+                            });
+                            break;
+                        case 'location_streetid':
+                            elem.closest('.filter-item').toggle($(this).find('option').length <= 1 || $(this).val() != '');
+                            break;
+                    }
+                    if (["location_stateid", "location_districtid", "location_boroughid"].indexOf(elemName) != -1) {
+                        $.each(options, function (id, option) {
+                            html += '<option value="' + option.id + '">' + escapeHtml(option.label) + '</option>';
+                        });
+                        elem.html(html);
+                        updateAdvancedSelects(elem);
+                        elem.closest('.filter-item').show();
+                    }
+                    for (var j = i + 2; j < filterElements.length; j++) {
+                        var elem2 = $(filterElements.get(j));
+                        if (elem2.attr('name') != 'location_number_parity') {
+                            elem2.html('<option value=""></option>');
+                            elem2.val('');
+                            elem2.closest('.filter-item').hide();
+                            if (elem2.is('.lms-ui-advanced-select')) {
+                                updateAdvancedSelects(elem);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        $('#clear-filter').click(function() {
+            $('.filter-element').each(function() {
+                $(this).val('');
+            });
+            $('#netranges').submit();
+        });
+
+        $('#apply-filter').click(function() {
+            $('#netranges').submit();
+        });
+    });
+
+</script>
+{/block}
