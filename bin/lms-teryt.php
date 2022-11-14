@@ -460,7 +460,7 @@ if (empty($teryt_dir)) {
     die;
 }
 
-$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2021.csv';
+define('BUILDING_BASE_NAME_REGEXP', '^PRG_PunktyAdresowe_POLSKA\.[[:alnum:]]{3}$');
 
 //==============================================================================
 // Download required files
@@ -660,7 +660,7 @@ if (isset($options['fetch'])) {
 
         for ($i = 0; $i < $numFiles; ++$i) {
             $filename = $zip->getNameIndex($i);
-            if (strpos($filename, 'PRG_PunktyAdresowe_POLSKA') === 0) {
+            if (preg_match('/' . BUILDING_BASE_NAME_REGEXP . '/', $filename)) {
                 $zip->extractTo($teryt_dir, $filename);
             }
         }
@@ -1339,9 +1339,19 @@ if (isset($options['update'])) {
 //==============================================================================
 
 if (isset($options['buildings'])) {
-    $fh = fopen($building_base_name, "r");
-    if (empty($fh)) {
-        fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $building_base_name);
+    $files = getdir($teryt_dir);
+    if (empty($files)) {
+        fprintf($stderr, "Error: couldn't find files matching to '%s' regular expression!" . PHP_EOL, BUILDING_BASE_NAME_REGEXP);
+        die;
+    }
+    $file_count = 0;
+    foreach ($files as $file) {
+        if (preg_match('/' . BUILDING_BASE_NAME_REGEXP . '/', $file)) {
+            $file_count++;
+        }
+    }
+    if ($file_count < 4) {
+        fprintf($stderr, "Error: couldn't find some files matching to '%s' regular expression!" . PHP_EOL, BUILDING_BASE_NAME_REGEXP);
         die;
     }
 
@@ -1353,11 +1363,8 @@ if (isset($options['buildings'])) {
         }
     }
 
-    $steps = ceil(filesize($building_base_name) / 4096);
-    $i = 0;
     $to_update = array();
     $to_insert = array();
-    $previous_line = '';
 
     // create location cache
     $location_cache = new LocationCache(LocationCache::LOAD_FULL);
@@ -1518,7 +1525,6 @@ if (isset($options['buildings'])) {
     $DB->Execute('DELETE FROM location_buildings WHERE updated = 0');
     $DB->Execute('UPDATE location_buildings SET updated = 0');
 
-    fclose($fh);
     unset(
         $to_insert,
         $to_update,
@@ -1530,7 +1536,6 @@ if (isset($options['buildings'])) {
         $building,
         $simc,
         $city,
-        $previous_line,
         $lines,
         $steps,
         $state_name_to_ident,
@@ -1778,16 +1783,21 @@ if (isset($options['delete'])) {
         echo 'Deleting downloaded files...' . PHP_EOL;
     }
 
-    if (!empty($building_base_name) && file_exists($building_base_name)) {
-        unlink($building_base_name);
+    if (!empty(BUILDING_BASE_NAME_REGEXP)) {
+        $files = getdir($teryt_dir);
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                if (preg_match('/' . BUILDING_BASE_NAME_REGEXP . '/', $file)) {
+                    @unlink($teryt_dir . DIRECTORY_SEPARATOR . $file);
+                }
+            }
+        }
     }
 
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME);
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml');
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml');
+    @unlink($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME);
+    @unlink($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
+    @unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml');
+    @unlink($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml');
 }
 
 fclose($stderr);
-
-?>
