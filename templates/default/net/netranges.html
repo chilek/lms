@@ -42,9 +42,46 @@
         margin-left: 0.5em;
     }
 
+    #update-panels {
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+    }
+
+    .update-panel {
+        display: flex;
+        flex-wrap: wrap;
+        flex-grow: 1;
+        align-items: center;
+        margin-top: 0.3em;
+        margin-bottom: 0.3em;
+    }
+
+    .update-panel > * {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .update-panel > :not(:first-child) {
+        margin-left: 0.8em;
+    }
+
+    .update-panel > * > :not(:first-child) {
+        margin-left: 0.5em;
+    }
+
+    .update-panel:nth-child(3) {
+        justify-content: center;
+    }
+
 </style>
 
 <form name="netranges" id="netranges" method="POST">
+    <input type="submit" class="hiddenbtn">
+</form>
+
+<form name="update-link" id="update-link" method="POST">
     <input type="submit" class="hiddenbtn">
 </form>
 
@@ -52,10 +89,11 @@
     <colgroup>
         <col style="width: 1%;">
         <col style="width: 99%;">
+        <col style="width: 1%;">
     </colgroup>
     <thead>
         <tr>
-            <td colspan="2">
+            <td colspan="3">
                 <div class="lms-ui-filter-container">
                     <div class="lms-ui-filter-definition">
                         {icon name="filter"}
@@ -143,7 +181,7 @@
         </tr>
         {if $pagination->getTotal() != 0}
             <tr>
-                <td class="lms-ui-pagination" colspan="2">
+                <td class="lms-ui-pagination" colspan="3">
                     {include file="pagination.html"}
                 </td>
             </tr>
@@ -157,9 +195,12 @@
             <td>
                 <strong>{trans("GPS coordinates")}</strong>
             </td>
+            <td>
+                &nbsp;
+            </td>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="lms-ui-multi-check">
         {foreach $buildings as $building}
             <tr class="highlight">
                 <td class="nobr">
@@ -179,10 +220,14 @@
                     </a>
                     {$building.longitude}, {$building.latitude}
                 </td>
+                <td>
+                    <input type="checkbox" name="range[buildings][{$building.id}]" value="{$building.id}"
+                        form="update-link" class="lms-ui-multi-check">
+                </td>
             </tr>
         {foreachelse}
             <tr>
-                <td colspan="2" class="empty-table">
+                <td colspan="3" class="empty-table">
                     {if empty($location_stateid) || empty($location_districtid)}
                         {trans("State and district should be selected at least.")}
                     {else}
@@ -195,11 +240,99 @@
     <tfoot>
         {if $pagination->getTotal() != 0}
             <tr>
-                <td class="lms-ui-pagination" colspan="2">
+                <td class="lms-ui-pagination" colspan="3">
                     {include file="pagination.html"}
                 </td>
             </tr>
         {/if}
+        <tr>
+            <td colspan="3">
+                <table style="width: 100%;">
+                    <tr>
+                        <td class="text-left">
+                            <div id="update-panels">
+                                <div class="update-panel">
+                                    <label>
+                                        {trans("<!netrange>Link")}
+                                        <select name="range[type]" form="update-link" required>
+                                            <option value="">{trans("— none —")}</option>
+                                            {foreach $_LINKTYPES as $type => $label}
+                                                <option value="{$type}"{if $type == $range.type} selected{/if}>{$label}</option>
+                                            {/foreach}
+                                        </select>
+                                    </label>
+                                    <label{if $range.type == ''} style="display: none;"{/if}>
+                                        {trans("<!netrange>Technology")}
+                                        <select name="range[technology]" form="update-link" required>
+                                            <option value="">{trans("— none —")}</option>
+                                            {if $range.type != ''}
+                                                {foreach $linktechnologies[$range.type] as $technology => $label}
+                                                    <option value="{$technology}"{if $technology == $range.technology} selected{/if}>{$label}</option>
+                                                {/foreach}
+                                            {/if}
+                                        </select>
+                                    </label>
+                                    <label {if $range.type == '' || $range.technology == ''} style="display: none;"{/if}>
+                                        {trans("Download")}
+                                        <select name="range[downlink]" form="update-link" required>
+                                            <option value="">{trans("— none —")}</option>
+                                            {foreach $linkspeeds as $speed => $label}
+                                                <option value="{$speed}"{if $speed == $range.downlink} selected{/if}>{$label}</option>
+                                            {/foreach}
+                                        </select>
+                                    </label>
+                                    <label {if $range.type == '' || $range.technology == ''} style="display: none;"{/if}>
+                                        {trans("Upload")}
+                                        <select name="range[uplink]" form="update-link" required>
+                                            <option value="">{trans("— none —")}</option>
+                                            {foreach $linkspeeds as $speed => $label}
+                                                <option value="{$speed}"{if $speed == $range.uplink} selected{/if}>{$label}</option>
+                                            {/foreach}
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="update-panel">
+                                    <label>
+                                        {trans("<!netrange>Type")}
+                                        <select name="range[rangetype]" form="update-link" required>
+                                            <option value="">{trans("— none —")}</option>
+                                            <option value="1"{if $range.rangetype == 1} selected{/if}>{trans("<!netrange>real")}</option>
+                                            <option value="2"{if $range.rangetype == 2} selected{/if}>{trans("<!netrange>theoretical")}</option>
+                                        </select>
+                                    </label>
+                                    <span>
+                                        <span>
+                                            {trans("<!netrange>Service")}
+                                        </span>
+                                        <label>
+                                            <input type="hidden" name="range[service][1]" value="0" form="update-link">
+                                            <input type="checkbox" name="range[service][1]" value="1" form="update-link"
+                                                {if ($range.service & 1) > 0} checked{/if}>
+                                            {trans("<!netrange>wholesale")}
+                                        </label>
+                                        <label>
+                                            <input type="hidden" name="range[service][2]" value="0" form="update-link">
+                                            <input type="checkbox" name="range[service][2]" value="1" form="update-link"
+                                                {if ($range.service & 2) > 0} checked{/if}>
+                                            {trans("<!netrange>retail")}
+                                        </label>
+                                    </span>
+                                </div>
+                                <div class="update-panel">
+                                    {button id="update-link" icon="apply" label="Update" form="update-link" type="submit"}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-right valign-top">
+                            <label>
+                                {trans("Check All")}
+                                <input type="checkbox" name="allbox" class="lms-ui-multi-check-all" value="1">
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
     </tfoot>
 </table>
 
@@ -317,6 +450,34 @@
 
         $('#apply-filter').click(function() {
             $('#netranges').submit();
+        });
+
+        var linkTechnologies = {};
+        {foreach $linktechnologies as $type => $technologies}
+            {foreach $technologies as $technology => $label}
+                if (!linkTechnologies.hasOwnProperty("{$type}")) {
+                    linkTechnologies["{$type}"] = {};
+                }
+                linkTechnologies["{$type}"]["{$technology}"] = "{$label}";
+            {/foreach}
+        {/foreach}
+
+        $('[name="range[type]"]').change(function() {
+            var select = $('[name="range[technology]"]');
+            var html = '<option value="">{trans("— none —")}</option>';
+            if ($(this).val() !== '') {
+                $.each(linkTechnologies[$(this).val()], function (index, label) {
+                    html += '<option value="' + index + '">' + label + '</option>';
+                });
+            }
+            select.html(html);
+            select.prop('required', $(this).val() !== '').closest('label').toggle($(this).val() !== '');
+
+            $('[name="range[downlink]"],[name="range[uplink]"]').prop('required', false).closest('label').hide();
+        });
+
+        $('[name="range[technology]"]').change(function() {
+            $('[name="range[downlink]"],[name="range[uplink]"]').prop('required', $(this).val() !== '').closest('label').toggle($(this).val() !== '');
         });
     });
 

@@ -1046,6 +1046,7 @@ $_LANG['Event title is required!'] = 'Tytuł zdarzenia jest wymagany!';
 $_LANG['Event title is too long!'] = 'Tytuł zdarzenia jest za długi!';
 $_LANG['Holiday:'] = 'Dzień wolny od pracy:';
 $_LANG['service<!event>'] = 'serwis';
+$_LANG['<!netrange>Service'] = 'Usługa';
 $_LANG['installation'] = 'instalacja';
 $_LANG['meeting'] = 'spotkanie';
 $_LANG['exclude group'] = 'wyłącz grupę';
@@ -2630,6 +2631,8 @@ $_LANG['Cash state value is required!'] = 'Wartość stanu kasy jest wymagana!';
 $_LANG['New Cash History Entry'] = 'Nowy wpis w historii kasy';
 $_LANG['Wrong datetime format!'] = 'Błędny format daty/czasu!';
 $_LANG['Real state:'] = 'Stan rzeczywisty:';
+$_LANG['<!netrange>real'] = 'rzeczywisty';
+$_LANG['<!netrange>theoretical'] = 'teoretyczny';
 $_LANG['Select All<!masculine>'] = 'Zaznacz wszystkich';
 $_LANG['There is newer version of LMS ($a) available for download from $b.'] = 'Na stronie $b jest już dostępna nowsza wersja systemu - $a.';
 $_LANG['Are you sure, you want to delete selected documents?'] = 'Czy na pewno chcesz usunąć zaznaczone dokumenty?';
@@ -2854,6 +2857,7 @@ $_LANG['legal entity'] = 'osoba prawna / firma';
 $_LANG['Select legal personality type'] = 'Wybierz typ osobowości prawnej';
 $_LANG['Link type:'] = 'Typ łącza:';
 $_LANG['Link type'] = 'Typ łącza';
+$_LANG['<!netrange>Link'] = 'Łącze';
 $_LANG['wire'] = 'przewodowe';
 $_LANG['Select link type'] = 'Wybierz typ łącza';
 $_LANG['With document of type:'] = 'Z dokumentem typu:';
@@ -3914,6 +3918,7 @@ $_LANG['Check if customer consent to messages delivery via e-mail or sms is requ
 
 $_LANG['Select link technology'] = 'Wybierz technologię łącza';
 $_LANG['Link technology:'] = 'Technologia łącza:';
+$_LANG['<!netrange>Technology'] = 'Technologia';
 $_LANG['— unknown —'] = '— nieznana —';
 
 $_LANG['Hide toolbar from user interface. Default: false.'] = 'Ukryj górne menu w interfejsie użytkownika. Domyślnie: 0 (wyłączone).';
@@ -4078,6 +4083,7 @@ $_LANG['Azimuth:'] = 'Azymut:';
 $_LANG['Width:'] = 'Szerokość:';
 $_LANG['Altitude:'] = 'Wysokość:';
 $_LANG['Range:'] = 'Zasięg:';
+$_LANG['<!netrange>Type'] = 'Typ';
 $_LANG['Frequency:'] = 'Częstotliwość:';
 $_LANG['Bandwidth:'] = 'Szerokość kanału:';
 $_LANG['$a deg.'] = '$a st.';
@@ -4801,6 +4807,8 @@ $_LANG['resolve ticket'] = 'rozwiąż zgłoszenie';
 $_LANG['Network device:'] = 'Urządzenie sieciowe:';
 $_LANG['Network device'] = 'Urządzenie sieciowe';
 $_LANG['whole subtree'] = 'całe poddrzewo';
+$_LANG['<!netrange>wholesale'] = 'hurtowa';
+$_LANG['<!netrange>retail'] = 'detaliczna';
 
 $_LANG['<!mac>— none —'] = '— brak —';
 
