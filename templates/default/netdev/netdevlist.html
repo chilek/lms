@@ -103,7 +103,7 @@
     </THEAD>
     <TBODY>
 	{foreach $netdevlist as $netdev}
-	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}" data-name="{$netdev.name}">
+	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}" data-name="{$netdev.name}" data-id="{$netdev.id}">
 		<TD class="valign-top">
 			{if $netdev.lastonline}
 				{if ($smarty.now-$netdev.lastonline) > $lastonline_limit}
