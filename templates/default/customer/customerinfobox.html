@@ -1,5 +1,7 @@
 <!--// $Id$ //-->
 {$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
+{$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
+
 <style>
 
 	.customer-header {
@@ -197,8 +199,10 @@
 													{icon name="home" tip="billing address"}
 												</td>
 												<td>
-													<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location|default:""|escape}$a (TERRIT){/t}{else}{$v.location|default:""|escape}{/if}
-														<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
+													<span title="{trans('billing address')}">
+														{if $v.teryt}{t a=$v.location|default:""|escape}$a (TERRIT){/t}{else}{$v.location|default:""|escape}{/if}
+														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+															title="{trans("Google Maps")}">{icon name="location"}</a>
 													</span>
 												</td>
 											</tr>
@@ -213,8 +217,10 @@
 													{icon name="message" tip="postal address"}
 												</td>
 												<td>
-													<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
-														<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
+													<span title="{trans('postal address')}">
+														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
+														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+															title="{trans("Google Maps")}">{icon name="location"}</a>
 													</span>
 												</td>
 											</tr>
@@ -237,8 +243,10 @@
 													{icon class=$icon tip=$title}
 												</td>
 												<td>
-													<span title="{$title}">{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
-														<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}">{icon name="location"}</a>
+													<span title="{$title}">
+														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
+														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
+															title="{trans("Google Maps")}">{icon name="location"}</a>
 													</span>
 												</td>
 											</tr>

@@ -2442,6 +2442,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           addr.state as location_state_name, addr.state_id as location_state,
                                           addr.city as location_city_name, addr.city_id as location_city,
                                           addr.street as location_street_name, addr.street_id as location_street,
+                                          (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS location_full_street_name,
+                                          (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS location_full_reversed_street_name,
+                                          lst.name AS location_short_street_name,
                                           addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
                                           addr.country_id as location_country_id, addr.flat as location_flat,
                                           ca.type as location_address_type, addr.location,
@@ -2451,6 +2454,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           customers cv
                                           LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
                                           LEFT JOIN vaddresses addr       ON addr.id = ca.address_id
+                                          LEFT JOIN location_streets lst ON lst.id = addr.street_id
                                        WHERE
                                           cv.id = ?' .
                                           (($hide_deleted) ? ' AND cv.deleted != 1' : '')
