@@ -405,6 +405,8 @@ define('PROGRESS_ROW_COUNT', 1000);
 define('BUILDING_BASE_ZIP_NAME', 'PRG-punkty_adresowe_shp.zip');
 define('BUILDING_BASE_ZIP_URL', 'https://integracja.gugik.gov.pl/PRG/pobierz.php?adresy_zbiorcze_shp');
 
+setlocale(LC_NUMERIC, 'C');
+
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
 $all_states = array(
