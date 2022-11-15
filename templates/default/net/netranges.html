@@ -49,7 +49,7 @@
 <table class="lmsbox lms-ui-background-cycle">
     <colgroup>
         <col style="width: 1%;">
-        <col style="width: 1%;">
+        <col style="width: 99%;">
     </colgroup>
     <thead>
         <tr>
@@ -153,13 +153,14 @@
                 <strong>{trans("Territory unit")}</strong>
             </td>
             <td>
+                <strong>{trans("GPS coordinates")}</strong>
             </td>
         </tr>
     </thead>
     <tbody>
         {foreach $buildings as $building}
             <tr class="highlight">
-                <td>
+                <td class="nobr">
                     {$building.zip} {$building.city|escape},
                     {if strlen($building.rstreet)}
                         {$building.rstreet|escape}
@@ -170,13 +171,21 @@
                         ({$building.state|escape} / {$building.district|escape} / {$_BOROUGHTYPES[$building.boroughtype]} {$building.borough|escape})
                     </span>
                 </td>
-                <td>
+                <td class="nobr">
+                    <a href="https://www.google.com/maps/search/?api=1&query={$building.latitude}%2C{$building.longitude}">
+                        {icon name="location"}
+                    </a>
+                    {$building.longitude}, {$building.latitude}
                 </td>
             </tr>
         {foreachelse}
             <tr>
                 <td colspan="2" class="empty-table">
-                    {trans("No such buildings matching search criteria or list is empty.")}
+                    {if empty($location_stateid) || empty($location_districtid)}
+                        {trans("State and district should be selected at least.")}
+                    {else}
+                        {trans("No such buildings matching search criteria or list is empty.")}
+                    {/if}
                 </td>
             </tr>
         {/foreach}
@@ -261,7 +270,7 @@
                                 },
                                 success: function(options) {
                                     $.each(options, function(id, option) {
-                                        html += '<option value="' + option.id + '">' + escapeHtml(option.rlabel) + '</option>';
+                                        html += '<option value="' + option.id + '">' + escapeHtml(option.label) + '</option>';
                                     });
                                     elem.html(html);
                                     updateAdvancedSelects(elem);

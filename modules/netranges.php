@@ -91,7 +91,12 @@ function getCities($boroughid)
             lc.id,
             lc.name AS label
         FROM location_cities lc
-        WHERE lc.boroughid = ?
+        WHERE EXISTS (
+            SELECT 1 FROM location_buildings b
+            JOIN location_cities lc2 ON lc2.id = b.city_id
+            WHERE b.city_id = lc.id
+                AND lc2.boroughid = ?
+        )
         ORDER BY lc.name',
         array($boroughid)
     );
@@ -107,48 +112,10 @@ function getStreets($cityid)
 {
     $DB = LMSDB::getInstance();
 
-    $borough = $DB->GetRow(
-        'SELECT lb.id, lb.name, lb.districtid, ld.stateid
-        FROM location_boroughs lb
-        JOIN location_cities lc ON lc.boroughid = lb.id
-        JOIN location_districts ld ON ld.id = lb.districtid
-        WHERE lb.type = 1
-            AND lc.id = ?',
-        array($cityid)
-    );
-    if (!empty($borough)) {
-        $subcities = $DB->GetCol(
-            'SELECT lc.id
-            FROM location_boroughs lb
-            JOIN location_cities lc ON lc.boroughid = lb.id
-            JOIN location_districts ld ON ld.id = lb.districtid
-            WHERE ld.stateid = ?
-                AND lb.districtid = ?
-                AND (lb.type = 8 OR lb.type = 9)',
-            array($borough['stateid'], $borough['districtid'])
-        );
-        if (!empty($subcities)) {
-            $streets = $DB->GetAll(
-                'SELECT lst.id,
-                    lst.name AS name1,
-                    lst.name2 AS name2,
-                    (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS label,
-                    (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS rlabel,
-                    t.name AS typename
-                FROM location_streets lst
-                LEFT JOIN location_street_types t ON t.id = lst.typeid
-                WHERE lst.cityid IN ?
-                ORDER BY lst.name',
-                array(
-                    $subcities,
-                )
-            );
-        }
-    }
-
     if (!isset($streets)) {
         $streets = $DB->GetAll(
-            'SELECT lst.id,
+            'SELECT
+                lst.id,
                 lst.name AS name1,
                 lst.name2 AS name2, 
                 (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS label,
@@ -156,7 +123,11 @@ function getStreets($cityid)
                 t.name AS typename
             FROM location_streets lst
             LEFT JOIN location_street_types t ON t.id = lst.typeid
-            WHERE lst.cityid = ?
+            WHERE EXISTS (
+                SELECT 1 FROM location_buildings b
+                WHERE b.street_id = lst.id
+                    AND b.city_id = ?
+            )
             ORDER BY lst.name',
             array($cityid)
         );
@@ -175,6 +146,23 @@ function getBuildings(array $filter)
 
     $count = isset($filter['count']) && !empty($filter['count']);
 
+    $where = array();
+
+    if (isset($filter['streetid']) && is_numeric($filter['streetid'])) {
+        $where[] = 'b.street_id = ' . intval($filter['streetid']);
+    } elseif (isset($filter['cityid']) && is_numeric($filter['cityid'])) {
+        $where[] = 'b.city_id = ' . intval($filter['cityid']);
+    } elseif (isset($filter['boroughid']) && is_numeric($filter['boroughid'])) {
+        $where[] = 'lc.boroughid = ' . intval($filter['boroughid']);
+    } elseif (isset($filter['districtid']) && is_numeric($filter['districtid'])) {
+        $where[] = 'lb.districtid = ' . intval($filter['districtid']);
+    } elseif (isset($filter['stateid']) && is_numeric($filter['stateid'])) {
+        $where[] = 'ld.stateid = ' . intval($filter['stateid']);
+    }
+    if (!empty($filter['numberparity'])) {
+        $where[] = $DB->RegExp('b.building_num', $filter['numberparity'] == 'odd' ? '[13579][[:alpha:]]*$' : '[02468][[:alpha:]]*$');
+    }
+
     if ($count) {
         return $DB->GetOne(
             'SELECT COUNT(*)
@@ -183,14 +171,8 @@ function getBuildings(array $filter)
             JOIN location_cities lc ON lc.id = b.city_id
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
-            JOIN location_states ls ON ls.id = ld.stateid
-            WHERE 1 = 1'
-                . (isset($filter['streetid']) && is_numeric($filter['streetid']) ? ' AND lst.id = ' . intval($filter['streetid']) : '')
-                . (isset($filter['cityid']) && is_numeric($filter['cityid']) ? ' AND lc.id = ' . intval($filter['cityid']) : '')
-                . (isset($filter['boroughid']) && is_numeric($filter['boroughid']) ? ' AND lc.boroughid = ' . intval($filter['boroughid']) : '')
-                . (isset($filter['districtid']) && is_numeric($filter['districtid']) ? ' AND lb.districtid = ' . intval($filter['districtid']) : '')
-                . (isset($filter['stateid']) && is_numeric($filter['stateid']) ? ' AND ld.stateid = ' . intval($filter['stateid']) : '')
-                . (empty($filter['numberparity']) ? '' : ' AND ' . $DB->RegExp('b.building_num', $filter['numberparity'] == 'odd' ? '[13579][[:alpha:]]*$' : '[02468][[:alpha:]]*$'))
+            JOIN location_states ls ON ls.id = ld.stateid'
+            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
         );
     } else {
         $buildings = $DB->GetAll(
@@ -215,14 +197,8 @@ function getBuildings(array $filter)
             JOIN location_cities lc ON lc.id = b.city_id
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
-            JOIN location_states ls ON ls.id = ld.stateid
-            WHERE 1 = 1'
-            . (isset($filter['streetid']) && is_numeric($filter['streetid']) ? ' AND lst.id = ' . intval($filter['streetid']) : '')
-            . (isset($filter['cityid']) && is_numeric($filter['cityid']) ? ' AND lc.id = ' . intval($filter['cityid']) : '')
-            . (isset($filter['boroughid']) && is_numeric($filter['boroughid']) ? ' AND lc.boroughid = ' . intval($filter['boroughid']) : '')
-            . (isset($filter['districtid']) && is_numeric($filter['districtid']) ? ' AND lb.districtid = ' . intval($filter['districtid']) : '')
-            . (isset($filter['stateid']) && is_numeric($filter['stateid']) ? ' AND ld.stateid = ' . intval($filter['stateid']) : '')
-            . (empty($filter['numberparity']) ? '' : ' AND ' . $DB->RegExp('b.building_num', $filter['numberparity'] == 'odd' ? '[13579][[:alpha:]]*$' : '[02468][[:alpha:]]*$'))
+            JOIN location_states ls ON ls.id = ld.stateid'
+            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
             . (isset($filter['offset']) && is_numeric($filter['offset']) ? ' OFFSET ' . intval($filter['offset']) : '')
@@ -253,49 +229,49 @@ if (isset($_GET['boroughid'])) {
 $layout['pagetitle'] = trans('Network Ranges');
 
 if (isset($_POST['location_stateid'])) {
-    $location_stateid = strlen($_POST['location_stateid']) ? intval($_POST['location_stateid']) : 0;
+    $location_stateid = strlen($_POST['location_stateid']) ? intval($_POST['location_stateid']) : '';
 } else {
     $location_stateid = $SESSION->get('netranges_stateid');
 }
 $SESSION->save('netranges_stateid', $location_stateid);
 
 if (isset($_POST['location_districtid'])) {
-    $location_districtid = strlen($_POST['location_districtid']) ? intval($_POST['location_districtid']) : 0;
+    $location_districtid = strlen($_POST['location_districtid']) ? intval($_POST['location_districtid']) : '';
 } else {
     $location_districtid = $SESSION->get('netranges_districtid');
 }
 if (empty($location_stateid)) {
-    $location_districtid = 0;
+    $location_districtid = '';
 }
 $SESSION->save('netranges_districtid', $location_districtid);
 
 if (isset($_POST['location_boroughid'])) {
-    $location_boroughid = strlen($_POST['location_boroughid']) ? intval($_POST['location_boroughid']) : 0;
+    $location_boroughid = strlen($_POST['location_boroughid']) ? intval($_POST['location_boroughid']) : '';
 } else {
     $location_boroughid = $SESSION->get('netranges_boroughid');
 }
 if (empty($location_districtid)) {
-    $location_boroughid = 0;
+    $location_boroughid = '';
 }
 $SESSION->save('netranges_boroughid', $location_boroughid);
 
 if (isset($_POST['location_cityid'])) {
-    $location_cityid = strlen($_POST['location_cityid']) ? intval($_POST['location_cityid']) : 0;
+    $location_cityid = strlen($_POST['location_cityid']) ? intval($_POST['location_cityid']) : '';
 } else {
     $location_cityid = $SESSION->get('netranges_cityid');
 }
 if (empty($location_boroughid)) {
-    $location_cityid = 0;
+    $location_cityid = '';
 }
 $SESSION->save('netranges_cityid', $location_cityid);
 
 if (isset($_POST['location_streetid'])) {
-    $location_streetid = strlen($_POST['location_streetid']) ? intval($_POST['location_streetid']) : 0;
+    $location_streetid = strlen($_POST['location_streetid']) ? intval($_POST['location_streetid']) : '';
 } else {
     $location_streetid = $SESSION->get('netranges_streetid');
 }
 if (empty($location_cityid)) {
-    $location_streetid = 0;
+    $location_streetid = '';
 }
 $SESSION->save('netranges_streetid', $location_streetid);
 
@@ -306,7 +282,7 @@ if (isset($_POST['location_number_parity'])) {
     $location_number_parity = $SESSION->get('netranges_number_parity');
 }
 if (empty($location_cityid) || !empty($streets) && empty($location_streetid)) {
-    $location_number_parity = 0;
+    $location_number_parity = '';
 }
 $SESSION->save('netranges_number_parity', $location_number_parity);
 
@@ -320,7 +296,7 @@ $filter = array(
     'count' => true,
 );
 
-$total = intval(getBuildings($filter));
+$total = !empty($filter['stateid']) && !empty($filter['districtid']) ? intval(getBuildings($filter)) : 0;
 if (isset($_GET['page'])) {
     $page = intval($_GET['page']);
 } elseif ($SESSION->is_set('netranges_page')) {
@@ -335,14 +311,20 @@ $limit = intval(ConfigHelper::getConfig('phpui.netranges_pagelimit', '100'));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
-$filter['offset'] = ($page - 1) * $limit;
-$filter['limit'] = $limit;
-if ($total && $total < $filter['offset']) {
-    $filter['page'] = 1;
-    $filter['offset'] = 0;
+if (!empty($total)) {
+    $filter['offset'] = ($page - 1) * $limit;
+    $filter['limit'] = $limit;
+    if ($total && $total < $filter['offset']) {
+        $filter['page'] = 1;
+        $filter['offset'] = 0;
+    }
+    $filter['count'] = false;
+    $buildings = getBuildings($filter);
+} else {
+    $buildings = array();
 }
-$filter['count'] = false;
-$SMARTY->assign('buildings', getBuildings($filter));
+
+$SMARTY->assign('buildings', $buildings);
 
 $SMARTY->assign('boroughs', getTerritoryUnits());
 $SMARTY->assign('cities', empty($location_boroughid) ? array() : getCities($location_boroughid));
