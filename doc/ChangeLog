@@ -334,7 +334,7 @@ version 28-git (????-??-??):
     by white characters or commas); added 'prg' provider support [chilan]
   - enhancement: 'documents.attachment_filename' configuration variable with '%filename' as default value
     allows to tweak main attachment file name sent to customer [chilan]
-  - improvement: 'phpui.geo_coordinate_url' allows to customize URL of geographic coordinate point
+  - improvement: 'phpui.gps_coordinate_url' allows to customize URL of geographic coordinate point
     (default: 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude') [chilan]
 
 version 27.0 (2021-08-20):
