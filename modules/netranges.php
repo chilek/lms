@@ -154,9 +154,11 @@ function getBuildings(array $filter)
         $where[] = 'b.city_id = ' . intval($filter['cityid']);
     } elseif (isset($filter['boroughid']) && is_numeric($filter['boroughid'])) {
         $where[] = 'lc.boroughid = ' . intval($filter['boroughid']);
-    } elseif (isset($filter['districtid']) && is_numeric($filter['districtid'])) {
+    }
+    if (isset($filter['districtid']) && is_numeric($filter['districtid'])) {
         $where[] = 'lb.districtid = ' . intval($filter['districtid']);
-    } elseif (isset($filter['stateid']) && is_numeric($filter['stateid'])) {
+    }
+    if (isset($filter['stateid']) && is_numeric($filter['stateid'])) {
         $where[] = 'ld.stateid = ' . intval($filter['stateid']);
     }
     if (!empty($filter['numberparity'])) {
