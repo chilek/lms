@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 
-{$geo_coordinate_url = ConfigHelper::getConfig('phpui.geo_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
+{$gps_coordinate_url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
 
 <h1>{$layout.pagetitle}</h1>
 
@@ -174,7 +174,7 @@
                     </span>
                 </td>
                 <td class="nobr">
-                    <a href="{$geo_coordinate_url|replace:"%longitude":$building.longitude|replace:"%latitude":$building.latitude}">
+                    <a href="{$gps_coordinate_url|replace:"%longitude":$building.longitude|replace:"%latitude":$building.latitude}">
                         {icon name="location"}
                     </a>
                     {$building.longitude}, {$building.latitude}
