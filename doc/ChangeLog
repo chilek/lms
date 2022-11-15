@@ -336,6 +336,8 @@ version 28-git (????-??-??):
     allows to tweak main attachment file name sent to customer [chilan]
   - improvement: 'phpui.gps_coordinate_url' allows to customize URL of geographic coordinate point
     (default: 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude') [chilan]
+  - improvement: 'phpui.geo_location_url' allows to customize URL of geographic location point
+    (default: 'https://www.google.com/maps/place/%location') [chilan]
 
 version 27.0 (2021-08-20):
 
