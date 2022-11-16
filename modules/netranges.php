@@ -261,7 +261,8 @@ function getBuildings(array $filter)
             JOIN location_cities lc ON lc.id = b.city_id
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
-            JOIN location_states ls ON ls.id = ld.stateid'
+            JOIN location_states ls ON ls.id = ld.stateid
+            LEFT JOIN netranges r ON r.buildingid = b.id'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
         );
     } else {
@@ -280,14 +281,22 @@ function getBuildings(array $filter)
                 ld.id AS districtid,
                 ld.name AS district,
                 ls.id AS stateid,
-                ls.name AS state
+                ls.name AS state,
+                r.id AS netrangeid,
+                r.linktype,
+                r.linktechnology,
+                r.downlink,
+                r.uplink,
+                r.type,
+                r.services
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             LEFT JOIN location_street_types t ON t.id = lst.typeid
             JOIN location_cities lc ON lc.id = b.city_id
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
-            JOIN location_states ls ON ls.id = ld.stateid'
+            JOIN location_states ls ON ls.id = ld.stateid
+            LEFT JOIN netranges r ON r.buildingid = b.id'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
@@ -314,6 +323,101 @@ if (isset($_GET['boroughid'])) {
         $streets = array();
     }
     die(json_encode($streets));
+}
+
+$oldrange = $SESSION->get('netranges_update_range');
+
+$oldrange = isset($oldrange) ? $oldrange : array();
+$range = isset($_POST['range']) ? $_POST['range'] : array();
+
+if (isset($range['linktype'])) {
+    $range['linktype'] = strlen($range['linktype']) ? intval($range['linktype']) : '';
+} else {
+    $range['linktype'] = isset($oldrange['linktype']) ? $oldrange['linktype'] : '';
+}
+
+if (isset($range['linktechnology'])) {
+    $range['linktechnology'] = strlen($range['linktechnology']) ? intval($range['linktechnology']) : '';
+} else {
+    $range['linktechnology'] = isset($oldrange['linktechnology']) ? $oldrange['linktechnology'] : '';
+}
+
+if (isset($range['downlink'])) {
+    $range['downlink'] = strlen($range['downlink']) ? intval($range['downlink']) : '';
+} else {
+    $range['downlink'] = isset($oldrange['downlink']) ? $oldrange['downlink'] : '';
+}
+
+if (isset($range['uplink'])) {
+    $range['uplink'] = strlen($range['uplink']) ? intval($range['uplink']) : '';
+} else {
+    $range['uplink'] = isset($oldrange['uplink']) ? $oldrange['uplink'] : '';
+}
+
+if (isset($range['type'])) {
+    $range['type'] = strlen($range['type']) ? intval($range['type']) : '';
+} else {
+    $range['type'] = isset($oldrange['type']) ? $oldrange['type'] : '';
+}
+
+$services = 0;
+if (isset($range['services']['1'])) {
+    if (!empty($range['services']['1'])) {
+        $services |= 1;
+    }
+} else {
+    $services |= isset($oldrange['services']) && ($oldrange['services'] & 1) ? 1 : 0;
+}
+if (isset($range['services']['2'])) {
+    if (!empty($range['services']['2'])) {
+        $services |= 2;
+    }
+} else {
+    $services |= isset($oldrange['services']) && ($oldrange['services'] & 2) ? 2 : 0;
+}
+$range['services'] = $services;
+
+$SESSION->save('netranges_update_range', $range);
+
+if (isset($_POST['range'])) {
+    if (isset($range['buildings'])) {
+        $buildings = Utils::filterIntegers($range['buildings']);
+        if (!empty($buildings)) {
+            $DB->BeginTrans();
+
+            if (isset($_GET['delete'])) {
+                $DB->Execute('DELETE FROM netranges WHERE buildingid IN ?', array($buildings));
+            } else {
+                $args = $range;
+                unset($args['buildings']);
+                foreach ($buildings as $buildingid) {
+                    $args['buildingid'] = $buildingid;
+                    if ($DB->GetOne('SELECT 1 FROM netranges WHERE buildingid = ?', array($buildingid))) {
+                        $DB->Execute(
+                            'UPDATE netranges
+                            SET linktype = ?,
+                                linktechnology = ?,
+                                downlink = ?,
+                                uplink = ?,
+                                type = ?
+                                services = ?,
+                            WHERE buildingid = ?',
+                            array_values($args)
+                        );
+                    } else {
+                        $DB->Execute(
+                            'INSERT INTO netranges
+                            (linktype, linktechnology, downlink, uplink, type, services, buildingid)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)',
+                            array_values($args)
+                        );
+                    }
+                }
+            }
+
+            $DB->CommitTrans();
+        }
+    }
 }
 
 $layout['pagetitle'] = trans('Network Ranges');
@@ -421,58 +525,6 @@ $SMARTY->assign('cities', empty($location_boroughid) ? array() : getCities($loca
 $SMARTY->assign('streets', $streets);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign(compact('location_stateid', 'location_districtid', 'location_boroughid', 'location_cityid', 'location_streetid', 'location_number_parity'));
-
-$oldrange = $SESSION->get('netranges_update_range');
-if (!isset($oldrange)) {
-    $oldrange = array();
-}
-$range = array();
-if (isset($_POST['range']['type'])) {
-    $range['type'] = strlen($_POST['range']['type']) ? intval($_POST['range']['type']) : '';
-} else {
-    $range['type'] = isset($oldrange['type']) ? $oldrange['type'] : '';
-}
-
-if (isset($_POST['range']['technology'])) {
-    $range['technology'] = strlen($_POST['range']['technology']) ? intval($_POST['range']['technology']) : '';
-} else {
-    $range['technology'] = isset($oldrange['technology']) ? $oldrange['technology'] : '';
-}
-
-if (isset($_POST['range']['downlink'])) {
-    $range['downlink'] = strlen($_POST['range']['downlink']) ? intval($_POST['range']['downlink']) : '';
-} else {
-    $range['downlink'] = isset($oldrange['downlink']) ? $oldrange['downlink'] : '';
-}
-
-if (isset($_POST['range']['uplink'])) {
-    $range['uplink'] = strlen($_POST['range']['uplink']) ? intval($_POST['range']['uplink']) : '';
-} else {
-    $range['uplink'] = isset($oldrange['uplink']) ? $oldrange['uplink'] : '';
-}
-
-if (isset($_POST['range']['rangetype'])) {
-    $range['rangetype'] = strlen($_POST['range']['rangetype']) ? intval($_POST['range']['rangetype']) : '';
-} else {
-    $range['rangetype'] = isset($oldrange['rangetype']) ? $oldrange['rangetype'] : '';
-}
-
-$range['service'] = 0;
-if (isset($_POST['range']['service']['1'])) {
-    if (!empty($_POST['range']['service']['1'])) {
-        $range['service'] |= 1;
-    }
-} else {
-    $range['service'] |= isset($oldrange['service']) && ($oldrange['service'] & 1) ? 1 : 0;
-}
-if (isset($_POST['range']['service']['2'])) {
-    if (!empty($_POST['range']['service']['2'])) {
-        $range['service'] |= 2;
-    }
-} else {
-    $range['service'] |= isset($oldrange['service']) && ($oldrange['service'] & 2) ? 2 : 0;
-}
-$SESSION->save('netranges_update_range', $range);
 
 $SMARTY->assign(array(
     'linktechnologies' => $linktechnologies,

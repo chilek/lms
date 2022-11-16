@@ -11,9 +11,21 @@
 
     div.lms-ui-filter-container {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         flex-wrap: wrap;
+    }
+
+    div.lms-ui-filter-container div.lms-ui-filter-definitions {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        align-items: flex-start;
+        max-width: 80%;
+    }
+
+    div.lms-ui-filter-container div.lms-ui-filter-buttons {
+        flex-grow: 1;
     }
 
     div.lms-ui-filter-container div.lms-ui-filter-definition {
@@ -42,37 +54,36 @@
         margin-left: 0.5em;
     }
 
-    #update-panels {
+    #operation-panels {
         display: flex;
         flex-direction: column;
         width: fit-content;
     }
 
-    .update-panel {
+    .operation-panel {
         display: flex;
         flex-wrap: wrap;
         flex-grow: 1;
         align-items: center;
-        margin-top: 0.3em;
-        margin-bottom: 0.3em;
     }
 
-    .update-panel > * {
+    .operation-panel > * {
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
+        margin: 0.4em;
     }
 
-    .update-panel > :not(:first-child) {
-        margin-left: 0.8em;
-    }
-
-    .update-panel > * > :not(:first-child) {
+    .operation-panel > * > :not(:first-child) {
         margin-left: 0.5em;
     }
 
-    .update-panel:nth-child(3) {
+    .operation-panel:nth-child(3) {
         justify-content: center;
+    }
+
+    #delete-check-all-panel {
+        justify-content: flex-end;
     }
 
 </style>
@@ -81,98 +92,107 @@
     <input type="submit" class="hiddenbtn">
 </form>
 
-<form name="update-link" id="update-link" method="POST">
+<form name="update-range" id="update-range" method="POST" action="?m={$layout.module}">
     <input type="submit" class="hiddenbtn">
 </form>
 
 <table class="lmsbox lms-ui-background-cycle">
     <colgroup>
         <col style="width: 1%;">
-        <col style="width: 99%;">
+        <col style="width: 1%;">
+        <col style="width: 1;">
+        <col style="width: 1%;">
+        <col style="width: 95%;">
         <col style="width: 1%;">
     </colgroup>
     <thead>
         <tr>
-            <td colspan="3">
+            <td colspan="6">
                 <div class="lms-ui-filter-container">
-                    <div class="lms-ui-filter-definition">
-                        {icon name="filter"}
-                        <label class="filter-item">
-                            <span>{trans("State")}</span>
-                            <select name="location_stateid" form="netranges" class="lms-ui-advanced-select filter-element"
-                                data-placeholder="{trans("— none —")}"
-                                data-options='{ "allow_single_deselect": true }'>
-                                <option value=""></option>
-                                {foreach $boroughs as $state}
-                                    <option value="{$state.id}"{if $state.id == $location_stateid} selected{/if}
-                                        >{$state.label|escape}</option>
-                                {/foreach}
-                            </select>
-                        </label>
-                        <label class="filter-item"{if empty($location_stateid)} style="display: none;"{/if}>
-                            <span>{trans("District")}</span>
-                            <select name="location_districtid" form="netranges" class="lms-ui-advanced-select filter-element"
-                                data-placeholder="{trans("— none —")}"
-                                data-options='{ "allow_single_deselect": true }'>
-                                <option value=""></option>
-                                {if !empty($location_stateid)}
-                                    {foreach $boroughs["id-"|cat:$location_stateid].districts as $district}
-                                        <option value="{$district.id}"{if $district.id == $location_districtid} selected{/if}
-                                            >{$district.label|escape}</option>
+                    <div class="lms-ui-filter-definitions">
+                        <div class="lms-ui-filter-definition">
+                            {icon name="filter"}
+                            <label class="filter-item">
+                                <span>{trans("State")}</span>
+                                <select name="location_stateid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                    data-placeholder="{trans("— none —")}"
+                                    data-options='{ "allow_single_deselect": true }'>
+                                    <option value=""></option>
+                                    {foreach $boroughs as $state}
+                                        <option value="{$state.id}"{if $state.id == $location_stateid} selected{/if}
+                                            >{$state.label|escape}</option>
                                     {/foreach}
-                                {/if}
-                            </select>
-                        </label>
-                        <label class="filter-item"{if empty($location_districtid)} style="display: none;"{/if}>
-                            <span>{trans("Commune")}</span>
-                            <select name="location_boroughid" form="netranges" class="lms-ui-advanced-select filter-element"
-                                data-placeholder="{trans("— none —")}"
-                                data-options='{ "allow_single_deselect": true }'>
-                                <option value=""></option>
-                                {if !empty($location_districtid)}
-                                    {foreach $boroughs["id-"|cat:$location_stateid].districts["id-"|cat:$location_districtid].boroughs as $borough}
-                                        <option value="{$borough.id}"{if $borough.id == $location_boroughid} selected{/if}
-                                            >{$borough.label|escape}</option>
-                                    {/foreach}
-                                {/if}
-                            </select>
-                        </label>
-                        <label class="filter-item"{if empty($location_boroughid)} style="display: none;"{/if}>
-                            <span>{trans("City")}</span>
-                            <select name="location_cityid" form="netranges" class="lms-ui-advanced-select filter-element"
-                                data-placeholder="{trans("— none —")}"
-                                data-options='{ "allow_single_deselect": true }'>
-                                <option value=""></option>
-                                {if !empty($location_boroughid)}
-                                    {foreach $cities as $city}
-                                        <option value="{$city.id}"{if $city.id == $location_cityid} selected{/if}
-                                            >{$city.label|escape}</option>
-                                    {/foreach}
-                                {/if}
-                            </select>
-                        </label>
-                        <label class="filter-item"{if empty($location_cityid)} style="display: none;"{/if}>
-                            <span>{trans("Street")}</span>
-                            <select name="location_streetid" form="netranges" class="lms-ui-advanced-select filter-element"
-                                data-placeholder="{trans("— none —")}"
-                                data-options='{ "allow_single_deselect": true }'>
-                                <option value=""></option>
-                                {if !empty($location_cityid)}
-                                    {foreach $streets as $street}
-                                        <option value="{$street.id}"{if $street.id == $location_streetid} selected{/if}
-                                            >{$street.label|escape}</option>
-                                    {/foreach}
-                                {/if}
-                            </select>
-                        </label>
-                        <label class="filter-item"{if empty($location_cityid) || !empty($streets) && empty($location_streetid)} style="display: none;"{/if}>
-                            <span>{trans("Numbers")}</span>
-                            <select name="location_number_parity" form="netranges" class="filter-element">
-                                <option value="">{trans("— any —")}</option>
-                                <option value="odd"{if $location_number_parity == 'odd'} selected{/if}>{trans("odd")}</option>
-                                <option value="even"{if $location_number_parity == 'even'} selected{/if}>{trans("even")}</option>
-                            </select>
-                        </label>
+                                </select>
+                            </label>
+                            <label class="filter-item"{if empty($location_stateid)} style="display: none;"{/if}>
+                                <span>{trans("District")}</span>
+                                <select name="location_districtid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                    data-placeholder="{trans("— none —")}"
+                                    data-options='{ "allow_single_deselect": true }'>
+                                    <option value=""></option>
+                                    {if !empty($location_stateid)}
+                                        {foreach $boroughs["id-"|cat:$location_stateid].districts as $district}
+                                            <option value="{$district.id}"{if $district.id == $location_districtid} selected{/if}
+                                                >{$district.label|escape}</option>
+                                        {/foreach}
+                                    {/if}
+                                </select>
+                            </label>
+                            <label class="filter-item"{if empty($location_districtid)} style="display: none;"{/if}>
+                                <span>{trans("Commune")}</span>
+                                <select name="location_boroughid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                    data-placeholder="{trans("— none —")}"
+                                    data-options='{ "allow_single_deselect": true }'>
+                                    <option value=""></option>
+                                    {if !empty($location_districtid)}
+                                        {foreach $boroughs["id-"|cat:$location_stateid].districts["id-"|cat:$location_districtid].boroughs as $borough}
+                                            <option value="{$borough.id}"{if $borough.id == $location_boroughid} selected{/if}
+                                                >{$borough.label|escape}</option>
+                                        {/foreach}
+                                    {/if}
+                                </select>
+                            </label>
+                            <label class="filter-item"{if empty($location_boroughid)} style="display: none;"{/if}>
+                                <span>{trans("City")}</span>
+                                <select name="location_cityid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                    data-placeholder="{trans("— none —")}"
+                                    data-options='{ "allow_single_deselect": true }'>
+                                    <option value=""></option>
+                                    {if !empty($location_boroughid)}
+                                        {foreach $cities as $city}
+                                            <option value="{$city.id}"{if $city.id == $location_cityid} selected{/if}
+                                                >{$city.label|escape}</option>
+                                        {/foreach}
+                                    {/if}
+                                </select>
+                            </label>
+                            <label class="filter-item"{if empty($location_cityid)} style="display: none;"{/if}>
+                                <span>{trans("Street")}</span>
+                                <select name="location_streetid" form="netranges" class="lms-ui-advanced-select filter-element"
+                                    data-placeholder="{trans("— none —")}"
+                                    data-options='{ "allow_single_deselect": true }'>
+                                    <option value=""></option>
+                                    {if !empty($location_cityid)}
+                                        {foreach $streets as $street}
+                                            <option value="{$street.id}"{if $street.id == $location_streetid} selected{/if}
+                                                >{$street.label|escape}</option>
+                                        {/foreach}
+                                    {/if}
+                                </select>
+                            </label>
+                            <label class="filter-item"{if empty($location_cityid) || !empty($streets) && empty($location_streetid)} style="display: none;"{/if}>
+                                <span>{trans("Numbers")}</span>
+                                <select name="location_number_parity" form="netranges" class="filter-element">
+                                    <option value="">{trans("— any —")}</option>
+                                    <option value="odd"{if $location_number_parity == 'odd'} selected{/if}>{trans("odd")}</option>
+                                    <option value="even"{if $location_number_parity == 'even'} selected{/if}>{trans("even")}</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="lms-ui-filter-definition">
+                        </div>
+                    </div>
+                    <div class="lms-ui-filter-buttons">
                         {icon name="clear" class="filter-button" id="clear-filter"}
                         {icon name="next" class="filter-button" id="apply-filter"}
                     </div>
@@ -181,7 +201,7 @@
         </tr>
         {if $pagination->getTotal() != 0}
             <tr>
-                <td class="lms-ui-pagination" colspan="3">
+                <td class="lms-ui-pagination" colspan="6">
                     {include file="pagination.html"}
                 </td>
             </tr>
@@ -194,6 +214,21 @@
             </td>
             <td>
                 <strong>{trans("GPS coordinates")}</strong>
+            </td>
+            <td class="nobr">
+                <strong>{trans("Link type")}</strong>
+                <br>
+                <strong>{trans("Link technology")}</strong>
+            </td>
+            <td class="nobr">
+                <strong>{trans("Download")}</strong>
+                <br>
+                <strong>{trans("Upload")}</strong>
+            </td>
+            <td class="nobr">
+                <strong>{trans("Type")}</strong>
+                <br>
+                <strong>{trans("Services")}</strong>
             </td>
             <td>
                 &nbsp;
@@ -221,13 +256,56 @@
                     {$building.longitude}, {$building.latitude}
                 </td>
                 <td>
+                    {if !empty($building.netrangeid)}
+                        <span class="nobr">{$_LINKTYPES[$building.linktype]}</span>
+                    {/if}
+                    {if !empty($building.netrangeid)}
+                        <br>
+                        <span class="nobr">{$linktechnologies[$building.linktype][$building.linktechnology]}</span>
+                    {/if}
+                </td>
+                <td>
+                    {if !empty($building.netrangeid)}
+                        <span class="nobr">{$linkspeeds[$building.downlink]}</span>
+                    {/if}
+                    {if !empty($building.netrangeid)}
+                        <br>
+                        <span class="nobr">{$linkspeeds[$building.uplink]}</span>
+                    {/if}
+                </td>
+                <td>
+                    {if !empty($building.netrangeid)}
+                        <span class="nobr">
+                            {if $building.type == 1}
+                                {trans("<!netrange>real")}
+                            {elseif $building.type == 2}
+                                {trans("<!netrange>theoretical")}
+                            {/if}
+                        </span>
+                    {/if}
+                    {if !empty($building.netrangeid)}
+                        <br>
+                        <span class="nobr">{strip}
+                            {if ($building.services & 1) > 0}
+                                {trans("<!netrange>wholesale")}
+                            {/if}
+                            {if ($building.services & 2) > 0}
+                                {if ($building.service & 1) > 0}
+                                    ,&nbsp;
+                                {/if}
+                                {trans("<!netrange>retail")}
+                            {/if}
+                        {/strip}</span>
+                    {/if}
+                </td>
+                <td>
                     <input type="checkbox" name="range[buildings][{$building.id}]" value="{$building.id}"
-                        form="update-link" class="lms-ui-multi-check">
+                        form="update-range" class="lms-ui-multi-check">
                 </td>
             </tr>
         {foreachelse}
             <tr>
-                <td colspan="3" class="empty-table">
+                <td colspan="6" class="empty-table">
                     {if empty($location_stateid) || empty($location_districtid)}
                         {trans("State and district should be selected at least.")}
                     {else}
@@ -240,50 +318,50 @@
     <tfoot>
         {if $pagination->getTotal() != 0}
             <tr>
-                <td class="lms-ui-pagination" colspan="3">
+                <td class="lms-ui-pagination" colspan="6">
                     {include file="pagination.html"}
                 </td>
             </tr>
         {/if}
         <tr>
-            <td colspan="3">
+            <td colspan="6">
                 <table style="width: 100%;">
                     <tr>
                         <td class="text-left">
-                            <div id="update-panels">
-                                <div class="update-panel">
+                            <div class="operation-panels">
+                                <div class="operation-panel">
                                     <label>
                                         {trans("<!netrange>Link")}
-                                        <select name="range[type]" form="update-link" required>
+                                        <select name="range[linktype]" form="update-range" required>
                                             <option value="">{trans("— none —")}</option>
                                             {foreach $_LINKTYPES as $type => $label}
-                                                <option value="{$type}"{if $type == $range.type} selected{/if}>{$label}</option>
+                                                <option value="{$type}"{if $type == $range.linktype} selected{/if}>{$label}</option>
                                             {/foreach}
                                         </select>
                                     </label>
-                                    <label{if $range.type == ''} style="display: none;"{/if}>
+                                    <label{if $range.linktype == ''} style="display: none;"{/if}>
                                         {trans("<!netrange>Technology")}
-                                        <select name="range[technology]" form="update-link" required>
+                                        <select name="range[linktechnology]" form="update-range" required>
                                             <option value="">{trans("— none —")}</option>
-                                            {if $range.type != ''}
-                                                {foreach $linktechnologies[$range.type] as $technology => $label}
-                                                    <option value="{$technology}"{if $technology == $range.technology} selected{/if}>{$label}</option>
+                                            {if $range.linktype != ''}
+                                                {foreach $linktechnologies[$range.linktype] as $technology => $label}
+                                                    <option value="{$technology}"{if $technology == $range.linktechnology} selected{/if}>{$label}</option>
                                                 {/foreach}
                                             {/if}
                                         </select>
                                     </label>
-                                    <label {if $range.type == '' || $range.technology == ''} style="display: none;"{/if}>
+                                    <label {if $range.linktype == '' || $range.linktechnology == ''} style="display: none;"{/if}>
                                         {trans("Download")}
-                                        <select name="range[downlink]" form="update-link" required>
+                                        <select name="range[downlink]" form="update-range" required>
                                             <option value="">{trans("— none —")}</option>
                                             {foreach $linkspeeds as $speed => $label}
                                                 <option value="{$speed}"{if $speed == $range.downlink} selected{/if}>{$label}</option>
                                             {/foreach}
                                         </select>
                                     </label>
-                                    <label {if $range.type == '' || $range.technology == ''} style="display: none;"{/if}>
+                                    <label {if $range.linktype == '' || $range.linktechnology == ''} style="display: none;"{/if}>
                                         {trans("Upload")}
-                                        <select name="range[uplink]" form="update-link" required>
+                                        <select name="range[uplink]" form="update-range" required>
                                             <option value="">{trans("— none —")}</option>
                                             {foreach $linkspeeds as $speed => $label}
                                                 <option value="{$speed}"{if $speed == $range.uplink} selected{/if}>{$label}</option>
@@ -291,43 +369,48 @@
                                         </select>
                                     </label>
                                 </div>
-                                <div class="update-panel">
+                                <div class="operation-panel">
                                     <label>
                                         {trans("<!netrange>Type")}
-                                        <select name="range[rangetype]" form="update-link" required>
+                                        <select name="range[type]" form="update-range" required>
                                             <option value="">{trans("— none —")}</option>
-                                            <option value="1"{if $range.rangetype == 1} selected{/if}>{trans("<!netrange>real")}</option>
-                                            <option value="2"{if $range.rangetype == 2} selected{/if}>{trans("<!netrange>theoretical")}</option>
+                                            <option value="1"{if $range.type == 1} selected{/if}>{trans("<!netrange>real")}</option>
+                                            <option value="2"{if $range.type == 2} selected{/if}>{trans("<!netrange>theoretical")}</option>
                                         </select>
                                     </label>
                                     <span>
                                         <span>
-                                            {trans("<!netrange>Service")}
+                                            {trans("<!netrange>Services")}
                                         </span>
                                         <label>
-                                            <input type="hidden" name="range[service][1]" value="0" form="update-link">
-                                            <input type="checkbox" name="range[service][1]" value="1" form="update-link"
-                                                {if ($range.service & 1) > 0} checked{/if}>
+                                            <input type="hidden" name="range[services][1]" value="0" form="update-range">
+                                            <input type="checkbox" name="range[services][1]" value="1" form="update-range"
+                                                {if ($range.services & 1) > 0} checked{/if}>
                                             {trans("<!netrange>wholesale")}
                                         </label>
                                         <label>
-                                            <input type="hidden" name="range[service][2]" value="0" form="update-link">
-                                            <input type="checkbox" name="range[service][2]" value="1" form="update-link"
-                                                {if ($range.service & 2) > 0} checked{/if}>
+                                            <input type="hidden" name="range[services][2]" value="0" form="update-range">
+                                            <input type="checkbox" name="range[services][2]" value="1" form="update-range"
+                                                {if ($range.services & 2) > 0} checked{/if}>
                                             {trans("<!netrange>retail")}
                                         </label>
                                     </span>
                                 </div>
-                                <div class="update-panel">
-                                    {button id="update-link" icon="apply" label="Update" form="update-link" type="submit"}
+                                <div class="operation-panel">
+                                    {button id="update-range" icon="apply" label="Update" form="update-range" type="submit"}
                                 </div>
                             </div>
                         </td>
                         <td class="text-right valign-top">
-                            <label>
-                                {trans("Check All")}
-                                <input type="checkbox" name="allbox" class="lms-ui-multi-check-all" value="1">
-                            </label>
+                            <div class="operation-panels">
+                                <div class="operation-panel" id="delete-check-all-panel">
+                                    {button icon="delete" label="Delete" id="delete-button"}
+                                    <label>
+                                        {trans("Check All")}
+                                        <input type="checkbox" name="allbox" class="lms-ui-multi-check-all" value="1">
+                                    </label>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -462,8 +545,8 @@
             {/foreach}
         {/foreach}
 
-        $('[name="range[type]"]').change(function() {
-            var select = $('[name="range[technology]"]');
+        $('[name="range[linktype]"]').change(function() {
+            var select = $('[name="range[linktechnology]"]');
             var html = '<option value="">{trans("— none —")}</option>';
             if ($(this).val() !== '') {
                 $.each(linkTechnologies[$(this).val()], function (index, label) {
@@ -476,8 +559,15 @@
             $('[name="range[downlink]"],[name="range[uplink]"]').prop('required', false).closest('label').hide();
         });
 
-        $('[name="range[technology]"]').change(function() {
+        $('[name="range[linktechnology]"]').change(function() {
             $('[name="range[downlink]"],[name="range[uplink]"]').prop('required', $(this).val() !== '').closest('label').toggle($(this).val() !== '');
+        });
+
+        $('#delete-button').click(function() {
+            $(this).prop('disabled', true);
+            $('#update-range').attr('novalidate', '').attr('action', function() {
+                return $(this).attr('action') + '&delete=1';
+            }).submit();
         });
     });
 

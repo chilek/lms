@@ -168,6 +168,7 @@ DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS serviceproviders;
 DROP TABLE IF EXISTS divisions;
 DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS netranges;
 DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS location_streets;
 DROP TABLE IF EXISTS location_street_types;
@@ -390,6 +391,30 @@ CREATE TABLE location_buildings (
 	CONSTRAINT location_buildings_street_id_fkey
 		FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	INDEX location_cityid_index (city_id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table netranges
+#
+CREATE TABLE netranges (
+	id int(11) NOT NULL auto_increment,
+	buildingid int(11) NOT NULL
+	linktype smallint NOT NULL,
+	linktechnology smallint NOT NULL,
+	downlink int(11) NOT NULL,
+	uplink int(11) NOT NULL,
+	type smallint NOT NULL,
+	services smallint NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT netranges_buildingid_fkey
+		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	INDEX netranges_linktype_idx (linktype),
+	INDEX netranges_linktechnology_idx (linktechnology),
+	INDEX netranges_downlink_idx (downlink),
+	INDEX netranges_uplink_idx (uplink),
+	INDEX netranges_type_idx (type),
+	INDEX netranges_services_idx (services)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4261,4 +4286,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022110900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022111600');

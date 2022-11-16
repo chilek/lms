@@ -223,6 +223,31 @@ CREATE TABLE location_buildings (
 DROP INDEX IF EXISTS location_cityid_index;
 CREATE INDEX location_cityid_index ON location_buildings (city_id);
 
+/* --------------------------------------------------------
+  Structure of table "netranges"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXSITS netranges_id_seq;
+CREATE SEQUENCE netranges_id_seq;
+DROP TABLE IF EXISTS netranges;
+CREATE TABLE netranges (
+    id integer DEFAULT nextval('netranges_id_seq'::text) NOT NULL,
+    buildingid integer NOT NULL
+        CONSTRAINT netranges_buildingid_fkey REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    linktype smallint NOT NULL,
+    linktechnology smallint NOT NULL,
+    downlink integer NOT NULL,
+    uplink integer NOT NULL,
+    type smallint NOT NULL,
+    services smallint NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX netranges_linktype_idx ON netranges (linktype);
+CREATE INDEX netranges_linktechnology_idx ON netranges (linktechnology);
+CREATE INDEX netranges_downlink_idx ON netranges (downlink);
+CREATE INDEX netranges_uplink_idx ON netranges (uplink);
+CREATE INDEX netranges_type_idx ON netranges (type);
+CREATE INDEX netranges_services_idx ON netranges (services);
+
 /* ---------------------------------------------------
  Structure of table "addresses"
 ------------------------------------------------------*/
@@ -4311,6 +4336,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022110900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022111600');
 
 COMMIT;
