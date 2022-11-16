@@ -1490,7 +1490,7 @@ if (isset($options['buildings'])) {
             $data = array();
             $data[] = $city['id'];
             $data[] = $street['id'] ?: 'null';
-            $data[] = $v['building_num'] ? $DB->Escape($v['NUMER']) : 'null';
+            $data[] = $v['NUMER'] ? $DB->Escape($v['NUMER']) : 'null';
             $data[] = $v['PNA'] ? $DB->Escape($v['PNA']) : 'null';
             $data[] = $v['latitude'] ?: 'null';
             $data[] = $v['longitude'] ?: 'null';
