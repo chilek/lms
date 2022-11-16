@@ -228,6 +228,8 @@ $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('
 
 $billing_document_template = ConfigHelper::getConfig('payments.billing_document_template', '');
 
+$auto_payments = ConfigHelper::checkConfig('payments.auto_payments');
+
 $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
     isset($options['customer-status'])
@@ -1953,7 +1955,7 @@ foreach ($assigns as $assign) {
                             )
                         );
 
-                        if ($PAYTYPES[$inv_paytype]['features'] & INVOICE_FEATURE_AUTO_PAYMENT) {
+                        if ($auto_payments && ($PAYTYPES[$inv_paytype]['features'] & INVOICE_FEATURE_AUTO_PAYMENT)) {
                             $DB->Execute(
                                 "INSERT INTO cash (type, time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
