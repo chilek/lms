@@ -338,6 +338,9 @@ version 28-git (????-??-??):
     (default: 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude') [chilan]
   - improvement: 'phpui.geo_location_url' allows to customize URL of geographic location point
     (default: 'https://www.google.com/maps/place/%location') [chilan]
+  - improvement: 'payments.auto_payments' with default value 'false' controls if invoices with pay type
+    of 'cash', 'paid', 'barter' and 'compensation' trigger oposite finascial operations (usually payments)
+    automation [chilan]
 
 version 27.0 (2021-08-20):
 
