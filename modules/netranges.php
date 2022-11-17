@@ -256,10 +256,10 @@ function getBuildings(array $filter)
     if (isset($filter['without-ranges']) && is_numeric($filter['without-ranges'])) {
         switch (intval($filter['without-ranges'])) {
             case 1:
-                $where[] = 'r.id IS NOT NULL';
+                $where[] = 'r.id IS NULL';
                 break;
             case 2:
-                $where[] = 'r.id IS NULL';
+                $where[] = 'r.id IS NOT NULL';
                 break;
         }
     }
