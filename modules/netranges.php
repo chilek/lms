@@ -627,7 +627,7 @@ if (isset($_GET['page'])) {
 if (empty($page)) {
     $page = 1;
 }
-$limit = intval(ConfigHelper::getConfig('phpui.netranges_pagelimit', '100'));
+$limit = intval(ConfigHelper::getConfig('phpui.netrangelist_pagelimit', '100'));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
