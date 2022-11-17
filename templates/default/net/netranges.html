@@ -46,11 +46,11 @@
         margin-right: 0.5em;
     }
 
-    div.lms-ui-filter-container div.lms-ui-filter-definition .filter-button {
+    div.lms-ui-filter-container div.lms-ui-filter-buttons .filter-button {
         cursor: pointer;
     }
 
-    div.lms-ui-filter-container div.lms-ui-filter-definition .filter-button:not(:last-child) {
+    div.lms-ui-filter-container div.lms-ui-filter-buttons..filter-button:not(:last-child) {
         margin-left: 0.5em;
     }
 
@@ -88,6 +88,10 @@
 
     #delete-check-all-panel {
         justify-content: flex-end;
+    }
+
+    .summary {
+        border-top: none;
     }
 
 </style>
@@ -320,6 +324,11 @@
         {/foreach}
     </tbody>
     <tfoot>
+        <tr>
+            <td colspan="6" class="text-center summary">
+                <strong>{t a=$total}<!netrange>Buildings: $a{/t}, {t a=$ranges}<!netrange>Ranges: $a{/t}</strong>
+            </td>
+        </tr>
         {if $pagination->getTotal() != 0}
             <tr>
                 <td class="lms-ui-pagination" colspan="6">

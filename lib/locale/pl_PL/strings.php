@@ -4083,6 +4083,7 @@ $_LANG['Azimuth:'] = 'Azymut:';
 $_LANG['Width:'] = 'Szerokość:';
 $_LANG['Altitude:'] = 'Wysokość:';
 $_LANG['Range:'] = 'Zasięg:';
+$_LANG['<!netrange>Ranges: $a'] = 'Zasięgów: $a';
 $_LANG['<!netrange>Type'] = 'Typ';
 $_LANG['Frequency:'] = 'Częstotliwość:';
 $_LANG['Bandwidth:'] = 'Szerokość kanału:';
@@ -4258,6 +4259,7 @@ $_LANG['user assignment<!syslog>'] = 'powiązanie użytkownika z grupą';
 $_LANG['Street:'] = 'Ulica:';
 $_LANG['Building:'] = 'Budynek:';
 $_LANG['Building'] = 'Budynek';
+$_LANG['<!netrange>Buildings: $a'] = 'Budynków: $a';
 $_LANG['Apartment:'] = 'Lokal:';
 $_LANG['Postal address'] = 'Adres korespondencyjny';
 

@@ -254,8 +254,10 @@ function getBuildings(array $filter)
     }
 
     if ($count) {
-        return $DB->GetOne(
-            'SELECT COUNT(*)
+        return $DB->GetRow(
+            'SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS ranges
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             JOIN location_cities lc ON lc.id = b.city_id
@@ -490,7 +492,9 @@ $filter = array(
     'count' => true,
 );
 
-$total = !empty($filter['stateid']) && !empty($filter['districtid']) ? intval(getBuildings($filter)) : 0;
+$summary = !empty($filter['stateid']) && !empty($filter['districtid']) ? getBuildings($filter) : array();
+$total = isset($summary['total']) ? intval($summary['total']) : 0;
+$ranges = isset($summary['ranges']) ? intval($summary['ranges']) : 0;
 if (isset($_GET['page'])) {
     $page = intval($_GET['page']);
 } elseif ($SESSION->is_set('netranges_page')) {
@@ -530,6 +534,8 @@ $SMARTY->assign(array(
     'linktechnologies' => $linktechnologies,
     'linkspeeds' => $linkspeeds,
     'range'=> $range,
+    'total' => $total,
+    'ranges' => $ranges,
 ));
 
 $SMARTY->display('net/netranges.html');
