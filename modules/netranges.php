@@ -658,6 +658,7 @@ $SMARTY->assign(array(
     'range'=> $range,
     'total' => $total,
     'ranges' => $ranges,
+    'existing' => $existing,
 ));
 
 $SMARTY->display('net/netranges.html');
