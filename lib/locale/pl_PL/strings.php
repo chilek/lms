@@ -1072,6 +1072,7 @@ $_LANG['No filter'] = 'Filtr wyłączony';
 $_LANG['no owner'] = 'bez właściciela';
 $_LANG['no owner or logged user'] = 'bez właściciela lub zalogowany użytkownik';
 $_LANG['with owner'] = 'z właścicielem';
+$_LANG['<!netrange>Without ranges'] = 'Bez zasięgów';
 $_LANG['Filter:'] = 'Filtr:';
 $_LANG['Finances'] = 'Finanse';
 $_LANG['finances hiding'] = 'ukrywanie informacji finansowych';

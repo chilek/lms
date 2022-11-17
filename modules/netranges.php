@@ -253,6 +253,35 @@ function getBuildings(array $filter)
         $where[] = $DB->RegExp('b.building_num', $filter['numberparity'] == 'odd' ? '[13579][[:alpha:]]*$' : '[02468][[:alpha:]]*$');
     }
 
+    if (isset($filter['without-ranges']) && is_numeric($filter['without-ranges'])) {
+        switch (intval($filter['without-ranges'])) {
+            case 1:
+                $where[] = 'r.id IS NOT NULL';
+                break;
+            case 2:
+                $where[] = 'r.id IS NULL';
+                break;
+        }
+    }
+    if (isset($filter['linktype']) && is_numeric($filter['linktype'])) {
+        $where[] = 'r.linktype = ' . intval($filter['linktype']);
+    }
+    if (isset($filter['linktechnology']) && is_numeric($filter['linktechnology'])) {
+        $where[] = 'r.linktechnology = ' . intval($filter['linktechnology']);
+    }
+    if (isset($filter['downlink']) && is_numeric($filter['downlink'])) {
+        $where[] = 'r.downlink = ' . intval($filter['downlink']);
+    }
+    if (isset($filter['uplink']) && is_numeric($filter['uplink'])) {
+        $where[] = 'r.uplink = ' . intval($filter['uplink']);
+    }
+    if (isset($filter['type']) && is_numeric($filter['type'])) {
+        $where[] = 'r.type = ' . intval($filter['type']);
+    }
+    if (isset($filter['services']) && is_numeric($filter['services'])) {
+        $where[] = 'r.services = ' . intval($filter['services']);
+    }
+
     if ($count) {
         return $DB->GetRow(
             'SELECT
@@ -328,7 +357,6 @@ if (isset($_GET['boroughid'])) {
 }
 
 $oldrange = $SESSION->get('netranges_update_range');
-
 $oldrange = isset($oldrange) ? $oldrange : array();
 $range = isset($_POST['range']) ? $_POST['range'] : array();
 
@@ -424,73 +452,118 @@ if (isset($_POST['range'])) {
 
 $layout['pagetitle'] = trans('Network Ranges');
 
-if (isset($_POST['location_stateid'])) {
-    $location_stateid = strlen($_POST['location_stateid']) ? intval($_POST['location_stateid']) : '';
-} else {
-    $location_stateid = $SESSION->get('netranges_stateid');
-}
-$SESSION->save('netranges_stateid', $location_stateid);
+$oldfilter = $SESSION->get('netranges_filter');
+$oldfilter = isset($oldfilter) ? $oldfilter : array();
+$filter = isset($_POST['filter']) ? $_POST['filter'] : array();
 
-if (isset($_POST['location_districtid'])) {
-    $location_districtid = strlen($_POST['location_districtid']) ? intval($_POST['location_districtid']) : '';
+if (isset($filter['without-ranges'])) {
+    $filter['without-ranges'] = strlen($filter['without-ranges']) ? intval($filter['without-ranges']) : '';
 } else {
-    $location_districtid = $SESSION->get('netranges_districtid');
+    $filter['without-ranges'] = isset($oldfilter['without-ranges']) ? $oldfilter['without-ranges'] : '';
 }
-if (empty($location_stateid)) {
-    $location_districtid = '';
-}
-$SESSION->save('netranges_districtid', $location_districtid);
 
-if (isset($_POST['location_boroughid'])) {
-    $location_boroughid = strlen($_POST['location_boroughid']) ? intval($_POST['location_boroughid']) : '';
+if (isset($filter['stateid'])) {
+    $filter['stateid'] = strlen($filter['stateid']) ? intval($filter['stateid']) : '';
 } else {
-    $location_boroughid = $SESSION->get('netranges_boroughid');
+    $filter['stateid'] = isset($oldfilter['stateid']) ? $oldfilter['stateid'] : '';
 }
-if (empty($location_districtid)) {
-    $location_boroughid = '';
-}
-$SESSION->save('netranges_boroughid', $location_boroughid);
 
-if (isset($_POST['location_cityid'])) {
-    $location_cityid = strlen($_POST['location_cityid']) ? intval($_POST['location_cityid']) : '';
+if (isset($filter['districtid'])) {
+    $filter['districtid'] = strlen($filter['districtid']) ? intval($filter['districtid']) : '';
 } else {
-    $location_cityid = $SESSION->get('netranges_cityid');
+    $filter['districtid'] = isset($oldfilter['districtid']) ? $oldfilter['districtid'] : '';
 }
-if (empty($location_boroughid)) {
-    $location_cityid = '';
+if (empty($filter['stateid'])) {
+    $filter['districtid'] = '';
 }
-$SESSION->save('netranges_cityid', $location_cityid);
 
-if (isset($_POST['location_streetid'])) {
-    $location_streetid = strlen($_POST['location_streetid']) ? intval($_POST['location_streetid']) : '';
+if (isset($filter['boroughid'])) {
+    $filter['boroughid'] = strlen($filter['boroughid']) ? intval($filter['boroughid']) : '';
 } else {
-    $location_streetid = $SESSION->get('netranges_streetid');
+    $filter['boroughid'] = isset($oldfilter['boroughid']) ? $oldfilter['boroughid'] : '';
 }
-if (empty($location_cityid)) {
-    $location_streetid = '';
+if (empty($filter['districtid'])) {
+    $filter['boroughid'] = '';
 }
-$SESSION->save('netranges_streetid', $location_streetid);
 
-$streets = empty($location_cityid) ? array() : getStreets($location_cityid);
-if (isset($_POST['location_number_parity'])) {
-    $location_number_parity = $_POST['location_number_parity'];
+if (isset($filter['cityid'])) {
+    $filter['cityid'] = strlen($filter['cityid']) ? intval($filter['cityid']) : '';
 } else {
-    $location_number_parity = $SESSION->get('netranges_number_parity');
+    $filter['cityid'] = isset($oldfilter['cityid']) ? $oldfilter['cityid'] : '';
 }
-if (empty($location_cityid) || !empty($streets) && empty($location_streetid)) {
-    $location_number_parity = '';
+if (empty($filter['boroughid'])) {
+    $filter['cityid'] = '';
 }
-$SESSION->save('netranges_number_parity', $location_number_parity);
 
-$filter = array(
-    'stateid' => $location_stateid,
-    'districtid' => $location_districtid,
-    'boroughid' => $location_boroughid,
-    'cityid' => $location_cityid,
-    'streetid' => $location_streetid,
-    'numberparity' => $location_number_parity,
-    'count' => true,
-);
+if (isset($filter['streetid'])) {
+    $filter['streetid'] = strlen($filter['streetid']) ? intval($filter['streetid']) : '';
+} else {
+    $filter['streetid'] = isset($oldfilter['streetid']) ? $oldfilter['streetid'] : '';
+}
+if (empty($filter['cityid'])) {
+    $filter['streetid'] = '';
+}
+
+$streets = empty($filter['cityid']) ? array() : getStreets($filter['cityid']);
+if (isset($filter['numberparity'])) {
+    $filter['numberparity'] = $filter['numberparity'];
+} else {
+    $filter['numberparity'] = isset($oldfilter['numberparity']) ? $oldfilter['numberparity'] : '';
+}
+if (empty($filter['cityid']) || !empty($streets) && empty($filter['streetid'])) {
+    $filter['numberparity'] = '';
+}
+
+if (isset($filter['linktype'])) {
+    $filter['linktype'] = strlen($filter['linktype']) ? intval($filter['linktype']) : '';
+} else {
+    $filter['linktype'] = isset($oldfilter['linktype']) ? $oldfilter['linktype'] : '';
+}
+
+if (isset($filter['linktechnology'])) {
+    $filter['linktechnology'] = strlen($filter['linktechnology']) ? intval($filter['linktechnology']) : '';
+} else {
+    $filter['linktechnology'] = isset($oldfilter['linktechnology']) ? $oldfilter['linktechnology'] : '';
+}
+
+if (isset($filter['downlink'])) {
+    $filter['downlink'] = strlen($filter['downlink']) ? intval($filter['downlink']) : '';
+} else {
+    $filter['downlink'] = isset($oldfilter['downlink']) ? $oldfilter['downlink'] : '';
+}
+
+if (isset($filter['uplink'])) {
+    $filter['uplink'] = strlen($filter['uplink']) ? intval($filter['uplink']) : '';
+} else {
+    $filter['uplink'] = isset($oldfilter['uplink']) ? $oldfilter['uplink'] : '';
+}
+
+if (isset($filter['type'])) {
+    $filter['type'] = strlen($filter['type']) ? intval($filter['type']) : '';
+} else {
+    $filter['type'] = isset($oldfilter['type']) ? $oldfilter['type'] : '';
+}
+
+$services = 0;
+if (isset($filter['services']['1'])) {
+    if (!empty($filter['services']['1'])) {
+        $services |= 1;
+    }
+} else {
+    $services |= isset($oldfilter['services']) && ($oldfilter['services'] & 1) ? 1 : 0;
+}
+if (isset($filter['services']['2'])) {
+    if (!empty($filter['services']['2'])) {
+        $services |= 2;
+    }
+} else {
+    $services |= isset($oldfilter['services']) && ($oldfilter['services'] & 2) ? 2 : 0;
+}
+$filter['services'] = $services;
+
+$SESSION->save('netranges_filter', $filter);
+
+$filter['count'] = true;
 
 $summary = !empty($filter['stateid']) && !empty($filter['districtid']) ? getBuildings($filter) : array();
 $total = isset($summary['total']) ? intval($summary['total']) : 0;
@@ -525,12 +598,12 @@ if (!empty($total)) {
 $SMARTY->assign('buildings', $buildings);
 
 $SMARTY->assign('boroughs', getTerritoryUnits());
-$SMARTY->assign('cities', empty($location_boroughid) ? array() : getCities($location_boroughid));
+$SMARTY->assign('cities', empty($filter['boroughid']) ? array() : getCities($filter['boroughid']));
 $SMARTY->assign('streets', $streets);
 $SMARTY->assign('pagination', $pagination);
-$SMARTY->assign(compact('location_stateid', 'location_districtid', 'location_boroughid', 'location_cityid', 'location_streetid', 'location_number_parity'));
 
 $SMARTY->assign(array(
+    'filter' => $filter,
     'linktechnologies' => $linktechnologies,
     'linkspeeds' => $linkspeeds,
     'range'=> $range,
