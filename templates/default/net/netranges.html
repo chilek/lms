@@ -112,14 +112,15 @@
     <colgroup>
         <col style="width: 1%;">
         <col style="width: 1%;">
-        <col style="width: 1;">
         <col style="width: 1%;">
-        <col style="width: 95%;">
         <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 94%;">
     </colgroup>
     <thead>
         <tr>
-            <td colspan="6">
+            <td colspan="7">
                 <div class="lms-ui-filter-container">
                     <div class="lms-ui-filter-definitions">
                         <div class="lms-ui-filter-definition">
@@ -212,6 +213,14 @@
                                 </select>
                             </label>
                             <label class="filter-item">
+                                {trans("<!netrange>Existing")}
+                                <select name="filter[existing]" form="netranges">
+                                    <option value="">{trans("— any —")}</option>
+                                    <option value="1"{if $filter['existing'] == 1} selected{/if}>{trans("yes")}</option>
+                                    <option value="2"{if $filter['existing'] == 2} selected{/if}>{trans("no")}</option>
+                                </select>
+                            </label>
+                            <label class="filter-item">
                                 {trans("<!netrange>Link")}
                                 <select name="filter[linktype]" form="netranges">
                                     <option value="">{trans("— any —")}</option>
@@ -285,7 +294,7 @@
         </tr>
         {if $pagination->getTotal() != 0}
             <tr>
-                <td class="lms-ui-pagination" colspan="6">
+                <td class="lms-ui-pagination" colspan="7">
                     {include file="pagination.html"}
                 </td>
             </tr>
@@ -313,6 +322,9 @@
                 <strong>{trans("Type")}</strong>
                 <br>
                 <strong>{trans("Services")}</strong>
+            </td>
+            <td class="nobr">
+                <strong>{trans("<!netrange>Existing")}</strong>
             </td>
             <td>
                 &nbsp;
@@ -382,14 +394,19 @@
                         {/strip}</span>
                     {/if}
                 </td>
-                <td>
+                <td class="text-center">
+                    {if !empty($building.existing)}
+                        {icon name="checked"}
+                    {/if}
+                </td>
+                <td class="text-right">
                     <input type="checkbox" name="range[buildings][{$building.id}]" value="{$building.id}"
                         form="update-range" class="lms-ui-multi-check">
                 </td>
             </tr>
         {foreachelse}
             <tr>
-                <td colspan="6" class="empty-table">
+                <td colspan="7" class="empty-table">
                     {if empty($filter.stateid) || empty($filter.districtid)}
                         {trans("State and district should be selected at least.")}
                     {else}
@@ -401,19 +418,19 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="6" class="text-center summary">
+            <td colspan="7" class="text-center summary">
                 <strong>{t a=$total}<!netrange>Buildings: $a{/t}, {t a=$ranges}<!netrange>Ranges: $a{/t}</strong>
             </td>
         </tr>
         {if $pagination->getTotal() != 0}
             <tr>
-                <td class="lms-ui-pagination" colspan="6">
+                <td class="lms-ui-pagination" colspan="7">
                     {include file="pagination.html"}
                 </td>
             </tr>
         {/if}
         <tr>
-            <td colspan="6">
+            <td colspan="7">
                 <table style="width: 100%;">
                     <tr>
                         <td class="text-left">

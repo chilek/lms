@@ -263,6 +263,28 @@ function getBuildings(array $filter)
                 break;
         }
     }
+    if (isset($filter['existing']) && is_numeric($filter['existing'])) {
+        switch (intval($filter['existing'])) {
+            case 1:
+                $where[] = 'EXISTS (
+                        SELECT 1 FROM nodes n
+                        LEFT JOIN vaddresses a ON a.id = n.address_id
+                        WHERE a.city_id = b.city_id
+                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
+                            AND a.house = b.building_num
+                    )';
+                break;
+            case 2:
+                $where[] = 'NOT EXISTS (
+                        SELECT 1 FROM nodes n
+                        LEFT JOIN vaddresses a ON a.id = n.address_id
+                        WHERE a.city_id = b.city_id
+                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
+                            AND a.house = b.building_num
+                    )';
+                break;
+        }
+    }
     if (isset($filter['linktype']) && is_numeric($filter['linktype'])) {
         $where[] = 'r.linktype = ' . intval($filter['linktype']);
     }
@@ -319,7 +341,17 @@ function getBuildings(array $filter)
                 r.downlink,
                 r.uplink,
                 r.type,
-                r.services
+                r.services,
+                (CASE
+                    WHEN EXISTS (
+                        SELECT 1 FROM nodes n
+                        LEFT JOIN vaddresses a ON a.id = n.address_id
+                        WHERE a.city_id = b.city_id
+                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
+                            AND a.house = b.building_num
+                    ) THEN 1
+                    ELSE 0
+                END) AS existing
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             LEFT JOIN location_street_types t ON t.id = lst.typeid
@@ -460,6 +492,12 @@ if (isset($filter['without-ranges'])) {
     $filter['without-ranges'] = strlen($filter['without-ranges']) ? intval($filter['without-ranges']) : '';
 } else {
     $filter['without-ranges'] = isset($oldfilter['without-ranges']) ? $oldfilter['without-ranges'] : '';
+}
+
+if (isset($filter['existing'])) {
+    $filter['existing'] = strlen($filter['existing']) ? intval($filter['existing']) : '';
+} else {
+    $filter['existing'] = isset($oldfilter['existing']) ? $oldfilter['existing'] : '';
 }
 
 if (isset($filter['stateid'])) {
