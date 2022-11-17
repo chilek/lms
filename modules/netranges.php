@@ -300,7 +300,7 @@ function getBuildings(array $filter)
     if (isset($filter['type']) && is_numeric($filter['type'])) {
         $where[] = 'r.type = ' . intval($filter['type']);
     }
-    if (isset($filter['services']) && is_numeric($filter['services'])) {
+    if (isset($filter['services']) && is_numeric($filter['services']) && !empty($filter['services'])) {
         $where[] = 'r.services = ' . intval($filter['services']);
     }
 
