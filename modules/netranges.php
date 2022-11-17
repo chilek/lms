@@ -308,7 +308,17 @@ function getBuildings(array $filter)
         return $DB->GetRow(
             'SELECT
                 COUNT(*) AS total,
-                SUM(CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS ranges
+                SUM(CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS ranges,
+                SUM(CASE
+                    WHEN EXISTS (
+                        SELECT 1 FROM nodes n
+                        LEFT JOIN vaddresses a ON a.id = n.address_id
+                        WHERE a.city_id = b.city_id
+                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
+                            AND a.house = b.building_num
+                    ) THEN 1
+                    ELSE 0
+                END) AS existing
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             JOIN location_cities lc ON lc.id = b.city_id
@@ -606,6 +616,7 @@ $filter['count'] = true;
 $summary = !empty($filter['stateid']) && !empty($filter['districtid']) ? getBuildings($filter) : array();
 $total = isset($summary['total']) ? intval($summary['total']) : 0;
 $ranges = isset($summary['ranges']) ? intval($summary['ranges']) : 0;
+$existing = isset($summary['existing']) ? intval($summary['existing']) : 0;
 if (isset($_GET['page'])) {
     $page = intval($_GET['page']);
 } elseif ($SESSION->is_set('netranges_page')) {

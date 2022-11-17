@@ -419,7 +419,11 @@
     <tfoot>
         <tr>
             <td colspan="7" class="text-center summary">
-                <strong>{t a=$total}<!netrange>Buildings: $a{/t}, {t a=$ranges}<!netrange>Ranges: $a{/t}</strong>
+                <strong>
+                    {t a=$total}<!netrange>Buildings: $a{/t},
+                    {t a=$ranges}<!netrange>Ranges: $a{/t},
+                    {t a=$existing}<!netrange>Existing: $a{/t}
+                </strong>
             </td>
         </tr>
         {if $pagination->getTotal() != 0}

@@ -656,6 +656,7 @@ $_LANG['connected<!plural:item>'] = 'podłączone';
 $_LANG['connected<!plural>'] = 'podłączeni';
 $_LANG['existing<!plural>'] = 'istniejący';
 $_LANG['<!netrange>Existing'] = 'Istniejące';
+$_LANG['<!netrange>Existing: $a'] = 'Istniejące: $a';
 $_LANG['connected<!singular>'] = 'podłączony';
 $_LANG['Connected:'] = 'Podłączeni:';
 $_LANG['Connected<!status>'] = 'podłączony';
