@@ -204,6 +204,7 @@ function dbf_to_utf8($src)
     return str_replace(
         array(
             "\xC2\xB9",
+            "\xC3\xA6",
             "\xC3\xAA",
             "\xC4\x99",
             "\xC2\xB3",
@@ -219,6 +220,7 @@ function dbf_to_utf8($src)
         ),
         array(
             'ą',
+            'ć',
             'ę',
             'ę',
             'ł',
