@@ -27,7 +27,7 @@ if (!$this->ResourceExists('netranges', LMSDB::RESOURCE_TYPE_TABLE)) {
     $this->Execute("
         CREATE TABLE netranges (
             id int(11) NOT NULL auto_increment,
-            buildingid int(11) NOT NULL
+            buildingid int(11) NOT NULL,
             linktype smallint NOT NULL,
             linktechnology smallint NOT NULL,
             downlink int(11) NOT NULL,
