@@ -206,7 +206,7 @@
                             {icon name="filter"}
                             <label class="filter-item">
                                 {trans("<!netrange>Without ranges")}
-                                <select name="filter[without-ranges]" form="netranges">
+                                <select name="filter[without-ranges]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     <option value="1"{if $filter['without-ranges'] == 1} selected{/if}>{trans("yes")}</option>
                                     <option value="2"{if $filter['without-ranges'] == 2} selected{/if}>{trans("no")}</option>
@@ -214,7 +214,7 @@
                             </label>
                             <label class="filter-item">
                                 {trans("<!netrange>Existing")}
-                                <select name="filter[existing]" form="netranges">
+                                <select name="filter[existing]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     <option value="1"{if $filter['existing'] == 1} selected{/if}>{trans("yes")}</option>
                                     <option value="2"{if $filter['existing'] == 2} selected{/if}>{trans("no")}</option>
@@ -222,7 +222,7 @@
                             </label>
                             <label class="filter-item">
                                 {trans("<!netrange>Link")}
-                                <select name="filter[linktype]" form="netranges">
+                                <select name="filter[linktype]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     {foreach $_LINKTYPES as $type => $label}
                                         <option value="{$type}"{if $type == $filter.linktype} selected{/if}>{$label}</option>
@@ -231,7 +231,7 @@
                             </label>
                             <label class="filter-item" {if $filter.linktype == ''} style="display: none;"{/if}>
                                 {trans("<!netrange>Technology")}
-                                <select name="filter[linktechnology]" form="netranges">
+                                <select name="filter[linktechnology]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     {if $filter.linktype != ''}
                                         {foreach $linktechnologies[$filter.linktype] as $technology => $label}
@@ -242,7 +242,7 @@
                             </label>
                             <label class="filter-item" {if $filter.linktype == '' || $filter.linktechnology == ''} style="display: none;"{/if}>
                                 {trans("Download")}
-                                <select name="filter[downlink]" form="netranges">
+                                <select name="filter[downlink]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     {foreach $linkspeeds as $speed => $label}
                                         <option value="{$speed}"{if $speed == $filter.downlink} selected{/if}>{$label}</option>
@@ -251,7 +251,7 @@
                             </label>
                             <label class="filter-item" {if $filter.linktype == '' || $filter.linktechnology == ''} style="display: none;"{/if}>
                                 {trans("Upload")}
-                                <select name="filter[uplink]" form="netranges">
+                                <select name="filter[uplink]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     {foreach $linkspeeds as $speed => $label}
                                         <option value="{$speed}"{if $speed == $filter.uplink} selected{/if}>{$label}</option>
@@ -260,7 +260,7 @@
                             </label>
                             <label class="filter-item">
                                 {trans("<!netrange>Type")}
-                                <select name="filter[type]" form="netranges">
+                                <select name="filter[type]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     <option value="1"{if $filter.type == 1} selected{/if}>{trans("<!netrange>real")}</option>
                                     <option value="2"{if $filter.type == 2} selected{/if}>{trans("<!netrange>theoretical")}</option>
@@ -273,12 +273,14 @@
                                 <label>
                                     <input type="hidden" name="filter[services][1]" value="0" form="netranges">
                                     <input type="checkbox" name="filter[services][1]" value="1" form="netranges"
+                                        class="filter-element"
                                         {if ($filter.services & 1) > 0} checked{/if}>
                                     {trans("<!netrange>wholesale")}
                                 </label>
                                 <label>
                                     <input type="hidden" name="filter[services][2]" value="0" form="netranges">
                                     <input type="checkbox" name="filter[services][2]" value="1" form="netranges"
+                                        class="filter-element"
                                         {if ($filter.services & 2) > 0} checked{/if}>
                                     {trans("<!netrange>retail")}
                                 </label>
@@ -636,7 +638,11 @@
 
         $('#clear-filter').click(function() {
             $('.filter-element').each(function() {
-                $(this).val('');
+                if ($(this).is(':checkbox')) {
+                    $(this).prop('checked', false);
+                } else {
+                    $(this).val('');
+                }
             });
             $('#netranges').submit();
         });
