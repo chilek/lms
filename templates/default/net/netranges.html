@@ -335,7 +335,7 @@
     </thead>
     <tbody class="lms-ui-multi-check">
         {foreach $buildings as $building}
-            <tr class="highlight">
+            <tr class="highlight"{if !empty($building.netrangeid)} data-netrangeid="{$building.netrangeid}"{/if}>
                 <td class="nobr">
                     {$building.zip} {$building.city|escape},
                     {if strlen($building.rstreet)}
@@ -509,7 +509,7 @@
                                     </span>
                                 </div>
                                 <div class="operation-panel">
-                                    {button id="update-range" icon="apply" label="Update" form="update-range" type="submit"}
+                                    {button id="update-button" icon="apply" label="Update" form="update-range" type="submit"}
                                 </div>
                             </div>
                         </td>
@@ -694,11 +694,26 @@
                 }).closest('label').toggle($(this).val() !== '');
         });
 
+        $('#update-range').submit(function() {
+            if (!$('.lms-ui-multi-check').find(':checked').length) {
+                var button = $('#update-button');
+
+                alertDialog("{trans("No building selected!")}", button);
+                button.prop('disabled', false);
+                return false;
+            }
+        });
+
         $('#delete-button').click(function() {
-            $(this).prop('disabled', true);
-            $('#update-range').attr('novalidate', '').attr('action', function() {
-                return $(this).attr('action') + '&delete=1';
-            }).submit();
+            if ($('.lms-ui-multi-check').find('[data-netrangeid] :checked').length) {
+                $(this).prop('disabled', true);
+                $('#update-range').attr('novalidate', '').attr('action', function () {
+                    return $(this).attr('action') + '&delete=1';
+                }).submit();
+            } else {
+                alertDialog("{trans("No network range selected!")}", this);
+                return false;
+            }
         });
     });
 
