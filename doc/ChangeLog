@@ -343,6 +343,7 @@ version 28-git (????-??-??):
     automation [chilan]
   - improvement: 'phpui.netrangelist_pagelimit' with default value '100' controls limit of network ranges
     on single page [chilan]
+  - enhancement: implemented SIDUSIS report support [chilan]
 
 version 27.0 (2021-08-20):
 
