@@ -66,8 +66,8 @@
 			{/if}
 
 			{foreach $documents as $doc}
-			{$docattach = $doc.attachments[0]}
-			{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif count($doc.attachments) == 1}&attachmentid={$docattach.id}{/if}{/capture}
+			{$docattach = reset($doc.attachments)}
+			{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
 			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
 				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}">
 				<div class="lms-ui-tab-table-wrapper col-6">

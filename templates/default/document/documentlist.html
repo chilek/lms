@@ -219,7 +219,7 @@
 	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
-	{$docattach = $doc.attachments[0]}
+	{$docattach = reset($doc.attachments)}
 	{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
 	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-archived="{if $doc.archived}1{else}0{/if}" data-closed="{if $doc.closed}1{else}0{/if}"
 		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}"
