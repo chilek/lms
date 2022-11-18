@@ -128,6 +128,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                     ? $location['house'] . ' '
                     : ''
                     ) . $location['simple_street'];
+            } elseif (isset($location['house']) && mb_strlen($location['house'])) {
+                $params['street'] = $location['house'];
             }
             if (isset($address['zip'])) {
                 $params['postalcode'] = $address['zip'];
