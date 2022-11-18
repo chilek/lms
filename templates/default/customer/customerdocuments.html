@@ -66,6 +66,9 @@
 			{/if}
 
 			{foreach $documents as $doc}
+			{if empty($doc.attachments)}
+				{$doc.attachments = array()}
+			{/if}
 			{$docattach = reset($doc.attachments)}
 			{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
 			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
