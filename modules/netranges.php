@@ -253,23 +253,20 @@ function getBuildings(array $filter)
             'SELECT
                 COUNT(*) AS total,
                 SUM(CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS ranges,
-                SUM(CASE
-                    WHEN EXISTS (
-                        SELECT 1 FROM nodes n
-                        LEFT JOIN vaddresses a ON a.id = n.address_id
-                        WHERE a.city_id = b.city_id
-                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
-                            AND a.house = b.building_num
-                    ) THEN 1
-                    ELSE 0
-                END) AS existing
+                SUM(CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             JOIN location_cities lc ON lc.id = b.city_id
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
             JOIN location_states ls ON ls.id = ld.stateid
-            LEFT JOIN netranges r ON r.buildingid = b.id'
+            LEFT JOIN netranges r ON r.buildingid = b.id
+            LEFT JOIN (
+                SELECT a.city_id, a.street_id, a.house, COUNT(*) AS nodecount FROM nodes n
+                JOIN vaddresses a ON a.id = n.address_id
+                WHERE a.city_id IS NOT NULL
+                GROUP BY a.city_id, a.street_id, a.house
+            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = b.building_num'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
         );
     } else {
@@ -296,16 +293,7 @@ function getBuildings(array $filter)
                 r.uplink,
                 r.type,
                 r.services,
-                (CASE
-                    WHEN EXISTS (
-                        SELECT 1 FROM nodes n
-                        LEFT JOIN vaddresses a ON a.id = n.address_id
-                        WHERE a.city_id = b.city_id
-                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
-                            AND a.house = b.building_num
-                    ) THEN 1
-                    ELSE 0
-                END) AS existing
+                (CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             LEFT JOIN location_street_types t ON t.id = lst.typeid
@@ -313,7 +301,13 @@ function getBuildings(array $filter)
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
             JOIN location_states ls ON ls.id = ld.stateid
-            LEFT JOIN netranges r ON r.buildingid = b.id'
+            LEFT JOIN netranges r ON r.buildingid = b.id
+            LEFT JOIN (
+                SELECT a.city_id, a.street_id, a.house, COUNT(*) AS nodecount FROM nodes n
+                JOIN vaddresses a ON a.id = n.address_id
+                WHERE a.city_id IS NOT NULL
+                GROUP BY a.city_id, a.street_id, a.house
+            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = b.building_num'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
