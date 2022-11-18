@@ -225,7 +225,7 @@
                                 <select name="filter[linktype]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
                                     {foreach $_LINKTYPES as $type => $label}
-                                        <option value="{$type}"{if $type == $filter.linktype} selected{/if}>{$label}</option>
+                                        <option value="{$type}"{if $type === $filter.linktype} selected{/if}>{$label}</option>
                                     {/foreach}
                                 </select>
                             </label>
@@ -447,7 +447,7 @@
                                         <select name="range[linktype]" form="update-range" required>
                                             <option value="">{trans("— none —")}</option>
                                             {foreach $_LINKTYPES as $type => $label}
-                                                <option value="{$type}"{if $type == $range.linktype} selected{/if}>{$label}</option>
+                                                <option value="{$type}"{if $type === $range.linktype} selected{/if}>{$label}</option>
                                             {/foreach}
                                         </select>
                                     </label>
