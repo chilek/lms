@@ -88,7 +88,6 @@ fputcsv(
         'DI',
         $division['name'],
         $division['telecomnumber'],
-        '',
         preg_replace('/[^0-9]/', '', $division['ten']),
     )
 );
@@ -100,7 +99,7 @@ fputcsv(
         OPERATOR_REPRESENTATIVE_ID,
         $division['email'],
         $phone,
-        ConfigHelper::getConfig('sidusis.operator_offer_url', 'http:/firma.pl/offer/')
+        ConfigHelper::getConfig('sidusis.operator_offer_url', 'http://firma.pl/offer/')
     )
 );
 
@@ -136,8 +135,8 @@ foreach ($buildings as $building) {
             sprintf('%02.6F', round($building['longitude'], 6)),
             $linktype,
             $SIDUSIS_LINKTECHNOLOGIES[$building['linktype']][$building['linktechnology']],
-            $SIDUSIS_LINKSPEEDS[$building['downlink']],
-            $SIDUSIS_LINKSPEEDS[$building['uplink']],
+            $building['downlink'],
+            $building['uplink'],
             $building['type'] == '1' ? 'rzeczywisty' : 'teoretyczny',
             ($building['services'] & 1) ? 'TAK' : 'NIE',
             ($building['services'] & 2) ? 'TAK' : 'NIE',
