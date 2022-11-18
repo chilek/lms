@@ -1862,7 +1862,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
 
     if (ConfigHelper::getConfig('database.type')=='postgres') {
         $DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
-        $DB->Execite('DROP SEQUENCE "userdivisions_id_seq"; CREATE SEQUENCE "userdivisions_id_seq"');
+        $DB->Execute('DROP SEQUENCE "userdivisions_id_seq"; CREATE SEQUENCE "userdivisions_id_seq"');
         $DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
         $DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
         $DB->Execute('DROP SEQUENCE "customercontacts_id_seq"; CREATE SEQUENCE "customercontacts_id_seq"');
