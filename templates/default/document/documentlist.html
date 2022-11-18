@@ -219,10 +219,12 @@
 	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
+	{$docattach = $doc.attachments[0]}
+	{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
 	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-archived="{if $doc.archived}1{else}0{/if}" data-closed="{if $doc.closed}1{else}0{/if}"
 		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}"
 		data-popup-menu-title="{t a=$doc.docid|string_format:"#%06d"}Document $a{/t}">
-		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
+		<TD class="nobr" data-target-url="{$url}"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 			{if $doc.closed == $smarty.const.DOC_OPEN && $doc.confirmdate}
 				{hint text=$doc.confirmdate|date_format:"Y-m-d H:i" icon="wait"}
@@ -231,7 +233,7 @@
 				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
 			{/if}
 		</TD>
-		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+		<TD class="nobr" data-target-url="{$url}">
 			{$doc.username|escape}
 			{if $doc.cuserid} / {$doc.cusername|escape}{/if}
 			{if $doc.closed == 3}
@@ -243,7 +245,7 @@
 			{/if}
 			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
 		</TD>
-		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+		<TD class="nobr" data-target-url="{$url}">
 			{$doc.title|truncate:40:"&hellip;":true}
 			{if $doc.description}
 				{hint icon="info" content=$doc.description|escape|replace:"\n":'<br>'}
@@ -260,7 +262,6 @@
 		</TD>
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"&hellip;":true}</A></TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			{$docattach = $doc.attachments[0]}
 			{buttons}
 				{if $doc.senddocuments}
 					{textformat assign="tip" wrap=5000}
@@ -286,7 +287,6 @@
 					{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 				{/if}
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
-					{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
 					{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url=$url external=true
 						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"

@@ -66,21 +66,23 @@
 			{/if}
 
 			{foreach $documents as $doc}
+			{$docattach = $doc.attachments[0]}
+			{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif count($doc.attachments) == 1}&attachmentid={$docattach.id}{/if}{/capture}
 			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
 				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}">
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column number" onclick="window.open('?m=documentview&id={$doc.docid}');"
+							<div class="lms-ui-tab-table-column number" data-target-url="{$url}"
 									{if $doc.description} {tip text=$doc.description}{/if}>
 								<strong>{number number=$doc.number template=$doc.template customerid=$customerinfo.id time=$doc.cdate}</strong>
 							</div>
-							<div class="lms-ui-tab-table-column creation-date" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							<div class="lms-ui-tab-table-column creation-date" data-target-url="{$url}">
 								{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column created-by" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							<div class="lms-ui-tab-table-column created-by" data-target-url="{$url}">
 								{$doc.username|escape}
 								{if $doc.cuserid} / {$doc.cusername|escape}{/if}
 								{if $doc.closed == 3}
@@ -91,14 +93,14 @@
 									{icon name="sign" tip="attached document scans with customer signature"}
 								{/if}
 							</div>
-							<div class="lms-ui-tab-table-column type" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							<div class="lms-ui-tab-table-column type" data-target-url="{$url}">
 								<strong>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</strong>
 							</div>
 						</div>
 					</div>
 
 					<div class="lms-ui-tab-table-wrapper col-3">
-						<div class="lms-ui-tab-table-column title" onclick="window.open('?m=documentview&id={$doc.docid}');">
+						<div class="lms-ui-tab-table-column title" data-target-url="{$url}">
 							{$doc.title|truncate:40:"&hellip;":true}
 						</div>
 						<div class="lms-ui-tab-table-column description">
@@ -108,7 +110,7 @@
 								&ndash;
 							{/if}
 						</div>
-						<div class="lms-ui-tab-table-column period" onclick="window.open('?m=documentview&id={$doc.docid}');">
+						<div class="lms-ui-tab-table-column period" data-target-url="{$url}">
 							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
 							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
 						</div>
@@ -139,9 +141,7 @@
 							{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 						{/if}
 						{if is_array($doc.attachments)}
-							{$docattach = $doc.attachments[0]}
 							{if $docattach.type == 1 || count($doc.attachments) == 1}
-								{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif count($doc.attachments) == 1}&attachmentid={$docattach.id}{/if}{/capture}
 								{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 									url=$url external=true
 									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
