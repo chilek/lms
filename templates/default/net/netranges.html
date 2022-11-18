@@ -537,7 +537,7 @@
         var boroughs = JSON.parse('{json_encode($boroughs, JSON_FORCE_OBJECT)}');
 
         $('.filter-element').change(function() {
-            var filterElements = $('.filter-element').filter('select');
+            var filterElements = $('.lms-ui-filter-definition:first-child .filter-element').filter('select');
             var elem;
             if ($(this).val() == '') {
                 for (var i = 0; i < filterElements.length; i++) {
