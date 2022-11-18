@@ -124,7 +124,7 @@
                 <div class="lms-ui-filter-container">
                     <div class="lms-ui-filter-definitions">
                         <div class="lms-ui-filter-definition">
-                            {icon name="filter"}
+                            {icon name="filter" class="fa-fw"}
                             <label class="filter-item">
                                 <span>{trans("State")}</span>
                                 <select name="filter[stateid]" form="netranges" class="lms-ui-advanced-select filter-element"
@@ -203,7 +203,7 @@
                             </label>
                         </div>
                         <div class="lms-ui-filter-definition">
-                            {icon name="filter"}
+                            {icon name="filter" class="fa-fw"}
                             <label class="filter-item">
                                 {trans("<!netrange>Without ranges")}
                                 <select name="filter[without-ranges]" form="netranges" class="filter-element">
@@ -349,7 +349,7 @@
                 </td>
                 <td class="nobr">
                     <a href="{$gps_coordinate_url|replace:"%longitude":$building.longitude|replace:"%latitude":$building.latitude}">
-                        {icon name="location"}
+                        {icon name="location" class="fa-fw"}
                     </a>
                     {$building.longitude}, {$building.latitude}
                 </td>
@@ -398,7 +398,7 @@
                 </td>
                 <td class="text-center">
                     {if !empty($building.existing)}
-                        {icon name="checked"}
+                        {icon name="checked" class="fa-fw"}
                     {/if}
                 </td>
                 <td class="text-right">

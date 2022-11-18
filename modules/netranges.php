@@ -24,94 +24,6 @@
  *  $Id$
  */
 
-$linktechnologies = array(
-    LINKTYPE_WIRE => array(
-        1 => 'ADSL',
-        2 => 'ADSL2',
-        3 => 'ADSL2+',
-        4 => 'VDSL',
-        5 => 'VDSL2',
-        13 => 'VDSL2(vectoring)',
-        14 => 'G.Fast',
-        50 => '(EURO)DOCSIS 1.x',
-        51 => '(EURO)DOCSIS 2.x',
-        52 => '(EURO)DOCSIS 3.x',
-        6 => '10 Mb/s Ethernet',
-        7 => '100 Mb/s Fast Ethernet',
-        8 => '1 Gigabit Ethernet',
-        15 => '2,5 Gigabit Ethernet',
-        16 => '5 Gigabit Ethernet',
-        9 => '10 Gigabit Ethernet',
-        11 => 'SDH/PDH',
-        17 => 'MoCA',
-        18 => 'EoC',
-    ),
-    LINKTYPE_WIRELESS => array(
-        112 => 'LTE',
-        117 => 'LTE-A',
-        118 => 'LTE-Pro',
-        119 => 'NR SA',
-        120 => 'NR NSA',
-    ),
-    LINKTYPE_FIBER => array(
-        250 => '(EURO)DOCSIS 1.x',
-        251 => '(EURO)DOCSIS 2.x',
-        252 => '(EURO)DOCSIS 3.x',
-        203 => '10 Mb/s Ethernet',
-        204 => '100 Mb/s Fast Ethernet',
-        205 => '1 Gigabit Ethernet',
-        213 => '2,5 Gigabit Ethernet',
-        214 => '5 Gigabit Ethernet',
-        206 => '10 Gigabit Ethernet',
-        215 => '25 Gigabit Ethernet',
-        207 => '100 Gigabit Ethernet',
-        217 => 'CWDM',
-        218 => 'DWDM',
-        212 => 'SDH/PDH',
-        208 => 'EPON',
-        216 => '10G-EPON',
-        209 => 'GPON',
-        219 => 'NGPON1 (XGPON)',
-        220 => 'NGPON2 (XGPON)',
-        221 => 'XGSPON',
-        222 => '25G PON',
-        223 => 'MoCA',
-        224 => 'EoC',
-    ),
-);
-
-$linkspeeds = array(
-    2 => '2 Mb/s',
-    10 => '10 Mb/s',
-    20 => '20 Mb/s',
-    30 => '30 Mb/s',
-    40 => '40 Mb/s',
-    50 => '50 Mb/s',
-    60 => '60 Mb/s',
-    70 => '70 Mb/s',
-    80 => '80 Mb/s',
-    90 => '90 Mb/s',
-    100 => '100 Mb/s',
-    200 => '200 Mb/s',
-    300 => '300 Mb/s',
-    400 => '400 Mb/s',
-    500 => '500 Mb/s',
-    600 => '600 Mb/s',
-    700 => '700 Mb/s',
-    800 => '800 Mb/s',
-    900 => '900 Mb/s',
-    1000 => '1000 Mb/s',
-    2000 => '2000 Mb/s',
-    3000 => '3000 Mb/s',
-    4000 => '4000 Mb/s',
-    5000 => '5000 Mb/s',
-    6000 => '6000 Mb/s',
-    7000 => '7000 Mb/s',
-    8000 => '8000 Mb/s',
-    9000 => '9000 Mb/s',
-    10000 => '10000 Mb/s',
-);
-
 function getTerritoryUnits()
 {
     global $BOROUGHTYPES;
@@ -471,8 +383,8 @@ if (isset($_POST['range'])) {
                                 linktechnology = ?,
                                 downlink = ?,
                                 uplink = ?,
-                                type = ?
-                                services = ?,
+                                type = ?,
+                                services = ?
                             WHERE buildingid = ?',
                             array_values($args)
                         );
@@ -617,16 +529,20 @@ $summary = !empty($filter['stateid']) && !empty($filter['districtid']) ? getBuil
 $total = isset($summary['total']) ? intval($summary['total']) : 0;
 $ranges = isset($summary['ranges']) ? intval($summary['ranges']) : 0;
 $existing = isset($summary['existing']) ? intval($summary['existing']) : 0;
+
 if (isset($_GET['page'])) {
     $page = intval($_GET['page']);
 } elseif ($SESSION->is_set('netranges_page')) {
-    $page = intval($SESSION->restore('netranges_page'));
+    $SESSION->restore('netranges_page', $page);
+    $page = intval($page);
 } else {
     $page = 1;
 }
 if (empty($page)) {
     $page = 1;
 }
+$SESSION->save('netranges_page', $page);
+
 $limit = intval(ConfigHelper::getConfig('phpui.netrangelist_pagelimit', '100'));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
@@ -653,8 +569,8 @@ $SMARTY->assign('pagination', $pagination);
 
 $SMARTY->assign(array(
     'filter' => $filter,
-    'linktechnologies' => $linktechnologies,
-    'linkspeeds' => $linkspeeds,
+    'linktechnologies' => $SIDUSIS_LINKTECHNOLOGIES,
+    'linkspeeds' => $SIDUSIS_LINKSPEEDS,
     'range'=> $range,
     'total' => $total,
     'ranges' => $ranges,

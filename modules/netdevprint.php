@@ -49,6 +49,10 @@ switch ($type) {
         include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukeincome.php');
         break;
 
+    case 'uke-sidusis':
+        include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukesidusis.php');
+        break;
+
     default:
         $layout['pagetitle'] = trans('Reports');
 

@@ -2123,4 +2123,60 @@
 
 {/if}
 
+{if $printmenu == "netdev"}
+<form method="post" name="sidusis" id="sidusis-form" action="?m=netdevprint&type=uke-sidusis">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td colspan="3" class="nobr">
+				{icon name="netdev" class="fa-fw"}
+				<strong>{trans("SIDUSIS report")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="division" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Division")}</strong>
+			</td>
+			<td>
+				<select name="division"	form="sidusis-form" required {tip text="Select division"}>
+					<option value="">{trans("— all —")}</option>
+					{foreach $divisions as $division}
+						<option value="{$division.id}">{$division.label|escape}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button type="submit" form="sidusis-form" icon="submit" label="Submit"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
+	$(function() {
+		$('#sidusis-form').submit(function () {
+			$('[form="sidusis-form"][type="submit"]').prop('disabled', false);
+		})
+	});
+
+</script>
+
+{/if}
+
 {/block}
