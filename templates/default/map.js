@@ -96,7 +96,8 @@
 				technologyname: "{$range.technologyname}",
 				speedname: "{$range.speedname}",
 				rangetypename: "{$range.rangetypename}",
-				existingname: "{$range.existingname}"
+				existingname: "{$range.existingname}",
+				servicesname: "{$range.servicesname}"
 			});
 		{/foreach}
 	{/if}

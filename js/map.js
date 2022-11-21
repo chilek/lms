@@ -743,7 +743,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 										features[i].data.technologyname + '<br>' +
 										features[i].data.speedname + '<br>' +
 										features[i].data.rangetypename + '<br>' +
-										features[i].data.existingname +
+										(features[i].data.existingname.length ? features[i].data.existingname  + '<br>' : '') +
+										features[i].data.servicesname +
 										'</strong>';
 								} else {
 									content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>' +

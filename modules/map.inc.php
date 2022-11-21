@@ -187,6 +187,10 @@ if ($ranges) {
         $range['speedname'] = trans("Link speed:") . ' ' . trans('$a Mbit/$b Mbit', $range['downlink'], $range['uplink']);
         $range['rangetypename'] = trans('<!netrange>Type:') . ' ' . trans($range['type'] == 1 ? '<!netrange>real' : '<!netrange>theoretical');
         $range['existingname'] = empty($range['existing']) ? '' : trans('<!netrange>Existing');
+        $range['servicesname'] = '<ul>' . trans('<!netrange>Services:')
+            . ($range['services'] & 1 ? '<li><span>' . trans('<!netrange>wholesale') . '</span></li>' : '')
+            . ($range['services'] & 2 ? '<li><span>' . trans('<!netrange>retail') . '</span></li>' : '')
+            . '</ul>';
     }
     unset($range);
 }
