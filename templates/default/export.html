@@ -2,76 +2,116 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
-<FORM method="post" name="invoicereport" id="invoicereport" action="?m=export&amp;type=invoices">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD width="99%">
-			<B>{trans("Sale Registry")}</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD width="100%" colspan="2">
-			<TABLE width="100%">
-				<TR>
-					<TD width="1%">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD width="1%">
-						<B>{trans("Period:")}&nbsp;</B>
-					</TD>
-					<TD style="width: 1%;">
-						<span class="lms-ui-date-period-container">
-							{date_period_preset from="#invoicereport [name=\"from\"]" to="#invoicereport [name=\"to\"]"}
-							<span>{trans("From")}</span>
-							<input type="text" name="from" size="10" maxlength="10"
-								placeholder="{trans("yyyy/mm/dd")}"
-								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</span>
-					</TD>
-					<TD style="width: 97%;">
-						<span class="lms-ui-date-period-container">
-							<span>{trans("To")}</span>
-							<input type="text" name="to" size="10" maxlength="10"
-								placeholder="{trans("yyyy/mm/dd")}"
-								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</span>
-					</TD>
-				</TR>
-				<TR>
-					<TD>
-						<IMG src="img/division.gif" alt="">
-					</TD>
-					<TD class="bold">
-						{trans("Division:")}
-					</TD>
-					<TD colspan="2">
-						<SELECT size="1" name="division" {tip text="Select division"}>
-							<OPTION value="0">{trans("— all —")}</OPTION>
-							{foreach $divisions as $division}
-								<OPTION value="{$division.id}">{$division.label|escape}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD width="100%" colspan="2" align="right">
-			<A href="javascript:document.invoicereport.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
+<h1>{$layout.pagetitle}</h1>
+
+<form method="post" name="invoicereport" id="invoicereport" action="?m=export&type=invoices">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td>
+				{icon name="money"}
+			</td>
+			<td>
+				<strong>{trans("Sale Registry")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td colspan="2">
+				<table style="width: 100%;">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 1%;">
+						<col style="width: 97%;">
+					</colgroup>
+					<tr>
+						<td>
+							{icon name="calendar"}
+						</td>
+						<td>
+							<strong>{trans("Period")}</strong>
+						</td>
+						<td>
+							<span class="lms-ui-date-period-container">
+								{date_period_preset from="[form=\"invoicereport\"][name=\"from\"]" to="[form=\"invoicereport\"][name=\"to\"]"}
+								<span>{trans("From")}</span>
+								<input type="text" name="from" form="invoicereport" size="10" maxlength="10"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+							</span>
+						</td>
+						<td>
+							<span class="lms-ui-date-period-container">
+								<span>{trans("To")}</span>
+								<input type="text" name="to" form="invoicereport" size="10" maxlength="10"
+									placeholder="{trans("yyyy/mm/dd")}"
+									{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{icon name="division"}
+						</td>
+						<td>
+							<strong>{trans("Division")}</strong>
+						</td>
+						<td colspan="2">
+							<select size="1" name="division" form="invoicereport" {tip text="Select division"}>
+								<option value="0">{trans("— all —")}</option>
+								{foreach $divisions as $division}
+									<option value="{$division.id}">{$division.label|escape}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{icon name="customergroup"}
+						</td>
+						<td class="nobr">
+							<strong>{trans("Group")}</strong>
+						</td>
+						<td colspan="2">
+							<select size="4" name="customergroups[]" form="invoicereport" class="lms-ui-multiselect"
+								multiple {tip text="Select groups"}
+								data-default-value="{trans("— all groups —")}">
+								{foreach $customergroups as $customergroup}
+									<option value="{$customergroup.id}">{$customergroup.name|trunescape:30}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="lms-ui-box-buttons">
+				{button type="submit" label="Save" icon="save" form="invoicereport"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
+	$(function() {
+		$('#invoicereport').submit(function() {
+			$('[form="invoicereport"][type="submit"]').prop('disabled', false);
+		});
+	});
+
+</script>
+
 <FORM method="post" name="receiptlist" id="receiptlist" action="?m=export&amp;type=cash">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">

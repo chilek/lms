@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     } else {
         $from = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
     }
-        
+
     if ($_POST['to']) {
         list($year, $month, $day) = explode('/', $_POST['to']);
         $to = mktime(23, 59, 59, $month, $day, $year);
@@ -126,7 +126,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $line = str_replace('%ABSVALUE', str_replace('-', '', $row['value']), $line);
             $line = str_replace('%N', $row['number'], $line);
             $line = str_replace('%I', $i, $line);
-            
+
             if (strpos($line, '%PREFIX')!==false || strpos($line, '%SUFFIX')!==false) {
                 $tmp = explode('%N', $row['template']);
                 if ($tmp[0]) {
@@ -152,24 +152,24 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
                     $line = str_replace('%SUFFIX', '', $line);
                 }
             }
-            
+
             if (strpos($line, '%TYPE')!==false) {
                 if ($row['value']<0) {
                     $type = $cash_out_type;
                 } else {
                     $type = $cash_in_type;
                 }
-                
+
                 // fragment dla systemu Enova: rozpoznawanie
-                // wyci�g�w bankowych na podstawie przedrostka
+                // wyciągów bankowych na podstawie przedrostka
                 // planu numeracyjnego
                 if (strpos($number, 'PB')===0) {
                     $type += 2;
                 }
-                    
+
                 $line = str_replace('%TYPE', $type, $line);
             }
-            
+
             if (strtoupper($encoding)!='UTF-8') {
                 if (strtoupper($encoding)=='MAZOVIA') {
                     $line = mazovia_to_utf8($line);
@@ -177,7 +177,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
                     $line = iconv('UTF-8', $encoding.'//TRANSLIT', $line);
                 }
             }
-            
+
             print $line.$endln;
         }
     }
@@ -186,6 +186,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 } elseif (isset($_GET['type']) && $_GET['type'] == 'invoices') {
     $from = $_POST['from'];
     $to = $_POST['to'];
+
+    $customergroups = isset($_POST['customergroups']) && is_array($_POST['customergroups']) ? Utils::filterIntegers($_POST['customergroups']) : array();
 
     // date format 'yyyy/mm/dd'
     if ($from) {
@@ -212,16 +214,22 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     // because we need here incoices-like round-off
 
     // get documents items numeric values for calculations
-    $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count, description, prodid, content, d.customerid
-		FROM documents d
-		LEFT JOIN invoicecontents ON docid = d.id 
-		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
-			' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '') . '
-			AND NOT EXISTS (
-		    		SELECT 1 FROM vcustomerassignments a
-				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid) 
-		ORDER BY cdate, docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+    $items = $DB->GetAll(
+        'SELECT docid, itemid, taxid, value, count, description, prodid, content, d.customerid
+        FROM documents d
+        LEFT JOIN invoicecontents ON docid = d.id
+        WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
+            ' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
+            . (empty($customergroups) ? '' : ' AND EXISTS (
+                SELECT 1 FROM customerassignments ca WHERE ca.customerid = d.customerid AND ca.customergroupid IN (' . implode(',', $customergroups) . ')
+            )')
+            . ' AND NOT EXISTS (
+                    SELECT 1 FROM vcustomerassignments a
+                JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+                WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
+        ORDER BY cdate, docid',
+        array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto)
+    );
 
     // get documents data
     $docs = $DB->GetAllByKey(
@@ -422,4 +430,5 @@ $layout['pagetitle'] = trans('Export');
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
 $SMARTY->assign('divisions', $LMS->GetDivisions());
+$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->display('export.html');
