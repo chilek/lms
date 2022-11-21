@@ -345,6 +345,8 @@ version 28-git (????-??-??):
     on single page [chilan]
   - enhancement: implemented SIDUSIS report support [chilan]
   - enhancement: added customer group filter in invoice report export form [chilan]
+  - enhancement: added 'notes.customer_credentials_format' suuport - it is very similar in behaviour
+    to 'invoices.customer_credentials_format' [chilan]
 
 version 27.0 (2021-08-20):
 
