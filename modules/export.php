@@ -220,9 +220,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
         'SELECT docid, itemid, taxid,
             grossprice, grossvalue, netprice, netvalue, taxvalue, count,
             diff_grossprice, diff_grossvalue, diff_netprice, diff_netvalue, diff_taxvalue, diff_count,
-            description, prodid, content, d.customerid, b.balance
+            description, prodid, content, d.customerid
         FROM documents d
-        JOIN customerbalances b ON b.customerid = d.customerid
         LEFT JOIN vinvoicecontents ON docid = d.id
         WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
             ' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
@@ -239,12 +238,13 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 
     // get documents data
     $docs = $DB->GetAllByKey(
-        'SELECT documents.id AS id, number, cdate, customerid, userid, name, address, zip, city, ten, ssn,
-            numberplans.template, reference, extnumber, paytime, closed
-        FROM documents
-        LEFT JOIN numberplans ON numberplanid = numberplans.id
-        WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
-            ' . ($divisionid ? ' AND divisionid = ' . $divisionid : ''),
+        'SELECT d.id AS id, number, cdate, d.customerid, userid, name, address, zip, city, ten, ssn,
+            numberplans.template, reference, extnumber, paytime, closed, b.balance
+        FROM documents d
+        JOIN customerbalances b ON b.customerid = d.customerid
+        LEFT JOIN numberplans ON d.numberplanid = numberplans.id
+        WHERE (d.type = ? OR d.type = ?) AND (d.cdate BETWEEN ? AND ?)
+            ' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : ''),
         'id',
         array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto)
     );
