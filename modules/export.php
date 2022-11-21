@@ -215,9 +215,12 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 
     // get documents items numeric values for calculations
     $items = $DB->GetAll(
-        'SELECT docid, itemid, taxid, value, count, description, prodid, content, d.customerid
+        'SELECT docid, itemid, taxid,
+            grossprice, grossvalue, netprice, netvalue, taxvalue, count,
+            diff_grossprice, diff_grossvalue, diff_netprice, diff_netvalue, diff_taxvalue, diff_count,
+            description, prodid, content, d.customerid
         FROM documents d
-        LEFT JOIN invoicecontents ON docid = d.id
+        LEFT JOIN vinvoicecontents ON docid = d.id
         WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
             ' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
             . (empty($customergroups) ? '' : ' AND EXISTS (
@@ -234,16 +237,16 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     // get documents data
     $docs = $DB->GetAllByKey(
         'SELECT documents.id AS id, number, cdate, customerid, userid, name, address, zip, city, ten, ssn,
-			numberplans.template, reference, extnumber, paytime, closed
-		FROM documents 
-	        LEFT JOIN numberplans ON numberplanid = numberplans.id
-		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
-			' . ($divisionid ? ' AND divisionid = ' . $divisionid : ''),
+            numberplans.template, reference, extnumber, paytime, closed
+        FROM documents
+        LEFT JOIN numberplans ON numberplanid = numberplans.id
+        WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
+            ' . ($divisionid ? ' AND divisionid = ' . $divisionid : ''),
         'id',
         array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto)
     );
 
-        // wysy�amy ...
+    // wysyłamy ...
     header('Content-Type: application/octetstream');
     header('Content-Disposition: attachment; filename='.$inv_filename);
     header('Pragma: public');
@@ -252,6 +255,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
         // get taxes for calculations
         $taxes = $LMS->GetTaxes();
         $i = 0;
+
+        $record = '';
 
         if (is_array($inv_record)) {
             foreach ($inv_record as $r) {
@@ -264,55 +269,36 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $taxid = $row['taxid'];
             $doc = $docs[$docid];
 
-            if ($doc['reference']) {
-                // I think we can simply do query here instead of building
-                // big sql join in $items query, we've got so many credit notes?
-                $value = 0;
-                $count = 0;
-                $refid = $doc['reference'];
-                do {
-                    $item = $DB->GetRow(
-                        'SELECT taxid, value, count, reference
-                            FROM invoicecontents
-                            JOIN documents ON id = docid
-                            WHERE docid=? AND itemid=?',
-                        array($refid, $row['itemid'])
-                    );
-                    if (!isset($firstitem)) {
-                        $firstitem = $item;
-                    }
-                    $value += $item['value'];
-                    $count += $item['count'];
-                    $refid = $item['reference'];
-                } while (!empty($refid));
-
-                $row['value'] += $value;
-                $row['count'] += $count;
-
-                $refitemsum = $value * $count;
-                $refitemval = round($value / ($taxes[$firstitem['taxid']]['value'] + 100) * 100, 2) * $count;
-                $refitemtax = $refitemsum - $refitemval;
-
-                $rectax[$item['taxid']]['tax'] -= $refitemtax;
-                $rectax[$item['taxid']]['val'] -= $refitemval;
-                $rectax[$item['taxid']]['sum'] -= $refitemsum;
-                $rec['brutto'] -= $refitemsum;
+            if (!isset($rectax[$taxid])) {
+                $rectax[$taxid] = array(
+                    'tax' => 0,
+                    'val' => 0,
+                    'sum' => 0,
+                    'brutto' => 0,
+                );
             }
 
-            $sum = $row['value'] * $row['count'];
-            $val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
-            $tax = $sum - $val;
+            if ($doc['reference']) {
+                $rectax[$taxid]['tax'] -= $row['taxvalue'] - $row['diff_taxvalue'];
+                $rectax[$taxid]['val'] -= $row['netvalue'] - $row['diff_netvalue'];
+                $rectax[$taxid]['sum'] -= $row['grossvalue'] - $row['diff_grossvalue'];
+                $rec['brutto'] -= $row['grossvalue'] - $row['diff_grossvalue'];
+            }
+
+            $sum = $row['grossvalue'];
+            $val = $row['netvalue'];
+            $tax = $row['taxvalue'];
 
             $rectax[$taxid]['tax'] += $tax;
             $rectax[$taxid]['val'] += $val;
             $rectax[$taxid]['sum'] += $sum;
             $rec['brutto'] += $sum;
 
-            if ($row['docid'] != $items[$idx+1]['docid']) {
+            if (!isset($items[$idx + 1]['docid']) || $row['docid'] != $items[$idx + 1]['docid']) {
                 $line = $record ? $record : $inv_record;
                 $i++;
 
-                $clariondate = intval($doc['cdate']/86400)+61731;
+                $clariondate = intval($doc['cdate'] / 86400) + 61731;
                 $date = date($date_format, $doc['cdate']);
                 $number = docnumber(array(
                     'number' => $doc['number'],
