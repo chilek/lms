@@ -70,8 +70,9 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
         'SELECT d.id AS id, value, number, cdate, customerid, 
 		d.name AS customer, address, zip, city, ten, ssn, userid,
 		numberplans.template, extnumber, receiptcontents.description, 
-		cashregs.name AS cashreg
+		cashregs.name AS cashreg, b.balance
 		FROM documents d
+        JOIN customerbalances b ON b.customerid = d.customerid
 		LEFT JOIN receiptcontents ON (d.id = docid)
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 		LEFT JOIN cashregs ON (cashregs.id = regid)
@@ -124,6 +125,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $line = str_replace('%DESC', $row['description'], $line);
             $line = str_replace('%VALUE', $row['value'], $line);
             $line = str_replace('%ABSVALUE', str_replace('-', '', $row['value']), $line);
+            $line = str_replace('%BALANCE', form_num($row['balance']), $line);
             $line = str_replace('%N', $row['number'], $line);
             $line = str_replace('%I', $i, $line);
 
@@ -218,8 +220,9 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
         'SELECT docid, itemid, taxid,
             grossprice, grossvalue, netprice, netvalue, taxvalue, count,
             diff_grossprice, diff_grossvalue, diff_netprice, diff_netvalue, diff_taxvalue, diff_count,
-            description, prodid, content, d.customerid
+            description, prodid, content, d.customerid, b.balance
         FROM documents d
+        JOIN customerbalances b ON b.customerid = d.customerid
         LEFT JOIN vinvoicecontents ON docid = d.id
         WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
             ' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
@@ -328,6 +331,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 //              $line = str_replace('%DESC', $row['description'], $line);
                 $line = str_replace('%VALUE', form_num($rec['brutto']), $line);
                 $line = str_replace('%ABSVALUE', str_replace('-', '', form_num($rec['brutto'])), $line);
+                $line = str_replace('%BALANCE', form_num($doc['balance']), $line);
 
                 $v = 0;
                 $netto_v = 0;
