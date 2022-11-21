@@ -250,11 +250,11 @@ function getBuildings(array $filter)
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id
             LEFT JOIN (
-                SELECT a.city_id, a.street_id, a.house, COUNT(*) AS nodecount FROM nodes n
+                SELECT a.city_id, a.street_id, UPPER(a.house) AS house, COUNT(*) AS nodecount FROM nodes n
                 JOIN vaddresses a ON a.id = n.address_id
                 WHERE a.city_id IS NOT NULL
-                GROUP BY a.city_id, a.street_id, a.house
-            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND UPPER(na.house) = UPPER(b.building_num)'
+                GROUP BY a.city_id, a.street_id, UPPER(a.house)
+            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
         );
     } else {
