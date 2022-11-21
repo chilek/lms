@@ -274,8 +274,11 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
                     'tax' => 0,
                     'val' => 0,
                     'sum' => 0,
-                    'brutto' => 0,
                 );
+            }
+
+            if (!isset($rec['brutto'])) {
+                $rec['brutto'] = 0;
             }
 
             if ($doc['reference']) {
