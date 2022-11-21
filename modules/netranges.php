@@ -149,7 +149,7 @@ function getStreets($cityid)
             'SELECT
                 lst.id,
                 lst.name AS name1,
-                lst.name2 AS name2, 
+                lst.name2 AS name2,
                 (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS label,
                 (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS rlabel,
                 t.name AS typename
@@ -210,22 +210,10 @@ function getBuildings(array $filter)
     if (isset($filter['existing']) && is_numeric($filter['existing'])) {
         switch (intval($filter['existing'])) {
             case 1:
-                $where[] = 'EXISTS (
-                        SELECT 1 FROM nodes n
-                        LEFT JOIN vaddresses a ON a.id = n.address_id
-                        WHERE a.city_id = b.city_id
-                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
-                            AND a.house = b.building_num
-                    )';
+                $where[] = 'na.city_id IS NOT NULL';
                 break;
             case 2:
-                $where[] = 'NOT EXISTS (
-                        SELECT 1 FROM nodes n
-                        LEFT JOIN vaddresses a ON a.id = n.address_id
-                        WHERE a.city_id = b.city_id
-                            AND (b.street_id IS NULL OR a.street_id = b.street_id)
-                            AND a.house = b.building_num
-                    )';
+                $where[] = 'na.city_id IS NULL';
                 break;
         }
     }
@@ -266,7 +254,7 @@ function getBuildings(array $filter)
                 JOIN vaddresses a ON a.id = n.address_id
                 WHERE a.city_id IS NOT NULL
                 GROUP BY a.city_id, a.street_id, a.house
-            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = b.building_num'
+            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND UPPER(na.house) = UPPER(b.building_num)'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
         );
     } else {
@@ -307,7 +295,7 @@ function getBuildings(array $filter)
                 JOIN vaddresses a ON a.id = n.address_id
                 WHERE a.city_id IS NOT NULL
                 GROUP BY a.city_id, a.street_id, a.house
-            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = b.building_num'
+            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND UPPER(na.house) = UPPER(b.building_num)'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
