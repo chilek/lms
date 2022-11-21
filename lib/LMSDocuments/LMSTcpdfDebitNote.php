@@ -153,9 +153,19 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
         $y = $this->backend->GetY();
 
-        if (ConfigHelper::checkConfig('invoices.customer_credentials', true)) {
-            $pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';
-            $pin .= '<b>PIN: ' . sprintf('%04d', $this->data['customerpin']) . '</b><br>';
+        if (ConfigHelper::checkConfig('notes.customer_credentials', true)) {
+            $pin = str_replace(
+                array('%cid', '%pin'),
+                array(
+                    sprintf('%04d', $this->data['customerid']),
+                    strlen($this->data['customerpin']) < 4 ? sprintf('%04d', $this->data['customerpin']) : $this->data['customerpin']
+                ),
+                ConfigHelper::getConfig(
+                    'notes.customer_credentials_format',
+                    '<b>' . trans('Customer ID: %cid') . '</b><br>'
+                    . '<b>' . trans('PIN: %pin') . '</b><br>'
+                )
+            );
 
             $this->backend->SetFont(null, 'B', 8);
             $this->backend->writeHTMLCell('', '', 120, '', $pin, 0, 1, 0, true, 'L');
