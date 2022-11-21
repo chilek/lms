@@ -287,7 +287,7 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 	return features;
 }
 
-function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection, startLon, startLat)
+function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArray, selection, startLon, startLat)
 {
 	var i, j;
 
@@ -441,6 +441,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	var osm = new OpenLayers.Layer.OSM();
 
 	map.addLayers([gsat, gphy, gmap, ghyb, osm]);
+
 	var devicestyle = new OpenLayers.Style(
 		{
 			graphicWidth: 16,
@@ -478,6 +479,21 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						case 2: return "img/node_off.png";
 						default: return "img/node.png";
 					}
+				}
+			}
+		});
+
+	var rangeStyle = new OpenLayers.Style(
+		{
+			graphicWidth: 16,
+			graphicHeight: 16,
+			graphicXOffset: -8,
+			graphicYOffset: -8,
+			externalGraphic: "${img}"
+		}, {
+			context: {
+				img: function(feature) {
+					return "img/home.png";
 				}
 			}
 		});
@@ -637,10 +653,31 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	var nodelinklayer = new OpenLayers.Layer.Vector(nodelinkLbl);
 	nodelinklayer.addFeatures(nodelinks);
 
+	var ranges = [];
+	if (rangeArray) {
+		for (i in rangeArray) {
+			lonLat = new OpenLayers.LonLat(rangeArray[i].lon, rangeArray[i].lat)
+				.transform(lmsProjection, map.getProjectionObject());
+			area.extend(lonLat);
+			ranges.push(new OpenLayers.Feature.Vector(
+				new OpenLayers.Geometry.Point(
+					lonLat.lon,
+					lonLat.lat
+				), rangeArray[i]));
+		}
+	}
+
+	var rangesLbl = OpenLayers.Lang.translate("Ranges");
+	var rangeLayer = new OpenLayers.Layer.Vector(rangesLbl, {
+		styleMap: new OpenLayers.StyleMap(rangeStyle)
+	});
+	rangeLayer.addFeatures(ranges);
+
 	map.addLayer(devicelayer);
 	map.addLayer(devlinklayer);
 	map.addLayer(nodelayer);
 	map.addLayer(nodelinklayer);
+	map.addLayer(rangeLayer);
 	// add layer if exist any 2.4GHz radiosector
 	if (areas2.length) {
 		map.addLayer(rsarealayer2);
@@ -652,7 +689,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		map.addLayer(rsdirectionlayer5);
 	}
 
-	var highlightlayers = [ devicelayer, devlinklayer, nodelayer, nodelinklayer ];
+	var highlightlayers = [ devicelayer, devlinklayer, nodelayer, nodelinklayer, rangeLayer ];
 
 	if (startLon != null && startLat != null) {
 		var positionLayer = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Position"));
@@ -683,8 +720,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		multiple: false,
 		eventListeners: {
 			"featurehighlighted": function(e) {
-				if (mappopup == null)
-				{
+				if (mappopup == null) {
 					var map = this.map;
 					var feature = e.feature;
 					var featureLonLat, mapLonLat;
@@ -692,8 +728,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 						featureLonLat.transform(lmsProjection, map.getProjectionObject());
 						mapLonLat = featureLonLat.clone();
-					}
-					else {
+					} else {
 						featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
 						mapLonLat = featureLonLat.clone();
 						mapLonLat.transform(map.getProjectionObject(), lmsProjection).transform(lmsProjection, map.getProjectionObject());
@@ -702,16 +737,26 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					if (features.length) {
 						var content = '<div class="lmsMapPopupContents">';
 						for (i in features) {
-							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")
-								content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>' +
-									(features[i].data.ipaddr.length ?
-										'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g,
-											'</div><div class="lmsMapPopupAddress">') + '</div>'
-										: '');
-							else
+							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+								if (features[i].data.hasOwnProperty('existing')) {
+									content += '<strong>' + features[i].data.typename + '<br>' +
+										features[i].data.technologyname + '<br>' +
+										features[i].data.speedname + '<br>' +
+										features[i].data.rangetypename + '<br>' +
+										features[i].data.existingname +
+										'</strong>';
+								} else {
+									content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>' +
+										(features[i].data.ipaddr.length ?
+											'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g,
+												'</div><div class="lmsMapPopupAddress">') + '</div>'
+											: '');
+								}
+							} else {
 								content += '<span class="bold">' + features[i].data.typename + '<br>' +
 									(features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '') +
 									features[i].data.speedname + '</span>';
+							}
 						}
 						content += '</div>';
 						mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
@@ -732,8 +777,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				OpenLayers.Event.stop(e);
 			},
 			"featureunhighlighted": function(e) {
-				if (mappopup)
-				{
+				if (mappopup) {
 					var map = this.map;
 					map.removePopup(mappopup);
 					mappopup = null;
@@ -755,6 +799,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			toggleKey: "ctrlKey", // ctrl key removes from selection
 			multipleKey: "shiftKey", // shift key adds to selection
 			onSelect: function(feature) {
+				if (feature.data.hasOwnProperty('existing')) {
+					return;
+				}
 				var i, j;
 				var map = feature.layer.map;
 				if (mappopup)

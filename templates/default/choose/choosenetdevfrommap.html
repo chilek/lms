@@ -14,13 +14,13 @@
 </script>{/if}
 {if $part == "main"}
 {include file="openlayers.html"}
-<script type="text/javascript">
-<!--
+<script>
+
 	function init()
 	{
 		{include file="map.js"}
 
-		map = createMap(devices, devlinks, nodes, nodelinks, false);
+		map = createMap(devices, devlinks, nodes, nodelinks, ranges, false);
 
 		var selectlayer = new OpenLayers.Control.SelectFeature(map.getLayersByName(devicesLbl)[0], {
 			clickout: true, toggle: false,
@@ -40,7 +40,7 @@
 
         autoiframe_setsize('autoiframe');
 	}
-//-->
+
 </script>
 {/if}
 </head>

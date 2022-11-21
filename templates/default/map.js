@@ -84,3 +84,19 @@
 			});
 		{/foreach}
 	{/if}
+
+	var ranges = [];
+	{if $ranges}
+		{foreach $ranges as $range}
+			ranges.push({
+				lon: {$range.longitude},
+				lat: {$range.latitude},
+				existing: {$range.existing},
+				typename: "{$range.typename}",
+				technologyname: "{$range.technologyname}",
+				speedname: "{$range.speedname}",
+				rangetypename: "{$range.rangetypename}",
+				existingname: "{$range.existingname}"
+			});
+		{/foreach}
+	{/if}

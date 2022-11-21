@@ -4091,6 +4091,7 @@ $_LANG['Altitude:'] = 'Wysokość:';
 $_LANG['Range:'] = 'Zasięg:';
 $_LANG['<!netrange>Ranges: $a'] = 'Zasięgów: $a';
 $_LANG['<!netrange>Type'] = 'Typ';
+$_LANG['<!netrange>Type:'] = 'Typ:';
 $_LANG['Frequency:'] = 'Częstotliwość:';
 $_LANG['Bandwidth:'] = 'Szerokość kanału:';
 $_LANG['$a deg.'] = '$a st.';

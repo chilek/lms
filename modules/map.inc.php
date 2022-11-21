@@ -139,7 +139,60 @@ if ($nodes) {
     }
 }
 
+$ranges = $DB->GetAll(
+    'SELECT b.*,
+        lst.name AS street1,
+        lst.name2 AS street2,
+        (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS street,
+        (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS rstreet,
+        t.name AS streettype,
+        lc.id AS cityid,
+        lc.name AS city,
+        lb.id AS boroughid,
+        lb.type AS boroughtype,
+        lb.name AS borough,
+        ld.id AS districtid,
+        ld.name AS district,
+        ls.id AS stateid,
+        ls.name AS state,
+        r.id AS netrangeid,
+        r.linktype,
+        r.linktechnology,
+        r.downlink,
+        r.uplink,
+        r.type,
+        r.services,
+        (CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing
+    FROM location_buildings b
+    LEFT JOIN location_streets lst ON lst.id = b.street_id
+    LEFT JOIN location_street_types t ON t.id = lst.typeid
+    JOIN location_cities lc ON lc.id = b.city_id
+    JOIN location_boroughs lb ON lb.id = lc.boroughid
+    JOIN location_districts ld ON ld.id = lb.districtid
+    JOIN location_states ls ON ls.id = ld.stateid
+    JOIN netranges r ON r.buildingid = b.id
+    LEFT JOIN (
+        SELECT a.city_id, a.street_id, a.house, COUNT(*) AS nodecount FROM nodes n
+        JOIN vaddresses a ON a.id = n.address_id
+        WHERE a.city_id IS NOT NULL
+        GROUP BY a.city_id, a.street_id, a.house
+    ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND UPPER(na.house) = UPPER(b.building_num)
+    ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
+);
+
+if ($ranges) {
+    foreach ($ranges as &$range) {
+        $range['typename'] = trans("Link type:") . ' ' . $LINKTYPES[$range['linktype']];
+        $range['technologyname'] = ($range['linktechnology'] ? trans("Link technology:") . ' ' . $SIDUSIS_LINKTECHNOLOGIES[$range['linktype']][$range['linktechnology']] : '');
+        $range['speedname'] = trans("Link speed:") . ' ' . trans('$a Mbit/$b Mbit', $range['downlink'], $range['uplink']);
+        $range['rangetypename'] = trans('<!netrange>Type:') . ' ' . trans($range['type'] == 1 ? '<!netrange>real' : '<!netrange>theoretical');
+        $range['existingname'] = empty($range['existing']) ? '' : trans('<!netrange>Existing');
+    }
+    unset($range);
+}
+
 $SMARTY->assign('devices', $devices);
 $SMARTY->assign('devlinks', $devlinks);
 $SMARTY->assign('nodes', $nodes);
 $SMARTY->assign('nodelinks', empty($nodelinks) ? null : $nodelinks);
+$SMARTY->assign('ranges', empty($ranges) ? null : $ranges);

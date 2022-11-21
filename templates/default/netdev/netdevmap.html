@@ -25,21 +25,21 @@
 {elseif $type=='openlayers'}
 {include file="openlayers.html"}
 <div id="map" class="map"></div>
-<script type="text/javascript">
-<!--
+<script>
+
 	{include file="map.js"}
 
 	$('#lms-ui-contents').show();
 
 	{if $lon && $lat}
-	map = createMap(devices, devlinks, nodes, nodelinks, true, '{$lon}', '{$lat}');
+	map = createMap(devices, devlinks, nodes, nodelinks, ranges, true, '{$lon}', '{$lat}');
 	{else}
-	map = createMap(devices, devlinks, nodes, nodelinks, true);
+	map = createMap(devices, devlinks, nodes, nodelinks, ranges, true);
 	{/if}
 
 	set_lastonline_limit({ConfigHelper::getConfig('phpui.lastonline_limit')});
 	setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
-//-->
+
 </script>
 {elseif $gd} {* default if $type is not set or not 'flash' *}
 <P ALIGN="CENTER">
