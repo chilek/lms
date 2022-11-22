@@ -226,7 +226,7 @@ CREATE INDEX location_cityid_index ON location_buildings (city_id);
 /* --------------------------------------------------------
   Structure of table "netranges"
 -------------------------------------------------------- */
-DROP SEQUENCE IF EXSITS netranges_id_seq;
+DROP SEQUENCE IF EXISTS netranges_id_seq;
 CREATE SEQUENCE netranges_id_seq;
 DROP TABLE IF EXISTS netranges;
 CREATE TABLE netranges (
