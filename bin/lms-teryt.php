@@ -876,7 +876,7 @@ if (isset($options['update'])) {
     }
 
     foreach ($terc as $k => $v) {
-        if ($v['valid']) {
+        if (!empty($v['valid'])) {
             continue;
         }
 
