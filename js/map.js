@@ -1010,7 +1010,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	if (mapLayers != null) {
 		var visibleLayers = mapLayers.split(';');
 		for (i = 0; i < visibleLayers.length, i < layerSwitcher.dataLayers.length; i++) {
-			for (j = 0; j < layerSwitcher.dataLayers.length, layerSwitcher.layerStates[j].id != layerSwitcher.dataLayers[i].layer.id; j++);
+			for (j = 0; j < layerSwitcher.dataLayers.length, j < visibleLayers.length, layerSwitcher.layerStates[j].id != layerSwitcher.dataLayers[i].layer.id; j++);
 			layerSwitcher.dataLayers[i].layer.setVisibility((visibleLayers[i] == '1' ? true : false));
 		}
 	}
