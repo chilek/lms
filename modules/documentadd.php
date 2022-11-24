@@ -213,9 +213,21 @@ if (isset($_POST['document'])) {
             // run template engine
             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
+                $SMARTY->AddTemplateDir(
+                    array(
+                        'documentadd' => $doc_dir . DIRECTORY_SEPARATOR . 'templates'
+                            . DIRECTORY_SEPARATOR . $engine['name']
+                    )
+                );
                 require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
             } else {
+                $SMARTY->AddTemplateDir(
+                    array(
+                        'documentadd' => DOC_DIR . DIRECTORY_SEPARATOR . 'templates'
+                            . DIRECTORY_SEPARATOR . 'default'
+                    )
+                );
                 require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . 'default' . DIRECTORY_SEPARATOR . 'engine.php');
             }
