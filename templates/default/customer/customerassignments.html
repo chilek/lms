@@ -273,7 +273,7 @@
 									{/if}
 									<br>
 								{/if}
-								{$a.count|rtrim:'0'|rtrim:'.'}
+								{rtrim(rtrim($a.count, '0'), '.')}
 							</div>
 							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-column discount">
