@@ -115,7 +115,7 @@ if (isset($_POST['config'])) {
         $error['var'] = trans('Option name is required!');
     } elseif (strlen($cfg['var'])>64) {
         $error['var'] = trans('Option name is too long (max.64 characters)!');
-    } elseif (!preg_match('/^[a-z0-9_-]+$/', $cfg['var'])) {
+    } elseif (!preg_match('/^[a-z0-9_-]+$/i', $cfg['var'])) {
         $error['var'] = trans('Option name contains forbidden characters!');
     }
 
