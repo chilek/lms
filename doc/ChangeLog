@@ -348,6 +348,9 @@ version 28-git (????-??-??):
   - enhancement: added 'notes.customer_credentials_format' suuport - it is very similar in behaviour
     to 'invoices.customer_credentials_format' [chilan]
   - enhancement: export: added '%BALANCE' symbol support [chilan]
+  - improvement: 'phpui.territ_street_address_format' with default value '%type% %street1% %street2%'
+    describes street address format when generating its textual representation basing on territ
+    identifiers [chilan]
 
 version 27.0 (2021-08-20):
 
