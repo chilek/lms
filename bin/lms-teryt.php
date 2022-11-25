@@ -1680,7 +1680,7 @@ if (isset($options['reverse'])) {
     }
     unset($cities_with_sections);
 
-    $territ_street_address_format = ConfigHelper::getConfig('phpui.territ_street_address_format', '%type% %street2% %street1%');
+    $teryt_street_address_format = ConfigHelper::getConfig('phpui.teryt_street_address_format', '%type% %street2% %street1%');
 
     foreach ($addresses as $a) {
         $city_id = $a['city_id'];
@@ -1721,7 +1721,7 @@ if (isset($options['reverse'])) {
                             $names['street'],
                             $names['street2'],
                         ),
-                        $territ_street_address_format
+                        $teryt_street_address_format
                     )
                 );
                 unset($names['streettype'], $names['street2']);

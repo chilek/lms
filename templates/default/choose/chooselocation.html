@@ -288,7 +288,7 @@ function submit_location() {
     // SET STREET
     var street_option = $('option:selected', street);
     if (parseInt(street_option.val())) {
-		var territStreetAddressFormat = '{ConfigHelper::getConfig('phpui.territ_street_address_format', '%type% %street2% %street1%')}';
+		var terytStreetAddressFormat = '{ConfigHelper::getConfig('phpui.teryt_street_address_format', '%type% %street2% %street1%')}';
 		var streetParts = {};
 
 		streetParts.type = street_option.attr('data-street-type');
@@ -302,7 +302,7 @@ function submit_location() {
 		}
 
 		{literal}
-		var street = territStreetAddressFormat.replace('%type%', streetParts.type)
+		var street = terytStreetAddressFormat.replace('%type%', streetParts.type)
 			.replace('%street1%', streetParts.street1)
 			.replace('%street2%', streetParts.street2)
 			.replaceAll(/[ ]{2,}/g, ' ');
