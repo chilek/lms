@@ -288,19 +288,27 @@ function submit_location() {
     // SET STREET
     var street_option = $('option:selected', street);
     if (parseInt(street_option.val())) {
-    	var street_parts = [];
-    	street_parts.push(street_option.attr('data-street-type'));
-		if (typeof(street_option.attr('data-street-name-2')) !== 'undefined') {
-			street_parts.push(street_option.attr('data-street-name-2'));
+		var territStreetAddressFormat = '{ConfigHelper::getConfig('phpui.territ_street_address_format', '%type% %street2% %street1%')}';
+		var streetParts = {};
+
+		streetParts.type = street_option.attr('data-street-type');
+		streetParts.street1 = street_option.attr('data-street-name-1');
+		streetParts.street2 = typeof(street_option.attr('data-street-name-2')) !== 'undefined' ? street_option.attr('data-street-name-2') : '';
+		if (streetParts.type.match(/^rynek$/i) &&
+			(streetParts.street1.match(/^rynek/i) || streetParts.street2.match(/^rynek/i))) {
+			streetParts.type = '';
+		} else if (!streetParts.street2.length && streetParts.street1.match(/^[0-9]+(\.|-go)?$/)) {
+			streetParts.type = '';
 		}
-		street_parts.push(street_option.attr('data-street-name-1'));
-		if (street_parts[0].match(/^rynek$/i) &&
-			(street_parts[1].match(/^rynek/i) || (street_parts.length == 3 && street_parts[2].match(/^rynek/i)))) {
-			street_parts.shift();
-		} else if (street_parts.length == 2 && street_parts[1].match(/^[0-9]+(\.|-go)?$/)) {
-			street_parts.reverse();
-		}
-    	location_box.find( "input[data-address='street']"        ).val( street_parts.join(' ') );
+
+		{literal}
+		var street = territStreetAddressFormat.replace('%type%', streetParts.type)
+			.replace('%street1%', streetParts.street1)
+			.replace('%street2%', streetParts.street2)
+			.replaceAll(/[ ]{2,}/g, ' ');
+		{/literal}
+
+		location_box.find( "input[data-address='street']"        ).val( street );
         location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );
     } else {
         location_box.find( "input[data-address='street']"        ).val( '' );

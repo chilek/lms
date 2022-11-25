@@ -352,17 +352,13 @@ function getNamesWithSubcities($subcities, $street_id)
 {
     $DB = LMSDB::getInstance();
 
-    $street_name_sql = "(CASE WHEN s.name2 IS NULL THEN s.name ELSE "
-        . $DB->Concat('s.name2', "' '", 's.name') . " END)";
-
     return array(
         'city' => $DB->GetOne(
             "SELECT name FROM location_cities WHERE id = ?",
             array($subcities['cityid'])
         ),
         'street' => $DB->GetOne(
-            "SELECT (CASE WHEN t.id IS NULL THEN " . $street_name_sql . " ELSE "
-            . $DB->Concat('t.name', "' '", $street_name_sql) . " END) AS street
+            "SELECT t.name AS streettype, s.name AS street, s.name2 AS street2
 			FROM location_streets s
 			JOIN location_street_types t ON t.id = s.typeid
 			WHERE s.cityid IN (" . $subcities['cities'] . ")
@@ -378,19 +374,15 @@ function getNames($city_id, $street_id)
 
     if (empty($street_id)) {
         return $DB->GetRow(
-            "SELECT c.name AS city, NULL AS street
+            "SELECT c.name AS city
 			FROM location_cities c
 			WHERE c.id = ?
 			LIMIT 1",
             array($city_id)
         );
     } else {
-        $street_name_sql = "(CASE WHEN s.name2 IS NULL THEN s.name ELSE "
-            . $DB->Concat('s.name2', "' '", 's.name') . " END)";
         return $DB->GetRow(
-            "SELECT c.name AS city,
-				(CASE WHEN t.id IS NULL THEN " . $street_name_sql . " ELSE "
-                    . $DB->Concat('t.name', "' '", $street_name_sql) . " END) AS street
+            "SELECT c.name AS city, t.name AS streettype, s.name AS street, s.name2 AS street2
 			FROM location_cities c
 			JOIN location_streets s ON s.cityid = c.id
 			JOIN location_street_types t ON t.id = s.typeid
@@ -1688,6 +1680,8 @@ if (isset($options['reverse'])) {
     }
     unset($cities_with_sections);
 
+    $territ_street_address_format = ConfigHelper::getConfig('phpui.territ_street_address_format', '%type% %street2% %street1%');
+
     foreach ($addresses as $a) {
         $city_id = $a['city_id'];
         $street_id = empty($a['street_id']) ? '-' : $a['street_id'];
@@ -1706,6 +1700,32 @@ if (isset($options['reverse'])) {
             } else {
                 $names = getNames($city_id, $street_id == '-' ? null : $street_id);
             }
+            if (isset($names['streettype'])) {
+                if (preg_match('/^rynek$/i', $names['streettype']) &&
+                   (preg_match('/^rynek/i', $names['street']) || preg_match('/^rynek/i', $names['street2']))) {
+                    $names['streettype'] = '';
+                } else if (!strlen($names['street2']) && preg_match('/^[0-9]+(\.|-go)?$/', $names['street1'])) {
+                    $names['streettype'] = '';
+                }
+                $names['street'] = preg_replace(
+                    '/[ ]{2,}/',
+                    ' ',
+                    str_replace(
+                        array(
+                            '%type%',
+                            '%street1%',
+                            '%street2%',
+                        ),
+                        array(
+                            $names['streettype'],
+                            $names['street'],
+                            $names['street2'],
+                        ),
+                        $territ_street_address_format
+                    )
+                );
+                unset($names['streettype'], $names['street2']);
+            }
             $location_cache[$key] = $names;
         }
 
@@ -1713,13 +1733,9 @@ if (isset($options['reverse'])) {
             printf("=> City '%s', Street: '%s'" . PHP_EOL, $names['city'], empty($names['street']) ? '-' : $names['street']);
         }
 
-        if (preg_match('/^rynek\s+rynek/i', $names['street'])) {
-            $names['street'] = preg_replace('/^rynek\s+/i', '', $names['street']);
-        }
-
         $DB->Execute(
             "UPDATE addresses SET city = ?, street = ? WHERE id = ?",
-            array($names['city'], $names['street'], $a['id'])
+            array($names['city'], empty($names['street']) ? null : $names['street'], $a['id'])
         );
 
         $updated++;
