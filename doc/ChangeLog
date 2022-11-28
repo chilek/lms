@@ -351,6 +351,8 @@ version 28-git (????-??-??):
   - improvement: 'phpui.teryt_street_address_format' with default value '%type% %street1% %street2%'
     describes street address format when generating its textual representation basing on territ
     identifiers [chilan]
+  - enhancement: added 'with term contracts' and 'with active term contracts' selection in status
+    filter of customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
