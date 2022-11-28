@@ -987,6 +987,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         }
                     }
                     break;
+                case 84:
+                case 85:
+                    $contracts = 4;
+                    if ($state_item == 85) {
+                        $archived_document_condition = ' AND d.archived = 0';
+                    }
+                    break;
                 case 62:
                     $state_conditions[] = 'c.einvoice = 1';
                     break;
@@ -1598,7 +1605,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							WHERE dateto > 0
 							GROUP BY customerid
 							HAVING MAX(dateto) >= ?NOW? AND MAX(dateto) <= ?NOW? + 86400 * ' . $contracts_days . '
-						) ass ON ass.customerid = c.id') : '')))
+						) ass ON ass.customerid = c.id') :
+                ($contracts == 4 ? 'JOIN (
+                            SELECT DISTINCT d.customerid FROM documents d
+                            JOIN documentcontents dc ON dc.docid = d.id
+                            WHERE dc.todate <> 0
+                                AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                                . $archived_document_condition
+                            . '
+                        ) d ON d.customerid = c.id' : ''))))
                 . ' WHERE '
                 . (empty($state_conditions) ? '1 = 1' : implode(' ' . $statesqlskey . ' ', $state_conditions))
                 . ($ignore_deleted_customers ? ' AND c.deleted = 0' : '')
