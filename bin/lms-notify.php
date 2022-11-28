@@ -3615,6 +3615,7 @@ if (!empty($intersect)) {
                         'customers' => $customers,
                         'actions' => $actions,
                         'quiet' => $quiet,
+                        'debug' => $debug,
                     ));
 
                     break;
@@ -3974,6 +3975,7 @@ if (!empty($intersect)) {
                         'nodes' => $all_nodes,
                         'actions' => $actions,
                         'quiet' => $quiet,
+                        'debug' => $debug,
                     ));
 
                     break;
