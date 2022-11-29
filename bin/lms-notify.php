@@ -1091,7 +1091,7 @@ if (empty($types) || in_array('documents', $types)) {
     $days = $notifications['documents']['days'];
 
     $start = strtotime('+ ' . $days . ' days', $daystart);
-    $end = strtotime('+ 1 day', $start);
+    $end = strtotime('+ ' . $days . ' days', $dayend);
 
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
@@ -1274,7 +1274,7 @@ if (empty($types) || in_array('contracts', $types)) {
     $days = $notifications['contracts']['days'];
 
     $start = strtotime('+ ' . $days . ' days', $daystart);
-    $end = strtotime('+ 1 day', $start);
+    $end = strtotime('+ ' . $days . ' days', $dayend);
 
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
