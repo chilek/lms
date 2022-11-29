@@ -355,6 +355,7 @@ version 28-git (????-??-??):
     filter of customer search form [chilan]
   - enhancement: '--omit-free-days' parameter of bin/lms-notify.php and bin/lms-sendinvoices.php backend
     scripts blocks sending notification and invoices on weekends and holidays [chilan]
+  - enhancement: implemented 'negation' flag for node group selection in customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
