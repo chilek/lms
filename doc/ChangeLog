@@ -353,6 +353,8 @@ version 28-git (????-??-??):
     identifiers [chilan]
   - enhancement: added 'with term contracts' and 'with active term contracts' selection in status
     filter of customer search form [chilan]
+  - enhancement: '--omit-free-days' parameter of bin/lms-notify.php and bin/lms-sendinvoices.php backend
+    scripts blocks sending notification and invoices on weekends and holidays [chilan]
 
 version 27.0 (2021-08-20):
 
