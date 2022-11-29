@@ -227,7 +227,7 @@
 					<tr>
 						<td class="{if !$comment_details}ftop{/if}{if $item.note} blend{/if}">
 							{if $message.contenttype == 'text/plain'}
-								{$item.body|trim|escape|regex_replace:"/\r?\n/":'<br>'|message_quote}
+								{trim($item.body)|escape|regex_replace:"/\r?\n/":'<br>'|message_quote}
 							{else}
 								{$item.body|message_quote}
 							{/if}

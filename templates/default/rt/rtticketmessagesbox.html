@@ -270,7 +270,7 @@
 					<TD colspan="4" class="lms-ui-autolinker {if $message.contenttype == 'text/plain'}message-body{else}message-html-body{/if}{if $message.deleted == 1 && $message.deltime != 0}
 						lucid lms-ui-rtmessage-deleted{else} superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}{/if}">
 						{if $message.contenttype == 'text/plain'}
-							{$message.body|trim|escape|regex_replace:"/\r?\n/":'<br>'|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"|message_quote}
+							{trim($message.body)|escape|regex_replace:"/\r?\n/":'<br>'|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"|message_quote}
 						{else}
 							{$message.body|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"|message_quote}
 						{/if}

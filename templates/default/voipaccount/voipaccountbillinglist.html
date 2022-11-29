@@ -228,7 +228,7 @@
 						<a href="?m=customerinfo&id={$record.callerownerid}"
 							class="lms-ui-hint-rollover"
 							data-url="?m=customerinfoshort&id={$record.callerownerid}">
-							{$record.caller_lastname|lower|ucfirst} {$record.caller_name|ucfirst}
+							{ucfirst($record.caller_lastname|lower)} {ucfirst($record.caller_name)}
 						</a>
 					{else}
 						{trans("Customer from outside")}
@@ -242,7 +242,7 @@
 						<a href="?m=customerinfo&id={$record.calleeownerid}"
 							class="lms-ui-hint-rollover"
 							data-url="?m=customerinfoshort&id={$record.calleeownerid}">
-							{$record.callee_lastname|lower|ucfirst} {$record.callee_name|ucfirst}
+							{ucfirst($record.callee_lastname|lower)} {ucfirst($record.callee_name)}
 						</a>
 					{else}
 						{trans("customer from outside")}
