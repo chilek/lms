@@ -138,7 +138,7 @@ $SESSION->save('cslcgk', $customergroupsqlskey);
 if (!isset($_POST['cgnot'])) {
     $SESSION->restore('cslcgnot', $customergroupnegation);
 } else {
-    $customergroupnegation = true;
+    $customergroupnegation = !empty($_POST['cgnot']);
 }
 $SESSION->save('cslcgnot', $customergroupnegation);
 
@@ -155,6 +155,13 @@ if (!isset($_POST['ng'])) {
     $nodegroup = $_POST['ng'];
 }
 $SESSION->save('cslng', $nodegroup);
+
+if (!isset($_POST['ngnot'])) {
+    $SESSION->restore('cslngnot', $nodegroupnegation);
+} else {
+    $nodegroupnegation = !empty($_POST['ngnot']);
+}
+$SESSION->save('cslngnot', $nodegroupnegation);
 
 if (!isset($_POST['d'])) {
     $SESSION->restore('csld', $division);
@@ -187,6 +194,7 @@ if (isset($_GET['search'])) {
         "time",
         "days",
         "sqlskey",
+        "nodegroupnegation",
         "nodegroup",
         "division"
     ));
@@ -277,6 +285,7 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('cgk', $customergroupsqlskey);
     $SMARTY->assign('cgnot', $customergroupnegation);
     $SMARTY->assign('fk', $flagsqlskey);
+    $SMARTY->assign('ngnot', $nodegroupnegation);
     $SMARTY->assign('karma', $karma);
     $SMARTY->display('customer/customersearch.html');
 }

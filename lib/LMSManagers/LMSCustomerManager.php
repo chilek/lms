@@ -799,6 +799,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param int $time Timestamp
      * @param string $sqlskey Logical conjunction
      * @param int $nodegroup Node group
+     * @param boolean $nodegroupnegation negate node group assignments
      * @param int $division Division id
      * @param int $days Days after expiration
      * @param int $limit Limit
@@ -868,6 +869,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($customergroupnegation)) {
             $customergroupnegation = false;
+        }
+
+        if (!isset($nodegroupnegation)) {
+            $nodegroupnegation = false;
         }
 
         if (isset($state) && !is_array($state) && !empty($state)) {
@@ -1634,7 +1639,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         : ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0')
                     ) : '')
                 . (isset($customergroup) && $customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
-                . (!empty($nodegroup) ? ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1) : '')
+                . (!empty($nodegroup) ? ($nodegroupnegation ? ' AND na.gcount IS NULL' : ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1)) : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction . ', c.id ASC' : '')

@@ -695,6 +695,7 @@
 		</td>
 		<td>
 			<label>
+				<input type="hidden" value="0" name="cgnot">
 				<input type="checkbox" value="NOT" name="cgnot"{if !empty($cgnot)} checked{/if}>
 				{trans("negation")}
 			</label>
@@ -726,12 +727,20 @@
 			{icon name="nodegroup"} {trans("Nodes Group:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" name="ng">
-				<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("— all groups —")}</OPTION>
-				{foreach from=$nodegroups item=nodegroup}
-				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
+			<label>
+				<input type="hidden" value="0" name="ngnot">
+				<input type="checkbox" value="NOT" name="ngnot"{if !empty($ngnot)} checked{/if}>
+				{trans("negation")}
+			</label>
+			&nbsp;
+			<select size="1" name="ng">
+				<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("— all groups —")}</option>
+				{foreach $nodegroups as $nodegroup}
+					<option value="{$nodegroup.id}"
+						{if $listdata.nodegroup == $nodegroup.id} selected{/if}
+						>{$nodegroup.name|trunescape:30}</option>
 				{/foreach}
-			</SELECT>
+			</select>
 		</TD>
 	</TR>
 	<TR>
