@@ -47,6 +47,7 @@ $parameters = array(
     'customer-status:' => null,
     'customerid:' => null,
     'division:' => null,
+    'omit-free-days' => null,
 );
 
 $long_to_shorts = array();
@@ -227,9 +228,34 @@ if (empty($fakedate)) {
 } else {
     $currtime = strtotime($fakedate);
 }
+
+$omit_free_days = isset($options['omit-free-days']);
+
 list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+
+$weekday = date('N', $currtime);
+$holidays = getHolidays($year);
+if ($omit_free_days && ($weekday > 5 || isset($holidays[$currtime]))) {
+    die('Notifications are omitted, because current day is free day!' . PHP_EOL);
+}
+
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
+
+if ($omit_free_days) {
+    $prevday = $daystart;
+    $curryear = $year;
+    do {
+        $nextday = $prevday;
+        $prevday = strtotime('yesterday', $prevday);
+        $prevyear = date('Y', $prevday);
+        if ($prevyear != $curryear) {
+            $holidays = getHolidays($prevyear);
+            $curryear = $prevyear;
+        }
+    } while (date('N', $prevday) > 5 || isset($holidays[$prevday]));
+    $daystart = $nextday;
+}
 
 $SYSLOG = SYSLOG::getInstance();
 
