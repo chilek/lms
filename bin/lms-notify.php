@@ -129,6 +129,7 @@ lms-notify.php
     --division=<shortname>
                                 limit notifications to customers which belong to specified
                                 division
+    --omit-free-days            dont send notifications on free days
 
 EOF;
     exit(0);
