@@ -49,6 +49,7 @@ $parameters = array(
     'division:' => null,
     'customergroups:' => null,
     'customer-status:' => null,
+    'omit-free-days' => null,
 );
 
 $long_to_shorts = array();
@@ -125,6 +126,7 @@ lms-sendinvoices.php
                                 should be assigned
     --customer-status=<status1,status2,...>
                                 send invoices of customers with specified status only
+    --omit-free-days            dont send invoices on free days
 
 EOF;
     exit(0);
@@ -374,7 +376,17 @@ if (empty($fakedate)) {
 } else {
     $currtime = strtotime($fakedate);
 }
+
+$omit_free_days = isset($options['omit-free-days']);
+
 list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+
+$weekday = date('N', $currtime);
+$holidays = getHolidays($year);
+if ($omit_free_days && ($weekday > 5 || isset($holidays[$currtime]))) {
+    die('Invoices are not sent, because current day is free day!' . PHP_EOL);
+}
+
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
 
@@ -443,6 +455,21 @@ if ($backup || $archive) {
 } else {
     $args = array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
         CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
+
+    if ($omit_free_days) {
+        $prevday = $daystart;
+        $curryear = $year;
+        do {
+            $nextday = $prevday;
+            $prevday = strtotime('yesterday', $prevday);
+            $prevyear = date('Y', $prevday);
+            if ($prevyear != $curryear) {
+                $holidays = getHolidays($prevyear);
+                $curryear = $prevyear;
+            }
+        } while (date('N', $prevday) > 5 || isset($holidays[$prevday]));
+        $daystart = $nextday;
+    }
 
     if (!empty($part_size) && preg_match('/^(?<percent>[0-9]+)%$/', $part_size, $m)) {
         $percent = intval($m['percent']);
