@@ -98,7 +98,7 @@
 					<div{if $menuitem.tip}
 							{tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"
 						{/if}
-						{if !empty($menuitem.submenu)}
+						{if !empty($menuitem.link)}
 							onClick="{if !empty($menuitem.windowopen)}window.open('{$menuitem.link}');{else}return self.location.href = '{$menuitem.link}';{/if}"
 						{/if}>
 						<div class="box1">
