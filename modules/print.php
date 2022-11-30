@@ -28,6 +28,11 @@ if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkCo
     access_denied();
 }
 
+$report_type = ConfigHelper::getConfig('phpui.report_type');
+if (empty($report_type)) {
+    $report_type = '';
+}
+
 $type = isset($_GET['type']) ? $_GET['type'] : '';
 
 switch ($type) {
@@ -135,7 +140,7 @@ switch ($type) {
         }
 
         $SMARTY->assign('balancelist', $list);
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomerbalance.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -273,11 +278,11 @@ switch ($type) {
                 $list[$x]['sourcename'] = $row['sourcename'];
                 $list[$x]['comment'] = $row['comment'];
                 $list[$x]['customerid'] = $row['customerid'];
-                $list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
+                $list[$x]['customername'] = empty($row['customerid']) ? '' : $customerslist[$row['customerid']]['customername'];
 
-                if ($row['customerid'] && $row['type']==0) {
-                            // customer covenant
-                        $list[$x]['after'] = $lastafter;
+                if (!empty($row['customerid']) && empty($row['type'])) {
+                    // customer covenant
+                    $list[$x]['after'] = $lastafter;
                     $list[$x]['covenant'] = true;
                     $listdata['liability'] -= $row['value'] * $row['currencyvalue'];
                 } else {
@@ -285,9 +290,10 @@ switch ($type) {
                     $list[$x]['after'] = $lastafter + $list[$x]['value'] * $row['currencyvalue'];
 
                     if ($row['value'] > 0) {
-                            //income
+                        //income
                         $listdata['income'] += $list[$x]['value'] * $row['currencyvalue'];
-                    } else { //expense
+                    } else {
+                        //expense
                         $listdata['expense'] -= $list[$x]['value'] * $row['currencyvalue'];
                     }
                 }
@@ -319,7 +325,7 @@ switch ($type) {
             $SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
         }
 
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printbalancelist.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -372,7 +378,7 @@ switch ($type) {
         );
 
         $SMARTY->assign('incomelist', $incomelist);
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printincomereport.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -422,7 +428,7 @@ switch ($type) {
             $SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
         }
         $SMARTY->assign('importlist', $importlist);
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printimportlist.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -754,7 +760,7 @@ switch ($type) {
             $SMARTY->assign('taxescount', count($taxes));
         }
 
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printliabilityreport.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -964,14 +970,14 @@ switch ($type) {
             $SMARTY->assign('totals', $totals);
             $SMARTY->assign('pagescount', count($pages));
             $SMARTY->assign('reccount', count($list));
-            if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+            if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist-ext.html');
                 html2pdf($output, trans('Reports'), $layout['pagetitle']);
             } else {
                 $SMARTY->display('print/printreceiptlist-ext.html');
             }
         } else {
-            if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+            if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist.html');
                 html2pdf($output, trans('Reports'), $layout['pagetitle']);
             } else {
