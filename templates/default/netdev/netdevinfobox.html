@@ -168,9 +168,11 @@
 												<input id="longitude" type="hidden" value="{$netdev.netnode.longitude}">
 												{$netdev.netnode.longitude}
 												{trans("(from network node)")}
+												{$longitude = $netdev.netnode.longitude}
 											{else}
 												<input id="longitude" type="hidden" value="{$netdev.longitude}">
 												{$netdev.longitude}
+												{$longitude = $netdev.longitude}
 											{/if}
 										</td>
 									</tr>
@@ -186,9 +188,11 @@
 												<input id="longitude" type="hidden" value="{$netdev.netnode.latitude}">
 												{$netdev.netnode.latitude}
 												{trans("(from network node)")}
+												{$latitude = $netdev.netnode.latitude}
 											{else}
 												<input id="latitude" type="hidden" value="{$netdev.latitude}">
 												{$netdev.latitude}
+												{$latitude = $netdev.latitude}
 											{/if}
 										</td>
 									</tr>
@@ -198,6 +202,15 @@
 										<td>
 											{button type="link" icon="map" label="Show on map"
 												href="?m=netdevmap&netdevid={$netdev.id}"}
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+										</td>
+										<td>
+											{$gps_coordinate_url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
+											{button type="link" icon="location" label="Show on external map" external=true
+												href="{$gps_coordinate_url|replace:"%longitude":$longitude|replace:"%latitude":$latitude}"}
 										</td>
 									</tr>
 								{/if}

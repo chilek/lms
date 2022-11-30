@@ -3539,6 +3539,7 @@ $_LANG['Click to select GPS coordinates from map'] = 'Kliknij, aby wybrać wspó
 $_LANG['Select GPS coordinates'] = 'Wybierz współrzędne geograficzne';
 $_LANG['Select GPS coordinates:'] = 'Wybierz współrzędne geograficzne:';
 $_LANG['Show on map'] = 'Pokaż na mapie';
+$_LANG['Show on external map'] = 'Pokaż na mapie zewnętrznej';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';
 $_LANG['Unicast reply from $a [$b]: time=$c'] = 'Odpowiedź unicast od $a [$b]: czas=$c';
