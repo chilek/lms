@@ -117,7 +117,7 @@ $income = $DB->GetAll('
     LEFT JOIN documents d ON d.id = cash.docid
 	JOIN customers c ON c.id = cash.customerid
 	JOIN taxes t ON t.id = cash.taxid
-	WHERE cash.type = 0 AND time >= ? AND time <= ?'
+	WHERE cash.type = 0 AND time >= ? AND time <= ? AND (d.id IS NULL OR d.cancelled = 0)'
     . ($division ? ' AND ((cash.docid IS NOT NULL AND d.divisionid = ' . $division . ')
             OR (cash.docid IS NULL AND c.divisionid = ' . $division . '))' : '')
     . ($customergroup ? ' AND EXISTS (SELECT 1 FROM customerassignments
