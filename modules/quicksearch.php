@@ -838,7 +838,7 @@ switch ($mode) {
                 $params['name'] = $search;
             }
             if (empty($properties) || isset($properties['unresolvedonly'])) {
-                $params['state'] = -1;
+                $params['state'] = -2;
             }
             $SESSION->save('rtsearch', $params);
 
