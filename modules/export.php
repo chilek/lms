@@ -67,9 +67,9 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     header('Pragma: public');
 
     if ($list = $DB->GetAll(
-        'SELECT d.id AS id, value, number, cdate, customerid, 
+        'SELECT d.id AS id, value, number, cdate, d.customerid,
 		d.name AS customer, address, zip, city, ten, ssn, userid,
-		numberplans.template, extnumber, receiptcontents.description, 
+		numberplans.template, extnumber, receiptcontents.description,
 		cashregs.name AS cashreg, b.balance
 		FROM documents d
         JOIN customerbalances b ON b.customerid = d.customerid
