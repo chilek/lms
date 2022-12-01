@@ -214,6 +214,7 @@ $menu = array(
         'VoIP' => array(
             'name' => trans('VoIP'),
             'css' => 'lms-ui-icon-phone',
+            'link' => '?m=voipaccountlist&init=1',
             'tip' => trans('VoIP Management'),
             'accesskey' =>'v',
             'prio' => 11,
