@@ -1678,6 +1678,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                 'contenttype' => $customer_mail_format == 'text' ? 'text/plain' : 'text/html',
                                 'recipients' => $recipients,
                             ));
+
+                            $msgid = $message['id'];
+                            $msgitems = $message['items'];
+
                             $headers = array(
                                 'From' => $sender,
                                 'Recipient-Name' => $customerinfo['customername'],
@@ -1699,10 +1703,42 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                     $headers['X-LMS-Message-Item-Id'] = $message['items'][$doc['customerid']][$destination];
                                     $headers['Message-ID'] = '<messageitem-' . $message['items'][$doc['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
                                 }
+
                                 if (!isset($lms)) {
                                     $lms = LMS::getInstance();
                                 }
-                                $lms->SendMail($destination, $headers, $customer_mail_body);
+
+                                $res = $lms->SendMail($destination, $headers, $customer_mail_body);
+
+                                if (is_int($res)) {
+                                    $status = $res;
+                                    $send_errors = array();
+                                } elseif (is_string($res)) {
+                                    $status = MSG_ERROR;
+                                    $send_errors = array($res);
+                                } else {
+                                    $status = $res['status'];
+                                    $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                                }
+
+                                if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                                    $this->db->Execute(
+                                        'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                            error = ?, externalmsgid = ?
+                                        WHERE messageid = ?
+                                            AND customerid = ?
+                                            AND destination = ?',
+                                        array(
+                                            $status,
+                                            empty($send_errors) ? null : implode(', ', $send_errors),
+                                            !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                            $msgid,
+                                            $doc['customerid'],
+                                            $destination,
+                                        )
+                                    );
+                                }
+
                             }
                         }
                     }
@@ -1820,6 +1856,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         'contenttype' => $new_document_mail_format == 'text' ? 'text/plain' : 'text/html',
                         'recipients' => $recipients,
                     ));
+                    $msgid = $message['id'];
+                    $msgitems = $message['items'];
 
                     $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
                     $headers = array(
@@ -1840,10 +1878,40 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                     foreach ($destinations as $destination) {
                         if (!empty($mail_dsn) || !empty($mail_mdn)) {
-                            $headers['X-LMS-Message-Item-Id'] = $message['items'][$document['customerid']][$destination];
-                            $headers['Message-ID'] = '<messageitem-' . $message['items'][$document['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
+                            $headers['X-LMS-Message-Item-Id'] = $msgitems[$document['customerid']][$destination];
+                            $headers['Message-ID'] = '<messageitem-' . $msgitems[$document['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
                         }
-                        $LMS->SendMail($destination, $headers, $mail_body);
+
+                        $res = $LMS->SendMail($destination, $headers, $mail_body);
+
+                        if (is_int($res)) {
+                            $status = $res;
+                            $send_errors = array();
+                        } elseif (is_string($res)) {
+                            $status = MSG_ERROR;
+                            $send_errors = array($res);
+                        } else {
+                            $status = $res['status'];
+                            $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                        }
+
+                        if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                            $this->db->Execute(
+                                'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                    error = ?, externalmsgid = ?
+                                WHERE messageid = ?
+                                    AND customerid = ?
+                                    AND destination = ?',
+                                array(
+                                    $status,
+                                    empty($send_errors) ? null : implode(', ', $send_errors),
+                                    !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                    $msgid,
+                                    $document['customerid'],
+                                    $destination,
+                                )
+                            );
+                        }
                     }
                 }
             }
@@ -1899,12 +1967,44 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         'body' => $sms_body,
                         'recipients' => $recipients,
                     ));
+                    $msgid = $message['id'];
+                    $msgitems = $message['items'];
 
                     $error = array();
                     foreach ($destinations as $destination) {
-                        $res = $LMS->SendSMS($destination, $sms_body, $message['items'][$document['customerid']][$destination], $sms_options);
-                        if ($res['status'] == MSG_ERROR) {
+                        $res = $LMS->SendSMS($destination, $sms_body, $msgitems[$document['customerid']][$destination], $sms_options);
+
+                        if (is_int($res)) {
+                            $status = $res;
+                            $send_errors = array();
+                        } elseif (is_string($res)) {
+                            $status = MSG_ERROR;
+                            $send_errors = array($res);
+                        } else {
+                            $status = $res['status'];
+                            $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                        }
+
+                        if ($status == MSG_ERROR) {
                             $error[] = array_merge($error, $res['errors']);
+                        }
+
+                        if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                            $this->db->Execute(
+                                'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                    error = ?, externalmsgid = ?
+                                WHERE messageid = ?
+                                    AND customerid = ?
+                                    AND destination = ?',
+                                array(
+                                    $status,
+                                    empty($send_errors) ? null : implode(', ', $send_errors),
+                                    !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                    $msgid,
+                                    $document['customerid'],
+                                    $destination,
+                                )
+                            );
                         }
                     }
                 }

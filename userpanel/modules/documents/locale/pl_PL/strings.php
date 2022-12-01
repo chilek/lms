@@ -97,6 +97,7 @@ $_LANG['Your authorization code has expired! Try again in a moment.'] = 'Wygasł
 $_LANG['Authorization code you entered is invalid!'] = 'Podałeś niepoprawny kod autoryzacyjny!';
 $_LANG['Authorization code has been sent to you mobile phone.'] = 'Kod autoryzacyjny został wysłany na Twój telefon komórkowy.';
 $_LANG['Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.'] = 'Kod autoryzacyjny poprawny! Dokument został zatwierdzony, a Twoje usługi zostaną aktywowane za parę chwil.';
+$_LANG['SMS authorization code for document confirmation'] = 'kod autoryzacyjny SMS do zatwierdzenia dokumentu';
 
 $_LANG['Enter document approval customer one-time password sms body'] = 'Wprowadź treść SMS-a zawierającego hasło jednorazowe wysyłane do klienta';
 $_LANG['One-time password SMS body:'] = 'Treść SMS-a z hasłem jednorazowym:';

@@ -78,10 +78,55 @@ function module_main()
                             $SESSION->save('smsauthcode', $sms_authcode);
                             $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
+
+                            $result = $LMS->addMessage(array(
+                                'type' => MSG_SMS,
+                                'subject' => trans('SMS authorization code for document confirmation'),
+                                'body' => $sms_body,
+                                'recipients' => array(
+                                    0 => array(
+                                        'id' => $SESSION->id,
+                                        'phone' => implode(',', $sms_recipients),
+                                    ),
+                                ),
+                            ));
+                            $msgid = $result['id'];
+                            $msgitems = $result['items'];
+
                             foreach ($sms_recipients as $sms_recipient) {
-                                $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
-                                if ($res['status'] == MSG_ERROR) {
+                                $res = $LMS->SendSMS($sms_recipient, $sms_body, $msgitems[$SESSION->id][$sms_recipient], $sms_options);
+
+                                if (is_int($res)) {
+                                    $status = $res;
+                                    $send_errors = array();
+                                } elseif (is_string($res)) {
+                                    $status = MSG_ERROR;
+                                    $send_errors = array($res);
+                                } else {
+                                    $status = $res['status'];
+                                    $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                                }
+
+                                if ($status == MSG_ERROR) {
                                     $errors = array_merge($errors, $res['errors']);
+                                }
+
+                                if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                                    $DB->Execute(
+                                        'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                            error = ?, externalmsgid = ?
+                                        WHERE messageid = ?
+                                            AND customerid = ?
+                                            AND destination = ?',
+                                        array(
+                                            $status,
+                                            empty($send_errors) ? null : implode(', ', $send_errors),
+                                            !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                            $msgid,
+                                            $SESSION->id,
+                                            $sms_recipient,
+                                        )
+                                    );
                                 }
                             }
                         } else {
