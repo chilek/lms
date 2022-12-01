@@ -274,6 +274,8 @@ if (isset($_POST['tariff'])) {
         WHERE id = ?',
         array($_GET['id'])
     );
+    $tariff['datefrom'] = empty($tariff['datefrom']) ? '' : date('Y/m/d', $tariff['datefrom']);
+    $tariff['dateto'] = empty($tariff['dateto']) ? '' : date('Y/m/d', $tariff['dateto']);
     $tariff['tags'] = $LMS->getTariffTagsForTariff($_GET['id']);
 } else {
     $tariff['domain_limit'] = 0;
