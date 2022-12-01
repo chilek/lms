@@ -1738,7 +1738,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                         )
                                     );
                                 }
-
                             }
                         }
                     }
