@@ -359,6 +359,8 @@ version 28-git (????-??-??):
   - enhancement: added link button which opens point with gps coordinates on external map [chilan]
   - improvement: added sms message in customer message box related to sent sms auth code used during
     customer document confirmation in userpanel [chilan]
+  - improvement: helpdesk quicksearch use 2-level logical operators - normal attributes are combined
+    with 'OR' operator, but 'unresolved only' is combined with 'AND' operator' [chilan]
 
 version 27.0 (2021-08-20):
 
