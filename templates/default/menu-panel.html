@@ -98,8 +98,8 @@
 					<div{if $menuitem.tip}
 							{tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"
 						{/if}
-						{if !empty($menuitem.link)}
-							onClick="{if !empty($menuitem.windowopen)}window.open('{$menuitem.link}');{else}return self.location.href = '{$menuitem.link}';{/if}"
+						{if !empty($menuitem.link) && !empty($menuitem.windowopen)}
+							onClick="window.open('{$menuitem.link}');"
 						{/if}>
 						<div class="box1">
 							{if isset($menuitem.img)}
