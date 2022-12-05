@@ -239,7 +239,7 @@ function getBuildings(array $filter)
     if ($count) {
         return $DB->GetRow(
             'SELECT
-                COUNT(*) AS total,
+                COUNT(DISTINCT b.id) AS total,
                 SUM(CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS ranges,
                 SUM(CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing
             FROM location_buildings b
@@ -418,37 +418,97 @@ $range['services'] = $services;
 $SESSION->save('netranges_update_range', $range);
 
 if (isset($_POST['range'])) {
-    if (isset($range['buildings'])) {
-        $buildings = Utils::filterIntegers($range['buildings']);
-        if (!empty($buildings)) {
+    if (isset($range['buildings']) || isset($range['ranges'])) {
+        $buildings = isset($range['buildings']) ? Utils::filterIntegers($range['buildings']) : array();
+        $ranges = isset($range['ranges']) ? Utils::filterIntegers(array_keys($range['ranges'])) : array();
+        if (!empty($buildings) || !empty($ranges)) {
             $DB->BeginTrans();
 
             if (isset($_GET['delete'])) {
-                $DB->Execute('DELETE FROM netranges WHERE buildingid IN ?', array($buildings));
-            } else {
+                if (!empty($buildings)) {
+                    $DB->Execute('DELETE FROM netranges WHERE buildingid IN ?', array($buildings));
+                }
+                if (!empty($ranges)) {
+                    $DB->Execute('DELETE FROM netranges WHERE id IN ?', array($ranges));
+                }
+            } elseif (isset($_GET['update'])) {
                 $args = $range;
-                unset($args['buildings']);
-                foreach ($buildings as $buildingid) {
-                    $args['buildingid'] = $buildingid;
-                    if ($DB->GetOne('SELECT 1 FROM netranges WHERE buildingid = ?', array($buildingid))) {
-                        $DB->Execute(
-                            'UPDATE netranges
-                            SET linktype = ?,
-                                linktechnology = ?,
-                                downlink = ?,
-                                uplink = ?,
-                                type = ?,
-                                services = ?
-                            WHERE buildingid = ?',
+                unset($args['buildings'], $args['ranges']);
+                if (!empty($buildings)) {
+                    foreach ($buildings as $buildingid) {
+                        $args['buildingid'] = $buildingid;
+                        if (!$DB->GetOne('SELECT 1 FROM netranges WHERE buildingid = ? LIMIT 1', array($buildingid))) {
+                            $DB->Execute(
+                                'INSERT INTO netranges
+                                (linktype, linktechnology, downlink, uplink, type, services, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                array_values($args)
+                            );
+                        }
+                    }
+                    unset($args['buildingid']);
+                }
+                if (!empty($ranges)) {
+                    $ranges = $range['ranges'];
+                    foreach ($ranges as $rangeid => $buildingid) {
+                        if (!ctype_digit(strval($rangeid)) || !ctype_digit($buildingid)) {
+                            continue;
+                        }
+                        if ($DB->GetOne('SELECT 1 FROM netranges WHERE id = ?', array($rangeid))) {
+                            $args['id'] = $rangeid;
+                            $DB->Execute(
+                                'UPDATE netranges
+                                SET linktype = ?,
+                                    linktechnology = ?,
+                                    downlink = ?,
+                                    uplink = ?,
+                                    type = ?,
+                                    services = ?
+                                WHERE id = ?',
+                                array_values($args)
+                            );
+                            unset($args['id']);
+                        } else {
+                            $args['buildingid'] = $buildingid;
+                            $DB->Execute(
+                                'INSERT INTO netranges
+                                (linktype, linktechnology, downlink, uplink, type, services, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                array_values($args)
+                            );
+                            unset($args['buildingid']);
+                        }
+                    }
+                }
+            } elseif (isset($_GET['add'])) {
+                if (!empty($range['ranges'])) {
+                    $buildings = array_merge($buildings, array_unique(Utils::filterIntegers($range['ranges'])));
+                }
+                $args = $range;
+                unset($args['buildings'], $args['ranges']);
+                if (!empty($buildings)) {
+                    foreach ($buildings as $buildingid) {
+                        $args['buildingid'] = $buildingid;
+                        if (!$DB->GetOne(
+                            'SELECT 1
+                            FROM netranges
+                            WHERE linktype = ?
+                                AND linktechnology = ?
+                                AND downlink = ?
+                                AND uplink = ?
+                                AND type = ?
+                                AND services = ?
+                                AND buildingid = ?
+                            LIMIT 1',
                             array_values($args)
-                        );
-                    } else {
-                        $DB->Execute(
-                            'INSERT INTO netranges
-                            (linktype, linktechnology, downlink, uplink, type, services, buildingid)
-                            VALUES (?, ?, ?, ?, ?, ?, ?)',
-                            array_values($args)
-                        );
+                        )) {
+                            $DB->Execute(
+                                'INSERT INTO netranges
+                                (linktype, linktechnology, downlink, uplink, type, services, buildingid)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                array_values($args)
+                            );
+                        }
                     }
                 }
             }

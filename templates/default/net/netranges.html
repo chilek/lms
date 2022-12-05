@@ -476,8 +476,13 @@
                     {/if}
                 </td>
                 <td class="text-right">
-                    <input type="checkbox" name="range[buildings][{$building.id}]" value="{$building.id}"
-                        form="update-range" class="lms-ui-multi-check">
+                    {if !empty($building.netrangeid)}
+                        <input type="checkbox" name="range[ranges][{$building.netrangeid}]" value="{$building.id}"
+                            form="update-range" class="lms-ui-multi-check">
+                    {else}
+                        <input type="checkbox" name="range[buildings][{$building.buildingid}]" value="{$building.id}"
+                               form="update-range" class="lms-ui-multi-check">
+                    {/if}
                 </td>
             </tr>
         {foreachelse}
@@ -584,6 +589,7 @@
                                 </div>
                                 <div class="operation-panel">
                                     {button id="update-button" icon="apply" label="Update" form="update-range" type="submit"}
+                                    {button id="add-button" icon="add" label="Add" form="update-range" type="submit"}
                                 </div>
                             </div>
                         </td>
@@ -768,13 +774,19 @@
                 }).closest('label').toggle($(this).val() !== '');
         });
 
-        $('#update-range').submit(function() {
+        $('#update-range').submit(function(e) {
             if (!$('.lms-ui-multi-check').find(':checked').length) {
                 var button = $('#update-button');
 
                 alertDialog("{trans("No building selected!")}", button);
                 button.prop('disabled', false);
                 return false;
+            }
+            if (e.originalEvent) {
+                $(this).attr('action', function() {
+                    return $(this).attr('action') + '&' +
+                        ($(e.originalEvent.submitter).is('#add-button') ? 'add' : 'update') + '=1';
+                });
             }
         });
 
