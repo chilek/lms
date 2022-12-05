@@ -38,7 +38,13 @@ if (!class_exists('ZipArchive')) {
     die('Error: ZipArchive class not found! Install php-zip module.');
 }
 
-$phone = preg_replace('/[^0-9+]/', '', $division['phone']);
+if (preg_match('/^\+/', $division['phone'])) {
+    $phone = '+';
+    $division['phone'] = substr($division['phone'], 1);
+} else {
+    $phone = '';
+}
+$phone .= preg_replace('/[^0-9+]/', '', $division['phone']);
 if (!strlen($division['email']) && !strlen($phone)) {
     die('Division email or phone should be not empty at least!');
 }
