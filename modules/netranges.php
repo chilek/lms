@@ -317,6 +317,9 @@ function getBuildings(array $filter)
             $linktechnologies = array();
             if (!empty($building['linktechnologies'])) {
                 foreach (explode(',', $building['linktechnologies']) as $linktechnology) {
+                    if (!strlen($linktechnology)) {
+                        continue;
+                    }
                     if (!isset($linktechnologies[$linktechnology])) {
                         $linktechnologies[$linktechnology] = 0;
                     }
