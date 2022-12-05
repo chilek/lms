@@ -484,7 +484,7 @@ switch ($type) {
                 .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
                 .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
                     . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
-                .(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
+                . (isset($_POST['customer_type']) ? '&customertype=' . intval($_POST['customer_type']) : '')
                 .(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]='
                     . implode('&numberplanid[]=', Utils::filterIntegers($_POST['numberplan'])) : '')
                 .(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
