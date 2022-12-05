@@ -98,6 +98,11 @@
         border-top: none;
     }
 
+    .lms-ui-hint-content > table {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+
 </style>
 
 <form name="netranges" id="netranges" method="POST">
@@ -327,6 +332,8 @@
             </td>
             <td class="nobr">
                 <strong>{trans("<!netrange>Existing")}</strong>
+                <br>
+                <strong>{trans("<!netrange>Major technology")}</strong>
             </td>
             <td>
                 &nbsp;
@@ -398,7 +405,74 @@
                 </td>
                 <td class="text-center">
                     {if !empty($building.existing)}
-                        {icon name="checked" class="fa-fw"}
+                        {capture assign="hint"}
+                            {if !empty($building.linktechnologies)}
+                                <table class="lmsbox-inner lms-ui-background-cycle">
+                                    <caption><strong>{trans("<!netrange>Technologies")}</strong></caption>
+                                    <thead>
+                                        <tr>
+                                            <td>
+                                                <strong>{trans("<!netrange>Technology")}</strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong>{trans("<!netrange>Node count")}</strong>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {foreach $building.linktechnologies as $linktechnology => $count}
+                                            <tr>
+                                                <td>
+                                                    {if $linktechnology < 100}
+                                                        {$_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE][$linktechnology]} ({$_LINKTYPES[$smarty.const.LINKTYPE_WIRE]})
+                                                    {elseif $linktechnology < 200}
+                                                        {$_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRELESS][$linktechnology]} ({$_LINKTYPES[$smarty.const.LINKTYPE_WIRELESS]})
+                                                    {else}
+                                                        {$_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_FIBER][$linktechnology]} ({$_LINKTYPES[$smarty.const.LINKTYPE_FIBER]})
+                                                    {/if}
+                                                </td>
+                                                <td class="text-center">
+                                                    {$count}
+                                                </td>
+                                            </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            {/if}
+                            {if !empty($building.customers)}
+                                <table class="lmsbox-inner lms-ui-background-cycle">
+                                    <caption><strong>{trans("<!netrange>Customers")}</strong></caption>
+                                    <thead>
+                                        <tr>
+                                            <td>
+                                                <strong>{trans("<!netrange>Customer name")}</strong>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {foreach $building.customers as $customer}
+                                            <tr>
+                                                <td>
+                                                    <a href="?m=customerinfo&id={$customer.id}">{$customer.name|escape} (#{$customer.id})</a>
+                                                </td>
+                                            </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            {/if}
+                        {/capture}
+                        {hint icon="checked" class="fa-fw" text=$hint}
+                    {/if}
+                    <br>
+                    {if !empty($building.linktechnologies)}
+                        {$linktechnology = key($building.linktechnologies)}
+                        {if $linktechnology < 100}
+                            {$_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE][$linktechnology]} ({$_LINKTYPES[$smarty.const.LINKTYPE_WIRE]})
+                        {elseif $linktechnology < 200}
+                            {$_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRELESS][$linktechnology]} ({$_LINKTYPES[$smarty.const.LINKTYPE_WIRELESS]})
+                        {else}
+                            {$_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_FIBER][$linktechnology]} ({$_LINKTYPES[$smarty.const.LINKTYPE_FIBER]})
+                        {/if}
                     {/if}
                 </td>
                 <td class="text-right">

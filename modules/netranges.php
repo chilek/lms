@@ -281,7 +281,10 @@ function getBuildings(array $filter)
                 r.uplink,
                 r.type,
                 r.services,
-                (CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing
+                (CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing,
+                na.linktechnologies,
+                na.customerids,
+                na.customernames
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             LEFT JOIN location_street_types t ON t.id = lst.typeid
@@ -291,8 +294,13 @@ function getBuildings(array $filter)
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id
             LEFT JOIN (
-                SELECT a.city_id, a.street_id, UPPER(a.house) AS house, COUNT(*) AS nodecount FROM nodes n
+                SELECT a.city_id, a.street_id, UPPER(a.house) AS house, COUNT(*) AS nodecount, '
+                . $DB->GroupConcat('n.linktechnology') . ' AS linktechnologies, '
+                . $DB->GroupConcat('n.ownerid') . ' AS customerids, '
+                . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
+                FROM nodes n
                 JOIN vaddresses a ON a.id = n.address_id
+                JOIN customers c ON c.id = n.ownerid
                 WHERE a.city_id IS NOT NULL
                 GROUP BY a.city_id, a.street_id, UPPER(a.house)
             ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
@@ -304,6 +312,35 @@ function getBuildings(array $filter)
     }
     if (empty($buildings)) {
         $buildings = array();
+    } else {
+        foreach ($buildings as &$building) {
+            $linktechnologies = array();
+            if (!empty($building['linktechnologies'])) {
+                foreach (explode(',', $building['linktechnologies']) as $linktechnology) {
+                    if (!isset($linktechnologies[$linktechnology])) {
+                        $linktechnologies[$linktechnology] = 0;
+                    }
+                    $linktechnologies[$linktechnology]++;
+                }
+                asort($linktechnologies);
+            }
+            $building['linktechnologies'] = $linktechnologies;
+
+            $customers = array();
+            if (!empty($building['customerids'])) {
+                $customernames = explode('|', $building['customernames']);
+                foreach (explode(',', $building['customerids']) as $idx => $customerid) {
+                    if (!isset($customers[$customerid])) {
+                        $customers[$customerid] = array(
+                            'id' => $customerid,
+                            'name' => $customernames[$idx],
+                        );
+                    }
+                }
+            }
+            $building['customers'] = $customers;
+        }
+        unset($building);
     }
     return $buildings;
 }
