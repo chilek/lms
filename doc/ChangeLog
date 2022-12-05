@@ -361,6 +361,7 @@ version 28-git (????-??-??):
     customer document confirmation in userpanel [chilan]
   - improvement: helpdesk quicksearch use 2-level logical operators - normal attributes are combined
     with 'OR' operator, but 'unresolved only' is combined with 'AND' operator' [chilan]
+  - enhancement: added JPK_FA (4) support [chilan]
 
 version 27.0 (2021-08-20):
 
