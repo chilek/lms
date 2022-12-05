@@ -660,6 +660,7 @@ $_LANG['<!netrange>Existing: $a'] = 'Istniejące: $a';
 $_LANG['<!netrange>Major technology'] = 'Główna technologia';
 $_LANG['<!netrange>Technologies'] = 'Technologie';
 $_LANG['<!netrange>Technology'] = 'Technologia';
+$_LANG['<!netrange>Link technology'] = 'Technologia łącza';
 $_LANG['<!netrange>Node count'] = 'Liczba komputerów';
 $_LANG['<!netrange>Customers'] = 'Klienci';
 $_LANG['<!netrange>Customer name'] = 'Nazwa klienta';
