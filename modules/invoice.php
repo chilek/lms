@@ -1231,7 +1231,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $tax = $invoice['taxest']['8.00']['tax'];
                         $jpk_data .= "\t\t<P_13_2>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_2>\n";
                         $jpk_data .= "\t\t<P_14_2>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2>\n";
-                        if ($isset($invoice['currency']) && $invoice['currency'] != Localisation::getCurrentCurrency()) {
+                        if (isset($invoice['currency']) && $invoice['currency'] != Localisation::getCurrentCurrency()) {
                             $jpk_data .= "\t\t<P_14_2W>" . str_replace(',', '.', sprintf('%.2f', round($tax * $currencyvalue, 2))) . "</P_14_2W>\n";
                         }
                     }
