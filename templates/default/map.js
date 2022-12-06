@@ -95,6 +95,7 @@
 				typename: "{$range.typename}",
 				technologyname: "{$range.technologyname}",
 				speedname: "{$range.speedname}",
+				rangetype: "{$range.type}",
 				rangetypename: "{$range.rangetypename}",
 				existingname: "{$range.existingname}",
 				servicesname: "{$range.servicesname}"

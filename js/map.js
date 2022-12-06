@@ -485,18 +485,34 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 	var rangeStyle = new OpenLayers.Style(
 		{
+			fill: false,
+			stroke: false,
+			label: "${label}",
+			labelAlign: "cc",
+			labelXOffset: 0,
+			labelYOffset: 0,
+			fontSize: "1.2em",
+			fontOpacity: 1,
+			fontFamily: "FontAwesome",
+			labelOutlineWidth: 2,
 			graphicWidth: 16,
 			graphicHeight: 16,
 			graphicXOffset: -8,
 			graphicYOffset: -8,
-			externalGraphic: "${img}"
+			externalGraphic: "img/empty.gif"
 		}, {
 			context: {
-				img: function(feature) {
-					return "img/home.png";
+				label: function(feature) {
+					switch (feature.attributes.rangetype) {
+						case "1":
+							return "\uf058";
+						case "2":
+							return "\uf059";
+					}
 				}
 			}
-		});
+		}
+	);
 
 	var lonLat;
 
