@@ -563,7 +563,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontSize: "1.2em",
 			fontOpacity: 1,
 			fontFamily: "FontAwesome",
-			labelOutlineWidth: 2,
+			labelOutlineWidth: 0,
 			graphicWidth: 16,
 			graphicHeight: 16,
 			graphicXOffset: -8,
