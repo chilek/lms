@@ -130,7 +130,7 @@ foreach ($buildings as $building) {
         $fh,
         array(
             'ZS',
-            $building['id'],
+            $building['netrangeid'],
             $building['state_ident'] . $building['district_ident'] . $building['borough_ident'] . $building['borough_type'],
             $building['city_name'],
             $building['city_ident'],
