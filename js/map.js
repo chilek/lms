@@ -444,20 +444,54 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 	var devicestyle = new OpenLayers.Style(
 		{
+			fill: false,
+			stroke: false,
+			label: "${label}",
+			labelAlign: "cc",
+			labelXOffset: 0,
+			labelYOffset: 0,
+			fontSize: "1.3em",
+			fontOpacity: 1,
+			fontFamily: "FontAwesome",
+			labelOutlineWidth: "${labelOutlineWidth}",
+			labelOutlineColor: "${labelOutlineColor}",
 			graphicWidth: 16,
 			graphicHeight: 16,
 			graphicXOffset: -8,
 			graphicYOffset: -8,
-			externalGraphic: "${img}"
+			externalGraphic: "img/empty.gif"
 		}, {
 			context: {
-				img: function(feature) {
-					//alert(map.zoom);
+				label: function(feature) {
 					switch (feature.attributes.state) {
-						case 0: return "img/netdev_unk.png";
-						case 1: return "img/netdev_on.png";
-						case 2: return "img/netdev_off.png";
-						default: return "img/netdev.png";
+						case 0: return "\uf2db";
+						case 1: return "\uf2db";
+						case 2: return "\uf2db";
+						default: return "\uf2db";
+					}
+				},
+				labelOutlineWidth: function(feature) {
+					switch (feature.attributes.state) {
+						case 0:
+							return 2;
+						case 1:
+							return 2;
+						case 2:
+							return 0;
+						default:
+							return 0;
+					}
+				},
+				labelOutlineColor: function(feature) {
+					switch (feature.attributes.state) {
+						case 0:
+							return 'red';
+						case 1:
+							return 'limegreen';
+						case 2:
+							return '';
+						default:
+							return '';
 					}
 				}
 			}
@@ -465,19 +499,54 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 	var nodestyle = new OpenLayers.Style(
 		{
+			fill: false,
+			stroke: false,
+			label: "${label}",
+			labelAlign: "cc",
+			labelXOffset: 0,
+			labelYOffset: 0,
+			fontSize: "1.2em",
+			fontOpacity: 1,
+			fontFamily: "FontAwesome",
+			labelOutlineWidth: "${labelOutlineWidth}",
+			labelOutlineColor: "${labelOutlineColor}",
 			graphicWidth: 16,
 			graphicHeight: 16,
 			graphicXOffset: -8,
 			graphicYOffset: -8,
-			externalGraphic: "${img}"
+			externalGraphic: "img/empty.gif"
 		}, {
 			context: {
-				img: function(feature) {
+				label: function(feature) {
 					switch (feature.attributes.state) {
-						case 0: return "img/node_unk.png";
-						case 1: return "img/node_on.png";
-						case 2: return "img/node_off.png";
-						default: return "img/node.png";
+						case 0: return "\uf108";
+						case 1: return "\uf108";
+						case 2: return "\uf108";
+						default: return "\uf108";
+					}
+				},
+				labelOutlineWidth: function(feature) {
+					switch (feature.attributes.state) {
+						case 0:
+							return 2;
+						case 1:
+							return 2;
+						case 2:
+							return 0;
+						default:
+							return 0;
+					}
+				},
+				labelOutlineColor: function(feature) {
+					switch (feature.attributes.state) {
+						case 0:
+							return 'red';
+						case 1:
+							return 'limegreen';
+						case 2:
+							return '';
+						default:
+							return '';
 					}
 				}
 			}
