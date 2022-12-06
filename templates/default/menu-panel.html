@@ -99,7 +99,11 @@
 							{tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"
 						{/if}
 						{if !empty($menuitem.link) && (!empty($menuitem.windowopen) || empty($menuitem.submenu))}
-							onClick="window.open('{$menuitem.link}');"
+							{if empty($menuitem.windowopen)}
+								onClick="location.href = '{$menuitem.link}';"
+							{else}
+								onClick="window.open('{$menuitem.link}');"
+							{/if}
 						{/if}>
 						<div class="box1">
 							{if isset($menuitem.img)}
