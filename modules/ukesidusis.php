@@ -94,6 +94,7 @@ fputcsv(
         'DI',
         $division['name'],
         $division['telecomnumber'],
+        '',
         preg_replace('/[^0-9]/', '', $division['ten']),
     )
 );
