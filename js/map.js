@@ -655,7 +655,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			if (devlinkArray[i].technology in linkstyles) {
 				linkstyle = linkstyles[devlinkArray[i].technology];
 			} else {
-				linkstyle = linkstyles[devlinkArray[i].type];
+				linkstyle = linkstyles[devlinkArray[i].type.length ? devlinkArray[i].type : 0];
 			}
 			linkstyle.strokeWidth = devlinkArray[i].speed.length ? linkweights[devlinkArray[i].speed] : 1;
 			devlinks.push(new OpenLayers.Feature.Vector(

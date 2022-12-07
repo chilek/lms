@@ -1,6 +1,6 @@
 	var devices = [];
 	{if $devices}
-		{foreach from=$devices item=device}
+		{foreach $devices as $device}
 			devices.push({
 				lon: {$device.lon},
 				lat: {$device.lat},
@@ -33,7 +33,7 @@
 
 	var devlinks = [];
 	{if $devlinks}
-		{foreach from=$devlinks item=devlink}
+		{foreach $devlinks as $devlink}
 			devlinks.push({
 				srclon: {$devlink.srclon},
 				srclat: {$devlink.srclat},
@@ -51,7 +51,7 @@
 
 	var nodes = [];
 	{if $nodes}
-		{foreach from=$nodes item=node}
+		{foreach $nodes as $node}
 			nodes.push({
 				lon: {$node.lon},
 				lat: {$node.lat},
@@ -69,7 +69,7 @@
 
 	var nodelinks = [];
 	{if $nodelinks}
-		{foreach from=$nodelinks item=nodelink}
+		{foreach $nodelinks as $nodelink}
 			nodelinks.push({
 				nodelon: {$nodelink.nodelon},
 				nodelat: {$nodelink.nodelat},
