@@ -456,11 +456,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontWeight: 900,
 			labelOutlineWidth: "${labelOutlineWidth}",
 			labelOutlineColor: "${labelOutlineColor}",
-			graphicWidth: 16,
-			graphicHeight: 16,
-			graphicXOffset: -8,
-			graphicYOffset: -8,
-			externalGraphic: "img/empty.gif"
+			labelSelect: true
 		}, {
 			context: {
 				label: function(feature) {
@@ -512,11 +508,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontWeight: 900,
 			labelOutlineWidth: "${labelOutlineWidth}",
 			labelOutlineColor: "${labelOutlineColor}",
-			graphicWidth: 16,
-			graphicHeight: 16,
-			graphicXOffset: -8,
-			graphicYOffset: -8,
-			externalGraphic: "img/empty.gif"
+			labelSelect: true
 		}, {
 			context: {
 				label: function(feature) {
