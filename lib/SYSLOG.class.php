@@ -588,8 +588,14 @@ class SYSLOG
 
     private function _decodeTransaction(&$transaction, $messages, $keys, $data)
     {
+        static $message_limit = null;
+
+        if (!isset($message_limit)) {
+            $message_limit = intval(ConfigHelper::getConfig('logs.message_limit', 11));
+        }
+
         // PHP code is much faster then LIMIT 11 sql clause
-        $transaction['messages'] = array_reverse(array_slice($messages, 0, 11, true), true);
+        $transaction['messages'] = array_reverse(array_slice($messages, 0, $message_limit, true), true);
 
         if (!empty($keys)) {
             foreach ($keys as $key) {
