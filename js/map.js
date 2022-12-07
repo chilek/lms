@@ -142,8 +142,7 @@ var lmsProjection = new OpenLayers.Projection("EPSG:4326");
 var devicesLbl;
 var nodesLbl;
 
-function removeInvisiblePopups()
-{
+function removeInvisiblePopups() {
 	// OpenLayers doesn't destroy closed popups, so
 	// we search for them here and destroy if there are ...
 	for (var i in map.popups)
@@ -153,13 +152,11 @@ function removeInvisiblePopups()
 		}
 }
 
-function set_lastonline_limit(sec)
-{
+function set_lastonline_limit(sec) {
 	lastonline_limit = sec;
 }
 
-function netdevmap_updater()
-{
+function netdevmap_updater() {
 	var i, j, data;
 
 	if (maprequest.status == 200) {
@@ -211,8 +208,7 @@ function netdevmap_updater()
 	map.getControlsBy('displayClass', 'lmsRefreshButton')[0].deactivate();
 }
 
-function netdevmap_refresh(live)
-{
+function netdevmap_refresh(live) {
 	maprequest = OpenLayers.Request.issue({
 		url: '?m=netdevmaprefresh' + (live ? '&live=1' : ''),
 		callback: netdevmap_updater
@@ -223,13 +219,11 @@ function netdevmap_refresh(live)
 			}, lastonline_limit * 1000);
 }
 
-function close_popup(id)
-{
+function close_popup(id) {
 	map.removePopup(id)
 }
 
-function ping_host(id, ip, type)
-{
+function ping_host(id, ip, type) {
 	//removeInvisiblePopups();
 
 	for (var i = 0; i < map.popups.length, map.popups[i].id != id; i++);
@@ -247,8 +241,7 @@ function ping_host(id, ip, type)
 	}
 }
 
-function ping_any_host(id)
-{
+function ping_any_host(id) {
 	var ip = document.forms[id + '_ipform'].ip.value;
 	if (!ip.match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/))
 		return false;
@@ -260,8 +253,7 @@ function ping_any_host(id)
 	return false;
 }
 
-function findFeaturesIntersection(selectFeature, feature, featureLonLat)
-{
+function findFeaturesIntersection(selectFeature, feature, featureLonLat) {
 	var featurePixel = map.getPixelFromLonLat(featureLonLat);
 	var features = [];
 	for (var i in selectFeature.layers) {
@@ -287,8 +279,7 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 	return features;
 }
 
-function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArray, selection, startLon, startLat)
-{
+function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArray, selection, startLon, startLat) {
 	var i, j;
 
 	var linkstyles = [];
@@ -653,33 +644,33 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	var points;
 
 	var devlinks = [];
-	if (devlinkArray)
-		for (i in devlinkArray)
-		{
+	if (devlinkArray) {
+		for (i in devlinkArray) {
 			points = new Array(
 				new OpenLayers.Geometry.Point(devlinkArray[i].srclon, devlinkArray[i].srclat)
 					.transform(lmsProjection, map.getProjectionObject()),
 				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
 					.transform(lmsProjection, map.getProjectionObject())
 			);
-			if (devlinkArray[i].technology in linkstyles)
+			if (devlinkArray[i].technology in linkstyles) {
 				linkstyle = linkstyles[devlinkArray[i].technology];
-			else
+			} else {
 				linkstyle = linkstyles[devlinkArray[i].type];
-			linkstyle.strokeWidth = linkweights[devlinkArray[i].speed];
+			}
+			linkstyle.strokeWidth = devlinkArray[i].speed.length ? linkweights[devlinkArray[i].speed] : 1;
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
 				devlinkArray[i], linkstyle));
 		}
+	}
 
 	var devlinkLbl = OpenLayers.Lang.translate("Device Links");
 	var devlinklayer = new OpenLayers.Layer.Vector(devlinkLbl);
 	devlinklayer.addFeatures(devlinks);
 
 	var nodes = [];
-	if (nodeArray)
-		for (i in nodeArray)
-		{
+	if (nodeArray) {
+		for (i in nodeArray) {
 			lonLat = new OpenLayers.LonLat(nodeArray[i].lon, nodeArray[i].lat)
 				.transform(lmsProjection, map.getProjectionObject());
 			area.extend(lonLat);
@@ -689,6 +680,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					lonLat.lat
 				), nodeArray[i]));
 		}
+	}
 
 	nodesLbl = OpenLayers.Lang.translate("Nodes");
 	var nodelayer = new OpenLayers.Layer.Vector(nodesLbl, {
@@ -697,24 +689,25 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	nodelayer.addFeatures(nodes);
 
 	var nodelinks = [];
-	if (nodelinkArray)
-		for (i in nodelinkArray)
-		{
+	if (nodelinkArray) {
+		for (i in nodelinkArray) {
 			points = new Array(
 				new OpenLayers.Geometry.Point(nodelinkArray[i].nodelon, nodelinkArray[i].nodelat)
 					.transform(lmsProjection, map.getProjectionObject()),
 				new OpenLayers.Geometry.Point(nodelinkArray[i].netdevlon, nodelinkArray[i].netdevlat)
 					.transform(lmsProjection, map.getProjectionObject())
-				);
-			if (nodelinkArray[i].technology in linkstyles)
+			);
+			if (nodelinkArray[i].technology in linkstyles) {
 				linkstyle = linkstyles[nodelinkArray[i].technology];
-			else
+			} else {
 				linkstyle = linkstyles[nodelinkArray[i].type];
-			linkstyle.strokeWidth = linkweights[nodelinkArray[i].speed];
+			}
+			linkstyle.strokeWidth = nodelinkArray[i].speed.length ? linkweights[nodelinkArray[i].speed] : 1;
 			nodelinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
 				nodelinkArray[i], linkstyle));
 		}
+	}
 
 	var nodelinkLbl = OpenLayers.Lang.translate("Node Links");
 	var nodelinklayer = new OpenLayers.Layer.Vector(nodelinkLbl);
