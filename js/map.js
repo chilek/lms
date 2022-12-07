@@ -445,18 +445,18 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	var devicestyle = new OpenLayers.Style(
 		{
 			fill: false,
-			stroke: false,
 			label: "${label}",
 			labelAlign: "cc",
 			labelXOffset: 0,
 			labelYOffset: 0,
+			labelSelect: true,
+			labelOutlineWidth: 0,
 			fontSize: "1.3em",
 			fontOpacity: 1,
 			fontFamily: '"Font Awesome 5 Free"',
 			fontWeight: 900,
-			labelOutlineWidth: "${labelOutlineWidth}",
-			labelOutlineColor: "${labelOutlineColor}",
-			labelSelect: true
+			fontStrokeColor: "${fontStrokeColor}",
+			fontStrokeWidth: "${fontStrokeWidth}",
 		}, {
 			context: {
 				label: function(feature) {
@@ -467,28 +467,24 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						default: return "\uf2db";
 					}
 				},
-				labelOutlineWidth: function(feature) {
+				fontStrokeColor: function(feature) {
 					switch (feature.attributes.state) {
 						case 0:
-							return 2;
+							return "red";
 						case 1:
-							return 2;
-						case 2:
-							return 0;
+							return "limegreen";
 						default:
-							return 0;
+							return false;
 					}
 				},
-				labelOutlineColor: function(feature) {
-					switch (feature.attributes.state) {
+				fontStrokeWidth: function(feature) {
+					switch (feature.attributes.rangetype) {
 						case 0:
-							return 'red';
+							return 1;
 						case 1:
-							return 'limegreen';
-						case 2:
-							return '';
+							return 1;
 						default:
-							return '';
+							return 0;
 					}
 				}
 			}
@@ -497,18 +493,18 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	var nodestyle = new OpenLayers.Style(
 		{
 			fill: false,
-			stroke: false,
 			label: "${label}",
 			labelAlign: "cc",
 			labelXOffset: 0,
 			labelYOffset: 0,
+			labelSelect: true,
+			labelOutlineWidth: 0,
 			fontSize: "1.2em",
 			fontOpacity: 1,
 			fontFamily: '"Font Awesome 5 Free"',
 			fontWeight: 900,
-			labelOutlineWidth: "${labelOutlineWidth}",
-			labelOutlineColor: "${labelOutlineColor}",
-			labelSelect: true
+			fontStrokeColor: "${fontStrokeColor}",
+			fontStrokeWidth: "${fontStrokeWidth}"
 		}, {
 			context: {
 				label: function(feature) {
@@ -519,28 +515,24 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						default: return "\uf108";
 					}
 				},
-				labelOutlineWidth: function(feature) {
+				fontStrokeColor: function(feature) {
 					switch (feature.attributes.state) {
 						case 0:
-							return 2;
+							return "red";
 						case 1:
-							return 2;
-						case 2:
-							return 0;
+							return "limegreen";
 						default:
-							return 0;
+							return false;
 					}
 				},
-				labelOutlineColor: function(feature) {
-					switch (feature.attributes.state) {
+				fontStrokeWidth: function(feature) {
+					switch (feature.attributes.rangetype) {
 						case 0:
-							return 'red';
+							return 1;
 						case 1:
-							return 'limegreen';
-						case 2:
-							return '';
+							return 1;
 						default:
-							return '';
+							return 0;
 					}
 				}
 			}
