@@ -17,7 +17,7 @@
 				{foreach $device.radiosectors as $radiosector}
 					{
 						name: '{$radiosector.name}',
-						technology: {$radiosector.technology},
+						technology: "{$radiosector.technology}",
 						azimuth: {$radiosector.azimuth},
 						width: {$radiosector.width},
 						rsrange: {$radiosector.rsrange},
@@ -39,9 +39,9 @@
 				srclat: {$devlink.srclat},
 				dstlon: {$devlink.dstlon},
 				dstlat: {$devlink.dstlat},
-				type: {$devlink.type},
-				technology: {$devlink.technology},
-				speed: {$devlink.speed},
+				type: "{$devlink.type}",
+				technology: "{$devlink.technology}",
+				speed: "{$devlink.speed}",
 				typename: "{$devlink.typename}",
 				technologyname: "{$devlink.technologyname}",
 				speedname: "{$devlink.speedname}"
@@ -75,9 +75,9 @@
 				nodelat: {$nodelink.nodelat},
 				netdevlon: {$nodelink.netdevlon},
 				netdevlat: {$nodelink.netdevlat},
-				type: {$nodelink.type},
-				technology: {$nodelink.technology},
-				speed: {$nodelink.speed},
+				type: "{$nodelink.type}",
+				technology: "{$nodelink.technology}",
+				speed: "{$nodelink.speed}",
 				typename: "{$nodelink.typename}",
 				technologyname: "{$nodelink.technologyname}",
 				speedname: "{$nodelink.speedname}"
