@@ -595,7 +595,7 @@ class SYSLOG
         }
 
         // PHP code is much faster then LIMIT 11 sql clause
-        $transaction['messages'] = array_reverse(array_slice($messages, 0, $message_limit, true), true);
+        $transaction['messages'] = array_reverse(empty($message_limit) ? $messages : array_slice($messages, 0, $message_limit, true), true);
 
         if (!empty($keys)) {
             foreach ($keys as $key) {
