@@ -549,17 +549,16 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	var rangeStyle = new OpenLayers.Style(
 		{
 			fill: false,
-			stroke: false,
 			label: "${label}",
 			labelAlign: "cc",
 			labelXOffset: 0,
 			labelYOffset: 0,
+			labelSelect: true,
+			labelOutlineWidth: 0,
 			fontSize: "1.2em",
 			fontOpacity: 1,
 			fontFamily: '"Font Awesome 5 Free"',
 			fontWeight: 900,
-			labelOutlineWidth: 0,
-			labelSelect: true
 		}, {
 			context: {
 				label: function(feature) {
