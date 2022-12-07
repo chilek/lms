@@ -567,11 +567,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			fontFamily: '"Font Awesome 5 Free"',
 			fontWeight: 900,
 			labelOutlineWidth: 0,
-			graphicWidth: 16,
-			graphicHeight: 16,
-			graphicXOffset: -8,
-			graphicYOffset: -8,
-			externalGraphic: "img/empty.gif"
+			labelSelect: true
 		}, {
 			context: {
 				label: function(feature) {
