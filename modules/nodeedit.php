@@ -383,9 +383,15 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['ipaddr_pub'] = $nodeinfo['ip_pub'];
 
     if (empty($nodeinfo['netdev'])) {
-        $nodeinfo['linktype'] = intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE));
-        $nodeinfo['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
-        $nodeinfo['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
+        if (!ctype_digit($nodeinfo['linktype'])) {
+            $nodeinfo['linktype'] = intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE));
+        }
+        if (!ctype_digit($nodeinfo['linktechnology'])) {
+            $nodeinfo['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
+        }
+        if (!ctype_digit($nodeinfo['linkspeed'])) {
+            $nodeinfo['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
+        }
     }
 }
 
