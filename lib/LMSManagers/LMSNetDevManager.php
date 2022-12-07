@@ -68,15 +68,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         if (empty($link)) {
             $type        = 0;
-            $technology  = 0;
+            $technology  = null;
             $radiosector = null;
-            $speed       = 100000;
+            $speed       = null;
             $port        = 0;
         } else {
-            $type        = isset($link['type']) ? intval($link['type']) : 0;
-            $radiosector = isset($link['radiosector']) && !empty($link['radiosector']) ? intval($link['radiosector']) : null;
-            $technology  = isset($link['technology']) ? intval($link['technology']) : 0;
-            $speed       = isset($link['speed']) ? intval($link['speed']) : 100000;
+            $type        = isset($link['type']) && ctype_digit($link['type']) ? intval($link['type']) : null;
+            $radiosector = !empty($link['radiosector']) && ctype_digit($link['radiosector']) ? intval($link['radiosector']) : null;
+            $technology  = !empty($link['technology']) && ctype_digit($link['technology']) ? intval($link['technology']) : null;
+            $speed       = !empty($link['speed']) && ctype_digit($link['speed']) ? intval($link['speed']) : null;
             $port        = isset($link['port'])  ? intval($link['port'])  : 0;
         }
 
@@ -86,7 +86,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'linkradiosector'  => $radiosector,
             'linktechnology'   => $technology,
             'linkspeed'        => $speed,
-            'port'             => intval($port),
+            'port'             => $port,
             SYSLOG::RES_NODE   => $id,
         );
         $res = $this->db->Execute('UPDATE nodes SET netdev=?, linktype=?, linkradiosector=?,
@@ -184,14 +184,14 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $type = 0;
             $srcradiosector = null;
             $dstradiosector = null;
-            $technology = 0;
-            $speed = 100000;
+            $technology = null;
+            $speed = null;
         } else {
-            $type = isset($link['type']) ? $link['type'] : 0;
-            $srcradiosector = isset($link['srcradiosector']) ? (intval($link['srcradiosector']) ? intval($link['srcradiosector']) : null) : null;
-            $dstradiosector = isset($link['dstradiosector']) ? (intval($link['dstradiosector']) ? intval($link['dstradiosector']) : null) : null;
-            $technology = isset($link['technology']) ? $link['technology'] : 0;
-            $speed = isset($link['speed']) ? $link['speed'] : 100000;
+            $type = isset($link['type']) && ctype_digit($link['type']) ? intval($link['type']) : null;
+            $srcradiosector = !empty($link['srcradiosector']) && crypt_digit($link['srcradiosector']) ? intval($link['srcradiosector']) : null;
+            $dstradiosector = !empty($link['dstradiosector']) && crypt_digit($link['dstradiosector']) ? intval($link['dstradiosector']) : null;
+            $technology = !empty($link['technology']) && ctype_digit($link['technology']) ? intval($link['technology']) : null;
+            $speed = !empty($link['speed']) && ctype_digit($link['speed']) ? intval($link['speed']) : null;
         }
 
         $query = 'UPDATE netlinks SET type = ?, srcradiosector = ?, dstradiosector = ?, technology = ?, speed = ?';
@@ -252,13 +252,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function NetDevLink($dev1, $dev2, $link)
     {
-        $type = $link['type'];
-        $srcradiosector = ($type == 1 ?
-        (isset($link['srcradiosector']) && intval($link['srcradiosector']) ? intval($link['srcradiosector']) : null) : null);
-        $dstradiosector = ($type == 1 ?
-        (isset($link['dstradiosector']) && intval($link['dstradiosector']) ? intval($link['dstradiosector']) : null) : null);
-        $technology = $link['technology'];
-        $speed = $link['speed'];
+        $type = isset($link['type']) && ctype_digit($link['type']) ? $link['type'] : null;
+        $srcradiosector = $type == LINKTYPE_WIRELESS && !empty($link['srcradiosector']) && ctype_digit($link['srcradiosector'])
+            ? intval($link['srcradiosector']) : null;
+        $dstradiosector = $type == LINKTYPE_WIRELESS && !empty($link['dstradiosector']) && ctype_digit($link['dstradiosector'])
+            ? intval($link['dstradiosector']) : null;
+        $technology = !empty($link['technology']) && ctype_digit($link['technology']) ? intval($link['technology']) : null;
+        $speed = !empty($link['speed']) && ctype_digit($link['speed']) ? intval($link['speed']) : null;
         $sport = $link['srcport'];
         $dport = $link['dstport'];
 
@@ -629,13 +629,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 'dstradiosector' => $link['dstradiosector'],
                 'dst' => $this->db->GetAll(
                     'SELECT id, name FROM netradiosectors WHERE netdev = ? '
-                    . ($link['type'] == LINKTYPE_WIRELESS && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+                    . ($link['type'] == LINKTYPE_WIRELESS && !empty($link['technology']) && ctype_digit($link['technology']) ? ' AND (technology IS NULL OR technology = ' . intval($link['technology']) . ')' : '')
                     . ' ORDER BY name',
                     array($dev1)
                 ),
                 'src' => $this->db->GetAll(
                     'SELECT id, name FROM netradiosectors WHERE netdev = ? '
-                    . ($link['type'] == LINKTYPE_WIRELESS && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+                    . ($link['type'] == LINKTYPE_WIRELESS && !empty($link['technology']) && ctype_digit($link['technology']) ? ' AND (technology IS NULL OR technology = ' . intval($link['technology']) . ')' : '')
                     . ' ORDER BY name',
                     array($dev2)
                 ),
@@ -1369,7 +1369,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			LEFT JOIN (
 				SELECT dstradiosector, COUNT(*) AS devices FROM netlinks GROUP BY dstradiosector
 			) l2 ON l2.dstradiosector = s.id
-			WHERE s.netdev = ?' . ($technology ? ' AND (technology = ' . intval($technology) . ' OR technology = 0)' : '') . '
+			WHERE s.netdev = ?' . (!empty($technology) ? ' AND (technology = ' . intval($technology) . ' OR technology IS NULL)' : '') . '
 			ORDER BY s.name', array($netdevid));
 
         if (!empty($radiosectors)) {
@@ -1393,7 +1393,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'altitude' => $radiosector['altitude'],
             'rsrange' => $radiosector['rsrange'],
             'license' => (strlen($radiosector['license']) ? $radiosector['license'] : null),
-            'technology' => intval($radiosector['technology']),
+            'technology' => !empty($radiosector['technology']) && ctype_digit($radiosector['technology']) ? intval($radiosector['technology']) : null,
             'type' => intval($radiosector['type']),
             'frequency' => (strlen($radiosector['frequency']) ? $radiosector['frequency'] : null),
             'frequency2' => (strlen($radiosector['frequency2']) ? $radiosector['frequency2'] : null),
@@ -1448,7 +1448,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'altitude' => $radiosector['altitude'],
             'rsrange' => $radiosector['rsrange'],
             'license' => (strlen($radiosector['license']) ? $radiosector['license'] : null),
-            'technology' => intval($radiosector['technology']),
+            'technology' => !empty($radiosector['technology']) && ctype_digit($radiosector['technology']) ? $radiosector['technology'] : null,
             'type' => intval($radiosector['type']),
             'secret' => $radiosector['secret'],
             'frequency' => (strlen($radiosector['frequency']) ? $radiosector['frequency'] : null),

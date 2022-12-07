@@ -1609,7 +1609,7 @@ CREATE TABLE netradiosectors (
 	altitude smallint DEFAULT 0 NOT NULL,
 	rsrange integer DEFAULT 0 NOT NULL,
 	license varchar(64) DEFAULT NULL,
-	technology integer DEFAULT 0 NOT NULL,
+	technology integer DEFAULT NULL,
 	frequency numeric(9,5) DEFAULT NULL,
 	frequency2 numeric(9,5) DEFAULT NULL,
 	bandwidth numeric(9,5) DEFAULT NULL,
@@ -1973,9 +1973,9 @@ CREATE TABLE netlinks (
 		CONSTRAINT netlinks_src_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	dst integer 		NOT NULL
 		CONSTRAINT netlinks_dst_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	type smallint		DEFAULT 0 NOT NULL,
-	speed integer		DEFAULT 100000 NOT NULL,
-	technology integer	DEFAULT 0 NOT NULL,
+	type smallint		DEFAULT NULL,
+	speed integer		DEFAULT NULL,
+	technology integer	DEFAULT NULL,
 	srcport smallint	DEFAULT 0 NOT NULL,
 	dstport smallint	DEFAULT 0 NOT NULL,
 	srcradiosector integer	DEFAULT NULL
@@ -4336,6 +4336,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120701');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120702');
 
 COMMIT;

@@ -53,12 +53,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'info'              => Utils::removeInsecureHtml($nodedata['info']),
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
-            'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-            'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-                (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
-            'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
-            'linkspeed'         => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
-            'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
+            'linktype'          => isset($nodedata['linktype']) && ctype_digit($nodedata['linktype']) ? intval($nodedata['linktype']) : null,
+            'linkradiosector'   => isset($nodedata['linktype']) && ctype_digit($nodedata['linktype']) && intval($nodedata['linktype']) == LINKTYPE_WIRELESS
+                && !empty($nodedata['radiosector']) && ctype_digit($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null,
+            'linktechnology'    => !empty($nodedata['linktechnology']) && ctype_digit($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : null,
+            'linkspeed'         => !empty($nodedata['linkspeed']) && ctype_digit($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : null,
+            'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : null,
             'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
             'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
@@ -780,11 +780,11 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'warning'           => $nodedata['warning'],
             'info'              => Utils::removeInsecureHtml($nodedata['info']),
             SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
-            'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-            'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-                (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
-            'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
-            'linkspeed'         => isset($nodedata['linkspeed'])      ? intval($nodedata['linkspeed'])      : 100000,
+            'linktype'          => isset($nodedata['linktype']) && ctype_digit($nodedata['linktype']) ? intval($nodedata['linktype']) : null,
+            'linkradiosector'   => isset($nodedata['linktype']) && ctype_digit($nodedata['linktype']) && intval($nodedata['linktype']) == LINKTYPE_WIRELESS
+                && !empty($nodedata['radiosector']) && ctype_digit($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null,
+            'linktechnology'    => !empty($nodedata['linktechnology']) && ctype_digit($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : null,
+            'linkspeed'         => !empty($nodedata['linkspeed']) && ctype_digit($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : null,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
@@ -895,7 +895,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         } else {
             $link['radiosectors'] = $this->db->GetAll(
                 'SELECT id, name FROM netradiosectors WHERE netdev = ?'
-                . ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
+                . (!empty($link['technology']) ? ' AND (technology = ' . $link['technology'] . ' OR technology IS NULL)' : '')
                 . ' ORDER BY name',
                 array($devid)
             );
@@ -935,18 +935,18 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function SetNodeLinkType($node, $link = null)
     {
         if (empty($link)) {
-            $type = 0;
-            $technology = 0;
+            $type = LINKTYPE_WIRE;
+            $technology = null;
             $radiosector = null;
-            $speed = 100000;
+            $speed = null;
         } else {
-            $type = isset($link['type']) ? intval($link['type']) : 0;
-            $radiosector = isset($link['radiosector']) ? intval($link['radiosector']) : null;
-            if ($type != 1 || $radiosector == 0) {
+            $type = isset($link['type']) && ctype_digit($link['type']) ? intval($link['type']) : null;
+            $radiosector = !empty($link['radiosector']) && ctype_digit($link['radiosector']) ? intval($link['radiosector']) : null;
+            if ($type != LINKTYPE_WIRELESS || empty($radiosector)) {
                 $radiosector = null;
             }
-            $technology = isset($link['technology']) ? intval($link['technology']) : 0;
-            $speed = isset($link['speed']) ? intval($link['speed']) : 100000;
+            $technology = !empty($link['technology']) && ctype_digit($link['technology']) ? intval($link['technology']) : null;
+            $speed = !empty($link['speed']) && ctype_digit($link['speed']) ? intval($link['speed']) : null;
         }
 
         $query = 'UPDATE nodes SET linktype = ?, linkradiosector = ?, linktechnology = ?, linkspeed = ?';
