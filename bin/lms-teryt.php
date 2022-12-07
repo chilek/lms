@@ -984,7 +984,7 @@ if (isset($options['update'])) {
     }
 
     foreach ($wmrodz as $k => $v) {
-        if ($v['valid']) {
+        if (!empty($v['valid'])) {
             continue;
         }
 
@@ -1308,7 +1308,7 @@ if (isset($options['update'])) {
     }
 
     foreach ($ulic as $k => $v) {
-        if (!$v['valid']) {
+        if (empty($v['valid'])) {
             $DB->Execute('DELETE FROM location_streets WHERE id=?', array($v['id']));
         }
     }
