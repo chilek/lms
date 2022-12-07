@@ -764,7 +764,7 @@ if (isset($options['update'])) {
         }
 
         $key  = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz'];
-        $data = $terc[$key];
+        $data = isset($terc[$key]) ? $terc[$key] : null;
 
         // if $row['pow'] is empty then this row contains state
         if (empty($row['pow'])) {
