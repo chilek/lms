@@ -67,17 +67,21 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function NetDevLinkNode($id, $devid, $link = null)
     {
         if (empty($link)) {
-            $type        = 0;
+            $type        = LINKTYPE_WIRE;
             $technology  = null;
             $radiosector = null;
             $speed       = null;
             $port        = 0;
         } else {
-            $type        = isset($link['type']) && ctype_digit($link['type']) ? intval($link['type']) : null;
-            $radiosector = !empty($link['radiosector']) && ctype_digit($link['radiosector']) ? intval($link['radiosector']) : null;
-            $technology  = !empty($link['technology']) && ctype_digit($link['technology']) ? intval($link['technology']) : null;
-            $speed       = !empty($link['speed']) && ctype_digit($link['speed']) ? intval($link['speed']) : null;
-            $port        = isset($link['port'])  ? intval($link['port'])  : 0;
+            $type        = isset($link['type']) && (is_int($link['type']) || ctype_digit($link['type']))
+                ? intval($link['type']) : null;
+            $radiosector = !empty($link['radiosector']) && (is_int($link['radiosector']) || ctype_digit($link['radiosector']))
+                ? intval($link['radiosector']) : null;
+            $technology  = !empty($link['technology']) && (is_int($link['technology']) || ctype_digit($link['technology']))
+                ? intval($link['technology']) : null;
+            $speed       = !empty($link['speed']) && (is_int($link['speed']) || ctype_digit($link['speed']))
+                ? intval($link['speed']) : null;
+            $port        = isset($link['port']) ? intval($link['port'])  : 0;
         }
 
         $args = array(
@@ -187,11 +191,16 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $technology = null;
             $speed = null;
         } else {
-            $type = isset($link['type']) && ctype_digit($link['type']) ? intval($link['type']) : null;
-            $srcradiosector = !empty($link['srcradiosector']) && crypt_digit($link['srcradiosector']) ? intval($link['srcradiosector']) : null;
-            $dstradiosector = !empty($link['dstradiosector']) && crypt_digit($link['dstradiosector']) ? intval($link['dstradiosector']) : null;
-            $technology = !empty($link['technology']) && ctype_digit($link['technology']) ? intval($link['technology']) : null;
-            $speed = !empty($link['speed']) && ctype_digit($link['speed']) ? intval($link['speed']) : null;
+            $type = isset($link['type']) && (is_int($link['type']) || ctype_digit($link['type']))
+                ? intval($link['type']) : null;
+            $srcradiosector = !empty($link['srcradiosector']) && (is_int($link['srcradiosector']) || ctype_digit($link['srcradiosector']))
+                ? intval($link['srcradiosector']) : null;
+            $dstradiosector = !empty($link['dstradiosector']) && (is_int($link['dstradiosector']) || ctype_digit($link['dstradiosector']))
+                ? intval($link['dstradiosector']) : null;
+            $technology = !empty($link['technology']) && (is_int($link['technology']) || ctype_digit($link['technology']))
+                ? intval($link['technology']) : null;
+            $speed = !empty($link['speed']) && (is_int($link['speed']) || ctype_digit($link['speed']))
+                ? intval($link['speed']) : null;
         }
 
         $query = 'UPDATE netlinks SET type = ?, srcradiosector = ?, dstradiosector = ?, technology = ?, speed = ?';
@@ -252,28 +261,33 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function NetDevLink($dev1, $dev2, $link)
     {
-        $type = isset($link['type']) && ctype_digit($link['type']) ? $link['type'] : null;
-        $srcradiosector = $type == LINKTYPE_WIRELESS && !empty($link['srcradiosector']) && ctype_digit($link['srcradiosector'])
+        $type = isset($link['type']) && (is_int($link['type']) || ctype_digit($link['type']))
+            ? intval($link['type']) : null;
+        $srcradiosector = $type == LINKTYPE_WIRELESS && !empty($link['srcradiosector'])
+            && (is_int($link['srcradiosector']) || ctype_digit($link['srcradiosector']))
             ? intval($link['srcradiosector']) : null;
-        $dstradiosector = $type == LINKTYPE_WIRELESS && !empty($link['dstradiosector']) && ctype_digit($link['dstradiosector'])
+        $dstradiosector = $type == LINKTYPE_WIRELESS && !empty($link['dstradiosector'])
+            && (is_int($link['dstradiosector']) || ctype_digit($link['dstradiosector']))
             ? intval($link['dstradiosector']) : null;
-        $technology = !empty($link['technology']) && ctype_digit($link['technology']) ? intval($link['technology']) : null;
-        $speed = !empty($link['speed']) && ctype_digit($link['speed']) ? intval($link['speed']) : null;
+        $technology = !empty($link['technology']) && (is_int($link['technology']) || ctype_digit($link['technology']))
+            ? intval($link['technology']) : null;
+        $speed = !empty($link['speed']) && (is_int($link['speed']) || ctype_digit($link['speed']))
+            ? intval($link['speed']) : null;
         $sport = $link['srcport'];
         $dport = $link['dstport'];
 
         if ($dev1 != $dev2) {
             if (!$this->IsNetDevLink($dev1, $dev2)) {
                 $args = array(
-                'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
-                'type' => $type,
-                'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
-                'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
-                'technology' => $technology,
-                'speed' => $speed,
-                'srcport' => intval($sport),
-                'dstport' => intval($dport),
+                    'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
+                    'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
+                    'type' => $type,
+                    'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
+                    'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
+                    'technology' => $technology,
+                    'speed' => $speed,
+                    'srcport' => intval($sport),
+                    'dstport' => intval($dport),
                 );
                 $res = $this->db->Execute('INSERT INTO netlinks
 					(src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport)
@@ -629,13 +643,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 'dstradiosector' => $link['dstradiosector'],
                 'dst' => $this->db->GetAll(
                     'SELECT id, name FROM netradiosectors WHERE netdev = ? '
-                    . ($link['type'] == LINKTYPE_WIRELESS && !empty($link['technology']) && ctype_digit($link['technology']) ? ' AND (technology IS NULL OR technology = ' . intval($link['technology']) . ')' : '')
+                    . ($link['type'] == LINKTYPE_WIRELESS && !empty($link['technology']) && (is_int($link['technology']) || ctype_digit($link['technology']))
+                        ? ' AND (technology IS NULL OR technology = ' . intval($link['technology']) . ')' : '')
                     . ' ORDER BY name',
                     array($dev1)
                 ),
                 'src' => $this->db->GetAll(
                     'SELECT id, name FROM netradiosectors WHERE netdev = ? '
-                    . ($link['type'] == LINKTYPE_WIRELESS && !empty($link['technology']) && ctype_digit($link['technology']) ? ' AND (technology IS NULL OR technology = ' . intval($link['technology']) . ')' : '')
+                    . ($link['type'] == LINKTYPE_WIRELESS && !empty($link['technology']) && (is_int($link['technology']) || ctype_digit($link['technology']))
+                        ? ' AND (technology IS NULL OR technology = ' . intval($link['technology']) . ')' : '')
                     . ' ORDER BY name',
                     array($dev2)
                 ),
@@ -1393,7 +1409,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'altitude' => $radiosector['altitude'],
             'rsrange' => $radiosector['rsrange'],
             'license' => (strlen($radiosector['license']) ? $radiosector['license'] : null),
-            'technology' => !empty($radiosector['technology']) && ctype_digit($radiosector['technology']) ? intval($radiosector['technology']) : null,
+            'technology' => !empty($radiosector['technology']) && (is_int($radiosector['technology']) || ctype_digit($radiosector['technology']))
+                ? intval($radiosector['technology']) : null,
             'type' => intval($radiosector['type']),
             'frequency' => (strlen($radiosector['frequency']) ? $radiosector['frequency'] : null),
             'frequency2' => (strlen($radiosector['frequency2']) ? $radiosector['frequency2'] : null),
@@ -1448,7 +1465,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'altitude' => $radiosector['altitude'],
             'rsrange' => $radiosector['rsrange'],
             'license' => (strlen($radiosector['license']) ? $radiosector['license'] : null),
-            'technology' => !empty($radiosector['technology']) && ctype_digit($radiosector['technology']) ? $radiosector['technology'] : null,
+            'technology' => !empty($radiosector['technology']) && (is_int($radiosector['technology']) || ctype_digit($radiosector['technology']))
+                ? intval($radiosector['technology']) : null,
             'type' => intval($radiosector['type']),
             'secret' => $radiosector['secret'],
             'frequency' => (strlen($radiosector['frequency']) ? $radiosector['frequency'] : null),
