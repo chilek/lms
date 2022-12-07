@@ -192,6 +192,8 @@ $this->Execute("
                OR (t1.nodeid IS NULL AND t2.nodeid IS NULL))
 ");
 
+$this->Execute("UPDATE nodes SET linktechnology = NULL WHERE linktechnology = 0");
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2022120701', 'dbversion'));
 
 $this->CommitTrans();
