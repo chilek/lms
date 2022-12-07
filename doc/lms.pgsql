@@ -1637,11 +1637,11 @@ CREATE TABLE nodes (
 		CONSTRAINT nodes_ownerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	netdev integer 		DEFAULT NULL
 		CONSTRAINT nodes_netdev_fkey REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	linktype smallint	DEFAULT 0 NOT NULL,
+	linktype smallint	DEFAULT NULL,
 	linkradiosector integer DEFAULT NULL
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	linkspeed integer	DEFAULT 100000 NOT NULL,
-	linktechnology integer	DEFAULT 0 NOT NULL,
+	linkspeed integer	DEFAULT NULL,
+	linktechnology integer	DEFAULT NULL,
 	port smallint		DEFAULT 0 NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
@@ -4336,6 +4336,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120701');
 
 COMMIT;

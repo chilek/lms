@@ -1765,10 +1765,10 @@ CREATE TABLE nodes (
   creatorid int(11) DEFAULT NULL,
   modid int(11) DEFAULT NULL,
   netdev int(11) DEFAULT NULL,
-  linktype tinyint(1) NOT NULL DEFAULT '0',
+  linktype tinyint(1) DEFAULT NULL,
   linkradiosector int(11) DEFAULT NULL,
-  linkspeed int(11) NOT NULL DEFAULT '100000',
-  linktechnology int(11) NOT NULL DEFAULT '0',
+  linkspeed int(11) DEFAULT NULL,
+  linktechnology int(11) DEFAULT NULL,
   port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
@@ -4286,4 +4286,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120701');
