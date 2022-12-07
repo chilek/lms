@@ -277,7 +277,7 @@ class SYSLOG
 
     public static function getInstance($force = false)
     {
-        if (self::$syslog == null && ($force || ConfigHelper::checkConfig('phpui.logging'))) {
+        if (self::$syslog == null && ($force || ConfigHelper::checkConfig('logs.enabled'))) {
             self::$syslog = new SYSLOG();
             foreach (self::$resource_keys as $key => $name) {
                 if (isset($name)) {

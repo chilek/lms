@@ -159,7 +159,7 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 //require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'LMS.class.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
+if (ConfigHelper::checkConfig('logs.enabled') && class_exists('SYSLOG')) {
     $SYSLOG = new SYSLOG($DB);
 } else {
     $SYSLOG = null;

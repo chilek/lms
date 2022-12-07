@@ -932,7 +932,7 @@ if (ConfigHelper::checkConfig('phpui.ewx_support')) {
     );
 }
 
-if (ConfigHelper::checkConfig('phpui.logging')) {
+if (ConfigHelper::checkConfig('logs.enabled')) {
     $menu['log'] = array(
         'name' => trans('Transaction Log'),
         'css' => 'lms-ui-icon-archiveview',

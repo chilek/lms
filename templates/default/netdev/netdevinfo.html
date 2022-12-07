@@ -22,7 +22,7 @@
 	{include file="attachments.html" attachmenttype="netdevmodelid" attachmentresourceid=$netdev.modelid}
 {/block}
 {block name="transactions"}
-	{if ConfigHelper::checkConfig('phpui.logging') && ConfigHelper::checkPrivilege('transaction_logs')}
+	{if ConfigHelper::checkConfig('logs.enabled') && ConfigHelper::checkPrivilege('transaction_logs')}
 		{include file="transactions.html"}
 	{/if}
 {/block}
