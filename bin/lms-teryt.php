@@ -1178,7 +1178,7 @@ if (isset($options['update'])) {
     }
 
     foreach ($simc as $k => $v) {
-        if (!$v['valid']) {
+        if (empty($v['valid'])) {
             $DB->Execute('DELETE FROM location_cities WHERE id=?', array($v['id']));
             ++$simc_delete;
         }
