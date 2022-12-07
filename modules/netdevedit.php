@@ -153,21 +153,21 @@ switch ($action) {
 
                     if (isset($row['dstport'])) { // device
                         $LMS->NetDevLink($dev2['id'], $row['id'], array(
-                        'type' => $row['type'],
-                        'srcradiosector' => $row['srcradiosector'],
-                        'dstradiosector' => $row['dstradiosector'],
-                        'technology' => $row['technology'],
-                        'speed' => $row['speed'],
-                        'srcport' => $sport,
-                        'dstport' => $row['dstport'],
+                            'type' => $row['type'],
+                            'srcradiosector' => $row['srcradiosector'],
+                            'dstradiosector' => $row['dstradiosector'],
+                            'technology' => $row['technology'],
+                            'speed' => $row['speed'],
+                            'srcport' => $sport,
+                            'dstport' => $row['dstport'],
                         ));
                     } else { // node
                         $LMS->NetDevLinkNode($row['id'], $dev2['id'], array(
-                        'type' => $row['type'],
-                        'radiosector' => $row['srcradiosector'],
-                        'technology' => $row['technology'],
-                        'speed' => $row['speed'],
-                        'port' => $sport,
+                            'type' => $row['type'],
+                            'radiosector' => $row['srcradiosector'],
+                            'technology' => $row['technology'],
+                            'speed' => $row['speed'],
+                            'port' => $sport,
                         ));
                     }
                 }
@@ -192,21 +192,21 @@ switch ($action) {
 
                     if (isset($row['dstport'])) { // device
                         $LMS->NetDevLink($dev1['id'], $row['id'], array(
-                        'type' => $row['type'],
-                        'srcradiosector' => $row['srcradiosector'],
-                        'dstradiosector' => $row['dstradiosector'],
-                        'technology' => $row['technology'],
-                        'speed' => $row['speed'],
-                        'srcport' => $sport,
-                        'dstport' => $row['dstport']
+                            'type' => $row['type'],
+                            'srcradiosector' => $row['srcradiosector'],
+                            'dstradiosector' => $row['dstradiosector'],
+                            'technology' => $row['technology'],
+                            'speed' => $row['speed'],
+                            'srcport' => $sport,
+                            'dstport' => $row['dstport']
                         ));
                     } else { // node
                         $LMS->NetDevLinkNode($row['id'], $dev1['id'], array(
-                        'type' => $row['type'],
-                        'radiosector' => $row['srcradiosector'],
-                        'technology' => $row['technology'],
-                        'speed' => $row['speed'],
-                        'port' => $sport,
+                            'type' => $row['type'],
+                            'radiosector' => $row['srcradiosector'],
+                            'technology' => $row['technology'],
+                            'speed' => $row['speed'],
+                            'port' => $sport,
                         ));
                     }
                 }
@@ -228,11 +228,11 @@ switch ($action) {
         $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
         break;
     case 'connect':
-        $linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
-        $srcradiosector = ($linktype == LINKTYPE_WIRELESS ? intval($_GET['srcradiosector']) : null);
-        $dstradiosector = ($linktype == LINKTYPE_WIRELESS ? intval($_GET['dstradiosector']) : null);
-        $linktechnology = !empty($_GET['linktechnology']) ? intval($_GET['linktechnology']) : '0';
-        $linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '100000';
+        $linktype = !empty($_GET['linktype']) && ctype_digit($_GET['linktype']) ? intval($_GET['linktype']) : null;
+        $srcradiosector = $linktype == LINKTYPE_WIRELESS && ctype_digit($_GET['srcradiosector']) ? intval($_GET['srcradiosector']) : null;
+        $dstradiosector = $linktype == LINKTYPE_WIRELESS && ctype_digit($_GET['dstradiosector']) ? intval($_GET['dstradiosector']) : null;
+        $linktechnology = !empty($_GET['linktechnology']) && ctype_digit($_GET['linktechnology']) ? intval($_GET['linktechnology']) : null;
+        $linkspeed = !empty($_GET['linkspeed']) && ctype_digit($_GET['linkspeed']) ? intval($_GET['linkspeed']) : null;
         $dev['srcport'] = !empty($_GET['srcport']) ? intval($_GET['srcport']) : '0';
         $dev['dstport'] = !empty($_GET['dstport']) ? intval($_GET['dstport']) : '0';
         $dev['id'] = !empty($_GET['netdev']) ? intval($_GET['netdev']) : '0';
@@ -291,10 +291,10 @@ switch ($action) {
         break;
 
     case 'connectnode':
-        $linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
-        $linkradiosector = ($linktype == 1 ? intval($_GET['radiosector']) : null);
-        $linktechnology = !empty($_GET['linktechnology']) ? intval($_GET['linktechnology']) : '0';
-        $linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '0';
+        $linktype = isset($_GET['linktype']) && ctype_digit($_GET['linktype']) ? intval($_GET['linktype']) : null;
+        $linkradiosector = $linktype == LINKTYPE_WIRELESS && ctype_digit($_GET['radiosector']) ? intval($_GET['radiosector']) : null;
+        $linktechnology = !empty($_GET['linktechnology']) && ctype_digit($_GET['linktechnology']) ? intval($_GET['linktechnology']) : null;
+        $linkspeed = !empty($_GET['linkspeed']) && ctype_digit($_GET['linkspeed']) ? intval($_GET['linkspeed']) : null;
         $node['port'] = !empty($_GET['port']) ? intval($_GET['port']) : '0';
         $node['id'] = !empty($_GET['nodeid']) ? intval($_GET['nodeid']) : '0';
 
