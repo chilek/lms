@@ -1085,6 +1085,7 @@ if (!empty($assigns)) {
                     break;
                 }
                 $balance += $record['value'];
+                $balance = round($balance, 2);
                 if (empty($record['docid'])) {
                     continue;
                 }
