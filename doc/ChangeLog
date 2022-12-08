@@ -365,6 +365,7 @@ version 28-git (????-??-??):
   - improvement: 'logs.message_limit' with default value of '11' allows to control how many transaction
     messages are decoded and displayed in transaction lists [chilan]
   - improvement/cleanup: renamed 'phpui.logging' configuration variable to 'logs.enabled' [chilan]
+  - improvement: network device name maximum length changed from 32 to 100 [chilan]
 
 version 27.0 (2021-08-20):
 
