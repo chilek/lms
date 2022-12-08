@@ -47,7 +47,7 @@ if (isset($netdev)) {
     $netdev['name'] = trim($netdev['name']);
     if ($netdev['name'] == '') {
         $error['name'] = trans('Device name is required!');
-    } elseif (strlen($netdev['name']) > 60) {
+    } elseif (strlen($netdev['name']) > 100) {
         $error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
     }
 

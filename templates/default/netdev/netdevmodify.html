@@ -16,8 +16,8 @@
 
 	{box_container id="netdev"}
 		{box_header icon="netdev" icon_class="fa-fw" label="Name"}
-			<input type="text" name="netdev[name]" value="{$netdev.name}" maxlength="32" required
-					{tip trigger="name" bold=1}>
+			<input type="text" name="netdev[name]" value="{$netdev.name}" maxlength="100" required
+				{tip class="lms-ui-autogrow" trigger="name" bold=1}>
 		{/box_header}
 
 		{box_contents}

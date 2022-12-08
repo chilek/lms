@@ -1670,7 +1670,7 @@ CREATE TABLE netdevicemodels (
 #
 CREATE TABLE netdevices (
   id 		int(11) 	NOT NULL auto_increment,
-  name 		varchar(32) 	NOT NULL DEFAULT '',
+  name 		varchar(100) 	NOT NULL DEFAULT '',
   description 	text 		NOT NULL DEFAULT '',
   producer 	varchar(256) 	NOT NULL DEFAULT '',
   model 	varchar(256) 	NOT NULL DEFAULT '',
@@ -4286,4 +4286,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120702');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120800');

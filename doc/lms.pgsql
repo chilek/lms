@@ -1541,7 +1541,7 @@ CREATE SEQUENCE netdevices_id_seq;
 DROP TABLE IF EXISTS netdevices CASCADE;
 CREATE TABLE netdevices (
 	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
-	name varchar(32) 	DEFAULT '' NOT NULL,
+	name varchar(100) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	producer varchar(256) 	DEFAULT '' NOT NULL,
 	model varchar(256) 	DEFAULT '' NOT NULL,
@@ -4336,6 +4336,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120702');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120800');
 
 COMMIT;
