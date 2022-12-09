@@ -278,7 +278,7 @@ function getBuildings(array $filter)
                 ) ca4 ON ca4.customer_id = n.ownerid
                 LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
                 LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
-                WHERE a.city_id IS NOT NULL
+                WHERE a.city_id IS NOT NULL OR a2.city_id IS NOT NULL
                 GROUP BY
                     (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
@@ -355,7 +355,7 @@ function getBuildings(array $filter)
                 LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
                 LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
                 JOIN customers c ON c.id = n.ownerid
-                WHERE a.city_id IS NOT NULL
+                WHERE a.city_id IS NOT NULL OR a2.city_id IS NOT NULL
                 GROUP BY
                     (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
