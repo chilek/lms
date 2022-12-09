@@ -250,12 +250,25 @@ function getBuildings(array $filter)
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id
             LEFT JOIN (
-                SELECT a.city_id, a.street_id, UPPER(a.house) AS house, COUNT(*) AS nodecount FROM nodes n
+                SELECT
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END) AS city_id,
+                    (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END) AS street_id,
+                    UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
+                    COUNT(*) AS nodecount
+                FROM nodes n
                 JOIN vaddresses a ON a.id = n.address_id
+                LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
+                LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
                 WHERE a.city_id IS NOT NULL
-                GROUP BY a.city_id, a.street_id, UPPER(a.house)
+                GROUP BY
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
+                    (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
+                    UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)
             ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
-            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : ''),
+            array(
+                DEFAULT_LOCATION_ADDRESS,
+            )
         );
     } else {
         $buildings = $DB->GetAll(
@@ -294,20 +307,32 @@ function getBuildings(array $filter)
             JOIN location_states ls ON ls.id = ld.stateid
             LEFT JOIN netranges r ON r.buildingid = b.id
             LEFT JOIN (
-                SELECT a.city_id, a.street_id, UPPER(a.house) AS house, COUNT(*) AS nodecount, '
-                . $DB->GroupConcat('n.linktechnology') . ' AS linktechnologies, '
-                . $DB->GroupConcat('n.ownerid') . ' AS customerids, '
-                . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
+                SELECT
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END) AS city_id,
+                    (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END) AS street_id,
+                    UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
+                    COUNT(*) AS nodecount, '
+                    . $DB->GroupConcat('n.linktechnology') . ' AS linktechnologies, '
+                    . $DB->GroupConcat('n.ownerid') . ' AS customerids, '
+                    . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
                 FROM nodes n
                 JOIN vaddresses a ON a.id = n.address_id
+                LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
+                LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
                 JOIN customers c ON c.id = n.ownerid
                 WHERE a.city_id IS NOT NULL
-                GROUP BY a.city_id, a.street_id, UPPER(a.house)
+                GROUP BY
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
+                    (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
+                    UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)
             ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
-            . (isset($filter['offset']) && is_numeric($filter['offset']) ? ' OFFSET ' . intval($filter['offset']) : '')
+            . (isset($filter['offset']) && is_numeric($filter['offset']) ? ' OFFSET ' . intval($filter['offset']) : ''),
+            array(
+                DEFAULT_LOCATION_ADDRESS,
+            )
         );
     }
     if (empty($buildings)) {
