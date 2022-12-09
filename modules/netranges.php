@@ -256,7 +256,8 @@ function getBuildings(array $filter)
                     UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
                     COUNT(*) AS nodecount
                 FROM nodes n
-                JOIN vaddresses a ON a.id = n.address_id
+                JOIN customers c ON c.id = n.ownerid
+                LEFT JOIN vaddresses a ON a.id = n.address_id
                 LEFT JOIN (
                     SELECT
                         ca2.customer_id,
@@ -278,7 +279,8 @@ function getBuildings(array $filter)
                 ) ca4 ON ca4.customer_id = n.ownerid
                 LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
                 LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
-                WHERE a.city_id IS NOT NULL OR a2.city_id IS NOT NULL
+                WHERE a.city_id IS NOT NULL
+                    OR a2.city_id IS NOT NULL
                 GROUP BY
                     (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
@@ -332,7 +334,8 @@ function getBuildings(array $filter)
                     . $DB->GroupConcat('n.ownerid') . ' AS customerids, '
                     . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
                 FROM nodes n
-                JOIN vaddresses a ON a.id = n.address_id
+                JOIN customers c ON c.id = n.ownerid
+                LEFT JOIN vaddresses a ON a.id = n.address_id
                 LEFT JOIN (
                     SELECT
                         ca2.customer_id,
@@ -354,8 +357,8 @@ function getBuildings(array $filter)
                 ) ca4 ON ca4.customer_id = n.ownerid
                 LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
                 LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
-                JOIN customers c ON c.id = n.ownerid
-                WHERE a.city_id IS NOT NULL OR a2.city_id IS NOT NULL
+                WHERE a.city_id IS NOT NULL
+                    OR a2.city_id IS NOT NULL
                 GROUP BY
                     (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
