@@ -676,6 +676,7 @@ $query = "SELECT
 					)
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
 				JOIN assignments a2 ON a2.id = vna.assignment_id
+				JOIN tariffs t ON t.id = a2.tariffid AND t.type = ?
 				WHERE (
 					(
 						vc.call_start_time >= (CASE a2.period
@@ -752,6 +753,7 @@ $billings = $DB->GetAll(
         TARIFF_FLAG_NET_ACCOUNT,
         1,
         array(CCONSENT_FULL_PHONE_BILLING, CCONSENT_SIMPLIFIED_PHONE_BILLING),
+        SERVICE_PHONE,
         SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime,
