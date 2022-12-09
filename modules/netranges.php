@@ -257,7 +257,26 @@ function getBuildings(array $filter)
                     COUNT(*) AS nodecount
                 FROM nodes n
                 JOIN vaddresses a ON a.id = n.address_id
-                LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
+                LEFT JOIN (
+                    SELECT
+                        ca2.customer_id,
+                        MAX(ca2.address_id) AS address_id
+                    FROM customer_addresses ca2
+                    JOIN (
+                        SELECT
+                            ca.customer_id,
+                            MAX(ca.type) AS type
+                        FROM customer_addresses ca
+                        JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.city_id IS NOT NULL AND va2.house <> \'\'
+                        WHERE ca.type > 0
+                        GROUP BY ca.customer_id
+                    ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
+                    JOIN vaddresses va3 ON va3.id = ca2.address_id
+                    WHERE va3.city_id IS NOT NULL
+                        AND va3.house <> \'\'
+                    GROUP BY ca2.customer_id
+                ) ca4 ON ca4.customer_id = n.ownerid
+                LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
                 LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
                 WHERE a.city_id IS NOT NULL
                 GROUP BY
@@ -265,10 +284,7 @@ function getBuildings(array $filter)
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
                     UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)
             ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
-            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : ''),
-            array(
-                DEFAULT_LOCATION_ADDRESS,
-            )
+            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
         );
     } else {
         $buildings = $DB->GetAll(
@@ -317,7 +333,26 @@ function getBuildings(array $filter)
                     . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
                 FROM nodes n
                 JOIN vaddresses a ON a.id = n.address_id
-                LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
+                LEFT JOIN (
+                    SELECT
+                        ca2.customer_id,
+                        MAX(ca2.address_id) AS address_id
+                    FROM customer_addresses ca2
+                    JOIN (
+                        SELECT
+                            ca.customer_id,
+                            MAX(ca.type) AS type
+                        FROM customer_addresses ca
+                        JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.city_id IS NOT NULL AND va2.house <> \'\'
+                        WHERE ca.type > 0
+                        GROUP BY ca.customer_id
+                    ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
+                    JOIN vaddresses va3 ON va3.id = ca2.address_id
+                    WHERE va3.city_id IS NOT NULL
+                        AND va3.house <> \'\'
+                    GROUP BY ca2.customer_id
+                ) ca4 ON ca4.customer_id = n.ownerid
+                LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
                 LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
                 JOIN customers c ON c.id = n.ownerid
                 WHERE a.city_id IS NOT NULL
@@ -329,10 +364,7 @@ function getBuildings(array $filter)
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
-            . (isset($filter['offset']) && is_numeric($filter['offset']) ? ' OFFSET ' . intval($filter['offset']) : ''),
-            array(
-                DEFAULT_LOCATION_ADDRESS,
-            )
+            . (isset($filter['offset']) && is_numeric($filter['offset']) ? ' OFFSET ' . intval($filter['offset']) : '')
         );
     }
     if (empty($buildings)) {
