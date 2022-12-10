@@ -251,7 +251,7 @@ function getBuildings(array $filter)
             LEFT JOIN netranges r ON r.buildingid = b.id
             LEFT JOIN (
                 SELECT
-                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END) AS city_id,
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END) AS city_id,
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END) AS street_id,
                     UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
                     COUNT(*) AS nodecount
@@ -282,7 +282,7 @@ function getBuildings(array $filter)
                 WHERE a.city_id IS NOT NULL
                     OR a2.city_id IS NOT NULL
                 GROUP BY
-                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
                     UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)
             ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
@@ -326,13 +326,13 @@ function getBuildings(array $filter)
             LEFT JOIN netranges r ON r.buildingid = b.id
             LEFT JOIN (
                 SELECT
-                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END) AS city_id,
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END) AS city_id,
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END) AS street_id,
                     UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
                     COUNT(*) AS nodecount, '
-                    . $DB->GroupConcat('n.linktechnology') . ' AS linktechnologies, '
-                    . $DB->GroupConcat('n.ownerid') . ' AS customerids, '
-                    . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
+                    . $DB->GroupConcat('n.linktechnology', ',') . ' AS linktechnologies, '
+                    . $DB->GroupConcat('n.ownerid', ',', true) . ' AS customerids, '
+                    . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|', true) . ' AS customernames
                 FROM nodes n
                 JOIN customers c ON c.id = n.ownerid
                 LEFT JOIN vaddresses a ON a.id = n.address_id
@@ -360,7 +360,7 @@ function getBuildings(array $filter)
                 WHERE a.city_id IS NOT NULL
                     OR a2.city_id IS NOT NULL
                 GROUP BY
-                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a.city_id END),
+                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
                     UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)
             ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
