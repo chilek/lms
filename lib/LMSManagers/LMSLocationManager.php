@@ -451,17 +451,25 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         $pow = substr($terc, 2, 2);
         $gmi = substr($terc, 4, 2);
         $rodz_gmi = $terc[6];
+
         $result = $this->db->GetRow(
-            'SELECT ts.cityid AS location_city, ts.nazwa AS location_city_name,
-				lb.id AS location_borough, lb.name AS location_borough_name,
-				ld.id AS location_district, ld.name AS location_district_name,
-				ls.id AS location_state, ls.name AS location_state_name
-			FROM teryt_simc ts
-			JOIN location_cities lc ON lc.id = ts.cityid
-			JOIN location_boroughs lb ON lb.id = lc.boroughid
-			JOIN location_districts ld ON ld.id = lb.districtid
-			JOIN location_states ls ON ls.id = ld.stateid
-			WHERE woj = ? AND pow = ? AND gmi = ? AND rodz_gmi = ? AND sym = ?',
+            'SELECT
+                COALESCE(lc2.id, ts.cityid) AS location_city,
+                COALESCE(lc2.name, ts.nazwa) AS location_city_name,
+                COALESCE(lb2.id, lb.id) AS location_borough,
+                COALESCE(lb2.name, lb.name) AS location_borough_name,
+                ld.id AS location_district,
+                ld.name AS location_district_name,
+                ls.id AS location_state,
+                ls.name AS location_state_name
+            FROM teryt_simc ts
+            JOIN location_cities lc ON lc.id = ts.cityid
+            JOIN location_boroughs lb ON lb.id = lc.boroughid
+            JOIN location_districts ld ON ld.id = lb.districtid
+            JOIN location_states ls ON ls.id = ld.stateid
+            LEFT JOIN location_boroughs lb2 ON lb2.districtid = lb.districtid AND lb2.type = 1 AND lb.type IN (8, 9)
+            LEFT JOIN location_cities lc2 ON lc2.boroughid = lb2.id
+            WHERE woj = ? AND pow = ? AND gmi = ? AND rodz_gmi = ? AND sym = ?',
             array($woj, $pow, $gmi, $rodz_gmi, $simc)
         );
         if (empty($result)) {
