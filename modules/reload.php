@@ -39,6 +39,17 @@ switch ($_RELOAD_TYPE) {
     case 'exec':
         $hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 
+        if (empty($hosts)) {
+            $SMARTY->display('header.html');
+
+            echo '<H1>' . $layout['pagetitle'] . '</H1>';
+            echo '<span class="bold red">' . trans('No hosts in database!') . '</span>';
+
+            $SMARTY->display('footer.html');
+
+            die;
+        }
+
         if ((isset($_GET['setreloads']) && isset($_POST['hosts'])) || count($hosts) == 1) {
             $SMARTY->display('header.html');
 
@@ -78,6 +89,17 @@ switch ($_RELOAD_TYPE) {
 
     case 'sql':
         $hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
+
+        if (empty($hosts)) {
+            $SMARTY->display('header.html');
+
+            echo '<H1>' . $layout['pagetitle'] . '</H1>';
+            echo '<span class="bold red">' . trans('No hosts in database!') . '</span>';
+
+            $SMARTY->display('footer.html');
+
+            die;
+        }
 
         $reload_sqlquery = ConfigHelper::getConfig('phpui.reload_sqlquery');
         if (!empty($reload_sqlquery) && $hosts) {

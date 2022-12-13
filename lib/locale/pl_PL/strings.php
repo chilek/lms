@@ -577,6 +577,7 @@ $_LANG['Cancel'] = 'Anuluj';
 $_LANG['Can\'t change value of tax rate which was used in the past!'] = 'Nie można zmienić wartości stawki podatkowej, która była już używana w przeszłości';
 $_LANG['No prefix groups assigned to tariff rule.'] = 'Nie przypisano grup do reguły taryfikacyjnej.';
 $_LANG['No prefix groups assigned to tariff.'] = 'Nie przypisano grup do taryfy.';
+$_LANG['No hosts in database!'] = 'Brak hostów w bazie danych!';
 $_LANG['Can\'t send message. PEAR::Mail not found!'] = 'Nie można wysłać wiadomości. Nie znaleziono PEAR::Mail!';
 $_LANG['Cash'] = 'Kasa';
 $_LANG['cash on delivery'] = 'pobranie';
