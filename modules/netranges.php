@@ -385,7 +385,7 @@ function getBuildings(array $filter)
                     }
                     $linktechnologies[$linktechnology]++;
                 }
-                asort($linktechnologies);
+                arsort($linktechnologies);
             }
             $building['linktechnologies'] = $linktechnologies;
 
