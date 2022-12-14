@@ -346,7 +346,6 @@ $( '#district_sel'  ).val( {$data.districtid} );
 $( '#city_sel'      ).val( {$data.cityid} );
 $( '#street_sel'    ).val( location_box.find( "input[data-address='street-hidden']" ).val() );
 initAdvancedSelects('#street_sel');
-$( '#location-name' ).val( location_box.find( "input[data-address='location-name']" ).val() );
 
 $('#location-search').submit(function(e) {
 	e.preventDefault();
