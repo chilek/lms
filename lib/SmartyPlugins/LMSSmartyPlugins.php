@@ -792,7 +792,13 @@ class LMSSmartyPlugins
 
     public static function macAddressSelectionFunction(array $params, $template)
     {
-        $result = '<table style="width: 100%;" class="lms-ui-mac-address-selection">';
+        $node_empty_mac = isset($params['node_empty_mac']) && strlen($params['node_empty_mac']) ? $params['node_empty_mac'] : '';
+
+        $result = '<table style="width: 100%;" class="lms-ui-mac-address-selection" data-node-empty-mac="' . $node_empty_mac . '">';
+
+        if (empty($params['macs'])) {
+            $params['mac'] = array();
+        }
 
         $form = $params['form'];
         $i = 0;
@@ -800,7 +806,7 @@ class LMSSmartyPlugins
             $result .= '<tr id="mac' . $key . '" class="mac">
 			<td style="width: 100%;">
 				<input type="text" name="' . $form . '[macs][' . $key . ']" value="' . $mac . '" '
-                . 'id="mac-input-' . $key . '" ' . (!$i ? 'required ' : '')
+                . 'id="mac-input-' . $key . '" ' . (!$i && !strlen($node_empty_mac) ? 'required ' : '')
                 . ' placeholder="' . trans('MAC address') . '" '  . self::tipFunction(array(
                     'trigger' => 'mac-input-' . $key,
                 ), $template) . '>

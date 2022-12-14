@@ -850,4 +850,19 @@ class Utils
     {
         return preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.64\.|100\.68\.)/', $ip) > 0;
     }
+
+    public static function normalizeMac($mac)
+    {
+        return strtoupper(
+            preg_replace(
+                '/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i',
+                '$1:$2:$3:$4:$5:$6',
+                preg_replace(
+                    '/[^0-9a-f]/i',
+                    '',
+                    $mac
+                )
+            )
+        );
+    }
 }

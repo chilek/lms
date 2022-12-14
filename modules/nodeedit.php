@@ -61,21 +61,43 @@ switch ($action) {
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
-$macs = array();
 
-foreach ($nodeinfo['macs'] as $key => $value) {
-    $macs[] = $nodeinfo['macs'][$key]['mac'];
+$nodeinfo['macs'] = Utils::array_column($nodeinfo['macs'], 'mac');
+$node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+if (strlen($node_empty_mac)) {
+    if (check_mac($node_empty_mac)) {
+        $node_empty_mac = Utils::normalizeMac($node_empty_mac);
+        $nodeinfo['macs'] = array_filter($nodeinfo['macs'], function ($mac) use ($node_empty_mac) {
+            return $mac != $node_empty_mac;
+        });
+    } else {
+        $node_empty_mac = '';
+    }
 }
-
-$nodeinfo['macs'] = $macs;
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
 if (isset($_POST['nodeedit'])) {
     $nodeedit = $_POST['nodeedit'];
 
-    foreach ($nodeedit['macs'] as $key => $value) {
-        $nodeedit['macs'][$key] = str_replace('-', ':', $value);
+    if (empty($nodeedit['macs'])) {
+        $nodeedit['macs'] = array();
+    }
+
+    $nodeedit['macs'] = array_map(
+        function ($mac) {
+            return Utils::normalizeMac($mac);
+        },
+        $nodeedit['macs']
+    );
+
+    if (strlen($node_empty_mac)) {
+        $nodeedit['macs'] = array_filter(
+            $nodeedit['macs'],
+            function ($mac) use ($node_empty_mac) {
+                return $mac != $node_empty_mac;
+            }
+        );
     }
 
     foreach ($nodeedit as $key => $value) {
@@ -164,7 +186,7 @@ if (isset($_POST['nodeedit'])) {
         ++$key;
     }
 
-    if (empty($macs)) {
+    if (!strlen($node_empty_mac) && empty($macs)) {
         $error['mac0'] = trans('MAC address is required!');
     }
     $nodeedit['macs'] = $macs;
@@ -395,7 +417,7 @@ if (isset($_POST['nodeedit'])) {
     }
 }
 
-if (empty($nodeinfo['macs'])) {
+if (!strlen($node_empty_mac) && empty($nodeinfo['macs'])) {
     $nodeinfo['macs'][] = '';
 }
 
@@ -468,6 +490,7 @@ if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']
 }
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('node_empty_mac', $node_empty_mac);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
 $SMARTY->assign('nodeedit_sortable_order', $SESSION->get_persistent_setting('nodeedit-sortable-order'));

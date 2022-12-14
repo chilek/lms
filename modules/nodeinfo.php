@@ -56,6 +56,15 @@ if (isset($_GET['devid'])) {
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
+
+$node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+if (strlen($node_empty_mac)) {
+    $node_empty_mac = Utils::normalizeMac($node_empty_mac);
+    $nodeinfo['macs'] = array_filter($nodeinfo['macs'], function ($mac) use ($node_empty_mac) {
+        return $mac['mac'] != $node_empty_mac;
+    });
+}
+
 if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
     $nodegroups = $LMS->GetNodeGroupNamesByNode($nodeid);
     $othernodegroups = $LMS->GetNodeGroupNamesWithoutNode($nodeid);

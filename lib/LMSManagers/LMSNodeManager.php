@@ -38,6 +38,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeUpdate($nodedata, $deleteassignments = false)
     {
+        static $node_empty_mac = null;
+
         $args = array(
             'name' => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
@@ -85,33 +87,62 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             unset($args[SYSLOG::RES_USER]);
             $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 
-            $macs = $this->db->GetAll('SELECT id, nodeid FROM macs WHERE nodeid = ?', array($nodedata['id']));
+            $macs = $this->db->GetAll(
+                'SELECT id, nodeid
+                    FROM macs
+                    WHERE nodeid = ?',
+                array(
+                    $nodedata['id'],
+                )
+            );
             if (!empty($macs)) {
                 foreach ($macs as $mac) {
                     $args = array(
-                    SYSLOG::RES_MAC => $mac['id'],
-                    SYSLOG::RES_NODE => $mac['nodeid'],
-                    SYSLOG::RES_CUST => $nodedata['ownerid']
+                        SYSLOG::RES_MAC => $mac['id'],
+                        SYSLOG::RES_NODE => $mac['nodeid'],
+                        SYSLOG::RES_CUST => $nodedata['ownerid']
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_DELETE, $args);
                 }
             }
         }
+
         $this->db->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
+
+        if (!isset($node_empty_mac)) {
+            $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+            if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
+                $node_empty_mac = Utils::normalizeMac($node_empty_mac);
+            } else {
+                $node_empty_mac = '';
+            }
+        }
+
         if (!empty($nodedata['macs'])) {
             foreach ($nodedata['macs'] as $mac) {
-                $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $nodedata['id']));
-                if ($this->syslog) {
+                $mac = strtoupper($mac);
+
+                $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array($mac, $nodedata['id']));
+
+                if ($this->syslog && $mac != $node_empty_mac) {
                     $macid = $this->db->GetLastInsertID('macs');
                     $args = array(
-                    SYSLOG::RES_MAC => $macid,
-                    SYSLOG::RES_NODE => $nodedata['id'],
-                    SYSLOG::RES_CUST => $nodedata['ownerid'],
-                    'mac' => strtoupper($mac)
+                        SYSLOG::RES_MAC => $macid,
+                        SYSLOG::RES_NODE => $nodedata['id'],
+                        SYSLOG::RES_CUST => $nodedata['ownerid'],
+                        'mac' => $mac
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
                 }
             }
+        } elseif (strlen($node_empty_mac)) {
+            $this->db->Execute(
+                'INSERT INTO macs (mac, nodeid) VALUES (?, ?)',
+                array(
+                    $node_empty_mac,
+                    $nodedata['id'],
+                )
+            );
         }
 
         if ($deleteassignments) {
@@ -772,6 +803,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeAdd($nodedata)
     {
+        static $node_empty_mac = null;
+
         $args = array(
             'name'              => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
@@ -844,6 +877,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 foreach ($nodedata['macs'] as $mac) {
                     $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $id));
                 }
+
                 if ($this->syslog) {
                     $macs = $this->db->GetAll('SELECT id, mac FROM macs WHERE nodeid = ?', array($id));
                     foreach ($macs as $mac) {
@@ -855,6 +889,23 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
                     }
+                }
+            } else {
+                if (!isset($node_empty_mac)) {
+                    $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+                    if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
+                        $node_empty_mac = Utils::normalizeMac($node_empty_mac);
+                    }
+                }
+
+                if (strlen($node_empty_mac)) {
+                    $this->db->Execute(
+                        'INSERT INTO macs (mac, nodeid) VALUES (?, ?)',
+                        array(
+                            $node_empty_mac,
+                            $id
+                        )
+                    );
                 }
             }
 

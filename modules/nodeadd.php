@@ -52,9 +52,17 @@ if (isset($_GET['premac'])) {
     } else {
         $nodedata['macs'][] = $_GET['premac'];
     }
-    $nodedata['macs'] = array_filter($nodedata['macs'], function ($mac) {
-        return check_mac($mac);
-    });
+    $nodedata['macs'] = array_filter(
+        array_map(
+            function ($mac) {
+                return Utils::normalizeMac($mac);
+            },
+            $nodedata['macs']
+        ),
+        function ($mac) {
+            return check_mac($mac);
+        }
+    );
 }
 
 if (isset($_GET['prename']) && preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $_GET['prename'])) {
@@ -65,11 +73,32 @@ if (isset($_GET['pre_address_id'])) {
     $nodedata['address_id'] = intval($_GET['pre_address_id']);
 }
 
+$node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+if (strlen($node_empty_mac) && !check_mac($node_empty_mac)) {
+    $node_empty_mac = '';
+}
+
 if (isset($_POST['nodedata'])) {
     $nodedata = $_POST['nodedata'];
 
-    foreach ($nodedata['macs'] as $key => $value) {
-        $nodedata['macs'][$key] = str_replace('-', ':', $value);
+    if (empty($nodedata['macs'])) {
+        $nodedata['macs'] = array();
+    }
+
+    $nodedata['macs'] = array_map(
+        function ($mac) {
+            return Utils::normalizeMac($mac);
+        },
+        $nodedata['macs']
+    );
+
+    if (strlen($node_empty_mac)) {
+        $nodedata['macs'] = array_filter(
+            $nodedata['macs'],
+            function ($mac) use ($node_empty_mac) {
+                return $mac != $node_empty_mac;
+            }
+        );
     }
 
     foreach ($nodedata as $key => $value) {
@@ -166,7 +195,7 @@ if (isset($_POST['nodedata'])) {
         ++$key;
     }
 
-    if (empty($macs)) {
+    if (!strlen($node_empty_mac) && empty($macs)) {
         $error['mac0'] = trans('MAC address is required!');
     }
     $nodedata['macs'] = $macs;
@@ -435,7 +464,7 @@ if (isset($_POST['nodedata'])) {
 */
 }
 
-if (empty($nodedata['macs'])) {
+if (!strlen($node_empty_mac) && empty($nodedata['macs'])) {
     $nodedata['macs'][] = '';
 }
 
@@ -477,6 +506,7 @@ if (!empty($nodedata['ownerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
+$SMARTY->assign('node_empty_mac', $node_empty_mac);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('nodedata', $nodedata);
