@@ -1432,7 +1432,7 @@ if (isset($options['buildings'])) {
 
         $v = array_merge($address, $coords);
 
-        $v['NUMER'] = dbf_to_utf8($v['NUMER']);
+        $v['NUMER'] = preg_replace('/\.$/', '', dbf_to_utf8($v['NUMER']));
         if (!preg_match('#^[0-9a-zA-Z-, /\pL]*$#u', $v['NUMER'])) {
             fwrite($stderr, 'warning: house number contains incorrect characters: ' . $v['NUMER'] . PHP_EOL);
             continue;
