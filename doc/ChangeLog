@@ -370,6 +370,8 @@ version 28-git (????-??-??):
     for nodes; mac address from this setting specifies fake-mac stored in database for nodes
     without any assigned macs (setting has no default value what means mac addresses are required
     for node) [chilan]
+  - enhancement: user 'trusted hosts' property allows to define IP address/network list from which
+    two factor authentication mechanism is bypassed [chilan]
 
 version 27.0 (2021-08-20):
 
