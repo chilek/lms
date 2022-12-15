@@ -1445,7 +1445,7 @@ if (isset($options['buildings'])) {
         $city = $location_cache->getCityByIdent($terc, $simc);
 
         if (!$city) {
-            fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database in row!' . PHP_EOL);
+            fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database!' . PHP_EOL);
             continue;
         }
 
@@ -1454,7 +1454,7 @@ if (isset($options['buildings'])) {
         } else {
             $street = $location_cache->getStreetByIdent($city['id'], $ulic);
             if (empty($street)) {
-                fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database in row!' . PHP_EOL);
+                fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database!' . PHP_EOL);
                 continue;
             }
         }
