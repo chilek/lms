@@ -19,6 +19,7 @@ CREATE TABLE users (
 	position varchar(255) 	DEFAULT '' NOT NULL,
 	rights text 	DEFAULT '' NOT NULL,
 	hosts varchar(255) 	DEFAULT '' NOT NULL,
+	trustedhosts varchar(255) DEFAULT NULL,
 	passwd varchar(255) 	DEFAULT '' NOT NULL,
 	netpasswd varchar(255) DEFAULT NULL,
 	passwdforcechange smallint NOT NULL DEFAULT 0,
@@ -4336,6 +4337,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022120800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022121500');
 
 COMMIT;

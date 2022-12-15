@@ -31,6 +31,10 @@
 		white-space: normal;
 	}
 
+	textarea.lms-ui-autogrow {
+		min-width: 30%;
+	}
+
 </style>
 
 <H1>{$layout.pagetitle}</H1>
@@ -245,13 +249,27 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="nobr">
+			<td class="valign-top">
 				{icon name="ipnetwork"}
-				<strong>{trans("Allowed hosts:")}</strong>
+				<strong>{trans("Allowed hosts")}</strong>
 			</td>
 			<td>
-				<input type="text" size="40" name="useradd[hosts]" value="{$useradd.hosts}"
-					{tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
+				<textarea rows="2" name="useradd[hosts]" class="lms-ui-autogrow" {tip trigger="hosts"}>{strip}
+					{$useradd.hosts|escape}
+					{/strip}</textarea>
+				{hint content="Enter comma-separated list of hosts or networks (optional). User can log in only from IP addresses which belong to this list."}
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
+				{icon name="ipnetwork"}
+				<strong>{trans("Trusted hosts")}</strong>
+			</td>
+			<td>
+				<textarea rows="2" name="useradd[trustedhosts]" class="lms-ui-autogrow" {tip trigger="trustedhosts"}>{strip}
+					{$useradd.trustedhosts|escape}
+				{/strip}</textarea>
+				{hint content="Enter comma-separated list of hosts or networks (optional). User can log in with bypass two factor authentication from IP addresses which belong to this list."}
 			</td>
 		</tr>
 		<tr>

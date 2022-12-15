@@ -27,6 +27,10 @@
 		white-space: normal;
 	}
 
+	textarea.lms-ui-autogrow {
+		min-width: 30%;
+	}
+
 </style>
 <form name="useredit" method="post" action="?m=useredit&amp;id={$userinfo.id}">
 <input type="submit" class="hiddenbtn">
@@ -240,15 +244,31 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td class="valign-top">
 				{icon name="ipnetwork"}
 			</td>
-			<td class="nobr">
-				<strong>{trans("Allowed hosts:")}</strong>
+			<td class="valign-top">
+				<strong>{trans("Allowed hosts")}</strong>
 			</td>
 			<td>
-				<input type="text" size="40" name="userinfo[hosts]" value="{$userinfo.hosts}"
-					{tip text="Enter comma-separated list of hosts or networks (optional)" trigger="hosts"}>
+				<textarea rows="2" name="userinfo[hosts]" {tip class="lms-ui-autogrow" trigger="hosts"}>{strip}
+					{$userinfo.hosts|escape}
+					{/strip}</textarea>
+				{hint content="Enter comma-separated list of hosts or networks (optional). User can log in only from IP addresses which belong to this list."}
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
+				{icon name="ipnetwork"}
+			</td>
+			<td class="valign-top">
+				<strong>{trans("Trusted hosts")}</strong>
+			</td>
+			<td>
+				<textarea rows="2" name="userinfo[trustedhosts]" {tip class="lms-ui-autogrow" trigger="trustedhosts"}>{strip}
+					{$userinfo.trustedhosts|escape}
+				{/strip}</textarea>
+				{hint content="Enter comma-separated list of hosts or networks (optional). User can log in with bypass two factor authentication from IP addresses which belong to this list."}
 			</td>
 		</tr>
 		<tr>
