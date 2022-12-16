@@ -31,7 +31,7 @@ if (!$this->ResourceExists('voip_cdr.direction', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("CREATE INDEX voip_cdr_direction_idx ON voip_cdr (direction)");
     $this->Execute("ALTER TABLE voip_cdr MODIFY COLUMN type smallint NOT NULL DEFAULT 0");
     $this->Execute("UPDATE voip_cdr SET type = 0");
-    $this->Execute("DROP INDEX voip_cdr_subtype_idx");
+    $this->Execute("DROP INDEX voip_cdr_subtype_idx ON voip_cdr");
     $this->Execute("ALTER TABLE voip_cdr CHANGE COLUMN subtype incremental smallint NOT NULL DEFAULT 0");
 }
 
