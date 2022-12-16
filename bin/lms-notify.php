@@ -1117,7 +1117,7 @@ if (empty($types) || in_array('documents', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND d.closed = 0
             AND d.confirmdate >= ?
-            AND d.confirmdate < ?"
+            AND d.confirmdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -1289,12 +1289,12 @@ if (empty($types) || in_array('contracts', $types)) {
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
-                HAVING MAX(a.dateto) >= ? AND MAX(a.dateto) < ?
+                HAVING MAX(a.dateto) >= ? AND MAX(a.dateto) <= ?
             ) d ON d.customerid = c.id" :
             "JOIN (
                 SELECT DISTINCT customerid, documents.id, documents.cdate, dc.todate AS dateto FROM documents
                 JOIN documentcontents dc ON dc.docid = documents.id
-                WHERE dc.todate >= ? AND dc.todate < ?
+                WHERE dc.todate >= ? AND dc.todate <= ?
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
             ) d ON d.customerid = c.id") . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1309,7 +1309,7 @@ if (empty($types) || in_array('contracts', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE "
             . ($expiration_type == 'assignments' ? '1 = 1' : 'NOT EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0)')
-            . $customer_status_condition . " AND d.dateto >= ? AND d.dateto < ?"
+            . $customer_status_condition . " AND d.dateto >= ? AND d.dateto <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
