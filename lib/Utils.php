@@ -230,7 +230,17 @@ class Utils
                 $line = trim($line);
             }
             unset($line);
-            return implode("\n", $lines);
+            return preg_replace(
+                array(
+                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
+                    '#\[([^]]+)\]\((/[^\)]*)\)#',
+                ),
+                array(
+                    '[$1](https://wiki.lms.plus/$2)',
+                    '[$1](https://github.com$2)',
+                ),
+                implode("\n", $lines)
+            );
         }
 
         $result = array();
@@ -239,15 +249,30 @@ class Utils
             return $result;
         }
 
-        $content = file($markdown_documentation_file);
+        $content = file_get_contents($markdown_documentation_file);
         if (empty($content)) {
             return $result;
         }
 
+        $content = explode(
+            "\n",
+            preg_replace(
+                array(
+                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
+                    '#\[([^]]+)\]\((/[^\)]*)\)#',
+                ),
+                array(
+                    '[$1](https://wiki.lms.plus/$2)',
+                    '[$1](https://github.com$2)',
+                ),
+                $content
+            )
+        );
+
         $variable = null;
         $buffer = '';
         foreach ($content as $line) {
-            if (preg_match('/^##\s+(?<variable>.+)\r?\n/', $line, $m)) {
+            if (preg_match('/^##\s+(?<variable>.+)\r?/', $line, $m)) {
                 if ($variable && $buffer) {
                     list ($section, $var) = explode('.', $variable);
                     if (!isset($result[$section])) {
@@ -268,7 +293,7 @@ class Utils
                 $variable = null;
                 $buffer = '';
             } elseif ($variable) {
-                $buffer .= $line;
+                $buffer .= ($buffer != '' ? "\n" : '') . $line;
             }
         }
         if ($variable && $buffer) {
