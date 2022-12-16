@@ -80,7 +80,7 @@
 			{/if}
 			<a name="{$customerlist[customerlist].id}" class="lms-ui-hint-rollover"
 				data-url="?m=customerinfoshort&id={$customerlist[customerlist].id}">
-					<strong>{$customerlist[customerlist].customername}</strong>
+					<strong>{$customerlist[customerlist].customername|escape}</strong>
 			</a>
 			{if !empty($customerlist[customerlist].karma)}
 				<i class="lms-ui-icon-star{if $customerlist[customerlist].karma > 0} green{else} red{/if}" title="{trans('Karma')}"></i>
