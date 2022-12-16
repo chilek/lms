@@ -289,6 +289,105 @@ function getBuildings(array $filter)
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
         );
     } else {
+        $where2 = array();
+        if (isset($filter['cityid']) && is_numeric($filter['cityid'])) {
+            $where2[] = '(a.city_id = ' . intval($filter['cityid'])
+                . ' OR a2.city_id = ' . intval($filter['cityid']) . ')';
+        }
+
+
+        $node_addresses = $DB->GetAll(
+            'SELECT
+                (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END) AS city_id,
+                (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END) AS street_id,
+                UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
+                COUNT(*) AS nodecount, '
+                . $DB->GroupConcat('n.linktechnology', ',') . ' AS linktechnologies, '
+                . $DB->GroupConcat('n.ownerid', ',') . ' AS customerids, '
+                . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|') . ' AS customernames
+            FROM nodes n
+            JOIN customers c ON c.id = n.ownerid
+            LEFT JOIN vaddresses a ON a.id = n.address_id
+            LEFT JOIN (
+                SELECT
+                    ca2.customer_id,
+                    MAX(ca2.address_id) AS address_id
+                FROM customer_addresses ca2
+                JOIN (
+                    SELECT
+                        ca.customer_id,
+                        MAX(ca.type) AS type
+                    FROM customer_addresses ca
+                    JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.city_id IS NOT NULL AND va2.house <> \'\'
+                    WHERE ca.type > 0
+                    GROUP BY ca.customer_id
+                ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
+                JOIN vaddresses va3 ON va3.id = ca2.address_id
+                WHERE va3.city_id IS NOT NULL
+                    AND va3.house <> \'\'
+                GROUP BY ca2.customer_id
+            ) ca4 ON ca4.customer_id = n.ownerid
+            LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
+            LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
+            WHERE (a.city_id IS NOT NULL
+                OR a2.city_id IS NOT NULL)
+                ' . (empty($where2) ? '' : ' AND ' . implode(' AND ', $where2)) . '
+            GROUP BY
+                (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
+                (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
+                UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)'
+        );
+        if (empty($node_addresses)) {
+            $node_addresses = array();
+        }
+
+        $nodes = array();
+        foreach ($node_addresses as $node_address) {
+            $city_id = $node_address['city_id'];
+            $street_id = intval($node_address['street_id']);
+            $house = $node_address['house'];
+
+            if (!isset($nodes[$city_id])) {
+                $nodes[$city_id] = array();
+            }
+            if (!isset($nodes[$city_id][$street_id])) {
+                $nodes[$city_id][$street_id] = array();
+            }
+
+            $linktechnologies = array();
+            if (!empty($node_address['linktechnologies'])) {
+                foreach (explode(',', $node_address['linktechnologies']) as $linktechnology) {
+                    if (!strlen($linktechnology)) {
+                        continue;
+                    }
+                    if (!isset($linktechnologies[$linktechnology])) {
+                        $linktechnologies[$linktechnology] = 0;
+                    }
+                    $linktechnologies[$linktechnology]++;
+                }
+                arsort($linktechnologies);
+            }
+
+            $customers = array();
+            if (!empty($node_address['customerids'])) {
+                $customernames = explode('|', $node_address['customernames']);
+                foreach (explode(',', $node_address['customerids']) as $idx => $customerid) {
+                    if (!isset($customers[$customerid])) {
+                        $customers[$customerid] = array(
+                            'id' => $customerid,
+                            'name' => $customernames[$idx],
+                        );
+                    }
+                }
+            }
+
+            $nodes[$city_id][$street_id][$house] = array(
+                'count' => $node_address['nodecount'],
+                'linktechnologies' => $linktechnologies,
+                'customers' => $customers,
+            );
+        }
+
         $buildings = $DB->GetAll(
             'SELECT b.*,
                 lst.name AS street1,
@@ -311,11 +410,7 @@ function getBuildings(array $filter)
                 r.downlink,
                 r.uplink,
                 r.type,
-                r.services,
-                (CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing,
-                na.linktechnologies,
-                na.customerids,
-                na.customernames
+                r.services
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             LEFT JOIN location_street_types t ON t.id = lst.typeid
@@ -323,47 +418,7 @@ function getBuildings(array $filter)
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
             JOIN location_states ls ON ls.id = ld.stateid
-            LEFT JOIN netranges r ON r.buildingid = b.id
-            LEFT JOIN (
-                SELECT
-                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END) AS city_id,
-                    (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END) AS street_id,
-                    UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END) AS house,
-                    COUNT(*) AS nodecount, '
-                    . $DB->GroupConcat('n.linktechnology', ',') . ' AS linktechnologies, '
-                    . $DB->GroupConcat('n.ownerid', ',', true) . ' AS customerids, '
-                    . $DB->GroupConcat($DB->Concat('c.lastname', "' '", 'c.name'), '|', true) . ' AS customernames
-                FROM nodes n
-                JOIN customers c ON c.id = n.ownerid
-                LEFT JOIN vaddresses a ON a.id = n.address_id
-                LEFT JOIN (
-                    SELECT
-                        ca2.customer_id,
-                        MAX(ca2.address_id) AS address_id
-                    FROM customer_addresses ca2
-                    JOIN (
-                        SELECT
-                            ca.customer_id,
-                            MAX(ca.type) AS type
-                        FROM customer_addresses ca
-                        JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.city_id IS NOT NULL AND va2.house <> \'\'
-                        WHERE ca.type > 0
-                        GROUP BY ca.customer_id
-                    ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
-                    JOIN vaddresses va3 ON va3.id = ca2.address_id
-                    WHERE va3.city_id IS NOT NULL
-                        AND va3.house <> \'\'
-                    GROUP BY ca2.customer_id
-                ) ca4 ON ca4.customer_id = n.ownerid
-                LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
-                LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
-                WHERE a.city_id IS NOT NULL
-                    OR a2.city_id IS NOT NULL
-                GROUP BY
-                    (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
-                    (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
-                    UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)
-            ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
+            LEFT JOIN netranges r ON r.buildingid = b.id'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
             . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
@@ -374,34 +429,19 @@ function getBuildings(array $filter)
         $buildings = array();
     } else {
         foreach ($buildings as &$building) {
-            $linktechnologies = array();
-            if (!empty($building['linktechnologies'])) {
-                foreach (explode(',', $building['linktechnologies']) as $linktechnology) {
-                    if (!strlen($linktechnology)) {
-                        continue;
-                    }
-                    if (!isset($linktechnologies[$linktechnology])) {
-                        $linktechnologies[$linktechnology] = 0;
-                    }
-                    $linktechnologies[$linktechnology]++;
-                }
-                arsort($linktechnologies);
-            }
-            $building['linktechnologies'] = $linktechnologies;
+            $city_id = intval($building['city_id']);
+            $street_id = intval($building['street_id']);
+            $building_num = $building['building_num'];
 
-            $customers = array();
-            if (!empty($building['customerids'])) {
-                $customernames = explode('|', $building['customernames']);
-                foreach (explode(',', $building['customerids']) as $idx => $customerid) {
-                    if (!isset($customers[$customerid])) {
-                        $customers[$customerid] = array(
-                            'id' => $customerid,
-                            'name' => $customernames[$idx],
-                        );
-                    }
-                }
+            if (isset($nodes[$city_id][$street_id][$building_num])) {
+                $node = $nodes[$city_id][$street_id][$building_num];
+                $building['linktechnologies'] = $node['linktechnologies'];
+                $building['customers'] = $node['customers'];
+            } else {
+                $building['linktechnologies'] = array();
+                $building['customers'] = array();
             }
-            $building['customers'] = $customers;
+            $building['existing'] = isset($nodes[$city_id][$street_id][$building_num]) ? 1 : 0;
         }
         unset($building);
     }
