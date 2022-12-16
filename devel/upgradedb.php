@@ -96,10 +96,14 @@ if (!$quiet) {
 }
 
 // find alternative config files:
-if (is_readable('lms.ini')) {
+if (isset($options['config-file'])) {
+    if (!is_readable($CONFIG_FILE)) {
+        die('Unable to read configuration file [' . $CONFIG_FILE . ']!' . PHP_EOL);
+    }
+} elseif (is_readable('lms.ini')) {
     $CONFIG_FILE = 'lms.ini';
 } elseif (!is_readable($CONFIG_FILE)) {
-    die('Unable to read configuration file ['.$CONFIG_FILE.']!' . PHP_EOL);
+    die('Unable to read configuration file [' . $CONFIG_FILE . ']!' . PHP_EOL);
 }
 
 define('CONFIG_FILE', $CONFIG_FILE);
