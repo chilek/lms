@@ -888,6 +888,11 @@ class LMS
         return $manager->changeCustomerType($id, $type);
     }
 
+    public function changeCustomerStatus($id, $status)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->changeCustomerStatus($id, $status);
+    }
     public function getCustomerCalls(array $params)
     {
         $manager = $this->getCustomerManager();

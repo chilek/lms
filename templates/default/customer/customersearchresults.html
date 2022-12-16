@@ -181,6 +181,11 @@
 						<option value="2">{trans("<!customersearch>Disable warning")}</option>
 						<option value="3">{trans("Set notice content")}</option>
 					</optgroup>
+					<optgroup label="{trans("Customer statuses")}">
+						{foreach $_CSTATUSES as $statusid => $status}
+							<option value="{($statusid + 100)}">{$status.singularlabel}</option>
+						{/foreach}
+					</optgroup>
 					{if is_array($listdata.customergroup)}
 						<optgroup label="{trans("Customer groups")}">
 							{$groups = array_flip($listdata.customergroup)}
@@ -421,6 +426,12 @@
 			$('#customersearchresults').attr('action', action).submit();
 		}
 
+		function changeCustomerStatus(status) {
+			var action = '?m=customeredit&search=1&status=' + status + '&oper=changestatus';
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
 		$('#customer-action').change(function() {
 			var action = parseInt($(this).val());
 
@@ -501,11 +512,15 @@
 					changeCustomerType({$smarty.const.CTYPES_COMPANY});
 					break;
 				default:
-					var option = $('#customer-action option:selected');
-					var resource = option.attr('data-resource');
-					var operation = option.attr('data-operation');
-					if (resource && operation) {
-						changeContactFlags(resource, parseInt(operation));
+					if (action >= {($smarty.const.CSTATUS_CONNECTED + 100)} && action <= {($smarty.const.CSTATUS_LAST + 100)}) {
+						changeCustomerStatus(action - 100);
+					} else {
+						var option = $('#customer-action option:selected');
+						var resource = option.attr('data-resource');
+						var operation = option.attr('data-operation');
+						if (resource && operation) {
+							changeContactFlags(resource, parseInt(operation));
+						}
 					}
 					break;
 			}

@@ -744,6 +744,7 @@ $_LANG['Customers'] = 'Klienci';
 $_LANG['Customers:'] = 'Klienci:';
 $_LANG['Customer Search'] = 'Wyszukiwanie klientów';
 $_LANG['Customer Search Results'] = 'Wyniki wyszukiwania klientów';
+$_LANG['Customer statuses'] = 'Statusy klientów';
 $_LANG['Customers in Subscription:'] = 'Klienci w taryfie:';
 $_LANG['Customers List'] = 'Lista klientów';
 $_LANG['Customers List:'] = 'Lista klientów:';

@@ -3241,6 +3241,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
     }
 
+    public function changeCustomerStatus($id, $status)
+    {
+        $this->db->Execute(
+            'UPDATE customers SET status = ? WHERE id = ?',
+            array($status, $id)
+        );
+        if ($this->syslog) {
+            $userid = Auth::GetCurrentUser();
+            $args = array(
+                SYSLOG::RES_USER => $userid,
+                SYSLOG::RES_CUST => $id,
+                'status' => $status,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        }
+    }
+
     public function getCustomerCalls(array $params)
     {
         $count = isset($params['count']) && !empty($params['count']);

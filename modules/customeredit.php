@@ -57,10 +57,13 @@ if (isset($_GET['search'])) {
     unset($customerlist['over']);
 
     require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
-    if ($customerlist && ((isset($_POST['consents']) && !empty($_POST['consents']))
+    if ($customerlist && (
+        (isset($_POST['consents']) && !empty($_POST['consents']))
         || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
         || (isset($_GET['type']) && isset($_POST['contactflags'][$_GET['type']]) && !empty($_POST['contactflags'][$_GET['type']])
-            && isset($CUSTOMERCONTACTTYPES[$_GET['type']])))) {
+            && isset($CUSTOMERCONTACTTYPES[$_GET['type']]))
+        || ($_GET['oper'] == 'changestatus' && isset($_GET['status']) && isset($CSTATUSES[$_GET['status']])))
+    ) {
         foreach ($customerlist as $row) {
             switch ($_GET['oper']) {
                 case 'addconsents':
@@ -77,6 +80,9 @@ if (isset($_GET['search'])) {
                     break;
                 case 'changetype':
                     $LMS->changeCustomerType($row['id'], $_GET['type']);
+                    break;
+                case 'changestatus':
+                    $LMS->changeCustomerStatus($row['id'], $_GET['status']);
                     break;
             }
         }
