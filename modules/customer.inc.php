@@ -79,6 +79,10 @@ if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('
         $aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
     }
 
+    if (!ConfigHelper::checkConfig('phpui.big_networks')) {
+        $SMARTY->assign('customers', $LMS->GetCustomerNames());
+    }
+
     $balancelist = $LMS->GetCustomerBalanceList($customerid, null, 'ASC', $aggregate_documents);
 }
 if (!isset($resource_tabs['customervoipaccountsbox']) || $resource_tabs['customervoipaccountsbox']) {
