@@ -182,6 +182,7 @@ $ranges = $DB->GetAll(
 
 if ($ranges) {
     foreach ($ranges as &$range) {
+        $range['location'] = $range['city'] . (empty($range['street_id']) ? '' : ', ' . $range['streettype'] . ' ' . $range['street']) . ' ' . $range['building_num'];
         $range['typename'] = trans("Link type:") . ' ' . $LINKTYPES[$range['linktype']];
         $range['technologyname'] = ($range['linktechnology'] ? trans("Link technology:") . ' ' . $SIDUSIS_LINKTECHNOLOGIES[$range['linktype']][$range['linktechnology']] : '');
         $range['speedname'] = trans("Link speed:") . ' ' . trans('$a Mbit/$b Mbit', $range['downlink'], $range['uplink']);

@@ -799,7 +799,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 						for (i in features) {
 							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
 								if (features[i].data.hasOwnProperty('existing')) {
-									content += '<strong>' + features[i].data.typename + '<br>' +
+									content += '<strong><span class="netrange-location">' + features[i].data.location + '</span><br>' +
+										features[i].data.typename + '<br>' +
 										features[i].data.technologyname + '<br>' +
 										features[i].data.speedname + '<br>' +
 										features[i].data.rangetypename + '<br>' +

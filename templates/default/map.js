@@ -89,6 +89,7 @@
 	{if $ranges}
 		{foreach $ranges as $range}
 			ranges.push({
+				location: "{$range.location}",
 				lon: {$range.longitude},
 				lat: {$range.latitude},
 				existing: {$range.existing},
