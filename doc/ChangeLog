@@ -373,6 +373,7 @@ version 28-git (????-??-??):
   - enhancement: user 'trusted hosts' property allows to define IP address/network list from which
     two factor authentication mechanism is bypassed [chilan]
   - enhancement: new action on customer search results - customer status change [chilan]
+  - enhancement: implemented instant payment transfer between customers [chilan]
 
 version 27.0 (2021-08-20):
 
