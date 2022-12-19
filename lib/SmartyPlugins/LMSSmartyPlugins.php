@@ -260,7 +260,7 @@ class LMSSmartyPlugins
                 $result .= ' id="' . $params['select_id'] . '"';
             }
 
-            if (!empty($params['selecttip'])) {
+            if (isset($params['selecttip'])) {
                 $result .= ' ' . self::tipFunction(array('text' => $params['selecttip']), $template);
             } else {
                 $result .= ' ' . self::tipFunction(array('text' => 'Select customer (optional)'), $template);
@@ -345,7 +345,7 @@ class LMSSmartyPlugins
                 . (isset($form) ? ' form="' . $form . '"' : '')
                 . ' ' . self::tipFunction(
                     array(
-                        'text' => 'Search for customer',
+                        'text' => isset($params['inputtip']) ? $params['inputtip'] : 'Search for customer',
                         'trigger' => 'customerid',
                         'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
                     ),
