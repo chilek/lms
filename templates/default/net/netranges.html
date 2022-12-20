@@ -754,20 +754,21 @@
             select.html(html);
             select.prop('required', function() {
                 if (prefix == 'range') {
-                    return $(this).val() !== '';
+                    return $(that).val() !== '';
                 } else {
-                    return $(that).prop('required');
+                    return $(this).prop('required');
                 }
-            }).closest('label').toggle($(this).val() !== '');
+            }).closest('label').toggle($(that).val() !== '');
             $('[name="' + prefix + '[downlink]"],[name="' + prefix + '[uplink]"]').prop('required', false).closest('label').hide();
         });
 
         $('[name$="[linktechnology]"]').change(function() {
             var prefix = $(this).attr('name').match(/^range/) ? 'range' : 'filter';
+            var that = this;
             $('[name="' + prefix + '[downlink]"],[name="' + prefix + '[uplink]"]')
                 .prop('required', function() {
                     if (prefix == 'range') {
-                        return $(this).val() !== '';
+                        return $(that).val() !== '';
                     } else {
                         return $(this).prop('required');
                     }
