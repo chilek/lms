@@ -178,7 +178,7 @@ function getBuildings(array $filter)
 
     $count = isset($filter['count']) && !empty($filter['count']);
 
-    $where = array();
+    $where = $where2 = array();
 
     if (isset($filter['streetid']) && is_numeric($filter['streetid'])) {
         $where[] = 'b.street_id = ' . intval($filter['streetid']);
@@ -210,10 +210,10 @@ function getBuildings(array $filter)
     if (isset($filter['existing']) && is_numeric($filter['existing'])) {
         switch (intval($filter['existing'])) {
             case 1:
-                $where[] = 'na.city_id IS NOT NULL';
+                $where2[] = 'na.city_id IS NOT NULL';
                 break;
             case 2:
-                $where[] = 'na.city_id IS NULL';
+                $where2[] = 'na.city_id IS NULL';
                 break;
         }
     }
@@ -286,7 +286,7 @@ function getBuildings(array $filter)
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
                     UPPER(CASE WHEN a2.id IS NULL THEN a.house ELSE a2.house END)
             ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)'
-            . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+            . (!empty($where) || !empty($where2) ? ' WHERE ' . implode(' AND ', array_merge($where, $where2)) : '')
         );
     } else {
         $where2 = array();
@@ -294,7 +294,6 @@ function getBuildings(array $filter)
             $where2[] = '(a.city_id = ' . intval($filter['cityid'])
                 . ' OR a2.city_id = ' . intval($filter['cityid']) . ')';
         }
-
 
         $node_addresses = $DB->GetAll(
             'SELECT
@@ -444,6 +443,14 @@ function getBuildings(array $filter)
             $building['existing'] = isset($nodes[$city_id][$street_id][$building_num]) ? 1 : 0;
         }
         unset($building);
+        if (isset($filter['existing']) && is_numeric($filter['existing'])) {
+            $existing = intval($filter['existing']);
+            if ($existing) {
+                $buildings = array_filter($buildings, function ($building) use ($existing) {
+                    return $building['existing'] == 1 && $existing == 1 || $building['existing'] == 0 && $existing == 2;
+                });
+            }
+        }
     }
     return $buildings;
 }
