@@ -208,7 +208,8 @@ function getBuildings(array $filter)
         }
     }
     if (isset($filter['existing']) && is_numeric($filter['existing'])) {
-        switch (intval($filter['existing'])) {
+        $existing = intval($filter['existing']);
+        switch ($existing) {
             case 1:
                 $where2[] = 'na.city_id IS NOT NULL';
                 break;
@@ -216,6 +217,8 @@ function getBuildings(array $filter)
                 $where2[] = 'na.city_id IS NULL';
                 break;
         }
+    } else {
+        $existing = 0;
     }
     if (isset($filter['linktype']) && is_numeric($filter['linktype'])) {
         $where[] = 'r.linktype = ' . intval($filter['linktype']);
@@ -239,7 +242,8 @@ function getBuildings(array $filter)
     if ($count) {
         return $DB->GetRow(
             'SELECT
-                COUNT(DISTINCT b.id) AS total,
+                COUNT(b.id) AS total,
+                COUNT(DISTINCT b.id) AS unique_total,
                 SUM(CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS ranges,
                 SUM(CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing
             FROM location_buildings b
@@ -279,8 +283,8 @@ function getBuildings(array $filter)
                 ) ca4 ON ca4.customer_id = n.ownerid
                 LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
                 LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
-                WHERE a.city_id IS NOT NULL
-                    OR a2.city_id IS NOT NULL
+                WHERE a2.id IS NULL AND a.city_id IS NOT NULL
+                    OR a2.id IS NOT NULL AND a2.city_id IS NOT NULL
                 GROUP BY
                     (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
                     (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
@@ -289,10 +293,8 @@ function getBuildings(array $filter)
             . (!empty($where) || !empty($where2) ? ' WHERE ' . implode(' AND ', array_merge($where, $where2)) : '')
         );
     } else {
-        $where2 = array();
         if (isset($filter['cityid']) && is_numeric($filter['cityid'])) {
-            $where2[] = '(a.city_id = ' . intval($filter['cityid'])
-                . ' OR a2.city_id = ' . intval($filter['cityid']) . ')';
+            $cityid = intval($filter['cityid']);
         }
 
         $node_addresses = $DB->GetAll(
@@ -328,9 +330,8 @@ function getBuildings(array $filter)
             ) ca4 ON ca4.customer_id = n.ownerid
             LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
             LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
-            WHERE (a.city_id IS NOT NULL
-                OR a2.city_id IS NOT NULL)
-                ' . (empty($where2) ? '' : ' AND ' . implode(' AND ', $where2)) . '
+            WHERE (a2.id IS NULL AND a.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a.city_id = ' . $cityid : '') . ')
+                OR (a2.id IS NOT NULL AND a2.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a2.city_id = ' . $cityid : '') . ')
             GROUP BY
                 (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
                 (CASE WHEN a2.id IS NULL THEN a.street_id ELSE a2.street_id END),
@@ -387,6 +388,9 @@ function getBuildings(array $filter)
             );
         }
 
+        $limit = isset($filter['limit']) && is_numeric($filter['limit']) ? intval($filter['limit']) : null;
+        $offset = isset($filter['offset']) && is_numeric($filter['offset']) ? intval($filter['offset']) : null;
+
         $buildings = $DB->GetAll(
             'SELECT b.*,
                 lst.name AS street1,
@@ -420,8 +424,10 @@ function getBuildings(array $filter)
             LEFT JOIN netranges r ON r.buildingid = b.id'
             . (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
             . ' ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
-            . (isset($filter['limit']) && is_numeric($filter['limit']) ? ' LIMIT ' . intval($filter['limit']) : '')
-            . (isset($filter['offset']) && is_numeric($filter['offset']) ? ' OFFSET ' . intval($filter['offset']) : '')
+            . (empty($existing) ? (
+                (isset($limit) ? ' LIMIT ' . $limit : '')
+                . (isset($offset) ? ' OFFSET ' . $offset : '')
+            ) : '')
         );
     }
     if (empty($buildings)) {
@@ -436,19 +442,24 @@ function getBuildings(array $filter)
                 $node = $nodes[$city_id][$street_id][$building_num];
                 $building['linktechnologies'] = $node['linktechnologies'];
                 $building['customers'] = $node['customers'];
+                $building['existing'] = 1;
             } else {
                 $building['linktechnologies'] = array();
                 $building['customers'] = array();
+                $building['existing'] = 0;
             }
-            $building['existing'] = isset($nodes[$city_id][$street_id][$building_num]) ? 1 : 0;
         }
         unset($building);
-        if (isset($filter['existing']) && is_numeric($filter['existing'])) {
-            $existing = intval($filter['existing']);
-            if ($existing) {
-                $buildings = array_filter($buildings, function ($building) use ($existing) {
-                    return $building['existing'] == 1 && $existing == 1 || $building['existing'] == 0 && $existing == 2;
-                });
+        if (!empty($existing)) {
+            $buildings = array_filter($buildings, function ($building) use ($existing) {
+                return $building['existing'] == 1 && $existing == 1 || $building['existing'] == 0 && $existing == 2;
+            });
+            if (isset($limit) || isset($offset)) {
+                $buildings = array_slice(
+                    $buildings,
+                    isset($offset) ? $offset : 0,
+                    isset($limit) ? $limit : null
+                );
             }
         }
     }
@@ -748,6 +759,7 @@ $filter['count'] = true;
 
 $summary = !empty($filter['stateid']) && !empty($filter['districtid']) ? getBuildings($filter) : array();
 $total = isset($summary['total']) ? intval($summary['total']) : 0;
+$unique_total = isset($summary['unique_total']) ? intval($summary['unique_total']) : 0;
 $ranges = isset($summary['ranges']) ? intval($summary['ranges']) : 0;
 $existing = isset($summary['existing']) ? intval($summary['existing']) : 0;
 
@@ -793,6 +805,7 @@ $SMARTY->assign(array(
     'linktechnologies' => $SIDUSIS_LINKTECHNOLOGIES,
     'linkspeeds' => $linkspeeds,
     'range'=> $range,
+    'unique_total' => $unique_total,
     'total' => $total,
     'ranges' => $ranges,
     'existing' => $existing,
