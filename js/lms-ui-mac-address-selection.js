@@ -28,7 +28,7 @@ $(function() {
 		$('table.lms-ui-mac-address-selection').append(
 			'<tr id="mac' + key + '" class="mac">' +
 			'<td style="width: 100%;">' +
-			'<input type="text" name="' + $(this).attr('data-field-prefix') + '[macs][' + key + ']" value="" ' +
+			'<input type="text" id="mac-input-' + key + '" name="' + $(this).attr('data-field-prefix') + '[macs][' + key + ']" value="" ' +
 			'placeholder="' + $t('MAC address') + '">' +
 			'&nbsp;<span class="ui-icon ui-icon-closethick remove-mac"></span>' +
 			'&nbsp;<a class="lms-ui-button mac-selector" ' +
