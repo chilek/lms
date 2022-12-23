@@ -575,13 +575,15 @@
                                         </span>
                                         <label>
                                             <input type="hidden" name="range[services][1]" value="0" form="update-range">
-                                            <input type="checkbox" name="range[services][1]" value="1" form="update-range"
+                                            <input type="checkbox" name="range[services][1]" value="1" class="range-services"
+                                                form="update-range" required
                                                 {if ($range.services & 1) > 0} checked{/if}>
                                             {trans("<!netrange>wholesale")}
                                         </label>
                                         <label>
                                             <input type="hidden" name="range[services][2]" value="0" form="update-range">
-                                            <input type="checkbox" name="range[services][2]" value="1" form="update-range"
+                                            <input type="checkbox" name="range[services][2]" value="1" class="range-services"
+                                                form="update-range" required
                                                 {if ($range.services & 2) > 0} checked{/if}>
                                             {trans("<!netrange>retail")}
                                         </label>
@@ -760,7 +762,7 @@
                 }
             }).closest('label').toggle($(that).val() !== '');
             $('[name="' + prefix + '[downlink]"],[name="' + prefix + '[uplink]"]').prop('required', false).closest('label').hide();
-        });
+        }).change();
 
         $('[name$="[linktechnology]"]').change(function() {
             var prefix = $(this).attr('name').match(/^range/) ? 'range' : 'filter';
@@ -773,7 +775,14 @@
                         return $(this).prop('required');
                     }
                 }).closest('label').toggle($(this).val() !== '');
-        });
+        }).change();
+
+        var rangeServices = $('.range-services');
+        rangeServices.change(function() {
+            $.each(rangeServices, function () {
+                $(this).prop('required', !rangeServices.filter(':checked').length);
+            });
+        }).change();
 
         $('#update-range').submit(function(e) {
             if (!$('.lms-ui-multi-check').find(':checked').length) {
