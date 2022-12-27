@@ -705,6 +705,7 @@ $_LANG['Create time:'] = 'Data utworzenia:';
 $_LANG['Create time'] = 'Data utworzenia';
 $_LANG['Generating subscriptions...'] = 'Generuję taryfy…';
 $_LANG['Creation time'] = 'Czas utworzenia';
+$_LANG['Creation time:'] = 'Czas utworzenia:';
 $_LANG['Creditor:'] = 'Wierzyciel:';
 $_LANG['Creditor name is required!'] = 'Nazwa wierzyciela jest wymagana!';
 $_LANG['Crontab:'] = 'Crontab:';
