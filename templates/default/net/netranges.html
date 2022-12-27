@@ -747,10 +747,11 @@
             var that = this;
             var prefix = $(this).attr('name').match(/^range/) ? 'range' : 'filter';
             var select = $('[name="' + prefix + '[linktechnology]"]');
+            var linktechnology = select.val();
             var html = '<option value="">' + (prefix == 'range' ? '{trans("— none —")}' : '{trans("— any —")}') +'</option>';
             if ($(this).val() !== '') {
                 $.each(linkTechnologies[$(this).val()], function (index, label) {
-                    html += '<option value="' + index + '">' + label + '</option>';
+                    html += '<option value="' + index + '"' + (index == linktechnology ? ' selected' : '') + '>' + label + '</option>';
                 });
             }
             select.html(html);
