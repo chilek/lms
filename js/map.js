@@ -796,9 +796,15 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					var features = findFeaturesIntersection(this, feature, featureLonLat);
 					if (features.length) {
 						var content = '<div class="lmsMapPopupContents">';
+						var first = true;
 						for (i in features) {
 							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
 								if (features[i].data.hasOwnProperty('existing')) {
+									if (!first) {
+										content += '<br>';
+									} else {
+										first = false;
+									}
 									content += '<strong><span class="netrange-location">' + features[i].data.location + '</span><br>' +
 										features[i].data.typename + '<br>' +
 										features[i].data.technologyname + '<br>' +
