@@ -267,7 +267,7 @@ function getBuildings(array $filter)
                     AND va3.house <> \'\'
                 GROUP BY ca2.customer_id
             ) ca4 ON ca4.customer_id = n.ownerid
-            LEFT JOIN customer_addresses ca ON ca.customer_id = ca4.customer_id
+            LEFT JOIN customer_addresses ca ON n.address_id IS NULL AND ca.customer_id = ca4.customer_id
             LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
             LEFT JOIN location_streets lst2 ON lst2.id = a2.street_id
             WHERE (a2.id IS NULL AND a.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a.city_id = ' . $cityid : '') . ')
