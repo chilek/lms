@@ -337,7 +337,7 @@ function getBuildings(array $filter)
                 b.city_id,
                 b.building_num,
                 lst.ident AS street_ident,
-                (CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS range
+                (CASE WHEN r.id IS NULL THEN 0 ELSE 1 END) AS ifrange
             FROM location_buildings b
             LEFT JOIN location_streets lst ON lst.id = b.street_id
             JOIN location_cities lc ON lc.id = b.city_id
@@ -374,7 +374,7 @@ function getBuildings(array $filter)
             };
             $result['total']++;
             $result['unique_total'][$range['id']] = true;
-            if (!empty($range['range'])) {
+            if (!empty($range['ifrange'])) {
                 $result['ranges']++;
             }
         }
