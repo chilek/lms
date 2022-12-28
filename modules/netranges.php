@@ -185,7 +185,8 @@ function getBuildings(array $filter)
     if (isset($filter['streetid']) && is_numeric($filter['streetid'])) {
         $street_ident = $DB->GetOne('SELECT ident FROM location_streets WHERE id = ?', array($filter['streetid']));
         $where[] = 'lst.ident = ' . $DB->Escape($street_ident);
-    } elseif (isset($filter['cityid']) && is_numeric($filter['cityid'])) {
+    }
+    if (isset($filter['cityid']) && is_numeric($filter['cityid'])) {
         $where[] = 'b.city_id = ' . intval($filter['cityid']);
     } elseif (isset($filter['boroughid']) && is_numeric($filter['boroughid'])) {
         $where[] = 'lc.boroughid = ' . intval($filter['boroughid']);
