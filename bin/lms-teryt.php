@@ -1399,8 +1399,12 @@ if (isset($options['buildings'])) {
         if (!$quiet && !($i % 10000)) {
             printf("%.2f%%\r", ($step * 100) / $steps);
         }
+
+        $step_incremented = false;
+
         if (!($i % 10000) || $i >= $totalRecords) {
             $step++;
+            $step_incremented = true;
 
             if ($to_insert) {
                 $DB->Execute(
@@ -1498,7 +1502,9 @@ if (isset($options['buildings'])) {
         }
 
         if (!(($i - 1) % 10000) || ($i - 1) >= $totalRecords) {
-            $step++;
+            if (!$step_incremented) {
+                $step++;
+            }
 
             if ($to_insert) {
                 $DB->Execute(
