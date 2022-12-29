@@ -432,6 +432,9 @@ if (!empty($states)) {
 if (isset($options['list'])) {
     $state_lists[$options['list']] = "Invalid state list format entered in command line!";
 }
+
+$oldlocale = setlocale(LC_CTYPE, '0');
+setlocale(LC_CTYPE, 'en_US.UTF-8');
 foreach ($state_lists as $states => $error_message) {
     $states = explode(',', $states);
     foreach ($states as &$state) {
@@ -448,6 +451,7 @@ foreach ($state_lists as $states => $error_message) {
     unset($state);
     $state_list = array_combine($states, array_fill(0, count($states), '1'));
 }
+setlocale(LC_CTYPE, $oldlocale);
 
 if (empty($teryt_dir)) {
     $teryt_dir = getcwd();
