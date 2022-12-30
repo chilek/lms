@@ -362,17 +362,13 @@ function getBuildings(array $filter)
             $street_ident = intval($range['street_ident']);
             $building_num = mb_strtoupper($range['building_num']);
 
-            if (!empty($existing)) {
-                if (isset($nodes[$city_id][$street_ident][$building_num])) {
-                    if ($existing == 2) {
-                        continue;
-                    }
-                    $result['existing']++;
-                } elseif ($existing == 1) {
+            if (isset($nodes[$city_id][$street_ident][$building_num])) {
+                if ($existing == 2) {
                     continue;
                 }
-            } elseif (isset($nodes[$city_id][$street_ident][$building_num])) {
                 $result['existing']++;
+            } elseif ($existing == 1) {
+                continue;
             }
             $result['total']++;
             $result['unique_total'][$range['id']] = true;
