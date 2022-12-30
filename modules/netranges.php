@@ -271,8 +271,9 @@ function getBuildings(array $filter)
             LEFT JOIN customer_addresses ca ON n.address_id IS NULL AND ca.customer_id = ca4.customer_id
             LEFT JOIN vaddresses a2 ON a2.id = ca.address_id
             LEFT JOIN location_streets lst2 ON lst2.id = a2.street_id
-            WHERE (a2.id IS NULL AND a.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a.city_id = ' . $cityid : '') . ')
-                OR (a2.id IS NOT NULL AND a2.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a2.city_id = ' . $cityid : '') . ')
+            WHERE n.ipaddr <> 0
+                AND ((a2.id IS NULL AND a.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a.city_id = ' . $cityid : '') . ')
+                OR (a2.id IS NOT NULL AND a2.city_id IS NOT NULL ' . (isset($cityid) ? ' AND a2.city_id = ' . $cityid : '') . '))
             GROUP BY
                 (CASE WHEN a2.id IS NULL THEN a.city_id ELSE a2.city_id END),
                 (CASE WHEN a2.id IS NULL THEN lst.ident ELSE lst2.ident END),
