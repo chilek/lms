@@ -4,202 +4,262 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$xajax}
-<SCRIPT type="text/javascript">
-<!--
-	function filter() {
-		document.page.action = "?m=archiveview";
-		document.page.target = "";
-		document.page.submit();
+
+<style>
+
+	div.lms-ui-filter-container {
+		justify-content: flex-start;
 	}
 
-	function clear_filter() {
-		xjx.$('datefrom').value = '';
-		xjx.$('dateto').value = '';
-		xjx.$('user').selectedIndex = 0;
-		xjx.$('resourcetype').selectedIndex = 0;
-		xjx.$('resourceid').value = '';
-		xjx.$('propertyvalue').value = '';
-		filter();
+	div.lms-ui-filter-container > div.lms-ui-filter-definition:not(:first-child) {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	div.lms-ui-filter-container > div.lms-ui-filter-definition > label > span {
+		margin-right: 0.5em;
+	}
+
+</style>
+
+<form method="POST" name="page" id="filter" action="">
+	<input type="submit" class="hiddenbtn">
+</form>
+<table class="lmsbox lms-ui-background-cycle">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 97%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td class="container" colspan="4">
+				<div class="lms-ui-filter-container">
+					<div class="lms-ui-filter-definition">
+						{icon name="filter"}
+						<label>
+							<span>{trans("From")}</span>
+							<input type="text" size="12" name="datefrom" form="filter" data-default-value=""
+								value="{$listdata.datefrom|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}"
+								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>
+						</label>
+						<label>
+							<span>{trans("To")}</span>
+							<input type="text" size="12" name="dateto" form="filter" data-default-value=""
+								value="{$listdata.dateto|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}"
+								{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+						</label>
+					</div>
+					<div class="lms-ui-filter-definition">
+						<label>
+							<span>{trans("User")}</span>
+							<select size="1" name="user" form="filter" data-default-value="">
+								<option value="">{trans("— all —")}</option>
+								{foreach $listdata.users as $idx => $user}
+									<option value="{$idx}"{if $listdata.user == $idx} selected{/if}>{$user.login}</option>
+								{/foreach}
+							</select>
+						</label>
+						<label>
+							<span>{trans("Module")}</span>
+							<select name="module" form="filter" class="lms-ui-advanced-select" data-default-value="">
+								<option value="">{trans("— any —")}</option>
+								{foreach $listdata.modules as $module}
+									<option value="{$module}"{if $listdata.module == $module} selected{/if}>{$module}</option>
+								{/foreach}
+							</select>
+						</label>
+					</div>
+					<div class="lms-ui-filter-definition">
+						<label>
+							<span>{trans("Resource Type")}</span>
+							<select size="1" name="resourcetype" form="filter" data-default-value="">
+								<option value="">{trans("— all —")}</option>
+								{foreach SYSLOG::getAllResources() as $idx => $resourcetype}
+									<option value="{$idx}"
+										{if $listdata.resourcetype == "{$idx}"} selected{/if}>{$resourcetype}</option>
+								{/foreach}
+							</select>
+						</label>
+						<label>
+							<span>{trans("Resource ID")}</span>
+							<input type="text" size="5" name="resourceid" form="filter" data-default-value=""
+								value="{if $listdata.resourceid}{$listdata.resourceid}{/if}"
+								{tip text="Enter resource ID (empty means any ID)" trigger="resourceid"}>
+						</label>
+					</div>
+					<div class="lms-ui-filter-definition">
+						<label>
+							<span>{trans("Property Name")}</span>
+							<select size="1" name="propertyname" form="filter" data-default-value="">
+								<option value="">{trans("— all —")}</option>
+							</select>
+						</label>
+						<label>
+							<span>{trans("Property Value")}</span>
+							<input type="text" size="20" name="propertyvalue" form="filter" data-default-value=""
+								value="{if $listdata.propertyvalue}{$listdata.propertyvalue}{/if}"
+								{tip text="Enter property value (empty means any value)" trigger="propertyvalue"}>
+						</label>
+					</div>
+					{button type="link" icon="clear" name="clear" id="clear-button"}
+					{button type="link" icon="next" id="submit-button"}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{if $listdata.page}<a href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</a>{else}&nbsp;{/if}
+			</td>
+			<td colspan="3" class="text-right">
+				{if $listdata.prev}<a href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;</a>{else}&nbsp;{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="text-center nobr">
+				<strong>{trans("Date")}</strong>
+			</td>
+			<td class="text-center nobr">
+				<strong>{trans("User")}</strong>
+			</td>
+			<td class="text-center nobr">
+				<strong>{trans("Module")}</strong>
+			</td>
+			<td class="nobr">
+				<strong>{trans("Operations")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td>
+				{if $listdata.page}<a href="?m=archiveview&page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</a>{else}&nbsp;{/if}
+			</td>
+			<td colspan="3" class="text-right">
+				{if $listdata.prev}<a href="?m=archiveview&page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;</a>{else}&nbsp;{/if}
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		{foreach $transactions as $tr}
+		<tr class="highlight">
+			<td class="valign-bottom nobr">
+				{$tr.time|date_format:"Y.m.d H:i:s"}
+			</td>
+			<td class="text-center valign-bottom nobr">
+				<a href="?m=userinfo&id={$tr.userid}">{$tr.login}</a>
+			</td>
+			<td class="text-center valign-bottom nobr">
+				{$tr.module}
+			</td>
+			<td class="valign-bottom">
+				{if $tr.messages}
+					{foreach $tr.messages as $messageid => $message}
+						<strong>{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></strong>
+						{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&type={$msgkey.type}&id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
+						{foreach $message.data as $key => $value}{$key}: {$value.value}{if !$value@last}, {/if}{/foreach}
+						{if !$message@last}<br>{/if}
+					{/foreach}
+				{/if}
+			</td>
+		</tr>
+		{foreachelse}
+		<tr>
+			<td class="empty-table" colspan="4">
+				{trans("No such transactions in database.")}
+			</td>
+		</tr>
+		{/foreach}
+	</tbody>
+</table>
+<script>
+
+	function GetPropertyValues(propertyValue) {
+		var resourceType = $('[name="resourcetype"]').val();
+		var propertyName = $('[name="propertyname"]').val();
+		if (typeof(propertyValue) == 'undefined') {
+			propertyValue = '';
+		}
+		$.ajax({
+			method: "GET",
+			dataType: "json",
+			data: {
+				api: 1,
+				action: "get-property-values",
+				"resource-type": resourceType,
+				"property-name": propertyName
+			},
+			success: function (data) {
+				var html;
+				if (data.length > 19) {
+					html = '<input type="text" size="20" name="propertyvalue" form="filter" data-default-value=""' +
+							(propertyValue.length ? ' value="' + propertyValue + '"' : '') + '>';
+				} else {
+					html = '<select size="1" name="propertyvalue" form="filter" data-default-value="">' +
+						'<option value="">{trans('— all —')}</option>';
+						$.each(data, function(index, elem) {
+							html += '<option value="' + elem.value + '"' +
+								(propertyValue.length && propertyValue == elem.value ? ' selected' : '') + '>' +
+								elem.label + '</option>';
+						});
+					html += '</select>';
+				}
+				$('[name="propertyvalue"]').replaceWith(html);
+			}
+		});
 	}
 
 	function GetPropertyNames(params) {
-		var restype = xjx.$('resourcetype');
-		var propname = xjx.$('propertyname');
-		var propvalue = xjx.$('propertyvalue');
-		if (restype.selectedIndex) {
-			propname.disabled = true;
-			propvalue.disabled = true;
-			xajax_GetPropertyNames(restype.options[restype.selectedIndex].value, params);
+		var resourceType = $('[name="resourcetype"]').val();
+		if (resourceType.length) {
+			$('[name="propertyname"],[name="propertyvalue"]').prop('disabled', true);
+			$.ajax({
+				method: "GET",
+				dataType: "json",
+				data: {
+					api: 1,
+					action: "get-property-names",
+					"resource-type": resourceType
+				},
+				success: function(data) {
+					var html = '<option value="">{trans("— all —")}</option>';
+					$.each(data, function(index, value) {
+						html += '<option value="' + value + '"' +
+							(typeof(params) == 'object' && params.hasOwnProperty('propertyname') && params.propertyname == value ? ' selected' : '') +
+							'>' + value + '</option>';
+					});
+					$('[name="propertyname"]').html(html).prop('disabled', false);
+					if (typeof(params) == 'object' && params.hasOwnProperty('propertyvalue')) {
+						GetPropertyValues(params.propertyvalue);
+					}
+				}
+			});
 		}
 	}
 
-	function GetPropertyValues(propvalue) {
-		var restype = xjx.$('resourcetype');
-		var propname = xjx.$('propertyname');
-		xajax_GetPropertyValues(restype.options[restype.selectedIndex].value,
-			propname.options[propname.selectedIndex].value, propvalue);
-	}
-//-->
-</SCRIPT>
-<FORM method="post" name="page" action="">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
-	<THEAD>
+	$(function() {
+		$("#submit-button").click(function() {
+			$("#filter").submit();
+		});
 
-	<TR>
-		<TD class="container" colspan="4">
-			<TABLE>
-				<TBODY>
-				<TR>
-					<TD style="width: 1%;" class="nobr">
-						<A href="javascript:clear_filter();"><IMG src="img/delete.gif" alt=""></A>
-						<span class="bold">{trans("Filter:")} </span>
-						<label for="datefrom">{trans("From:")}</label>
-						<input type="text" size="12" name="datefrom" id="datefrom" value="{$listdata.datefrom|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-						<label for="dateto">{trans("To:")}</label>
-						<input type="text" size="12" name="dateto" id="dateto" value="{$listdata.dateto|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-						<label for="user">{trans("User:")}</label>
-						<SELECT size="1" name="user" id="user">
-							<OPTION value="0"{if $listdata.user == "0"} SELECTED{/if}>{trans("— all —")}</OPTION>
-							{foreach $listdata.users as $idx => $user}
-							<OPTION value="{$idx}"{if $listdata.user == "{$idx}"} SELECTED{/if}>{$user.login}</OPTION>
-							{/foreach}
-						</SELECT>&nbsp;
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-						<TABLE style="width: 100%;">
-							<TR>
-								<TD class="nobr">
-									<label for="resourcetype">{trans("Resource Type:")}</label>
-								</TD>
-								<TD>
-									<SELECT size="1" name="resourcetype" id="resourcetype" onchange="javascript:GetPropertyNames(null);">
-										<OPTION value="0"{if $listdata.resourcetype == "0"} SELECTED{/if}>{trans("— all —")}</OPTION>
-										{foreach SYSLOG::getAllResources() as $idx => $resourcetype}
-										<OPTION value="{$idx}"{if $listdata.resourcetype == "{$idx}"} SELECTED{/if}>{$resourcetype}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="nobr">
-									<label for="resourceid">{trans("Resource ID:")}</label>
-								</TD>
-								<TD>
-									<input type="text" size="5" name="resourceid" id="resourceid" value="{if $listdata.resourceid}{$listdata.resourceid}{/if}" {tip text="Enter resource ID (empty means any ID)" trigger="resourceid"}>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-						<TABLE style="width: 100%;">
-							<TR>
-								<TD class="nobr">
-									<label for="propertyname">{trans("Property Name:")}</label>
-								</TD>
-								<TD>
-									<SELECT size="1" name="propertyname" id="propertyname" onchange="javascript:GetPropertyValues();">
-										<OPTION value=""{if $listdata.propertyname == "0"} SELECTED{/if}>{trans("— all —")}</OPTION>
-									</SELECT>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="nobr">
-									<label for="propertyvalue">{trans("Property Value:")}</label>
-								</TD>
-								<TD id="propertyvaluedata">
-									<input type="text" size="20" name="propertyvalue" id="propertyvalue" value="{if $listdata.propertyvalue}{$listdata.propertyvalue}{/if}" {tip text="Enter property value (empty means any value)" trigger="propertyvalue"}>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-					<TD style="width: 97%;">
-						<A href="javascript:filter();" accesskey="s">{trans("Search")}<img src="img/search.gif" alt="{trans("Search")}"></A>
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			{if $listdata.page}<A href="?m=archiveview&amp;page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
-		</TD>
-		<TD colspan="3" class="text-right">
-			{if $listdata.prev}<A href="?m=archiveview&amp;page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;</A>{else}&nbsp;{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD class="text-center bold nobr" style="width: 1%;">
-			{trans("Date:")}
-		</TD>
-		<TD class="text-center bold nobr" style="width: 1%;">
-			{trans("User:")}
-		</TD>
-		<TD class="text-center bold nobr" style="width: 1%;">
-			{trans("Module:")}
-		</TD>
-		<TD class="bold nobr" style="width: 97%;">
-			{trans("Operations:")}
-		</TD>
-	</TR>
+		$("#clear-button").click(function() {
+			$("[data-default-value]").each(function() {
+				$(this).val($(this).attr("data-default-value"));
+			});
+			$("#filter").submit();
+		});
 
-	</THEAD>
-	<TFOOT>
+		$('[name="resourcetype"]').change(function() {
+			GetPropertyNames();
+		})
 
-	<TR>
-		<TD>
-			{if $listdata.page}<A href="?m=archiveview&amp;page={$listdata.page - 1}">&laquo;&laquo;&laquo; {trans("Next")}</A>{else}&nbsp;{/if}
-		</TD>
-		<TD colspan="3" class="text-right">
-			{if $listdata.prev}<A href="?m=archiveview&amp;page={$listdata.page + 1}">{trans("Previous")} &raquo;&raquo;&raquo;</A>{else}&nbsp;{/if}
-		</TD>
-	</TR>
+		$('[name="propertyname"]').change(function() {
+			GetPropertyValues();
+		});
+	});
 
-	</TFOOT>
-	<TBODY>
+	GetPropertyNames( { propertyname: '{$listdata.propertyname}', propertyvalue: '{$listdata.propertyvalue}' } );
 
-	{if $transactions}
-	{cycle values="light,lucid" print=false name=trans}
-	{foreach $transactions as $tr}
-	<TR class="{cycle name=trans}">
-		<TD style="width: 1%;" class="valign-bottom nobr">
-			{$tr.time|date_format:"Y.m.d H:i:s"}
-		</TD>
-		<TD style="width: 1%;" class="text-center valign-bottom nobr">
-			<a href="?m=userinfo&amp;id={$tr.userid}">{$tr.login}</a>
-		</TD>
-		<TD style="width: 1%;" class="text-center valign-bottom nobr">
-			{$tr.module}
-		</TD>
-		<TD style="width: 97%;" class="valign-bottom">
-			{if $tr.messages}
-				{foreach $tr.messages as $messageid => $message}
-					<span class="bold">{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></span>
-					{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
-					{foreach $message.data as $key => $value}{$key}: {$value.value}{if !$value@last}, {/if}{/foreach}
-					{if !$message@last}<br>{/if}
-				{/foreach}
-			{/if}
-		</TD>
-	</TR>
-	{/foreach}
-	{else}
-	<tr>
-		<td class="empty-table" colspan="4">
-			{trans("No such transactions in database.")}
-		</td>
-	</tr>
-	{/if}
-
-	</TBODY>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
-<!--
-GetPropertyNames( { propertyname: '{$listdata.propertyname}', propertyvalue: '{$listdata.propertyvalue}' } );
-//-->
-</SCRIPT>
+</script>
 {/block}

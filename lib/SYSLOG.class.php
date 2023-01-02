@@ -384,6 +384,7 @@ class SYSLOG
         $propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
         $propvalue = (isset($params['propvalue']) ? $params['propvalue'] : '');
         $userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null);
+        $module = isset($params['module']) && strlen($params['module']) ? $params['module'] : null;
         $offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
         $limit = (isset($params['limit']) && !empty($params['limit']) ? intval($params['limit']) : 20);
         $order = (isset($params['order']) && preg_match('/ASC/i', $params['order']) ? 'ASC' : 'DESC');
@@ -414,6 +415,10 @@ class SYSLOG
         if ($userid) {
             $where[] = 'lt.userid = ?';
             $args[] = $userid;
+        }
+        if ($module) {
+            $where[] = 'lt.module = ?';
+            $args[] = $module;
         }
         if ($datefrom) {
             $where[] = 'lt.time >= ?';
