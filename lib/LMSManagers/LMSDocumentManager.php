@@ -2453,7 +2453,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $day = sprintf('%02d', intval(date('d', $currtime)));
         $year = sprintf('%04d', intval(date('Y', $currtime)));
 
-        $from = $sender_email;
+        if (empty($dsn_email)) {
+            $from = $sender_email;
+        } else {
+            $from = $dsn_email;
+        }
 
         if (!empty($sender_name)) {
             $from = "$sender_name <$from>";
@@ -2582,7 +2586,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 $headers = array(
-                    'From' => empty($dsn_email) ? $from : $dsn_email,
+                    'From' => $from,
                     'To' => $mailto_qp_encoded,
                     'Recipient-Name' => $document['name'],
                     'Subject' => $subject,
