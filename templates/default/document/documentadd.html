@@ -250,6 +250,8 @@
 		<tr id="referencedocument">
 			{include file="document/documentreference.html"}
 		</tr>
+		{block name="documentpluginreference"}
+		{/block}
 		<tr id="document-file-row"{if !$document.type} style="display: none;"{/if}>
 			<td>
 				{icon name="import"}
