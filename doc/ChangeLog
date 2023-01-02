@@ -374,6 +374,7 @@ version 28-git (????-??-??):
     two factor authentication mechanism is bypassed [chilan]
   - enhancement: new action on customer search results - customer status change [chilan]
   - enhancement: implemented instant payment transfer between customers [chilan]
+  - enhancement: allow to filter transactions by module name [chilan]
 
 version 27.0 (2021-08-20):
 
