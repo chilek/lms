@@ -4949,7 +4949,11 @@ class LMS
         $day = sprintf('%02d', intval(date('d', $currtime)));
         $year = sprintf('%04d', intval(date('Y', $currtime)));
 
-        $from = $sender_email;
+        if (empty($dsn_email)) {
+            $from = $sender_email;
+        } else {
+            $from = $dsn_email;
+        }
 
         if (!empty($sender_name)) {
             $from = qp_encode($sender_name) . " <$from>";
@@ -5127,7 +5131,7 @@ class LMS
                 }
 
                 $headers = array(
-                    'From' => empty($dsn_email) ? $from : $dsn_email,
+                    'From' => $from,
                     'To' => $mailto_qp_encoded,
                     'Recipient-Name' => $doc['name'],
                     'Subject' => $subject,
