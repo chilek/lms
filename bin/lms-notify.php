@@ -605,6 +605,10 @@ if (!empty($plugins)) {
     }
 }
 
+if (!empty($dsn_email)) {
+    $mail_from = $dsn_email;
+}
+
 if (!empty($mail_fname)) {
     $mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
 }
@@ -808,7 +812,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
     $headers = array(
-        'From' => empty($dsn_email) ? $mail_from : $dsn_email,
+        'From' => $mail_from,
         'To' => qp_encode($rname) . " <$rmail>",
         'Recipient-Name' => $rname,
         'Subject' => $subject,
