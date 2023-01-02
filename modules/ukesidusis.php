@@ -120,7 +120,7 @@ foreach ($buildings as $building) {
             }
             break;
         case LINKTYPE_WIRELESS:
-            $linktype = 'radiowe';
+            $linktype = 'radiowe (FWA)';
             break;
         case LINKTYPE_FIBER:
             $linktype = 'światłowodowe';
