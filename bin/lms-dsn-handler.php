@@ -160,13 +160,172 @@ if (!$ih) {
     die("Cannot connect to mail server!" . PHP_EOL);
 }
 
+$month_mappings = array(
+    'sty' => 1,
+    'lut' => 2,
+    'mar' => 3,
+    'kwi' => 4,
+    'maj' => 5,
+    'cze' => 6,
+    'lip' => 7,
+    'sie' => 8,
+    'wrz' => 9,
+    'paź' => 10,
+    'lis' => 11,
+    'gru' => 12,
+);
+
 $handled_posts = array();
 $posts = imap_search($ih, 'ALL');
 if (!empty($posts)) {
     foreach ($posts as $postid) {
         $post = imap_fetchstructure($ih, $postid);
         $headers = imap_fetchheader($ih, $postid);
-        if ($post->subtype != 'REPORT') {
+        if ($post->subtype == 'MIXED' || $post->subtype == 'HTML') {
+            $subject = $readdate = $sender = $orig_date = null;
+
+            if (empty($post->parts)) {
+                $body = imap_fetchbody($ih, $postid, 1);
+
+                $charset = 'UTF-8';
+                if (!empty($post->parameters)) {
+                    foreach ($post->parameters as $parameter) {
+                        if ($parameter->attribute == 'charset') {
+                            $charset = $parameter->value;
+                        }
+                    }
+                }
+
+                switch ($post->encoding) {
+                    case 3:
+                        $body = base64_decode($body);
+                        break;
+                    case 4:
+                        $body = quoted_printable_decode($body);
+                        break;
+                }
+
+                if ($charset != 'UTF-8') {
+                    $body = iconv($charset, 'UTF-8', $body);
+                }
+
+                if ($post->subtype == 'HTML') {
+                    // X-Mailer: OnetMailer
+                    // From: "Poczta w Onet.pl" <komunikaty@onet.pl>
+                    if (preg_match('/Subject:[[:blank:]]+(?<subject>.+\r?\n(?:[[:blank:]].+\r?\n)*)/s', $headers, $m)) {
+                        $subject = iconv_mime_decode($m['subject']);
+                        if (!preg_match('/^Potwierdzenie (odczytania|otrzymania) wiadomości/', $subject)) {
+                            continue;
+                        }
+                    }
+                    if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r\n?/', $headers, $m)) {
+                        $readdate = strtotime($m['date']);
+                    } else {
+                        continue;
+                    }
+                    foreach (preg_split('/\r?\n/', $body) as $line) {
+                        if (preg_match('#^Potwierdzenie odczytania wiadomości <br[[:blank:]]*> wysłanej do <b>(?<sender>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})</b> o godzinie <b>(?<date>[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})</b>#', $line, $m)) {
+                            $sender = $m['sender'];
+                            $orig_date = strtotime($m['date']);
+                        }
+                    }
+                }
+            } else {
+                $parts = $post->parts;
+                foreach ($parts as $partid => $part) {
+                    if (!empty($part->ifsubtype) && $part->subtype == 'ALTERNATIVE') {
+                        foreach ($part->parts as $partid2 => $part2) {
+                            if (!empty($part2->ifsubtype) && $part2->subtype == 'PLAIN') {
+                                // User-Agent: Poczta o2
+                                //   lub
+                                // User-Agent: Poczta Wirtualnej Polski
+                                if (preg_match('/Subject:[[:blank:]]+(?<subject>.+\r?\n(?:[[:blank:]].+\r?\n)*)/s', $headers, $m)) {
+                                    $subject = iconv_mime_decode($m['subject']);
+                                    if (!preg_match('/^Potwierdzenie odbioru:[[:blank:]]*/', $subject)) {
+                                        break 2;
+                                    }
+                                }
+                                if (preg_match('/Date:[[:blank:]]+(?<date>.+)\r?\n/', $headers, $m)) {
+                                    $readdate = strtotime($m['date']);
+                                } else {
+                                    break 2;
+                                }
+                                if (preg_match('/From:[[:blank:]]+(?<from>.+\r?\n(?:[[:blank:]].+\r?\n)*)/s', $headers, $m)) {
+                                    $sender = iconv_mime_decode($m['from']);
+                                } else {
+                                    break 2;
+                                }
+
+                                $body = imap_fetchbody($ih, $postid, ($partid + 1) . '.' . ($partid2 + 1));
+
+                                $charset = 'UTF-8';
+                                if (!empty($part2->parameters)) {
+                                    foreach ($part2->parameters as $parameter) {
+                                        if ($parameter->attribute == 'charset') {
+                                            $charset = $parameter->value;
+                                        }
+                                    }
+                                }
+
+                                switch ($part2->encoding) {
+                                    case 3:
+                                        $body = base64_decode($body);
+                                        break;
+                                    case 4:
+                                        $body = quoted_printable_decode($body);
+                                        break;
+                                }
+
+                                if ($charset != 'UTF-8') {
+                                    $body = iconv($charset, 'UTF-8', $body);
+                                }
+
+                                foreach (preg_split('/\r?\n/', $body) as $line) {
+                                    if (preg_match('/To jest potwierdzenie dla wiadomości wysłanej przez Ciebie do.+[[:blank:]]+(?<mday>[0-9]+)[[:blank:]]+(?<mname>[[:alpha:]]+)[[:blank:]]+(?<year>[0-9]{4})[[:blank:]]+o[[:blank:]]+godz\.[[:blank:]]+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})\./', $line, $m)) {
+                                        $month_mapping_index = mb_substr($m['mname'], 0, 3);
+                                        if (!isset($month_mappings[$month_mapping_index])) {
+                                            break 3;
+                                        }
+                                        $orig_date = mktime($m['hour'], $m['minute'], 0, $month_mappings[$month_mapping_index], $m['mday'], $m['year']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!isset($orig_date)) {
+                continue;
+            }
+
+            $msgitemid = $DB->GetOne(
+                'SELECT mi.id
+                FROM messageitems mi
+                JOIN messages m ON m.id = mi.messageid
+                WHERE m.type = ?
+                    AND mi.lastdate >= ? - 60
+                    AND mi.lastdate <= ? + 60
+                    AND mi.destination = ?',
+                array(
+                    MSG_MAIL,
+                    $orig_date,
+                    $orig_date,
+                    $sender,
+                )
+            );
+
+            if (!empty($msgitemid)) {
+                $DB->Execute(
+                    'UPDATE messageitems SET status = ?, lastreaddate = ? WHERE id = ?',
+                    array(MSG_DELIVERED, $readdate, $msgitemid)
+                );
+
+                $handled_posts[] = $postid;
+            }
+
+            continue;
+        } elseif ($post->subtype != 'REPORT') {
             continue;
         }
         if ((count($post->parts) < 2 || count($post->parts) > 3) && preg_match('/In-Reply-To:[[:blank:]]+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $headers) === 0) {
