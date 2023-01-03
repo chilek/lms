@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['with all attachments'] = 'z wszystkimi załącznikami';
+$_LANG['with protocols'] = 'z protokołami';
+
 $_LANG['comma separated emails'] = 'adresy e-mail oddzielone przecinkami';
 
 $_LANG['related documents'] = 'powiązane dokumenty';

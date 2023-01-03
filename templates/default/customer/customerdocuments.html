@@ -197,8 +197,12 @@
 			{tab_buttons}
 				{button id="print-docs" icon="print" label="Print"}
 				<label>
-					<input type="checkbox" name="attachments" value="1" form="customerdocuments-form">
-					{trans("attachments")}
+					<input type="checkbox" id="print-attachments" name="attachments" value="1" form="customerdocuments-form">
+					{trans("with all attachments")}
+				</label>
+				<label>
+					<input type="checkbox" id="print-protocols" name="protocols" value="1" form="customerdocuments-form">
+					{trans("with protocols")}
 				</label>
 			{/tab_buttons}
 		{/tab_button_panel}
