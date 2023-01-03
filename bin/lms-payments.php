@@ -230,6 +230,8 @@ $billing_document_template = ConfigHelper::getConfig('payments.billing_document_
 
 $auto_payments = ConfigHelper::checkConfig('payments.auto_payments');
 
+$use_comment_for_liabilities = ConfigHelper::checkConfig('payments.use_comment_for_liabilities');
+
 $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
     isset($options['customer-status'])
@@ -1467,7 +1469,7 @@ foreach ($assigns as $assign) {
         continue;
     }
 
-    if ($assign['liabilityid']) {
+    if ($assign['liabilityid'] && !$use_comment_for_liabilities) {
         $desc = $assign['name'];
     } else {
         if (empty($assign['backwardperiod'])) {
