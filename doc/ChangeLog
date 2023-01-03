@@ -375,6 +375,8 @@ version 28-git (????-??-??):
   - enhancement: new action on customer search results - customer status change [chilan]
   - enhancement: implemented instant payment transfer between customers [chilan]
   - enhancement: allow to filter transactions by module name [chilan]
+  - improvement: set 'payments.use_comment_for_liabilities' to 'true' if want to handle liabilities
+    the same way as tariff assignments (using 'payments.comment' configuration variable) [chilan]
 
 version 27.0 (2021-08-20):
 
