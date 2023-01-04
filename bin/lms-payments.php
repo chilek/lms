@@ -1050,12 +1050,13 @@ if (!empty($assigns)) {
             continue;
         }
         $history = $DB->GetAll(
-            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
+            'SELECT (CASE WHEN d.id IS NULL OR c.value > 0 THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
                 d.id AS docid,
                 (c.value * c.currencyvalue) AS value
             FROM cash c
             LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
             WHERE c.customerid = ?
+                AND c.value <> 0
                 AND c.time >= ? AND c.time < ?
             ORDER BY deadline',
             array(
@@ -1069,7 +1070,7 @@ if (!empty($assigns)) {
         $rewards[$cid] = true;
         if (!empty($history)) {
             foreach ($history as &$record) {
-                if (!empty($record['docid'])) {
+                if (!empty($record['docid']) && $record['value'] < 0) {
                     $record['deadline'] = mktime(
                         23,
                         59,
