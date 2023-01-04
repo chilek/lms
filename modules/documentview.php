@@ -65,8 +65,8 @@ if (!empty($docids)) {
             'SELECT filename, contenttype, md5sum
             FROM documentattachments
             WHERE docid IN ?'
-                . ($attachments || !empty($attachmentid) ? '' : ' AND type = 1')
-                . ($protocols && empty($attachments) && empty($attachmentid) ? ' OR type = -2' : '')
+            . ($attachments || !empty($attachmentid) || !empty($protocols) ? '' : ' AND type = 1')
+            . ($protocols && empty($attachments) && empty($attachmentid) ? ' AND (type = 1 OR type = -2)' : '')
                 . (empty($attachmentid) ? '' : ' AND id = ' . $attachmentid)
             . ' ORDER BY docid ASC, type DESC',
             array(
