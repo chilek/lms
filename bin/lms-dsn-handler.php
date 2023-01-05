@@ -252,10 +252,13 @@ if (!empty($posts)) {
                                 }
                                 if (preg_match('/From:[[:blank:]]+(?<from>.+\r?\n(?:[[:blank:]].+\r?\n)*)/s', $headers, $m)) {
                                     $sender = iconv_mime_decode($m['from']);
+                                    if (!preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $sender, $m)) {
+                                        break 2;
+                                    }
+                                    $sender = $m['mail'];
                                 } else {
                                     break 2;
                                 }
-
                                 $body = imap_fetchbody($ih, $postid, ($partid + 1) . '.' . ($partid2 + 1));
 
                                 $charset = 'UTF-8';
@@ -304,9 +307,10 @@ if (!empty($posts)) {
                 FROM messageitems mi
                 JOIN messages m ON m.id = mi.messageid
                 WHERE m.type = ?
-                    AND mi.lastdate >= ? - 60
-                    AND mi.lastdate <= ? + 60
-                    AND mi.destination = ?',
+                    AND m.cdate >= ? - 60
+                    AND m.cdate <= ? + 60
+                    AND mi.destination = ?
+                LIMIT 1',
                 array(
                     MSG_MAIL,
                     $orig_date,
