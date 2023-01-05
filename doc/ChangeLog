@@ -377,7 +377,9 @@ version 28-git (????-??-??):
   - enhancement: allow to filter transactions by module name [chilan]
   - improvement: set 'payments.use_comment_for_liabilities' to 'true' if want to handle liabilities
     the same way as tariff assignments (using 'payments.comment' configuration variable) [chilan]
-  - nnahcement: handle MDN reports from o2.pl/wp.pl/onet.pl [chilan]
+  - ennahcement: handle MDN reports from o2.pl/wp.pl/onet.pl [chilan]
+  - enhancement: added smarty function '{image_data}' to ease embedding image content
+    in html templates [chilan]
 
 version 27.0 (2021-08-20):
 
