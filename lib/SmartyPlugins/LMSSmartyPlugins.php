@@ -1540,4 +1540,14 @@ class LMSSmartyPlugins
             return $default;
         }
     }
+
+    public static function imageDataFunction(array $params, Smarty_Internal_Template $template)
+    {
+        if (!isset($params['file']) || !is_file($params['file'])) {
+            return '';
+        }
+
+        return 'data:' . mime_content_type($params['file'])
+            . ';base64,' . base64_encode(file_get_contents($params['file']));
+    }
 }
