@@ -1773,12 +1773,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $string = str_replace(
             array(
                 '%docid%',
+                '%document%',
                 '%date-y%',
                 '%date-m%',
                 '%date-d%',
             ),
             array(
                 $document['id'],
+                $document['fullnumber'],
                 date('Y', $document['confirmdate']),
                 date('m', $document['confirmdate']),
                 date('d', $document['confirmdate']),

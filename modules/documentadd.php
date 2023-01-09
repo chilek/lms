@@ -478,6 +478,7 @@ if (isset($_POST['document'])) {
 
         if ($LMS->DocumentExists($docid) && !empty($document['confirmdate'])) {
             $document['id'] = $docid;
+            $document['fullnumber'] = $fullnumber;
             $LMS->NewDocumentCustomerNotifications($document);
         }
 

@@ -110,6 +110,7 @@ $_LANG[
     . '<strong>%pin%</strong> - customer pin code,<br>'
     . '<strong>%customername%</strong> - full customer name,<br>'
     . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%document%</strong> - document number,<br>'
     . '<strong>%date-y%</strong> - date to which we wait for customer action (year),<br>'
     . '<strong>%date-m%</strong> - date to which we wait for customer action (month),<br>'
     . '<strong>%date-d%</strong> - date to which we wait for customer action (day).'
@@ -119,6 +120,7 @@ $_LANG[
     . '<strong>%pin%</strong> - kod PIN klienta,<br>'
     . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
     . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%document%</strong> - numer dokumentu,<br>'
     . '<strong>%date-y%</strong> - data do której oczekujemy na decyzję klienta (rok),<br>'
     . '<strong>%date-m%</strong> - data do której oczekujemy na decyzję klienta (miesiąc),<br>'
     . '<strong>%date-d%</strong> - data do której oczekujemy na decyzję klienta (dzień).';
