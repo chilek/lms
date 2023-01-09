@@ -382,7 +382,7 @@ function module_main()
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
-		    c.description, n.template, d.closed, d.cdate, d.confirmdate
+		    c.description, n.template, d.closed, d.cdate, d.confirmdate, d.customerid
 		FROM documentcontents c
 		JOIN documents d ON (c.docid = d.id)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)

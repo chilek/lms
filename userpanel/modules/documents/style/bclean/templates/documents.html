@@ -105,7 +105,7 @@
 		{/if}
 		{foreach $documents as $doc}
 			<tr class="align-middle p-2 {if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)}text-muted{/if}">
-				<td>{number number=$doc.number template=$doc.template time=$doc.cdate}</td>
+				<td>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</td>
 				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
 				<td>{$doc.cdate|date_format:"Y-m-d"}</td>
 				<td>

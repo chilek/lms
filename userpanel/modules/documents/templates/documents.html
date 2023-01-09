@@ -240,7 +240,7 @@
 	{foreach $documents as $doc}
 	<tr class="{cycle name=doc}{if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)} blend{/if}"
 			onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong></td>
+		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</strong></td>
 		<td class="nobr">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
 		<td class="nobr">{$doc.cdate|date_format:"Y-m-d"}</td>
 		<td class="nobr">
