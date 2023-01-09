@@ -33,20 +33,6 @@ function toggle_all_attachments(docid) {
 }
 
 $(function() {
-	$('#print-attachments').on('change', function () {
-		let that = $(this);
-		$('#print-protocols').prop('disabled', function (index, oldproperty) {
-			return that.is(':checked') ? true : false;
-		});
-	});
-
-	$('#print-protocols').on('change', function () {
-		let that = $(this);
-		$('#print-attachments').prop('disabled', function (index, oldproperty) {
-			return that.is(':checked') ? true : false;
-		});
-	});
-
 	$('#send-documents').click(function() {
 		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
 			alertDialog($t('No document has been selected!'), this);

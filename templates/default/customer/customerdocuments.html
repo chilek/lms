@@ -195,15 +195,19 @@
 		{/tab_button_panel}
 		{tab_button_panel}
 			{tab_buttons}
-				{button id="print-docs" icon="print" label="Print"}
-				<label>
-					<input type="checkbox" id="print-attachments" name="attachments" value="1" form="customerdocuments-form">
-					{trans("with all attachments")}
-				</label>
-				<label>
-					<input type="checkbox" id="print-protocols" name="protocols" value="1" form="customerdocuments-form">
-					{trans("with protocols")}
-				</label>
+				<fieldset>
+					{button id="print-docs" icon="print" label="Print"}
+					<label>
+						<input type="checkbox" name="attachments" value="1" form="customerdocuments-form">
+						{trans("attachments")}
+					</label>
+					<select name="attachment_group" form="customerdocuments-form">
+						<option value="" selected>{trans("— all —")}</option>
+						{foreach $_DOC_ATTACHMENT_GROUPS as $gkey => $attachment_group}
+							<option value="{$gkey}">{$attachment_group}</option>
+						{/foreach}
+					</select>
+				</fieldset>
 			{/tab_buttons}
 		{/tab_button_panel}
 {/if}

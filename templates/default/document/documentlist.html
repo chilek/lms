@@ -351,15 +351,19 @@
 				</TR>
 				<tr>
 					<td colspan="2">
-						{button icon="print" label="Print" id="print-documents"}
-						<label>
-							<input type="checkbox" id="print-attachments" name="attachments" value="1" form="page-form">
-							{trans("with all attachments")}
-						</label>
-						<label>
-							<input type="checkbox" id="print-protocols" name="protocols" value="1" form="page-form">
-							{trans("with protocols")}
-						</label>
+						<fieldset>
+							{button icon="print" label="Print" id="print-documents"}
+							<label>
+								<input type="checkbox" name="attachments" value="1" form="page-form">
+								{trans("attachments")}
+							</label>
+							<select name="attachment_group" form="page-form">
+								<option value="" selected>{trans("— all —")}</option>
+								{foreach $_DOC_ATTACHMENT_GROUPS as $gkey => $attachment_group}
+									<option value="{$gkey}">{$attachment_group}</option>
+								{/foreach}
+							</select>
+						</fieldset>
 					</td>
 				</tr>
 			</TABLE>
@@ -370,20 +374,6 @@
 </TABLE>
 
 <script>
-
-	$('#print-attachments').on('change', function () {
-		let that = $(this);
-		$('#print-protocols').prop('disabled', function (index, oldproperty) {
-			return that.is(':checked') ? true : false;
-		});
-	});
-
-	$('#print-protocols').on('change', function () {
-		let that = $(this);
-		$('#print-attachments').prop('disabled', function (index, oldproperty) {
-			return that.is(':checked') ? true : false;
-		});
-	});
 
 	$('#send-documents').click(function() {
 		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {

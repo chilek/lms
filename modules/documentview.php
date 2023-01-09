@@ -58,16 +58,16 @@ if (!empty($docids)) {
         $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
 
         $attachments = isset($_GET['attachments']) || isset($_POST['attachments']);
-        $protocols = isset($_GET['protocols']) || isset($_POST['protocols']);
+        $attachment_group = ($_GET['attachment_group'] ?? ($_POST['attachment_group'] ?? null));
         $attachmentid = isset($_GET['attachmentid']) && is_numeric($_GET['attachmentid']) ? intval($_GET['attachmentid']) : null;
 
         $list = $DB->GetAll(
             'SELECT filename, contenttype, md5sum
             FROM documentattachments
             WHERE docid IN ?'
-            . ($attachments || !empty($attachmentid) || !empty($protocols) ? '' : ' AND type = 1')
-            . ($protocols && empty($attachments) && empty($attachmentid) ? ' AND (type = 1 OR type = -2)' : '')
-                . (empty($attachmentid) ? '' : ' AND id = ' . $attachmentid)
+            . ($attachments || $attachment_group == '' || !empty($attachmentid) ? '' : ' AND type = 1')
+            . ($attachments && $attachment_group != '' && empty($attachmentid) ? ' AND (type = 1 OR type = '.$attachment_group.')' : '')
+            . (empty($attachmentid) ? '' : ' AND id = ' . $attachmentid)
             . ' ORDER BY docid ASC, type DESC',
             array(
                 $list,

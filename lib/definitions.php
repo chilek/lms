@@ -1422,6 +1422,12 @@ $IDENTITY_TYPES = array(
     5   => 'permanent residence card',
 );
 
+// Document attachements group
+$DOC_ATTACHMENT_GROUPS = array(
+    0   => trans('plain'),
+    -2   => trans('protocols'),
+);
+
 if (isset($SMARTY)) {
     $SMARTY->assign('_NETWORK_INTERFACE_TYPES', $NETWORK_INTERFACE_TYPES);
     $SMARTY->assign('_CTYPES', $CTYPES);
@@ -1464,6 +1470,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_CURRENCIES', $CURRENCIES);
     $SMARTY->assign('_TAX_CATEGORIES', $TAX_CATEGORIES);
     $SMARTY->assign('_IDENTITY_TYPES', $IDENTITY_TYPES);
+    $SMARTY->assign('_DOC_ATTACHMENT_GROUPS', $DOC_ATTACHMENT_GROUPS);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
