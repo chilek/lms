@@ -380,6 +380,7 @@ version 28-git (????-??-??):
   - enhancement: handle MDN reports from o2.pl/wp.pl/onet.pl [chilan]
   - enhancement: added smarty function '{image_data}' to ease embedding image content
     in html templates [chilan]
+  - improvement: updated 'domains' table structure to match PowerDNS 4.7 [chilan]
 
 version 27.0 (2021-08-20):
 
