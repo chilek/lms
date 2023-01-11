@@ -248,8 +248,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
 
             $DB->CommitTrans();
         }
+
+        $LMS->executeHook('cashimport_after_commit', array('cashimports' => $imports));
     }
-    $LMS->executeHook('cashimport_after_commit', array('cashimports' => $imports));
 }
 
 $divisions = $LMS->GetDivisions(array('order' => 'name'));
