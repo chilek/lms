@@ -476,6 +476,17 @@ if (isset($_POST['document'])) {
 
         $DB->CommitTrans();
 
+        if ($LMS->DocumentExists($docid)) {
+            $hook_data = $LMS->executeHook(
+                'documentadd_after_submit',
+                array(
+                    'docid' => $docid,
+                    'document' => $document
+                )
+            );
+            $document = $hook_data['document'];
+        }
+
         if ($LMS->DocumentExists($docid) && !empty($document['confirmdate'])) {
             $document['id'] = $docid;
             $document['fullnumber'] = $fullnumber;
