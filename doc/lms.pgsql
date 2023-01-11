@@ -2257,14 +2257,17 @@ CREATE TABLE domains (
 	description text 	DEFAULT '' NOT NULL,
 	master varchar(128) 	DEFAULT NULL,
 	last_check integer 	DEFAULT NULL,
-	type varchar(6) 	DEFAULT '' NOT NULL,
+	type text		 	DEFAULT '' NOT NULL,
 	notified_serial integer DEFAULT NULL,
 	account varchar(40) 	DEFAULT NULL,
 	mxbackup smallint	DEFAULT 0 NOT NULL,
+	options text DEFAULT NULL,
+	catalog text DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
 CREATE INDEX domains_ownerid_idx ON domains (ownerid);
+CREATE INDEX domains_catalog_idx ON domains(catalog);
 
 /* ---------------------------------------------------
  Structure of table "passwd" (accounts)
@@ -4337,6 +4340,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022121500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023011100');
 
 COMMIT;

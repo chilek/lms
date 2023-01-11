@@ -2349,13 +2349,16 @@ CREATE TABLE domains (
 	description text NOT NULL DEFAULT '',
 	master VARCHAR(128) DEFAULT NULL,
 	last_check INT(11) DEFAULT NULL,
-	type VARCHAR(6) NOT NULL,
+	type text DEFAULT '' NOT NULL,
 	notified_serial INT(11) DEFAULT NULL,
 	account VARCHAR(40) DEFAULT NULL,
 	mxbackup tinyint(1) NOT NULL DEFAULT '0',
+	options text DEFAULT NULL,
+	catalog text DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY (name),
 	INDEX ownerid (ownerid),
+	INDEX domains_catalog_idx (catalog),
 	CONSTRAINT domains_ownerid_fkey
 	FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -4287,4 +4290,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022121500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023011100');
