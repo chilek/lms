@@ -3654,6 +3654,12 @@ class LMS
         return $manager->getDocumentType($docid);
     }
 
+    public function getDocumentFullNumber($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentFullNumber($docid);
+    }
+
     /*
      *  Location
      */

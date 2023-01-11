@@ -227,6 +227,7 @@ function module_main()
 
                                 if (!empty($mail_sender_address)) {
                                     $customerinfo = $LMS->GetCustomer($SESSION->id);
+                                    $fullnumber = $LMS->getDocumentFullNumber($documentid);
 
                                     if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
                                         // operator notification
@@ -236,6 +237,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )
@@ -246,6 +248,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )
@@ -289,6 +292,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )
@@ -299,6 +303,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )

@@ -2872,6 +2872,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $string = str_replace('%cid%', $customerinfo['id'], $string);
         $string = str_replace('%customername%', $customerinfo['customername'], $string);
         $document = $data['document'];
+        $string = str_replace('%document%', $document['fullnumber'], $string);
         $string = str_replace('%docid%', $document['id'], $string);
         return $string;
     }
