@@ -45,7 +45,6 @@ if (!empty($docids)) {
         'SELECT d.id FROM documents d
         JOIN docrights r ON (r.doctype = d.type)
         WHERE d.id IN ?
-            AND d.type < 0
             AND r.userid = ?
             AND (r.rights & ?) > 0',
         array(
