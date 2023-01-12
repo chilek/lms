@@ -2358,7 +2358,7 @@ CREATE TABLE domains (
 	PRIMARY KEY (id),
 	UNIQUE KEY (name),
 	INDEX ownerid (ownerid),
-	INDEX domains_catalog_idx (catalog),
+	INDEX domains_catalog_idx (catalog(255)),
 	CONSTRAINT domains_ownerid_fkey
 	FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;

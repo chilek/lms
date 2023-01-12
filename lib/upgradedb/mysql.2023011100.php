@@ -27,7 +27,7 @@ if (!$this->ResourceExists('domains.options', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE domains MODIFY COLUMN type text DEFAULT '' NOT NULL");
     $this->Execute("ALTER TABLE domains ADD COLUMN options text DEFAULT NULL");
     $this->Execute("ALTER TABLE domains ADD COLUMN catalog text DEFAULT NULL");
-    $this->Execute("CREATE INDEX domains_catalog_idx ON domains (catalog)");
+    $this->Execute("CREATE INDEX domains_catalog_idx ON domains (catalog(255))");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2023011100', 'dbversion'));
