@@ -764,6 +764,8 @@ $existing = isset($summary['existing']) ? intval($summary['existing']) : 0;
 
 if (isset($_GET['page'])) {
     $page = intval($_GET['page']);
+} elseif (isset($_POST['page'])) {
+    $page = intval($_POST['page']);
 } elseif ($SESSION->is_set('netranges_page')) {
     $SESSION->restore('netranges_page', $page);
     $page = intval($page);
