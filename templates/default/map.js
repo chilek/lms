@@ -2,8 +2,8 @@
 	{if $devices}
 		{foreach $devices as $device}
 			devices.push({
-				lon: {$device.lon},
-				lat: {$device.lat},
+				lon: "{$device.lon}",
+				lat: "{$device.lat}",
 				state: {$device.state},
 				name: "{$device.name}",
 				location: "{$device.location|default:""|escape}",
@@ -53,8 +53,8 @@
 	{if $nodes}
 		{foreach $nodes as $node}
 			nodes.push({
-				lon: {$node.lon},
-				lat: {$node.lat},
+				lon: "{$node.lon}",
+				lat: "{$node.lat}",
 				state: {$node.state},
 				name: "{$node.name}",
 				location: "{$node.location|default:""|escape}",
@@ -90,8 +90,8 @@
 		{foreach $ranges as $range}
 			ranges.push({
 				location: "{$range.location|escape}",
-				lon: {$range.longitude},
-				lat: {$range.latitude},
+				lon: "{$range.longitude}",
+				lat: "{$range.latitude}",
 				existing: {$range.existing},
 				typename: "{$range.typename}",
 				technologyname: "{$range.technologyname}",
