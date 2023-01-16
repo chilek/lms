@@ -26,41 +26,15 @@
 
 function macformat($mac, $escape = false)
 {
-    global $DB;
+    $DB = LMSDB::getInstance();
 
-    $res = str_replace('-', ':', $mac);
-
-    // allow eg. format "::ab:3::12", only whole addresses
-    if (preg_match('/^([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2})$/i', $mac, $arr)) {
-        $res = '';
-        for ($i=1; $i<=6; $i++) {
-            if ($i > 1) {
-                $res .= ':';
-            }
-            if (strlen($arr[$i]) == 1) {
-                $res .= '0';
-            }
-            if (strlen($arr[$i]) == 0) {
-                $res .= '00';
-            }
-
-            $res .= $arr[$i];
-        }
-    } else // other formats eg. cisco xxxx.xxxx.xxxx or parts of addresses
-    {
-        $tmp = preg_replace('/[^0-9a-f]/i', '', $mac);
-
-        if (strlen($tmp) == 12) { // we've the whole address
-            if (check_mac($tmp)) {
-                $res = $tmp;
-            }
-        }
-    }
+    $mac = preg_replace('/[^0-9a-f]/i', '', $mac);
 
     if ($escape) {
-        $res = $DB->Escape("%$res%");
+        return $DB->Escape('%' . $mac . '%');
+    } else {
+        return $mac;
     }
-    return $res;
 }
 
 $mode = '';
@@ -458,7 +432,7 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['login']) ? " OR LOWER(n.login) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['ip']) ? " OR INET_NTOA(ipaddr) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['public_ip']) ? " OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search" : '')
-                . (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '')
+                . (empty($properties) || isset($properties['mac']) ? " OR LOWER(REPLACE(mac, ':', '')) ?LIKE? LOWER(" . macformat($search, true) . ')' : '')
                 . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(location) ?LIKE? LOWER($sql_search)" : '') . "
 				)
 			    AND NOT EXISTS (
@@ -506,10 +480,10 @@ switch ($mode) {
                         $description = trans('IP') . ': ' . $row['ip_pub'];
                     } else if ((empty($properties) || isset($properties['location_address'])) && isset($row['location']) && preg_match("~$search~i", $row['location'])) {
                         $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
-                    } else if ((empty($properties) || isset($properties['mac'])) && preg_match("~" . macformat($search) . "~i", $row['mac'])) {
+                    } else if ((empty($properties) || isset($properties['mac'])) && preg_match('/' . macformat($search) . '/i', str_replace(':', '', $row['mac']))) {
                         $macs = explode(',', $row['mac']);
                         foreach ($macs as $mac) {
-                            if (preg_match("~" . macformat($search) . "~i", $mac)) {
+                            if (preg_match('/' . macformat($search) . '/i', str_replace(':', '', $mac))) {
                                 $description = trans('MAC') . ': ' . $mac;
                             }
                         }
