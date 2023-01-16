@@ -3769,7 +3769,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'UPDATE invoicecontents SET value = ?, count = ? WHERE docid = ? AND itemid = ?',
                     array(
                         str_replace(',', '.', $previous_record['value']),
-                        str_replace(',', '.', -$previous_record['count']),
+                        0,
                         $row['docid'],
                         $row['itemid']
                     )
