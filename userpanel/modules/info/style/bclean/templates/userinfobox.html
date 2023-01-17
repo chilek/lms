@@ -102,8 +102,6 @@
 				{$imid='im'|cat:$item.id}
 				{if isset($fields_changed[$imid])}
 				    <del>{$item.uid}</del> &rarr; <mark>{$fields_changed[$imid].fieldvalue}</mark>
-				{else}
-				    {$item.uid}
 				{/if}
 			</li>
 		{/foreach}
