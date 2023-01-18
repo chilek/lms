@@ -381,6 +381,7 @@ version 28-git (????-??-??):
   - enhancement: added smarty function '{image_data}' to ease embedding image content
     in html templates [chilan]
   - improvement: updated 'domains' table structure to match PowerDNS 4.7 [chilan]
+  - enhancement: userpanel/document: present confirmation type and date in document list [chilan]
 
 version 27.0 (2021-08-20):
 
