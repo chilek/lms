@@ -644,6 +644,12 @@ $SMARTY->assign('defaultTaxId', $defaultTaxId);
 $SMARTY->assign('numberplanlist', $numberplans);
 // --- promotion support
 
+$hook_data = array(
+    'document' => $document,
+);
+$hook_data = $LMS->ExecuteHook('documentadd_init', $hook_data);
+$document = $hook_data['document'];
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('docrights', $rights);
 $SMARTY->assign('docengines', $docengines);

@@ -2260,7 +2260,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if ($userid) {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn, d.name
+                    d.fullnumber, n.template, d.ssn, d.name, d.reference
                 FROM documents d
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
@@ -2890,6 +2890,45 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         return $documents;
+    }
+
+    public function getReferencedDocument($docid)
+    {
+        $userid = Auth::GetCurrentUser();
+
+        return $this->db->GetRow(
+            'SELECT d.* 
+            FROM documents d
+            JOIN docrights r ON r.doctype = d.type AND r.userid = ? AND (r.rights & ?) > 0
+            JOIN documentattachments a ON a.docid = d.id
+            WHERE d.id = (SELECT documents.reference FROM documents WHERE documents.id = ?)
+            ORDER BY d.id, a.type DESC',
+            array(
+                $userid,
+                DOCRIGHT_VIEW,
+                $docid,
+            )
+        );
+    }
+
+    public function getReferencingDocuments($docid)
+    {
+        $userid = Auth::GetCurrentUser();
+
+        return $this->db->GetAllByKey(
+            'SELECT d.*
+            FROM documents d
+            JOIN docrights r ON r.doctype = d.type AND r.userid = ? AND (r.rights & ?) > 0
+            JOIN documentattachments a ON a.docid = d.id
+            WHERE d.reference = ?
+            ORDER BY d.id, a.type DESC',
+            'id',
+            array(
+                $userid,
+                DOCRIGHT_VIEW,
+                $docid,
+            )
+        );
     }
 
     public function getDocumentType($docid)
