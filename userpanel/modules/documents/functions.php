@@ -387,7 +387,7 @@ function module_main()
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
-		    c.description, n.template, d.closed, d.cdate, d.confirmdate, d.customerid
+		    c.description, n.template, d.closed, d.cdate, d.sdate, d.confirmdate, d.customerid
 		FROM documentcontents c
 		JOIN documents d ON (c.docid = d.id)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -402,6 +402,25 @@ function module_main()
         foreach ($documents as &$doc) {
             $doc['attachments'] = $DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
 				ORDER BY type DESC, filename', 'id', array($doc['id']));
+
+            switch ($doc['closed']) {
+                case DOC_CLOSED_AFTER_CUSTOMER_SMS:
+                    $doc['confirm_type'] = DOC_CLOSED_AFTER_CUSTOMER_SMS;
+                    $doc['confirm_date'] = $doc['sdate'];
+                    break;
+                case DOC_CLOSED_AFTER_CUSTOMER_SCAN:
+                    $doc['confirm_type'] = DOC_CLOSED_AFTER_CUSTOMER_SCAN;
+                    $doc['confirm_date'] = 0;
+                    foreach ($doc['attachments'] as $attachment) {
+                        if ($attachment['type'] == -1 && $attachment['cdate'] > $doc['confirm_date']) {
+                            $doc['confirm_date'] = $attachment['cdate'];
+                        }
+                    }
+                    break;
+                default:
+                    $doc['confirm_type'] = $doc['confirm_date'] = 0;
+                    break;
+            }
         }
     }
 

@@ -88,11 +88,11 @@
 							<div class="lms-ui-tab-table-column created-by" data-target-url="{$url}">
 								{$doc.username|escape}
 								{if $doc.cuserid} / {$doc.cusername|escape}{/if}
-								{if $doc.closed == 3}
+								{if $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SMS}
 									{if !$doc.cuserid}
 										{icon name="sms" tip="customer has accepted document via sms"}
 									{/if}
-								{elseif $doc.closed == 2}
+								{elseif $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SCAN}
 									{icon name="sign" tip="attached document scans with customer signature"}
 								{/if}
 							</div>

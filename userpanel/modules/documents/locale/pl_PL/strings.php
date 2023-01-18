@@ -159,3 +159,5 @@ $_LANG['One from files has invalid type!'] = 'Jeden z plików ma nieprawidłowy 
 $_LANG['Invalid file type: $a'] = 'Nieprawidłowy typ pliku: $a';
 $_LANG['Total file size is too large!'] = 'Zbyt duży całkowity rozmiar plików!';
 $_LANG['<!documents>Submit'] = 'Wyślij';
+
+$_LANG['Confirmation'] = 'Zatwierdzenie';
