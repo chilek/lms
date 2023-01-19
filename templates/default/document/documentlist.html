@@ -262,6 +262,8 @@
 				{t a=$_DOCTYPES[$doc.reference.type] b=$doc.reference.fullnumber c=$doc.reference.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}
 			</a>
 			{/if}
+            {block name="documentlistpluginreference"}
+            {/block}
 		</TD>
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"&hellip;":true}</A></TD>
 		<TD class="lms-ui-buttons text-right nobr">
@@ -351,11 +353,25 @@
 				</TR>
 				<tr>
 					<td colspan="2">
-						{button icon="print" label="Print" id="print-documents"}
-						<label>
-							<input type="checkbox" name="attachments" value="1" form="page-form">
-							{trans("attachments")}
-						</label>
+						<fieldset>
+							{button icon="print" label="Print" id="print-documents"}
+							<label>
+								<input type="checkbox" name="attachments" value="1" form="page-form">
+								{trans("attachments")}
+							</label>
+							<label>
+								<input type="checkbox" name="related" value="1" form="page-form">
+								{trans("related documents")}
+							</label>
+							<select name="related_documents[]" form="page-form"  multiple class="lms-ui-multiselect"}
+									data-default-value="{trans("- all -")}" data-shorten-to-default-value="false">
+								{foreach Localisation::arraySort($_DOCTYPES) as $key => $related_document}
+									{if $key < 0}
+									<option value="{$key}">{$related_document}</option>
+									{/if}
+								{/foreach}
+							</select>
+						</fieldset>
 					</td>
 				</tr>
 			</TABLE>

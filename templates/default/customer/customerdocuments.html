@@ -196,10 +196,24 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{button id="print-docs" icon="print" label="Print"}
-				<label>
-					<input type="checkbox" name="attachments" value="1" form="customerdocuments-form">
-					{trans("attachments")}
-				</label>
+				<fieldset>
+					<label>
+						<input type="checkbox" name="attachments" value="1" form="customerdocuments-form">
+						{trans("attachments")}
+					</label>
+					<label>
+						<input type="checkbox" name="related" value="1" form="customerdocuments-form">
+						{trans("related documents")}
+					</label>
+					<select name="related_documents[]" form="customerdocuments-form" multiple class="lms-ui-multiselect" }
+							data-default-value="{trans("- all -")}" data-shorten-to-default-value="false">
+						{foreach Localisation::arraySort($_DOCTYPES) as $key => $related_document}
+							{if $key < 0}
+								<option value="{$key}">{$related_document}</option>
+							{/if}
+						{/foreach}
+					</select>
+				</fieldset>
 			{/tab_buttons}
 		{/tab_button_panel}
 {/if}
