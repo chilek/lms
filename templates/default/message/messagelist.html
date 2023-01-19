@@ -80,12 +80,10 @@
 						<span>{trans("from")}</span>
 						<input type="text" name="datefrom" size="10" maxlength="10" form="messagelist"
 							value="{if !empty($listdata.datefrom)}{$listdata.datefrom|date_format:"Y/m/d"}{/if}"
-							onChange="javascript:document.page.submit();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 						<span>{trans("to")}</span>
 						<input type="text" name="dateto" size="10" maxlength="10" form="messagelist"
 							value="{if !empty($listdata.dateto)}{$listdata.dateto|date_format:"Y/m/d"}{/if}"
-							onChange="javascript:document.page.submit();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 					</span>
 					<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
