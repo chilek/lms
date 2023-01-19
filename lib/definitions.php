@@ -688,8 +688,8 @@ $DOCTYPES = array(
 define('DOC_OPEN', 0);
 define('DOC_CLOSED', 1);
 // for document types < 0
-define('DOC_CLOSED_AFTER_CUSTOMER_SMS', 2);
-define('DOC_CLOSED_AFTER_CUSTOMER_SCAN', 3);
+define('DOC_CLOSED_AFTER_CUSTOMER_SCAN', 2);
+define('DOC_CLOSED_AFTER_CUSTOMER_SMS', 3);
 
 define('DOC_FLAG_RECEIPT', 1);
 define('DOC_FLAG_TELECOM_SERVICE', 2);
