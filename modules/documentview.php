@@ -57,8 +57,15 @@ if (!empty($docids)) {
         $margins = explode(',', ConfigHelper::getConfig('documents.margins', ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5')));
 
         $attachments = isset($_GET['attachments']) || isset($_POST['attachments']);
+        $docTypes = array();
+        foreach (Localisation::arraySort($DOCTYPES) as $key => $doctype) {
+            if ($key < 0) {
+                $docTypes[] = $key;
+            }
+        }
+
         $related = ($_GET['related'] ?? ($_POST['related'] ?? null));
-        $relatedDocuments = ($_GET['related_documents'] ?? ($_POST['related_documents'] ?? array()));
+        $relatedDocuments = ($_GET['related_documents'] ?? ($_POST['related_documents'] ?? $docTypes));
         $attachmentid = isset($_GET['attachmentid']) && is_numeric($_GET['attachmentid']) ? intval($_GET['attachmentid']) : null;
 
         if (!empty($related) && !empty($relatedDocuments)) {
