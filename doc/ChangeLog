@@ -383,6 +383,7 @@ version 28-git (????-??-??):
   - improvement: updated 'domains' table structure to match PowerDNS 4.7 [chilan]
   - enhancement: userpanel/document: present confirmation type and date in document list [chilan]
   - enhancement: date interval selection in message list [chilan]
+  - enhancement: lms-sms2rt.php script handles many incoming sms files scenario [chilan]
 
 version 27.0 (2021-08-20):
 
