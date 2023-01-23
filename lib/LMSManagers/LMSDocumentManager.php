@@ -1404,7 +1404,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules');
-        $userpanel = empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'documents') !== false;
+        $userpanel = $userpanel && (empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'documents') !== false);
 
         $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
 
