@@ -384,6 +384,10 @@ version 28-git (????-??-??):
   - enhancement: userpanel/document: present confirmation type and date in document list [chilan]
   - enhancement: date interval selection in message list [chilan]
   - enhancement: lms-sms2rt.php script handles many incoming sms files scenario [chilan]
+  - enhancement: 'documents.pdf_merge_backend' with default value of 'fpdi' allows to selected used
+    pdf merge backend helpful for bulk multi document prints (one other supported value is 'pdfunite'
+    which means pdfunite command line tool is used to merge many pdf documents - this tool has to be
+    installed on serwer) [chilan]
 
 version 27.0 (2021-08-20):
 
