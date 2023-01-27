@@ -1310,8 +1310,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
             if ($invoice_type == 'pdf' && $related_documents) {
                 if (!isset($fpdi)) {
-                    $fpdi = new LMSFpdiBackend;
-                    $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+                    $pdf_merge_backend = ConfigHelper::getConfig('documents.pdf_merge_backend', 'fpdi');
+                    if ($pdf_merge_backend == 'pdfunite') {
+                        $fpdi = new LMSPdfUniteBackend();
+                    } else {
+                        $fpdi = new LMSFpdiBackend();
+                        $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+                    }
                 }
 
                 $fpdi->AppendPage($document->WriteToString());

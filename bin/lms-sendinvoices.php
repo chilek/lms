@@ -525,8 +525,13 @@ if (!empty($docs)) {
     if ($backup) {
         $output_file = isset($output_file) && $invoice_type == 'pdf' && $document_type == 'pdf' ? $output_file : null;
         if (isset($output_file)) {
-            $fpdi = new LMSFpdiBackend();
-            $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+            $pdf_merge_backend = ConfigHelper::getConfig('documents.pdf_merge_backend', 'fpdi');
+            if ($pdf_merge_backend == 'pdfunite') {
+                $fpdi = new LMSPdfUniteBackend();
+            } else {
+                $fpdi = new LMSFpdiBackend();
+                $fpdi->setPDFVersion(ConfigHelper::getConfig('invoices.pdf_version', '1.7'));
+            }
         }
 
         foreach ($docs as $doc) {

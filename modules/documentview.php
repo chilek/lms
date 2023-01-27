@@ -125,7 +125,12 @@ if (!empty($docids)) {
         header('Content-Type: ' . ($pdf ? 'application/pdf' : $list[0]['contenttype']));
 
         if ($pdf && count($list) > 1) {
-            $fpdi = new LMSFpdiBackend();
+            $pdf_merge_backend = ConfigHelper::getConfig('documents.pdf_merge_backend', 'fpdi');
+            if ($pdf_merge_backend == 'pdfunite') {
+                $fpdi = new LMSPdfUniteBackend();
+            } else {
+                $fpdi = new LMSFpdiBackend();
+            }
         }
 
         if ($htmls && !$pdfs && $document_type == 'pdf') {
