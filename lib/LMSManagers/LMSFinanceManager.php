@@ -5063,7 +5063,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $args = array(
             'cdate' => $currtime,
             'sdate' => $currtime,
-            'paytime' => $proforma['paytime'],
+            'paytime' => 0,
             'paytype' => $proforma['paytype'],
             'flags' => (empty($proforma['splitpayment']) ? 0 : DOC_FLAG_SPLIT_PAYMENT)
                 + (empty($proforma['netflag']) ? 0 : DOC_FLAG_NET_ACCOUNT),
