@@ -2198,7 +2198,7 @@ foreach ($assigns as $assign) {
         }
 
         if (!$quiet && (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom'])) {
-            echo  'CID:' . $cid . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
+            echo  'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
         }
 
         // settlement accounting
@@ -2417,7 +2417,7 @@ foreach ($assigns as $assign) {
                 }
 
                 if (!$quiet) {
-                    echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                    echo 'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
                 }
             }
 
