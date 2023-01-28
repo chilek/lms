@@ -38,7 +38,7 @@ class LMSPdfUniteBackend
     public function AppendPage($contents = null)
     {
         if (isset($contents)) {
-            $tmpfname = '/tmp/' . uniqid('LMS-PDF-UNITE-', true) . '.pdf';
+            $tmpfname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('LMS-PDF-UNITE-', true) . '.pdf';
             file_put_contents($tmpfname, $contents);
             $this->input_files[] = $tmpfname;
         }
@@ -52,7 +52,7 @@ class LMSPdfUniteBackend
             foreach ($this->input_files as $input_file) {
                 $cmd .= ' ' . $input_file;
             }
-            $this->output_file = '/tmp/' . uniqid('LMS-PDF-UNITE-', true) . '.pdf';
+            $this->output_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('LMS-PDF-UNITE-', true) . '.pdf';
             $cmd .= ' ' . $this->output_file;
             system($cmd, $result);
             if (!empty($result)) {
