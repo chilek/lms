@@ -2383,7 +2383,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         ));
 
                         if (!empty($password)) {
-                            $pdf_file_name = tempnam('/tmp', 'lms-document-attachment-');
+                            $pdf_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'lms-document-attachment-' . uniqid('', true);
                             file_put_contents($pdf_file_name, $contents);
                             $protection_command = str_replace(
                                 array(
