@@ -124,17 +124,13 @@ if (!empty($docids)) {
 
         header('Content-Type: ' . ($pdf ? 'application/pdf' : $list[0]['contenttype']));
 
-        if ($pdf && count($list) > 1) {
+        if ($pdf) {
             $pdf_merge_backend = ConfigHelper::getConfig('documents.pdf_merge_backend', 'fpdi');
             if ($pdf_merge_backend == 'pdfunite') {
                 $fpdi = new LMSPdfUniteBackend();
             } else {
                 $fpdi = new LMSFpdiBackend();
             }
-        }
-
-        if ($htmls && !$pdfs && $document_type == 'pdf') {
-            $htmlbuffer = '';
         }
 
         $i = 0;
@@ -152,23 +148,10 @@ if (!empty($docids)) {
                 continue;
             }
 
-            if (!$cached_pdf && $htmls && !$pdfs && $document_type == 'pdf') {
-                if ($i) {
-                    $htmlbuffer .= "\n<page>\n";
-                }
-                $htmlbuffer .= file_get_contents($filename);
-                if ($i) {
-                    $htmlbuffer .= "\n</page>\n";
-                }
-            } else {
-                if (!$cached_pdf && $htmls && !$pdfs && $i) {
-                    echo '<div style="page-break-after: always;">&nbsp;</div>';
-                }
-
-                if ($pdf && count($list) > 1) {
-                    $content = file_get_contents($filename);
-
-                    if (!$cached_pdf && preg_match('/html$/i', $doc['contenttype'])) {
+            if ($pdf) {
+                $content = file_get_contents($filename);
+                if (!$cached_pdf) {
+                    if (preg_match('/html$/i', $doc['contenttype'])) {
                         $content = html2pdf(
                             $content,
                             trans('Document'),
@@ -180,33 +163,26 @@ if (!empty($docids)) {
                             'S'
                         );
                     }
-
-                    try {
-                        $fpdi->AppendPage($content);
-                    } catch (Exception $e) {
-                        if ($e->getCode() == 267) {
-                            // This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)
-                        }
-                    }
-                } else {
-                    readfile($filename);
                 }
+
+                try {
+                    $fpdi->AppendPage($content);
+                } catch (Exception $e) {
+                    if ($e->getCode() == 267) {
+                        // This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)
+                    }
+                }
+            } elseif (preg_match('/html$/i', $doc['contenttype'])) {
+                if ($i) {
+                    echo '<div style="page-break-before: always;">&nbsp;</div>';
+                }
+                readfile($filename);
             }
 
             $i++;
         }
 
-        if ($htmls && !$pdfs && $document_type == 'pdf' && strlen($htmlbuffer)) {
-            html2pdf(
-                $htmlbuffer,
-                trans('Document'),
-                null,
-                null,
-                null,
-                'P',
-                $margins
-            );
-        } elseif ($pdf && count($list) > 1) {
+        if ($pdf) {
             // Output the new PDF
             $fpdi->WriteToBrowser();
         }
