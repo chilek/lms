@@ -256,12 +256,12 @@ if ($http_mode) {
 
     if (is_array($content)) {
         foreach ($content as $sms) {
-            $message_file = tempnam('/tmp', 'LMS_INCOMING_MESSAGE');
+            $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
             file_put_contents($message_file, $sms);
             $message_files[] = $message_file;
         }
     } else {
-        $message_file = tempnam('/tmp', 'LMS_INCOMING_MESSAGE');
+        $message_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'LMS_INCOMING_MESSAGE-' . uniqid('', true);
         file_put_contents($message_file, $content);
         $message_files[] = $message_file;
     }
