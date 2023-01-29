@@ -133,9 +133,7 @@ if (!empty($docids)) {
             }
         }
 
-        if ($htmls && !$pdfs && $document_type == 'pdf') {
-            $htmlbuffer = '';
-        }
+        $htmlbuffer = '';
 
         $html2pdf_command = ConfigHelper::getConfig('documents.html2pdf_command', '', true);
 
@@ -169,10 +167,6 @@ if (!empty($docids)) {
                         . "\n</div>\n";
                 }
             } else {
-                if (!$cached_pdf && $htmls && !$pdfs && $i) {
-                    echo '<div style="page-break-after: always;">&nbsp;</div>';
-                }
-
                 if ($pdf && count($list) > 1) {
                     $content = file_get_contents($filename);
 
@@ -197,62 +191,71 @@ if (!empty($docids)) {
                         }
                     }
                 } else {
-                    readfile($filename);
+                    $htmlbuffer .= "\n<div class=\"document\">\n"
+                        . file_get_contents($filename)
+                        . "\n</div>\n";
                 }
             }
 
             $i++;
         }
 
-        if ($htmls && !$pdfs && $document_type == 'pdf' && strlen($htmlbuffer)) {
-            if (!empty($html2pdf_command)) {
-                $htmlbuffer = "
-                    <html>
-                        <head>
-                            <style>
+        if ($htmls && !$pdfs && strlen($htmlbuffer)) {
+            $htmlbuffer = "
+                <html>
+                    <head>
+                        <style>
 
-                                @page {
-                                    size: A4;
-                                    margin: 1cm;
-                                }
+                            @page {
+                                size: A4;
+                                margin: 1cm;
+                            }
 
-                            </style>
-                        </head>
-                        <body>"
-                        . $htmlbuffer
-                        . "
-                            <script>
- 
-                                let documents = document.querySelectorAll('.document');
-                                if (documents.length) {
-                                    documents.forEach(function(document) {
-                                        let documentShadow = document.attachShadow({
-                                            mode: \"closed\"
-                                        });
-                                        let innerHTML = document.innerHTML;
-                                        document.innerHTML = '';
-                                        documentShadow.innerHTML = innerHTML;
+                            .document {
+                                 break-after: always;
+                            }
+
+                        </style>
+                    </head>
+                    <body>"
+                    . $htmlbuffer
+                    . "
+                        <script>
+
+                            let documents = document.querySelectorAll('.document');
+                            if (documents.length) {
+                                documents.forEach(function(document) {
+                                    let documentShadow = document.attachShadow({
+                                        mode: \"closed\"
                                     });
-                                }
+                                    let innerHTML = document.innerHTML;
+                                    document.innerHTML = '';
+                                    documentShadow.innerHTML = innerHTML;
+                                });
+                            }
 
-                            </script>
-                        </body>
-                    </html>";
+                        </script>
+                    </body>
+                </html>";
+
+            if ($document_type == 'pdf') {
+                html2pdf(
+                    $htmlbuffer,
+                    trans('Document'),
+                    null,
+                    null,
+                    null,
+                    'P',
+                    $margins
+                );
+            } else {
+                echo $htmlbuffer;
             }
-
-            html2pdf(
-                $htmlbuffer,
-                trans('Document'),
-                null,
-                null,
-                null,
-                'P',
-                $margins
-            );
         } elseif ($pdf && count($list) > 1) {
             // Output the new PDF
             $fpdi->WriteToBrowser();
         }
+
         die;
     }
 }
