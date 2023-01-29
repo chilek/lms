@@ -137,6 +137,8 @@ if (!empty($docids)) {
             $htmlbuffer = '';
         }
 
+        $html2pdf_command = ConfigHelper::getConfig('documents.html2pdf_command', '', true);
+
         $i = 0;
         foreach ($list as $doc) {
             $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'], 0, 2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
@@ -153,9 +155,19 @@ if (!empty($docids)) {
             }
 
             if (!$cached_pdf && $htmls && !$pdfs && $document_type == 'pdf') {
-                $htmlbuffer .= "\n<div class=\"document\">\n"
-                    . file_get_contents($filename)
-                    . "\n</div>\n";
+                if (empty($html2pdf_command)) {
+                    if ($i) {
+                        $htmlbuffer .= "\n<page>\n";
+                    }
+                    $htmlbuffer .= file_get_contents($filename);
+                    if ($i) {
+                        $htmlbuffer .= "\n</page>\n";
+                    }
+                } else {
+                    $htmlbuffer .= "\n<div class=\"document\">\n"
+                        . file_get_contents($filename)
+                        . "\n</div>\n";
+                }
             } else {
                 if (!$cached_pdf && $htmls && !$pdfs && $i) {
                     echo '<div style="page-break-after: always;">&nbsp;</div>';
@@ -193,37 +205,40 @@ if (!empty($docids)) {
         }
 
         if ($htmls && !$pdfs && $document_type == 'pdf' && strlen($htmlbuffer)) {
-            $htmlbuffer = "<html>
-                <head>
-                    <style>
+            if (!empty($html2pdf_command)) {
+                $htmlbuffer = "
+                    <html>
+                        <head>
+                            <style>
 
-                        @page {
-                            size: A4;
-                            margin: 1cm;
-                        }
+                                @page {
+                                    size: A4;
+                                    margin: 1cm;
+                                }
 
-                    </style>
-                </head>
-                <body>"
-                . $htmlbuffer
-                . "
-                    <script>
+                            </style>
+                        </head>
+                        <body>"
+                        . $htmlbuffer
+                        . "
+                            <script>
+ 
+                                let documents = document.querySelectorAll('.document');
+                                if (documents.length) {
+                                    documents.forEach(function(document) {
+                                        let documentShadow = document.attachShadow({
+                                            mode: \"closed\"
+                                        });
+                                        let innerHTML = document.innerHTML;
+                                        document.innerHTML = '';
+                                        documentShadow.innerHTML = innerHTML;
+                                    });
+                                }
 
-                        let documents = document.querySelectorAll('.document');
-                        if (documents.length) {
-                            documents.forEach(function(document) {
-                                let documentShadow = document.attachShadow({
-                                    mode: \"closed\"
-                                });
-                                let innerHTML = document.innerHTML;
-                                document.innerHTML = '';
-                                documentShadow.innerHTML = innerHTML;
-                            });
-                        }
-
-                    </script>
-                </body>
-                </html>";
+                            </script>
+                        </body>
+                    </html>";
+            }
 
             html2pdf(
                 $htmlbuffer,
