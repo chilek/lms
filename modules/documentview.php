@@ -153,13 +153,9 @@ if (!empty($docids)) {
             }
 
             if (!$cached_pdf && $htmls && !$pdfs && $document_type == 'pdf') {
-                if ($i) {
-                    $htmlbuffer .= "\n<page>\n";
-                }
-                $htmlbuffer .= file_get_contents($filename);
-                if ($i) {
-                    $htmlbuffer .= "\n</page>\n";
-                }
+                $htmlbuffer .= "\n<div class=\"document\">\n"
+                    . file_get_contents($filename)
+                    . "\n</div>\n";
             } else {
                 if (!$cached_pdf && $htmls && !$pdfs && $i) {
                     echo '<div style="page-break-after: always;">&nbsp;</div>';
@@ -197,6 +193,26 @@ if (!empty($docids)) {
         }
 
         if ($htmls && !$pdfs && $document_type == 'pdf' && strlen($htmlbuffer)) {
+            $htmlbuffer = "<html>\n<body>\n"
+                . $htmlbuffer
+                . "
+                    <script>
+
+                        let documents = document.querySelectorAll('.document');
+                        if (documents.length) {
+                            documents.forEach(function(document) {
+                                let documentShadow = document.attachShadow({
+                                    mode: \"closed\"
+                                });
+                                let innerHTML = document.innerHTML;
+                                document.innerHTML = '';
+                                documentShadow.innerHTML = innerHTML;
+                            });
+                        }
+
+                    </script>"
+                . "\n</body>\n</html>\n";
+
             html2pdf(
                 $htmlbuffer,
                 trans('Document'),
