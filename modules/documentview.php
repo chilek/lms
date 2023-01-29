@@ -193,7 +193,18 @@ if (!empty($docids)) {
         }
 
         if ($htmls && !$pdfs && $document_type == 'pdf' && strlen($htmlbuffer)) {
-            $htmlbuffer = "<html>\n<body>\n"
+            $htmlbuffer = "<html>
+                <head>
+                    <style>
+
+                        @page {
+                            size: A4;
+                            margin: 1cm;
+                        }
+
+                    </style>
+                </head>
+                <body>"
                 . $htmlbuffer
                 . "
                     <script>
@@ -210,8 +221,9 @@ if (!empty($docids)) {
                             });
                         }
 
-                    </script>"
-                . "\n</body>\n</html>\n";
+                    </script>
+                </body>
+                </html>";
 
             html2pdf(
                 $htmlbuffer,
