@@ -2654,7 +2654,6 @@ $_LANG['Enter reason (optional)'] = 'Podaj powód (opcjonalnie)';
 $_LANG['PIN code is required!'] = 'Kod PIN jest wymagany!';
 $_LANG['Registry not selected!'] = 'Nie wybrano rejestru!';
 $_LANG['You have no write rights to selected registry!'] = 'Nie masz prawa zapisu w wybranym rejestrze!';
-$_LANG['payments book'] = 'książeczka opłat';
 $_LANG['payment book'] = 'książeczka opłat';
 $_LANG['Add contact'] = 'Dodaj kontakt';
 $_LANG['Enter contact name/description (optional)'] = 'Wprowadź nazwę/opis kontaktu (opcjonalnie)';
