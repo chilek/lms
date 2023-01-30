@@ -1075,7 +1075,7 @@ $SIDUSIS_LINKTECHNOLOGIES = array(
         118 => 'LTE-Pro',
         119 => 'NR SA',
         120 => 'NR NSA',
-        150 => 'Inna',
+        150 => 'inna',
     ),
     LINKTYPE_FIBER => array(
         250 => '(EURO)DOCSIS 1.x',
