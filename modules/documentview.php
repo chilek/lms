@@ -191,9 +191,13 @@ if (!empty($docids)) {
                         }
                     }
                 } else {
-                    $htmlbuffer .= "\n<div class=\"document\">\n"
-                        . file_get_contents($filename)
-                        . "\n</div>\n";
+                    if (!$pdf) {
+                        $htmlbuffer .= "\n<div class=\"document\">\n"
+                            . file_get_contents($filename)
+                            . "\n</div>\n";
+                    } else {
+                        readfile($filename);
+                    }
                 }
             }
 
