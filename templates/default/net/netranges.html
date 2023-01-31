@@ -770,7 +770,7 @@
                 $('[name="range[downlink]"],[name="range[uplink]"]').each(function() {
                     $(this).find('option').each(function() {
                         var val = $(this).val();
-                        $(this).toggle(linktype !== '{$smarty.const.LINKTYPE_WIRELESS}' || val === '' || parseInt(val) >= 30);
+                        $(this).toggle(linktype !== '{$smarty.const.LINKTYPE_WIRELESS}' || val === '' || parseInt(linktechnology) != 150 || parseInt(val) >= 30);
                     });
                 });
             }
@@ -779,20 +779,21 @@
         $('[name$="[linktechnology]"]').change(function() {
             var prefix = $(this).attr('name').match(/^range/) ? 'range' : 'filter';
             var that = this;
+            var linktechnology = $(that).val();
             $('[name="' + prefix + '[downlink]"],[name="' + prefix + '[uplink]"]')
                 .prop('required', function() {
                     if (prefix == 'range') {
-                        return $(that).val() !== '';
+                        return linktechnology !== '';
                     } else {
                         return $(this).prop('required');
                     }
-                }).closest('label').toggle($(this).val() !== '');
+                }).closest('label').toggle(linktechnology !== '');
             if (prefix == 'range') {
                 var linktype = $('[name="range[linktype]"]').val();
                 $('[name="range[downlink]"],[name="range[uplink]"]').each(function() {
                     $(this).find('option').each(function() {
                         var val = $(this).val();
-                        $(this).toggle(linktype !== '{$smarty.const.LINKTYPE_WIRELESS}' || val === '' || parseInt(val) >= 30);
+                        $(this).toggle(linktype !== '{$smarty.const.LINKTYPE_WIRELESS}' || val === '' || parseInt(linktechnology) != 150 || parseInt(val) >= 30);
                     });
                 });
             }
