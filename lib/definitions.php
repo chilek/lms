@@ -642,11 +642,11 @@ define('DOC_PROTOCOL', -3);
 define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
 define('DOC_BREACH', -6);
-define('DOC_PAYMENTBOOK', -7);
-define('DOC_PAYMENTSUMMONS', -8);
-define('DOC_PAYMENTPRESUMMONS', -9);
+define('DOC_PAYMENT_BOOK', -7);
+define('DOC_PAYMENT_SUMMON', -8);
+define('DOC_PAYMENT_PRESUMMON', -9);
 define('DOC_BILLING', -10);
-define('DOC_PRICELIST', -11);
+define('DOC_PRICE_LIST', -11);
 define('DOC_PROMOTION', -12);
 define('DOC_WARRANTY', -13);
 define('DOC_REGULATIONS', -14);
@@ -672,10 +672,10 @@ $DOCTYPES = array(
     DOC_ORDER       =>  trans('order'), //zamowienie
     DOC_SHEET       =>  trans('customer sheet'), // karta klienta
     DOC_BREACH      =>  trans('contract termination'), //rozwiazanie umowy
-    DOC_PAYMENTBOOK  => trans('payment book'), // ksiazeczka oplat
-    DOC_PAYMENTSUMMONS  => trans('payment summons'), // wezwanie do zapłaty
-    DOC_PAYMENTPRESUMMONS  => trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
-    DOC_PRICELIST       =>  trans('price-list'), // cennik
+    DOC_PAYMENT_BOOK  => trans('payment book'), // ksiazeczka oplat
+    DOC_PAYMENT_SUMMON  => trans('payment summon'), // wezwanie do zapłaty
+    DOC_PAYMENT_PRESUMMON  => trans('payment pre-summon'), // przedsądowe wezw. do zapłaty
+    DOC_PRICE_LIST       =>  trans('price-list'), // cennik
     DOC_PROMOTION       =>  trans('promotion'), // promocja
     DOC_WARRANTY       =>  trans('warranty'), // gwarancja
     DOC_REGULATIONS       =>  trans('regulations'), // regulamin
