@@ -388,6 +388,8 @@ version 28-git (????-??-??):
     pdf merge backend helpful for bulk multi document prints (one other supported value is 'pdfunite'
     which means pdfunite command line tool is used to merge many pdf documents - this tool has to be
     installed on serwer) [chilan]
+  - enhancement: 'documents.protected_document_types' specifies which types of documents are protected
+    with password when sending to customers (default empty value means all document types) [chilan]
 
 version 27.0 (2021-08-20):
 
