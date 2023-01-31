@@ -204,7 +204,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
-    'doctype' => array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_PRICELIST, DOC_PROMOTION, DOC_WARRANTY, DOC_REGULATIONS, DOC_OTHER),
+    'doctype' => array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_PRICE_LIST, DOC_PROMOTION, DOC_WARRANTY, DOC_REGULATIONS, DOC_OTHER),
 )));
 $SMARTY->assign('documentlist', $documentlist);
 $SMARTY->assign('pagination', $pagination);
