@@ -2253,7 +2253,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function GetDocumentFullContents($id)
     {
-        global $DOCTYPES;
+        global $DOCTYPES, $DOCTYPE_ALIASES;
 
         $userid = Auth::GetCurrentUser();
 
@@ -2313,6 +2313,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     'qpdf --encrypt %password %password 256 -- %in-file -'
                 )
             );
+            $document_protected_document_types = ConfigHelper::getConfig(
+                'documents.protected_document_types',
+                '',
+                true
+            );
+            if (strlen($document_protected_document_types)) {
+                $protected_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $document_protected_document_types, -1, PREG_SPLIT_NO_EMPTY);
+                $document_protected_document_types = array();
+                $doctype_aliases = array_flip($DOCTYPE_ALIASES);
+                foreach ($protected_document_types as $protected_document_type) {
+                    if (isset($doctype_aliases[$protected_document_type])) {
+                        $document_protected_document_types[$doctype_aliases[$protected_document_type]] = $protected_document_type;
+                    }
+                }
+            } else {
+                $document_protected_document_types = $DOCTYPE_ALIASES;
+            }
 
             foreach ($document['attachments'] as &$attachment) {
                 $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2)
@@ -2367,7 +2384,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if ($pdf) {
-                    if (!empty($document_password) && !empty($document_protection_command)) {
+                    if (!empty($document_password) && !empty($document_protection_command) && isset($document_protected_document_types[$document['type']])) {
                         $password = trim(str_replace(
                             array(
                                 '%ssn',

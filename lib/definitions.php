@@ -684,6 +684,27 @@ $DOCTYPES = array(
     DOC_OTHER       =>  trans('other'),
 );
 
+$DOCTYPE_ALIASES = array(
+    DOC_OFFER => 'offer',
+    DOC_BILLING => 'billing',
+    DOC_CONTRACT => 'contract',
+    DOC_ANNEX => 'annex',
+    DOC_PROTOCOL => 'protocol',
+    DOC_ORDER => 'order',
+    DOC_SHEET => 'sheet',
+    DOC_BREACH => 'contract-termination',
+    DOC_PAYMENT_BOOK => 'payment-book',
+    DOC_PAYMENT_SUMMON  => 'payment-summon',
+    DOC_PAYMENT_PRESUMMON  => 'payment-pre-summon',
+    DOC_PRICE_LIST => 'price-list',
+    DOC_PROMOTION => 'promotion',
+    DOC_WARRANTY => 'warranty',
+    DOC_REGULATIONS => 'regulations',
+    DOC_CONF_FILE => 'configuration-file',
+    DOC_COMPLAINT => 'complaint',
+    DOC_OTHER => 'other',
+);
+
 // for all document types
 define('DOC_OPEN', 0);
 define('DOC_CLOSED', 1);
