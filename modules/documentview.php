@@ -171,6 +171,44 @@ if (!empty($docids)) {
                     $content = file_get_contents($filename);
 
                     if (!$cached_pdf && preg_match('/html$/i', $doc['contenttype'])) {
+                        $content = "
+                            <html>
+                                <head>
+                                    <style>
+
+                                        @page {
+                                            size: A4;
+                                            margin: 1cm;
+                                        }
+
+                                        .document {
+                                             break-after: always;
+                                        }
+
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class=\"document\">"
+                                    . $content
+                                    . "</div>
+                                    <script>
+
+                                        let documents = document.querySelectorAll('.document');
+                                        if (documents.length) {
+                                            documents.forEach(function(document) {
+                                                let documentShadow = document.attachShadow({
+                                                    mode: \"closed\"
+                                                });
+                                                let innerHTML = document.innerHTML;
+                                                document.innerHTML = '';
+                                                documentShadow.innerHTML = innerHTML;
+                                            });
+                                        }
+
+                                    </script>
+                                </body>
+                            </html>";
+
                         $content = html2pdf(
                             $content,
                             trans('Document'),
