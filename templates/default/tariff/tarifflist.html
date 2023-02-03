@@ -135,6 +135,15 @@
 					<option value="1" {if $listdata.netflag == 1} selected{/if}>{trans("net")}</option>
 					<option value="2" {if $listdata.netflag == 2} selected{/if}>{trans("gross")}</option>
 				</select>
+				<label>
+					{trans("Flags")}
+					<select name="flags" onchange="document.choosefilter.submit();">
+						<option value="">{trans("— all —")}</option>
+						{foreach $_TARIFF_FLAGS as $flagvalue => $label}
+							<option value="{$flagvalue}"{if $listdata.flags == $flagvalue} selected{/if}>{$label}</option>
+						{/foreach}
+					</select>
+				</label>
 			</FORM>
 		</TD>
 	</TR>
@@ -145,6 +154,31 @@
 		<TD>
 			{icon name="money"}
 			<a href="?m=tariffinfo&id={$tariff.id}"><B>{$tariff.name}</B></a>
+
+			{if ($tariff.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
+				{capture assign="reward_flags"}
+					{if $tariff.value < 0}
+						{trans("reward for")}
+					{else}
+						{trans("penalty for")}
+					{/if}
+					<ul class='reward-flags'>
+						{foreach $_TARIFF_FLAGS as $flag => $label}
+							{if intval($tariff.flags) & intval($flag)}
+								<li>
+									<strong>{$label}</strong>
+								</li>
+							{/if}
+						{/foreach}
+					</ul>
+				{/capture}
+				{if $tariff.value < 0}
+					{icon name="reward" tip=$reward_flags}
+				{else}
+					{icon name="penalty" tip=$reward_flags}
+				{/if}
+			{/if}
+
 			{if $tariff.datefrom || $tariff.dateto}
 				{if $tariff.datefrom}
 				({trans("from:")} {$tariff.datefrom|date_format:"Y-m-d"}{if !$tariff.dateto}){/if}

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customergroupid = null, $promotionid = null, $state = null, $tags = null, $tax = null, $netflag = null)
+function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customergroupid = null, $promotionid = null, $state = null, $tags = null, $tax = null, $netflag = null, $flags = null)
 {
     $DB = LMSDB::getInstance();
 
@@ -117,6 +117,7 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             .($type ? ' AND t.type = '.intval($type) : '')
             . ($netflag == 1 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' > 0' : '')
             . ($netflag == 2 ? ' AND t.flags & ' . TARIFF_FLAG_NET_ACCOUNT . ' = 0' : '')
+            . (empty($flags) ? '' : ' AND t.flags & ' . $flags . ' > 0')
             . ($tax ? ' AND taxes.id = '.intval($tax) : '')
             .($access ? ' AND t.authtype & ' . intval($access) . ' > 0' : '')
             .($promotionid ? ' AND t.id IN (SELECT pa.tariffid
@@ -317,9 +318,19 @@ if (!isset($_POST['netflag']) && !isset($_GET['netflag'])) {
 }
 $SESSION->save('tlnetflag', $netflag);
 
-$tarifflist = GetTariffList($o, $t, $a, $g, $p, $s, $tg, $tax, $netflag);
+if (!isset($_POST['flags']) && !isset($_GET['flags'])) {
+    $SESSION->restore('tlflags', $flags);
+} elseif (isset($_GET['flags'])) {
+    $flags = $_GET['flags'];
+} else {
+    $flags = $_POST['flags'];
+}
+$SESSION->save('tllags', $flags);
+
+$tarifflist = GetTariffList($o, $t, $a, $g, $p, $s, $tg, $tax, $netflag, $flags);
 
 $customergroups = $LMS->CustomergroupGetAll();
+
 $promotions = $DB->GetAll('SELECT id, name FROM promotions ORDER BY name');
 
 $listdata['total'] = $tarifflist['total'];
@@ -335,6 +346,7 @@ $listdata['state'] = $s;
 $listdata['tags'] = $tg;
 $listdata['tax'] = $tax;
 $listdata['netflag'] = $netflag;
+$listdata['flags'] = $flags;
 $listdata['order'] = $tarifflist['order'];
 $listdata['direction'] = $tarifflist['direction'];
 
