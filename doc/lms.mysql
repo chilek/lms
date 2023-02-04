@@ -1036,7 +1036,7 @@ CREATE TABLE tariffs (
 	id int(11) 		NOT NULL auto_increment,
 	name varchar(255) 	NOT NULL DEFAULT '',
 	type tinyint 		NOT NULL DEFAULT '1',
-	value decimal(9,2) 	NOT NULL DEFAULT '0',
+	value decimal(9,3) 	NOT NULL DEFAULT '0',
     taxcategory smallint DEFAULT 0 NOT NULL,
 	taxid int(11) 	NOT NULL,
 	numberplanid integer DEFAULT NULL,
@@ -1090,7 +1090,7 @@ CREATE TABLE tariffs (
 	authtype tinyint(1) NOT NULL DEFAULT '0',
     currency varchar(3),
     flags tinyint(1) DEFAULT 0 NOT NULL,
-	netvalue decimal(9,2) DEFAULT NULL,
+	netvalue decimal(9,3) DEFAULT NULL,
     PRIMARY KEY  (id),
 	UNIQUE KEY tariffs_name_key (name, value, currency, period),
 	INDEX type (type),
@@ -1162,7 +1162,7 @@ CREATE TABLE liabilities (
 	prodid varchar(255)     NOT NULL DEFAULT '',
 	type smallint DEFAULT -1 NOT NULL,
     flags smallint DEFAULT 0 NOT NULL,
-	netvalue decimal(9,2) DEFAULT NULL,
+	netvalue decimal(9,3) DEFAULT NULL,
     PRIMARY KEY (id),
 	CONSTRAINT liabilities_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1260,7 +1260,7 @@ CREATE TABLE assignments (
 	suspended tinyint(1) NOT NULL DEFAULT '0',
 	settlement tinyint(1) NOT NULL DEFAULT '0',
 	pdiscount decimal(5,2) NOT NULL DEFAULT '0',
-	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
+	vdiscount decimal(9,3) NOT NULL DEFAULT '0',
 	paytime smallint DEFAULT NULL,
 	paytype smallint DEFAULT NULL,
 	numberplanid int(11) DEFAULT NULL,
@@ -1315,7 +1315,7 @@ CREATE TABLE invoicecontents (
 	itemid smallint NOT NULL DEFAULT '0',
 	value decimal(12,5) NOT NULL DEFAULT '0',
 	pdiscount decimal(5,2) NOT NULL DEFAULT '0',
-	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
+	vdiscount decimal(9,3) NOT NULL DEFAULT '0',
 	taxid int(11) NOT NULL,
 	prodid varchar(255) NOT NULL DEFAULT '',
 	content varchar(16) NOT NULL DEFAULT '',
@@ -1945,6 +1945,23 @@ CREATE TABLE tariffassignments (
         KEY tarifftagid_idx (tarifftagid),
         CONSTRAINT `tariffassignments_tariffid_key` FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT `tariffassignments_tarifftagid_key` FOREIGN KEY (tarifftagid) REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+#  Structure of table "tariffpricevariants"
+#
+CREATE TABLE tariffpricevariants (
+    id int(11) NOT NULL auto_increment,
+    tariffid int(11) NOT NULL
+        CONSTRAINT tariffpricevariants_tariffid_fkey
+        FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    quantity_threshold int(11) NOT NULL,
+    net_price numeric(9,3) DEFAULT 0 NOT NULL,
+    gross_price numeric(9,3) DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY tariffpricevariants_tariffid_quantity_threshold_ukey (tariffid, quantity_threshold)
+    CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)
 ) ENGINE=InnoDB;
 
 ## --------------------------------------------------------
@@ -3451,14 +3468,14 @@ CREATE VIEW vinvoicecontents AS
         ic.tariffid AS tariffid, ic.vdiscount AS vdiscount, ic.taxcategory AS taxcategory, ic.period AS period,
         (CASE WHEN (d.flags & 16) > 0 THEN 1 ELSE 0 END) AS netflag,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND(ic.value, 2)
+                ROUND(ic.value, 3)
             ELSE
-                ROUND((ic.value / (1 + (t.value / 100))), 2)
+                ROUND((ic.value / (1 + (t.value / 100))), 3)
         END) AS netprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND((ic.value * (1 + (t.value / 100))), 2)
+                ROUND((ic.value * (1 + (t.value / 100))), 3)
             ELSE
-                ROUND(ic.value, 2)
+                ROUND(ic.value, 3)
         END) AS grossprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
                 ROUND((ic.value * ABS(ic.count)), 2)
@@ -3479,14 +3496,14 @@ CREATE VIEW vinvoicecontents AS
         (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
         (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+                ROUND(ic.value, 3) - ROUND(ic2.value, 3)
             ELSE
-                ROUND((ic.value / (1 + (t.value / 100))),2) - ROUND((ic2.value / (1 + (t.value / 100))), 2)
+                ROUND((ic.value / (1 + (t.value / 100))), 3) - ROUND((ic2.value / (1 + (t.value / 100))), 3)
         END) AS diff_netprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND((ic.value * (1 + (t.value / 100))),2) - ROUND((ic2.value * (1 + (t.value / 100))) ,2)
+                ROUND((ic.value * (1 + (t.value / 100))), 3) - ROUND((ic2.value * (1 + (t.value / 100))) , 3)
             ELSE
-                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+                ROUND(ic.value, 3) - ROUND(ic2.value, 3)
         END) AS diff_grossprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
                 ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
@@ -4292,4 +4309,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023021500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023022100');

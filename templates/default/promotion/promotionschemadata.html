@@ -138,7 +138,7 @@
 						{$_SERVICETYPES[$tariff.type]}
 					</TD>
 					<TD class="text-right valign-top bold nobr">
-						{$tariff.value|string_format:"%.2f"}
+						{$tariff.value|string_format:"%.3f"}
 					</TD>
 					<td class="text-right valign-top nobr">
 						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
@@ -188,7 +188,7 @@
 							{if !empty($tariff.data.users[$key])}
 								<i class="lms-ui-icon-user" title="{t a=$tariff.data.users_text[$key]}Modifiable by selected users:<br><strong>$a</strong>{/t}"></i>
 							{/if}
-							{if $tariff.data.value[$key] != 'NULL'}{$tariff.data.value[$key]|string_format:"%.2f"}{/if}
+							{if $tariff.data.value[$key] != 'NULL'}{$tariff.data.value[$key]|string_format:"%.3f"}{/if}
 							{if $tariff.data.period[$key]}({$_PERIODS[$tariff.data.period[$key]]}){/if}
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
@@ -203,7 +203,7 @@
 									{/foreach}
 								</SELECT>
 							</div>
-							<INPUT type="text" size="8" name="form[{$tariff.id}][value][{$key}]" class="value-edit"
+							<INPUT type="text" size="8" name="form[{$tariff.id}][value][{$key}]" class="value-edit period_form_value"
 									value="{$formdata[$tariff.id].value[$key]}"
 									{if $key}
 										{tip text="Enter subscription value for specified period"}
@@ -344,7 +344,7 @@
 								{/foreach}
 							</SELECT>
 						</div>
-						<INPUT type="text" size="8" name="form[value][{$key}]" value="{$formdata.value[$key]}"
+						<INPUT type="text" size="8" class="period_form_value" id="period_form_value_{$key}" name="form[value][{$key}]" value="{$formdata.value[$key]}"
 								{if $key}
 									{tip text="Enter subscription value for specified period"}
 								{else}
@@ -503,6 +503,8 @@
 					} else if ($(this).is('[data-value]')) {
 						var value = $(this).attr('data-value');
 						if (value != 'NULL') {
+							value = parseFloat(value).toFixed(3);
+							value = value.replace(/[\.]+/, ',');
 							edit.find('.value-edit').val(value);
 						}
 						edit.find('.period-edit').val($(this).attr('data-period'));
@@ -541,6 +543,14 @@
 			document.tariffs.submit();
 		});
 		return false;
+	});
+
+	$(".period_form_value").on('change', function () {
+		let elemVal = $(this).val();
+		let roundedValue = parseFloat(elemVal.replace(/[\,]+/, '.'));
+		roundedValue = financeDecimals.round(roundedValue, 3);
+		roundedValue = roundedValue.toFixed(3).replace(/[\.]+/, ',');
+		$(this).val(roundedValue);
 	});
 
 </SCRIPT>

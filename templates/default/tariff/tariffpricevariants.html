@@ -1,0 +1,54 @@
+<!--// $Id$ //-->
+{css}
+
+<form id="tariffpricevariantadd" name="tariffpricevariantadd"></form>
+
+{tab_container id="tariffpricevariants" label="Tariff price variants"}
+    {tab_header content_id="tariffpricevariantspanel"}
+        {tab_header_cell icon="lms-ui-icon-cash"}
+            <strong>{t a=$tariff.price_variants|size}Tariff price variants ($a){/t}</strong>
+        {/tab_header_cell}
+    {/tab_header}
+
+    {tab_contents id="tariffpricevariantspanel"}
+        {tab_table id="tariffpricevarianttable"}
+            {include file="tariff/tariffpricevariantlist.html"}
+        {/tab_table}
+
+        {tab_button_panel id="add_management_tariff_price"}
+            {tab_buttons}
+                <div>
+                    <strong>{trans("Quantity threshold")}</strong>
+                    <input type="text" size="10" form="tariffpricevariantadd" name="quantity_threshold" id="tariff-price-variant-threshold" class="tariff-price-variant-edit-field"
+                           value="" required>
+                </div>
+
+                <div>
+                    <strong>{trans("Gross price")}</strong>
+                    <input type="text" size="10" form="tariffpricevariantadd" name="gross_price" id="tariff-price-variant-grossprice" class="tariff-price-variant-edit-field"
+                           value="" required>
+                </div>
+
+                <div>
+                    <strong>{trans("Net price")}</strong>
+                    <input type="text" size="10" form="tariffpricevariantadd" name="net_price" id="tariff-price-variant-netprice" class="tariff-price-variant-edit-field"
+                           value="" required>
+                </div>
+
+                {button type="link" icon="save" id="tariff_price_variant_add_button"
+                    onclick="javascript:addManagementTariffPriceVariant();"}
+                {button type="link" icon="cancel"
+                    onclick="javascript:hideAddManagementTariffPriceVariant();"}
+            {/tab_buttons}
+        {/tab_button_panel}
+
+        {tab_button_panel id="management_tariff_price_variant_buttons"}
+            {tab_buttons}
+            {button id="tariffpricevariantaddlink" onclick="javascript:showAddManagementTariffPriceVariant();"
+            icon="add" label="Add"}
+            {/tab_buttons}
+        {/tab_button_panel}
+    {/tab_contents}
+{/tab_container}
+
+{js}

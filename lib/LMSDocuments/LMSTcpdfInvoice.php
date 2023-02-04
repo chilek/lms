@@ -112,13 +112,13 @@ class LMSTcpdfInvoice extends LMSInvoice
                     if (!empty($this->data['pdiscount']) && !empty($pdiscount)) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%.2f%%', $item['pdiscount']));
                     } elseif (!empty($this->data['vdiscount']) && !empty($item['vdiscount'])) {
-                        $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
+                        $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.3f', $item['vdiscount'])) + 1;
                     }
                 }
                 if ($this->data['netflag']) {
-                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['basevalue'])) + 1;
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.3f', $item['basevalue'])) + 1;
                 } else {
-                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['value'])) + 1;
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.3f', $item['value'])) + 1;
                 }
                 $t_width['totalbase'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['totalbase'])) + 1;
                 $t_width['taxlabel'] = $this->backend->getStringWidth($item['taxlabel']) + 1;
@@ -150,13 +150,13 @@ class LMSTcpdfInvoice extends LMSInvoice
                     if (!empty($this->data['invoice']['pdiscount']) && !empty($pdiscount)) {
                         $t_width['discount'] = $this->backend->getStringWidth(sprintf('%.2f%%', $item['pdiscount']));
                     } elseif (!empty($this->data['invoice']['vdiscount']) && !empty($item['vdiscount'])) {
-                        $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['vdiscount'])) + 1;
+                        $t_width['discount'] = $this->backend->getStringWidth(sprintf('%01.3f', $item['vdiscount'])) + 1;
                     }
                 }
                 if ($this->data['invoice']['netflag']) {
-                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['basevalue'])) + 1;
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.3f', $item['basevalue'])) + 1;
                 } else {
-                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['value'])) + 1;
+                    $t_width['basevalue'] = $this->backend->getStringWidth(sprintf('%01.3f', $item['value'])) + 1;
                 }
                 $t_width['totalbase'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['totalbase'])) + 1;
                 $t_width['taxlabel'] = $this->backend->getStringWidth($item['taxlabel']) + 1;
@@ -227,16 +227,16 @@ class LMSTcpdfInvoice extends LMSInvoice
                         if ((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && !empty($pdiscount)) {
                             $this->backend->Cell($h_width['discount'], $h, sprintf('%.2f%%', $item['pdiscount']), 1, 0, 'R', 0, '', 1);
                         } elseif ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && !empty($item['vdiscount'])) {
-                            $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
+                            $this->backend->Cell($h_width['discount'], $h, sprintf('%01.3f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
                         } elseif (((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && empty($pdiscount))
                             || ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && empty($vdiscount))) {
-                            $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', 0), 1, 0, 'R', 0, '', 1);
+                            $this->backend->Cell($h_width['discount'], $h, sprintf('%01.3f', 0), 1, 0, 'R', 0, '', 1);
                         }
                     }
                     if ($this->data['invoice']['netflag']) {
-                        $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
+                        $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.3f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
                     } else {
-                        $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['value']), 1, 0, 'R', 0, '', 1);
+                        $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.3f', $item['value']), 1, 0, 'R', 0, '', 1);
                     }
                     $this->backend->Cell($h_width['totalbase'], $h, sprintf('%01.2f', $item['totalbase']), 1, 0, 'R', 0, '', 1);
                     $this->backend->Cell($h_width['taxlabel'], $h, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
@@ -310,16 +310,16 @@ class LMSTcpdfInvoice extends LMSInvoice
                 if ((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && !empty($pdiscount)) {
                     $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f%%', $item['pdiscount']), 1, 0, 'R', 0, '', 1);
                 } elseif ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && !empty($item['vdiscount'])) {
-                    $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
+                    $this->backend->Cell($h_width['discount'], $h, sprintf('%01.3f', $item['vdiscount']), 1, 0, 'R', 0, '', 1);
                 } elseif (((!empty($this->data['pdiscount']) || !empty($this->data['invoice']['pdiscount'])) && empty($pdiscount))
                     || ((!empty($this->data['vdiscount']) || !empty($this->data['invoice']['vdiscount'])) && empty($vdiscount))) {
-                    $this->backend->Cell($h_width['discount'], $h, sprintf('%01.2f', 0), 1, 0, 'R', 0, '', 1);
+                    $this->backend->Cell($h_width['discount'], $h, sprintf('%01.3f', 0), 1, 0, 'R', 0, '', 1);
                 }
             }
             if ($this->data['netflag']) {
-                $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
+                $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.3f', $item['basevalue']), 1, 0, 'R', 0, '', 1);
             } else {
-                $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.2f', $item['value']), 1, 0, 'R', 0, '', 1);
+                $this->backend->Cell($h_width['basevalue'], $h, sprintf('%01.3f', $item['value']), 1, 0, 'R', 0, '', 1);
             }
             $this->backend->Cell($h_width['totalbase'], $h, sprintf('%01.2f', $item['totalbase']), 1, 0, 'R', 0, '', 1);
             $this->backend->Cell($h_width['taxlabel'], $h, $item['taxlabel'], 1, 0, 'C', 0, '', 1);

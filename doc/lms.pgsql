@@ -880,7 +880,7 @@ CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint		DEFAULT 1 NOT NULL,
-	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	value numeric(9,3) 	DEFAULT 0 NOT NULL,
     taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT NULL,
 	taxid integer 		NOT NULL
@@ -938,7 +938,7 @@ CREATE TABLE tariffs (
 	authtype smallint 	DEFAULT 0 NOT NULL,
     currency varchar(3),
     flags smallint DEFAULT 0 NOT NULL,
-    netvalue numeric(9,2) DEFAULT NULL,
+    netvalue numeric(9,3) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
 );
@@ -1003,7 +1003,7 @@ CREATE SEQUENCE liabilities_id_seq;
 DROP TABLE IF EXISTS liabilities CASCADE;
 CREATE TABLE liabilities (
 	id integer DEFAULT nextval('liabilities_id_seq'::text) NOT NULL,
-	value numeric(9,2)  	DEFAULT 0 NOT NULL,
+	value numeric(9,3)  	DEFAULT 0 NOT NULL,
     taxcategory smallint DEFAULT 0 NOT NULL,
 	currency varchar(3),
 	name text           	DEFAULT '' NOT NULL,
@@ -1012,7 +1012,7 @@ CREATE TABLE liabilities (
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint DEFAULT -1 NOT NULL,
     flags smallint DEFAULT 0 NOT NULL,
-    netvalue numeric(9,2) DEFAULT NULL,
+    netvalue numeric(9,3) DEFAULT NULL,
     PRIMARY KEY (id)
 );
 
@@ -1119,7 +1119,7 @@ CREATE TABLE assignments (
 	suspended smallint	DEFAULT 0 NOT NULL,
 	settlement smallint	DEFAULT 0 NOT NULL,
 	pdiscount numeric(5,2)	DEFAULT 0 NOT NULL,
-	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
+	vdiscount numeric(9,3) DEFAULT 0 NOT NULL,
 	paytime smallint    DEFAULT NULL,
 	paytype smallint    DEFAULT NULL,
 	numberplanid integer DEFAULT NULL
@@ -1173,7 +1173,7 @@ CREATE TABLE invoicecontents (
 	tariffid integer 	DEFAULT NULL
 		CONSTRAINT invoicecontents_tariffid_fkey REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	pdiscount numeric(5,2) DEFAULT 0 NOT NULL,
-	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
+	vdiscount numeric(9,3) DEFAULT 0 NOT NULL,
 	taxcategory smallint DEFAULT 0 NOT NULL,
 	period smallint DEFAULT 3
 );
@@ -1832,6 +1832,22 @@ CREATE TABLE tariffassignments (
 );
 
 CREATE INDEX tariffassignments_tarifftagid_idx ON tariffassignments (tarifftagid);
+
+/* --------------------------------------------------------
+  Structure of table "tariffpricevariants"
+-------------------------------------------------------- */
+
+CREATE TABLE tariffpricevariants (
+    id integer DEFAULT nextval('tariffpricevariants_id_seq'::text) NOT NULL,
+    tariffid integer NOT NULL
+        CONSTRAINT tariffpricevariants_tariffid_fkey REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    quantity_threshold integer NOT NULL,
+    net_price numeric(9,3) DEFAULT 0 NOT NULL,
+    gross_price numeric(9,3) DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT tariffpricevariants_tariffid_quantity_threshold_ukey UNIQUE (tariffid, quantity_threshold),
+    CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)
+);
 
 /* ---------------------------------------------------------
   Structure of table "payments"
@@ -3587,7 +3603,7 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
     count numeric(9,3),
     description text,
     tariffid integer,
-    vdiscount numeric(9,2),
+    vdiscount numeric(9,3),
     taxcategory smallint,
     period smallint,
     netflag integer,
@@ -3598,7 +3614,7 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
     grossvalue numeric(12,5),
     diff_count numeric(9,3),
     diff_pdiscount numeric(5,2),
-    diff_vdiscount numeric(9,2),
+    diff_vdiscount numeric(9,3),
     diff_netprice numeric(12,5),
     diff_grossprice numeric(12,5),
     diff_netvalue numeric(12,5),
@@ -3625,12 +3641,12 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
             ELSE 0
         END AS netflag,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value, 2)
-            ELSE round(ic.value / (1 + t.value / 100), 2)
+            WHEN (d.flags & 16) > 0 THEN round(ic.value, 3)
+            ELSE round(ic.value / (1 + t.value / 100), 3)
         END AS netprice,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value * (1 + t.value / 100), 2)
-            ELSE round(ic.value, 2)
+            WHEN (d.flags & 16) > 0 THEN round(ic.value * (1 + t.value / 100), 3)
+            ELSE round(ic.value, 3)
         END AS grossprice,
         CASE
             WHEN (d.flags & 16) > 0 THEN round(ic.value * abs(ic.count), 2)
@@ -3648,12 +3664,12 @@ CREATE OR REPLACE FUNCTION get_invoice_contents(integer) RETURNS TABLE (
         ic.pdiscount - ic2.pdiscount AS diff_pdiscount,
         ic.vdiscount - ic2.vdiscount AS diff_vdiscount,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value, 2) - round(ic2.value, 2)
-            ELSE round(ic.value / (1 + t.value / 100), 2) - round(ic2.value / (1 + t.value / 100), 2)
+            WHEN (d.flags & 16) > 0 THEN round(ic.value, 3) - round(ic2.value, 3)
+            ELSE round(ic.value / (1 + t.value / 100), 3) - round(ic2.value / (1 + t.value / 100), 3)
             END AS diff_netprice,
         CASE
-            WHEN (d.flags & 16) > 0 THEN round(ic.value * (1 + t.value / 100), 2) - round(ic2.value * (1 + t.value / 100), 2)
-            ELSE round(ic.value, 2) - round(ic2.value, 2)
+            WHEN (d.flags & 16) > 0 THEN round(ic.value * (1 + t.value / 100), 3) - round(ic2.value * (1 + t.value / 100), 3)
+            ELSE round(ic.value, 3) - round(ic2.value, 3)
         END AS diff_grossprice,
         CASE
             WHEN (d.flags & 16) > 0 THEN round(ic.value * abs(ic.count), 2) - round(ic2.value * abs(ic2.count), 2)
@@ -4342,6 +4358,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023021500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023022100');
 
 COMMIT;

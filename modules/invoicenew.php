@@ -103,6 +103,7 @@ switch ($action) {
             foreach ($invoice['content'] as $item) {
                 $contents[] = array(
                     'tariffid' => $item['tariffid'],
+                    'tariff' => !empty($item['tariffid']) ? $LMS->GetTariff($item['tariffid']) : array(),
                     'name' => $item['description'],
                     'prodid' => $item['prodid'],
                     'count' => str_replace(',', '.', $item['count']),
@@ -248,10 +249,9 @@ switch ($action) {
                 trans('Tax category selection is required!');
         }
 
-        foreach (array('pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key) {
-            $itemdata[$key] = f_round($itemdata[$key]);
+        foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto', 'count') as $key) {
+            $itemdata[$key] = f_round($itemdata[$key], 3);
         }
-        $itemdata['count'] = f_round($itemdata['count'], 3);
 
         if ($itemdata['count'] > 0 && $itemdata['name'] != '') {
             $taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
@@ -259,25 +259,26 @@ switch ($action) {
 
             if ($invoice['netflag']) {
                 $itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['pdiscount']) / 100)
-                    - $itemdata['vdiscount']);
+                    - $itemdata['vdiscount'], 3);
                 $itemdata['s_valuenetto'] = f_round($itemdata['valuenetto'] * $itemdata['count']);
                 $itemdata['tax_from_s_valuenetto'] = f_round($itemdata['s_valuenetto'] * ($taxvalue / 100));
                 $itemdata['s_valuebrutto'] = f_round($itemdata['s_valuenetto'] + $itemdata['tax_from_s_valuenetto']);
-                $itemdata['valuebrutto'] = f_round($itemdata['valuenetto'] * ($taxvalue / 100 + 1));
+                $itemdata['valuebrutto'] = f_round($itemdata['valuenetto'] * ($taxvalue / 100 + 1), 3);
             } else {
                 $itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * f_round($itemdata['pdiscount']) / 100)
-                    - $itemdata['vdiscount']);
+                    - $itemdata['vdiscount'], 3);
                 $itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
                 $itemdata['tax_from_s_valuebrutto'] = f_round(($itemdata['s_valuebrutto'] * $taxvalue)
                     / (100 + $taxvalue));
                 $itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] - $itemdata['tax_from_s_valuebrutto']);
-                $itemdata['valuenetto'] = f_round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1));
+                $itemdata['valuenetto'] = f_round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 3);
             }
 
-            $itemdata['discount'] = f_round($itemdata['discount']);
-            $itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
-            $itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
             $itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
+        }
+
+        if ($itemdata['tariffid'] > 0) {
+            $itemdata['tariff'] = $LMS->GetTariff($itemdata['tariffid']);
         }
 
         $hook_data = array(

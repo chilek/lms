@@ -27,6 +27,7 @@
 function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customergroupid = null, $promotionid = null, $state = null, $tags = null, $tax = null, $netflag = null, $flags = null)
 {
     $DB = LMSDB::getInstance();
+    $LMS = LMS::getInstance();
 
     if ($order == '') {
         $order = 'name,asc';
@@ -171,6 +172,9 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             .') x GROUP BY tariffid', 'tariffid');
 
         foreach ($tarifflist as $idx => &$row) {
+            // get tariff price variants
+            $priceVariants = $LMS->getTariffPriceVariants($row['id']);
+            $row['price_variants'] = !empty($priceVariants) ? $priceVariants : array();
             // count of 'active' assignments
             $row['activecount'] = $row['count'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['count'] : 0);
             // avg monthly income

@@ -520,12 +520,12 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
-			END), 2) AS unitary_value,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
+			END), 3) AS unitary_value,
+		ROUND(ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
-			END), 2) * a.count AS value,
+			END), 3) * a.count, 2) AS value,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
 		a.count AS count,
@@ -1107,10 +1107,24 @@ $currencyvalues = array();
 if (!empty($assigns)) {
     // determine currency values for assignments with foreign currency
     // if payments.prefer_netto = true, use value netto+tax
+    // if assignment based on tariff with price variants get price by quantity
     foreach ($assigns as &$assign) {
+        if (!empty($assign['tariffid'])) {
+            $priceVariant = $LMS->getTariffPriceVariantByQuantityThreshold($assign['tariffid'], $assign['count']);
+        }
+        if (!empty($priceVariant)) {
+            $suspention = empty($assign['suspended']) ? 1 : ($suspension_percentage / 100);
+            if (!empty($assign['netflag'])) {
+                $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspention, 3);
+                $assign['netvalue'] = round($assign['unitary_value'] * $assign['count'], 2);
+            } else {
+                $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspention, 3);
+                $assign['value'] = round($assign['unitary_value'] * $assign['count'], 2);
+            }
+        }
         if ($prefer_netto) {
             if (isset($assign['netvalue']) && !empty($assign['netvalue'])) {
-                $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
+                $assign['value'] = round($assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100, 3);
             }
         }
 
@@ -1464,7 +1478,7 @@ foreach ($assigns as $assign) {
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
     if (!$assign['suspended'] && $assign['allsuspended']) {
-        $assign['value'] = $assign['value'] * $suspension_percentage / 100;
+        $assign['value'] = round($assign['value'] * $suspension_percentage / 100, 3);
     }
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
@@ -1661,7 +1675,7 @@ foreach ($assigns as $assign) {
             }
         }
 
-        $price = round($price, 2);
+        $price = round($price, 3);
         $value = round($price * $assign['count'], 2);
 
         $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
@@ -1776,7 +1790,7 @@ foreach ($assigns as $assign) {
                     && $exported_telecom_service;
 
                 $DB->Execute(
-                    "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
+                    "INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
@@ -1885,7 +1899,7 @@ foreach ($assigns as $assign) {
                 if ($tmp_itemid != 0) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $DB->Execute(
-                            "UPDATE debitnotecontents SET value = value + ? 
+                            "UPDATE debitnotecontents SET value = value + ?
                             WHERE docid = ? AND itemid = ?",
                             array($grossvalue, $invoices[$cid], $tmp_itemid)
                         );
@@ -1898,7 +1912,7 @@ foreach ($assigns as $assign) {
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "UPDATE cash SET value = value + ? 
+                            "UPDATE cash SET value = value + ?
                             WHERE docid = ? AND itemid = ?",
                             array(-$grossvalue, $invoices[$cid], $tmp_itemid)
                         );
@@ -1908,7 +1922,7 @@ foreach ($assigns as $assign) {
 
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $DB->Execute(
-                            "INSERT INTO debitnotecontents (docid, value, description, itemid) 
+                            "INSERT INTO debitnotecontents (docid, value, description, itemid)
                             VALUES (?, ?, ?, ?)",
                             array($invoices[$cid], $grossvalue, $desc, $itemid)
                         );
@@ -2253,7 +2267,7 @@ foreach ($assigns as $assign) {
                     break;
             }
 
-            $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 2);
+            $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 3);
 
             if (floatval($partial_price)) {
                 //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
@@ -2348,7 +2362,7 @@ foreach ($assigns as $assign) {
 
                         if ($assign['invoice'] == DOC_DNOTE) {
                             $DB->Execute(
-                                "INSERT INTO debitnotecontents (docid, value, description, itemid) 
+                                "INSERT INTO debitnotecontents (docid, value, description, itemid)
 								VALUES (?, ?, ?, ?)",
                                 array($invoices[$cid], $partial_grossvalue, $desc, $itemid)
                             );

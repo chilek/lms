@@ -1582,6 +1582,67 @@ class LMS
         return $manager->TariffExists($id);
     }
 
+    /**
+     * Returns tariff price variant manager
+     *
+     * @return LMSTariffPriceVariantManagerInterface price variant manager
+     */
+    protected function LMSTariffPriceVariantManager()
+    {
+        if (!isset($this->tariff_price_variant_manager)) {
+            $this->tariff_price_variant_manager = new LMSTariffPriceVariantManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->tariff_price_variant_manager;
+    }
+
+    public function addTariffPriceVariant($params)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->addTariffPriceVariant($params);
+    }
+
+    public function updateTariffPriceVariant($params)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->updateTariffPriceVariant($params);
+    }
+
+    public function delTariffPriceVariant($tariff_price_variant_id)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->delTariffPriceVariant($tariff_price_variant_id);
+    }
+
+    public function getTariffPriceVariant($tariff_price_variant_id)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->getTariffPriceVariant($tariff_price_variant_id);
+    }
+
+    public function getTariffPriceVariantByQuantityThreshold($tariff_id, $quantity_threshold)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->getTariffPriceVariantByQuantityThreshold($tariff_id, $quantity_threshold);
+    }
+
+    public function getTariffPriceVariants($tariff_id)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->getTariffPriceVariants($tariff_id);
+    }
+
+    public function checkTariffQuantityThresholdExists($tariff_id, $quantity_threshold)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->checkTariffQuantityThresholdExists($tariff_id, $quantity_threshold);
+    }
+
+    public function recalculateTariffPriceVariants($tariff, $calculation_method)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->recalculateTariffPriceVariants($tariff, $calculation_method);
+    }
+
     public function ReceiptDelete($docid)
     {
         $manager = $this->getFinanceManager();

@@ -251,20 +251,36 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                                        WHERE
                                                                          assignment_id = ?', 'phone', array($row['id']));
 
+
+
+                if (!empty($row['tariffid'])) {
+                    $priceVariant = $lms->getTariffPriceVariantByQuantityThreshold($row['tariffid'], $row['count']);
+                    if (!empty($priceVariant)) {
+                        $row['netvalue'] = $priceVariant['net_price'] * $row['count'];
+                        $row['value'] = $priceVariant['gross_price'] * $row['count'];
+                        $row['unitary_netvalue'] = $priceVariant['net_price'];
+                        $row['unitary_value'] = $priceVariant['gross_price'];
+                        $assignments[$idx]['unitary_netvalue'] = $priceVariant['net_price'];
+                        $assignments[$idx]['unitary_value'] = $priceVariant['gross_price'];
+                        $assignments[$idx]['netvalue'] = $priceVariant['net_price'] * $row['count'];
+                        $assignments[$idx]['value'] = $priceVariant['gross_price'] * $row['count'];
+                    }
+                }
+
                 if ($assignments[$idx]['netflag']) {
-                    $assignments[$idx]['discounted_netprice'] = f_round(($row['unitary_netvalue'] - $row['unitary_netvalue'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']));
+                    $assignments[$idx]['discounted_netprice'] = f_round(($row['unitary_netvalue'] - $row['unitary_netvalue'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']), 3);
                     if ($row['suspended'] == 1) {
                         $assignments[$idx]['discounted_netprice'] = $assignments[$idx]['discounted_netprice'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
                     }
                     $assignments[$idx]['discounted_netvalue'] = f_round($assignments[$idx]['discounted_netprice'] * $row['count']);
-                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice']);
+                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice'], 3);
 
                     if (!empty($assignments[$idx]['tax_value'])) {
-                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['tax_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['tax_value'] / 100 + 1), 3);
 
                         $assignments[$idx]['tax_from_discounted_value'] = f_round($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['tax_value'] / 100));
                     } elseif (!empty($assignments[$idx]['taxl_value'])) {
-                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['taxl_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_price'] = f_round($assignments[$idx]['discounted_netprice'] * ($assignments[$idx]['taxl_value'] / 100 + 1), 3);
 
                         $assignments[$idx]['tax_from_discounted_value'] = f_round($assignments[$idx]['discounted_netvalue'] * ($assignments[$idx]['taxl_value'] / 100));
                     } else {
@@ -272,22 +288,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $assignments[$idx]['tax_from_discounted_value'] = 0;
                     }
                     $assignments[$idx]['discounted_value'] = f_round(($assignments[$idx]['discounted_netvalue'] + $assignments[$idx]['tax_from_discounted_value']));
-                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price']);
+                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price'], 3);
                 } else {
-                    $assignments[$idx]['discounted_price'] = f_round(($row['unitary_value'] - $row['unitary_value'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']));
+                    $assignments[$idx]['discounted_price'] = f_round(($row['unitary_value'] - $row['unitary_value'] * $row['pdiscount'] / 100) - ($row['unitary_vdiscount']), 3);
                     if ($row['suspended'] == 1) {
                         $assignments[$idx]['discounted_price'] = $assignments[$idx]['discounted_price'] * ConfigHelper::getConfig('finances.suspension_percentage') / 100;
                     }
                     $assignments[$idx]['discounted_value'] = f_round($assignments[$idx]['discounted_price'] * $row['count']);
-                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price']);
+                    $assignments[$idx]['unitary_discount'] = f_round($row['unitary_value'] - $assignments[$idx]['discounted_price'], 3);
 
                     if (!empty($assignments[$idx]['tax_value'])) {
-                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['tax_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['tax_value'] / 100 + 1), 3);
 
                         $assignments[$idx]['tax_from_discounted_value'] = f_round(($assignments[$idx]['discounted_value'] * $assignments[$idx]['tax_value'])
                             / (100 + $assignments[$idx]['tax_value']));
                     } elseif (!empty($assignments[$idx]['taxl_value'])) {
-                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['taxl_value'] / 100 + 1));
+                        $assignments[$idx]['discounted_netprice'] = f_round($assignments[$idx]['discounted_price'] / ($assignments[$idx]['taxl_value'] / 100 + 1), 3);
 
                         $assignments[$idx]['tax_from_discounted_value'] = f_round(($assignments[$idx]['discounted_value'] * $assignments[$idx]['taxl_value'])
                             / (100 + $assignments[$idx]['taxl_value']));
@@ -296,7 +312,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $assignments[$idx]['tax_from_discounted_value'] = 0;
                     }
                     $assignments[$idx]['discounted_netvalue'] = f_round(($assignments[$idx]['discounted_value'] - $assignments[$idx]['tax_from_discounted_value']));
-                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice']);
+                    $assignments[$idx]['unitary_netdiscount'] = f_round($row['unitary_netvalue'] - $assignments[$idx]['discounted_netprice'], 3);
                 }
 
                 $now = time();
@@ -312,8 +328,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $assignments[$idx]['real_netvalue'] = $row['netvalue'];
                     $assignments[$idx]['real_unitary_discount'] = $assignments[$idx]['unitary_discount'];
                     $assignments[$idx]['real_unitary_netdiscount'] = $assignments[$idx]['unitary_netdiscount'];
-                    $assignments[$idx]['real_discount'] = round($assignments[$idx]['real_unitary_discount'] * $row['count'], 2);
-                    $assignments[$idx]['real_netdiscount'] = round($assignments[$idx]['real_unitary_netdiscount'] * $row['count'], 2);
+                    $assignments[$idx]['real_discount'] = round($assignments[$idx]['real_unitary_discount'] * $row['count'], 3);
+                    $assignments[$idx]['real_netdiscount'] = round($assignments[$idx]['real_unitary_netdiscount'] * $row['count'], 3);
                     $assignments[$idx]['real_disc_value'] = $assignments[$idx]['discounted_value'];
                     $assignments[$idx]['real_disc_netvalue'] = $assignments[$idx]['discounted_netvalue'];
                     $assignments[$idx]['real_unitary_downrate'] = $row['unitary_downrate'];
@@ -467,7 +483,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // Activation
                 if (!$idx) {
                     // if activation value specified, create disposable liability
-                    if (f_round($value)) {
+                    if (f_round($value, 3)) {
                         $start_day   = date('d', $orig_datefrom);
                         $start_month = date('n', $orig_datefrom);
                         $start_year  = date('Y', $orig_datefrom);
@@ -550,7 +566,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                         array($tariff['id'])
                                     );
 
-                                    $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)));
+                                    $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)), 3);
 
                                     $args = array_merge($args, array(
                                         'name' => $tariff['name'],
@@ -588,7 +604,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 }
                             }
                         } else {
-                            $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)));
+                            $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)), 3);
                             $args = array(
                                 'name' => trans('Activation payment'),
                                 'value' => str_replace(',', '.', $value),
@@ -701,7 +717,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 array($tariff['id'])
                             );
 
-                            $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)));
+                            $netValue = f_round(($value / ($tariff['taxvalue'] / 100 + 1)), 3);
 
                             $args = array_merge($args, array(
                                 'name' => $tariff['name'],
@@ -790,7 +806,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                             if ($value != 'NULL') {
                                 $v = $diffdays * $discounted_val / $month_days;
-                                $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
+                                $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 3));
 
                                 $args = array(
                                     SYSLOG::RES_TARIFF => $tariffid,
@@ -883,7 +899,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         if ($diffdays > 0) {
                             $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
                             $v = $diffdays * $discounted_val / $month_days;
-                            $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
+                            $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 3));
                             $partial_datefrom = $prevperiod;
                             if ($data['at'] > 0 && $data['at'] < $dom) {
                                 $partial_at = $data['at'];
@@ -1018,7 +1034,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
                     $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
                     $value = $diffdays * $discounted_val / $month_days;
-                    $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
+                    $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
                     $partial_dateto--;
                     if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                         $partial_at = $data['at'];
@@ -1095,7 +1111,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 if ($diffdays > 0) {
                     $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
                     $value = $diffdays * $discounted_val / $month_days;
-                    $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
+                    $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
                     $partial_datefrom = $prevperiod;
                     if ($data['at'] > 0 && $data['at'] < $dom) {
                         $partial_at = $data['at'];
@@ -1524,7 +1540,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                         if (isset($values[$label][$tariffid])) {
                             foreach ($values[$label][$tariffid] as $period_idx => $value) {
-                                if (!preg_match('/^[0-9]+(\.[0-9]{1,2})?$/', $value)) {
+                                if (!preg_match('/^[0-9]+([.,][0-9]{1,3})?$/', $value)) {
                                     $error['value-' . $schemaid . '-'
                                     . iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))
                                     . '-' . $tariffid . '-' . $period_idx] = trans('Incorrect value!');
@@ -3291,6 +3307,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $tarifftag_manager = new LMSTariffTagManager($this->db, $this->auth, $this->cache, $this->syslog);
         $result['tags'] = $tarifftag_manager->getTariffTagsForTariff($id);
 
+        $tariffPriceVariant_manager = new LMSTariffPriceVariantManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $priceVariants = $tariffPriceVariant_manager->getTariffPriceVariants($id);
+        $result['price_variants'] = !empty($priceVariants) ? $priceVariants : array();
+
         $flags = array();
         if (!empty($result['flags'])) {
             foreach ($TARIFF_FLAGS as $flag => $label) {
@@ -3383,7 +3403,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTariffs($forced_id = null)
     {
-        return $this->db->GetAllByKey(
+        $tariffs = $this->db->GetAllByKey(
             'SELECT t.id, t.name, t.value,
             (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END) AS splitpayment,
             (CASE WHEN t.flags & ? > 0 THEN 1 ELSE 0 END) AS netflag,
@@ -3394,6 +3414,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             taxes.label AS tax, t.period, t.type AS tarifftype, ' . $this->db->GroupConcat('ta.tarifftagid') . ' AS tags
             FROM tariffs t
             LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
+            LEFT JOIN tariffpricevariants tpv ON tpv.tariffid = t.id
             LEFT JOIN taxes ON t.taxid = taxes.id
             WHERE t.disabled = 0' . (empty($forced_id) ? '' : ' OR t.id = ' . intval($forced_id)) . '
             GROUP BY t.id, t.name, t.value, t.taxcategory, t.currency, uprate, taxid, t.authtype, datefrom, dateto, prodid, downrate, upceil, downceil, climit, plimit,
@@ -3405,6 +3426,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 TARIFF_FLAG_NET_ACCOUNT,
             )
         );
+
+        if (!empty($tariffs)) {
+            $lms = LMS::getInstance();
+            foreach ($tariffs as $tariffid => $tariff) {
+                $priceVariants = $lms->getTariffPriceVariants($tariffid);
+                $tariffs[$tariffid]['price_variants'] = !empty($priceVariants) ? $priceVariants : array();
+            }
+        }
+
+        return $tariffs;
     }
 
     public function TariffSet($id)
