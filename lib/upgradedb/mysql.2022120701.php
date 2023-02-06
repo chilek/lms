@@ -55,7 +55,7 @@ $this->Execute("
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0
 ");
 
-$this->Execure("
+$this->Execute("
     CREATE VIEW vnodetariffs_tariffs AS
         SELECT n.id AS nodeid,
             ROUND(SUM(t.downrate * a.count)) AS downrate,
