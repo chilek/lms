@@ -229,7 +229,7 @@ if (!empty($docids)) {
                         }
                     }
                 } else {
-                    if (!$pdf) {
+                    if (!$pdf && $htmls) {
                         $htmlbuffer .= "\n<div class=\"document\">\n"
                             . file_get_contents($filename)
                             . "\n</div>\n";
