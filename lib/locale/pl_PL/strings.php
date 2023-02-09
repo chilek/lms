@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-$_LANG['related documents'] = 'dokumenty powiązane';
 $_LANG['comma separated emails'] = 'adresy e-mail oddzielone przecinkami';
 
 $_LANG['related documents'] = 'powiązane dokumenty';
