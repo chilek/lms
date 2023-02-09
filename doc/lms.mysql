@@ -1645,6 +1645,7 @@ CREATE TABLE netdeviceproducers (
 CREATE TABLE netdevicetypes (
     id int(11) NOT NULL auto_increment,
     name varchar(50) NOT NULL,
+    passive tinyint(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY netdevicetypes_name_ukey (name)
 ) ENGINE=InnoDB;
@@ -4131,18 +4132,18 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('mANT30 PA', NULL, 1),
 ('mANT30', NULL, 1);
 
-INSERT INTO netdevicetypes (name) VALUES
-('router'),
-('switch'),
-('antenna'),
-('access-point'),
-('PON OLT'),
-('PON ONT'),
-('PON splitter'),
-('GSM modem'),
-('DSL modem'),
-('power line adapter'),
-('IPTV decoder');
+INSERT INTO netdevicetypes (name, passive) VALUES
+('router', 0),
+('switch', 0),
+('antenna', 1),
+('access-point', 0),
+('PON OLT', 0),
+('PON ONT', 0),
+('PON splitter', 1),
+('GSM modem', 0),
+('DSL modem', 0),
+('power line adapter', 0),
+('IPTV decoder', 0);
 
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
@@ -4290,4 +4291,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023011100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023020900');
