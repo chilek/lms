@@ -598,7 +598,8 @@ function changeMacFormat(id)
 	}
 	var curmac = elem.innerHTML.trim();
 	var macpatterns = [
-		/^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi,
+		/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/g,
+		/^([0-9a-f]{2}:){5}[0-9a-f]{2}$/g,
 		/^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
 		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi,
 		/^([0-9a-f]{4}-){2}[0-9a-f]{4}$/gi,
@@ -615,21 +616,25 @@ function changeMacFormat(id)
 	i = parseInt(i);
 	switch (i) {
 		case 0:
-			curmac = curmac.replace(/:/g, '-');
+			curmac = curmac.toLowerCase();
 			break;
 		case 1:
+			curmac = curmac.replace(/:/g, '-');
+			curmac = curmac.toUpperCase();
+			break;
+		case 2:
 			curmac = curmac.replace(/-/g, '');
 			curmac = curmac.toLowerCase();
 			curmac = curmac.replace(/^([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})$/gi, '$1.$2.$3');
 			break;
-		case 2:
+		case 3:
 			curmac = curmac.replace(/\./g, '-');
 			break;
-		case 3:
+		case 4:
 			curmac = curmac.replace(/-/g, '');
 			curmac = curmac.toUpperCase();
 			break;
-		case 4:
+		case 5:
 			curmac = curmac.replace(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/gi, '$1:$2:$3:$4:$5:$6');
 			break;
 	}
