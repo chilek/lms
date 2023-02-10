@@ -5125,6 +5125,7 @@ $_LANG['<!netelemtype>telecommunication cabinet'] = 'szafa telekomunikacyjna';
 $_LANG['<!netelemtype>cable cabinet'] = 'szafa kablowa';
 $_LANG['<!netelemtype>cable post'] = 'słupek kablowy';
 $_LANG['<!netelemtype>telecommunication post'] = 'słupek telekomunikacyjny';
+$_LANG['<!netelemtype>— other —'] = '— inny —';
 
 $_LANG['Own node'] = 'Węzeł własny';
 $_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
