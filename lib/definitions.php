@@ -1247,7 +1247,7 @@ $NETELEMENTSTATUSES = array(
 );
 
 $NETELEMENTTYPES = array(
-    0   => trans('<!netelemtype>office building'),
+    21  => trans('<!netelemtype>office building'),
     2   => trans('<!netelemtype>residential building'),
     1   => trans('<!netelemtype>industrial building'),
     11  => trans('<!netelemtype>service building'),
