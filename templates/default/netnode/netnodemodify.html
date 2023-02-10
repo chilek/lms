@@ -45,7 +45,7 @@
 
 			{box_row icon="type" icon_class="fa-fw" label="Type"}
 				<select name="netnode[type]" {tip text="Enter node type"}>
-					<option value="0">{trans("- other -")}</option>
+					<option value="0">{trans("— other —")}</option>
 					{foreach $_NETELEMENTTYPES as $idx => $type}
 						<option value="{$idx}"
 							{if $netnode.type == $idx} selected{/if}>{$type}</option>
