@@ -1449,7 +1449,7 @@ if (isset($options['buildings'])) {
 
         $v['NUMER'] = preg_replace('/\.$/', '', dbf_to_utf8($v['NUMER']));
         if (!preg_match('#^[0-9a-zA-Z-, /\pL]*$#u', $v['NUMER'])) {
-            if (strlem($simc)) {
+            if (strlen($simc)) {
                 fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             } else {
                 fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
@@ -1460,7 +1460,7 @@ if (isset($options['buildings'])) {
         $city = $location_cache->getCityByIdent($terc, $simc);
 
         if (!$city) {
-            if (strlem($simc)) {
+            if (strlen($simc)) {
                 fwrite($stderr, 'Warning: building was not fount in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             } else {
                 fwrite($stderr, 'Warning: building was not fount in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
