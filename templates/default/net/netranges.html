@@ -767,7 +767,7 @@
             }).closest('label').toggle(linktype !== '');
             $('[name="' + prefix + '[downlink]"],[name="' + prefix + '[uplink]"]').prop('required', false).closest('label').hide();
             if (prefix == 'range') {
-                $('[name="range[downlink]"],[name="range[uplink]"]').each(function() {
+                $('[name="range[downlink]"]').each(function() {
                     $(this).find('option').each(function() {
                         var val = $(this).val();
                         $(this).toggle(linktype !== '{$smarty.const.LINKTYPE_WIRELESS}' || val === '' || parseInt(linktechnology) != 150 || parseInt(val) >= 30);
@@ -790,7 +790,7 @@
                 }).closest('label').toggle(linktechnology !== '');
             if (prefix == 'range') {
                 var linktype = $('[name="range[linktype]"]').val();
-                $('[name="range[downlink]"],[name="range[uplink]"]').each(function() {
+                $('[name="range[downlink]"]').each(function() {
                     $(this).find('option').each(function() {
                         var val = $(this).val();
                         $(this).toggle(linktype !== '{$smarty.const.LINKTYPE_WIRELESS}' || val === '' || parseInt(linktechnology) != 150 || parseInt(val) >= 30);
