@@ -547,7 +547,10 @@
                                             <option value="">{trans("— none —")}</option>
                                             {foreach $linkspeeds as $speed => $label}
                                                 <option value="{$speed}"{if $speed == $range.downlink} selected{/if}
-                                                    {if $range.linktype == $smarty.const.WIRELESS && $speed < 30} style="display: none;"{/if}>{$label}</option>
+                                                    {if $range.linktype == $smarty.const.WIRELESS
+                                                        && !empty($range.linktechnology)
+                                                        && $range.linktechnology == 150
+                                                        && $speed < 30} style="display: none;"{/if}>{$label}</option>
                                             {/foreach}
                                         </select>
                                     </label>
@@ -557,7 +560,7 @@
                                             <option value="">{trans("— none —")}</option>
                                             {foreach $linkspeeds as $speed => $label}
                                                 <option value="{$speed}"{if $speed == $range.uplink} selected{/if}
-                                                    {if $range.linktype == $smarty.const.WIRELESS && $speed < 30} style="display: none;"{/if}>{$label}</option>
+                                                    >{$label}</option>
                                             {/foreach}
                                         </select>
                                     </label>
