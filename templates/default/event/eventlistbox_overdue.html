@@ -44,9 +44,7 @@
 
 <script>
 
-    if (getCookie('overdue-events-panel') == 1) {
-        $('#overdue-events-panel').show();
-    }
+    $("#overdue-events-panel").toggle(getStorageItem("overdue-events-panel", "local") == "1");
 
 </script>
 {/block}
