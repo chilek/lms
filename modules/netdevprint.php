@@ -53,6 +53,10 @@ switch ($type) {
         include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukesidusis.php');
         break;
 
+    case 'uke-pit':
+        include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukepit.php');
+        break;
+
     default:
         $layout['pagetitle'] = trans('Reports');
 

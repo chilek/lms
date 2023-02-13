@@ -3610,6 +3610,7 @@ $_LANG['Remove lock'] = 'Usuń blokadę';
 $_LANG['Days:'] = 'Dni:';
 
 $_LANG['UKE SIIS report'] = 'Raport UKE SIIS';
+$_LANG['UKE PIT report'] = 'Raport UKE PIT';
 $_LANG['SIDUSIS report'] = 'Raport SIDUSIS';
 $_LANG['Allows you to prepare SIIS v5 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 5 do UKE';
 $_LANG['UKE income report'] = 'Raport przychodów UKE';
@@ -4105,7 +4106,7 @@ $_LANG['Producers and models'] = 'Producenci i modele';
 $_LANG['Network device producers and models management'] = 'Zarządzanie producentami i modelami osprzętu sieciowego';
 
 $_LANG['Format type:'] = 'Typ formatu:';
-$_LANG['Include customer network device assignments:'] = 'Uwzględniaj powiązania urządzeń z klientami:';
+$_LANG['Include customer network device assignments'] = 'Uwzględniaj powiązania urządzeń z klientami';
 $_LANG['Exported sheets:'] = 'Eksportowane arkusze:';
 
 $_LANG['cash import file'] = 'plik importu płatności';
