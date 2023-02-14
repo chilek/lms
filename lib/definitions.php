@@ -1263,11 +1263,39 @@ $NETELEMENTTYPES = array(
     19  => trans('<!netelemtype>telecommunication post'),
     18  => trans('<!netelemtype>cable post'),
     7   => trans('<!netelemtype>telecommunication cabinet'),
-    16  => trans('<!netteletype>cable connector'),
+    16  => trans('<!netelemtype>cable connector'),
     15  => trans('<!netelemtype>lighting mast'),
     4   => trans('<!netelemtype>telecommunication mast'),
     14  => trans('<!netelemtype>pole'),
     5   => trans('<!netelemtype>telecommunication tower'),
+);
+
+$NETELEMENTTYPEGROUPS = array(
+    trans('building objects (SIIS)') => array(
+        21 => true,
+        2 => true,
+        1 => true,
+        11 => true,
+        12 => true,
+        3 => true,
+        13 => true,
+    ),
+    trans('infrastructure elements (PIT)') => array(
+        10 => true,
+        17 => true,
+        9 => true,
+        20 => true,
+        8 => true,
+        6 => true,
+        19 => true,
+        18 => true,
+        7 => true,
+        16 => true,
+        15 => true,
+        4 => true,
+        14 => true,
+        5 => true,
+    ),
 );
 
 $NETELEMENTOWNERSHIPS = array(
@@ -1565,6 +1593,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);
     $SMARTY->assign('_NETELEMENTSTATUSES', $NETELEMENTSTATUSES);
     $SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
+    $SMARTY->assign('_NETELEMENTTYPEGROUPS', $NETELEMENTTYPEGROUPS);
     $SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
     $SMARTY->assign('_USERPANEL_AUTH_TYPES', $USERPANEL_AUTH_TYPES);
     $SMARTY->assignByRef('_EVENTTYPES', $EVENTTYPES);

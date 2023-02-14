@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['building objects (SIIS)'] = 'obiekty budowlane (SIIS)';
+$_LANG['infrastructure elements (PIT)'] = 'elementy infrastruktury (PIT)';
+
 $_LANG['comma separated emails'] = 'adresy e-mail oddzielone przecinkami';
 
 $_LANG['related documents'] = 'powiązane dokumenty';
