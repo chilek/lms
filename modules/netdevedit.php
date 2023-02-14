@@ -700,7 +700,7 @@ if (isset($netdev)) {
         && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netdev['location_city_name']) && ($netdev['location_country_id'] == 2 || empty($netdev['location_country_id']))
         && (!isset($netdev['teryt']) || empty($netdev['location_city'])) && $LMS->isTerritState($netdev['location_state_name'])) {
-        $error['netdev[teryt]'] = trans('TERRIT address is required!');
+        $error['netdev[teryt]'] = trans('TERYT address is required!');
     }
 
     if (!empty($netdev['location_country_id'])) {

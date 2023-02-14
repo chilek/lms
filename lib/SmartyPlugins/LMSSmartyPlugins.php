@@ -665,7 +665,7 @@ class LMSSmartyPlugins
 
         echo '<tr>
               <td colspan="2">
-                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
+                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans('TERYT base') . '</label>
                   ' . self::buttonFunction(array('icon' => 'popup', 'class' => 'teryt-address-button'), $template) . '
               </td>
           </tr>';
@@ -708,7 +708,7 @@ class LMSSmartyPlugins
 
         $location_str .= isset($params['data']['location'])
             ? (isset($params['data']['teryt']) && $params['data']['teryt']
-                ? trans('$a (TERRIT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
+                ? trans('$a (TERYT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
             : '...';
 
         $title = '';

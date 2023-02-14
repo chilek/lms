@@ -200,7 +200,7 @@
 												</td>
 												<td>
 													<span title="{trans('billing address')}">
-														{if $v.teryt}{t a=$v.location|default:""|escape}$a (TERRIT){/t}{else}{$v.location|default:""|escape}{/if}
+														{if $v.teryt}{t a=$v.location|default:""|escape}$a (TERYT){/t}{else}{$v.location|default:""|escape}{/if}
 														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
 															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>
@@ -218,7 +218,7 @@
 												</td>
 												<td>
 													<span title="{trans('postal address')}">
-														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
+														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERYT){/t}{else}{$v.location|escape}{/if}
 														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
 															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>
@@ -244,7 +244,7 @@
 												</td>
 												<td>
 													<span title="{$title}">
-														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERRIT){/t}{else}{$v.location|escape}{/if}
+														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERYT){/t}{else}{$v.location|escape}{/if}
 														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
 															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>

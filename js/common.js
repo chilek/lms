@@ -229,7 +229,7 @@ if ( typeof $ !== 'undefined' ) {
 				url: '?m=chooselocation' + (addressType ? '&addresstype=' + addressType : '') +
 					'&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'),
 				selector: this,
-				title: $t("Choose TERRIT location"),
+				title: $t("Choose TERYT location"),
 				onLoaded: function() {
 					$('#search [name="searchcity"]').focus();
 				}
@@ -822,7 +822,7 @@ function location_str(data) {
 	}
 
 	if (teryt) {
-		location = $t('$a (TERRIT)', location);
+		location = $t('$a (TERYT)', location);
 	}
 
 	return location;

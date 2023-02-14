@@ -333,7 +333,7 @@ if (isset($_POST['nodedata'])) {
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($nodedata['address_id']) && !$LMS->isTerritAddress($nodedata['address_id'])) {
-        $error['address_id'] = trans('TERRIT address is required!');
+        $error['address_id'] = trans('TERYT address is required!');
     }
 
     if ($nodedata['invprojectid'] == '-1') { // nowy projekt

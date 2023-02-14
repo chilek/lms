@@ -96,7 +96,7 @@
 							{if $node.location}<BR>
 								<span class="nobr" class="lms-ui-ignore-target-url">
 									{if $node.teryt}
-										{button icon="map" type="link" href="?m=netdevmap&nodeid={$node.id}"} {t a=$node.location|trunescape:60}$a (TERRIT){/t}</a>
+										{button icon="map" type="link" href="?m=netdevmap&nodeid={$node.id}"} {t a=$node.location|trunescape:60}$a (TERYT){/t}</a>
 									{else}
 										{button icon="map" type="link" href="?m=netdevmap&nodeid={$node.id}" label="{$node.location|trunescape:60}" }
 									{/if}

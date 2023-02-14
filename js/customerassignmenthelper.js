@@ -386,7 +386,7 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.nodes, function(key, node) {
 							var location = String(node.location);
-							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
+							location = node.teryt == '1' ? $t('$a (TERYT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
@@ -414,7 +414,7 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.netdevnodes, function(key, node) {
 							var location = String(node.location);
-							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
+							location = node.teryt == '1' ? $t('$a (TERYT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
@@ -442,7 +442,7 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.voipaccounts, function(key, account) {
 							var location = String(account.location);
-							location = account.teryt == '1' ? $t('$a (TERRIT)', location) : location;
+							location = account.teryt == '1' ? $t('$a (TERYT)', location) : location;
 							$.each(account.phones, function(key, phone) {
 								options += '<option value="' + phone.id + '"' +
 									(("sphones" in selected) && (schemaid in selected.sphones) && (label in selected.sphones[schemaid]) &&
@@ -475,7 +475,7 @@ function CustomerAssignmentHelper(options) {
 				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
 					$.each(data['with-end-points'], function(key, value) {
-						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
 							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
@@ -487,7 +487,7 @@ function CustomerAssignmentHelper(options) {
 				if (data['without-end-points']) {
 					options += '<optgroup label="' + $t("without end-points") + '">';
 					$.each(data['without-end-points'], function(key, value) {
-						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
 							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +

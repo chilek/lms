@@ -3471,8 +3471,8 @@ $_LANG['Select street'] = 'Wybierz ulicę';
 $_LANG['State'] = 'Województwo';
 $_LANG['Street'] = 'Ulica';
 $_LANG['street'] = 'ulica';
-$_LANG['TERRIT-DB'] = 'Baza TERYT';
-$_LANG['$a (TERRIT)'] = '$a (TERYT)';
+$_LANG['TERYT base'] = 'Baza TERYT';
+$_LANG['$a (TERYT)'] = '$a (TERYT)';
 $_LANG['City has not been selected!'] = 'Nie wybrano miasta!';
 $_LANG['Flat number is too long (max. 8 characters)!'] = 'Numer mieszkania jest za długi (max. 8 znaków)!';
 $_LANG['Zip code is too long (max. 8 characters)!'] = 'Kod pocztowy jest za długi (max. 8 znaków)!';
@@ -4306,8 +4306,8 @@ $_LANG['<!enddate>— any —'] = '— dowolną —';
 $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 $_LANG['expire in indicated number of days'] = 'wygasną za wskazaną liczbę dni';
 
-$_LANG['TERRIT not specified'] = 'bez TERYT';
-$_LANG['<!welcome>TERRIT not specified'] = 'Bez TERYT';
+$_LANG['TERYT not specified'] = 'bez TERYT';
+$_LANG['<!welcome>TERYT not specified'] = 'Bez TERYT';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
@@ -5210,7 +5210,7 @@ $_LANG['Tax category:'] = 'GTU:';
 $_LANG['Select tax category'] = 'Wybierz GTU';
 $_LANG['Tax category selection is required!'] = 'Wymagany wybór GTU!';
 
-$_LANG['TERRIT address is required!'] = 'Wymagany adres zgodny z TERYT!';
+$_LANG['TERYT address is required!'] = 'Wymagany adres zgodny z TERYT!';
 
 $_LANG['investment project management'] = 'zarządzanie projektami inwestycyjnymi';
 
@@ -5255,7 +5255,7 @@ $_LANG['invoice transfer form'] = 'druczek przelewu na fakturze';
 $_LANG['Copy from billing address'] = 'Kopiuj z adresu billingowego';
 $_LANG['Copy from post address'] = 'Kopiuj z adresu korespondencyjnego';
 
-$_LANG['Choose TERRIT location'] = 'Wybierz lokalizację TERYT';
+$_LANG['Choose TERYT location'] = 'Wybierz lokalizację TERYT';
 $_LANG['Ticket watching'] = 'Obserwowanie zgłoszeń';
 $_LANG['Start watching'] = 'Obserwuj';
 $_LANG['Stop watching'] = 'Nie obserwuj';

@@ -1459,9 +1459,9 @@ if (isset($options['buildings'])) {
 
         if (!$city) {
             if (strlen($simc)) {
-                fwrite($stderr, 'Warning: building was not found in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             } else {
-                fwrite($stderr, 'Warning: building was not found in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             }
             continue;
         }
@@ -1471,7 +1471,7 @@ if (isset($options['buildings'])) {
         } else {
             $street = $location_cache->getStreetByIdent($city['id'], $ulic);
             if (empty($street)) {
-                fwrite($stderr, 'Warning: building was not found in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                fwrite($stderr, 'Warning: building was not found in TERYT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
                 continue;
             }
         }

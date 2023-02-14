@@ -2410,7 +2410,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 unset($caddr[$k]);
                 continue;
             } elseif ($v['teryt']) {
-                $v['location'] = trans('$a (TERRIT)', $v['location']);
+                $v['location'] = trans('$a (TERYT)', $v['location']);
             }
 
             switch ($v['location_address_type']) {
@@ -2554,7 +2554,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         if (isset($address)) {
-            $address = (empty($address['teryt']) ? $address['location'] : trans('$a (TERRIT)', $address['location']));
+            $address = (empty($address['teryt']) ? $address['location'] : trans('$a (TERYT)', $address['location']));
         }
 
         return $address;
