@@ -392,7 +392,10 @@ version 28-git (????-??-??):
     with password when sending to customers (default empty value means all document types) [chilan]
   - enhancement: added tariff flag filter and presentation them on list near tariff name [chilan]
   - improvement: new mac format with colons and lower case hex digits [chilan]
-
+  - enhancement: uke/pit: updated network node type and link technology dictionaries [chilan]
+  - improvement: uke/pit: changed network node type to lms-ui-advanced-select with two groups - building
+    objects (SIIS) and infrastructure elements (PIT) [chilan]
+ 
 version 27.0 (2021-08-20):
 
   - enhancement: require user selection in event(add/edit) forms,
