@@ -832,13 +832,13 @@ if ($netnodes) {
 
         // save info about network ranges
         $ranges = $DB->GetAll("SELECT n.linktype, n.linktechnology,
-			a.city_id AS location_city, a.city AS location_city_name,
-			a.street_id AS location_street, a.street AS location_street_name,
-			a.house AS location_house, a.zip AS location_zip, 0 AS from_uni_link
-		FROM nodes n
-		LEFT JOIN addresses a ON n.address_id = a.id
-		WHERE n.ownerid IS NOT NULL AND a.city_id IS NOT NULL AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
-		GROUP BY n.linktype, n.linktechnology, a.street, a.street_id, a.city_id, a.city, a.house, a.zip");
+            a.city_id AS location_city, a.city AS location_city_name,
+            a.street_id AS location_street, a.street AS location_street_name,
+            a.house AS location_house, a.zip AS location_zip, 0 AS from_uni_link
+        FROM nodes n
+        LEFT JOIN addresses a ON n.address_id = a.id
+        WHERE n.ownerid IS NOT NULL AND a.city_id IS NOT NULL AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
+        GROUP BY n.linktype, n.linktechnology, a.street, a.street_id, a.city_id, a.city, a.house, a.zip");
         if (empty($ranges)) {
             $ranges = array();
         }
@@ -936,27 +936,27 @@ if ($netnodes) {
                 $nodes = $DB->GetAll(
                     "SELECT na.nodeid, c.type, n.invprojectid, nd.id AS netdevid, nd.status,"
                     . $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
-					WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
-					WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
-					ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
-				FROM nodeassignments na
-				JOIN nodes n             ON n.id = na.nodeid
-				LEFT JOIN addresses addr ON addr.id = n.address_id
-				JOIN assignments a       ON a.id = na.assignmentid
-				JOIN tariffs t           ON t.id = a.tariffid
-				JOIN customers c ON c.id = n.ownerid
-				LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
-					WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
-						AND aa.datefrom < ?NOW?
-						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
-					AS allsuspended ON allsuspended.cid = c.id
-				JOIN netdevices nd ON nd.id = n.netdev
-				WHERE n.ownerid IS NOT NULL AND n.netdev IS NOT NULL AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
-					AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
-					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
-					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
-					AND allsuspended.total IS NULL
-				GROUP BY na.nodeid, c.type, n.invprojectid, nd.id, nd.status",
+                    WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
+                    WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
+                    ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
+                FROM nodeassignments na
+                JOIN nodes n             ON n.id = na.nodeid
+                LEFT JOIN addresses addr ON addr.id = n.address_id
+                JOIN assignments a       ON a.id = na.assignmentid
+                JOIN tariffs t           ON t.id = a.tariffid
+                JOIN customers c ON c.id = n.ownerid
+                LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
+                    WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
+                        AND aa.datefrom < ?NOW?
+                        AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
+                    AS allsuspended ON allsuspended.cid = c.id
+                JOIN netdevices nd ON nd.id = n.netdev
+                WHERE n.ownerid IS NOT NULL AND n.netdev IS NOT NULL AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
+                    AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
+                    AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+                    AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
+                    AND allsuspended.total IS NULL
+                GROUP BY na.nodeid, c.type, n.invprojectid, nd.id, nd.status",
                     array($range['linktype'], $range['linktechnology'], $range['location_city'], $range['location_street'], $range['location_house'])
                 );
                 if (empty($nodes)) {
@@ -972,25 +972,25 @@ if ($netnodes) {
                     . $uni_link['operator_netdevid'] . " AS netdevid, "
                     . $uni_link['operator_netdevstatus'] . " AS status, "
                     . $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
-					WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
-					WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
-					ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
-				FROM nodeassignments na
-				JOIN nodes n             ON n.id = na.nodeid
-				JOIN assignments a       ON a.id = na.assignmentid
-				JOIN tariffs t           ON t.id = a.tariffid
-				JOIN customers c ON c.id = n.ownerid
-				LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
-					WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
-						AND aa.datefrom < ?NOW?
-						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
-					AS allsuspended ON allsuspended.cid = c.id
-				JOIN netdevices nd ON nd.id = n.netdev
-				WHERE n.id IN (" . implode(',', $uni_link['nodes']) . ")
-					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
-					AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-					AND allsuspended.total IS NULL
-				GROUP BY na.nodeid, c.type",
+                    WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
+                    WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
+                    ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
+                FROM nodeassignments na
+                JOIN nodes n             ON n.id = na.nodeid
+                JOIN assignments a       ON a.id = na.assignmentid
+                JOIN tariffs t           ON t.id = a.tariffid
+                JOIN customers c ON c.id = n.ownerid
+                LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
+                    WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
+                        AND aa.datefrom < ?NOW?
+                        AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
+                    AS allsuspended ON allsuspended.cid = c.id
+                JOIN netdevices nd ON nd.id = n.netdev
+                WHERE n.id IN (" . implode(',', $uni_link['nodes']) . ")
+                    AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+                    AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+                    AND allsuspended.total IS NULL
+                GROUP BY na.nodeid, c.type",
                     array()
                 );
                 if (empty($uni_nodes)) {
@@ -1322,17 +1322,17 @@ if ($netdevices) {
     foreach ($netdevices as $netdevice) {
         $ndnetlinks = $DB->GetAll(
             "SELECT src, dst, nl.type, speed, nl.technology,
-			(CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
-				ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
-			(CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
-				ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
-			FROM netlinks nl
-			JOIN netdevices ndsrc ON ndsrc.id = nl.src
-			JOIN netdevices nddst ON nddst.id = nl.dst
-			LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
-			LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
-			WHERE (src = ?" . ($customer_netdevices ? 'AND nddst.ownerid IS NULL' : '') . ")
-				OR (dst = ?" . ($customer_netdevices ? 'AND ndsrc.ownerid IS NULL' : '') . ")",
+            (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
+                ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
+            (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
+                ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
+            FROM netlinks nl
+            JOIN netdevices ndsrc ON ndsrc.id = nl.src
+            JOIN netdevices nddst ON nddst.id = nl.dst
+            LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
+            LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
+            WHERE (src = ?" . ($customer_netdevices ? 'AND nddst.ownerid IS NULL' : '') . ")
+                OR (dst = ?" . ($customer_netdevices ? 'AND ndsrc.ownerid IS NULL' : '') . ")",
             array($netdevice['id'], $netdevice['id'], $netdevice['id'], $netdevice['id'])
         );
         if ($ndnetlinks) {
