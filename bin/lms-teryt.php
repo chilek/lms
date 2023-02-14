@@ -1382,8 +1382,6 @@ if (isset($options['buildings'])) {
         $teryt_dir . DIRECTORY_SEPARATOR . 'PRG_PunktyAdresowe_POLSKA.shp',
         array(
             \Shapefile\Shapefile::OPTION_DBF_IGNORED_FIELDS => array(
-                'SIMC_NAZWA',
-                'ULIC_NAZWA',
                 'LAYER',
                 'PATH',
             ),
@@ -1450,9 +1448,9 @@ if (isset($options['buildings'])) {
         $v['NUMER'] = preg_replace('/\.$/', '', dbf_to_utf8($v['NUMER']));
         if (!preg_match('#^[0-9a-zA-Z-, /\pL]*$#u', $v['NUMER'])) {
             if (strlen($simc)) {
-                fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             } else {
-                fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                fwrite($stderr, 'Warning: house number contains incorrect characters (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             }
             continue;
         }
@@ -1461,9 +1459,9 @@ if (isset($options['buildings'])) {
 
         if (!$city) {
             if (strlen($simc)) {
-                fwrite($stderr, 'Warning: building was not fount in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                fwrite($stderr, 'Warning: building was not fount in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', ULIC: ' . $ulic . ', STREET: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             } else {
-                fwrite($stderr, 'Warning: building was not fount in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['ULIC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
+                fwrite($stderr, 'Warning: building was not fount in TERRIT database (TERC: ' . $terc . ', SIMC: ' . $simc . ', CITY: ' . $address['SIMC_NAZWA'] . ', NR: ' . $v['NUMER'] . ')!' . PHP_EOL);
             }
             continue;
         }
