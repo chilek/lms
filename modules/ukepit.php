@@ -965,11 +965,17 @@ if ($netnodes) {
                 JOIN netdevices nd ON nd.id = n.netdev
                 WHERE n.ownerid IS NOT NULL AND n.netdev IS NOT NULL AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
                     AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
-                    AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+                    AND a.suspended = 0 AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
                     AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
                     AND allsuspended.total IS NULL
                 GROUP BY na.nodeid, c.type, n.invprojectid, nd.id, nd.status",
-                    array($range['linktype'], $range['linktechnology'], $range['location_city'], $range['location_street'], $range['location_house'])
+                    array(
+                        $range['linktype'],
+                        $range['linktechnology'],
+                        $range['location_city'],
+                        $range['location_street'],
+                        $range['location_house']
+                    )
                 );
                 if (empty($nodes)) {
                     $nodes = array();
@@ -999,7 +1005,7 @@ if ($netnodes) {
                     AS allsuspended ON allsuspended.cid = c.id
                 JOIN netdevices nd ON nd.id = n.netdev
                 WHERE n.id IN (" . implode(',', $uni_link['nodes']) . ")
-                    AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+                    AND a.suspended = 0 AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
                     AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
                     AND allsuspended.total IS NULL
                 GROUP BY na.nodeid, c.type",
@@ -1019,8 +1025,8 @@ if ($netnodes) {
 
             // check if this is range with the same location as owning network node
             if ($range['location_city'] == $netnode['location_city']
-            && $range['location_street'] == $netnode['location_street']
-            && $range['location_house'] == $netnode['location_house']) {
+                && $range['location_street'] == $netnode['location_street']
+                && $range['location_house'] == $netnode['location_house']) {
                 $range_netbuilding = true;
             }
 
@@ -1223,12 +1229,11 @@ if ($netnodes) {
                         }
 
                         $us_data = array_merge($us_data, array(
-                        'us_invproject' => strlen($prj) ? $prj : '',
-                        'us_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                            'us_invproject' => strlen($prj) ? $prj : '',
+                            'us_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
                         ));
 
                         $buffer .= 'U,' . to_csv($us_data) . EOL;
-                        }
                         $netrangeid++;
                     }
 
@@ -1269,6 +1274,7 @@ if ($netnodes) {
                     $netbuildingid++;
                 }
             }
+        }
 
         // unfortunately network node doesn't have range with the same location
         if (!$range_netbuilding) {
