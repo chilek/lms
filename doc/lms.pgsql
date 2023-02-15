@@ -4193,7 +4193,8 @@ INSERT INTO netdevicetypes (name, passive) VALUES
 ('GSM modem', 0),
 ('DSL modem', 0),
 ('power line adapter', 0),
-('IPTV decoder', 0);
+('IPTV decoder', 0),
+('cable joint', 1);
 
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
@@ -4341,6 +4342,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023021000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023021500');
 
 COMMIT;

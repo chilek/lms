@@ -5122,6 +5122,7 @@ $_LANG['<!netelemtype>chimney'] = 'komin';
 $_LANG['<!netelemtype>telecommunication container'] = 'kontener telekomunikacyjny';
 $_LANG['<!netelemtype>pole'] = 'słup';
 $_LANG['<!netelemtype>cable joint'] = 'mufa kablowa';
+$_LANG['cable joint'] = 'mufa kablowa';
 $_LANG['<!netelemtype>cable box'] = 'skrzynka kablowa';
 $_LANG['<!netelemtype>well'] = 'studzienka';
 $_LANG['<!netelemtype>cable connector'] = 'złącze kablowe';
