@@ -1326,7 +1326,6 @@ unset($netnode);
 unset($teryt_cities);
 unset($teryt_streets);
 
-/*
 //prepare info about network links (only between different network nodes)
 $netconnectionid = 1;
 $processed_netlinks = array();
@@ -1354,12 +1353,16 @@ if ($netdevices) {
                 $srcnetnode = $netdevs[$netlink['src']];
                 $dstnetnode = $netdevs[$netlink['dst']];
                 $netnodeids = array($netnodes[$srcnetnode]['id'], $netnodes[$dstnetnode]['id']);
+
                 sort($netnodeids);
+
                 $netnodelinkid = implode('_', $netnodeids);
+
                 if (!isset($processed_netlinks[$netnodelinkid])) {
-                        $linkspeed = $netlink['speed'];
-                        $speed = floor($linkspeed / 1000);
-                        $netintid = '';
+                    $linkspeed = $netlink['speed'];
+                    $speed = floor($linkspeed / 1000);
+                    $netintid = '';
+
                     if ($netlink['src'] == $netdevice['id']) {
                         if ($netdevnetnode != $dstnetnode) {
                             if ($netdevices[$netlink['src']]['invproject'] == $netdevices[$netlink['dst']]['invproject']
@@ -1377,50 +1380,9 @@ if ($netdevices) {
                             }
 
                             $processed_netlinks[$netnodelinkid] = true;
-                            //$netnodes[$netdevnetnode]['distports']++;
-                            $foreign = false;
 
-                            if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2) {
-                                $invproject = strlen($netnodes[$dstnetnode]['invproject']) ? $netnodes[$dstnetnode]['invproject'] : '';
-                                $netintid = $netnodes[$dstnetnode]['backbonenetintid'][$invproject][$netnodes[$dstnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-                                $data = array(
-                                    'ps_id' => $netconnectionid,
-                                    'ps_wwid' => $netnodes[$dstnetnode]['id'],
-                                    'ps_woid' => $netnodes[$netdevnetnode]['id'],
-                                    'ps_intid' => $netintid,
-                                    'ps_internetusage' => 'Tak',
-                                    'ps_voiceusage' => 'Nie',
-                                    'ps_otherusage' => 'Nie',
-                                    'ps_totalspeed' => $speed,
-                                    'ps_internetspeed' => $speed,
-                                    'ps_invproject' => $netnodes[$netdevnetnode]['invproject'],
-                                    'ps_invstatus' => strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '',
-                                );
-                                $buffer .= 'PS,' . to_csv($data) . EOL;
-
-                                $netconnectionid++;
-                                $foreign = true;
-                            }
-                            if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2) {
-                                $invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
-                                $netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-                                $data = array(
-                                    'ps_id' => $netconnectionid,
-                                    'ps_wwid' => $netnodes[$netdevnetnode]['id'],
-                                    'ps_woid' => $netnodes[$dstnetnode]['id'],
-                                    'ps_intid' => $netintid,
-                                    'ps_internetusage' => 'Tak',
-                                    'ps_voiceusage' => 'Nie',
-                                    'ps_otherusage' => 'Nie',
-                                    'ps_totalspeed' => $speed,
-                                    'ps_internetspeed' => $speed,
-                                    'ps_invproject' => $netnodes[$dstnetnode]['invproject'],
-                                    'ps_invstatus' => strlen($netnodes[$dstnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$dstnetnode]['status']] : '',
-                                );
-                                $buffer .= 'PS,' . to_csv($data) . EOL;
-                                $netconnectionid++;
-                                $foreign = true;
-                            }
+                            $foreign = $netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2
+                                || $netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2;
 
                             $netlinks[] = array(
                                 'type' => $netlink['type'],
@@ -1451,49 +1413,9 @@ if ($netdevices) {
                         }
 
                         $processed_netlinks[$netnodelinkid] = true;
-                        //$netnodes[$netdevnetnode]['distports']++;
-                        $foreign = false;
 
-                        if ($netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$srcnetnode]['ownership'] < 2) {
-                            $invproject = strlen($netnodes[$srcnetnode]['invproject']) ? $netnodes[$srcnetnode]['invproject'] : '';
-                            $netintid = $netnodes[$srcnetnode]['backbonenetintid'][$invproject][$netnodes[$srcnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-                            $data = array(
-                                'ps_id' => $netconnectionid,
-                                'ps_wwid' => $netnodes[$srcnetnode]['id'],
-                                'ps_woid' => $netnodes[$netdevnetnode]['id'],
-                                'ps_intid' => $netintid,
-                                'ps_internetusage' => 'Tak',
-                                'ps_voiceusage' => 'Nie',
-                                'ps_otherusage' => 'Nie',
-                                'ps_totalspeed' => $speed,
-                                'ps_internetspeed' => $speed,
-                                'ps_invproject' => $netnodes[$netdevnetnode]['invproject'],
-                                'ps_invstatus' => strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '',
-                            );
-                            $buffer .= 'PS,' . to_csv($data) . EOL;
-                            $netconnectionid++;
-                            $foreign = true;
-                        }
-                        if ($netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$srcnetnode]['ownership'] == 2) {
-                            $invproject = strlen($netnodes[$netdevnetnode]['invproject']) ? $netnodes[$netdevnetnode]['invproject'] : '';
-                            $netintid = $netnodes[$netdevnetnode]['backbonenetintid'][$invproject][$netnodes[$netdevnetnode]['status']][$netlink['type']][$netlink['technology']][$netlink['speed']];
-                            $data = array(
-                                'ps_id' => $netconnectionid,
-                                'ps_wwid' => $netnodes[$netdevnetnode]['id'],
-                                'ps_woid' => $netnodes[$srcnetnode]['id'],
-                                'ps_intid' => $netintid,
-                                'ps_internetusage' => 'Tak',
-                                'ps_voiceusage' => 'Nie',
-                                'ps_otherusage' => 'Nie',
-                                'ps_totalspeed' => $speed,
-                                'ps_internetspeed' => $speed,
-                                'ps_invproject' => $netnodes[$srcnetnode]['invproject'],
-                                'ps_invstatus' => strlen($netnodes[$srcnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$srcnetnode]['status']] : '',
-                            );
-                            $buffer .= 'PS,' . to_csv($data) . EOL;
-                            $netconnectionid++;
-                            $foreign = true;
-                        }
+                        $foreign = $netnodes[$netdevnetnode]['ownership'] == 2 && $netnodes[$dstnetnode]['ownership'] < 2
+                            || $netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2;
 
                         $netlinks[] = array(
                             'type' => $netlink['type'],
@@ -1513,6 +1435,7 @@ if ($netdevices) {
     }
 }
 
+/*
 // save info about network lines
 $netlineid = 1;
 $snetcablelines = '';
