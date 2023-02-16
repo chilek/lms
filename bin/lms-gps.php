@@ -224,7 +224,7 @@ foreach ($types as $label => $type) {
     $locations = $DB->GetAll(
         "SELECT
             t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
-            ld.name AS distict_name, lb.name AS borough_name,
+            ld.name AS district_name, lb.name AS borough_name,
             va.city AS city_name,
             va.zip AS zip,
             c.name AS country_name,
@@ -289,8 +289,7 @@ foreach ($types as $label => $type) {
                         break;
                     } else {
                         if (!$quiet) {
-                            echo 'google: #' . $row['id'] . " - ERROR - Accuracy: " . $res['accuracy']
-                                . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
+                            echo 'google: #' . $row['id'] . " - ERROR: " . $res['status'] . ' (' . $res['error'] . ')' . PHP_EOL;
                         }
                     }
                     if (empty($google_api_key)) {

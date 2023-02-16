@@ -1449,10 +1449,11 @@ function geocode($location)
     }
 
     $page = json_decode($res, true);
-    $latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
-    $longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
+
+    $latitude = empty($page['results']) ? null : str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
+    $longitude = empty($page['results']) ? null : str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
+    $accuracy = empty($page['results']) ? null : $page["results"][0]["geometry"]["location_type"];
     $status = $page["status"];
-    $accuracy = $page["results"][0]["geometry"]["location_type"];
     return array(
         'status' => $status,
         'error' => isset($page['error_message']) ? $page['error_message'] : '',
