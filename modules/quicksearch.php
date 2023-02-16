@@ -28,7 +28,7 @@ function macformat($mac, $escape = false)
 {
     $DB = LMSDB::getInstance();
 
-    $mac = preg_replace('/[^0-9a-f]/i', '', $mac);
+    $mac = preg_replace('/[\-:\.]/', '', $mac);
 
     if ($escape) {
         return $DB->Escape('%' . $mac . '%');
