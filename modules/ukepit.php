@@ -394,6 +394,9 @@ $netdevs    = array();
 $foreigners = array();
 $netnodeid = 1;
 
+$root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
+$root_netnode_name = null;
+
 if ($netdevices) {
     foreach ($netdevices as $netdevid => $netdevice) {
         $tmp = array(
@@ -530,6 +533,7 @@ if ($netdevices) {
         }
 
         $netdevice['netnodename'] = $netdevices[$netdevid]['netnodename'] = $netnodename;
+
         if (!array_key_exists($netnodename, $netnodes)) {
             if ($customer_netdevices) {
                 $netnodes[$netnodename]['uni_links'] = array();
@@ -641,8 +645,19 @@ if ($netdevices) {
                 $netnodes[$netnodename]['latitudes'] = array();
             }
 
+            $netnodes[$netnodename]['mode'] = empty($netdevice['passive']) ? 2 : 1;
+
+            $netnodes[$netnodename]['media'] = array();
+            $netnodes[$netnodename]['technologies'] = array();
+            $netnodes[$netnodename]['parent_netnodename'] = null;
+            $netnodes[$netnodename]['child_netdevices'] = array();
+            $netnodes[$netnodename]['child_netnodenames'] = array();
+
             $netnodeid++;
+        } elseif (empty($netdevice['passive']) && $netnodes[$netnodename]['mode'] < 2) {
+            $netnodes[$netnodename]['mode'] = 2;
         }
+
         $netdevices[$netdevid]['ownership'] = $netnodes[$netnodename]['ownership'];
 
         $projectname = $prj = $netdevice['invproject'];
@@ -650,6 +665,10 @@ if ($netdevices) {
             $status = 0;
         } else {
             $status = $netdevice['status'];
+        }
+
+        if ($netdevid == $root_netdevice_id) {
+            $root_netnode_name = $netnodename;
         }
 
         if (!empty($accessports)) {
@@ -709,9 +728,41 @@ if ($netdevices) {
             $netnodes[$netnodename]['latitudes'][] = $netdevice['latitude'];
         }
 
-        $netdevs[$netdevice['id']] = $netnodename;
+        $netdevs[$netdevid] = $netnodename;
+
+        $child_netdevices = $DB->GetCol(
+            "SELECT (CASE nl.src WHEN ? THEN nl.dst ELSE nl.src END) AS id
+            FROM netlinks nl
+            JOIN netdevices ndsrc ON ndsrc.id = nl.src
+            JOIN netdevices nddst ON nddst.id = nl.dst
+            WHERE (nl.src = ?" . ($customer_netdevices ? 'AND nddst.ownerid IS NULL' : '') . ")
+                OR (nl.dst = ?" . ($customer_netdevices ? 'AND ndsrc.ownerid IS NULL' : '') . ")",
+            array($netdevid, $netdevid, $netdevid)
+        );
+
+        if (empty($child_netdevices)) {
+            $child_netdevices = array();
+        }
+
+        $netnodes[$netnodename]['child_netdevices'] = array_merge($netnodes[$netnodename]['child_netdevices'], $child_netdevices);
     }
 }
+
+foreach ($netnodes as $netnodename => &$netnode) {
+    foreach ($netnode['child_netdevices'] as $netdevid) {
+        $netnode['child_netnodenames'][] = $netdevs[$netdevid];
+    }
+    $netnode['child_netnodenames'] = array_unique($netnode['child_netnodenames']);
+    //echo $netnodename . ': ' . implode(',', $netnode['child_netnodenames']) . '<br>';
+}
+unset($netnode);
+
+function analyze_network_subtree($netnode_name, &$netnodes, &$netdevices)
+{
+}
+
+analyze_network_subtree($root_netnode_name, $netnodes, $netdevices);
+//var_dump($root_netnode_name);die;
 
 $foreignerid = 1;
 $sforeigners = '';
