@@ -256,6 +256,7 @@
 
 			<label>
 				{trans("Flags")}
+				<input type="hidden" name="flags[]" value="0">
 				<select name="flags[]" {tip text="Select customer flags (optional)" class="lms-ui-multiselect"}
 						multiple onchange="document.choosefilter.submit();">
 					{foreach Localisation::arraySort($_CUSTOMERFLAGS, 'label') as $cflag => $flag}
