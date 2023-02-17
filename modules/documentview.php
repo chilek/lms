@@ -243,42 +243,44 @@ if (!empty($docids)) {
         }
 
         if ($htmls && !$pdfs && strlen($htmlbuffer)) {
-            $htmlbuffer = "
-                <html>
-                    <head>
-                        <style>
+            if (!empty($html2pdf_command)) {
+                $htmlbuffer = "
+                    <html>
+                        <head>
+                            <style>
 
-                            @page {
-                                size: A4;
-                                margin: 1cm;
-                            }
+                                @page {
+                                    size: A4;
+                                    margin: 1cm;
+                                }
 
-                            .document {
-                                 break-after: always;
-                            }
+                                .document {
+                                     break-after: always;
+                                }
 
-                        </style>
-                    </head>
-                    <body>"
-                    . $htmlbuffer
-                    . "
-                        <script>
+                            </style>
+                        </head>
+                        <body>"
+                        . $htmlbuffer
+                        . "
+                            <script>
 
-                            let documents = document.querySelectorAll('.document');
-                            if (documents.length) {
-                                documents.forEach(function(document) {
-                                    let documentShadow = document.attachShadow({
-                                        mode: \"closed\"
+                                let documents = document.querySelectorAll('.document');
+                                if (documents.length) {
+                                    documents.forEach(function(document) {
+                                        let documentShadow = document.attachShadow({
+                                            mode: \"closed\"
+                                        });
+                                        let innerHTML = document.innerHTML;
+                                        document.innerHTML = '';
+                                        documentShadow.innerHTML = innerHTML;
                                     });
-                                    let innerHTML = document.innerHTML;
-                                    document.innerHTML = '';
-                                    documentShadow.innerHTML = innerHTML;
-                                });
-                            }
+                                }
 
-                        </script>
-                    </body>
-                </html>";
+                            </script>
+                        </body>
+                    </html>";
+            }
 
             if ($document_type == 'pdf') {
                 html2pdf(
