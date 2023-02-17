@@ -408,6 +408,7 @@ $netnodeid = 1;
 
 $root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
 $root_netnode_name = null;
+$processed_child_netlinks = array();
 
 if ($netdevices) {
     foreach ($netdevices as $netdevid => $netdevice) {
@@ -742,8 +743,8 @@ if ($netdevices) {
 
         $netdevs[$netdevid] = $netnodename;
 
-        $child_netdevices = $DB->GetCol(
-            "SELECT (CASE nl.src WHEN ? THEN nl.dst ELSE nl.src END) AS id
+        $child_netdevices = $DB->GetAll(
+            "SELECT nl.id AS netlinkid, (CASE nl.src WHEN ? THEN nl.dst ELSE nl.src END) AS netdevid
             FROM netlinks nl
             JOIN netdevices ndsrc ON ndsrc.id = nl.src
             JOIN netdevices nddst ON nddst.id = nl.dst
@@ -756,7 +757,13 @@ if ($netdevices) {
             $child_netdevices = array();
         }
 
-        $netnodes[$netnodename]['child_netdevices'] = array_merge($netnodes[$netnodename]['child_netdevices'], $child_netdevices);
+        foreach ($child_netdevices as $child_netdevice) {
+            if (isset($processed_child_netlinks[$child_netdevice['netlinkid']])) {
+                continue;
+            }
+            $processed_child_netlinks[$child_netdevice['netlinkid']] = true;
+            $netnodes[$netnodename]['child_netdevices'][] = $child_netdevice['netdevid'];
+        }
     }
 }
 
