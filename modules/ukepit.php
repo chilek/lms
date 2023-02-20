@@ -226,7 +226,8 @@ $netdevices = $DB->GetAllByKey(
         a.city AS location_city_name, a.street AS location_street_name,
         (CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE " . $DB->Concat('a.house', "'/'", 'a.flat') . " END) AS address_budynek,
         a.zip AS location_zip,
-        COALESCE(t.passive, 1) AS passive
+        COALESCE(t.passive, 1) AS passive,
+        nd.name AS name
     FROM netdevices nd
     LEFT JOIN netnodes nn ON nn.id = nd.netnodeid
     LEFT JOIN addresses a ON nd.address_id = a.id
@@ -237,6 +238,18 @@ $netdevices = $DB->GetAllByKey(
     )
     ORDER BY nd.id",
     'id'
+);
+
+$all_netlinks = $DB->GetAllByKey(
+    "SELECT nl.id,
+        nl.src,
+        nl.dst,
+        " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS name
+    FROM netlinks nl
+    JOIN netdevices ndsrc ON ndsrc.id = nl.src
+    JOIN netdevices nddst ON nddst.id = nl.dst"
+    . ($customer_netdevices ? ' WHERE ndsrc.ownerid IS NULL AND nddst.ownerid IS NULL' : ''),
+    'name'
 );
 
 if ($customer_netdevices) {
@@ -411,7 +424,7 @@ $root_netnode_name = null;
 $processed_child_netlinks = array();
 
 if ($netdevices) {
-    foreach ($netdevices as $netdevid => $netdevice) {
+    foreach ($netdevices as $netdevid => &$netdevice) {
         $tmp = array(
             'city_name'      => $netdevice['location_city_name'],
             'location_house' => $netdevice['location_house'],
@@ -422,9 +435,9 @@ if ($netdevices) {
         $location = location_str($tmp);
 
         if ($location) {
-            $netdevices[$netdevid]['location'] = $location;
+            $netdevice['location'] = $location;
         } else if ($netdevice['ownerid']) {
-            $netdevices[$netdevid]['location'] = $LMS->getAddressForCustomerStuff($netdevice['ownerid']);
+            $netdevice['location'] = $LMS->getAddressForCustomerStuff($netdevice['ownerid']);
         }
 
         $accessports = $DB->GetAll(
@@ -514,7 +527,7 @@ if ($netdevices) {
             }
         }
 
-        $netdevices[$netdevid]['invproject'] = $netdevice['invproject'] =
+        $netdevice['invproject'] = $netdevice['invproject'] =
             !isset($netdevice['invprojectid']) || !strlen($netdevice['invprojectid']) ? '' : $projects[$netdevice['invprojectid']]['name'];
 
         $projectname = $prj = '';
@@ -545,7 +558,7 @@ if ($netdevices) {
             }
         }
 
-        $netdevice['netnodename'] = $netdevices[$netdevid]['netnodename'] = $netnodename;
+        $netdevice['netnodename'] = $netnodename;
 
         if (!array_key_exists($netnodename, $netnodes)) {
             if ($customer_netdevices) {
@@ -557,6 +570,7 @@ if ($netdevices) {
 
             if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
                 $netnode = $real_netnodes[$netdevice['netnodeid']];
+                $netnodes[$netnodename]['real_id'] = $netnode['id'];
                 $netnodes[$netnodename]['location'] = $netnode['location'];
                 $netnodes[$netnodename]['location_city'] = $netnode['location_city'];
                 $netnodes[$netnodename]['location_city_name'] = $netnode['location_city_name'];
@@ -662,16 +676,15 @@ if ($netdevices) {
 
             $netnodes[$netnodename]['media'] = array();
             $netnodes[$netnodename]['technologies'] = array();
+            $netnodes[$netnodename]['local_technologies'] = array();
             $netnodes[$netnodename]['parent_netnodename'] = null;
-            $netnodes[$netnodename]['child_netdevices'] = array();
-            $netnodes[$netnodename]['child_netnodenames'] = array();
 
             $netnodeid++;
         } elseif (empty($netdevice['passive']) && $netnodes[$netnodename]['mode'] < 2) {
             $netnodes[$netnodename]['mode'] = 2;
         }
 
-        $netdevices[$netdevid]['ownership'] = $netnodes[$netnodename]['ownership'];
+        $netdevice['ownership'] = $netnodes[$netnodename]['ownership'];
 
         $projectname = $prj = $netdevice['invproject'];
         if (!strlen($projectname)) {
@@ -742,40 +755,9 @@ if ($netdevices) {
         }
 
         $netdevs[$netdevid] = $netnodename;
-
-        $child_netdevices = $DB->GetAll(
-            "SELECT nl.id AS netlinkid, (CASE nl.src WHEN ? THEN nl.dst ELSE nl.src END) AS netdevid
-            FROM netlinks nl
-            JOIN netdevices ndsrc ON ndsrc.id = nl.src
-            JOIN netdevices nddst ON nddst.id = nl.dst
-            WHERE (nl.src = ?" . ($customer_netdevices ? 'AND nddst.ownerid IS NULL' : '') . ")
-                OR (nl.dst = ?" . ($customer_netdevices ? 'AND ndsrc.ownerid IS NULL' : '') . ")",
-            array($netdevid, $netdevid, $netdevid)
-        );
-
-        if (empty($child_netdevices)) {
-            $child_netdevices = array();
-        }
-
-        foreach ($child_netdevices as $child_netdevice) {
-            if (isset($processed_child_netlinks[$child_netdevice['netlinkid']])) {
-                continue;
-            }
-            $processed_child_netlinks[$child_netdevice['netlinkid']] = true;
-            $netnodes[$netnodename]['child_netdevices'][] = $child_netdevice['netdevid'];
-        }
     }
+    unset($netdevice);
 }
-
-foreach ($netnodes as $netnodename => &$netnode) {
-    $netnode['child_netdevices'] = array_diff($netnode['child_netdevices'], $netnode['netdevices']);
-
-    foreach ($netnode['child_netdevices'] as $netdevid) {
-        $netnode['child_netnodenames'][] = $netdevs[$netdevid];
-    }
-    $netnode['child_netnodenames'] = array_unique($netnode['child_netnodenames']);
-}
-unset($netnode);
 
 $foreignerid = 1;
 $sforeigners = '';
@@ -827,7 +809,7 @@ if ($netnodes) {
 
         if (empty($netnode['location_street_name'])) {
             // no street specified for address
-            if (strlen(trim($netnode['address_budynek']))
+            if (isset($netnode['address_budynek']) && strlen(trim($netnode['address_budynek']))
                 && (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets']))) {
                 $netnode['address_ulica'] = "BRAK ULICY";
                 $netnode['address_symul'] = "99999";
@@ -864,12 +846,12 @@ if ($netnodes) {
                     ? $netnode['address_cecha'] . ' ' : '') . $netnode['address_ulica']) : $netnode['location_street_name'],
                 'ww_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
                 'ww_house' => str_replace(' ', '', $netnode['address_budynek']),
-                'ww_zip' => $netnode['location_zip'],
+                'ww_zip' => isset($netnode['location_zip']) ? $netnode['location_zip'] : '',
                 'ww_latitude' =>  isset($netnode['latitude']) ? $netnode['latitude'] : '',
                 'ww_longitude' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
                 'ww_objtype' => $NETELEMENTTYPES[$netnode['type']],
-                'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
-                'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
+//                'ww_uip' => $netnode['uip'] ? 'Tak' : 'Nie',
+//                'ww_miar' => $netnode['miar'] ? 'Tak' : 'Nie',
                 'ww_eu' => $netnode['invproject'] ? 'Tak' : 'Nie',
                 'ww_invproject' => $netnode['invproject'],
                 'ww_invstatus' => $netnode['invproject'] ? $NETELEMENTSTATUSES[$netnode['status']] : '',
@@ -1106,7 +1088,7 @@ if ($netnodes) {
             $prjnodes = array();
             foreach ($nodes as $node) {
                 $status = $node['status'];
-                if (!strlen($node['invprojectid'])) {
+                if (!isset($node['invprojectid']) || !strlen($node['invprojectid'])) {
                     $prj = '';
                 } elseif ($node['invprojectid'] > 1) {
                     $prj = $projects[$node['invprojectid']]['name'];
@@ -1341,26 +1323,96 @@ if ($netnodes) {
 }
 unset($netnode);
 
-function analyze_network_subtree($netnode_name, $current_netnode_name, &$netnodes, &$netdevices)
+$url = ConfigHelper::getConfig('system.url');
+
+function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlinkid, $same_netnode, $current_netnode_name, &$netnodes, &$netdevices, &$netlinks)
 {
-    if (isset($netnodes[$netnode_name]['processed'])) {
-        $netnode_stack = array();
+    static $url,
+        $processed_netnodes = array(),
+        $processed_netdevices = array(),
+        $processed_netlinks = array();
+
+    if (!isset($url)) {
+        $url = ConfigHelper::getConfig('system.url');
+    }
+
+    $netnode = &$netnodes[$netnode_name];
+
+    if (isset($netnode_netlinkid)) {
+        $processed_netlinks[$netnode_netlinkid] = true;
+    }
+
+    if (!$same_netnode && isset($processed_netnodes[$netnode_name]) || isset($processed_netdevices[$netnode_netdevid])) {
+        $netdev_stack = array();
         $back_trace = debug_backtrace();
-        foreach ($back_trace as $idx => &$bt) {
-            if ($bt['function'] != 'analyze_network_subtree') {
+        $last_netdevid = null;
+
+        if (!$same_netnode && isset($processed_netnodes[$netnode_name])) {
+            $bt = end($back_trace);
+            while ($bt['function'] != __FUNCTION__) {
+                $bt = prev($back_trace);
+            }
+            $bt_netnode_netdevid = $bt['args'][1];
+            if ($bt_netnode_netdevid != $processed_netnodes[$netnode_name]) {
+                $back_trace = array_slice($back_trace, 0, 1);
+
+                $netdev_stack[] = array(
+                    'name' => $netnode_name,
+                    'location' => $netnodes[$netnode_name]['location_city_name']
+                        . (empty($netnodes[$netnode_name]['location_street_name']) ? '' : ', ' . $netnodes[$netnode_name]['location_street_name'])
+                        . ' ' . $netnodes[$netnode_name]['location_house'],
+                    'id' => isset($netnodes[$netnode_name]['real_id']) ? $netnodes[$netnode_name]['real_id'] : null,
+                    'netdevid' => $processed_netnodes[$netnode_name],
+                    'comment' => trans('traversed earlier with different path'),
+                );
+            }
+        }
+
+        foreach ($back_trace as $bt) {
+            if ($bt['function'] != __FUNCTION__) {
                 continue;
             }
-            $netnode_stack[] = array(
-                'name' => $bt['args'][0],
-                'location' => $netnodes[$bt['args'][0]]['location_city_name'] . (empty($netnodes[$bt['args'][0]]['location_street_name']) ? '' : ', ' . $netnodes[$bt['args'][0]]['location_street_name']) . ' ' . $netnodes[$bt['args'][0]]['location_house']
+            $bt_netnode_name = $bt['args'][0];
+            $bt_netnode_netdevid = $bt['args'][1];
+            $netdev_stack[] = array(
+                'name' => $bt_netnode_name,
+                'location' => $netnodes[$bt_netnode_name]['location_city_name']
+                    . (empty($netnodes[$bt_netnode_name]['location_street_name']) ? '' : ', ' . $netnodes[$bt_netnode_name]['location_street_name'])
+                    . ' ' . $netnodes[$bt_netnode_name]['location_house'],
+                'id' => isset($netnodes[$bt_netnode_name]['real_id']) ? $netnodes[$bt_netnode_name]['real_id'] : null,
+                'netdevid' => $bt_netnode_netdevid,
             );
+            if (isset($last_netdevid) && $last_netdevid == $bt_netnode_netdevid) {
+                break;
+            }
+            if (!isset($last_netdevid)) {
+                $last_netdevid = $bt_netnode_netdevid;
+            }
         }
-        unset($bt);
-        echo trans('Detected network loop on network node <strong>\'$a\'</strong>!', $netnode_name) . '<br>';
-        echo trans('Network nodes which belong to this loop:') . '<br><br>';
-        foreach ($netnode_stack as $ns) {
-            echo trans('<!uke-pit>name: <strong>$a</strong>', $ns['name']) . '<br>';
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;' . trans('<!uke-pit>location: $a', $ns['location']) . '<br>';
+
+        if (!$same_netnode && isset($processed_netnodes[$netnode_name])) {
+            echo trans('Detected network loop on network node <strong>\'$a\'</strong>!', $netnode_name) . '<br>';
+        } else {
+            echo trans('Detected network loop on network device <strong>\'$a\'</strong>!', $netdevices[$bt_netnode_netdevid]['name']) . '<br>';
+        }
+
+        echo trans('Network devices which belong to this loop:') . '<br><br>';
+
+        foreach ($netdev_stack as $nd) {
+            echo trans(
+                '<!uke-pit>name: <strong>$a</strong>',
+                isset($nd['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $nd['real_id'] . '">' . $nd['name'] . '</a>' : $nd['name']
+            ) . '<br>';
+            if (isset($nd['comment'])) {
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;komentarz: <span style="color: red; font-weight: bold;">' . $nd['comment'] . '</span><br>';
+            }
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;' . trans('<!uke-pit>location: $a', $nd['location']) . '<br>';
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;' . trans(
+                '<!uke-pit>device: $a (#$b)',
+                '<a href="' . $url . '?m=netdevinfo&id=' . $nd['netdevid'] . '">' . $netdevices[$nd['netdevid']]['name'] . '</a>',
+                $nd['netdevid']
+            ) . '<br>';
             echo '<br>';
         }
         die;
@@ -1368,31 +1420,90 @@ function analyze_network_subtree($netnode_name, $current_netnode_name, &$netnode
         return;
     }
 
-    $netnodes[$netnode_name]['processed'] = true;
-
-    if ($netnodes[$netnode_name]['mode'] == 2) {
-        $current_netnode_name = $netnode_name;
-    } else {
-        $netnodes[$netnode_name]['parent_netnodename'] = $current_netnode_name;
+    if (!$same_netnode) {
+        $processed_netnodes[$netnode_name] = $netnode_netdevid;
     }
 
-    foreach ($netnodes[$netnode_name]['child_netnodenames'] as $child_netnode_name) {
-        analyze_network_subtree($child_netnode_name, $current_netnode_name, $netnodes, $netdevices);
+    $processed_netdevices[$netnode_netdevid] = true;
+
+    if (!$same_netnode) {
+        if ($netnode['mode'] == 2) {
+            $current_netnode_name = $netnode_name;
+        } else {
+            $netnode['parent_netnodename'] = $current_netnode_name;
+            $netnodes[$current_netnode_name]['technologies'] = array_merge(
+                $netnodes[$current_netnode_name]['technologies'],
+                $netnode['technologies']
+            );
+        }
     }
+
+    foreach ($netlinks as $netlink_key => $netlink) {
+        if (strpos($netlink_key, $netnode_netdevid . '_') === 0) {
+            $netdevice = $netdevices[$netlink['dst']];
+        } elseif (strpos($netlink_key, '_' . $netnode_netdevid) !== false) {
+            $netdevice = $netdevices[$netlink['src']];
+        } else {
+            continue;
+        }
+
+        if (!isset($processed_netlinks[$netlink['id']])) {
+            analyze_network_tree(
+                $netdevice['netnodename'],
+                $netdevice['id'],
+                $netlink['id'],
+                $netnode_name == $netdevice['netnodename'],
+                $current_netnode_name,
+                $netnodes,
+                $netdevices,
+                $netlinks
+            );
+        }
+    }
+
+    return $processed_netnodes;
 }
 
-analyze_network_subtree($root_netnode_name, $root_netnode_name, $netnodes, $netdevices);
+foreach ($netnodes as $netnodename => $netnode) {
+    $netnode['technologies'] = $netnode['local_technologies'] = array_unique($netnode['technologies']);
+}
+
+$processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, $netnodes, $netdevices, $all_netlinks);
 
 foreach ($netnodes as $netnodename => $netnode) {
     $netnode['technologies'] = array_unique($netnode['technologies']);
 
-    echo $netnodename . ':<br>';
+    echo '<strong>' . (isset($netnode['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $netnode['real_id'] . '">' . $netnodename . '</a>' : $netnodename) . '</strong>:<br>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;lokalizacja: ' . $netnode['location_city_name'] . (empty($netnode['location_street_name']) ? '' : ', ' . $netnode['location_street_name']) . ' ' . $netnode['location_house'] . '<br>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
-    if ($netnode['mode'] == 1) {
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: ' . (isset($netnode['parent_netnodename']) ? $netnode['parent_netnodename'] : '-') . '<br>';
+    echo '&nbsp;&nbsp;&nbsp;&nbsp;obecny w drzewie: ';
+
+    if (isset($processed_netnodes[$netnodename])) {
+        echo '<span style="color: green; font-weight: bold;">tak</span>';
+    } else {
+        echo '<span style="color: red; font-weight: bold;">nie</span>';
     }
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie dostępu: ' . (empty($netnode['technologies']) ? '(brak)' : implode(',', $netnode['technologies'])) . '<br>';
+    echo '<br>';
+
+    if ($netnode['mode'] == 1) {
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: <strong>' . (isset($netnode['parent_netnodename']) ? $netnode['parent_netnodename'] : '-') . '</strong><br>';
+    }
+    echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie dostępu:<br>';
+    if (empty($netnode['technologies'])) {
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(brak)<br>';
+    } else {
+        foreach ($netnode['technologies'] as $technology) {
+            if ($technology < 100) {
+                $technologyname = $LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology];
+            } elseif ($technology < 200) {
+                $technologyname = $LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology];
+            } else {
+                $technologyname = $LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology];
+            }
+
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . '<br>';
+        }
+    }
 /*
     echo '&nbsp;&nbsp;&nbsp;&nbsp;zasięgi: ';
     if (empty($netnode['ranges'])) {

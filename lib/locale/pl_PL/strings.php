@@ -25,9 +25,12 @@
  */
 
 $_LANG['Detected network loop on network node <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w węźle <strong>\'$a\'</strong>!';
-$_LANG['Network nodes which belong to this loop:'] = 'Węzły sieciowe należące do tej pętli:';
+$_LANG['Detected network loop on network device <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w urządzeniu <strong>\'$a\'</strong>!';
+$_LANG['Network devices which belong to this loop:'] = 'Urządzenia sieciowe należące do tej pętli:';
 $_LANG['<!uke-pit>name: <strong>$a</strong>'] = 'nazwa: <strong>$a</strong>';
 $_LANG['<!uke-pit>location: $a'] = 'lokalizacja: $a';
+$_LANG['<!uke-pit>device: $a (#$b)'] = 'urządzenie: $a (#$b)';
+$_LANG['traversed earlier with different path'] = 'odwiedzony wcześniej inną ścieżką';
 
 $_LANG['building objects (SIIS)'] = 'obiekty budowlane (SIIS)';
 $_LANG['infrastructure elements (PIT)'] = 'elementy infrastruktury (PIT)';
