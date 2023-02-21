@@ -398,6 +398,8 @@ version 28-git (????-??-??):
   - enhancement: added network node quick search customisation [chilan]
   - enhancement: allow to quick search network devices by description [chilan]
   - enhancement: add support for tariff price variants [ravvar]
+  - improvement/cleanup: renamed 'siis' gps coordinate provider pointed in 'phpui.gps_coordinate_providers'
+    to 'prg' [chilan]
 
 version 27.0 (2021-08-20):
 
