@@ -1111,15 +1111,15 @@ if (!empty($assigns)) {
     foreach ($assigns as &$assign) {
         if (!empty($assign['tariffid'])) {
             $priceVariant = $LMS->getTariffPriceVariantByQuantityThreshold($assign['tariffid'], $assign['count']);
-        }
-        if (!empty($priceVariant)) {
-            $suspention = empty($assign['suspended']) ? 1 : ($suspension_percentage / 100);
-            if (!empty($assign['netflag'])) {
-                $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspention, 3);
-                $assign['netvalue'] = round($assign['unitary_value'] * $assign['count'], 2);
-            } else {
-                $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspention, 3);
-                $assign['value'] = round($assign['unitary_value'] * $assign['count'], 2);
+            if (!empty($priceVariant)) {
+                $suspention = empty($assign['suspended']) ? 1 : ($suspension_percentage / 100);
+                if (!empty($assign['netflag'])) {
+                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspention, 3);
+                    $assign['netvalue'] = round($assign['unitary_value'] * $assign['count'], 2);
+                } else {
+                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspention, 3);
+                    $assign['value'] = round($assign['unitary_value'] * $assign['count'], 2);
+                }
             }
         }
         if ($prefer_netto) {
