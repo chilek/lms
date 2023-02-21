@@ -395,6 +395,8 @@ version 28-git (????-??-??):
   - enhancement: uke/pit: updated network node type and link technology dictionaries [chilan]
   - improvement: uke/pit: changed network node type to lms-ui-advanced-select with two groups - building
     objects (SIIS) and infrastructure elements (PIT) [chilan]
+  - enhancement: added network node quick search customisation [chilan]
+  - enhancement: allow to quick search network devices by description [chilan]
 
 version 27.0 (2021-08-20):
 
