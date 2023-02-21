@@ -246,17 +246,33 @@ $netdevices = $DB->GetAllByKey(
     'id'
 );
 
-$all_netlinks = $DB->GetAllByKey(
+$all_netlinks = array();
+
+$tmp_netlinks = $DB->GetAll(
     "SELECT nl.id,
         nl.src,
-        nl.dst,
-        " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS name
+        nl.dst
     FROM netlinks nl
     JOIN netdevices ndsrc ON ndsrc.id = nl.src
     JOIN netdevices nddst ON nddst.id = nl.dst"
-    . ($customer_netdevices ? ' WHERE ndsrc.ownerid IS NULL AND nddst.ownerid IS NULL' : ''),
-    'name'
+    . ($customer_netdevices ? ' WHERE ndsrc.ownerid IS NULL AND nddst.ownerid IS NULL' : '')
 );
+
+if (!empty($tmp_netlinks)) {
+    foreach ($tmp_netlinks as $netlink) {
+        if (!isset($all_netlinks[$netlink['src']])) {
+            $all_netlinks[$netlink['src']] = array();
+        }
+        $all_netlinks[$netlink['src']][$netlink['id']] = $netlink['dst'];
+
+        if (!isset($all_netlinks[$netlink['dst']])) {
+            $all_netlinks[$netlink['dst']] = array();
+        }
+        $all_netlinks[$netlink['dst']][$netlink['id']] = $netlink['src'];
+    }
+
+    unset($tmp_netlinks);
+}
 
 if ($customer_netdevices) {
     function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks, &$netdevices)
@@ -1432,27 +1448,23 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
         }
     }
 
-    foreach ($netlinks as $netlink_key => $netlink) {
-        if (strpos($netlink_key, $netnode_netdevid . '_') === 0) {
-            $netdevice = $netdevices[$netlink['dst']];
-        } elseif (strpos($netlink_key, '_' . $netnode_netdevid) !== false) {
-            $netdevice = $netdevices[$netlink['src']];
-        } else {
-            continue;
-        }
+    if (!empty($netlinks[$netnode_netdevid])) {
+        foreach ($netlinks[$netnode_netdevid] as $netlinkid => $netdevid) {
+            $netdevice = $netdevices[$netdevid];
 
-        if (!isset($processed_netlinks[$netlink['id']])) {
-            analyze_network_tree(
-                $netdevice['netnodename'],
-                $netdevice['id'],
-                $netlink['id'],
-                $netnode_name == $netdevice['netnodename'],
-                $current_netnode_name,
-                $netnode_name_stack,
-                $netnodes,
-                $netdevices,
-                $netlinks
-            );
+            if (!isset($processed_netlinks[$netlinkid])) {
+                analyze_network_tree(
+                    $netdevice['netnodename'],
+                    $netdevice['id'],
+                    $netlinkid,
+                    $netnode_name == $netdevice['netnodename'],
+                    $current_netnode_name,
+                    $netnode_name_stack,
+                    $netnodes,
+                    $netdevices,
+                    $netlinks
+                );
+            }
         }
     }
 
