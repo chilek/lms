@@ -25,23 +25,21 @@ define('DOC_FLAG_NET_ACCOUNT_2023022100', 16);
 
 $this->BeginTrans();
 
-if (!$this->ResourceExists('tariffpricevariants', LMSDB::RESOURCE_TYPE_TABLE)) {
-    $this->Execute("CREATE SEQUENCE tariffpricevariants_id_seq");
+$this->Execute("CREATE SEQUENCE tariffpricevariants_id_seq");
 
-    $this->Execute("
-        CREATE TABLE tariffpricevariants (
-            id integer DEFAULT nextval('tariffpricevariants_id_seq'::text) NOT NULL,
-            tariffid integer NOT NULL
-                CONSTRAINT tariffpricevariants_tariffid_fkey REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-            quantity_threshold integer NOT NULL,
-            net_price numeric(9,3) DEFAULT 0 NOT NULL,
-            gross_price numeric(9,3) DEFAULT 0 NOT NULL,
-            PRIMARY KEY (id),
-            CONSTRAINT tariffpricevariants_tariffid_quantity_threshold_ukey UNIQUE (tariffid, quantity_threshold),
-            CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)            
-        )
-    ");
-}
+$this->Execute("
+    CREATE TABLE tariffpricevariants (
+        id integer DEFAULT nextval('tariffpricevariants_id_seq'::text) NOT NULL,
+        tariffid integer NOT NULL
+            CONSTRAINT tariffpricevariants_tariffid_fkey REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        quantity_threshold integer NOT NULL,
+        net_price numeric(9,3) DEFAULT 0 NOT NULL,
+        gross_price numeric(9,3) DEFAULT 0 NOT NULL,
+        PRIMARY KEY (id),
+        CONSTRAINT tariffpricevariants_tariffid_quantity_threshold_ukey UNIQUE (tariffid, quantity_threshold),
+        CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)            
+    )
+");
 
 $this->Execute("ALTER TABLE tariffs ALTER COLUMN value TYPE numeric(9,3)");
 $this->Execute("ALTER TABLE tariffs ALTER COLUMN netvalue TYPE numeric(9,3)");

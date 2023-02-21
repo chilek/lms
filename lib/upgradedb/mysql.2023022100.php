@@ -25,22 +25,20 @@ define('DOC_FLAG_NET_ACCOUNT_2023022100', 16);
 
 $this->BeginTrans();
 
-if (!$this->ResourceExists('tariffpricevariants', LMSDB::RESOURCE_TYPE_TABLE)) {
-    $this->Execute(
-        "CREATE TABLE tariffpricevariants (
-            id int(11) NOT NULL auto_increment,
-            tariffid int(11) NOT NULL
-                CONSTRAINT tariffpricevariants_tariffid_fkey
-                FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-            quantity_threshold int(11) NOT NULL,
-            net_price numeric(9,3) DEFAULT 0 NOT NULL,
-            gross_price numeric(9,3) DEFAULT 0 NOT NULL,
-            PRIMARY KEY (id),
-            UNIQUE KEY tariffpricevariants_tariffid_quantity_threshold_ukey (tariffid, quantity_threshold)
-            CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)
-        ) ENGINE=InnoDB"
-    );
-}
+$this->Execute(
+    "CREATE TABLE tariffpricevariants (
+        id int(11) NOT NULL auto_increment,
+        tariffid int(11) NOT NULL
+            CONSTRAINT tariffpricevariants_tariffid_fkey
+            FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        quantity_threshold int(11) NOT NULL,
+        net_price numeric(9,3) DEFAULT 0 NOT NULL,
+        gross_price numeric(9,3) DEFAULT 0 NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY tariffpricevariants_tariffid_quantity_threshold_ukey (tariffid, quantity_threshold)
+        CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)
+    ) ENGINE=InnoDB"
+);
 
 $this->Execute("ALTER TABLE tariffs MODIFY COLUMN value decimal(9,3) NOT NULL DEFAULT 0");
 $this->Execute("ALTER TABLE tariffs MODIFY COLUMN netvalue decimal(9,3) DEFAULT NULL");
