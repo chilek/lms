@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,6 +40,7 @@ $parameters = array(
     'quiet' => 'q',
     'help' => 'h',
     'version' => 'v',
+    'section:' => 's:',
     'host:' => 'H:',
 );
 
@@ -77,7 +78,7 @@ foreach (array_flip(array_filter($long_to_shorts, function ($value) {
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-maketcnew.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2023 LMS Developers
 
 EOF;
     exit(0);
@@ -86,12 +87,14 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-maketcnew.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2023 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 -H, --host=<host-name>          allows to limit networks to those assigned to specified host
 
 EOF;
@@ -102,7 +105,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-maketcnew.php
-(C) 2001-2020 LMS Developers
+(C) 2001-2023 LMS Developers
 
 EOF;
 }
@@ -157,34 +160,37 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 //require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
-$script_file = ConfigHelper::getConfig('tcnew.script_file', "/etc/rc.d/rc.htb");
-$script_file_day = ConfigHelper::getConfig('tcnew.script_file_day', "/etc/rc.d/rc.htb.day");
-$script_file_night = ConfigHelper::getConfig('tcnew.script_file_night', "/etc/rc.d/rc.htb.night");
-$script_permission = ConfigHelper::getConfig('tcnew.script_permission', "0700");
-$script_begin = ConfigHelper::getConfig('tcnew.begin', "#!/bin/bash\n\nPATH=\"/bin:/sbin:/usr/bin:/usr/sbin\"\n\n");
-$script_begin_day = ConfigHelper::getConfig('tcnew.begin_day', $script_begin);
-$script_begin_night = ConfigHelper::getConfig('tcnew.begin_night', $script_begin);
-$script_end = ConfigHelper::getConfig('tcnew.end', '', true);
-$script_end_day = ConfigHelper::getConfig('tcnew.end_day', $script_end);
-$script_end_night = ConfigHelper::getConfig('tcnew.end_night', $script_end);
-$script_class_up = ConfigHelper::getConfig('tcnew.class_up', '', true);
-$script_class_up_day = ConfigHelper::getConfig('tcnew.class_up_day', $script_class_up);
-$script_class_up_night = ConfigHelper::getConfig('tcnew.class_up_night', $script_class_up);
-$script_class_down = ConfigHelper::getConfig('tcnew.class_down', '', true);
-$script_class_down_day = ConfigHelper::getConfig('tcnew.class_down_day', $script_class_down);
-$script_class_down_night = ConfigHelper::getConfig('tcnew.class_down_night', $script_class_down);
-$script_filter_up = ConfigHelper::getConfig('tcnew.filter_up', '', true);
-$script_filter_up_day = ConfigHelper::getConfig('tcnew.filter_up_day', '', true);
-$script_filter_up_night = ConfigHelper::getConfig('tcnew.filter_up_night', '', true);
-$script_filter_down = ConfigHelper::getConfig('tcnew.filter_down', '', true);
-$script_filter_down_day = ConfigHelper::getConfig('tcnew.filter_down_day', '', true);
-$script_filter_down_night = ConfigHelper::getConfig('tcnew.filter_down_night', '', true);
-$script_climit = ConfigHelper::getConfig('tcnew.climit', '', true);
-$script_plimit = ConfigHelper::getConfig('tcnew.plimit', '', true);
-$script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
-$create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
-$all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
-$ignore_assignment_suspensions = ConfigHelper::checkConfig('tcnew.ignore_assignment_suspensions');
+$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section'] : 'notify');
+
+$script_file = ConfigHelper::getConfig($config_section . '.script_file', "/etc/rc.d/rc.htb");
+$script_file_day = ConfigHelper::getConfig($config_section . '.script_file_day', "/etc/rc.d/rc.htb.day");
+$script_file_night = ConfigHelper::getConfig($config_section . '.script_file_night', "/etc/rc.d/rc.htb.night");
+$script_permission = ConfigHelper::getConfig($config_section . '.script_permission', "0700");
+$script_begin = ConfigHelper::getConfig($config_section . '.begin', "#!/bin/bash\n\nPATH=\"/bin:/sbin:/usr/bin:/usr/sbin\"\n\n");
+$script_begin_day = ConfigHelper::getConfig($config_section . '.begin_day', $script_begin);
+$script_begin_night = ConfigHelper::getConfig($config_section . '.begin_night', $script_begin);
+$script_end = ConfigHelper::getConfig($config_section . '.end', '', true);
+$script_end_day = ConfigHelper::getConfig($config_section . '.end_day', $script_end);
+$script_end_night = ConfigHelper::getConfig($config_section . '.end_night', $script_end);
+$script_class_up = ConfigHelper::getConfig($config_section . '.class_up', '', true);
+$script_class_up_day = ConfigHelper::getConfig($config_section . '.class_up_day', $script_class_up);
+$script_class_up_night = ConfigHelper::getConfig($config_section . '.class_up_night', $script_class_up);
+$script_class_down = ConfigHelper::getConfig($config_section . '.class_down', '', true);
+$script_class_down_day = ConfigHelper::getConfig($config_section . '.class_down_day', $script_class_down);
+$script_class_down_night = ConfigHelper::getConfig($config_section . '.class_down_night', $script_class_down);
+$script_filter_up = ConfigHelper::getConfig($config_section . '.filter_up', '', true);
+$script_filter_up_day = ConfigHelper::getConfig($config_section . '.filter_up_day', '', true);
+$script_filter_up_night = ConfigHelper::getConfig($config_section . '.filter_up_night', '', true);
+$script_filter_down = ConfigHelper::getConfig($config_section . '.filter_down', '', true);
+$script_filter_down_day = ConfigHelper::getConfig($config_section . '.filter_down_day', '', true);
+$script_filter_down_night = ConfigHelper::getConfig($config_section . '.filter_down_night', '', true);
+$script_climit = ConfigHelper::getConfig($config_section . '.climit', '', true);
+$script_plimit = ConfigHelper::getConfig($config_section . '.plimit', '', true);
+$script_multi_mac = ConfigHelper::checkConfig($config_section . '.multi_mac');
+$create_device_channels = ConfigHelper::checkConfig($config_section . '.create_device_channels');
+$all_assignments = ConfigHelper::checkConfig($config_section . '.all_assignments');
+$ignore_assignment_suspensions = ConfigHelper::checkConfig($config_section . '.ignore_assignment_suspensions');
 
 $host = isset($options['host']) ? mb_strtoupper($options['host']) : null;
 
@@ -198,11 +204,11 @@ if ($host && empty($existing_networks)) {
 }
 
 // get selected networks from ini file
-$networks = ConfigHelper::getConfig('tcnew.networks', '', true);
+$networks = ConfigHelper::getConfig($config_section . '.networks', '', true);
 $networks = preg_split('/(\s+|\s*,\s*)/', $networks, -1, PREG_SPLIT_NO_EMPTY);
 
 // exclude networks set in config value
-$excluded_networks = ConfigHelper::getConfig('tcnew.excluded_networks', '', true);
+$excluded_networks = ConfigHelper::getConfig($config_section . '.excluded_networks', '', true);
 $excluded_networks = preg_split('/(\s+|\s*,\s*)/', $excluded_networks, -1, PREG_SPLIT_NO_EMPTY);
 
 if (empty($networks)) {
@@ -218,7 +224,7 @@ $networks = $DB->GetAllByKey(
 );
 
 // customer groups
-$customergroups = ConfigHelper::getConfig('tcnew.customergroups', '', true);
+$customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
 $customergroups = preg_split('/(\s+|\s*,\s*)/', $customergroups, -1, PREG_SPLIT_NO_EMPTY);
 if (empty($customergroups)) {
     $customerids = array();
