@@ -251,8 +251,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                                        WHERE
                                                                          assignment_id = ?', 'phone', array($row['id']));
 
-
-
                 if (!empty($row['tariffid'])) {
                     $priceVariant = $lms->getTariffPriceVariantByQuantityThreshold($row['tariffid'], $row['count']);
                     if (!empty($priceVariant)) {
