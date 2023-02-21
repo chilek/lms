@@ -35,7 +35,7 @@ $this->Execute(
         PRIMARY KEY (id),
         CONSTRAINT tariffpricevariants_tariffid_fkey
             FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-        UNIQUE KEY tariffpricevariants_tariffid_quantity_threshold_ukey (tariffid, quantity_threshold)
+        UNIQUE KEY tariffpricevariants_tariffid_quantity_threshold_ukey (tariffid, quantity_threshold),
         CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)
     ) ENGINE=InnoDB"
 );
