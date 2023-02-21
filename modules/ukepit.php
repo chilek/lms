@@ -1356,7 +1356,7 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
         $back_trace = debug_backtrace();
         $last_netdevid = null;
 
-        foreach ($back_trace as $bt) {
+        foreach (array_reverse($back_trace) as $bt) {
             if ($bt['function'] != __FUNCTION__) {
                 continue;
             }
@@ -1464,7 +1464,7 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
                 if (!isset($processed_netlinks[$netlink['id']]) && $netnode_name != $netdevice['netnodename']) {
                     analyze_network_tree(
                         $netdevice['netnodename'],
-                        $netdevid,
+                        $netdevice['id'],
                         $netlink['id'],
                         false,
                         $current_netnode_name,
