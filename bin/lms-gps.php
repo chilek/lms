@@ -201,7 +201,7 @@ if (isset($options['providers'])) {
     $providers = explode(',', $options['sources']);
 }
 if (empty($providers)) {
-    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,osm,siis'));
+    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,osm,prg'));
     $providers = preg_split('/([\s]+|[\s]*[,|][\s]*)/', $providers, -1, PREG_SPLIT_NO_EMPTY);
 }
 $providers = array_filter($providers, 'array_provider_filter');
@@ -339,7 +339,7 @@ foreach ($types as $label => $type) {
                     }
 
                     sleep(1);
-                } elseif ($provider == 'siis' && !empty($row['state_name'])) {
+                } elseif (($provider == 'prg' || $provider == 'siis') && !empty($row['state_name'])) {
                     if (($building = $lc->buildingExists($row['city_id'], empty($row['street_id']) ? 'null' : $row['street_id'], $row['house']))
                     && !empty($building['longitude']) && !empty($building['latitude'])) {
                         if (!$debug) {
@@ -353,13 +353,13 @@ foreach ($types as $label => $type) {
                             );
                         }
                         if (!$quiet) {
-                            echo 'siis: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $building['latitude']
+                            echo 'prg: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $building['latitude']
                                 . " long.: " . $building['longitude'] . ")" . PHP_EOL;
                         }
                         break;
                     } else {
                         if (!$quiet) {
-                            echo 'siis: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
+                            echo 'prg: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
                         }
                     }
                 }
