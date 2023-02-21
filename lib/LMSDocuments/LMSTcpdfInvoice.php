@@ -69,24 +69,24 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         /* invoice headers */
         $heads['no'] = trans('No.');
-        $heads['name'] = trans('Name of Product, Commodity or Service:');
+        $heads['name'] = trans('Name of Product, Commodity or Service');
         if (!$hide_prodid) {
-            $heads['prodid'] = trans('Product ID:');
+            $heads['prodid'] = trans('Product ID');
         }
         if ($show_tax_category) {
-            $heads['taxcategory'] = trans('Tax Category:');
+            $heads['taxcategory'] = trans('Tax Category');
         }
-        $heads['content'] = trans('Unit:');
-        $heads['count'] = trans('Amount:');
+        $heads['content'] = trans('Unit');
+        $heads['count'] = trans('Amount');
         if (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])
             || !empty($this->data['invoice']['pdiscount']) || !empty($this->data['invoice']['vdiscount']))) {
-            $heads['discount'] = trans('Discount:');
+            $heads['discount'] = trans('Discount');
         }
-        $heads['basevalue'] = ($this->data['netflag'] ? trans('Unitary Net Value:') : trans('Unitary gross value'));
-        $heads['totalbase'] = trans('Net Value:');
-        $heads['taxlabel'] = trans('Tax Rate:');
-        $heads['totaltax'] = trans('Tax Value:');
-        $heads['total'] = trans('Gross Value:');
+        $heads['basevalue'] = ($this->data['netflag'] ? trans('Unitary Net Value') : trans('Unitary gross value'));
+        $heads['totalbase'] = trans('Net Value');
+        $heads['taxlabel'] = trans('Tax Rate');
+        $heads['totaltax'] = trans('Tax Value');
+        $heads['total'] = trans('Gross Value');
 
         /* width of the columns on the invoice */
         foreach ($heads as $name => $text) {

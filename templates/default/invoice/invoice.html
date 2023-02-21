@@ -237,32 +237,32 @@
 				<strong>{trans("No.")}</strong>
 			</td>
 			<td width="{-$cols + 101}%" class="head" align="center">
-				<strong>{trans("Name of Product, Commodity or Service:")}</strong>
+				<strong>{trans("Name of Product, Commodity or Service")}</strong>
 			</td>
 			{if !$hide_prodid}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Product ID:")}</strong>
+					<strong>{trans("Product ID")}</strong>
 				</td>
 			{/if}
 			{if $show_tax_category}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Tax Category:")}</strong>
+					<strong>{trans("Tax Category")}</strong>
 				</td>
 			{/if}
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Unit:")}</strong>
+				<strong>{trans("Unit")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Amount:")}</strong>
+				<strong>{trans("Amount")}</strong>
 			</td>
 			{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Discount:")}</strong>
+					<strong>{trans("Discount")}</strong>
 				</td>
 			{/if}
 			{if $invoice.netflag}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Unitary Net Value:")}</strong>
+					<strong>{trans("Unitary Net Value")}</strong>
 				</td>
 			{else}
 				<td width="1%" class="head" align="center">
@@ -270,16 +270,16 @@
 				</td>
 			{/if}
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Net Value:")}</strong>
+				<strong>{trans("Net Value")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Tax Rate:")}</strong>
+				<strong>{trans("Tax Rate")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Tax Value:")}</strong>
+				<strong>{trans("Tax Value")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Gross Value:")}</strong>
+				<strong>{trans("Gross Value")}</strong>
 			</td>
 		</tr>
 		{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
