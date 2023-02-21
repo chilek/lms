@@ -189,6 +189,8 @@
 					data-currency="{$a.currency}"
 					data-gross-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
 					data-net-disc-value="{$a.real_disc_netvalue|default:"0"|replace:",":"."}"
+					data-discount-value="{$a.real_discount|default:"0"|replace:",":"."}"
+					data-discount-netvalue="{$a.real_netdiscount|default:"0"|replace:",":"."}"
 				{/if}
 				data-downceil="{$a.real_downceil|default:"0"}"
 				data-upceil="{$a.real_upceil|default:"0"}"
@@ -675,8 +677,8 @@
 				}
 				total_gross_disc_value[currency] += parseFloat($(this).attr('data-gross-disc-value'));
 				total_net_disc_value[currency] += parseFloat($(this).attr('data-net-disc-value'));
-				total_net_discount[currency] += (parseFloat($(this).attr('data-net-value')) - parseFloat($(this).attr('data-net-disc-value')));
-				total_gross_discount[currency] += (parseFloat($(this).attr('data-gross-value')) - parseFloat($(this).attr('data-gross-disc-value')));
+				total_net_discount[currency] += parseFloat($(this).attr('data-discount-netvalue'));
+				total_gross_discount[currency] += parseFloat($(this).attr('data-discount-value'));
 				{/if}
 			});
 
