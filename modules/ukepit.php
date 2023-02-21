@@ -31,6 +31,12 @@ if (!class_exists('ZipArchive')) {
     die('Error: ZipArchive class not found! Install php-zip module.');
 }
 
+$root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
+
+if (empty($root_netdevice_id)) {
+    die(trans('Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'));
+}
+
 /*!
  * \brief Parse network speed
  */
@@ -419,7 +425,6 @@ $netdevs    = array();
 $foreigners = array();
 $netnodeid = 1;
 
-$root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
 $root_netnode_name = null;
 $processed_child_netlinks = array();
 
@@ -758,6 +763,11 @@ if ($netdevices) {
     }
     unset($netdevice);
 }
+
+if (!isset($root_netnode_name)) {
+    die(trans('Unable to determine root network node using <strong>\'phpui.root_netdevice_id\'</strong> configuration setting!'));
+}
+
 
 $foreignerid = 1;
 $sforeigners = '';
@@ -1411,10 +1421,14 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
             $current_netnode_name = $netnode_name;
         } else {
             $netnode['parent_netnodename'] = $current_netnode_name;
-            $netnodes[$current_netnode_name]['technologies'] = array_merge(
-                $netnodes[$current_netnode_name]['technologies'],
-                $netnode['technologies']
-            );
+            if (isset($netnodes[$current_netnode_name]['technologies'])) {
+                $netnodes[$current_netnode_name]['technologies'] = array_merge(
+                    $netnodes[$current_netnode_name]['technologies'],
+                    $netnode['technologies']
+                );
+            } else {
+                $netnodes[$current_netnode_name]['technologies'] = $netnode['technologies'];
+            }
         }
     }
 

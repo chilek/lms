@@ -30,7 +30,8 @@ $_LANG['Network devices which belong to this loop:'] = 'Urządzenia sieciowe nal
 $_LANG['<!uke-pit>network node: <strong>$a</strong>'] = 'węzeł sieciowy: <strong>$a</strong>';
 $_LANG['<!uke-pit>location: $a'] = 'lokalizacja: $a';
 $_LANG['<!uke-pit>device: $a (#$b)'] = 'urządzenie: $a (#$b)';
-$_LANG['traversed earlier with different path'] = 'odwiedzony wcześniej inną ścieżką';
+$_LANG['Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'] = 'Nie zdefiniowano głównego urządzenia sieciowego! Użyj ustawienia konfiguracyjnego <strong>\'phpui.root_netdevice_id\'</strong>, aby je zdefiniować.';
+$_LANG['Unable to determine root network node using <strong>\'phpui.root_netdevice_id\'</strong> configuration setting!'] = 'Niemożliwe wyznaczenie głównego węzła sieci z użyciem ustawienia konfiguracyjnego <strong>\'phpui.root_netdevice_id\'</strong> !';
 
 $_LANG['building objects (SIIS)'] = 'obiekty budowlane (SIIS)';
 $_LANG['infrastructure elements (PIT)'] = 'elementy infrastruktury (PIT)';
