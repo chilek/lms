@@ -4885,6 +4885,10 @@ $_LANG['<!qs>device id'] = 'identyfikator urządzenia';
 $_LANG['<!qs>device name'] = 'nazwa urządzenia';
 $_LANG['<!qs>device serial number'] = 'numer seryjny urządzenia';
 $_LANG['<!qs>device mac'] = 'adres MAC urządzenia';
+$_LANG['<!qs>device description'] = 'opis urządzenia';
+
+$_LANG['<!qs>network node id'] = 'identyfikator węzła sieciowego';
+$_LANG['<!qs>network node name'] = 'nazwa węzła sieciowego';
 
 $_LANG['<!qs>ticket id'] = 'identyfikator zgłoszenia';
 $_LANG['<!qs>ticket subject'] = 'temat zgłoszenia';

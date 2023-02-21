@@ -548,10 +548,11 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name FROM netnodes
-                WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
-                LOWER(name) ?LIKE? LOWER($sql_search)
-                ORDER by name
+            $candidates = $DB->GetAll("SELECT id, name, info FROM netnodes
+                WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) : '1 = 0') : '1 = 0')
+                . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['additional-info']) ? " OR LOWER(info) ?LIKE? LOWER($sql_search)" : '')
+                . " ORDER by name
                 LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
                 $result = array();
@@ -566,8 +567,13 @@ switch ($mode) {
                     $description_class = '';
                     $action = '?m=netnodeinfo&id=' . $row['id'];
 
-                    if (preg_match("~^$search\$~i", $row['id'])) {
-                            $description = trans('Id:') . ' ' . $row['id'];
+                    if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
+                        $description = trans('Id') . ': ' . $row['id'];
+                    } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
+                        $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
+                    } else if ((empty($properties) || isset($properties['additional-info'])) && preg_match("~$search~i", $row['info'])) {
+                        //$description = trans('Additional information:') . ' ' . htmlspecialchars($row['info']);
+                        $description = trans('Additional information:') . ' &hellip;';
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
@@ -603,7 +609,7 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, serialnumber, no.lastonline FROM netdevices
+            $candidates = $DB->GetAll("SELECT id, name, serialnumber, description, no.lastonline FROM netdevices
                 LEFT JOIN (
                     SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
                     FROM nodes
@@ -615,6 +621,7 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['description']) ? " OR LOWER(description) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = netdevices.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
                 . "	ORDER by name
                 LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
@@ -642,9 +649,12 @@ switch ($mode) {
                     if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
                             $description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
-                        $description = trans('Name') . ': ' . $row['name'];
+                        $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
                     } else if ((empty($properties) || isset($properties['serial'])) && preg_match("~$search~i", $row['serialnumber'])) {
                         $description = trans('Serial number:') . ' ' . $row['serialnumber'];
+                    } else if ((empty($properties) || isset($properties['description'])) && preg_match("~$search~i", $row['description'])) {
+                        //$description = trans('Description:') . ' ' . htmlspecialchars($row['description']);
+                        $description = trans('Description:') . ' &hellip;';
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');

@@ -73,7 +73,13 @@
 {if ConfigHelper::checkPrivilege('network_management') || ConfigHelper::checkPrivilege('read_only')}
 <div id="qs-netnode" class="lms-ui-quick-search-field" data-mode="netnode" data-label="{trans("<!qs>network node")}" data-keyboard-shortcut="{$qs_keyboard_shortcut_modifier}+5">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-netnode" {tip text="Enter netnode ID or name and press Enter"}></i>
-    <input type="text" name="qs[netnode]" value="" size="15" {tip text="Enter netnode ID or name and press Enter" class="blend lms-ui-quick-search-input"}>
+	<input type="text" name="qs[netnode]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+	<i class="fa-fw lms-ui-icon-customisation"></i>
+	<select id="qs-netnode-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which customer properties should be used during search")}">
+		<option value="id"{if !isset($qs_properties.netnode) || isset($qs_properties.netnode.id)} selected{/if}>{trans("<!qs>network node id")}</option>
+		<option value="name"{if !isset($qs_properties.netnode) || isset($qs_properties.netnode.name)} selected{/if}>{trans("<!qs>network node name")}</option>
+		<option value="additional-info"{if !isset($qs_properties.netnode) || isset($qs_properties.netnode['additional-info'])} selected{/if}>{trans("<!qs>additional information")}</option>
+	</select>
 </div>
 {/if}
 
@@ -87,6 +93,7 @@
 		<option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
 		<option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
 		<option value="mac"{if !isset($qs_properties.mac) || isset($qs_properties.netdevice.mac)} selected{/if}>{trans("<!qs>device mac")}</option>
+		<option value="description"{if !isset($qs_properties.description) || isset($qs_properties.netdevice.description)} selected{/if}>{trans("<!qs>device description")}</option>
 	</select>
 </div>
 {/if}
