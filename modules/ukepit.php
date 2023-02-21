@@ -1357,7 +1357,7 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
         $back_trace = debug_backtrace();
         $last_netdevid = null;
 
-        foreach (array_reverse($back_trace) as $bt) {
+        foreach ($back_trace as $bt) {
             if ($bt['function'] != __FUNCTION__) {
                 continue;
             }
@@ -1387,7 +1387,7 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
 
         echo trans('Network devices which belong to this loop:') . '<br><br>';
 
-        foreach ($netdev_stack as $nd) {
+        foreach (array_reverse($netdev_stack) as $nd) {
             echo trans(
                 '<!uke-pit>network node: <strong>$a</strong>',
                 isset($nd['id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $nd['id'] . '">' . $nd['name'] . '</a>' : $nd['name']
