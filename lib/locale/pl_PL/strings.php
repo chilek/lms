@@ -36,6 +36,14 @@ $_LANG['Unable to determine root network node using <strong>\'phpui.root_netdevi
 $_LANG['building objects (SIIS)'] = 'obiekty budowlane (SIIS)';
 $_LANG['infrastructure elements (PIT)'] = 'elementy infrastruktury (PIT)';
 
+$_LANG['Tariff price variants'] = 'Warianty cenowe taryfy';
+$_LANG['Tariff price variants ($a)'] = 'Warianty cenowe taryfy ($a)';
+$_LANG['Price variants:'] = 'Warianty cenowe:';
+$_LANG['Price variants'] = 'Warianty cenowe';
+$_LANG['Quantity threshold'] = 'Próg ilości';
+$_LANG['Net price:'] = 'Cena netto:';
+$_LANG['Gross price:'] = 'Cena brutto:';
+
 $_LANG['comma separated emails'] = 'adresy e-mail oddzielone przecinkami';
 
 $_LANG['related documents'] = 'powiązane dokumenty';

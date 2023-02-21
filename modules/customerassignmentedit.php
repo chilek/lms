@@ -564,6 +564,11 @@ if (isset($_POST['assignment'])) {
         $a['tariffid'] = -1;
     }
 
+    // tariff price variants
+    if (!empty($a['tariffid'])) {
+        $a['tariff_price_variants'] = $LMS->getTariffPriceVariants($a['tariffid']);
+    }
+
     // nodes assignments
     $a['nodes'] = $DB->GetCol('SELECT nodeid FROM nodeassignments WHERE assignmentid=?', array($a['id']));
 

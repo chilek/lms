@@ -1,0 +1,72 @@
+<div class="lms-ui-tab-table-row header">
+    <div class="lms-ui-tab-table-wrapper col-2">
+        <div class="lms-ui-tab-table-column price">
+            <strong>{trans("Gross price")}</strong>
+        </div>
+        <div class="lms-ui-tab-table-column price">
+            <strong>{trans("Net price")}</strong>
+        </div>
+    </div>
+    <div class="lms-ui-tab-table-column price_threshold">
+        <strong>{trans("Quantity threshold")}</strong>
+    </div>
+    <div class="lms-ui-tab-table-column buttons">
+        &nbsp;
+    </div>
+</div>
+{foreach $tariff.price_variants as $price_variant}
+    <div class="lms-ui-tab-table-row" data-pricevariantid="{$price_variant.id}">
+        <div class="lms-ui-tab-table-wrapper col-2">
+            <div class="lms-ui-tab-table-column price">
+                <span class="tariff-price-variant-info-field">
+                    {moneyf($price_variant.gross_price, $tariff.currency, 3)}
+                </span>
+                <input type="text" size="10" name="gross_price_edit_{$price_variant.id}" id="gross_price_edit_{$price_variant.id}"
+                    value="{$price_variant.gross_price}"
+                    class="tariff-price-variant-edit-field"
+                    {tip trigger="quantity_threshold_edit_{$price_variant.id}"}
+                    style="display: none;"
+                    required>
+            </div>
+            <div class="lms-ui-tab-table-column price">
+                <span class="tariff-price-variant-info-field">
+                    {moneyf($price_variant.net_price, $tariff.currency, 3)}
+                </span>
+                <input type="text" size="10" name="net_price_edit_{$price_variant.id}" id="net_price_edit_{$price_variant.id}"
+                    value="{$price_variant.net_price}"
+                    class="tariff-price-variant-edit-field"
+                    {tip trigger="quantity_threshold_edit_{$price_variant.id}"}
+                    style="display: none;"
+                    required>
+            </div>
+        </div>
+        <div class="lms-ui-tab-table-column price_threshold">
+                <span class="tariff-price-variant-info-field">
+                    {$price_variant.quantity_threshold}
+                </span>
+                <input type="text" size="10" name="quantity_threshold_edit_{$price_variant.id}" id="quantity_threshold_edit_{$price_variant.id}"
+                    value="{$price_variant.quantity_threshold}"
+                    class="tariff-price-variant-edit-field"
+                    {tip trigger="quantity_threshold_edit_{$price_variant.id}"}
+                    style="display: none;"
+                    required>
+        </div>
+        <div class="lms-ui-tab-table-column buttons">
+            {button type="link" icon="edit" id="tariff_price_variant_edit_button_{$price_variant.id}"
+                onclick="javascript:toggleEditManagementTariffPriceVariant({$price_variant.id});"
+                visible=!$edit}
+            {button type="link" icon="save" id="tariff_price_variant_save_button_{$price_variant.id}"
+                onclick="javascript:updateManagementTariffPriceVariant({$price_variant.id});"
+                visible=$edit}
+            {button type="link" icon="cancel" id="tariff_price_variant_cancel_button_{$price_variant.id}"
+                onclick="javascript:toggleEditManagementTariffPriceVariant({$price_variant.id});"
+                visible=$edit}
+            {button type="link" icon="delete" id="tariff_price_variant_delete_button_{$price_variant.id}"
+                onclick="javascript:delManagementTariffPriceVariant({$price_variant.id});"}
+        </div>
+    </div>
+{foreachelse}
+    <div class="lms-ui-tab-empty-table">
+        {trans("No data")}
+    </div>
+{/foreach}

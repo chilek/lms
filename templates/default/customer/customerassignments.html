@@ -249,13 +249,13 @@
 							<div class="lms-ui-tab-table-column base_value">
 								<span class="net">
 									{if $a.tariffid || $a.liabilityid}
-										{moneyf($a.unitary_netvalue, $a.currency)}
+										{moneyf($a.unitary_netvalue, $a.currency, 3)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
 								<span class="gross">
 									{if $a.tariffid || $a.liabilityid}
-										{moneyf($a.unitary_value, $a.currency)}
+										{moneyf($a.unitary_value, $a.currency, 3)}
 									{/if}
 								</span>
 							</div>
@@ -287,17 +287,17 @@
 											{/if}
 										{elseif $a.vdiscount != 0}
 											{if isset($a.real_unitary_netdiscount)}
-												{moneyf($a.real_unitary_netdiscount, $a.currency)}
+												{moneyf($a.real_unitary_netdiscount, $a.currency, 3)}
 												{if $a.count != 1}
 													<span title="{trans("Total net discount")}">
-													({moneyf($a.real_netdiscount, $a.currency)})
+													({moneyf($a.real_netdiscount, $a.currency, 3)})
 												</span>
 												{/if}
 											{else}
-												{moneyf($a.unitary_netdiscount, $a.currency)}
+												{moneyf($a.unitary_netdiscount, $a.currency, 3)}
 												{if $a.count != 1}
 													<span title="{trans("Total net discount")}">
-															({moneyf($a.unitary_netdiscount *$a.count, $a.currency)})
+															({moneyf($a.unitary_netdiscount *$a.count, $a.currency, 3)})
 													</span>
 												{/if}
 											{/if}
@@ -317,17 +317,17 @@
 											{/if}
 										{elseif $a.vdiscount != 0}
 											{if isset($a.real_unitary_discount)}
-												{moneyf($a.real_unitary_discount, $a.currency)}
+												{moneyf($a.real_unitary_discount, $a.currency, 3)}
 												{if $a.count != 1}
 													<span title="{trans("Total gross discount")}">
-														({moneyf($a.real_discount, $a.currency)})
+														({moneyf($a.real_discount, $a.currency, 3)})
 													</span>
 												{/if}
 											{else}
-												{moneyf($a.unitary_discount, $a.currency)}
+												{moneyf($a.unitary_discount, $a.currency, 3)}
 												{if $a.count != 1}
 												<span title="{trans("Total net discount")}">
-														({moneyf($a.unitary_discount *$a.count, $a.currency)})
+														({moneyf($a.unitary_discount *$a.count, $a.currency, 3)})
 												</span>
 												{/if}
 											{/if}
@@ -347,17 +347,17 @@
 							<div class="lms-ui-tab-table-column price">
 								<span class="net">
 									{if isset($a.real_unitary_netprice)}
-										{moneyf($a.real_unitary_netprice, $a.currency)}
+										{moneyf($a.real_unitary_netprice, $a.currency, 3)}
 									{else}
-										{moneyf($a.discounted_netprice, $a.currency)}
+										{moneyf($a.discounted_netprice, $a.currency, 3)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
 								<span class="gross">
 									{if isset($a.real_unitary_price)}
-										{moneyf($a.real_unitary_price, $a.currency)}
+										{moneyf($a.real_unitary_price, $a.currency, 3)}
 									{else}
-										{moneyf(($a.discounted_price), $a.currency)}
+										{moneyf(($a.discounted_price), $a.currency, 3)}
 									{/if}
 
 								</span>
@@ -548,6 +548,7 @@
 		{/foreach}
 
 		var money_format = '%01.2f %s';
+		var money_format_3f = '%01.3f %s';
 	}
 
 	$(function() {
@@ -687,7 +688,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += sprintf(money_format_3f, value, currency);
 			});
 			tab_elem.find('.total_gross_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -696,7 +697,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += sprintf(money_format_3f, value, currency);
 			});
 			tab_elem.find('.total_net_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -723,7 +724,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += sprintf(money_format_3f, value, currency);
 			});
 			tab_elem.find('.total_gross_discount').html('(' + (html.length ? html : '-') + ')');
 
@@ -732,7 +733,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += sprintf(money_format_3f, value, currency);
 			});
 			tab_elem.find('.total_net_discount').html('(' + (html.length ? html : '-') + ')');
 			{/if}

@@ -122,9 +122,9 @@
                                                     </td>
                                                     <td align="right">
                                                         {if $tariff.currency}
-                                                            {moneyf($tariff.netvalue, $tariff.currency)}
+                                                            {moneyf($tariff.netvalue, $tariff.currency, 3)}
                                                         {else}
-                                                            {$tariff.netvalue|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                            {moneyf($tariff.netvalue, null, 3)} <span class="alert">{trans('No currency assigned!')}</span>
                                                         {/if}
                                                     </td>
                                                     <td rowspan="2">
@@ -141,9 +141,9 @@
                                                     </td>
                                                     <td align="right">
                                                         {if $tariff.currency}
-                                                            {moneyf($tariff.value, $tariff.currency)}
+                                                            {moneyf($tariff.value, $tariff.currency, 3)}
                                                         {else}
-                                                            {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                            {moneyf($tariff.value, null, 3)} <span class="alert">{trans('No currency assigned!')}</span>
                                                         {/if}
                                                     </td>
                                                 </tr>
@@ -634,6 +634,10 @@
     </table>
 
     <script>
+        const tariffNetFlagValue = '{$tariff.netflag}';
+        const tariffTaxValue = '{$tariff.taxvalue}';
+        const tariffpricevariantTariffId = '{$tariff.id}';
+
         $('#delete-tariff').click(function() {
             confirmDialog($t("Are you sure, you want to delete that tariff?"), this).done(function() {
                 location.href = '?m=tariffdel&id={$tariff.id}';
@@ -641,4 +645,9 @@
             return false;
         });
     </script>
+
+    {block name=tariffpricevariants}
+        {include file="tariff/tariffpricevariants.html"}
+    {/block}
+
 {/block}

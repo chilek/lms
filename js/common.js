@@ -1048,3 +1048,10 @@ var financeDecimals = {
 		return Math.floor((n + r) * o) / o;
 	}
 };
+
+function financeRound(value, precision) {
+	let roundedValue = parseFloat(value.replace(/[\,]+/, '.'));
+	roundedValue = financeDecimals.round(roundedValue, precision);
+	roundedValue = roundedValue.toFixed(precision).replace(/[\.]+/, ',');
+	return roundedValue;
+}

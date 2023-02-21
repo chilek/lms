@@ -397,6 +397,7 @@ version 28-git (????-??-??):
     objects (SIIS) and infrastructure elements (PIT) [chilan]
   - enhancement: added network node quick search customisation [chilan]
   - enhancement: allow to quick search network devices by description [chilan]
+  - enhancement: add support for tariff price variants [ravvar]
 
 version 27.0 (2021-08-20):
 

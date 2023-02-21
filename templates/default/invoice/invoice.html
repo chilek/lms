@@ -321,17 +321,17 @@
 							{if $item.pdiscount != 0}
 								{$item.pdiscount|string_format:"%.2f"} %
 							{else}
-								{$item.vdiscount|string_format:"%01.2f"}
+								{$item.vdiscount|string_format:"%01.3f"}
 							{/if}
 						</td>
 					{/if}
 					{if $invoice.netflag}
 						<td class="flr" align="right" nowrap>
-							{$item.basevalue|string_format:"%01.2f"}
+							{$item.basevalue|string_format:"%01.3f"}
 						</td>
 					{else}
 						<td class="flr" align="right" nowrap>
-							{$item.value|string_format:"%01.2f"}
+							{$item.value|string_format:"%01.3f"}
 						</td>
 					{/if}
 					<td class="flr" align="right" nowrap>
@@ -428,16 +428,16 @@
 				</td>
 				{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 					<td class="flr" align="right" nowrap>
-						{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
+						{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f"} %{else}{$item.vdiscount|string_format:"%01.3f"}{/if}
 					</td>
 				{/if}
 				{if $invoice.netflag}
 					<td class="flr" align="right" nowrap>
-						{$item.basevalue|string_format:"%01.2f"}
+						{$item.basevalue|string_format:"%01.3f"}
 					</td>
 				{else}
 					<td class="flr" align="right" nowrap>
-						{$item.value|string_format:"%01.2f"}
+						{$item.value|string_format:"%01.3f"}
 					</td>
 				{/if}
 				<td class="flr" align="right" nowrap>

@@ -514,12 +514,12 @@ function isboolean($value)
     }
 }
 
-function moneyf($value, $currency = null)
+function moneyf($value, $currency = null, $precision = 2)
 {
     if (empty($currency)) {
         $currency = Localisation::getCurrentCurrency();
     }
-    return sprintf('%01.2f %s', $value, $currency);
+    return sprintf('%01.'.$precision.'f %s', $value, $currency);
 }
 
 function moneyf_in_words($value, $currency = null)
