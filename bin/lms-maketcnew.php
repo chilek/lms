@@ -161,7 +161,7 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 //require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
-    ? $options['section'] : 'notify');
+    ? $options['section'] : 'tcnew');
 
 $script_file = ConfigHelper::getConfig($config_section . '.script_file', "/etc/rc.d/rc.htb");
 $script_file_day = ConfigHelper::getConfig($config_section . '.script_file_day', "/etc/rc.d/rc.htb.day");
