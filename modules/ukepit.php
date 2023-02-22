@@ -1436,6 +1436,15 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
         }
 
         if (!$same_netnode && isset($netnode_name_stack[$netnode_name])) {
+            foreach (array_reverse($netdev_stack) as $idx => $ns) {
+                if ($ns['name'] == $netnode_name) {
+                    break;
+                }
+            }
+            if (!empty($idx)) {
+                $netdev_stack = array_slice($netdev_stack, $idx);
+            }
+
             echo trans('Detected network loop on network node <strong>\'$a\'</strong>!', $netnode_name) . '<br>';
         } else {
             echo trans('Detected network loop on network device <strong>\'$a\'</strong>!', $netdevices[$bt_netnode_netdevid]['name']) . '<br>';
