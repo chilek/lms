@@ -1442,7 +1442,7 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
                 }
             }
             if (!empty($idx)) {
-                $netdev_stack = array_slice($netdev_stack, $idx);
+                $netdev_stack = array_slice($netdev_stack, 0, -$idx);
             }
 
             echo trans('Detected network loop on network node <strong>\'$a\'</strong>!', $netnode_name) . '<br>';
