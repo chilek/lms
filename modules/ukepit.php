@@ -37,6 +37,23 @@ if (empty($root_netdevice_id)) {
     die(trans('Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'));
 }
 
+function linkTechnologyLabel($technology)
+{
+    static $LINKTECHNOLOGIES;
+
+    if (!isset($LINKTECHNOLOGIES)) {
+        $LINKTECHNOLOGIES = $GLOBALS['LINKTECHNOLOGIES'];
+    }
+
+    if ($technology < 100) {
+        return $LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology];
+    } elseif ($technology < 200) {
+        return $LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology];
+    } else {
+        return $LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology];
+    }
+}
+
 /*!
  * \brief Parse network speed
  */
@@ -114,6 +131,16 @@ define('ZIP_CODE', '15-950');
 $customers = array();
 
 $customer_netdevices = isset($_POST['customernetdevices']);
+
+$pit_ethernet_technologies = array();
+
+foreach ($LINKTECHNOLOGIES as $linktype => $linktechnologies) {
+    foreach ($linktechnologies as $linktechnology => $label) {
+        if (stripos($label, 'ethernet') !== false) {
+            $pit_ethernet_technologies[$linktechnology] = $linktechnology;
+        }
+    }
+}
 
 $po_buffer = $w_buffer = $pe_buffer = $uwa_buffer = $lb_buffer = $lk_buffer = '';
 
@@ -251,7 +278,10 @@ $all_netlinks = array();
 $tmp_netlinks = $DB->GetAll(
     "SELECT nl.id,
         nl.src,
-        nl.dst
+        nl.dst,
+        nl.type,
+        nl.technology,
+        nl.speed
     FROM netlinks nl
     JOIN netdevices ndsrc ON ndsrc.id = nl.src
     JOIN netdevices nddst ON nddst.id = nl.dst"
@@ -263,12 +293,22 @@ if (!empty($tmp_netlinks)) {
         if (!isset($all_netlinks[$netlink['src']])) {
             $all_netlinks[$netlink['src']] = array();
         }
-        $all_netlinks[$netlink['src']][$netlink['id']] = $netlink['dst'];
+        $all_netlinks[$netlink['src']][$netlink['id']] = array(
+            'netdevid' => $netlink['dst'],
+            'type' => $netlink['type'],
+            'technology' => $netlink['technology'],
+            'speed' => $netlink['speed'],
+        );
 
         if (!isset($all_netlinks[$netlink['dst']])) {
             $all_netlinks[$netlink['dst']] = array();
         }
-        $all_netlinks[$netlink['dst']][$netlink['id']] = $netlink['src'];
+        $all_netlinks[$netlink['dst']][$netlink['id']] = array(
+            'netdevid' => $netlink['src'],
+            'type' => $netlink['type'],
+            'technology' => $netlink['technology'],
+            'speed' => $netlink['speed'],
+        );
     }
 
     unset($tmp_netlinks);
@@ -1449,10 +1489,14 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
     }
 
     if (!empty($netlinks[$netnode_netdevid])) {
-        foreach ($netlinks[$netnode_netdevid] as $netlinkid => $netdevid) {
-            $netdevice = $netdevices[$netdevid];
+        foreach ($netlinks[$netnode_netdevid] as $netlinkid => $netlink) {
+            $netdevice = $netdevices[$netlink['netdevid']];
 
             if (!isset($processed_netlinks[$netlinkid])) {
+                if ($netnode_name == $netdevice['netnodename']) {
+                    $netnodes[$netnode_name]['local_technologies'][$netlink['technology']] = $netlink['technology'];
+                }
+
                 analyze_network_tree(
                     $netdevice['netnodename'],
                     $netdevice['id'],
@@ -1477,8 +1521,11 @@ foreach ($netnodes as $netnodename => $netnode) {
 
 $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
 
-foreach ($netnodes as $netnodename => $netnode) {
+foreach ($netnodes as $netnodename => &$netnode) {
     $netnode['technologies'] = array_unique($netnode['technologies']);
+    $netnode['ethernet_technologies'] = array_filter($netnode['local_technologies'], function($technology) use ($pit_ethernet_technologies) {
+        return isset($pit_ethernet_technologies[$technology]);
+    });
 
     echo '<strong>' . (isset($netnode['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $netnode['real_id'] . '">' . $netnodename . '</a>' : $netnodename) . '</strong>:<br>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;lokalizacja: ' . $netnode['location_city_name'] . (empty($netnode['location_street_name']) ? '' : ', ' . $netnode['location_street_name']) . ' ' . $netnode['location_house'] . '<br>';
@@ -1495,22 +1542,31 @@ foreach ($netnodes as $netnodename => $netnode) {
     if ($netnode['mode'] == 1) {
         echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: <strong>' . (isset($netnode['parent_netnodename']) ? $netnode['parent_netnodename'] : '-') . '</strong><br>';
     }
+
     echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie dostępu:<br>';
     if (empty($netnode['technologies'])) {
         echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(brak)<br>';
     } else {
         foreach ($netnode['technologies'] as $technology) {
-            if ($technology < 100) {
-                $technologyname = $LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology];
-            } elseif ($technology < 200) {
-                $technologyname = $LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology];
-            } else {
-                $technologyname = $LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology];
-            }
+            $technologyname = linkTechnologyLabel($technology);
 
             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . '<br>';
         }
     }
+
+    if ($netnode['mode'] == 2) {
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie ethernetowe w węźle:<br>';
+        if (empty($netnode['ethernet_technologies'])) {
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(brak)<br>';
+        } else {
+            foreach ($netnode['ethernet_technologies'] as $technology) {
+                $technologyname = linkTechnologyLabel($technology);
+
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . '<br>';
+            }
+        }
+    }
+
 /*
     echo '&nbsp;&nbsp;&nbsp;&nbsp;zasięgi: ';
     if (empty($netnode['ranges'])) {
@@ -1522,6 +1578,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 */
     echo '<br>';
 }
+unset($netnode);
 die;
 
 unset($teryt_cities);
