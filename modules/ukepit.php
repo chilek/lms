@@ -1523,7 +1523,7 @@ $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_i
 
 foreach ($netnodes as $netnodename => &$netnode) {
     $netnode['technologies'] = array_unique($netnode['technologies']);
-    $netnode['ethernet_technologies'] = array_filter($netnode['local_technologies'], function($technology) use ($pit_ethernet_technologies) {
+    $netnode['ethernet_technologies'] = array_filter($netnode['local_technologies'], function ($technology) use ($pit_ethernet_technologies) {
         return isset($pit_ethernet_technologies[$technology]);
     });
 
