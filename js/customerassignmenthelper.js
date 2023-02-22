@@ -576,10 +576,10 @@ function tariffSelectionHandler() {
 	}
 	var val = tariff_select.val();
 
-	var tariffGrossPrice = ((assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
-	var tariffNetPrice = ((assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
-	var tariffNetFlag = ((assignmentTariffId == val && assignmentNetflag) ? assignmentNetflag : selected.attr('data-tariffnetflag'));
-	var tariffTaxId = ((assignmentTariffId == val && assignmentTaxid ) ? assignmentTaxid : selected.attr('data-tarifftaxid'));
+	var tariffGrossPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
+	var tariffNetPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
+	var tariffNetFlag = ((assignmentTariffId && assignmentTariffId == val && assignmentNetflag) ? assignmentNetflag : selected.attr('data-tariffnetflag'));
+	var tariffTaxId = ((assignmentTariffId && assignmentTariffId == val && assignmentTaxid ) ? assignmentTaxid : selected.attr('data-tarifftaxid'));
 	$('#tariff-price-variants').html('');
 
 	$('#tarifftype').val(tarifftype);
@@ -630,25 +630,26 @@ function tariffSelectionHandler() {
 		let tariffBaseNetPrice = selected.attr('data-tariffnetvalue');
 		let tariffBaseGrossPrice = selected.attr('data-tariffvalue');
 		let tariffPriceVariants = selected.attr('data-tariffpricevariants');
-		let tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
+		if (tariffPriceVariants) {
+			let tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
+			if (Object.keys(tariffPriceVariantsObj).length > 0) {
+				// draw info with tariff price variants
+				drawPriceVariants(tariffPriceVariantsObj, $('#tariff-price-variants'));
 
-		if (Object.keys(tariffPriceVariantsObj).length > 0) {
-			// draw info with tariff price variants
-			drawPriceVariants(tariffPriceVariantsObj, $('#tariff-price-variants'));
-
-			// get tariff price variants according to quantity
-			let quantity = $("#quantity").val();
-			let priceVariant = getPriceVariant(parseInt(quantity), tariffPriceVariantsObj);
-			if (Object.keys(priceVariant).length > 0) {
-				grossPriceElem.val(priceVariant.gross_price);
-				netPriceElem.val(priceVariant.net_price);
+				// get tariff price variants according to quantity
+				let quantity = $("#quantity").val();
+				let priceVariant = getPriceVariant(parseInt(quantity), tariffPriceVariantsObj);
+				if (Object.keys(priceVariant).length > 0) {
+					grossPriceElem.val(priceVariant.gross_price);
+					netPriceElem.val(priceVariant.net_price);
+				} else {
+					grossPriceElem.val(tariffBaseGrossPrice);
+					netPriceElem.val(tariffBaseNetPrice);
+				}
 			} else {
-				grossPriceElem.val(tariffBaseGrossPrice);
-				netPriceElem.val(tariffBaseNetPrice);
+				grossPriceElem.val(tariffGrossPrice).prop('disabled', true);
+				netPriceElem.val(tariffNetPrice).prop('disabled', true);
 			}
-		} else {
-			grossPriceElem.val(tariffGrossPrice).prop('disabled', true);
-			netPriceElem.val(tariffNetPrice).prop('disabled', true);
 		}
 
 		$('#a_price, #a_tax').addClass('lms-ui-disabled');
