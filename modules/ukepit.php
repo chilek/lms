@@ -39,7 +39,7 @@ if (empty($root_netdevice_id)) {
 
 function linkTechnologyLabel($technology)
 {
-    static $LINKTECHNOLOGIES;
+    static $LINKTECHNOLOGIES = null;
 
     if (!isset($LINKTECHNOLOGIES)) {
         $LINKTECHNOLOGIES = $GLOBALS['LINKTECHNOLOGIES'];
@@ -51,6 +51,122 @@ function linkTechnologyLabel($technology)
         return $LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology];
     } else {
         return $LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology];
+    }
+}
+
+function mediaCodeByTechnology($technology)
+{
+    static $LINKTECHNOLOGIES = null;
+
+    if (!isset($LINKTECHNOLOGIES)) {
+        $LINKTECHNOLOGIES = $GLOBALS['LINKTECHNOLOGIES'];
+    }
+
+    if ($technology < 50 || $technology >= 100) {
+        if ($technology < 100) {
+            return LINKTYPE_WIRE;
+        } elseif ($technology < 200) {
+            return LINKTYPE_WIRELESS;
+        } else {
+            return LINKTYPE_FIBER;
+        }
+    } else {
+        return 3;
+    }
+}
+
+function mediaNameByCode($mediaName)
+{
+    static $mediaNames = array(
+        LINKTYPE_WIRE => 'kablowe parowe miedziane',
+        LINKTYPE_WIRELESS => 'radiowe',
+        LINKTYPE_FIBER => 'światłowodowe',
+        3 => 'kablowe współosiowe miedziane',
+    );
+
+    return $mediaNames[$mediaName];
+}
+
+function ethernetInterfaceCodeByTechnology($technology)
+{
+    static $LINKTECHNOLOGIES = null;
+    static $ethernet_interface_codes = null;
+
+    if (!isset($LINKTECHNOLOGIES)) {
+        $LINKTECHNOLOGIES = $GLOBALS['LINKTECHNOLOGIES'];
+    }
+
+
+    if (!isset($ethernet_interface_codes)) {
+        $ethernet_interface_codes = array(
+            // Ethernet 100Mb/s
+            7 => '01',
+            204 => '01',
+            // Ethernet 1 Gb/s
+            8 => '02',
+            205 => '02',
+            // Ethernet 10 Gb/s
+            9 => '03',
+            206 => '03',
+            // Ethernet 25 Gb/s
+            215 => '04',
+            // Ethernet 40 Gb/s
+            210 => '05',
+            // Ethernet 100 Gb/s
+            207 => '06'
+            // Ethernet 200 Gb/s = 07
+            // Ethernet 400 Gb/s = 08
+            // Ethernet 800 Gb/s = 09
+        );
+    }
+
+    if (isset($ethernet_interface_codes[$technology])) {
+        return $ethernet_interface_codes[$technology];
+    } else {
+        return '10';
+    }
+}
+
+function pointCodeByNetNodeType($netNodeType)
+{
+    static $point_codes = null;
+
+    if (!isset($point_codes)) {
+        $point_codes = array(
+            // Szafa kablowa
+            17  => '01',
+            // Studzienka
+            9   => '02',
+            // Mufa kablowa
+            20  => '03',
+            // Skrzynka kablowa
+            8   => '04',
+            // Kontener telekomunikacyjny
+            6   => '05',
+            // Słupek telekomunikacyjny
+            19  => '06',
+            // Słupek kablowy
+            18  => '07',
+            // Szafa telekomunikacyjna
+            7   => '08',
+            // Złącze kablowe
+            16  => '09',
+            // Maszt oświetleniowy
+            15  => '10',
+            // Maszt telekomunikacyjny
+            4   => '11',
+            // Słup
+            14  => '12',
+            // Wieża telekomunikacyjna
+            5   => '13',
+            // Inne określone w narzędziu teleinformatycznym = 14
+        );
+    }
+
+    if (isset($point_codes[$netNodeType])) {
+        return $point_codes[$netNodeType];
+    } else {
+        return '14';
     }
 }
 
@@ -315,13 +431,11 @@ if (!empty($tmp_netlinks)) {
 }
 
 if ($customer_netdevices) {
-    function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks, &$netdevices)
+    function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
     {
-        if (isset($netdevices['processed'])) {
-            return array();
-        }
+        static $processed_netdevices = array();
 
-        $netdevices['processed'] = true;
+        $processed_netdevices[$netdevid] = true;
 
         if (isset($customer_nodes[$customerid . '_' . $netdevid])) {
             $nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
@@ -338,12 +452,16 @@ if ($customer_netdevices) {
                 } else {
                     continue;
                 }
+
+                if (isset($processed_netdevices[$next_netdevid])) {
+                    continue;
+                }
+
                 $nodeids = array_merge($nodeids, find_nodes_for_netdev(
                     $customerid,
                     $next_netdevid,
                     $customer_nodes,
-                    $customer_netlinks,
-                    $netdevices
+                    $customer_netlinks
                 ));
             }
             unset($customer_netlink);
@@ -426,8 +544,7 @@ if ($customer_netdevices) {
                 $netlink['customerid'],
                 $netlink['netdevid'],
                 $customer_nodes,
-                $customer_netlinks,
-                $netdevs
+                $customer_netlinks
             );
             if (empty($nodes)) {
                 unset($uni_links[$netlinkid]);
@@ -824,11 +941,8 @@ if (!isset($root_netnode_name)) {
     die(trans('Unable to determine root network node using <strong>\'phpui.root_netdevice_id\'</strong> configuration setting!'));
 }
 
-
-$foreignerid = 1;
-$sforeigners = '';
+$po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
 foreach ($foreigners as $name => $foreigner) {
-    $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
     $data = array(
         // alternatively $foreingerid can be used
         'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
@@ -836,7 +950,6 @@ foreach ($foreigners as $name => $foreigner) {
         'po03_nip_nie_pl' => '',
     );
     $po_buffer .= to_csv($data) . EOL;
-    $foreignerid++;
 }
 
 $netintid = 1;
@@ -1530,12 +1643,144 @@ foreach ($netnodes as $netnodename => $netnode) {
 
 $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
 
+$w_buffer = 'we01_id_wezla,we02_tytul_do_wezla,we03_id_podmiotu_obcego,we04_terc,we05_simc,we06_ulic,'
+    . 'we07_nr_porzadkowy,we08_szerokosc,we09_dlugosc,we10_medium_transmisyjne,we11_bsa,we12_technologia_dostepowa,'
+    . 'we13_uslugi_transmisji_danych,we14_mozliwosc_zwiekszenia_liczby_interfejsow,we15_finansowanie_publ,'
+    . 'we16_numery_projektow_publ,we17_infrastruktura_o_duzym_znaczeniu,we18_typ_interfejsu,we19_udostepnianie_ethernet' . EOL;
+
+$pe_buffer = 'pe01_id_pe,pe02_typ_pe,pe03_id_wezla,pe04_pdu,pe05_terc,pe06_simc,pe07_ulic,pe08_nr_porzadkowy,'
+    . 'pe09_szerokosc,pe10_dlugosc,pe11_medium_transmisyjne,pe12_technologia_dostepowa,'
+    . 'pe13_mozliwosc_swiadczenia_uslug,pe14_finansowanie_publ,pe15_numery_projektow_publ';
+
 foreach ($netnodes as $netnodename => &$netnode) {
     $netnode['technologies'] = array_unique($netnode['technologies']);
     $netnode['ethernet_technologies'] = array_filter($netnode['local_technologies'], function ($technology) use ($pit_ethernet_technologies) {
         return isset($pit_ethernet_technologies[$technology]);
     });
 
+    $media = array();
+    foreach ($netnode['technologies'] as $technology) {
+        $mediaCode = mediaCodeByTechnology($technology);
+        if (!isset($media[$mediaCode])) {
+            $media[$mediaCode] = array();
+        }
+        $media[$mediaCode][$technology] = $technology;
+    }
+
+    if ($netnode['mode'] == 2) {
+        $data = array(
+            'we01_id_wezla' => '',
+            'we02_tytul_do_wezla' => strlen($netnode['coowner']) ? 'Węzeł współdzielony' : 'Węzeł własny',
+            'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) ? 'PO-' . $netnode['coowner'] : '',
+            'we04_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
+            'we05_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+            'we06_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+            'we07_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
+            'we08_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
+            'we09_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+            'we10_medium' => '',
+            'we11_bsa' => 'Nie',
+            'we12_technologia_dostepowa' => '',
+            'we13_uslugi_transmisji_danych' => '',
+            'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => 'Nie',
+            'we15_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
+            'we16_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';', $netnode['invproject']),
+            'we17_infrastruktura_o_duzym_znaczeniu' => 'Nie',
+            'we18_typ_interfejsu' => empty($netnode['ethernet_technologies'])
+                ? ''
+                : implode(
+                    ';',
+                    array_map(
+                        function ($technology) {
+                            return ethernetInterfaceCodeByTechnology($technology);
+                        },
+                        $netnode['ethernet_technologies']
+                    )
+                ),
+            'we19_udostepnianie_ethernet' => empty($netnode['ethernet_technologies']) ? '' : 'Nie',
+        );
+
+        $first = true;
+        foreach ($media as $mediaCode => $technology) {
+            $data['we01_id_wezla'] = 'W-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY');
+            if (!$first) {
+                $data['we01_id_wezla'] .= '-' . $mediaCode;
+            }
+            $data['we10_medium'] = mediaNameByCode($mediaCode);
+            $data['we12_technologia_dostepowa'] = empty($netnode['technologies'])
+                ? ''
+                : implode(
+                    ';',
+                    array_map(
+                        function ($technology) {
+                            return linkTechnologyLabel($technology);
+                        },
+                        array_filter(
+                            $netnode['technologies'],
+                            function ($technology) use ($mediaCode) {
+                                $technologyMediaCode = mediaCodeByTechnology($technology);
+                                return $technologyMediaCode == $mediaCode;
+                            }
+                        )
+                    )
+                );
+
+            $first = false;
+
+            $w_buffer .= to_csv($data) . EOL;
+        }
+    } else {
+        $data = array(
+            'pe01_id_pe' => 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY'),
+            'pe02_typ_pe' => pointCodeByNetNodeType($netnode['type']),
+            'pe03_id_wezla' => '',
+            'pe04_pdu' => empty($netnode['technologies']) ? 'Nie' : 'Tak',
+            'pe05_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
+            'pe06_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+            'pe07_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+            'pe08_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
+            'pe09_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
+            'pe10_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+            'pe11_medium_transmisyjne' => '',
+            'pe12_technologia_dostepowa' => '',
+            'pe13_mozliwosc_swiadczenia_uslug' => empty($netnode['technologies']) ? '' : '09',
+            'pe14_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
+            'pe15_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';', $netnode['invproject']),
+        );
+
+        $first = true;
+        foreach ($media as $mediaCode => $technology) {
+            $data['pe01_id_pe'] = 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY');
+            if (!$first) {
+                $data['pe03_id_wezla'] .= '-' . $mediaCode;
+            }
+            $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . ($first ? '' : $mediaCode) : '';
+            $data['pe11_medium_transmisyjne'] = mediaNameByCode($mediaCode);
+            $data['pe12_technologia_dostepowa'] = empty($netnode['technologies'])
+                ? ''
+                : implode(
+                    ';',
+                    array_map(
+                        function ($technology) {
+                            return linkTechnologyLabel($technology);
+                        },
+                        array_filter(
+                            $netnode['technologies'],
+                            function ($technology) use ($mediaCode) {
+                                $technologyMediaCode = mediaCodeByTechnology($technology);
+                                return $technologyMediaCode == $mediaCode;
+                            }
+                        )
+                    )
+                );
+
+            $first = false;
+
+            $pe_buffer .= to_csv($data) . EOL;
+        }
+    }
+
+    continue;
     echo '<strong>' . (isset($netnode['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $netnode['real_id'] . '">' . $netnodename . '</a>' : $netnodename) . '</strong>:<br>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;lokalizacja: ' . $netnode['location_city_name'] . (empty($netnode['location_street_name']) ? '' : ', ' . $netnode['location_street_name']) . ' ' . $netnode['location_house'] . '<br>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
@@ -1588,7 +1833,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
     echo '<br>';
 }
 unset($netnode);
-die;
+//die;
 
 unset($teryt_cities);
 unset($teryt_streets);
