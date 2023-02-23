@@ -1279,7 +1279,8 @@ if ($netnodes) {
                     'network-speed' => networkSpeedCode($node['downstream']),
                 );
 
-                $range_key = implode('_',
+                $range_key = implode(
+                    '_',
                     array_filter(
                         array_merge(
                             $range,
