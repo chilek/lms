@@ -5148,7 +5148,6 @@ $_LANG['<!netelemtype>chimney'] = 'komin';
 $_LANG['<!netelemtype>telecommunication container'] = 'kontener telekomunikacyjny';
 $_LANG['<!netelemtype>pole'] = 'słup';
 $_LANG['<!netelemtype>cable joint'] = 'mufa kablowa';
-$_LANG['cable joint'] = 'mufa kablowa';
 $_LANG['<!netelemtype>cable box'] = 'skrzynka kablowa';
 $_LANG['<!netelemtype>well'] = 'studzienka';
 $_LANG['<!netelemtype>cable connector'] = 'złącze kablowe';
@@ -5157,6 +5156,9 @@ $_LANG['<!netelemtype>cable cabinet'] = 'szafa kablowa';
 $_LANG['<!netelemtype>cable post'] = 'słupek kablowy';
 $_LANG['<!netelemtype>telecommunication post'] = 'słupek telekomunikacyjny';
 $_LANG['<!netelemtype>— other —'] = '— inny —';
+
+$_LANG['cable joint'] = 'mufa kablowa';
+$_LANG['VoIP gateway'] = 'bramka VoIP';
 
 $_LANG['Own node'] = 'Węzeł własny';
 $_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
