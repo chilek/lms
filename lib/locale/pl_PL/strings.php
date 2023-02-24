@@ -34,8 +34,8 @@ $_LANG['overground on power, lighting or traction foundation'] = 'nadziemny na p
 $_LANG['Duct type'] = 'Typ traktu';
 $_LANG['Duct type:'] = 'Typ traktu:';
 $_LANG['Select duct type'] = 'Wybierz typ traktu';
-$_LANG['Line count'] = 'Liczba linii';
-$_LANG['Line count:'] = 'Liczba linii:';
+$_LANG['Fiber/Line count'] = 'Liczba włókien/linii';
+$_LANG['Fiber/Line count:'] = 'Liczba włókien/linii:';
 
 $_LANG['Detected network loop on network node <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w węźle <strong>\'$a\'</strong>!';
 $_LANG['Detected network loop on network device <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w urządzeniu <strong>\'$a\'</strong>!';

@@ -27,7 +27,7 @@
 		</tr>
 		{if $link.isnetlink}
 			<tr class="light">
-				<td style="width: 1%; white-space: nowrap;">{trans("Line count")}</td>
+				<td style="width: 1%; white-space: nowrap;">{trans("Fiber/Line count")}</td>
 				<td style="width: 99%;">
 					<input type="text" name="linecount" id="linecount" value="{if $link.linecount}{$link.linecount}{/if}" size="2"
 						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>

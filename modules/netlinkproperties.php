@@ -79,7 +79,7 @@ function update_netlink_properties($id, $devid, $link)
 
     $port_content = '<i class="' . $icon . '" 
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
-            . ($isnetlink && $link['type'] == LINKTYPE_FIBER ? trans('Line count:') . ' ' . $link['linecount'] . '<br>': '')
+            . ($isnetlink && $link['type'] == LINKTYPE_FIBER ? trans('Fiber/Line count:') . ' ' . $link['linecount'] . '<br>': '')
             . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
                 : ($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')
                     . ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))

@@ -117,7 +117,7 @@
 											{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}
 											<br>
 											{if $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}
-												{trans("Line count:")} {$netdevice.linecount}
+												{trans("Fiber/Line count:")} {$netdevice.linecount}
 												<br>
 											{/if}
 											{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}
@@ -230,7 +230,7 @@
 						{/foreach}
 					</SELECT>
 
-					<input type="text" name="linecount" form="connect-form" size="8" placeholder="{trans("Line count")}"
+					<input type="text" name="linecount" form="connect-form" size="8" placeholder="{trans("Fiber/Line count")}"
 						value="{if $devlinklinecount}{$devlinklinecount}{/if}"{if $devlinktype != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 
 					<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"}
