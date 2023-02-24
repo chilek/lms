@@ -90,6 +90,11 @@ function mediaNameByCode($mediaName)
     return $mediaNames[$mediaName];
 }
 
+function mediaNameByTechnology($technology)
+{
+    return mediaNameByCode(mediaCodeByTechnology($technology));
+}
+
 function ethernetInterfaceCodeByTechnology($technology)
 {
     static $LINKTECHNOLOGIES = null;
@@ -305,8 +310,6 @@ foreach ($LINKTECHNOLOGIES as $linktype => $linktechnologies) {
         }
     }
 }
-
-$lb_buffer = $lk_buffer = '';
 
 function to_csv($data)
 {
@@ -1465,13 +1468,13 @@ if (!$summary_only) {
 
     $pe_buffer = 'pe01_id_pe,pe02_typ_pe,pe03_id_wezla,pe04_pdu,pe05_terc,pe06_simc,pe07_ulic,pe08_nr_porzadkowy,'
         . 'pe09_szerokosc,pe10_dlugosc,pe11_medium_transmisyjne,pe12_technologia_dostepowa,'
-        . 'pe13_mozliwosc_swiadczenia_uslug,pe14_finansowanie_publ,pe15_numery_projektow_publ';
+        . 'pe13_mozliwosc_swiadczenia_uslug,pe14_finansowanie_publ,pe15_numery_projektow_publ' . EOL;
 
     $ua_buffer = '"ua01_id_punktu_adresowego","ua02_id_pe","ua03_id_po","ua04_terc","ua05_simc","ua06_ulic",'
         . '"ua07_nr_porzadkowy","ua08_szerokosc",ua09_dlugosc,ua10_medium_dochodzace_do_pa,ua11_technologia_dostepowa,'
         . 'ua12_instalacja_telekom,ua13_medium_instalacji_budynku,ua14_technologia_dostepowa,"ua15_identyfikacja_uslugi",'
         . '"ua16_dostep_stacjonarny","ua17_dostep_stacjonarny_bezprzewodowy","ua18_telewizja_cyfrowa","ua19_radio",'
-        . '"ua20_usluga_telefoniczna","ua21_predkosc_uslugi_td","ua22_liczba_uzytkownikow_uslugi_td"';
+        . '"ua20_usluga_telefoniczna","ua21_predkosc_uslugi_td","ua22_liczba_uzytkownikow_uslugi_td"' . EOL;
 }
 
 foreach ($netnodes as $netnodename => &$netnode) {
@@ -1508,8 +1511,9 @@ foreach ($netnodes as $netnodename => &$netnode) {
                 'we13_uslugi_transmisji_danych' => '',
                 'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => 'Nie',
                 'we15_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
-                'we16_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';',
-                    $netnode['invproject']),
+                'we16_numery_projektow_publ' => empty($netnode['invproject'])
+                    ? ''
+                    : implode(';', $netnode['invproject']),
                 'we17_infrastruktura_o_duzym_znaczeniu' => 'Nie',
                 'we18_typ_interfejsu' => empty($netnode['ethernet_technologies'])
                     ? ''
@@ -1527,12 +1531,11 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
             $first = true;
             foreach ($media as $mediaCode => $technology) {
+                if (!isset($netnode['fullname'])) {
+                    $netnode['fullname'] = (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
+                }
+
                 $data['we01_id_wezla'] = 'W-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
-                /*
-                            if (!$first) {
-                                $data['we01_id_wezla'] .= '-' . $mediaCode;
-                            }
-                */
                 $data['we10_medium'] = mediaNameByCode($mediaCode);
                 $data['we12_technologia_dostepowa'] = empty($netnode['technologies'])
                     ? ''
@@ -1578,13 +1581,11 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
             $first = true;
             foreach ($media as $mediaCode => $technology) {
+                if (!isset($netnode['fullname'])) {
+                    $netnode['fullname'] = (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
+                }
+
                 $data['pe01_id_pe'] = 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
-                /*
-                            if (!$first) {
-                                $data['pe03_id_wezla'] .= '-' . $mediaCode;
-                            }
-                */
-                //            $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . ($first ? '' : $mediaCode) : '';
                 $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . '-' . $mediaCode : '';
 
                 $access_media = array();
@@ -1656,60 +1657,60 @@ foreach ($netnodes as $netnodename => &$netnode) {
                 }
             }
         }
-    }
-
-    echo '<strong>' . (isset($netnode['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $netnode['real_id'] . '">' . $netnodename . '</a>' : $netnodename) . '</strong>:<br>';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;lokalizacja: ' . $netnode['location_city_name'] . (empty($netnode['location_street_name']) ? '' : ', ' . $netnode['location_street_name']) . ' ' . $netnode['location_house'] . '<br>';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;obecny w drzewie: ';
-
-    if (isset($processed_netnodes[$netnodename])) {
-        echo '<span style="color: green; font-weight: bold;">tak</span>';
     } else {
-        echo '<span style="color: red; font-weight: bold;">nie</span>';
-    }
-    echo '<br>';
+        echo '<strong>' . (isset($netnode['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $netnode['real_id'] . '">' . $netnodename . '</a>' : $netnodename) . '</strong>:<br>';
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;lokalizacja: ' . $netnode['location_city_name'] . (empty($netnode['location_street_name']) ? '' : ', ' . $netnode['location_street_name']) . ' ' . $netnode['location_house'] . '<br>';
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;obecny w drzewie: ';
 
-    if ($netnode['mode'] == 1) {
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: <strong>' . (isset($netnode['parent_netnodename']) ? $netnode['parent_netnodename'] : '-') . '</strong><br>';
-    }
-
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie dostępu:<br>';
-    if (empty($netnode['technologies'])) {
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(brak)<br>';
-    } else {
-        foreach ($netnode['technologies'] as $technology) {
-            $technologyname = technologyName($technology);
-            $mediaName = mediaNameByCode(mediaCodeByTechnology($technology));
-
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . ' (' . $mediaName . ')<br>';
+        if (isset($processed_netnodes[$netnodename])) {
+            echo '<span style="color: green; font-weight: bold;">tak</span>';
+        } else {
+            echo '<span style="color: red; font-weight: bold;">nie</span>';
         }
-    }
+        echo '<br>';
 
-    if ($netnode['mode'] == 2) {
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie ethernetowe w węźle:<br>';
-        if (empty($netnode['ethernet_technologies'])) {
+        if ($netnode['mode'] == 1) {
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;zasilany z węzła: <strong>' . (isset($netnode['parent_netnodename']) ? $netnode['parent_netnodename'] : '-') . '</strong><br>';
+        }
+
+        echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie dostępu:<br>';
+        if (empty($netnode['technologies'])) {
             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(brak)<br>';
         } else {
-            foreach ($netnode['ethernet_technologies'] as $technology) {
+            foreach ($netnode['technologies'] as $technology) {
                 $technologyname = technologyName($technology);
-                $mediaName = mediaNameByCode(mediaCodeByTechnology($technology));
+                $mediaName = mediaNameByTechnology($technology);
 
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . ' (' . $mediaName . ')<br>';
             }
         }
-    }
 
-/*
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;zasięgi: ';
-    if (empty($netnode['ranges'])) {
-        echo '-';
-    } else {
-        echo nl2br(print_r($netnode['ranges'], true));
+        if ($netnode['mode'] == 2) {
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;technologie ethernetowe w węźle:<br>';
+            if (empty($netnode['ethernet_technologies'])) {
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(brak)<br>';
+            } else {
+                foreach ($netnode['ethernet_technologies'] as $technology) {
+                    $technologyname = technologyName($technology);
+                    $mediaName = mediaNameByTechnology($technology);
+
+                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . ' (' . $mediaName . ')<br>';
+                }
+            }
+        }
+
+        /*
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;zasięgi: ';
+            if (empty($netnode['ranges'])) {
+                echo '-';
+            } else {
+                echo nl2br(print_r($netnode['ranges'], true));
+            }
+            echo '<br>';
+        */
+        echo '<br>';
     }
-    echo '<br>';
-*/
-    echo '<br>';
 }
 unset($netnode);
 
@@ -1723,7 +1724,7 @@ $netlinks = array();
 if ($netdevices) {
     foreach ($netdevices as $netdevice) {
         $ndnetlinks = $DB->GetAll(
-            "SELECT src, dst, nl.type, speed, nl.technology,
+            "SELECT nl.id, src, dst, nl.type, speed, nl.technology,
             (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
                 ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
             (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
@@ -1733,8 +1734,8 @@ if ($netdevices) {
             JOIN netdevices nddst ON nddst.id = nl.dst
             LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
             LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
-            WHERE (src = ?" . ($customer_netdevices ? 'AND nddst.ownerid IS NULL' : '') . ")
-                OR (dst = ?" . ($customer_netdevices ? 'AND ndsrc.ownerid IS NULL' : '') . ")",
+            WHERE (src = ?" . ($customer_netdevices ? ' AND nddst.ownerid IS NULL' : '') . ")
+                OR (dst = ?" . ($customer_netdevices ? ' AND ndsrc.ownerid IS NULL' : '') . ")",
             array($netdevice['id'], $netdevice['id'], $netdevice['id'], $netdevice['id'])
         );
         if ($ndnetlinks) {
@@ -1775,12 +1776,13 @@ if ($netdevices) {
                                 || $netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2;
 
                             $netlinks[] = array(
+                                'id' => $netlink['id'],
                                 'type' => $netlink['type'],
                                 'speed' => $speed,
                                 'technology' => $netlink['technology'],
                                 'src' => $netdevnetnode,
                                 'dst' => $dstnetnode,
-                                'license' => $netlink['license'],
+                                'license' => isset($netlink['license']) ? $netlink['license'] : '',
                                 'frequency' => $netlink['frequency'],
                                 'invproject' => $invproject,
                                 'status' => $status,
@@ -1808,11 +1810,13 @@ if ($netdevices) {
                             || $netnodes[$netdevnetnode]['ownership'] < 2 && $netnodes[$dstnetnode]['ownership'] == 2;
 
                         $netlinks[] = array(
+                            'id' => $netlink['id'],
                             'type' => $netlink['type'],
                             'speed' => $speed,
+                            'technology' => $netlink['technology'],
                             'src' => $netdevnetnode,
                             'dst' => $srcnetnode,
-                            'license' => $netlink['license'],
+                            'license' => isset($netlink['license']) ? $netlink['license'] : '',
                             'frequency' => $netlink['frequency'],
                             'invproject' => $invproject,
                             'status' => $status,
@@ -1825,86 +1829,82 @@ if ($netdevices) {
     }
 }
 
-/*
-// save info about network lines
-$netlineid = 1;
-$snetcablelines = '';
-$snetradiolines = '';
-if ($netlinks) {
-    foreach ($netlinks as $netlink) {
-        if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
-            if ($netlink['type'] == 1) {
-                $linktechnology = empty($netlink['technology']) ? $netlink['technology'] : 0;
-                if (!$linktechnology) {
-                    $linktechnology = 101;
+if (!$summary_only) {
+    $lk_buffer = 'lk01_id_lk,lk02_id_punktu_poczatkowego,lk03_punkty_zalamania,lk04_id_punktu_koncowego,'
+        . 'lk05_medium_transmisyjne,lk06_rodzaj_linii_kablowej,lk07_liczba_wlokien,lk08_liczba_wlokien_wykorzystywanych,'
+        . 'lk09_liczba_wlokien_udostepnienia,lk10_finansowanie_publ,lk11_numery_projektow_publ,'
+        . 'lk12_infrastruktura_o_duzym_znaczeniu' . EOL;
+
+    $lb_buffer = 'lb01_id_lb,lb02_id_punktu_poczatkowego,lb03_id_punktu_koncowego,lb04_medium_transmisyjne,'
+        . 'lb05_nr_pozwolenia_radiowego,lb06_pasmo_radiowe,lb07_system_transmisyjny,lb08_przepustowosc,'
+        . 'lb09_mozliwosc_udostepniania' . EOL;
+
+    // save info about network lines
+    $snetcablelines = '';
+    $snetradiolines = '';
+    if ($netlinks) {
+        foreach ($netlinks as $netlink) {
+            $technology = $netlink['technology'];
+
+            if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
+                $srcnetnode = $netnodes[$netlink['src']];
+                $dstnetnode = $netnodes[$netlink['dst']];
+
+                if (!isset($srcnetnode['fullname']) || !isset($dstnetnode['fullname'])) {
+                    continue;
                 }
-                switch ($linktechnology) {
-                    case 100:
-                    case 101:
-                        $linktransmission = 'WiFi';
-                        break;
-                    case 102:
-                    case 103:
-                    case 104:
-                        $linktransmission = $LINKTECHNOLOGIES[1][$linktechnology];
-                        break;
-                    default:
-                        $linktransmission = '';
-                }
-                $linkfrequency = $netlink['frequency'];
-                if (empty($linkfrequency)) {
-                    $linkfrequency = '5.5';
+
+                $srcnetnodename = $srcnetnode['fullname'];
+                $dstnetnodename = $dstnetnode['fullname'];
+
+                if ($netlink['type'] == LINKTYPE_WIRELESS) {
+                    if (!$technology) {
+                        $technology = 101;
+                    }
+
+                    $frequency = $netlink['frequency'];
+                    if (empty($frequency)) {
+                        $frequency = 5.5;
+                    } else {
+                        $frequency = floatval($frequency);
+                    }
+
+                    $data = array(
+                        'lb01_id_lb' => 'LB-' . $netlink['id'],
+                        'lb02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $srcnetnodename,
+                        'lb03_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
+                        'lb04_medium_transmisyjne' => strlen($netlink['license']) ? 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego' : 'radiowe na częstotliwości ogólnodostępnej',
+                        'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
+                        'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
+                        'lb07_system_transmisyjny' => networkSpeedCode($netlink['speed'] * 1000),
+                        'lb08_przepustowosc' => 'Nie',
+                    );
+
+                    $lb_buffer .= to_csv($data) . EOL;
                 } else {
-                    $linkfrequency = str_replace(',', '.', (float) $linkfrequency);
+                    $data = array(
+                        'lk01_id_lk' => 'LK-' . $netlink['id'],
+                        'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $srcnetnodename,
+                        'lk03_punkty_zalamania' => '',
+                        'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
+                        'lk05_medium_transmisyjne' => mediaNameByTechnology($technology),
+                        'lk06_rodzaj_linii_kablowej' => 'Inna określona w narzędziu teleinformatycznym',
+                        'lk07_liczba_wlokien' => $netlink['type'] == LINKTYPE_FIBER ? '2' : '',
+                        'lk08_liczba_wlokien_wykorzystywanych' => $netlink['type'] == LINKTYPE_FIBER ? '2' : '',
+                        'lk09_liczba_wlokien_udostepnienia' => '0',
+                        'lk10_finansowanie_publ' => empty($netlink['invproject']) ? 'Nie' : 'Tak',
+                        'lk11_numery_projektow_publ' => empty($netlink['invproject']) ? '' : $netlink['invproject'],
+                        'lk12_infrastruktura_o_duzym_znaczeniu' => 'Nie',
+                    );
+
+                    $lk_buffer .= to_csv($data) . EOL;
                 }
-                $data = array(
-                    'rl_id' => $netlineid,
-                    'rl_anodeid' => $netnodes[$netlink['src']]['id'],
-                    'rl_bnodeid' => $netnodes[$netlink['dst']]['id'],
-                    'rl_mediumtype' => empty($netlink['license'])
-                    ? 'radiowe na częstotliwości ogólnodostępnej'
-                    : 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego',
-                    'rl_licencenr' => empty($netlink['license']) ? '' : $netlink['license'],
-                    'rl_bandwidth' => $linkfrequency,
-                    'rl_transmission' => $linktransmission,
-                    'rl_throughput' => $netlink['speed'],
-                    'rl_leaseavail' => 'Nie',
-                    'rl_invproject' => $netlink['invproject'],
-                    'rl_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
-                );
-                $buffer .= 'LB,' . to_csv($data) . EOL;
-            } else {
-                $data = array(
-                    'lp_id' => $netlineid,
-                    'lp_owner' => 'Własna',
-                    'lp_foreingerid' => '',
-                    'lp_anodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['src']]['ownership']],
-                    'lp_anodeid' => $netnodes[$netlink['src']]['id'],
-                    'lp_bnodetype' => $NETELEMENTOWNERSHIPS[$netnodes[$netlink['dst']]['ownership']],
-                    'lp_bnodeid' => $netnodes[$netlink['dst']]['id'],
-                    'lp_tech' => $linktypes[$netlink['type']]['technologia'],
-                    'lp_fibertype' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['typ'] : '',
-                    'lp_fibertotal' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
-                    'lp_fiberused' => $netlink['type'] == 2 ? $linktypes[$netlink['type']]['liczba_jednostek'] : '',
-                    'lp_eu' => strlen($netlink['invproject']) ? 'Tak' : 'Nie',
-                    'lp_passiveavail' => 'Brak danych',
-                    'lp_passivetype' => '',
-                    'lp_fiberlease' => $netlink['type'] == 2 ? 'Nie' : '',
-                    'lp_fiberleasecount' => '',
-                    'lp_bandwidthlease' => 'Nie',
-                    'lp_duct' => ($netnodes[$netlink['src']]['type'] == 14 && $netnodes[$netlink['dst']]['type'] == 14
-                    ? 'napowietrzny' : $linktypes[$netlink['type']]['trakt']),
-                    'lp_length' => $netlink['type'] == 2 ? '0.1' : '',
-                    'lp_invproject' => $netlink['invproject'],
-                    'lp_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
-                );
-                $buffer .= 'LK,' . to_csv($data) . EOL;
             }
-            $netlineid++;
         }
     }
 }
 
+/*
 // save info about network links
 $netlinkid = 1;
 $snetlinks = '';
