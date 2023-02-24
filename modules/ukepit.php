@@ -224,6 +224,27 @@ function isMobileTechnology($technology)
     return isset($mobile_technologies[$technology]);
 }
 
+function routeTypeName($routetype)
+{
+    static $route_types = null;
+
+    if (!isset($route_types)) {
+        $route_types = array(
+            1 => 'Linia kablowa podziemna (umieszczona bezpośrednio w ziemi)',
+            2 => 'Linia kablowa umieszczona w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)',
+            3 => 'Linia kablowa umieszczona w kanale technologicznym',
+            4 => 'Linia kablowa nadziemna na podbudowie słupowej telekomunikacyjnej',
+            5 => 'Linia kablowa nadziemna na podbudowie elektroenergetycznej, oświetleniowej lub trakcyjnej',
+        );
+    }
+
+    if (isset($route_types[$routetype])) {
+        return $route_types[$routetype];
+    } else {
+        return 'Inna określona w narzędziu teleinformatycznym';
+    }
+}
+
 /*!
  * \brief Parse network speed
  */
@@ -1726,6 +1747,8 @@ if ($netdevices) {
     foreach ($netdevices as $netdevice) {
         $ndnetlinks = $DB->GetAll(
             "SELECT nl.id, src, dst, nl.type, speed, nl.technology,
+            nl.routetype,
+            nl.lines,
             (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
                 ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
             (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
@@ -1785,6 +1808,8 @@ if ($netdevices) {
                                 'dst' => $dstnetnode,
                                 'license' => isset($netlink['license']) ? $netlink['license'] : '',
                                 'frequency' => $netlink['frequency'],
+                                'routetype' => $netlink['routetype'],
+                                'lines' => $netlink['lines'],
                                 'invproject' => $invproject,
                                 'status' => $status,
                                 'foreign' => $foreign,
@@ -1819,6 +1844,8 @@ if ($netdevices) {
                             'dst' => $srcnetnode,
                             'license' => isset($netlink['license']) ? $netlink['license'] : '',
                             'frequency' => $netlink['frequency'],
+                            'routetype' => $netlink['routetype'],
+                            'lines' => $netlink['lines'],
                             'invproject' => $invproject,
                             'status' => $status,
                             'foreign' => $foreign,
@@ -1889,9 +1916,13 @@ if (!$summary_only) {
                         'lk03_punkty_zalamania' => '',
                         'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
                         'lk05_medium_transmisyjne' => mediaNameByTechnology($technology),
-                        'lk06_rodzaj_linii_kablowej' => 'Inna określona w narzędziu teleinformatycznym',
-                        'lk07_liczba_wlokien' => $netlink['type'] == LINKTYPE_FIBER ? '2' : '',
-                        'lk08_liczba_wlokien_wykorzystywanych' => $netlink['type'] == LINKTYPE_FIBER ? '2' : '',
+                        'lk06_rodzaj_linii_kablowej' => routeTypeName($netlink['routetype']),
+                        'lk07_liczba_wlokien' => $netlink['type'] == LINKTYPE_FIBER
+                            ? (empty($netlink['lines']) ? '2' : $netlink['lines'])
+                            : '',
+                        'lk08_liczba_wlokien_wykorzystywanych' => $netlink['type'] == LINKTYPE_FIBER
+                            ? (empty($netlink['lines']) ? '2' : $netlink['lines'])
+                            : '',
                         'lk09_liczba_wlokien_udostepnienia' => '0',
                         'lk10_finansowanie_publ' => empty($netlink['invproject']) ? 'Nie' : 'Tak',
                         'lk11_numery_projektow_publ' => empty($netlink['invproject']) ? '' : $netlink['invproject'],
