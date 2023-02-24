@@ -26,11 +26,11 @@
 
 $_LANG['— other —'] = '— inny —';
 
-$_LANG['underground cable line (placed directly in the ground)'] = 'linia kablowa podziemna (umieszczona bezpośrednio w ziemi)';
-$_LANG['cable line placed in cable ducts (including cable pipeline, microducts)'] = 'linia kablowa umieszczona w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';
-$_LANG['cable line placed in the technological channel'] = 'linia kablowa umieszczona w kanale technologicznym';
-$_LANG['above-ground cable line on a telecommunications pole foundation'] = 'linia kablowa nadziemna na podbudowie słupowej telekomunikacyjnej';
-$_LANG['overground cable line on a power, lighting or traction foundation'] = 'linia kablowa nadziemna na podbudowie elektroenergetycznej, oświetleniowej lub trakcyjnej';
+$_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';
+$_LANG['placed in cable ducts (including cable pipeline, microducts)'] = 'umieszczony w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';
+$_LANG['placed in the technological channel'] = 'umieszczony w kanale technologicznym';
+$_LANG['above-ground on telecommunication pole foundation'] = 'nadziemny na podbudowie słupowej telekomunikacyjnej';
+$_LANG['overground on power, lighting or traction foundation'] = 'nadziemny na podbudowie elektroenergetycznej, oświetleniowej lub trakcyjnej';
 $_LANG['Duct type'] = 'Typ traktu';
 $_LANG['Duct type:'] = 'Typ traktu:';
 $_LANG['Select duct type'] = 'Wybierz typ traktu';

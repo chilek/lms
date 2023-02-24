@@ -1299,11 +1299,11 @@ $NETELEMENTTYPEGROUPS = array(
 );
 
 $NETWORK_DUCT_TYPES = array(
-    1 => trans('underground cable line (placed directly in the ground)'),
-    2 => trans('cable line placed in cable ducts (including cable pipeline, microducts)'),
-    3 => trans('cable line placed in the technological channel'),
-    4 => trans('above-ground cable line on a telecommunications pole foundation'),
-    5 => trans('overground cable line on a power, lighting or traction foundation'),
+    1 => trans('underground (placed directly in the ground)'),
+    2 => trans('placed in cable ducts (including cable pipeline, microducts)'),
+    3 => trans('placed in the technological channel'),
+    4 => trans('above-ground on telecommunication pole foundation'),
+    5 => trans('overground on power, lighting or traction foundation'),
 );
 
 $NETELEMENTOWNERSHIPS = array(
