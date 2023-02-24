@@ -29,7 +29,7 @@
 			<tr class="light">
 				<td style="width: 1%; white-space: nowrap;">{trans("Line count")}</td>
 				<td style="width: 99%;">
-					<input type="text" name="lines" id="lines" value="{if $link.lines}{$link.lines}{/if}" size="2"
+					<input type="text" name="linecount" id="linecount" value="{if $link.linecount}{$link.linecount}{/if}" size="2"
 						{if $link.type != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 				</td>
 			</tr>
@@ -159,7 +159,7 @@
 		if (linktype != {$smarty.const.LINKTYPE_WIRELESS}) {
 			$('#radiosector,#srcradiosector,#dstradiosector').val(0);
 		}
-		$('[name="lines"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
+		$('[name="linecount"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
 		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', linktype != 1);
 	}
 
@@ -201,7 +201,7 @@
 		var linktechnology = form.elements['linktechnology'].value;
 		var linkspeed = form.elements['linkspeed'].value;
 		var routetype = form.elements['routetype'].value;
-		var lines = form.elements['lines'].value;
+		var linecount = form.elements['linecount'].value;
 
 		xajax_update_netlink_properties({$link.id}, {$link.devid}, {
 				type: linktype,
@@ -214,7 +214,7 @@
 				technology: linktechnology,
 				speed: linkspeed,
 				routetype: routetype,
-				lines: lines
+				linecount: linecount
 			} );
 	}
 

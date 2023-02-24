@@ -237,7 +237,7 @@ switch ($action) {
         $dev['dstport'] = !empty($_GET['dstport']) ? intval($_GET['dstport']) : '0';
         $dev['id'] = !empty($_GET['netdev']) ? intval($_GET['netdev']) : '0';
         $routetype = !empty($_GET['routetype']) && ctype_digit($_GET['routetype']) ? intval($_GET['routetype']) : null;
-        $lines = !empty($_GET['lines']) && ctype_digit($_GET['lines']) ? intval($_GET['lines']) : null;
+        $linecount = !empty($_GET['linecount']) && ctype_digit($_GET['linecount']) ? intval($_GET['linecount']) : null;
 
         $ports1 = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($_GET['id']));
         $takenports1 = $LMS->CountNetDevLinks($_GET['id']);
@@ -275,7 +275,7 @@ switch ($action) {
         $SESSION->save('devlinktechnology', $linktechnology);
         $SESSION->save('devlinkspeed', $linkspeed);
         $SESSION->save('devlinkroutetype', $routetype);
-        $SESSION->save('devlinklines', $lines);
+        $SESSION->save('devlinklinecount', $linecount);
 
         if (!$error) {
             $LMS->NetDevLink($dev['id'], $_GET['id'], array(
@@ -287,7 +287,7 @@ switch ($action) {
                 'srcport' => $dev['srcport'],
                 'dstport' => $dev['dstport'],
                 'routetype' => $routetype,
-                'lines' => $lines,
+                'linecount' => $linecount,
             ));
             $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
         }
@@ -893,7 +893,7 @@ $SMARTY->assign('devlinkdstradiosector', $SESSION->get('devlinkdstradiosector'))
 $SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
 $SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
 $SMARTY->assign('devlinkroutetype', $SESSION->get('devlinkroutetype'));
-$SMARTY->assign('devlinklines', $SESSION->get('devlinklines'));
+$SMARTY->assign('devlinklinecount', $SESSION->get('devlinklinecount'));
 $SMARTY->assign('nodelinktype', $SESSION->get('nodelinktype'));
 $SMARTY->assign('nodelinkradiosector', $SESSION->get('nodelinkradiosector'));
 $SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));

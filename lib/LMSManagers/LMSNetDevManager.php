@@ -191,7 +191,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $technology = null;
             $speed = null;
             $routetype = null;
-            $lines = null;
+            $linecount = null;
         } else {
             $type = isset($link['type']) && (is_int($link['type']) || ctype_digit($link['type']))
                 ? intval($link['type']) : null;
@@ -205,11 +205,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 ? intval($link['speed']) : null;
             $routetype = !empty($link['routetype']) && (is_int($link['routetype']) || ctype_digit($link['routetype']))
                 ? intval($link['routetype']) : null;
-            $lines = !empty($link['lines']) && (is_int($link['lines']) || ctype_digit($link['lines']))
-                ? intval($link['lines']) : null;
+            $linecount = !empty($link['linecount']) && (is_int($link['linecount']) || ctype_digit($link['linecount']))
+                ? intval($link['linecount']) : null;
         }
 
-        $query = 'UPDATE netlinks SET type = ?, srcradiosector = ?, dstradiosector = ?, technology = ?, speed = ?, routetype = ?, lines = ?';
+        $query = 'UPDATE netlinks SET type = ?, srcradiosector = ?, dstradiosector = ?, technology = ?, speed = ?, routetype = ?, linecount = ?';
         $args = array(
             'type' => $type,
             'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
@@ -217,7 +217,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'technology' => $technology,
             'speed' => $speed,
             'routetype' => $routetype,
-            'lines' => $lines,
+            'linecount' => $linecount,
         );
         if (isset($link['srcport']) && isset($link['dstport'])) {
             $query .= ', srcport = ?, dstport = ?';
@@ -286,8 +286,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         $routetype = !empty($link['routetype']) && (is_int($link['routetype']) || ctype_digit($link['routetype']))
             ? intval($link['routetype'])
             : null;
-        $lines = !empty($link['lines']) && (is_int($link['lines']) || ctype_digit($link['lines']))
-            ? intval($link['lines'])
+        $linecount = !empty($link['linecount']) && (is_int($link['linecount']) || ctype_digit($link['linecount']))
+            ? intval($link['linecount'])
             : null;
 
         if ($dev1 != $dev2) {
@@ -303,10 +303,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     'srcport' => intval($sport),
                     'dstport' => intval($dport),
                     'routetype' => $routetype,
-                    'lines' => $lines,
+                    'linecount' => $linecount,
                 );
                 $res = $this->db->Execute('INSERT INTO netlinks
-					(src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, lines)
+					(src, dst, type, srcradiosector, dstradiosector, technology, speed, srcport, dstport, routetype, linecount)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($this->syslog && $res) {
                     $args[SYSLOG::RES_NETLINK] = $this->db->GetLastInsertID('netlinks');
@@ -648,7 +648,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
                 (CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector,
                 routetype,
-                lines
+                linecount
             FROM netlinks
             WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
             array($dev1, $dev1, $dev1, $dev1, $dev1, $dev2, $dev1, $dev2)
@@ -686,7 +686,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 d.producer, d.ports, l.type AS linktype,
                 l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
                 l.routetype,
-                l.lines,
+                l.linecount,
                 srcrs.name AS srcradiosector, dstrs.name AS dstradiosector,
                 (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
                     + (SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
@@ -698,7 +698,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             JOIN (
                 SELECT DISTINCT type, technology, speed,
                     routetype,
-                    lines,
+                    linecount,
                     (CASE src WHEN ? THEN dst ELSE src END) AS dev,
                     (CASE src WHEN ? THEN dstport ELSE srcport END) AS srcport,
                     (CASE src WHEN ? THEN srcport ELSE dstport END) AS dstport,

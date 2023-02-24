@@ -1748,7 +1748,7 @@ if ($netdevices) {
         $ndnetlinks = $DB->GetAll(
             "SELECT nl.id, src, dst, nl.type, speed, nl.technology,
             nl.routetype,
-            nl.lines,
+            nl.linecount,
             (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
                 ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
             (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
@@ -1809,7 +1809,7 @@ if ($netdevices) {
                                 'license' => isset($netlink['license']) ? $netlink['license'] : '',
                                 'frequency' => $netlink['frequency'],
                                 'routetype' => $netlink['routetype'],
-                                'lines' => $netlink['lines'],
+                                'linecount' => $netlink['linecount'],
                                 'invproject' => $invproject,
                                 'status' => $status,
                                 'foreign' => $foreign,
@@ -1845,7 +1845,7 @@ if ($netdevices) {
                             'license' => isset($netlink['license']) ? $netlink['license'] : '',
                             'frequency' => $netlink['frequency'],
                             'routetype' => $netlink['routetype'],
-                            'lines' => $netlink['lines'],
+                            'linecount' => $netlink['linecount'],
                             'invproject' => $invproject,
                             'status' => $status,
                             'foreign' => $foreign,
@@ -1918,10 +1918,10 @@ if (!$summary_only) {
                         'lk05_medium_transmisyjne' => mediaNameByTechnology($technology),
                         'lk06_rodzaj_linii_kablowej' => routeTypeName($netlink['routetype']),
                         'lk07_liczba_wlokien' => $netlink['type'] == LINKTYPE_FIBER
-                            ? (empty($netlink['lines']) ? '2' : $netlink['lines'])
+                            ? (empty($netlink['linecount']) ? '2' : $netlink['linecount'])
                             : '',
                         'lk08_liczba_wlokien_wykorzystywanych' => $netlink['type'] == LINKTYPE_FIBER
-                            ? (empty($netlink['lines']) ? '2' : $netlink['lines'])
+                            ? (empty($netlink['linecount']) ? '2' : $netlink['linecount'])
                             : '',
                         'lk09_liczba_wlokien_udostepnienia' => '0',
                         'lk10_finansowanie_publ' => empty($netlink['invproject']) ? 'Nie' : 'Tak',
