@@ -1680,8 +1680,9 @@ foreach ($netnodes as $netnodename => &$netnode) {
     } else {
         foreach ($netnode['technologies'] as $technology) {
             $technologyname = technologyName($technology);
+            $mediaName = mediaNameByCode(mediaCodeByTechnology($technology));
 
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . '<br>';
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . ' (' . $mediaName . ')<br>';
         }
     }
 
@@ -1692,8 +1693,9 @@ foreach ($netnodes as $netnodename => &$netnode) {
         } else {
             foreach ($netnode['ethernet_technologies'] as $technology) {
                 $technologyname = technologyName($technology);
+                $mediaName = mediaNameByCode(mediaCodeByTechnology($technology));
 
-                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . '<br>';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $technologyname . ' (' . $mediaName . ')<br>';
             }
         }
     }
