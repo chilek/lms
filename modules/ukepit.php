@@ -321,6 +321,7 @@ $customers = array();
 
 $customer_netdevices = isset($_POST['customernetdevices']);
 $summary_only = isset($_POST['summaryonly']);
+$detect_loops = isset($_POST['detectloops']);
 
 $pit_ethernet_technologies = array();
 
@@ -1347,10 +1348,12 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
     static $url,
         $processed_netnodes = array(),
         $processed_netdevices = array(),
-        $processed_netlinks = array();
+        $processed_netlinks = array(),
+        $detect_loops = null;
 
     if (!isset($url)) {
         $url = ConfigHelper::getConfig('system.url');
+        $detect_loops = $GLOBALS['detect_loops'];
     }
 
     $netnode = &$netnodes[$netnode_name];
@@ -1359,7 +1362,7 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
         $processed_netlinks[$netnode_netlinkid] = true;
     }
 
-    if (!$same_netnode && isset($netnode_name_stack[$netnode_name]) || $same_netnode && isset($processed_netdevices[$netnode_netdevid])) {
+    if ($detect_loops && (!$same_netnode && isset($netnode_name_stack[$netnode_name]) || $same_netnode && isset($processed_netdevices[$netnode_netdevid]))) {
         $netdev_stack = array();
         $back_trace = debug_backtrace();
         $last_netdevid = null;
