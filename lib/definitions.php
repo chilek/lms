@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1298,6 +1298,14 @@ $NETELEMENTTYPEGROUPS = array(
     ),
 );
 
+$NETWORK_DUCT_TYPES = array(
+    1 => trans('underground cable line (placed directly in the ground)'),
+    2 => trans('cable line placed in cable ducts (including cable pipeline, microducts)'),
+    3 => trans('cable line placed in the technological channel'),
+    4 => trans('above-ground cable line on a telecommunications pole foundation'),
+    5 => trans('overground cable line on a power, lighting or traction foundation'),
+);
+
 $NETELEMENTOWNERSHIPS = array(
     0   => trans('Own node'),
     1   => trans('Node shared with another entity'),
@@ -1594,6 +1602,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_NETELEMENTSTATUSES', $NETELEMENTSTATUSES);
     $SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
     $SMARTY->assign('_NETELEMENTTYPEGROUPS', $NETELEMENTTYPEGROUPS);
+    $SMARTY->assign('_NETWORK_DUCT_TYPES', $NETWORK_DUCT_TYPES);
     $SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
     $SMARTY->assign('_USERPANEL_AUTH_TYPES', $USERPANEL_AUTH_TYPES);
     $SMARTY->assignByRef('_EVENTTYPES', $EVENTTYPES);

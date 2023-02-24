@@ -112,9 +112,38 @@
 							<div class="lms-ui-tab-table-column taken-ports">
 								<span id="dev-link-port-{$netdevice.id}" class="dev-link-port"
 									onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
+									{capture assign="netlinkhint"}{strip}
+										<span>
+											{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}
+											<br>
+											{if $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}
+												{trans("Line count:")} {$netdevice.lines}
+												<br>
+											{/if}
+											{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}
+												{if $netdevice.srcradiosector}
+													{trans("Radio sector:")} {$netdevice.srcradiosector}
+													<br>
+												{/if}
+												{if $netdevice.dstradiosector}
+													{trans("Destination radio sector:")} {$netdevice.dstradiosector}
+													<br>
+												{/if}
+											{/if}
+											{if $netdevice.linktechnology}
+												{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}
+												<br>
+											{/if}
+											{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}
+											<br>
+											{if !empty($netdevice.routetype)}
+												<p class="lms-ui-route-type">
+													{trans("Duct type:")} {$_NETWORK_DUCT_TYPES[$netdevice.routetype]}
+												</p>
+											{/if}
+									{/strip}{/capture}
 									<i class="{if $netdevice.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
-											{tip trigger="dev-link-port-{$netdevice.id}"
-												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}<br>{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}{if $netdevice.srcradiosector}{trans("Radio sector:")} {$netdevice.srcradiosector}<br>{/if}{if $netdevice.dstradiosector}{trans("Destination radio sector:")} {$netdevice.dstradiosector}<br>{/if}{/if}{if $netdevice.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}</span>"}>
+										{tip trigger="dev-link-port-{$netdevice.id}" text=$netlinkhint}>
 									</i>
 								</span>
 								<span id="dev-link-dstport-{$netdevice.id}">
@@ -201,6 +230,9 @@
 						{/foreach}
 					</SELECT>
 
+					<input type="text" name="lines" form="connect-form" size="8" placeholder="{trans("Line count")}"
+						value="{if $devlinklines}{$devlinklines}{/if}"{if $devlinktype != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
+
 					<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"}
 							onchange="change_devlinktechnology(this.options[this.selectedIndex].value)"
 							form="connect-form">
@@ -217,6 +249,14 @@
 						<OPTION VALUE="{$key}"{if $key==$devlinkspeed || (!$devlinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
 						{/foreach}
 					</SELECT>
+
+					<select name="routetype" id="routetype" form="connect-form"
+						{tip trigger="routetype" text="Select duct type"}>
+						<option value="">{trans("— other —")}</option>
+						{foreach Localisation::arraySort($_NETWORK_DUCT_TYPES) as $ducttypeid => $ducttypelabel}
+							<option value="{$ducttypeid}"{if $ducttypeid == $devlinkroutetype} selected{/if}>{$ducttypelabel}</option>
+						{/foreach}
+					</select>
 
 					{button icon="save" onclick="javascript:document.connect.submit();" label="Connect"}
 				{/if}
@@ -255,7 +295,9 @@
 		xjx.$('connboxsrcradiosector').style.display = (linktype == 1 ? '' : 'none');
 		xjx.$('connboxdstradiosector').style.display = (linktype == 1 ? '' : 'none');
 
-		if (linktype == 1) {
+		$('[name="lines"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
+
+		if (linktype == {$smarty.const.LINKTYPE_WIRELESS}) {
 			var selected = xjx.$('srcnetdev').selectedIndex;
 			if (selected) {
 				netdev = xjx.$('srcnetdev').options[selected].value;

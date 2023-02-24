@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 function update_netlink_properties($id, $devid, $link)
 {
-    global $LMS, $DB, $LINKTYPES, $LINKTECHNOLOGIES, $LINKSPEEDS;
+    global $LMS, $DB, $LINKTYPES, $LINKTECHNOLOGIES, $LINKSPEEDS, $NETWORK_DUCT_TYPES;
 
     $result = new xajaxResponse();
 
@@ -79,11 +79,13 @@ function update_netlink_properties($id, $devid, $link)
 
     $port_content = '<i class="' . $icon . '" 
 			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
+            . ($isnetlink && $link['type'] == LINKTYPE_FIBER ? trans('Line count:') . ' ' . $link['lines'] . '<br>': '')
             . (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
                 : ($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')
                     . ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))
             . ($link['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . '<br>' : '')
             . trans("Link speed:") . ' ' . $LINKSPEEDS[$link['speed']]
+            . (empty($link['routetype']) ? '' : '<br><p class=&quot;lms-ui-route-type&quot;>' . trans('Duct type:') . ' ' . $NETWORK_DUCT_TYPES[$link['routetype']] . '</p>')
             . '</span>"></i>';
 
     $result->call(

@@ -24,6 +24,19 @@
  *  $Id$
  */
 
+$_LANG['— other —'] = '— inny —';
+
+$_LANG['underground cable line (placed directly in the ground)'] = 'linia kablowa podziemna (umieszczona bezpośrednio w ziemi)';
+$_LANG['cable line placed in cable ducts (including cable pipeline, microducts)'] = 'linia kablowa umieszczona w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';
+$_LANG['cable line placed in the technological channel'] = 'linia kablowa umieszczona w kanale technologicznym';
+$_LANG['above-ground cable line on a telecommunications pole foundation'] = 'linia kablowa nadziemna na podbudowie słupowej telekomunikacyjnej';
+$_LANG['overground cable line on a power, lighting or traction foundation'] = 'linia kablowa nadziemna na podbudowie elektroenergetycznej, oświetleniowej lub trakcyjnej';
+$_LANG['Duct type'] = 'Typ traktu';
+$_LANG['Duct type:'] = 'Typ traktu:';
+$_LANG['Select duct type'] = 'Wybierz typ traktu';
+$_LANG['Line count'] = 'Liczba linii';
+$_LANG['Line count:'] = 'Liczba linii:';
+
 $_LANG['Detected network loop on network node <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w węźle <strong>\'$a\'</strong>!';
 $_LANG['Detected network loop on network device <strong>\'$a\'</strong>!'] = 'Wykryto zapętlenie sieci w urządzeniu <strong>\'$a\'</strong>!';
 $_LANG['Network devices which belong to this loop:'] = 'Urządzenia sieciowe należące do tej pętli:';
