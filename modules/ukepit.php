@@ -1575,8 +1575,9 @@ foreach ($netnodes as $netnodename => &$netnode) {
                 'pe12_technologia_dostepowa' => '',
                 'pe13_mozliwosc_swiadczenia_uslug' => empty($netnode['technologies']) ? '' : '09',
                 'pe14_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
-                'pe15_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';',
-                    $netnode['invproject']),
+                'pe15_numery_projektow_publ' => empty($netnode['invproject'])
+                    ? ''
+                    : implode(';', $netnode['invproject']),
             );
 
             $first = true;
