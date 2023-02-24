@@ -1303,9 +1303,10 @@ if ($netnodes) {
                 );
 
                 if (!isset($netnode['ranges'][$range_key])) {
-                    $netnode['ranges'][$range_key] = array();
+                    $range['count'] = 0;
+                    $netnode['ranges'][$range_key] = array_merge($range, $range_access_props);
                 }
-                $netnode['ranges'][$range_key][] = array_merge($range, $range_access_props);
+                $netnode['ranges'][$range_key]['count']++;
             }
 
             $netnode['technologies'][] = $range['technology'];
@@ -1580,8 +1581,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
             $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . '-' . $mediaCode : '';
 
             $access_media = array();
-            foreach ($netnode['ranges'] as $range_key => $ranges) {
-                $range = reset($ranges);
+            foreach ($netnode['ranges'] as $range_key => $range) {
                 $access_media[$range['medium']] = true;
             }
 
@@ -1613,9 +1613,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
     }
 
     if (!empty($netnode['ranges'])) {
-        foreach ($netnode['ranges'] as $range_key => $ranges) {
-            $range = reset($ranges);
-
+        foreach ($netnode['ranges'] as $range_key => $range) {
             if ($netnode['mode'] == 2) {
                 $new_pe = $netnodes[$netnodename];
                 $new_pe['mode'] = 1;
@@ -1644,7 +1642,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
                     'ua19_radio' => 'Nie',
                     'ua20_usluga_telefoniczna' => $range['phone'] ? 'Tak' : 'Nie',
                     'ua21_predkosc_uslugi_td' => $range['network-speed'],
-                    'ua22_liczba_uzytkownikow_uslugi_td' => count($ranges),
+                    'ua22_liczba_uzytkownikow_uslugi_td' => $range['count'],
                 );
 
                 $ua_buffer .= to_csv($data) . EOL;
