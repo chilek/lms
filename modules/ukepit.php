@@ -358,18 +358,6 @@ $borough_types = array(
     9 => 'dzielnica',
 );
 
-$linktypes = array(
-    array('linia' => "kablowa", 'trakt' => "podziemny", 'technologia' => "kablowe parowe miedziane", 'typ' => "UTP",
-        'technologia_dostepu' => "100 Mb/s Fast Ethernet", 'liczba_jednostek' => "1",
-        'jednostka' => "linie w kablu"),
-    array('linia' => "bezprzewodowa", 'trakt' => "NIE DOTYCZY", 'technologia' => "radiowe", 'typ' => "WiFi",
-        'technologia_dostepu' => "WiFi - 2,4 GHz", 'liczba_jednostek' => "1",
-        'jednostka' => "kanały"),
-    array('linia' => "kablowa", 'trakt' => "podziemny w kanalizacji", 'technologia' => "światłowodowe", 'typ' => "G.652",
-        'technologia_dostepu' => "100 Mb/s Fast Ethernet", 'liczba_jednostek' => "2",
-        'jednostka' => "włókna")
-);
-
 $projects = $LMS->GetProjects();
 if (!empty($invprojects)) {
     foreach ($projects as $idx => $project) {
@@ -1335,7 +1323,7 @@ if ($netnodes) {
                 $netnode['ranges'][$range_key]['count']++;
             }
 
-            $netnode['technologies'][] = $range['technology'];
+            $netnode['technologies'][$range['technology']] = $range['technology'];
         }
     }
 }
@@ -1431,6 +1419,10 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
     if (!$same_netnode) {
         $netnode_name_stack[$netnode_name] = true;
         $processed_netnodes[$netnode_name] = true;
+
+        if (isset($netlinks[$netnode_netdevid][$netnode_netlinkid]['technology'])) {
+            $netnodes[$netnode_name]['uplink_technology'] = $netlinks[$netnode_netdevid][$netnode_netlinkid]['technology'];
+        }
     }
 
     $processed_netdevices[$netnode_netdevid] = true;
@@ -1440,13 +1432,11 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
             $current_netnode_name = $netnode_name;
         } else {
             $netnode['parent_netnodename'] = $current_netnode_name;
-            if (isset($netnodes[$current_netnode_name]['technologies'])) {
-                $netnodes[$current_netnode_name]['technologies'] = array_merge(
-                    $netnodes[$current_netnode_name]['technologies'],
-                    $netnode['technologies']
-                );
-            } else {
-                $netnodes[$current_netnode_name]['technologies'] = $netnode['technologies'];
+            if (!isset($netnodes[$current_netnode_name]['technologies'])) {
+                $netnodes[$current_netnode_name]['technologies'] = array();
+            }
+            foreach ($netnode['technologies'] as $technology) {
+                $netnodes[$current_netnode_name]['technologies'][$technology] = $technology;
             }
         }
     }
@@ -1479,7 +1469,7 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
 }
 
 foreach ($netnodes as $netnodename => $netnode) {
-    $netnode['technologies'] = $netnode['local_technologies'] = array_unique($netnode['technologies']);
+    $netnode['local_technologies'] = $netnode['technologies'];
 }
 
 $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
@@ -1502,11 +1492,22 @@ if (!$summary_only) {
 }
 
 foreach ($netnodes as $netnodename => &$netnode) {
-    $netnode['technologies'] = array_unique($netnode['technologies']);
-    $netnode['ethernet_technologies'] = array_filter($netnode['local_technologies'], function ($technology) use ($pit_ethernet_technologies) {
-        return isset($pit_ethernet_technologies[$technology]);
-    });
+    if (!empty($netnode['uplink_technology'])) {
+        $netnode['technologies'][$netnode['uplink_technology']] = $netnode['uplink_technology'];
+        if (!empty($netnode['parent_netnodename'])) {
+            $netnodes[$netnode['parent_netnodename']]['technologies'][$netnode['uplink_technology']] = $netnode['uplink_technology'];
+        }
+    }
+    $netnode['ethernet_technologies'] = array_filter(
+        $netnode['local_technologies'],
+        function ($technology) use ($pit_ethernet_technologies) {
+            return isset($pit_ethernet_technologies[$technology]);
+        }
+    );
+}
+unset($netnode);
 
+foreach ($netnodes as $netnodename => &$netnode) {
     if (!$summary_only) {
         $media = array();
         foreach ($netnode['technologies'] as $technology) {
