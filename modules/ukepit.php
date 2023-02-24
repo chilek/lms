@@ -294,6 +294,7 @@ define('EOL', "\r\n");
 $customers = array();
 
 $customer_netdevices = isset($_POST['customernetdevices']);
+$summary_only = isset($_POST['summaryonly']);
 
 $pit_ethernet_technologies = array();
 
@@ -1456,20 +1457,22 @@ foreach ($netnodes as $netnodename => $netnode) {
 
 $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
 
-$w_buffer = 'we01_id_wezla,we02_tytul_do_wezla,we03_id_podmiotu_obcego,we04_terc,we05_simc,we06_ulic,'
-    . 'we07_nr_porzadkowy,we08_szerokosc,we09_dlugosc,we10_medium_transmisyjne,we11_bsa,we12_technologia_dostepowa,'
-    . 'we13_uslugi_transmisji_danych,we14_mozliwosc_zwiekszenia_liczby_interfejsow,we15_finansowanie_publ,'
-    . 'we16_numery_projektow_publ,we17_infrastruktura_o_duzym_znaczeniu,we18_typ_interfejsu,we19_udostepnianie_ethernet' . EOL;
+if (!$summary_only) {
+    $w_buffer = 'we01_id_wezla,we02_tytul_do_wezla,we03_id_podmiotu_obcego,we04_terc,we05_simc,we06_ulic,'
+        . 'we07_nr_porzadkowy,we08_szerokosc,we09_dlugosc,we10_medium_transmisyjne,we11_bsa,we12_technologia_dostepowa,'
+        . 'we13_uslugi_transmisji_danych,we14_mozliwosc_zwiekszenia_liczby_interfejsow,we15_finansowanie_publ,'
+        . 'we16_numery_projektow_publ,we17_infrastruktura_o_duzym_znaczeniu,we18_typ_interfejsu,we19_udostepnianie_ethernet' . EOL;
 
-$pe_buffer = 'pe01_id_pe,pe02_typ_pe,pe03_id_wezla,pe04_pdu,pe05_terc,pe06_simc,pe07_ulic,pe08_nr_porzadkowy,'
-    . 'pe09_szerokosc,pe10_dlugosc,pe11_medium_transmisyjne,pe12_technologia_dostepowa,'
-    . 'pe13_mozliwosc_swiadczenia_uslug,pe14_finansowanie_publ,pe15_numery_projektow_publ';
+    $pe_buffer = 'pe01_id_pe,pe02_typ_pe,pe03_id_wezla,pe04_pdu,pe05_terc,pe06_simc,pe07_ulic,pe08_nr_porzadkowy,'
+        . 'pe09_szerokosc,pe10_dlugosc,pe11_medium_transmisyjne,pe12_technologia_dostepowa,'
+        . 'pe13_mozliwosc_swiadczenia_uslug,pe14_finansowanie_publ,pe15_numery_projektow_publ';
 
-$ua_buffer = '"ua01_id_punktu_adresowego","ua02_id_pe","ua03_id_po","ua04_terc","ua05_simc","ua06_ulic",'
-    . '"ua07_nr_porzadkowy","ua08_szerokosc",ua09_dlugosc,ua10_medium_dochodzace_do_pa,ua11_technologia_dostepowa,'
-    . 'ua12_instalacja_telekom,ua13_medium_instalacji_budynku,ua14_technologia_dostepowa,"ua15_identyfikacja_uslugi",'
-    . '"ua16_dostep_stacjonarny","ua17_dostep_stacjonarny_bezprzewodowy","ua18_telewizja_cyfrowa","ua19_radio",'
-    . '"ua20_usluga_telefoniczna","ua21_predkosc_uslugi_td","ua22_liczba_uzytkownikow_uslugi_td"';
+    $ua_buffer = '"ua01_id_punktu_adresowego","ua02_id_pe","ua03_id_po","ua04_terc","ua05_simc","ua06_ulic",'
+        . '"ua07_nr_porzadkowy","ua08_szerokosc",ua09_dlugosc,ua10_medium_dochodzace_do_pa,ua11_technologia_dostepowa,'
+        . 'ua12_instalacja_telekom,ua13_medium_instalacji_budynku,ua14_technologia_dostepowa,"ua15_identyfikacja_uslugi",'
+        . '"ua16_dostep_stacjonarny","ua17_dostep_stacjonarny_bezprzewodowy","ua18_telewizja_cyfrowa","ua19_radio",'
+        . '"ua20_usluga_telefoniczna","ua21_predkosc_uslugi_td","ua22_liczba_uzytkownikow_uslugi_td"';
+}
 
 foreach ($netnodes as $netnodename => &$netnode) {
     $netnode['technologies'] = array_unique($netnode['technologies']);
@@ -1477,180 +1480,184 @@ foreach ($netnodes as $netnodename => &$netnode) {
         return isset($pit_ethernet_technologies[$technology]);
     });
 
-    $media = array();
-    foreach ($netnode['technologies'] as $technology) {
-        $mediaCode = mediaCodeByTechnology($technology);
-        if (!isset($media[$mediaCode])) {
-            $media[$mediaCode] = array();
-        }
-        $media[$mediaCode][$technology] = $technology;
-    }
-
-    if ($netnode['mode'] == 2) {
-        $data = array(
-            'we01_id_wezla' => '',
-            'we02_tytul_do_wezla' => strlen($netnode['coowner']) ? 'Węzeł współdzielony' : 'Węzeł własny',
-            'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) ? 'PO-' . $netnode['coowner'] : '',
-            'we04_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-            'we05_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
-            'we06_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
-            'we07_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
-            'we08_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
-            'we09_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
-            'we10_medium' => '',
-            'we11_bsa' => 'Nie',
-            'we12_technologia_dostepowa' => '',
-            'we13_uslugi_transmisji_danych' => '',
-            'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => 'Nie',
-            'we15_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
-            'we16_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';', $netnode['invproject']),
-            'we17_infrastruktura_o_duzym_znaczeniu' => 'Nie',
-            'we18_typ_interfejsu' => empty($netnode['ethernet_technologies'])
-                ? ''
-                : implode(
-                    ';',
-                    array_map(
-                        function ($technology) {
-                            return ethernetInterfaceCodeByTechnology($technology);
-                        },
-                        $netnode['ethernet_technologies']
-                    )
-                ),
-            'we19_udostepnianie_ethernet' => empty($netnode['ethernet_technologies']) ? '' : 'Nie',
-        );
-
-        $first = true;
-        foreach ($media as $mediaCode => $technology) {
-            $data['we01_id_wezla'] = 'W-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
-/*
-            if (!$first) {
-                $data['we01_id_wezla'] .= '-' . $mediaCode;
+    if (!$summary_only) {
+        $media = array();
+        foreach ($netnode['technologies'] as $technology) {
+            $mediaCode = mediaCodeByTechnology($technology);
+            if (!isset($media[$mediaCode])) {
+                $media[$mediaCode] = array();
             }
-*/
-            $data['we10_medium'] = mediaNameByCode($mediaCode);
-            $data['we12_technologia_dostepowa'] = empty($netnode['technologies'])
-                ? ''
-                : implode(
-                    ';',
-                    array_map(
-                        function ($technology) {
-                            return technologyName($technology);
-                        },
-                        array_filter(
-                            $netnode['technologies'],
-                            function ($technology) use ($mediaCode) {
-                                $technologyMediaCode = mediaCodeByTechnology($technology);
-                                return $technologyMediaCode == $mediaCode;
-                            }
+            $media[$mediaCode][$technology] = $technology;
+        }
+
+
+        if ($netnode['mode'] == 2) {
+            $data = array(
+                'we01_id_wezla' => '',
+                'we02_tytul_do_wezla' => strlen($netnode['coowner']) ? 'Węzeł współdzielony' : 'Węzeł własny',
+                'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) ? 'PO-' . $netnode['coowner'] : '',
+                'we04_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
+                'we05_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+                'we06_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'we07_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
+                'we08_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
+                'we09_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                'we10_medium' => '',
+                'we11_bsa' => 'Nie',
+                'we12_technologia_dostepowa' => '',
+                'we13_uslugi_transmisji_danych' => '',
+                'we14_mozliwosc_zwiekszenia_liczby_interfejsow' => 'Nie',
+                'we15_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
+                'we16_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';',
+                    $netnode['invproject']),
+                'we17_infrastruktura_o_duzym_znaczeniu' => 'Nie',
+                'we18_typ_interfejsu' => empty($netnode['ethernet_technologies'])
+                    ? ''
+                    : implode(
+                        ';',
+                        array_map(
+                            function ($technology) {
+                                return ethernetInterfaceCodeByTechnology($technology);
+                            },
+                            $netnode['ethernet_technologies']
                         )
-                    )
-                );
+                    ),
+                'we19_udostepnianie_ethernet' => empty($netnode['ethernet_technologies']) ? '' : 'Nie',
+            );
 
-            $first = false;
+            $first = true;
+            foreach ($media as $mediaCode => $technology) {
+                $data['we01_id_wezla'] = 'W-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
+                /*
+                            if (!$first) {
+                                $data['we01_id_wezla'] .= '-' . $mediaCode;
+                            }
+                */
+                $data['we10_medium'] = mediaNameByCode($mediaCode);
+                $data['we12_technologia_dostepowa'] = empty($netnode['technologies'])
+                    ? ''
+                    : implode(
+                        ';',
+                        array_map(
+                            function ($technology) {
+                                return technologyName($technology);
+                            },
+                            array_filter(
+                                $netnode['technologies'],
+                                function ($technology) use ($mediaCode) {
+                                    $technologyMediaCode = mediaCodeByTechnology($technology);
+                                    return $technologyMediaCode == $mediaCode;
+                                }
+                            )
+                        )
+                    );
 
-            $w_buffer .= to_csv($data) . EOL;
-        }
-    } else {
-        $data = array(
-            'pe01_id_pe' => '',
-            'pe02_typ_pe' => pointCodeByNetNodeType($netnode['type']),
-            'pe03_id_wezla' => '',
-            'pe04_pdu' => '',
-            'pe05_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
-            'pe06_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
-            'pe07_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
-            'pe08_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
-            'pe09_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
-            'pe10_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
-            'pe11_medium_transmisyjne' => '',
-            'pe12_technologia_dostepowa' => '',
-            'pe13_mozliwosc_swiadczenia_uslug' => empty($netnode['technologies']) ? '' : '09',
-            'pe14_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
-            'pe15_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';', $netnode['invproject']),
-        );
+                $first = false;
 
-        $first = true;
-        foreach ($media as $mediaCode => $technology) {
-            $data['pe01_id_pe'] = 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
-/*
-            if (!$first) {
-                $data['pe03_id_wezla'] .= '-' . $mediaCode;
+                $w_buffer .= to_csv($data) . EOL;
             }
-*/
-//            $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . ($first ? '' : $mediaCode) : '';
-            $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . '-' . $mediaCode : '';
+        } else {
+            $data = array(
+                'pe01_id_pe' => '',
+                'pe02_typ_pe' => pointCodeByNetNodeType($netnode['type']),
+                'pe03_id_wezla' => '',
+                'pe04_pdu' => '',
+                'pe05_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
+                'pe06_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
+                'pe07_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
+                'pe08_nr_porzadkowy' => str_replace(' ', '', $netnode['address_budynek']),
+                'pe09_szerokosc' => isset($netnode['latitude']) ? $netnode['latitude'] : '',
+                'pe10_dlugosc' => isset($netnode['longitude']) ? $netnode['longitude'] : '',
+                'pe11_medium_transmisyjne' => '',
+                'pe12_technologia_dostepowa' => '',
+                'pe13_mozliwosc_swiadczenia_uslug' => empty($netnode['technologies']) ? '' : '09',
+                'pe14_finansowanie_publ' => empty($netnode['invproject']) ? 'Nie' : 'Tak',
+                'pe15_numery_projektow_publ' => empty($netnode['invproject']) ? '' : implode(';',
+                    $netnode['invproject']),
+            );
 
-            $access_media = array();
+            $first = true;
+            foreach ($media as $mediaCode => $technology) {
+                $data['pe01_id_pe'] = 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
+                /*
+                            if (!$first) {
+                                $data['pe03_id_wezla'] .= '-' . $mediaCode;
+                            }
+                */
+                //            $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . ($first ? '' : $mediaCode) : '';
+                $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . '-' . $mediaCode : '';
+
+                $access_media = array();
+                foreach ($netnode['ranges'] as $range_key => $range) {
+                    $access_media[$range['medium']] = true;
+                }
+
+                $data['pe04_pdu'] = isset($access_media[$mediaCode]) ? 'Tak' : 'Nie';
+
+                $data['pe11_medium_transmisyjne'] = mediaNameByCode($mediaCode);
+                $data['pe12_technologia_dostepowa'] = empty($netnode['technologies'])
+                    ? ''
+                    : implode(
+                        ';',
+                        array_map(
+                            function ($technology) {
+                                return technologyName($technology);
+                            },
+                            array_filter(
+                                $netnode['technologies'],
+                                function ($technology) use ($mediaCode) {
+                                    $technologyMediaCode = mediaCodeByTechnology($technology);
+                                    return $technologyMediaCode == $mediaCode;
+                                }
+                            )
+                        )
+                    );
+
+                $first = false;
+
+                $pe_buffer .= to_csv($data) . EOL;
+            }
+        }
+
+        if (!empty($netnode['ranges'])) {
             foreach ($netnode['ranges'] as $range_key => $range) {
-                $access_media[$range['medium']] = true;
-            }
+                if ($netnode['mode'] == 2) {
+                    $new_pe = $netnodes[$netnodename];
+                    $new_pe['mode'] = 1;
+                    $new_pe['parent_netnodename'] = $netnodename;
+                    $netnodes['V-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY')] = $new_pe;
+                } else {
+                    $data = array(
+                        'ua01_id_punktu_adresowego' => $range_key,
+                        'ua02_id_pe' => 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $range['medium'],
+                        'ua03_id_po' => '',
+                        'ua04_terc' => $range['terc'],
+                        'ua05_simc' => $range['simc'],
+                        'ua06_ulic' => $range['ulic'],
+                        'ua07_nr_porzadkowy' => $range['building'],
+                        'ua08_szerokosc' => $range['latitude'],
+                        'ua09_dlugosc' => $range['longitude'],
+                        'ua10_medium_dochodzace_do_pa' => mediaNameByCode($range['medium']),
+                        'ua11_technologia_dostepowa' => technologyName($range['technology']),
+                        'ua12_instalacja_telekom' => '',
+                        'ua13_medium_instalacji_budynku' => '',
+                        'ua14_technologia_dostepowa' => '',
+                        'ua15_identyfikacja_uslugi' => 'UAS100',
+                        'ua16_dostep_stacjonarny' => $range['fixed-internet'] ? 'Tak' : 'Nie',
+                        'ua17_dostep_stacjonarny_bezprzewodowy' => $range['wireless-internet'] ? 'Tak' : 'Nie',
+                        'ua18_telewizja_cyfrowa' => $range['tv'] ? 'Tak' : 'Nie',
+                        'ua19_radio' => 'Nie',
+                        'ua20_usluga_telefoniczna' => $range['phone'] ? 'Tak' : 'Nie',
+                        'ua21_predkosc_uslugi_td' => $range['network-speed'],
+                        'ua22_liczba_uzytkownikow_uslugi_td' => $range['count'],
+                    );
 
-            $data['pe04_pdu'] = isset($access_media[$mediaCode]) ? 'Tak' : 'Nie';
-
-            $data['pe11_medium_transmisyjne'] = mediaNameByCode($mediaCode);
-            $data['pe12_technologia_dostepowa'] = empty($netnode['technologies'])
-                ? ''
-                : implode(
-                    ';',
-                    array_map(
-                        function ($technology) {
-                            return technologyName($technology);
-                        },
-                        array_filter(
-                            $netnode['technologies'],
-                            function ($technology) use ($mediaCode) {
-                                $technologyMediaCode = mediaCodeByTechnology($technology);
-                                return $technologyMediaCode == $mediaCode;
-                            }
-                        )
-                    )
-                );
-
-            $first = false;
-
-            $pe_buffer .= to_csv($data) . EOL;
-        }
-    }
-
-    if (!empty($netnode['ranges'])) {
-        foreach ($netnode['ranges'] as $range_key => $range) {
-            if ($netnode['mode'] == 2) {
-                $new_pe = $netnodes[$netnodename];
-                $new_pe['mode'] = 1;
-                $new_pe['parent_netnodename'] = $netnodename;
-                $netnodes['V-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY')] = $new_pe;
-            } else {
-                $data = array(
-                    'ua01_id_punktu_adresowego' => $range_key,
-                    'ua02_id_pe' => 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $range['medium'],
-                    'ua03_id_po' => '',
-                    'ua04_terc' => $range['terc'],
-                    'ua05_simc' => $range['simc'],
-                    'ua06_ulic' => $range['ulic'],
-                    'ua07_nr_porzadkowy' => $range['building'],
-                    'ua08_szerokosc' => $range['latitude'],
-                    'ua09_dlugosc' => $range['longitude'],
-                    'ua10_medium_dochodzace_do_pa' => mediaNameByCode($range['medium']),
-                    'ua11_technologia_dostepowa' => technologyName($range['technology']),
-                    'ua12_instalacja_telekom' => '',
-                    'ua13_medium_instalacji_budynku' => '',
-                    'ua14_technologia_dostepowa' => '',
-                    'ua15_identyfikacja_uslugi' => 'UAS100',
-                    'ua16_dostep_stacjonarny' => $range['fixed-internet'] ? 'Tak' : 'Nie',
-                    'ua17_dostep_stacjonarny_bezprzewodowy' => $range['wireless-internet'] ? 'Tak' : 'Nie',
-                    'ua18_telewizja_cyfrowa' => $range['tv'] ? 'Tak' : 'Nie',
-                    'ua19_radio' => 'Nie',
-                    'ua20_usluga_telefoniczna' => $range['phone'] ? 'Tak' : 'Nie',
-                    'ua21_predkosc_uslugi_td' => $range['network-speed'],
-                    'ua22_liczba_uzytkownikow_uslugi_td' => $range['count'],
-                );
-
-                $ua_buffer .= to_csv($data) . EOL;
+                    $ua_buffer .= to_csv($data) . EOL;
+                }
             }
         }
     }
 
-    continue;
     echo '<strong>' . (isset($netnode['real_id']) ? '<a href="' . $url . '?m=netnodeinfo&id=' . $netnode['real_id'] . '">' . $netnodename . '</a>' : $netnodename) . '</strong>:<br>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;lokalizacja: ' . $netnode['location_city_name'] . (empty($netnode['location_street_name']) ? '' : ', ' . $netnode['location_street_name']) . ' ' . $netnode['location_house'] . '<br>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;typ: ' . ($netnode['mode'] == 1 ? 'punkt elastyczności' : 'węzeł') . '<br>';
@@ -1703,7 +1710,6 @@ foreach ($netnodes as $netnodename => &$netnode) {
     echo '<br>';
 }
 unset($netnode);
-//die;
 
 unset($teryt_cities);
 unset($teryt_streets);
@@ -1927,24 +1933,26 @@ if ($netlinks) {
 }
 */
 
-$filename = tempnam(sys_get_temp_dir(), 'lms-pit') . '.zip';
-$zipname = 'lms-pit.zip';
+if (!$summary_only) {
+    $filename = tempnam(sys_get_temp_dir(), 'lms-pit') . '.zip';
+    $zipname = 'lms-pit.zip';
 
-$zip = new ZipArchive();
-if ($zip->open($filename, ZipArchive::CREATE)) {
-    $zip->addFromString('podmioty_obce.csv', $po_buffer);
-    $zip->addFromString('wezly.csv', $w_buffer);
-    $zip->addFromString('punkty_elastycznosci.csv', $pe_buffer);
-    $zip->addFromString('uslugi_w_adresach.csv', $ua_buffer);
-    $zip->addFromString('linie_bezprzewodowe.csv', $lb_buffer);
-    $zip->addFromString('linie_kablowe.csv', $lk_buffer);
+    $zip = new ZipArchive();
+    if ($zip->open($filename, ZipArchive::CREATE)) {
+        $zip->addFromString('podmioty_obce.csv', $po_buffer);
+        $zip->addFromString('wezly.csv', $w_buffer);
+        $zip->addFromString('punkty_elastycznosci.csv', $pe_buffer);
+        $zip->addFromString('uslugi_w_adresach.csv', $ua_buffer);
+        $zip->addFromString('linie_bezprzewodowe.csv', $lb_buffer);
+        $zip->addFromString('linie_kablowe.csv', $lk_buffer);
 
-    $zip->close();
+        $zip->close();
+    }
+
+    header('Content-type: application/zip');
+    header('Content-Disposition: attachment; filename="' . $zipname . '"');
+    header('Pragma: public');
+
+    readfile($filename);
+    unlink($filename);
 }
-
-header('Content-type: application/zip');
-header('Content-Disposition: attachment; filename="' . $zipname . '"');
-header('Pragma: public');
-
-readfile($filename);
-unlink($filename);

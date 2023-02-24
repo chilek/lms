@@ -32,6 +32,7 @@ $_LANG['<!uke-pit>location: $a'] = 'lokalizacja: $a';
 $_LANG['<!uke-pit>device: $a (#$b)'] = 'urządzenie: $a (#$b)';
 $_LANG['Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'] = 'Nie zdefiniowano głównego urządzenia sieciowego! Użyj ustawienia konfiguracyjnego <strong>\'phpui.root_netdevice_id\'</strong>, aby je zdefiniować.';
 $_LANG['Unable to determine root network node using <strong>\'phpui.root_netdevice_id\'</strong> configuration setting!'] = 'Niemożliwe wyznaczenie głównego węzła sieci z użyciem ustawienia konfiguracyjnego <strong>\'phpui.root_netdevice_id\'</strong> !';
+$_LANG['<!uke-pit>Generate summary only'] = 'Generuj jedynie podsumowanie';
 
 $_LANG['building objects (SIIS)'] = 'obiekty budowlane (SIIS)';
 $_LANG['infrastructure elements (PIT)'] = 'elementy infrastruktury (PIT)';

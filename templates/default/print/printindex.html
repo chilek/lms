@@ -1965,34 +1965,47 @@
 		<col style="width: 99%;">
 	</colgroup>
 	<thead>
-	<tr>
-		<th scope="col" colspan="3" class="bold nobr">
-			{icon name="netdev" class="fa-fw"}
-			{trans("UKE PIT report")}
-		</th>
-	</tr>
+		<tr>
+			<th scope="col" colspan="3" class="bold nobr">
+				{icon name="netdev" class="fa-fw"}
+				{trans("UKE PIT report")}
+			</th>
+		</tr>
 	</thead>
 	<tbody>
-	<tr>
-		<td>
-			{icon name="netdevice" class="fa-fw"}
-		</td>
-		<td class="nobr">
-			<label for="uke-pit-customernetdevices">
-				<strong>{trans("Include customer network device assignments")}</strong>
-			</label>
-		</td>
-		<td>
-			<input type="checkbox" name="customernetdevices" form="uke-pit"
-				id="uke-pit-customernetdevices" value="1">
-		</td>
-	</tr>
-
-	<tr>
-		<td colspan="3" class="lms-ui-box-buttons">
-			{button form="uke-pit" icon="save" label="Submit" onclick="$('#uke-pit').submit();"}
-		</td>
-	</tr>
+		<tr>
+			<td>
+				{icon name="summary" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-summary-only">
+					<strong>{trans("<!uke-pit>Generate summary only")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="summaryonly" form="uke-pit"
+					   id="uke-pit-summary-only" value="1">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="netdevice" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-customernetdevices">
+					<strong>{trans("Include customer network device assignments")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="customernetdevices" form="uke-pit"
+					id="uke-pit-customernetdevices" value="1">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button form="uke-pit" icon="save" label="Submit" onclick="$('#uke-pit').submit();"}
+			</td>
+		</tr>
 	</tbody>
 </table>
 
