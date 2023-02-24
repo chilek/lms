@@ -400,6 +400,7 @@ version 28-git (????-??-??):
   - enhancement: add support for tariff price variants [ravvar]
   - improvement/cleanup: renamed 'siis' gps coordinate provider pointed in 'phpui.gps_coordinate_providers'
     to 'prg' [chilan]
+  - enhancement: added route/duct type and line count properties for network links [chilan]
 
 version 27.0 (2021-08-20):
 
