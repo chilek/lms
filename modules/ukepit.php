@@ -1903,22 +1903,23 @@ if (!$summary_only) {
 
                     $data = array(
                         'lb01_id_lb' => 'LB-' . $netlink['id'],
-                        'lb02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $srcnetnodename,
-                        'lb03_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
+                        'lb02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'W') . '-' . $srcnetnodename,
+                        'lb03_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'W') . '-' . $dstnetnodename,
                         'lb04_medium_transmisyjne' => strlen($netlink['license']) ? 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego' : 'radiowe na częstotliwości ogólnodostępnej',
                         'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
                         'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
-                        'lb07_system_transmisyjny' => networkSpeedCode($netlink['speed'] * 1000),
-                        'lb08_przepustowosc' => 'Nie',
+                        'lb07_system_transmisyjny' => '',
+                        'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * 1000),
+                        'lb09_mozliwosc_udostepniania' => 'Nie',
                     );
 
                     $lb_buffer .= to_csv($data) . EOL;
                 } else {
                     $data = array(
                         'lk01_id_lk' => 'LK-' . $netlink['id'],
-                        'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $srcnetnodename,
+                        'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'W') . '-' . $srcnetnodename,
                         'lk03_punkty_zalamania' => '',
-                        'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
+                        'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'W') . '-' . $dstnetnodename,
                         'lk05_medium_transmisyjne' => mediaNameByTechnology($technology),
                         'lk06_rodzaj_linii_kablowej' => routeTypeName($netlink['routetype']),
                         'lk07_liczba_wlokien' => $netlink['type'] == LINKTYPE_FIBER
