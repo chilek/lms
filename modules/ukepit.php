@@ -1893,10 +1893,30 @@ if (!$summary_only) {
 
                     $lb_buffer .= to_csv($data) . EOL;
                 } else {
+                    $points = array(
+                        array(
+                            'longitude' => $srcnetnode['longitude'],
+                            'latitude' => $dstnetnode['latitude'],
+                        ),
+                        array(
+                            'longitude' => $dstnetnode['longitude'],
+                            'latitude' => $dstnetnode['latitude'],
+                        ),
+                    );
+
                     $data = array(
                         'lk01_id_lk' => 'LK-' . $netlink['id'],
                         'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $srcnetnodename,
-                        'lk03_punkty_zalamania' => '',
+                        'lk03_punkty_zalamania' => 'LINESTRING('
+                            . implode(
+                                ',',
+                                array_map(
+                                    function ($point) {
+                                        return sprintf('%.6f %.6f', $point['longitude'], $point['latitude']);
+                                    },
+                                    $points
+                                )
+                            ) . ')',
                         'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
                         'lk05_medium_transmisyjne' => mediaNameByTechnology($technology),
                         'lk06_rodzaj_linii_kablowej' => routeTypeName($netlink['routetype']),
