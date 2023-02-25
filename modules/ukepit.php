@@ -1019,7 +1019,7 @@ if ($netnodes) {
             WHERE n.ownerid IS NOT NULL
                 AND a.city_id IS NOT NULL
                 AND n.netdev IN ?
-            GROUP BY n.linktype, n.linktechnology, a.street, a.street_id, a.city_id, a.city, a.house",
+            GROUP BY n.linktype, n.linktechnology, a.city_id, a.street_id, a.house",
             array(
                 $netnode['netdevices'],
             )
@@ -1072,27 +1072,6 @@ if ($netnodes) {
             }
 
             $teryt['address_budynek'] = $range['location_house'];
-
-            if (empty($range['location_street_name'])) {
-                if (!isset($teryt_cities[$range['location_city']]) || empty($teryt['with_streets'])) {
-                    $teryt['address_ulica'] = "BRAK ULICY";
-                    $teryt['address_symul'] = "99999";
-                } else {
-                    $teryt['address_ulica'] = '';
-                    $teryt['address_symul'] = '';
-                    $teryt['address_budynek'] = '';
-                }
-            } else {
-                if (!isset($teryt['address_symul'])) {
-                    if (isset($teryt_cities[$range['location_city']]) && !empty($teryt['with_streets'])) {
-                        $teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
-                        $teryt['address_symul'] = "99998";
-                    } else {
-                        $teryt['address_ulica'] = "BRAK ULICY";
-                        $teryt['address_symul'] = "99999";
-                    }
-                }
-            }
 
             $nodes = array();
             $uni_nodes = array();
