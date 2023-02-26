@@ -114,7 +114,8 @@
 			<tr class="light">
 				<td style="white-space: nowrap;">{trans("Duct type")}</td>
 				<td>
-					<select name="routetype" style="width: 100%;">
+					<select name="routetype" style="width: 100%;"
+						{if $link.routetype == $smarty.const.LINKTYPE_WIRELESS} disabled{/if}>
 						<option value="">{trans("— other —")}</option>
 						{foreach Localisation::arraySort($_NETWORK_DUCT_TYPES) as $ducttypeid => $ductlabel}
 							<option value="{$ducttypeid}"{if $ducttypeid == $link.routetype} selected{/if}>{$ductlabel}</option>
@@ -160,6 +161,7 @@
 			$('#radiosector,#srcradiosector,#dstradiosector').val(0);
 		}
 		$('[name="linecount"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
+		$('[name="routetype"]').prop('disabled', linktype == {$smarty.const.LINKTYPE_WIRELESS});
 		$('#radiosector,#srcradiosector,#dstradiosector').prop('disabled', linktype != 1);
 	}
 
