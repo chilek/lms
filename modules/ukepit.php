@@ -1568,8 +1568,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
         if ($netnode['mode'] == 2) {
             $data = array(
                 'we01_id_wezla' => '',
-                'we02_tytul_do_wezla' => strlen($netnode['coowner']) ? 'Węzeł współdzielony' : 'Węzeł własny',
-                'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) ? 'PO-' . $netnode['coowner'] : '',
+                'we02_tytul_do_wezla' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'Węzeł współdzielony' : 'Węzeł własny',
+                'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'PO-' . $netnode['coowner'] : '',
                 'we04_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
                 'we05_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
                 'we06_ulic' => isset($netnode['address_symul']) ? $netnode['address_symul'] : '',
