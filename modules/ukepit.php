@@ -1940,8 +1940,8 @@ if (!$summary_only) {
 
                     $data = array(
                         'lb01_id_lb' => 'LB-' . $netlink['id'],
-                        'lb02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $srcnetnodename,
-                        'lb03_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
+                        'lb02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $srcnetnodename,
+                        'lb03_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $dstnetnodename,
                         'lb04_medium_transmisyjne' => strlen($netlink['license']) ? 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego' : 'radiowe na częstotliwości ogólnodostępnej',
                         'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
                         'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
@@ -1965,7 +1965,7 @@ if (!$summary_only) {
 
                     $data = array(
                         'lk01_id_lk' => 'LK-' . $netlink['id'],
-                        'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $srcnetnodename,
+                        'lk02_id_punktu_poczatkowego' => ($srcnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $srcnetnodename,
                         'lk03_punkty_zalamania' => 'LINESTRING('
                             . implode(
                                 ',',
@@ -1976,7 +1976,7 @@ if (!$summary_only) {
                                     $points
                                 )
                             ) . ')',
-                        'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'PE' : 'WE') . '-' . $dstnetnodename,
+                        'lk04_id_punktu_koncowego' => ($dstnetnode['mode'] == 1 ? 'P' : 'W') . '-' . $dstnetnodename,
                         'lk05_medium_transmisyjne' => mediaNameByTechnology($technology),
                         'lk06_rodzaj_linii_kablowej' => routeTypeName($netlink['routetype']),
                         'lk07_liczba_wlokien' => $netlink['type'] == LINKTYPE_FIBER
