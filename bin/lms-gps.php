@@ -215,8 +215,6 @@ $google_api_key = ConfigHelper::getConfig(
     true
 );
 
-$lc = new LocationCache('full');
-
 foreach ($types as $label => $type) {
     if (!$quiet) {
         echo $label . PHP_EOL;
