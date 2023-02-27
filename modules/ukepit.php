@@ -1000,30 +1000,6 @@ if (!isset($root_netnode_name)) {
     die(trans('Unable to determine root network node using <strong>\'phpui.root_netdevice_id\'</strong> configuration setting!'));
 }
 
-$po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
-foreach ($foreigners as $name => $foreigner) {
-    $data = array(
-        // alternatively $foreingerid can be used
-        'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
-        'po02_nip_pil' => '',
-        'po03_nip_nie_pl' => '',
-    );
-    $po_buffer .= to_csv($data) . EOL;
-}
-
-$netintid = 1;
-$netbuildingid = 1;
-$netrangeid = 1;
-$radiosectorid = 1;
-$snetnodes = '';
-$sforeignernetnodes = '';
-$snetconnections = '';
-$snetinterfaces = '';
-$sradiosectors = '';
-$snetranges = '';
-$snetbuildings = '';
-$teryt_netranges = array();
-
 if ($netnodes) {
     foreach ($netnodes as $netnodename => &$netnode) {
         // if teryt location is not set then try to get location address from network node name
@@ -1553,6 +1529,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
 }
 unset($netnode);
 
+$used_foreigners = array();
+
 foreach ($netnodes as $netnodename => &$netnode) {
     if (!$summary_only) {
         $media = array();
@@ -1566,6 +1544,10 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
 
         if ($netnode['mode'] == 2) {
+            if (strlen($netnode['coowner']) && !empty($netnode['ownership'])) {
+                $used_foreigners[$netnode['coowner']] = true;
+            }
+
             $data = array(
                 'we01_id_wezla' => '',
                 'we02_tytul_do_wezla' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'Węzeł współdzielony' : 'Węzeł własny',
@@ -1789,6 +1771,19 @@ unset($netnode);
 unset($teryt_cities);
 unset($teryt_streets);
 
+$po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
+foreach ($foreigners as $name => $foreigner) {
+    if (isset($used_foreigners[$name])) {
+        $data = array(
+            // alternatively $foreingerid can be used
+            'po01_id_podmiotu_obcego' => 'PO-' . $foreigner,
+            'po02_nip_pil' => '',
+            'po03_nip_nie_pl' => '',
+        );
+        $po_buffer .= to_csv($data) . EOL;
+    }
+}
+
 //prepare info about network links (only between different network nodes)
 $netconnectionid = 1;
 $processed_netlinks = array();
@@ -1826,7 +1821,6 @@ if ($netdevices) {
                 if (!isset($processed_netlinks[$netnodelinkid])) {
                     $linkspeed = $netlink['speed'];
                     $speed = floor($linkspeed / 1000);
-                    $netintid = '';
 
                     if ($netlink['src'] == $netdevice['id']) {
                         if ($netdevnetnode != $dstnetnode) {
@@ -1918,8 +1912,6 @@ if (!$summary_only) {
         . 'lb09_mozliwosc_udostepniania' . EOL;
 
     // save info about network lines
-    $snetcablelines = '';
-    $snetradiolines = '';
     if ($netlinks) {
         foreach ($netlinks as $netlink) {
             $technology = $netlink['technology'];
