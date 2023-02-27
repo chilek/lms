@@ -245,6 +245,73 @@ function routeTypeName($routetype)
     }
 }
 
+function radioTransmissionNameByTechnology($technology)
+{
+    static $transmission_names = null;
+
+    if (!isset($transmission_names)) {
+        $transmission_names = array(
+            // WiFi – 802.11a w paśmie 5GHz
+            117 => 'WiFi',
+            // WiFi – 802.11b w paśmie 2.4GHz
+            118 => 'WiFi',
+            // WiFi – 802.11g w paśmie 2.4GHz
+            119 => 'WiFi',
+            // WiFi – 802.11n w paśmie 2.4GHz
+            100 => 'WiFi',
+            // WiFi – 802.11n w paśmie 5GHz
+            120 => 'WiFi',
+            // WiFi – 802.11ac w paśmie 5GHz
+            101 => 'WiFi',
+            // WiFi – 802.11ax w paśmie 2.4GHz
+            121 => 'WiFi',
+            // WiFi – 802.11ax w paśmie 5GHz
+            122 => 'WiFi',
+            // WiFi – 802.11ax w paśmie 6GHz
+            123 => 'WiFi',
+            // WiFi – 802.11ad w paśmie 60GHz
+            124 => 'WiFi',
+            // WiMAX
+            102 => 'WiMAX',
+            // LMDS
+            103 => 'LMDS',
+            // radiolinia
+            104 => 'Radiolinia',
+            // 2G/GSM (w tym GPRS oraz EDGE)
+            106 => 'Inny określony w narzędziu teleinformatycznym',
+            //107 => 'EDGE',
+            // 3G/CDMA2000
+            152 => 'Inny określony w narzędziu teleinformatycznym',
+            // 3G/UMTS
+            113 => 'Inny określony w narzędziu teleinformatycznym',
+            // 3G/HSPA
+            108 => 'Inny określony w narzędziu teleinformatycznym',
+            // 3G/HSPA+
+            109 => 'Inny określony w narzędziu teleinformatycznym',
+            // 3G/DC-HSPA
+            150 => 'Inny określony w narzędziu teleinformatycznym',
+            // 3G/DC-HSPA+
+            110 => 'Inny określony w narzędziu teleinformatycznym',
+            // 3G/MC-HSPA
+            151 => 'Inny określony w narzędziu teleinformatycznym',
+            // 3G/MC-HSPA+
+            111 => 'Inny określony w narzędziu teleinformatycznym',
+            // 4G/LTE
+            112 => 'Inny określony w narzędziu teleinformatycznym',
+            // 4G/LTE-A
+            153 => 'Inny określony w narzędziu teleinformatycznym',
+            // 4G/LTE-Pro
+            154 => 'Inny określony w narzędziu teleinformatycznym',
+            // 5G/NR SA
+            155 => 'Inny określony w narzędziu teleinformatycznym',
+            // 5G/NR NSA
+            156 => 'Inny określony w narzędziu teleinformatycznym',
+        );
+    }
+
+    return $transmission_names[$technology];
+}
+
 /*!
  * \brief Parse network speed
  */
@@ -1887,8 +1954,9 @@ if (!$summary_only) {
                         'lb04_medium_transmisyjne' => strlen($netlink['license']) ? 'radiowe na częstotliwości wymagającej uzyskanie pozwolenia radiowego' : 'radiowe na częstotliwości ogólnodostępnej',
                         'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
                         'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
-                        'lb07_system_transmisyjny' => networkSpeedCode($netlink['speed'] * 1000),
-                        'lb08_przepustowosc' => 'Nie',
+                        'lb07_system_transmisyjny' => radioTransmissionNameByTechnology($technology),
+                        'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * 1000),
+                        'lb09_mozliwosc_udostepnienia' => 'Nie',
                     );
 
                     $lb_buffer .= to_csv($data) . EOL;
