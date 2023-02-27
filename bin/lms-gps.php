@@ -90,8 +90,8 @@ lms-gps.php
 -u, --update                    update nodes GPS coordinates
 -U, --update-netdevices         update netdevices GPS coordinates
 -N, --update-netnodes           update netnodes GPS coordinates
--p, --providers=<google,osm,siis>
--s, --sources=<google,osm,siis> use Google Maps API and/or SIIS building location database
+-p, --providers=<google,osm,prg>
+-s, --sources=<google,osm,prg>  use Google Maps API and/or PRG building location database
                                 to determine GPS coordinates (in specified order)
 -d, --debug                     only try to determine GPS coordinates without updating database
 -h, --help                      print this help and exit;
@@ -190,6 +190,7 @@ function array_provider_filter($provider)
         'google' => true,
         'osm' => true,
         'siis' => true,
+        'prg' => true,
     );
     return isset($all_providers[$provider]);
 }
