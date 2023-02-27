@@ -1896,7 +1896,7 @@ if (!$summary_only) {
                     $points = array(
                         array(
                             'longitude' => $srcnetnode['longitude'],
-                            'latitude' => $dstnetnode['latitude'],
+                            'latitude' => $srcnetnode['latitude'],
                         ),
                         array(
                             'longitude' => $dstnetnode['longitude'],
