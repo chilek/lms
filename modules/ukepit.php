@@ -1550,7 +1550,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
             $data = array(
                 'we01_id_wezla' => '',
-                'we02_tytul_do_wezla' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'Węzeł współdzielony' : 'Węzeł własny',
+                'we02_tytul_do_wezla' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'Węzeł współdzielony z innym podmiotem' : 'Węzeł własny',
                 'we03_id_podmiotu_obcego' => strlen($netnode['coowner']) && !empty($netnode['ownership']) ? 'PO-' . $netnode['coowner'] : '',
                 'we04_terc' => isset($netnode['area_terc']) ? $netnode['area_terc'] : '',
                 'we05_simc' => isset($netnode['area_simc']) ? $netnode['area_simc'] : '',
