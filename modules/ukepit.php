@@ -1657,7 +1657,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
                     $netnode['fullname'] = (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
                 }
 
-                $data['pe01_id_pe'] = 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
+                $data['pe01_id_pe'] = 'P-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $mediaCode;
                 $data['pe03_id_wezla'] = isset($netnode['parent_netnodename']) ? 'W-' . $netnode['parent_netnodename'] . '-' . $mediaCode : '';
 
                 $access_media = array();
@@ -1702,7 +1702,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
                 } else {
                     $data = array(
                         'ua01_id_punktu_adresowego' => $range_key,
-                        'ua02_id_pe' => 'PE-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $range['medium'],
+                        'ua02_id_pe' => 'P-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $range['medium'],
                         'ua03_id_po' => '',
                         'ua04_terc' => $range['terc'],
                         'ua05_simc' => $range['simc'],
