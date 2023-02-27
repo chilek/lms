@@ -403,7 +403,7 @@ foreach ($LINKTECHNOLOGIES as $linktype => $linktechnologies) {
 function to_csv($data)
 {
     foreach ($data as $key => $val) {
-        $data[$key] = '"' . str_replace('"', '""', $val) . '"';
+        $data[$key] = '"' . (isset($val) ? str_replace('"', '""', $val) : '') . '"';
     }
     return implode(',', array_values($data));
 }
