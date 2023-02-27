@@ -1785,7 +1785,6 @@ foreach ($foreigners as $name => $foreigner) {
 }
 
 //prepare info about network links (only between different network nodes)
-$netconnectionid = 1;
 $processed_netlinks = array();
 $netlinks = array();
 if ($netdevices) {
