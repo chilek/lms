@@ -340,27 +340,43 @@ foreach ($types as $label => $type) {
 
                     sleep(1);
                 } elseif (($provider == 'prg' || $provider == 'siis') && !empty($row['state_name'])) {
-                    if (($building = $lc->buildingExists($row['city_id'], empty($row['street_id']) ? 'null' : $row['street_id'], $row['house']))
-                    && !empty($building['longitude']) && !empty($building['latitude'])) {
-                        if (!$debug) {
-                            $DB->Execute(
-                                "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
-                                array(
-                                    $building['latitude'],
-                                    $building['longitude'],
-                                    $row['id'],
-                                )
-                            );
-                        }
-                        if (!$quiet) {
-                            echo 'prg: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $building['latitude']
-                                . " long.: " . $building['longitude'] . ")" . PHP_EOL;
-                        }
-                        break;
-                    } else {
+                    $args = array(
+                        'city_id' => $row['city_id'],
+                    );
+                    if (!empty($row['street_id'])) {
+                        $args['street_id'] = $ow['street_id'];
+                    }
+                    if (!empty($row['house'])) {
+                        $args['building_num'] = $row['house'];
+                    }
+
+                    $buildings = $DB->GetAll(
+                        'SELECT * FROM location_buildings
+                        WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?',
+                        array_values($args)
+                    );
+
+                    if (empty($buildings) || count($buildings) > 1 || empty($buildings[0]['longitude'])) {
                         if (!$quiet) {
                             echo 'prg: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
                         }
+                        continue;
+                    }
+
+                    if (!$debug) {
+                        $DB->Execute(
+                            "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
+                            array(
+                                $buildings[0]['latitude'],
+                                $buildings[0]['longitude'],
+                                $row['id'],
+                            )
+                        );
+                    }
+
+                    if (!$quiet) {
+                        echo 'prg: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $buildings[0]['latitude']
+                            . " long.: " . $buildings[0]['longitude'] . ")" . PHP_EOL;
                     }
                 }
             }
