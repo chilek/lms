@@ -439,12 +439,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $commited = (!isset($data['commited']) || $data['commited'] ? 1 : 0);
 
+        $now = strtotime('now');
+
         // Create assignments according to promotion schema
         if (!empty($data['promotionassignmentid']) && !empty($data['schemaid'])) {
             $force_at_next_day = ConfigHelper::checkConfig('promotions.force_at_next_day', ConfigHelper::checkConfig('phpui.promotion_force_at_next_day'));
             $force_current_period_settlement_at_same_day = ConfigHelper::checkConfig('promotions.force_current_period_settlement_at_same_day');
-
-            $now = strtotime('now');
 
             $align_periods = isset($data['align-periods']) && !empty($data['align-periods']);
 
@@ -1034,10 +1034,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 3));
                     $partial_dateto--;
+
                     if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                         $partial_at = $data['at'];
                     } else {
-                        $partial_at = $dom + 1;
+                        $partial_at = $data['datefrom'] <= $now ? date('d', strtotime('tomorrow')) : $dom + 1;
                     }
 
                     if (empty($data['tariffid'])) {
