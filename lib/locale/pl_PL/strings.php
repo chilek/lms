@@ -34,7 +34,7 @@ $_LANG['<!uke-pit>Network node "$a" (#$b) has missed properties: $c'] = 'Węzło
 $_LANG['<!uke-pit>Network device "$a" (#$b) has missed properties: $c'] = 'Urządzeniu sieciowemu "$a" (#$b) brakuje właściwości: $c';
 $_LANG['<!uke-pit>Node "$a" (#$b) has missed properties: $c'] = 'Komputerowi "$a" (#$b) brakuje właściwości: $c';
 $_LANG['<!uke-pit>Validate TERYT properties'] = 'Weryfikuj właściwości TERYT';
-$_LANG['<!uke-pit>Validate building number'] = 'Weryfikuj numer budynku';
+$_LANG['<!uke-pit>Validate building numbers'] = 'Weryfikuj numery budynków';
 $_LANG['<!uke-pit>Validate GPS coordinates'] = 'Weryfikuj współrzędne GPS';
 
 $_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';

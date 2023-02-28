@@ -389,7 +389,7 @@ $customers = array();
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
 $summary_only = isset($_POST['summaryonly']);
 $validate_teryt = isset($_POST['validate-teryt']);
-$validate_building_number = isset($_POST['validate-building-number']);
+$validate_building_numbers = isset($_POST['validate-building-numbers']);
 $validate_gps = isset($_POST['validate-gps']);
 $detect_loops = isset($_POST['detectloops']);
 
@@ -1634,7 +1634,7 @@ foreach (array('netnodes', 'netdevices', 'nodes') as $errorous_resource) {
                     $missed_properties[] = trans('<!uke-pit>SIMC');
                 }
             }
-            if ($validate_building_number && isset($error['location_building'])) {
+            if ($validate_building_numbers && isset($error['location_building'])) {
                 $missed_properties[] = trans('<!uke-pit>building number');
             }
             if ($validate_gps && isset($error['gps'])) {
