@@ -386,7 +386,7 @@ define('EOL', "\r\n");
 
 $customers = array();
 
-$customer_netdevices = isset($_POST['customernetdevices']);
+$customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
 $summary_only = isset($_POST['summaryonly']);
 $detect_loops = isset($_POST['detectloops']);
 
@@ -496,8 +496,11 @@ $netdevices = $DB->GetAllByKey(
     LEFT JOIN addresses a ON nd.address_id = a.id
     LEFT JOIN netdevicemodels m ON m.id = nd.netdevicemodelid
     LEFT JOIN netdevicetypes t ON t.id = m.type
-    WHERE " . ($customer_netdevices ? 'nd.ownerid IS NULL AND' : '') . " EXISTS (
-        SELECT id FROM netlinks nl WHERE nl.src = nd.id OR nl.dst = nd.id
+    WHERE " . ($customer_resources_as_operator_resources ? '' : 'nd.ownerid IS NULL AND') . " EXISTS (
+        SELECT id
+        FROM netlinks nl
+        WHERE nl.src = nd.id
+            OR nl.dst = nd.id
     )
     ORDER BY nd.id",
     'id'
@@ -506,7 +509,8 @@ $netdevices = $DB->GetAllByKey(
 $all_netlinks = array();
 
 $tmp_netlinks = $DB->GetAll(
-    "SELECT nl.id,
+    "SELECT
+        nl.id,
         nl.src,
         nl.dst,
         nl.type,
@@ -515,7 +519,7 @@ $tmp_netlinks = $DB->GetAll(
     FROM netlinks nl
     JOIN netdevices ndsrc ON ndsrc.id = nl.src
     JOIN netdevices nddst ON nddst.id = nl.dst"
-    . ($customer_netdevices ? ' WHERE ndsrc.ownerid IS NULL AND nddst.ownerid IS NULL' : '')
+    . ($customer_resources_as_operator_resources ? '' : ' WHERE ndsrc.ownerid IS NULL AND nddst.ownerid IS NULL')
 );
 
 if (!empty($tmp_netlinks)) {
@@ -544,7 +548,7 @@ if (!empty($tmp_netlinks)) {
     unset($tmp_netlinks);
 }
 
-if ($customer_netdevices) {
+if (!$customer_resources_as_operator_resources) {
     function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
     {
         static $processed_netdevices = array();
@@ -586,9 +590,15 @@ if ($customer_netdevices) {
 
     // search for links between operator network devices and customer network devices
     $uni_links = $DB->GetAllByKey(
-        "SELECT nl.id AS netlinkid, nl.type AS type, nl.technology AS technology,
-            nl.speed AS speed, rs.frequency, rs.id AS radiosectorid,
-            c.id AS customerid, c.type AS customertype,
+        "SELECT
+            nl.id AS netlinkid,
+            nl.type AS type,
+            nl.technology AS technology,
+            nl.speed AS speed,
+            rs.frequency,
+            rs.id AS radiosectorid,
+            c.id AS customerid,
+            c.type AS customertype,
             (CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
             (CASE WHEN ndsrc.ownerid IS NULL THEN ndsrc.status ELSE nddst.status END) AS operator_netdevstatus,
             (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.invprojectid ELSE ndsrc.invprojectid END) AS invprojectid,
@@ -614,7 +624,8 @@ if ($customer_netdevices) {
     );
     if (!empty($uni_links)) {
         $customer_netlinks = $DB->GetAllByKey(
-            "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink,
+            "SELECT "
+                . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink,
                 nl.src,
                 nl.dst
             FROM netlinks nl
@@ -626,27 +637,36 @@ if ($customer_netdevices) {
         );
 
         $customer_nodes = $DB->GetAllByKey(
-            "SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
-                " . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
+            "SELECT "
+                . $DB->GroupConcat('n.id') . " AS nodeids, "
+                . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
             FROM nodes n
             LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
-            WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
+            WHERE (n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL)
                 AND EXISTS (
                     SELECT na.id FROM nodeassignments na
                     JOIN assignments a ON a.id = na.assignmentid
-                    WHERE na.nodeid = n.id AND a.suspended = 0
-                        AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
-                        AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+                    WHERE na.nodeid = n.id
+                        AND a.commited = 1
+                        AND a.suspended = 0
+                        AND a.period IN ?
+                        AND a.datefrom < ?NOW?
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?)
                 )
                 AND NOT EXISTS (
                     SELECT id FROM assignments aa
                     WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-                        AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+                        AND aa.commited = 1
+                        AND aa.tariffid IS NULL
+                        AND aa.liabilityid IS NULL
                         AND aa.datefrom < ?NOW?
-                        AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+                        AND (aa.dateto = 0 OR aa.dateto > ?NOW?)
                 )
             GROUP BY customerid_netdev",
-            'customerid_netdev'
+            'customerid_netdev',
+            array(
+                array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE),
+            )
         );
 
         // collect customer node/node-netdev identifiers connected to customer subnetwork
@@ -732,39 +752,55 @@ if ($netdevices) {
         }
 
         $accessports = $DB->GetAll(
-            "SELECT linktype AS type, linktechnology AS technology,
-                linkspeed AS speed, rs.frequency, " . $DB->GroupConcat('rs.id') . " AS radiosectors,
-                c.type AS customertype, COUNT(port) AS portcount
+            "SELECT
+                linktype AS type,
+                linktechnology AS technology,
+                linkspeed AS speed,
+                rs.frequency, "
+                . $DB->GroupConcat('rs.id') . " AS radiosectors,
+                c.type AS customertype,
+                COUNT(port) AS portcount
             FROM nodes n
             JOIN customers c ON c.id = n.ownerid
             LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
-            WHERE n.netdev = ? " . ($customer_netdevices ? 'AND n.ownerid IS NOT NULL' : '') . "
-                AND EXISTS
-                    (SELECT na.id FROM nodeassignments na
-                        JOIN assignments a ON a.id = na.assignmentid
-                        WHERE na.nodeid = n.id AND a.suspended = 0
-                            AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
-                            AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?))
-                AND NOT EXISTS
-                    (SELECT id FROM assignments aa
-                        WHERE aa.customerid = c.id AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-                            AND (aa.datefrom < ?NOW? OR aa.datefrom = 0)
-                            AND (aa.dateto > ?NOW? OR aa.dateto = 0))
+            WHERE n.netdev = ? " . ($customer_resources_as_operator_resources ? '' : 'AND n.ownerid IS NOT NULL') . "
+                AND EXISTS (
+                    SELECT na.id FROM nodeassignments na
+                    JOIN assignments a ON a.id = na.assignmentid
+                    WHERE na.nodeid = n.id
+                        AND a.commited = 1
+                        AND a.suspended = 0
+                        AND a.period IN ?
+                        AND a.datefrom < ?NOW?
+                        AND (a.dateto = 0 OR a.dateto > ?NOW?)
+                )
+                AND NOT EXISTS (
+                    SELECT id FROM assignments aa
+                    WHERE aa.customerid = c.id
+                        AND aa.commited = 1
+                        AND aa.tariffid IS NULL
+                        AND aa.liabilityid IS NULL
+                        AND aa.datefrom < ?NOW?
+                        AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+                )
             GROUP BY linktype, linktechnology, linkspeed, rs.frequency, c.type
             ORDER BY c.type",
-            array($netdevice['id'])
+            array(
+                $netdevice['id'],
+                array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE),
+            )
         );
 
-        if ($customer_netdevices) {
+        if (!$customer_resources_as_operator_resources) {
             // append uni links to access ports
             $access_links = $DB->GetAll(
-                "SELECT nl.id
+                "SELECT
+                    nl.id
                 FROM netlinks nl
                 JOIN netdevices ndsrc ON ndsrc.id = nl.src
                 JOIN netdevices nddst ON nddst.id = nl.dst
                 WHERE (nl.src = ? AND ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
-                    OR (nl.dst = ? AND nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL)
-                ",
+                    OR (nl.dst = ? AND nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL)",
                 array(
                     $netdevice['id'],
                     $netdevice['id'],
@@ -851,7 +887,7 @@ if ($netdevices) {
         $netdevice['netnodename'] = $netnodename;
 
         if (!array_key_exists($netnodename, $netnodes)) {
-            if ($customer_netdevices) {
+            if (!$customer_resources_as_operator_resources) {
                 $netnodes[$netnodename]['uni_links'] = array();
             }
 
@@ -975,7 +1011,7 @@ if ($netdevices) {
 
         if (!empty($accessports)) {
             foreach ($accessports as $ports) {
-                if ($customer_netdevices && isset($ports['uni_links'])) {
+                if (!$customer_resources_as_operator_resources && isset($ports['uni_links'])) {
                     $netnodes[$netnodename]['uni_links'] = array_merge($netnodes[$netnodename]['uni_links'], $ports['uni_links']);
                 }
             }
@@ -1051,7 +1087,8 @@ if ($netnodes) {
 
         // save info about network ranges
         $ranges = $DB->GetAll(
-            "SELECT n.linktype,
+            "SELECT
+                n.linktype,
                 n.linktechnology,
                 a.city_id AS location_city,
                 a.street_id AS location_street,
@@ -1072,7 +1109,7 @@ if ($netnodes) {
             $ranges = array();
         }
 
-        if ($customer_netdevices) {
+        if (!$customer_resources_as_operator_resources) {
             // collect ranges from customer uni links
             $uni_ranges = array();
             if (isset($netnode['uni_links']) && !empty($netnode['uni_links'])) {
@@ -1118,7 +1155,7 @@ if ($netnodes) {
 
             $nodes = array();
             $uni_nodes = array();
-            if (!$customer_netdevices || empty($range['from_uni_link'])) {
+            if ($customer_resources_as_operator_resources || empty($range['from_uni_link'])) {
                 // get info about computers connected to network node
                 $nodes = $DB->GetAll(
                     "SELECT
@@ -1175,7 +1212,7 @@ if ($netnodes) {
                 if (empty($nodes)) {
                     $nodes = array();
                 }
-            } elseif ($customer_netdevices) {
+            } elseif (!$customer_resources_as_operator_resources) {
                 // get info about computers or network devices connected to network node though customer network device
                 $uni_link_id = $range['from_uni_link'];
                 $uni_link = &$uni_links[$uni_link_id];
@@ -1203,7 +1240,8 @@ if ($netnodes) {
                             aa.customerid AS cid,
                             COUNT(id) AS total
                         FROM assignments aa
-                        WHERE aa.tariffid IS NULL
+                        WHERE aa.commited = 1
+                            AND aa.tariffid IS NULL
                             AND aa.liabilityid IS NULL
                             AND aa.datefrom < ?NOW?
                             AND (aa.dateto > ?NOW? OR aa.dateto = 0)
@@ -1790,21 +1828,32 @@ $netlinks = array();
 if ($netdevices) {
     foreach ($netdevices as $netdevice) {
         $ndnetlinks = $DB->GetAll(
-            "SELECT nl.id, src, dst, nl.type, speed, nl.technology,
-            nl.routetype,
-            nl.linecount,
-            (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
-                ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
-            (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
-                ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
+            "SELECT
+                nl.id,
+                nl.src,
+                nl.dst,
+                nl.type,
+                nl.speed,
+                nl.technology,
+                nl.routetype,
+                nl.linecount,
+                (CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
+                    ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
+                (CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
+                    ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
             FROM netlinks nl
             JOIN netdevices ndsrc ON ndsrc.id = nl.src
             JOIN netdevices nddst ON nddst.id = nl.dst
             LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
             LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
-            WHERE (src = ?" . ($customer_netdevices ? ' AND nddst.ownerid IS NULL' : '') . ")
-                OR (dst = ?" . ($customer_netdevices ? ' AND ndsrc.ownerid IS NULL' : '') . ")",
-            array($netdevice['id'], $netdevice['id'], $netdevice['id'], $netdevice['id'])
+            WHERE (src = ?" . ($customer_resources_as_operator_resources ? '' : ' AND nddst.ownerid IS NULL') . ")
+                OR (dst = ?" . ($customer_resources_as_operator_resources ? '' : ' AND ndsrc.ownerid IS NULL') . ")",
+            array(
+                $netdevice['id'],
+                $netdevice['id'],
+                $netdevice['id'],
+                $netdevice['id'],
+            )
         );
         if ($ndnetlinks) {
             foreach ($ndnetlinks as $netlink) {
