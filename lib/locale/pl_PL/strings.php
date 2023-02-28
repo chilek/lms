@@ -26,6 +26,17 @@
 
 $_LANG['— other —'] = '— inny —';
 
+$_LANG['<!uke-pit>TERC'] = 'TERC';
+$_LANG['<!uke-pit>SIMC'] = 'SIMC';
+$_LANG['<!uke-pit>building number'] = 'numer budynku';
+$_LANG['<!uke-pit>GPS coordinates'] = 'współrzędne GPS';
+$_LANG['<!uke-pit>Network node "$a" (#$b) has missed properties: $c'] = 'Węzłowi sieciowemu "$a" (#$b) brakuje właściwości: $c';
+$_LANG['<!uke-pit>Network device "$a" (#$b) has missed properties: $c'] = 'Urządzeniu sieciowemu "$a" (#$b) brakuje właściwości: $c';
+$_LANG['<!uke-pit>Node "$a" (#$b) has missed properties: $c'] = 'Komputerowi "$a" (#$b) brakuje właściwości: $c';
+$_LANG['<!uke-pit>Validate TERYT properties'] = 'Weryfikuj właściwości TERYT';
+$_LANG['<!uke-pit>Validate building number'] = 'Weryfikuj numer budynku';
+$_LANG['<!uke-pit>Validate GPS coordinates'] = 'Weryfikuj współrzędne GPS';
+
 $_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';
 $_LANG['placed in cable ducts (including cable pipeline, microducts)'] = 'umieszczony w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';
 $_LANG['placed in the technological channel'] = 'umieszczony w kanale technologicznym';

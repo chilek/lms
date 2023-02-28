@@ -388,6 +388,9 @@ $customers = array();
 
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
 $summary_only = isset($_POST['summaryonly']);
+$validate_teryt = isset($_POST['validate-teryt']);
+$validate_building_number = isset($_POST['validate-building-number']);
+$validate_gps = isset($_POST['validate-gps']);
 $detect_loops = isset($_POST['detectloops']);
 
 $pit_ethernet_technologies = array();
@@ -734,6 +737,12 @@ $netnodeid = 1;
 $root_netnode_name = null;
 $processed_child_netlinks = array();
 
+$errors = array(
+    'netnodes' => array(),
+    'netdevices' => array(),
+    'nodes' =>  array(),
+);
+
 if ($netdevices) {
     foreach ($netdevices as $netdevid => &$netdevice) {
         $tmp = array(
@@ -893,6 +902,7 @@ if ($netdevices) {
 
             $netnodes[$netnodename]['id'] = $netnodeid;
             $netnodes[$netnodename]['invproject'] = $projectname;
+            $netnodes[$netnodename]['name'] = $netnodename;
 
             if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
                 $netnode = $real_netnodes[$netdevice['netnodeid']];
@@ -934,6 +944,34 @@ if ($netdevices) {
                         $netnodes[$netnodename]['address_ulica'] = $teryt_street['address_ulica'];
                         $netnodes[$netnodename]['address_symul'] = $teryt_street['address_symul'];
                     }
+
+                    if (!strlen($teryt_city['area_terc']) || !strlen($teryt_city['area_simc']) || !strlen($netnode['location_house'])) {
+                        $error = array(
+                            'id' => $netnode['id'],
+                            'name' => $netnode['name'],
+                        );
+                        if (!strlen($teryt_city['area_terc'])) {
+                            $error['terc'] = true;
+                        }
+                        if (!strlen($teryt_city['area_simc'])) {
+                            $error['simc'] = true;
+                        }
+                        if (!strlen($netnode['location_house'])) {
+                            $error['location_house'] = true;
+                        }
+                        $errors['netnodes'][] = $error;
+                    }
+                } else {
+                    $error = array(
+                        'id' => $netnode['id'],
+                        'name' => $netnode['name'],
+                        'terc' => true,
+                        'simc' => true,
+                    );
+                    if (!isset($netnode['location_house']) || !strlen($netnode['location_house'])) {
+                        $error['location_house'] = true;
+                    }
+                    $errors['netnodes'][] = $error;
                 }
 
                 $netnodes[$netnodename]['address_budynek'] = $netnode['address_budynek'];
@@ -972,6 +1010,34 @@ if ($netdevices) {
                         $netnodes[$netnodename]['address_ulica'] = $teryt_street['address_ulica'];
                         $netnodes[$netnodename]['address_symul'] = $teryt_street['address_symul'];
                     }
+
+                    if (!strlen($teryt_city['area_terc']) || !strlen($teryt_city['area_simc']) || !strlen($netdevice['location_house'])) {
+                        $error = array(
+                            'id' => $netdevice['id'],
+                            'name' => $netdevice['name'],
+                        );
+                        if (!strlen($teryt_city['area_terc'])) {
+                            $error['terc'] = true;
+                        }
+                        if (!strlen($teryt_city['area_simc'])) {
+                            $error['simc'] = true;
+                        }
+                        if (!strlen($netdevice['location_house'])) {
+                            $error['location_house'] = true;
+                        }
+                        $errors['netdevices'][] = $error;
+                    }
+                } else {
+                    $error = array(
+                        'id' => $netdevice['id'],
+                        'name' => $netdevice['name'],
+                        'terc' => true,
+                        'simc' => true,
+                    );
+                    if (!isset($netdevice['location_house']) || !strlen($netdevice['location_house'])) {
+                        $error['location_house'] = true;
+                    }
+                    $errors['netdevices'][] = $error;
                 }
 
                 $netnodes[$netnodename]['address_budynek'] = $netdevice['address_budynek'];
@@ -1055,23 +1121,27 @@ if ($netnodes) {
             }
             $netnode['longitude'] = to_wgs84($netnode['longitude'] / count($netnode['longitudes']));
             $netnode['latitude'] = to_wgs84($netnode['latitude'] / count($netnode['latitudes']));
-        }
-
-        if (empty($netnode['location_street_name'])) {
-            // no street specified for address
-            if (isset($netnode['address_budynek']) && strlen(trim($netnode['address_budynek']))
-                && (!isset($teryt_cities[$netnode['location_city']]) || empty($teryt_cities[$netnode['location_city']]['with_streets']))) {
-                $netnode['address_ulica'] = "BRAK ULICY";
-                $netnode['address_symul'] = "99999";
-            } else {
-                $netnode['address_ulica'] = '';
-                $netnode['address_symul'] = '';
-                $netnode['address_budynek'] = '';
+        } else {
+            if (empty($netnode['longitude']) || empty($netnode['latitude'])) {
+                if (empty($netnode['real_id'])) {
+                    foreach ($netnode['netdevices'] as $netdeviceid) {
+                        $netdevice = $netdevices[$netdeviceid];
+                        if (empty($netdevice['longitude']) || empty($netdevice['latitude'])) {
+                            $errors['netdevices'][] = array(
+                                'id' => $netdevice['id'],
+                                'name' => $netdevice['name'],
+                                'gps' => true,
+                            );
+                        }
+                    }
+                } else {
+                    $errors['netnodes'][] = array(
+                        'id' => $netnode['real_id'],
+                        'name' => $netnode['name'],
+                        'gps' => true,
+                    );
+                }
             }
-        } elseif (!isset($netnode['address_symul'])) {
-            // specified street is from outside teryt
-            $netnode['address_ulica'] = "ul. SPOZA ZAKRESU";
-            $netnode['address_symul'] = "99998";
         }
 
         if (is_array($netnode['invproject'])) {
@@ -1311,7 +1381,7 @@ if ($netnodes) {
             $range = array(
                 'terc' => isset($teryt['area_terc']) ? $teryt['area_terc'] : '',
                 'simc' => isset($teryt['area_simc']) ? $teryt['area_simc'] : '',
-                'ulic' => $teryt['address_symul'],
+                'ulic' => isset($teryt['address_symul']) ? $teryt['address_symul'] : '',
                 'building' => isset($teryt['address_budynek']) ? str_replace(' ', '', $teryt['address_budynek']) : '',
                 'latitude' => (!isset($netrange['latitude']) || is_string($netrange['latitude']))
                     && (!isset($netnode['latitude']) || is_string($netnode['latitude']))
@@ -1534,6 +1604,53 @@ foreach ($netnodes as $netnodename => $netnode) {
 }
 
 $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
+
+$stop = false;
+foreach (array('netnodes', 'netdevices', 'nodes') as $errorous_resource) {
+    if (!empty($errors[$errorous_resource])) {
+        foreach ($errors[$errorous_resource] as $error) {
+            if ($errorous_resource == 'netnodes') {
+                if (!isset($processed_netnodes[$error['name']])) {
+                    continue;
+                }
+                $error_message = '<!uke-pit>Network node "$a" (#$b) has missed properties: $c';
+                $url_prefix = '?m=netnodeinfo&id=';
+            } elseif ($errorous_resource == 'netdevices') {
+                if (!isset($processed_netnodes[$netdevs[$error['id']]])) {
+                    continue;
+                }
+                $error_message = '<!uke-pit>Network device "$a" (#$b) has missed properties: $c';
+                $url_prefix = '?m=netdevinfo&id=';
+            } elseif ($errorous_resource == 'nodes') {
+                $error_message = '<!uke-pit>Node "$a" (#$b) has missed properties: $c';
+                $url_prefix = '?m=nodeinfo&id=';
+            }
+            $missed_properties = array();
+            if ($validate_teryt) {
+                if (isset($error['terc'])) {
+                    $missed_properties[] = trans('<!uke-pit>TERC');
+                }
+                if (isset($error['simc'])) {
+                    $missed_properties[] = trans('<!uke-pit>SIMC');
+                }
+            }
+            if ($validate_building_number && isset($error['location_building'])) {
+                $missed_properties[] = trans('<!uke-pit>building number');
+            }
+            if ($validate_gps && isset($error['gps'])) {
+                $missed_properties[] = trans('<!uke-pit>GPS coordinates');
+            }
+            if (empty($missed_properties)) {
+                continue;
+            }
+            $stop = true;
+            echo trans($error_message, '<a href="' . $url_prefix . $error['id'] . '">' . $error['name'] . '</a>', $error['id'], implode(', ', $missed_properties)) . '<br>';
+        }
+    }
+}
+if ($stop) {
+    die;
+}
 
 if (!$summary_only) {
     $w_buffer = 'we01_id_wezla,we02_tytul_do_wezla,we03_id_podmiotu_obcego,we04_terc,we05_simc,we06_ulic,'
