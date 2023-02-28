@@ -192,32 +192,24 @@
 	}
 
 	function submit_netlink_properties() {
-		var form = document.forms['netlinkproperties'];
-		var linktype = form.elements['linktype'].value;
-		var radiosector = (form.elements['radiosector'] != null ? form.elements['radiosector'].value : null);
-		var srcradiosector = (form.elements['srcradiosector'] != null ? form.elements['srcradiosector'].value : null);
-		var dstradiosector = (form.elements['dstradiosector'] != null ? form.elements['dstradiosector'].value : null);
-		var srcport = (form.elements['srcport'] != null ? form.elements['srcport'].value : null);
-		var dstport = (form.elements['dstport'] != null ? form.elements['dstport'].value : null);
-		var port = (form.elements['port'] != null ? form.elements['port'].value : null);
-		var linktechnology = form.elements['linktechnology'].value;
-		var linkspeed = form.elements['linkspeed'].value;
-		var routetype = form.elements['routetype'].value;
-		var linecount = form.elements['linecount'].value;
+		var params = {
+			type: $('[name="linktype"]').val(),
+			technology: $('[name="linktechnology"]').val(),
+			speed: $('[name="linkspeed"]').val()
+		}
+		{if $link.isnetlink}
+			params.srcradiosector = $('[name="srcradiosector"]').val();
+			params.dstradiosector = $('[name="dstradiosector"]').val();
+			params.srcport = $('[name="srcport"]').val();
+			params.dstport = $('[name="dstport"]').val();
+			params.routetype = $('[name="routetype"]').val();
+			params.linecount = $('[name="linecount"]').val();
+		{else}
+			params.port = $('[name="port"]').val();
+			params.radiosector = $('[name="radiosector"]').val();
+		{/if}
 
-		xajax_update_netlink_properties({$link.id}, {$link.devid}, {
-				type: linktype,
-				radiosector: radiosector,
-				srcradiosector: srcradiosector,
-				dstradiosector: dstradiosector,
-				srcport: srcport,
-				dstport: dstport,
-				port: port,
-				technology: linktechnology,
-				speed: linkspeed,
-				routetype: routetype,
-				linecount: linecount
-			} );
+		xajax_update_netlink_properties({$link.id}, {$link.devid}, params);
 	}
 
 	function update_netlink_info(tech_content, speed_content, port_content, srcport, dstport) {
