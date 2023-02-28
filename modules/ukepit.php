@@ -1351,6 +1351,7 @@ if ($netnodes) {
                     'tv' => isset($servicetypes['TV']),
                     'phone' => isset($servicetypes['TEL']),
                     'network-speed' => networkSpeedCode($node['downstream']),
+                    'downstream' => $node['downstream'],
                 );
 
                 $range_key = implode(
@@ -1370,7 +1371,7 @@ if ($netnodes) {
                             )
                         ),
                         function ($value, $key) {
-                            return $key != 'latitude' && $key != 'longitude';
+                            return $key != 'latitude' && $key != 'longitude' && $key != 'downstream';
                         },
                         ARRAY_FILTER_USE_BOTH
                     )
@@ -1720,6 +1721,23 @@ foreach ($netnodes as $netnodename => &$netnode) {
                     $new_pe['parent_netnodename'] = $netnodename;
                     $netnodes['V-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY')] = $new_pe;
                 } else {
+                    $service_name = array();
+
+                    if ($range['fixed-internet']) {
+                        $service_name[] = 'INT';
+                    }
+                    if ($range['wireless-internet']) {
+                        $service_name[] = 'WINT';
+                    }
+                    if ($range['tv']) {
+                        $service_name[] = 'TV';
+                    }
+                    if ($range['phone']) {
+                        $service_name[] = 'TEL';
+                    }
+
+                    $service_name[] = round($range['downstream'] / 1000);
+
                     $data = array(
                         'ua01_id_punktu_adresowego' => $range_key,
                         'ua02_id_pe' => 'P-' . (strlen($netnodename) ? $netnodename : 'BEZ-NAZWY') . '-' . $range['medium'],
@@ -1735,7 +1753,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
                         'ua12_instalacja_telekom' => '',
                         'ua13_medium_instalacji_budynku' => '',
                         'ua14_technologia_dostepowa' => '',
-                        'ua15_identyfikacja_uslugi' => 'UAS100',
+                        'ua15_identyfikacja_uslugi' => implode('-', $service_name),
                         'ua16_dostep_stacjonarny' => $range['fixed-internet'] ? 'Tak' : 'Nie',
                         'ua17_dostep_stacjonarny_bezprzewodowy' => $range['wireless-internet'] ? 'Tak' : 'Nie',
                         'ua18_telewizja_cyfrowa' => $range['tv'] ? 'Tak' : 'Nie',
