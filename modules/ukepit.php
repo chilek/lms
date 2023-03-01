@@ -1294,9 +1294,9 @@ if ($netnodes) {
 
                 $uni_nodes = $DB->GetAll(
                     "SELECT
-                        na.nodeid,
-                        n.linktype,
-                        n.linktechnology, "
+                        na.nodeid, "
+                        . $uni_link['type'] . " AS linktype, "
+                        . $uni_link['technology'] . " AS linktechnology, "
                         . $uni_link['operator_netdevid'] . " AS netdevid, "
                         . $DB->GroupConcat(
                             "DISTINCT (CASE t.type WHEN " . SERVICE_INTERNET . " THEN 'INT'
@@ -1379,9 +1379,6 @@ if ($netnodes) {
                 $netrange['longitude'] /= $netrange['count'];
                 $netrange['latitude'] /= $netrange['count'];
             }
-
-            $personalnodes = array();
-            $commercialnodes = array();
 
             $range = array(
                 'terc' => isset($teryt['area_terc']) ? $teryt['area_terc'] : '',
@@ -1703,7 +1700,6 @@ foreach ($netnodes as $netnodename => &$netnode) {
             }
             $media[$mediaCode][$technology] = $technology;
         }
-
 
         if ($netnode['mode'] == 2) {
             if (strlen($netnode['coowner']) && !empty($netnode['ownership'])) {
