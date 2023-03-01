@@ -488,15 +488,24 @@ $netdevices = $DB->GetAllByKey(
     "SELECT nd.id, nd.ownerid, ports,
         nd.longitude, nd.latitude, nd.status, nd.netnodeid,
         (CASE WHEN nd.invprojectid = 1 THEN nn.invprojectid ELSE nd.invprojectid END) AS invprojectid,
+        " . $DB->Concat('ts.woj', 'ts.pow', 'ts.gmi', 'ts.rodz_gmi') . " AS area_terc,
         a.city_id AS location_city,
-        a.street_id AS location_street, a.house AS location_house, a.flat AS location_flat,
-        a.city AS location_city_name, a.street AS location_street_name,
+        lc.ident AS area_simc,
+        a.street_id AS location_street,
+        lst.ident AS area_ulic,
+        a.house AS location_house,
+        a.flat AS location_flat,
+        a.city AS location_city_name,
+        a.street AS location_street_name,
         (CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE " . $DB->Concat('a.house', "'/'", 'a.flat') . " END) AS address_budynek,
         COALESCE(t.passive, 1) AS passive,
         nd.name AS name
     FROM netdevices nd
     LEFT JOIN netnodes nn ON nn.id = nd.netnodeid
     LEFT JOIN addresses a ON nd.address_id = a.id
+    LEFT JOIN location_cities lc ON lc.id = a.city_id
+    LEFT JOIN teryt_simc ts ON ts.cityid = a.city_id
+    LEFT JOIN location_streets lst ON lst.id = a.street_id
     LEFT JOIN netdevicemodels m ON m.id = nd.netdevicemodelid
     LEFT JOIN netdevicetypes t ON t.id = m.type
     WHERE " . ($customer_resources_as_operator_resources ? '' : 'nd.ownerid IS NULL AND') . " EXISTS (
@@ -872,17 +881,13 @@ if ($netdevices) {
                 $projectname = $prj = $projects[$real_netnodes[$netdevice['netnodeid']]['invprojectid']]['name'];
             }
         } else {
-            $netnodename = mb_strtoupper(empty($netdevice['location_city'])
-                ? (isset($netdevice['location']) ? $netdevice['location'] : '(pusty)')
-                : implode(
-                    '_',
-                    array(
-                        $netdevice['location_city'],
-                        $netdevice['location_street'],
-                        $netdevice['location_house'],
-                        $netdevice['location_flat'],
-                    )
-                ));
+            if (empty($netdevice['location_city'])) {
+                $netnodename = isset($netdevice['location']) ? $netdevice['location'] : '(pusty)';
+            } else {
+                $netnodename = $netdevice['area_terc'] . '_' . $netdevice['area_simc'] . '_' . $netdevice['area_ulic'] . '_' . $netdevice['location_house'];
+            }
+            $netnodename = mb_strtoupper($netnodename);
+
             if (array_key_exists($netnodename, $netnodes)) {
                 if (!in_array($netdevice['invproject'], $netnodes[$netnodename]['invproject'])) {
                     $netnodes[$netnodename]['invproject'][] = $netdevice['invproject'];
