@@ -1691,6 +1691,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 unset($netnode);
 
 $used_foreigners = array();
+$range_keys = array();
 
 foreach ($netnodes as $netnodename => &$netnode) {
     if (!$summary_only) {
@@ -1859,6 +1860,13 @@ foreach ($netnodes as $netnodename => &$netnode) {
                     }
 
                     $service_name[] = round($range['downstream'] / 1000);
+
+                    if (isset($range_keys[$range_key])) {
+                        $range_keys[$range_key]++;
+                        $range_key .= '-' . $range_keys[$range_key];
+                    } else {
+                        $range_keys[$range_key] = 0;
+                    }
 
                     $data = array(
                         'ua01_id_punktu_adresowego' => $range_key,
