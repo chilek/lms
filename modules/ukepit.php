@@ -1679,7 +1679,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
         }
     }
     $netnode['ethernet_technologies'] = array_filter(
-        $netnode['local_technologies'],
+        array_unique($netnode['local_technologies']),
         function ($technology) use ($pit_ethernet_technologies) {
             return isset($pit_ethernet_technologies[$technology]);
         }
