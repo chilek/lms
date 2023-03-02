@@ -1064,6 +1064,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 case 83:
                     $state_conditions[] = 'b.balance <= -t.value * 2';
                     break;
+                case 84:
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)
+                        AND NOT EXISTS (SELECT 1 FROM nodes
+                        JOIN netdevices ON nodes.netdev = netdevices.id
+                        WHERE nodes.ownerid = c.id)';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
