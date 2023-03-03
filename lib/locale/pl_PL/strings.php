@@ -5185,6 +5185,8 @@ $_LANG['<!netelemtype>— other —'] = '— inny —';
 
 $_LANG['cable joint'] = 'mufa kablowa';
 $_LANG['VoIP gateway'] = 'bramka VoIP';
+$_LANG['fiber cassette'] = 'kaseta światłowodowa';
+$_LANG['splice tray'] = 'tacka spawów';
 
 $_LANG['Own node'] = 'Węzeł własny';
 $_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
