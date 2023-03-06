@@ -986,10 +986,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         } else {
             if ($data['period'] == MONTHLY && ((isset($data['settlement']) && $data['settlement'] == 2) || isset($data['last-settlement']))) {
                 if (empty($data['tariffid'])) {
-                    $val = $data['value'];
+                    $val = empty($data['netflag']) ? $data['value'] : $data['netvalue'];
                 } else {
-                    $tariff = $this->db->GetRow('SELECT value, period FROM tariffs WHERE id = ?', array($data['tariffid']));
-                    $val = $tariff['value'];
+                    $tariff = $this->db->GetRow('SELECT netvalue, value, period FROM tariffs WHERE id = ?', array($data['tariffid']));
+                    $val = empty($data['netflag']) ? $tariff['value'] : $tariff['netvalue'];
                     if ($tariff['period'] && $data['period'] != DISPOSABLE
                         && $tariff['period'] != $data['period']) {
                         if ($tariff['period'] == YEARLY) {
