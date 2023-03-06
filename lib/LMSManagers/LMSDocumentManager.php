@@ -1424,6 +1424,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $customer_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
             $customer_mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
             $customer_mail_attachments = ConfigHelper::checkConfig('userpanel.document_approval_customer_notification_attachments');
+        } else {
+            $mail_dsn = ConfigHelper::getConfig('documents.notification_mail_dsn_address', '', true);
+            $mail_mdn = ConfigHelper::getConfig('documents.notification_mail_mdn_address', '', true);
+            $mail_sender_name = ConfigHelper::getConfig('documents.notification_mail_sender_name', '', true);
+            $mail_sender_address = ConfigHelper::getConfig('documents.notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+            $mail_reply_address = ConfigHelper::getConfig('documents.notification_mail_reply_address', '', true);
+            $operator_mail_recipient = ConfigHelper::getConfig('documents.approval_operator_notification_mail_recipient', '');
+            $operator_mail_format = ConfigHelper::getConfig('documents.approval_operator_notification_mail_format', 'text');
+            $operator_mail_subject = ConfigHelper::getConfig('documents.approval_operator_notification_mail_subject');
+            $operator_mail_body = ConfigHelper::getConfig('documents.approval_operator_notification_mail_body');
+            $customer_mail_format = ConfigHelper::getConfig('documents.approval_customer_notification_mail_format', 'text');
+            $customer_mail_subject = ConfigHelper::getConfig('documents.approval_customer_notification_mail_subject');
+            $customer_mail_body = ConfigHelper::getConfig('documents.approval_customer_notification_mail_body');
+            $customer_mail_attachments = ConfigHelper::checkConfig('documents.approval_customer_notification_attachments');
         }
 
         $customerinfos = array();
@@ -1462,7 +1476,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
-            if (!$userpanel || (empty($doc['customerawaits']) && empty($doc['operatorawaits']))) {
+            if ($userpanel && empty($doc['customerawaits']) && empty($doc['operatorawaits']))) {
                 continue;
             }
 
