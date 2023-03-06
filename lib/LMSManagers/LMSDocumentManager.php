@@ -1476,7 +1476,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
-            if ($userpanel && empty($doc['customerawaits']) && empty($doc['operatorawaits']))) {
+            if ($userpanel && empty($doc['customerawaits']) && empty($doc['operatorawaits'])) {
                 continue;
             }
 
