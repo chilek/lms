@@ -401,6 +401,15 @@ version 28-git (????-??-??):
   - improvement/cleanup: renamed 'siis' gps coordinate provider pointed in 'phpui.gps_coordinate_providers'
     to 'prg' [chilan]
   - enhancement: added route/duct type and line count properties for network links [chilan]
+  - enhancement: implemented UKE/PIT reports [chilan]
+  - enhancement: added operator and customer notification support when document is commited
+    from within LMS - new configuration variables in 'documents' section: 'notification_mail_dsn_address',
+    'notification_mail_mdn_address', 'notification_mail_sender_name', 'notification_mail_sender_address',
+    'notification_mail_reply_address', 'approval_operator_notification_mail_recipient',
+    'approval_operator_notification_mail_format', 'approval_operator_notification_mail_subject',
+    'approval_operator_notification_mail_body', 'approval_customer_notification_mail_format',
+    'approval_customer_notification_mail_subject', 'approval_customer_notification_mail_body'
+    and 'approval_customer_notification_attachments' [chilan]
 
 version 27.0 (2021-08-20):
 
