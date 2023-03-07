@@ -1027,7 +1027,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
                 $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
                 $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
-                $diffdays = ($partial_dateto - $data['datefrom']) / 86400;
+                $diffdays = round(($partial_dateto - $data['datefrom']) / 86400);
                 if ($diffdays > 0) {
                     list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
                     $month_days = date('d', mktime(0, 0, 0, $m + 1, 0, $y));
@@ -1106,7 +1106,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($data['dateto'] && $data['datefrom'] < $data['dateto'] && isset($data['last-settlement']) && $data['period'] == MONTHLY) {
                 list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
                 $prevperiod = mktime(0, 0, 0, $month, 1, $year);
-                $diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
+                $diffdays = round(($data['dateto'] + 1 - $prevperiod) / 86400);
                 if ($diffdays > 0) {
                     $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
                     $value = $diffdays * $discounted_val / $month_days;
