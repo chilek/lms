@@ -159,7 +159,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             d.fullnumber,
             (CASE WHEN
                     ((a.period <> ' . DISPOSABLE . ' OR (a.tariffid IS NULL AND a.liabilityid IS NULL)) AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531))
-                    OR (a.period = ' . DISPOSABLE . ' AND a.at > ' . $now . ')
+                    OR (a.period = ' . DISPOSABLE . ' AND a.at >= ' . $now . ')
                 THEN 0
                 ELSE 1
             END) AS expired,
