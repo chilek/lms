@@ -174,6 +174,7 @@ if (!empty($docids)) {
                         $content = "
                             <html>
                                 <head>
+                                    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
                                     <style>
 
                                         @page {
@@ -247,6 +248,7 @@ if (!empty($docids)) {
                 $htmlbuffer = "
                     <html>
                         <head>
+                            <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
                             <style>
 
                                 @page {
