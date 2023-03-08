@@ -213,18 +213,22 @@ function GetRecipients($filter, $type = MSG_MAIL)
 
     $recipients = $LMS->DB->GetAll(
         'SELECT c.id, pin, c.divisionid, '
-        . ($type == MSG_MAIL ? 'cc.email, ' : '')
-        . ($type == MSG_SMS ? 'x.phone, ' : '')
-        . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
-        divisions.account,
-        COALESCE(b.value, 0) AS totalbalance,
-        b2.balance AS balance
-		FROM customerview c 
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		LEFT JOIN (
-			SELECT SUM(value * currencyvalue) AS value, customerid
-			FROM cash GROUP BY customerid
-		) b ON (b.customerid = c.id)
+            . ($type == MSG_MAIL ? 'cc.email, ' : '')
+            . ($type == MSG_SMS ? 'x.phone, ' : '')
+            . $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
+            divisions.account,
+            acc.alternative_accounts,
+            COALESCE(b.balance, 0) AS totalbalance,
+            b2.balance AS balance
+        FROM customerview c
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (
+            SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
+        LEFT JOIN customerbalances b ON b.customerid = c.id
         LEFT JOIN (
             SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
@@ -362,6 +366,8 @@ function GetRecipients($filter, $type = MSG_MAIL)
 				AND (dateto = 0 OR dateto > ?NOW?))' : '')
         .' ORDER BY c.divisionid, customername',
         array(
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_CNOTE,
             DOC_RECEIPT,
             DOC_CNOTE,
@@ -385,10 +391,18 @@ function GetCustomers($customers)
         'SELECT c.id, pin, c.divisionid, '
             . $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
             divisions.account,
-            COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS totalbalance,
+            acc.alternative_accounts,
+            COALESCE(b.balance, 0) AS totalbalance,
             b2.balance AS balance
         FROM customerview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (
+            SELECT ' . $DB->GroupConcat('contact') . ' AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
+        LEFT JOIN customerbalances b ON b.customerid = c.id
         LEFT JOIN (
             SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
             LEFT JOIN customers ON customers.id = cash.customerid
@@ -414,6 +428,8 @@ function GetCustomers($customers)
         ORDER BY c.divisionid, customername',
         'id',
         array(
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_CNOTE,
             DOC_RECEIPT,
             DOC_CNOTE,
@@ -428,6 +444,9 @@ function GetCustomers($customers)
 
 function BodyVars(&$body, $data, $format)
 {
+    static $use_only_alternative_accounts = null,
+        $use_all_accounts = null;
+
     global $LMS;
 
     $data['services'] = isset($data['id']) ? $LMS->GetCustomerServiceSummary($data['id']) : array();
@@ -447,7 +466,32 @@ function BodyVars(&$body, $data, $format)
     $totalamount = -$data['totalbalance'];
 
     if (strpos($body, '%bankaccount') !== false) {
-        $body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'], $data['account'])), $body);
+        if (!isset($use_only_alternative_accounts)) {
+            $use_only_alternative_accounts = ConfigHelper::checkConfig('messages.use_only_alternative_accounts');
+            $use_all_accounts = ConfigHelper::checkConfig('messages.use_all_accounts');
+        }
+
+        $alternative_accounts = isset($data['alternative_accounts']) && strlen($data['alternative_accounts'])
+            ? explode(',', $data['alternative_accounts'])
+            : array();
+
+        if (!$use_only_alternative_accounts || empty($alternative_accounts)) {
+            $accounts = array(bankaccount($data['id'], $data['account']));
+        } else {
+            $accounts = array();
+        }
+
+        if ($use_all_accounts || $use_only_alternative_accounts) {
+            $accounts = array_merge($accounts, $alternative_accounts);
+        }
+        foreach ($accounts as &$account) {
+            $account = format_bankaccount($account);
+        }
+        unset($account);
+
+        $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
+
+        $body = str_replace('%bankaccount', $all_accounts, $body);
     }
 
     list ($now_year, $now_month, $now_day) = explode('/', date('Y/m/d'));
