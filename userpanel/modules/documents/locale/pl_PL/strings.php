@@ -140,6 +140,23 @@ $_LANG[
 
 $_LANG[
     'Supported substitutions:<br><br>'
+    . '<strong>%cid%</strong> - customer identifier,<br>'
+    . '<strong>%customername%</strong> - full customer name,<br>'
+    . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%document%</strong> - document number,<br>'
+    . '<strong>%creatorname%</strong> - document creator name,<br>'
+    . '<strong>%approvername%</strong> - document approver name.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%cid%</strong> - identyfikator klienta,<br>'
+    . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%document%</strong> - numer dokumentu,<br>'
+    . '<strong>%creatorname%</strong> - nazwa twórcy dokumentu,<br>'
+    . '<strong>%approvername%</strong> - nazwa zatwierdzającego dokument.';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
     . '<strong>%password%</strong> - replaced by one-time password sent to customer via SMS.'
 ] =
     'Obsługiwane symbole specjalne:<br><br>'

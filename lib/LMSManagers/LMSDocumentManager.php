@@ -1342,12 +1342,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 '%customername%',
                 '%docid%',
                 '%document%',
+                '%creatorname%',
+                '%approvername%',
             ),
             array(
                 $customerinfo['id'],
                 $customerinfo['customername'],
                 $document['id'],
                 $document['fullnumber'],
+                $document['creatorname'],
+                $document['approvername'],
             ),
             $string
         );
@@ -1377,22 +1381,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, d.fullnumber, dc.fromdate AS datefrom,
-					d.reference, d.commitflags, d.confirmdate, d.closed,
-					u.email AS creatoremail,
-					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
-                    (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
-				FROM documents d
-                JOIN documentcontents dc ON dc.docid = d.id
-				LEFT JOIN docrights r ON r.doctype = d.type
-				LEFT JOIN (
-                    SELECT da.docid, COUNT(*) AS customerdocuments
-                    FROM documentattachments da
-                    WHERE da.type = -1
-                    GROUP BY da.docid
-				) a ON a.docid = d.id
-				LEFT JOIN users u ON u.id = d.userid AND (u.ntype & ?) > 0 AND u.email <> ?
-				WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
-                    . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
+                d.reference, d.commitflags, d.confirmdate, d.closed,
+                u.email AS creatoremail,
+                u.name AS creatorname,
+                (CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
+                (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
+            FROM documents d
+            JOIN documentcontents dc ON dc.docid = d.id
+            LEFT JOIN docrights r ON r.doctype = d.type
+            LEFT JOIN (
+                SELECT da.docid, COUNT(*) AS customerdocuments
+                FROM documentattachments da
+                WHERE da.type = -1
+                GROUP BY da.docid
+            ) a ON a.docid = d.id
+            LEFT JOIN vusers u ON u.id = d.userid AND (u.ntype & ?) > 0 AND u.email <> ?
+            WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
+                . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
             'id',
             array(
                 MSG_MAIL,
@@ -1445,6 +1450,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $errors = array();
         $info = array();
+
+        if ($userpanel) {
+            $approvername = '-';
+        } else {
+            $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $approvername = $user_manager->GetUserName();
+        }
 
         foreach ($docs as $docid => $doc) {
             $this->db->Execute(
@@ -1499,6 +1511,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );
@@ -1509,6 +1523,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );
@@ -1649,6 +1665,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );
@@ -1659,6 +1677,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );

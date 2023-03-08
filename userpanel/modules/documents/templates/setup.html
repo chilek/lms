@@ -350,6 +350,17 @@
 							</td>
 						</tr>
 
+						{capture assign="hint"}{strip}
+							Supported substitutions:<br>
+							<br>
+							<strong>%cid%</strong> - customer identifier,<br>
+							<strong>%customername%</strong> - full customer name,<br>
+							<strong>%docid%</strong> - document identifier,<br>
+							<strong>%document%</strong> - document number,<br>
+							<strong>%creatorname%</strong> - document creator name,<br>
+							<strong>%approvername%</strong> - document approver name.
+						{/strip}{/capture}
+
 						<tr>
 							<td class="nobr" colspan="2">
 								<fieldset>
