@@ -468,7 +468,7 @@
 					{if $division_count > 1}style="display: none;"{/if}>
 				<label {tip trigger="copytosender" text="Check if you want do send message copy to sender"}>
 					<input type="checkbox" name="message[copytosender]"
-						{if ConfigHelper::checkConfig('phpui.send_message_to_sender_checkbox')} checked{/if}>
+						{if ConfigHelper::checkConfig('messages.send_to_sender_checkbox')} checked{/if}>
 					{trans("send copy to sender")}
 				</label>
 			</td>
@@ -788,11 +788,11 @@
 					data: $('#message').serialize()
 				}
 			).done(function (data) {
-				var confirmThreshold = {intval(ConfigHelper::getConfig('phpui.send_message_confirm_threshold', 50))};
+				var confirmThreshold = {intval(ConfigHelper::getConfig('messages.send_confirm_threshold', 50))};
 				if (data.recipients <= confirmThreshold) {
 					$('#message').submit();
 				} else {
-					var violationType = '{ConfigHelper::getConfig('phpui.send_message_limit_violation_type', 'warning')}';
+					var violationType = '{ConfigHelper::getConfig('messages.send_limit_violation_type', 'warning')}';
 					switch (violationType) {
 						case 'error':
 							alertDialog(

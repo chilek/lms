@@ -416,6 +416,14 @@ version 28-git (????-??-??):
   - enhancement: messageadd form: '%bankaccount' can be replaced optionally by customer alternative
     bank accounts - 'messages.use_all_accounts' and 'messages.use_only_alternative_accounts' control
     replacement behavior [chilan]
+  - devel/cleanup: renamed 'phpui.message_send_interval' to 'messages.send_interval' [chilan]
+  - devel/cleanup: renamed 'phpui.message_sender_email' to 'messages.sender_email' [chilan]
+  - devel/cleanup: renamed 'phpui.send_message_confirm_threshold'
+    to 'messages.send_confirm_threshold' [chilan]
+  - devel/cleanup: renamed 'phpui.send_message_limit_violation_type'
+    to 'messages.send_limit_violation_type' [chilan]
+  - devel/cleanup: renamed 'phpui.send_message_to_sender_checkbox'
+    to 'messages.send_to_sender_checkbox' [chilan]
 
 version 27.0 (2021-08-20):
 

@@ -761,7 +761,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $error['sender'] = trans('Specified e-mail is not correct!');
             }
         }
-        $message['sender'] = empty($message['sender']) ? ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']) : $message['sender'];
+        $message['sender'] = empty($message['sender']) ? ConfigHelper::getConfig('messages.sender_email', $userinfo['email']) : $message['sender'];
         if ($message['from'] == '') {
             $error['from'] = trans('Sender name is required!');
         }
@@ -1040,7 +1040,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $headers['X-LMS-Format'] = 'html';
             }
 
-            $interval = intval(ConfigHelper::getConfig('phpui.message_send_interval', 0));
+            $interval = intval(ConfigHelper::getConfig('messages.send_interval', 0));
         } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
@@ -1060,7 +1060,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 ConfigHelper::setFilter($divisionid);
 
                 if ($message['type'] == MSG_MAIL) {
-                    $sender_email = ConfigHelper::getConfig('phpui.message_sender_email', $message['sender']);
+                    $sender_email = ConfigHelper::getConfig('messages.sender_email', $message['sender']);
                     $headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $sender_email . '>';
                     if (isset($message['copytosender'])) {
                         $headers['Cc'] = $headers['From'];
@@ -1418,7 +1418,7 @@ $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 
 if (empty($message['sender'])) {
-    $message['sender'] = ConfigHelper::getConfig('phpui.message_sender_email', $userinfo['email']);
+    $message['sender'] = ConfigHelper::getConfig('messages.sender_email', $userinfo['email']);
 }
 
 $SMARTY->assign('message', $message);
