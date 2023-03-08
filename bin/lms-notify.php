@@ -619,8 +619,19 @@ $sms_options = $LMS->getCustomerSMSOptions();
 
 function parse_customer_data($data, $format, $row)
 {
+    static $use_only_alternative_accounts = null,
+        $use_all_accounts = null,
+        $config_section = null;
+
     global $LMS;
+
     $DB = LMSDB::getInstance();
+
+    if (!isset($use_only_alternative_accounts)) {
+        $config_section = $GLOBALS['config_section'];
+        $use_only_alternative_accounts = ConfigHelper::checkConfig($config_section . '.use_only_alternative_accounts');
+        $use_all_accounts = ConfigHelper::checkConfig($config_section . '.use_all_accounts');
+    }
 
     if (!isset($row['totalbalance'])) {
         $row['totalbalance'] = 0;
@@ -647,6 +658,26 @@ function parse_customer_data($data, $format, $row)
         $commented_balance = trans('Billing status: $a', moneyf($row['totalbalance']));
     }
 
+    $alternative_accounts = isset($row['alternative_accounts']) && strlen($row['alternative_accounts'])
+        ? explode(',', $row['alternative_accounts'])
+        : array();
+
+    if (!$use_only_alternative_accounts || empty($alternative_accounts)) {
+        $accounts = array(bankaccount($row['id'], $row['account']));
+    } else {
+        $accounts = array();
+    }
+
+    if ($use_all_accounts || $use_only_alternative_accounts) {
+        $accounts = array_merge($accounts, $alternative_accounts);
+    }
+    foreach ($accounts as &$account) {
+        $account = format_bankaccount($account);
+    }
+    unset($account);
+
+    $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
+
     $data = str_replace(
         array(
             '%bankaccount',
@@ -671,7 +702,7 @@ function parse_customer_data($data, $format, $row)
 
         ),
         array(
-            isset($row['account']) ? format_bankaccount(bankaccount($row['id'], $row['account'])) : '',
+            $all_accounts,
             $commented_balance,
             $row['name'],
             isset($row['age']) ? $row['age'] : '',
@@ -990,7 +1021,7 @@ if (empty($types) || in_array('timetable', $types)) {
     $time = intval(strtotime('now') - strtotime('today'));
     $subject = $notifications['timetable']['subject'];
     $today = date('Y/m/d', $daystart);
- 
+
     if (!empty($users)) {
         foreach ($users as $user) {
             if (empty($user['email']) && empty($user['phone'])) {
@@ -1464,7 +1495,8 @@ if (empty($types) || in_array('debtors', $types)) {
     // @TODO: check 'messages' table and don't send notifies to often
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
+            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account,
+            acc.alternative_accounts
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
@@ -1501,6 +1533,12 @@ if (empty($types) || in_array('debtors', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         WHERE 1 = 1" . $customer_status_condition
             . " AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
@@ -1522,6 +1560,8 @@ if (empty($types) || in_array('debtors', $types)) {
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            DOC_BANKACCOUNT | DOC_INVOICES | DOC_DISABLED,
+            DOC_BANKACCOUNT | DOC_INVOICES,
             $limit
         )
     );
@@ -1692,8 +1732,9 @@ if (empty($types) || in_array('reminder', $types)) {
     $limit = $notifications['reminder']['limit'];
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-        d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
-        b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency,
+            acc.alternative_accounts
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -1731,6 +1772,12 @@ if (empty($types) || in_array('reminder', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         JOIN (
             SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
@@ -1758,6 +1805,8 @@ if (empty($types) || in_array('reminder', $types)) {
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_INVOICE,
             DOC_INVOICE_PRO,
             DOC_DNOTE,
@@ -1945,8 +1994,9 @@ if (empty($types) || in_array('income', $types)) {
 
     $incomes = $DB->GetAll(
         "SELECT c.id, c.pin, SUM(cash.value) AS value, cash.currency, cash.time AS cdate,
-        m.email, x.phone, divisions.account,
-        " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
+            m.email, x.phone, divisions.account, acc.alternative_accounts,
+
+            " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
         b2.balance AS balance, b.balance AS totalbalance
         FROM cash
         JOIN customeraddressview c ON c.id = cash.customerid
@@ -1985,6 +2035,12 @@ if (empty($types) || in_array('income', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         WHERE 1 = 1" . $customer_status_condition
             . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= ? AND cash.time < ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
@@ -1992,7 +2048,7 @@ if (empty($types) || in_array('income', $types)) {
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
         . " GROUP BY c.id, c.pin, cash.currency, cash.time, m.email, x.phone, divisions.account,
-            c.lastname, c.name, b2.balance, b.balance",
+            acc.alternative_accounts, c.lastname, c.name, b2.balance, b.balance",
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
@@ -2005,6 +2061,8 @@ if (empty($types) || in_array('income', $types)) {
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             $start,
             $end,
         )
@@ -2145,6 +2203,7 @@ if (empty($types) || in_array('invoices', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
             d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance, v.value, v.currency,
             c.invoicenotice
         FROM documents d
@@ -2161,6 +2220,12 @@ if (empty($types) || in_array('invoices', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
             GROUP BY docid, currency
@@ -2183,6 +2248,8 @@ if (empty($types) || in_array('invoices', $types)) {
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_INVOICE,
             DOC_INVOICE_PRO,
             DOC_CNOTE,
@@ -2365,7 +2432,8 @@ if (empty($types) || in_array('invoices', $types)) {
 if (empty($types) || in_array('notes', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-        d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
+            acc.alternative_accounts,
         COALESCE(ca.balance, 0) AS balance, v.value, v.currency
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
@@ -2380,6 +2448,12 @@ if (empty($types) || in_array('notes', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
             GROUP BY docid, currency
@@ -2402,6 +2476,8 @@ if (empty($types) || in_array('notes', $types)) {
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_DNOTE,
             $daystart,
             $dayend
@@ -2777,7 +2853,8 @@ if (empty($types) || in_array('birthday', $types)) {
 if (empty($types) || in_array('warnings', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-        c.pin, c.message, m.email, x.phone, divisions.account, COALESCE(ca.balance, 0) AS balance
+            c.pin, c.message, m.email, x.phone, divisions.account, acc.alternative_accounts,
+            COALESCE(ca.balance, 0) AS balance
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -2790,6 +2867,12 @@ if (empty($types) || in_array('warnings', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         LEFT JOIN (SELECT SUM(value * currencyvalue) AS balance, customerid
             FROM cash
             GROUP BY customerid
@@ -2805,7 +2888,9 @@ if (empty($types) || in_array('warnings', $types)) {
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
-            $required_phone_contact_flags
+            $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
         )
     );
 
