@@ -410,6 +410,9 @@ version 28-git (????-??-??):
     'approval_operator_notification_mail_body', 'approval_customer_notification_mail_format',
     'approval_customer_notification_mail_subject', 'approval_customer_notification_mail_body'
     and 'approval_customer_notification_attachments' [chilan]
+  - enhancement: lms-notify.php: '%bankaccount' can be replaced optionally by customer alternative
+    bank accounts - 'use_all_accounts' and 'use_only_alternative_accounts' controls replacement
+    behavior [chilan]
 
 version 27.0 (2021-08-20):
 
