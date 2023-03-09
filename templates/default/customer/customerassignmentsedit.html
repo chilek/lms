@@ -203,7 +203,7 @@
 			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
 			$("#netflag, #grossprice, #netprice, #tax").prop('disabled', false);
 
-			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
+			{if ConfigHelper::checkConfig('assignments.missed_node_warning', ConfigHelper::checkConfig('phpui.node_assignment_warning'))}
 			if (isNaN(tariffid)) {
 				document.assignment.submit();
 				return;

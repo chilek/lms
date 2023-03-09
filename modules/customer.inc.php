@@ -58,10 +58,20 @@ if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) 
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited = ConfigHelper::checkConfig('phpui.default_show_approved_assignments_only', true);
-    $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
-    if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
-        $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
+    $commited = ConfigHelper::checkConfig(
+        'assignments.default_show_approved_only',
+        ConfigHelper::checkConfig('phpui.default_show_approved_assignments_only', true)
+    );
+    $expired = ConfigHelper::checkConfig(
+        'assignments.default_show_expired',
+        ConfigHelper::checkConfig('phpui.default_show_expired_assignments')
+    );
+    $default_show_period = intval(ConfigHelper::getConfig(
+        'assignments.default_show_period',
+        ConfigHelper::getConfig('phpui.default_show_period_assignments', -1)
+    ));
+    if ($default_show_period != -1) {
+        $period = $PERIODS[$default_show_period];
     } else {
         $period = null;
     }

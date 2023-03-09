@@ -290,7 +290,10 @@ if (isset($_POST['tariff'])) {
         $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));
     }
 
-    $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
+    $default_assignment_period = ConfigHelper::getConfig(
+        'assignments.default_period',
+        ConfigHelper::getConfig('phpui.default_assignment_period')
+    );
     if (!empty($default_assignment_period)) {
         $tariff['period'] = $default_assignment_period;
     }

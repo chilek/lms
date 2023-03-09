@@ -133,6 +133,9 @@ function GetConfigList()
             'paytype' => 'Default invoices paytype. Default: "1" (cash)',
             'customer_bankaccount' => 'Show bankaccount on invoice. Default: 0',
         ),
+        'assignments' => array(
+            'default_period' => 'Default period value for assignment. Default: 0',
+        ),
         'timetable' => array(
             'default_forward_day_limit' => 'Number of days (including current day) on timetable. Default: 7.',
             'event_max_userlist_size' => 'Automatically adjusts the size of the selection list to the number of users when set to 0.',

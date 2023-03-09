@@ -3885,8 +3885,8 @@ URL: %url
 ('phpui', 'note_check_payment', 'false', '', 0),
 ('phpui', 'radius', '1', '', 0),
 ('phpui', 'public_ip', '1', '', 0),
-('phpui', 'default_assignment_period', '3', '', 0),
-('phpui', 'default_assignment_invoice', '0', '', 0),
+('assignments', 'default_period', '3', '', 0),
+('assignments', 'default_document_type', '0', '', 0),
 ('phpui', 'default_editor', 'html', '', 0),
 ('logs', 'enabled', 'false', '', 0),
 ('phpui', 'hide_toolbar', 'false', '', 0),
@@ -4363,6 +4363,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023030800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023030900');
 
 COMMIT;

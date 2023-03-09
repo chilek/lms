@@ -430,6 +430,34 @@ version 28-git (????-??-??):
   - enhancement: 'assignments.force_current_period_settlement_at_same_day' configuration variable
     with 'false' as default value causes current period settlement assignment generation with
     current day or date from property as accounting day (when set to 'true' value) [chilan]
+  - devel/cleanup: renamed 'phpui.assignment_presentation_format' to
+    'assignments.presentation_format' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_align_periods' to
+    'assignments.default_align_periods' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_at' to
+    'assignments.default_at' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_discount_type' to
+    'assignments.default_discount_type' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_invoice' to
+    'assignments.default_document_type' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_last_settlement' to
+    'assignments.default_end_period_settlement' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_list_dataset' to
+    'assignments.default_list_dataset' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_period' to
+    'assignments.default_period' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_settlement' to
+    'assignments.default_begin_period_settlement' [chilan]
+  - devel/cleanup: renamed 'phpui.default_existing_assignment_operation' to
+    'assignments.default_existing_operation' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_approved_assignments_only' to
+    'assignments.default_show_approved_only' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_expired_assignments' to
+    'assignments.default_show_expired' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_period_assignments' to
+    'assignments.default_show_period' [chilan]
+  - devel/cleanup: renamed 'phpui.node_assignment_warning' to
+    'assignments.missed_node_warning' [chilan]
 
 version 27.0 (2021-08-20):
 

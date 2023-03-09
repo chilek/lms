@@ -580,7 +580,10 @@ if (isset($_POST['assignment'])) {
     }
 
     if (empty($a['pdiscount']) && empty($a['vdiscount'])) {
-        $default_assignment_discount_type = ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage');
+        $default_assignment_discount_type = ConfigHelper::getConfig(
+            'assignments.default_discount_type',
+            ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage')
+        );
         $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
     }
 }

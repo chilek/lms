@@ -107,6 +107,10 @@ $DEFAULTS = array(
         'auto_remove_investment_project' => true,
         'logout_confirmation' => false
     ),
+    'assignments' => array(
+        'default_document_type' => 0,
+        'default_period' => 3,
+    ),
     'invoices' => array(
         'template_file' => 'FT-0100',
         'content_type' => 'application/pdf',

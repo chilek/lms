@@ -91,7 +91,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         static $assignmentPresentationFormat = null;
 
         if (!isset($assignmentPresentationFormat)) {
-            $assignmentPresentationFormat = ConfigHelper::getConfig('phpui.assignment_presentation_format', '%name');
+            $assignmentPresentationFormat = ConfigHelper::getConfig(
+                'assignments.presentation_format',
+                ConfigHelper::getConfig('phpui.assignment_presentation_format', '%name')
+            );
         }
 
         return str_replace(

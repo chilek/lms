@@ -516,15 +516,21 @@ if (isset($_POST['document'])) {
     $document['customerid'] = isset($_GET['cid']) ? intval($_GET['cid']) : '';
     $document['type'] = isset($_GET['type']) ? intval($_GET['type']) : '';
 
-    $default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
-    if (!empty($default_assignment_invoice)) {
-        if (preg_match('/^[0-9]+$/', $default_assignment_invoice)) {
-            $document['assignment']['invoice'] = $default_assignment_invoice;
-        } elseif (ConfigHelper::checkValue($default_assignment_invoice)) {
+    $default_document_type = ConfigHelper::getConfig(
+        'assignments.default_document_type',
+        ConfigHelper::getConfig('phpui.default_assignment_invoice')
+    );
+    if (!empty($default_document_type)) {
+        if (preg_match('/^[0-9]+$/', $default_document_type)) {
+            $document['assignment']['invoice'] = $default_document_type;
+        } elseif (ConfigHelper::checkValue($default_document_type)) {
             $document['assignment']['invoice'] = DOC_INVOICE;
         }
     }
-    $default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
+    $default_assignment_settlement = ConfigHelper::getConfig(
+        'assignments.default_begin_period_settlement',
+        ConfigHelper::getConfig('phpui.default_assignment_settlement')
+    );
     if (!empty($default_assignment_settlement)) {
         if (preg_match('/^[0-9]+$/', $default_assignment_settlement)) {
             $document['assignment']['settlement'] = $default_assignment_settlement;
@@ -532,13 +538,25 @@ if (isset($_POST['document'])) {
             $document['assignment']['settlement'] = 1;
         }
     }
-    $document['assignment']['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
-    $document['assignment']['align-periods'] = ConfigHelper::checkConfig('phpui.default_assignment_align_periods', true);
-    $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
+    $document['assignment']['last-settlement'] = ConfigHelper::checkConfig(
+        'assignments.default_end_period_settlement',
+        ConfigHelper::checkConfig('phpui.default_assignment_last_settlement')
+    );
+    $document['assignment']['align-periods'] = ConfigHelper::checkConfig(
+        'assignments.default_align_periods',
+        ConfigHelper::checkConfig('phpui.default_assignment_align_periods', true)
+    );
+    $default_assignment_period = ConfigHelper::getConfig(
+        'assignments.default_period',
+        ConfigHelper::getConfig('phpui.default_assignment_period')
+    );
     if (!empty($default_assignment_period)) {
         $document['assignment']['period'] = $default_assignment_period;
     }
-    $default_assignment_at = ConfigHelper::getConfig('phpui.default_assignment_at');
+    $default_assignment_at = ConfigHelper::getConfig(
+        'assignments.default_at',
+        ConfigHelper::getConfig('phpui.default_assignment_at')
+    );
     if (!empty($default_assignment_at)) {
         $document['assignment']['at'] = $default_assignment_at;
     }
@@ -549,7 +567,10 @@ if (isset($_POST['document'])) {
             ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check')
         );
 
-    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $default_existing_assignment_operation = ConfigHelper::getConfig(
+        'assignments.default_existing_operation',
+        ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep')
+    );
     $existing_assignment_operation_map = array(
         'keep' => EXISTINGASSIGNMENT_KEEP,
         'suspend' => EXISTINGASSIGNMENT_SUSPEND,
