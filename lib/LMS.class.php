@@ -5098,7 +5098,7 @@ class LMS
             }
             unset($account);
 
-            $all_accounts = implode($mail_format == 'text' ? "\n" : '<br>', $accounts);
+            $all_accounts = implode(isset($mail_format) && $mail_format == 'text' ? "\n" : '<br>', $accounts);
 
             $body = str_replace(
                 array(
