@@ -575,11 +575,6 @@ function tariffSelectionHandler() {
 		tariffaccess = parseInt(tariffaccess);
 	}
 	var val = tariff_select.val();
-
-	var tariffGrossPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
-	var tariffNetPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
-	var tariffNetFlag = ((assignmentTariffId && assignmentTariffId == val && assignmentNetflag) ? assignmentNetflag : selected.attr('data-tariffnetflag'));
-	var tariffTaxId = ((assignmentTariffId && assignmentTariffId == val && assignmentTaxid ) ? assignmentTaxid : selected.attr('data-tarifftaxid'));
 	$('#tariff-price-variants').html('');
 
 	$('#tarifftype').val(tarifftype);
@@ -602,34 +597,38 @@ function tariffSelectionHandler() {
 	if (val == '') {
 		$('#a_tax,#a_type,#a_price,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').show();
 		$('#a_price, #a_tax, #a_taxcategory, #a_splitpayment').removeClass('lms-ui-disabled');
-		if (tariffNetFlag && parseInt(tariffNetFlag) !== 0) {
-			$('#grossprice').val(tariffGrossPrice).prop('disabled', true);
-			$('#netprice').val(tariffNetPrice).prop('disabled', false);
+		if (assignmentNetflag && parseInt(assignmentNetflag) !== 0) {
+			$('#grossprice').val(assignmentGrossvalue).prop('disabled', true);
+			$('#netprice').val(assignmentNetvalue).prop('disabled', false);
 			$('#netflag').prop({checked: true, disabled: false});
 			$('#invoice').prop('required', true);
 			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', true);
 		} else {
-			$('#grossprice').val(tariffGrossPrice).prop('disabled', false);
-			$('#netprice').val(tariffNetPrice).prop('disabled', true);
+			$('#grossprice').val(assignmentGrossvalue).prop('disabled', false);
+			$('#netprice').val(assignmentNetvalue).prop('disabled', true);
 			$('#netflag').prop({checked: false, disabled: false});
 			$('#invoice').prop('required', false);
 			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 		}
 
-		if (tariffTaxId) {
-			$('#tax').val(tariffTaxId).prop('disabled', false);
+		if (assignmentTaxid) {
+			$('#tax').val(assignmentTaxid).prop('disabled', false);
 		} else {
 			$('#tax').val(tariffDefaultTaxId).prop('disabled', false);
 		}
 
 		$('#a_attribute').hide();
 	} else {
-		$('#a_tax,#a_price').show();
-		$('#a_type,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
-
+		let tariffGrossPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
+		let tariffNetPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
+		let tariffNetFlag = ((assignmentTariffId && assignmentTariffId == val && assignmentNetflag) ? assignmentNetflag : selected.attr('data-tariffnetflag'));
+		let tariffTaxId = ((assignmentTariffId && assignmentTariffId == val && assignmentTaxid ) ? assignmentTaxid : selected.attr('data-tarifftaxid'));
 		let tariffBaseNetPrice = selected.attr('data-tariffnetvalue');
 		let tariffBaseGrossPrice = selected.attr('data-tariffvalue');
 		let tariffPriceVariants = selected.attr('data-tariffpricevariants');
+
+		$('#a_tax,#a_price').show();
+		$('#a_type,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
 		if (tariffPriceVariants) {
 			let tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
 			if (Object.keys(tariffPriceVariantsObj).length > 0) {
