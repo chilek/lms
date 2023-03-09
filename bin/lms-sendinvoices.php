@@ -322,6 +322,9 @@ if ($backup || $archive) {
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
     $part_size = isset($options['part-size']) ? $options['part-size'] : ConfigHelper::getConfig('sendinvoices.limit', '0');
 
+    $use_all_accounts = ConfigHelper::checkConfig('sendinvoices.use_all_accounts');
+    $use_only_alternative_accounts = ConfigHelper::checkConfig('sendinvoices.use_only_alternative_accounts');
+
     $allowed_customer_status = Utils::determineAllowedCustomerStatus(
         isset($options['customer-status'])
             ? $options['customer-status']
@@ -685,6 +688,8 @@ if (!empty($docs)) {
             'aggregate_documents',
             'interval',
             'no_attachments',
+            'use_all_accounts',
+            'use_only_alternative_accounts',
             'which',
             'duplicate_date',
             'smtp_options'

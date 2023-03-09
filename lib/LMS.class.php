@@ -5082,6 +5082,24 @@ class LMS
 
             list ($now_y, $now_m) = explode('/', date('Y/m', time()));
 
+            $alternative_accounts = $document['document']['bankaccounts'];
+
+            if (empty($use_only_alternative_accounts) || empty($alternative_accounts)) {
+                $accounts = array(bankaccount($doc['customerid'], $document['document']['account']));
+            } else {
+                $accounts = array();
+            }
+
+            if (!empty($use_all_accounts) || !empty($use_only_alternative_accounts)) {
+                $accounts = array_merge($accounts, $alternative_accounts);
+            }
+            foreach ($accounts as &$account) {
+                $account = format_bankaccount($account);
+            }
+            unset($account);
+
+            $all_accounts = implode($mail_format == 'text' ? "\n" : '<br>', $accounts);
+
             $body = str_replace(
                 array(
                     '%invoice',
@@ -5110,7 +5128,7 @@ class LMS
                     $commented_balance,
                     $year . '-' . $month . '-' . $day,
                     "\n",
-                    format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
+                    $all_accounts,
                     date('Y', $deadline),
                     date('m', $deadline),
                     date('d', $deadline),
