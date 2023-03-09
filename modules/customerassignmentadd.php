@@ -182,7 +182,10 @@ if (isset($_POST['assignment'])) {
         $a['at'] = $default_assignment_at;
     }
 
-    $a['type'] = intval(ConfigHelper::getConfig('phpui.default_liability_type', '-1'));
+    $a['type'] = intval(ConfigHelper::getConfig(
+        'assignments.default_liability_type',
+        ConfigHelper::getConfig('phpui.default_liability_type', '-1')
+    ));
 
     $a['check_all_terminals'] =
         ConfigHelper::checkConfig(

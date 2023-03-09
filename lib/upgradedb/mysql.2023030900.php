@@ -163,6 +163,16 @@ $this->Execute(
     )
 );
 
+$this->Execute(
+    "UPDATE uiconfig SET section = ?, var = ? WHERE section = ? AND var = ?",
+    array(
+        'assignments',
+        'default_liability_type',
+        'phpui',
+        'default_liability_type',
+    )
+);
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2023030900', 'dbversion'));
 
 $this->CommitTrans();

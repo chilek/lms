@@ -458,6 +458,8 @@ version 28-git (????-??-??):
     'assignments.default_show_period' [chilan]
   - devel/cleanup: renamed 'phpui.node_assignment_warning' to
     'assignments.missed_node_warning' [chilan]
+  - devel/cleanup: renamed 'phpui.default_liability_type' to
+    'assignments.default_liability_type' [chilan]
 
 version 27.0 (2021-08-20):
 
