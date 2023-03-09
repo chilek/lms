@@ -41,7 +41,7 @@ $_LANG.trans = function() {
 				replace = arguments[argn];
 			}
 			text = text.replace(text.substr(start, 2), replace);
-			start += replace.length;
+			start += replace === null ? "" : replace.length;
 		} else {
 			start += 2;
 		}
