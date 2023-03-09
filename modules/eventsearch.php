@@ -39,6 +39,10 @@ if (!isset($_POST['event'])) {
     if (isset($_GET['ticketid'])) {
             $event['ticketid'] = $_GET['ticketid'];
     }
+    if (isset($_GET['closed'])) {
+            $event['closed'] = $_GET['closed'];
+    }
+
     if (!empty($event)) {
             $_POST['event'] = $event;
     }

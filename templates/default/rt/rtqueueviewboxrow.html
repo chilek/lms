@@ -98,8 +98,8 @@
 		{$ticket.lastmodified|date_format:"Y-m-d H:i:s"|default:"-"}
 	</TD>
 	<TD class="text-center nobr ticket-events">
-		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}">{$ticket.eventcountopened} </A>{else}- {/if}/
-		{if $ticket.eventcountclosed}<A href="?m=eventsearch&ticketid={$ticket.id}"> {$ticket.eventcountclosed}</A>{else} -{/if}
+		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}&closed=0">{$ticket.eventcountopened}</A> {else}- {/if}/
+		{if $ticket.eventcountclosed}<A href="?m=eventsearch&ticketid={$ticket.id}&closed=1">{$ticket.eventcountclosed}</A>{else} -{/if}
 	</TD>
 	<TD class="lms-ui-buttons nobr text-right">
 		{buttons}
