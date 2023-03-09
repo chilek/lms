@@ -427,6 +427,9 @@ version 28-git (????-??-??):
   - enhancement: messageadd form: '%bankaccount' can be replaced optionally by customer alternative
     bank accounts - 'sendinvoices.use_all_accounts' and 'sendinvoices.use_only_alternative_accounts'
     control replacement behavior [chilan]
+  - enhancement: 'assignments.force_current_period_settlement_at_same_day' configuration variable
+    with 'false' as default value causes current period settlement assignment generation with
+    current day or date from property as accounting day (when set to 'true' value) [chilan]
 
 version 27.0 (2021-08-20):
 
