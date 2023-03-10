@@ -1560,8 +1560,8 @@ if (empty($types) || in_array('debtors', $types)) {
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
-            DOC_BANKACCOUNT | DOC_INVOICES | DOC_DISABLED,
-            DOC_BANKACCOUNT | DOC_INVOICES,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             $limit
         )
     );
