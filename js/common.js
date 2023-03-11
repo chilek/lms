@@ -301,9 +301,8 @@ function sendvalue(targetfield, value)
 	window.parent.parent.popclick();
 	if (targetfield.className.indexOf('lms-ui-advanced-select') !== -1) {
 		targetfield.dispatchEvent(new Event('chosen:updated'))
-	} else {
-		targetfield.dispatchEvent(new Event('change'))
 	}
+	targetfield.dispatchEvent(new Event('change'))
 	targetfield.focus();
 }
 
