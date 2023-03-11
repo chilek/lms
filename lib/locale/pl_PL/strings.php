@@ -36,6 +36,8 @@ $_LANG['<!uke-pit>Node "$a" (#$b) has missed properties: $c'] = 'Komputerowi "$a
 $_LANG['<!uke-pit>Validate TERYT properties'] = 'Weryfikuj właściwości TERYT';
 $_LANG['<!uke-pit>Validate building numbers'] = 'Weryfikuj numery budynków';
 $_LANG['<!uke-pit>Validate GPS coordinates'] = 'Weryfikuj współrzędne GPS';
+$_LANG['<!uke-pit>Root network node \'$a\' does not contain any active network devices!'] = 'Główny węzeł \'$a\' nie zawiera żadnych urządzeń aktywnych!';
+$_LANG['<!uke-pit>Passive network devices:'] = 'Pasywne urządzenia sieciowe:';
 
 $_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';
 $_LANG['placed in cable ducts (including cable pipeline, microducts)'] = 'umieszczony w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';

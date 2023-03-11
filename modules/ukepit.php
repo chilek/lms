@@ -1602,6 +1602,26 @@ function analyze_network_tree($netnode_name, $netnode_netdevid, $netnode_netlink
 }
 
 foreach ($netnodes as $netnodename => $netnode) {
+    if ($netnodename == $root_netnode_name && $netnode['mode'] != 2) {
+        echo trans(
+            '<!uke-pit>Root network node \'$a\' does not contain any active network devices!',
+            empty($netnode['real_id'])
+                ? '<strong>' . $netnodename . '</strong>'
+                : '<a href="?m=netnodeinfo&id=' . $netnode['id'] . '"><strong>'
+                    . $netnodename . ' (#' . $netnode['real_id'] . ')</strong></a>'
+        ) . '<br>';
+        foreach ($netnode['netdevices'] as $netdevid) {
+            echo trans('<!uke-pit>Passive network devices:') . '<br>';
+            echo trans(
+                '<!uke-pit>device: $a (#$b)',
+                '<a href="' . $url . '?m=netdevinfo&id=' . $netdevid . '">' . $netdevices[$netdevid]['name'] . '</a>',
+                $netdevid
+            ) . '<br>';
+        }
+
+        die;
+    }
+
     $netnode['local_technologies'] = $netnode['technologies'];
 }
 
