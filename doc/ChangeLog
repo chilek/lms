@@ -462,6 +462,10 @@ version 28-git (????-??-??):
     'assignments.default_liability_type' [chilan]
   - improvement: lms-payments.php script support --config-section parameter which allows to specify
     configuration section which should be used to obtain configuration settings [chilan]
+  - enhancement: added 'documents.operator_approval_notification_document_types'
+    and 'documents.customer_approval_notification_document_types' with empty default
+    values (which means all document types) controls which document type commitment triggers
+    operator and customer notifications [chilan]
 
 version 27.0 (2021-08-20):
 
