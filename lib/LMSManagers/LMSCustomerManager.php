@@ -2484,7 +2484,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                        WHERE
                                           cv.id = ?' .
                                           (($hide_deleted) ? ' AND cv.deleted != 1' : '')
-                                            . ' ORDER BY LOWER(addr.city), LOWER(addr.street)',
+                                            . ' ORDER BY LOWER(addr.city), LOWER(addr.street), LOWER(addr.house)',
             'address_id',
             array( $id )
         );
