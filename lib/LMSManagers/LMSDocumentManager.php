@@ -1463,10 +1463,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 );
                 $operator_document_types = array_flip(
                     array_map(
-                        function($doctype) use ($doctype_aliases) {
+                        function ($doctype) use ($doctype_aliases) {
                             return $doctype_aliases[$doctype];
                         },
-                        array_filter($doc_types, function($doctype) use ($doctype_aliases) {
+                        array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
                             return isset($doctype_aliases[$doctype]);
                         })
                     )
@@ -1484,10 +1484,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 );
                 $customer_document_types = array_flip(
                     array_map(
-                        function($doctype) use ($doctype_aliases) {
+                        function ($doctype) use ($doctype_aliases) {
                             return $doctype_aliases[$doctype];
                         },
-                        array_filter($doc_types, function($doctype) use ($doctype_aliases) {
+                        array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
                             return isset($doctype_aliases[$doctype]);
                         })
                     )
