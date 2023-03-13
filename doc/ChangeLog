@@ -460,6 +460,8 @@ version 28-git (????-??-??):
     'assignments.missed_node_warning' [chilan]
   - devel/cleanup: renamed 'phpui.default_liability_type' to
     'assignments.default_liability_type' [chilan]
+  - improvement: lms-payments.php script support --config-section parameter which allows to specify
+    configuration section which should be used to obtain configuration settings [chilan]
 
 version 27.0 (2021-08-20):
 
