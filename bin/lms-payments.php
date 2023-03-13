@@ -209,35 +209,35 @@ $config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $
     ? $options['section']
     : 'payments';
 
-$deadline = ConfigHelper::getConfig($config_section   . '.deadline', 14);
-$sdate_next = ConfigHelper::checkConfig($config_section   . '.saledate_next_month');
-$paytype = ConfigHelper::getConfig($config_section   . '.paytype', PAYTYPE_TRANSFER);
-$comment = ConfigHelper::getConfig($config_section   . '.comment', "Tariff %tariff - %attribute subscription for period %period");
-$backward_comment = ConfigHelper::getConfig($config_section   . '.backward_comment', $comment);
-$backward_on_the_last_day = ConfigHelper::checkConfig($config_section   . '.backward_on_the_last_day');
-$s_comment = ConfigHelper::getConfig($config_section   . '.settlement_comment', $comment);
-$s_backward_comment = ConfigHelper::getConfig($config_section   . '.settlement_backward_comment', $s_comment);
-$suspension_description = ConfigHelper::getConfig($config_section   . '.suspension_description', '');
+$deadline = ConfigHelper::getConfig($config_section . '.deadline', 14);
+$sdate_next = ConfigHelper::checkConfig($config_section . '.saledate_next_month');
+$paytype = ConfigHelper::getConfig($config_section . '.paytype', PAYTYPE_TRANSFER);
+$comment = ConfigHelper::getConfig($config_section . '.comment', "Tariff %tariff - %attribute subscription for period %period");
+$backward_comment = ConfigHelper::getConfig($config_section . '.backward_comment', $comment);
+$backward_on_the_last_day = ConfigHelper::checkConfig($config_section . '.backward_on_the_last_day');
+$s_comment = ConfigHelper::getConfig($config_section . '.settlement_comment', $comment);
+$s_backward_comment = ConfigHelper::getConfig($config_section . '.settlement_backward_comment', $s_comment);
+$suspension_description = ConfigHelper::getConfig($config_section . '.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
-$unit_name = trans(ConfigHelper::getConfig($config_section   . '.default_unit_name'));
-$check_invoices = ConfigHelper::checkConfig($config_section   . '.check_invoices');
+$unit_name = trans(ConfigHelper::getConfig($config_section . '.default_unit_name'));
+$check_invoices = ConfigHelper::checkConfig($config_section . '.check_invoices');
 $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
-$delete_old_assignments_after_days = intval(ConfigHelper::getConfig($config_section   . '.delete_old_assignments_after_days', 0));
-$prefer_settlement_only = ConfigHelper::checkConfig($config_section   . '.prefer_settlement_only');
-$prefer_netto = ConfigHelper::checkConfig($config_section   . '.prefer_netto');
-$customergroups = ConfigHelper::getConfig($config_section   . '.customergroups', '', true);
-$tariff_tags = ConfigHelper::getConfig($config_section   . '.tariff_tags', '', true);
+$delete_old_assignments_after_days = intval(ConfigHelper::getConfig($config_section . '.delete_old_assignments_after_days', 0));
+$prefer_settlement_only = ConfigHelper::checkConfig($config_section . '.prefer_settlement_only');
+$prefer_netto = ConfigHelper::checkConfig($config_section . '.prefer_netto');
+$customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
+$tariff_tags = ConfigHelper::getConfig($config_section . '.tariff_tags', '', true);
 
-$reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig($config_section   . '.reward_penalty_deadline_grace_days'));
+$reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig($config_section . '.reward_penalty_deadline_grace_days'));
 
 $force_telecom_service_flag = ConfigHelper::checkConfig('invoices.force_telecom_service_flag', true);
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
-$billing_document_template = ConfigHelper::getConfig($config_section   . '.billing_document_template', '');
+$billing_document_template = ConfigHelper::getConfig($config_section . '.billing_document_template', '');
 
-$auto_payments = ConfigHelper::checkConfig($config_section   . '.auto_payments');
+$auto_payments = ConfigHelper::checkConfig($config_section . '.auto_payments');
 
-$use_comment_for_liabilities = ConfigHelper::checkConfig($config_section   . '.use_comment_for_liabilities');
+$use_comment_for_liabilities = ConfigHelper::checkConfig($config_section . '.use_comment_for_liabilities');
 
 $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
