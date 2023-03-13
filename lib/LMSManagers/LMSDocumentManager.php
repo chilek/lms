@@ -1364,7 +1364,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 '%creatoremail%',
             ),
             array(
-                empty($data['creatoremail']) ? '' : $data['creatoremail'],
+                strlen($data['creatoremail']) ? $data['creatoremail'] : '',
             ),
             $string
         );
@@ -1382,7 +1382,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, d.fullnumber, dc.fromdate AS datefrom,
                 d.reference, d.commitflags, d.confirmdate, d.closed,
-                u.email AS creatoremail,
+                (CASE WHEN (u.ntype & ?) > 0 AND u.email <> ? THEN u.email ELSE ? END) AS creatoremail,
                 u.name AS creatorname,
                 (CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
                 (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
@@ -1395,12 +1395,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 WHERE da.type = -1
                 GROUP BY da.docid
             ) a ON a.docid = d.id
-            LEFT JOIN vusers u ON u.id = d.userid AND (u.ntype & ?) > 0 AND u.email <> ?
+            LEFT JOIN vusers u ON u.id = d.userid
             WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
                 . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
             'id',
             array(
                 MSG_MAIL,
+                '',
                 '',
             )
         );
