@@ -1372,6 +1372,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
+        global $DOCTYPE_ALIASES;
+
         $userid = Auth::GetCurrentUser();
 
         $ids = Utils::filterIntegers($ids);
@@ -1381,6 +1383,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, d.fullnumber, dc.fromdate AS datefrom,
+                d.type AS doctype,
                 d.reference, d.commitflags, d.confirmdate, d.closed,
                 (CASE WHEN (u.ntype & ?) > 0 AND u.email <> ? THEN u.email ELSE ? END) AS creatoremail,
                 u.name AS creatorname,
@@ -1416,16 +1419,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $this->db->BeginTrans();
 
+        $doctype_aliases = array_flip($DOCTYPE_ALIASES);
+
         if ($userpanel) {
             $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
             $mail_mdn = ConfigHelper::getConfig('userpanel.document_notification_mail_mdn_address', '', true);
             $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
             $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
             $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
+            $operator_document_types = array();
             $operator_mail_recipient = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_recipient', '');
             $operator_mail_format = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_format', 'text');
             $operator_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_subject');
             $operator_mail_body = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_body');
+            $customer_document_types = array();
             $customer_mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
             $customer_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
             $customer_mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
@@ -1436,14 +1443,58 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $mail_sender_name = ConfigHelper::getConfig('documents.notification_mail_sender_name', '', true);
             $mail_sender_address = ConfigHelper::getConfig('documents.notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
             $mail_reply_address = ConfigHelper::getConfig('documents.notification_mail_reply_address', '', true);
+            $operator_document_types = ConfigHelper::getConfig('documents.approval_operator_notification_document_types', '', true);
             $operator_mail_recipient = ConfigHelper::getConfig('documents.approval_operator_notification_mail_recipient', '');
             $operator_mail_format = ConfigHelper::getConfig('documents.approval_operator_notification_mail_format', 'text');
             $operator_mail_subject = ConfigHelper::getConfig('documents.approval_operator_notification_mail_subject');
             $operator_mail_body = ConfigHelper::getConfig('documents.approval_operator_notification_mail_body');
+            $customer_document_types = ConfigHelper::getConfig('documents.approval_customer_notification_document_types', '', true);
             $customer_mail_format = ConfigHelper::getConfig('documents.approval_customer_notification_mail_format', 'text');
             $customer_mail_subject = ConfigHelper::getConfig('documents.approval_customer_notification_mail_subject');
             $customer_mail_body = ConfigHelper::getConfig('documents.approval_customer_notification_mail_body');
             $customer_mail_attachments = ConfigHelper::checkConfig('documents.approval_customer_notification_attachments');
+
+            if (strlen($operator_document_types)) {
+                $doc_types = preg_split(
+                    '/\s*[,;]\s*/',
+                    preg_replace('/\s+/', ',', $operator_document_types),
+                    -1,
+                    PREG_SPLIT_NO_EMPTY
+                );
+                $operator_document_types = array_flip(
+                    array_map(
+                        function($doctype) use ($doctype_aliases) {
+                            return $doctype_aliases[$doctype];
+                        },
+                        array_filter($doc_types, function($doctype) use ($doctype_aliases) {
+                            return isset($doctype_aliases[$doctype]);
+                        })
+                    )
+                );
+            } else {
+                $operator_document_types = $DOCTYPE_ALIASES;
+            }
+
+            if (strlen($customer_document_types)) {
+                $doc_types = preg_split(
+                    '/\s*[,;]\s*/',
+                    preg_replace('/\s+/', ',', $customer_document_types),
+                    -1,
+                    PREG_SPLIT_NO_EMPTY
+                );
+                $customer_document_types = array_flip(
+                    array_map(
+                        function($doctype) use ($doctype_aliases) {
+                            return $doctype_aliases[$doctype];
+                        },
+                        array_filter($doc_types, function($doctype) use ($doctype_aliases) {
+                            return isset($doctype_aliases[$doctype]);
+                        })
+                    )
+                );
+            } else {
+                $customer_document_types = $DOCTYPE_ALIASES;
+            }
         }
 
         $customerinfos = array();
@@ -1495,7 +1546,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
             if (!empty($mail_sender_address)) {
                 // notify operator about document confirmation
-                if (!empty($operator_mail_recipient) && !empty($operator_mail_subject) && !empty($operator_mail_body)) {
+                if (!empty($operator_mail_recipient) && !empty($operator_mail_subject) && !empty($operator_mail_body)
+                    && isset($operator_document_types[$doc['doctype']])) {
                     if (!isset($customer_manager)) {
                         $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
@@ -1550,7 +1602,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                 // customer awaits for signed document scan approval
                 // so we should probably notify him about document confirmation
-                if (!empty($customer_mail_subject) && !empty($customer_mail_body)) {
+                if (!empty($customer_mail_subject) && !empty($customer_mail_body) && isset($customer_document_types[$doc['doctype']])) {
                     if (!isset($customer_manager)) {
                         $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
