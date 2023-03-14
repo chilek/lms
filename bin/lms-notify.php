@@ -662,7 +662,7 @@ function parse_customer_data($data, $format, $row)
         ? explode(',', $row['alternative_accounts'])
         : array();
 
-    if (!$use_only_alternative_accounts || empty($alternative_accounts)) {
+    if ((!$use_only_alternative_accounts || empty($alternative_accounts)) && isset($row['account']) && strlen($row['account'])) {
         $accounts = array(bankaccount($row['id'], $row['account']));
     } else {
         $accounts = array();
@@ -1995,7 +1995,6 @@ if (empty($types) || in_array('income', $types)) {
     $incomes = $DB->GetAll(
         "SELECT c.id, c.pin, SUM(cash.value) AS value, cash.currency, cash.time AS cdate,
             m.email, x.phone, divisions.account, acc.alternative_accounts,
-
             " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
         b2.balance AS balance, b.balance AS totalbalance
         FROM cash
