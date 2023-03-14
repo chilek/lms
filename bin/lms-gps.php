@@ -338,6 +338,8 @@ foreach ($types as $label => $type) {
                     }
 
                     sleep(1);
+
+                    break;
                 } elseif (($provider == 'prg' || $provider == 'siis') && !empty($row['state_name'])) {
                     $args = array(
                         'city_id' => $row['city_id'],
@@ -377,6 +379,8 @@ foreach ($types as $label => $type) {
                         echo 'prg: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $buildings[0]['latitude']
                             . " long.: " . $buildings[0]['longitude'] . ")" . PHP_EOL;
                     }
+
+                    break;
                 }
             }
         }
