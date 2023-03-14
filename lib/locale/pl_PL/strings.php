@@ -84,6 +84,8 @@ $_LANG['Total to pay: $a'] = 'Razem do zapłaty: $a';
 $_LANG['Invoice value: $a'] = 'Wartość faktury: $a';
 $_LANG['Invoice value: $a (to pay)'] = 'Wartość faktury: $a (do zapłaty)';
 $_LANG['Invoice value: $a (to repay)'] = 'Wartość faktury: $a (do zwrotu)';
+$_LANG['Correction value: $a (to pay)'] = 'Wartość korekty: $a (do zapłaty)';
+$_LANG['Correction value: $a (to repay)'] = 'Wartość korekty: $a (do zwrotu)';
 
 $_LANG['Select tariff'] = 'Wybierz taryfę';
 $_LANG['Document flags'] = 'Flagi dokumentu';

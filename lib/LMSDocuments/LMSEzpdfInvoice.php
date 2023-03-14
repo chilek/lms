@@ -1213,7 +1213,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $y,
                 $show_balance_summary ? 10 : 14,
                 trans(
-                    'Invoice value: $a (to repay)',
+                    $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
                     moneyf($this->data['value'], $this->data['currency'])
                 )
             );
@@ -1224,7 +1224,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $show_balance_summary ? 10 : 14,
                 (!$show_balance_summary && $this->use_alert_color ? '<c:color:255,0,0>' : '')
                 . trans(
-                    'Invoice value: $a (to pay)',
+                    $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to pay)',
                     moneyf($this->data['value'], $this->data['currency'])
                 )
                 . (!$show_balance_summary && $this->use_alert_color ? '</c:color>' : '')
