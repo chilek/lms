@@ -316,7 +316,9 @@ foreach ($types as $label => $type) {
                         $params['postalcode'] = $row['zip'];
                     }
                     $res = osm_geocode($params);
-                    if (empty($res)) {
+                    if (empty($res)
+                        || isset($res['latitude']) && !strlen($res['latitude'])
+                        || isset($res['longitude']) && !strlen($res['longitude'])) {
                         if (!$quiet) {
                             echo 'osm: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
                         }
