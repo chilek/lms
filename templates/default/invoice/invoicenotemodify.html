@@ -552,8 +552,8 @@
 					&nbsp;
 				</td>
 				<td class="bold nobr text-right">
-					{sum assign="s_valuebrutto" array=$contents column=s_valuebrutto string_format="%01.2f"}
-					{$s_valuebrutto}
+					{sum assign="s_valuebrutto" array=$contents column=s_valuebrutto}
+					{$s_valuebrutto|string_format:"%01.2f"}
 					<input type="hidden" id="s-valuebrutto" value="{$s_valuebrutto}">
 				</td>
 				<td>
