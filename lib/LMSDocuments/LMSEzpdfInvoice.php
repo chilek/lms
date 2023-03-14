@@ -493,7 +493,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $t_data[$v++] = '<b>' . trans('No.') . '</b>';
         $t_data[$v++] = '<b>' . trans('Name of Product, Commodity or Service') . '</b>';
         if (!$hide_prodid) {
-            $t_data[$v++] = '<b>' . trans('Product ID') . '</b>';
+            $t_data[$v++] = '<b>' . trans('<!invoice>Product ID') . '</b>';
         }
         if ($show_tax_category) {
             $t_data[$v++] = '<b>' . trans('Tax Category') . '</b>';
@@ -846,7 +846,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $cols['no'] = '<b>' . trans('No.') . '</b>';
         $cols['name'] = '<b>' . trans('Name of Product, Commodity or Service') . '</b>';
         if (!$hide_prodid) {
-            $cols['prodid'] = '<b>' . trans('Product ID') . '</b>';
+            $cols['prodid'] = '<b>' . trans('<!invoice>Product ID') . '</b>';
         }
         if ($show_tax_category) {
             $cols['taxcategory'] = '<b>' . trans('Tax Category') . '</b>';

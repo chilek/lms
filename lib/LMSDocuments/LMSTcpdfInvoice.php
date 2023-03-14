@@ -71,7 +71,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $heads['no'] = trans('No.');
         $heads['name'] = trans('Name of Product, Commodity or Service');
         if (!$hide_prodid) {
-            $heads['prodid'] = trans('Product ID');
+            $heads['prodid'] = trans('<!invoice>Product ID');
         }
         if ($show_tax_category) {
             $heads['taxcategory'] = trans('Tax Category');
