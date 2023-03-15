@@ -914,12 +914,14 @@ if (!empty($assigns)) {
             }
 
             $customer_netlinks = $DB->GetAllByKey(
-                "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
-					FROM netlinks nl
-					JOIN netdevices ndsrc ON ndsrc.id = nl.src
-					JOIN netdevices nddst ON nddst.id = nl.dst
-					WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
-						AND ndsrc.ownerid = nddst.ownerid",
+                "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink,
+                    nl.src,
+                    nl.dst
+                FROM netlinks nl
+                JOIN netdevices ndsrc ON ndsrc.id = nl.src
+                JOIN netdevices nddst ON nddst.id = nl.dst
+                WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
+                    AND ndsrc.ownerid = nddst.ownerid",
                 'netlink'
             );
 
