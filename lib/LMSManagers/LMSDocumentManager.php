@@ -1453,48 +1453,48 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $customer_mail_subject = ConfigHelper::getConfig('documents.approval_customer_notification_mail_subject');
             $customer_mail_body = ConfigHelper::getConfig('documents.approval_customer_notification_mail_body');
             $customer_mail_attachments = ConfigHelper::checkConfig('documents.approval_customer_notification_attachments');
+        }
 
-            if (strlen($operator_document_types)) {
-                $doc_types = preg_split(
-                    '/\s*[,;]\s*/',
-                    preg_replace('/\s+/', ',', $operator_document_types),
-                    -1,
-                    PREG_SPLIT_NO_EMPTY
-                );
-                $operator_document_types = array_flip(
-                    array_map(
-                        function ($doctype) use ($doctype_aliases) {
-                            return $doctype_aliases[$doctype];
-                        },
-                        array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
-                            return isset($doctype_aliases[$doctype]);
-                        })
-                    )
-                );
-            } else {
-                $operator_document_types = $DOCTYPE_ALIASES;
-            }
+        if (strlen($operator_document_types)) {
+            $doc_types = preg_split(
+                '/\s*[,;]\s*/',
+                preg_replace('/\s+/', ',', $operator_document_types),
+                -1,
+                PREG_SPLIT_NO_EMPTY
+            );
+            $operator_document_types = array_flip(
+                array_map(
+                    function ($doctype) use ($doctype_aliases) {
+                        return $doctype_aliases[$doctype];
+                    },
+                    array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
+                        return isset($doctype_aliases[$doctype]);
+                    })
+                )
+            );
+        } else {
+            $operator_document_types = $DOCTYPE_ALIASES;
+        }
 
-            if (strlen($customer_document_types)) {
-                $doc_types = preg_split(
-                    '/\s*[,;]\s*/',
-                    preg_replace('/\s+/', ',', $customer_document_types),
-                    -1,
-                    PREG_SPLIT_NO_EMPTY
-                );
-                $customer_document_types = array_flip(
-                    array_map(
-                        function ($doctype) use ($doctype_aliases) {
-                            return $doctype_aliases[$doctype];
-                        },
-                        array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
-                            return isset($doctype_aliases[$doctype]);
-                        })
-                    )
-                );
-            } else {
-                $customer_document_types = $DOCTYPE_ALIASES;
-            }
+        if (strlen($customer_document_types)) {
+            $doc_types = preg_split(
+                '/\s*[,;]\s*/',
+                preg_replace('/\s+/', ',', $customer_document_types),
+                -1,
+                PREG_SPLIT_NO_EMPTY
+            );
+            $customer_document_types = array_flip(
+                array_map(
+                    function ($doctype) use ($doctype_aliases) {
+                        return $doctype_aliases[$doctype];
+                    },
+                    array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
+                        return isset($doctype_aliases[$doctype]);
+                    })
+                )
+            );
+        } else {
+            $customer_document_types = $DOCTYPE_ALIASES;
         }
 
         $customerinfos = array();
@@ -1513,7 +1513,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         foreach ($docs as $docid => $doc) {
             $this->db->Execute(
                 'UPDATE documents SET sdate = ?NOW?, cuserid = ?, closed = ?, confirmdate = ?,
- 				adate = ?, auserid = ? WHERE id = ?',
+                adate = ?, auserid = ? WHERE id = ?',
                 array(
                     $userid,
                     empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SMS : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SCAN,
