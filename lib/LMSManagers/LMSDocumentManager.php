@@ -1427,12 +1427,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
             $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
             $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
-            $operator_document_types = array();
+            $operator_document_types = '';
             $operator_mail_recipient = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_recipient', '');
             $operator_mail_format = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_format', 'text');
             $operator_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_subject');
             $operator_mail_body = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_body');
-            $customer_document_types = array();
+            $customer_document_types = '';
             $customer_mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
             $customer_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
             $customer_mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
