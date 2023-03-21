@@ -276,6 +276,9 @@ if (isset($_POST['tariff'])) {
 
         $SESSION->restore('tariff_netflag', $netflag, true);
         $SESSION->restore('tariff_taxid', $taxid, true);
+        if (!isset($tariff['netflag'])) {
+            $tariff['netflag'] = 0;
+        }
         if ($netflag != $tariff['netflag'] || $taxid != $tariff['taxid']) {
             $calculation_method = !empty($tariff['netflag']) ? 'from_net' : 'from_gross';
             $LMS->recalculateTariffPriceVariants($tariff, $calculation_method);

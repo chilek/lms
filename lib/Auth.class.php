@@ -153,7 +153,11 @@ class Auth
                     $this->SYSLOG->AddMessage(
                         SYSLOG::RES_USER,
                         SYSLOG::OPER_USERLOGIN,
-                        array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT'])
+                        array(
+                            SYSLOG::RES_USER => $this->id,
+                            'ip' => $this->ip,
+                            'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+                        )
                     );
                 }
             }

@@ -108,12 +108,12 @@
                                                     <tr>
                                                         <td align="right">
                                                             <label>{trans('Net')}
-                                                                <input type="text" size="8" id="netprice" name="tariff[netvalue]" value="{$tariff.netvalue}" {if !$tariff.netflag} disabled{/if}>
+                                                                <input type="text" size="8" id="netprice" name="tariff[netvalue]" value="{$tariff.netvalue}"{if empty($tariff.netflag)} disabled{/if}>
                                                             </label>
                                                         </td>
                                                         <td rowspan="2">
                                                             <label>
-                                                                <input type="checkbox" id="netflag" name="tariff[netflag]" value="1" {if $tariff.netflag} checked{/if}
+                                                                <input type="checkbox" id="netflag" name="tariff[netflag]" value="1"{if !empty($tariff.netflag)} checked{/if}
                                                                         {tip text="Billing according to the net price"}>
                                                                 {trans('calculated from net')}
                                                             </label>
@@ -122,7 +122,7 @@
                                                     <tr>
                                                         <td align="right">
                                                             <label>{trans('Gross')}
-                                                                <input type="text" size="8" id="grossprice" name="tariff[value]" value="{$tariff.value}" {if $tariff.netflag} disabled{/if} {tip trigger="value"}>
+                                                                <input type="text" size="8" id="grossprice" name="tariff[value]" value="{$tariff.value}"{if !empty($tariff.netflag)} disabled{/if} {tip trigger="value"}>
                                                             </label>
                                                         </td>
                                                     </tr>
