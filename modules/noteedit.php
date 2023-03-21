@@ -55,7 +55,7 @@ if (isset($_GET['id']) && $action=='edit') {
 
     $note['oldcdate'] = $note['cdate'];
     $note['oldnumber'] = $note['number'];
-    $note['oldnumberplanid'] = $note['numberplanid'];
+    $note['oldnumberplanid'] = empty($note['numberplanid']) ? 0 : $note['numberplanid'];
     $note['oldcustomerid'] = $note['customerid'];
 
     $SESSION->save('notecustomer', $LMS->GetCustomer($note['customerid'], true));
