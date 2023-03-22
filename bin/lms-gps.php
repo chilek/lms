@@ -347,7 +347,7 @@ foreach ($types as $label => $type) {
                         'city_id' => $row['city_id'],
                     );
                     if (!empty($row['street_id'])) {
-                        $args['street_id'] = $ow['street_id'];
+                        $args['street_id'] = $row['street_id'];
                     }
                     if (!empty($row['house'])) {
                         $args['building_num'] = $row['house'];
