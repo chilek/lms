@@ -508,7 +508,7 @@
                             <input type="text" name="prodid" size="6">
                         </td>
                         <td class="text-right">
-                            <input type="text" id="quantity" name="count" size="3" value="{if $itemdata.count}{$itemdata.count}{else}1{/if}">
+                            <input type="text" id="quantity" name="count" size="3" value="{if $itemdata.count}{$itemdata.count|string_format:"%01.3f"}{else}1.000{/if}">
                             <input type="text" name="jm" size="3" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
                         </td>
                         <td class="text-right">
@@ -662,8 +662,9 @@
                         drawPriceVariants(tariffPriceVariantsObj, $('#tariff-price-variants'));
 
                         // get tariff price variants according to quantity
+                        $("#quantity").val(parseInt($("#quantity").val()));
                         let quantity = $("#quantity").val();
-                        let priceVariant = getPriceVariant(parseInt(quantity), tariffPriceVariantsObj);
+                        let priceVariant = getPriceVariant(quantity, tariffPriceVariantsObj);
                         if (Object.keys(priceVariant).length > 0) {
                             grossPrice = priceVariant.gross_price;
                             netPrice = priceVariant.net_price;
@@ -1052,6 +1053,8 @@
     });
 
     $("#quantity").on('change', function () {
+        let roundedQuantity = parseFloat($(this).val().replace(/[\,]+/, '.'));
+        roundedQuantity = (Math.round(roundedQuantity * 1000) / 1000);
         let tariff_select = $('#tariff-select');
         let selected = tariff_select.find(':selected');
         let tariffId = selected.val();
@@ -1061,7 +1064,8 @@
             let tariffPriceVariants = selected.attr('data-tariffpricevariants');
             let tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
             if (Object.keys(tariffPriceVariantsObj).length > 0) {
-                let priceVariant = getPriceVariant(parseInt($(this).val()), tariffPriceVariantsObj);
+                roundedQuantity = parseInt($(this).val());
+                let priceVariant = getPriceVariant(roundedQuantity, tariffPriceVariantsObj);
                 if (Object.keys(priceVariant).length > 0) {
                     grossPriceElem.val(priceVariant.gross_price);
                     netPriceElem.val(priceVariant.net_price);
@@ -1071,6 +1075,8 @@
                 }
             }
         }
+        roundedQuantity = roundedQuantity.toFixed(3);
+        $(this).val(roundedQuantity);
     });
 
 </script>
