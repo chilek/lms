@@ -1485,8 +1485,8 @@ function osm_geocode($params)
     }
 
     $page = json_decode($res, true);
-    $latitude = str_replace(',', '.', $page[0]['lat']);
-    $longitude = str_replace(',', '.', $page[0]['lon']);
+    $latitude = isset($page[0]) ? str_replace(',', '.', $page[0]['lat']) : '';
+    $longitude = isset($page[0]) ? str_replace(',', '.', $page[0]['lon']) : '';
     return array(
         'latitude' => $latitude,
         'longitude' => $longitude,
