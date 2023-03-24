@@ -77,9 +77,49 @@
 			// we use 'tabId' session storage value for identifying web browser tabs
 			// which should preserve some form data per tab
 			var lmsTabId = sessionStorage.getItem('tabId');
+
+			const bc = new BroadcastChannel("lms-broadcast-channel");
+			bc.onmessage = (event) => {
+				var newLmsTabId = event.data.srcTabId;
+				if (newLmsTabId == lmsTabId) {
+					event.srcElement.postMessage({
+						srcTabId: 0
+					});
+				} else if (newLmsTabId == 0) {
+					lmsTabId = Date.now();
+					sessionStorage.setItem('tabId', lmsTabId);
+
+					// new browser tab can be opened as hidden or tabid of new tab can be not initialised
+					// so we have to be careful and handle 'backto' session variable in special way and
+					// correct this variable when new tab id has been determined before the moment
+					var oldLmsTabId = getCookie('tabId');
+					{if $__history_entry}
+						if (oldLmsTabId) {
+							$.ajax({
+								url: '?old_tab_id=' + oldLmsTabId + '&tab_id=' + lmsTabId,
+								method: "POST",
+								dataType: 'json',
+								data: {
+									old_history_entry: $('#old-history-entry').val(),
+									history_entry: $('#history-entry').val()
+								}
+							});
+						}
+					{/if}
+
+					if (!document.hidden) {
+						setCookie('tabId', lmsTabId);
+					}
+				}
+			};
+			bc.postMessage({
+				srcTabId: lmsTabId
+			});
+
 			if (!lmsTabId) {
-				sessionStorage.setItem('tabId', Date.now());
-				lmsTabId = sessionStorage.getItem('tabId');
+				lmsTabId = Date.now();
+				sessionStorage.setItem('tabId', lmsTabId);
+
 				// new browser tab can be opened as hidden or tabid of new tab can be not initialised
 				// so we have to be careful and handle 'backto' session variable in special way and
 				// correct this variable when new tab id has been determined before the moment
