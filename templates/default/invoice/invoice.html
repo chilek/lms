@@ -319,32 +319,32 @@
 					{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 						<td class="flr" align="right" nowrap>
 							{if $item.pdiscount != 0}
-								{$item.pdiscount|string_format:"%.2f"} %
+								{Localisation::formatNumber($item.pdiscount)} %
 							{else}
-								{$item.vdiscount|string_format:"%01.3f"}
+								{Localisation::smartFormatNumber($item.vdiscount)}
 							{/if}
 						</td>
 					{/if}
 					{if $invoice.netflag}
 						<td class="flr" align="right" nowrap>
-							{$item.basevalue|string_format:"%01.3f"}
+							{Localisation::smartFormatNumber($item.basevalue)}
 						</td>
 					{else}
 						<td class="flr" align="right" nowrap>
-							{$item.value|string_format:"%01.3f"}
+							{Localisation::smartFormatNumber($item.value)}
 						</td>
 					{/if}
 					<td class="flr" align="right" nowrap>
-						{$item.totalbase|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.totalbase)}
 					</td>
 					<td class="flr" align="right" nowrap>
 						{$item.taxlabel}
 					</td>
 					<td class="flr" align="right" nowrap>
-						{$item.totaltax|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.totaltax)}
 					</td>
 					<td width="1%" class="flr" align="right" nowrap>
-						{$item.total|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.total)}
 					</td>
 				</tr>
 			{/foreach}
@@ -353,16 +353,16 @@
 					<p align="right"><strong>{trans("Total:")}</strong></p>
 				</td>
 				<td align="right" class="fall" nowrap>
-					{$invoice.invoice.totalbase|string_format:"%01.2f"}
+					{Localisation::formatNumber($invoice.invoice.totalbase)}
 				</td>
 				<td class="fall" align="right">
 					<strong>x</strong>
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$invoice.invoice.totaltax|string_format:"%01.2f"}
+					{Localisation::formatNumber($invoice.invoice.totaltax)}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$invoice.invoice.total|string_format:"%01.2f"}
+					{Localisation::formatNumber($invoice.invoice.total)}
 				</td>
 				</tr>
 				<tr>
@@ -379,16 +379,16 @@
 						&nbsp;
 					</td>
 					<td align="right" class="fall" nowrap>
-						{$item.base|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.base)}
 					</td>
 					<td class="fall" align="right">
 						{$item.taxlabel}
 					</td>
 					<td class="fall" align="right" nowrap>
-						{$item.tax|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.tax)}
 					</td>
 					<td class="fall" align="right" nowrap>
-						{$item.total|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.total)}
 					</td>
 				</tr>
 			{/foreach}
@@ -428,29 +428,29 @@
 				</td>
 				{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 					<td class="flr" align="right" nowrap>
-						{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f"} %{else}{$item.vdiscount|string_format:"%01.3f"}{/if}
+						{if $item.pdiscount != 0}{Localisation::formatNumber($item.pdiscount)} %{else}{Localisation::smartFormatNumber($item.vdiscount)}{/if}
 					</td>
 				{/if}
 				{if $invoice.netflag}
 					<td class="flr" align="right" nowrap>
-						{$item.basevalue|string_format:"%01.3f"}
+						{Localisation::smartFormatNumber($item.basevalue)}
 					</td>
 				{else}
 					<td class="flr" align="right" nowrap>
-						{$item.value|string_format:"%01.3f"}
+						{Localisation::smartFormatNumber($item.value)}
 					</td>
 				{/if}
 				<td class="flr" align="right" nowrap>
-					{$item.totalbase|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.totalbase)}
 				</td>
 				<td class="flr" align="right" nowrap>
 					{$item.taxlabel}
 				</td>
 				<td class="flr" align="right" nowrap>
-					{$item.totaltax|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.totaltax)}
 				</td>
 				<td class="flr" align="right" nowrap>
-					{$item.total|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.total)}
 				</td>
 			</tr>
 		{/foreach}
@@ -459,16 +459,16 @@
 				<p align="right"><strong>{trans("Total:")}</strong></p>
 			</td>
 			<td align="right" class="fall" nowrap>
-				{$invoice.totalbase|string_format:"%01.2f"}
+				{Localisation::formatNumber($invoice.totalbase)}
 			</td>
 			<td class="fall" align="right">
 				<strong>x</strong>
 			</td>
 			<td class="fall" align="right" nowrap>
-				{$invoice.totaltax|string_format:"%01.2f"}
+				{Localisation::formatNumber($invoice.totaltax)}
 			</td>
 			<td class="fall" align="right" nowrap>
-				{$invoice.total|string_format:"%01.2f"}
+				{Localisation::formatNumber($invoice.total)}
 			</td>
 		</tr>
 		<tr>
@@ -485,16 +485,16 @@
 					&nbsp;
 				</td>
 				<td align="right" class="fall" nowrap>
-					{$item.base|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.base)}
 				</td>
 				<td class="fall" align="right">
 					{$item.taxlabel}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$item.tax|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.tax)}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$item.total|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.total)}
 				</td>
 			</tr>
 		{/foreach}
@@ -510,16 +510,16 @@
 					<strong>{trans("Difference value:")}</strong>
 				</td>
 				<td align="right" class="fall" nowrap>
-					{if $totalbase > 0}+{/if}{$totalbase|string_format:"%01.2f"}
+					{if $totalbase > 0}+{/if}{Localisation::formatNumber($totalbase)}
 				</td>
 				<td class="fall" align="right">
 					<strong>x</strong>
 				</td>
 				<td class="fall" align="right" nowrap>
-					{if $totaltax > 0}+{/if}{$totaltax|string_format:"%01.2f"}
+					{if $totaltax > 0}+{/if}{Localisation::formatNumber($totaltax)}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{if $total > 0}+{/if}{$total|string_format:"%01.2f"}
+					{if $total > 0}+{/if}{Localisation::formatNumber($total)}
 				</td>
 			</tr>
 		{/if}

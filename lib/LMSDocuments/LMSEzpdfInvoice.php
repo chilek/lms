@@ -531,10 +531,10 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
                     if (!empty($this->data['pdiscount'])) {
-                        $tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%01.2f %%', $item['pdiscount']));
+                        $tt_width[$v] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['pdiscount']) . ' %');
                     }
                     if (!empty($this->data['vdiscount'])) {
-                        $tmp_width = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['vdiscount']));
+                        $tmp_width = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['vdiscount']));
                         if ($tmp_width > $tt_width[$v]) {
                             $tt_width[$v] = $tmp_width;
                         }
@@ -544,14 +544,14 @@ class LMSEzpdfInvoice extends LMSInvoice
                     }
                 }
                 if ($this->data['netflag']) {
-                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['basevalue'])) + 6;
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['basevalue'])) + 6;
                 } else {
-                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['value'])) + 6;
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['value'])) + 6;
                 }
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
+                $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totalbase'])) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['total'])) + 6;
+                $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totaltax'])) + 6;
+                $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['total'])) + 6;
                 for ($i = 2; $i < $v; $i++) {
                     if (($tt_width[$i] + 2 * $margin + 2) > $t_width[$i]) {
                         $t_width[$i] = $tt_width[$i] + 2 * $margin + 2;
@@ -574,10 +574,10 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
                     if (!empty($this->data['pdiscount'])) {
-                        $tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
+                        $tt_width[$v] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['pdiscount']) . ' %');
                     }
                     if (!empty($this->data['vdiscount'])) {
-                        $tmp_width = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['vdiscount']));
+                        $tmp_width = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['vdiscount']));
                         if ($tmp_width > $tt_width[$v]) {
                             $tt_width[$v] = $tmp_width;
                         }
@@ -587,14 +587,14 @@ class LMSEzpdfInvoice extends LMSInvoice
                     }
                 }
                 if ($this->data['invoice']['netflag']) {
-                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['basevalue'])) + 6;
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['basevalue'])) + 6;
                 } else {
-                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['value'])) + 6;
+                    $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['value'])) + 6;
                 }
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
+                $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totalbase'])) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
-                $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['total'])) + 6;
+                $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totaltax'])) + 6;
+                $tt_width[$v++] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['total'])) + 6;
                 for ($i = 2; $i < $v; $i++) {
                     if (($tt_width[$i] + 2 * $margin + 2) > $t_width[$i]) {
                         $t_width[$i] = $tt_width[$i] + 2 * $margin + 2;
@@ -646,22 +646,22 @@ class LMSEzpdfInvoice extends LMSInvoice
                         $item['pdiscount'] = floatval($item['pdiscount']);
                         $item['vdiscount'] = floatval($item['vdiscount']);
                         if (!empty($item['pdiscount'])) {
-                            $t_data[$v++] = sprintf('%.2f %%', $item['pdiscount']);
+                            $t_data[$v++] = Localisation::formatNumber($item['pdiscount']) . ' %';
                         } elseif (!empty($item['vdiscount'])) {
-                            $t_data[$v++] = sprintf('%01.3f', $item['vdiscount']);
+                            $t_data[$v++] = Localisation::smartFormatNumber($item['vdiscount']);
                         } elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
                             $t_data[$v++] = '';
                         }
                     }
                     if ($this->data['invoice']['netflag']) {
-                        $t_data[$v++] = sprintf('%01.3f', $item['basevalue']);
+                        $t_data[$v++] = Localisation::smartFormatNumber($item['basevalue']);
                     } else {
-                        $t_data[$v++] = sprintf('%01.3f', $item['value']);
+                        $t_data[$v++] = Localisation::smartFormatNumber($item['value']);
                     }
-                    $t_data[$v++] = sprintf('%01.2f', $item['totalbase']);
+                    $t_data[$v++] = Localisation::formatNumber($item['totalbase']);
                     $t_data[$v++] = $item['taxlabel'];
-                    $t_data[$v++] = sprintf('%01.2f', $item['totaltax']);
-                    $t_data[$v++] = sprintf('%01.2f', $item['total']);
+                    $t_data[$v++] = Localisation::formatNumber($item['totaltax']);
+                    $t_data[$v++] = Localisation::formatNumber($item['total']);
 
                     $lp++;
                     $y = $this->invoice_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
@@ -688,10 +688,10 @@ class LMSEzpdfInvoice extends LMSInvoice
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
             $v = count($cols) + 1;
-            $t_data[$v++] = sprintf('%01.2f', $this->data['invoice']['totalbase']);
+            $t_data[$v++] = Localisation::formatNumber($this->data['invoice']['totalbase']);
             $t_data[$v++] = "<b>x</b>";
-            $t_data[$v++] = sprintf('%01.2f', $this->data['invoice']['totaltax']);
-            $t_data[$v++] = sprintf('%01.2f', $this->data['invoice']['total']);
+            $t_data[$v++] = Localisation::formatNumber($this->data['invoice']['totaltax']);
+            $t_data[$v++] = Localisation::formatNumber($this->data['invoice']['total']);
 
             $y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
             $y -= 5;
@@ -704,10 +704,10 @@ class LMSEzpdfInvoice extends LMSInvoice
             if ($this->data['invoice']['taxest']) {
                 foreach ($this->data['invoice']['taxest'] as $item) {
                     $v = count($cols) + 1;
-                    $t_data[$v++] = sprintf('%01.2f', $item['base']);
+                    $t_data[$v++] = Localisation::formatNumber($item['base']);
                     $t_data[$v++] = $item['taxlabel'];
-                    $t_data[$v++] = sprintf('%01.2f', $item['tax']);
-                    $t_data[$v++] = sprintf('%01.2f', $item['total']);
+                    $t_data[$v++] = Localisation::formatNumber($item['tax']);
+                    $t_data[$v++] = Localisation::formatNumber($item['total']);
                     $y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
                 }
             }
@@ -740,22 +740,22 @@ class LMSEzpdfInvoice extends LMSInvoice
                     $item['pdiscount'] = floatval($item['pdiscount']);
                     $item['vdiscount'] = floatval($item['vdiscount']);
                     if (!empty($item['pdiscount'])) {
-                        $t_data[$v++] = sprintf('%.2f %%', $item['pdiscount']);
+                        $t_data[$v++] = Localisation::formatNumber($item['pdiscount']) . ' %';
                     } elseif (!empty($item['vdiscount'])) {
-                        $t_data[$v++] = sprintf('%01.3f', $item['vdiscount']);
+                        $t_data[$v++] = Localisation::smartFormatNumber($item['vdiscount']);
                     } elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
                         $t_data[$v++] = '';
                     }
                 }
                 if ($this->data['netflag']) {
-                    $t_data[$v++] = sprintf('%01.3f', $item['basevalue']);
+                    $t_data[$v++] = Localisation::smartFormatNumber($item['basevalue']);
                 } else {
-                    $t_data[$v++] = sprintf('%01.3f', $item['value']);
+                    $t_data[$v++] = Localisation::smartFormatNumber($item['value']);
                 }
-                $t_data[$v++] = sprintf('%01.2f', $item['totalbase']);
+                $t_data[$v++] = Localisation::formatNumber($item['totalbase']);
                 $t_data[$v++] = $item['taxlabel'];
-                $t_data[$v++] = sprintf('%01.2f', $item['totaltax']);
-                $t_data[$v++] = sprintf('%01.2f', $item['total']);
+                $t_data[$v++] = Localisation::formatNumber($item['totaltax']);
+                $t_data[$v++] = Localisation::formatNumber($item['total']);
 
                 $lp++;
                 $y = $this->invoice_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
@@ -773,10 +773,10 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
         $v = count($cols) + 1;
-        $t_data[$v++] = sprintf('%01.2f', $this->data['totalbase']);
+        $t_data[$v++] = Localisation::formatNumber($this->data['totalbase']);
         $t_data[$v++] = "<b>x</b>";
-        $t_data[$v++] = sprintf('%01.2f', $this->data['totaltax']);
-        $t_data[$v++] = sprintf('%01.2f', $this->data['total']);
+        $t_data[$v++] = Localisation::formatNumber($this->data['totaltax']);
+        $t_data[$v++] = Localisation::formatNumber($this->data['total']);
 
         $y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
 
@@ -790,10 +790,10 @@ class LMSEzpdfInvoice extends LMSInvoice
         if ($this->data['taxest']) {
             foreach ($this->data['taxest'] as $item) {
                 $v = count($cols) + 1;
-                $t_data[$v++] = sprintf('%01.2f', $item['base']);
+                $t_data[$v++] = Localisation::formatNumber($item['base']);
                 $t_data[$v++] = $item['taxlabel'];
-                $t_data[$v++] = sprintf('%01.2f', $item['tax']);
-                $t_data[$v++] = sprintf('%01.2f', $item['total']);
+                $t_data[$v++] = Localisation::formatNumber($item['tax']);
+                $t_data[$v++] = Localisation::formatNumber($item['total']);
                 $y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
             }
         }
@@ -810,10 +810,10 @@ class LMSEzpdfInvoice extends LMSInvoice
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Difference value:') . '</b>');
 
             $v = count($cols) + 1;
-            $t_data[$v++] = ($totalbase > 0 ? '+' : '') . sprintf('%01.2f', $totalbase);
+            $t_data[$v++] = ($totalbase > 0 ? '+' : '') . Localisation::formatNumber($totalbase);
             $t_data[$v++] = "<b>x</b>";
-            $t_data[$v++] = ($totaltax > 0 ? '+' : '') . sprintf('%01.2f', $totaltax);
-            $t_data[$v++] = ($total > 0 ? '+' : '') . sprintf('%01.2f', $total);
+            $t_data[$v++] = ($totaltax > 0 ? '+' : '') . Localisation::formatNumber($totaltax);
+            $t_data[$v++] = ($total > 0 ? '+' : '') . Localisation::formatNumber($total);
 
             $y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
         }
@@ -886,24 +886,24 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width['count'] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
                     if (!empty($this->data['pdiscount'])) {
-                        $tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
+                        $tt_width['discount'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['pdiscount']) . ' %');
                     }
                     if (!empty($this->data['vdiscount'])) {
-                        $tmp_width = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['vdiscount']));
+                        $tmp_width = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['vdiscount']));
                         if ($tmp_width > $tt_width['discount']) {
                             $tt_width['discount'] = $tmp_width;
                         }
                     }
                 }
                 if ($this->data['netflag']) {
-                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['basevalue'])) + 6;
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['basevalue'])) + 6;
                 } else {
-                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['value'])) + 6;
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['value'])) + 6;
                 }
-                $tt_width['totalbase'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
+                $tt_width['totalbase'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totalbase'])) + 6;
                 $tt_width['taxlabel'] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
-                $tt_width['totaltax'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
-                $tt_width['total'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['total'])) + 6;
+                $tt_width['totaltax'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totaltax'])) + 6;
+                $tt_width['total'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['total'])) + 6;
 
                 foreach ($tt_width as $name => $w) {
                     if (($w + 2 * $margin + 2) > $params['cols'][$name]['width']) {
@@ -926,24 +926,24 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width['count'] = $this->backend->getTextWidth($font_size, (float)$item['count']);
                 if (!$hide_discount) {
                     if (!empty($this->data['pdiscount'])) {
-                        $tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
+                        $tt_width['discount'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['pdiscount']) . ' %');
                     }
                     if (!empty($this->data['vdiscount'])) {
-                        $tmp_width = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['vdiscount']));
+                        $tmp_width = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['vdiscount']));
                         if ($tmp_width > $tt_width['discount']) {
                             $tt_width['discount'] = $tmp_width;
                         }
                     }
                 }
                 if ($this->data['invoice']['netflag']) {
-                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['basevalue'])) + 6;
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['basevalue'])) + 6;
                 } else {
-                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, sprintf('%01.3f', $item['value'])) + 6;
+                    $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['value'])) + 6;
                 }
-                $tt_width['totalbase'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totalbase'])) + 6;
+                $tt_width['totalbase'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totalbase'])) + 6;
                 $tt_width['taxlabel'] = $this->backend->getTextWidth($font_size, $item['taxlabel']) + 6;
-                $tt_width['totaltax'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['totaltax'])) + 6;
-                $tt_width['total'] = $this->backend->getTextWidth($font_size, sprintf('%01.2f', $item['total'])) + 6;
+                $tt_width['totaltax'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['totaltax'])) + 6;
+                $tt_width['total'] = $this->backend->getTextWidth($font_size, Localisation::formatNumber($item['total'])) + 6;
 
                 foreach ($tt_width as $name => $w) {
                     if (($w + 2 * $margin + 2) > $params['cols'][$name]['width']) {
@@ -1028,20 +1028,20 @@ class LMSEzpdfInvoice extends LMSInvoice
                         $item['pdiscount'] = floatval($item['pdiscount']);
                         $item['vdiscount'] = floatval($item['vdiscount']);
                         if (!empty($item['pdiscount'])) {
-                            $data[$i]['discount'] = sprintf('%01.2f %%', $item['pdiscount']);
+                            $data[$i]['discount'] = Localisation::formatNumber($item['pdiscount']) . ' %';
                         } elseif (!empty($item['vdiscount'])) {
-                            $data[$i]['discount'] = sprintf('%01.3f', $item['vdiscount']);
+                            $data[$i]['discount'] = Localisation::smartFormatNumber($item['vdiscount']);
                         }
                     }
                     if ($this->data['invoice']['netflag']) {
-                        $data[$i]['basevalue'] = sprintf('%01.3f', $item['basevalue']);
+                        $data[$i]['basevalue'] = Localisation::smartFormatNumber($item['basevalue']);
                     } else {
-                        $data[$i]['basevalue'] = sprintf('%01.3f', $item['value']);
+                        $data[$i]['basevalue'] = Localisation::smartFormatNumber($item['value']);
                     }
-                    $data[$i]['totalbase'] = sprintf('%01.2f', $item['totalbase']);
+                    $data[$i]['totalbase'] = Localisation::formatNumber($item['totalbase']);
                     $data[$i]['taxlabel'] = $item['taxlabel'];
-                    $data[$i]['totaltax'] = sprintf('%01.2f', $item['totaltax']);
-                    $data[$i]['total'] = sprintf('%01.2f', $item['total']);
+                    $data[$i]['totaltax'] = Localisation::formatNumber($item['totaltax']);
+                    $data[$i]['total'] = Localisation::formatNumber($item['total']);
 
                     $i++;
                 }
@@ -1054,10 +1054,10 @@ class LMSEzpdfInvoice extends LMSInvoice
             $y -= 10;
             $this->backend->check_page_length($y);
 
-            $data2[0]['totalbase'] = sprintf('%01.2f', $this->data['invoice']['totalbase']);
+            $data2[0]['totalbase'] = Localisation::formatNumber($this->data['invoice']['totalbase']);
             $data2[0]['taxlabel'] = "<b>x</b>";
-            $data2[0]['totaltax'] = sprintf('%01.2f', $this->data['invoice']['totaltax']);
-            $data2[0]['total'] = sprintf('%01.2f', $this->data['invoice']['total']);
+            $data2[0]['totaltax'] = Localisation::formatNumber($this->data['invoice']['totaltax']);
+            $data2[0]['total'] = Localisation::formatNumber($this->data['invoice']['total']);
 
             $this->backend->ezSetY($y);
             $y = $this->backend->ezTable($data2, null, '', $params2) - 2;
@@ -1073,10 +1073,10 @@ class LMSEzpdfInvoice extends LMSInvoice
             if ($this->data['invoice']['taxest']) {
                 $i = 0;
                 foreach ($this->data['invoice']['taxest'] as $item) {
-                    $data2[$i]['totalbase'] = sprintf('%01.2f', $item['base']);
+                    $data2[$i]['totalbase'] = Localisation::formatNumber($item['base']);
                     $data2[$i]['taxlabel'] = $item['taxlabel'];
-                    $data2[$i]['totaltax'] = sprintf('%01.2f', $item['tax']);
-                    $data2[$i]['total'] = sprintf('%01.2f', $item['total']);
+                    $data2[$i]['totaltax'] = Localisation::formatNumber($item['tax']);
+                    $data2[$i]['total'] = Localisation::formatNumber($item['total']);
                     $i++;
                 }
                 //$this->backend->ezSetY($y);
@@ -1113,20 +1113,20 @@ class LMSEzpdfInvoice extends LMSInvoice
                     $item['pdiscount'] = floatval($item['pdiscount']);
                     $item['vdiscount'] = floatval($item['vdiscount']);
                     if (!empty($item['pdiscount'])) {
-                        $data[$i]['discount'] = sprintf('%01.2f %%', $item['pdiscount']);
+                        $data[$i]['discount'] = Localisation::formatNumber($item['pdiscount']) . ' %';
                     } elseif (!empty($item['vdiscount'])) {
-                        $data[$i]['discount'] = sprintf('%01.3f', $item['vdiscount']);
+                        $data[$i]['discount'] = Localisation::smartFormatNumber($item['vdiscount']);
                     }
                 }
                 if ($this->data['netflag']) {
-                    $data[$i]['basevalue'] = sprintf('%01.3f', $item['basevalue']);
+                    $data[$i]['basevalue'] = Localisation::smartFormatNumber($item['basevalue']);
                 } else {
-                    $data[$i]['basevalue'] = sprintf('%01.3f', $item['value']);
+                    $data[$i]['basevalue'] = Localisation::smartFormatNumber($item['value']);
                 }
-                $data[$i]['totalbase'] = sprintf('%01.2f', $item['totalbase']);
+                $data[$i]['totalbase'] = Localisation::formatNumber($item['totalbase']);
                 $data[$i]['taxlabel'] = $item['taxlabel'];
-                $data[$i]['totaltax'] = sprintf('%01.2f', $item['totaltax']);
-                $data[$i]['total'] = sprintf('%01.2f', $item['total']);
+                $data[$i]['totaltax'] = Localisation::formatNumber($item['totaltax']);
+                $data[$i]['total'] = Localisation::formatNumber($item['total']);
 
                 $i++;
             }
@@ -1140,10 +1140,10 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->check_page_length($y);
 
         // podsumowanie podatku
-        $data2[0]['totalbase'] = sprintf('%01.2f', $this->data['totalbase']);
+        $data2[0]['totalbase'] = Localisation::formatNumber($this->data['totalbase']);
         $data2[0]['taxlabel'] = "<b>x</b>";
-        $data2[0]['totaltax'] = sprintf('%01.2f', $this->data['totaltax']);
-        $data2[0]['total'] = sprintf('%01.2f', $this->data['total']);
+        $data2[0]['totaltax'] = Localisation::formatNumber($this->data['totaltax']);
+        $data2[0]['total'] = Localisation::formatNumber($this->data['total']);
 
         $this->backend->ezSetY($y);
         $y = $this->backend->ezTable($data2, null, '', $params2) - 2;
@@ -1161,10 +1161,10 @@ class LMSEzpdfInvoice extends LMSInvoice
         if (isset($this->data['taxest'])) {
             $i = 0;
             foreach ($this->data['taxest'] as $item) {
-                $data2[$i]['totalbase'] = sprintf('%01.2f', $item['base']);
+                $data2[$i]['totalbase'] = Localisation::formatNumber($item['base']);
                 $data2[$i]['taxlabel'] = $item['taxlabel'];
-                $data2[$i]['totaltax'] = sprintf('%01.2f', $item['tax']);
-                $data2[$i]['total'] = sprintf('%01.2f', $item['total']);
+                $data2[$i]['totaltax'] = Localisation::formatNumber($item['tax']);
+                $data2[$i]['total'] = Localisation::formatNumber($item['total']);
                 $i++;
             }
             //$this->backend->ezSetY($y);
@@ -1182,10 +1182,10 @@ class LMSEzpdfInvoice extends LMSInvoice
             $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
             $this->backend->text_align_right($xx - 5, $fy, $font_size, '<b>' . trans('Difference value:') . '</b>');
 
-            $data2[0]['totalbase'] = ($totalbase>0 ? '+' : '') . sprintf('%01.2f', $totalbase);
+            $data2[0]['totalbase'] = ($totalbase>0 ? '+' : '') . Localisation::formatNumber($totalbase);
             $data2[0]['taxlabel'] = "<b>x</b>";
-            $data2[0]['totaltax'] = ($totaltax>0 ? '+' : '') . sprintf('%01.2f', $totaltax);
-            $data2[0]['total'] = ($total>0 ? '+' : '') . sprintf('%01.2f', $total);
+            $data2[0]['totaltax'] = ($totaltax>0 ? '+' : '') . Localisation::formatNumber($totaltax);
+            $data2[0]['total'] = ($total>0 ? '+' : '') . Localisation::formatNumber($total);
 
             $this->backend->ezSetY($y);
             $y = $this->backend->ezTable($data2, null, '', $params2);
