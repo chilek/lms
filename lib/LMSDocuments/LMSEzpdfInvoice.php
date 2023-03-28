@@ -1214,7 +1214,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $show_balance_summary ? 10 : 14,
                 trans(
                     $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
-                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency']),
+                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency'])
                 )
             );
         } else {
