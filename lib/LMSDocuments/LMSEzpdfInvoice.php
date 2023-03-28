@@ -1307,11 +1307,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                 . ($balance >= 0
                     ? trans(
                         'Excess payment: $a',
-                        sprintf('%s %s', Localisation::formatNumber($balance / $this->data['currencyvalue']), $this->data['currency']),
+                        sprintf('%s %s', Localisation::formatNumber($balance / $this->data['currencyvalue']), $this->data['currency'])
                     )
                     : trans(
                         'Total to pay: $a',
-                        sprintf('%s %s', Localisation::formatNumber(-$balance / $this->data['currencyvalue']), $this->data['currency']),
+                        sprintf('%s %s', Localisation::formatNumber(-$balance / $this->data['currencyvalue']), $this->data['currency'])
                     ))
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
             );
