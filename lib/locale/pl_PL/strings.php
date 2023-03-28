@@ -24,6 +24,14 @@
  *  $Id$
  */
 
+$_LANG['Invalid longitude format!'] = 'Błędny format długości geograficznej!';
+$_LANG['Invalid latitude format!'] = 'Błędny format szerokości geograficznej!';
+$_LANG['Longitude is required!'] = 'Wymagana długość geograficzna!';
+$_LANG['Longitude should not be empty!'] = 'Długość geograficzna nie powinna być pusta!';
+$_LANG['Latitude is required!'] = 'Wymagana szerokość geograficzna!';
+$_LANG['Latitude should not be empty!'] = 'Szerokość geograficzna nie powinna być pusta!';
+$_LANG['Longitude and latitude cannot be empty!'] = 'Długość i szerokość geograficzna nie mogą być puste!';
+
 $_LANG['— other —'] = '— inny —';
 
 $_LANG['<!uke-pit>TERC'] = 'TERC';

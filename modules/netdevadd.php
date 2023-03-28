@@ -40,6 +40,8 @@ if ($api) {
 }
 
 if (isset($netdev)) {
+    $error = array();
+
     $netdev['ports']   = ($netdev['ports'] == '')    ? 0 : intval($netdev['ports']);
     $netdev['clients'] = (empty($netdev['clients'])) ? 0 : intval($netdev['clients']);
     $netdev['ownerid'] = (empty($netdev['ownerid'])) ? 0 : intval($netdev['ownerid']);
@@ -62,6 +64,44 @@ if (isset($netdev)) {
 
     if ($netdev['guaranteeperiod'] != 0 && !$netdev['purchasetime']) {
         $error['purchasetime'] = trans('Purchase date cannot be empty when guarantee period is set!');
+    }
+
+    $gps_coordinates_required = ConfigHelper::getConfig('phpui.netdev_gps_coordinates_required', 'none');
+
+    $longitude = strval(floatval($netdev['longitude']));
+    $latitude = strval(floatval($netdev['latitude']));
+
+    if (strlen($netdev['longitude']) && $longitude != $netdev['longitude']) {
+        $error['longitude'] = trans('Invalid longitude format!');
+    }
+    if (strlen($netdev['latitude']) && $latitude != $netdev['latitude']) {
+        $error['latitude'] = trans('Invalid latitude format!');
+    }
+
+    if (!strlen($netdev['longitude']) != !strlen($netdev['latitude'])) {
+        if (!isset($error['longitude'])) {
+            $error['longitude'] = trans('Longitude and latitude cannot be empty!');
+        }
+        if (!isset($error['latitude'])) {
+            $error['latitude'] = trans('Longitude and latitude cannot be empty!');
+        }
+    }
+
+    if ($gps_coordinates_required != 'none' || ConfigHelper::checkValue($gps_coordinates_required)) {
+        if (!isset($error['longitude']) && !strlen($netdev['longitude'])) {
+            if ($gps_coordinates_required == 'error' || ConfigHelper::checkValue($gps_coordinates_required)) {
+                $error['longitude'] = trans('Longitude is required!');
+            } elseif ($gps_coordinates_required == 'warning' && !isset($warnings['netdev-longitude-'])) {
+                $warning['netdev[longitude]'] = trans('Longitude should not be empty!');
+            }
+        }
+        if (!isset($error['latitude']) && !strlen($netdev['latitude'])) {
+            if ($gps_coordinates_required == 'error' || ConfigHelper::checkValue($gps_coordinates_required)) {
+                $error['latitude'] = trans('Latitude is required!');
+            } elseif ($gps_coordinates_required == 'warning' && !isset($warnings['netdev-latitude-'])) {
+                $warning['netdev[latitude]'] = trans('Latitude should not be empty!');
+            }
+        }
     }
 
     if (!strlen($netdev['projectid']) && !empty($netdev['project'])) {

@@ -259,6 +259,44 @@ if (isset($_POST['nodeedit'])) {
         }
     }
 
+    $gps_coordinates_required = ConfigHelper::getConfig('phpui.node_gps_coordinates_required', 'none');
+
+    $longitude = strval(floatval($nodeedit['longitude']));
+    $latitude = strval(floatval($nodeedit['latitude']));
+
+    if (strlen($nodeedit['longitude']) && $longitude != $nodeedit['longitude']) {
+        $error['longitude'] = trans('Invalid longitude format!');
+    }
+    if (strlen($nodeedit['latitude']) && $latitude != $nodeedit['latitude']) {
+        $error['latitude'] = trans('Invalid latitude format!');
+    }
+
+    if (!strlen($nodeedit['longitude']) != !strlen($nodeedit['latitude'])) {
+        if (!isset($error['longitude'])) {
+            $error['longitude'] = trans('Longitude and latitude cannot be empty!');
+        }
+        if (!isset($error['latitude'])) {
+            $error['latitude'] = trans('Longitude and latitude cannot be empty!');
+        }
+    }
+
+    if ($gps_coordinates_required != 'none' && !ConfigHelper::checkValue($gps_coordinates_required)) {
+        if (!isset($error['longitude']) && !strlen($nodeedit['longitude'])) {
+            if ($gps_coordinates_required == 'error') {
+                $error['longitude'] = trans('Longitude is required!');
+            } elseif ($gps_coordinates_required == 'warning' && !isset($warnings['nodeedit-longitude-'])) {
+                $warning['nodeedit[longitude]'] = trans('Longitude should not be empty!');
+            }
+        }
+        if (!isset($error['latitude']) && !strlen($nodeedit['latitude'])) {
+            if ($gps_coordinates_required == 'error') {
+                $error['latitude'] = trans('Latitude is required!');
+            } elseif ($gps_coordinates_required == 'warning' && !isset($warnings['nodeedit-latitude-'])) {
+                $warning['nodeedit[latitude]'] = trans('Latitude should not be empty!');
+            }
+        }
+    }
+
     if (!isset($nodeedit['access'])) {
         $nodeedit['access'] = 0;
     }
