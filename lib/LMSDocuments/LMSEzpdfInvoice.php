@@ -1225,7 +1225,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 (!$show_balance_summary && $this->use_alert_color ? '<c:color:255,0,0>' : '')
                 . trans(
                     $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to pay)',
-                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency']),
+                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency'])
                 )
                 . (!$show_balance_summary && $this->use_alert_color ? '</c:color>' : '')
             );
