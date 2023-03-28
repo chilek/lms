@@ -1214,7 +1214,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $show_balance_summary ? 10 : 14,
                 trans(
                     $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
-                    moneyf($this->data['value'], $this->data['currency'])
+                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency']),
                 )
             );
         } else {
@@ -1225,7 +1225,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 (!$show_balance_summary && $this->use_alert_color ? '<c:color:255,0,0>' : '')
                 . trans(
                     $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to pay)',
-                    moneyf($this->data['value'], $this->data['currency'])
+                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency']),
                 )
                 . (!$show_balance_summary && $this->use_alert_color ? '</c:color>' : '')
             );
@@ -1265,7 +1265,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 9,
                 '<b>' . trans(
                     'Previous balance: $a $b',
-                    moneyf(abs($previous_balance) / $this->data['currencyvalue'], $this->data['currency']),
+                    sprintf('%s %s', Localisation::formatNumber(abs($previous_balance) / $this->data['currencyvalue']), $this->data['currency']),
                     $comment
                 ) . '</b>'
             );
@@ -1285,7 +1285,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
                 . trans(
                     'Your balance on date of invoice issue: $a $b',
-                    moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
+                    sprintf('%s %s', Localisation::formatNumber($balance / $this->data['currencyvalue']), $this->data['currency']),
                     $comment
                 )
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
@@ -1307,11 +1307,11 @@ class LMSEzpdfInvoice extends LMSInvoice
                 . ($balance >= 0
                     ? trans(
                         'Excess payment: $a',
-                        moneyf($balance / $this->data['currencyvalue'], $this->data['currency'])
+                        sprintf('%s %s', Localisation::formatNumber($balance / $this->data['currencyvalue']), $this->data['currency']),
                     )
                     : trans(
                         'Total to pay: $a',
-                        moneyf(-$balance / $this->data['currencyvalue'], $this->data['currency'])
+                        sprintf('%s %s', Localisation::formatNumber(-$balance / $this->data['currencyvalue']), $this->data['currency']),
                     ))
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
             );
