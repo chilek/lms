@@ -218,7 +218,7 @@ if (isset($_POST['nodedata'])) {
         }
     }
 
-    $password_required = ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('nodepassword_required', 'none'));
+    $password_required = ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('phpui.nodepassword_required', 'none'));
 
     if (strlen($nodedata['passwd']) > 32) {
         $error['passwd'] = trans('Password is too long (max. 32 characters)!');
