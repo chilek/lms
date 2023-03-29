@@ -260,13 +260,13 @@ if (isset($_POST['nodedata'])) {
 
     $gps_coordinates_required = ConfigHelper::getConfig('phpui.node_gps_coordinates_required', 'none');
 
-    $longitude = strval(floatval($nodedata['longitude']));
-    $latitude = strval(floatval($nodedata['latitude']));
+    $longitude = filter_var($nodedata['longitude'], FILTER_VALIDATE_FLOAT);
+    $latitude = filter_var($nodedata['latitude'], FILTER_VALIDATE_FLOAT);
 
-    if (strlen($nodedata['longitude']) && $longitude != $nodedata['longitude']) {
+    if (strlen($nodedata['longitude']) && $longitude === false) {
         $error['longitude'] = trans('Invalid longitude format!');
     }
-    if (strlen($nodedata['latitude']) && $latitude != $nodedata['latitude']) {
+    if (strlen($nodedata['latitude']) && $latitude === false) {
         $error['latitude'] = trans('Invalid latitude format!');
     }
 

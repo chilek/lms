@@ -697,13 +697,13 @@ if (isset($netdev)) {
 
     $gps_coordinates_required = ConfigHelper::getConfig('phpui.netdev_gps_coordinates_required', 'none');
 
-    $longitude = strval(floatval($netdev['longitude']));
-    $latitude = strval(floatval($netdev['latitude']));
+    $longitude = filter_var($netdev['longitude'], FILTER_VALIDATE_FLOAT);
+    $latitude = filter_var($netdev['latitude'], FILTER_VALIDATE_FLOAT);
 
-    if (strlen($netdev['longitude']) && $longitude != $netdev['longitude']) {
+    if (strlen($netdev['longitude']) && $longitude === false) {
         $error['longitude'] = trans('Invalid longitude format!');
     }
-    if (strlen($netdev['latitude']) && $latitude != $netdev['latitude']) {
+    if (strlen($netdev['latitude']) && $latitude === false) {
         $error['latitude'] = trans('Invalid latitude format!');
     }
 
