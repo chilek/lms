@@ -754,7 +754,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $balance > 0
                     ? trans(
                         'Excess payment: $a',
-                    Utils::formatMoney($balance / $this->data['currencyvalue'], $this->data['currency'])
+                        Utils::formatMoney($balance / $this->data['currencyvalue'], $this->data['currency'])
                     )
                     : trans(
                         'Total to pay: $a',
