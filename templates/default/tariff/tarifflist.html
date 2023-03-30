@@ -293,8 +293,8 @@
 			{if $tariff.upceil_n}({convert_to_units($tariff.upceil_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
-			{moneyf($tariff.netvalue, $tariff.currency, 3)}<br>
-			<strong>{moneyf($tariff.value, $tariff.currency, 3)}</strong>
+			{Utils::smartFormatMoney($tariff.netvalue, $tariff.currency)}<br>
+			<strong>{Utils::smartFormatMoney($tariff.value, $tariff.currency)}</strong>
 		</TD>
 		<td class="text-center">
 			{$tariff.tax}<br>
@@ -327,10 +327,10 @@
 								{foreach $tariff.price_variants as $price_variant}
 									<div class="lms-ui-box-row highlight">
 										<div class="lms-ui-box-field">
-											<strong>{moneyf($price_variant.gross_price, $tariff.currency, 3)}</strong>
+											<strong>{Utils::smartFormatMoney($price_variant.gross_price, $tariff.currency)}</strong>
 										</div>
 										<div class="lms-ui-box-field">
-											{moneyf($price_variant.net_price, $tariff.currency, 3)}
+											{Utils::smartFormatMoney($price_variant.net_price, $tariff.currency)}
 										</div>
 										<div class="lms-ui-box-field">
 											{$price_variant.quantity_threshold}
@@ -351,7 +351,7 @@
 		</TD>
 		<TD class="text-right">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			{moneyf($tariff.income, $tariff.currency)}
+				{Utils::smartFormatMoney($tariff.income, $tariff.currency)}
 			{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
@@ -392,7 +392,7 @@
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 				{foreach $listdata.totalincome as $currency => $totalincome}
 					{if !$totalincome@first}<br>{/if}
-					<B>{moneyf($totalincome, $currency)}</B>
+					<B>{Utils::smartFormatMoney($totalincome, $currency)}</B>
 				{/foreach}
 			{/if}
 		</TD>

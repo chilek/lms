@@ -138,7 +138,7 @@
 						{$_SERVICETYPES[$tariff.type]}
 					</TD>
 					<TD class="text-right valign-top bold nobr">
-						{$tariff.value|string_format:"%.3f"}
+						{Localisation::smartFormatNumber($tariff.value)}
 					</TD>
 					<td class="text-right valign-top nobr">
 						<span class="tariff-view"{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}
@@ -188,7 +188,7 @@
 							{if !empty($tariff.data.users[$key])}
 								<i class="lms-ui-icon-user" title="{t a=$tariff.data.users_text[$key]}Modifiable by selected users:<br><strong>$a</strong>{/t}"></i>
 							{/if}
-							{if $tariff.data.value[$key] != 'NULL'}{$tariff.data.value[$key]|string_format:"%.3f"}{/if}
+							{if $tariff.data.value[$key] != 'NULL'}{Localisation::smartFormatNumber($tariff.data.value[$key])}{/if}
 							{if $tariff.data.period[$key]}({$_PERIODS[$tariff.data.period[$key]]}){/if}
 						</SPAN>
 						<span class="tariff-edit"{if !$error || $formdata.aid != $tariff.id} style="display: none;"{/if}>
@@ -294,7 +294,7 @@
 													data-tarifftags="{$tariff.tags}" data-valid="{$tariff.valid}"
 													{if !$tariff.valid} class="blend"{if !$formdata.alltariffs} style="display: none;"{/if}{/if}
 											>
-												{$tariff.name|truncate:40:"&hellip;":true} ({moneyf($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
+												{$tariff.name|truncate:40:"&hellip;":true} ({Utils::smartFormatMoney($tariff.value, $tariff.currency)}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
 											</OPTION>
 										{/foreach}
 									</SELECT>
