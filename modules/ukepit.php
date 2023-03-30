@@ -1473,8 +1473,7 @@ if ($report_type == 'full') {
             n.linktechnology,
             a.city_id AS location_city,
             a.street_id AS location_street,
-            a.house AS location_house,
-            0 AS from_uni_link
+            a.house AS location_house
         FROM nodes n
         LEFT JOIN addresses a ON n.address_id = a.id
         WHERE n.ownerid IS NOT NULL
@@ -1536,7 +1535,6 @@ if ($report_type == 'full') {
                 GROUP BY aa.customerid
             ) allsuspended ON allsuspended.cid = a.customerid
             WHERE n.ownerid IS NOT NULL
-                AND n.netdev IS NOT NULL
                 AND n.linktype = ?
                 AND n.linktechnology = ?
                 AND addr.city_id = ?
