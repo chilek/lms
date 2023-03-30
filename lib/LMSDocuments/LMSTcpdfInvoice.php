@@ -629,7 +629,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 trans(
                     $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
-                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency'])
+                    Utils::formatMoney($this->data['value'], $this->data['currency'])
                 ),
                 0,
                 1,
@@ -648,7 +648,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 trans(
                     $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to pay)' : 'Correction value: $a (to pay)',
-                    sprintf('%s %s', Localisation::formatNumber($this->data['value']), $this->data['currency'])
+                    Utils::formatMoney($this->data['value'], $this->data['currency'])
                 ),
                 0,
                 1,
@@ -698,7 +698,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 trans(
                     'Previous balance: $a $b',
-                    sprintf('%s %s', Localisation::formatNumber(abs($previous_balance) / $this->data['currencyvalue']), $this->data['currency']),
+                    Utils::formatMoney(abs($previous_balance) / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ),
                 0,
@@ -726,7 +726,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 trans(
                     'Your balance on date of invoice issue: $a $b',
-                    sprintf('%s %s', Localisation::formatNumber($balance / $this->data['currencyvalue']), $this->data['currency']),
+                    Utils::formatMoney($balance / $this->data['currencyvalue'], $this->data['currency']),
                     $comment
                 ),
                 0,
@@ -754,11 +754,11 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $balance > 0
                     ? trans(
                         'Excess payment: $a',
-                        sprintf('%s %s', Localisation::formatNumber($balance / $this->data['currencyvalue']), $this->data['currency'])
+                    Utils::formatMoney($balance / $this->data['currencyvalue'], $this->data['currency'])
                     )
                     : trans(
                         'Total to pay: $a',
-                        sprintf('%s %s', Localisation::formatNumber(-$balance / $this->data['currencyvalue']), $this->data['currency'])
+                        Utils::formatMoney(-$balance / $this->data['currencyvalue'], $this->data['currency'])
                     ),
                 0,
                 1,

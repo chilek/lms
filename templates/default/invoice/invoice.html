@@ -539,17 +539,17 @@
 					{if $invoice.rebate}
 						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
 						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
-							{t a=sprintf('%s %s', Localisation::formatNumber($invoice.value), $invoice.currency)}Correction value: $a (to repay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to repay){/t}
 						{else}
-							{t a=sprintf('%s %s', Localisation::formatNumber($invoice.value), $invoice.currency)}Invoice value: $a (to repay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
 						{/if}
 						{if $use_alert_color && !$show_balance_summary}</span>{/if}
 					{else}
 						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
 						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
-							{t a=sprintf('%s %s', Localisation::formatNumber($invoice.value), $invoice.currency)}Correction value: $a (to pay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to pay){/t}
 						{else}
-							{t a=sprintf('%s %s', Localisation::formatNumber($invoice.value), $invoice.currency)}Invoice value: $a (to pay){/t}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
 						{/if}
 						{if $use_alert_color && !$show_balance_summary}</span>{/if}
 					{/if}
@@ -608,16 +608,16 @@
 						{$comment = ""}
 					{/if}
 
-					{trans('Previous balance: $a $b', sprintf('%s %s', Localisation::formatNumber(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment))}
+					{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment))}
 					<br>
 
 					{if $icustomerbalance > 0}
 						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Excess payment: $a', sprintf('%s %s', Localisation::formatNumber($customerbalance / $invoice.currencyvalue), $invoice.currency))}
+							{trans('Excess payment: $a', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency))}
 						</span>
 					{else}
 						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Total to pay: $a', sprintf('%s %s', Localisation::formatNumber(-$customerbalance / $invoice.currencyvalue), $invoice.currency))}
+							{trans('Total to pay: $a', Utils::formatMoney(-$customerbalance / $invoice.currencyvalue, $invoice.currency))}
 						</span>
 					{/if}
 				</td>
@@ -636,7 +636,7 @@
 						{if $use_alert_color}
 							<span style="color: red;">
 						{/if}
-						{trans('Your balance on date of invoice issue: $a $b', sprintf('%s %s', Localisation::formatNumber($customerbalance / $invoice.currencyvalue), $invoice.currency), $comment)}
+						{trans('Your balance on date of invoice issue: $a $b', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
 						{if $use_alert_color}
 							</span>
 						{/if}

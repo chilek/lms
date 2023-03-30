@@ -890,4 +890,20 @@ class Utils
             )
         );
     }
+
+    public static function smartFormatMoney($value, $currency = null)
+    {
+        if (empty($currency)) {
+            $currency = Localisation::getCurrentCurrency();
+        }
+        return sprintf('%s %s', Localisation::smartFormatNumber($value), $currency);
+    }
+
+    public static function formatMoney($value, $currency = null)
+    {
+        if (empty($currency)) {
+            $currency = Localisation::getCurrentCurrency();
+        }
+        return sprintf('%s %s', Localisation::formatNumber($value), $currency);
+    }
 }
