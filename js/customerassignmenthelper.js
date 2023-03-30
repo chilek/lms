@@ -804,11 +804,11 @@ $("#tax").on('change', function () {
 	}
 });
 
-grossPriceElem.on('change', function () {
+$("#grossprice").on('change', function () {
 	claculatePriceFromGross();
 });
 
-netFlagElem.on('change', function () {
+$("#netprice").on('change', function () {
 	claculatePriceFromNet();
 });
 
