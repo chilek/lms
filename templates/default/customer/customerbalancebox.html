@@ -126,11 +126,11 @@
 					{if $item.value > 0 && $item.type} data-moveable="1"{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"&hellip;":true}</TD>
-					<TD class="text-right nobr" data-order="{$item.value}">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}" data-order="{$item.value}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr" data-order="{$item.value}">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if !$item.type}{Utils::formatMoney($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}" data-order="{$item.value}">{if $item.type && $item.value > 0}+{Utils::formatMoney($item.value, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if $item.type && $item.value < 0}{Utils::formatMoney($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
-					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
+					<TD class="text-right nobr{if $item.after < 0} red{/if}">{Utils::formatMoney($item.after)}</TD>
 					<TD class="comment"
 						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
 						>{$item.comment|escape}</TD>
