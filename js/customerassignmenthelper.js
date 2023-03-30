@@ -645,9 +645,6 @@ function tariffSelectionHandler() {
 					grossPriceElem.val(tariffBaseGrossPrice);
 					netPriceElem.val(tariffBaseNetPrice);
 				}
-			} else {
-				grossPriceElem.val(tariffGrossPrice).prop('disabled', true);
-				netPriceElem.val(tariffNetPrice).prop('disabled', true);
 			}
 		}
 
@@ -666,6 +663,8 @@ function tariffSelectionHandler() {
 			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 		}
 		$('#netflag').prop('disabled', true);
+		grossPriceElem.val(tariffGrossPrice).prop('disabled', true);
+		netPriceElem.val(tariffNetPrice).prop('disabled', true);
 
 		$('#tax').val(tariffTaxId).prop('disabled', true);
 
@@ -804,11 +803,11 @@ $("#tax").on('change', function () {
 	}
 });
 
-grossPriceElem.on('change', function () {
+$("#grossprice").on('change', function () {
 	claculatePriceFromGross();
 });
 
-netFlagElem.on('change', function () {
+$("#netprice").on('change', function () {
 	claculatePriceFromNet();
 });
 
