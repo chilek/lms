@@ -548,9 +548,6 @@
 		{foreach $_SERVICETYPES as $type => $name}
 		tariff_types[{$type}] = '{$name}';
 		{/foreach}
-
-		var money_format = '%01.2f %s';
-		var money_format_3f = '%01.3f %s';
 	}
 
 	$(function() {
@@ -690,7 +687,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format_3f, value, currency);
+				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
 			});
 			tab_elem.find('.total_gross_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -699,7 +696,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format_3f, value, currency);
+				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
 			});
 			tab_elem.find('.total_net_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -708,7 +705,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += sprintf("%s %s", lms.utils.formatNumber(value), currency);
 			});
 			tab_elem.find('.total_gross_disc_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -717,7 +714,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += sprintf("%s %s", lms.utils.formatNumber(value), currency);
 			});
 			tab_elem.find('.total_net_disc_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -726,7 +723,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format_3f, value, currency);
+				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
 			});
 			tab_elem.find('.total_gross_discount').html('(' + (html.length ? html : '-') + ')');
 
@@ -735,7 +732,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format_3f, value, currency);
+				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
 			});
 			tab_elem.find('.total_net_discount').html('(' + (html.length ? html : '-') + ')');
 			{/if}

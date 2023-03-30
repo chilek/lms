@@ -46,6 +46,29 @@
 		touchDeviceTooltips: {if ConfigHelper::checkConfig('phpui.touch_device_tooltips', 'false')}true{else}false{/if}
 	};
 
+	var lms = {
+		utils: {
+			smartNumberFormatter: Intl.NumberFormat(lmsSettings.language, {
+				style: "decimal",
+				useGrouping: "always",
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 3
+			}),
+			numberFormatter: Intl.NumberFormat(lmsSettings.language, {
+				style: "decimal",
+				useGrouping: "always",
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			}),
+			smartFormatNumber: function (value) {
+				return this.smartNumberFormatter.format(value);
+			},
+			formatNumber: function (value) {
+				return this.numberFormatter.format(value);
+			}
+		}
+	}
+
 	var tooltipsEnabled = true;
 	if ("ontouchstart" in document.documentElement && !lmsSettings.touchDeviceTooltips) {
 		tooltipsEnabled = false;
