@@ -1470,6 +1470,7 @@ if ($report_type == 'full') {
     $nodes = $DB->GetAll(
         "SELECT
             na.nodeid,
+            n.name,
             n.linktype,
             n.linktechnology,
             addr.city_id AS location_city,
@@ -1507,7 +1508,10 @@ if ($report_type == 'full') {
             AND a.datefrom < ?NOW?
             AND (a.dateto = 0 OR a.dateto > ?NOW?)
             AND allsuspended.total IS NULL
-        GROUP BY na.nodeid, n.linktype, n.linktechnology,
+        GROUP BY na.nodeid,
+            n.name,
+            n.linktype,
+            n.linktechnology,
             addr.city_id,
             addr.street_id,
             addr.house",
@@ -1562,6 +1566,31 @@ if ($report_type == 'full') {
         if ($netrange['count']) {
             $netrange['longitude'] /= $netrange['count'];
             $netrange['latitude'] /= $netrange['count'];
+        }
+
+        if (!isset($teryt['area_terc']) || !isset($teryt['area_simc']) || !isset($node['location_house']) || !strlen($node['location_house'])) {
+            $error = array(
+                'id' => $node['nodeid'],
+                'name' => $node['name'],
+            );
+            if (!isset($teryt['area_terc'])) {
+                $error['terc'] = true;
+            }
+            if (!isset($teryt['area_simc'])) {
+                $error['simc'] = true;
+            }
+            if (!isset($node['location_house']) || !strlen($node['location_house'])) {
+                $error['location_house'] = true;
+            }
+            $errors['nodes'][] = $error;
+        }
+
+        if (!strlen($netrange['longitude']) || !strlen($netrange['latitude'])) {
+            $errors['nodes'][] = array(
+                'id' => $node['nodeid'],
+                'name' => $node['name'],
+                'gps' => true,
+            );
         }
 
         $range = array(
