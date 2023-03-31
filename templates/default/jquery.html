@@ -60,12 +60,18 @@
 				minimumFractionDigits: 2,
 				maximumFractionDigits: 2
 			}),
+			formatNumber: function (value) {
+				return this.numberFormatter.format(value);
+			},
 			smartFormatNumber: function (value) {
 				return this.smartNumberFormatter.format(value);
 			},
-			formatNumber: function (value) {
-				return this.numberFormatter.format(value);
-			}
+			formatMoney: function (value, currency) {
+				return this.formatNumber(value) + ' ' + currency;
+			},
+			smartFormatMoney: function (value, currency) {
+				return this.smartFormatNumber(value) + ' ' + currency;
+			},
 		}
 	}
 

@@ -687,7 +687,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_gross_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -696,7 +696,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_net_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -705,7 +705,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf("%s %s", lms.utils.formatNumber(value), currency);
+				html += lms.utils.formatMoney(value, currency);
 			});
 			tab_elem.find('.total_gross_disc_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -714,7 +714,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf("%s %s", lms.utils.formatNumber(value), currency);
+				html += lms.utils.formatMoney(value, currency);
 			});
 			tab_elem.find('.total_net_disc_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -723,7 +723,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_gross_discount').html('(' + (html.length ? html : '-') + ')');
 
@@ -732,7 +732,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf("%s %s", lms.utils.smartFormatNumber(value), currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_net_discount').html('(' + (html.length ? html : '-') + ')');
 			{/if}
