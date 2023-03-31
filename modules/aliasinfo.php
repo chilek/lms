@@ -43,7 +43,7 @@ $mailforwards = $DB->GetAllByKey(
     array($alias['id'])
 );
 $alias['mailforwards'] = array();
-if (count($mailforwards)) {
+if (!empty($mailforwards) && count($mailforwards)) {
     foreach ($mailforwards as $mailforward => $idx) {
         $alias['mailforwards'][] = $mailforward;
     }
