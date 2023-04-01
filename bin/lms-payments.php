@@ -883,8 +883,18 @@ if (!empty($assigns)) {
             'netlinkid'
         );
         if (!empty($uni_links)) {
-            function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
+            function find_nodes_for_netdev($netlink, &$customer_nodes, &$customer_netlinks, &$processed_netlinks)
             {
+                $customerid = $netlink['customerid'];
+                $netdevid = $netlink['netdevid'];
+                $netlinkid = $netlink['netlinkid'];
+
+                if (isset($processed_netlinks[$netlinkid])) {
+                    return array();
+                }
+
+                $processed_netlinks[$netlinkid] = $netlinkid;
+
                 if (isset($customer_nodes[$customerid . '_' . $netdevid])) {
                     $nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
                 } else {
@@ -900,18 +910,27 @@ if (!empty($assigns)) {
                         } else {
                             continue;
                         }
-                        $nodeids = array_merge($nodeids, find_nodes_for_netdev(
-                            $customerid,
-                            $next_netdevid,
-                            $customer_nodes,
-                            $customer_netlinks
-                        ));
+
+                        if (!isset($processed_netlinks[$customer_netlink['netlink']])) {
+                            $nodeids = array_merge($nodeids, find_nodes_for_netdev(
+                                array(
+                                    'netdevid' => $next_netdevid,
+                                    'customerid' => $customerid,
+                                    'netlinkid' => $customer_netlink['netlink'],
+                                ),
+                                $customer_nodes,
+                                $customer_netlinks,
+                                $processed_netlinks
+                            ));
+                        }
                     }
                     unset($customer_netlink);
                 }
 
                 return $nodeids;
             }
+
+            $processed_netlinks = array();
 
             $customer_netlinks = $DB->GetAllByKey(
                 "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink,
@@ -953,10 +972,10 @@ if (!empty($assigns)) {
             // and then fill assignment linktechnologies relations
             foreach ($uni_links as $netlinkid => &$netlink) {
                 $nodes = find_nodes_for_netdev(
-                    $netlink['customerid'],
-                    $netlink['netdevid'],
+                    $netlink,
                     $customer_nodes,
-                    $customer_netlinks
+                    $customer_netlinks,
+                    $processed_netlinks,
                 );
                 if (!empty($nodes)) {
                     foreach ($nodes as $nodeid) {
