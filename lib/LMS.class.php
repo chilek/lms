@@ -1450,7 +1450,7 @@ class LMS
         return $manager->ValidateAssignment($data);
     }
 
-    public function CheckSchemaModifiedValues($data)
+    public function CheckSchemaModifiedValues(&$data)
     {
         $manager = $this->getFinanceManager();
         return $manager->CheckSchemaModifiedValues($data);

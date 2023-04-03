@@ -1632,16 +1632,25 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $result;
     }
 
-    public function CheckSchemaModifiedValues($data)
+    public function CheckSchemaModifiedValues(&$data)
     {
+        $schemaid = $data['schemaid'];
+        $sassignments = $data['sassignmentid'][$schemaid];
+        $values = isset($data['values'][$schemaid]) ? $data['values'][$schemaid] : null;
+
+        if (is_array($values)) {
+            foreach ($values as $label => $assignments) {
+                foreach ($assignments as $assignmentid => $periods) {
+                    $data['values'][$schemaid][$label][$assignmentid] = str_replace(',', '.', $values[$label][$assignmentid]);
+                }
+            }
+            $values = $data['values'][$schemaid];
+        }
+
         if (ConfigHelper::checkConfig('promotions.allow_modify_values_for_privileged_user', ConfigHelper::checkConfig('phpui.promotion_allow_modify_values_for_privileged_user'))
             && ConfigHelper::checkPrivilege('promotion_management')) {
             return true;
         }
-
-        $schemaid = $data['schemaid'];
-        $sassignments = $data['sassignmentid'][$schemaid];
-        $values = isset($data['values'][$schemaid]) ? $data['values'][$schemaid] : null;
 
         if (is_array($values)) {
             foreach ($values as $label => &$assignments) {
