@@ -975,7 +975,7 @@ if (!empty($assigns)) {
                     $netlink,
                     $customer_nodes,
                     $customer_netlinks,
-                    $processed_netlinks,
+                    $processed_netlinks
                 );
                 if (!empty($nodes)) {
                     foreach ($nodes as $nodeid) {
