@@ -478,7 +478,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 list($value, $period) = explode(':', $dt);
 
                 if (isset($data['modifiedvalues'][$idx])) {
-                    $value = $data['modifiedvalues'][$idx];
+                    $value = str_replace(',', '.', $data['modifiedvalues'][$idx]);
                 }
 
                 // Activation
