@@ -204,7 +204,7 @@
 								</SELECT>
 							</div>
 							<INPUT type="text" size="8" name="form[{$tariff.id}][value][{$key}]" class="value-edit period_form_value"
-									value="{$formdata[$tariff.id].value[$key]}"
+									value="{if isset($formdata[$tariff.id].value[$key])}{Localisation::smartFormatNumber($formdata[$tariff.id].value[$key])}{/if}"
 									{if $key}
 										{tip text="Enter subscription value for specified period"}
 									{else}
@@ -502,10 +502,10 @@
 						edit.find('.selectable-edit').val($(this).attr('data-selectable'));
 					} else if ($(this).is('[data-value]')) {
 						var value = $(this).attr('data-value');
-						if (value != 'NULL') {
-							value = parseFloat(value).toFixed(3);
-							value = value.replace(/[\.]+/, ',');
-							edit.find('.value-edit').val(value);
+						if (value == 'NULL') {
+							edit.find('.value-edit').val('');
+						} else {
+							edit.find('.value-edit').val(lms.utils.smartFormatNumber(value).replace(/[\.]+/, ','));
 						}
 						edit.find('.period-edit').val($(this).attr('data-period'));
 						var users = $(this).attr('data-users').split(',');
@@ -547,10 +547,10 @@
 
 	$(".period_form_value").on('change', function () {
 		let elemVal = $(this).val();
-		let roundedValue = parseFloat(elemVal.replace(/[\,]+/, '.'));
-		roundedValue = financeDecimals.round(roundedValue, 3);
-		roundedValue = roundedValue.toFixed(3).replace(/[\.]+/, ',');
-		$(this).val(roundedValue);
+		if (elemVal.length) {
+			let value = parseFloat(elemVal.replace(/[\,]+/, '.'));
+			$(this).val(lms.utils.smartFormatNumber(value));
+		}
 	});
 
 </SCRIPT>
