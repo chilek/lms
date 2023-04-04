@@ -78,6 +78,7 @@
 			// which should preserve some form data per tab
 			var lmsTabId = sessionStorage.getItem('tabId');
 
+/*
 			const bc = new BroadcastChannel("lms-broadcast-channel");
 			bc.onmessage = (event) => {
 				var newLmsTabId = event.data.srcTabId;
@@ -115,6 +116,7 @@
 			bc.postMessage({
 				srcTabId: lmsTabId
 			});
+*/
 
 			if (!lmsTabId) {
 				lmsTabId = Date.now();
