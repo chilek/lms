@@ -696,7 +696,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			linkstyle.strokeWidth = devlinkArray[i].speed.length ? linkweights[devlinkArray[i].speed] : 1;
 
 			devlinks.push(new OpenLayers.Feature.Vector(
-				new OpenLayers.Geometry.LineString(points)
+				new OpenLayers.Geometry.LineString(points),
 				devlinkArray[i],
 				linkstyle
 			));
