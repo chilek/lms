@@ -675,40 +675,18 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	});
 	devicelayer.addFeatures(devices);
 
-	var points, lineStrings;
+	var points;
 
 	var devlinks = [];
 	if (devlinkArray) {
 		for (i in devlinkArray) {
-/*
-			points = new Array(
-				new OpenLayers.Geometry.Point(devlinkArray[i].srclon, devlinkArray[i].srclat)
-					.transform(lmsProjection, map.getProjectionObject()),
-				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
-					.transform(lmsProjection, map.getProjectionObject())
-			);
-*/
 			points = [];
-
 			$.each(devlinkArray[i].points, function(index, point) {
 				points.push(
 					new OpenLayers.Geometry.Point(point.lon, point.lat)
 						.transform(lmsProjection, map.getProjectionObject()),
 				);
 			});
-
-			lineStrings = [];
-
-			points.forEach(function(point, index) {
-				if (index < points.length - 1) {
-					lineStrings.push(
-						new OpenLayers.Geometry.LineString([
-							point.clone(),
-							points[index + 1].clone(),
-						]),
-					);
-				}
-			})
 
 			if (devlinkArray[i].technology in linkstyles) {
 				linkstyle = linkstyles[devlinkArray[i].technology];
@@ -718,19 +696,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			linkstyle.strokeWidth = devlinkArray[i].speed.length ? linkweights[devlinkArray[i].speed] : 1;
 
 			devlinks.push(new OpenLayers.Feature.Vector(
-				new OpenLayers.Geometry.MultiLineString(lineStrings),
+				new OpenLayers.Geometry.LineString(points)
 				devlinkArray[i],
 				linkstyle
 			));
-
-/*
-			devlinks.push(new OpenLayers.Feature.Vector(
-//				new OpenLayers.Geometry.LineString(points),
-				lineStrings[0],
-				devlinkArray[i],
-				linkstyle
-			));
-*/
 		}
 	}
 
@@ -828,18 +797,13 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				return;
 			}
 			var map = this.map;
-			var lineStrings = feature.geometry.components;
 			var lonLats = [];
-			lineStrings.forEach(function(lineString, lineStringIndex) {
-				var points = lineString.components;
-				points.forEach(function(point, pointIndex) {
-					if (pointIndex < points.length - 1 || lineStringIndex == lineStrings.length - 1) {
-						var lonLat = new OpenLayers.LonLat(point.x, point.y);
-						lonLat.transform(map.getProjectionObject(), lmsProjection);
-						lonLats.push(lonLat);
-					}
-				})
-			});
+			var points = feature.geometry.components;
+			points.forEach(function(point, index) {
+				var lonLat = new OpenLayers.LonLat(point.x, point.y);
+				lonLat.transform(map.getProjectionObject(), lmsProjection);
+				lonLats.push(lonLat);
+			})
 
 			OpenLayers.Request.issue({
 				url: "?m=netlinkpoints&api=1",
