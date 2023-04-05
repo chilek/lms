@@ -2211,6 +2211,27 @@ if ($report_type == 'full') {
 unset($teryt_cities);
 unset($teryt_streets);
 
+$tmp_netlinkpoints = $DB->GetAll(
+    'SELECT *
+    FROM netlinkpoints
+    ORDER BY id'
+);
+if (empty($tmp_netlinkpoints)) {
+    $tmp_netlinkpoints = array();
+}
+$netlinkpoints = array();
+foreach ($tmp_netlinkpoints as $netlinkpoint) {
+    $netlinkid = $netlinkpoint['netlinkid'];
+    $netlinkpointid = $netlinkpoint['id'];
+
+    if (!isset($netlinkpoints[$netlinkid])) {
+        $netlinkpoints[$netlinkid] = array();
+    }
+
+    $netlinkpoints[$netlinkid][$netlinkpointid] = $netlinkpoint;
+}
+unset($tmp_netlinkpoints);
+
 if ($report_type == 'full') {
     $po_buffer = 'po01_id_podmiotu_obcego,po02_nip_pl,po03_nip_nie_pl' . EOL;
     foreach ($foreigners as $name => $foreigner) {
@@ -2405,14 +2426,22 @@ if ($report_type == 'full') {
                         $lb_buffer .= to_csv($data) . EOL;
                     } else {
                         $points = array(
-                            array(
+                            0 => array(
                                 'longitude' => $srcnetnode['longitude'],
                                 'latitude' => $srcnetnode['latitude'],
                             ),
-                            array(
-                                'longitude' => $dstnetnode['longitude'],
-                                'latitude' => $dstnetnode['latitude'],
-                            ),
+                        );
+                        if (isset($netlinkpoints[$netlink['id']])) {
+                            foreach ($netlinkpoints[$netlink['id']] as $netlinkpoint) {
+                                $points[$netlinkpoint['id']] = array(
+                                    'longitude' => $netlinkpoint['longitude'],
+                                    'latitude' => $netlinkpoint['latitude'],
+                                );
+                            }
+                        }
+                        $points[PHP_INT_MAX] = array(
+                            'longitude' => $dstnetnode['longitude'],
+                            'latitude' => $dstnetnode['latitude'],
                         );
 
                         $data = array(
@@ -2450,37 +2479,6 @@ if ($report_type == 'full') {
         }
     }
 }
-
-/*
-// save info about network links
-$netlinkid = 1;
-$snetlinks = '';
-if ($netlinks) {
-    foreach ($netlinks as $netlink) {
-        if ($netnodes[$netlink['src']]['id'] != $netnodes[$netlink['dst']]['id']) {
-            $data = array(
-                'pol_id' => $netlinkid,
-                'pol_owner' => 'Własna',
-                'pol_foreignerid' => '',
-                'pol_wa' => $netnodes[$netlink['src']]['id'],
-                'pol_wb' => $netnodes[$netlink['dst']]['id'],
-                'pol_blayer' => $netlink['foreign'] ? 'Tak' : 'Nie',
-                'pol_dlayer' => $netlink['foreign'] ? 'Nie' : 'Tak',
-                'pol_alayer' => 'Nie',
-                'pol_internetusage' => 'Tak',
-                'pol_voiceusage' => 'Nie',
-                'pol_otherusage' => 'Nie',
-                'pol_totalspeed' => $netlink['speed'],
-                'pol_internetspeed' => $netlink['speed'],
-                'pol_invproject' => $netlink['invproject'],
-                'pol_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
-            );
-            $buffer .= 'P,' . to_csv($data) . EOL;
-            $netlinkid++;
-        }
-    }
-}
-*/
 
 if (!$summary_only) {
     if ($report_type == 'full') {
