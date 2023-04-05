@@ -201,7 +201,7 @@ $access_table = array(
     'network_management' => array(
         'label' => trans('networks and devices management'),
         'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|mac|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel|netdevreplace)|ewxnodelist|ewxdevlist|chooselocation|ping'
-            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist|netranges)$',
+            . '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments|routednetworks|vlanlist|netranges|netlinkpoints)$',
         'allow_menu_items' => array(
             'networks' => Permission::MENU_ALL,
             'netdevices' => Permission::MENU_ALL,

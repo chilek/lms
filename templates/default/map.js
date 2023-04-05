@@ -35,10 +35,14 @@
 	{if $devlinks}
 		{foreach $devlinks as $devlink}
 			devlinks.push({
+				netlinkid: {$devlink.netlinkid},
+				src: {$devlink.src},
+				dst: {$devlink.dst},
 				srclon: {$devlink.srclon},
 				srclat: {$devlink.srclat},
 				dstlon: {$devlink.dstlon},
 				dstlat: {$devlink.dstlat},
+				points: JSON.parse('{json_encode($devlink.points)}'),
 				type: "{$devlink.type}",
 				technology: "{$devlink.technology}",
 				speed: "{$devlink.speed}",

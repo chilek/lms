@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['Network device map refresh error!'] = 'Błąd odświeżenia mapy sieci!';
+$_LANG['Network link update failed!'] = 'Błąd uaktualnienia połączenia sieciowego!';
+
 $_LANG['Invalid longitude format!'] = 'Błędny format długości geograficznej!';
 $_LANG['Invalid latitude format!'] = 'Błędny format szerokości geograficznej!';
 $_LANG['Longitude is required!'] = 'Wymagana długość geograficzna!';

@@ -75,19 +75,61 @@ if ($devices) {
         }
     }
 
-    $devids = implode(',', array_keys($devices));
-
-    $devlinks = $DB->GetAll('SELECT src, dst, type, technology, speed FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
+    $devlinks = $DB->GetAllByKey(
+        'SELECT id, src, dst, type, technology, speed
+        FROM netlinks
+        WHERE src IN ?
+            AND dst IN ?',
+        'id',
+        array(
+            array_keys($devices),
+            array_keys($devices),
+        )
+    );
     if ($devlinks) {
-        foreach ($devlinks as $devlinkidx => $devlink) {
-            $devlinks[$devlinkidx]['srclat'] = $devices[$devlink['src']]['lat'];
-            $devlinks[$devlinkidx]['srclon'] = $devices[$devlink['src']]['lon'];
-            $devlinks[$devlinkidx]['dstlat'] = $devices[$devlink['dst']]['lat'];
-            $devlinks[$devlinkidx]['dstlon'] = $devices[$devlink['dst']]['lon'];
-            $devlinks[$devlinkidx]['typename'] = trans("Link type:")." ".$LINKTYPES[$devlink['type']];
-            $devlinks[$devlinkidx]['technologyname'] = ($devlink['technology'] ? trans("Link technology:")." ".$LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
-            $devlinks[$devlinkidx]['speedname'] = trans("Link speed:")." ".$LINKSPEEDS[$devlink['speed']];
+        foreach ($devlinks as &$devlink) {
+            $devlink['netlinkid'] = $devlink['id'];
+            $devlink['srclat'] = $devices[$devlink['src']]['lat'];
+            $devlink['srclon'] = $devices[$devlink['src']]['lon'];
+            $devlink['dstlat'] = $devices[$devlink['dst']]['lat'];
+            $devlink['dstlon'] = $devices[$devlink['dst']]['lon'];
+            $devlink['typename'] = trans("Link type:") . ' ' . $LINKTYPES[$devlink['type']];
+            $devlink['technologyname'] = ($devlink['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
+            $devlink['speedname'] = trans("Link speed:") . ' ' . $LINKSPEEDS[$devlink['speed']];
+            $devlink['points'] = array(
+                0 => array(
+                    'lon' => $devices[$devlink['src']]['lon'],
+                    'lat' => $devices[$devlink['src']]['lat'],
+                ),
+            );
         }
+        unset($devlink);
+
+        $netlinkpoints = $DB->GetAll(
+            'SELECT *
+            FROM netlinkpoints
+            ORDER BY id'
+        );
+        if (empty($netlinkpoints)) {
+            $netlinkpoints = array();
+        }
+
+        foreach ($netlinkpoints as $netlinkpoint) {
+            $netlinkid = $netlinkpoint['netlinkid'];
+            $netlinkpointid = $netlinkpoint['id'];
+            $devlinks[$netlinkid]['points'][$netlinkpointid] = array(
+                'lon' => $netlinkpoint['longitude'],
+                'lat' => $netlinkpoint['latitude'],
+            );
+        }
+
+        foreach ($devlinks as &$devlink) {
+            $devlink['points'][PHP_INT_MAX] = array(
+                'lon' => $devlink['dstlon'],
+                'lat' => $devlink['dstlat'],
+            );
+        }
+        unset($devlink);
     }
 } else {
     $devlinks = null;
@@ -119,12 +161,20 @@ if ($nodes) {
         }
     }
 
-    $nodeids = implode(',', array_keys($nodes));
-
     if ($devices) {
-        $nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
-			linkspeed AS speed FROM vnodes n WHERE netdev IS NOT NULL AND ownerid IS NOT NULL
-			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
+        $nodelinks = $DB->GetAll(
+            'SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
+                linkspeed AS speed
+            FROM vnodes n
+            WHERE netdev IS NOT NULL
+                AND ownerid IS NOT NULL
+                AND n.id IN ?
+                AND netdev IN ?',
+            array(
+                array_keys($nodes),
+                array_keys($devices),
+            )
+        );
         if ($nodelinks) {
             foreach ($nodelinks as $nodelinkidx => $nodelink) {
                 $nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['lat'];

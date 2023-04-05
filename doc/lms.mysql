@@ -90,6 +90,7 @@ DROP TABLE IF EXISTS rtmessages;
 DROP TABLE IF EXISTS rtticketlastview;
 DROP TABLE IF EXISTS rttickets;
 DROP TABLE IF EXISTS rtqueues;
+DROP TABLE IF EXISTS netlinkpoints;
 DROP TABLE IF EXISTS netlinks;
 DROP TABLE IF EXISTS stats;
 DROP TABLE IF EXISTS nodesessions;
@@ -2120,6 +2121,19 @@ CREATE TABLE netlinks (
     FOREIGN KEY (src) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT netlinks_dst_fkey
     FOREIGN KEY (dst) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  netlinkpoints
+#
+CREATE TABLE netlinkpoints (
+	id int(11) NOT NULL auto_increment,
+	longitude decimal(10, 6) DEFAULT NULL,
+	latitude decimal(10, 6) DEFAULT NULL,
+	netlinkid int(11) NOT NULL,
+	CONSTRAINT netlinkpoints_netlinkid_fkey
+		FOREIGN KEY (netlinkid) REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -4314,4 +4328,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023030900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023040500');

@@ -133,6 +133,40 @@ OpenLayers.Renderer.LmsSVG = OpenLayers.Class(OpenLayers.Renderer.SVG, {
 	CLASS_NAME: "OpenLayers.Renderer.LmsSVG"
 });
 
+OpenLayers.Control.LmsModifyFeature = OpenLayers.Class(OpenLayers.Control.ModifyFeature, {
+	dragStart: function(feature) {
+		var isPoint = feature.geometry.CLASS_NAME ==
+			'OpenLayers.Geometry.Point';
+		if (!this.standalone &&
+			((!feature._sketch && isPoint) || !feature._sketch)) {
+			if (this.toggle && this.feature === feature) {
+				// mark feature for unselection
+				this._unselect = feature;
+			}
+			this.selectFeature(feature);
+		}
+		if (this.feature &&
+			(feature._sketch || isPoint && feature === this.feature)) {
+			var map = feature.layer.map;
+			// feature is a drag or virtual handle or point
+			var points = feature.geometry.parent.components;
+			var selectedPointIndex = -1;
+			points.forEach(function(value, index) {
+				if (value.x == feature.geometry.x && value.y == feature.geometry.y) {
+					selectedPointIndex = index;
+				}
+				//var pointLonLat = new OpenLayers.LonLat(value.x, value.y);
+				//console.log(pointLonLat.transform(map.getProjectionObject(), lmsProjection), value);
+			});
+			if (feature.style == null && (!selectedPointIndex || selectedPointIndex == points.length -1)) {
+				return;
+			}
+			this.vertex = feature;
+			this.handlers.drag.stopDown = true;
+		}
+	}
+});
+
 var map = null;
 //var layerSwitcher = null;
 var maprequest = null;
@@ -163,7 +197,7 @@ function netdevmap_updater() {
 		try {
 			data = JSON.parse(maprequest.responseText);
 		} catch (e) {
-			alert('Network device map refresh error!');
+			alertDialog($t('Network device map refresh error!'));
 			map.getControlsBy('displayClass', 'lmsRefreshButton')[0].deactivate();
 			return 0;
 		}
@@ -641,26 +675,62 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	});
 	devicelayer.addFeatures(devices);
 
-	var points;
+	var points, lineStrings;
 
 	var devlinks = [];
 	if (devlinkArray) {
 		for (i in devlinkArray) {
+/*
 			points = new Array(
 				new OpenLayers.Geometry.Point(devlinkArray[i].srclon, devlinkArray[i].srclat)
 					.transform(lmsProjection, map.getProjectionObject()),
 				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
 					.transform(lmsProjection, map.getProjectionObject())
 			);
+*/
+			points = [];
+
+			$.each(devlinkArray[i].points, function(index, point) {
+				points.push(
+					new OpenLayers.Geometry.Point(point.lon, point.lat)
+						.transform(lmsProjection, map.getProjectionObject()),
+				);
+			});
+
+			lineStrings = [];
+
+			points.forEach(function(point, index) {
+				if (index < points.length - 1) {
+					lineStrings.push(
+						new OpenLayers.Geometry.LineString([
+							point.clone(),
+							points[index + 1].clone(),
+						]),
+					);
+				}
+			})
+
 			if (devlinkArray[i].technology in linkstyles) {
 				linkstyle = linkstyles[devlinkArray[i].technology];
 			} else {
 				linkstyle = linkstyles[devlinkArray[i].type.length ? devlinkArray[i].type : 0];
 			}
 			linkstyle.strokeWidth = devlinkArray[i].speed.length ? linkweights[devlinkArray[i].speed] : 1;
+
 			devlinks.push(new OpenLayers.Feature.Vector(
-				new OpenLayers.Geometry.LineString(points),
-				devlinkArray[i], linkstyle));
+				new OpenLayers.Geometry.MultiLineString(lineStrings),
+				devlinkArray[i],
+				linkstyle
+			));
+
+/*
+			devlinks.push(new OpenLayers.Feature.Vector(
+//				new OpenLayers.Geometry.LineString(points),
+				lineStrings[0],
+				devlinkArray[i],
+				linkstyle
+			));
+*/
 		}
 	}
 
@@ -749,6 +819,51 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		map.addLayer(rsdirectionlayer5);
 	}
 
+	devlinklayer.events.on({
+		"featuremodified": function(ev) {
+//		"afterfeaturemodified": function(ev) {
+			var feature = ev.feature;
+			var netlink = feature.data;
+			if (!netlink.hasOwnProperty('netlinkid')) {
+				return;
+			}
+			var map = this.map;
+			var lineStrings = feature.geometry.components;
+			var lonLats = [];
+			lineStrings.forEach(function(lineString, lineStringIndex) {
+				var points = lineString.components;
+				points.forEach(function(point, pointIndex) {
+					if (pointIndex < points.length - 1 || lineStringIndex == lineStrings.length - 1) {
+						var lonLat = new OpenLayers.LonLat(point.x, point.y);
+						lonLat.transform(map.getProjectionObject(), lmsProjection);
+						lonLats.push(lonLat);
+					}
+				})
+			});
+
+			OpenLayers.Request.issue({
+				url: "?m=netlinkpoints&api=1",
+				params: {
+					netlinkid: netlink.netlinkid,
+					srcdevid: netlink.src,
+					dstdevid: netlink.dst,
+					points: JSON.stringify(lonLats)
+				},
+				callback: function(response) {
+					if (response.status == 200) {
+						try {
+							data = JSON.parse(response.responseText);
+						} catch (e) {
+							alertDialog($t('Network link update failed!'));
+						}
+					} else {
+						alertDialog($t('Network link update failed!'));
+					}
+				}
+			});
+		}
+	});
+
 	var highlightlayers = [ devicelayer, devlinklayer, nodelayer, nodelinklayer, rangeLayer ];
 
 	if (startLon != null && startLat != null) {
@@ -786,8 +901,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					var featureLonLat, mapLonLat;
 					if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" && feature.style == null) {
 						featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
-						featureLonLat.transform(lmsProjection, map.getProjectionObject());
 						mapLonLat = featureLonLat.clone();
+						featureLonLat.transform(lmsProjection, map.getProjectionObject());
 					} else {
 						featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
 						mapLonLat = featureLonLat.clone();
@@ -797,6 +912,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					if (features.length) {
 						var content = '<div class="lmsMapPopupContents">';
 						var first = true;
+						var popupRequired = false;
 						for (i in features) {
 							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
 								if (features[i].data.hasOwnProperty('existing')) {
@@ -813,12 +929,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 										(features[i].data.existingname.length ? features[i].data.existingname  + '<br>' : '') +
 										features[i].data.servicesname +
 										'</strong>';
-								} else {
+									popupRequired = true;
+								} else if (features[i].data.hasOwnProperty('ipaddr')) {
 									content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>' +
 										(features[i].data.ipaddr.length ?
 											'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g,
 												'</div><div class="lmsMapPopupAddress">') + '</div>'
 											: '');
+									popupRequired = true;
 								}
 							} else {
 								content += '<span class="bold">' + features[i].data.typename + '<br>' +
@@ -827,19 +945,21 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 							}
 						}
 						content += '</div>';
-						mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
-						mappopup.setOpacity(0.8);
-						mappopup.closeOnMove = true;
-						map.addPopup(mappopup);
-						mappopup.div.style.overflow = 'visible';
-						mappopup.div.style.width = 'auto';
-						mappopup.div.style.height = 'auto';
-						mappopup.groupDiv.style.overflow = 'visible';
-						mappopup.groupDiv.style.width = 'auto';
-						mappopup.groupDiv.style.height = 'auto';
-						mappopup.contentDiv.style.width = 'auto';
-						mappopup.contentDiv.style.heigh = 'auto';
-						//mappopup.updateSize();
+						if (popupRequired) {
+							mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
+							mappopup.setOpacity(0.8);
+							mappopup.closeOnMove = true;
+							map.addPopup(mappopup);
+							mappopup.div.style.overflow = 'visible';
+							mappopup.div.style.width = 'auto';
+							mappopup.div.style.height = 'auto';
+							mappopup.groupDiv.style.overflow = 'visible';
+							mappopup.groupDiv.style.width = 'auto';
+							mappopup.groupDiv.style.height = 'auto';
+							mappopup.contentDiv.style.width = 'auto';
+							mappopup.contentDiv.style.heigh = 'auto';
+							//mappopup.updateSize();
+						}
 					}
 				}
 				OpenLayers.Event.stop(e);
@@ -857,7 +977,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	map.addControl(highlightlayer);
 	highlightlayer.activate();
 
-	var selectlayer;
+	var selectlayer, modifyfeature = null;
 
 	if (selection)
 	{
@@ -952,6 +1072,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		});
 		map.addControl(selectlayer);
 		selectlayer.activate();
+
+		modifyfeature = new OpenLayers.Control.LmsModifyFeature(devlinklayer);
+		map.addControl(modifyfeature);
+		modifyfeature.activate();
 
 		var checkbutton = new OpenLayers.Control.Button({
 			displayClass: "lmsCheckButton",
