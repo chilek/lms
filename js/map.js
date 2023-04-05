@@ -684,7 +684,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 			$.each(devlinkArray[i].points, function(index, point) {
 				points.push(
 					new OpenLayers.Geometry.Point(point.lon, point.lat)
-						.transform(lmsProjection, map.getProjectionObject()),
+						.transform(lmsProjection, map.getProjectionObject())
 				);
 			});
 
