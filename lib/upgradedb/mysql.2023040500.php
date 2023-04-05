@@ -23,16 +23,18 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-    CREATE TABLE netlinkpoints (
-        id int(11) NOT NULL auto_increment,
-        longitude decimal(10, 6) DEFAULT NULL,
-        latitude decimal(10, 6) DEFAULT NULL,
-        netlinkid int(11) NOT NULL,
-        CONSTRAINT netlinkpoints_netlinkid_fkey
-            FOREIGN KEY (netlinkid) REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
-    ) ENGINE=InnoDB
-");
+if (!$this->ResourceExists('netlinkpoints', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE TABLE netlinkpoints (
+            id int(11) NOT NULL auto_increment,
+            longitude decimal(10, 6) DEFAULT NULL,
+            latitude decimal(10, 6) DEFAULT NULL,
+            netlinkid int(11) NOT NULL,
+            CONSTRAINT netlinkpoints_netlinkid_fkey
+                FOREIGN KEY (netlinkid) REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
+        ) ENGINE=InnoDB
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2023040500', 'dbversion'));
 

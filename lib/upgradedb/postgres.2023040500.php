@@ -23,16 +23,18 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-    CREATE SEQUENCE netlinkpoints_id_seq;
-    CREATE TABLE netlinkpoints (
-        id integer DEFAULT nextval('netlinkpoints_id_seq'::text) NOT NULL,
-        longitude numeric(10, 6) DEFAULT NULL,
-        latitude numeric(10, 6) DEFAULT NULL,
-        netlinkid integer NOT NULL
-            CONSTRAINT netlinkpoints_netlinkid_fkey REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
-    )
-");
+if (!$this->ResourceExists('netlinkpoints', LMSDB::RESOURCE_TYPE_TABLE)) {
+    $this->Execute("
+        CREATE SEQUENCE netlinkpoints_id_seq;
+        CREATE TABLE netlinkpoints (
+            id integer DEFAULT nextval('netlinkpoints_id_seq'::text) NOT NULL,
+            longitude numeric(10, 6) DEFAULT NULL,
+            latitude numeric(10, 6) DEFAULT NULL,
+            netlinkid integer NOT NULL
+                CONSTRAINT netlinkpoints_netlinkid_fkey REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
+        )
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2023040500', 'dbversion'));
 
