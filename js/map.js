@@ -677,16 +677,19 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 
 	var points;
 
+	function addPoint(index, point) {
+		points.push(
+			new OpenLayers.Geometry.Point(point.lon, point.lat)
+				.transform(lmsProjection, map.getProjectionObject())
+		);
+	}
+
 	var devlinks = [];
 	if (devlinkArray) {
 		for (i in devlinkArray) {
 			points = [];
-			$.each(devlinkArray[i].points, function(index, point) {
-				points.push(
-					new OpenLayers.Geometry.Point(point.lon, point.lat)
-						.transform(lmsProjection, map.getProjectionObject())
-				);
-			});
+
+			$.each(devlinkArray[i].points, addPoint);
 
 			if (devlinkArray[i].technology in linkstyles) {
 				linkstyle = linkstyles[devlinkArray[i].technology];
