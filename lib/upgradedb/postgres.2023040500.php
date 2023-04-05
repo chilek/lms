@@ -31,7 +31,8 @@ if (!$this->ResourceExists('netlinkpoints', LMSDB::RESOURCE_TYPE_TABLE)) {
             longitude numeric(10, 6) DEFAULT NULL,
             latitude numeric(10, 6) DEFAULT NULL,
             netlinkid integer NOT NULL
-                CONSTRAINT netlinkpoints_netlinkid_fkey REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
+                CONSTRAINT netlinkpoints_netlinkid_fkey REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE,
+            PRIMARY KEY (id)
         )
     ");
 }

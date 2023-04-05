@@ -2015,6 +2015,7 @@ CREATE TABLE netlinkpoints (
 	id integer DEFAULT nextval('netlinkpoints_id_seq'::text) NOT NULL,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
+	PRIMARY KEY (id),
 	netlinkid integer NOT NULL
 		CONSTRAINT netlinkpoints_netlinkid_fkey REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
 );

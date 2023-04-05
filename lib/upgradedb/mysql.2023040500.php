@@ -30,6 +30,7 @@ if (!$this->ResourceExists('netlinkpoints', LMSDB::RESOURCE_TYPE_TABLE)) {
             longitude decimal(10, 6) DEFAULT NULL,
             latitude decimal(10, 6) DEFAULT NULL,
             netlinkid int(11) NOT NULL,
+            PRIMARY KEY (id),
             CONSTRAINT netlinkpoints_netlinkid_fkey
                 FOREIGN KEY (netlinkid) REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB
