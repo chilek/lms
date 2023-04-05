@@ -909,6 +909,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 								content += '<span class="bold">' + features[i].data.typename + '<br>' +
 									(features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '') +
 									features[i].data.speedname + '</span>';
+								popupRequired = true;
 							}
 						}
 						content += '</div>';
