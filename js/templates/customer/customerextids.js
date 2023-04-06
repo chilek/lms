@@ -22,7 +22,6 @@
  *  $Id$
  */
 
-
 const extidAction = '?m=customerextidhelper';
 const customerextidtable = $('#customerextidtable');
 const customerextidtableHTML = ' #customerextidtable';
@@ -113,7 +112,7 @@ function delManagementCustomerExtid(seviceProviderId, extId) {
     });
 }
 
-function showServiceproviders(serviceproviderId, extId) {
+function showServiceProviders(serviceproviderId, extId) {
     $.ajax({
         url: extidAction + '&api=1&oper=showextids',
         async: true,
@@ -140,7 +139,8 @@ function showServiceproviders(serviceproviderId, extId) {
         });
     });
 }
-function showAddServiceproviders() {
+
+function showAddServiceProviders() {
     $.ajax({
         url: extidAction + '&api=1&oper=showextids',
         async: true,
@@ -167,13 +167,14 @@ function showAddServiceproviders() {
         });
     });
 }
+
 function toggleEditManagementCustomerExtid(serviceproviderId, extId) {
     let edit = $('#customer-extid-edit-button-' + serviceproviderId + extId).is(':visible');
     if (edit) {
         $('#customerextidtable [data-extid="' + serviceproviderId + extId + '"]')
             .find('.customer-extid-info-field').hide().end().find('.customer-extid-edit-field').show();
 
-        showServiceproviders(serviceproviderId, extId);
+        showServiceProviders(serviceproviderId, extId);
 
         $('#customer-extid-cancel-button-' + serviceproviderId + extId + ', #customer-extid-save-button-' + serviceproviderId + extId).show();
         $('#customer-extid-edit-button-' + serviceproviderId + extId).hide();
@@ -193,12 +194,13 @@ function toggleEditManagementCustomerExtid(serviceproviderId, extId) {
         });
     }
 }
+
 function showAddManagementCustomerExtid() {
     $('#add-management-customer-extid').show().find('.customer-extid-edit-field').each(function () {
         $(this).attr('data-old-value', $(this).val()).attr('data-old-tooltip', $(this).attr('title'));
     }).first().focus();
 
-    showAddServiceproviders();
+    showAddServiceProviders();
     $('#customer-extid-buttons').hide();
 }
 
@@ -213,4 +215,3 @@ function hideAddManagementCustomerExtid() {
 }
 
 $('#add-management-customer-extid').hide();
-
