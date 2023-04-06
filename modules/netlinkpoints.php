@@ -50,8 +50,8 @@ foreach ($points as $point) {
         'INSERT INTO netlinkpoints (netlinkid, longitude, latitude) VALUES (?, ?, ?)',
         array(
             $netlinkid,
-            $point['lon'],
-            $point['lat'],
+            str_replace(',', '.', $point['lon']),
+            str_replace(',', '.', $point['lat']),
         )
     );
 }
