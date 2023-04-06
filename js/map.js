@@ -877,7 +877,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					}
 					var features = findFeaturesIntersection(this, feature, featureLonLat);
 					if (features.length) {
-						var content = '<div class="lmsMapPopupContents">';
+						var content = '<div class="lms-ui-map-popup-contents">';
 						var first = true;
 						var popupRequired = false;
 						for (i in features) {
@@ -898,10 +898,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 										'</strong>';
 									popupRequired = true;
 								} else if (features[i].data.hasOwnProperty('ipaddr')) {
-									content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>' +
+									content += '<div class="lms-ui-map-popup-name">' + features[i].data.name + '</div>' +
 										(features[i].data.ipaddr.length ?
-											'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g,
-												'</div><div class="lmsMapPopupAddress">') + '</div>'
+											'<div class="lms-ui-map-popup-address">' + features[i].data.ipaddr.replace(/,/g,
+												'</div><div class="lms-ui-map-popup-address">') + '</div>'
 											: '');
 									popupRequired = true;
 								}
@@ -981,32 +981,32 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					//featurepopup.closeOnMove = true;
 					//featurepopup.keepInMap = true;
 					//featurepopup.panMapIfOutOfView = true;
-					var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitle">Info</div>' +
-						'<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div></div>' +
-						'<div class="lmsInfoPopupContents">';
+					var content = '<div class="lms-ui-map-popup-titlebar"><div class="lms-ui-map-popup-title">Info</div>' +
+						'<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lms-ui-map-popup-closebox">&nbsp;</div></div>' +
+						'<div class="lms-ui-map-info-popup-contents">';
 					for (i in features) {
-						content += '<div class="lmsInfoPopupName">' + features[i].data.name + '</div>';
+						content += '<div class="lms-ui-map-info-popup-name">' + features[i].data.name + '</div>';
 						if (features[i].data.type == 'netdevinfo') {
 							if (features[i].data.ipaddr.length) {
 								var ips = features[i].data.ipaddr.split(',');
 								var nodeids = features[i].data.nodeid.split(',');
 								for (j in nodeids)
-									content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\'' +
+									content += '<div class="lms-ui-map-info-popup-address"><a href="#" onclick="ping_host(\'' +
 										featurepopup.id + '\', \'' + ips[j] + '\')"><i class="lms-ui-icon-routed"></i>&nbsp;' +
 										ips[j] + '</a></div>';
 							}
 						} else
-							content += '<div class="lmsInfoPopupAddress"><i class="lms-ui-icon-routed"></i>&nbsp;<a href="#" onclick="ping_host(\'' +
+							content += '<div class="lms-ui-map-info-popup-address"><i class="lms-ui-icon-routed"></i>&nbsp;<a href="#" onclick="ping_host(\'' +
 								featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')">' +
 								features[i].data.ipaddr + '</a></div>';
-							content += '<div class="lmsInfoPopupDetails">' +
+							content += '<div class="lms-ui-map-info-popup-details">' +
 							'<i class="lms-ui-icon-location"></i><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">&nbsp;Info</a></div>';
-							content += '<div class="lmsInfoPopupDetails"><i class="lms-ui-icon-location"></i>&nbsp;' + features[i].data.location + '</div>';
+							content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-location"></i>&nbsp;' + features[i].data.location + '</div>';
 							if (features[i].data.url) {
 							var urls = features[i].data.url.split(',');
 							var comments = features[i].data.comment.split(',');
 							for (j in urls) {
-								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '"' +
+								content += '<div class="lms-ui-map-info-popup-details"><a href="' + urls[j] + '"' +
 									(urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>' +
 									'<img src="img/network.gif" alt=""> ' +
 									(comments[j].length ? comments[j] : urls[j]) + '</a></div>';
