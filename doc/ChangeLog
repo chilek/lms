@@ -470,6 +470,7 @@ version 28-git (????-??-??):
     (with default value of 'none' for both) control gps coordinates validation process for nodes
     and network devices [chilan]
   - enhancement: uke/pit: network link multi point support [chilan]
+  - enhancement: add customer external IDs managment panel [ravvar]
 
 version 27.0 (2021-08-20):
 
