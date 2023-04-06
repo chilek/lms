@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+$_LANG['IDs in external systems'] = 'Identyfikatory w systemach zewnętrznych';
+$_LANG['ID in external system'] = 'Identyfikator w systemie zewnętrznym';
+$_LANG['External system'] = 'System zewnętrzny';
+$_LANG['No external system!'] = 'Brak systemu zewnętrznego';
+$_LANG['Selected service provider has assigned External ID already!'] = 'Wybrany system zewnętrzny ma już przypisany zewnętrzny identyfikator!';
+
 $_LANG['Network device map refresh error!'] = 'Błąd odświeżenia mapy sieci!';
 $_LANG['Network link update failed!'] = 'Błąd uaktualnienia połączenia sieciowego!';
 

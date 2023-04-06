@@ -941,16 +941,40 @@ class LMS
         return $manager->getCustomerModificationInfo($customerid);
     }
 
-    public function getCustomerExternalIDs($customerid, $serviceproviderid = null)
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null, $serviceprovidersonly = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerExternalIDs($customerid, $serviceproviderid);
+        return $manager->getCustomerExternalIDs($customerid, $serviceproviderid, $serviceprovidersonly);
+    }
+
+    public function addCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerExternalID($customerid, $extid, $serviceproviderid);
+    }
+
+    public function updateCustomerExternalID($customerid, $extid, $oldextid, $serviceproviderid, $oldserviceproviderid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerExternalID($customerid, $extid, $oldextid, $serviceproviderid, $oldserviceproviderid);
     }
 
     public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false)
     {
         $manager = $this->getCustomerManager();
         return $manager->updateCustomerExternalIDs($customerid, $customerextids, $only_passed_service_providers);
+    }
+
+    public function deleteCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->deleteCustomerExternalID($customerid, $extid, $serviceproviderid);
+    }
+
+    public function getServiceProviders()
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getServiceProviders();
     }
 
     /*

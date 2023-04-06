@@ -3517,7 +3517,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         );
     }
 
-    public function getCustomerExternalIDs($customerid, $serviceproviderid = null)
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null, $serviceprovidersonly = false)
     {
         $result = $this->db->GetAllByKey(
             'SELECT ce.extid,
@@ -3526,11 +3526,46 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             FROM customerextids ce
             LEFT JOIN serviceproviders sp ON sp.id = ce.serviceproviderid
             WHERE ce.customerid = ?'
-                . (empty($serviceproviderid) ? '' : ' AND ce.serviceproviderid = ' . intval($serviceproviderid)),
+            . (empty($serviceproviderid) ? '' : ' AND ce.serviceproviderid = ' . intval($serviceproviderid))
+            . (empty($serviceprovidersonly) ? '' : ' AND ce.serviceproviderid IS NOT NULL'),
             'serviceproviderid',
             array($customerid)
         );
         return empty($result) ? array() : $result;
+    }
+
+    public function addCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        if (!empty($customerid) && !empty($extid) && !empty($serviceproviderid)) {
+            return $this->db->Execute(
+                'INSERT INTO customerextids (customerid, extid, serviceproviderid)
+                       VALUES (?, ?, ?)',
+                array(
+                    $customerid,
+                    Utils::removeInsecureHtml($extid),
+                    $serviceproviderid,
+                )
+            );
+        }
+    }
+
+    public function updateCustomerExternalID($customerid, $extid, $oldextid, $serviceproviderid, $oldserviceproviderid)
+    {
+        if (!empty($customerid) && !empty($extid) && !empty($serviceproviderid)) {
+            return $this->db->Execute(
+                'UPDATE customerextids SET extid = ?, serviceproviderid = ?
+                WHERE customerid = ?
+                AND extid = ?
+                AND serviceproviderid = ?',
+                array(
+                    Utils::removeInsecureHtml($extid),
+                    $serviceproviderid,
+                    $customerid,
+                    $oldextid,
+                    $oldserviceproviderid
+                )
+            );
+        }
     }
 
     public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false)
@@ -3630,5 +3665,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         return $modifications;
+    }
+
+    public function deleteCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        if (!empty($customerid) && !empty($extid) && !empty($serviceproviderid)) {
+            $this->db->Execute(
+                'DELETE FROM customerextids WHERE customerid = ? AND extid = ? AND serviceproviderid = ?',
+                array(
+                    $customerid,
+                    strval($extid),
+                    $serviceproviderid,
+                )
+            );
+        }
+    }
+
+    public function getServiceProviders()
+    {
+        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders', 'id');
+        return empty($result) ? array() : $result;
     }
 }
