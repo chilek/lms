@@ -689,7 +689,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		for (i in devlinkArray) {
 			points = [];
 
-			$.each(devlinkArray[i].points, addPoint);
+			for (var pointIndex in devlinkArray[i].points) {
+				addPoint(pointIndex, devlinkArray[i].points[pointIndex])
+			}
 
 			if (devlinkArray[i].technology in linkstyles) {
 				linkstyle = linkstyles[devlinkArray[i].technology];
