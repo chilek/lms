@@ -230,18 +230,17 @@ if (empty($fakedate)) {
     $currtime = strtotime($fakedate);
 }
 
-$omit_free_days = isset($options['omit-free-days']);
-
 list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
-
-$weekday = date('N', $currtime);
-$holidays = getHolidays($year);
-if ($omit_free_days && ($weekday > 5 || isset($holidays[$currtime]))) {
-    die('Notifications are omitted, because current day is free day!' . PHP_EOL);
-}
 
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
+
+$omit_free_days = isset($options['omit-free-days']);
+$weekday = date('N', $currtime);
+$holidays = getHolidays($year);
+if ($omit_free_days && ($weekday > 5 || isset($holidays[$daystart))) {
+    die('Notifications are omitted, because current day is free day!' . PHP_EOL);
+}
 
 if ($omit_free_days) {
     $prevday = $daystart;
