@@ -471,6 +471,7 @@ version 28-git (????-??-??):
     and network devices [chilan]
   - enhancement: uke/pit: network link multi point support [chilan]
   - enhancement: add customer external IDs managment panel [ravvar]
+  - enhancement: search nodes by address origin (explicit/implicit/ignore) [chilan]
 
 version 27.0 (2021-08-20):
 
