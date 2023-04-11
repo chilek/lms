@@ -395,11 +395,17 @@ class Localisation
 
     public static function smartFormatNumber($number)
     {
+        if (is_string($number)) {
+            $number = floatval($number);
+        }
         return self::$numberSmartFormatter->format($number);
     }
 
     public static function formatNumber($number)
     {
+        if (is_string($number)) {
+            $number = floatval($number);
+        }
         return self::$numberFormatter->format($number);
     }
 

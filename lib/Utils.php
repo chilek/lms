@@ -893,6 +893,9 @@ class Utils
 
     public static function smartFormatMoney($value, $currency = null)
     {
+        if (is_string($value)) {
+            $value = floatval($value);
+        }
         if (empty($currency)) {
             $currency = Localisation::getCurrentCurrency();
         }
@@ -901,6 +904,9 @@ class Utils
 
     public static function formatMoney($value, $currency = null)
     {
+        if (is_string($value)) {
+            $value = floatval($value);
+        }
         if (empty($currency)) {
             $currency = Localisation::getCurrentCurrency();
         }
