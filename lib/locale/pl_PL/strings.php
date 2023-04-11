@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+$_LANG['<!nodesearch>Address origin'] = 'Pochodzenie adresu';
+$_LANG['<!nodesearch>with explicit address'] = 'z jawnym adresem';
+$_LANG['<!nodesearch>with implicit address'] = 'z niejawnym adresem';
+
 $_LANG['IDs in external systems'] = 'Identyfikatory w systemach zewnętrznych';
 $_LANG['ID in external system'] = 'Identyfikator w systemie zewnętrznym';
 $_LANG['External system'] = 'System zewnętrzny';

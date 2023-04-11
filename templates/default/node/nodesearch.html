@@ -80,6 +80,21 @@
 		</TD>
 	</TR>
 	<tr>
+		<td class="nobr">
+			{icon name="home"}
+			<strong>{trans("<!nodesearch>Address origin")}</strong>
+		</td>
+		<td>
+			<select name="search[address-origin]">
+				<option value="">{trans("— ignore —")}</option>
+				<option value="1"{if $nodesearch['address-origin'] == 1} selected{/if}
+					>{trans("<!nodesearch>with explicit address")}</option>
+				<option value="2"{if $nodesearch['address-origin'] == 2} selected{/if}
+					>{trans("<!nodesearch>with implicit address")}</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
 		<td class="bold nobr">
 			<img src="img/access.gif">
 			{trans("Status:")}

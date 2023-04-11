@@ -356,6 +356,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *              createdto - node created before this date (default: null = ignore),
      *              lastonlinebefore - last online earlier than (default: null = ignore), single integer value,
      *              lastonlineafter - last online later than (default: null = ignore), single integer value,
+     *              address-origin - check node address origin (default: empty = ignore):
+     *                  1 - with explicit address,
+     *                  2 - with implicit address,
      *      sqlskey - sql field operator (default: 'AND') - text value; used on some fields (not all);
      *          allowed values:
      *          'AND', 'OR'
@@ -494,6 +497,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                             break;
                         case 'lastonlineafter':
                             $searchargs[] = 'n.lastonline >= ' . intval($value);
+                            break;
+                        case 'address-origin':
+                            switch (intval($value)) {
+                                case 1:
+                                    $searchargs[] = 'n.address_id IS NOT NULL';
+                                    break;
+                                case 2:
+                                    $searchargs[] = 'n.address_id IS NULL';
+                                    break;
+                            }
                             break;
                         default:
                             $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
