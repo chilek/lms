@@ -472,6 +472,8 @@ version 28-git (????-??-??):
   - enhancement: uke/pit: network link multi point support [chilan]
   - enhancement: add customer external IDs managment panel [ravvar]
   - enhancement: search nodes by address origin (explicit/implicit/ignore) [chilan]
+  - enhancement: uke/pit: optional customer services aggregation for 'customer services'
+    report type [chilan]
 
 version 27.0 (2021-08-20):
 
