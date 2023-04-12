@@ -49,6 +49,7 @@ $_LANG['— other —'] = '— inny —';
 
 $_LANG['<!uke-pit>full'] = 'pełny';
 $_LANG['<!uke-pit>customer services'] = 'usługi klienckie';
+$_LANG['<!uke-pit>Aggregate customer services'] = 'Agreguj usługi klienckie';
 $_LANG['<!uke-pit>Report type'] = 'Typ raportu';
 $_LANG['<!uke-pit>TERC'] = 'TERC';
 $_LANG['<!uke-pit>SIMC'] = 'SIMC';

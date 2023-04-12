@@ -1995,6 +1995,20 @@
 		</tr>
 		<tr>
 			<td>
+				{icon name="configuration" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-aggregate-customer-services" class="lms-ui-disabled">
+					<strong>{trans("<!uke-pit>Aggregate customer services")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="aggregate-customer-services" form="uke-pit"
+					id="uke-pit-aggregate-customer-services" value="1" disabled>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				{icon name="summary" class="fa-fw"}
 			</td>
 			<td class="nobr">
@@ -2084,6 +2098,17 @@
 		</tr>
 	</tbody>
 </table>
+
+<script>
+
+	$(function() {
+		$('[name="report-type"]').change(function() {
+			var checked = $(this).prop('checked') && $(this).is('[value="customer-services"]');
+			$('#uke-pit-aggregate-customer-services').prop('disabled', !checked).closest('tr').find('label').toggleClass('lms-ui-disabled', !checked);
+		});
+	});
+
+</script>
 
 {/if}
 

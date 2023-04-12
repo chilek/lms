@@ -388,6 +388,7 @@ $customers = array();
 
 $report_type = isset($_POST['report-type']) && $_POST['report-type'] == 'customer-services' ? 'customer-services' : 'full';
 
+$aggregate_customer_services = isset($_POST['aggregate-customer-services']);
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
 $summary_only = isset($_POST['summaryonly']);
 $validate_teryt = isset($_POST['validate-teryt']);
@@ -1637,7 +1638,38 @@ if ($report_type == 'full') {
             'downstream' => $node['downstream'],
         );
 
-        $ranges[] = array_merge($range, $range_access_props);
+        if ($aggregate_customer_services) {
+            $range_key = implode(
+                '_',
+                array_filter(
+                    array_merge(
+                        $range,
+                        array_map(
+                            function ($value) {
+                                if (is_bool($value)) {
+                                    return $value ? '1' : '0';
+                                } else {
+                                    return $value;
+                                }
+                            },
+                            $range_access_props
+                        )
+                    ),
+                    function ($value, $key) {
+                        return $key != 'latitude' && $key != 'longitude' && $key != 'downstream';
+                    },
+                    ARRAY_FILTER_USE_BOTH
+                )
+            );
+
+            if (isset($ranges[$range_key])) {
+                $ranges[$range_key]['count']++;
+            } else {
+                $ranges[$range_key] = array_merge($range, $range_access_props);
+            }
+        } else {
+            $ranges[] = array_merge($range, $range_access_props);
+        }
     }
 }
 
@@ -2156,9 +2188,7 @@ if ($report_type == 'full') {
     unset($netnode);
 } else {
     if (!empty($ranges)) {
-        $range_key = 1;
-
-        foreach ($ranges as $range) {
+        foreach ($ranges as $range_key => $range) {
             $service_name = array();
 
             if ($range['fixed-internet']) {
@@ -2177,7 +2207,7 @@ if ($report_type == 'full') {
             $service_name[] = round($range['downstream'] / 1000);
 
             $data = array(
-                'ua01_id_punktu_adresowego' => $range_key,
+                'ua01_id_punktu_adresowego' => $aggregate_customer_services ? $range_key : ($range_key + 1),
                 'ua02_id_pe' => '',
                 'ua03_id_po' => '',
                 'ua04_terc' => $range['terc'],
@@ -2201,8 +2231,6 @@ if ($report_type == 'full') {
                 'ua21_predkosc_uslugi_td' => $range['network-speed'],
                 'ua22_liczba_uzytkownikow_uslugi_td' => $range['count'],
             );
-
-            $range_key++;
 
             $ua_buffer .= to_csv($data) . EOL;
         }
