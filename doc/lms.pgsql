@@ -2008,7 +2008,7 @@ CREATE TABLE netlinks (
 CREATE INDEX netlinks_srcradiosector_idx ON netlinks (srcradiosector);
 CREATE INDEX netlinks_dstradiosector_idx ON netlinks (dstradiosector);
 
-DROP SEQUENCE netlinkpoints_id_seq;
+DROP SEQUENCE IF EXISTS netlinkpoints_id_seq;
 CREATE SEQUENCE netlinkpoints_id_seq;
 DROP TABLE IF EXISTS netlinkpoints CASCADE;
 CREATE TABLE netlinkpoints (
