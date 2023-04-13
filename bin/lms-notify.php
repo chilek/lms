@@ -1314,7 +1314,7 @@ if (empty($types) || in_array('contracts', $types)) {
 
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-            SUM(value * currencyvalue) AS balance, d.cdate, d.dateto AS deadline,
+            SUM(value * currencyvalue) AS balance, d.number, d.template, d.cdate, d.dateto AS deadline,
             m.email, x.phone
         FROM customeraddressview c
         JOIN cash ON (c.id = cash.customerid) "
@@ -1327,7 +1327,9 @@ if (empty($types) || in_array('contracts', $types)) {
                 HAVING MAX(a.dateto) >= ? AND MAX(a.dateto) <= ?
             ) d ON d.customerid = c.id" :
             "JOIN (
-                SELECT DISTINCT customerid, documents.id, documents.cdate, dc.todate AS dateto FROM documents
+                SELECT DISTINCT customerid, documents.id, documents.cdate, documents.number, numberplans.template, dc.todate AS dateto
+                FROM documents
+                LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
                 JOIN documentcontents dc ON dc.docid = documents.id
                 WHERE dc.todate >= ? AND dc.todate <= ?
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
@@ -1367,6 +1369,13 @@ if (empty($types) || in_array('contracts', $types)) {
         foreach ($customers as $row) {
             $notifications['contracts']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['contracts']['aggregate_documents'];
+
+            $row['doc_number'] = docnumber(array(
+                'number' => $row['number'],
+                'template' => $row['template'] ?: '%N/LMS/%Y',
+                'cdate' => $row['cdate'],
+                'customerid' => $row['id'],
+            ));
 
             unset($message, $message_html, $message_text);
             if ($format == $mail_format) {
