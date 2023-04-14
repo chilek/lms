@@ -1351,7 +1351,7 @@ if (empty($types) || in_array('contracts', $types)) {
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
-        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.cdate, d.dateto, m.email, x.phone",
+        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone",
         array(
             $start,
             $end,
