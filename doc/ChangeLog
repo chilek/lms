@@ -474,6 +474,8 @@ version 28-git (????-??-??):
   - enhancement: search nodes by address origin (explicit/implicit/ignore) [chilan]
   - enhancement: uke/pit: optional customer services aggregation for 'customer services'
     report type [chilan]
+  - devel/cleanup: moved all configuration variables from section 'tarifftypes' to variables
+    in 'assignments' section and prefixed with 'type_' [chilan]
 
 version 27.0 (2021-08-20):
 
