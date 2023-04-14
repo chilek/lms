@@ -1527,6 +1527,7 @@ foreach ($assigns as $assign) {
     $desc = str_replace(
         array(
             '%type',
+            '%billing_period',
             '%tariff',
             '%attribute',
             '%desc',
@@ -1553,6 +1554,7 @@ foreach ($assigns as $assign) {
         ),
         array(
             $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
+            isset($BILLING_PERIODS[$assign['period']]) ? $BILLING_PERIODS[$assign['period']] : '',
             $assign['name'],
             $assign['attribute'],
             $assign['description'],

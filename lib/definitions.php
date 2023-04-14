@@ -782,6 +782,16 @@ $PERIODS = array(
     DISPOSABLE  =>  trans('disposable')
 );
 
+$BILLING_PERIODS = array(
+    DISPOSABLE => ConfigHelper::getConfig('assignments.billing_period_disposable', trans('disposable')),
+    DAILY => ConfigHelper::getConfig('assignments.billing_period_daily', trans('daily')),
+    WEEKLY => ConfigHelper::getConfig('assignments.billing_period_weekly', trans('weekly')),
+    MONTHLY => ConfigHelper::getConfig('assignments.billing_period_monthly', trans('monthly')),
+    QUARTERLY => ConfigHelper::getConfig('assignments.billing_period_quarterly', trans('quarterly')),
+    HALFYEARLY => ConfigHelper::getConfig('assignments.billing_period_half_yearly', trans('half-yearly')),
+    YEARLY => ConfigHelper::getConfig('assignments.billing_period_yearly', trans('yearly')),
+);
+
 // Numbering periods
 $NUM_PERIODS = array(
     CONTINUOUS  =>  trans('continuously'),
