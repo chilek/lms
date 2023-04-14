@@ -863,13 +863,13 @@ define('VOIP_ACCOUNT_FLAG_CUSTOMER_RECORDING', BILLING_RECORD_FLAG_CUSTOMER_RECO
 define('VOIP_ACCOUNT_FLAG_TRUNK', 4);
 
 $SERVICETYPES = array(
-    SERVICE_OTHER => ConfigHelper::getConfig('tarifftypes.other', trans('other')),
-    SERVICE_INTERNET => ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
-    SERVICE_HOSTING => ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
-    SERVICE_SERVICE => ConfigHelper::getConfig('tarifftypes.service', trans('service')),
-    SERVICE_PHONE => ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
-    SERVICE_TV => ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
-    SERVICE_TRANSMISSION => ConfigHelper::getConfig('tarifftypes.transmission', trans('transmission')),
+    SERVICE_OTHER => ConfigHelper::getConfig('assignments.type_other', ConfigHelper::getConfig('tarifftypes.other', trans('other'))),
+    SERVICE_INTERNET => ConfigHelper::getConfig('assignments.type_internet', ConfigHelper::getConfig('tarifftypes.internet', trans('internet'))),
+    SERVICE_HOSTING => ConfigHelper::getConfig('assignments.type_hosting', ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting'))),
+    SERVICE_SERVICE => ConfigHelper::getConfig('assignments.type_service', ConfigHelper::getConfig('tarifftypes.service', trans('service'))),
+    SERVICE_PHONE => ConfigHelper::getConfig('assignments.type_phone', ConfigHelper::getConfig('tarifftypes.phone', trans('phone'))),
+    SERVICE_TV => ConfigHelper::getConfig('assignments.type_tv', ConfigHelper::getConfig('tarifftypes.tv', trans('tv'))),
+    SERVICE_TRANSMISSION => ConfigHelper::getConfig('assignments.type_transmission', ConfigHelper::getConfig('tarifftypes.transmission', trans('transmission'))),
 );
 
 define('INVOICE_FEATURE_DEADLINE', 1);
