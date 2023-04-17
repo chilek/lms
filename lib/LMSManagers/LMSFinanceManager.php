@@ -503,8 +503,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             }
                             $at = $datefrom;
                         } elseif (ConfigHelper::checkValue($activation_at_next_day) || preg_match('/^(absolute|business)$/', $activation_at_next_day)) {
-                            if ($datefrom < $now && !$activation_at_same_day) {
-                                $datefrom = strtotime('tomorrow');
+                            if ($datefrom < $now) {
+                                if ($activation_at_same_day) {
+                                    $datefrom = strtotime('today');
+                                } else {
+                                    $datefrom = strtotime('tomorrow');
+                                }
                             }
                             if ($activation_at_next_day == 'business') {
                                 $datefrom = Utils::findNextBusinessDay($datefrom);
