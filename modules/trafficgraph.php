@@ -516,7 +516,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
         for ($j = 0; $j < $subunits; $j++) {
             $Tpos = $tto - $corr - ($i * $unit) + ($j * $unit/$subunits);
             if (($Tpos < $tto) && ($Tpos > $tfrom)) {
-                $Xpos = $crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range;
+                $Xpos = intval(round($crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range));
                 imageline($image, $Xpos, $crtY1 + 1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
             }
         }
@@ -524,8 +524,8 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
         imagesetstyle($image, $style2);
         $Tpos = $tto - $corr - ($i * $unit);
         if ($Tpos > $tfrom) {
-            $Xpos = $crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range;
-            imageline($image, $Xpos, $crtY1+1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
+            $Xpos = intval(round($crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range));
+            imageline($image, $Xpos, $crtY1 + 1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
 
             if ($unit >= 24 * 3600) {
                 $utxt = date('j/m', $Tpos);
