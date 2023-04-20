@@ -51,7 +51,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             $y += ($h - $th) / 2;
         }
 
-        imagestring($img, $font, $x, $y, $text, $color);
+        imagestring($img, $font, intval($x), intval($y), $text, $color);
     }
 
     function value2string($value, $base = 1024)
@@ -353,9 +353,9 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     $start = $padding;
 
     /* Rectangles of color with respect to graph lines */
-    imagefilledrectangle($image, $start, $ftrY + 1 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 1 * $ftrSPC + $rectSize + $rectPad, $clrTOT);
-    imagefilledrectangle($image, $start, $ftrY + 2 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 2 * $ftrSPC + $rectSize + $rectPad, $clrIN);
-    imagefilledrectangle($image, $start, $ftrY + 3 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 3 * $ftrSPC + $rectSize + $rectPad, $clrOUT);
+    imagefilledrectangle($image, intval($start), intval($ftrY + 1 * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + 1 * $ftrSPC + $rectSize + $rectPad), $clrTOT);
+    imagefilledrectangle($image, intval($start), intval($ftrY + 2 * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + 2 * $ftrSPC + $rectSize + $rectPad), $clrIN);
+    imagefilledrectangle($image, intval($start), intval($ftrY + 3 * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + 3 * $ftrSPC + $rectSize + $rectPad), $clrOUT);
 
     for ($i = 1; $i < 4; $i++) {
         imagerectangle($image, $start, $ftrY + $i * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + $i * $ftrSPC + $rectSize + $rectPad, $clrBLK);
