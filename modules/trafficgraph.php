@@ -445,15 +445,15 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     /* Draw entire chart */
     $pixel = ($crtY2 - $crtY1) / ($max_v * $max_pow);
 
-    $Xpos = $crtX1 + 1;
+    $Xpos = intval($crtX1 + 1);
     foreach ($chart as $elem) {
         //imagesetthickness($image, 1);
         //imageline($image, $Xpos, $crtY2-1, $Xpos, $crtY2 - (($elem['upload']+$elem['download'])*$pixel), $clrTOT);
-        imageline($image, $Xpos, $crtY2-1, $Xpos, $crtY2 - ($elem['download'] * $pixel), $clrIN);
+        imageline($image, $Xpos, intval($crtY2 - 1), $Xpos, intval($crtY2 - $elem['download'] * $pixel), $clrIN);
         //imagesetthickness($image, 1);
         if ($Xpos > ($crtX1 + 1)) {
             //imageline($image, $Xpos-1, $crtY2 - $Ypos_down, $Xpos, $crtY2 - ($elem['download']*$pixel), $clrIN);
-            imageline($image, $Xpos-1, $crtY2 - $Ypos_up, $Xpos, $crtY2 - ($elem['upload'] * $pixel), $clrOUT);
+            imageline($image, $Xpos - 1, intval($crtY2 - $Ypos_up), intval($Xpos), intval($crtY2 - $elem['upload'] * $pixel), $clrOUT);
         }
         $Ypos_up = $elem['upload'] * $pixel;
         $Ypos_down = $elem['download'] * $pixel;
