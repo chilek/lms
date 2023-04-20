@@ -358,7 +358,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     imagefilledrectangle($image, intval($start), intval($ftrY + 3 * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + 3 * $ftrSPC + $rectSize + $rectPad), $clrOUT);
 
     for ($i = 1; $i < 4; $i++) {
-        imagerectangle($image, $start, $ftrY + $i * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + $i * $ftrSPC + $rectSize + $rectPad, $clrBLK);
+        imagerectangle($image, intval($start), intval($ftrY + $i * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + $i * $ftrSPC + $rectSize + $rectPad), $clrBLK);
     }
 
     $start += $ftrSPC;
@@ -417,8 +417,8 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     /* DRAW CHART */
     /**************/
     /* Draw chart border */
-    imagefilledrectangle($image, $crtX1, $crtY1, $crtX2, $crtY2, $clrCBG);
-    imagerectangle($image, $crtX1, $crtY1, $crtX2, $crtY2, $clrBRD);
+    imagefilledrectangle($image, intval($crtX1), intval($crtY1), intval($crtX2), intval($crtY2), $clrCBG);
+    imagerectangle($image, intval($crtX1), intval($crtY1), intval($crtX2), intval($crtY2), $clrBRD);
 
     $style1 = array($clrGRD, IMG_COLOR_TRANSPARENT, IMG_COLOR_TRANSPARENT, IMG_COLOR_TRANSPARENT);
     $style2 = array($clrGRD, $clrGRD, IMG_COLOR_TRANSPARENT);
@@ -517,7 +517,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             $Tpos = $tto - $corr - ($i * $unit) + ($j * $unit/$subunits);
             if (($Tpos < $tto) && ($Tpos > $tfrom)) {
                 $Xpos = intval(round($crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range));
-                imageline($image, $Xpos, $crtY1 + 1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
+                imageline($image, $Xpos, intval($crtY1 + 1), $Xpos, intval($crtY2 - 1), IMG_COLOR_STYLED);
             }
         }
 
@@ -525,7 +525,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
         $Tpos = $tto - $corr - ($i * $unit);
         if ($Tpos > $tfrom) {
             $Xpos = intval(round($crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range));
-            imageline($image, $Xpos, $crtY1 + 1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
+            imageline($image, $Xpos, intval($crtY1 + 1), $Xpos, intval($crtY2 - 1), IMG_COLOR_STYLED);
 
             if ($unit >= 24 * 3600) {
                 $utxt = date('j/m', $Tpos);
