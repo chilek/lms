@@ -465,12 +465,12 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     for ($i = 1; $i <= $max_v; $i++) {
         imagesetstyle($image, $style2);
         if ($i != $max_v) {
-            imageline($image, $crtX1+1, $crtY2 - $i*$max_step, $crtX2-1, $crtY2 - $i * $max_step, IMG_COLOR_STYLED);
+            imageline($image, intval($crtX1 + 1), intval($crtY2 - $i * $max_step), intval($crtX2 - 1), intval($crtY2 - $i * $max_step), IMG_COLOR_STYLED);
         }
         imagesetstyle($image, $style1);
         for ($j = 1; $j < $subs; $j++) {
             $Ypos = $i * $max_step - $j * $max_substep;
-            imageline($image, $crtX1 + 1, $crtY2 - $Ypos, $crtX2 - 1, $crtY2 - $Ypos, IMG_COLOR_STYLED);
+            imageline($image, intval($crtX1 + 1), intval($crtY2 - $Ypos), intval($crtX2 - 1), intval($crtY2 - $Ypos), IMG_COLOR_STYLED);
         }
         $text = value2string($i * $max_pow, 1000);
         imagestringcenter($image, $crtFont, $crtX1 - (strlen($text) + 1) * imagefontwidth($crtFont), $crtY2 - $i * $max_step, 0, -1, $text, $clrTXT);
