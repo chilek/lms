@@ -222,7 +222,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT COUNT(documentcontents.docid)
 				FROM documentcontents
 				JOIN documents d ON (d.id = documentcontents.docid)
-				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
+				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
 				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN vusers u2 ON u2.id = d.cuserid
 				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
@@ -250,7 +250,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
                     . $status_sql
                     . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived)),
-                array(Auth::GetCurrentUser())
+                array(
+                    DOCRIGHT_VIEW,
+                    Auth::GetCurrentUser(),
+                )
             );
         }
 
@@ -263,7 +266,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				u2.lastname AS clastname, d.reference, i.senddocuments
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
-			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
 			LEFT JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN vusers u3 ON u3.id = d.auserid
@@ -295,7 +298,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             .$sqlord
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
-            array(Auth::GetCurrentUser())
+            array(
+                DOCRIGHT_VIEW,
+                Auth::GetCurrentUser(),
+            )
         );
 
         if (empty($list)) {
@@ -2351,8 +2357,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 FROM documents d
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
-                WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1',
-                array($id, $userid)
+                WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
+                array(
+                    $id,
+                    $userid,
+                    DOCRIGHT_VIEW,
+                )
             );
         } else {
             $document = $this->db->GetRow(
