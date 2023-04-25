@@ -183,7 +183,7 @@ if (!empty($docids)) {
                                         }
 
                                         .document {
-                                             break-after: always;
+                                             break-after: page;
                                         }
 
                                     </style>
@@ -244,7 +244,7 @@ if (!empty($docids)) {
         }
 
         if ($htmls && !$pdfs && strlen($htmlbuffer)) {
-            if (!empty($html2pdf_command)) {
+            if (!empty($html2pdf_command) || $document_type != 'pdf') {
                 $htmlbuffer = "
                     <html>
                         <head>
@@ -257,7 +257,7 @@ if (!empty($docids)) {
                                 }
 
                                 .document {
-                                     break-after: always;
+                                     break-after: page;
                                 }
 
                             </style>
