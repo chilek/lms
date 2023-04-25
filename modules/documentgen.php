@@ -273,7 +273,7 @@ if (isset($_POST['document'])) {
                 }
 
                 if ($output) {
-                    $file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
+                    $file = tempnam(DOC_DIR, 'tmp.file');
                     $fh = fopen($file, 'w');
                     fwrite($fh, $output);
                     fclose($fh);
