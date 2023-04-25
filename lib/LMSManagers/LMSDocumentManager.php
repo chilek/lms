@@ -50,13 +50,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				d.type AS doctype, d.template AS doctemplate, reference
 			FROM documents d
 			LEFT JOIN documentcontents c ON c.docid = d.id
-			LEFT JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_VIEW . ' > 0)
+			LEFT JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
 			LEFT JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN vusers u3 ON u3.id = d.auserid
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 			WHERE d.customerid = ?' . ($all ? '' : ' AND c.docid IS NOT NULL AND r.doctype IS NOT NULL') . '
-			ORDER BY cdate', array(Auth::GetCurrentUser(), $customerid))) {
+			ORDER BY cdate',
+			array(
+                Auth::GetCurrentUser(),
+                DOCRIGHT_VIEW,
+                $customerid,
+            )
+        )) {
             foreach ($list as &$doc) {
                 $doc['attachments'] = $this->db->GetAll('SELECT * FROM documentattachments
 					WHERE docid = ? ORDER BY type DESC, filename', array($doc['docid']));
@@ -251,8 +257,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     . $status_sql
                     . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived)),
                 array(
-                    DOCRIGHT_VIEW,
                     Auth::GetCurrentUser(),
+                    DOCRIGHT_VIEW,
                 )
             );
         }
@@ -299,8 +305,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array(
-                DOCRIGHT_VIEW,
                 Auth::GetCurrentUser(),
+                DOCRIGHT_VIEW,
             )
         );
 
