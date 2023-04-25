@@ -113,8 +113,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 continue;
             }
 
-            $name = isset($matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
-            $lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
+            $name = isset($pattern['pname'], $matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
+            $lastname = isset($pattern['lastname'], $matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
             $customername = preg_replace('/[\s]{2,}/', ' ', (empty($lastname) ? '' : $lastname . ' ') . $name);
             $comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
             $time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
