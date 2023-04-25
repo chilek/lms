@@ -34,12 +34,6 @@ if (!class_exists('ZipArchive')) {
 //$old_locale = setlocale(LC_NUMERIC, '0');
 setlocale(LC_NUMERIC, 'C');
 
-$root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
-
-if (empty($root_netdevice_id)) {
-    die(trans('Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'));
-}
-
 function technologyName($technology)
 {
     static $LINKTECHNOLOGIES = null;
@@ -387,6 +381,12 @@ define('EOL', "\r\n");
 $customers = array();
 
 $report_type = isset($_POST['report-type']) && $_POST['report-type'] == 'customer-services' ? 'customer-services' : 'full';
+
+$root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
+
+if ($report_type == 'full' && empty($root_netdevice_id)) {
+    die(trans('Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'));
+}
 
 $aggregate_customer_services = isset($_POST['aggregate-customer-services']);
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
