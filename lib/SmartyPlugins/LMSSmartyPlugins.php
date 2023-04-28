@@ -1563,7 +1563,7 @@ class LMSSmartyPlugins
 
         $text = isset($params['text']) ? $params['text'] : 'text not set';
         $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
-        $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+        $scale = isset($params['scale']) : filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         if (!isset($scale)) {
             $scale = 1;
         }
@@ -1574,6 +1574,6 @@ class LMSSmartyPlugins
 
         $bobj = $barcode->getBarcodeObj($type, iconv('UTF-8', 'ASCII//TRANSLIT', $text), $scale * -1, $scale * -1, $color, $padding);
 
-        return '<img src="data:image/png;base64,' . $bobj->getPngData() . '">';
+        return '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
     }
 }
