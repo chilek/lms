@@ -1332,6 +1332,7 @@ if (empty($types) || in_array('contracts', $types)) {
                 LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
                 JOIN documentcontents dc ON dc.docid = documents.id
                 WHERE dc.todate >= ? AND dc.todate <= ?
+                    AND documents.archived = 0
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
             ) d ON d.customerid = c.id") . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
