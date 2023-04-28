@@ -1563,7 +1563,7 @@ class LMSSmartyPlugins
 
         $text = isset($params['text']) ? $params['text'] : 'text not set';
         $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
-        $scale = isset($params['scale']) : filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
+        $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         if (!isset($scale)) {
             $scale = 1;
         }
