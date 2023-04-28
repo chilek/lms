@@ -1561,6 +1561,7 @@ class LMSSmartyPlugins
             $types = array_flip($barcode->getTypes());
         }
 
+        $transliterate = isset($params['transliterate']) ? ConfigHelper::checkValue($params['transliterate']) : true;
         $text = isset($params['text']) ? $params['text'] : 'text not set';
         $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
         $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
@@ -1572,7 +1573,7 @@ class LMSSmartyPlugins
             ? $params['padding']
             : array(0, 0, 0, 0);
 
-        $bobj = $barcode->getBarcodeObj($type, iconv('UTF-8', 'ASCII//TRANSLIT', $text), $scale * -1, $scale * -1, $color, $padding);
+        $bobj = $barcode->getBarcodeObj($type, $transliterate ? iconv('UTF-8', 'ASCII//TRANSLIT', $text) : $text, $scale * -1, $scale * -1, $color, $padding);
 
         return '<img src="data:image/png;base64,' . base64_encode($bobj->getPngData()) . '">';
     }
