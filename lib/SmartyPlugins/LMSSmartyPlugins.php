@@ -1550,4 +1550,30 @@ class LMSSmartyPlugins
         return 'data:' . mime_content_type($params['file'])
             . ';base64,' . base64_encode(file_get_contents($params['file']));
     }
+
+    public static function barCodeFunction($params, $template)
+    {
+        static $barcode = null;
+        static $types = array();
+
+        if (!isset($barcode)) {
+            $barcode = new \Com\Tecnick\Barcode\Barcode();
+            $types = array_flip($barcode->getTypes());
+        }
+
+        $text = isset($params['text']) ? $params['text'] : 'text not set';
+        $type = isset($params['type']) && isset($types[$params['type']]) ? $params['type'] : 'C128';
+        $scale = isset($params['scale']) ? filter_var($params['scale'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+        if (!isset($scale)) {
+            $scale = 1;
+        }
+        $color = isset($params['color']) ? $params['color'] : 'black';
+        $padding = isset($params['padding']) && is_array($params['padding']) && count($params['padding']) == 4
+            ? $params['padding']
+            : array(0, 0, 0, 0);
+
+        $bobj = $barcode->getBarcodeObj($type, iconv('UTF-8', 'ASCII//TRANSLIT', $text), $scale * -1, $scale * -1, $color, $padding);
+
+        return '<img src="data:image/png;base64,' . $bobj->getPngData() . '">';
+    }
 }
