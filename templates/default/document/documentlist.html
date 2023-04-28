@@ -96,7 +96,7 @@
 					<input type="hidden" name="t[]" value="0">
 					<label>
 						{trans("Type:")}
-						<select size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect"
+						<select size="1" name="t[]" multiple class="lms-ui-multiselect"
 							data-default-value="{trans("— all —")}">
 							{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 								{if $key < 0}
@@ -109,7 +109,7 @@
 					<input type="hidden" name="service[]" value="0">
 					<label>
 						{trans("Service:")}
-						<SELECT size="1" name="service[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
+						<SELECT size="1" name="service[]" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 							{foreach $_SERVICETYPES as $key => $item}
 							<OPTION VALUE="{$key}"{if is_array($filter.service) && in_array($key, $filter.service)} selected{/if}>{$item}</OPTION>
 							{/foreach}
@@ -122,14 +122,14 @@
 							<input type="hidden" name="usertype" value="">
 							<input type="hidden" name="u[]" value="0">
 						{else}
-							<select name="usertype" id="usertype" onChange="javascript:applyFilter();">
+							<select name="usertype" id="usertype">
 								<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
 								<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
 								<option value="archiver"{if empty($filter.usertype) || $filter.usertype == 'archiver'} selected{/if}>{trans("archiver")}</option>
 							</select>
 
 							<input type="hidden" name="u[]" value="0">
-							<select name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
+							<select name="u[]" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 								{foreach $users as $user}
 								<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
 								{/foreach}
@@ -140,7 +140,7 @@
 
 					<label>
 						{trans("Period:")}
-						<SELECT name="periodtype" onChange="javascript:applyFilter();">
+						<SELECT name="periodtype">
 							<OPTION value="creationdate"{if empty($filter.periodtype) || $filter.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
 							<OPTION value="confirmationdate"{if $filter.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
 							<OPTION value="archivizationdate"{if $filter.periodtype == 'archivizationdate'} selected{/if}>{trans("archivization date")}</OPTION>
@@ -154,19 +154,17 @@
 						<span>{trans("from")}</span>
 						<input type="text" name="from" size="10" maxlength="10"
 							value="{if $filter.from > 0}{$filter.from|date_format:"Y/m/d"}{/if}"
-							onChange="javascript:applyFilter();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 						<span>{trans("to")}</span>
 						<input type="text" name="to" size="10" maxlength="10"
 							value="{if $filter.to > 0}{$filter.to|date_format:"Y/m/d"}{/if}"
-							onChange="javascript:applyFilter();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 					</span>
 
 					{if $numberplans|size}
 						<label>
 							{trans("Number plan:")}
-							<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
+							<SELECT name="p" {tip text="Select numbering plan"}>
 								<OPTION value="0">{trans("— all —")}</OPTION>
 								{foreach $numberplans as $plan}
 								{$period = $plan.period}
@@ -180,7 +178,7 @@
 
 					<label>
 						{trans("Status:")}
-						<SELECT name="s" onChange="javascript:applyFilter();" {tip text="Select document status"}>
+						<SELECT name="s" {tip text="Select document status"}>
 							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 							<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
@@ -193,7 +191,7 @@
 
 					<label>
 						{trans("Archived:")}
-						<SELECT name="archived" onChange="javascript:applyFilter();" {tip text="Select document archived state"}>
+						<SELECT name="archived" {tip text="Select document archived state"}>
 							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="1"{if $filter.archived == 1} selected{/if}>{trans("yes")}</OPTION>
 							<OPTION value="0"{if $filter.archived == 0} selected{/if}>{trans("no")}</OPTION>
