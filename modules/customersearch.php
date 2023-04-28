@@ -85,6 +85,16 @@ if (!isset($_POST['flags'])) {
 }
 $SESSION->save('cslf', $flags);
 
+if (!isset($_POST['hidessn'])) {
+    $SESSION->restore('cshidessn', $hidessn);
+    if (!isset($hidessn)) {
+        $hidessn = 1;
+    }
+} else {
+    $hidessn = intval($_POST['hidessn']);
+}
+$SESSION->save('cshidessn', $hidessn);
+
 if (!isset($_POST['fk'])) {
     $SESSION->restore('cslfk', $flagsqlskey);
 } else {
@@ -206,6 +216,7 @@ if (isset($_GET['search'])) {
     $listdata['over'] = $customerlist['over'];
     $listdata['state'] = $state;
     $listdata['flags'] = $flags;
+    $listdata['hidessn'] = $hidessn;
     $listdata['karma'] = $karma;
     $listdata['network'] = $network;
     $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
@@ -264,6 +275,7 @@ if (isset($_GET['search'])) {
 
     $listdata['state'] = $state;
     $listdata['flags'] = $flags;
+    $listdata['hidessn'] = $hidessn;
     $listdata['karma'] = $karma;
     $listdata['network'] = $network;
     $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;

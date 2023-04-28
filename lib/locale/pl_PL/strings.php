@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['(hidden)'] = '(ukryto)';
+
 $_LANG['<!nodesearch>Address origin'] = 'Pochodzenie adresu';
 $_LANG['<!nodesearch>with explicit address'] = 'z jawnym adresem';
 $_LANG['<!nodesearch>with implicit address'] = 'z niejawnym adresem';

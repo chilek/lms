@@ -2,6 +2,6 @@
 
 {foreach $customerlist as $customer}{if $customer.id}
 {assign var=cid value=$customer.id}
-{$customer@iteration};{$cid|string_format:"%04d"};{$customer.lastname};{$customer.name};{$customer.full_address};{if $contactlist.$cid.phone}{$contactlist.$cid.phone}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customer.tariffvalue|money_format};{/if}{if $customer.email}{$customer.email}{/if};{if $customer.ten}{$customer.ten}{elseif $customer.ssn}{$customer.ssn}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{moneyf($customer.balance)}{/if}
+{$customer@iteration};{$cid|string_format:"%04d"};{$customer.lastname};{$customer.name};{$customer.full_address};{if $contactlist.$cid.phone}{$contactlist.$cid.phone}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customer.tariffvalue|money_format};{/if}{if $customer.email}{$customer.email}{/if};{if $customer.ten}{$customer.ten}{elseif $customer.ssn}{if empty($listdata.hidessn)}{$customer.ssn}{else}{trans("(hidden)")}{/if}{/if};{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{moneyf($customer.balance)}{/if}
 
 {/if}{/foreach}

@@ -119,6 +119,19 @@
 	</TR>
 	</THEAD>
 	<TBODY>
+	<tr>
+		<td class="bold nobr">
+			<label for="hidessn">
+				{icon name="id"}
+				{trans("hide customer SSN")}
+			</label>
+		</td>
+		<td>
+			<input type="hidden" name="hidessn" value="0">
+			<input type="checkbox" name="hidessn" id="hidessn" value="1"
+				{if !empty($listdata.hidessn) || !isset($listdata.hidessn)} checked{/if}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="customer"} {trans("First/last or Company name:")}
