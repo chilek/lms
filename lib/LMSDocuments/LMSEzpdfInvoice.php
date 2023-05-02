@@ -890,7 +890,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                     }
                     if (!empty($this->data['vdiscount'])) {
                         $tmp_width = $this->backend->getTextWidth($font_size, Localisation::smartFormatNumber($item['vdiscount']));
-                        if ($tmp_width > $tt_width['discount']) {
+                        if (!isset($tt_width['discount']) || $tmp_width > $tt_width['discount']) {
                             $tt_width['discount'] = $tmp_width;
                         }
                     }
