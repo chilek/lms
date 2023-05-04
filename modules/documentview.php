@@ -162,9 +162,13 @@ if (!empty($docids)) {
                         $htmlbuffer .= "\n</page>\n";
                     }
                 } else {
-                    $htmlbuffer .= "\n<div class=\"document\">\n"
-                        . file_get_contents($filename)
-                        . "\n</div>\n";
+                    if ($htmls == 1) {
+                        $htmlbuffer .= file_get_contents($filename);
+                    } else {
+                        $htmlbuffer .= "\n<div class=\"document\">\n"
+                            . file_get_contents($filename)
+                            . "\n</div>\n";
+                    }
                 }
             } else {
                 if ($pdf && count($list) > 1) {
@@ -231,9 +235,13 @@ if (!empty($docids)) {
                     }
                 } else {
                     if (!$pdf && $htmls) {
-                        $htmlbuffer .= "\n<div class=\"document\">\n"
-                            . file_get_contents($filename)
-                            . "\n</div>\n";
+                        if ($htmls == 1) {
+                            $htmlbuffer .= file_get_contents($filename);
+                        } else {
+                            $htmlbuffer .= "\n<div class=\"document\">\n"
+                                . file_get_contents($filename)
+                                . "\n</div>\n";
+                        }
                     } else {
                         readfile($filename);
                     }
@@ -244,7 +252,7 @@ if (!empty($docids)) {
         }
 
         if ($htmls && !$pdfs && strlen($htmlbuffer)) {
-            if (!empty($html2pdf_command) || $document_type != 'pdf') {
+            if ((!empty($html2pdf_command) || $document_type != 'pdf') && $htmls > 1) {
                 $htmlbuffer = "
                     <html>
                         <head>
