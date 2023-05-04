@@ -690,6 +690,7 @@ $_LANG['<!voip>call'] = 'połączenie';
 $_LANG['<!voip>SMS'] = 'SMS';
 $_LANG['<!voip>MMS'] = 'MMS';
 $_LANG['<!voip>data transfer'] = 'transmisja danych';
+$_LANG['<!voip>video'] = 'video';
 
 $_LANG['<!voip>outgoing call'] = 'połączenie wychodzące';
 $_LANG['<!voip>outgoing SMS'] = 'SMS wychodzący';

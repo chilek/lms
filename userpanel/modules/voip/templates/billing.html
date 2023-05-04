@@ -229,6 +229,8 @@
                                             {if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_BUSY} selected{/if}>{trans("<!voip>busy")}</option>
                                         <option value="{$smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}"
                                             {if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED} selected{/if}>{trans("server error")}</option>
+                                        <option value="{$smarty.const.BILLING_RECORD_STATUS_UNKNOWN}"
+                                                {if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_UNKNOWN} selected{/if}>{trans("unknown")}</option>
                                     </select>
                                 </td>
                             </TR>

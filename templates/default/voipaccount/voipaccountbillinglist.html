@@ -189,6 +189,8 @@
 							{if $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_MMS} selected{/if}>{trans("<!voip>MMS")}</option>
 						<option value="{$smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}"
 							{if $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER} selected{/if}>{trans("<!voip>data transfer")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_TYPE_VIDEO}"
+								{if $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_VIDEO} selected{/if}>{trans("<!voip>video")}</option>
 					</select>
 
 					<span>{trans("<!voip>Status")}</span>
@@ -202,6 +204,8 @@
 							{if $listdata.fstatus == $smarty.const.BILLING_RECORD_STATUS_BUSY} selected{/if}>{trans("<!voip>busy")}</option>
 						<option value="{$smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}"
 							{if $listdata.fstatus == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED} selected{/if}>{trans("server error")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_STATUS_UNKNOWN}"
+								{if $listdata.fstatus == $smarty.const.BILLING_RECORD_STATUS_UNKNOWN} selected{/if}>{trans("unknown")}</option>
 					</select>
 					{button type="link" icon="next" onclick="$('#choosefilter').submit()"}
 				</div>
@@ -260,8 +264,10 @@
 				<td>
 					{if !empty($record.calleeownerid)}
 						<a href="?m=voipaccountinfo&amp;id={$record.calleevoipaccountid}">{$record.callee}</a>
-					{else}
+					{elseif !empty($record.callee)}
 						{$record.callee}
+					{else}
+						-
 					{/if}
 				</td>
 
@@ -276,8 +282,10 @@
 				<td>
 					{if $record.type == $smarty.const.BILLING_RECORD_TYPE_CALL}
 						{$record.billedtime|duration_format}
-					{elseif $record.type = $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
+					{elseif $record.type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
 						{$record.billedtime|size_format}
+					{elseif $record.type == $smarty.const.BILLING_RECORD_TYPE_SMS}
+						{$record.billedtime}
 					{else}
 						-
 					{/if}
@@ -314,6 +322,8 @@
 						{trans("no answer")}
 					{elseif $record.status == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}
 						{trans("server error")}
+					{elseif $record.status == $smarty.const.BILLING_RECORD_STATUS_UNKNOWN}
+						{trans("unknown")}
 					{/if}
 				</td>
 

@@ -226,6 +226,8 @@
 					{trans("answered")}
 				{else if $cdr.status == $smarty.const.BILLING_RECORD_STATUS_NO_ANSWER}
 					{trans("no answer")}
+                {else if $cdr.status == $smarty.const.BILLING_RECORD_STATUS_UNKNOWN}
+					{trans("unknown")}
 				{/if}
             </td>
         </tr>

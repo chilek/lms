@@ -91,6 +91,8 @@
 						{if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_BUSY} selected{/if}>{trans("<!voip>busy")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}"
 						{if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED} selected{/if}>{trans("server error")}</option>
+                    <option value="{$smarty.const.BILLING_RECORD_STATUS_UNKNOWN}"
+                            {if $params.fstatus == $smarty.const.BILLING_RECORD_STATUS_UNKNOWN} selected{/if}>{trans("unknown")}</option>
 				</select>
 			</div>
 			{button type="submit" id="billing" class="btn btn-danger m-2" icon="search" label="Search"}
@@ -176,6 +178,8 @@
 								{trans("no answer")}
 							{elseif $billings[i].status == $smarty.const.BILLING_RECORD_STATUS_SERVER_FAILED}
 								{trans("server error")}
+                            {elseif $billings[i].status == $smarty.const.BILLING_RECORD_STATUS_UNKNOWN}
+                                {trans("unknown")}
 							{/if}
 						</TD>
 						<TD>{$billings[i].price|money_format}</TD>
