@@ -605,8 +605,12 @@ $services = $DB->GetAll(
     )
 );
 
-$billing_invoice_description = ConfigHelper::getConfig($config_section . '.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 $billing_invoice_separate_fractions = ConfigHelper::checkConfig($config_section . '.billing_invoice_separate_fractions');
+$default_billing_invoice_description = ($billing_invoice_separate_fractions ?
+    '%call_fraction between %backward_periods (for %phones)'
+    : 'Phone calls between %backward_periods (for %phones)'
+);
+$billing_invoice_description = ConfigHelper::getConfig($config_section . '.billing_invoice_description', $default_billing_invoice_description);
 $empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 
 $query = "SELECT
