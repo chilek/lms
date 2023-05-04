@@ -4113,10 +4113,10 @@ class LMS
      * End VoIP functions
      */
 
-    public function GetCustomerVoipAccounts($id)
+    public function GetCustomerVoipAccounts($id, $extid = null, $serviceproviderid = null)
     {
         $manager = $this->getVoipAccountManager();
-        return $manager->getCustomerVoipAccounts($id);
+        return $manager->getCustomerVoipAccounts($id, $extid, $serviceproviderid);
     }
 
     public function GetConfigSections()
