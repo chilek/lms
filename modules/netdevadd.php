@@ -87,7 +87,13 @@ if (isset($netdev)) {
         }
     }
 
-    if ($gps_coordinates_required != 'none' || ConfigHelper::checkValue($gps_coordinates_required)) {
+    if ($gps_coordinates_required != 'none'
+        && ($gps_coordinates_required == 'warning'
+            || $gps_coordinates_required == 'error'
+            || ConfigHelper::checkValue($gps_coordinates_required))) {
+        if ($gps_coordinates_required != 'warning' && $gps_coordinates_required != 'error') {
+            $gps_coordinates_required = 'error';
+        }
         if (!isset($error['longitude']) && !strlen($netdev['longitude'])) {
             if ($gps_coordinates_required == 'error' || ConfigHelper::checkValue($gps_coordinates_required)) {
                 $error['longitude'] = trans('Longitude is required!');
