@@ -686,11 +686,11 @@ $_LANG['<!voip>Type'] = 'Typ';
 $_LANG['<!voip>Direction/Type'] = 'Kierunek/Typ';
 $_LANG['<!voip>Status'] = 'Status';
 
-$_LANG['<!voip>call'] = 'połączenie';
+$_LANG['<!voip>voice call'] = 'połączenie głosowe';
+$_LANG['<!voip>video call'] = 'połączenie video';
 $_LANG['<!voip>SMS'] = 'SMS';
 $_LANG['<!voip>MMS'] = 'MMS';
 $_LANG['<!voip>data transfer'] = 'transmisja danych';
-$_LANG['<!voip>video'] = 'video';
 
 $_LANG['<!voip>outgoing call'] = 'połączenie wychodzące';
 $_LANG['<!voip>outgoing SMS'] = 'SMS wychodzący';

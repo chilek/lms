@@ -182,7 +182,9 @@
 					<select size="1" name="ftype" form="choosefilter">
 						<option value="">{trans("— all —")}</option>
 						<option value="{$smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}"
-							{if is_numeric($listdata.ftype) && $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL} selected{/if}>{trans("<!voip>call")}</option>
+							{if is_numeric($listdata.ftype) && $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL} selected{/if}>{trans("<!voip>voice call")}</option>
+						<option value="{$smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}"
+							{if is_numeric($listdata.ftype) && $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL} selected{/if}>{trans("<!voip>video call")}</option>
 						<option value="{$smarty.const.BILLING_RECORD_TYPE_SMS}"
 							{if $listdata.ftype == $smarty.const.BILLING_RECORD_TYPE_SMS} selected{/if}>{trans("<!voip>SMS")}</option>
 						<option value="{$smarty.const.BILLING_RECORD_TYPE_MMS}"
