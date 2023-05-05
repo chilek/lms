@@ -68,7 +68,9 @@
 				<select name="ftype" id="ftype" class="form-control">
 					<option value="">{trans("— all —")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}"
-						{if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL} selected{/if}>{trans("<!voip>call")}</option>
+						{if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL} selected{/if}>{trans("<!voip>voice call")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL}"
+						{if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_VIDEO_CALL} selected{/if}>{trans("<!voip>video call")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_TYPE_SMS}"
 						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_SMS} selected{/if}>{trans("<!voip>SMS")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_TYPE_MMS}"
