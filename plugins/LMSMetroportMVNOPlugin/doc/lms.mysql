@@ -1,0 +1,16 @@
+DELETE FROM dbinfo WHERE keytype = 'dbversion_LMSMetroportMVNOPlugin';
+
+INSERT INTO uiconfig (section, var, value) VALUES ('metroportmvno', 'api_url', 'https://api.mmsc.metroport.pl');
+INSERT INTO uiconfig (section, var, value) VALUES ('metroportmvno', 'api_login', 'api_login');
+INSERT INTO uiconfig (section, var, value) VALUES ('metroportmvno', 'api_password', 'api_password');
+INSERT INTO uiconfig (section, var, value) VALUES ('metroportmvno', 'tariff_tag', 'metroport-mvno');
+
+INSERT INTO serviceproviders (name) VALUES ('Metroport MVNO');
+
+INSERT INTO tariffs (name, type, taxid) VALUES ('METROPORT MVNO', 4, (SELECT id FROM taxes WHERE value=23.0 AND validfrom <= UNIX_TIMESTAMP() AND (validto = 0 OR validto >= UNIX_TIMESTAMP())));
+
+INSERT INTO tarifftags (name) VALUES ('metroport-mvno');
+
+INSERT INTO tariffassignments (tariffid, tarifftagid) (SELECT currval('tariffs_id_seq'), currval('tarifftags_id_seq'));
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion_LMSMetroportMVNOPlugin', '2023050400');
