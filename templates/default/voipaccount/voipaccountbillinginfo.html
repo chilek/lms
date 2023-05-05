@@ -165,7 +165,7 @@
                 {trans("<!voip>Total time")}
             </td>
             <td class="nobr">
-               {if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+               {if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
                    {$cdr.totaltime|duration_format}
                {else}
                    -
@@ -178,7 +178,7 @@
                 {trans("<!voip>Billed time")}
             </td>
             <td class="nobr">
-               {if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+               {if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
                    {$cdr.billedtime|duration_format}
                {elseif $cdr.type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
                    {$cdr.billedtime|size_format}
@@ -196,7 +196,7 @@
 				{if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
 					{trans("<!voip>data transfer")}
 				{elseif $cdr.direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
-					{if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+					{if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
 						{trans("<!voip>outgoing call")}
 					{elseif $cdr.type == $smarty.const.BILLING_RECORD_TYPE_SMS}
 						{trans("<!voip>outgoing SMS")}
@@ -204,7 +204,7 @@
 						{trans("<!voip>outgoing MMS")}
 					{/if}
 				{elseif $cdr.direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
-					{if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+					{if $cdr.type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
 						{trans("<!voip>incoming call")}
 					{elseif $cdr.type == $smarty.const.BILLING_RECORD_TYPE_SMS}
 						{trans("<!voip>incoming SMS")}

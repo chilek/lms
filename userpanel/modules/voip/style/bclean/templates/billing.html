@@ -67,8 +67,8 @@
 				</label>
 				<select name="ftype" id="ftype" class="form-control">
 					<option value="">{trans("— all —")}</option>
-					<option value="{$smarty.const.BILLING_RECORD_TYPE_CALL}"
-						{if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_CALL} selected{/if}>{trans("<!voip>call")}</option>
+					<option value="{$smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}"
+						{if is_numeric($params.ftype) && $params.ftype == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL} selected{/if}>{trans("<!voip>call")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_TYPE_SMS}"
 						{if $params.ftype == $smarty.const.BILLING_RECORD_TYPE_SMS} selected{/if}>{trans("<!voip>SMS")}</option>
 					<option value="{$smarty.const.BILLING_RECORD_TYPE_MMS}"
@@ -133,14 +133,14 @@
 						<TD>{$billings[i].caller}</TD>
 						<TD>{$billings[i].callee}</TD>
 						<td>
-							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
 								{$billings[i].totaltime|duration_format}
 							{else}
 								-
 							{/if}
 						</td>
 						<td>
-							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
 								{$billings[i].billedtime|duration_format}
 							{elseif $billings[i].type = $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
 								{$billings[i].billedtime|size_format}
@@ -152,7 +152,7 @@
 							{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_DATA_TRANSFER}
 								{trans("<!voip>data transfer")}
 							{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_OUTGOING}
-								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
 									{trans("<!voip>outgoing call")}
 								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
 									{trans("<!voip>outgoing SMS")}
@@ -160,7 +160,7 @@
 									{trans("<!voip>outgoing MMS")}
 								{/if}
 							{elseif $billings[i].direction == $smarty.const.BILLING_RECORD_DIRECTION_INCOMING}
-								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_CALL}
+								{if $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_VOICE_CALL}
 									{trans("<!voip>incoming call")}
 								{elseif $billings[i].type == $smarty.const.BILLING_RECORD_TYPE_SMS}
 									{trans("<!voip>incoming SMS")}
