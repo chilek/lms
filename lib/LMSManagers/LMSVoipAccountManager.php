@@ -837,6 +837,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 case BILLING_RECORD_STATUS_NO_ANSWER:
                 case BILLING_RECORD_STATUS_BUSY:
                 case BILLING_RECORD_STATUS_SERVER_FAILED:
+                case BILLING_RECORD_STATUS_UNKNOWN:
                     $where[] = 'cdr.status = ' . $params['fstatus'];
                     break;
             }

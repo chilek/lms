@@ -124,6 +124,7 @@ if (!empty($params['fstatus'])) {
         case BILLING_RECORD_STATUS_NO_ANSWER:
         case BILLING_RECORD_STATUS_BUSY:
         case BILLING_RECORD_STATUS_SERVER_FAILED:
+        case BILLING_RECORD_STATUS_UNKNOWN:
             $listdata['fstatus'] = $params['fstatus'];
             break;
     }
