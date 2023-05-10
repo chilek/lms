@@ -366,7 +366,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 		OpenLayers.Util.applyDefaults(
 			{
 				strokeColor: "${strokeColor}",
-				strokeWidth: "${strokeWidth}"
+				strokeWidth: "${strokeWidth}",
+				pointRadius: 9
 			},
 			OpenLayers.Feature.Vector.style["default"]
 		),
