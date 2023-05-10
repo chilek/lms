@@ -341,6 +341,49 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	linkweights[1000000] = 4;
 	linkweights[10000000] = 6;
 
+	var styleContext = 	{
+		context: {
+			strokeColor: function(feature) {
+				var data = feature.data;
+				if (data.hasOwnProperty('technology')) {
+					if (data.technology in linkstyles) {
+						return linkstyles[data.technology]['strokeColor'];
+					} else {
+						return linkstyles[data.type.length ? data.type : 0]['strokeColor'];
+					}
+				}
+			},
+			strokeWidth: function(feature) {
+				var data = feature.data;
+				if (data.hasOwnProperty('speed')) {
+					return data.speed.length ? linkweights[data.speed] : 1;
+				}
+			}
+		}
+	}
+
+	var linkStyleDefault = new OpenLayers.Style(
+		OpenLayers.Util.applyDefaults(
+			{
+				strokeColor: "${strokeColor}",
+				strokeWidth: "${strokeWidth}"
+			},
+			OpenLayers.Feature.Vector.style["default"]
+		),
+		styleContext
+	);
+
+	var linkStyleSelect = new OpenLayers.Style(
+		OpenLayers.Util.applyDefaults(
+			{
+				strokeColor: "${strokeColor}",
+				strokeWidth: "${strokeWidth}"
+			},
+			OpenLayers.Feature.Vector.style["select"]
+		),
+		styleContext
+	);
+
 	var rsareastyle2 = {
 		fillOpacity: 0.2,
 		graphicOpacity: 1,
@@ -693,23 +736,20 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				addPoint(pointIndex, devlinkArray[i].points[pointIndex])
 			}
 
-			if (devlinkArray[i].technology in linkstyles) {
-				linkstyle = linkstyles[devlinkArray[i].technology];
-			} else {
-				linkstyle = linkstyles[devlinkArray[i].type.length ? devlinkArray[i].type : 0];
-			}
-			linkstyle.strokeWidth = devlinkArray[i].speed.length ? linkweights[devlinkArray[i].speed] : 1;
-
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
-				devlinkArray[i],
-				linkstyle
+				devlinkArray[i]
 			));
 		}
 	}
 
 	var devlinkLbl = OpenLayers.Lang.translate("Device Links");
-	var devlinklayer = new OpenLayers.Layer.Vector(devlinkLbl);
+	var devlinklayer = new OpenLayers.Layer.Vector(devlinkLbl, {
+		styleMap: new OpenLayers.StyleMap({
+			"default": linkStyleDefault,
+			"select": linkStyleSelect,
+		})
+	});
 	devlinklayer.addFeatures(devlinks);
 
 	var nodes = [];
