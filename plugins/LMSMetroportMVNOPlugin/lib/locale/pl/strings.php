@@ -24,6 +24,7 @@ $_LANG['Customer #$a - LMS account #$b has been deleted.'] = 'Klient #$a - konto
 $_LANG['Customer #$a - LMS account #$b has been updated.'] = 'Klient #$a - konto LMS #$b zostało zaktualizowane.';
 $_LANG['Customer #$a - LMS account #$b has been added.'] = 'Klient #$a - konto LMS #$b zostało dodane.';
 $_LANG['Customer #$a - LMS account #$b has not been added.'] = 'Klient #$a - konto LMS #$b nie zostało dodane.';
+$_LANG['Customer #$a - LMS account #$b has been bound with MVNO account #$c.'] = 'Klient #$a - konto LMS #$b zostało powiązane z kontem MVNO #$c.';
 $_LANG['Getting billing records for period'] = 'Pobieranie rekordów bilingowych dla okresu';
 $_LANG['Getting billing records for subperiod'] = 'Pobieranie rekordów bilingowych dla podokresu';
 $_LANG['Fatal error: no customers with "metroport-mvno"-tagged tariffs assigned!'] = 'Błąd krytyczny: brak klientów LMS z przypisaną taryfą z etykietą "metroport-mvno"';

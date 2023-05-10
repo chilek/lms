@@ -184,6 +184,27 @@ class MetroportMVNO
     }
 
     /**
+     * set LMS customer account extid
+     *
+     * @param int $accountId  account ID
+     * @param string $extId  account ID
+     * @return bool
+     * @throws
+     */
+    public function setAccountExtid(int $accountId, string $extId)
+    {
+        return $this->db->Execute(
+            'UPDATE voipaccounts SET extid = ?, serviceproviderid = ?
+            WHERE id = ?',
+            array(
+                $extId,
+                $this->serviceProviderId,
+                $accountId,
+            )
+        );
+    }
+
+    /**
      * Add customer account
      *
      * @param array $accountData account data
