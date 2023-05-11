@@ -518,6 +518,7 @@ $_LANG['Aliases:'] = 'Aliasy:';
 $_LANG['Aliases List'] = 'Lista aliasów';
 $_LANG['Alias with that login name already exists in that domain!'] = 'Alias o podanej nazwie już istnieje w tej domenie!';
 $_LANG['— all —'] = '— wszystkie —';
+$_LANG['- all -'] = '- wszystkie -';
 $_LANG['all'] = 'wszystkie';
 $_LANG['all<!customers>'] = 'wszyscy';
 $_LANG['— all customers —'] = '— wszyscy —';
