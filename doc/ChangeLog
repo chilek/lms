@@ -483,6 +483,7 @@ version 28-git (????-??-??):
     in html templates [chilan]
   - enhancement: implemented 'hide customer SSN' option in customer search form [chilan]
   - improvement: lms-notify.php 'contracts' type notifications: ignore archived documents [chilan]
+  - enhancement: added period selection in liability report form [chilan]
 
 version 27.0 (2021-08-20):
 
