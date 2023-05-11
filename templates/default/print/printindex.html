@@ -1373,13 +1373,31 @@
 								<COL style="width: 96%;">
 							</COLGROUP>
 							<TR>
-								<TD>
-									<IMG src="img/calendar.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Day:")}&nbsp;
-									<INPUT type="text" name="day" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-								</TD>
+								<td>
+									<table style="width: 100%">
+										<tr>
+											<td style="width: 100%;" class="nobr">
+												{icon name="calendar"}
+												<strong>{trans("Day")}</strong>
+												<input type="text" name="day" size="10" maxlength="10"
+													placeholder="{trans("yyyy/mm/dd")}"
+													{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 100%;" class="nobr">
+												{icon name="calendar"}
+												<strong>{trans("Period")}</strong>
+												<select size="1" name="period" {tip text="Select time period to account liability"}>
+													<option value="">{trans("- all -")}</option>
+													{foreach $_PERIODS as $key => $item}
+														<option value="{$key}">{$item}</option>
+													{/foreach}
+												</select>
+											</td>
+										</tr>
+									</table>
+								</td>
 								<TD>
 									<IMG src="img/view.gif" alt="">
 								</TD>

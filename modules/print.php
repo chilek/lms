@@ -560,6 +560,10 @@ switch ($type) {
             $today = mktime(0, 0, 0);
         }
 
+        if (isset($_POST['period']) && $_POST['period'] != '') {
+            $period = intval($_POST['period']);
+        }
+
         $layout['pagetitle'] = trans('Liability Report on $a', date('Y/m/d', $reportday));
 
         $order = $_POST['order'];
@@ -639,6 +643,7 @@ switch ($type) {
                         AND t.taxid=?
                         AND c.deleted=0
                         AND a.datefrom <= ? AND (a.dateto >= ? OR a.dateto = 0)
+                        ' . (isset($period) ? ' AND a.period = ' . $period : '') . '
                         AND ((a.period='.DISPOSABLE.' AND a.at=?)
                             OR (a.period='.WEEKLY.'. AND a.at=?)
                             OR (a.period='.MONTHLY.' AND a.at=?)
@@ -671,6 +676,7 @@ switch ($type) {
                         AND l.taxid=?
                         AND c.deleted=0
                         AND a.datefrom <= ? AND (a.dateto>=? OR a.dateto=0)
+                        ' . (isset($period) ? ' AND a.period = ' . $period : '') . '
                         AND ((a.period='.DISPOSABLE.' AND a.at=?)
                             OR (a.period='.WEEKLY.'. AND a.at=?)
                             OR (a.period='.MONTHLY.' AND a.at=?)
