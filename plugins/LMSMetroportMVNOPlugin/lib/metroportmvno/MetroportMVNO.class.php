@@ -72,16 +72,16 @@ class MetroportMVNO
     public function getCustomersForBind(int $customerid = null)
     {
         return $this->db->GetAllByKey(
-            'SELECT c.id as id, c.ten, c.ssn, c.lastname, c.name, c.type, c.icn, ce.extid
+            "SELECT c.id as id, c.ten, c.ssn, c.lastname, c.name, c.type, c.icn, ce.extid
             FROM customers c
             LEFT JOIN customerextids ce ON ce.customerid = c.id 
             WHERE ce.serviceproviderid IS NULL
             AND NOT EXISTS (SELECT 1 FROM customerextids ce1 WHERE ce1.customerid = ce.customerid AND ce1.serviceproviderid = ?)
-            AND (c.ssn IS NOT NULL OR c.ten IS NOT NULL)
-            AND c.deleted = 0'
-            . (!empty($customerid) ? ' AND c.id = ' . $customerid : '')
-            . ' ORDER BY id',
-            'id',
+            AND ((c.ssn IS NOT NULL AND c.ssn <> '') OR (c.ten IS NOT NULL AND c.ten <> ''))
+            AND c.deleted = 0"
+            . (!empty($customerid) ? " AND c.id = " . $customerid : "")
+            . " ORDER BY id",
+            "id",
             array(
                 $this->serviceProviderId
             )
