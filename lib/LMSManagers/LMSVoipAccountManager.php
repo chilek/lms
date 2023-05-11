@@ -728,7 +728,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
                 LEFT JOIN location_states lst      ON lst.id  = ld.stateid
             WHERE ownerid = ?'
-            . (empty($extid) ? '' : ' AND extid ?LIKE? ' . $this->db->Escape("$extid"))
+            . (empty($extid) ? '' : ' AND extid ?LIKE? ' . $this->db->Escape("%$extid%"))
             . (empty($serviceproviderid) ? '' : ' AND serviceproviderid = ' . intval($serviceproviderid))
             . ' ORDER BY login ASC',
             array($id)
