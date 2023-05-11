@@ -78,6 +78,10 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                             $searchargs[] = 'v.ownerid = ' . intval($value);
                             break;
 
+                        case 'phone':
+                            $searchargs[] = 'n.phone ?LIKE? ' . $this->db->Escape("%$value%");
+                            break;
+
                         default:
                             $searchargs[] = $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }
