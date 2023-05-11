@@ -496,16 +496,32 @@ if ($syncAccounts) {
             echo PHP_EOL . '---' . trans('LMS customers accounts with MMSC users mvno accounts synchronization') . '---' . PHP_EOL;
         }
 
+        //<editor-fold desc="No synchronized customer accounts">
+        $mmscAccountsByAno = array_column($mmscAccounts, null, 'ano');
+
+        foreach ($lmsBoundCustomers as $lmsBoundCustomer) {
+            $customerAccounts = $LMS->getCustomerVoipAccounts($lmsBoundCustomer['id']);
+            foreach ($customerAccounts as $customerAccount) {
+                $customerAccountPhone = $customerAccount['phones'][0]['phone'];
+                $customerAccountAno = substr($customerAccountPhone, 2);
+                if (count($customerAccount['phones']) == 1
+                    && isset($mmscAccountsByAno[$customerAccountAno])
+                    && empty($customerAccount['extid'])) {
+                    $customerNoSynchronizedAccountsByAno[$customerAccountAno] = $customerAccount;
+                }
+            }
+        }
+        //</editor-fold>
+
         foreach ($mmscAccounts as $mmscAccount) {
             $mmscAccountId = strval($mmscAccount['id']);
             $mmscUserCode = $mmscAccount['usercode'];
 
             //get LMS customer account by extid = $mmscUsersAccountId
             if (isset($lmsBoundCustomersByUsercode[$mmscUserCode])) {
-                $lmsCustomerId = $lmsBoundCustomersByUsercode[$mmscUserCode]['id'];
-                $customerAccount = $LMS->getCustomerVoipAccounts($lmsCustomerId, $mmscAccountId, $metroportmvno->serviceProviderId);
                 $login = strval($mmscAccount['ano']);
                 $phone = ('48' . $mmscAccount['ano']);
+
                 $numbers = array(
                     array(
                         'phone' => $phone,
@@ -526,44 +542,55 @@ if ($syncAccounts) {
                         break;
                 }
 
-                if (!empty($customerAccount)) {
-                    if ($customerAccount[0]['access'] != $access && $access == -1 && $mmscAccount['status_confirmed'] == 1) {
-                        // delete LMS account
-                        $metroportmvno->accountDelete($customerAccount[0]['id']);
-                        if (!$quiet) {
-                            echo trans('Customer #$a - LMS account #$b has been deleted.', $lmsCustomerId, $customerAccount[0]['id']) . PHP_EOL;
-                        }
-                    } elseif ($customerAccount[0]['phones'][0]['phone'] != $phone || $customerAccount[0]['access'] != $access) {
-                        // update LMS account
-                        $args['login'] = $login;
-                        $args = $customerAccount[0];
-                        $args['address_id'] = -1;
-                        $args['access'] = $mmscAccount['status_confirmed'] == 1 ? $access : $customerAccount[0]['access'];
-                        $args['numbers'] = $numbers;
+                $lmsCustomerId = $lmsBoundCustomersByUsercode[$mmscUserCode]['id'];
 
-                        $result = $metroportmvno->accountUpdate($args);
-                        if (!empty($result) && !$quiet) {
-                            echo trans('Customer #$a - LMS account #$b has been updated.', $lmsCustomerId, $customerAccount[0]['id']) . PHP_EOL;
-                        }
+                if (isset($customerNoSynchronizedAccountsByAno[$login])) {
+                    $customerAccountId = $customerNoSynchronizedAccountsByAno[$mmscAccount['ano']]['id'];
+                    $result = $metroportmvno->setAccountExtid($customerAccountId, $mmscAccountId);
+                    if (!empty($result) && !$quiet) {
+                        echo trans('Customer #$a - LMS account #$b has been bound with MVNO account #$c.', $lmsCustomerId, $customerAccountId, $mmscAccountId) . PHP_EOL;
                     }
                 } else {
-                    //create LMS account
-                    $args = array(
-                        'ownerid' => $lmsCustomerId,
-                        'login' => $login,
-                        'passwd' => '',
-                        'address_id' => -1,
-                        'access' => $access,
-                        'numbers' => $numbers,
-                        'extid' => $mmscAccountId,
-                        'serviceproviderid' => $metroportmvno->serviceProviderId,
-                    );
-                    $accountId = $metroportmvno->accountAdd($args);
-                    if (!$quiet) {
-                        if (empty($accountId)) {
-                            echo trans('Customer #$a - LMS account #$b has not been added.', $lmsCustomerId, $phone) . PHP_EOL;
-                        } else {
-                            echo trans('Customer #$a - LMS account #$b has been added.', $lmsCustomerId, $phone) . PHP_EOL;
+                    $customerAccount = $LMS->getCustomerVoipAccounts($lmsCustomerId, $mmscAccountId, $metroportmvno->serviceProviderId);
+                    if (!empty($customerAccount)) {
+                        if ($customerAccount[0]['access'] != $access && $access == -1 && $mmscAccount['status_confirmed'] == 1) {
+                            // delete LMS account
+                            $metroportmvno->accountDelete($customerAccount[0]['id']);
+                            if (!$quiet) {
+                                echo trans('Customer #$a - LMS account #$b has been deleted.', $lmsCustomerId, $customerAccount[0]['id']) . PHP_EOL;
+                            }
+                        } elseif ($customerAccount[0]['phones'][0]['phone'] != $phone || $customerAccount[0]['access'] != $access) {
+                            // update LMS account
+                            $args = $customerAccount[0];
+                            $args['login'] = $login;
+                            $args['address_id'] = -1;
+                            $args['access'] = $mmscAccount['status_confirmed'] == 1 ? $access : $customerAccount[0]['access'];
+                            $args['numbers'] = $numbers;
+
+                            $result = $metroportmvno->accountUpdate($args);
+                            if (!empty($result) && !$quiet) {
+                                echo trans('Customer #$a - LMS account #$b has been updated.', $lmsCustomerId, $customerAccount[0]['id']) . PHP_EOL;
+                            }
+                        }
+                    } else {
+                        //create LMS account
+                        $args = array(
+                            'ownerid' => $lmsCustomerId,
+                            'login' => $login,
+                            'passwd' => '',
+                            'address_id' => -1,
+                            'access' => $access,
+                            'numbers' => $numbers,
+                            'extid' => $mmscAccountId,
+                            'serviceproviderid' => $metroportmvno->serviceProviderId,
+                        );
+                        $accountId = $metroportmvno->accountAdd($args);
+                        if (!$quiet) {
+                            if (empty($accountId)) {
+                                echo trans('Customer #$a - LMS account #$b has not been added.', $lmsCustomerId, $phone) . PHP_EOL;
+                            } else {
+                                echo trans('Customer #$a - LMS account #$b has been added.', $lmsCustomerId, $phone) . PHP_EOL;
+                            }
                         }
                     }
                 }

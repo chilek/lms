@@ -77,7 +77,8 @@ class MetroportMVNO
             LEFT JOIN customerextids ce ON ce.customerid = c.id 
             WHERE ce.serviceproviderid IS NULL
             AND NOT EXISTS (SELECT 1 FROM customerextids ce1 WHERE ce1.customerid = ce.customerid AND ce1.serviceproviderid = ?)
-            AND (c.ssn IS NOT NULL OR c.ten IS NOT NULL)'
+            AND (c.ssn IS NOT NULL OR c.ten IS NOT NULL)
+            AND c.deleted = 0'
             . (!empty($customerid) ? ' AND c.id = ' . $customerid : '')
             . ' ORDER BY id',
             'id',
@@ -181,6 +182,27 @@ class MetroportMVNO
         }*/
 
         return $msg;
+    }
+
+    /**
+     * set LMS customer account extid
+     *
+     * @param int $accountId  account ID
+     * @param string $extId  account ID
+     * @return bool
+     * @throws
+     */
+    public function setAccountExtid(int $accountId, string $extId)
+    {
+        return $this->db->Execute(
+            'UPDATE voipaccounts SET extid = ?, serviceproviderid = ?
+            WHERE id = ?',
+            array(
+                $extId,
+                $this->serviceProviderId,
+                $accountId,
+            )
+        );
     }
 
     /**
