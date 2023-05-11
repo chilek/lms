@@ -347,9 +347,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				var data = feature.data;
 				if (data.hasOwnProperty('technology')) {
 					if (data.technology in linkstyles) {
-						return linkstyles[data.technology]['strokeColor'];
+						return linkstyles[data.technology].strokeColor;
 					} else {
-						return linkstyles[data.type.length ? data.type : 0]['strokeColor'];
+						return linkstyles[data.type.length ? data.type : 0].strokeColor;
 					}
 				}
 			},
@@ -381,7 +381,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 				strokeWidth: "${strokeWidth}",
 				pointRadius: 9
 			},
-			OpenLayers.Feature.Vector.style["select"]
+			OpenLayers.Feature.Vector.style.select
 		),
 		styleContext
 	);
