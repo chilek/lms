@@ -484,6 +484,8 @@ version 28-git (????-??-??):
   - enhancement: implemented 'hide customer SSN' option in customer search form [chilan]
   - improvement: lms-notify.php 'contracts' type notifications: ignore archived documents [chilan]
   - enhancement: added period selection in liability report form [chilan]
+  - improvement: use 'phpui.default_link*' configuration variables for newly connected nodes
+    to network devices [chilan]
 
 version 27.0 (2021-08-20):
 
