@@ -911,7 +911,7 @@ if ($report_type == 'full') {
                 }
 
                 $netnodes[$netnodename]['id'] = $netnodeid;
-                $netnodes[$netnodename]['invproject'] = $projectname;
+                $netnodes[$netnodename]['invproject'] = array($projectname);
                 $netnodes[$netnodename]['name'] = $netnodename;
 
                 if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
@@ -1152,11 +1152,6 @@ if ($report_type == 'full') {
                         );
                     }
                 }
-            }
-
-            if (is_array($netnode['invproject'])) {
-                $netnodes[$netnodename]['invproject'] = $netnode['invproject'] =
-                    count($netnode['invproject']) == 1 ? $netnode['invproject'][0] : '';
             }
 
             if ($netnode['ownership'] == 2) {
