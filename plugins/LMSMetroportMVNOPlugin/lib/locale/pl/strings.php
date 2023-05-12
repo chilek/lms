@@ -20,6 +20,8 @@ $_LANG['Error getting billings from Metroport API server - HTTP error code: "$a"
 
 $_LANG['LMS customers with MMSC users synchronization'] = 'Synchronizacja klientów LMS z użytkownikami MMSC';
 $_LANG['LMS customers accounts with MMSC users mvno accounts synchronization'] = 'Synchronizacja kont LMS z kontami mvno z MMSC';
+$_LANG['Customer #$a could not be synchronized. There is another customer with same ten number.'] = 'Nie można zsynchronizować klienta #$a. Jest inny klient z tym samym numerem nip.';
+$_LANG['Customer #$a could not be synchronized. There is another customer with same ssn number.'] = 'Nie można zsynchronizować klienta #$a. Jest inny klient z tym samym numerem pesel.';
 $_LANG['Customer #$a - LMS account #$b has been deleted.'] = 'Klient #$a - konto LMS #$b zostało usunięte.';
 $_LANG['Customer #$a - LMS account #$b has been updated.'] = 'Klient #$a - konto LMS #$b zostało zaktualizowane.';
 $_LANG['Customer #$a - LMS account #$b has been added.'] = 'Klient #$a - konto LMS #$b zostało dodane.';

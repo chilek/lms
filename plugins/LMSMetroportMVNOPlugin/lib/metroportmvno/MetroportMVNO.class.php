@@ -72,16 +72,16 @@ class MetroportMVNO
     public function getCustomersForBind(int $customerid = null)
     {
         return $this->db->GetAllByKey(
-            'SELECT c.id as id, c.ten, c.ssn, c.lastname, c.name, c.type, c.icn, ce.extid
+            "SELECT c.id as id, c.ten, c.ssn, c.lastname, c.name, c.type, c.icn, ce.extid
             FROM customers c
             LEFT JOIN customerextids ce ON ce.customerid = c.id 
             WHERE ce.serviceproviderid IS NULL
             AND NOT EXISTS (SELECT 1 FROM customerextids ce1 WHERE ce1.customerid = ce.customerid AND ce1.serviceproviderid = ?)
-            AND (c.ssn IS NOT NULL OR c.ten IS NOT NULL)
-            AND c.deleted = 0'
-            . (!empty($customerid) ? ' AND c.id = ' . $customerid : '')
-            . ' ORDER BY id',
-            'id',
+            AND ((c.ssn IS NOT NULL AND c.ssn <> '') OR (c.ten IS NOT NULL AND c.ten <> ''))
+            AND c.deleted = 0"
+            . (!empty($customerid) ? " AND c.id = " . $customerid : "")
+            . " ORDER BY id",
+            "id",
             array(
                 $this->serviceProviderId
             )
@@ -322,88 +322,22 @@ class MetroportMVNO
                 $this->syslog->AddMessage($this->syslog::RES_VOIP_ACCOUNT, $this->syslog::OPER_UPDATE, $args);
             }
 
-            $this->db->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($accountData['id']));
+            $result = $this->db->Execute(
+                'UPDATE voip_numbers SET phone = ? WHERE voip_account_id = ?',
+                array(
+                    $accountData['numbers'][0]['phone'],
+                    $accountData['id']
+                )
+            );
 
-            $current_phones = $this->db->GetAllByKey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?', 'phone', array($accountData['id']));
-            $phone_index = 0;
-
-            $numbers = $accountData['numbers'];
-
-            foreach ($numbers as $v) {
-                if (!isset($current_phones[$v['phone']])) {
-                    $args = array(
-                        $this->syslog::RES_VOIP_ACCOUNT => $accountData['id'],
-                        'phone' => $v['phone'],
-                        'number_index' => ++$phone_index,
-                        'info' => $v['info'],
-                    );
-                    $result = $this->db->Execute(
-                        'INSERT INTO voip_numbers (voip_account_id, phone, number_index, info) VALUES (?, ?, ?, ?)',
-                        array_values($args)
-                    );
-                    if ($result && $this->syslog) {
-                        $args[$this->syslog::RES_CUST] = $accountData['ownerid'];
-                        $args[$this->syslog::RES_VOIP_ACCOUNT_NUMBER] = $this->db->GetLastInsertID('voip_numbers');
-                        $this->syslog->AddMessage($this->syslog::RES_VOIP_ACCOUNT_NUMBER, $this->syslog::OPER_ADD, $args);
-                    }
-                } else {
-                    $args = array(
-                        'number_index' => ++$phone_index,
-                        'info' => $v['info'],
-                        'phone' => $v['phone'],
-                        $this->syslog::RES_VOIP_ACCOUNT => $accountData['id'],
-                    );
-                    $result = $this->db->Execute(
-                        'UPDATE voip_numbers SET number_index = ?, info = ? WHERE phone = ? AND voip_account_id = ?',
-                        array_values($args)
-                    );
-                    if ($result && $this->syslog) {
-                        unset($args['info']);
-                        $voip_number_id = $this->db->GetOne(
-                            'SELECT id FROM voip_numbers WHERE number_index = ? AND phone = ? AND voip_account_id = ?',
-                            array_values($args)
-                        );
-
-                        if ($voip_number_id) {
-                            $args[$this->syslog::RES_CUST] = $accountData['ownerid'];
-                            $args[$this->syslog::RES_VOIP_ACCOUNT_NUMBER] = $voip_number_id;
-                            $this->syslog->AddMessage($this->syslog::RES_VOIP_ACCOUNT_NUMBER, $this->syslog::OPER_UPDATE, $args);
-                        }
-                    }
-                }
+            if ($result && $this->syslog) {
+                $args[$this->syslog::RES_CUST] = $accountData['ownerid'];
+                $args[$this->syslog::RES_VOIP_ACCOUNT_NUMBER] = $accountData['numbers'][0]['phone'];
+                $this->syslog->AddMessage($this->syslog::RES_VOIP_ACCOUNT_NUMBER, $this->syslog::OPER_UPDATE, $args);
             }
-
-            $numbers = Utils::array_column($accountData['numbers'], 'phone', 'phone');
-
-            foreach ($current_phones as $v) {
-                if (!isset($numbers[$v['phone']])) {
-                    $voip_number_id = $this->db->GetOne(
-                        'SELECT id FROM voip_numbers
-                        WHERE voip_account_id = ? AND phone = ?',
-                        array(
-                            $accountData['id'],
-                            $v['phone'],
-                        )
-                    );
-                    if ($voip_number_id) {
-                        if ($this->syslog) {
-                            $args = array(
-                                $this->syslog::RES_VOIP_ACCOUNT_NUMBER => $voip_number_id,
-                                $this->syslog::RES_VOIP_ACCOUNT => $accountData['id'],
-                                $this->syslog::RES_CUST => $accountData['ownerid'],
-                            );
-                            $this->syslog->AddMessage($this->syslog::RES_VOIP_ACCOUNT_NUMBER, $this->syslog::OPER_DELETE, $args);
-                        }
-
-                        $this->db->Execute('DELETE FROM voip_numbers WHERE id = ?', array($voip_number_id));
-                    }
-                }
-            }
-
-            return true;
         }
 
-        return false;
+        return $result;
     }
 
     /**
