@@ -394,7 +394,7 @@ if ($syncCustomers) {
         $lmsCustomersByTen = array();
         $lmsCustomersBySsn = array();
 
-        $lmsBoundCustomers = $this->getBoundCustomers($customerid);
+        $lmsBoundCustomers = $metroportmvno->getBoundCustomers($customerid);
 
         $lmsBoundCustomersByTen = array();
         $lmsBoundCustomersBySsn = array();
