@@ -2583,10 +2583,10 @@ class LMS
         return $manager->IsTicketLoop($ticketid, $parentid);
     }
 
-    public function GetRTSmtpOptions()
+    public function GetRTSmtpOptions($config_section = 'rt')
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetRTSmtpOptions();
+        return $manager->GetRTSmtpOptions($config_section);
     }
 
     public function CopyQueuePermissions($src_userid, $dst_userid)
