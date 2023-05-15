@@ -486,6 +486,8 @@ version 28-git (????-??-??):
   - enhancement: added period selection in liability report form [chilan]
   - improvement: use 'phpui.default_link*' configuration variables for newly connected nodes
     to network devices [chilan]
+  - enhancement: lms-rtparser.php: configuration section from which settings are obtained is configurable
+    with --section launch parameter; --silent|-s renamed to --quiet|-q [chilan]
 
 version 27.0 (2021-08-20):
 
