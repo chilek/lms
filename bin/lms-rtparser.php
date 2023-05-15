@@ -33,7 +33,7 @@ $parameters = array(
     'help' => 'h',
     'version' => 'v',
     'section:' => 's:',
-    'queue:' => 'q:',
+    'queue:' => null,
     'message-file:' => 'm:',
     'use-html' => null,
     'prefer-html' => null,
@@ -92,7 +92,7 @@ lms-rtparser.php
 -q, --quiet                     suppress any output, except errors;
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
--q, --queue=<queueid>           queue ID (it means, QUEUE ID, numeric! NOT NAME! also
+    --queue=<queueid>           queue ID (it means, QUEUE ID, numeric! NOT NAME! also
                                 its required to run!);
 -m, --message-file=<message-file>
                                 use message file instead of standard input;
