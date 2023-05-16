@@ -488,6 +488,7 @@ version 28-git (????-??-??):
     to network devices [chilan]
   - enhancement: lms-rtparser.php: configuration section from which settings are obtained is configurable
     with --section launch parameter; --silent|-s renamed to --quiet|-q [chilan]
+  - enhancement: uke-pit: division selection for 'customer services' report type [chilan]
 
 version 27.0 (2021-08-20):
 
