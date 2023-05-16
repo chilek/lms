@@ -2013,6 +2013,27 @@
 		</tr>
 		<tr>
 			<td>
+				{icon name="division" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-division" class="lms-ui-disabled">
+					<strong>{trans("Division")}</strong>
+				</label>
+			</td>
+			<td>
+				<select size="1" name="division" form="uke-pit"
+					id="uke-pit-division"
+					{tip text="Select division"}
+					disabled>
+					<option value="0">- {trans("all")} -</option>
+					{foreach $divisions as $item}
+						<option value="{$item.id}">{$item.label|escape}</option>
+					{/foreach}
+				</>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				{icon name="configuration" class="fa-fw"}
 			</td>
 			<td class="nobr">
@@ -2122,7 +2143,7 @@
 	$(function() {
 		$('[name="report-type"]').change(function() {
 			var checked = $(this).prop('checked') && $(this).is('[value="customer-services"]');
-			$('#uke-pit-aggregate-customer-services').prop('disabled', !checked).closest('tr').find('label').toggleClass('lms-ui-disabled', !checked);
+			$('#uke-pit-aggregate-customer-services,#uke-pit-division').prop('disabled', !checked).closest('tr').find('label').toggleClass('lms-ui-disabled', !checked);
 		});
 	});
 

@@ -388,6 +388,7 @@ if ($report_type == 'full' && empty($root_netdevice_id)) {
     die(trans('Root network device ID is not defined! Use <strong>\'phpui.root_netdevice_id\'</strong> configuration setting to define it.'));
 }
 
+$division = isset($_POST['division']) ? intval($_POST['division']) : 0;
 $aggregate_customer_services = isset($_POST['aggregate-customer-services']);
 $customer_resources_as_operator_resources = isset($_POST['customer-resources-as-operator-resources']);
 $summary_only = isset($_POST['summaryonly']);
@@ -1483,7 +1484,10 @@ if ($report_type == 'full') {
         FROM nodeassignments na
         JOIN nodes n             ON n.id = na.nodeid
         LEFT JOIN addresses addr ON addr.id = n.address_id
-        JOIN assignments a       ON a.id = na.assignmentid
+        " . ($division
+            ? 'JOIN customers c ON c.id = n.ownerid'
+            : '')
+        . " JOIN assignments a       ON a.id = na.assignmentid
         JOIN tariffs t           ON t.id = a.tariffid
         LEFT JOIN (
             SELECT
@@ -1497,6 +1501,7 @@ if ($report_type == 'full') {
             GROUP BY aa.customerid
         ) allsuspended ON allsuspended.cid = a.customerid
         WHERE n.ownerid IS NOT NULL
+            " . ($division ? ' AND c.divisionid = ' . $division : '') . "
             AND n.access = 1
             AND a.commited = 1
             AND a.suspended = 0
