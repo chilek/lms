@@ -2462,7 +2462,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
 
         $data = $this->db->GetAllByKey(
-        'SELECT
+            'SELECT
                 addr.id AS address_id, ca.id AS customer_address_id,
                 addr.name as location_name,
                 addr.state as location_state_name, addr.state_id as location_state,
