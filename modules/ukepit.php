@@ -2186,7 +2186,7 @@ if ($report_type == 'full') {
         }
     }
     unset($netnode);
-} else {
+} elseif (!$summary_only) {
     if (!empty($ranges)) {
         foreach ($ranges as $range_key => $range) {
             $service_name = array();
