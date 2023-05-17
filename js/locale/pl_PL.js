@@ -23,6 +23,18 @@
  *  $Id$
  */
 
+$_LANG['(hidden)'] = '(ukryto)';
+
+$_LANG['<!nodesearch>Address origin'] = 'Pochodzenie adresu';
+$_LANG['<!nodesearch>with explicit address'] = 'z jawnym adresem';
+$_LANG['<!nodesearch>with implicit address'] = 'z niejawnym adresem';
+
+$_LANG['IDs in external systems'] = 'Identyfikatory w systemach zewnętrznych';
+$_LANG['ID in external system'] = 'Identyfikator w systemie zewnętrznym';
+$_LANG['Service provider'] = 'Dostawca usług';
+$_LANG['No external system!'] = 'Brak systemu zewnętrznego';
+$_LANG['Selected service provider has assigned External ID already!'] = 'Wybrany system zewnętrzny ma już przypisany zewnętrzny identyfikator!';
+
 $_LANG['Network device map refresh error!'] = 'Błąd odświeżenia mapy sieci!';
 $_LANG['Network link update failed!'] = 'Błąd uaktualnienia połączenia sieciowego!';
 
@@ -38,6 +50,7 @@ $_LANG['— other —'] = '— inny —';
 
 $_LANG['<!uke-pit>full'] = 'pełny';
 $_LANG['<!uke-pit>customer services'] = 'usługi klienckie';
+$_LANG['<!uke-pit>Aggregate customer services'] = 'Agreguj usługi klienckie';
 $_LANG['<!uke-pit>Report type'] = 'Typ raportu';
 $_LANG['<!uke-pit>TERC'] = 'TERC';
 $_LANG['<!uke-pit>SIMC'] = 'SIMC';
@@ -504,6 +517,7 @@ $_LANG['Aliases:'] = 'Aliasy:';
 $_LANG['Aliases List'] = 'Lista aliasów';
 $_LANG['Alias with that login name already exists in that domain!'] = 'Alias o podanej nazwie już istnieje w tej domenie!';
 $_LANG['— all —'] = '— wszystkie —';
+$_LANG['- all -'] = '- wszystkie -';
 $_LANG['all'] = 'wszystkie';
 $_LANG['all<!customers>'] = 'wszyscy';
 $_LANG['— all customers —'] = '— wszyscy —';
@@ -672,7 +686,8 @@ $_LANG['<!voip>Type'] = 'Typ';
 $_LANG['<!voip>Direction/Type'] = 'Kierunek/Typ';
 $_LANG['<!voip>Status'] = 'Status';
 
-$_LANG['<!voip>call'] = 'połączenie';
+$_LANG['<!voip>voice call'] = 'połączenie głosowe';
+$_LANG['<!voip>video call'] = 'połączenie video';
 $_LANG['<!voip>SMS'] = 'SMS';
 $_LANG['<!voip>MMS'] = 'MMS';
 $_LANG['<!voip>data transfer'] = 'transmisja danych';
@@ -3582,6 +3597,12 @@ $_LANG['street'] = 'ulica';
 $_LANG['TERYT base'] = 'Baza TERYT';
 $_LANG['Territory unit'] = 'Jednostka terytorialna';
 $_LANG['$a (TERYT)'] = '$a (TERYT)';
+$_LANG['<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b</span>'] =
+    '<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b</span>';
+$_LANG['<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b,</span> <span class="nobr">ULIC: $c</span>'] =
+    '<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b,</span> <span class="nobr">ULIC: $c</span>';
+$_LANG['TERC: $a, SIMC: $b'] = 'TERC: $a, SIMC: $b';
+$_LANG['TERC: $a, SIMC: $b, ULIC: $c'] = 'TERC: $a, SIMC: $b, ULIC: $c';
 $_LANG['City has not been selected!'] = 'Nie wybrano miasta!';
 $_LANG['Flat number is too long (max. 8 characters)!'] = 'Numer mieszkania jest za długi (max. 8 znaków)!';
 $_LANG['Zip code is too long (max. 8 characters)!'] = 'Kod pocztowy jest za długi (max. 8 znaków)!';

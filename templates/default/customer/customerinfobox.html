@@ -1,6 +1,7 @@
 <!--// $Id$ //-->
 {$unsecure_pin_validity = intval(ConfigHelper::getConfig('phpui.unsecure_pin_validity', 0, true))}
 {$gps_location_url = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
+{$show_numeric_identifiers = ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}
 
 <style>
 
@@ -200,7 +201,22 @@
 												</td>
 												<td>
 													<span title="{trans('billing address')}">
-														{if $v.teryt}{t a=$v.location|default:""|escape}$a (TERYT){/t}{else}{$v.location|default:""|escape}{/if}
+														{if $v.teryt}
+															{if $show_numeric_identifiers}
+																{capture assign="teryt_comment"}{strip}
+																	{if empty($v.location_street)}
+																		{t a=$v.terc b=$v.simc}TERC: $a, SIMC: $b{/t}
+																	{else}
+																		{t a=$v.terc b=$v.simc c=$v.ulic}TERC: $a, SIMC: $b, ULIC: $c{/t}
+																	{/if}
+																{/strip}{/capture}
+																{t a=$v.location|default:""|escape b=$teryt_comment}$a ($b){/t}
+															{else}
+																{t a=$v.location|default:""|escape}$a (TERYT){/t}
+															{/if}
+														{else}
+															{$v.location|default:""|escape}
+														{/if}
 														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
 															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>
@@ -218,7 +234,18 @@
 												</td>
 												<td>
 													<span title="{trans('postal address')}">
-														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERYT){/t}{else}{$v.location|escape}{/if}
+														{if $show_numeric_identifiers}
+															{capture assign="teryt_comment"}{strip}
+																{if empty($v.location_street)}
+																	{t a=$v.terc b=$v.simc}<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b</span>{/t}
+																{else}
+																	{t a=$v.terc b=$v.simc c=$v.ulic}<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b,</span> <span class="nobr">ULIC: $c</span>{/t}
+																{/if}
+															{/strip}{/capture}
+															{t a=$v.location|default:""|escape b=$teryt_comment}$a ($b){/t}
+														{else}
+															{t a=$v.location|default:""|escape}$a (TERYT){/t}
+														{/if}
 														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
 															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>
@@ -244,7 +271,18 @@
 												</td>
 												<td>
 													<span title="{$title}">
-														{if $v.location_name}{$v.location_name|escape}, {/if}{if $v.teryt}{t a=htmlspecialchars($v.location)}$a (TERYT){/t}{else}{$v.location|escape}{/if}
+														{if $show_numeric_identifiers}
+															{capture assign="teryt_comment"}{strip}
+																{if empty($v.location_street)}
+																	{t a=$v.terc b=$v.simc}TERC: $a, SIMC: $b{/t}
+																{else}
+																	{t a=$v.terc b=$v.simc c=$v.ulic}TERC: $a, SIMC: $b, ULIC: $c{/t}
+																{/if}
+															{/strip}{/capture}
+															{t a=$v.location|default:""|escape b=$teryt_comment}$a ($b){/t}
+														{else}
+															{t a=$v.location|default:""|escape}$a (TERYT){/t}
+														{/if}
 														<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
 															title="{trans("Show on map")}">{icon name="location"}</a>
 													</span>

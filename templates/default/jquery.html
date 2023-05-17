@@ -43,7 +43,8 @@
 		openCalendarOnInputClick: {if ConfigHelper::checkConfig('phpui.open_calendar_on_input_click')}true{else}false{/if},
 		uploadedImageMaxSize: {intval(ConfigHelper::getConfig('phpui.uploaded_image_max_size', 0))},
 		monthlyPeriod: {$smarty.const.MONTHLY},
-		touchDeviceTooltips: {if ConfigHelper::checkConfig('phpui.touch_device_tooltips', 'false')}true{else}false{/if}
+		touchDeviceTooltips: {if ConfigHelper::checkConfig('phpui.touch_device_tooltips', 'false')}true{else}false{/if},
+		terytShowNumericIdentifiers: {if ConfigHelper::checkConfig('teryt.show_numeric_identifiers')}true{else}false{/if}
 	};
 
 	var lms = {

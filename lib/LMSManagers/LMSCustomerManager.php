@@ -2462,29 +2462,33 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
 
         $data = $this->db->GetAllByKey(
-            'SELECT
-                                          addr.id AS address_id, ca.id AS customer_address_id,
-                                          addr.name as location_name,
-                                          addr.state as location_state_name, addr.state_id as location_state,
-                                          addr.city as location_city_name, addr.city_id as location_city,
-                                          addr.street as location_street_name, addr.street_id as location_street,
-                                          (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS location_full_street_name,
-                                          (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS location_full_reversed_street_name,
-                                          COALESCE(lst.name, addr.street) AS location_short_street_name,
-                                          addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
-                                          addr.country_id as location_country_id, addr.flat as location_flat,
-                                          ca.type as location_address_type, addr.location,
-                                          0 AS use_counter, 0 AS node_use_counter, 0 AS netdev_use_counter, 0 AS netnode_use_counter,
-                                          (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt
-                                       FROM
-                                          customers cv
-                                          LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
-                                          LEFT JOIN vaddresses addr       ON addr.id = ca.address_id
-                                          LEFT JOIN location_streets lst ON lst.id = addr.street_id
-                                       WHERE
-                                          cv.id = ?' .
-                                          (($hide_deleted) ? ' AND cv.deleted != 1' : '')
-                                            . ' ORDER BY LOWER(addr.city), LOWER(addr.street), LOWER(addr.house)',
+        'SELECT
+                addr.id AS address_id, ca.id AS customer_address_id,
+                addr.name as location_name,
+                addr.state as location_state_name, addr.state_id as location_state,
+                addr.city as location_city_name, addr.city_id as location_city,
+                addr.street as location_street_name, addr.street_id as location_street,
+                (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS location_full_street_name,
+                (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS location_full_reversed_street_name,
+                COALESCE(lst.name, addr.street) AS location_short_street_name,
+                addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
+                addr.country_id as location_country_id, addr.flat as location_flat,
+                ca.type as location_address_type, addr.location,
+                0 AS use_counter, 0 AS node_use_counter, 0 AS netdev_use_counter, 0 AS netnode_use_counter,
+                (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt,
+                ' . $this->db->Concat('simc.woj', 'simc.pow', 'simc.gmi', 'simc.rodz_gmi') . ' AS terc,
+                simc.sym AS simc,
+                ulic.sym_ul AS ulic
+            FROM customers cv
+            LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
+            LEFT JOIN vaddresses addr       ON addr.id = ca.address_id
+            LEFT JOIN location_streets lst ON lst.id = addr.street_id
+            LEFT JOIN teryt_simc simc ON simc.cityid = addr.city_id
+            LEFT JOIN teryt_ulic ulic ON ulic.id = addr.street_id
+            WHERE
+                cv.id = ?' .
+                (($hide_deleted) ? ' AND cv.deleted != 1' : '')
+            . ' ORDER BY LOWER(addr.city), LOWER(addr.street), LOWER(addr.house)',
             'address_id',
             array( $id )
         );

@@ -578,6 +578,7 @@ class LMSSmartyPlugins
                  maxlength="64">
 
           <input type="hidden" value="' . (!empty($params['location_state']) ? $params['location_state'] : '' ) . '" data-address="state-hidden" name="' . $input_name_state_id . '">
+          <input type="hidden" value="' . (!empty($params['location_state']) ? $params['terc'] : '' ) . '" data-address="terc">
           </td>
           </tr>';
 
@@ -589,6 +590,7 @@ class LMSSmartyPlugins
                     . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32"'
                     . (isset($params['location_address_type']) && $params['location_address_type'] == BILLING_ADDRESS ? ' required' : '') . '>
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
+                  <input type="hidden" value="' . (!empty($params['location_city']) ? $params['simc'] : '' ) . '" data-address="simc">
               </td>
           </tr>';
 
@@ -597,6 +599,7 @@ class LMSSmartyPlugins
               <td>
                   <input type="text"   value="' . (!empty($params['location_street_name']) ? htmlspecialchars($params['location_street_name']) : '' ) . '" size="' . self::LOCATION_BOX_INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
                   <input type="hidden" value="' . (!empty($params['location_street'])      ? $params['location_street']      : '' ) . '" data-address="street-hidden" name="' . $input_name_street_id . '">
+                  <input type="hidden" value="' . (!empty($params['location_street']) ? $params['ulic'] : '' ) . '" data-address="ulic">
               </td>
           </tr>';
 
@@ -688,6 +691,12 @@ class LMSSmartyPlugins
 
     public static function locationBoxExpandableFunction(array $params, $template)
     {
+        static $show_numeric_identifiers = null;
+
+        if (!isset($show_numeric_identifiers)) {
+            $show_numeric_identifiers = ConfigHelper::checkConfig('teryt.show_numeric_identifiers');
+        }
+
         if (empty($params)) {
             $params = array();
         }
@@ -707,8 +716,27 @@ class LMSSmartyPlugins
             : (empty($params['data']['location_name']) ? '' : htmlspecialchars($params['data']['location_name']) . ', ');
 
         $location_str .= isset($params['data']['location'])
-            ? (isset($params['data']['teryt']) && $params['data']['teryt']
-                ? trans('$a (TERYT)', htmlspecialchars($params['data']['location'])) : htmlspecialchars($params['data']['location']))
+            ? (
+                isset($params['data']['teryt']) && $params['data']['teryt']
+                ? (
+                    $show_numeric_identifiers
+                    ? (
+                        empty($params['data']['location_street'])
+                        ? trans(
+                            '$a ($b)',
+                            htmlspecialchars($params['data']['location']),
+                            '<span class="nobr">TERC: ' . $params['data']['terc'] . ',</span> <span class="nobr">SIMC: ' . $params['data']['simc'] . '</span>'
+                        )
+                        : trans(
+                            '$a ($b)',
+                            htmlspecialchars($params['data']['location']),
+                            '<span class="nobr">TERC: ' . $params['data']['terc'] . ',</span> <span class="nobr">SIMC: ' . $params['data']['simc'] . ',</span> <span class="nobr">ULIC: ' . $params['data']['ulic'] . '</span>'
+                        )
+                    )
+                    : trans('$a (TERYT)', htmlspecialchars($params['data']['location']))
+                )
+                : htmlspecialchars($params['data']['location'])
+            )
             : '...';
 
         $title = '';

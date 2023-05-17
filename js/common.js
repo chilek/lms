@@ -784,8 +784,11 @@ function getCustomerAddresses( id, on_success ) {
  * \param string latitude_id id of longitude input
  */
 function location_str(data) {
+	var terc = data.hasOwnProperty('terc') ? data.terc : null;
 	var city = data.city;
+	var simc = data.hasOwnProperty('simc') ? data.simc : null;
 	var street = data.street;
+	var ulic = data.hasOwnProperty('ulic') ? data.ulic : null;
 	var house = data.house;
 	var flat = data.flat;
 	var zip = data.hasOwnProperty('zip') ? data.zip : null;
@@ -825,7 +828,26 @@ function location_str(data) {
 	}
 
 	if (teryt) {
-		location = $t('$a (TERYT)', location);
+		if (lmsSettings.terytShowNumericIdentifiers) {
+			if (ulic) {
+				location = $t(
+					'$a ($b)',
+					location,
+					'TERC: ' + terc + ',' +
+					' SIMC: ' + simc + ',' +
+					' ULIC: ' + ulic
+				)
+			} else {
+				location = $t(
+					'$a ($b)',
+					location,
+					'TERC: ' + terc + ',' +
+					' SIMC: ' + simc
+				)
+			}
+		} else {
+			location = $t('$a (TERYT)', location);
+		}
 	}
 
 	return location;

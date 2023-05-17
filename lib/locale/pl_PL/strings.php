@@ -3598,6 +3598,12 @@ $_LANG['street'] = 'ulica';
 $_LANG['TERYT base'] = 'Baza TERYT';
 $_LANG['Territory unit'] = 'Jednostka terytorialna';
 $_LANG['$a (TERYT)'] = '$a (TERYT)';
+$_LANG['<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b</span>'] =
+    '<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b</span>';
+$_LANG['<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b,</span> <span class="nobr">ULIC: $c</span>'] =
+    '<span class="nobr">TERC: $a,</span> <span class="nobr">SIMC: $b,</span> <span class="nobr">ULIC: $c</span>';
+$_LANG['TERC: $a, SIMC: $b'] = 'TERC: $a, SIMC: $b';
+$_LANG['TERC: $a, SIMC: $b, ULIC: $c'] = 'TERC: $a, SIMC: $b, ULIC: $c';
 $_LANG['City has not been selected!'] = 'Nie wybrano miasta!';
 $_LANG['Flat number is too long (max. 8 characters)!'] = 'Numer mieszkania jest za długi (max. 8 znaków)!';
 $_LANG['Zip code is too long (max. 8 characters)!'] = 'Kod pocztowy jest za długi (max. 8 znaków)!';
