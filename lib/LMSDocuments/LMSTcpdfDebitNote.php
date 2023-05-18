@@ -191,8 +191,8 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
         /* headers */
         $heads['no'] = trans('No.');
-        $heads['name'] = trans('Title:');
-        $heads['total'] = trans('Value:');
+        $heads['name'] = trans('Title');
+        $heads['total'] = trans('Value');
 
         /* width of the columns */
         foreach ($heads as $name => $text) {
@@ -271,18 +271,20 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
     protected function invoice_to_pay()
     {
-        $this->backend->Ln(0);
+        $this->backend->Ln(-5);
         $this->backend->SetFont(null, 'B', 14);
         if ($this->use_alert_color) {
             $this->backend->SetTextColorArray(array(255, 0, 0));
         }
-        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay: $a', moneyf($this->data['value'], $this->data['currency'])), 0, 1, 0, true, 'R');
+        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay: $a', moneyf($this->data['value'], $this->data['currency'])), 0, 1, 0, true, 'L');
         if ($this->use_alert_color) {
             $this->backend->SetTextColor();
         }
 
-        $this->backend->SetFont(null, '', 10);
-        $this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');
+        $this->backend->SetFont(null, '', 7);
+        if (!ConfigHelper::checkConfig('invoices.hide_in_words')) {
+            $this->backend->writeHTMLCell(0, 5, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'L');
+        }
     }
 
     public function signature()
@@ -323,6 +325,9 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->invoice_to_pay();
         if (ConfigHelper::checkConfig('notes.issuer_signature')) {
             $this->signature();
+        }
+        if (ConfigHelper::checkConfig('invoices.qr2pay')) {
+            $this->invoice_qr2pay_code();
         }
         $this->invoice_footnote();
         $docnumber = docnumber(array(
