@@ -2488,7 +2488,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if ($pdf) {
-                    if (!empty($document_password) && !empty($document_protection_command) && isset($document_protected_document_types[$document['type']])) {
+                    $ssn_is_present = strpos($document_password, '%ssn') !== false;
+
+                    if (!empty($document_password) && !empty($document_protection_command) && isset($document_protected_document_types[$document['type']])
+                        && (!$ssn_is_present || strlen($document['ssn']))) {
                         $password = trim(str_replace(
                             array(
                                 '%ssn',
