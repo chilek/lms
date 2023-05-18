@@ -628,7 +628,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
+                    $this->data['doctype'] != DOC_CNOTE ? 'Invoice value: $a (to repay)' : 'Correction value: $a (to repay)',
                     Utils::formatMoney($this->data['value'], $this->data['currency'])
                 ),
                 0,
@@ -647,7 +647,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 '',
                 '',
                 trans(
-                    $this->data['doctype'] == DOC_INVOICE ? 'Invoice value: $a (to pay)' : 'Correction value: $a (to pay)',
+                    $this->data['doctype'] != DOC_CNOTE ? 'Invoice value: $a (to pay)' : 'Correction value: $a (to pay)',
                     Utils::formatMoney($this->data['value'], $this->data['currency'])
                 ),
                 0,
