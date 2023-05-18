@@ -491,6 +491,7 @@ version 28-git (????-??-??):
   - enhancement: uke-pit: division selection for 'customer services' report type [chilan]
   - enhancement: configuration variable 'teryt.show_numeric_identifiers' with 'false' as default allows
     to enable numeric TERYT identifier presentation near customer addresses [chilan]
+  - enhancement: qr2pay code support for debit notes [chilan]
 
 version 27.0 (2021-08-20):
 
