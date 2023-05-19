@@ -43,7 +43,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->backend->SetFont($font, 'BI', 7);
         $this->backend->SetFont($font, '', 7);
 
-        $this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
+        $this->use_alert_color = ConfigHelper::checkConfig('notes.use_alert_color', ConfigHelper::checkConfig('invoices.use_alert_color'));
     }
 
     public function note_date()
@@ -74,14 +74,14 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $drawer = '<b>' . trans('Note drawer:') . '</b><br>';
         $tmp = $this->data['division_header'];
 
-        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+        if (!ConfigHelper::checkConfig('notes.show_only_alternative_accounts', ConfigHelper::checkConfig('invoices.show_only_alternative_accounts'))
             || empty($this->data['bankccounts'])) {
             $accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
         } else {
             $accounts = array();
         }
-        if (ConfigHelper::checkConfig('invoices.show_all_accounts')
-            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+        if (ConfigHelper::checkConfig('notes.show_all_accounts', ConfigHelper::checkConfig('invoices.show_all_accounts'))
+            || ConfigHelper::checkConfig('notes.show_only_alternative_accounts', ConfigHelper::checkConfig('invoices.show_only_alternative_accounts'))) {
             $accounts = array_merge($accounts, $this->data['bankaccounts']);
         }
         foreach ($accounts as &$account) {
@@ -93,7 +93,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
         $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
-        if (ConfigHelper::checkConfig('invoices.customer_bankaccount', true)) {
+        if (ConfigHelper::checkConfig('notes.customer_bankaccount', ConfigHelper::checkConfig('invoices.customer_bankaccount', true))) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
         }
 
@@ -107,7 +107,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
     public function shipping_address()
     {
-        if (ConfigHelper::checkConfig('invoices.post_address', true)) {
+        if (ConfigHelper::checkConfig('notes.post_address', ConfigHelper::checkConfig('invoices.post_address', true))) {
             $shipaddress = '';
             if ($this->data['post_name'] || $this->data['post_address']) {
                 $lines = document_address(array(
@@ -145,7 +145,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $recipient .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
         if ($this->data['ten']) {
             $recipient .= trans('TEN') . ': ' . $this->data['ten'];
-        } elseif (!ConfigHelper::checkConfig('invoices.hide_ssn', true) && $this->data['ssn']) {
+        } elseif (!ConfigHelper::checkConfig('notes.hide_ssn', ConfigHelper::checkConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
             $recipient .= trans('SSN') . ': ' . $this->data['ssn'];
         }
         $this->backend->SetFont(null, '', 8);
@@ -153,7 +153,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
 
         $y = $this->backend->GetY();
 
-        if (ConfigHelper::checkConfig('notes.customer_credentials', true)) {
+        if (ConfigHelper::checkConfig('notes.customer_credentials', ConfigHelper::checkConfig('invoices.customer_credentials', true))) {
             $pin = str_replace(
                 array('%cid', '%pin'),
                 array(
@@ -162,8 +162,11 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
                 ),
                 ConfigHelper::getConfig(
                     'notes.customer_credentials_format',
-                    '<b>' . trans('Customer ID: %cid') . '</b><br>'
-                    . '<b>' . trans('PIN: %pin') . '</b><br>'
+                    ConfigHelper::getConfig(
+                        'invoices.customer_credentials_format',
+                        '<b>' . trans('Customer ID: %cid') . '</b><br>'
+                        . '<b>' . trans('PIN: %pin') . '</b><br>'
+                    )
                 )
             );
 
@@ -282,7 +285,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         }
 
         $this->backend->SetFont(null, '', 7);
-        if (!ConfigHelper::checkConfig('invoices.hide_in_words')) {
+        if (!ConfigHelper::checkConfig('notes.hide_in_words', ConfigHelper::checkConfig('invoices.hide_in_words'))) {
             $this->backend->writeHTMLCell(0, 5, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'L');
         }
     }
@@ -300,23 +303,13 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->backend->writeHTMLCell(70, '', 125, '', trans('issuer\'s signature'), 0, 1, 0, true, 'C');
     }
 
-    public function note_header_image()
-    {
-        $image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
-        if (!file_exists($image_path)) {
-            return;
-        }
-        $this->backend->writeHTMLCell(40, 0, 12, 8, '<img src="' . $image_path . '">');
-    }
-
     public function Draw($note)
     {
         $this->data = $note;
 
-        $this->note_header_image();
+        $this->invoice_header_image();
         $this->invoice_no_accountant();
         $this->note_date();
-        $this->invoice_expositor();
         $this->note_title();
         $this->note_drawer();
         $this->shipping_address();
@@ -325,8 +318,14 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->invoice_to_pay();
         if (ConfigHelper::checkConfig('notes.issuer_signature')) {
             $this->signature();
+        } else {
+            $this->invoice_expositor();
         }
-        if (ConfigHelper::checkConfig('invoices.qr2pay')) {
+        if (ConfigHelper::checkConfig('notes.show_balance', ConfigHelper::checkConfig('invoices.show_balance', true))
+            || ConfigHelper::checkConfig('notes.show_expired_balance', ConfigHelper::checkConfig('invoices.show_expired_balance'))) {
+            $this->invoice_balance();
+        }
+        if (ConfigHelper::checkConfig('notes.qr2pay', ConfigHelper::checkConfig('invoices.qr2pay'))) {
             $this->invoice_qr2pay_code();
         }
         $this->invoice_footnote();

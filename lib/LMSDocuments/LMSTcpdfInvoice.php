@@ -671,7 +671,9 @@ class LMSTcpdfInvoice extends LMSInvoice
     {
         $this->backend->SetFont(null, 'B', 9);
 
-        $show_balance_summary = ConfigHelper::checkConfig('invoices.show_balance_summary');
+        $show_balance_summary = $this->data['doctype'] == DOC_DNOTE
+            ? ConfigHelper::checkConfig('notes.show_balance_summary', ConfigHelper::checkConfig('invoices.show_balance_summary'))
+            : ConfigHelper::checkConfig('invoices.show_balance_summary');
 
         $balance = $this->data['customerbalance'];
 
@@ -802,7 +804,8 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->SetTextColor();
         }
 
-        if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
+        if ($this->data['doctype'] != DOC_DNOTE && !ConfigHelper::checkConfig('invoices.hide_payment_type')
+            || $this->data['doctype'] == DOC_DNOTE && !ConfigHelper::checkConfig('notes.hide_payment_type', ConfigHelper::checkConfig('invoices.hide_payment_type'))) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . ' <b>' . trans($this->data['paytypename']) . '</b>', 0, 1, 0, true, 'R');
             if (!empty($this->data['splitpayment'])) {
                 $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('(split payment)') . '</b>', 0, 1, 0, true, 'R');
@@ -815,7 +818,9 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     protected function invoice_expositor()
     {
-        if (!ConfigHelper::checkConfig('invoices.hide_expositor') && !empty($this->data['expositor'])) {
+        if (($this->data['doctype'] != DOC_DNOTE && !ConfigHelper::checkConfig('invoices.hide_expositor')
+            || $this->data['doctype'] == DOC_DNOTE && !ConfigHelper::checkConfig('notes.hide_expositor', ConfigHelper::CheckConfig('invoices.hide_expositor')))
+            && !empty($this->data['expositor'])) {
             $this->backend->SetFont(null, '', 8);
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor: <b>$a</b>', $this->data['expositor']), 0, 1, 0, true, 'R');
         }
@@ -824,7 +829,9 @@ class LMSTcpdfInvoice extends LMSInvoice
     protected function invoice_comment()
     {
         if (!empty($this->data['comment'])) {
-            if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
+            if (($this->data['doctype'] != DOC_DNOTE && ConfigHelper::checkConfig('invoices.qr2pay')
+                || $this->data['doctype'] == DOC_DNOTE && ConfigHelper::checkConfig('notes.qr2pay', ConfigHelper::checkConfig('invoices.qr2pay')))
+                && !isset($this->data['rebate'])) {
                 $width = 150;
             } else {
                 $width = 0;
@@ -844,7 +851,8 @@ class LMSTcpdfInvoice extends LMSInvoice
             $tmp = $this->data['division_footer'];
 
             $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
-            if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
+            if ($this->data['doctype'] != DOC_DNOTE && ConfigHelper::checkConfig('invoices.show_all_accounts')
+                || $this->data['doctype'] == DOC_DNOTE && ConfigHelper::checkConfig('notes.show_all_accounts', ConfigHelper::checkConfig('invoices.show_all_accounts'))) {
                 $accounts = array_merge($accounts, $this->data['bankaccounts']);
             }
             foreach ($accounts as &$account) {
@@ -856,7 +864,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->SetFont(null, '', 8);
             //$h = $this->backend->getStringHeight(0, $tmp);
             $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-            if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
+            if (($this->data['doctype'] != DOC_DNOTE && ConfigHelper::checkConfig('invoices.qr2pay')
+                || $this->data['doctype'] == DOC_DNOTE && ConfigHelper::checkConfig('notes.qr2pay', ConfigHelper::checkConfig('invoices.qr2pay')))
+                && !isset($this->data['rebate'])) {
                 $width = 150;
             } else {
                 $width = 0;
@@ -877,7 +887,9 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->SetFont(null);
 
             $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-            if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
+            if (($this->data['doctype'] != DOC_DNOTE && ConfigHelper::checkConfig('invoices.qr2pay')
+                || $this->data['doctype'] == DOC_DNOTE && ConfigHelper::checkConfig('notes.qr2pay', ConfigHelper::checkConfig('invoices.qr2pay')))
+                && !isset($this->data['rebate'])) {
                 $width = 150;
             } else {
                 $width = 0;
@@ -889,7 +901,9 @@ class LMSTcpdfInvoice extends LMSInvoice
 
     public function invoice_header_image()
     {
-        $image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
+        $image_path = $this->data['doctype'] != DOC_DNOTE
+            ? ConfigHelper::getConfig('invoices.header_image', '', true)
+            : ConfigHelper::getConfig('notes.header_image', ConfigHelper::getConfig('invoices.header_image', '', true), true);
         if (!file_exists($image_path)) {
             return;
         }
@@ -952,25 +966,37 @@ class LMSTcpdfInvoice extends LMSInvoice
             'customerid' => $this->data['customerid'],
         ));
 
-        if (!ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+        if (($this->data['doctype'] != DOC_DNOTE && !ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')
+            || $this->data['doctype'] == DOC_DNOTE && !ConfigHelper::checkConfig('notes.show_only_alternative_accounts', ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')))
             || empty($this->data['bankaccounts'])) {
             $accounts = array(bankaccount($this->data['customerid'], $this->data['account'], $this->data['export']));
         } else {
             $accounts = array();
         }
-        if (ConfigHelper::checkConfig('invoices.show_all_accounts')
-            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')) {
+        if ($this->data['doctype'] != DOC_DNOTE
+            && (ConfigHelper::checkConfig('invoices.show_all_accounts')
+            || ConfigHelper::checkConfig('invoices.show_only_alternative_accounts'))
+            || $this->data['doctype'] == DOC_DNOTE
+            && (ConfigHelper::checkConfig('notes.show_all_accounts', ConfigHelper::checkConfig('invoices.show_all_accounts'))
+            || ConfigHelper::checkConfig('notes.show_only_alternative_accounts', ConfigHelper::checkConfig('invoices.show_only_alternative_accounts')))) {
             $accounts = array_merge($accounts, $this->data['bankaccounts']);
         }
         $account = reset($accounts);
 
-        if (ConfigHelper::checkConfig('invoices.customer_balance_in_form')) {
+        if ($this->data['doctype'] != DOC_DNOTE && ConfigHelper::checkConfig('invoices.customer_balance_in_form')
+            || $this->data['doctype'] == DOC_DNOTE && ConfigHelper::checkConfig('notes.customer_balance_in_form', ConfigHelper::checkConfig('invoices.customer_balance_in_form'))) {
             $payment_value = $this->data['customerbalance'] * -1;
         } else {
             $payment_value = $this->data['value'];
         }
 
-        $qr2pay_comment = ConfigHelper::getConfig('invoices.qr2pay_comment', trans('QR Payment for Internet Invoice no. %number'));
+        $qr2pay_comment = ConfigHelper::getConfig(
+            'notes.qr2pay_comment',
+            ConfigHelper::getConfig(
+                'invoices.qr2pay_comment',
+                trans('QR Payment for Internet Invoice no. %number')
+            )
+        );
 
         $this->backend->SetFont(null, '', 7);
         $this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');

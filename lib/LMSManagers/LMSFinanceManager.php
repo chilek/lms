@@ -2951,7 +2951,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $LMS;
 
-        if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
+        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
                 d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.cancelled, d.published, d.archived, d.divisionid, d.paytime,
 				u.name AS user, u.issuer, n.template,
@@ -3050,6 +3050,40 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
                 }
             }
+
+            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $result['customerbalance'] = $customer_manager->GetCustomerBalance($result['customerid'], $result['cdate'] + 1);
+
+            $default_author = ConfigHelper::getConfig('notes.default_author', 'user_issuer,user_name,division_author');
+            $default_author = preg_split('/[\s]*,[\s]*/', trim($default_author), -1, PREG_SPLIT_NO_EMPTY);
+            $expositor = trans('system');
+            foreach ($default_author as $author) {
+                switch ($author) {
+                    case 'user_issuer':
+                        if (!empty($result['issuer'])) {
+                            $expositor = $result['issuer'];
+                            break 2;
+                        }
+                        break;
+                    case 'user_name':
+                        if (!empty($result['user'])) {
+                            $expositor = $result['user'];
+                            break 2;
+                        }
+                        break;
+                    case 'division_author':
+                        if (!empty($result['division_author'])) {
+                            $expositor = $result['division_author'];
+                            break 2;
+                        }
+                        break;
+                    default:
+                        $expositor = $author;
+                        break 2;
+                }
+            }
+
+            $result['expositor'] = $expositor;
 
             $result['disable_protection'] = ConfigHelper::checkConfig('notes.disable_protection');
             $result['protection_password'] = ConfigHelper::getConfig('notes.protection_password');
