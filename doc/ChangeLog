@@ -492,6 +492,13 @@ version 28-git (????-??-??):
   - enhancement: configuration variable 'teryt.show_numeric_identifiers' with 'false' as default allows
     to enable numeric TERYT identifier presentation near customer addresses [chilan]
   - enhancement: qr2pay code support for debit notes [chilan]
+  - improvement: some unification of invoice and debit note look ('notes.use_alert_color',
+    notes.show_only_alternative_accounts', 'notes.show_all_accounts', 'notes.customer_bankaccount',
+    'notes.post_address', 'notes.hide_ssn', 'notes.customer_credentials', 'notes.hide_in_words',
+    'notes.show_balance', 'notes.show_expired_balance', 'notes.qr2pay', 'notes.show_balance_summary',
+    'notes.hide_payment_type', 'notes.hide_expositor', 'notes.header_image',
+    'notes.customer_balance_in_form', 'notes.qr2pay_comment', 'notes.default_author' support
+    added) [chilan]
 
 version 27.0 (2021-08-20):
 
