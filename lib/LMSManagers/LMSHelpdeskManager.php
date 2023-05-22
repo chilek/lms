@@ -1413,7 +1413,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     } elseif ($message['contenttype'] == 'text/html') {
                         $message['body'] = str_ireplace(
                             '"CID:' . $attachment['cid'] . '"',
-                            '"' . $url_prefix . '/?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $id . '&mid=' . $message['id'] . '"',
+                            '"' . $url_prefix . '/?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $message['ticketid'] . '&mid=' . $message['id'] . '"',
                             $message['body']
                         );
                     }
