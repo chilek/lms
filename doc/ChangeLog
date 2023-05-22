@@ -499,6 +499,7 @@ version 28-git (????-??-??):
     'notes.hide_payment_type', 'notes.hide_expositor', 'notes.header_image',
     'notes.customer_balance_in_form', 'notes.qr2pay_comment', 'notes.default_author' support
     added) [chilan]
+  - enhancement: separate 'without explicit TERYT' and 'without TERYT' filters for nodes [chilan]
 
 version 27.0 (2021-08-20):
 
