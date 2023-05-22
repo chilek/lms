@@ -331,12 +331,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *          2 = disconnected,
      *          3 = online,
      *          4 = without tariff,
-     *          5 = without TERYT,
+     *          5 = without explicit TERYT,
      *          6 = not connected to any network device,
      *          7 = with warning,
      *          8 = without GPS coords,
-     *          9 = without radio sector (if wireless link)
-     *          10 = with locks
+     *          9 = without radio sector (if wireless link),
+     *          10 = with locks,
+     *          11 = without TERYT,
      *      network - network id (default: null = any), single integer value
      *      customergroup - customer group id (default: null = any), single integer value
      *      nodegroup - node group id (default: null = any), single integer value, -1 means nodes without any group
@@ -571,6 +572,27 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $sql .= 'FROM vnodes n
 				JOIN customerview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid
+                ' . ($status == 11
+                    ? ' LEFT JOIN (
+                        SELECT
+                            ca2.customer_id,
+                            MAX(ca2.address_id) AS address_id
+                        FROM customer_addresses ca2
+                        JOIN (
+                            SELECT
+                                ca.customer_id,
+                                MAX(ca.type) AS type
+                            FROM customer_addresses ca
+                            JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.house <> \'\'
+                            WHERE ca.type > 0
+                            GROUP BY ca.customer_id
+                        ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
+                        JOIN vaddresses va3 ON va3.id = ca2.address_id
+                        WHERE va3.house <> \'\'
+                        GROUP BY ca2.customer_id
+                    ) ca4 ON ca4.customer_id = n.ownerid
+                    LEFT JOIN addresses a4 ON a4.id = ca4.address_id'
+                    : '') . '
 				LEFT JOIN netdevices nd ON nd.id = n.netdev
 				LEFT JOIN netnodes nn ON nn.id = nd.netnodeid
 				LEFT JOIN invprojects p ON p.id = n.invprojectid
@@ -595,6 +617,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
 					)' : '')
                 . ($status == 5 ? ' AND n.location_city IS NULL' : '')
+                . ($status == 11 ? ' AND (n.location_city IS NULL AND (a4.id IS NULL OR a4.city_id IS NULL))' : '')
                 . ($status == 6 ? ' AND n.netdev IS NULL' : '')
                 . ($status == 7 ? ' AND n.warning = 1' : '')
                 . ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
@@ -942,15 +965,40 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeStats()
     {
-        $result = $this->db->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected,
-				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
-				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
-				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutterryt,
-				COUNT(CASE WHEN netdev IS NULL THEN 1 END) AS withoutnetdev,
-				COUNT(CASE WHEN warning = 1 THEN 1 END) AS withwarning
-				FROM vnodes
-				JOIN customerview c ON c.id = ownerid
-				WHERE ownerid IS NOT NULL', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
+        $result = $this->db->GetRow(
+            'SELECT COUNT(CASE WHEN access = 1 THEN 1 END) AS connected,
+                COUNT(CASE WHEN access = 0 THEN 1 END) AS disconnected,
+                COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
+                COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutexplicitteryt,
+                COUNT(CASE WHEN location_city IS NULL AND (a4.id IS NULL OR a4.city_id IS NULL) THEN 1 END) AS withoutteryt,
+                COUNT(CASE WHEN netdev IS NULL THEN 1 END) AS withoutnetdev,
+                COUNT(CASE WHEN warning = 1 THEN 1 END) AS withwarning
+            FROM vnodes
+            JOIN customerview c ON c.id = ownerid
+            LEFT JOIN (
+                SELECT
+                    ca2.customer_id,
+                    MAX(ca2.address_id) AS address_id
+                FROM customer_addresses ca2
+                JOIN (
+                    SELECT
+                        ca.customer_id,
+                        MAX(ca.type) AS type
+                    FROM customer_addresses ca
+                    JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.house <> \'\'
+                    WHERE ca.type > 0
+                    GROUP BY ca.customer_id
+                ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
+                JOIN vaddresses va3 ON va3.id = ca2.address_id
+                WHERE va3.house <> \'\'
+                GROUP BY ca2.customer_id
+            ) ca4 ON ca4.customer_id = c.id
+            LEFT JOIN addresses a4 ON a4.id = ca4.address_id
+            WHERE ownerid IS NOT NULL',
+            array(
+                ConfigHelper::getConfig('phpui.lastonline_limit'),
+            )
+        );
 
         $result['total'] = $result['connected'] + $result['disconnected'];
         return $result;

@@ -4456,6 +4456,10 @@ $_LANG['expire in indicated number of days'] = 'wygasną za wskazaną liczbę dn
 
 $_LANG['TERYT not specified'] = 'bez TERYT';
 $_LANG['<!welcome>TERYT not specified'] = 'Bez TERYT';
+$_LANG['<!welcome>Without explicit TERYT'] = 'Bez jawnego TERYT';
+$_LANG['<!welcome>Without TERYT'] = 'Bez TERYT';
+$_LANG['without explicit TERYT'] = 'bez jawnego TERYT';
+$_LANG['without TERYT'] = 'bez TERYT';
 $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
