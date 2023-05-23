@@ -2949,11 +2949,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetNoteContent($id)
     {
-        global $LMS;
+        global $LMS, $PAYTYPES;
 
         if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
                 d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
-				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.cancelled, d.published, d.archived, d.divisionid, d.paytime,
+				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.cancelled, d.published, d.archived, d.divisionid, d.paytime, d.paytype,
 				u.name AS user, u.issuer, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
@@ -3025,6 +3025,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['value'] += $row['value'];
                 }
             }
+
+            $result['paytypename'] = $PAYTYPES[$result['paytype']]['label'];
 
             $result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);

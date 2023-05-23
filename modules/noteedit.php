@@ -307,6 +307,7 @@ switch ($action) {
                 'name' => $customer['customername'],
                 'address' => $customer['address'],
                 'paytime' => $note['paytime'],
+                'paytype' => $note['paytype'],
                 'ten' => $customer['ten'],
                 'ssn' => $customer['ssn'],
                 'zip' => $customer['zip'],
@@ -334,7 +335,7 @@ switch ($action) {
             );
             $DB->Execute(
                 'UPDATE documents SET number = ?, numberplanid = ?,
-                cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
+                cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?, paytype = ?,
                 ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
                 div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
                 div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,

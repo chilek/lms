@@ -51,6 +51,10 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->backend->SetFont(null, '', 8);
         $this->backend->writeHTMLCell(0, 0, '', 10, trans('Draw-up date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
         $this->backend->writeHTMLCell(0, 0, '', '', trans('Deadline:') . ' <b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
+
+        if (!ConfigHelper::checkConfig('notes.hide_payment_type', ConfigHelper::checkConfig('invoices.hide_payment_type'))) {
+            $this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . ' <b>' . trans($this->data['paytypename']) . '</b>', 0, 1, 0, true, 'R');
+        }
     }
 
     public function note_title()
@@ -91,7 +95,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
-        $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
+        $tmp = str_replace('%bankname', isset($this->data['div_bank']) ? $this->data['div_bank'] : '', $tmp);
 
         if (ConfigHelper::checkConfig('notes.customer_bankaccount', ConfigHelper::checkConfig('invoices.customer_bankaccount', true))) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
