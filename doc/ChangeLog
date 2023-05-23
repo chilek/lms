@@ -500,6 +500,7 @@ version 28-git (????-??-??):
     'notes.customer_balance_in_form', 'notes.qr2pay_comment', 'notes.default_author' support
     added) [chilan]
   - enhancement: separate 'without explicit TERYT' and 'without TERYT' filters for nodes [chilan]
+  - enhancement: added paytype support for debit notes [chilan]
 
 version 27.0 (2021-08-20):
 
