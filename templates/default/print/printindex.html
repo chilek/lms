@@ -781,6 +781,23 @@
 										</select>
 									</TD>
 								</tr>
+								<tr>
+									<td>
+										{icon name="configuration"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("JPK flags")}</strong>
+									</td>
+									<TD colspan="2">
+										<select name="jpk-flag" form="invoicereport">
+											<option value="">{trans("— any —")}</option>
+											<option value="{$smarty.const.DOC_FLAG_SPLIT_PAYMENT}" {tip text="translates into JPK MPP flag"}>{trans("split payment")}</option>
+											<option value="{$smarty.const.DOC_FLAG_RECEIPT}" {tip text="translates into JPK FP flag"}>{trans("with receipt<!plural>")}</option>
+											<option value="{$smarty.const.DOC_FLAG_TELECOM_SERVICE}" {tip text="translates into JPK EE flag"}>{trans("<!invoice>telecommunication service")}</option>
+											<option value="{$smarty.const.DOC_FLAG_RELATED_ENTITY}" {tip text="translates into JPK TP flag"}>{trans("related entity")}</option>
+										</select>
+									</TD>
+								</tr>
 							</table>
 						</td>
 						<td class="nobr">

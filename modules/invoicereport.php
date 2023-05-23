@@ -177,6 +177,12 @@ if (in_array(DOC_DNOTE, $doctypes)) {
     $taxescount = 1;
 }
 
+if (!empty($_POST['jpk-flag']) && isset($DOC_FLAGS[$_POST['jpk-flag']])) {
+    $jpk_flag = intval($_POST['jpk-flag']);
+} else {
+    $jpk_flag = 0;
+}
+
 if (!empty($_POST['numberplanid'])) {
     if (is_array($_POST['numberplanid'])) {
         $numberplans = Utils::filterIntegers($_POST['numberplanid']);
@@ -229,6 +235,7 @@ $documents = $DB->GetAll('SELECT d.id, d.type,
 	    ' .
         ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
         . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
+        . (empty($jpk_flag) ? '' : ' AND (d.flags & ' . $jpk_flag . ') > 0')
         .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
         .(isset($divwhere) ? $divwhere : '')
         . (isset($servicetypewhere) ? $servicetypewhere : '')
