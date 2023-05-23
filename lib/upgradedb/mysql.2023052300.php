@@ -55,10 +55,10 @@ if (!empty($notes)) {
             'UPDATE documents SET paytype = ? WHERE id = ?',
             array(
                 isset($customer_paytypes[$note['customerid']])
-                    ? $customer_paytypes[$note['customerid']]
+                    ? $customer_paytypes[$note['customerid']]['paytype']
                     : (isset($division_paytypes[$note['divisionid']])
-                    ? $division_paytypes[$note['divisionid']]
-                    : $default_paytype),
+                        ? $division_paytypes[$note['divisionid']]['inv_paytype']
+                        : $default_paytype),
                 $note['id'],
             )
         );
