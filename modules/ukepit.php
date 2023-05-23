@@ -900,7 +900,7 @@ if ($report_type == 'full') {
                     }
                 } else {
                     $prj = $netdevice['invproject'];
-                    $projectname = array($prj);
+                    $projectname = $prj;
                 }
             }
 
