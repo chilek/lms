@@ -501,6 +501,7 @@ version 28-git (????-??-??):
     added) [chilan]
   - enhancement: separate 'without explicit TERYT' and 'without TERYT' filters for nodes [chilan]
   - enhancement: added paytype support for debit notes [chilan]
+  - enhancement: added jpk flag filter to sale report form [chilan]
 
 version 27.0 (2021-08-20):
 
