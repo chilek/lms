@@ -1126,15 +1126,34 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNotConnectedDevices($id)
     {
-        return $this->db->GetAll('SELECT d.id, d.name, d.description,
-			d.producer, d.ports
-			FROM netdevices d
-			LEFT JOIN (SELECT DISTINCT
-				(CASE src WHEN ? THEN dst ELSE src END) AS dev
-				FROM netlinks WHERE src = ? OR dst = ?
-			) l ON (d.id = l.dev)
-			WHERE l.dev IS NULL AND d.id != ?
-			ORDER BY name', array($id, $id, $id, $id));
+        return $this->db->GetAll(
+            'SELECT
+                d.id,
+                d.name,
+                d.description,
+                d.producer,
+                d.ports,
+                nn.id AS netnodeid,
+                nn.name AS netnodename
+            FROM netdevices d
+            LEFT JOIN (
+                SELECT
+                    DISTINCT (CASE src WHEN ? THEN dst ELSE src END) AS dev
+                FROM netlinks
+                WHERE src = ?
+                    OR dst = ?
+            ) l ON d.id = l.dev
+            LEFT JOIN netnodes nn ON nn.id = d.netnodeid
+            WHERE l.dev IS NULL
+                AND d.id != ?
+            ORDER BY name',
+            array(
+                $id,
+                $id,
+                $id,
+                $id,
+            )
+        );
     }
 
     public function GetNetDev($id)
