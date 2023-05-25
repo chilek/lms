@@ -502,6 +502,8 @@ version 28-git (????-??-??):
   - enhancement: separate 'without explicit TERYT' and 'without TERYT' filters for nodes [chilan]
   - enhancement: added paytype support for debit notes [chilan]
   - enhancement: added jpk flag filter to sale report form [chilan]
+  - improvement: show network node names in network device selection list to be connected
+    to current network device [chilan]
 
 version 27.0 (2021-08-20):
 
