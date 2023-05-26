@@ -64,6 +64,9 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             case 'lastinspectiontime':
                 $ostr = 'ORDER BY n.lastinspectiontime';
                 break;
+            case 'netdevcount':
+                $ostr = 'ORDER BY netdevcount.netdevcount';
+                break;
             case 'name':
             default:
                 $ostr = 'ORDER BY n.name';
@@ -136,6 +139,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                 'SELECT n.id, n.name' . ($short ? ''
                     : ', n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
                     n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
+                    netdevcount.netdevcount,
                     lc.ident AS location_city_ident,
                     (CASE WHEN lst.ident IS NULL
                         THEN (CASE WHEN addr.street = \'\' THEN \'99999\' ELSE \'99998\' END)
@@ -149,6 +153,15 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     addr.city_id as location_city, addr.street_id as location_street,
                     addr.house as location_house, addr.flat as location_flat') . '
                 FROM netnodes n
+                ' . ($short ? ''
+                : ' LEFT JOIN (
+                    SELECT
+                        nn.id AS netnodeid,
+                        COUNT(nd.*) AS netdevcount
+                    FROM netnodes nn
+                    LEFT JOIN netdevices nd ON nd.netnodeid = nn.id
+                    GROUP BY nn.id
+                ) netdevcount ON netdevcount.netnodeid = n.id') . '
                 LEFT JOIN divisions d ON d.id = n.divisionid
                 LEFT JOIN vaddresses addr        ON addr.id = n.address_id
                 LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
