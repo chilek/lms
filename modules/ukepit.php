@@ -1172,7 +1172,9 @@ if ($report_type == 'full') {
                     0 AS from_uni_link
                 FROM nodes n
                 LEFT JOIN addresses a ON n.address_id = a.id
+                JOIN customers c ON c.id = n.ownerid
                 WHERE n.ownerid IS NOT NULL
+                    " . ($division ? ' AND c.divisionid = ' . $division : '') . "
                     AND a.city_id IS NOT NULL
                     AND n.netdev IN ?
                 GROUP BY n.linktype, n.linktechnology, a.city_id, a.street_id, a.house",
@@ -1249,6 +1251,7 @@ if ($report_type == 'full') {
                         FROM nodeassignments na
                         JOIN nodes n             ON n.id = na.nodeid
                         LEFT JOIN addresses addr ON addr.id = n.address_id
+                        JOIN customers c ON c.id = n.ownerid
                         JOIN assignments a       ON a.id = na.assignmentid
                         JOIN tariffs t           ON t.id = a.tariffid
                         LEFT JOIN (
@@ -1264,6 +1267,7 @@ if ($report_type == 'full') {
                         ) allsuspended ON allsuspended.cid = a.customerid
                         WHERE n.ownerid IS NOT NULL
                             AND n.netdev IS NOT NULL
+                            " . ($division ? ' AND c.divisionid = ' . $division : '') . "
                             AND n.linktype = ?
                             AND n.linktechnology = ?
                             AND addr.city_id = ?
@@ -1324,7 +1328,9 @@ if ($report_type == 'full') {
                             GROUP BY aa.customerid
                         ) allsuspended ON allsuspended.cid = a.customerid
                         JOIN netdevices nd ON nd.id = n.netdev
+                        JOIN customers c ON c.id = nd.ownerid
                         WHERE n.id IN ?
+                            " . ($division ? ' AND c.divisionid = ' . $division : '') . "
                             AND a.commited = 1
                             AND a.suspended = 0
                             AND a.period IN ?
