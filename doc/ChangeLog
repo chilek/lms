@@ -504,6 +504,7 @@ version 28-git (????-??-??):
   - enhancement: added jpk flag filter to sale report form [chilan]
   - improvement: show network node names in network device selection list to be connected
     to current network device [chilan]
+  - enhancement: show assigned network device count on network node list [chilan]
 
 version 27.0 (2021-08-20):
 
