@@ -692,9 +692,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     + (SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
                 AS takenports,
                 lc.name AS city_name, lb.name AS borough_name, lb.type AS borough_type,
-                ld.name AS district_name, ls.name AS state_name, addr.location
+                ld.name AS district_name, ls.name AS state_name, addr.location,
+                d.netnodeid,
+                nn.name AS netnodename
             FROM netdevices d
             LEFT JOIN vaddresses addr ON d.address_id = addr.id
+            LEFT JOIN netnodes nn ON nn.id = d.netnodeid
             JOIN (
                 SELECT DISTINCT type, technology, speed,
                     routetype,

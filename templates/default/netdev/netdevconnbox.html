@@ -20,13 +20,21 @@
 			{if $netdevlist}
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-8">
-					<div class="lms-ui-tab-table-wrapper name-location-link col-4">
-						<div class="lms-ui-tab-table-wrapper name-location col-2">
+					<div class="lms-ui-tab-table-wrapper name-netnode-location-link col-5">
+						<div class="lms-ui-tab-table-wrapper name-netnode-location col-3">
 							<div class="lms-ui-tab-table-column name">
-								<i class="lms-ui-icon-netdev"></i> <strong>{trans("Name")} / {trans("Producer")}:</strong>
+								{icon name="netdev" class="fa-fw"}
+								<strong>
+									{trans("Name")} / {trans("Producer")}
+								</strong>
+							</div>
+							<div class="lms-ui-tab-table-column netnode">
+								{icon name="netnode" class="fa-fw"}
+								{trans("Network node")}
 							</div>
 							<div class="lms-ui-tab-table-column location">
-								<i class="lms-ui-icon-location"></i> {trans("Location:")}
+								{icon name="location" class="fa-fw"}
+								{trans("Location:")}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper link col-2">
@@ -67,20 +75,28 @@
 			{foreach $netdevlist as $netdevice}
 			<div class="lms-ui-tab-table-row">
 				<div class="lms-ui-tab-table-wrapper col-8">
-					<div class="lms-ui-tab-table-wrapper name-location-link col-4">
-						<div class="lms-ui-tab-table-wrapper name-location col-2">
+					<div class="lms-ui-tab-table-wrapper name-netnode-location-link col-5">
+						<div class="lms-ui-tab-table-wrapper name-netnode-location col-3">
 							<div class="lms-ui-tab-table-column name" data-target-url="?m=netdevinfo&id={$netdevice.id}">
-								<i class="lms-ui-icon-netdev"></i>
+								{icon name="netdev" class="fa-fw"}
 								<a name="{$netdevice.id}">
 									<strong>
 										{$netdevice.name} {if $netdevice.producer}/ {$netdevice.producer}{/if}
 									</strong>
-								</A>
+								</a>
+							</div>
+							<div class="lms-ui-tab-table-column netnode" data-target-url="?m=netnodeinfo&id={$netdevice.netnodeid}">
+								{icon name="netnode" class="fa-fw"}
+								<a name="{$netdevice.netnodeid}">
+									<strong>
+										{$netdevice.netnodename}
+									</strong>
+								</a>
 							</div>
 							<div class="lms-ui-tab-table-column location" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								{if $netdevice.location}
 									{$netdevice.location}
-									<i class="lms-ui-icon-location"></i>
+									{icon name="location" class="fa-fw"}
 									{if $netdevice.borough_name}
 										({$netdevice.state_name} / {$netdevice.district_name} / {$_BOROUGHTYPES[$netdevice.borough_type]} {$netdevice.borough_name})
 									{/if}
