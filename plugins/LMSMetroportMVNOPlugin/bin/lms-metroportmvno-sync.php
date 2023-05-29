@@ -923,7 +923,6 @@ if ($syncBillings) {
                     }
                 }
                 //</editor-fold>
-
                 if (!empty($response) && $responseCount !== 0) {
                     foreach ($response as $item) {
                         if ((!empty($item['src']) && !preg_match('/^[0-9]+$/', $item['src']))
@@ -952,7 +951,7 @@ if ($syncBillings) {
                                 $duration = $item['duration'];
                                 break;
                             case 'datatransfer':
-                                $duration = ($item['datatransfer'] * 1000);
+                                $duration = ($item['datatransfer'] * 1024);
                                 break;
                             case 'msg':
                                 $duration = $item['msg'];
@@ -1106,7 +1105,7 @@ if ($syncBillings) {
                             $duration = $item['duration'];
                             break;
                         case 'datatransfer':
-                            $duration = ($item['datatransfer'] * 1000);
+                            $duration = ($item['datatransfer'] * 1024);
                             break;
                         case 'msg':
                             $duration = $item['msg'];
