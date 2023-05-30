@@ -1193,7 +1193,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             LEFT JOIN location_boroughs lb     ON (lb.id = lc.boroughid)
             LEFT JOIN location_districts ld    ON (ld.id = lb.districtid)
             LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
-            WHERE d.id = ?', array($id));
+            WHERE d.id = ?',
+            array($id)
+        );
 
         if (!empty($result['location_city'])) {
             $result['teryt'] = 1;
