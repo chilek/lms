@@ -1572,26 +1572,26 @@ if (isset($options['merge'])) {
     $updated = 0;
 
     $addresses = $DB->GetAll("
-		(
-			SELECT a.id, a.city, a.street
-			FROM addresses a
-			JOIN customer_addresses ca ON ca.address_id = a.id
-			WHERE a.city IS NOT NULL
-				AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
-		) UNION (
-			SELECT a.id, a.city, a.street
-			FROM addresses a
-			JOIN netdevices nd ON nd.address_id = a.id
-			WHERE a.city IS NOT NULL
-				AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
-		) UNION (
-			SELECT a.id, a.city, a.street
-			FROM addresses a
-			JOIN netnodes nn ON nn.address_id = a.id
-			WHERE a.city IS NOT NULL
-				AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
-		)
-	");
+        (
+            SELECT a.id, a.city, a.street, ca.customer_id
+            FROM addresses a
+            JOIN customer_addresses ca ON ca.address_id = a.id
+            WHERE a.city IS NOT NULL
+                AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
+        ) UNION (
+            SELECT a.id, a.city, a.street, 0 AS customer_id
+            FROM addresses a
+            JOIN netdevices nd ON nd.address_id = a.id
+            WHERE a.city IS NOT NULL
+                AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
+        ) UNION (
+            SELECT a.id, a.city, a.street, 0 AS customer_id
+            FROM addresses a
+            JOIN netnodes nn ON nn.address_id = a.id
+            WHERE a.city IS NOT NULL
+                AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
+        )
+    ");
 
     if (!$addresses) {
         $addresses = array();
@@ -1626,13 +1626,13 @@ if (isset($options['merge'])) {
 
         if (empty($idents)) {
             if (!$quiet) {
-                echo 'not found' . PHP_EOL;
+                echo 'not found' . (empty($a['customer_id']) ? '' : ' (customer #' . $a['customer_id'] . ')') . PHP_EOL;
             }
             continue;
         }
 
         if (!$quiet) {
-            echo 'found' . PHP_EOL;
+            echo 'found' . (empty($a['customer_id']) ? '' : ' (customer #' . $a['customer_id'] . ')') . PHP_EOL;
         }
 
         if (!isset($idents['streetid'])) {
