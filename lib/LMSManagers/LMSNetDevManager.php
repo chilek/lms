@@ -439,6 +439,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (array_key_exists('ownerid', $data)) {
             $args['ownerid'] = empty($data['ownerid']) ? null : $data['ownerid'];
         }
+        if (array_key_exists('divisionid', $data)) {
+            $args['divisionid'] = empty($data['divisionid']) ? null : $data['divisionid'];
+        }
 
         if (empty($args)) {
             return null;
@@ -545,7 +548,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'status'           => empty($data['status']) ? 0 : $data['status'],
             'netdevicemodelid' => null,
             'address_id'       => !empty($data['ownerid']) && $data['customer_address_id'] > 0 ? $data['customer_address_id'] : null,
-            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null
+            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null,
+            'divisionid'       => !empty($data['divisionid']) ? $data['divisionid'] : null,
         );
 
         if (preg_match('/^[0-9]+$/', $data['producerid'])) {
@@ -570,8 +574,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, login, secret, community, channelid,
-				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid, divisionid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('netdevices');
 
             if (empty($data['ownerid'])) {
@@ -1161,32 +1165,35 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDev($id)
     {
-        $result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
-				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid, ndm.type AS typeid, ndt.name AS type,
-				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
-				lt.name AS street_type, lc.name AS city_name,
-				lb.name AS borough_name, lb.type AS borough_type,
-				ld.name AS district_name, ls.name AS state_name, addr.id as address_id,
-				addr.name as location_name,
-				addr.state as location_state_name, addr.state_id as location_state,
-				addr.zip as location_zip, addr.country_id as location_country,
-				addr.city as location_city_name, addr.street as location_street_name,
-				addr.city_id as location_city, addr.street_id as location_street,
-				addr.postoffice AS location_postoffice,
-				addr.house as location_house, addr.flat as location_flat, addr.location
-			FROM netdevices d
-				LEFT JOIN netdevicemodels ndm      ON ndm.id = d.netdevicemodelid
-				LEFT JOIN netdevicetypes ndt       ON ndm.type = ndt.id
-				LEFT JOIN vaddresses addr          ON addr.id = d.address_id
-				LEFT JOIN nastypes t               ON (t.id = d.nastype)
-				LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
-				LEFT JOIN location_cities lc       ON (lc.id = addr.city_id)
-				LEFT JOIN location_streets lst     ON (lst.id = addr.street_id)
-				LEFT JOIN location_street_types lt ON (lt.id = lst.typeid)
-				LEFT JOIN location_boroughs lb     ON (lb.id = lc.boroughid)
-				LEFT JOIN location_districts ld    ON (ld.id = lb.districtid)
-				LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
-			WHERE d.id = ?', array($id));
+        $result = $this->db->GetRow(
+            'SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
+                producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid, ndm.type AS typeid, ndt.name AS type,
+                (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
+                lt.name AS street_type, lc.name AS city_name,
+                lb.name AS borough_name, lb.type AS borough_type,
+                ld.name AS district_name, ls.name AS state_name, addr.id as address_id,
+                addr.name as location_name,
+                addr.state as location_state_name, addr.state_id as location_state,
+                addr.zip as location_zip, addr.country_id as location_country,
+                addr.city as location_city_name, addr.street as location_street_name,
+                addr.city_id as location_city, addr.street_id as location_street,
+                addr.postoffice AS location_postoffice,
+                addr.house as location_house, addr.flat as location_flat, addr.location,
+                COALESCE(dv.label, dv.shortname) AS division
+            FROM netdevices d
+            LEFT JOIN divisions dv ON dv.id = d.divisionid
+            LEFT JOIN netdevicemodels ndm      ON ndm.id = d.netdevicemodelid
+            LEFT JOIN netdevicetypes ndt       ON ndm.type = ndt.id
+            LEFT JOIN vaddresses addr          ON addr.id = d.address_id
+            LEFT JOIN nastypes t               ON (t.id = d.nastype)
+            LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
+            LEFT JOIN location_cities lc       ON (lc.id = addr.city_id)
+            LEFT JOIN location_streets lst     ON (lst.id = addr.street_id)
+            LEFT JOIN location_street_types lt ON (lt.id = lst.typeid)
+            LEFT JOIN location_boroughs lb     ON (lb.id = lc.boroughid)
+            LEFT JOIN location_districts ld    ON (ld.id = lb.districtid)
+            LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
+            WHERE d.id = ?', array($id));
 
         if (!empty($result['location_city'])) {
             $result['teryt'] = 1;

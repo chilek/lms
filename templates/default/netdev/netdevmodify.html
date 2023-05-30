@@ -23,6 +23,18 @@
 		{box_contents}
 			{box_panel}
 
+				{if $divisions}
+					{box_row icon="division" icon_class="fa-fw" label="Division"}
+						<select name="netdev[divisionid]" {tip text="Select division"}>
+							<option value="">{trans("— none —")}</option>
+							{foreach $divisions as $division}
+								<option value="{$division.id}"
+									{if $netdev.divisionid == $division.id} selected{/if}>{$division.label|escape}</option>
+							{/foreach}
+						</select>
+					{/box_row}
+				{/if}
+
 				{box_row icon="status" icon_class="fa-fw" label="Status"}
 					<select name="netdev[status]" value="{$netdev.status}">
 						{foreach $_NETELEMENTSTATUSES as $idx => $status}

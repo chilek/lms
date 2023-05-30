@@ -31,6 +31,19 @@
 									<col style="width: 1%;">
 									<col style="width: 98%;">
 								</colgroup>
+								{if !empty($netdev.division)}
+									<tr>
+										<td>
+											{icon name="division"}
+										</td>
+										<td class="nobr">
+											<strong>{trans("Division")}</strong>
+										</td>
+										<td>
+											<a href="?m=divisionedit&id={$netdev.divisionid}">{$netdev.division|escape} (#{$netdev.divisionid})</a>
+										</td>
+									</tr>
+								{/if}
 								{if !empty($netdev.ownerid)}
 									<tr>
 										<td>

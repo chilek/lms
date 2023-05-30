@@ -916,6 +916,7 @@ if ($subtitle) {
     $layout['pagetitle'] .= ' - ' . $subtitle;
 }
 
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('NNnodes', $LMS->GetNetNodes());
 $SMARTY->assign('producers', $LMS->GetProducers());

@@ -1572,6 +1572,8 @@ CREATE TABLE netdevices (
 		CONSTRAINT netdevices_ownerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	address_id integer DEFAULT NULL
 		CONSTRAINT netdevices_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
+	divisionid integer DEFAULT NULL
+		CONSTRAINT netdevices_divisionid_fkey REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
@@ -4375,6 +4377,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023052500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023053000');
 
 COMMIT;
