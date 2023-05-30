@@ -1156,6 +1156,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         AND datefrom <= ?NOW?
                         AND (dateto >= ?NOW? OR dateto = 0)';
                 break;
+            case -10:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.datefrom = 0';
+                break;
             default:
                 if ($as > 0) {
                     $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
