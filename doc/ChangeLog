@@ -506,6 +506,7 @@ version 28-git (????-??-??):
     to current network device [chilan]
   - enhancement: show assigned network device count on network node list [chilan]
   - enhancement: show network node info in rows which represent connected network devices [chilan]
+  - enhancement: 'without start date' assignment filter added in customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
