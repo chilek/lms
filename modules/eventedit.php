@@ -62,7 +62,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : null;
 switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && (time() - $event['closeddate'] < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
-            $DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?', array($_GET['id']));
+            $LMS->EventOpen($_GET['id']);
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
@@ -72,12 +72,12 @@ switch ($action) {
     case 'close':
         $SESSION->remove_history_entry();
         if (isset($_GET['ticketid'])) {
-            $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE closed = 0 AND ticketid = ?', array(Auth::GetCurrentUser(), $_GET['ticketid']));
-            $SESSION->redirect($backurl);
+            $params = array('ticketid' => $_GET['ticketid']);
         } else {
-            $DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW? WHERE id = ?', array(Auth::GetCurrentUser(), $_GET['id']));
-            $SESSION->redirect($backurl);
+            $params = array('id' => $_GET['id']);
         }
+        $LMS->EventClose($params);
+        $SESSION->redirect($backurl);
         break;
     case 'assign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
