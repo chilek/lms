@@ -509,6 +509,7 @@ version 28-git (????-??-??):
   - enhancement: 'without start date' assignment filter added in customer search form [chilan]
   - improvement: show customer id for addresses in 'merge' mode lms-teryt.php script [chilan]
   - enhancement: added division property to network devices [chilan]
+  - improvement: show source name in imported operation list pending for confirmation [chilan]
 
 version 27.0 (2021-08-20):
 
