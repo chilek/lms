@@ -2717,6 +2717,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerSMSOptions()
     {
+        global $LMS;
+
         $options = array();
 
         $variable_mapping = array(
@@ -2735,6 +2737,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'from' => 'sms-customers.from',
             'phone_number_validation_pattern' => 'sms-customers.phone_number_validation_pattern',
             'message_template' => 'sms-customers.message_template',
+        );
+
+        $variable_mapping = $LMS->executeHook(
+            'get_customer_sms_options',
+            $variable_mapping
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {

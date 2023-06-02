@@ -3286,7 +3286,7 @@ class LMS
 
         // message ID must be unique
         if (!$messageid) {
-            $messageid = '0.' . time();
+            $messageid = '0.' . microtime(true);
         }
 
         $message = preg_replace("/\r/", "", $message);
