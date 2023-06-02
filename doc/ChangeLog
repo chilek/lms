@@ -510,6 +510,8 @@ version 28-git (????-??-??):
   - improvement: show customer id for addresses in 'merge' mode lms-teryt.php script [chilan]
   - enhancement: added division property to network devices [chilan]
   - improvement: show source name in imported operation list pending for confirmation [chilan]
+  - improvement/devel: 'get_customer_sms_options' plugin hook introduced which allows to collect
+    specific sms-like section configuration variable names [chilan]
 
 version 27.0 (2021-08-20):
 
