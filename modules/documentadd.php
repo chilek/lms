@@ -485,12 +485,16 @@ if (isset($_POST['document'])) {
                 )
             );
             $document = $hook_data['document'];
-        }
 
-        if ($LMS->DocumentExists($docid) && !empty($document['confirmdate'])) {
-            $document['id'] = $docid;
-            $document['fullnumber'] = $fullnumber;
-            $LMS->NewDocumentCustomerNotifications($document);
+            if (isset($document['closed'])) {
+                $LMS->CommitDocuments(array($docid), false, false);
+            }
+
+            if (!empty($document['confirmdate'])) {
+                $document['id'] = $docid;
+                $document['fullnumber'] = $fullnumber;
+                $LMS->NewDocumentCustomerNotifications($document);
+            }
         }
 
         if (!isset($document['reuse'])) {
