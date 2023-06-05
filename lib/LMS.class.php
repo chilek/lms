@@ -506,6 +506,12 @@ class LMS
         return $manager->isUserNetworkPasswordSet($id);
     }
 
+    public function hasUserApiKeySet($id)
+    {
+        $manager = $this->getUserManager();
+        return $manager->hasUserApiKeySet($id);
+    }
+
     /*
      *  Customers functions
      */

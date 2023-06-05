@@ -69,4 +69,6 @@ interface LMSUserManagerInterface
     public function checkPassword($password, $net = false);
 
     public function isUserNetworkPasswordSet($id);
+
+    public function hasUserApiKeySet($id);
 }

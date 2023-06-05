@@ -104,6 +104,9 @@
 			{/if}
 			{button type="link" icon="password" tip="Change password" href="?m=userpasswd&id={$user.id}"}
 			{button type="link" icon="password" tip="Change network password" href="?m=userpasswd&id={$user.id}&net=1"}
+			{if $user.api}
+				{button type="link" icon="password" tip="Change API key" href="?m=userpasswd&id={$user.id}&net=2"}
+			{/if}
 			{if $user.id != $layout.logid}
 				{button type="link" class="delete-user" icon="delete" tip="Delete" href="?m=userdel&id={$user.id}"}
 			{/if}

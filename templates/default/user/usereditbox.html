@@ -211,6 +211,17 @@
 			<td>
 				{icon name="password"}
 			</td>
+			<td class="bold">
+				{trans("API access")}
+			</td>
+			<td>
+				<input type="checkbox" name="userinfo[api]" id="api" value="1"{if $userinfo.api} checked{/if}>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+			</td>
 			<td>
 				<strong>
 					{trans("Two factor authentication:")}

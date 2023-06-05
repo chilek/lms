@@ -1887,6 +1887,14 @@ $_LANG['Sale date'] = 'Data sprzedaży';
 $_LANG['Sale Registry'] = 'Rejestr sprzedaży';
 $_LANG['Sale Registry for period $a - $b'] = 'Rejestr sprzedaży za okres $a - $b';
 $_LANG['Save'] = 'Zapisz';
+$_LANG['Please input API Key'] = 'Podaj klucz API';
+$_LANG['API access'] = 'Dostęp API';
+$_LANG['API access could not be turned on when API key is empty!'] = 'Dostęp API nie może być włączony gdy klucz API jest pusty!';
+$_LANG['Enter new API key'] = 'Wprowadź nowy klucz API';
+$_LANG['Change API key'] = 'Zmień klucz API';
+$_LANG['Repeat new API key'] = 'Powtórz nowy klucz API';
+$_LANG['API keys do not match!'] = 'Klucze API nie są takie same!';
+$_LANG['API key should contain at least one capital letter, one lower case letter, one digit and should consist of at least 16 and maximum 8192 characters!'] = 'Klucz API powinien zawierać co najmniej jedną dużą, małą literę, cyfrę, co najmniej 16 i maksymalnie 8192 znaki!';
 $_LANG['Save & Print'] = 'Zapisz i drukuj';
 $_LANG['Scan'] = 'Skanuj';
 $_LANG['Search'] = 'Szukaj';
@@ -5673,7 +5681,7 @@ $_LANG['Group name can contain letters (with national characters), digits, dots,
 $_LANG['Network password'] = 'Hasło sieciowe';
 $_LANG['Network Password'] = 'Hasło sieciowe';
 $_LANG['Change your network password'] = 'Zmiana Twojego hasła sieciowego';
-$_LANG['Repeat network password'] = 'Powtórz hasło sieciowe';
+$_LANG['Repeat new network password'] = 'Powtórz nowe hasło sieciowe';
 $_LANG['Network password can be used to authenticate users via Radius server.'] = 'Hasło sieciowe może być używane do uwierzytelniania użytkowników w oparciu o serwer Radius.';
 $_LANG['Change network password'] = 'Zmiana hasła sieciowego';
 

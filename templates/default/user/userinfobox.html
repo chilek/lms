@@ -165,6 +165,21 @@
 			<td>
 				{icon name="password"}
 			</td>
+			<td class="nobr bold">
+				{trans("API access")}
+			</td>
+			<td class="nobr">
+				{if empty($userinfo.api)}
+					{trans("no")}
+				{else}
+					{trans("yes")}
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="password"}
+			</td>
 			<td class="nobr">
 				<strong>{trans("Two factor authentication:")}</strong>
 			</td>
@@ -347,6 +362,9 @@
 				{/if}
 				{button type="link-button" label="Change password" icon="password" href="?m=userpasswd&id={$userinfo.id}"}
 				{button type="link-button" label="Change network password" icon="password" href="?m=userpasswd&id={$userinfo.id}&net=1"}
+				{if $userinfo.api}
+				    {button type="link-button" label="Change API key" icon="password" href="?m=userpasswd&id={$userinfo.id}&net=2"}
+				{/if}
 				{button type="link-button" label="User list" icon="list" href="?m=userlist"}
 			</td>
 		</tr>

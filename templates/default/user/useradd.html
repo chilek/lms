@@ -207,6 +207,20 @@
 			</td>
 		</tr>
 		<tr>
+			<td>
+				{icon name="password"}
+				<strong>{trans("API Key:")}</strong>
+			</td>
+			<td>
+				<input type="checkbox" name="useradd[api]" id="api" value="1"
+					{tip text="API access"}
+					{if !empty($useradd.api)} checked{/if}>
+				<input type="password" name="useradd[apikey]" autocomplete="off" id="apikey"
+					minlength="16" {tip trigger="apikey"}>
+				{hint mode='toggle' content='Please input API Key'}
+			</td>
+		</tr>
+		<tr>
 			<td class="nobr">
 				<label for="passwdforcechange">
 					{icon name="password"}
@@ -402,6 +416,16 @@
 </table>
 </form>
 <script>
+
+    function set_input_visibility(checkboxelem, elemid) {
+        if ($ ( checkboxelem ).is(':checked')) {
+            $( elemid ).attr("required", "true").show();
+        } else {
+            $( elemid ).removeAttr('required').val('').hide();
+        }
+    };
+    $( '#api' ).click(function() { set_input_visibility('#api', '#apikey'); });
+    $( document ).ready(function() { set_input_visibility('#api', '#apikey'); });
 
 	$(function() {
 		$('form[name="useradd"] [name="useradd[login]"]').focus();
