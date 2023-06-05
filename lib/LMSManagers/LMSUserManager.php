@@ -39,7 +39,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function setUserPassword($id, $passwd, $net = false)
     {
-        switch($net) {
+        switch ($net) {
             case 2:
                 $args = array(
                     'passwd' => empty($passwd) ? null : password_hash($passwd, PASSWORD_DEFAULT),
@@ -716,7 +716,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 WHERE
                     id = ?
                     AND apikey IS NOT NULL',
-                array($id)
-            ) == 1;
+            array($id)
+        ) == 1;
     }
 }
