@@ -34,8 +34,12 @@ $aee = ConfigHelper::getConfig(
     ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)
 );
 
-if (isset($_GET['id'])) {
-    $event = $LMS->GetEvent($_GET['id']);
+$action = isset($_GET['action']) ? $_GET['action'] : null;
+$id = !empty($_GET['id']) ? intval($_GET['id']) : null;
+$ticketid = !empty($_GET['ticketid']) ? intval($_GET['ticketid']) : null;
+
+if (!empty($id)) {
+    $event = $LMS->GetEvent($id);
     if (empty($event)) {
         $SESSION->redirect('?m=eventlist');
     }
@@ -58,11 +62,10 @@ $backto = $SESSION->get_history_entry('m=eventlist');
 $backid = $SESSION->get('backid');
 $backurl = '?' . $backto . (empty($backid) ? '' : '#' . $backid);
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
 switch ($action) {
     case 'open':
         if (empty($event['closeddate']) || ($event['closed'] == 1 && $aee && (time() - $event['closeddate'] < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
-            $LMS->EventOpen($_GET['id']);
+            $LMS->EventOpen($id);
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
@@ -71,17 +74,16 @@ switch ($action) {
         break;
     case 'close':
         $SESSION->remove_history_entry();
-        if (isset($_GET['ticketid'])) {
-            $params = array('ticketid' => $_GET['ticketid']);
+        if (isset($ticketid)) {
+            $LMS->EventClose(array('ticketid' => $ticketid));
         } else {
-            $params = array('id' => $_GET['id']);
+            $LMS->EventClose(array('id' => $id));
         }
-        $LMS->EventClose($params);
         $SESSION->redirect($backurl);
         break;
     case 'assign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
-            $LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
+            $LMS->AssignUserToEvent($id, Auth::GetCurrentUser());
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
@@ -90,7 +92,7 @@ switch ($action) {
         break;
     case 'unassign':
         if ($event['closed'] != 1 || ($event['closed'] == 1 && $aee && ((time() - $event['closeddate']) < $aee)) || ConfigHelper::checkPrivilege('superuser')) {
-            $LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
+            $LMS->UnassignUserFromEvent($id, Auth::GetCurrentUser());
             $SESSION->remove_history_entry();
             $SESSION->redirect($backurl);
         } else {
