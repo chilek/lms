@@ -512,6 +512,8 @@ version 28-git (????-??-??):
   - improvement: show source name in imported operation list pending for confirmation [chilan]
   - improvement/devel: 'get_customer_sms_options' plugin hook introduced which allows to collect
     specific sms-like section configuration variable names [chilan]
+  - improvement: send document confirm notifications if document is created with 'closed'
+    status [chilan]
 
 version 27.0 (2021-08-20):
 
