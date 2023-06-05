@@ -217,7 +217,6 @@
 					{/if}
 				{else}
 					{if $event.customername}
-						{button icon='customer' href="?m=customerinfo&amp;id={$event.customerid}" label="{$event.customername|trunescape:30}"}<br>
 						{if !empty($event.address_id)}
 							{icon name='location' label=$event.location}
 						{elseif !empty($event.nodeid)}
