@@ -1105,7 +1105,7 @@ function check_password_strength($password, $passlength = 8)
     return preg_match('/[a-z]/', $password)
         && preg_match('/[A-Z]/', $password)
         && preg_match('/[0-9]/', $password)
-        && mb_strlen($password) > ($passlength);
+        && mb_strlen($password) > $passlength;
 }
 
 function access_denied()
