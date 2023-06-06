@@ -39,28 +39,41 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function setUserPassword($id, $passwd, $net = false)
     {
-        if ($net) {
-            $args = array(
-                'netpasswd' => empty($passwd) ? null : $passwd,
-                SYSLOG::RES_USER => $id
-            );
-            $result = $this->db->Execute(
-                'UPDATE users SET netpasswd = ?
-                WHERE id = ?',
-                array_values($args)
-            );
-        } else {
-            $args = array(
-                'passwd' => password_hash($passwd, PASSWORD_DEFAULT),
-                'passwdforcechange' => 0,
-                SYSLOG::RES_USER => $id
-            );
-            $result = $this->db->Execute(
-                'UPDATE users SET passwd = ?, passwdlastchange = ?NOW?, passwdforcechange = ?
-                WHERE id = ?',
-                array_values($args)
-            );
-            $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, password_hash($passwd, PASSWORD_DEFAULT)));
+        switch ($net) {
+            case 2:
+                $args = array(
+                    'passwd' => empty($passwd) ? null : password_hash($passwd, PASSWORD_DEFAULT),
+                    SYSLOG::RES_USER => $id
+                );
+                $result = $this->db->Execute(
+                    'UPDATE users SET apikey = ?
+                    WHERE id = ?',
+                    array_values($args)
+                );
+                break;
+            case 1:
+                $args = array(
+                    'netpasswd' => empty($passwd) ? null : $passwd,
+                    SYSLOG::RES_USER => $id
+                );
+                $result = $this->db->Execute(
+                    'UPDATE users SET netpasswd = ?
+                    WHERE id = ?',
+                    array_values($args)
+                );
+                break;
+            default:
+                $args = array(
+                    'passwd' => password_hash($passwd, PASSWORD_DEFAULT),
+                    'passwdforcechange' => 0,
+                    SYSLOG::RES_USER => $id
+                );
+                $result = $this->db->Execute(
+                    'UPDATE users SET passwd = ?, passwdlastchange = ?NOW?, passwdforcechange = ?
+                    WHERE id = ?',
+                    array_values($args)
+                );
+                $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, password_hash($passwd, PASSWORD_DEFAULT)));
         }
         if ($result && $this->syslog) {
             unset($args['passwd']);
@@ -206,7 +219,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
         $userlist = $this->db->GetAllByKey(
             'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
-            accessfrom, accessto, rname, twofactorauth'
+            accessfrom, accessto, rname, twofactorauth, api'
             . ' FROM ' . (isset($superuser) ? 'vallusers' : 'vusers')
             . ' WHERE deleted = 0'
             . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
@@ -274,6 +287,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'position' => $user['position'],
             'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
             'phone' => !empty($user['phone']) ? $user['phone'] : null,
+            'api' => empty($user['api']) ? 0 : 1,
+            'apikey' => empty($user['apikey']) ? null : password_hash($user['apikey'], PASSWORD_DEFAULT),
             'passwdforcechange' => isset($user['passwdforcechange']) ? 1 : 0,
             'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
             'access' => !empty($user['access']) ? 1 : 0,
@@ -284,9 +299,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         );
         $user_inserted = $this->db->Execute(
             'INSERT INTO users (login, firstname, lastname, issuer, email, passwd, netpasswd, rights,
-                hosts, trustedhosts, position, ntype, phone,
+                hosts, trustedhosts, position, ntype, phone, api, apikey,
                 passwdforcechange, passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
@@ -507,6 +522,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'position' => $user['position'],
             'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
             'phone' => !empty($user['phone']) ? $user['phone'] : null,
+            'api' => empty($user['api']) ? 0 : 1,
             'passwdforcechange' => isset($user['passwdforcechange']) ? 1 : 0,
             'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
             'access' => !empty($user['access']) ? 1 : 0,
@@ -518,7 +534,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         );
         $res = $this->db->Execute(
             'UPDATE users SET login = ?, firstname = ?, lastname = ?, issuer = ?, email = ?, rights = ?,
-            hosts = ?, trustedhosts = ?, position = ?, ntype = ?, phone = ?, passwdforcechange = ?, passwdexpiration = ?,
+            hosts = ?, trustedhosts = ?, position = ?, ntype = ?, phone = ?, api = ?, passwdforcechange = ?, passwdexpiration = ?,
             access = ?, accessfrom = ?, accessto = ?, twofactorauth = ?, twofactorauthsecretkey = ?
             WHERE id = ?',
             array_values($args)
@@ -663,15 +679,20 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     public function checkPassword($password, $net = false)
     {
-        if ($net) {
+        if ($net == 1) {
             return $this->db->GetOne(
                 'SELECT netpasswd FROM users WHERE id = ?',
                 array(Auth::GetCurrentUser())
             ) == $password;
         } else {
             $dbpasswd = $this->db->GetOne(
-                'SELECT passwd FROM users WHERE id = ?',
-                array(Auth::GetCurrentUser())
+                'SELECT ? FROM users
+                    WHERE
+                        id = ?',
+                array(
+                    ($net == 2) ? 'apikey' : 'passwd',
+                    Auth::GetCurrentUser(),
+                )
             );
             return password_verify($password, $dbpasswd);
         }
@@ -685,6 +706,17 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
                 $id,
                 '',
             )
+        ) == 1;
+    }
+
+    public function hasUserApiKeySet($id)
+    {
+        return $this->db->GetOne(
+            'SELECT 1 FROM users
+                WHERE
+                    id = ?
+                    AND apikey IS NOT NULL',
+            array($id)
         ) == 1;
     }
 }

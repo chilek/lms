@@ -92,6 +92,14 @@ if (count($useradd)) {
         }
     }
 
+    if (!empty($useradd['apikey']) && !check_password_strength($useradd['apikey'])) {
+        $error['apikey'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 16 characters!');
+    }
+
+    if (!empty($useradd['api']) && empty($useradd['apikey'])) {
+        $error['apikey'] = $error['api'] = trans('API access could not be turned on when API key is empty!');
+    }
+
     if (!empty($useradd['accessfrom'])) {
         $accessfrom = date_to_timestamp($useradd['accessfrom']);
         if (empty($accessfrom)) {

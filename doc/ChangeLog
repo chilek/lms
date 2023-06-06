@@ -514,6 +514,7 @@ version 28-git (????-??-??):
     specific sms-like section configuration variable names [chilan]
   - improvement: send document confirm notifications if document is created with 'closed'
     status [chilan]
+  - enhancement: added support for user API keys [interduo]
 
 version 27.0 (2021-08-20):
 
