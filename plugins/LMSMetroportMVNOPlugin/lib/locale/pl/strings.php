@@ -31,3 +31,5 @@ $_LANG['Getting billing records for period'] = 'Pobieranie rekordów bilingowych
 $_LANG['Getting billing records for subperiod'] = 'Pobieranie rekordów bilingowych dla podokresu';
 $_LANG['Fatal error: no customers with "metroport-mvno"-tagged tariffs assigned!'] = 'Błąd krytyczny: brak klientów LMS z przypisaną taryfą z etykietą "metroport-mvno"';
 $_LANG['has been bound with MMSC user'] = 'został powiazany z użytkownikiem MMSC';
+$_LANG['Price list file ($a) does not exist!'] = 'Plik z cennikiem ($a) nie istnieje!';
+$_LANG['Price list csv file import.'] = 'Import pliku csv z cennikiem.';
