@@ -514,6 +514,9 @@ version 28-git (????-??-??):
     specific sms-like section configuration variable names [chilan]
   - improvement: send document confirm notifications if document is created with 'closed'
     status [chilan]
+  - enhancement: teryt: two different building base providers are supported - 'gugik' and 'sidusis'
+    (--building-base-provider parameter of bin/lms-teryt.php script chooses which provider should be
+    used) [chilan]
 
 version 27.0 (2021-08-20):
 
