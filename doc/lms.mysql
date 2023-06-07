@@ -387,11 +387,13 @@ CREATE TABLE location_buildings (
 	latitude     numeric(10,6) NULL,
 	longitude    numeric(10,6) NULL,
 	updated      smallint DEFAULT 0,
+	extid        varchar(128) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT location_buildings_city_id_fkey
 		FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT location_buildings_street_id_fkey
 		FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY location_buildings_extid_ukey (extid),
 	INDEX location_cityid_index (city_id)
 ) ENGINE=InnoDB;
 
@@ -4332,4 +4334,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023053000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023060700');
