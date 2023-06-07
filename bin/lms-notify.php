@@ -225,7 +225,7 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 if (empty($fakedate)) {
-    $currtime = strtotime('today');
+    $currtime = strtotime('now');
 } else {
     $currtime = strtotime($fakedate);
 }
