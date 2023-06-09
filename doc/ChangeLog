@@ -517,6 +517,8 @@ version 28-git (????-??-??):
   - enhancement: teryt: two different building base providers are supported - 'gugik' and 'sidusis'
     (--building-base-provider parameter of bin/lms-teryt.php script chooses which provider should be
     used) [chilan]
+  - enhancement: 'teryt.building_base_provider' with 'gugik' as default value allows to permanently
+    specify building base provider which should be used [chilan]
 
 version 27.0 (2021-08-20):
 
