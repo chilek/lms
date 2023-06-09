@@ -126,7 +126,7 @@
 									</select>
 									<select id="linktype" onchange="change_linktype(this.options[this.selectedIndex].value)">
 										{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
-											<option value="{$linktype}"{if $linktype == $nodelinktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
+											<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 										{/foreach}
 									</select>
 									<select id="linktechnology">
