@@ -544,15 +544,14 @@ function get_teryt_file($ch, $type, $outfile)
     return true;
 }
 
+$building_base_provider = ConfigHelper::getConfig('teryt.building_base_provider', 'gugik');
 if (isset($options['building-base-provider'])) {
-    if (!isset($supported_building_base_providers[$options['building-base-provider']])) {
-        die('Building base provider \'' . $options['building-base-provider'] . '\' is not supported!' . PHP_EOL);
-    }
-    $building_base_provider_type = $options['building-base-provider'];
-} else {
-    $building_base_provider_type = 'gugik';
+    $building_base_provider = $options['building-base-provider'];
 }
-$building_base_provider = $supported_building_base_providers[$building_base_provider_type];
+if (!isset($supported_building_base_providers[$building_base_provider])) {
+    die('Building base provider \'' . $building_base_provider . '\' is not supported!' . PHP_EOL);
+}
+$building_base_provider = $supported_building_base_providers[$building_base_provider];
 
 if (isset($options['fetch'])) {
     if (!function_exists('curl_init')) {
