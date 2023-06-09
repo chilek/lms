@@ -221,9 +221,8 @@
 
 													<select name="nodedata[linktype]" id="linktype"
 															{tip trigger="linktype" text="Select link type"}>
-														{foreach $_LINKTYPES as $key => $item}
-															<option value="{$key}"{if $key == $nodedata.linktype} selected{/if}
-																>{$item}</option>
+														{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+															<option value="{$linktype}"{if $linktype == $nodedata.linktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 														{/foreach}
 													</select>
 

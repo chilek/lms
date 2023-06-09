@@ -252,9 +252,8 @@
 															<select name="linktype" id="linktype"
 																{tip trigger="linktype" text="Select link type"}
 																onchange="change_linktype(this.options[this.selectedIndex].value)">
-																{foreach $_LINKTYPES as $key => $item}
-																	<option value="{$key}"
-																		{if $linktype == $key} selected{/if}>{$item}</option>
+																{foreach $_LINKTECHNOLOGIES as $key => $linktech}
+																	<option value="{$linktype}"{if $linktype == $key} selected{/if}>{$_LINKTYPES[$key]}</option>
 																{/foreach}
 															</select>
 

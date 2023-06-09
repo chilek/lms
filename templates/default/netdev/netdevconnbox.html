@@ -248,13 +248,13 @@
 						{/foreach}
 					</SELECT>
 
-					<SELECT name="linktype" id="connboxlinktype" {tip trigger="linktype" text="Select link type"}
+					<select name="linktype" id="connboxlinktype" {tip trigger="linktype" text="Select link type"}
 							onchange="change_devlinktype(this.options[this.selectedIndex].value)"
 							form="connect-form">
-						{foreach $_LINKTYPES as $key => $item}
-						<OPTION VALUE="{$key}"{if $key==$devlinktype} selected{/if}>{$item}</OPTION>
+						{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+							<option value="{$linktype}"{if $linktype == $devlinktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 						{/foreach}
-					</SELECT>
+					</select>
 
 					<input type="text" name="linecount" form="connect-form" size="8" placeholder="{trans("Fiber/Line count")}"
 						value="{if $devlinklinecount}{$devlinklinecount}{/if}"{if $devlinktype != $smarty.const.LINKTYPE_FIBER} disabled{/if}>

@@ -113,12 +113,12 @@
 								<TD style="width: 1%;"><IMG src="img/netdev.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Link type:")}</TD>
 								<TD style="width: 98%;" class="nobr">
-									<SELECT size="1" name="linktype" {tip text="Select link type"}>
-										<OPTION value="">{trans("— all —")}</OPTION>
-										{foreach from=$_LINKTYPES item=item key=key}
-										<OPTION value="{$key}">{$item}</OPTION>
+									<select size="1" name="linktype" {tip text="Select link type"}>
+										<option value="">{trans("— all —")}</option>
+										{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+											<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 										{/foreach}
-									</SELECT>
+									</select>
 								</TD>
 							</TR>
 							<TR>

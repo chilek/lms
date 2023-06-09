@@ -311,8 +311,8 @@
 							<td>
 								<select size="1" name="message[linktype]" {tip trigger="linktype"}>
 									<option value="">{trans("— all —")}</option>
-									{foreach $_LINKTYPES as $type => $label}
-										<option value="{$type}">{$label}</option>
+									{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+										<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 									{/foreach}
 								</select>
 							</td>

@@ -229,8 +229,8 @@
                                 {trans("<!netrange>Link")}
                                 <select name="filter[linktype]" form="netranges" class="filter-element">
                                     <option value="">{trans("— any —")}</option>
-                                    {foreach $_LINKTYPES as $type => $label}
-                                        <option value="{$type}"{if $type === $filter.linktype} selected{/if}>{$label}</option>
+                                    {foreach $linktechnologies as $linktype => $linktech}
+                                        <option value="{$linktype}"{if $linktype === $filter.linktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
                                     {/foreach}
                                 </select>
                             </label>

@@ -1162,6 +1162,30 @@ $LINKTECHNOLOGIES = array(
     ),
 );
 
+$allowed_link_technologies = trim(ConfigHelper::getConfig('phpui.allowed_link_technologies', '', true));
+if (strlen($allowed_link_technologies)) {
+    $allowed_link_technologies = array_filter(
+        preg_split("/([\s]+|[\s]*,[\s]*)/", $allowed_link_technologies, -1, PREG_SPLIT_NO_EMPTY),
+        function ($link_technology) {
+            return ctype_digit($link_technology);
+        }
+    );
+    if (!empty($allowed_link_technologies)) {
+        $allowed_link_technologies = array_flip($allowed_link_technologies);
+        foreach ($LINKTECHNOLOGIES as $linktype => &$linktechnologies) {
+            foreach ($linktechnologies as $linktechnology_idx => $linktechnology) {
+                if (!isset($allowed_link_technologies[$linktechnology_idx])) {
+                    unset($linktechnologies[$linktechnology_idx]);
+                }
+            }
+            if (empty($linktechnologies)) {
+                unset($LINKTECHNOLOGIES[$linktype]);
+            }
+        }
+        unset($linktechnologies);
+    }
+}
+
 $SIDUSIS_LINKTECHNOLOGIES = array(
     LINKTYPE_WIRE => array(
         1 => 'ADSL',
@@ -1218,6 +1242,38 @@ $SIDUSIS_LINKTECHNOLOGIES = array(
         224 => 'EoC',
     ),
 );
+
+$allowed_link_technologies = trim(ConfigHelper::getConfig(
+    'sidusis.allowed_link_technologies',
+    ConfigHelper::getConfig(
+        'phpui.allowed_link_technologies',
+        '',
+        true
+    ),
+    true
+));
+if (strlen($allowed_link_technologies)) {
+    $allowed_link_technologies = array_filter(
+        preg_split("/([\s]+|[\s]*,[\s]*)/", $allowed_link_technologies, -1, PREG_SPLIT_NO_EMPTY),
+        function ($link_technology) {
+            return ctype_digit($link_technology);
+        }
+    );
+    if (!empty($allowed_link_technologies)) {
+        $allowed_link_technologies = array_flip($allowed_link_technologies);
+        foreach ($SIDUSIS_LINKTECHNOLOGIES as $linktype => &$linktechnologies) {
+            foreach ($linktechnologies as $linktechnology_idx => $linktechnology) {
+                if (!isset($allowed_link_technologies[$linktechnology_idx])) {
+                    unset($linktechnologies[$linktechnology_idx]);
+                }
+            }
+            if (empty($linktechnologies)) {
+                unset($SIDUSIS_LINKTECHNOLOGIES[$linktype]);
+            }
+        }
+        unset($linktechnologies);
+    }
+}
 
 $LINKSPEEDS = array(
     10000       => trans('10Mbit/s'),

@@ -188,13 +188,13 @@
 							<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodelinkradiosector} selected{/if}>{$radiosector.name}</OPTION>
 						{/foreach}
 					</SELECT>
-					<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"}
+					<select name="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"}
 							onchange="change_nodelinktype(this.options[this.selectedIndex].value)"
 							form="connectnode-form">
-						{foreach from=$_LINKTYPES item=item key=key}
-							<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
+						{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+							<option value="{$linktype}"{if $linktype == $nodelinktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 						{/foreach}
-					</SELECT>
+					</select>
 					{if !isset($nodelinktype)}{$devnodeslinktype = 0}{else}{$devnodeslinktype = $nodelinktype}{/if}
 					<SELECT NAME="linktechnology" id="devnodeslinktechnology"
 							{tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology()"
