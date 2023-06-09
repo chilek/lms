@@ -519,6 +519,8 @@ version 28-git (????-??-??):
     used) [chilan]
   - enhancement: 'teryt.building_base_provider' with 'gugik' as default value allows to permanently
     specify building base provider which should be used [chilan]
+  - enhancement: 'phpui.allowed_link_technologies' and 'sidusis.allowed_link_technologies' with default
+    empty values allow to limit link technology selection lists in user interface [chilan]
 
 version 27.0 (2021-08-20):
 
