@@ -319,6 +319,7 @@
 			} else {
 				select.val($(this).attr('data-old-userid'));
 			}
+			updateAdvancedSelects(select);
 		});
 
 		$('body').on('change', '.template-selector', function() {
