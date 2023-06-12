@@ -904,8 +904,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     if ($diffdays > 0) {
                         $month_days = date('d', mktime(0, 0, 0, $month + 1, 0, $year));
-                        $v = $diffdays * $discounted_val / $month_days;
                         if (!empty($lid) || $value != 'NULL') {
+                            $v = $diffdays * $discounted_val / $month_days;
                             $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 3));
                         }
                         $partial_datefrom = $prevperiod;

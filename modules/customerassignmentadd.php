@@ -92,12 +92,12 @@ if (isset($_POST['assignment'])) {
         $LMS->UpdateExistingAssignments($a);
 
         if (isset($a['sassignmentid'][$schemaid]) && is_array($a['sassignmentid'][$schemaid])) {
-            $modifiedvalues = $a['values'][$schemaid];
+            $modifiedvalues = isset($a['values'][$schemaid]) ? $a['values'][$schemaid] : array();
             $counts = $a['counts'][$schemaid];
             $backwardperiods = $a['backwardperiods'][$schemaid];
             $copy_a = $a;
-            $snodes = $a['snodes'][$schemaid];
-            $sphones = $a['sphones'][$schemaid];
+            $snodes = isset($a['snodes'][$schemaid]) ? $a['snodes'][$schemaid] : array();
+            $sphones = isset($a['sphones'][$schemaid]) ? $a['sphones'][$schemaid] : array();
 
             foreach ($a['sassignmentid'][$schemaid] as $label => $v) {
                 if (!$v) {
@@ -108,8 +108,8 @@ if (isset($_POST['assignment'])) {
                 $copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
                 $copy_a['count'] = $counts[$label];
                 $copy_a['backwardperiod'] = $backwardperiods[$label][$v];
-                $copy_a['nodes'] = $snodes[$label];
-                $copy_a['phones'] = $sphones[$label];
+                $copy_a['nodes'] = isset($snodes[$label]) ? $snodes[$label] : array();
+                $copy_a['phones'] = isset($sphones[$label]) ? $sphones[$label] : array();
                 $tariffid = $LMS->AddAssignment($copy_a);
             }
         } else {
