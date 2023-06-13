@@ -1171,6 +1171,7 @@ if ($report_type == 'full') {
                     n.linktype,
                     n.linktechnology,
                     a.city_id AS location_city,
+                    a.street AS location_street_name,
                     a.street_id AS location_street,
                     a.house AS location_house,
                     0 AS from_uni_link
@@ -1181,7 +1182,7 @@ if ($report_type == 'full') {
                     " . ($division ? ' AND c.divisionid = ' . $division : '') . "
                     AND a.city_id IS NOT NULL
                     AND n.netdev IN ?
-                GROUP BY n.linktype, n.linktechnology, a.city_id, a.street_id, a.house",
+                GROUP BY n.linktype, n.linktechnology, a.city_id, a.street, a.street_id, a.house",
                 array(
                     $netnode['netdevices'],
                 )
@@ -1275,6 +1276,7 @@ if ($report_type == 'full') {
                             AND n.linktype = ?
                             AND n.linktechnology = ?
                             AND addr.city_id = ?
+                            " . (empty($range['location_street_name']) ? '' : ' AND addr.street = ' . $DB->Escape($range['location_street_name'])) . "
                             AND (addr.street_id = ? OR addr.street_id IS NULL)
                             AND addr.house = ?
                             AND a.commited = 1
