@@ -265,9 +265,17 @@ if (isset($_GET['ticketid'])) {
             $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
             $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
+            // Don't notify verifier adding note
+            $currentuser = Auth::GetCurrentUser();
+            if (empty($note['verifierid'])
+                || $props['verifierid'] == $currentuser
+                || $note['verifierid'] == $currentuser) {
+                $note['verifierid'] = null;
+            }
+
             $LMS->NotifyUsers(array(
                 'queue' => $queue['id'],
-                'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
+                'verifierid' => $note['verifierid'],
                 'mail_headers' => $headers,
                 'mail_body' => $body,
                 'sms_body' => $sms_body,
