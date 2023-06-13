@@ -514,9 +514,17 @@ if (isset($_POST['message'])) {
                     $params['contenttype'] = 'text/plain';
                     $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('rt.notification_sms_body', ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body')), $params);
 
+                    // Don't notify verifier adding message
+                    $currentuser = Auth::GetCurrentUser();
+                    if (empty($message['verifierid'])
+                        || $props['verifierid'] == $currentuser
+                        || $message['verifierid'] == $currentuser) {
+                        $message['verifierid'] = null;
+                    }
+
                     $LMS->NotifyUsers(array(
                         'queue' => $queue['id'],
-                        'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
+                        'verifierid' => $message['verifierid'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
                         'sms_body' => $sms_body,
