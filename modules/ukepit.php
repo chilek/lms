@@ -311,7 +311,7 @@ function radioTransmissionNameByTechnology($technology)
  */
 function networkSpeedCode($speed)
 {
-    $speed = round($speed / 1000, 2);
+    $speed = round($speed / $GLOBALS['speed_unit_type'], 2);
 
     if ($speed <= 2) {
         return '01';
@@ -382,6 +382,10 @@ $customers = array();
 
 $report_type = isset($_POST['report-type']) && $_POST['report-type'] == 'customer-services' ? 'customer-services' : 'full';
 
+$speed_unit_type = intval(ConfigHelper::getConfig('phpui.speed_unit_type', 1000));
+if (!$speed_unit_type) {
+    $speed_unit_type = 1000;
+}
 $root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
 
 if ($report_type == 'full' && empty($root_netdevice_id)) {
@@ -2097,7 +2101,7 @@ if ($report_type == 'full') {
                             $service_name[] = 'TEL';
                         }
 
-                        $service_name[] = round($range['downstream'] / 1000);
+                        $service_name[] = round($range['downstream'] / $speed_unit_type);
 
                         if (isset($range_keys[$range_key])) {
                             $range_keys[$range_key]++;
@@ -2210,7 +2214,7 @@ if ($report_type == 'full') {
                 $service_name[] = 'TEL';
             }
 
-            $service_name[] = round($range['downstream'] / 1000);
+            $service_name[] = round($range['downstream'] / $speed_unit_type);
 
             $data = array(
                 'ua01_id_punktu_adresowego' => $aggregate_customer_services ? $range_key : ($range_key + 1),
@@ -2326,7 +2330,7 @@ if ($report_type == 'full') {
 
                     if (!isset($processed_netlinks[$netnodelinkid])) {
                         $linkspeed = $netlink['speed'];
-                        $speed = floor($linkspeed / 1000);
+                        $speed = floor($linkspeed / $speed_unit_type);
 
                         if ($netlink['src'] == $netdevice['id']) {
                             if ($netdevnetnode != $dstnetnode) {
@@ -2453,7 +2457,7 @@ if ($report_type == 'full') {
                             'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
                             'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
                             'lb07_system_transmisyjny' => radioTransmissionNameByTechnology($technology),
-                            'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * 1000),
+                            'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * $speed_unit_type),
                             'lb09_mozliwosc_udostepnienia' => 'Nie',
                         );
 
