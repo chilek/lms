@@ -39,7 +39,7 @@
 	{include file="node/routednetworks.html"}
 {/block}
 {block name="transactions"}
-	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkPrivilege('privileges.transaction_logs'))}
+	{if ConfigHelper::checkConfig('logs.enabled') && (ConfigHelper::checkPrivilege('privileges.transaction_logs'))}
 		{include file="transactions.html"}
 	{/if}
 {/block}

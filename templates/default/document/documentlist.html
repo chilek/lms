@@ -4,10 +4,29 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 
+{$default_all_attachments = ConfigHelper::checkConfig('documents.default_all_attachments')}
+
 <style>
 
 	#usertype {
 		margin-right: 0.8em;
+	}
+
+	#buttons tr:first-child td {
+		padding-bottom: 0.15em;
+	}
+
+	#buttons tr:not(:first-child):not(:last-child) td {
+		padding-top: 0.15em;
+		padding-bottom: 0.15em;
+	}
+
+	#buttons tr:last-child td {
+		padding-top: 0.15em;
+	}
+
+	#buttons tr td > *:not(:first-child) {
+		margin-left: 0.3em;
 	}
 
 </style>
@@ -15,7 +34,7 @@
 <script>
 
 	{if $docid}
-	window.open('?m=documentview&id={$docid}');
+	window.open('?m=documentview&id={$docid}{if $attachments}&attachments=1{/if}');
 	{/if}
 
 	function toggle_all_attachments(docid) {
@@ -77,7 +96,7 @@
 					<input type="hidden" name="t[]" value="0">
 					<label>
 						{trans("Type:")}
-						<select size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect"
+						<select size="1" name="t[]" multiple class="lms-ui-multiselect"
 							data-default-value="{trans("— all —")}">
 							{foreach Localisation::arraySort($_DOCTYPES) as $key => $item}
 								{if $key < 0}
@@ -90,7 +109,7 @@
 					<input type="hidden" name="service[]" value="0">
 					<label>
 						{trans("Service:")}
-						<SELECT size="1" name="service[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
+						<SELECT size="1" name="service[]" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 							{foreach $_SERVICETYPES as $key => $item}
 							<OPTION VALUE="{$key}"{if is_array($filter.service) && in_array($key, $filter.service)} selected{/if}>{$item}</OPTION>
 							{/foreach}
@@ -103,14 +122,14 @@
 							<input type="hidden" name="usertype" value="">
 							<input type="hidden" name="u[]" value="0">
 						{else}
-							<select name="usertype" id="usertype" onChange="javascript:applyFilter();">
+							<select name="usertype" id="usertype">
 								<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
 								<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
 								<option value="archiver"{if empty($filter.usertype) || $filter.usertype == 'archiver'} selected{/if}>{trans("archiver")}</option>
 							</select>
 
 							<input type="hidden" name="u[]" value="0">
-							<select name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
+							<select name="u[]" multiple class="lms-ui-multiselect" data-default-value="{trans("— all —")}">
 								{foreach $users as $user}
 								<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name|escape}</option>
 								{/foreach}
@@ -121,7 +140,7 @@
 
 					<label>
 						{trans("Period:")}
-						<SELECT name="periodtype" onChange="javascript:applyFilter();">
+						<SELECT name="periodtype">
 							<OPTION value="creationdate"{if empty($filter.periodtype) || $filter.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
 							<OPTION value="confirmationdate"{if $filter.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
 							<OPTION value="archivizationdate"{if $filter.periodtype == 'archivizationdate'} selected{/if}>{trans("archivization date")}</OPTION>
@@ -135,19 +154,17 @@
 						<span>{trans("from")}</span>
 						<input type="text" name="from" size="10" maxlength="10"
 							value="{if $filter.from > 0}{$filter.from|date_format:"Y/m/d"}{/if}"
-							onChange="javascript:applyFilter();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 						<span>{trans("to")}</span>
 						<input type="text" name="to" size="10" maxlength="10"
 							value="{if $filter.to > 0}{$filter.to|date_format:"Y/m/d"}{/if}"
-							onChange="javascript:applyFilter();"
 							{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 					</span>
 
 					{if $numberplans|size}
 						<label>
 							{trans("Number plan:")}
-							<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
+							<SELECT name="p" {tip text="Select numbering plan"}>
 								<OPTION value="0">{trans("— all —")}</OPTION>
 								{foreach $numberplans as $plan}
 								{$period = $plan.period}
@@ -161,12 +178,12 @@
 
 					<label>
 						{trans("Status:")}
-						<SELECT name="s" onChange="javascript:applyFilter();" {tip text="Select document status"}>
+						<SELECT name="s" {tip text="Select document status"}>
 							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 							<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
-							<OPTION value="4"{if $filter.status == 4} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
-							<OPTION value="5"{if $filter.status == 5} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
+							<OPTION value="4"{if $filter.status == 5} selected{/if}>{trans("confirmed (signed document scan)")}</OPTION>
+							<OPTION value="5"{if $filter.status == 4} selected{/if}>{trans("confirmed (sms authorization)")}</OPTION>
 							<OPTION value="2"{if $filter.status == 2} selected{/if}>{trans("review (signed document scan)")}</OPTION>
 							<OPTION value="3"{if $filter.status == 3} selected{/if}>{trans("waiting for signed document scan")}</OPTION>
 						</SELECT>
@@ -174,7 +191,7 @@
 
 					<label>
 						{trans("Archived:")}
-						<SELECT name="archived" onChange="javascript:applyFilter();" {tip text="Select document archived state"}>
+						<SELECT name="archived" {tip text="Select document archived state"}>
 							<OPTION value="-1">{trans("— all —")} </OPTION>
 							<OPTION value="1"{if $filter.archived == 1} selected{/if}>{trans("yes")}</OPTION>
 							<OPTION value="0"{if $filter.archived == 0} selected{/if}>{trans("no")}</OPTION>
@@ -200,10 +217,15 @@
 	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
+	{if empty($doc.attachments)}
+		{$doc.attachments = array()}
+	{/if}
+	{$docattach = reset($doc.attachments)}
+	{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
 	<TR class="highlight{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}" data-archived="{if $doc.archived}1{else}0{/if}" data-closed="{if $doc.closed}1{else}0{/if}"
 		data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}"
 		data-popup-menu-title="{t a=$doc.docid|string_format:"#%06d"}Document $a{/t}">
-		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
+		<TD class="nobr" data-target-url="{$url}"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 			{if $doc.closed == $smarty.const.DOC_OPEN && $doc.confirmdate}
 				{hint text=$doc.confirmdate|date_format:"Y-m-d H:i" icon="wait"}
@@ -212,19 +234,19 @@
 				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
 			{/if}
 		</TD>
-		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+		<TD class="nobr" data-target-url="{$url}">
 			{$doc.username|escape}
 			{if $doc.cuserid} / {$doc.cusername|escape}{/if}
-			{if $doc.closed == 3}
+			{if $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SMS}
 				{if !$doc.cuserid}
 					{icon name="sms" tip="customer has accepted document via sms"}
 				{/if}
-			{elseif $doc.closed == 2}
+			{elseif $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SCAN}
 				{icon name="sign" tip="attached document scans with customer signature"}
 			{/if}
 			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
 		</TD>
-		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+		<TD class="nobr" data-target-url="{$url}">
 			{$doc.title|truncate:40:"&hellip;":true}
 			{if $doc.description}
 				{hint icon="info" content=$doc.description|escape|replace:"\n":'<br>'}
@@ -238,10 +260,11 @@
 				{t a=$_DOCTYPES[$doc.reference.type] b=$doc.reference.fullnumber c=$doc.reference.cdate|date_format:"Y-m-d"}$a no. $b issued on $c{/t}
 			</a>
 			{/if}
+            {block name="documentlistpluginreference"}
+            {/block}
 		</TD>
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"&hellip;":true}</A></TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			{$docattach = $doc.attachments[0]}
 			{buttons}
 				{if $doc.senddocuments}
 					{textformat assign="tip" wrap=5000}
@@ -267,8 +290,8 @@
 					{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 				{/if}
 				{if $docattach.type == 1 || $doc.attachments|size == 1}
-					{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-						url="?m=documentview&id={$doc.docid}" external=true
+					{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+						url=$url external=true
 						text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"
 						tip="Preview"}
 				{/if}
@@ -281,7 +304,7 @@
 			<div id="allattachments-{$doc.docid}" style="display: none;">
 				{foreach $doc.attachments as $docattach}
 					{if $docattach@first && $docattach.type == 1}{continue}{/if}
-					{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+					{documentview id="local-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 						url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
 						text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
 					{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
@@ -311,11 +334,10 @@
 	<TR>
 		<TD COLSPAN="5">
 			{if $documentlist|size}
-			<TABLE WIDTH="100%">
+			<TABLE WIDTH="100%" id="buttons">
 				<TR>
 					<TD class="nobr">
 						{button icon="mail" label="Send documents" id="send-documents"}
-						{button icon="print" label="Print" id="print-documents"}
 						{button icon="confirm" label="Confirm" id="confirm-documents"}
 						{button icon="archive" label="Archive" id="archive-documents"}
 						{button icon="delete" label="Delete" id="delete-documents"}
@@ -327,6 +349,29 @@
 						</label>
 					</TD>
 				</TR>
+				<tr>
+					<td colspan="2">
+						<fieldset>
+							{button icon="print" label="Print" id="print-documents"}
+							<label>
+								<input type="checkbox" name="attachments" value="1" form="page-form">
+								{trans("attachments")}
+							</label>
+							<label>
+								<input type="checkbox" name="related" value="1" form="page-form">
+								{trans("related documents")}
+							</label>
+							<select name="related_documents[]" form="page-form"  multiple class="lms-ui-multiselect"}
+									data-default-value="{trans("- all -")}" data-shorten-to-default-value="false">
+								{foreach Localisation::arraySort($_DOCTYPES) as $key => $related_document}
+									{if $key < 0}
+									<option value="{$key}">{$related_document}</option>
+									{/if}
+								{/foreach}
+							</select>
+						</fieldset>
+					</td>
+				</tr>
 			</TABLE>
 			{/if}
 		</TD>

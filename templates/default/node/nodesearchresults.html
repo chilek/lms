@@ -125,13 +125,13 @@
 										{/foreach}
 									</select>
 									<select id="linktype" onchange="change_linktype(this.options[this.selectedIndex].value)">
-										{foreach from=$_LINKTYPES item=item key=key}
-										<option value="{$key}">{$item}</option>
+										{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+											<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 										{/foreach}
 									</select>
 									<select id="linktechnology">
 										<option value="0">{trans("— unknown —")}</option>
-										{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+										{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE] as $linktechnologyidx => $linktechnology}
 										<option value="{$linktechnologyidx}">{$linktechnology}</option>
 										{/foreach}
 									</select>
@@ -269,18 +269,18 @@
 			options.remove(0);
 		options.add(new Option('{trans("— unknown —")}', 0));
 		switch (linktype) {
-			case 0:
-				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+			case {$smarty.const.LINKTYPE_WIRE}:
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
-			case 1:
-				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+			case {$smarty.const.LINKTYPE_WIRELESS}:
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRELESS] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
-			case 2:
-				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+			case {$smarty.const.LINKTYPE_FIBER}:
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_FIBER] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;

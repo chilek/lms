@@ -5,7 +5,7 @@ use PragmaRX\Google2FA\Google2FA;
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,6 +38,7 @@ class Auth
     public $nousers = false;
     public $passverified = false;
     public $hostverified = false;
+    public $trustedhost = false;
     public $access = false;
     public $accessfrom = false;
     public $accessto = false;
@@ -152,7 +153,11 @@ class Auth
                     $this->SYSLOG->AddMessage(
                         SYSLOG::RES_USER,
                         SYSLOG::OPER_USERLOGIN,
-                        array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT'])
+                        array(
+                            SYSLOG::RES_USER => $this->id,
+                            'ip' => $this->ip,
+                            'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+                        )
                     );
                 }
             }
@@ -293,16 +298,12 @@ class Auth
         }
     }
 
-    public function VerifyHost($hosts = '')
+    private function verifyAddressList($addresslist = '')
     {
-        if (!$hosts) {
-            return true;
-        }
-
-        $allowedlist = explode(',', $hosts);
+        $addresslist = preg_split("/([\s]+|[\s]*,[\s]*)/", $addresslist, -1, PREG_SPLIT_NO_EMPTY);
         $isin = false;
 
-        foreach ($allowedlist as $value) {
+        foreach ($addresslist as $value) {
             $net = '';
             $mask = '';
 
@@ -326,8 +327,34 @@ class Auth
             }
         }
 
-        $this->error = trans('Access denied!');
         return false;
+    }
+
+    public function VerifyHost($hosts = '')
+    {
+        if (!$hosts) {
+            return true;
+        }
+
+        if ($this->verifyAddressList($hosts)) {
+            return true;
+        } else {
+            $this->error = trans('Access denied!');
+            return false;
+        }
+    }
+
+    public function verifyTrustedHost($hosts = '')
+    {
+        if (!$hosts) {
+            return false;
+        }
+
+        if ($this->verifyAddressList($hosts)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function VerifyDivision($userid)
@@ -342,11 +369,11 @@ class Auth
 
     public function SwitchUser($userid = null)
     {
-        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+        if (((isset($this->targetLogin) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
                 passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
                 twofactorauth, twofactorauthsecretkey
             FROM vusers WHERE login = ? AND deleted = 0', array($this->targetLogin))) !== null)
-                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+                || (isset($userid) && ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
                 passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
                 twofactorauth, twofactorauthsecretkey
             FROM vusers WHERE id = ? AND deleted = 0', array($userid))) !== null))
@@ -375,7 +402,7 @@ class Auth
     {
         $this->islogged = false;
 
-        if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
+        if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, trustedhosts, lastlogindate, lastloginip,
 				passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
 				twofactorauth, twofactorauthsecretkey
 			FROM vusers WHERE login=? AND deleted=0', array($this->login))) {
@@ -456,17 +483,18 @@ class Auth
                 } else {
                     $this->passverified = $this->VerifyPassword($user['passwd']);
                     $this->hostverified = $this->VerifyHost($user['hosts']);
+                    $this->trustedhost = $this->verifyTrustedHost($user['trustedhosts']);
                     $this->access = $this->VerifyAccess($user['access']);
                     $this->accessfrom = $this->VerifyAccessFrom($user['accessfrom']);
                     $this->accessto = $this->VerifyAccessTo($user['accessto']);
-                    if (empty($user['twofactorauth']) || empty($user['twofactorauthsecretkey'])) {
+                    if ($this->trustedhost || empty($user['twofactorauth']) || empty($user['twofactorauthsecretkey'])) {
                         $this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
                     } else {
                         $this->islogged = ($this->hostverified && $this->access && $this->accessfrom && $this->accessto);
                         $this->SESSION->save('session_passverified', $this->passverified);
                     }
 
-                    if ($this->islogged && !empty($user['twofactorauth']) && !empty($user['twofactorauthsecretkey'])) {
+                    if ($this->islogged && !$this->trustedhost && !empty($user['twofactorauth']) && !empty($user['twofactorauthsecretkey'])) {
                         if ($this->isTrustedDevice() && $this->passverified) {
                             $this->authcoderequired = '';
                         } else {

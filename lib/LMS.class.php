@@ -888,6 +888,11 @@ class LMS
         return $manager->changeCustomerType($id, $type);
     }
 
+    public function changeCustomerStatus($id, $status)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->changeCustomerStatus($id, $status);
+    }
     public function getCustomerCalls(array $params)
     {
         $manager = $this->getCustomerManager();
@@ -936,16 +941,40 @@ class LMS
         return $manager->getCustomerModificationInfo($customerid);
     }
 
-    public function getCustomerExternalIDs($customerid, $serviceproviderid = null)
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null, $serviceprovidersonly = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerExternalIDs($customerid, $serviceproviderid);
+        return $manager->getCustomerExternalIDs($customerid, $serviceproviderid, $serviceprovidersonly);
+    }
+
+    public function addCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->addCustomerExternalID($customerid, $extid, $serviceproviderid);
+    }
+
+    public function updateCustomerExternalID($customerid, $extid, $oldextid, $serviceproviderid, $oldserviceproviderid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerExternalID($customerid, $extid, $oldextid, $serviceproviderid, $oldserviceproviderid);
     }
 
     public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false)
     {
         $manager = $this->getCustomerManager();
         return $manager->updateCustomerExternalIDs($customerid, $customerextids, $only_passed_service_providers);
+    }
+
+    public function deleteCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->deleteCustomerExternalID($customerid, $extid, $serviceproviderid);
+    }
+
+    public function getServiceProviders()
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getServiceProviders();
     }
 
     /*
@@ -1445,7 +1474,7 @@ class LMS
         return $manager->ValidateAssignment($data);
     }
 
-    public function CheckSchemaModifiedValues($data)
+    public function CheckSchemaModifiedValues(&$data)
     {
         $manager = $this->getFinanceManager();
         return $manager->CheckSchemaModifiedValues($data);
@@ -1575,6 +1604,67 @@ class LMS
     {
         $manager = $this->getFinanceManager();
         return $manager->TariffExists($id);
+    }
+
+    /**
+     * Returns tariff price variant manager
+     *
+     * @return LMSTariffPriceVariantManagerInterface price variant manager
+     */
+    protected function LMSTariffPriceVariantManager()
+    {
+        if (!isset($this->tariff_price_variant_manager)) {
+            $this->tariff_price_variant_manager = new LMSTariffPriceVariantManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->tariff_price_variant_manager;
+    }
+
+    public function addTariffPriceVariant($params)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->addTariffPriceVariant($params);
+    }
+
+    public function updateTariffPriceVariant($params)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->updateTariffPriceVariant($params);
+    }
+
+    public function delTariffPriceVariant($tariff_price_variant_id)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->delTariffPriceVariant($tariff_price_variant_id);
+    }
+
+    public function getTariffPriceVariant($tariff_price_variant_id)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->getTariffPriceVariant($tariff_price_variant_id);
+    }
+
+    public function getTariffPriceVariantByQuantityThreshold($tariff_id, $quantity_threshold)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->getTariffPriceVariantByQuantityThreshold($tariff_id, $quantity_threshold);
+    }
+
+    public function getTariffPriceVariants($tariff_id)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->getTariffPriceVariants($tariff_id);
+    }
+
+    public function checkTariffQuantityThresholdExists($tariff_id, $quantity_threshold)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->checkTariffQuantityThresholdExists($tariff_id, $quantity_threshold);
+    }
+
+    public function recalculateTariffPriceVariants($tariff, $calculation_method)
+    {
+        $manager = $this->LMSTariffPriceVariantManager();
+        return $manager->recalculateTariffPriceVariants($tariff, $calculation_method);
     }
 
     public function ReceiptDelete($docid)
@@ -2493,10 +2583,10 @@ class LMS
         return $manager->IsTicketLoop($ticketid, $parentid);
     }
 
-    public function GetRTSmtpOptions()
+    public function GetRTSmtpOptions($config_section = 'rt')
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetRTSmtpOptions();
+        return $manager->GetRTSmtpOptions($config_section);
     }
 
     public function CopyQueuePermissions($src_userid, $dst_userid)
@@ -3196,7 +3286,7 @@ class LMS
 
         // message ID must be unique
         if (!$messageid) {
-            $messageid = '0.' . time();
+            $messageid = '0.' . microtime(true);
         }
 
         $message = preg_replace("/\r/", "", $message);
@@ -3643,10 +3733,28 @@ class LMS
         return $manager->getDocumentReferences($docid, $cashid);
     }
 
+    public function getReferencedDocument($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getReferencedDocument($docid);
+    }
+
+    public function getReferencingDocuments($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getReferencingDocuments($docid);
+    }
+
     public function getDocumentType($docid)
     {
         $manager = $this->getDocumentManager();
         return $manager->getDocumentType($docid);
+    }
+
+    public function getDocumentFullNumber($docid)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->getDocumentFullNumber($docid);
     }
 
     /*
@@ -4005,10 +4113,10 @@ class LMS
      * End VoIP functions
      */
 
-    public function GetCustomerVoipAccounts($id)
+    public function GetCustomerVoipAccounts($id, $extid = null, $serviceproviderid = null)
     {
         $manager = $this->getVoipAccountManager();
-        return $manager->getCustomerVoipAccounts($id);
+        return $manager->getCustomerVoipAccounts($id, $extid, $serviceproviderid);
     }
 
     public function GetConfigSections()
@@ -4944,7 +5052,11 @@ class LMS
         $day = sprintf('%02d', intval(date('d', $currtime)));
         $year = sprintf('%04d', intval(date('Y', $currtime)));
 
-        $from = $sender_email;
+        if (empty($dsn_email)) {
+            $from = $sender_email;
+        } else {
+            $from = $dsn_email;
+        }
 
         if (!empty($sender_name)) {
             $from = qp_encode($sender_name) . " <$from>";
@@ -4994,6 +5106,24 @@ class LMS
 
             list ($now_y, $now_m) = explode('/', date('Y/m', time()));
 
+            $alternative_accounts = $document['document']['bankaccounts'];
+
+            if (empty($use_only_alternative_accounts) || empty($alternative_accounts)) {
+                $accounts = array(bankaccount($doc['customerid'], $document['document']['account']));
+            } else {
+                $accounts = array();
+            }
+
+            if (!empty($use_all_accounts) || !empty($use_only_alternative_accounts)) {
+                $accounts = array_merge($accounts, $alternative_accounts);
+            }
+            foreach ($accounts as &$account) {
+                $account = format_bankaccount($account);
+            }
+            unset($account);
+
+            $all_accounts = implode(isset($mail_format) && $mail_format == 'text' ? "\n" : '<br>', $accounts);
+
             $body = str_replace(
                 array(
                     '%invoice',
@@ -5022,7 +5152,7 @@ class LMS
                     $commented_balance,
                     $year . '-' . $month . '-' . $day,
                     "\n",
-                    format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])),
+                    $all_accounts,
                     date('Y', $deadline),
                     date('m', $deadline),
                     date('d', $deadline),
@@ -5122,7 +5252,7 @@ class LMS
                 }
 
                 $headers = array(
-                    'From' => empty($dsn_email) ? $from : $dsn_email,
+                    'From' => $from,
                     'To' => $mailto_qp_encoded,
                     'Recipient-Name' => $doc['name'],
                     'Subject' => $subject,
@@ -5256,7 +5386,7 @@ class LMS
                     if (is_string($res)) {
                         $msg = trans('Error sending mail: $a', $res);
                         if ($type == 'backend') {
-                            fprintf(STDERR, $msg . $eol);
+                            fwrite(STDERR, $msg . $eol);
                         } else {
                             echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
                             flush();

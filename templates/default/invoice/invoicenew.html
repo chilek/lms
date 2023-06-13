@@ -30,7 +30,8 @@
 </script>
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 {if isset($customer.id)}
 	{$customerid = $customer.id}
@@ -265,23 +266,23 @@
 				<tr>
 					<td colspan="10">
 						{icon name="money"}
-						{trans("Invoiceless liabilities:")}
+						{trans("Invoiceless liabilities")}
 					</td>
 				</tr>
 				<tr>
-					<td scope="col">{trans("Date:")}</td>
-					<td scope="col">{trans("Name of product, commodity or service:")}</td>
+					<td scope="col">{trans("Date")}</td>
+					<td scope="col">{trans("Name of product, commodity or service")}</td>
 					<td scope="col" class="nobr">
 						{trans("Type")}
 						<br>
-						{trans("Tax Category:")}
+						{trans("Tax Category")}
 					</td>
-					<td scope="col" class="text-right nobr">{trans("Product ID:")}</td>
-					<td scope="col" class="text-right">{trans("Amount:")}</td>
-					<td scope="col" class="text-right">{trans("Unit:")}</td>
-					<td scope="col" class="text-right nobr">{trans("Net Value:")}</td>
-					<td scope="col" class="text-right nobr">{trans("Tax:")}</td>
-					<td scope="col" class="text-right nobr">{trans("Gross Value:")}</td>
+					<td scope="col" class="text-right nobr">{trans("Product ID")}</td>
+					<td scope="col" class="text-right">{trans("Amount")}</td>
+					<td scope="col" class="text-right">{trans("Unit")}</td>
+					<td scope="col" class="text-right nobr">{trans("Net Value")}</td>
+					<td scope="col" class="text-right nobr">{trans("Tax")}</td>
+					<td scope="col" class="text-right nobr">{trans("Gross Value")}</td>
 					<td scope="col">&nbsp;</td>
 				</tr>
 			</thead>

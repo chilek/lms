@@ -273,10 +273,22 @@ if (isset($_POST['tariff'])) {
 
     if (!$error) {
         $LMS->TariffUpdate($tariff);
+
+        $SESSION->restore('tariff_netflag', $netflag, true);
+        $SESSION->restore('tariff_taxid', $taxid, true);
+        if (!isset($tariff['netflag'])) {
+            $tariff['netflag'] = 0;
+        }
+        if ($netflag != $tariff['netflag'] || $taxid != $tariff['taxid']) {
+            $calculation_method = !empty($tariff['netflag']) ? 'from_net' : 'from_gross';
+            $LMS->recalculateTariffPriceVariants($tariff, $calculation_method);
+        }
         $SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);
     }
 
-    $tariff['tags'] = array_flip($tariff['tags']);
+    if (!empty($tariff['tags'])) {
+        $tariff['tags'] = array_flip($tariff['tags']);
+    }
 } else {
     $tariff = $LMS->GetTariff($_GET['id']);
 
@@ -294,6 +306,9 @@ if (isset($_POST['tariff'])) {
     if ($tariff['datefrom']) {
         $tariff['datefrom'] = date('Y/m/d', $tariff['datefrom']);
     }
+
+    $SESSION->save('tariff_netflag', $tariff['netflag'], true);
+    $SESSION->save('tariff_taxid', $tariff['taxid'], true);
 }
 
 $layout['pagetitle'] = trans('Subscription Edit: $a', $tariff['name']);

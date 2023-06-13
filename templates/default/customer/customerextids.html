@@ -1,0 +1,50 @@
+<!--// $Id$ //-->
+{css}
+
+<script>
+    const customerId = '{$customerinfo.id}';
+</script>
+
+<form id="customerextidadd" name="customerextidadd"></form>
+
+{tab_container id="customerextids" label="IDs in external systems"}
+    {tab_header content_id="customerextidspanel"}
+        {tab_header_cell icon="lms-ui-icon-cash"}
+            <strong>{t}IDs in external systems{/t}</strong>
+        {/tab_header_cell}
+    {/tab_header}
+
+    {tab_contents id="customerextidspanel"}
+        {tab_table id="customerextidtable"}
+            {include file="customer/customerextidlist.html"}
+        {/tab_table}
+
+        {tab_button_panel id="add-management-customer-extid"}
+            {tab_buttons}
+                <div>
+                    <strong>{trans("ID in external system")}</strong>
+                    <input type="text" size="10" form="customerextidadd" name="ext_id" id="customer-extid-ext_id" class="customer-extid-edit-field"
+                           value="" required>
+                </div>
+
+                <div id="add-extid-providerid">
+                    <strong>{trans("Service provider")}</strong>
+                </div>
+
+                {button type="link" icon="save" id="customer-extid-add-button"
+                    onclick="javascript:addManagementCustomerExtid();"}
+                {button type="link" icon="cancel"
+                    onclick="javascript:hideAddManagementCustomerExtid();"}
+            {/tab_buttons}
+        {/tab_button_panel}
+
+        {tab_button_panel id="customer-extid-buttons"}
+            {tab_buttons}
+            {button id="customerextidslink" onclick="javascript:showAddManagementCustomerExtid();"
+            icon="add" label="Add"}
+            {/tab_buttons}
+        {/tab_button_panel}
+    {/tab_contents}
+{/tab_container}
+
+{js}

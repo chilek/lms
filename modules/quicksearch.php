@@ -26,41 +26,15 @@
 
 function macformat($mac, $escape = false)
 {
-    global $DB;
+    $DB = LMSDB::getInstance();
 
-    $res = str_replace('-', ':', $mac);
-
-    // allow eg. format "::ab:3::12", only whole addresses
-    if (preg_match('/^([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2}):([0-9a-f]{0,2})$/i', $mac, $arr)) {
-        $res = '';
-        for ($i=1; $i<=6; $i++) {
-            if ($i > 1) {
-                $res .= ':';
-            }
-            if (strlen($arr[$i]) == 1) {
-                $res .= '0';
-            }
-            if (strlen($arr[$i]) == 0) {
-                $res .= '00';
-            }
-
-            $res .= $arr[$i];
-        }
-    } else // other formats eg. cisco xxxx.xxxx.xxxx or parts of addresses
-    {
-        $tmp = preg_replace('/[^0-9a-f]/i', '', $mac);
-
-        if (strlen($tmp) == 12) { // we've the whole address
-            if (check_mac($tmp)) {
-                $res = $tmp;
-            }
-        }
-    }
+    $mac = preg_replace('/[\-:\.]/', '', $mac);
 
     if ($escape) {
-        $res = $DB->Escape("%$res%");
+        return $DB->Escape('%' . $mac . '%');
+    } else {
+        return $mac;
     }
-    return $res;
 }
 
 $mode = '';
@@ -434,22 +408,22 @@ switch ($mode) {
             // MySQL is slow here when vnodes view is used
             if (ConfigHelper::getConfig('database.type') == 'postgres') {
                 $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, location, access, lastonline
-				    FROM vnodes n
-				    WHERE %where
-    				ORDER BY n.name LIMIT ?';
+                    INET_NTOA(ipaddr_pub) AS ip_pub, mac, location, access, lastonline
+                    FROM vnodes n
+                    WHERE %where
+                    ORDER BY n.ipaddr LIMIT ?';
             } else {
                 $sql_query = 'SELECT n.id, n.name, n.login, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, va.location, access, lastonline
-				    FROM nodes n
-				    JOIN (
+                    INET_NTOA(ipaddr_pub) AS ip_pub, mac, va.location, access, lastonline
+                    FROM nodes n
+                    JOIN (
                         SELECT nodeid, GROUP_CONCAT(mac SEPARATOR \',\') AS mac
                         FROM macs
                         GROUP BY nodeid
                     ) m ON (n.id = m.nodeid)
                     LEFT JOIN vaddresses va ON va.id = n.address_id
-				    WHERE %where
-    				ORDER BY n.name LIMIT ?';
+                    WHERE %where
+                    ORDER BY n.ipaddr LIMIT ?';
             }
 
             $sql_where = '('
@@ -458,7 +432,7 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['login']) ? " OR LOWER(n.login) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['ip']) ? " OR INET_NTOA(ipaddr) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['public_ip']) ? " OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search" : '')
-                . (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '')
+                . (empty($properties) || isset($properties['mac']) ? " OR LOWER(REPLACE(mac, ':', '')) ?LIKE? LOWER(" . macformat($search, true) . ')' : '')
                 . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(location) ?LIKE? LOWER($sql_search)" : '') . "
 				)
 			    AND NOT EXISTS (
@@ -506,10 +480,10 @@ switch ($mode) {
                         $description = trans('IP') . ': ' . $row['ip_pub'];
                     } else if ((empty($properties) || isset($properties['location_address'])) && isset($row['location']) && preg_match("~$search~i", $row['location'])) {
                         $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
-                    } else if ((empty($properties) || isset($properties['mac'])) && preg_match("~" . macformat($search) . "~i", $row['mac'])) {
+                    } else if ((empty($properties) || isset($properties['mac'])) && preg_match('/' . macformat($search) . '/i', str_replace(':', '', $row['mac']))) {
                         $macs = explode(',', $row['mac']);
                         foreach ($macs as $mac) {
-                            if (preg_match("~" . macformat($search) . "~i", $mac)) {
+                            if (preg_match('/' . macformat($search) . '/i', str_replace(':', '', $mac))) {
                                 $description = trans('MAC') . ': ' . $mac;
                             }
                         }
@@ -574,10 +548,11 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name FROM netnodes
-                WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
-                LOWER(name) ?LIKE? LOWER($sql_search)
-                ORDER by name
+            $candidates = $DB->GetAll("SELECT id, name, info FROM netnodes
+                WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) : '1 = 0') : '1 = 0')
+                . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['additional-info']) ? " OR LOWER(info) ?LIKE? LOWER($sql_search)" : '')
+                . " ORDER by name
                 LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
                 $result = array();
@@ -592,8 +567,13 @@ switch ($mode) {
                     $description_class = '';
                     $action = '?m=netnodeinfo&id=' . $row['id'];
 
-                    if (preg_match("~^$search\$~i", $row['id'])) {
-                            $description = trans('Id:') . ' ' . $row['id'];
+                    if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
+                        $description = trans('Id') . ': ' . $row['id'];
+                    } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
+                        $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
+                    } else if ((empty($properties) || isset($properties['additional-info'])) && preg_match("~$search~i", $row['info'])) {
+                        //$description = trans('Additional information:') . ' ' . htmlspecialchars($row['info']);
+                        $description = trans('Additional information:') . ' &hellip;';
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
@@ -629,7 +609,7 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, serialnumber, no.lastonline FROM netdevices
+            $candidates = $DB->GetAll("SELECT id, name, serialnumber, description, no.lastonline FROM netdevices
                 LEFT JOIN (
                     SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
                     FROM nodes
@@ -641,6 +621,7 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['description']) ? " OR LOWER(description) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = netdevices.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
                 . "	ORDER by name
                 LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
@@ -668,9 +649,12 @@ switch ($mode) {
                     if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
                             $description = trans('Id:') . ' ' . $row['id'];
                     } else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
-                        $description = trans('Name') . ': ' . $row['name'];
+                        $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
                     } else if ((empty($properties) || isset($properties['serial'])) && preg_match("~$search~i", $row['serialnumber'])) {
                         $description = trans('Serial number:') . ' ' . $row['serialnumber'];
+                    } else if ((empty($properties) || isset($properties['description'])) && preg_match("~$search~i", $row['description'])) {
+                        //$description = trans('Description:') . ' ' . htmlspecialchars($row['description']);
+                        $description = trans('Description:') . ' &hellip;';
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
@@ -838,7 +822,7 @@ switch ($mode) {
                 $params['name'] = $search;
             }
             if (empty($properties) || isset($properties['unresolvedonly'])) {
-                $params['state'] = -1;
+                $params['state'] = -2;
             }
             $SESSION->save('rtsearch', $params);
 

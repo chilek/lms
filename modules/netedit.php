@@ -76,7 +76,11 @@ if (isset($_POST['networkdata'])) {
             $networkdata['address'] = getnetaddr($networkdata['address'], prefix2mask($networkdata['prefix']));
         } else {
             if ($LMS->NetworkOverlaps($networkdata['address'], prefix2mask($networkdata['prefix']), $networkdata['hostid'], $networkdata['id'])) {
-                $error['address'] = trans('Specified IP address overlaps with other network!');
+                if (Utils::isPrivateAddress($networkdata['address'])) {
+                    $error['address'] = trans('Specified IP address overlaps with other network!');
+                } elseif (!isset($warnings['networkdata-address-'])) {
+                    $warning['networkdata[address]'] = trans('Specified IP address overlaps with other network!');
+                }
             } else {
                 if (($networkdata['prefix'] < 31 && $network['assigned'] > $networkdata['size'] - 2)
                     || ($networkdata['prefix'] == 31 && $network['assigned'] > $networkdata['size'])) {
@@ -206,7 +210,7 @@ if (isset($_POST['networkdata'])) {
     }
     $networkdata['authtype'] = $authtype;
 
-    if (!$error) {
+    if (!$error && !$warning) {
         if (isset($networkdata['needshft']) && $networkdata['needshft']) {
             $LMS->NetworkShift($networkdata['id'], $network['address'], $network['mask'], $networkdata['addresslong'] - $network['addresslong']);
         }
@@ -283,5 +287,6 @@ $SMARTY->assign('networks', $networks);
 $SMARTY->assign('netlistsize', count($networks));
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
+$SMARTY->assign('warning', $warning);
 $SMARTY->assign('error', $error);
 $SMARTY->display('net/netinfo.html');

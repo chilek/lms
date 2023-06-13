@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,15 +24,13 @@
  *  $Id$
  */
 
+check_file_uploads();
+
 $promotion = isset($_POST['promotion']) ? $_POST['promotion'] : null;
 
 if ($promotion) {
     foreach ($promotion as $key => $value) {
         $promotion[$key] = trim($value);
-    }
-
-    if ($promotion['name']=='' && $promotion['description']=='') {
-        $SESSION->redirect('?m=promotionlist');
     }
 
     if ($promotion['name'] == '') {
@@ -45,6 +43,19 @@ if ($promotion) {
         $error['dateto'] = trans('Incorrect date range!');
     }
 
+    $result = handle_file_uploads('attachments', $error);
+    extract($result);
+    $SMARTY->assign('fileupload', $fileupload);
+
+    $files = array();
+    if (!$error && !empty($attachments)) {
+        foreach ($attachments as $attachment) {
+            $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+            $attachment['filename'] = $attachment['name'];
+            $files[] = $attachment;
+        }
+    }
+
     if (!$error) {
         $args = array(
             'name' => $promotion['name'],
@@ -55,6 +66,33 @@ if ($promotion) {
         $DB->Execute('INSERT INTO promotions (name, description, datefrom, dateto)
 			VALUES (?, ?, ?, ?)', array_values($args));
         $pid = $DB->GetLastInsertId('promotions');
+
+        $promo_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions';
+        $stat = stat($promo_dir);
+        $promo_dir .= DIRECTORY_SEPARATOR . $pid;
+        if (!is_dir($promo_dir)) {
+            @mkdir($promo_dir, 0700);
+        }
+
+        foreach ($files as $file) {
+            $filename = $promo_dir . DIRECTORY_SEPARATOR . $file['filename'];
+
+            if (!file_exists($filename) && !@rename($file['tmpname'], $filename)) {
+                die(trans('Can\'t save file in "$a" directory!', $filename));
+            }
+
+            $DB->Execute(
+                'INSERT INTO promotionattachments (promotionid, filename, contenttype, label, checked)
+                VALUES (?, ?, ?, ?, ?)',
+                array(
+                    $pid,
+                    $file['filename'],
+                    $file['type'],
+                    $file['label'],
+                    empty($file['checked']) ? 0 : 1,
+                )
+            );
+        }
 
         if ($SYSLOG) {
             $args[SYSLOG::RES_PROMO] = $pid;

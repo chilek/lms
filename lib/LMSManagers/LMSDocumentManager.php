@@ -43,20 +43,27 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return null;
         }
 
-        if ($list = $this->db->GetAll('SELECT d.id AS docid, d.number, d.type, c.title, c.fromdate, c.todate,
+        if ($list = $this->db->GetAll(
+            'SELECT d.id AS docid, d.number, d.type, c.title, c.fromdate, c.todate,
 				c.description, n.template, d.closed, d.confirmdate,
 				d.archived, d.adate, u3.name AS ausername, d.senddate,
 				d.cdate, u.name AS username, d.sdate, d.cuserid, u2.name AS cusername,
 				d.type AS doctype, d.template AS doctemplate, reference
 			FROM documents d
 			LEFT JOIN documentcontents c ON c.docid = d.id
-			LEFT JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_VIEW . ' > 0)
+			LEFT JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
 			LEFT JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN vusers u3 ON u3.id = d.auserid
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 			WHERE d.customerid = ?' . ($all ? '' : ' AND c.docid IS NOT NULL AND r.doctype IS NOT NULL') . '
-			ORDER BY cdate', array(Auth::GetCurrentUser(), $customerid))) {
+			ORDER BY cdate',
+            array(
+                Auth::GetCurrentUser(),
+                DOCRIGHT_VIEW,
+                $customerid,
+            )
+        )) {
             foreach ($list as &$doc) {
                 $doc['attachments'] = $this->db->GetAll('SELECT * FROM documentattachments
 					WHERE docid = ? ORDER BY type DESC, filename', array($doc['docid']));
@@ -222,8 +229,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 'SELECT COUNT(documentcontents.docid)
 				FROM documentcontents
 				JOIN documents d ON (d.id = documentcontents.docid)
-				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
-				JOIN vusers u ON u.id = d.userid
+				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
+				LEFT JOIN vusers u ON u.id = d.userid
 				LEFT JOIN vusers u2 ON u2.id = d.cuserid
 				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 				LEFT JOIN (
@@ -250,7 +257,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     .($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
                     . $status_sql
                     . ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived)),
-                array(Auth::GetCurrentUser())
+                array(
+                    Auth::GetCurrentUser(),
+                    DOCRIGHT_VIEW,
+                )
             );
         }
 
@@ -263,8 +273,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				u2.lastname AS clastname, d.reference, i.senddocuments
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
-			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
-			JOIN vusers u ON u.id = d.userid
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & ?) > 0)
+			LEFT JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN vusers u3 ON u3.id = d.auserid
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
@@ -295,7 +305,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             .$sqlord
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
-            array(Auth::GetCurrentUser())
+            array(
+                Auth::GetCurrentUser(),
+                DOCRIGHT_VIEW,
+            )
         );
 
         if (empty($list)) {
@@ -1342,12 +1355,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 '%customername%',
                 '%docid%',
                 '%document%',
+                '%creatorname%',
+                '%approvername%',
             ),
             array(
                 $customerinfo['id'],
                 $customerinfo['customername'],
                 $document['id'],
                 $document['fullnumber'],
+                $document['creatorname'],
+                $document['approvername'],
             ),
             $string
         );
@@ -1360,7 +1377,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 '%creatoremail%',
             ),
             array(
-                empty($data['creatoremail']) ? '' : $data['creatoremail'],
+                strlen($data['creatoremail']) ? $data['creatoremail'] : '',
             ),
             $string
         );
@@ -1368,6 +1385,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function CommitDocuments(array $ids, $userpanel = false, $check_close_flag = true)
     {
+        global $DOCTYPE_ALIASES;
+
         $userid = Auth::GetCurrentUser();
 
         $ids = Utils::filterIntegers($ids);
@@ -1377,25 +1396,28 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
         $docs = $this->db->GetAllByKey(
             'SELECT d.id, d.customerid, d.fullnumber, dc.fromdate AS datefrom,
-					d.reference, d.commitflags, d.confirmdate, d.closed,
-					u.email AS creatoremail,
-					(CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
-                    (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
-				FROM documents d
-                JOIN documentcontents dc ON dc.docid = d.id
-				LEFT JOIN docrights r ON r.doctype = d.type
-				LEFT JOIN (
-                    SELECT da.docid, COUNT(*) AS customerdocuments
-                    FROM documentattachments da
-                    WHERE da.type = -1
-                    GROUP BY da.docid
-				) a ON a.docid = d.id
-				LEFT JOIN users u ON u.id = d.userid AND (u.ntype & ?) > 0 AND u.email <> ?
-				WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
-                    . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
+                d.type AS doctype,
+                d.reference, d.commitflags, d.confirmdate, d.closed,
+                (CASE WHEN (u.ntype & ?) > 0 AND u.email <> ? THEN u.email ELSE ? END) AS creatoremail,
+                u.name AS creatorname,
+                (CASE WHEN d.confirmdate = -1 AND a.customerdocuments IS NOT NULL THEN 1 ELSE 0 END) AS customerawaits,
+                (CASE WHEN d.confirmdate > 0 AND d.confirmdate > ?NOW? THEN 1 ELSE 0 END) AS operatorawaits
+            FROM documents d
+            JOIN documentcontents dc ON dc.docid = d.id
+            LEFT JOIN docrights r ON r.doctype = d.type
+            LEFT JOIN (
+                SELECT da.docid, COUNT(*) AS customerdocuments
+                FROM documentattachments da
+                WHERE da.type = -1
+                GROUP BY da.docid
+            ) a ON a.docid = d.id
+            LEFT JOIN vusers u ON u.id = d.userid
+            WHERE ' . ($check_close_flag ? 'd.closed = ' . DOC_OPEN : '1 = 1')
+                . ' AND d.type < 0 AND d.id IN (' . implode(',', $ids) . ')' . ($userid ? ' AND r.userid = ' . intval($userid) . ' AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0' : ''),
             'id',
             array(
                 MSG_MAIL,
+                '',
                 '',
             )
         );
@@ -1404,11 +1426,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
 
         $userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules');
-        $userpanel = empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'documents') !== false;
+        $userpanel = $userpanel && (empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'documents') !== false);
 
         $finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         $this->db->BeginTrans();
+
+        $doctype_aliases = array_flip($DOCTYPE_ALIASES);
 
         if ($userpanel) {
             $mail_dsn = ConfigHelper::getConfig('userpanel.document_notification_mail_dsn_address', '', true);
@@ -1416,14 +1440,74 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $mail_sender_name = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_name', '', true);
             $mail_sender_address = ConfigHelper::getConfig('userpanel.document_notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
             $mail_reply_address = ConfigHelper::getConfig('userpanel.document_notification_mail_reply_address', '', true);
+            $operator_document_types = '';
             $operator_mail_recipient = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_recipient', '');
             $operator_mail_format = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_format', 'text');
             $operator_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_subject');
             $operator_mail_body = ConfigHelper::getConfig('userpanel.document_approval_operator_notification_mail_body');
+            $customer_document_types = '';
             $customer_mail_format = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_format', 'text');
             $customer_mail_subject = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_subject');
             $customer_mail_body = ConfigHelper::getConfig('userpanel.document_approval_customer_notification_mail_body');
             $customer_mail_attachments = ConfigHelper::checkConfig('userpanel.document_approval_customer_notification_attachments');
+        } else {
+            $mail_dsn = ConfigHelper::getConfig('documents.notification_mail_dsn_address', '', true);
+            $mail_mdn = ConfigHelper::getConfig('documents.notification_mail_mdn_address', '', true);
+            $mail_sender_name = ConfigHelper::getConfig('documents.notification_mail_sender_name', '', true);
+            $mail_sender_address = ConfigHelper::getConfig('documents.notification_mail_sender_address', ConfigHelper::getConfig('mail.smtp_username'));
+            $mail_reply_address = ConfigHelper::getConfig('documents.notification_mail_reply_address', '', true);
+            $operator_document_types = ConfigHelper::getConfig('documents.approval_operator_notification_document_types', '', true);
+            $operator_mail_recipient = ConfigHelper::getConfig('documents.approval_operator_notification_mail_recipient', '');
+            $operator_mail_format = ConfigHelper::getConfig('documents.approval_operator_notification_mail_format', 'text');
+            $operator_mail_subject = ConfigHelper::getConfig('documents.approval_operator_notification_mail_subject');
+            $operator_mail_body = ConfigHelper::getConfig('documents.approval_operator_notification_mail_body');
+            $customer_document_types = ConfigHelper::getConfig('documents.approval_customer_notification_document_types', '', true);
+            $customer_mail_format = ConfigHelper::getConfig('documents.approval_customer_notification_mail_format', 'text');
+            $customer_mail_subject = ConfigHelper::getConfig('documents.approval_customer_notification_mail_subject');
+            $customer_mail_body = ConfigHelper::getConfig('documents.approval_customer_notification_mail_body');
+            $customer_mail_attachments = ConfigHelper::checkConfig('documents.approval_customer_notification_attachments');
+        }
+
+        if (strlen($operator_document_types)) {
+            $doc_types = preg_split(
+                '/\s*[,;]\s*/',
+                preg_replace('/\s+/', ',', $operator_document_types),
+                -1,
+                PREG_SPLIT_NO_EMPTY
+            );
+            $operator_document_types = array_flip(
+                array_map(
+                    function ($doctype) use ($doctype_aliases) {
+                        return $doctype_aliases[$doctype];
+                    },
+                    array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
+                        return isset($doctype_aliases[$doctype]);
+                    })
+                )
+            );
+        } else {
+            $operator_document_types = $DOCTYPE_ALIASES;
+        }
+
+        if (strlen($customer_document_types)) {
+            $doc_types = preg_split(
+                '/\s*[,;]\s*/',
+                preg_replace('/\s+/', ',', $customer_document_types),
+                -1,
+                PREG_SPLIT_NO_EMPTY
+            );
+            $customer_document_types = array_flip(
+                array_map(
+                    function ($doctype) use ($doctype_aliases) {
+                        return $doctype_aliases[$doctype];
+                    },
+                    array_filter($doc_types, function ($doctype) use ($doctype_aliases) {
+                        return isset($doctype_aliases[$doctype]);
+                    })
+                )
+            );
+        } else {
+            $customer_document_types = $DOCTYPE_ALIASES;
         }
 
         $customerinfos = array();
@@ -1432,13 +1516,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $errors = array();
         $info = array();
 
+        if ($userpanel) {
+            $approvername = '-';
+        } else {
+            $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $approvername = $user_manager->GetUserName();
+        }
+
         foreach ($docs as $docid => $doc) {
             $this->db->Execute(
                 'UPDATE documents SET sdate = ?NOW?, cuserid = ?, closed = ?, confirmdate = ?,
- 				adate = ?, auserid = ? WHERE id = ?',
+                adate = ?, auserid = ? WHERE id = ?',
                 array(
                     $userid,
-                    empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SCAN : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SMS,
+                    empty($doc['customerawaits']) ? ($userpanel ? DOC_CLOSED_AFTER_CUSTOMER_SMS : DOC_CLOSED) : DOC_CLOSED_AFTER_CUSTOMER_SCAN,
                     $doc['customerawaits'] ? 0 : $doc['confirmdate'],
                     0,
                     null,
@@ -1462,13 +1553,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array($docid)
             );
 
-            if (!$userpanel || (empty($doc['customerawaits']) && empty($doc['operatorawaits']))) {
+            if ($userpanel && empty($doc['customerawaits']) && empty($doc['operatorawaits'])) {
                 continue;
             }
 
             if (!empty($mail_sender_address)) {
                 // notify operator about document confirmation
-                if (!empty($operator_mail_recipient) && !empty($operator_mail_subject) && !empty($operator_mail_body)) {
+                if (!empty($operator_mail_recipient) && !empty($operator_mail_subject) && !empty($operator_mail_body)
+                    && isset($operator_document_types[$doc['doctype']])) {
                     if (!isset($customer_manager)) {
                         $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
@@ -1485,6 +1577,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );
@@ -1495,6 +1589,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );
@@ -1519,7 +1615,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
                 // customer awaits for signed document scan approval
                 // so we should probably notify him about document confirmation
-                if (!empty($customer_mail_subject) && !empty($customer_mail_body)) {
+                if (!empty($customer_mail_subject) && !empty($customer_mail_body) && isset($customer_document_types[$doc['doctype']])) {
                     if (!isset($customer_manager)) {
                         $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
                     }
@@ -1635,6 +1731,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );
@@ -1645,6 +1743,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                             'document' => array(
                                 'id' => $docid,
                                 'fullnumber' => $doc['fullnumber'],
+                                'creatorname' => $doc['creatorname'],
+                                'approvername' => $approvername,
                             ),
                         )
                     );
@@ -1678,6 +1778,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                 'contenttype' => $customer_mail_format == 'text' ? 'text/plain' : 'text/html',
                                 'recipients' => $recipients,
                             ));
+
+                            $msgid = $message['id'];
+                            $msgitems = $message['items'];
+
                             $headers = array(
                                 'From' => $sender,
                                 'Recipient-Name' => $customerinfo['customername'],
@@ -1699,10 +1803,41 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                                     $headers['X-LMS-Message-Item-Id'] = $message['items'][$doc['customerid']][$destination];
                                     $headers['Message-ID'] = '<messageitem-' . $message['items'][$doc['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
                                 }
+
                                 if (!isset($lms)) {
                                     $lms = LMS::getInstance();
                                 }
-                                $lms->SendMail($destination, $headers, $customer_mail_body);
+
+                                $res = $lms->SendMail($destination, $headers, $customer_mail_body);
+
+                                if (is_int($res)) {
+                                    $status = $res;
+                                    $send_errors = array();
+                                } elseif (is_string($res)) {
+                                    $status = MSG_ERROR;
+                                    $send_errors = array($res);
+                                } else {
+                                    $status = $res['status'];
+                                    $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                                }
+
+                                if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                                    $this->db->Execute(
+                                        'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                            error = ?, externalmsgid = ?
+                                        WHERE messageid = ?
+                                            AND customerid = ?
+                                            AND destination = ?',
+                                        array(
+                                            $status,
+                                            empty($send_errors) ? null : implode(', ', $send_errors),
+                                            !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                            $msgid,
+                                            $doc['customerid'],
+                                            $destination,
+                                        )
+                                    );
+                                }
                             }
                         }
                     }
@@ -1738,12 +1873,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $string = str_replace(
             array(
                 '%docid%',
+                '%document%',
                 '%date-y%',
                 '%date-m%',
                 '%date-d%',
             ),
             array(
                 $document['id'],
+                $document['fullnumber'],
                 date('Y', $document['confirmdate']),
                 date('m', $document['confirmdate']),
                 date('d', $document['confirmdate']),
@@ -1820,6 +1957,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         'contenttype' => $new_document_mail_format == 'text' ? 'text/plain' : 'text/html',
                         'recipients' => $recipients,
                     ));
+                    $msgid = $message['id'];
+                    $msgitems = $message['items'];
 
                     $sender = ($mail_sender_name ? '"' . $mail_sender_name . '" ' : '') . '<' . $mail_sender_address . '>';
                     $headers = array(
@@ -1840,10 +1979,40 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     }
                     foreach ($destinations as $destination) {
                         if (!empty($mail_dsn) || !empty($mail_mdn)) {
-                            $headers['X-LMS-Message-Item-Id'] = $message['items'][$document['customerid']][$destination];
-                            $headers['Message-ID'] = '<messageitem-' . $message['items'][$document['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
+                            $headers['X-LMS-Message-Item-Id'] = $msgitems[$document['customerid']][$destination];
+                            $headers['Message-ID'] = '<messageitem-' . $msgitems[$document['customerid']][$destination] . '@rtsystem.' . gethostname() . '>';
                         }
-                        $LMS->SendMail($destination, $headers, $mail_body);
+
+                        $res = $LMS->SendMail($destination, $headers, $mail_body);
+
+                        if (is_int($res)) {
+                            $status = $res;
+                            $send_errors = array();
+                        } elseif (is_string($res)) {
+                            $status = MSG_ERROR;
+                            $send_errors = array($res);
+                        } else {
+                            $status = $res['status'];
+                            $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                        }
+
+                        if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                            $this->db->Execute(
+                                'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                    error = ?, externalmsgid = ?
+                                WHERE messageid = ?
+                                    AND customerid = ?
+                                    AND destination = ?',
+                                array(
+                                    $status,
+                                    empty($send_errors) ? null : implode(', ', $send_errors),
+                                    !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                    $msgid,
+                                    $document['customerid'],
+                                    $destination,
+                                )
+                            );
+                        }
                     }
                 }
             }
@@ -1899,12 +2068,44 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         'body' => $sms_body,
                         'recipients' => $recipients,
                     ));
+                    $msgid = $message['id'];
+                    $msgitems = $message['items'];
 
                     $error = array();
                     foreach ($destinations as $destination) {
-                        $res = $LMS->SendSMS($destination, $sms_body, $message['items'][$document['customerid']][$destination], $sms_options);
-                        if ($res['status'] == MSG_ERROR) {
+                        $res = $LMS->SendSMS($destination, $sms_body, $msgitems[$document['customerid']][$destination], $sms_options);
+
+                        if (is_int($res)) {
+                            $status = $res;
+                            $send_errors = array();
+                        } elseif (is_string($res)) {
+                            $status = MSG_ERROR;
+                            $send_errors = array($res);
+                        } else {
+                            $status = $res['status'];
+                            $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                        }
+
+                        if ($status == MSG_ERROR) {
                             $error[] = array_merge($error, $res['errors']);
+                        }
+
+                        if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                            $this->db->Execute(
+                                'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                    error = ?, externalmsgid = ?
+                                WHERE messageid = ?
+                                    AND customerid = ?
+                                    AND destination = ?',
+                                array(
+                                    $status,
+                                    empty($send_errors) ? null : implode(', ', $send_errors),
+                                    !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                    $msgid,
+                                    $document['customerid'],
+                                    $destination,
+                                )
+                            );
                         }
                     }
                 }
@@ -2152,19 +2353,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
     public function GetDocumentFullContents($id)
     {
-        global $DOCTYPES;
+        global $DOCTYPES, $DOCTYPE_ALIASES;
 
         $userid = Auth::GetCurrentUser();
 
         if ($userid) {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn, d.name
+                    d.fullnumber, n.template, d.ssn, d.name, d.reference
                 FROM documents d
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
-                WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1',
-                array($id, $userid)
+                WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
+                array(
+                    $id,
+                    $userid,
+                    DOCRIGHT_VIEW,
+                )
             );
         } else {
             $document = $this->db->GetRow(
@@ -2212,6 +2417,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     'qpdf --encrypt %password %password 256 -- %in-file -'
                 )
             );
+            $document_protected_document_types = ConfigHelper::getConfig(
+                'documents.protected_document_types',
+                '',
+                true
+            );
+            if (strlen($document_protected_document_types)) {
+                $protected_document_types = preg_split('/([\s]+|[\s]*,[\s]*)/', $document_protected_document_types, -1, PREG_SPLIT_NO_EMPTY);
+                $document_protected_document_types = array();
+                $doctype_aliases = array_flip($DOCTYPE_ALIASES);
+                foreach ($protected_document_types as $protected_document_type) {
+                    if (isset($doctype_aliases[$protected_document_type])) {
+                        $document_protected_document_types[$doctype_aliases[$protected_document_type]] = $protected_document_type;
+                    }
+                }
+            } else {
+                $document_protected_document_types = $DOCTYPE_ALIASES;
+            }
 
             foreach ($document['attachments'] as &$attachment) {
                 $filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2)
@@ -2266,7 +2488,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 if ($pdf) {
-                    if (!empty($document_password) && !empty($document_protection_command)) {
+                    $ssn_is_present = strpos($document_password, '%ssn') !== false;
+
+                    if (!empty($document_password) && !empty($document_protection_command) && isset($document_protected_document_types[$document['type']])
+                        && (!$ssn_is_present || strlen($document['ssn']))) {
                         $password = trim(str_replace(
                             array(
                                 '%ssn',
@@ -2282,7 +2507,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                         ));
 
                         if (!empty($password)) {
-                            $pdf_file_name = tempnam('/tmp', 'lms-document-attachment-');
+                            $pdf_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'lms-document-attachment-' . uniqid('', true);
                             file_put_contents($pdf_file_name, $contents);
                             $protection_command = str_replace(
                                 array(
@@ -2354,11 +2579,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $day = sprintf('%02d', intval(date('d', $currtime)));
         $year = sprintf('%04d', intval(date('Y', $currtime)));
 
-        $from = $sender_email;
+        if (empty($dsn_email)) {
+            $from = $sender_email;
+        } else {
+            $from = $dsn_email;
+        }
 
         if (!empty($sender_name)) {
             $from = "$sender_name <$from>";
         }
+
+        $attachment_filename = ConfigHelper::getConfig('documents.attachment_filename', '%filename');
 
         foreach ($docs as $doc) {
             $document = $this->GetDocumentFullContents($doc['id']);
@@ -2435,9 +2666,39 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             if (empty($test)) {
                 $files = array();
                 foreach ($document['attachments'] as $attachment) {
+                    $extension = '';
+
+                    if (!empty($attachment['type'])) {
+                        $filename = str_replace(
+                            array(
+                                '%filename',
+                                '%type',
+                                '%document',
+                                '%docid'
+                            ),
+                            array(
+                                $attachment['filename'],
+                                $DOCTYPES[$document['type']],
+                                $document['fullnumber'],
+                                $doc['id'],
+                            ),
+                            $attachment_filename
+                        );
+
+                        if (!preg_match('/\.[[:alnum:]]+$/i', $filename)) {
+                            if (preg_match('/(?<extension>\.[[:alnum:]]+)$/i', $attachment['filename'], $m)) {
+                                $extension = $m['extension'];
+                            } elseif (preg_match('#/(?<extension>[[:alnum:]]+)$#i', $attachment['contenttype'], $m)) {
+                                $extension = '.' . $m['extension'];
+                            }
+                        }
+                    } else {
+                        $filename = $attachment['filename'];
+                    }
+
                     $files[] = array(
                         'content_type' => $attachment['contenttype'],
-                        'filename' => $attachment['filename'],
+                        'filename' => preg_replace('/[^[:alnum:]_\.]/i', '_', $filename) . $extension,
                         'data' => $attachment['contents'],
                     );
                 }
@@ -2451,7 +2712,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 }
 
                 $headers = array(
-                    'From' => empty($dsn_email) ? $from : $dsn_email,
+                    'From' => $from,
                     'To' => $mailto_qp_encoded,
                     'Recipient-Name' => $document['name'],
                     'Subject' => $subject,
@@ -2755,8 +3016,52 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $documents;
     }
 
+    public function getReferencedDocument($docid)
+    {
+        $userid = Auth::GetCurrentUser();
+
+        return $this->db->GetRow(
+            'SELECT d.* 
+            FROM documents d
+            JOIN docrights r ON r.doctype = d.type AND r.userid = ? AND (r.rights & ?) > 0
+            JOIN documentattachments a ON a.docid = d.id
+            WHERE d.id = (SELECT documents.reference FROM documents WHERE documents.id = ?)
+            ORDER BY d.id, a.type DESC',
+            array(
+                $userid,
+                DOCRIGHT_VIEW,
+                $docid,
+            )
+        );
+    }
+
+    public function getReferencingDocuments($docid)
+    {
+        $userid = Auth::GetCurrentUser();
+
+        return $this->db->GetAllByKey(
+            'SELECT d.*
+            FROM documents d
+            JOIN docrights r ON r.doctype = d.type AND r.userid = ? AND (r.rights & ?) > 0
+            JOIN documentattachments a ON a.docid = d.id
+            WHERE d.reference = ?
+            ORDER BY d.id, a.type DESC',
+            'id',
+            array(
+                $userid,
+                DOCRIGHT_VIEW,
+                $docid,
+            )
+        );
+    }
+
     public function getDocumentType($docid)
     {
         return $this->db->GetOne('SELECT type FROM documents WHERE id = ?', array($docid));
+    }
+
+    public function getDocumentFullNumber($docid)
+    {
+        return $this->db->GetOne('SELECT fullnumber FROM documents WHERE id = ?', array($docid));
     }
 }

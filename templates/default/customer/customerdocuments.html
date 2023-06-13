@@ -1,5 +1,7 @@
 <!--// $Id$ //-->
 
+{$default_all_attachments = ConfigHelper::checkConfig('documents.default_all_attachments')}
+
 {css}
 {js}
 
@@ -64,39 +66,44 @@
 			{/if}
 
 			{foreach $documents as $doc}
+			{if empty($doc.attachments)}
+				{$doc.attachments = array()}
+			{/if}
+			{$docattach = reset($doc.attachments)}
+			{capture assign="url"}?m=documentview&id={$doc.docid}{if $default_all_attachments}&attachments=1{elseif $doc.attachments|size == 1}&attachmentid={$docattach.id}{/if}{/capture}
 			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}"
 				 data-senddate="{if $doc.senddate}{$doc.senddate|date_format:"Y-m-d H:i"}{else}{$doc.senddate}{/if}">
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column number" onclick="window.open('?m=documentview&id={$doc.docid}');"
+							<div class="lms-ui-tab-table-column number" data-target-url="{$url}"
 									{if $doc.description} {tip text=$doc.description}{/if}>
 								<strong>{number number=$doc.number template=$doc.template customerid=$customerinfo.id time=$doc.cdate}</strong>
 							</div>
-							<div class="lms-ui-tab-table-column creation-date" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							<div class="lms-ui-tab-table-column creation-date" data-target-url="{$url}">
 								{$doc.cdate|date_format:"Y-m-d H:i"}{if $doc.sdate} / {$doc.sdate|date_format:"Y-m-d H:i"}{/if}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column created-by" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							<div class="lms-ui-tab-table-column created-by" data-target-url="{$url}">
 								{$doc.username|escape}
 								{if $doc.cuserid} / {$doc.cusername|escape}{/if}
-								{if $doc.closed == 3}
+								{if $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SMS}
 									{if !$doc.cuserid}
 										{icon name="sms" tip="customer has accepted document via sms"}
 									{/if}
-								{elseif $doc.closed == 2}
+								{elseif $doc.closed == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SCAN}
 									{icon name="sign" tip="attached document scans with customer signature"}
 								{/if}
 							</div>
-							<div class="lms-ui-tab-table-column type" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							<div class="lms-ui-tab-table-column type" data-target-url="{$url}">
 								<strong>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</strong>
 							</div>
 						</div>
 					</div>
 
 					<div class="lms-ui-tab-table-wrapper col-3">
-						<div class="lms-ui-tab-table-column title" onclick="window.open('?m=documentview&id={$doc.docid}');">
+						<div class="lms-ui-tab-table-column title" data-target-url="{$url}">
 							{$doc.title|truncate:40:"&hellip;":true}
 						</div>
 						<div class="lms-ui-tab-table-column description">
@@ -106,7 +113,7 @@
 								&ndash;
 							{/if}
 						</div>
-						<div class="lms-ui-tab-table-column period" onclick="window.open('?m=documentview&id={$doc.docid}');">
+						<div class="lms-ui-tab-table-column period" data-target-url="{$url}">
 							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"Y-m-d"}{/if}
 							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"Y-m-d"}{/if}
 						</div>
@@ -137,11 +144,10 @@
 							{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 						{/if}
 						{if is_array($doc.attachments)}
-							{$docattach = $doc.attachments[0]}
 							{if $docattach.type == 1 || count($doc.attachments) == 1}
-								{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-								url="?m=documentview&id={$doc.docid}" external=true
-								text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
+								{documentview id="global-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+									url=$url external=true
+									text="<i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
 							{/if}
 							{if count($doc.attachments) > 1 || !$docattach.type < 1}
 								<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
@@ -154,7 +160,7 @@
 					<div id="allattachments-{$doc.docid}" class="document-attachment-container" style="display: none;">
 						{foreach $doc.attachments as $docattach}
 							{if $docattach@first && $docattach.type == 1}{continue}{/if}
-							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+							{documentview id="local-{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
 								text="{$docattach.filename} <i class=\"lms-ui-icon-view{if preg_match('/pdf/',$docattach.contenttype)} pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)} xls{/if}\"></i>"}
 							{if $docattach.type == -1}<i class="lms-ui-icon-user" title="<strong>{t a=date("Y/m/d H:i", $docattach.cdate)}Sent by customer at $a{/t}</strong>"></i>{/if}
@@ -176,7 +182,6 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{button id="send-documents" icon="mail" label="Send documents" data_send_documents="{$customerinfo.senddocuments}"}
-				{button id="print-docs" icon="print" label="Print"}
 				{button id="confirm-docs" icon="confirm" label="Confirm"}
 				{button id="archive-docs" icon="archive" label="Archive"}
 				{button id="delete-docs" icon="delete" label="Delete"}
@@ -186,6 +191,29 @@
 					{trans("Check All")}
 					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
 				</label>
+			{/tab_buttons}
+		{/tab_button_panel}
+		{tab_button_panel}
+			{tab_buttons}
+				{button id="print-docs" icon="print" label="Print"}
+				<fieldset>
+					<label>
+						<input type="checkbox" name="attachments" value="1" form="customerdocuments-form">
+						{trans("attachments")}
+					</label>
+					<label>
+						<input type="checkbox" name="related" value="1" form="customerdocuments-form">
+						{trans("related documents")}
+					</label>
+					<select name="related_documents[]" form="customerdocuments-form" multiple class="lms-ui-multiselect" }
+							data-default-value="{trans("- all -")}" data-shorten-to-default-value="false">
+						{foreach Localisation::arraySort($_DOCTYPES) as $key => $related_document}
+							{if $key < 0}
+								<option value="{$key}">{$related_document}</option>
+							{/if}
+						{/foreach}
+					</select>
+				</fieldset>
 			{/tab_buttons}
 		{/tab_button_panel}
 {/if}

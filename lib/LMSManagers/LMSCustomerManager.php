@@ -799,6 +799,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param int $time Timestamp
      * @param string $sqlskey Logical conjunction
      * @param int $nodegroup Node group
+     * @param boolean $nodegroupnegation negate node group assignments
      * @param int $division Division id
      * @param int $days Days after expiration
      * @param int $limit Limit
@@ -868,6 +869,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if (!isset($customergroupnegation)) {
             $customergroupnegation = false;
+        }
+
+        if (!isset($nodegroupnegation)) {
+            $nodegroupnegation = false;
         }
 
         if (isset($state) && !is_array($state) && !empty($state)) {
@@ -987,6 +992,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         }
                     }
                     break;
+                case 84:
+                case 85:
+                    $contracts = 4;
+                    if ($state_item == 85) {
+                        $archived_document_condition = ' AND d.archived = 0';
+                    }
+                    break;
                 case 62:
                     $state_conditions[] = 'c.einvoice = 1';
                     break;
@@ -1051,6 +1063,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     break;
                 case 83:
                     $state_conditions[] = 'b.balance <= -t.value * 2';
+                    break;
+                case 84:
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)
+                        AND NOT EXISTS (SELECT 1 FROM nodes
+                        JOIN netdevices ON nodes.netdev = netdevices.id
+                        WHERE nodes.ownerid = c.id)';
                     break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
@@ -1138,6 +1156,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         AND datefrom <= ?NOW?
                         AND (dateto >= ?NOW? OR dateto = 0)';
                 break;
+            case -10:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.datefrom = 0';
+                break;
             default:
                 if ($as > 0) {
                     $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE
@@ -1147,6 +1168,37 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $assignment = null;
                 }
                 break;
+        }
+
+        if (isset($search['assignment'])) {
+            if (is_array($search['assignment'])) {
+                $assignment_properties = $search['assignment'];
+            }
+            unset($search['assignment']);
+        }
+
+        if (isset($assignment) && $assignment_properties) {
+            $where_assignments = array();
+            foreach ($assignment_properties as $key => $value) {
+                switch ($key) {
+                    case 'at':
+                        if (strlen($value)) {
+                            $where_assignments[] = 'a.at = ' . intval($value);
+                        }
+                        break;
+                    case 'period':
+                        if (is_numeric($value)) {
+                            $where_assignments[] = 'a.period = ' . intval($value);
+                        }
+                        break;
+                    case 'backwardperiod':
+                        $where_assignments[] = 'a.backwardperiod = ' . intval($value);
+                        break;
+                }
+            }
+            if (!empty($where_assignments)) {
+                $assignment .= ' AND ' . (implode(' AND ', $where_assignments));
+            }
         }
 
         if (isset($network) && $network) {
@@ -1567,7 +1619,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							WHERE dateto > 0
 							GROUP BY customerid
 							HAVING MAX(dateto) >= ?NOW? AND MAX(dateto) <= ?NOW? + 86400 * ' . $contracts_days . '
-						) ass ON ass.customerid = c.id') : '')))
+						) ass ON ass.customerid = c.id') :
+                ($contracts == 4 ? 'JOIN (
+                            SELECT DISTINCT d.customerid FROM documents d
+                            JOIN documentcontents dc ON dc.docid = d.id
+                            WHERE dc.todate <> 0
+                                AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')'
+                                . $archived_document_condition
+                            . '
+                        ) d ON d.customerid = c.id' : ''))))
                 . ' WHERE '
                 . (empty($state_conditions) ? '1 = 1' : implode(' ' . $statesqlskey . ' ', $state_conditions))
                 . ($ignore_deleted_customers ? ' AND c.deleted = 0' : '')
@@ -1588,7 +1648,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         : ($customergroupsqlskey == 'AND' ? '= ' . (is_array($customergroup) ? count($customergroup) : 1) : '> 0')
                     ) : '')
                 . (isset($customergroup) && $customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
-                . (!empty($nodegroup) ? ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1) : '')
+                . (!empty($nodegroup) ? ($nodegroupnegation ? ' AND na.gcount IS NULL' : ' AND na.gcount = ' . (is_array($nodegroup) ? count($nodegroup) : 1)) : '')
                 . (!empty($consent_condition) ? ' AND ' . $consent_condition : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction . ', c.id ASC' : '')
@@ -2359,7 +2419,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 unset($caddr[$k]);
                 continue;
             } elseif ($v['teryt']) {
-                $v['location'] = trans('$a (TERRIT)', $v['location']);
+                $v['location'] = trans('$a (TERYT)', $v['location']);
             }
 
             switch ($v['location_address_type']) {
@@ -2406,24 +2466,32 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $data = $this->db->GetAllByKey(
             'SELECT
-                                          addr.id AS address_id, ca.id AS customer_address_id,
-                                          addr.name as location_name,
-                                          addr.state as location_state_name, addr.state_id as location_state,
-                                          addr.city as location_city_name, addr.city_id as location_city,
-                                          addr.street as location_street_name, addr.street_id as location_street,
-                                          addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
-                                          addr.country_id as location_country_id, addr.flat as location_flat,
-                                          ca.type as location_address_type, addr.location,
-                                          0 AS use_counter, 0 AS node_use_counter, 0 AS netdev_use_counter, 0 AS netnode_use_counter,
-                                          (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt
-                                       FROM
-                                          customers cv
-                                          LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
-                                          LEFT JOIN vaddresses addr       ON addr.id = ca.address_id
-                                       WHERE
-                                          cv.id = ?' .
-                                          (($hide_deleted) ? ' AND cv.deleted != 1' : '')
-                                            . ' ORDER BY LOWER(addr.city), LOWER(addr.street)',
+                addr.id AS address_id, ca.id AS customer_address_id,
+                addr.name as location_name,
+                addr.state as location_state_name, addr.state_id as location_state,
+                addr.city as location_city_name, addr.city_id as location_city,
+                addr.street as location_street_name, addr.street_id as location_street,
+                (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS location_full_street_name,
+                (CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS location_full_reversed_street_name,
+                COALESCE(lst.name, addr.street) AS location_short_street_name,
+                addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
+                addr.country_id as location_country_id, addr.flat as location_flat,
+                ca.type as location_address_type, addr.location,
+                0 AS use_counter, 0 AS node_use_counter, 0 AS netdev_use_counter, 0 AS netnode_use_counter,
+                (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt,
+                ' . $this->db->Concat('simc.woj', 'simc.pow', 'simc.gmi', 'simc.rodz_gmi') . ' AS terc,
+                simc.sym AS simc,
+                ulic.sym_ul AS ulic
+            FROM customers cv
+            LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
+            LEFT JOIN vaddresses addr       ON addr.id = ca.address_id
+            LEFT JOIN location_streets lst ON lst.id = addr.street_id
+            LEFT JOIN teryt_simc simc ON simc.cityid = addr.city_id
+            LEFT JOIN teryt_ulic ulic ON ulic.id = addr.street_id
+            WHERE
+                cv.id = ?' .
+                (($hide_deleted) ? ' AND cv.deleted != 1' : '')
+            . ' ORDER BY LOWER(addr.city), LOWER(addr.street), LOWER(addr.house)',
             'address_id',
             array( $id )
         );
@@ -2499,7 +2567,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         if (isset($address)) {
-            $address = (empty($address['teryt']) ? $address['location'] : trans('$a (TERRIT)', $address['location']));
+            $address = (empty($address['teryt']) ? $address['location'] : trans('$a (TERYT)', $address['location']));
         }
 
         return $address;
@@ -2649,6 +2717,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getCustomerSMSOptions()
     {
+        global $LMS;
+
         $options = array();
 
         $variable_mapping = array(
@@ -2667,6 +2737,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'from' => 'sms-customers.from',
             'phone_number_validation_pattern' => 'sms-customers.phone_number_validation_pattern',
             'message_template' => 'sms-customers.message_template',
+        );
+
+        $variable_mapping = $LMS->executeHook(
+            'get_customer_sms_options',
+            $variable_mapping
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {
@@ -2817,6 +2892,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $string = str_replace('%cid%', $customerinfo['id'], $string);
         $string = str_replace('%customername%', $customerinfo['customername'], $string);
         $document = $data['document'];
+        $string = str_replace('%document%', $document['fullnumber'], $string);
         $string = str_replace('%docid%', $document['id'], $string);
         return $string;
     }
@@ -3186,6 +3262,23 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
     }
 
+    public function changeCustomerStatus($id, $status)
+    {
+        $this->db->Execute(
+            'UPDATE customers SET status = ? WHERE id = ?',
+            array($status, $id)
+        );
+        if ($this->syslog) {
+            $userid = Auth::GetCurrentUser();
+            $args = array(
+                SYSLOG::RES_USER => $userid,
+                SYSLOG::RES_CUST => $id,
+                'status' => $status,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        }
+    }
+
     public function getCustomerCalls(array $params)
     {
         $count = isset($params['count']) && !empty($params['count']);
@@ -3438,7 +3531,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         );
     }
 
-    public function getCustomerExternalIDs($customerid, $serviceproviderid = null)
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null, $serviceprovidersonly = false)
     {
         $result = $this->db->GetAllByKey(
             'SELECT ce.extid,
@@ -3447,11 +3540,46 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             FROM customerextids ce
             LEFT JOIN serviceproviders sp ON sp.id = ce.serviceproviderid
             WHERE ce.customerid = ?'
-                . (empty($serviceproviderid) ? '' : ' AND ce.serviceproviderid = ' . intval($serviceproviderid)),
+            . (empty($serviceproviderid) ? '' : ' AND ce.serviceproviderid = ' . intval($serviceproviderid))
+            . (empty($serviceprovidersonly) ? '' : ' AND ce.serviceproviderid IS NOT NULL'),
             'serviceproviderid',
             array($customerid)
         );
         return empty($result) ? array() : $result;
+    }
+
+    public function addCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        if (!empty($customerid) && !empty($extid) && !empty($serviceproviderid)) {
+            return $this->db->Execute(
+                'INSERT INTO customerextids (customerid, extid, serviceproviderid)
+                       VALUES (?, ?, ?)',
+                array(
+                    $customerid,
+                    Utils::removeInsecureHtml($extid),
+                    $serviceproviderid,
+                )
+            );
+        }
+    }
+
+    public function updateCustomerExternalID($customerid, $extid, $oldextid, $serviceproviderid, $oldserviceproviderid)
+    {
+        if (!empty($customerid) && !empty($extid) && !empty($serviceproviderid)) {
+            return $this->db->Execute(
+                'UPDATE customerextids SET extid = ?, serviceproviderid = ?
+                WHERE customerid = ?
+                AND extid = ?
+                AND serviceproviderid = ?',
+                array(
+                    Utils::removeInsecureHtml($extid),
+                    $serviceproviderid,
+                    $customerid,
+                    $oldextid,
+                    $oldserviceproviderid
+                )
+            );
+        }
     }
 
     public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false)
@@ -3551,5 +3679,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         return $modifications;
+    }
+
+    public function deleteCustomerExternalID($customerid, $extid, $serviceproviderid)
+    {
+        if (!empty($customerid) && !empty($extid) && !empty($serviceproviderid)) {
+            $this->db->Execute(
+                'DELETE FROM customerextids WHERE customerid = ? AND extid = ? AND serviceproviderid = ?',
+                array(
+                    $customerid,
+                    strval($extid),
+                    $serviceproviderid,
+                )
+            );
+        }
+    }
+
+    public function getServiceProviders()
+    {
+        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders', 'id');
+        return empty($result) ? array() : $result;
     }
 }

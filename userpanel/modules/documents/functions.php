@@ -78,10 +78,55 @@ function module_main()
                             $SESSION->save('smsauthcode', $sms_authcode);
                             $SESSION->save('smsauthcode_timestamp', time());
                             $sms_body = str_replace('%password%', $sms_authcode, $sms_onetime_password_body);
+
+                            $result = $LMS->addMessage(array(
+                                'type' => MSG_SMS,
+                                'subject' => trans('SMS authorization code for document confirmation'),
+                                'body' => $sms_body,
+                                'recipients' => array(
+                                    0 => array(
+                                        'id' => $SESSION->id,
+                                        'phone' => implode(',', $sms_recipients),
+                                    ),
+                                ),
+                            ));
+                            $msgid = $result['id'];
+                            $msgitems = $result['items'];
+
                             foreach ($sms_recipients as $sms_recipient) {
-                                $res = $LMS->SendSMS($sms_recipient, $sms_body, null, $sms_options);
-                                if ($res['status'] == MSG_ERROR) {
+                                $res = $LMS->SendSMS($sms_recipient, $sms_body, $msgitems[$SESSION->id][$sms_recipient], $sms_options);
+
+                                if (is_int($res)) {
+                                    $status = $res;
+                                    $send_errors = array();
+                                } elseif (is_string($res)) {
+                                    $status = MSG_ERROR;
+                                    $send_errors = array($res);
+                                } else {
+                                    $status = $res['status'];
+                                    $send_errors = isset($res['errors']) ? $res['errors'] : array();
+                                }
+
+                                if ($status == MSG_ERROR) {
                                     $errors = array_merge($errors, $res['errors']);
+                                }
+
+                                if ($status == MSG_SENT || isset($res['id']) || !empty($send_errors)) {
+                                    $DB->Execute(
+                                        'UPDATE messageitems SET status = ?, lastdate = ?NOW?,
+                                            error = ?, externalmsgid = ?
+                                        WHERE messageid = ?
+                                            AND customerid = ?
+                                            AND destination = ?',
+                                        array(
+                                            $status,
+                                            empty($send_errors) ? null : implode(', ', $send_errors),
+                                            !is_array($res) || empty($res['id']) ? null : $res['id'],
+                                            $msgid,
+                                            $SESSION->id,
+                                            $sms_recipient,
+                                        )
+                                    );
                                 }
                             }
                         } else {
@@ -182,6 +227,7 @@ function module_main()
 
                                 if (!empty($mail_sender_address)) {
                                     $customerinfo = $LMS->GetCustomer($SESSION->id);
+                                    $fullnumber = $LMS->getDocumentFullNumber($documentid);
 
                                     if (!empty($mail_recipient) && !empty($mail_subject) && !empty($mail_body)) {
                                         // operator notification
@@ -191,6 +237,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )
@@ -201,6 +248,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )
@@ -244,6 +292,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )
@@ -254,6 +303,7 @@ function module_main()
                                                 'customerinfo' => $customerinfo,
                                                 'document' => array(
                                                     'id' => $documentid,
+                                                    'fullnumber' =>  $fullnumber,
                                                     'attachmentids' => $attachmentids,
                                                 ),
                                             )
@@ -337,7 +387,7 @@ function module_main()
     }
 
     $documents = $DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
-		    c.description, n.template, d.closed, d.cdate, d.confirmdate
+		    c.description, n.template, d.closed, d.cdate, d.sdate, d.confirmdate, d.customerid
 		FROM documentcontents c
 		JOIN documents d ON (c.docid = d.id)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -352,6 +402,25 @@ function module_main()
         foreach ($documents as &$doc) {
             $doc['attachments'] = $DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
 				ORDER BY type DESC, filename', 'id', array($doc['id']));
+
+            switch ($doc['closed']) {
+                case DOC_CLOSED_AFTER_CUSTOMER_SMS:
+                    $doc['confirm_type'] = DOC_CLOSED_AFTER_CUSTOMER_SMS;
+                    $doc['confirm_date'] = $doc['sdate'];
+                    break;
+                case DOC_CLOSED_AFTER_CUSTOMER_SCAN:
+                    $doc['confirm_type'] = DOC_CLOSED_AFTER_CUSTOMER_SCAN;
+                    $doc['confirm_date'] = 0;
+                    foreach ($doc['attachments'] as $attachment) {
+                        if ($attachment['type'] == -1 && $attachment['cdate'] > $doc['confirm_date']) {
+                            $doc['confirm_date'] = $attachment['cdate'];
+                        }
+                    }
+                    break;
+                default:
+                    $doc['confirm_type'] = $doc['confirm_date'] = 0;
+                    break;
+            }
         }
     }
 

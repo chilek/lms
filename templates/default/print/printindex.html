@@ -113,12 +113,12 @@
 								<TD style="width: 1%;"><IMG src="img/netdev.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Link type:")}</TD>
 								<TD style="width: 98%;" class="nobr">
-									<SELECT size="1" name="linktype" {tip text="Select link type"}>
-										<OPTION value="">{trans("— all —")}</OPTION>
-										{foreach from=$_LINKTYPES item=item key=key}
-										<OPTION value="{$key}">{$item}</OPTION>
+									<select size="1" name="linktype" {tip text="Select link type"}>
+										<option value="">{trans("— all —")}</option>
+										{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+											<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 										{/foreach}
-									</SELECT>
+									</select>
 								</TD>
 							</TR>
 							<TR>
@@ -781,6 +781,23 @@
 										</select>
 									</TD>
 								</tr>
+								<tr>
+									<td>
+										{icon name="configuration"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("JPK flags")}</strong>
+									</td>
+									<TD colspan="2">
+										<select name="jpk-flag" form="invoicereport">
+											<option value="">{trans("— any —")}</option>
+											<option value="{$smarty.const.DOC_FLAG_SPLIT_PAYMENT}" {tip text="translates into JPK MPP flag"}>{trans("split payment")}</option>
+											<option value="{$smarty.const.DOC_FLAG_RECEIPT}" {tip text="translates into JPK FP flag"}>{trans("with receipt<!plural>")}</option>
+											<option value="{$smarty.const.DOC_FLAG_TELECOM_SERVICE}" {tip text="translates into JPK EE flag"}>{trans("<!invoice>telecommunication service")}</option>
+											<option value="{$smarty.const.DOC_FLAG_RELATED_ENTITY}" {tip text="translates into JPK TP flag"}>{trans("related entity")}</option>
+										</select>
+									</TD>
+								</tr>
 							</table>
 						</td>
 						<td class="nobr">
@@ -1373,13 +1390,31 @@
 								<COL style="width: 96%;">
 							</COLGROUP>
 							<TR>
-								<TD>
-									<IMG src="img/calendar.gif" alt="">
-								</TD>
-								<TD class="bold nobr">
-									{trans("Day:")}&nbsp;
-									<INPUT type="text" name="day" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-								</TD>
+								<td>
+									<table style="width: 100%">
+										<tr>
+											<td style="width: 100%;" class="nobr">
+												{icon name="calendar"}
+												<strong>{trans("Day")}</strong>
+												<input type="text" name="day" size="10" maxlength="10"
+													placeholder="{trans("yyyy/mm/dd")}"
+													{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 100%;" class="nobr">
+												{icon name="calendar"}
+												<strong>{trans("Period")}</strong>
+												<select size="1" name="period" {tip text="Select time period to account liability"}>
+													<option value="">{trans("- all -")}</option>
+													{foreach $_PERIODS as $key => $item}
+														<option value="{$key}">{$item}</option>
+													{/foreach}
+												</select>
+											</td>
+										</tr>
+									</table>
+								</td>
 								<TD>
 									<IMG src="img/view.gif" alt="">
 								</TD>
@@ -1883,7 +1918,7 @@
 			</td>
 			<td class="nobr">
 				<label for="customernetdevices">
-					<strong>{trans("Include customer network device assignments:")}</strong>
+					<strong>{trans("Include customer network device assignments")}</strong>
 				</label>
 			</td>
 			<td>
@@ -1946,6 +1981,185 @@
 			tr.toggleClass('blend');
 
 			inp.prop('disabled', !inp.prop('disabled'));
+		});
+	});
+
+</script>
+
+{/if}
+
+{if $printmenu == "netdev"}
+<form method="post" name="uke-pit" id="uke-pit" action="?m=netdevprint&type=uke-pit">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<th scope="col" colspan="3" class="bold nobr">
+				{icon name="netdev" class="fa-fw"}
+				{trans("UKE PIT report")}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="configuration" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("<!uke-pit>Report type")}</strong>
+			</td>
+			<td>
+				<label>
+					<input type="radio" name="report-type" form="uke-pit"
+						value="full" checked>
+					{trans("<!uke-pit>full")}
+				</label>
+				<label>
+					<input type="radio" name="report-type" form="uke-pit"
+						value="customer-services">
+					{trans("<!uke-pit>customer services")}
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="division" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-division" class="lms-ui-disabled">
+					<strong>{trans("Division")}</strong>
+				</label>
+			</td>
+			<td>
+				<select size="1" name="division" form="uke-pit"
+					id="uke-pit-division"
+					{tip text="Select division"}>
+					<option value="0">- {trans("all")} -</option>
+					{foreach $divisions as $item}
+						<option value="{$item.id}">{$item.label|escape}</option>
+					{/foreach}
+				</>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="configuration" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-aggregate-customer-services" class="lms-ui-disabled">
+					<strong>{trans("<!uke-pit>Aggregate customer services")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="aggregate-customer-services" form="uke-pit"
+					id="uke-pit-aggregate-customer-services" value="1" disabled>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="summary" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-summary-only">
+					<strong>{trans("<!uke-pit>Generate summary only")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="summaryonly" form="uke-pit"
+					   id="uke-pit-summary-only" value="1">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="netdevice" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-customer-resources-as-operator-resources">
+					<strong>{trans("<!uke-pit>Customer network resources as operator resources")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="customer-resources-as-operator-resources" form="uke-pit"
+					id="uke-pit-customer-resources-as-operator-resources" value="1">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="location" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-validate-teryt">
+					<strong>{trans("<!uke-pit>Validate TERYT properties")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="validate-teryt" form="uke-pit"
+					id="uke-pit-validate-teryt" value="1" checked>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="location" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-validate-building-numbers">
+					<strong>{trans("<!uke-pit>Validate building numbers")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="validate-building-numbers" form="uke-pit"
+					   id="uke-pit-validate-building-numbers" value="1" checked>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="location" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-validate-gps">
+					<strong>{trans("<!uke-pit>Validate GPS coordinates")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="validate-gps" form="uke-pit"
+					id="uke-pit-validate-gps" value="1" checked>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{icon name="reload" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<label for="uke-pit-detect-loops">
+					<strong>{trans("<!uke-pit>Detect network loops")}</strong>
+				</label>
+			</td>
+			<td>
+				<input type="checkbox" name="detectloops" form="uke-pit"
+					   id="uke-pit-detect-loops" value="1" checked>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button form="uke-pit" icon="save" label="Submit" onclick="$('#uke-pit').submit();"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
+	$(function() {
+		$('[name="report-type"]').change(function() {
+			var checked = $(this).prop('checked') && $(this).is('[value="customer-services"]');
+			$('#uke-pit-aggregate-customer-services').prop('disabled', !checked).closest('tr').find('label').toggleClass('lms-ui-disabled', !checked);
 		});
 	});
 
@@ -2120,6 +2334,62 @@
 		</tr>
 	</tbody>
 </table>
+
+{/if}
+
+{if $printmenu == "netdev"}
+<form method="post" name="sidusis" id="sidusis-form" action="?m=netdevprint&type=uke-sidusis">
+	<input type="submit" class="hiddenbtn">
+</form>
+
+<table class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<td colspan="3" class="nobr">
+				{icon name="netdev" class="fa-fw"}
+				<strong>{trans("SIDUSIS report")}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{icon name="division" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("Division")}</strong>
+			</td>
+			<td>
+				<select name="division"	form="sidusis-form" required {tip text="Select division"}>
+					<option value="">{trans("— all —")}</option>
+					{foreach $divisions as $division}
+						<option value="{$division.id}">{$division.label|escape}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="lms-ui-box-buttons">
+				{button type="submit" form="sidusis-form" icon="submit" label="Submit"}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+
+	$(function() {
+		$('#sidusis-form').submit(function () {
+			$('[form="sidusis-form"][type="submit"]').prop('disabled', false);
+		})
+	});
+
+</script>
 
 {/if}
 

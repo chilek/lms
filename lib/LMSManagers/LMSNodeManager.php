@@ -38,6 +38,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeUpdate($nodedata, $deleteassignments = false)
     {
+        static $node_empty_mac = null;
+
         $args = array(
             'name' => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
@@ -53,11 +55,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'info'              => Utils::removeInsecureHtml($nodedata['info']),
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
-            'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-            'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-                (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
-            'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
-            'linkspeed'         => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
+            'linktype'          => isset($nodedata['linktype']) && (is_int($nodedata['linktype']) || ctype_digit($nodedata['linktype']))
+                ? intval($nodedata['linktype']) : null,
+            'linkradiosector'   => isset($nodedata['linktype']) && (is_int($nodedata['linktype']) || ctype_digit($nodedata['linktype']))
+                && intval($nodedata['linktype']) == LINKTYPE_WIRELESS
+                && !empty($nodedata['radiosector']) && (is_int($nodedata['radiosector']) || ctype_digit($nodedata['radiosector']))
+                ? intval($nodedata['radiosector']) : null,
+            'linktechnology'    => !empty($nodedata['linktechnology']) && (is_int($nodedata['linktechnology']) || ctype_digit($nodedata['linktechnology']))
+                ? intval($nodedata['linktechnology']) : null,
+            'linkspeed'         => !empty($nodedata['linkspeed']) && (is_int($nodedata['linkspeed']) || ctype_digit($nodedata['linkspeed']))
+                ? intval($nodedata['linkspeed']) : null,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
             'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
             'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
@@ -80,33 +87,62 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             unset($args[SYSLOG::RES_USER]);
             $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 
-            $macs = $this->db->GetAll('SELECT id, nodeid FROM macs WHERE nodeid = ?', array($nodedata['id']));
+            $macs = $this->db->GetAll(
+                'SELECT id, nodeid
+                    FROM macs
+                    WHERE nodeid = ?',
+                array(
+                    $nodedata['id'],
+                )
+            );
             if (!empty($macs)) {
                 foreach ($macs as $mac) {
                     $args = array(
-                    SYSLOG::RES_MAC => $mac['id'],
-                    SYSLOG::RES_NODE => $mac['nodeid'],
-                    SYSLOG::RES_CUST => $nodedata['ownerid']
+                        SYSLOG::RES_MAC => $mac['id'],
+                        SYSLOG::RES_NODE => $mac['nodeid'],
+                        SYSLOG::RES_CUST => $nodedata['ownerid']
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_DELETE, $args);
                 }
             }
         }
+
         $this->db->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
+
+        if (!isset($node_empty_mac)) {
+            $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+            if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
+                $node_empty_mac = Utils::normalizeMac($node_empty_mac);
+            } else {
+                $node_empty_mac = '';
+            }
+        }
+
         if (!empty($nodedata['macs'])) {
             foreach ($nodedata['macs'] as $mac) {
-                $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $nodedata['id']));
-                if ($this->syslog) {
+                $mac = strtoupper($mac);
+
+                $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array($mac, $nodedata['id']));
+
+                if ($this->syslog && $mac != $node_empty_mac) {
                     $macid = $this->db->GetLastInsertID('macs');
                     $args = array(
-                    SYSLOG::RES_MAC => $macid,
-                    SYSLOG::RES_NODE => $nodedata['id'],
-                    SYSLOG::RES_CUST => $nodedata['ownerid'],
-                    'mac' => strtoupper($mac)
+                        SYSLOG::RES_MAC => $macid,
+                        SYSLOG::RES_NODE => $nodedata['id'],
+                        SYSLOG::RES_CUST => $nodedata['ownerid'],
+                        'mac' => $mac
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
                 }
             }
+        } elseif (strlen($node_empty_mac)) {
+            $this->db->Execute(
+                'INSERT INTO macs (mac, nodeid) VALUES (?, ?)',
+                array(
+                    $node_empty_mac,
+                    $nodedata['id'],
+                )
+            );
         }
 
         if ($deleteassignments) {
@@ -295,12 +331,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *          2 = disconnected,
      *          3 = online,
      *          4 = without tariff,
-     *          5 = without TERYT,
+     *          5 = without explicit TERYT,
      *          6 = not connected to any network device,
      *          7 = with warning,
      *          8 = without GPS coords,
-     *          9 = without radio sector (if wireless link)
-     *          10 = with locks
+     *          9 = without radio sector (if wireless link),
+     *          10 = with locks,
+     *          11 = without TERYT,
      *      network - network id (default: null = any), single integer value
      *      customergroup - customer group id (default: null = any), single integer value
      *      nodegroup - node group id (default: null = any), single integer value, -1 means nodes without any group
@@ -320,6 +357,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
      *              createdto - node created before this date (default: null = ignore),
      *              lastonlinebefore - last online earlier than (default: null = ignore), single integer value,
      *              lastonlineafter - last online later than (default: null = ignore), single integer value,
+     *              address-origin - check node address origin (default: empty = ignore):
+     *                  1 - with explicit address,
+     *                  2 - with implicit address,
      *      sqlskey - sql field operator (default: 'AND') - text value; used on some fields (not all);
      *          allowed values:
      *          'AND', 'OR'
@@ -459,6 +499,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         case 'lastonlineafter':
                             $searchargs[] = 'n.lastonline >= ' . intval($value);
                             break;
+                        case 'address-origin':
+                            switch (intval($value)) {
+                                case 1:
+                                    $searchargs[] = 'n.address_id IS NOT NULL';
+                                    break;
+                                case 2:
+                                    $searchargs[] = 'n.address_id IS NULL';
+                                    break;
+                            }
+                            break;
                         default:
                             $searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }
@@ -522,6 +572,27 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $sql .= 'FROM vnodes n
 				JOIN customerview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid
+                ' . ($status == 11
+                    ? ' LEFT JOIN (
+                        SELECT
+                            ca2.customer_id,
+                            MAX(ca2.address_id) AS address_id
+                        FROM customer_addresses ca2
+                        JOIN (
+                            SELECT
+                                ca.customer_id,
+                                MAX(ca.type) AS type
+                            FROM customer_addresses ca
+                            JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.house <> \'\'
+                            WHERE ca.type > 0
+                            GROUP BY ca.customer_id
+                        ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
+                        JOIN vaddresses va3 ON va3.id = ca2.address_id
+                        WHERE va3.house <> \'\'
+                        GROUP BY ca2.customer_id
+                    ) ca4 ON ca4.customer_id = n.ownerid
+                    LEFT JOIN addresses a4 ON a4.id = ca4.address_id'
+                    : '') . '
 				LEFT JOIN netdevices nd ON nd.id = n.netdev
 				LEFT JOIN netnodes nn ON nn.id = nd.netnodeid
 				LEFT JOIN invprojects p ON p.id = n.invprojectid
@@ -546,6 +617,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
 					)' : '')
                 . ($status == 5 ? ' AND n.location_city IS NULL' : '')
+                . ($status == 11 ? ' AND (n.location_city IS NULL AND (a4.id IS NULL OR a4.city_id IS NULL))' : '')
                 . ($status == 6 ? ' AND n.netdev IS NULL' : '')
                 . ($status == 7 ? ' AND n.warning = 1' : '')
                 . ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
@@ -767,6 +839,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeAdd($nodedata)
     {
+        static $node_empty_mac = null;
+
         $args = array(
             'name'              => ConfigHelper::checkConfig('phpui.capitalize_node_names', true)
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
@@ -780,11 +854,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'warning'           => $nodedata['warning'],
             'info'              => Utils::removeInsecureHtml($nodedata['info']),
             SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
-            'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-            'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-                (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
-            'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
-            'linkspeed'         => isset($nodedata['linkspeed'])      ? intval($nodedata['linkspeed'])      : 100000,
+            'linktype'          => isset($nodedata['linktype']) && (is_int($nodedata['linktype']) || ctype_digit($nodedata['linktype']))
+                ? intval($nodedata['linktype']) : null,
+            'linkradiosector'   => isset($nodedata['linktype']) && (is_int($nodedata['linktype']) || ctype_digit($nodedata['linktype']))
+                && intval($nodedata['linktype']) == LINKTYPE_WIRELESS
+                && !empty($nodedata['radiosector']) && (is_int($nodedata['radiosector']) || ctype_digit($nodedata['radiosector']))
+                ? intval($nodedata['radiosector']) : null,
+            'linktechnology'    => !empty($nodedata['linktechnology']) && (is_int($nodedata['linktechnology']) || ctype_digit($nodedata['linktechnology']))
+                ? intval($nodedata['linktechnology']) : null,
+            'linkspeed'         => !empty($nodedata['linkspeed']) && (is_int($nodedata['linkspeed']) || ctype_digit($nodedata['linkspeed']))
+                ? intval($nodedata['linkspeed']) : null,
             'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
@@ -834,6 +913,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 foreach ($nodedata['macs'] as $mac) {
                     $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $id));
                 }
+
                 if ($this->syslog) {
                     $macs = $this->db->GetAll('SELECT id, mac FROM macs WHERE nodeid = ?', array($id));
                     foreach ($macs as $mac) {
@@ -845,6 +925,23 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
                     }
+                }
+            } else {
+                if (!isset($node_empty_mac)) {
+                    $node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+                    if (strlen($node_empty_mac) && check_mac($node_empty_mac)) {
+                        $node_empty_mac = Utils::normalizeMac($node_empty_mac);
+                    }
+                }
+
+                if (strlen($node_empty_mac)) {
+                    $this->db->Execute(
+                        'INSERT INTO macs (mac, nodeid) VALUES (?, ?)',
+                        array(
+                            $node_empty_mac,
+                            $id
+                        )
+                    );
                 }
             }
 
@@ -868,15 +965,40 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeStats()
     {
-        $result = $this->db->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected,
-				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
-				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
-				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutterryt,
-				COUNT(CASE WHEN netdev IS NULL THEN 1 END) AS withoutnetdev,
-				COUNT(CASE WHEN warning = 1 THEN 1 END) AS withwarning
-				FROM vnodes
-				JOIN customerview c ON c.id = ownerid
-				WHERE ownerid IS NOT NULL', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
+        $result = $this->db->GetRow(
+            'SELECT COUNT(CASE WHEN access = 1 THEN 1 END) AS connected,
+                COUNT(CASE WHEN access = 0 THEN 1 END) AS disconnected,
+                COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
+                COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutexplicitteryt,
+                COUNT(CASE WHEN location_city IS NULL AND (a4.id IS NULL OR a4.city_id IS NULL) THEN 1 END) AS withoutteryt,
+                COUNT(CASE WHEN netdev IS NULL THEN 1 END) AS withoutnetdev,
+                COUNT(CASE WHEN warning = 1 THEN 1 END) AS withwarning
+            FROM vnodes
+            JOIN customerview c ON c.id = ownerid
+            LEFT JOIN (
+                SELECT
+                    ca2.customer_id,
+                    MAX(ca2.address_id) AS address_id
+                FROM customer_addresses ca2
+                JOIN (
+                    SELECT
+                        ca.customer_id,
+                        MAX(ca.type) AS type
+                    FROM customer_addresses ca
+                    JOIN vaddresses va2 ON va2.id = ca.address_id AND va2.house <> \'\'
+                    WHERE ca.type > 0
+                    GROUP BY ca.customer_id
+                ) ca3 ON ca2.customer_id = ca3.customer_id AND ca3.type = ca2.type
+                JOIN vaddresses va3 ON va3.id = ca2.address_id
+                WHERE va3.house <> \'\'
+                GROUP BY ca2.customer_id
+            ) ca4 ON ca4.customer_id = c.id
+            LEFT JOIN addresses a4 ON a4.id = ca4.address_id
+            WHERE ownerid IS NOT NULL',
+            array(
+                ConfigHelper::getConfig('phpui.lastonline_limit'),
+            )
+        );
 
         $result['total'] = $result['connected'] + $result['disconnected'];
         return $result;
@@ -895,7 +1017,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         } else {
             $link['radiosectors'] = $this->db->GetAll(
                 'SELECT id, name FROM netradiosectors WHERE netdev = ?'
-                . ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
+                . (!empty($link['technology']) ? ' AND (technology = ' . $link['technology'] . ' OR technology IS NULL)' : '')
                 . ' ORDER BY name',
                 array($devid)
             );
@@ -935,18 +1057,21 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function SetNodeLinkType($node, $link = null)
     {
         if (empty($link)) {
-            $type = 0;
-            $technology = 0;
+            $type = LINKTYPE_WIRE;
+            $technology = null;
             $radiosector = null;
-            $speed = 100000;
+            $speed = null;
         } else {
-            $type = isset($link['type']) ? intval($link['type']) : 0;
-            $radiosector = isset($link['radiosector']) ? intval($link['radiosector']) : null;
-            if ($type != 1 || $radiosector == 0) {
+            $type = isset($link['type']) && ctype_digit($link['type']) ? intval($link['type']) : null;
+            $radiosector = !empty($link['radiosector']) && (is_int($link['radiosector']) || ctype_digit($link['radiosector']))
+                ? intval($link['radiosector']) : null;
+            if ($type != LINKTYPE_WIRELESS || empty($radiosector)) {
                 $radiosector = null;
             }
-            $technology = isset($link['technology']) ? intval($link['technology']) : 0;
-            $speed = isset($link['speed']) ? intval($link['speed']) : 100000;
+            $technology = !empty($link['technology']) && (is_int($link['technology']) || ctype_digit($link['technology']))
+                ? intval($link['technology']) : null;
+            $speed = !empty($link['speed']) && (is_int($link['speed']) || ctype_digit($link['speed']))
+                ? intval($link['speed']) : null;
         }
 
         $query = 'UPDATE nodes SET linktype = ?, linkradiosector = ?, linktechnology = ?, linkspeed = ?';

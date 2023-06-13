@@ -124,7 +124,7 @@
 					<option value="0"></option>
 				{/if}
 				{foreach $cities as $item}
-					<option value="{$item.id}">{$item.name}</option>
+					<option value="{$item.id}" data-terc="{$item.terc}" data-simc="{$item.simc}">{$item.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -134,7 +134,12 @@
 		<td>
 			<select id="street_sel" name="street" class="location-property-selection" {tip text="Select street"}>
 				{foreach $streets as $street}
-				<option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{$street.name1|escape}"{if $street.name2} data-street-name-2="{$street.name2|escape}"{/if}>{$street.name}</option>
+					<option value="{$street.id}"
+						data-street-type="{$street.typename}"
+						data-street-name-1="{$street.name1|escape}"
+						data-ulic="{$street.ulic}"
+						{if $street.name2} data-street-name-2="{$street.name2|escape}"{/if}
+					>{$street.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -276,11 +281,14 @@ function submit_location() {
     // SET CITY
     input_str = city.val() ? city.find('option:selected').text() : '';
 
+	var city_option = $('option:selected', city);
     if ( input_str && /^([^(]+)/.test(input_str) )  {
         tmp = RegExp.$1.replace(/\s+$/, '');
 
         location_box.find( "input[data-address='city']"        ).val(tmp);
-        location_box.find( "input[data-address='city-hidden']" ).val(city.val());
+        location_box.find( "input[data-address='city-hidden']" ).val(city_option.val());
+		location_box.find( "input[data-address='terc']" ).val(city_option.attr('data-terc'));
+        location_box.find( "input[data-address='simc']" ).val(city_option.attr('data-simc'));
         // automatically preselect 'Poland' country when we submit territized location
         location_box.find( "select[data-address='country']").val(2);
     }
@@ -288,20 +296,29 @@ function submit_location() {
     // SET STREET
     var street_option = $('option:selected', street);
     if (parseInt(street_option.val())) {
-    	var street_parts = [];
-    	street_parts.push(street_option.attr('data-street-type'));
-		if (typeof(street_option.attr('data-street-name-2')) !== 'undefined') {
-			street_parts.push(street_option.attr('data-street-name-2'));
+		var terytStreetAddressFormat = '{ConfigHelper::getConfig('phpui.teryt_street_address_format', '%type% %street2% %street1%')}';
+		var streetParts = {};
+
+		streetParts.type = street_option.attr('data-street-type');
+		streetParts.street1 = street_option.attr('data-street-name-1');
+		streetParts.street2 = typeof(street_option.attr('data-street-name-2')) !== 'undefined' ? street_option.attr('data-street-name-2') : '';
+		if (streetParts.type.match(/^rynek$/i) &&
+			(streetParts.street1.match(/^rynek/i) || streetParts.street2.match(/^rynek/i))) {
+			streetParts.type = '';
+		} else if (!streetParts.street2.length && streetParts.street1.match(/^[0-9]+(\.|-go)?$/)) {
+			streetParts.type = '';
 		}
-		street_parts.push(street_option.attr('data-street-name-1'));
-		if (street_parts[0].match(/^rynek$/i) &&
-			(street_parts[1].match(/^rynek/i) || (street_parts.length == 3 && street_parts[2].match(/^rynek/i)))) {
-			street_parts.shift();
-		} else if (street_parts.length == 2 && street_parts[1].match(/^[0-9]+(\.|-go)?$/)) {
-			street_parts.reverse();
-		}
-    	location_box.find( "input[data-address='street']"        ).val( street_parts.join(' ') );
+
+		{literal}
+		var street = terytStreetAddressFormat.replace('%type%', streetParts.type)
+			.replace('%street1%', streetParts.street1)
+			.replace('%street2%', streetParts.street2)
+			.replaceAll(/[ ]{2,}/g, ' ');
+		{/literal}
+
+		location_box.find( "input[data-address='street']"        ).val( street );
         location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );
+		location_box.find( "input[data-address='ulic']" ).val( street_option.attr('data-ulic') );
     } else {
         location_box.find( "input[data-address='street']"        ).val( '' );
         location_box.find( "input[data-address='street-hidden']" ).val( '' );
@@ -315,8 +332,9 @@ function submit_location() {
     //location_box.find( "input[data-address='location-name']" ).val( $( '#location-name' ).val() );
 
     // SET STATE
-    location_box.find( "input[data-address='state']"        ).val(state.find('option:selected').text());
-    location_box.find( "input[data-address='state-hidden']" ).val(state.val());
+	var state_option = $('option:selected', state);
+    location_box.find( "input[data-address='state']"        ).val(state_option.text());
+    location_box.find( "input[data-address='state-hidden']" ).val(state_option.val());
 
     // UPDATE ADDRESS STRING
     parent.$( '#{$data.boxid}' ).find('input').first().trigger('input');
@@ -338,7 +356,6 @@ $( '#district_sel'  ).val( {$data.districtid} );
 $( '#city_sel'      ).val( {$data.cityid} );
 $( '#street_sel'    ).val( location_box.find( "input[data-address='street-hidden']" ).val() );
 initAdvancedSelects('#street_sel');
-$( '#location-name' ).val( location_box.find( "input[data-address='location-name']" ).val() );
 
 $('#location-search').submit(function(e) {
 	e.preventDefault();

@@ -78,6 +78,10 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                             $searchargs[] = 'v.ownerid = ' . intval($value);
                             break;
 
+                        case 'phone':
+                            $searchargs[] = 'n.phone ?LIKE? ' . $this->db->Escape("%$value%");
+                            break;
+
                         default:
                             $searchargs[] = $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }
@@ -351,12 +355,14 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'cost_limit' => isset($voipaccountdata['cost_limit']) ? $voipaccountdata['cost_limit'] : null,
             SYSLOG::RES_ADDRESS => empty($voipaccountdata['address_id']) ? null : $voipaccountdata['address_id'],
             'description' => isset($voipaccountdata['description']) ? Utils::removeInsecureHtml($voipaccountdata['description']) : '',
+            'extid' => isset($voipaccountdata['extid']) ? strval($voipaccountdata['extid']) : null,
+            'serviceproviderid' => isset($voipaccountdata['serviceproviderid']) ? intval($voipaccountdata['serviceproviderid']) : null,
         );
 
         $voip_account_inserted = $DB->Execute(
             'INSERT INTO voipaccounts (ownerid, login, passwd, creatorid, creationdate, access,
-            balance, flags, cost_limit, address_id, description)
-            VALUES (?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
+            balance, flags, cost_limit, address_id, description, extid, serviceproviderid)
+            VALUES (?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
 
@@ -377,7 +383,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             }
 
             foreach ($voipaccountdata['numbers'] as $number) {
-                $phones[] = '(' . $id . ", '" . $number['phone'] . "'," . (++$phone_index) . ", " . $this->db->Escape($number['info']) . ")";
+                $phones[] = '(' . $id . ', ' . $this->db->Escape($number['phone']) . ', ' . (++$phone_index) . ', ' . $this->db->Escape($number['info']) . ')';
 
                 if ($this->syslog) {
                     $args = array(
@@ -701,12 +707,15 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * Returns all VoIP accounts for given customer id
      *
      * @param int $id Customer id
+     * @param int $extid Customer extid
+     * @param int $serviceproviderid Service provider id
      * @return array VoIP accounts data
      */
-    public function getCustomerVoipAccounts($id)
+    public function getCustomerVoipAccounts($id, $extid = null, $serviceproviderid = null)
     {
+        $extId = !empty($extid) ? strval($extid) : null;
         $result = $this->db->GetAll(
-            'SELECT v.id, login, passwd, ownerid, access, flags,
+            'SELECT v.id, login, passwd, ownerid, access, flags, balance, cost_limit, extid, serviceproviderid,
                 lb.name AS borough_name, ld.name AS district_name,
                 lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
@@ -722,15 +731,17 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 LEFT JOIN location_boroughs lb     ON lb.id   = lc.boroughid
                 LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
                 LEFT JOIN location_states lst      ON lst.id  = ld.stateid
-            WHERE ownerid=?
-            ORDER BY login ASC',
+            WHERE ownerid = ?'
+            . (empty($extid) ? '' : ' AND extid ?LIKE? ' . $this->db->Escape("%$extid%"))
+            . (empty($serviceproviderid) ? '' : ' AND serviceproviderid = ' . intval($serviceproviderid))
+            . ' ORDER BY login ASC',
             array($id)
         );
 
         if (!empty($result)) {
             foreach ($result as &$account) {
                 $account['phones'] = $this->db->GetAll(
-                    'SELECT * FROM voip_numbers WHERE voip_account_id = ?',
+                    'SELECT * FROM voip_numbers WHERE voip_account_id = ? ORDER BY number_index',
                     array($account['id'])
                 );
             }
@@ -830,6 +841,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 case BILLING_RECORD_STATUS_NO_ANSWER:
                 case BILLING_RECORD_STATUS_BUSY:
                 case BILLING_RECORD_STATUS_SERVER_FAILED:
+                case BILLING_RECORD_STATUS_UNKNOWN:
                     $where[] = 'cdr.status = ' . $params['fstatus'];
                     break;
             }

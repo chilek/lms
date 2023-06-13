@@ -97,6 +97,7 @@ $_LANG['Your authorization code has expired! Try again in a moment.'] = 'Wygasł
 $_LANG['Authorization code you entered is invalid!'] = 'Podałeś niepoprawny kod autoryzacyjny!';
 $_LANG['Authorization code has been sent to you mobile phone.'] = 'Kod autoryzacyjny został wysłany na Twój telefon komórkowy.';
 $_LANG['Authorization code is valid! Document has been confirmed and your services will be activated in a few moments.'] = 'Kod autoryzacyjny poprawny! Dokument został zatwierdzony, a Twoje usługi zostaną aktywowane za parę chwil.';
+$_LANG['SMS authorization code for document confirmation'] = 'kod autoryzacyjny SMS do zatwierdzenia dokumentu';
 
 $_LANG['Enter document approval customer one-time password sms body'] = 'Wprowadź treść SMS-a zawierającego hasło jednorazowe wysyłane do klienta';
 $_LANG['One-time password SMS body:'] = 'Treść SMS-a z hasłem jednorazowym:';
@@ -109,6 +110,7 @@ $_LANG[
     . '<strong>%pin%</strong> - customer pin code,<br>'
     . '<strong>%customername%</strong> - full customer name,<br>'
     . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%document%</strong> - document number,<br>'
     . '<strong>%date-y%</strong> - date to which we wait for customer action (year),<br>'
     . '<strong>%date-m%</strong> - date to which we wait for customer action (month),<br>'
     . '<strong>%date-d%</strong> - date to which we wait for customer action (day).'
@@ -118,6 +120,7 @@ $_LANG[
     . '<strong>%pin%</strong> - kod PIN klienta,<br>'
     . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
     . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%document%</strong> - numer dokumentu,<br>'
     . '<strong>%date-y%</strong> - data do której oczekujemy na decyzję klienta (rok),<br>'
     . '<strong>%date-m%</strong> - data do której oczekujemy na decyzję klienta (miesiąc),<br>'
     . '<strong>%date-d%</strong> - data do której oczekujemy na decyzję klienta (dzień).';
@@ -134,6 +137,23 @@ $_LANG[
     . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
     . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
     . '<strong>%document%</strong> - numer dokumentu.';
+
+$_LANG[
+    'Supported substitutions:<br><br>'
+    . '<strong>%cid%</strong> - customer identifier,<br>'
+    . '<strong>%customername%</strong> - full customer name,<br>'
+    . '<strong>%docid%</strong> - document identifier,<br>'
+    . '<strong>%document%</strong> - document number,<br>'
+    . '<strong>%creatorname%</strong> - document creator name,<br>'
+    . '<strong>%approvername%</strong> - document approver name.'
+] =
+    'Obsługiwane symbole specjalne:<br><br>'
+    . '<strong>%cid%</strong> - identyfikator klienta,<br>'
+    . '<strong>%customername%</strong> - pełna nazwa klienta,<br>'
+    . '<strong>%docid%</strong> - identyfikator dokumentu,<br>'
+    . '<strong>%document%</strong> - numer dokumentu,<br>'
+    . '<strong>%creatorname%</strong> - nazwa twórcy dokumentu,<br>'
+    . '<strong>%approvername%</strong> - nazwa zatwierdzającego dokument.';
 
 $_LANG[
     'Supported substitutions:<br><br>'
@@ -156,3 +176,5 @@ $_LANG['One from files has invalid type!'] = 'Jeden z plików ma nieprawidłowy 
 $_LANG['Invalid file type: $a'] = 'Nieprawidłowy typ pliku: $a';
 $_LANG['Total file size is too large!'] = 'Zbyt duży całkowity rozmiar plików!';
 $_LANG['<!documents>Submit'] = 'Wyślij';
+
+$_LANG['Confirmation'] = 'Zatwierdzenie';

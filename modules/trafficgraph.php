@@ -51,7 +51,7 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
             $y += ($h - $th) / 2;
         }
 
-        imagestring($img, $font, $x, $y, $text, $color);
+        imagestring($img, $font, intval($x), intval($y), $text, $color);
     }
 
     function value2string($value, $base = 1024)
@@ -353,12 +353,12 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     $start = $padding;
 
     /* Rectangles of color with respect to graph lines */
-    imagefilledrectangle($image, $start, $ftrY + 1 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 1 * $ftrSPC + $rectSize + $rectPad, $clrTOT);
-    imagefilledrectangle($image, $start, $ftrY + 2 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 2 * $ftrSPC + $rectSize + $rectPad, $clrIN);
-    imagefilledrectangle($image, $start, $ftrY + 3 * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + 3 * $ftrSPC + $rectSize + $rectPad, $clrOUT);
+    imagefilledrectangle($image, intval($start), intval($ftrY + 1 * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + 1 * $ftrSPC + $rectSize + $rectPad), $clrTOT);
+    imagefilledrectangle($image, intval($start), intval($ftrY + 2 * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + 2 * $ftrSPC + $rectSize + $rectPad), $clrIN);
+    imagefilledrectangle($image, intval($start), intval($ftrY + 3 * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + 3 * $ftrSPC + $rectSize + $rectPad), $clrOUT);
 
     for ($i = 1; $i < 4; $i++) {
-        imagerectangle($image, $start, $ftrY + $i * $ftrSPC + $rectPad, $start + $rectSize, $ftrY + $i * $ftrSPC + $rectSize + $rectPad, $clrBLK);
+        imagerectangle($image, intval($start), intval($ftrY + $i * $ftrSPC + $rectPad), intval($start + $rectSize), intval($ftrY + $i * $ftrSPC + $rectSize + $rectPad), $clrBLK);
     }
 
     $start += $ftrSPC;
@@ -417,8 +417,8 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     /* DRAW CHART */
     /**************/
     /* Draw chart border */
-    imagefilledrectangle($image, $crtX1, $crtY1, $crtX2, $crtY2, $clrCBG);
-    imagerectangle($image, $crtX1, $crtY1, $crtX2, $crtY2, $clrBRD);
+    imagefilledrectangle($image, intval($crtX1), intval($crtY1), intval($crtX2), intval($crtY2), $clrCBG);
+    imagerectangle($image, intval($crtX1), intval($crtY1), intval($crtX2), intval($crtY2), $clrBRD);
 
     $style1 = array($clrGRD, IMG_COLOR_TRANSPARENT, IMG_COLOR_TRANSPARENT, IMG_COLOR_TRANSPARENT);
     $style2 = array($clrGRD, $clrGRD, IMG_COLOR_TRANSPARENT);
@@ -445,15 +445,15 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     /* Draw entire chart */
     $pixel = ($crtY2 - $crtY1) / ($max_v * $max_pow);
 
-    $Xpos = $crtX1 + 1;
+    $Xpos = intval($crtX1 + 1);
     foreach ($chart as $elem) {
         //imagesetthickness($image, 1);
         //imageline($image, $Xpos, $crtY2-1, $Xpos, $crtY2 - (($elem['upload']+$elem['download'])*$pixel), $clrTOT);
-        imageline($image, $Xpos, $crtY2-1, $Xpos, $crtY2 - ($elem['download'] * $pixel), $clrIN);
+        imageline($image, $Xpos, intval($crtY2 - 1), $Xpos, intval($crtY2 - $elem['download'] * $pixel), $clrIN);
         //imagesetthickness($image, 1);
         if ($Xpos > ($crtX1 + 1)) {
             //imageline($image, $Xpos-1, $crtY2 - $Ypos_down, $Xpos, $crtY2 - ($elem['download']*$pixel), $clrIN);
-            imageline($image, $Xpos-1, $crtY2 - $Ypos_up, $Xpos, $crtY2 - ($elem['upload'] * $pixel), $clrOUT);
+            imageline($image, $Xpos - 1, intval($crtY2 - $Ypos_up), intval($Xpos), intval($crtY2 - $elem['upload'] * $pixel), $clrOUT);
         }
         $Ypos_up = $elem['upload'] * $pixel;
         $Ypos_down = $elem['download'] * $pixel;
@@ -465,12 +465,12 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
     for ($i = 1; $i <= $max_v; $i++) {
         imagesetstyle($image, $style2);
         if ($i != $max_v) {
-            imageline($image, $crtX1+1, $crtY2 - $i*$max_step, $crtX2-1, $crtY2 - $i * $max_step, IMG_COLOR_STYLED);
+            imageline($image, intval($crtX1 + 1), intval($crtY2 - $i * $max_step), intval($crtX2 - 1), intval($crtY2 - $i * $max_step), IMG_COLOR_STYLED);
         }
         imagesetstyle($image, $style1);
         for ($j = 1; $j < $subs; $j++) {
             $Ypos = $i * $max_step - $j * $max_substep;
-            imageline($image, $crtX1 + 1, $crtY2 - $Ypos, $crtX2 - 1, $crtY2 - $Ypos, IMG_COLOR_STYLED);
+            imageline($image, intval($crtX1 + 1), intval($crtY2 - $Ypos), intval($crtX2 - 1), intval($crtY2 - $Ypos), IMG_COLOR_STYLED);
         }
         $text = value2string($i * $max_pow, 1000);
         imagestringcenter($image, $crtFont, $crtX1 - (strlen($text) + 1) * imagefontwidth($crtFont), $crtY2 - $i * $max_step, 0, -1, $text, $clrTXT);
@@ -516,16 +516,16 @@ function TrafficGraph($nodeid, $net = null, $customer = null, $bar = null, $from
         for ($j = 0; $j < $subunits; $j++) {
             $Tpos = $tto - $corr - ($i * $unit) + ($j * $unit/$subunits);
             if (($Tpos < $tto) && ($Tpos > $tfrom)) {
-                $Xpos = $crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range;
-                imageline($image, $Xpos, $crtY1 + 1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
+                $Xpos = intval(round($crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range));
+                imageline($image, $Xpos, intval($crtY1 + 1), $Xpos, intval($crtY2 - 1), IMG_COLOR_STYLED);
             }
         }
 
         imagesetstyle($image, $style2);
         $Tpos = $tto - $corr - ($i * $unit);
         if ($Tpos > $tfrom) {
-            $Xpos = $crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range;
-            imageline($image, $Xpos, $crtY1+1, $Xpos, $crtY2 - 1, IMG_COLOR_STYLED);
+            $Xpos = intval(round($crtX1 + ($Tpos - $tfrom) * ($crtX2 - $crtX1) / $range));
+            imageline($image, $Xpos, intval($crtY1 + 1), $Xpos, intval($crtY2 - 1), IMG_COLOR_STYLED);
 
             if ($unit >= 24 * 3600) {
                 $utxt = date('j/m', $Tpos);

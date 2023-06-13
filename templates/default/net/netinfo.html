@@ -114,7 +114,9 @@
 			</select>
 			{else}
 				{strip}
-					({$network.vlanid})
+					{if !empty($network.vlanid)}
+						({$network.vlanid})
+					{/if}
 					{if $network.vlandescription}
 						,&nbsp;{$network.vlandescription|trunescape:45}
 					{/if}

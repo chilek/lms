@@ -69,7 +69,11 @@
 				{if $use_alert_color}
 					<span style="color: red; font-weight: bold;">
 				{/if}
-				{trans("Deadline:")}
+				{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_DEADLINE) > 0}
+					{trans("Deadline:")}
+				{else}
+					{trans("Payment Cleared")}
+				{/if}
 				{if $use_alert_color}
 					</span>
 				{/if}
@@ -88,14 +92,18 @@
 					{$invoice.sdate|date_format:"Y-m-d"}
 					<br>
 				{/if}
-				{if $use_alert_color}
-					<span style="color: red; font-weight: bold;">
+				{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_DEADLINE) > 0}
+					{if $use_alert_color}
+						<span style="color: red; font-weight: bold;">
+					{/if}
+					{$invoice.pdate|date_format:"Y-m-d"}
+					{if $use_alert_color}
+						</span>
+					{/if}
+				{else}
+					&nbsp;
 				{/if}
-				{$invoice.pdate|date_format:"Y-m-d"}
 				<br>
-				{if $use_alert_color}
-					</span>
-				{/if}
 				{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}
 					{trans($invoice.paytypename)}
 					{if !empty($invoice.splitpayment)}
@@ -229,32 +237,32 @@
 				<strong>{trans("No.")}</strong>
 			</td>
 			<td width="{-$cols + 101}%" class="head" align="center">
-				<strong>{trans("Name of Product, Commodity or Service:")}</strong>
+				<strong>{trans("Name of Product, Commodity or Service")}</strong>
 			</td>
 			{if !$hide_prodid}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Product ID:")}</strong>
+					<strong>{trans("<!invoice>Product ID")}</strong>
 				</td>
 			{/if}
 			{if $show_tax_category}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Tax Category:")}</strong>
+					<strong>{trans("Tax Category")}</strong>
 				</td>
 			{/if}
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Unit:")}</strong>
+				<strong>{trans("Unit")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Amount:")}</strong>
+				<strong>{trans("Amount")}</strong>
 			</td>
 			{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Discount:")}</strong>
+					<strong>{trans("Discount")}</strong>
 				</td>
 			{/if}
 			{if $invoice.netflag}
 				<td width="1%" class="head" align="center">
-					<strong>{trans("Unitary Net Value:")}</strong>
+					<strong>{trans("Unitary Net Value")}</strong>
 				</td>
 			{else}
 				<td width="1%" class="head" align="center">
@@ -262,16 +270,16 @@
 				</td>
 			{/if}
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Net Value:")}</strong>
+				<strong>{trans("Net Value")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Tax Rate:")}</strong>
+				<strong>{trans("Tax Rate")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Tax Value:")}</strong>
+				<strong>{trans("Tax Value")}</strong>
 			</td>
 			<td width="1%" class="head" align="center">
-				<strong>{trans("Gross Value:")}</strong>
+				<strong>{trans("Gross Value")}</strong>
 			</td>
 		</tr>
 		{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
@@ -311,32 +319,32 @@
 					{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 						<td class="flr" align="right" nowrap>
 							{if $item.pdiscount != 0}
-								{$item.pdiscount|string_format:"%.2f"} %
+								{Localisation::formatNumber($item.pdiscount)} %
 							{else}
-								{$item.vdiscount|string_format:"%01.2f"}
+								{Localisation::smartFormatNumber($item.vdiscount)}
 							{/if}
 						</td>
 					{/if}
 					{if $invoice.netflag}
 						<td class="flr" align="right" nowrap>
-							{$item.basevalue|string_format:"%01.2f"}
+							{Localisation::smartFormatNumber($item.basevalue)}
 						</td>
 					{else}
 						<td class="flr" align="right" nowrap>
-							{$item.value|string_format:"%01.2f"}
+							{Localisation::smartFormatNumber($item.value)}
 						</td>
 					{/if}
 					<td class="flr" align="right" nowrap>
-						{$item.totalbase|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.totalbase)}
 					</td>
 					<td class="flr" align="right" nowrap>
 						{$item.taxlabel}
 					</td>
 					<td class="flr" align="right" nowrap>
-						{$item.totaltax|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.totaltax)}
 					</td>
 					<td width="1%" class="flr" align="right" nowrap>
-						{$item.total|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.total)}
 					</td>
 				</tr>
 			{/foreach}
@@ -345,16 +353,16 @@
 					<p align="right"><strong>{trans("Total:")}</strong></p>
 				</td>
 				<td align="right" class="fall" nowrap>
-					{$invoice.invoice.totalbase|string_format:"%01.2f"}
+					{Localisation::formatNumber($invoice.invoice.totalbase)}
 				</td>
 				<td class="fall" align="right">
 					<strong>x</strong>
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$invoice.invoice.totaltax|string_format:"%01.2f"}
+					{Localisation::formatNumber($invoice.invoice.totaltax)}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$invoice.invoice.total|string_format:"%01.2f"}
+					{Localisation::formatNumber($invoice.invoice.total)}
 				</td>
 				</tr>
 				<tr>
@@ -371,16 +379,16 @@
 						&nbsp;
 					</td>
 					<td align="right" class="fall" nowrap>
-						{$item.base|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.base)}
 					</td>
 					<td class="fall" align="right">
 						{$item.taxlabel}
 					</td>
 					<td class="fall" align="right" nowrap>
-						{$item.tax|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.tax)}
 					</td>
 					<td class="fall" align="right" nowrap>
-						{$item.total|string_format:"%01.2f"}
+						{Localisation::formatNumber($item.total)}
 					</td>
 				</tr>
 			{/foreach}
@@ -420,29 +428,29 @@
 				</td>
 				{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 					<td class="flr" align="right" nowrap>
-						{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
+						{if $item.pdiscount != 0}{Localisation::formatNumber($item.pdiscount)} %{else}{Localisation::smartFormatNumber($item.vdiscount)}{/if}
 					</td>
 				{/if}
 				{if $invoice.netflag}
 					<td class="flr" align="right" nowrap>
-						{$item.basevalue|string_format:"%01.2f"}
+						{Localisation::smartFormatNumber($item.basevalue)}
 					</td>
 				{else}
 					<td class="flr" align="right" nowrap>
-						{$item.value|string_format:"%01.2f"}
+						{Localisation::smartFormatNumber($item.value)}
 					</td>
 				{/if}
 				<td class="flr" align="right" nowrap>
-					{$item.totalbase|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.totalbase)}
 				</td>
 				<td class="flr" align="right" nowrap>
 					{$item.taxlabel}
 				</td>
 				<td class="flr" align="right" nowrap>
-					{$item.totaltax|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.totaltax)}
 				</td>
 				<td class="flr" align="right" nowrap>
-					{$item.total|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.total)}
 				</td>
 			</tr>
 		{/foreach}
@@ -451,16 +459,16 @@
 				<p align="right"><strong>{trans("Total:")}</strong></p>
 			</td>
 			<td align="right" class="fall" nowrap>
-				{$invoice.totalbase|string_format:"%01.2f"}
+				{Localisation::formatNumber($invoice.totalbase)}
 			</td>
 			<td class="fall" align="right">
 				<strong>x</strong>
 			</td>
 			<td class="fall" align="right" nowrap>
-				{$invoice.totaltax|string_format:"%01.2f"}
+				{Localisation::formatNumber($invoice.totaltax)}
 			</td>
 			<td class="fall" align="right" nowrap>
-				{$invoice.total|string_format:"%01.2f"}
+				{Localisation::formatNumber($invoice.total)}
 			</td>
 		</tr>
 		<tr>
@@ -477,16 +485,16 @@
 					&nbsp;
 				</td>
 				<td align="right" class="fall" nowrap>
-					{$item.base|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.base)}
 				</td>
 				<td class="fall" align="right">
 					{$item.taxlabel}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$item.tax|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.tax)}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{$item.total|string_format:"%01.2f"}
+					{Localisation::formatNumber($item.total)}
 				</td>
 			</tr>
 		{/foreach}
@@ -502,16 +510,16 @@
 					<strong>{trans("Difference value:")}</strong>
 				</td>
 				<td align="right" class="fall" nowrap>
-					{if $totalbase > 0}+{/if}{$totalbase|string_format:"%01.2f"}
+					{if $totalbase > 0}+{/if}{Localisation::formatNumber($totalbase)}
 				</td>
 				<td class="fall" align="right">
 					<strong>x</strong>
 				</td>
 				<td class="fall" align="right" nowrap>
-					{if $totaltax > 0}+{/if}{$totaltax|string_format:"%01.2f"}
+					{if $totaltax > 0}+{/if}{Localisation::formatNumber($totaltax)}
 				</td>
 				<td class="fall" align="right" nowrap>
-					{if $total > 0}+{/if}{$total|string_format:"%01.2f"}
+					{if $total > 0}+{/if}{Localisation::formatNumber($total)}
 				</td>
 			</tr>
 		{/if}
@@ -526,17 +534,27 @@
 
 	<table width="100%" cellpadding="3">
 		<tr>
-			<td width="50%" align="left" class="hdf">
-				{if $invoice.rebate}
-					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-					{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
-					{if $use_alert_color && !$show_balance_summary}</span>{/if}
-				{else}
-					{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
-					{t a=moneyf($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
-					{if $use_alert_color && !$show_balance_summary}</span>{/if}
-				{/if}
-			</td>
+			{if ($_PAYTYPES[$invoice.paytype].features & $smarty.const.INVOICE_FEATURE_TO_PAY) > 0}
+				<td width="50%" align="left" class="hdf">
+					{if $invoice.rebate}
+						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to repay){/t}
+						{else}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to repay){/t}
+						{/if}
+						{if $use_alert_color && !$show_balance_summary}</span>{/if}
+					{else}
+						{if $use_alert_color && !$show_balance_summary}<span style="color: red; font-weight: bold;">{/if}
+						{if $invoice.invoice && $invoice.doctype == $smarty.const.DOC_CNOTE}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Correction value: $a (to pay){/t}
+						{else}
+							{t a=Utils::formatMoney($invoice.value, $invoice.currency)}Invoice value: $a (to pay){/t}
+						{/if}
+						{if $use_alert_color && !$show_balance_summary}</span>{/if}
+					{/if}
+				</td>
+			{/if}
 			<td width="50%" align="right" rowspan="2">
 				{if !ConfigHelper::checkConfig('invoices.hide_expositor')}
 					{t a=$invoice.expositor}Expositor: <b>$a</b>{/t}
@@ -590,16 +608,16 @@
 						{$comment = ""}
 					{/if}
 
-					{trans('Previous balance: $a $b', moneyf(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment)}
+					{trans('Previous balance: $a $b', Utils::formatMoney(abs($previous_balance) / $invoice.currencyvalue, $invoice.currency), $comment))}
 					<br>
 
 					{if $icustomerbalance > 0}
 						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Excess payment: $a', moneyf($customerbalance / $invoice.currencyvalue, $invoice.currency))}
+							{trans('Excess payment: $a', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency))}
 						</span>
 					{else}
 						<span style="font-size: 180%; font-weight: bold; display: inline-block; margin-top: 0.3em;{if $use_alert_color} color: red;{/if}">
-							{trans('Total to pay: $a', moneyf(-$customerbalance  / $invoice.currencyvalue, $invoice.currency))}
+							{trans('Total to pay: $a', Utils::formatMoney(-$customerbalance / $invoice.currencyvalue, $invoice.currency))}
 						</span>
 					{/if}
 				</td>
@@ -618,7 +636,7 @@
 						{if $use_alert_color}
 							<span style="color: red;">
 						{/if}
-						{trans('Your balance on date of invoice issue: $a $b', moneyf($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
+						{trans('Your balance on date of invoice issue: $a $b', Utils::formatMoney($customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
 						{if $use_alert_color}
 							</span>
 						{/if}

@@ -29,6 +29,8 @@ function array_provider_filter($provider)
     static $all_providers = array(
         'google' => true,
         'siis' => true,
+        'prg' => true,
+        'osm' => true,
     );
     return isset($all_providers[$provider]);
 }
@@ -68,7 +70,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
         }
     }
 
-    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,osm,siis'));
+    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,osm,prg'));
     $providers = preg_split('/\s*[,|]\s*/', $providers);
     $providers = array_filter($providers, 'array_provider_filter');
 
@@ -127,6 +129,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                     ? $location['house'] . ' '
                     : ''
                     ) . $location['simple_street'];
+            } elseif (isset($location['house']) && mb_strlen($location['house'])) {
+                $params['street'] = $location['house'];
             }
             if (isset($address['zip'])) {
                 $params['postalcode'] = $address['zip'];
@@ -141,7 +145,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                 $("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
                 $("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
             ');
-        } elseif ($provider == 'siis' && isset($address) && isset($address['city_id'])
+        } elseif (($provider == 'siis' || $provider == 'prg') && isset($address) && isset($address['city_id'])
             && !empty($address['city_id']) && $DB->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
             $args = array(
             'city_id' => $address['city_id'],

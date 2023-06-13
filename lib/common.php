@@ -514,12 +514,12 @@ function isboolean($value)
     }
 }
 
-function moneyf($value, $currency = null)
+function moneyf($value, $currency = null, $precision = 2)
 {
     if (empty($currency)) {
         $currency = Localisation::getCurrentCurrency();
     }
-    return sprintf('%01.2f %s', $value, $currency);
+    return sprintf('%01.'.$precision.'f %s', $value, $currency);
 }
 
 function moneyf_in_words($value, $currency = null)
@@ -915,7 +915,7 @@ function html2pdf($content, $subject = null, $title = null, $type = null, $id = 
 
         $html2pdf->pdf->SetAuthor('LMS Developers');
         $html2pdf->pdf->SetCreator('LMS ' . $layout['lmsv']);
-        if ($info) {
+        if (!empty($info)) {
             $html2pdf->pdf->SetAuthor($info['name']);
         }
         if ($subject) {
@@ -1449,10 +1449,11 @@ function geocode($location)
     }
 
     $page = json_decode($res, true);
-    $latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
-    $longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
+
+    $latitude = empty($page['results']) ? null : str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
+    $longitude = empty($page['results']) ? null : str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
+    $accuracy = empty($page['results']) ? null : $page["results"][0]["geometry"]["location_type"];
     $status = $page["status"];
-    $accuracy = $page["results"][0]["geometry"]["location_type"];
     return array(
         'status' => $status,
         'error' => isset($page['error_message']) ? $page['error_message'] : '',
@@ -1484,8 +1485,8 @@ function osm_geocode($params)
     }
 
     $page = json_decode($res, true);
-    $latitude = str_replace(',', '.', $page[0]['lat']);
-    $longitude = str_replace(',', '.', $page[0]['lon']);
+    $latitude = isset($page[0]) ? str_replace(',', '.', $page[0]['lat']) : '';
+    $longitude = isset($page[0]) ? str_replace(',', '.', $page[0]['lon']) : '';
     return array(
         'latitude' => $latitude,
         'longitude' => $longitude,

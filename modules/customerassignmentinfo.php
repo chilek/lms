@@ -74,7 +74,7 @@ if (!empty($a['docnumber'])) {
     );
 }
 
-$a['paytypename'] = !empty($a['paytype']) && isset($PAYTYPES[$a['paytype']]) ? $PAYTYPES[$a['paytype']] : '';
+$a['paytypename'] = !empty($a['paytype']) && isset($PAYTYPES[$a['paytype']]) ? $PAYTYPES[$a['paytype']]['label'] : '';
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->display('customer/customerassignmentinfoshort.html');

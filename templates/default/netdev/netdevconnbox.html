@@ -20,13 +20,21 @@
 			{if $netdevlist}
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-8">
-					<div class="lms-ui-tab-table-wrapper name-location-link col-4">
-						<div class="lms-ui-tab-table-wrapper name-location col-2">
+					<div class="lms-ui-tab-table-wrapper name-netnode-location-link col-5">
+						<div class="lms-ui-tab-table-wrapper name-netnode-location col-3">
 							<div class="lms-ui-tab-table-column name">
-								<i class="lms-ui-icon-netdev"></i> <strong>{trans("Name")} / {trans("Producer")}:</strong>
+								{icon name="netdev" class="fa-fw"}
+								<strong>
+									{trans("Name")} / {trans("Producer")}
+								</strong>
+							</div>
+							<div class="lms-ui-tab-table-column netnode">
+								{icon name="netnode" class="fa-fw"}
+								{trans("Network node")}
 							</div>
 							<div class="lms-ui-tab-table-column location">
-								<i class="lms-ui-icon-location"></i> {trans("Location:")}
+								{icon name="location" class="fa-fw"}
+								{trans("Location:")}
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper link col-2">
@@ -67,20 +75,28 @@
 			{foreach $netdevlist as $netdevice}
 			<div class="lms-ui-tab-table-row">
 				<div class="lms-ui-tab-table-wrapper col-8">
-					<div class="lms-ui-tab-table-wrapper name-location-link col-4">
-						<div class="lms-ui-tab-table-wrapper name-location col-2">
+					<div class="lms-ui-tab-table-wrapper name-netnode-location-link col-5">
+						<div class="lms-ui-tab-table-wrapper name-netnode-location col-3">
 							<div class="lms-ui-tab-table-column name" data-target-url="?m=netdevinfo&id={$netdevice.id}">
-								<i class="lms-ui-icon-netdev"></i>
+								{icon name="netdev" class="fa-fw"}
 								<a name="{$netdevice.id}">
 									<strong>
 										{$netdevice.name} {if $netdevice.producer}/ {$netdevice.producer}{/if}
 									</strong>
-								</A>
+								</a>
+							</div>
+							<div class="lms-ui-tab-table-column netnode" data-target-url="?m=netnodeinfo&id={$netdevice.netnodeid}">
+								{icon name="netnode" class="fa-fw"}
+								<a name="{$netdevice.netnodeid}">
+									<strong>
+										{$netdevice.netnodename}
+									</strong>
+								</a>
 							</div>
 							<div class="lms-ui-tab-table-column location" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								{if $netdevice.location}
 									{$netdevice.location}
-									<i class="lms-ui-icon-location"></i>
+									{icon name="location" class="fa-fw"}
 									{if $netdevice.borough_name}
 										({$netdevice.state_name} / {$netdevice.district_name} / {$_BOROUGHTYPES[$netdevice.borough_type]} {$netdevice.borough_name})
 									{/if}
@@ -112,9 +128,38 @@
 							<div class="lms-ui-tab-table-column taken-ports">
 								<span id="dev-link-port-{$netdevice.id}" class="dev-link-port"
 									onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
+									{capture assign="netlinkhint"}{strip}
+										<span>
+											{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}
+											<br>
+											{if $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}
+												{trans("Fiber/Line count:")} {$netdevice.linecount}
+												<br>
+											{/if}
+											{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}
+												{if $netdevice.srcradiosector}
+													{trans("Radio sector:")} {$netdevice.srcradiosector}
+													<br>
+												{/if}
+												{if $netdevice.dstradiosector}
+													{trans("Destination radio sector:")} {$netdevice.dstradiosector}
+													<br>
+												{/if}
+											{/if}
+											{if $netdevice.linktechnology}
+												{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}
+												<br>
+											{/if}
+											{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}
+											<br>
+											{if !empty($netdevice.routetype)}
+												<p class="lms-ui-route-type">
+													{trans("Duct type:")} {$_NETWORK_DUCT_TYPES[$netdevice.routetype]}
+												</p>
+											{/if}
+									{/strip}{/capture}
 									<i class="{if $netdevice.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
-											{tip trigger="dev-link-port-{$netdevice.id}"
-												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}<br>{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}{if $netdevice.srcradiosector}{trans("Radio sector:")} {$netdevice.srcradiosector}<br>{/if}{if $netdevice.dstradiosector}{trans("Destination radio sector:")} {$netdevice.dstradiosector}<br>{/if}{/if}{if $netdevice.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}</span>"}>
+										{tip trigger="dev-link-port-{$netdevice.id}" text=$netlinkhint}>
 									</i>
 								</span>
 								<span id="dev-link-dstport-{$netdevice.id}">
@@ -157,10 +202,20 @@
 						<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select" trigger="link" text="Select from list device for connection"}
 								onchange="get_radio_sectors_for_netdev()" form="connect-form">
 							{foreach $restnetdevlist as $dev}
-							{assign var=netdevname value=$dev.name}
-							{if $dev.producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$dev.producer}{/if}
-							{if $dev.location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$dev.location|cat:")"}{/if}
-							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"&hellip;":true}</OPTION>
+								{$netdevname = $dev.name}
+								{if $dev.producer}
+									{$netdevname = $netdevname|cat:" / "|cat:$dev.producer}
+								{/if}
+								{if $dev.location}
+									{$netdevname = $netdevname|cat:" ("|cat:$dev.location|cat:")"}
+								{/if}
+								<option value="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{strip}
+									{if !empty($dev.netnodeid)}
+										[{$dev.netnodename|escape}]
+										&nbsp;
+									{/if}
+									{$netdevname|trunescape:120}
+								{/strip}</option>
 							{/foreach}
 						</SELECT>
 						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdev.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
@@ -193,13 +248,16 @@
 						{/foreach}
 					</SELECT>
 
-					<SELECT name="linktype" id="connboxlinktype" {tip trigger="linktype" text="Select link type"}
+					<select name="linktype" id="connboxlinktype" {tip trigger="linktype" text="Select link type"}
 							onchange="change_devlinktype(this.options[this.selectedIndex].value)"
 							form="connect-form">
-						{foreach $_LINKTYPES as $key => $item}
-						<OPTION VALUE="{$key}"{if $key==$devlinktype} selected{/if}>{$item}</OPTION>
+						{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+							<option value="{$linktype}"{if $linktype == $devlinktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 						{/foreach}
-					</SELECT>
+					</select>
+
+					<input type="text" name="linecount" form="connect-form" size="8" placeholder="{trans("Fiber/Line count")}"
+						value="{if $devlinklinecount}{$devlinklinecount}{/if}"{if $devlinktype != $smarty.const.LINKTYPE_FIBER} disabled{/if}>
 
 					<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"}
 							onchange="change_devlinktechnology(this.options[this.selectedIndex].value)"
@@ -217,6 +275,14 @@
 						<OPTION VALUE="{$key}"{if $key==$devlinkspeed || (!$devlinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
 						{/foreach}
 					</SELECT>
+
+					<select name="routetype" id="routetype" form="connect-form"
+						{tip trigger="routetype" text="Select duct type"}>
+						<option value="">{trans("— other —")}</option>
+						{foreach Localisation::arraySort($_NETWORK_DUCT_TYPES) as $ducttypeid => $ducttypelabel}
+							<option value="{$ducttypeid}"{if $ducttypeid == $devlinkroutetype} selected{/if}>{$ducttypelabel}</option>
+						{/foreach}
+					</select>
 
 					{button icon="save" onclick="javascript:document.connect.submit();" label="Connect"}
 				{/if}
@@ -255,7 +321,10 @@
 		xjx.$('connboxsrcradiosector').style.display = (linktype == 1 ? '' : 'none');
 		xjx.$('connboxdstradiosector').style.display = (linktype == 1 ? '' : 'none');
 
-		if (linktype == 1) {
+		$('[name="linecount"]').prop('disabled', linktype != {$smarty.const.LINKTYPE_FIBER});
+		$('[name="routetype"]').prop('disabled', linktype == {$smarty.const.LINKTYPE_WIRELESS});
+
+		if (linktype == {$smarty.const.LINKTYPE_WIRELESS}) {
 			var selected = xjx.$('srcnetdev').selectedIndex;
 			if (selected) {
 				netdev = xjx.$('srcnetdev').options[selected].value;

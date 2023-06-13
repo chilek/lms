@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+
+check_file_uploads();
 
 $promotion = isset($_POST['promotion']) ? $_POST['promotion'] : null;
 $action = isset($_GET['action']) ? $_GET['action'] : null;
@@ -61,7 +63,9 @@ if ($action == 'tariffdel' && ($tariffid = intval($_GET['tid']))) {
 
 if ($promotion) {
     foreach ($promotion as $key => $value) {
-        $promotion[$key] = trim($value);
+        if ($key != 'attachments') {
+            $promotion[$key] = trim($value);
+        }
     }
 
     if ($promotion['name']=='' && $promotion['description']=='') {
@@ -92,6 +96,27 @@ if ($promotion) {
         $error['dateto'] = trans('Incorrect date range!');
     }
 
+    $result = handle_file_uploads('attachments', $error);
+    extract($result);
+    $SMARTY->assign('fileupload', $fileupload);
+
+    $files = array();
+    if (!$error && !empty($attachments)) {
+        foreach ($attachments as $attachment) {
+            $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+            $attachment['filename'] = $attachment['name'];
+            $files[] = $attachment;
+        }
+    }
+
+    $attachments = $DB->GetAllByKey(
+        'SELECT *, 0 AS deleted
+        FROM promotionattachments
+        WHERE promotionid = ?',
+        'id',
+        array($promotionid)
+    );
+
     if (!$error && !$warning) {
         $args = array(
             'name' => $promotion['name'],
@@ -107,11 +132,66 @@ if ($promotion) {
             array_values($args)
         );
 
+        $promo_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions';
+        $stat = stat($promo_dir);
+        $promo_dir .= DIRECTORY_SEPARATOR . $promotionid;
+
+        if (isset($promotion['attachments']) && is_array($promotion['attachments'])) {
+            foreach ($promotion['attachments'] as $attachmentid => $attachment) {
+                if ($attachment['deleted']) {
+                    $filename = $promo_dir . DIRECTORY_SEPARATOR . $attachments[$attachmentid]['filename'];
+                    @unlink($filename);
+                    $DB->Execute('DELETE FROM promotionattachments WHERE id = ?', array($attachmentid));
+                } else {
+                    $DB->Execute(
+                        'UPDATE promotionattachments SET label = ?, checked = ? WHERE id = ?',
+                        array(
+                            $attachment['label'],
+                            isset($attachment['checked']) ? 1 : 0,
+                            $attachmentid,
+                        )
+                    );
+                }
+            }
+        }
+
+        if (!is_dir($promo_dir)) {
+            @mkdir($promo_dir, 0700);
+        }
+
+        foreach ($files as $file) {
+            $filename = $promo_dir . DIRECTORY_SEPARATOR . $file['filename'];
+
+            if (!file_exists($filename) && !@rename($file['tmpname'], $filename)) {
+                die(trans('Can\'t save file in "$a" directory!', $filename));
+            }
+
+            $DB->Execute(
+                'INSERT INTO promotionattachments (promotionid, filename, contenttype, label, checked)
+                VALUES (?, ?, ?, ?, ?)',
+                array(
+                    $promotionid,
+                    $file['filename'],
+                    $file['type'],
+                    $file['label'],
+                    empty($file['checked']) ? 0 : 1,
+                )
+            );
+        }
+
         if ($SYSLOG) {
             $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
         }
 
         $SESSION->redirect('?m=promotioninfo&id=' . $promotion['id']);
+    } else {
+        foreach ($attachments as $attachmentid => &$attachment) {
+            $attachment['deleted'] = $promotion['attachments'][$attachmentid]['deleted'];
+            $attachment['checked'] = isset($promotion['attachments'][$attachmentid]['checked']) ? 1 : 0;
+            $attachment['label'] = $promotion['attachments'][$attachmentid]['label'];
+        }
+        unset($attachment);
+        $promotion['attachments'] = $attachments;
     }
 } else {
     $promotion = $LMS->getPromotion($promotionid);

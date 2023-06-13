@@ -43,6 +43,7 @@ switch ($action) {
         // get default note's numberplanid and next number
         $note['cdate'] = time();
         $note['paytime'] = ConfigHelper::getConfig('notes.paytime');
+        $note['paytype'] = ConfigHelper::getConfig('notes.paytype');
         if (isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid'])) {
             $customer = $LMS->GetCustomer($_GET['customerid'], true);
         }
@@ -147,7 +148,7 @@ switch ($action) {
         }
 
         if (empty($note['paytime_default']) && !preg_match('/^[0-9]+$/', $note['paytime'])) {
-                $error['paytime'] = trans('Integer value required!');
+            $error['paytime'] = trans('Integer value required!');
         }
 
         if (!isset($CURRENCIES[$note['currency']])) {
@@ -232,6 +233,24 @@ switch ($action) {
                 }
             }
 
+            // set paytype
+            if (empty($note['paytype'])) {
+                if ($customer['paytype']) {
+                    $note['paytype'] = $customer['paytype'];
+                } elseif ($paytype = $DB->GetOne(
+                    'SELECT inv_paytype
+                    FROM divisions
+                    WHERE id = ?',
+                    array($customer['divisionid'])
+                )) {
+                    $note['paytype'] = $paytype;
+                } else if (($paytype = intval(ConfigHelper::getConfig('notes.paytype', ConfigHelper::getConfig('invoices.paytype')))) && isset($PAYTYPES[$paytype])) {
+                    $note['paytype'] = $paytype;
+                } else {
+                    $error['paytype'] = trans('Default payment type not defined!');
+                }
+            }
+
             $cdate = !empty($note['cdate']) ? $note['cdate'] : time();
 
             $division = $LMS->GetDivision($customer['divisionid']);
@@ -256,6 +275,7 @@ switch ($action) {
                 'address' => ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
                     ? $customer['city'] . ', ' : '') . $customer['address'],
                 'paytime' => $note['paytime'],
+                'paytype' => $note['paytype'],
                 'ten' => $customer['ten'],
                 'ssn' => $customer['ssn'],
                 'zip' => $customer['zip'],
@@ -282,12 +302,12 @@ switch ($action) {
             );
             $DB->Execute(
                 'INSERT INTO documents (number, numberplanid, type,
-                    cdate, userid, customerid, name, address, paytime,
+                    cdate, userid, customerid, name, address, paytime, paytype,
                     ten, ssn, zip, city, countryid, divisionid,
                     div_name, div_shortname, div_address, div_city, div_zip, div_countryid,
                     div_ten, div_regon, div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
                     currency, currencyvalue)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 array_values($args)
             );

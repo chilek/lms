@@ -100,7 +100,16 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
     public function TariffassignmentDelete($tariffassignmentdata)
     {
         if ($this->syslog) {
-            $assign = $this->db->GetRow('SELECT tariffid FROM tariffassignments WHERE tarifftagid = ? AND tariffid = ?', array($tariffassignmentdata['tarifftagid'], $tariffassignmentdata['tariffid']));
+            $assign = $this->db->GetRow(
+                'SELECT id, tariffid
+                FROM tariffassignments
+                WHERE tarifftagid = ?
+                    AND tariffid = ?',
+                array(
+                    $tariffassignmentdata['tarifftagid'],
+                    $tariffassignmentdata['tariffid'],
+                )
+            );
             if ($assign) {
                 $args = array(
                     SYSLOG::RES_TARIFFASSIGN => $assign['id'],

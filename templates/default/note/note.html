@@ -5,6 +5,10 @@
 <BR>
 {trans("Deadline:")} {$note.pdate|date_format:"Y-m-d"}
 <BR>
+{if !ConfigHelper::checkConfig('notes.hide_payment_type', ConfigHelper::checkConfig('invoices.hide_payment_type'))}
+	{trans("Payment type:")}
+	{trans($note.paytypename)}
+{/if}
 {trans("Expositor:")}
 {if $note.issuer}
 	{$note.issuer|escape}

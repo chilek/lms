@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,15 +25,17 @@
 $(function() {
 	$('#add-mac').click(function() {
 		var key = $('.lms-ui-mac-address-selection .mac').length;
-		$('<tr id="mac' + key + '" class="mac">' +
+		$('table.lms-ui-mac-address-selection').append(
+			'<tr id="mac' + key + '" class="mac">' +
 			'<td style="width: 100%;">' +
-			'<input type="text" name="' + $(this).attr('data-field-prefix') + '[macs][' + key + ']" value="" ' +
+			'<input type="text" id="mac-input-' + key + '" name="' + $(this).attr('data-field-prefix') + '[macs][' + key + ']" value="" ' +
 			'placeholder="' + $t('MAC address') + '">' +
 			'&nbsp;<span class="ui-icon ui-icon-closethick remove-mac"></span>' +
 			'&nbsp;<a class="lms-ui-button mac-selector" ' +
 			'title="' + $t('Click to select MAC from the list') + '"><i class="lms-ui-icon-next fa-fw"></i></a>' +
 			'</td>' +
-			'</tr>').insertAfter($('.lms-ui-mac-address-selection .mac').last());
+			'</tr>'
+		);
 	});
 
 	$(document).on('click', '.mac-selector,.remove-mac', function() {
@@ -42,9 +44,10 @@ $(function() {
 		} else {
 			var mac_row = $(this).closest('.mac');
 			var other_mac_rows = mac_row.siblings('.mac');
-			if (mac_row.index() || other_mac_rows.length) {
+			var dataNodeEmptyMac = mac_row.closest('table').attr('data-node-empty-mac');
+			if (mac_row.index() || dataNodeEmptyMac.length || other_mac_rows.length) {
 				mac_row.remove();
-				if (other_mac_rows.length) {
+				if (!dataNodeEmptyMac.length && other_mac_rows.length) {
 					other_mac_rows.first().find('input').prop('required', true);
 				}
 			} else {

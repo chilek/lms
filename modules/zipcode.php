@@ -52,4 +52,8 @@ if (empty($_GET['house'])) {
 }
 $params['house'] = $_GET['house'];
 
-echo $LMS->GetZipCode($params);
+if (isset($_GET['provider'])) {
+    $params['provider'] = $_GET['provider'];
+    echo $LMS->GetZipCode($params);
+    die;
+}

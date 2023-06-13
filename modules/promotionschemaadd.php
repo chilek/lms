@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2021 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+check_file_uploads();
+
 $schema = isset($_POST['schema']) ? $_POST['schema'] : null;
 
 if ($schema) {
@@ -35,10 +37,6 @@ if ($schema) {
 
     $schema['promotionid'] = intval($_GET['id']);
 
-    if ($schema['name']=='' && $schema['description']=='') {
-        $SESSION->redirect('?m=promotioninfo&id='.$schema['promotionid']);
-    }
-
     if ($schema['name'] == '') {
         $error['name'] = trans('Schema name is required!');
     } else if ($DB->GetOne('SELECT id FROM promotionschemas
@@ -48,6 +46,19 @@ if ($schema) {
 
     if (!empty($schema['dateto']) && !empty($schema['datefrom']) && $schema['dateto'] < $schema['datefrom']) {
         $error['dateto'] = trans('Incorrect date range!');
+    }
+
+    $result = handle_file_uploads('attachments', $error);
+    extract($result);
+    $SMARTY->assign('fileupload', $fileupload);
+
+    $files = array();
+    if (!$error && !empty($attachments)) {
+        foreach ($attachments as $attachment) {
+            $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+            $attachment['filename'] = $attachment['name'];
+            $files[] = $attachment;
+        }
     }
 
     if (!$error) {
@@ -77,6 +88,33 @@ if ($schema) {
 			VALUES (?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $sid = $DB->GetLastInsertId('promotionschemas');
+
+        $schema_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotionschemas';
+        $stat = stat($schema_dir);
+        $schema_dir .= DIRECTORY_SEPARATOR . $sid;
+        if (!is_dir($schema_dir)) {
+            @mkdir($schema_dir, 0700);
+        }
+
+        foreach ($files as $file) {
+            $filename = $schema_dir . DIRECTORY_SEPARATOR . $file['filename'];
+
+            if (!file_exists($filename) && !@rename($file['tmpname'], $filename)) {
+                die(trans('Can\'t save file in "$a" directory!', $filename));
+            }
+
+            $DB->Execute(
+                'INSERT INTO promotionattachments (promotionschemaid, filename, contenttype, label, checked)
+                VALUES (?, ?, ?, ?, ?)',
+                array(
+                    $sid,
+                    $file['filename'],
+                    $file['type'],
+                    $file['label'],
+                    empty($file['checked']) ? 0 : 1,
+                )
+            );
+        }
 
         if ($SYSLOG) {
             $args[SYSLOG::RES_PROMOSCHEMA] = $sid;

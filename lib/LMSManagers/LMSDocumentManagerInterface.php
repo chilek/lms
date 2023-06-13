@@ -105,4 +105,6 @@ interface LMSDocumentManagerInterface
     public function deleteNumberPlan($id);
 
     public function getDocumentType($docid);
+
+    public function getDocumentFullNumber($docid);
 }

@@ -47,6 +47,7 @@ $parameters = array(
     'customer-status:' => null,
     'customerid:' => null,
     'division:' => null,
+    'omit-free-days' => null,
 );
 
 $long_to_shorts = array();
@@ -128,6 +129,7 @@ lms-notify.php
     --division=<shortname>
                                 limit notifications to customers which belong to specified
                                 division
+    --omit-free-days            dont send notifications on free days
 
 EOF;
     exit(0);
@@ -223,13 +225,38 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 if (empty($fakedate)) {
-    $currtime = time();
+    $currtime = strtotime('now');
 } else {
     $currtime = strtotime($fakedate);
 }
+
+$omit_free_days = isset($options['omit-free-days']);
+
 list ($year, $month, $day) = explode('/', date('Y/n/j', $currtime));
+
+$weekday = date('N', $currtime);
+$holidays = getHolidays($year);
+if ($omit_free_days && ($weekday > 5 || isset($holidays[$currtime]))) {
+    die('Notifications are omitted, because current day is free day!' . PHP_EOL);
+}
+
 $daystart = mktime(0, 0, 0, $month, $day, $year);
 $dayend = mktime(23, 59, 59, $month, $day, $year);
+
+if ($omit_free_days) {
+    $prevday = $daystart;
+    $curryear = $year;
+    do {
+        $nextday = $prevday;
+        $prevday = strtotime('yesterday', $prevday);
+        $prevyear = date('Y', $prevday);
+        if ($prevyear != $curryear) {
+            $holidays = getHolidays($prevyear);
+            $curryear = $prevyear;
+        }
+    } while (date('N', $prevday) > 5 || isset($holidays[$prevday]));
+    $daystart = $nextday;
+}
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -578,6 +605,10 @@ if (!empty($plugins)) {
     }
 }
 
+if (!empty($dsn_email)) {
+    $mail_from = $dsn_email;
+}
+
 if (!empty($mail_fname)) {
     $mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
 }
@@ -588,8 +619,19 @@ $sms_options = $LMS->getCustomerSMSOptions();
 
 function parse_customer_data($data, $format, $row)
 {
+    static $use_only_alternative_accounts = null,
+        $use_all_accounts = null,
+        $config_section = null;
+
     global $LMS;
+
     $DB = LMSDB::getInstance();
+
+    if (!isset($use_only_alternative_accounts)) {
+        $config_section = $GLOBALS['config_section'];
+        $use_only_alternative_accounts = ConfigHelper::checkConfig($config_section . '.use_only_alternative_accounts');
+        $use_all_accounts = ConfigHelper::checkConfig($config_section . '.use_all_accounts');
+    }
 
     if (!isset($row['totalbalance'])) {
         $row['totalbalance'] = 0;
@@ -616,6 +658,26 @@ function parse_customer_data($data, $format, $row)
         $commented_balance = trans('Billing status: $a', moneyf($row['totalbalance']));
     }
 
+    $alternative_accounts = isset($row['alternative_accounts']) && strlen($row['alternative_accounts'])
+        ? explode(',', $row['alternative_accounts'])
+        : array();
+
+    if ((!$use_only_alternative_accounts || empty($alternative_accounts)) && isset($row['account']) && strlen($row['account'])) {
+        $accounts = array(bankaccount($row['id'], $row['account']));
+    } else {
+        $accounts = array();
+    }
+
+    if ($use_all_accounts || $use_only_alternative_accounts) {
+        $accounts = array_merge($accounts, $alternative_accounts);
+    }
+    foreach ($accounts as &$account) {
+        $account = format_bankaccount($account);
+    }
+    unset($account);
+
+    $all_accounts = implode($format == 'text' ? "\n" : '<br>', $accounts);
+
     $data = str_replace(
         array(
             '%bankaccount',
@@ -640,7 +702,7 @@ function parse_customer_data($data, $format, $row)
 
         ),
         array(
-            isset($row['account']) ? format_bankaccount(bankaccount($row['id'], $row['account'])) : '',
+            $all_accounts,
             $commented_balance,
             $row['name'],
             isset($row['age']) ? $row['age'] : '',
@@ -781,7 +843,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
     $headers = array(
-        'From' => empty($dsn_email) ? $mail_from : $dsn_email,
+        'From' => $mail_from,
         'To' => qp_encode($rname) . " <$rmail>",
         'Recipient-Name' => $rname,
         'Subject' => $subject,
@@ -959,7 +1021,7 @@ if (empty($types) || in_array('timetable', $types)) {
     $time = intval(strtotime('now') - strtotime('today'));
     $subject = $notifications['timetable']['subject'];
     $today = date('Y/m/d', $daystart);
- 
+
     if (!empty($users)) {
         foreach ($users as $user) {
             if (empty($user['email']) && empty($user['phone'])) {
@@ -975,7 +1037,6 @@ if (empty($types) || in_array('timetable', $types)) {
                 LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
                 WHERE closed = 0
                     AND date <= ? AND enddate + 86400 >= ?
-                    AND begintime <= ? AND (endtime = 0 OR endtime >= ?)
                     AND ((private = 1 AND (events.userid = ? OR eventassignments.userid = ?))
                         OR (private = 0 AND eventassignments.userid = ?)
                         OR (private = 0 AND eventassignments.userid IS NULL)
@@ -984,8 +1045,6 @@ if (empty($types) || in_array('timetable', $types)) {
                 array(
                     $daystart,
                     $dayend,
-                    $time,
-                    $time,
                     $user['id'],
                     $user['id'],
                     $user['id']
@@ -1066,6 +1125,10 @@ if (empty($types) || in_array('timetable', $types)) {
 // documents
 if (empty($types) || in_array('documents', $types)) {
     $days = $notifications['documents']['days'];
+
+    $start = strtotime('+ ' . $days . ' days', $daystart);
+    $end = strtotime('+ ' . $days . ' days', $dayend);
+
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
             b.balance, m.email, x.phone, d.number, n.template, d.cdate, d.confirmdate AS deadline
@@ -1088,8 +1151,8 @@ if (empty($types) || in_array('documents', $types)) {
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE 1 = 1" . $customer_status_condition . " AND d.type IN (?, ?) AND d.closed = 0
-            AND d.confirmdate >= $daystart + ? * 86400
-            AND d.confirmdate < $daystart + (? + 1) * 86400"
+            AND d.confirmdate >= ?
+            AND d.confirmdate <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['documents']['deleted_customers'] ? '' : ' AND c.deleted = 0')
@@ -1101,8 +1164,8 @@ if (empty($types) || in_array('documents', $types)) {
             $required_phone_contact_flags,
             DOC_CONTRACT,
             DOC_ANNEX,
-            $days,
-            $days
+            $start,
+            $end,
         )
     );
 
@@ -1245,9 +1308,13 @@ if (empty($types) || in_array('documents', $types)) {
 if (empty($types) || in_array('contracts', $types)) {
     $expiration_type = ConfigHelper::getConfig($config_section . '.expiration_type', 'assignments');
     $days = $notifications['contracts']['days'];
+
+    $start = strtotime('+ ' . $days . ' days', $daystart);
+    $end = strtotime('+ ' . $days . ' days', $dayend);
+
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-            SUM(value * currencyvalue) AS balance, d.cdate, d.dateto AS deadline,
+            SUM(value * currencyvalue) AS balance, d.number, d.template, d.cdate, d.dateto AS deadline,
             m.email, x.phone
         FROM customeraddressview c
         JOIN cash ON (c.id = cash.customerid) "
@@ -1257,12 +1324,15 @@ if (empty($types) || in_array('contracts', $types)) {
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
-                HAVING MAX(a.dateto) >= $daystart + $days * 86400 AND MAX(a.dateto) < $daystart + ($days + 1) * 86400
+                HAVING MAX(a.dateto) >= ? AND MAX(a.dateto) <= ?
             ) d ON d.customerid = c.id" :
             "JOIN (
-                SELECT DISTINCT customerid, documents.id, documents.cdate, dc.todate AS dateto FROM documents
+                SELECT DISTINCT customerid, documents.id, documents.cdate, documents.number, numberplans.template, dc.todate AS dateto
+                FROM documents
+                LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
                 JOIN documentcontents dc ON dc.docid = documents.id
-                WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
+                WHERE dc.todate >= ? AND dc.todate <= ?
+                    AND documents.archived = 0
                     AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
             ) d ON d.customerid = c.id") . "
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1277,19 +1347,21 @@ if (empty($types) || in_array('contracts', $types)) {
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
         WHERE "
             . ($expiration_type == 'assignments' ? '1 = 1' : 'NOT EXISTS (SELECT 1 FROM documents d2 WHERE d2.reference = d.id AND d2.type < 0)')
-            . $customer_status_condition . " AND d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
+            . $customer_status_condition . " AND d.dateto >= ? AND d.dateto <= ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
-        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.cdate, d.dateto, m.email, x.phone",
+        . " GROUP BY c.id, c.pin, c.lastname, c.name, d.number, d.template, d.cdate, d.dateto, m.email, x.phone",
         array(
+            $start,
+            $end,
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
-            $days,
-            $days
+            $start,
+            $end,
         )
     );
 
@@ -1298,6 +1370,13 @@ if (empty($types) || in_array('contracts', $types)) {
         foreach ($customers as $row) {
             $notifications['contracts']['customers'][] = $row['id'];
             $row['aggregate_documents'] = $notifications['contracts']['aggregate_documents'];
+
+            $row['doc_number'] = docnumber(array(
+                'number' => $row['number'],
+                'template' => $row['template'] ?: '%N/LMS/%Y',
+                'cdate' => $row['cdate'],
+                'customerid' => $row['id'],
+            ));
 
             unset($message, $message_html, $message_text);
             if ($format == $mail_format) {
@@ -1426,7 +1505,8 @@ if (empty($types) || in_array('debtors', $types)) {
     // @TODO: check 'messages' table and don't send notifies to often
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
+            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account,
+            acc.alternative_accounts
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (
@@ -1463,6 +1543,12 @@ if (empty($types) || in_array('debtors', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         WHERE 1 = 1" . $customer_status_condition
             . " AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
@@ -1484,6 +1570,8 @@ if (empty($types) || in_array('debtors', $types)) {
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             $limit
         )
     );
@@ -1654,8 +1742,9 @@ if (empty($types) || in_array('reminder', $types)) {
     $limit = $notifications['reminder']['limit'];
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-        d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
-        b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            b2.balance AS balance, b.balance AS totalbalance, v.value, v.currency,
+            acc.alternative_accounts
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -1680,7 +1769,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
                     OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?, ?)) AND (" . ($days > 0 ? 'cash.docid = d.id OR ' : '') . "d.cdate + (d.paytime - ?) * 86400 < $currtime))))
+                        OR d.type IN (?, ?, ?)) AND d.cdate + (d.paytime - ?) * 86400 < $currtime)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1693,6 +1782,12 @@ if (empty($types) || in_array('reminder', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         JOIN (
             SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
@@ -1720,6 +1815,8 @@ if (empty($types) || in_array('reminder', $types)) {
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_INVOICE,
             DOC_INVOICE_PRO,
             DOC_DNOTE,
@@ -1901,10 +1998,14 @@ if (empty($types) || in_array('reminder', $types)) {
 // Income as result of customer payment
 if (empty($types) || in_array('income', $types)) {
     $days = $notifications['income']['days'];
+
+    $start = strtotime('+ ' . $days . ' days', $daystart);
+    $end = strtotime('+ 1 day', $start);
+
     $incomes = $DB->GetAll(
         "SELECT c.id, c.pin, SUM(cash.value) AS value, cash.currency, cash.time AS cdate,
-        m.email, x.phone, divisions.account,
-        " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
+            m.email, x.phone, divisions.account, acc.alternative_accounts,
+            " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
         b2.balance AS balance, b.balance AS totalbalance
         FROM cash
         JOIN customeraddressview c ON c.id = cash.customerid
@@ -1943,14 +2044,20 @@ if (empty($types) || in_array('income', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         WHERE 1 = 1" . $customer_status_condition
-            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400"
+            . " AND cash.type = 1 AND cash.value > 0 AND cash.time >= ? AND cash.time < ?"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
             . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
             . ($notifications['income']['deleted_customers'] ? '' : ' AND c.deleted = 0')
             . ($customergroups ?: '')
         . " GROUP BY c.id, c.pin, cash.currency, cash.time, m.email, x.phone, divisions.account,
-            c.lastname, c.name, b2.balance, b.balance",
+            acc.alternative_accounts, c.lastname, c.name, b2.balance, b.balance",
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
@@ -1963,8 +2070,10 @@ if (empty($types) || in_array('income', $types)) {
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
-            $days,
-            $days,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
+            $start,
+            $end,
         )
     );
 
@@ -2103,6 +2212,7 @@ if (empty($types) || in_array('invoices', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
             d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+            acc.alternative_accounts,
             COALESCE(ca.balance, 0) AS balance, v.value, v.currency,
             c.invoicenotice
         FROM documents d
@@ -2119,6 +2229,12 @@ if (empty($types) || in_array('invoices', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
             GROUP BY docid, currency
@@ -2141,6 +2257,8 @@ if (empty($types) || in_array('invoices', $types)) {
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_INVOICE,
             DOC_INVOICE_PRO,
             DOC_CNOTE,
@@ -2323,7 +2441,8 @@ if (empty($types) || in_array('invoices', $types)) {
 if (empty($types) || in_array('notes', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-        d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
+            acc.alternative_accounts,
         COALESCE(ca.balance, 0) AS balance, v.value, v.currency
         FROM documents d
         JOIN customeraddressview c ON (c.id = d.customerid)
@@ -2338,6 +2457,12 @@ if (empty($types) || in_array('notes', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
             GROUP BY docid, currency
@@ -2360,6 +2485,8 @@ if (empty($types) || in_array('notes', $types)) {
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
             $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
             DOC_DNOTE,
             $daystart,
             $dayend
@@ -2735,7 +2862,8 @@ if (empty($types) || in_array('birthday', $types)) {
 if (empty($types) || in_array('warnings', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-        c.pin, c.message, m.email, x.phone, divisions.account, COALESCE(ca.balance, 0) AS balance
+            c.pin, c.message, m.email, x.phone, divisions.account, acc.alternative_accounts,
+            COALESCE(ca.balance, 0) AS balance
         FROM customeraddressview c
         LEFT JOIN divisions ON divisions.id = c.divisionid
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -2748,6 +2876,12 @@ if (empty($types) || in_array('warnings', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
+        LEFT JOIN (
+            SELECT " . $DB->GroupConcat('contact') . " AS alternative_accounts, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) acc ON acc.customerid = c.id
         LEFT JOIN (SELECT SUM(value * currencyvalue) AS balance, customerid
             FROM cash
             GROUP BY customerid
@@ -2763,7 +2897,9 @@ if (empty($types) || in_array('warnings', $types)) {
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
             $checked_phone_contact_flags,
-            $required_phone_contact_flags
+            $required_phone_contact_flags,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
         )
     );
 
@@ -3438,7 +3574,7 @@ if (!empty($intersect)) {
                                 if (!empty($assigns)) {
                                     foreach ($assigns as $assign) {
                                         if (!$quiet) {
-                                            printf("[block/assignment-invoice] CustomerID: #%d, AssignmentID: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
+                                            printf("[block/assignment-invoice] Customer: #%d, Assignment: %d" . PHP_EOL, $assign['customerid'], $assign['id']);
                                         }
 
                                         if (empty($action_params)) {
@@ -3490,7 +3626,7 @@ if (!empty($intersect)) {
 
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
-                                            printf("[block/customer-status] CustomerID: #%d" . PHP_EOL, $custid);
+                                            printf("[block/customer-status] Customer: #%d" . PHP_EOL, $custid);
                                         }
 
                                         if (!$debug) {
@@ -3524,7 +3660,7 @@ if (!empty($intersect)) {
                                         array($cid)
                                     )) {
                                         if (!$quiet) {
-                                            printf("[block/all-assignment-suspension] CustomerID: #%d" . PHP_EOL, $cid);
+                                            printf("[block/all-assignment-suspension] Customer: #%d" . PHP_EOL, $cid);
                                         }
 
                                         if (!$debug) {
@@ -3604,6 +3740,7 @@ if (!empty($intersect)) {
                         'customers' => $customers,
                         'actions' => $actions,
                         'quiet' => $quiet,
+                        'debug' => $debug,
                     ));
 
                     break;
@@ -3813,7 +3950,7 @@ if (!empty($intersect)) {
 
                                     foreach ($custids as $custid) {
                                         if (!$quiet) {
-                                            printf("[unblock/customer-status] CustomerID: #%d" . PHP_EOL, $custid);
+                                            printf("[unblock/customer-status] Customer: #%d" . PHP_EOL, $custid);
                                         }
 
                                         if (!$debug) {
@@ -3963,6 +4100,7 @@ if (!empty($intersect)) {
                         'nodes' => $all_nodes,
                         'actions' => $actions,
                         'quiet' => $quiet,
+                        'debug' => $debug,
                     ));
 
                     break;

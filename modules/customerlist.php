@@ -89,6 +89,9 @@ if ($api) {
 
     if (isset($_GET['flags'])) {
         $filter['flags'] = $_GET['flags'];
+        if (empty($_GET['flags']) || count($_GET['flags']) == 1 && in_array('0', $_GET['flags'])) {
+            $filter['flags'] = array();
+        }
     }
 
     if (isset($_GET['page'])) {

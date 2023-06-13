@@ -153,12 +153,16 @@ function save_producer($forms)
     if ($error) {
         $obj->script('$("#id_producername").addClass("lms-ui-error").removeAttr("data-tooltip").attr("title", "' . $error['id_producername'] . '").focus();');
     } else {
+        $form['name'] = trim($form['name']);
+        $form['alternative_name'] = trim($form['alternative_name']);
+
         if ($form['id']) {
             $DB->Execute(
                 'UPDATE netdeviceproducers SET name = ?, alternative_name = ? WHERE id = ?',
-                array($form['name'],
-                    ($form['alternative_name'] ? $form['alternative_name'] : null),
-                    $form['id']
+                array(
+                    $form['name'],
+                    $form['alternative_name'] ?: null,
+                    $form['id'],
                 )
             );
             $obj->script("xajax_cancel_producer();");
@@ -166,8 +170,9 @@ function save_producer($forms)
         } else {
             $DB->Execute(
                 'INSERT INTO netdeviceproducers (name, alternative_name) VALUES (?, ?)',
-                array($form['name'],
-                    ($form['alternative_name'] ? $form['alternative_name'] : null)
+                array(
+                    $form['name'],
+                    $form['alternative_name'] ?: null,
                 )
             );
             $form['id'] = $DB->getLastInsertId('netdeviceproducers');
@@ -352,11 +357,15 @@ function save_model($forms)
     if ($error) {
         $obj->script('$("#id_model_name").addClass("lms-ui-error").removeAttr("data-tooltip").attr("title", "' . $error['id_model_name'] . '").focus();');
     } else {
+        $form['name'] = trim($form['name']);
+        $form['alternative_name'] = trim($form['alternative_name']);
+
         if ($formid) {
             $DB->Execute(
                 'UPDATE netdevicemodels SET name = ?, alternative_name = ?, type = ? WHERE id = ?',
-                array($form['name'],
-                    ($form['alternative_name'] ? $form['alternative_name'] : null),
+                array(
+                    $form['name'],
+                    $form['alternative_name'] ?: null,
                     $form['type'] ?: null,
                     $formid,
                 )
@@ -366,9 +375,10 @@ function save_model($forms)
         } else {
             $DB->Execute(
                 'INSERT INTO netdevicemodels (netdeviceproducerid, name, alternative_name, type) VALUES (?, ?, ?, ?)',
-                array($pid,
+                array(
+                    $pid,
                     $form['name'],
-                    ($form['alternative_name'] ? $form['alternative_name'] : null),
+                    $form['alternative_name'] ?: null,
                     $form['type'] ?: null,
                 )
             );

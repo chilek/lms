@@ -1,4 +1,8 @@
 // $Id$
+const netFlagElem = $("#netflag");
+const netPriceElem = $("#netprice");
+const grossPriceElem = $("#grossprice");
+const invoiceElem = $("#invoice");
 
 function CustomerAssignmentHelper(options) {
 	var helper = this;
@@ -37,14 +41,35 @@ function CustomerAssignmentHelper(options) {
 		if ('variablePrefix' in options) {
 			this.variablePrefix = options.variablePrefix;
 		} else {
-			this.variablePrefix = tariffTypes;
+			this.variablePrefix = 'assignment';
 		}
-    } else {
+
+		if ('promotionAttachments' in options) {
+			this.promotionAttachments = options.promotionAttachments;
+		} else {
+			this.promotionAttachments = {};
+		}
+
+		if ('assignmentPromotionAttachments' in options) {
+			this.assignmentPromotionAttachments = options.assignmentPromotionAttachments;
+		} else {
+			this.assignmentPromotionAttachments = {};
+		}
+
+		if ('assignmentPromotionSchemaAttachments' in options) {
+			this.assignmentPromotionSchemaAttachments = options.assignmentPromotionSchemaAttachments;
+		} else {
+			this.assignmentPromotionSchemaAttachments = {};
+		}
+	} else {
 		this.customerid = 0;
 		this.selected = {};
 		this.internetTariffType = 0;
 		this.phoneTariffType = 0;
 		this.tariffTypes = {};
+		this.promotionAttachments = {};
+		this.assignmentPromotionAttachments = {};
+		this.assignmentPromotionSchemaAttachments = {};
 		this.variablePrefix = 'assignment';
     }
 
@@ -123,12 +148,14 @@ function CustomerAssignmentHelper(options) {
 	}
 
 	this.promotionSelectionHandler = function() {
-		$('#a_location,#a_check_all_terminals,#a_options,#a_existingassignments,#a_properties').toggle(parseInt($(this).val()) != 0);
-		$('#backward-period').toggle(parseInt($(this).val()) == 0);
+		var schemaId = parseInt($(this).val());
+
+		$('#a_location,#a_check_all_terminals,#a_options,#a_existingassignments,#a_properties').toggle(schemaId != 0);
+		$('#backward-period').toggle(!schemaId);
 
 		$('.promotion-table').hide();
 
-		$("#schema" + $(this).val()).show();
+		$("#schema" + schemaId).show();
 
 		var selected_option = $('option:selected', this);
 		var schema_title = selected_option.attr('title');
@@ -137,6 +164,61 @@ function CustomerAssignmentHelper(options) {
 			(promo_title && promo_title.length ? promo_title : '-') + '<hr>' + (schema_title && schema_title.length ? schema_title : '-'));
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
+
+		var html = '';
+
+		if (helper.promotionAttachments.hasOwnProperty(schemaId) && !$.isEmptyObject(helper.promotionAttachments[schemaId].promotions)) {
+			html += '<div class="promotion-attachments">' +
+				'<strong>' + $t("from promotion") + '</strong>' +
+				'<ul>';
+
+			$.each(helper.promotionAttachments[schemaId].promotions, function (index, attachment) {
+				html +=
+					'<li>' +
+						'<label>' +
+							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
+								' value="0">' +
+							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
+								' value="' + attachment.id + '"' +
+								(helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
+									!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+							'<span>' +
+								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
+							'</span>' +
+						'</label>' +
+					'</li>';
+			});
+
+			html += '</ul></div>';
+		}
+
+		if (helper.promotionAttachments.hasOwnProperty(schemaId) && !$.isEmptyObject(helper.promotionAttachments[schemaId].promotionschemas)) {
+			html += '<div class="promotion-attachments">' +
+				'<strong>' + $t("from promotion schema") + '</strong>' +
+				'<ul>';
+
+			$.each(helper.promotionAttachments[schemaId].promotionschemas, function (index, attachment) {
+				html +=
+					'<li>' +
+						'<label>' +
+							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
+								' value="0">' +
+							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
+								' value="' + attachment.id + '"' +
+								(helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
+									!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+							'<span>' +
+								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
+							'</span>' +
+						'</label>' +
+					'</li>';
+			});
+
+			html += '</ul></div>';
+		}
+
+		$('#promotion-attachments').html(html);
+		$('#a_attachments').toggle($('#tariff-select').val() == -2 && typeof(promotionAttachments) != 'undefined' && html.length > 0);
 
 		$('#location-select').trigger('change');
 	}
@@ -308,7 +390,7 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.nodes, function(key, node) {
 							var location = String(node.location);
-							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
+							location = node.teryt == '1' ? $t('$a (TERYT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
@@ -336,7 +418,7 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.netdevnodes, function(key, node) {
 							var location = String(node.location);
-							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
+							location = node.teryt == '1' ? $t('$a (TERYT)', location) : location;
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
 								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
@@ -364,7 +446,7 @@ function CustomerAssignmentHelper(options) {
 						options = '';
 						$.each(data.voipaccounts, function(key, account) {
 							var location = String(account.location);
-							location = node.teryt == '1' ? $t('$a (TERRIT)', location) : location;
+							location = account.teryt == '1' ? $t('$a (TERYT)', location) : location;
 							$.each(account.phones, function(key, phone) {
 								options += '<option value="' + phone.id + '"' +
 									(("sphones" in selected) && (schemaid in selected.sphones) && (label in selected.sphones[schemaid]) &&
@@ -397,7 +479,7 @@ function CustomerAssignmentHelper(options) {
 				if (data['with-end-points']) {
 					options += '<optgroup label="' + $t("with end-points") + '">';
 					$.each(data['with-end-points'], function(key, value) {
-						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
 							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
@@ -409,7 +491,7 @@ function CustomerAssignmentHelper(options) {
 				if (data['without-end-points']) {
 					options += '<optgroup label="' + $t("without end-points") + '">';
 					$.each(data['without-end-points'], function(key, value) {
-						var location = value.teryt == '1' ? $t('$a (TERRIT)', value.location) : value.location;
+						var location = value.teryt == '1' ? $t('$a (TERYT)', value.location) : value.location;
 						options += '<option value="' + location + '"' +
 							(("location" in selected) && selected.location == location ? ' selected' : '') +
 							' data-icon="' + location_type_icons[value.location_type] + '">' +
@@ -493,6 +575,7 @@ function tariffSelectionHandler() {
 		tariffaccess = parseInt(tariffaccess);
 	}
 	var val = tariff_select.val();
+	$('#tariff-price-variants').html('');
 
 	$('#tarifftype').val(tarifftype);
 
@@ -536,16 +619,35 @@ function tariffSelectionHandler() {
 
 		$('#a_attribute').hide();
 	} else {
-		var tariffGrossPrice = selected.attr('data-tariffvalue');
-		var tariffNetPrice = selected.attr('data-tariffnetvalue');
-		var tariffNetFlag = selected.attr('data-tariffnetflag');
-		var tariffTaxId = selected.attr('data-tarifftaxid');
+		let tariffGrossPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentGrossvalue) ? assignmentGrossvalue : selected.attr('data-tariffvalue'));
+		let tariffNetPrice = ((assignmentTariffId && assignmentTariffId == val && assignmentNetvalue) ? assignmentNetvalue : selected.attr('data-tariffnetvalue'));
+		let tariffNetFlag = ((assignmentTariffId && assignmentTariffId == val && assignmentNetflag) ? assignmentNetflag : selected.attr('data-tariffnetflag'));
+		let tariffTaxId = ((assignmentTariffId && assignmentTariffId == val && assignmentTaxid ) ? assignmentTaxid : selected.attr('data-tarifftaxid'));
+		let tariffBaseNetPrice = selected.attr('data-tariffnetvalue');
+		let tariffBaseGrossPrice = selected.attr('data-tariffvalue');
+		let tariffPriceVariants = selected.attr('data-tariffpricevariants');
 
 		$('#a_tax,#a_price').show();
 		$('#a_type,#a_currency,#a_splitpayment,#a_taxcategory,#a_productid,#a_name').hide();
+		if (tariffPriceVariants) {
+			let tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
+			if (Object.keys(tariffPriceVariantsObj).length > 0) {
+				// draw info with tariff price variants
+				drawPriceVariants(tariffPriceVariantsObj, $('#tariff-price-variants'));
 
-		$('#grossprice').val(tariffGrossPrice).prop('disabled', true);
-		$('#netprice').val(tariffNetPrice).prop('disabled', true);
+				// get tariff price variants according to quantity
+				let quantity = $("#quantity").val();
+				let priceVariant = getPriceVariant(parseInt(quantity), tariffPriceVariantsObj);
+				if (Object.keys(priceVariant).length > 0) {
+					grossPriceElem.val(priceVariant.gross_price);
+					netPriceElem.val(priceVariant.net_price);
+				} else {
+					grossPriceElem.val(tariffBaseGrossPrice);
+					netPriceElem.val(tariffBaseNetPrice);
+				}
+			}
+		}
+
 		$('#a_price, #a_tax').addClass('lms-ui-disabled');
 
 		if(parseInt(tariffNetFlag) === 1) {
@@ -561,10 +663,8 @@ function tariffSelectionHandler() {
 			$('#invoice').find('option[value="' + assignment_settings.DOC_DNOTE + '"]').prop('disabled', false);
 		}
 		$('#netflag').prop('disabled', true);
-
-		assignmentGrossvalue = '';
-		assignmentNetvalue = '';
-		assignmentNetflag = false;
+		grossPriceElem.val(tariffGrossPrice).prop('disabled', true);
+		netPriceElem.val(tariffNetPrice).prop('disabled', true);
 
 		$('#tax').val(tariffTaxId).prop('disabled', true);
 
@@ -632,11 +732,6 @@ function tariffSelectionHandler() {
 
 $('#tariff-select').change(tariffSelectionHandler);
 
-const netFlagElem = $("#netflag");
-const netPriceElem = $("#netprice");
-const grossPriceElem = $("#grossprice");
-const invoiceElem = $("#invoice");
-
 function claculatePriceFromGross() {
 	let grossPriceElemVal = grossPriceElem.val();
 	grossPriceElemVal = parseFloat(grossPriceElemVal.replace(/[\,]+/, '.'));
@@ -645,13 +740,13 @@ function claculatePriceFromGross() {
 		let selectedTaxId = $("#tax").find('option:selected').val();
 		let tax = $('#tax' + selectedTaxId).val();
 
-		let grossPrice = financeDecimals.round(grossPriceElemVal);
-		let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
+		let grossPrice = financeDecimals.round(grossPriceElemVal, 3);
+		let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1), 3);
 
-		netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+		netPrice = netPrice.toFixed(3).replace(/[\.]+/, ',');
 		netPriceElem.val(netPrice);
 
-		grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+		grossPrice = grossPrice.toFixed(3).replace(/[\.]+/, ',');
 		grossPriceElem.val(grossPrice);
 	} else {
 		netPriceElem.val('');
@@ -667,13 +762,13 @@ function claculatePriceFromNet() {
 		let selectedTaxId = $("#tax").find('option:selected').val();
 		let tax = $('#tax' + selectedTaxId).val();
 
-		let netPrice = financeDecimals.round(netPriceElemVal);
-		let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
+		let netPrice = financeDecimals.round(netPriceElemVal, 3);
+		let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1), 3);
 
-		grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+		grossPrice = grossPrice.toFixed(3).replace(/[\.]+/, ',');
 		grossPriceElem.val(grossPrice);
 
-		netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+		netPrice = netPrice.toFixed(3).replace(/[\.]+/, ',');
 		netPriceElem.val(netPrice);
 	} else {
 		grossPriceElem.val('');
@@ -714,6 +809,116 @@ $("#grossprice").on('change', function () {
 
 $("#netprice").on('change', function () {
 	claculatePriceFromNet();
+});
+
+$(".format-3f").on('change', function () {
+	if ($(this).val()) {
+		let roundedValue = financeRound($(this).val(), 3);
+		$(this).val(roundedValue);
+	}
+});
+
+$("#discount_value").on('change', function () {
+	if ($("#discount_type").val() == 2) {
+		let roundedValue = financeRound($(this).val(), 3);
+		$(this).val(roundedValue);
+	}
+
+	if ($("#discount_type").val() == 1) {
+		let roundedValue = financeRound($(this).val(), 2);
+		$(this).val(roundedValue);
+	}
+});
+
+$("#discount_type").on('change', function () {
+	let discountValueElem = $("#discount_value");
+	let discountValueElemVal = discountValueElem.val();
+	if (discountValueElemVal) {
+		if ($(this).val() == 2) {
+			let roundedValue = financeRound(discountValueElemVal, 3);
+			discountValueElem.val(roundedValue);
+		}
+		if ($(this).val() == 1) {
+			let roundedValue = financeRound(discountValueElemVal, 2);
+			discountValueElem.val(roundedValue);
+		}
+	}
+});
+
+function getPriceVariant(quantity, tariffPriceVariants) {
+	let priceVariant = {};
+	let upThreshold;
+	$.each(tariffPriceVariants, function (idx, price_variant) {
+		upThreshold = price_variant.quantity_threshold;
+		if (quantity > upThreshold) {
+			priceVariant = price_variant;
+		} else {
+			return false;
+		}
+	});
+
+	return priceVariant;
+}
+
+function drawPriceVariants(tariffPriceVariants, elem) {
+	let html = '<fieldset class="price-variants">' +
+		'<legend><strong>' + $t('Price variants') + '</strong></legend>' +
+			'<div class="lms-ui-box">' +
+				'<div class="lms-ui-box-header">' +
+					'<div class="lms-ui-box-row">' +
+						'<div class="lms-ui-box-field">' +
+							'<strong>' + $t('Gross price') + '</strong>' +
+						'</div>' +
+						'<div class="lms-ui-box-field">' +
+							'<strong>' + $t('Net price') + '</strong>' +
+						'</div>' +
+						'<div class="lms-ui-box-field">' +
+							'<strong>' + $t('Quantity threshold') + '</strong>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="lms-ui-box-body lms-ui-background-cycle">';
+	$.each(tariffPriceVariants, function ($idx, price_variant) {
+		let gross_price = price_variant.gross_price;
+		let net_price = price_variant.net_price;
+		let currency = price_variant.currency;
+		html += '<div class="lms-ui-box-row highlight">';
+		html += '<div class="lms-ui-box-field"><strong>' + gross_price.replace(/[.]+/, ',') + ' ' + currency +'</strong></div>';
+		html += '<div class="lms-ui-box-field">' + net_price.replace(/[.]+/, ',') +  ' ' + currency +'</div>';
+		html += '<div class="lms-ui-box-field">' + price_variant.quantity_threshold +  ' ' + currency +'</div>';
+		html += '</div>';
+	});
+
+	html+= '</filedset>';
+	let tariffPriceVariantsTemplateElem = $('#tariff_price_variants_template');
+	let dataHintElem = tariffPriceVariantsTemplateElem.contents().filter(function () {
+		return this.nodeType == 1;
+	});
+	dataHintElem.attr('data-hint', html);
+	elem.append(tariffPriceVariantsTemplateElem.html());
+}
+
+$("#quantity").on('change', function () {
+	let tariff_select = $('#tariff-select');
+	let selected = tariff_select.find(':selected');
+	let tariffId = selected.val();
+	if (tariffId > 0) {
+		let tariffBaseNetPrice = selected.attr('data-tariffnetvalue');
+		let tariffBaseGrossPrice = selected.attr('data-tariffvalue');
+		let tariffPriceVariants = selected.attr('data-tariffpricevariants');
+		let tariffPriceVariantsObj = JSON.parse(tariffPriceVariants);
+
+		if (Object.keys(tariffPriceVariantsObj).length > 0) {
+			let priceVariant = getPriceVariant(parseInt($(this).val()), tariffPriceVariantsObj);
+			if (Object.keys(priceVariant).length > 0) {
+				grossPriceElem.val(priceVariant.gross_price);
+				netPriceElem.val(priceVariant.net_price);
+			} else {
+				grossPriceElem.val(tariffBaseGrossPrice);
+				netPriceElem.val(tariffBaseNetPrice);
+			}
+		}
+	}
 });
 
 $('#invoice').on('change', function () {

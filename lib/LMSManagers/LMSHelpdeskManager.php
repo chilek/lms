@@ -1413,7 +1413,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     } elseif ($message['contenttype'] == 'text/html') {
                         $message['body'] = str_ireplace(
                             '"CID:' . $attachment['cid'] . '"',
-                            '"' . $url_prefix . '/?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $id . '&mid=' . $message['id'] . '"',
+                            '"' . $url_prefix . '/?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $message['ticketid'] . '&mid=' . $message['id'] . '"',
                             $message['body']
                         );
                     }
@@ -2524,24 +2524,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $this->IsTicketLoop($ticketid, $parentid);
     }
 
-    public function GetRTSmtpOptions()
+    public function GetRTSmtpOptions($config_section = 'rt')
     {
         $options = array();
 
         $variable_mapping = array(
-            'host' => 'rt.smtp_host',
-            'port' => 'rt.smtp_port',
-            'user' => array('rt.smtp_username', 'rt.smtp_user'),
-            'pass' => array('rt.smtp_password', 'rt.smtp_pass'),
-            'auth' => array('rt.smtp_auth_type', 'rt.smtp_auth'),
-            'secure' => 'rt.smtp_secure',
-            'ssl_verify_peer' => 'rt.smtp_ssl_verify_peer',
-            'ssl_verify_peer_name' => 'rt.smtp_ssl_verify_peer_name',
-            'ssl_allow_self_signed' => 'rt.smtp_ssl_allow_self_signed',
-            'smime_certificate' => 'rt.smime_certificate',
-            'smime_key' => 'rt.smime_key',
-            'smime_ca_chain' => 'rt.smime_ca_chain',
-            'smime_sender_email' => 'rt.smime_sender_email',
+            'host' => $config_section . '.smtp_host',
+            'port' => $config_section . '.smtp_port',
+            'user' => array($config_section . '.smtp_username', $config_section . '.smtp_user'),
+            'pass' => array($config_section . '.smtp_password', $config_section . '.smtp_pass'),
+            'auth' => array($config_section . '.smtp_auth_type', $config_section . '.smtp_auth'),
+            'secure' => $config_section . '.smtp_secure',
+            'ssl_verify_peer' => $config_section . '.smtp_ssl_verify_peer',
+            'ssl_verify_peer_name' => $config_section . '.smtp_ssl_verify_peer_name',
+            'ssl_allow_self_signed' => $config_section . '.smtp_ssl_allow_self_signed',
+            'smime_certificate' => $config_section . '.smime_certificate',
+            'smime_key' => $config_section . '.smime_key',
+            'smime_ca_chain' => $config_section . '.smime_ca_chain',
+            'smime_sender_email' => $config_section . '.smime_sender_email',
         );
 
         foreach ($variable_mapping as $option_name => $variable_name) {

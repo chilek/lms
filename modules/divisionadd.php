@@ -94,7 +94,7 @@ if (!empty($_POST['division'])) {
         $error['email'] = trans('E-mail isn\'t correct!');
     }
 
-    if ($division['phone'] != '' && preg_match('/[^0-9\s\-]/', $division['phone'])) {
+    if ($division['phone'] != '' && !preg_match('/^\+?[0-9\s\-]+$/', $division['phone'])) {
         $error['phone'] = trans('Incorrect phone number!');
     }
 
@@ -109,7 +109,7 @@ if (!empty($_POST['division'])) {
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($division['location_city_name']) && ($division['location_country_id'] == 2 || empty($division['location_country_id']))
         && (!isset($division['teryt']) || empty($division['location_city'])) && $LMS->isTerritState($division['location_state_name'])) {
-        $error['division[teryt]'] = trans('TERRIT address is required!');
+        $error['division[teryt]'] = trans('TERYT address is required!');
     }
 
     if (!$error) {

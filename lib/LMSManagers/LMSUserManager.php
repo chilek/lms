@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2020 LMS Developers
+ *  Copyright (C) 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -270,6 +270,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'netpasswd' => empty($user['netpassword']) ? null : $user['netpassword'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
+            'trustedhosts' => $user['trustedhosts'],
             'position' => $user['position'],
             'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
             'phone' => !empty($user['phone']) ? $user['phone'] : null,
@@ -282,9 +283,10 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
         );
         $user_inserted = $this->db->Execute(
-            'INSERT INTO users (login, firstname, lastname, issuer, email, passwd, netpasswd, rights, hosts, position, ntype, phone,
+            'INSERT INTO users (login, firstname, lastname, issuer, email, passwd, netpasswd, rights,
+                hosts, trustedhosts, position, ntype, phone,
                 passwdforcechange, passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
@@ -501,6 +503,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'email' => $user['email'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
+            'trustedhosts' => $user['trustedhosts'],
             'position' => $user['position'],
             'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
             'phone' => !empty($user['phone']) ? $user['phone'] : null,
@@ -513,9 +516,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
             SYSLOG::RES_USER => $user['id']
         );
-        $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, issuer = ?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=?, passwdforcechange=?, passwdexpiration=?, access=?,
-				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
+        $res = $this->db->Execute(
+            'UPDATE users SET login = ?, firstname = ?, lastname = ?, issuer = ?, email = ?, rights = ?,
+            hosts = ?, trustedhosts = ?, position = ?, ntype = ?, phone = ?, passwdforcechange = ?, passwdexpiration = ?,
+            access = ?, accessfrom = ?, accessto = ?, twofactorauth = ?, twofactorauthsecretkey = ?
+            WHERE id = ?',
+            array_values($args)
+        );
 
         if ($res) {
             if (!empty($user['diff_division_del'])) {

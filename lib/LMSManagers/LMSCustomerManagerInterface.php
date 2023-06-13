@@ -150,6 +150,8 @@ interface LMSCustomerManagerInterface
 
     public function changeCustomerType($id, $tyoe);
 
+    public function changeCustomerStatus($id, $status);
+
     public function getCustomerCalls(array $params);
 
     public function deleteCustomerCall($id, $callid);
@@ -166,7 +168,15 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerModificationInfo($customerid);
 
-    public function getCustomerExternalIDs($customerid, $serviceproviderid = null);
+    public function getCustomerExternalIDs($customerid, $serviceproviderid = null, $serviceprovidersonly = false);
+
+    public function addCustomerExternalID($customerid, $extid, $serviceproviderid);
+
+    public function updateCustomerExternalID($customerid, $extid, $oldextid, $serviceproviderid, $oldserviceproviderid);
 
     public function updateCustomerExternalIDs($customerid, array $customerextids, $only_passed_service_providers = false);
+
+    public function deleteCustomerExternalID($customerid, $extid, $serviceproviderid);
+
+    public function getServiceProviders();
 }

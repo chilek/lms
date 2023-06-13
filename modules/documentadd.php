@@ -35,6 +35,8 @@ if (isset($_POST['document'])) {
 
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
+    $error = array();
+
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
         $error['customer'] = trans('Customer not selected!');
         $error['customerid'] = trans('Customer not selected!');
@@ -211,15 +213,27 @@ if (isset($_POST['document'])) {
             // run template engine
             if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                 . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php')) {
+                $SMARTY->AddTemplateDir(
+                    array(
+                        'documentadd' => $doc_dir . DIRECTORY_SEPARATOR . 'templates'
+                            . DIRECTORY_SEPARATOR . $engine['name']
+                    )
+                );
                 require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
             } else {
+                $SMARTY->AddTemplateDir(
+                    array(
+                        'documentadd' => DOC_DIR . DIRECTORY_SEPARATOR . 'templates'
+                            . DIRECTORY_SEPARATOR . 'default'
+                    )
+                );
                 require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
                     . 'default' . DIRECTORY_SEPARATOR . 'engine.php');
             }
 
             if (!empty($output)) {
-                $file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
+                $file = tempnam(DOC_DIR, 'tmp.file');
                 $fh = fopen($file, 'w');
                 fwrite($fh, $output);
                 fclose($fh);
@@ -274,6 +288,43 @@ if (isset($_POST['document'])) {
                 'md5sum' => md5_file($filename),
                 'attachmenttype' => 0,
             );
+        }
+    }
+
+    $promotionattachments = array();
+    if (isset($document['assignment']['promotion-attachments']) && !empty($document['assignment']['promotion-attachments'])) {
+        $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-attachments']);
+    }
+    if (isset($document['assignment']['promotion-schema-attachments']) && !empty($document['assignment']['promotion-schema-attachments'])) {
+        $promotionattachments = array_merge($promotionattachments, $document['assignment']['promotion-schema-attachments']);
+    }
+    $promotionattachments = Utils::filterIntegers($promotionattachments);
+    if (!empty($promotionattachments)) {
+        $promotionattachments = $DB->GetAll(
+            'SELECT *
+            FROM promotionattachments
+            WHERE id IN ?',
+            array(
+                $promotionattachments,
+            )
+        );
+        if (!empty($promotionattachments)) {
+            foreach ($promotionattachments as $attachment) {
+                $filename = STORAGE_DIR . DIRECTORY_SEPARATOR
+                    . (empty($attachment['promotionschemaid']) ? 'promotions' : 'promotionschemas')
+                    . DIRECTORY_SEPARATOR . $attachment[empty($attachment['promotionschemaid']) ? 'promotionid' : 'promotionschemaid']
+                    . DIRECTORY_SEPARATOR . $attachment['filename'];
+                if (file_exists($filename)) {
+                    $files[] = array(
+                        'tmpname' => null,
+                        'filename' => basename($filename),
+                        'name' => $filename,
+                        'type' => $attachment['contenttype'],
+                        'md5sum' => md5_file($filename),
+                        'attachmenttype' => 0,
+                    );
+                }
+            }
         }
     }
 
@@ -425,14 +476,31 @@ if (isset($_POST['document'])) {
 
         $DB->CommitTrans();
 
-        if ($LMS->DocumentExists($docid) && !empty($document['confirmdate'])) {
-            $document['id'] = $docid;
-            $LMS->NewDocumentCustomerNotifications($document);
+        if ($LMS->DocumentExists($docid)) {
+            $hook_data = $LMS->executeHook(
+                'documentadd_after_submit',
+                array(
+                    'docid' => $docid,
+                    'document' => $document
+                )
+            );
+            $document = $hook_data['document'];
+
+            if (isset($document['closed'])) {
+                $LMS->CommitDocuments(array($docid), false, false);
+            }
+
+            if (!empty($document['confirmdate'])) {
+                $document['id'] = $docid;
+                $document['fullnumber'] = $fullnumber;
+                $LMS->NewDocumentCustomerNotifications($document);
+            }
         }
 
         if (!isset($document['reuse'])) {
             if (isset($_GET['print'])) {
                 $SESSION->save('documentprint', $docid);
+                $SESSION->save('document-with-attachments', isset($_POST['with-attachments']));
             }
 
             $SESSION->redirect('?m=documentlist&c=' . $document['customerid']);
@@ -452,15 +520,21 @@ if (isset($_POST['document'])) {
     $document['customerid'] = isset($_GET['cid']) ? intval($_GET['cid']) : '';
     $document['type'] = isset($_GET['type']) ? intval($_GET['type']) : '';
 
-    $default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
-    if (!empty($default_assignment_invoice)) {
-        if (preg_match('/^[0-9]+$/', $default_assignment_invoice)) {
-            $document['assignment']['invoice'] = $default_assignment_invoice;
-        } elseif (ConfigHelper::checkValue($default_assignment_invoice)) {
+    $default_document_type = ConfigHelper::getConfig(
+        'assignments.default_document_type',
+        ConfigHelper::getConfig('phpui.default_assignment_invoice')
+    );
+    if (!empty($default_document_type)) {
+        if (preg_match('/^[0-9]+$/', $default_document_type)) {
+            $document['assignment']['invoice'] = $default_document_type;
+        } elseif (ConfigHelper::checkValue($default_document_type)) {
             $document['assignment']['invoice'] = DOC_INVOICE;
         }
     }
-    $default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
+    $default_assignment_settlement = ConfigHelper::getConfig(
+        'assignments.default_begin_period_settlement',
+        ConfigHelper::getConfig('phpui.default_assignment_settlement')
+    );
     if (!empty($default_assignment_settlement)) {
         if (preg_match('/^[0-9]+$/', $default_assignment_settlement)) {
             $document['assignment']['settlement'] = $default_assignment_settlement;
@@ -468,21 +542,39 @@ if (isset($_POST['document'])) {
             $document['assignment']['settlement'] = 1;
         }
     }
-    $document['assignment']['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
-    $document['assignment']['align-periods'] = ConfigHelper::checkConfig('phpui.default_assignment_align_periods', true);
-    $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
+    $document['assignment']['last-settlement'] = ConfigHelper::checkConfig(
+        'assignments.default_end_period_settlement',
+        ConfigHelper::checkConfig('phpui.default_assignment_last_settlement')
+    );
+    $document['assignment']['align-periods'] = ConfigHelper::checkConfig(
+        'assignments.default_align_periods',
+        ConfigHelper::checkConfig('phpui.default_assignment_align_periods', true)
+    );
+    $default_assignment_period = ConfigHelper::getConfig(
+        'assignments.default_period',
+        ConfigHelper::getConfig('phpui.default_assignment_period')
+    );
     if (!empty($default_assignment_period)) {
         $document['assignment']['period'] = $default_assignment_period;
     }
-    $default_assignment_at = ConfigHelper::getConfig('phpui.default_assignment_at');
+    $default_assignment_at = ConfigHelper::getConfig(
+        'assignments.default_at',
+        ConfigHelper::getConfig('phpui.default_assignment_at')
+    );
     if (!empty($default_assignment_at)) {
         $document['assignment']['at'] = $default_assignment_at;
     }
 
     $document['assignment']['check_all_terminals'] =
-        ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check');
+        ConfigHelper::checkConfig(
+            'promotions.schema_all_terminal_check',
+            ConfigHelper::checkConfig('phpui.promotion_schema_all_terminal_check')
+        );
 
-    $default_existing_assignment_operation = ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep');
+    $default_existing_assignment_operation = ConfigHelper::getConfig(
+        'assignments.default_existing_operation',
+        ConfigHelper::getConfig('phpui.default_existing_assignment_operation', 'keep')
+    );
     $existing_assignment_operation_map = array(
         'keep' => EXISTINGASSIGNMENT_KEEP,
         'suspend' => EXISTINGASSIGNMENT_SUSPEND,
@@ -543,6 +635,27 @@ if (isset($document['customerid'])) {
     $promotions = $numberplans = null;
 }
 
+$promotionattachments = array();
+foreach ($promotions as $promotionid => $promotion) {
+    foreach ($promotion['schemas'] as $schemaid => $schema) {
+        if (!isset($promotionattachments[$schemaid])) {
+            $promotionattachments[$schemaid] = array(
+                'promotions' => array(),
+                'promotionschemas' => array(),
+            );
+        }
+        $promotionattachments[$schemaid]['promotions'] = array_merge(
+            $promotionattachments[$schemaid]['promotions'],
+            $promotion['attachments']
+        );
+        $promotionattachments[$schemaid]['promotionschemas'] = array_merge(
+            $promotionattachments[$schemaid]['promotionschemas'],
+            $schema['attachments']
+        );
+    }
+}
+$SMARTY->assign('promotionattachments', $promotionattachments);
+
 $SMARTY->assign('promotions', $promotions);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $defaultTaxIds = $LMS->GetTaxes(null, null, true);
@@ -555,6 +668,12 @@ if (is_array($defaultTaxIds)) {
 $SMARTY->assign('defaultTaxId', $defaultTaxId);
 $SMARTY->assign('numberplanlist', $numberplans);
 // --- promotion support
+
+$hook_data = array(
+    'document' => $document,
+);
+$hook_data = $LMS->ExecuteHook('documentadd_init', $hook_data);
+$document = $hook_data['document'];
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('docrights', $rights);

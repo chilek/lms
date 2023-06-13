@@ -95,7 +95,16 @@
 			{foreach $newmenu as $menuindex => $menuitem}
 			<div id="menu-{$menuindex}" class="lms-ui-menu-item">
 				<div class="click-menu bottomline">
-					<div{if $menuitem.tip} {tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}'); {else}return self.location.href = '{$menuitem.link}'; {/if}"{/if}>
+					<div{if $menuitem.tip}
+							{tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"
+						{/if}
+						{if !empty($menuitem.link) && (!empty($menuitem.windowopen) || empty($menuitem.submenu))}
+							{if empty($menuitem.windowopen)}
+								onClick="location.href = '{$menuitem.link}';"
+							{else}
+								onClick="window.open('{$menuitem.link}');"
+							{/if}
+						{/if}>
 						<div class="box1">
 							{if isset($menuitem.img)}
 								<img src="img/{$menuitem.img}">
@@ -106,8 +115,8 @@
 						</div>
 					</div>
 					<div class="section">
-						{if $menuitem.submenu}
-							{foreach from=$menuitem.submenu item=submenuitem}
+						{if !empty($menuitem.submenu)}
+							{foreach $menuitem.submenu as $submenuitem}
 								<div{if $submenuitem.tip} {tip class="tip" text="\$a" a=$submenuitem.tip bold="1"}{else} class="tip"{/if}>
 									<div class="box2">
 										<a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a>

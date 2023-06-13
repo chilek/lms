@@ -26,6 +26,9 @@
 
 class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
 {
+    // default font
+    const TCPDF_FONT = 'liberationsans';
+
     /**
      * class constructor
      *
@@ -56,6 +59,11 @@ class LMSHTML2PDF extends \Spipu\Html2Pdf\Html2Pdf
             $margins,
             $pdfa
         );
+
+        $this->pdf->AddFont(self::TCPDF_FONT, 'I', LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'liberationsansi');
+        $this->pdf->AddFont(self::TCPDF_FONT, 'B', LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'liberationsansb');
+        $this->pdf->AddFont(self::TCPDF_FONT, 'BI', LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'liberationsansbi');
+        $this->pdf->AddFont(self::TCPDF_FONT, '', LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'liberationsans');
 
         // init the CSS parsing object
         $cssConverter = new \Spipu\Html2Pdf\CssConverter();

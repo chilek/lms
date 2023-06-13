@@ -186,7 +186,7 @@
 											{trans("MAC address")}
 										</td>
 										<td class="lms-ui-mac-address-selection">
-											{mac_address_selection form="nodeedit" macs=$nodeinfo.macs}
+											{mac_address_selection form="nodeedit" macs=$nodeinfo.macs node_empty_mac=$node_empty_mac}
 										</td>
 									</tr>
 
@@ -252,9 +252,8 @@
 
 													<select name="nodeedit[linktype]" id="linktype"
 														{tip trigger="linktype" text="Select link type"}>
-														{foreach $_LINKTYPES as $key => $item}
-															<option value="{$key}"{if $key == $nodeinfo.linktype} selected{/if}
-																>{$item}</option>
+														{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+															<option value="{$linktype}"{if $linktype == $nodeinfo.linktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 														{/foreach}
 													</select>
 

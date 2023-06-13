@@ -8,14 +8,40 @@
 
 <style>
 
-	#document-button-panel,
-	#document-button-panel > div {
-		display: inline-block;
+	.document-button-panel {
+		display: flex;
+		flex-direction: column;
 	}
 
-	#document-button-panel > div:first-child {
+	.document-button-subpanel,
+	.document-button-subpanel > div {
+		display: flex;
+		align-items: center;
+	}
+
+	.document-button-subpanel:first-child > div:not(:first-child) {
+		flex-wrap: wrap;
+	}
+
+	.document-button-subpanel {
+		flex-wrap: wrap;
+	}
+
+	.document-button-subpanel > div {
+		display: flex;
+		flex-wrap: nowrap;
+	}
+
+	.document-button-subpanel > div > * {
+		margin-left: 0.3em;
+		margin-right: 0.3em;
+	}
+
+/*
+	.document-button-subpanel > div:first-child {
 		padding-bottom: 0.3em;
 	}
+*/
 
 	table.lmsbox > thead >tr:not(:first-child) {
 		border-top: none;
@@ -224,6 +250,8 @@
 		<tr id="referencedocument">
 			{include file="document/documentreference.html"}
 		</tr>
+		{block name="documentpluginreference"}
+		{/block}
 		<tr id="document-file-row"{if !$document.type} style="display: none;"{/if}>
 			<td>
 				{icon name="import"}
@@ -261,21 +289,31 @@
 		</tr>
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
-				<div id="document-button-panel">
-					<div>
-						{button icon="save" class="operation-button" id="submit-button" label="Submit"}
-						{button icon="print" class="operation-button" id="print-button" label="Print"}
-						{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+				<div class="document-button-panel">
+					<div class="document-button-subpanel">
+						<div>
+							{button icon="save" class="operation-button" id="submit-button" label="Submit"}
+							{button icon="cancel" label="Cancel" onclick="location.href = '?m=documentlist';"}
+						</div>
+						<div>
+							<label>
+								<input type="checkbox" id="new-window-toggle">
+								{trans("new window")}
+							</label>
+							<label>
+								<input type="checkbox" name="document[reuse]" value="on" {if $document.reuse}checked{/if}>
+								{trans("Display this form again, when that document is saved")}
+							</label>
+						</div>
 					</div>
-					<div>
-						<label>
-							<input type="checkbox" id="new-window-toggle">
-							{trans("new window")}
-						</label>
-						<label>
-							<input type="checkbox" name="document[reuse]" value="on" {if $document.reuse}checked{/if}>
-							{trans("Display this form again, when that document is saved")}
-						</label>
+					<div class="document-button-subpanel">
+						<div>
+							{button icon="print" class="operation-button" id="print-button" label="Print"}
+							<label>
+								<input type="checkbox" name="with-attachments" value="1">
+								{trans("attachments")}
+							</label>
+						</div>
 					</div>
 				</div>
 			</td>

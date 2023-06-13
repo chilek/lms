@@ -274,6 +274,8 @@ if (isset($_POST['tariff'])) {
         WHERE id = ?',
         array($_GET['id'])
     );
+    $tariff['datefrom'] = empty($tariff['datefrom']) ? '' : date('Y/m/d', $tariff['datefrom']);
+    $tariff['dateto'] = empty($tariff['dateto']) ? '' : date('Y/m/d', $tariff['dateto']);
     $tariff['tags'] = $LMS->getTariffTagsForTariff($_GET['id']);
 } else {
     $tariff['domain_limit'] = 0;
@@ -288,7 +290,10 @@ if (isset($_POST['tariff'])) {
         $tariff['type'] = intval(ConfigHelper::getConfig('phpui.default_tariff_type', '-1'));
     }
 
-    $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
+    $default_assignment_period = ConfigHelper::getConfig(
+        'assignments.default_period',
+        ConfigHelper::getConfig('phpui.default_assignment_period')
+    );
     if (!empty($default_assignment_period)) {
         $tariff['period'] = $default_assignment_period;
     }

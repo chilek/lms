@@ -44,10 +44,18 @@
 {/if}
 
 			{box_row icon="type" icon_class="fa-fw" label="Type"}
-				<select name="netnode[type]" {tip text="Enter node type"}>
-					{foreach $_NETELEMENTTYPES as $idx => $type}
-						<option value="{$idx}"
-							{if $netnode.type == $idx} selected{/if}>{$type}</option>
+				{$netelementtypes = Localisation::arraySort($_NETELEMENTTYPES)}
+				<select name="netnode[type]" {tip text="Enter node type" class="lms-ui-advanced-select"}>
+					<option value="0">{trans("<!netelemtype>— other —")}</option>
+					{foreach $_NETELEMENTTYPEGROUPS as $group => $types}
+						<optgroup label="{$group}">
+							{foreach $netelementtypes as $idx => $type}
+								{if $types[$idx]}
+									<option value="{$idx}"
+										{if $netnode.type == $idx} selected{/if}>{$type}</option>
+								{/if}
+							{/foreach}
+						</optgroup>
 					{/foreach}
 				</select>
 			{/box_row}

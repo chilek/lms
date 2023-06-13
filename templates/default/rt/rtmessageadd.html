@@ -138,6 +138,7 @@
 				{foreach $contacts.mails as $contact}
 					<label>
 						<input type="checkbox" name="message[contacts][mails][{$contact.contact|escape}]" value="{$contact.contact|escape}"
+							class="mail-contact"
 							{if $contact.checked} checked{/if}>
 						{$contact.contact}{if $contact.name} ({$contact.name}){/if}
 						<input type="hidden" name="message[contacts][mailsources][{$contact.contact|escape}]" value="{$contact.source}">
@@ -150,7 +151,8 @@
 
 {if $group_action || !empty($contacts.phones)}
 			{box_row icon="sms" icon_class="fa-fw" id="smsnotify-row" label="Notify customer via SMS" labelid="smsnotify"}
-				<input type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
+				<input type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"
+					{if $message.smsnotify} checked{/if}>
 			{/box_row}
 {/if}
 
@@ -159,6 +161,7 @@
 				{foreach $contacts.phones as $contact}
 					<label>
 						<input type="checkbox" name="message[contacts][phones][{$contact.contact}]" value="{$contact.contact}"
+							class="sms-contact"
 							{if $contact.checked} checked{/if}>
 						{$contact.contact}{if $contact.name} ({$contact.name}){/if}
 					</label>
@@ -412,6 +415,26 @@
 			}
 			$('[name="message[body]"]').val(message);
 		});
+
+		{if !$group_action}
+		$('#message-form').submit(function() {
+			var errorMessages = [];
+			var errorElem = null;
+			if ($('#mailnotify').prop('checked') && !$('.mail-contact:checked').length) {
+				errorElem = $('.mail-contact').get(0);
+				errorMessages.push($t("No email address is selected while customer email notification is checked!"));
+			}
+			if ($('#smsnotify').prop('checked') && !$('.sms-contact:checked').length) {
+				errorElem = $('.sms-contact').get(0);
+				errorMessages.push($t("No phone number is selected while customer sms notification is checked!"));
+			}
+			if (errorMessages.length) {
+				alertDialog(errorMessages.join('<br>'), errorElem);
+				$(this).find('button[type="submit"]').prop('disabled', false);
+				return false;
+			}
+		});
+		{/if}
 
 		{if isset($citing)}
 		var textarea = $('[name="message[body]"]');

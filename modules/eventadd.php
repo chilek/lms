@@ -43,6 +43,7 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
 $userlist = $LMS->GetUserNames();
 $SMARTY->assign('netnodelist', $LMS->GetNetNodes());
 
+$search = array();
 if (!empty($_GET['netnodeid'])) {
     $netnodeid = intval($_GET['netnodeid']);
     if (!empty($netnodeid)) {

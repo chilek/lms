@@ -36,7 +36,7 @@ $tranferform_common_data = $transferform->GetCommonData(array('customerid' => $c
 
 $tranferform_custom_data = array(
     'title' => $payment_title,
-    'paytype' => 8, // only to hide deadline
+    'paytype' => PAYTYPE_PAID, // only to hide deadline
     'barcode' => $payment_title,
 );
 

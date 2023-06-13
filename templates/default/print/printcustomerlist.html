@@ -74,7 +74,7 @@
 		<TD ALIGN="RIGHT">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
 			{if $customerlist[customerlist].email}{$customerlist[customerlist].email}<BR>{/if}
-			{if $customerlist[customerlist].ten}{trans("TEN:")} {$customerlist[customerlist].ten}{elseif $customerlist[customerlist].ssn}{trans("SSN:")} {$customerlist[customerlist].ssn}{/if}
+			{if $customerlist[customerlist].ten}{trans("TEN:")} {$customerlist[customerlist].ten}{elseif $customerlist[customerlist].ssn}{trans("SSN:")} {if empty($listdata.hidessn)}{$customerlist[customerlist].ssn}{else}{trans("(hidden)")}{/if}{/if}
 		</TD>
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		<TD ALIGN="RIGHT" NOWRAP>

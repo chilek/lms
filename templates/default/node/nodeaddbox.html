@@ -163,7 +163,7 @@
 											{icon name="mac"}
 										</td>
 										<td class="lms-ui-mac-address-selection" colspan="2">
-											{mac_address_selection form="nodedata" macs=$nodedata.macs}
+											{mac_address_selection form="nodedata" macs=$nodedata.macs node_empty_mac=$node_empty_mac}
 										</td>
 									</tr>
 
@@ -221,9 +221,8 @@
 
 													<select name="nodedata[linktype]" id="linktype"
 															{tip trigger="linktype" text="Select link type"}>
-														{foreach $_LINKTYPES as $key => $item}
-															<option value="{$key}"{if $key == $nodedata.linktype} selected{/if}
-																>{$item}</option>
+														{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+															<option value="{$linktype}"{if $linktype == $nodedata.linktype} selected{/if}>{$_LINKTYPES[$linktype]}</option>
 														{/foreach}
 													</select>
 

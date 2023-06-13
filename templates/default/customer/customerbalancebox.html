@@ -3,7 +3,8 @@
 {css}
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 <FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
 </FORM>
@@ -121,14 +122,15 @@
 					data-refdocs="{if empty($item.documentreferenced)}0{else}1{/if}"
 					class="{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} teal{if $item.referenced} transformed{/if}{/if}
 					{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} blend{/if}"
-					{/if}>
+					{/if}
+					{if $item.value > 0 && $item.type} data-moveable="1"{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"&hellip;":true}</TD>
-					<TD class="text-right nobr" data-order="{$item.value}">{if !$item.type}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}" data-order="{$item.value}">{if $item.type && $item.value > 0}+{moneyf($item.value, $item.currency)}{else}-{/if}</TD>
-					<TD class="text-right nobr" data-order="{$item.value}">{if $item.type && $item.value < 0}{moneyf($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if !$item.type}{Utils::formatMoney($item.value*-1, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}" data-order="{$item.value}">{if $item.type && $item.value > 0}+{Utils::formatMoney($item.value, $item.currency)}{else}-{/if}</TD>
+					<TD class="text-right nobr" data-order="{$item.value}">{if $item.type && $item.value < 0}{Utils::formatMoney($item.value*-1, $item.currency)}{else}-{/if}</TD>
 					<TD class="text-center">&raquo;</TD>
-					<TD class="text-right nobr{if $item.after < 0} red{/if}">{moneyf($item.after)}</TD>
+					<TD class="text-right nobr{if $item.after < 0} red{/if}">{Utils::formatMoney($item.after)}</TD>
 					<TD class="comment"
 						{if $item.doctype == $smarty.const.DOC_INVOICE && !empty($item.reference) && $aggregate_documents && !empty($item.documentcomment)} title="{$item.documentcomment}"{/if}
 						>{$item.comment|escape}</TD>
@@ -403,10 +405,11 @@
 		{tab_button_panel}
 
 			{tab_buttons}
-				{if  ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
+				{if ConfigHelper::checkPrivilege('financial_operations') || ConfigHelper::checkPrivilege('finances_management')}
 					{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 						{button icon="delete" id="delete-invoices" label="Delete"}
 					{/if}
+					{button icon="transfer" id="move-balances" label="<!balance>Transfer"}
 				{/if}
 				{button icon="mail" id="send-invoices" label="Send invoices"}
 				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
@@ -464,8 +467,12 @@
 						<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
 						{currency_selection selected=Localisation::getDefaultCurrency() elementname="addbalance[currency]" form="addbalance-form"}
 						<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
-							{foreach item=tax from=$taxeslist}
-							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
+							{foreach $taxeslist as $tax}
+								<option value="{$tax.id}"
+									{if $taxid && $tax.id == $taxid
+										|| (!$taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+											|| !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
+									>{$tax.label}</option>
 							{/foreach}
 						</SELECT>
 					</div>
@@ -526,7 +533,53 @@
 	{/tab_contents}
 {/tab_container}
 
-<SCRIPT>
+<form method="POST" id="transfer-balance-form" action="?m=customerbalancetransfer">
+</form>
+
+<style>
+
+	#transfer-balance-dialog {
+		overflow: visible;
+		display: none;
+	}
+
+	ol.dialog-box {
+		list-style: none;
+		padding-left: 0;
+		width: 90%;
+	}
+	ol.dialog-box li {
+		padding-bottom: 5px;
+	}
+
+</style>
+
+<div id="transfer-balance-dialog" class="lms-ui-dialog" title="{trans("Financial operation transfer")}">
+	<ol class="dialog-box">
+		<li>
+			<strong>{trans("Customer")}</strong>
+			{customerlist
+				customers=$customers
+				form="transfer-balance-form"
+				selectname="customer-select"
+				inputname="customerid"
+				selecttip=""
+				inputtip=""
+				required=true
+				version=2}
+		</li>
+	</ol>
+	<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+		<div class="ui-dialog-buttonset">
+			{button type="submit" class="lms-ui-button ui-button ui-corner-all ui-widget" icon="apply"
+				id="transfer-balance-apply-button" label="Apply" form="transfer-balance-form"}
+			{button class="lms-ui-button ui-button ui-corner-all ui-widget" icon="cancel"
+				id="transfer-balance-cancel-button" label="Cancel" form="transfer-balance-form"}
+		</div>
+	</div>
+</div>
+
+<script>
 
 {if !$limit}
 	$('#customerbalancepanel').show();
@@ -844,9 +897,44 @@
 			var attachmentView = $(this).siblings('.all-attachment-view');
 			attachmentView.toggle();
 			$(this).find('i').attr('class', 'lms-ui-icon-' + (attachmentView.is(':visible') ? 'less' : 'more'));
+		});""
+
+		$('#customerbalancebox .lms-ui-multi-check,.lms-ui-multi-check-all').change(function() {
+			$('#move-balances').prop('disabled', !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length);
 		});
+
+		var transfer_balance_dialog = new LmsUiDialog('transfer-balance-dialog', {
+			position: {
+				my: "left bottom",
+				at: "top right",
+				of: $('#move-balances')
+			}
+		});
+		$('#transfer-balance-cancel-button').click(function() {
+			transfer_balance_dialog.handler.dialog("close");
+		});
+
+		$('#transfer-balance-form').submit(function() {
+			var checkboxes = $('#customerbalancebox [data-moveable] .lms-ui-multi-check:checked');
+			var old_customerid = {$balancelist.customerid};
+			var customerid = parseInt($('[name="customerid"][form="transfer-balance-form"]').val());
+			if (!checkboxes.length || customerid == old_customerid) {
+				$('#transfer-balance-apply-button').prop('disabled', false);
+				return false;
+			}
+			var html = '<input type="hidden" name="old-customerid" value="' + old_customerid + '">';
+			$.each(checkboxes, function() {
+				html += '<input type="hidden" name="marks[]" value="' + $(this).val() + '">';
+			});
+			$(this).html(html);
+		});
+
+		$('#move-balances').prop('disabled', !$('#customerbalancebox .lms-ui-multi-check:checked').closest('[data-moveable]').length)
+			.click(function() {
+				transfer_balance_dialog.open();
+			});
 	});
 
 	new_doc_type_changed($("[name=newdocument]").val());
 
-</SCRIPT>
+</script>

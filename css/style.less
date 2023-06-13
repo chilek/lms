@@ -650,6 +650,26 @@ input[type="text"][disabled] {
 	}
 }
 
+input[type="checkbox"][disabled] {
+	background-color: transparent;
+	& + label {
+		color: @blend;
+	}
+}
+
+input[type="radio"][disabled] {
+	background-color: transparent;
+	& + label {
+		color: @blend;
+	}
+}
+
+select[disabled] {
+	& + label {
+		color: @blend;
+	}
+}
+
 input[type="radio"] {
     vertical-align: text-bottom;
 }
@@ -1367,6 +1387,34 @@ IMG		{ vertical-align: middle; border: 0; }
 		> div {
 			margin-top: 0.3em;
 			margin-bottom: 0.3em;
+		}
+
+		.fileupload-file {
+			display: flex;
+			flex-direction: column;
+			width: fit-content;
+		}
+
+		.fileupload-file-info {
+			display: flex;
+			align-items: center;
+
+			.file-delete {
+				margin-right: 0.7em;
+			}
+		}
+
+		.fileupload-file-options {
+			display: flex;
+			align-items: center;
+			margin-top: 0.5em;
+			justify-content: space-between;
+		}
+
+		.fileupload-file-options input[type="text"] {
+			margin-left: 1em;
+			flex-grow: 1;
+			min-width: 17em;
 		}
 	}
 }
@@ -2698,3 +2746,10 @@ fieldset {
 span.division-context {
 	margin-left: 0.5em;
 }
+
+.lms-ui-route-type {
+	 margin-block-start: 0;
+	 margin-block-end: 0;
+	 text-indent: -3.5em;
+	 margin-left: 3.5em;
+ }

@@ -1,7 +1,9 @@
 #!/bin/bash
 
 #LMS Dependencies
-apt install -y php apache2 postgresql php-gd git bash-completion net-tools patch wget mtr php-pgsql php-bcmath php-soap php-snmp php-imap composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl php-pear makepasswd sudo bsd-mailx php-gmp php-iconv php-mailparse php-zip php-curl php-imagick
+apt install -y php apache2 postgresql git bash-completion net-tools patch wget mtr \
+  php-{intl,gd,pgsql,bcmath,soap,snmp,imap,gmp,iconv,mailparse,zip,curl,imagick,pear} \
+  composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl makepasswd sudo bsd-mailx
 
 apt update
 apt dist-upgrade -y
@@ -32,7 +34,7 @@ git clone https://github.com/lmsgit/lms ${LMSDIR}
 
 #DIR PRIVILGES
 cd ${LMSDIR}
-for dir in 'backups cache documents templates_c userpanel/templates_c rtattachments js/xajax_js/deferred storage/rt storage/voipcalls storage/customercalls'
+for dir in 'backups cache documents templates_c userpanel/templates_c rtattachments js/xajax_js/deferred storage/rt storage/voipcalls storage/customercalls storage/promotions storage/promotionschemas'
 do
     mkdir -p $dir
     chmod o-rwx -R $dir

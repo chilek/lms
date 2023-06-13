@@ -1027,6 +1027,7 @@ function initMultiChecks(selector) {
 					$(checkbox).attr('data-prev-checked', checkbox.checked);
 					updateCheckAll();
 				}
+				$(this).find('[type="checkbox"]').triggerHandler('change');
 			});
 			row.find('[type="checkbox"]').click(function(e) {
 				if (e.shiftKey) {

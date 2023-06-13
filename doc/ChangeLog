@@ -280,10 +280,247 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'phpui.document_password' and 'phpui.document_protection_command'
     to 'documents.protection_password' and 'documents.protection_command' [chilan]
   - enhancement: allow to assign events with netnodes and netdevices [interduo]
-  - enhancement: implement {network_device_selection} & {network_node_selection} smarty function [interduo]
+  - enhancement: implement {network_device_selection} & {network_node_selection} smarty
+    function [interduo]
   - enhancement: added paytime/deadline property to assignments [chilan]
   - enhancement: 'helpdesk' flag of email and mobile contacts controls if helpdesk notifications
     are sent to customer [chilan]
+  - enhancement: customer search by popular assignment properties [chilan]
+  - improvement: 'promotions.force_current_period_settlement_at_same_day' configuration variable
+    with 'false' as default value controls accounting day of current period settlement
+    assignment [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_activation_at_next_day'
+    to 'promotions.activation_at_next_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_activation_at_same_day'
+    to 'promotions.activation_at_same_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_allow_modify_values_for_privileged_user'
+    to 'promotions.allow_modify_values_for_privileged_user' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_force_at_next_day'
+    to 'promotions.force_at_next_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_preserve_at_day'
+    to 'promotions.preserve_at_day' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_schema_all_terminal_check'
+    to 'promotions.schema_all_terminal_check' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_schema_name_limit'
+    to 'promotions.schema_name_limit' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_show_period_values'
+    to 'promotions.show_period_values' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_tariff_duplicates'
+    to 'promotions.tariff_duplicates' [chilan]
+  - devel/cleanup: renamed 'phpui.promotion_use_discounts'
+    to 'promotions.use_discounts' [chilan]
+  - enhancement: 'phpui.node_password_required_for_auth_type' controls which authentication/access types
+    set for nodes require node password to be specified ('all' as default value) [chilan]
+  - improvement: some invoice item visibility depends on invoice pay type [chilan]
+  - enhancement: lms-sendinvoices.php backend script supports --single-file parameter which causes making
+    backup to single 'output.pdf' file in directory specified with --output-directory parameter [chilan]
+  - improvement: document html/pdf attachments are merged (optionally) before printing in document lists
+    and document add form (handle pdf and html attachment merging) [chilan]
+  - enhancement: invoices with 'barter', 'cash', 'compensation', 'paid' and 'card' auto auto-paid
+    in lms-payments.php script [chilan]
+  - improvement: 'documents.default_all_attachments' configuration variable with 'false' as default value
+    controls if document is printed by default with all attachments [chilan]
+  - improvement: 'phpui.default_taxlabel' (without default value) allows to preselect tax rate basing
+    on label; it takes precedence before 'phpui.default_taxrate' [chilan]
+  - enhancement: added promotion and promotionschema attachments support; file can be selected
+    from new document form [chilan]
+  - improvement: 'customercalls.utc_datetime' with 'false' as default value controls if date time
+    encoded in customer call file name is stored in UTC and thus should be converted to local time [chilan]
+  - improvement: 'customercalls.operator_number_pattern' without default value controls if source
+    or destination number is matched by this regular expression to determine if it's outgoing or incoming
+    call [chilan]
+  - improvement: network forms: public network overlaps generate warning instead error [chilan]
+  - enhancement: 'phpui.zipcode_provider' supports multi provider specification (providers are separated
+    by white characters or commas); added 'prg' provider support [chilan]
+  - enhancement: 'documents.attachment_filename' configuration variable with '%filename' as default value
+    allows to tweak main attachment file name sent to customer [chilan]
+  - improvement: 'phpui.gps_coordinate_url' allows to customize URL of geographic coordinate point
+    (default: 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude') [chilan]
+  - improvement: 'phpui.geo_location_url' allows to customize URL of geographic location point
+    (default: 'https://www.google.com/maps/place/%location') [chilan]
+  - improvement: 'payments.auto_payments' with default value 'false' controls if invoices with pay type
+    of 'cash', 'paid', 'barter' and 'compensation' trigger oposite finascial operations (usually payments)
+    automation [chilan]
+  - improvement: 'phpui.netrangelist_pagelimit' with default value '100' controls limit of network ranges
+    on single page [chilan]
+  - enhancement: implemented SIDUSIS report support [chilan]
+  - enhancement: added customer group filter in invoice report export form [chilan]
+  - enhancement: added 'notes.customer_credentials_format' suuport - it is very similar in behaviour
+    to 'invoices.customer_credentials_format' [chilan]
+  - enhancement: export: added '%BALANCE' symbol support [chilan]
+  - improvement: 'phpui.teryt_street_address_format' with default value '%type% %street1% %street2%'
+    describes street address format when generating its textual representation basing on territ
+    identifiers [chilan]
+  - enhancement: added 'with term contracts' and 'with active term contracts' selection in status
+    filter of customer search form [chilan]
+  - enhancement: '--omit-free-days' parameter of bin/lms-notify.php and bin/lms-sendinvoices.php backend
+    scripts blocks sending notification and invoices on weekends and holidays [chilan]
+  - enhancement: implemented 'negation' flag for node group selection in customer search form [chilan]
+  - enhancement: added link button which opens point with gps coordinates on external map [chilan]
+  - improvement: added sms message in customer message box related to sent sms auth code used during
+    customer document confirmation in userpanel [chilan]
+  - improvement: helpdesk quicksearch use 2-level logical operators - normal attributes are combined
+    with 'OR' operator, but 'unresolved only' is combined with 'AND' operator' [chilan]
+  - enhancement: added JPK_FA (4) support [chilan]
+  - improvement: 'logs.message_limit' with default value of '11' allows to control how many transaction
+    messages are decoded and displayed in transaction lists [chilan]
+  - improvement/cleanup: renamed 'phpui.logging' configuration variable to 'logs.enabled' [chilan]
+  - improvement: network device name maximum length changed from 32 to 100 [chilan]
+  - enhancement: non-empty 'phpui.node_empty_mac' value allows to disable mac requirement specification
+    for nodes; mac address from this setting specifies fake-mac stored in database for nodes
+    without any assigned macs (setting has no default value what means mac addresses are required
+    for node) [chilan]
+  - enhancement: user 'trusted hosts' property allows to define IP address/network list from which
+    two factor authentication mechanism is bypassed [chilan]
+  - enhancement: new action on customer search results - customer status change [chilan]
+  - enhancement: implemented instant payment transfer between customers [chilan]
+  - enhancement: allow to filter transactions by module name [chilan]
+  - improvement: set 'payments.use_comment_for_liabilities' to 'true' if want to handle liabilities
+    the same way as tariff assignments (using 'payments.comment' configuration variable) [chilan]
+  - enhancement: handle MDN reports from o2.pl/wp.pl/onet.pl [chilan]
+  - enhancement: added smarty function '{image_data}' to ease embedding image content
+    in html templates [chilan]
+  - improvement: updated 'domains' table structure to match PowerDNS 4.7 [chilan]
+  - enhancement: userpanel/document: present confirmation type and date in document list [chilan]
+  - enhancement: date interval selection in message list [chilan]
+  - enhancement: lms-sms2rt.php script handles many incoming sms files scenario [chilan]
+  - enhancement: 'documents.pdf_merge_backend' with default value of 'fpdi' allows to selected used
+    pdf merge backend helpful for bulk multi document prints (one other supported value is 'pdfunite'
+    which means pdfunite command line tool is used to merge many pdf documents - this tool has to be
+    installed on serwer) [chilan]
+  - enhancement: 'documents.protected_document_types' specifies which types of documents are protected
+    with password when sending to customers (default empty value means all document types) [chilan]
+  - enhancement: added tariff flag filter and presentation them on list near tariff name [chilan]
+  - improvement: new mac format with colons and lower case hex digits [chilan]
+  - enhancement: uke/pit: updated network node type and link technology dictionaries [chilan]
+  - improvement: uke/pit: changed network node type to lms-ui-advanced-select with two groups - building
+    objects (SIIS) and infrastructure elements (PIT) [chilan]
+  - enhancement: added network node quick search customisation [chilan]
+  - enhancement: allow to quick search network devices by description [chilan]
+  - enhancement: add support for tariff price variants [ravvar]
+  - improvement/cleanup: renamed 'siis' gps coordinate provider pointed in 'phpui.gps_coordinate_providers'
+    to 'prg' [chilan]
+  - enhancement: added route/duct type and line count properties for network links [chilan]
+  - enhancement: implemented UKE/PIT reports [chilan]
+  - enhancement: added operator and customer notification support when document is commited
+    from within LMS - new configuration variables in 'documents' section: 'notification_mail_dsn_address',
+    'notification_mail_mdn_address', 'notification_mail_sender_name', 'notification_mail_sender_address',
+    'notification_mail_reply_address', 'approval_operator_notification_mail_recipient',
+    'approval_operator_notification_mail_format', 'approval_operator_notification_mail_subject',
+    'approval_operator_notification_mail_body', 'approval_customer_notification_mail_format',
+    'approval_customer_notification_mail_subject', 'approval_customer_notification_mail_body'
+    and 'approval_customer_notification_attachments' [chilan]
+  - enhancement: lms-notify.php: '%bankaccount' can be replaced optionally by customer alternative
+    bank accounts - 'use_all_accounts' and 'use_only_alternative_accounts' control replacement
+    behavior [chilan]
+  - enhancement: messageadd form: '%bankaccount' can be replaced optionally by customer alternative
+    bank accounts - 'messages.use_all_accounts' and 'messages.use_only_alternative_accounts' control
+    replacement behavior [chilan]
+  - devel/cleanup: renamed 'phpui.message_send_interval' to 'messages.send_interval' [chilan]
+  - devel/cleanup: renamed 'phpui.message_sender_email' to 'messages.sender_email' [chilan]
+  - devel/cleanup: renamed 'phpui.send_message_confirm_threshold'
+    to 'messages.send_confirm_threshold' [chilan]
+  - devel/cleanup: renamed 'phpui.send_message_limit_violation_type'
+    to 'messages.send_limit_violation_type' [chilan]
+  - devel/cleanup: renamed 'phpui.send_message_to_sender_checkbox'
+    to 'messages.send_to_sender_checkbox' [chilan]
+  - enhancement: messageadd form: '%bankaccount' can be replaced optionally by customer alternative
+    bank accounts - 'sendinvoices.use_all_accounts' and 'sendinvoices.use_only_alternative_accounts'
+    control replacement behavior [chilan]
+  - enhancement: 'assignments.force_current_period_settlement_at_same_day' configuration variable
+    with 'false' as default value causes current period settlement assignment generation with
+    current day or date from property as accounting day (when set to 'true' value) [chilan]
+  - devel/cleanup: renamed 'phpui.assignment_presentation_format' to
+    'assignments.presentation_format' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_align_periods' to
+    'assignments.default_align_periods' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_at' to
+    'assignments.default_at' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_discount_type' to
+    'assignments.default_discount_type' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_invoice' to
+    'assignments.default_document_type' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_last_settlement' to
+    'assignments.default_end_period_settlement' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_list_dataset' to
+    'assignments.default_list_dataset' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_period' to
+    'assignments.default_period' [chilan]
+  - devel/cleanup: renamed 'phpui.default_assignment_settlement' to
+    'assignments.default_begin_period_settlement' [chilan]
+  - devel/cleanup: renamed 'phpui.default_existing_assignment_operation' to
+    'assignments.default_existing_operation' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_approved_assignments_only' to
+    'assignments.default_show_approved_only' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_expired_assignments' to
+    'assignments.default_show_expired' [chilan]
+  - devel/cleanup: renamed 'phpui.default_show_period_assignments' to
+    'assignments.default_show_period' [chilan]
+  - devel/cleanup: renamed 'phpui.node_assignment_warning' to
+    'assignments.missed_node_warning' [chilan]
+  - devel/cleanup: renamed 'phpui.default_liability_type' to
+    'assignments.default_liability_type' [chilan]
+  - improvement: lms-payments.php script support --config-section parameter which allows to specify
+    configuration section which should be used to obtain configuration settings [chilan]
+  - enhancement: added 'documents.operator_approval_notification_document_types'
+    and 'documents.customer_approval_notification_document_types' with empty default
+    values (which means all document types) controls which document type commitment triggers
+    operator and customer notifications [chilan]
+  - enhancement: 'phpui.node_gps_coordinates_required' and 'phpui.netdev_gps_coordinates_required'
+    (with default value of 'none' for both) control gps coordinates validation process for nodes
+    and network devices [chilan]
+  - enhancement: uke/pit: network link multi point support [chilan]
+  - enhancement: add customer external IDs managment panel [ravvar]
+  - enhancement: search nodes by address origin (explicit/implicit/ignore) [chilan]
+  - enhancement: uke/pit: optional customer services aggregation for 'customer services'
+    report type [chilan]
+  - devel/cleanup: moved all configuration variables from section 'tarifftypes' to variables
+    in 'assignments' section and prefixed with 'type_' [chilan]
+  - enhancement: configuration section 'assignments' variables prefixed with 'billing_period_'
+    phrase allow to control replacement of symbol '%billing_period' during financial operation
+    descriptions generated by lms-payments.php backend script [chilan]
+  - enhancement: added {barcode} smarty function support to ease barcode/qrcore generation
+    in html templates [chilan]
+  - enhancement: implemented 'hide customer SSN' option in customer search form [chilan]
+  - improvement: lms-notify.php 'contracts' type notifications: ignore archived documents [chilan]
+  - enhancement: added period selection in liability report form [chilan]
+  - improvement: use 'phpui.default_link*' configuration variables for newly connected nodes
+    to network devices [chilan]
+  - enhancement: lms-rtparser.php: configuration section from which settings are obtained is configurable
+    with --section launch parameter; --silent|-s renamed to --quiet|-q [chilan]
+  - enhancement: uke-pit: division selection for 'customer services' report type [chilan]
+  - enhancement: configuration variable 'teryt.show_numeric_identifiers' with 'false' as default allows
+    to enable numeric TERYT identifier presentation near customer addresses [chilan]
+  - enhancement: qr2pay code support for debit notes [chilan]
+  - improvement: some unification of invoice and debit note look ('notes.use_alert_color',
+    notes.show_only_alternative_accounts', 'notes.show_all_accounts', 'notes.customer_bankaccount',
+    'notes.post_address', 'notes.hide_ssn', 'notes.customer_credentials', 'notes.hide_in_words',
+    'notes.show_balance', 'notes.show_expired_balance', 'notes.qr2pay', 'notes.show_balance_summary',
+    'notes.hide_payment_type', 'notes.hide_expositor', 'notes.header_image',
+    'notes.customer_balance_in_form', 'notes.qr2pay_comment', 'notes.default_author' support
+    added) [chilan]
+  - enhancement: separate 'without explicit TERYT' and 'without TERYT' filters for nodes [chilan]
+  - enhancement: added paytype support for debit notes [chilan]
+  - enhancement: added jpk flag filter to sale report form [chilan]
+  - improvement: show network node names in network device selection list to be connected
+    to current network device [chilan]
+  - enhancement: show assigned network device count on network node list [chilan]
+  - enhancement: show network node info in rows which represent connected network devices [chilan]
+  - enhancement: 'without start date' assignment filter added in customer search form [chilan]
+  - improvement: show customer id for addresses in 'merge' mode lms-teryt.php script [chilan]
+  - enhancement: added division property to network devices [chilan]
+  - improvement: show source name in imported operation list pending for confirmation [chilan]
+  - improvement/devel: 'get_customer_sms_options' plugin hook introduced which allows to collect
+    specific sms-like section configuration variable names [chilan]
+  - improvement: send document confirm notifications if document is created with 'closed'
+    status [chilan]
+  - enhancement: teryt: two different building base providers are supported - 'gugik' and 'sidusis'
+    (--building-base-provider parameter of bin/lms-teryt.php script chooses which provider should be
+    used) [chilan]
+  - enhancement: 'teryt.building_base_provider' with 'gugik' as default value allows to permanently
+    specify building base provider which should be used [chilan]
+  - enhancement: 'phpui.allowed_link_technologies' and 'sidusis.allowed_link_technologies' with default
+    empty values allow to limit link technology selection lists in user interface [chilan]
 
 version 27.0 (2021-08-20):
 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -81,6 +81,42 @@ if ($id) {
         }
     }
     if (empty($assignments)) {
+        $attachments = $DB->GetAll(
+            'SELECT a.*
+            FROM promotionattachments a
+            WHERE a.promotionid = ?
+                OR a.promotionschemaid IN (
+                    SELECT s.id
+                    FROM promotionschemas s
+                    WHERE s.id = a.promotionschemaid
+                        AND s.promotionid = ?
+                )',
+            array(
+                $id,
+                $id,
+            )
+        );
+        if (!empty($attachments)) {
+            $promo_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotions' . DIRECTORY_SEPARATOR . $id;
+            $schema_dir = STORAGE_DIR . DIRECTORY_SEPARATOR . 'promotionschemas';
+            $chemaids = array();
+            foreach ($attachments as $attachment) {
+                if (empty($attachment['promotionid'])) {
+                    $schemaid = $attachment['promotionschemaid'];
+                    $filename = $schema_dir . DIRECTORY_SEPARATOR
+                        . $schemaid . DIRECTORY_SEPARATOR
+                        . $attachment['filename'];
+                    $schemaids[$schemaid] = true;
+                } else {
+                    $filename = $promo_dir . DIRECTORY_SEPARATOR . $attachment['filename'];
+                }
+                @unlink($filename);
+            }
+            rrmdir($promo_dir);
+            foreach (array_keys($schemaids) as $chemaid) {
+                rrmdir($schema_dir . DIRECTORY_SEPARATOR . $schemaid);
+            }
+        }
         $DB->Execute('DELETE FROM promotions WHERE id = ?', array($id));
     } else {
         $DB->Execute('UPDATE promotions SET deleted = 1 WHERE id = ?', array($id));

@@ -53,15 +53,29 @@ if ($layout['module'] != 'customeredit') {
     $SMARTY->assignByRef('customerinfo', $customerinfo);
 }
 
+if (!isset($resource_tabs['customerextids']) || $resource_tabs['customerextids']) {
+    $customerextids = $LMS->getCustomerExternalIDs($customerid, null, true);
+}
+
 if (!isset($resource_tabs['customernotes']) || $resource_tabs['customernotes']) {
     $customernotes = $LMS->getCustomerNotes($customerid);
 }
 
 if (!isset($resource_tabs['customerassignments']) || $resource_tabs['customerassignments']) {
-    $commited = ConfigHelper::checkConfig('phpui.default_show_approved_assignments_only', true);
-    $expired = ConfigHelper::checkConfig('phpui.default_show_expired_assignments');
-    if (ConfigHelper::variableExists('phpui.default_show_period_assignments')) {
-        $period = $PERIODS[intval(ConfigHelper::getConfig('phpui.default_show_period_assignments'))];
+    $commited = ConfigHelper::checkConfig(
+        'assignments.default_show_approved_only',
+        ConfigHelper::checkConfig('phpui.default_show_approved_assignments_only', true)
+    );
+    $expired = ConfigHelper::checkConfig(
+        'assignments.default_show_expired',
+        ConfigHelper::checkConfig('phpui.default_show_expired_assignments')
+    );
+    $default_show_period = intval(ConfigHelper::getConfig(
+        'assignments.default_show_period',
+        ConfigHelper::getConfig('phpui.default_show_period_assignments', -1)
+    ));
+    if ($default_show_period != -1) {
+        $period = $PERIODS[$default_show_period];
     } else {
         $period = null;
     }
@@ -77,6 +91,10 @@ if ((ConfigHelper::checkPrivilege('read_only') || ConfigHelper::checkPrivilege('
         $aggregate_documents = !empty($_GET['aggregate_documents']);
     } else {
         $aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
+    }
+
+    if (!ConfigHelper::checkConfig('phpui.big_networks')) {
+        $SMARTY->assign('customers', $LMS->GetCustomerNames());
     }
 
     $balancelist = $LMS->GetCustomerBalanceList($customerid, null, 'ASC', $aggregate_documents);
@@ -260,6 +278,7 @@ $SMARTY->assign(array(
 ));
 
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
+$SMARTY->assignByRef('customerextids', $customerextids);
 $SMARTY->assignByRef('customernotes', $customernotes);
 $SMARTY->assignByRef('customernodes', $customernodes);
 $SMARTY->assignByRef('customernetworks', $customernetworks);

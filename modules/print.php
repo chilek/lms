@@ -28,6 +28,11 @@ if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkCo
     access_denied();
 }
 
+$report_type = ConfigHelper::getConfig('phpui.report_type');
+if (empty($report_type)) {
+    $report_type = '';
+}
+
 $type = isset($_GET['type']) ? $_GET['type'] : '';
 
 switch ($type) {
@@ -135,7 +140,7 @@ switch ($type) {
         }
 
         $SMARTY->assign('balancelist', $list);
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printcustomerbalance.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -273,11 +278,11 @@ switch ($type) {
                 $list[$x]['sourcename'] = $row['sourcename'];
                 $list[$x]['comment'] = $row['comment'];
                 $list[$x]['customerid'] = $row['customerid'];
-                $list[$x]['customername'] = $customerslist[$row['customerid']]['customername'];
+                $list[$x]['customername'] = empty($row['customerid']) ? '' : $customerslist[$row['customerid']]['customername'];
 
-                if ($row['customerid'] && $row['type']==0) {
-                            // customer covenant
-                        $list[$x]['after'] = $lastafter;
+                if (!empty($row['customerid']) && empty($row['type'])) {
+                    // customer covenant
+                    $list[$x]['after'] = $lastafter;
                     $list[$x]['covenant'] = true;
                     $listdata['liability'] -= $row['value'] * $row['currencyvalue'];
                 } else {
@@ -285,9 +290,10 @@ switch ($type) {
                     $list[$x]['after'] = $lastafter + $list[$x]['value'] * $row['currencyvalue'];
 
                     if ($row['value'] > 0) {
-                            //income
+                        //income
                         $listdata['income'] += $list[$x]['value'] * $row['currencyvalue'];
-                    } else { //expense
+                    } else {
+                        //expense
                         $listdata['expense'] -= $list[$x]['value'] * $row['currencyvalue'];
                     }
                 }
@@ -319,7 +325,7 @@ switch ($type) {
             $SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
         }
 
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printbalancelist.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -372,7 +378,7 @@ switch ($type) {
         );
 
         $SMARTY->assign('incomelist', $incomelist);
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printincomereport.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -422,7 +428,7 @@ switch ($type) {
             $SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
         }
         $SMARTY->assign('importlist', $importlist);
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printimportlist.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -478,7 +484,7 @@ switch ($type) {
                 .(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
                 .(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
                     . implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
-                .(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
+                . (isset($_POST['customer_type']) ? '&customertype=' . intval($_POST['customer_type']) : '')
                 .(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]='
                     . implode('&numberplanid[]=', Utils::filterIntegers($_POST['numberplan'])) : '')
                 .(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
@@ -552,6 +558,10 @@ switch ($type) {
         } else {
             $reportday = time();
             $today = mktime(0, 0, 0);
+        }
+
+        if (isset($_POST['period']) && $_POST['period'] != '') {
+            $period = intval($_POST['period']);
         }
 
         $layout['pagetitle'] = trans('Liability Report on $a', date('Y/m/d', $reportday));
@@ -633,6 +643,7 @@ switch ($type) {
                         AND t.taxid=?
                         AND c.deleted=0
                         AND a.datefrom <= ? AND (a.dateto >= ? OR a.dateto = 0)
+                        ' . (isset($period) ? ' AND a.period = ' . $period : '') . '
                         AND ((a.period='.DISPOSABLE.' AND a.at=?)
                             OR (a.period='.WEEKLY.'. AND a.at=?)
                             OR (a.period='.MONTHLY.' AND a.at=?)
@@ -665,6 +676,7 @@ switch ($type) {
                         AND l.taxid=?
                         AND c.deleted=0
                         AND a.datefrom <= ? AND (a.dateto>=? OR a.dateto=0)
+                        ' . (isset($period) ? ' AND a.period = ' . $period : '') . '
                         AND ((a.period='.DISPOSABLE.' AND a.at=?)
                             OR (a.period='.WEEKLY.'. AND a.at=?)
                             OR (a.period='.MONTHLY.' AND a.at=?)
@@ -754,7 +766,7 @@ switch ($type) {
             $SMARTY->assign('taxescount', count($taxes));
         }
 
-        if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+        if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printliabilityreport.html');
             html2pdf($output, trans('Reports'), $layout['pagetitle']);
         } else {
@@ -964,14 +976,14 @@ switch ($type) {
             $SMARTY->assign('totals', $totals);
             $SMARTY->assign('pagescount', count($pages));
             $SMARTY->assign('reccount', count($list));
-            if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+            if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist-ext.html');
                 html2pdf($output, trans('Reports'), $layout['pagetitle']);
             } else {
                 $SMARTY->display('print/printreceiptlist-ext.html');
             }
         } else {
-            if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+            if (strtolower($report_type) == 'pdf') {
                 $output = $SMARTY->fetch('print/printreceiptlist.html');
                 html2pdf($output, trans('Reports'), $layout['pagetitle']);
             } else {

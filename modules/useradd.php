@@ -5,7 +5,7 @@ use PragmaRX\Google2FA\Google2FA;
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2020 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -128,6 +128,20 @@ if (count($useradd)) {
             $google2fa = new Google2FA();
             if ($google2fa->removeInvalidChars($useradd['twofactorauthsecretkey']) != $useradd['twofactorauthsecretkey']) {
                 $error['twofactorauthsecretkey'] = trans('Secret key contains invalid characters!');
+            }
+        }
+    }
+
+    foreach (array('hosts', 'trustedhosts') as $field) {
+        if ($useradd[$field]) {
+            $hosts = preg_split("/([\s]+|[\s]*,[\s]*)/", $useradd[$field], -1, PREG_SPLIT_NO_EMPTY);
+            if (!empty($hosts)) {
+                foreach ($hosts as $host) {
+                    if (!check_ip($host) && !check_cidr($host)) {
+                        $error[$field] = trans('Invalid address list format!');
+                        break;
+                    }
+                }
             }
         }
     }

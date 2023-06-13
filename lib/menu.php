@@ -214,6 +214,7 @@ $menu = array(
         'VoIP' => array(
             'name' => trans('VoIP'),
             'css' => 'lms-ui-icon-phone',
+            'link' => '?m=voipaccountlist&init=1',
             'tip' => trans('VoIP Management'),
             'accesskey' =>'v',
             'prio' => 11,
@@ -319,17 +320,23 @@ $menu = array(
                     'tip' => trans('Network map display'),
                     'prio' => 70,
                 ),
-                'netdevprint' => array(
-                    'name' => trans('Reports'),
-                    'link' => '?m=netdevprint',
-                    'tip' => trans('Lists and reports printing'),
-                    'prio' => 80,
-                ),
                 'vlanlist' => array(
                     'name' => trans('VLAN List'),
                     'link' => '?m=vlanlist',
                     'tip' => trans('VLAN List'),
+                    'prio' => 80,
+                ),
+                'netranges' => array(
+                    'name' => trans('Network ranges'),
+                    'link' => '?m=netranges',
+                    'tip' => trans('Network ranges'),
                     'prio' => 90,
+                ),
+                'netdevprint' => array(
+                    'name' => trans('Reports'),
+                    'link' => '?m=netdevprint',
+                    'tip' => trans('Lists and reports printing'),
+                    'prio' => 100,
                 ),
             ),
         ),
@@ -925,7 +932,7 @@ if (ConfigHelper::checkConfig('phpui.ewx_support')) {
     );
 }
 
-if (ConfigHelper::checkConfig('phpui.logging')) {
+if (ConfigHelper::checkConfig('logs.enabled')) {
     $menu['log'] = array(
         'name' => trans('Transaction Log'),
         'css' => 'lms-ui-icon-archiveview',

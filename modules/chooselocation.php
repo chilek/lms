@@ -41,20 +41,39 @@ function get_loc_streets($cityid)
             array($borough['stateid'], $borough['districtid'])
         );
         if (!empty($subcities)) {
-            $list = $DB->GetAll("SELECT s.id, s.name AS name1, s.name2 AS name2, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
-				FROM location_streets s
-				LEFT JOIN location_street_types t ON (s.typeid = t.id)
-				WHERE s.cityid IN (" . implode(',', $subcities) . ")
-				ORDER BY s.name");
+            $list = $DB->GetAll(
+                "SELECT
+                    s.id,
+                    s.name AS name1,
+                    s.name2 AS name2,
+                    (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name,
+                    t.name AS typename,
+                    ulic.sym_ul AS ulic
+                FROM location_streets s
+                LEFT JOIN location_street_types t ON s.typeid = t.id
+                JOIN teryt_ulic ulic ON ulic.id = s.id
+                WHERE s.cityid IN (" . implode(',', $subcities) . ")
+                ORDER BY s.name"
+            );
         }
     }
 
     if (!isset($list)) {
-        $list = $DB->GetAll("SELECT s.id, s.name AS name1, s.name2 AS name2, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
-			FROM location_streets s
-			LEFT JOIN location_street_types t ON (s.typeid = t.id)
-			WHERE s.cityid = ?
-			ORDER BY s.name", array($cityid));
+        $list = $DB->GetAll(
+            "SELECT
+                s.id,
+                s.name AS name1,
+                s.name2 AS name2,
+                (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name,
+                t.name AS typename,
+                ulic.sym_ul AS ulic
+            FROM location_streets s
+            LEFT JOIN location_street_types t ON s.typeid = t.id
+            JOIN teryt_ulic ulic ON ulic.id = s.id
+            WHERE s.cityid = ?
+            ORDER BY s.name",
+            array($cityid)
+        );
     }
 
     if ($list) {
@@ -74,16 +93,26 @@ function get_loc_cities($districtid)
 {
     global $DB, $BOROUGHTYPES;
 
-    $list = $DB->GetAll('SELECT c.id, c.name, b.name AS borough, b.type AS btype
-		FROM location_cities c
-		JOIN location_boroughs b ON (c.boroughid = b.id)
-		WHERE b.districtid = ?
-		ORDER BY c.name, b.type', array($districtid));
+    $list = $DB->GetAll(
+        'SELECT
+            c.id,
+            c.name,
+            b.name AS borough,
+            b.type AS btype,
+            ' . $DB->Concat('simc.woj', 'simc.pow', 'simc.gmi', 'simc.rodz_gmi') . ' AS terc,
+            simc.sym AS simc
+        FROM location_cities c
+        JOIN location_boroughs b ON c.boroughid = b.id
+        JOIN teryt_simc simc ON simc.cityid = c.id
+        WHERE b.districtid = ?
+        ORDER BY c.name, b.type',
+        array($districtid)
+    );
 
     if ($list) {
         foreach ($list as $idx => $row) {
             $name = sprintf('%s (%s %s)', $row['name'], $BOROUGHTYPES[$row['btype']], $row['borough']);
-            $list[$idx] = array('id' => $row['id'], 'name' => $name);
+            $list[$idx] = array('id' => $row['id'], 'name' => $name, 'terc' => $row['terc'], 'simc' => $row['simc']);
         }
     }
 

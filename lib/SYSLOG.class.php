@@ -93,6 +93,7 @@ class SYSLOG
     const RES_VOIP_ACCOUNT = 65;
     const RES_VOIP_ACCOUNT_NUMBER = 66;
     const RES_NETNODE = 67;
+    const RES_TARIFF_PRICE_VARIANT = 68;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -173,6 +174,7 @@ class SYSLOG
         self::RES_VOIP_ACCOUNT => 'VoIP account<!syslog>',
         self::RES_VOIP_ACCOUNT_NUMBER => 'VoIP account number<!syslog>',
         self::RES_NETNODE => 'network node<!syslog>',
+        self::RES_TARIFF_PRICE_VARIANT => 'tariff price variant<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -242,6 +244,7 @@ class SYSLOG
         self::RES_VOIP_ACCOUNT => 'voipaccountid',
         self::RES_VOIP_ACCOUNT_NUMBER => 'voipnumberid',
         self::RES_NETNODE => 'netnodeid',
+        self::RES_TARIFF_PRICE_VARIANT => 'tariffpricevariantid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
@@ -277,7 +280,7 @@ class SYSLOG
 
     public static function getInstance($force = false)
     {
-        if (self::$syslog == null && ($force || ConfigHelper::checkConfig('phpui.logging'))) {
+        if (self::$syslog == null && ($force || ConfigHelper::checkConfig('logs.enabled'))) {
             self::$syslog = new SYSLOG();
             foreach (self::$resource_keys as $key => $name) {
                 if (isset($name)) {
@@ -384,6 +387,7 @@ class SYSLOG
         $propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
         $propvalue = (isset($params['propvalue']) ? $params['propvalue'] : '');
         $userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null);
+        $module = isset($params['module']) && strlen($params['module']) ? $params['module'] : null;
         $offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
         $limit = (isset($params['limit']) && !empty($params['limit']) ? intval($params['limit']) : 20);
         $order = (isset($params['order']) && preg_match('/ASC/i', $params['order']) ? 'ASC' : 'DESC');
@@ -414,6 +418,10 @@ class SYSLOG
         if ($userid) {
             $where[] = 'lt.userid = ?';
             $args[] = $userid;
+        }
+        if ($module) {
+            $where[] = 'lt.module = ?';
+            $args[] = $module;
         }
         if ($datefrom) {
             $where[] = 'lt.time >= ?';
@@ -588,8 +596,14 @@ class SYSLOG
 
     private function _decodeTransaction(&$transaction, $messages, $keys, $data)
     {
+        static $message_limit = null;
+
+        if (!isset($message_limit)) {
+            $message_limit = intval(ConfigHelper::getConfig('logs.message_limit', 11));
+        }
+
         // PHP code is much faster then LIMIT 11 sql clause
-        $transaction['messages'] = array_reverse(array_slice($messages, 0, 11, true), true);
+        $transaction['messages'] = array_reverse(empty($message_limit) ? $messages : array_slice($messages, 0, $message_limit, true), true);
 
         if (!empty($keys)) {
             foreach ($keys as $key) {

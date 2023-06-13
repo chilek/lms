@@ -6,8 +6,84 @@
 .tag-bar {
 	padding: 2px;
 }
+
+.price-variants .lms-ui-box {
+	display: flex;
+	border: 1px dotted black;
+	border-radius: 5px;
+	background-color: #DFD5BD;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.price-variants .lms-ui-box-header {
+	padding-top: 0.7em;
+	padding-bottom: 0.3em;
+	border-bottom: 1px dotted black;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	background-color: #CEBD9B;
+
+	display: flex;
+	flex-grow: 1;
+	flex-wrap: wrap;
+}
+
+.price-variants .lms-ui-box-body {
+	display: flex;
+	flex-grow: 1;
+	flex-wrap: wrap;
+	flex-direction: column;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+.price-variants .lms-ui-box-row {
+	display: flex;
+	flex-grow: 1;
+	padding-left: 0.5em;
+	justify-content: stretch;
+
+}
+
+.price-variants .lms-ui-box-field {
+	width: 100%;
+	min-width: 10em;
+}
+
+.price-variants .lms-ui-box-body .lms-ui-box-row {
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+}
+
+.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:not(:last-child) {
+	border-bottom: 1px dotted grey;
+}
+
+.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(even) {
+	background-color: #EBE4D6;
+}
+
+.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(even).highlight:hover {
+	background-color: #CFC;
+}
+
+.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(odd) {
+	background-color: #DFD5BD;
+}
+
+.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(odd).highlight:hover {
+	background-color: #CFC;
+}
+
 </style>
-<H1>{$layout.pagetitle}</H1>
+
+<h1>{$layout.pagetitle}</h1>
 
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
@@ -45,14 +121,15 @@
 			<A href="?m=tarifflist&amp;o=upceil{if $listdata.direction == "asc" && $listdata.order == "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order == "upceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=tarifflist&amp;o=netvalue{if $listdata.direction == "asc" && $listdata.order == "netvalue"},desc{/if}"><B>{trans("Net price")}</B></A> {if $listdata.order == "netvalue"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&o=netvalue{if $listdata.direction == "asc" && $listdata.order == "netvalue"},desc{/if}"><B>{trans("Net price:")}</B></A> {if $listdata.order == "netvalue"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}"><B>{trans("Gross price:")}</B></A> {if $listdata.order == "value"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<td class="text-center">
 			{trans("Tax:")}<br>
 			{trans("Accounting:")}
 		</td>
-		<TD class="text-right nobr">
-			<A href="?m=tarifflist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}"><B>{trans("Gross price")}</B></A> {if $listdata.order == "value"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		<TD class="text-right">
+			{trans("Price variants:")}
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=tarifflist&amp;o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order == "count"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -135,6 +212,15 @@
 					<option value="1" {if $listdata.netflag == 1} selected{/if}>{trans("net")}</option>
 					<option value="2" {if $listdata.netflag == 2} selected{/if}>{trans("gross")}</option>
 				</select>
+				<label>
+					{trans("Flags")}
+					<select name="flags" onchange="document.choosefilter.submit();">
+						<option value="">{trans("— all —")}</option>
+						{foreach $_TARIFF_FLAGS as $flagvalue => $label}
+							<option value="{$flagvalue}"{if $listdata.flags == $flagvalue} selected{/if}>{$label}</option>
+						{/foreach}
+					</select>
+				</label>
 			</FORM>
 		</TD>
 	</TR>
@@ -145,6 +231,31 @@
 		<TD>
 			{icon name="money"}
 			<a href="?m=tariffinfo&id={$tariff.id}"><B>{$tariff.name}</B></a>
+
+			{if ($tariff.flags & $smarty.const.TARIFF_FLAG_ALL_REWARD_PENALTY_FLAGS) > 0}
+				{capture assign="reward_flags"}
+					{if $tariff.value < 0}
+						{trans("reward for")}
+					{else}
+						{trans("penalty for")}
+					{/if}
+					<ul class='reward-flags'>
+						{foreach $_TARIFF_FLAGS as $flag => $label}
+							{if intval($tariff.flags) & intval($flag)}
+								<li>
+									<strong>{$label}</strong>
+								</li>
+							{/if}
+						{/foreach}
+					</ul>
+				{/capture}
+				{if $tariff.value < 0}
+					{icon name="reward" tip=$reward_flags}
+				{else}
+					{icon name="penalty" tip=$reward_flags}
+				{/if}
+			{/if}
+
 			{if $tariff.datefrom || $tariff.dateto}
 				{if $tariff.datefrom}
 				({trans("from:")} {$tariff.datefrom|date_format:"Y-m-d"}{if !$tariff.dateto}){/if}
@@ -182,7 +293,8 @@
 			{if $tariff.upceil_n}({convert_to_units($tariff.upceil_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
-			{moneyf($tariff.netvalue, $tariff.currency)}<br>
+			{Utils::smartFormatMoney($tariff.netvalue, $tariff.currency)}<br>
+			<strong>{Utils::smartFormatMoney($tariff.value, $tariff.currency)}</strong>
 		</TD>
 		<td class="text-center">
 			{$tariff.tax}<br>
@@ -192,8 +304,45 @@
 				{trans("gross")}
 			{/if}
 		</td>
-		<TD class="text-right nobr">
-			<B>{moneyf($tariff.value, $tariff.currency)}</B><br>
+		<TD class="text-center nobr lms-ui-ignore-target-url">
+			{if !empty($tariff.price_variants)}
+				{capture assign="assignment_hint"}
+					<fieldset class="price-variants">
+						<legend><strong>{trans("Price variants")}</strong></legend>
+						<div class="lms-ui-box">
+							<div class="lms-ui-box-header">
+								<div class="lms-ui-box-row">
+									<div class="lms-ui-box-field">
+										<strong>{trans('Gross price')}</strong>
+									</div>
+									<div class="lms-ui-box-field">
+										<strong>{trans('Net price')}</strong>
+									</div>
+									<div class="lms-ui-box-field">
+										<strong>{trans('Quantity threshold')}</strong>
+									</div>
+								</div>
+							</div>
+							<div class="lms-ui-box-body lms-ui-background-cycle">
+								{foreach $tariff.price_variants as $price_variant}
+									<div class="lms-ui-box-row highlight">
+										<div class="lms-ui-box-field">
+											<strong>{Utils::smartFormatMoney($price_variant.gross_price, $tariff.currency)}</strong>
+										</div>
+										<div class="lms-ui-box-field">
+											{Utils::smartFormatMoney($price_variant.net_price, $tariff.currency)}
+										</div>
+										<div class="lms-ui-box-field">
+											{$price_variant.quantity_threshold}
+										</div>
+									</div>
+								{/foreach}
+							</div>
+						</div>
+					</fieldset>
+				{/capture}
+			{hint text=$assignment_hint icon="options"}
+			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			<span title="<span class=&quot;bold&quot;</span>{trans("Customer count")}">{$tariff.customerscount|default:0}</span>
@@ -202,7 +351,7 @@
 		</TD>
 		<TD class="text-right">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			{moneyf($tariff.income, $tariff.currency)}
+				{Utils::smartFormatMoney($tariff.income, $tariff.currency)}
 			{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
@@ -243,7 +392,7 @@
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 				{foreach $listdata.totalincome as $currency => $totalincome}
 					{if !$totalincome@first}<br>{/if}
-					<B>{moneyf($totalincome, $currency)}</B>
+					<B>{Utils::smartFormatMoney($totalincome, $currency)}</B>
 				{/foreach}
 			{/if}
 		</TD>

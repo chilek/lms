@@ -430,10 +430,22 @@ function module_main()
                 RT_RESOLVED => RT_OPEN,
                 RT_DEAD => RT_OPEN,
             );
-            $ticket['state'] = $DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($ticket['id']));
+            $ticket['state'] = $DB->GetOne(
+                'SELECT state
+                FROM rttickets
+                WHERE id = ?',
+                array($ticket['id'])
+            );
             $DB->Execute(
-                'UPDATE rttickets SET state = ? WHERE id = ?',
-                array($ticket_change_state_map[$ticket['state']], $ticket['id'])
+                'UPDATE rttickets
+                SET state = ?
+                WHERE id = ?',
+                array(
+                    isset($ticket_change_state_map[$ticket['state']])
+                        ? $ticket_change_state_map[$ticket['state']]
+                        : $ticket['state'],
+                    $ticket['id'],
+                )
             );
 
             $user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));

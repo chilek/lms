@@ -274,8 +274,6 @@
                 <td class="lms-ui-box-buttons" colspan="2">
                     {block name="voipaccountaddbox-buttons"}
                         {button type="submit" class="lms-ui-button-submit" accesskey="s" label="Submit" icon="save" form="voipaccountadd"}
-                        {button href="?m=voipaccountinfo&id={$voipaccountinfo.id}" label="Cancel" icon="cancel"}
-
                         {button type="link-button" href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}"
                             label="Cancel" icon="cancel"}
                         <br>

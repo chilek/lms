@@ -65,7 +65,12 @@ class LMSFpdiBackend extends Fpdi
                 $size = $this->getTemplateSize($templateId);
 
                 // create a page (landscape or portrait depending on the imported page size)
-                $this->AddPage($size['orientation'], $size);
+                if ($size['width'] > $size['height']) {
+                    $this->AddPage('L', array($size['width'], $size['height']));
+                } else {
+                    $this->AddPage('P', array($size['width'], $size['height']));
+                }
+                //$this->AddPage($size['orientation'], $size);
 
                 // use the imported page
                 $this->useTemplate($templateId);
@@ -90,5 +95,10 @@ class LMSFpdiBackend extends Fpdi
     public function WriteToString()
     {
         return $this->Output('', 'S');
+    }
+
+    public function WriteToFile($filename)
+    {
+        return $this->Output($filename, 'F');
     }
 }

@@ -1,0 +1,53 @@
+<div class="lms-ui-tab-table-row header">
+    <div class="lms-ui-tab-table-wrapper col-2">
+        <div class="lms-ui-tab-table-column extid">
+            <strong>{trans("ID in external system")}</strong>
+        </div>
+        <div class="lms-ui-tab-table-column extid">
+            <strong>{trans("Service provider")}</strong>
+        </div>
+    </div>
+    <div class="lms-ui-tab-table-column buttons">
+        &nbsp;
+    </div>
+</div>
+{foreach $customerextids as $extid}
+    <div class="lms-ui-tab-table-row" data-extid="{$extid.serviceproviderid}{$extid.extid}">
+        <div class="lms-ui-tab-table-wrapper col-2">
+            <div class="lms-ui-tab-table-column extid">
+                <span class="customer-extid-info-field">
+                    {$extid.extid}
+                </span>
+                <input type="text" size="10" name="extid-edit-{$extid.serviceproviderid}{$extid.extid}" id="extid-edit-{$extid.serviceproviderid}{$extid.extid}"
+                    value="{$extid.extid}"
+                    class="customer-extid-edit-field"
+                    {tip trigger="extid_edit_{$extid.extid}"}
+                    data-old-extid="{$extid.extid}"
+                    style="display: none;"
+                    required>
+            </div>
+            <div class="lms-ui-tab-table-column serviceproviderid">
+                <span class="customer-extid-info-field">
+                    {$extid.serviceprovidername}
+                </span>
+            </div>
+        </div>
+        <div class="lms-ui-tab-table-column buttons">
+            {button type="link" icon="edit" id="customer-extid-edit-button-{$extid.serviceproviderid}{$extid.extid}"
+                onclick="javascript:toggleEditManagementCustomerExtid({$extid.serviceproviderid}, '{$extid.extid}');"
+                visible=!$edit}
+            {button type="link" icon="save" id="customer-extid-save-button-{$extid.serviceproviderid}{$extid.extid}"
+                onclick="javascript:updateManagementCustomerExtid({$extid.serviceproviderid}, '{$extid.extid}');"
+                visible=$edit}
+            {button type="link" icon="cancel" id="customer-extid-cancel-button-{$extid.serviceproviderid}{$extid.extid}"
+                onclick="javascript:toggleEditManagementCustomerExtid({$extid.serviceproviderid}, '{$extid.extid}');"
+                visible=$edit}
+            {button type="link" icon="delete" id="customer-extid-delete-button-{$extid.serviceproviderid}{$extid.extid}"
+                onclick="javascript:delManagementCustomerExtid({$extid.serviceproviderid}, '{$extid.extid}');"}
+        </div>
+    </div>
+{foreachelse}
+    <div class="lms-ui-tab-empty-table">
+        {trans("No data")}
+    </div>
+{/foreach}

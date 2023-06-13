@@ -122,9 +122,9 @@
                                                     </td>
                                                     <td align="right">
                                                         {if $tariff.currency}
-                                                            {moneyf($tariff.netvalue, $tariff.currency)}
+                                                            {Utils::smartFormatMoney($tariff.netvalue, $tariff.currency)}
                                                         {else}
-                                                            {$tariff.netvalue|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                            {Utils::smartFormatMoney($tariff.netvalue, null)} <span class="alert">{trans('No currency assigned!')}</span>
                                                         {/if}
                                                     </td>
                                                     <td rowspan="2">
@@ -141,9 +141,9 @@
                                                     </td>
                                                     <td align="right">
                                                         {if $tariff.currency}
-                                                            {moneyf($tariff.value, $tariff.currency)}
+                                                            {Utils::smartFormatMoney($tariff.value, $tariff.currency)}
                                                         {else}
-                                                            {$tariff.value|string_format:"%.2f "} <span class="alert">{trans('No currency assigned!')}</span>
+                                                            {Utils::smartFormatMoney($tariff.value, null)} <span class="alert">{trans('No currency assigned!')}</span>
                                                         {/if}
                                                     </td>
                                                 </tr>
@@ -322,7 +322,7 @@
                                             <td>
                                                 {foreach $tariff.totalval as $currency => $totalval}
                                                     {if !$totalval@first}<br>{/if}
-                                                    {moneyf($totalval, $currency)}
+                                                    {Utils::smartFormatMoney($totalval, $currency)}
                                                 {/foreach}
                                             </td>
                                         </tr>
@@ -619,7 +619,7 @@
                                         <select size="1" name="to">
                                             {foreach from=$tariffs item=v}
                                                 {if $v.id != $tariff.id}
-                                                    <option value="{$v.id}">{$v.name} ({moneyf($v.value, $v.currency)})</option>
+                                                    <option value="{$v.id}">{$v.name} ({Utils::smartFormatMoney($v.value, $v.currency)})</option>
                                                 {/if}
                                             {/foreach}
                                         </select>
@@ -634,6 +634,10 @@
     </table>
 
     <script>
+        const tariffNetFlagValue = '{$tariff.netflag}';
+        const tariffTaxValue = '{$tariff.taxvalue}';
+        const tariffpricevariantTariffId = '{$tariff.id}';
+
         $('#delete-tariff').click(function() {
             confirmDialog($t("Are you sure, you want to delete that tariff?"), this).done(function() {
                 location.href = '?m=tariffdel&id={$tariff.id}';
@@ -641,4 +645,9 @@
             return false;
         });
     </script>
+
+    {block name=tariffpricevariants}
+        {include file="tariff/tariffpricevariants.html"}
+    {/block}
+
 {/block}

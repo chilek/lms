@@ -7,6 +7,9 @@
 {block name="customereditbox"}
 	{include file="customer/customereditbox.html"}
 {/block}
+{block name="customerextids"}
+	{include file="customer/customerextids.html"}
+{/block}
 {block name="customernotes"}
 	{include file="customer/customernotes.html" limit=10}
 {/block}
@@ -17,7 +20,7 @@
 	{include file="customer/customernetworksbox.html"}
 {/block}
 {block name="transactions"}
-	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
+	{if ConfigHelper::checkConfig('logs.enabled') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
 			{include file="transactions.html"}
 	{/if}
 {/block}

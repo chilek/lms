@@ -230,7 +230,17 @@ class Utils
                 $line = trim($line);
             }
             unset($line);
-            return implode("\n", $lines);
+            return preg_replace(
+                array(
+                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
+                    '#\[([^]]+)\]\((/[^\)]*)\)#',
+                ),
+                array(
+                    '[$1](https://wiki.lms.plus/$2)',
+                    '[$1](https://github.com$2)',
+                ),
+                implode("\n", $lines)
+            );
         }
 
         $result = array();
@@ -239,15 +249,30 @@ class Utils
             return $result;
         }
 
-        $content = file($markdown_documentation_file);
+        $content = file_get_contents($markdown_documentation_file);
         if (empty($content)) {
             return $result;
         }
 
+        $content = explode(
+            "\n",
+            preg_replace(
+                array(
+                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
+                    '#\[([^]]+)\]\((/[^\)]*)\)#',
+                ),
+                array(
+                    '[$1](https://wiki.lms.plus/$2)',
+                    '[$1](https://github.com$2)',
+                ),
+                $content
+            )
+        );
+
         $variable = null;
         $buffer = '';
         foreach ($content as $line) {
-            if (preg_match('/^##\s+(?<variable>.+)\r?\n/', $line, $m)) {
+            if (preg_match('/^##\s+(?<variable>.+)\r?/', $line, $m)) {
                 if ($variable && $buffer) {
                     list ($section, $var) = explode('.', $variable);
                     if (!isset($result[$section])) {
@@ -268,7 +293,7 @@ class Utils
                 $variable = null;
                 $buffer = '';
             } elseif ($variable) {
-                $buffer .= $line;
+                $buffer .= ($buffer != '' ? "\n" : '') . $line;
             }
         }
         if ($variable && $buffer) {
@@ -674,8 +699,8 @@ class Utils
                     $details = array(
                         'lastname' => $report['fiz_nazwa'],
                         'name' => '',
-                        'rbename' => $report['fizC_RodzajRejestru_Nazwa'],
-                        'rbe' => $report['fizC_numerWRejestrzeEwidencji'],
+                        'rbename' => isset($report['fizC_RodzajRejestru_Nazwa']) ? $report['fizC_RodzajRejestru_Nazwa'] : '',
+                        'rbe' => isset($report['fizC_numerWRejestrzeEwidencji']) ? $report['fizC_numerWRejestrzeEwidencji'] : '',
                         'regon' => array_key_exists('fiz_regon9', $report)
                             ? $report['fiz_regon9']
                             : $report['fiz_regon14'],
@@ -715,7 +740,7 @@ class Utils
                                 : $report['fiz_adSiedzMiejscowoscPoczty_Nazwa'],
                         'location_state' => empty($location) ? 0 : $location['location_state'],
                         'location_city' => empty($location) ? 0 : $location['location_city'],
-                        'location_street' => empty($location) ? 0 : $location['location_street'],
+                        'location_street' => empty($location) || empty($location['location_street']) ? 0 : $location['location_street'],
                     );
 
                     $details['addresses'] = $addresses;
@@ -765,7 +790,7 @@ class Utils
                                             : $local['lokfiz_adSiedzMiejscowoscPoczty_Nazwa'],
                                     'location_state' => empty($location) ? 0 : $location['location_state'],
                                     'location_city' => empty($location) ? 0 : $location['location_city'],
-                                    'location_street' => empty($location) ? 0 : $location['location_street'],
+                                    'location_street' => empty($location) || empty($location['location_street']) ? 0 : $location['location_street'],
                                 );
 
                                 $details['addresses'] = $addresses;
@@ -831,6 +856,7 @@ class Utils
                 '%k',
                 '%k',
                 '%R',
+                '%V',
                 '%j',
             ),
             explode(
@@ -839,10 +865,52 @@ class Utils
                 . trans('<!month-name-short>' . date('M', $date))
                 . '|'
                 . trans('<!month-name-full>' . date('F', $date))
-                . date('|y|H|h|i|s|H:i:s|Y-m-d|m/d/y|U|T|O|G|G|H:i|', $date)
+                . date('|y|H|h|i|s|H:i:s|Y-m-d|m/d/y|U|T|O|G|G|H:i|W|', $date)
                 . sprintf('%03d', date('z', $date) + 1)
             ),
             $format
         );
+    }
+
+    public static function isPrivateAddress($ip)
+    {
+        return preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.64\.|100\.68\.)/', $ip) > 0;
+    }
+
+    public static function normalizeMac($mac)
+    {
+        return strtoupper(
+            preg_replace(
+                '/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i',
+                '$1:$2:$3:$4:$5:$6',
+                preg_replace(
+                    '/[^0-9a-f]/i',
+                    '',
+                    $mac
+                )
+            )
+        );
+    }
+
+    public static function smartFormatMoney($value, $currency = null)
+    {
+        if (is_string($value)) {
+            $value = floatval($value);
+        }
+        if (empty($currency)) {
+            $currency = Localisation::getCurrentCurrency();
+        }
+        return sprintf('%s %s', Localisation::smartFormatNumber($value), $currency);
+    }
+
+    public static function formatMoney($value, $currency = null)
+    {
+        if (is_string($value)) {
+            $value = floatval($value);
+        }
+        if (empty($currency)) {
+            $currency = Localisation::getCurrentCurrency();
+        }
+        return sprintf('%s %s', Localisation::formatNumber($value), $currency);
     }
 }

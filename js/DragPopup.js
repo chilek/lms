@@ -52,7 +52,7 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
         //console.log('mouseDown');
         this.popPnt = this.popup.events.getMousePosition(evt);
         var divelems = this.popup.div.getElementsByTagName('div');
-        for (var i = 0; i < divelems.length, divelems[i].className != 'lmsPopupTitleBar'; i++);
+        for (var i = 0; i < divelems.length, divelems[i].className != 'lms-ui-map-popup-titlebar'; i++);
         if (i < divelems.length && (this.popPnt.x < divelems[i].offsetLeft || this.popPnt.x > divelems[i].offsetLeft + divelems[i].offsetWidth ||
                 this.popPnt.y < divelems[i].offsetTop || this.popPnt.y > divelems[i].offsetTop + divelems[i].offsetHeight))
             return true;

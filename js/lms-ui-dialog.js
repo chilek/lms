@@ -25,7 +25,7 @@
 /*
  * \brief Pseudo class for fast create dialog boxes.
  */
-function LmsUiDialog( id ) {
+function LmsUiDialog(id, options) {
     var that = this;
 
     // dialog body id
@@ -35,28 +35,31 @@ function LmsUiDialog( id ) {
     this.opener_id = undefined;
 
     // dialog handler
-    this.handler = $( this.dialog_body_id ).dialog({
-                       autoOpen: false,
-                       modal: true,
-                       resizable: false,
-                          buttons: [],
-                       show: {
-                           effect: "fade",
-                           duration: 150
-                       },
-                       hide: {
-                           effect: "fade",
-                           duration: 150
-                       },
-                       open: function(){
-                           jQuery('.ui-widget-overlay').bind('click',function(){
-                               $( "#" + id ).dialog('close');
-                           })
-                       },
-                       close: function() {
-                           that.formReset();
-                       }
-                   });
+    this.handler = $(this.dialog_body_id).dialog($.extend(
+        {
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            buttons: [],
+            show: {
+                effect: "fade",
+                duration: 150
+            },
+            hide: {
+                effect: "fade",
+                duration: 150
+            },
+            open: function () {
+                jQuery('.ui-widget-overlay').bind('click', function () {
+                    $("#" + id).dialog('close');
+                })
+            },
+            close: function () {
+                that.formReset();
+            }
+        },
+        typeof(options) === 'object' ? options : {}
+    ));
 }
 
 /*

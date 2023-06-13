@@ -37,6 +37,9 @@ class Localisation
     private static $defaultCurrency = null;
     private static $uiStrings = array();
 
+    private static $numberFormatter = null;
+    private static $numberSmartFormatter = null;
+
     public static function init()
     {
         self::$langDefs = array(
@@ -215,10 +218,28 @@ class Localisation
     private static function setLocales()
     {
         $locale = self::$langDefs[self::$systemLanguage]['locale'];
+
         setlocale(LC_COLLATE, $locale);
         setlocale(LC_CTYPE, $locale);
         setlocale(LC_TIME, $locale);
         setlocale(LC_NUMERIC, $locale);
+
+        if (!isset(self::$langDefs[self::$systemLanguage]['number_formatter'])) {
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 3);
+
+            self::$langDefs[self::$systemLanguage]['number_smart_formatter'] = $fmt;
+
+            $fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+
+            self::$langDefs[self::$systemLanguage]['number_formatter'] = $fmt;
+        }
+
+        self::$numberSmartFormatter = self::$langDefs[self::$systemLanguage]['number_smart_formatter'];
+        self::$numberFormatter = self::$langDefs[self::$systemLanguage]['number_formatter'];
     }
 
     public static function getCurrentCurrency()
@@ -370,6 +391,22 @@ class Localisation
             }
             self::setLocales();
         }
+    }
+
+    public static function smartFormatNumber($number)
+    {
+        if (is_string($number)) {
+            $number = floatval($number);
+        }
+        return self::$numberSmartFormatter->format($number);
+    }
+
+    public static function formatNumber($number)
+    {
+        if (is_string($number)) {
+            $number = floatval($number);
+        }
+        return self::$numberFormatter->format($number);
     }
 
     public static function trans()

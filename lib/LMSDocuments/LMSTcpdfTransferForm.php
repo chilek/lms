@@ -273,6 +273,8 @@ class LMSTcpdfTransferForm extends LMSDocument
 
     protected function transferform_main_form_fill()
     {
+        global $PAYTYPES;
+
         /* set font style & color */
         $this->backend->SetFont(null, '', 9);
         $this->backend->setColor('text', 0, 0, 0);
@@ -327,11 +329,9 @@ class LMSTcpdfTransferForm extends LMSDocument
 
         /* deadline */
         $paytype = $this->data['paytype'];
-        if ($paytype != 8) {
+        if ($PAYTYPES[$paytype]['features'] & INVOICE_FEATURE_DEADLINE) {
             $this->backend->SetFont(null, '', 8);
-            if ($paytype != 8) {
-                $this->backend->MultiCell(135 - 70, 10, trans('Deadline:') . ' ' . date("d.m.Y", $this->data['pdate']) . ' r.', 0, 'R', false, 1, 66.25 + 68.5, 69, true, 0, false, true, 10, 'M');
-            }
+            $this->backend->MultiCell(135 - 70, 10, trans('Deadline:') . ' ' . date("d.m.Y", $this->data['pdate']) . ' r.', 0, 'R', false, 1, 66.25 + 68.5, 69, true, 0, false, true, 10, 'M');
         }
 
         /* title */
@@ -383,7 +383,7 @@ class LMSTcpdfTransferForm extends LMSDocument
         $this->data['title'] = trans('Payment for liabilities');
         $this->data['value'] = 0;
         $this->data['currency'] = 'PLN';
-        $this->data['paytype'] = 2;
+        $this->data['paytype'] = PAYTYPE_TRANSFER;
         $this->data['pdate'] = time();
         $this->data['barcode'] = $data['customerid'];
 

@@ -34,6 +34,7 @@
 	var assignmentNetvalue = '{$document.assignment.netvalue}';
 	var assignmentNetflag = '{$document.assignment.netflag}';
 	var assignmentTaxid = '{$document.assignment.taxid}';
+	var assignmentTariffId = '{$document.assignment.tariffid}';
 
 	var tariffTypes = [];
 	{foreach $tariffs as $tariff}
@@ -50,14 +51,27 @@
 	selected["location"] = "{if isset($document.assignment.location)}{$document.assignment.location}{/if}";
 	selected["recipient_address_id"] = "{if isset($document.assignment.recipient_address_id)}{$document.assignment.recipient_address_id}{else}0{/if}";
 
+	var promotionAttachments = JSON.parse('{json_encode($promotionattachments, JSON_FORCE_OBJECT)}');
+	var assignmentPromotionAttachments = {};
+	{if !empty($document.assignment['promotion-attachments'])}
+		assignmentPromotionAttachments = JSON.parse('{json_encode($document.assignment['promotion-attachments'], JSON_FORCE_OBJECT)}');
+	{/if}
+	var assignmentPromotionSchemaAttachments = {};
+	{if !empty($document.assignment['promotion-schema-attachments'])}
+		assignmentPromotionSchemaAttachments = JSON.parse('{json_encode($document.assignment['promotion-schema-attachments'], JSON_FORCE_OBJECT)}');
+	{/if}
+
 	var assignment_settings = {
 		customerid: {if !empty($cid)}{$cid}{else}0{/if},
 		selected: selected,
 		internetTariffType: {$smarty.const.SERVICE_INTERNET},
 		phoneTariffType: {$smarty.const.SERVICE_PHONE},
-		DOC_DNOTE:{$smarty.const.DOC_DNOTE},
+		DOC_DNOTE: {$smarty.const.DOC_DNOTE},
 		tariffTypes: tariffTypes,
 		variablePrefix: 'document[assignment]',
+		promotionAttachments: promotionAttachments,
+		assignmentPromotionAttachments: assignmentPromotionAttachments,
+		assignmentPromotionSchemaAttachments: assignmentPromotionSchemaAttachments,
 		hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
 	}
 

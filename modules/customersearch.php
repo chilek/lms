@@ -85,6 +85,16 @@ if (!isset($_POST['flags'])) {
 }
 $SESSION->save('cslf', $flags);
 
+if (!isset($_POST['hidessn'])) {
+    $SESSION->restore('cshidessn', $hidessn);
+    if (!isset($hidessn)) {
+        $hidessn = 1;
+    }
+} else {
+    $hidessn = intval($_POST['hidessn']);
+}
+$SESSION->save('cshidessn', $hidessn);
+
 if (!isset($_POST['fk'])) {
     $SESSION->restore('cslfk', $flagsqlskey);
 } else {
@@ -138,7 +148,7 @@ $SESSION->save('cslcgk', $customergroupsqlskey);
 if (!isset($_POST['cgnot'])) {
     $SESSION->restore('cslcgnot', $customergroupnegation);
 } else {
-    $customergroupnegation = true;
+    $customergroupnegation = !empty($_POST['cgnot']);
 }
 $SESSION->save('cslcgnot', $customergroupnegation);
 
@@ -155,6 +165,13 @@ if (!isset($_POST['ng'])) {
     $nodegroup = $_POST['ng'];
 }
 $SESSION->save('cslng', $nodegroup);
+
+if (!isset($_POST['ngnot'])) {
+    $SESSION->restore('cslngnot', $nodegroupnegation);
+} else {
+    $nodegroupnegation = !empty($_POST['ngnot']);
+}
+$SESSION->save('cslngnot', $nodegroupnegation);
 
 if (!isset($_POST['d'])) {
     $SESSION->restore('csld', $division);
@@ -187,6 +204,7 @@ if (isset($_GET['search'])) {
         "time",
         "days",
         "sqlskey",
+        "nodegroupnegation",
         "nodegroup",
         "division"
     ));
@@ -198,6 +216,7 @@ if (isset($_GET['search'])) {
     $listdata['over'] = $customerlist['over'];
     $listdata['state'] = $state;
     $listdata['flags'] = $flags;
+    $listdata['hidessn'] = $hidessn;
     $listdata['karma'] = $karma;
     $listdata['network'] = $network;
     $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
@@ -256,6 +275,7 @@ if (isset($_GET['search'])) {
 
     $listdata['state'] = $state;
     $listdata['flags'] = $flags;
+    $listdata['hidessn'] = $hidessn;
     $listdata['karma'] = $karma;
     $listdata['network'] = $network;
     $listdata['customergroup'] = empty($customergroup) ? array() : $customergroup;
@@ -277,6 +297,7 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('cgk', $customergroupsqlskey);
     $SMARTY->assign('cgnot', $customergroupnegation);
     $SMARTY->assign('fk', $flagsqlskey);
+    $SMARTY->assign('ngnot', $nodegroupnegation);
     $SMARTY->assign('karma', $karma);
     $SMARTY->display('customer/customersearch.html');
 }

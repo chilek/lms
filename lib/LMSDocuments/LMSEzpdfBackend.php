@@ -119,6 +119,14 @@ class LMSEzpdfBackend extends Cezpdf
         return $this->ezOutput();
     }
 
+    public function WriteToFile($filename)
+    {
+        $content = $this->ezOutput();
+        $fh = fopen($filename, 'w');
+        fwrite($fh, $content, strlen($content));
+        fclose($fh);
+    }
+
     public function text_autosize($x, $y, $size, $text, $width)
     {
         while ($this->getTextWidth($size, $text) > $width) {

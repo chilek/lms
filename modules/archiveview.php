@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,63 +24,42 @@
  *  $Id$
  */
 
-function GetPropertyNames($resource, $params)
-{
+
+if (isset($_GET['action'])) {
     $SYSLOG = SYSLOG::getInstance();
 
-    $result = new XajaxResponse();
-    $names = $SYSLOG->GetResourcePropertyNames($resource);
+    $result = array();
 
-    $script = "var option;var propname = xjx.$('propertyname');
-		while (propname.length > 1)
-			propname.remove(1);";
-    if (!empty($names)) {
-        foreach ($names as $name) {
-            $script .= "option = document.createElement('option');
-				option.text = '" . $name . "';
-				option.value = '" . $name . "';
-				propname.add(option, null);"
-            . (!empty($params) && $params['propertyname'] == $name ? "option.selected = true;" : '');
-        }
+    switch ($_GET['action']) {
+        case 'get-property-names':
+            if (isset($_GET['resource-type'])) {
+                $result = $SYSLOG->GetResourcePropertyNames($_GET['resource-type']);
+            }
+            break;
+        case 'get-property-values':
+            if (isset($_GET['resource-type']) && isset($_GET['property-name'])) {
+                $values = $SYSLOG->GetResourcePropertyValues($_GET['resource-type'], $_GET['property-name']);
+                if (!empty($values)) {
+                    foreach ($values as $value) {
+                        if (count($values) <= 19) {
+                            $data = array('resource' => $_GET['resource-type'], 'name' => $_GET['property-name'], 'value' => $value);
+                            $SYSLOG->DecodeMessageData($data);
+                            $result[] = array(
+                                'value' => $value,
+                                'label' => strlen($data['value']) > 50 ? substr($data['value'], 0, 50) . '...' : $data['value'],
+                            );
+                        } else {
+                            $result[] = $value;
+                        }
+                    }
+                }
+            }
+            break;
     }
-    $script .= "propname.disabled = false;";
-    $result->script($script);
-    if (!empty($params) && isset($params['propertyvalue'])) {
-        $result->script("GetPropertyValues('" . $params['propertyvalue'] . "');");
-    }
-    $result->assign('propertyvaluedata', 'innerHTML', '<input type="text" size="20" name="propertyvalue" id="propertyvalue">');
 
-    return $result;
+    header('Content-Type: application/json');
+    die(json_encode($result));
 }
-
-function GetPropertyValues($resource, $propname, $propvalue)
-{
-    $SYSLOG = SYSLOG::getInstance();
-
-    $result = new XajaxResponse();
-    $values = $SYSLOG->GetResourcePropertyValues($resource, $propname);
-    if (empty($values) || count($values) > 19) {
-        $result->assign('propertyvaluedata', 'innerHTML', '<input type="text" size="20" name="propertyvalue" id="propertyvalue"'
-            . (strlen($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
-    } else {
-        $options = '<SELECT size="1" name="propertyvalue" id="propertyvalue">';
-        $options .= '<OPTION value="">' . trans('— all —') . '</OPTION>';
-        foreach ($values as $value) {
-            $data = array('resource' => $resource, 'name' => $propname, 'value' => $value);
-            $SYSLOG->DecodeMessageData($data);
-            $options .= '<OPTION value="' . $value . '"' . (strlen($propvalue) && $propvalue == $value ? ' selected' : '') . '>'
-                . (strlen($data['value']) > 50 ? substr($data['value'], 0, 50) . '...' : $data['value'])
-                . '</OPTION>';
-        }
-        $options .= '</SELECT>';
-        $result->assign('propertyvaluedata', 'innerHTML', $options);
-    }
-    return $result;
-}
-
-$LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetPropertyNames', 'GetPropertyValues'));
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $limit = ConfigHelper::getConfig('phpui.archiveview_limit', 100);
 $SESSION->add_history_entry();
@@ -129,6 +108,13 @@ if (isset($_POST['user'])) {
 }
 $SESSION->save('arvuser', $user);
 
+if (isset($_POST['module'])) {
+    $module = $_POST['module'];
+} else {
+    $SESSION->restore('arvmodule', $module);
+}
+$SESSION->save('arvmodule', $module);
+
 if (isset($_POST['resourcetype'])) {
     $resourcetype = intval($_POST['resourcetype']);
 } else {
@@ -162,6 +148,8 @@ $page = isset($_GET['page']) ? intval($_GET['page']) : 0;
 $listdata['page'] = $page;
 $listdata['user'] = $user;
 $listdata['users'] = $DB->GetAllByKey('SELECT id, login FROM users ORDER BY login', 'id');
+$listdata['module'] = $module;
+$listdata['modules'] = $DB->GetCol('SELECT DISTINCT module FROM logtransactions ORDER BY module');
 $listdata['resourcetype'] = $resourcetype;
 $listdata['resourceid'] = $resourceid;
 $listdata['propertyname'] = $propertyname;
@@ -173,6 +161,9 @@ if ($SYSLOG) {
     $args = array('limit' => $limit + 1);
     if (!empty($user)) {
         $args['userid'] = $user;
+    }
+    if (!empty($module)) {
+        $args['module'] = $module;
     }
     if (!empty($resourcetype)) {
         $args['key'] = SYSLOG::getResourceKey($resourcetype);

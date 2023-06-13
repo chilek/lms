@@ -1,5 +1,5 @@
-{$promotion_show_period_values = ConfigHelper::checkConfig('phpui.promotion_show_period_values')}
-{$promotion_schema_name_limit = intval(ConfigHelper::getConfig('phpui.promotion_schema_name_limit', 40))}
+{$promotion_show_period_values = ConfigHelper::checkConfig('promotions.show_period_values', ConfigHelper::checkConfig('phpui.promotion_show_period_values'))}
+{$promotion_schema_name_limit = intval(ConfigHelper::getConfig('promotions.schema_name_limit', ConfigHelper::getConfig('phpui.promotion_schema_name_limit', 40)))}
 
 <style>
 
@@ -119,7 +119,101 @@
 		padding-left: 0;
 	}
 
+	#attachments {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.promotion-attachments {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.promotion-attachments ul {
+		margin-block-start: 0.3em;
+		margin-block-end: 0.3em;
+		list-style: none;
+		padding-inline-start: 0;
+	}
+
+	.price-variants .lms-ui-box {
+		display: flex;
+		border: 1px dotted black;
+		border-radius: 5px;
+		background-color: #DFD5BD;
+		flex-direction: column;
+		justify-content: flex-start;
+	}
+
+	.price-variants .lms-ui-box-header {
+		padding-top: 0.7em;
+		padding-bottom: 0.3em;
+		border-bottom: 1px dotted black;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+		background-color: #CEBD9B;
+
+		display: flex;
+		flex-grow: 1;
+		flex-wrap: wrap;
+	}
+
+	.price-variants .lms-ui-box-body {
+		display: flex;
+		flex-grow: 1;
+		flex-wrap: wrap;
+		flex-direction: column;
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+	}
+
+	.price-variants .lms-ui-box-row {
+		display: flex;
+		flex-grow: 1;
+		padding-left: 0.5em;
+		justify-content: stretch;
+
+	}
+
+	.price-variants .lms-ui-box-field {
+		width: 100%;
+		min-width: 10em;
+	}
+
+	.price-variants .lms-ui-box-body .lms-ui-box-row {
+		padding-top: 0.3em;
+		padding-bottom: 0.3em;
+	}
+
+	.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:not(:last-child) {
+		border-bottom: 1px dotted grey;
+	}
+
+	.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:last-child {
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+	}
+
+	.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(even) {
+		background-color: #EBE4D6;
+	}
+
+	.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(even).highlight:hover {
+		background-color: #CFC;
+	}
+
+	.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(odd) {
+		background-color: #DFD5BD;
+	}
+
+	.price-variants .lms-ui-background-cycle.lms-ui-box-body .lms-ui-box-row:nth-child(odd).highlight:hover {
+		background-color: #CFC;
+	}
+
 </style>
+
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 {if isset($promotion_only)}
 <select id="tariff-select" name="{$variable_prefix}[tariffid]" style="display: none;">
@@ -194,6 +288,20 @@
 									<i id="promotion-schema-info" class="lms-ui-icon-info"></i>
 								</TD>
 							</TR>
+							<tr id="a_attachments" style="display: none;">
+								<td class="valign-top">
+									{icon name="attachment"}
+								</td>
+								<td class="valign-top">
+									<strong>
+										{trans("Attachments")}
+									</strong>
+								</td>
+								<td>
+									<div id="promotion-attachments">
+									</div>
+								</td>
+							</tr>
 							<tr id="a_location" style="display: none;">
 								<td>
 									{icon name="location"}
@@ -257,9 +365,9 @@
 																				{if !$item.single.optional} disabled data-mandatory="1"{/if}
 																				data-tariffaccess="{$item.single.authtype}">
 																				{if $promotion_show_period_values}
-																					{t a=$item.single.tariff b=moneyf($item.single.value, $item.single.currency) c=implode(' / ', $item.single.periodvalues)}$a (default: $b; $c){/t}
+																					{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.value, $item.single.currency) c=implode(' / ', $item.single.periodvalues)}$a (default: $b; $c){/t}
 																				{else}
-																					{t a=$item.single.tariff b=moneyf($item.single.value, $item.single.currency)}$a (default: $b){/t}
+																					{t a=$item.single.tariff b=Utils::smartFormatMoney($item.single.value, $item.single.currency)}$a (default: $b){/t}
 																				{/if}
 																			</label>
 																			<span class="schema-tariff-count">
@@ -284,15 +392,15 @@
 																					<td>
 																						{if $period.modifiable}
 																							{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.single.assignmentid}-{$key}{/textformat}
-																							<input id="{$elemid}" type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.single.assignmentid}][{$key}]"
-																									value="{if isset($variables.values[$schemaid][$label][$item.single.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.single.assignmentid][$key]}{else}{$period.value}{/if}"
+																							<input id="{$elemid}" type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.single.assignmentid}][{$key}]" class="format-3f"
+																									value="{if isset($variables.values[$schemaid][$label][$item.single.assignmentid][$key])}{$variables.values[$schemaid][$label][$item.single.assignmentid][$key]}{else}{Localisation::smartFormatNumber($period.value)}{/if}"
 																									{tip trigger=$elemid}>
-																							<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{$period.value}"></i>
+																							<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{Localisation::smartFormatNumber($period.value)}"></i>
 																						{else}
 																							{if $period.value == ''}
 																								-
 																							{else}
-																								{moneyf($period.value, $item.single.currency)}
+																								{Utils::smartFormatMoney($period.value)}
 																							{/if}
 																						{/if}
 																					</td>
@@ -316,7 +424,7 @@
 																				<option value="{$item.assignmentid}" data-tariffaccess="{$item.authtype}"
 																						data-tarifftype="{$item.type}" data-assignment-id="{$item.assignmentid}"
 																						{if in_array($item.assignmentid, (array)$variables.sassignmentid[$schemaid])} selected{/if}
-																					>{if $promotion_show_period_values}{t a=$item.tariff b=moneyf($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}{else}{t a=$item.tariff b=moneyf($item.value, $item.currency)}$a (default: $b){/t}{/if}</option>
+																					>{if $promotion_show_period_values}{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}{else}{t a=$item.tariff b=Utils::smartFormatMoney($item.value, $item.currency)}$a (default: $b){/t}{/if}</option>
 																				{/foreach}
 																			</select>
 																			<span class="schema-tariff-count">
@@ -404,7 +512,7 @@
 									{trans("Count:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[count]" value="{if $variables.count}{$variables.count}{else}1{/if}" size="15" pattern="[0-9]+([\.][0-9]+)?" formnovalidate {tip text="Enter count in numeric format" trigger="count"}>
+									<INPUT type="text" id="quantity" name="{$variable_prefix}[count]" value="{if $variables.count}{$variables.count}{else}1{/if}" size="15" pattern="[0-9]+([\.][0-9]+)?" formnovalidate {tip text="Enter count in numeric format" trigger="count"}>
 								</TD>
 							</TR>
 
@@ -507,7 +615,7 @@
 												</label>
 											</td>
 											<td>
-												<input type="text" size="11" id="netprice" name="{$variable_prefix}[netvalue]" value=""
+												<input type="text" size="11" id="netprice" name="{$variable_prefix}[netvalue]" value="{if $variables.netvalue}{$variables.netvalue}{/if}"
 													   {tip text="Enter liability net price (tariffless liabilities only)" trigger="netvalue"}>
 											</td>
 											<td rowspan="2">
@@ -516,6 +624,7 @@
 														{tip text="Billing according to the net price"}>
 													<span class="lms-ui-label">{trans('calculated from net')}</span>
 												</label>
+												<span id="tariff-price-variants"></span>
 											</td>
 										</tr>
 										<tr>
@@ -525,7 +634,7 @@
 												</label>
 											</td>
 											<td>
-												<input type="text" size="11" id="grossprice" name="{$variable_prefix}[value]" value=""
+												<input type="text" size="11" id="grossprice" name="{$variable_prefix}[value]" value="{if $variables.value}{$variables.value}{/if}"
 													{tip text="Enter liability gross price (tariffless liabilities only)" trigger="value"}>
 											</td>
 										</tr>
@@ -552,8 +661,8 @@
 									<span class="bold">{trans("Discount:")}</span>
 								</TD>
 								<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-									<INPUT type="text" size="8" name="{$variable_prefix}[discount]" value="{if $variables.pdiscount != 0}{$variables.pdiscount|string_format:"%.2f"}{else}{if $variables.vdiscount != 0}{$variables.vdiscount|string_format:"%.2f"}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
-									<SELECT name="{$variable_prefix}[discount_type]">
+									<INPUT type="text" size="8" id="discount_value" name="{$variable_prefix}[discount]" value="{if $variables.pdiscount != 0}{Localisation::formatNumber($variables.pdiscount)}{else}{if $variables.vdiscount != 0}{Localisation::smartFormatNumber($variables.vdiscount)}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
+									<SELECT id="discount_type" name="{$variable_prefix}[discount_type]">
 										{foreach from=$_DISCOUNTTYPES item=item key=key}
 										<OPTION value="{$key}"{if $variables.discount_type == $key} selected{/if}>{$item}</OPTION>
 										{/foreach}
@@ -599,8 +708,12 @@
 								</TD>
 								<TD>
 									<SELECT SIZE="1" id="tax" name="{$variable_prefix}[taxid]" {tip text="Select Tax value" trigger="taxid"}>
-										{foreach item=tax from=$taxeslist}
-										<OPTION value="{$tax.id}"{if ($variables.taxid && $tax.id == $variables.taxid) || (!$variables.taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
+										{foreach $taxeslist as $tax}
+										<option value="{$tax.id}"
+											{if $variables.taxid && $tax.id == $variables.taxid
+												|| (!$variables.taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+													|| !isset($default_taxlabel) && $tax.value == $default_taxrate))} selected{/if}
+											>{$tax.label}</option>
 										{/foreach}
 									</SELECT>
 									{foreach $taxeslist as $tax}
@@ -900,5 +1013,11 @@
 	</tr>
 	</TBODY>
 </TABLE>
+
+<template id="tariff_price_variants_template">
+	{capture assign="assignment_hint"}
+	{/capture}
+	{hint text=$assignment_hint icon="options"}
+</template>
 
 <script src="js/customerassignmenthelper.js"></script>

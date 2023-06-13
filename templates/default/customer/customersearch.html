@@ -30,6 +30,26 @@
 		margin-left: 0.5em;
 	}
 
+	#assignment-properties {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#assignment-properties > div {
+		display: flex;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+
+	.reverse-elements {
+		display: flex;
+		flex-direction: row-reverse;
+	}
+
+	.reverse-elements > :not(:first-child) {
+		margin-right: 0.5em;
+	}
+
 </style>
 
 <script>
@@ -59,24 +79,24 @@
 		options.add(new Option('{trans("— none —")}', 0));
 		switch (linktype) {
 			case '':
-				{foreach array(0, 1, 2) as $linktype}
+				{foreach array({$smarty.const.LINKTYPE_WIRE}, {$smarty.const.LINKTYPE_WIRELESS}, {$smarty.const.LINKTYPE_FIBER}) as $linktype}
 					{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
 					options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 					{/foreach}
 				{/foreach}
 				break;
 			case '0':
-				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRE] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
 			case '1':
-				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_WIRELESS] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
 			case '2':
-				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				{foreach $_LINKTECHNOLOGIES[$smarty.const.LINKTYPE_FIBER] as $linktechnologyidx => $linktechnology}
 				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
 				break;
@@ -99,6 +119,19 @@
 	</TR>
 	</THEAD>
 	<TBODY>
+	<tr>
+		<td class="bold nobr">
+			<label for="hidessn">
+				{icon name="id"}
+				{trans("hide customer SSN")}
+			</label>
+		</td>
+		<td>
+			<input type="hidden" name="hidessn" value="0">
+			<input type="checkbox" name="hidessn" id="hidessn" value="1"
+				{if !empty($listdata.hidessn) || !isset($listdata.hidessn)} checked{/if}>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="customer"} {trans("First/last or Company name:")}
@@ -368,14 +401,14 @@
 		<TD class="bold nobr">
 			{icon name="netdev"} {trans("Link type:")}
 		</TD>
-		<TD>
-			<SELECT SIZE="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
-				<OPTION VALUE="">{trans("— all —")}</OPTION>
-				{foreach from=$_LINKTYPES item=item key=key}
-					<OPTION VALUE="{$key}">{$item}</OPTION>
+		<td>
+			<select size="1" name="search[linktype]" onchange="change_linktype(this.options[this.selectedIndex].value)">
+				<option value="">{trans("— all —")}</option>
+				{foreach $_LINKTECHNOLOGIES as $linktype => $linktech}
+					<option value="{$linktype}">{$_LINKTYPES[$linktype]}</option>
 				{/foreach}
-			</SELECT>
-		</TD>
+			</select>
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
@@ -450,6 +483,7 @@
 				<option value="90">{trans('expire in $a days', 90)}</option>
 				<option value="-100">{trans('expire in indicated number of days')}</option>
 				<option value="-1">{trans('without end date')}</option>
+				<option value="-10">{trans('without start date')}</option>
 				<option value="-2">{trans('active')}</option>
 				<option value="-7">{trans('active, without nodes')}</option>
 				<option value="-3">{trans('active, with invoice')}</option>
@@ -463,6 +497,41 @@
 				size="5" placeholder="{trans("days")}" style="display: none;" pattern="[0-9]+">
 		</TD>
 	</TR>
+	<tr>
+		<td></td>
+		<td>
+			<div id="assignment-properties">
+				<div>
+					<div class="reverse-elements">
+						<select id="assignment-period" size="1" name="search[assignment][period]" disabled
+							{tip text="Select time period to account liability"}>
+							<option value="">{trans("— all —")}</option>
+							{foreach $_PERIODS as $key => $item}
+								<option value="{$key}">{$item}</option>
+							{/foreach}
+						</select>
+						<label for="assignment-period">
+							{trans("Accounting")}
+						</label>
+					</div>
+					<input type="checkbox" id="backward-period" name="search[assignment][backwardperiod]" value="1" disabled>
+					<label for="backward-period" {tip text="Check if tariff should be accounted backward"}>
+						{trans("<!assignment>backward")}
+					</label>
+				</div>
+				<div>
+					<input id="a-day-of-month" type="text" name="search[assignment][at]"
+						value="" size="8" disabled
+						{tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"}>
+					<input type="checkbox" id="last-day-of-month" name="search[assignment][at]" value="0"
+						disabled>
+					<label for="last-day-of-month">
+						{trans("last day of month")}
+					</label>
+				</div>
+			</div>
+		</td>
+	</tr>
 	<TR>
 		<TD class="bold nobr">
 			{icon name="modified-date"} {trans("Created:")}
@@ -574,11 +643,13 @@
 				<OPTION VALUE="56">{trans("suspended<!plural>")}</OPTION>
 				<OPTION value="59">{trans("without contracts")}</OPTION>
 				<OPTION value="76">{trans("without active contracts")}</OPTION>
+				<option value="84">{trans("with term contracts")}</option>
+				<option value="85">{trans("with active term contracts")}</option>
 				<OPTION value="60">{trans("with expired contracts")}</OPTION>
 				<OPTION value="77">{trans("with expired, active contracts")}</OPTION>
 				<OPTION value="61">{trans("with expiring contracts")}</OPTION>
 				<OPTION value="78">{trans("with expiring, active contracts")}</OPTION>
-				<OPTION VALUE="70">{trans("TERRIT not specified")}</OPTION>
+				<OPTION VALUE="70">{trans("TERYT not specified")}</OPTION>
 				<OPTION VALUE="68">{trans("without zip (main address)")}</OPTION>
 				<OPTION VALUE="74">{trans("without zip (other addresses)")}</OPTION>
 				<option value="81">{trans("without location address")}</option>
@@ -638,6 +709,7 @@
 		</td>
 		<td>
 			<label>
+				<input type="hidden" value="0" name="cgnot">
 				<input type="checkbox" value="NOT" name="cgnot"{if !empty($cgnot)} checked{/if}>
 				{trans("negation")}
 			</label>
@@ -669,12 +741,20 @@
 			{icon name="nodegroup"} {trans("Nodes Group:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" name="ng">
-				<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("— all groups —")}</OPTION>
-				{foreach from=$nodegroups item=nodegroup}
-				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"&hellip;":true}</OPTION>
+			<label>
+				<input type="hidden" value="0" name="ngnot">
+				<input type="checkbox" value="NOT" name="ngnot"{if !empty($ngnot)} checked{/if}>
+				{trans("negation")}
+			</label>
+			&nbsp;
+			<select size="1" name="ng">
+				<option value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("— all groups —")}</option>
+				{foreach $nodegroups as $nodegroup}
+					<option value="{$nodegroup.id}"
+						{if $listdata.nodegroup == $nodegroup.id} selected{/if}
+						>{$nodegroup.name|trunescape:30}</option>
 				{/foreach}
-			</SELECT>
+			</select>
 		</TD>
 	</TR>
 	<TR>
@@ -727,6 +807,19 @@
 		$('[name="s[]"]').change(function() {
 			var disabled = $(this).val().indexOf('71') === -1;
 			$('[name="search[balance_days]"]').prop('disabled', disabled).closest('label').toggleClass('lms-ui-disabled', disabled);
+		});
+
+		$('#assignment-selector').change(function() {
+			$('#assignment-properties').find('select,input').prop('disabled', !parseInt($(this).val()));
+			$('#last-day-of-month').prop('disabled', parseInt($(this).val()) != {$smarty.const.MONTHLY});
+		});
+
+		$('#assignment-period').change(function() {
+			$('#last-day-of-month').prop('disabled', parseInt($(this).val()) != {$smarty.const.MONTHLY});
+		});
+
+		$('#last-day-of-month').change(function() {
+			$('#a-day-of-month').prop('disabled', $(this).prop('checked'));
 		});
 	});
 

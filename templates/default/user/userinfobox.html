@@ -192,14 +192,25 @@
 		</tr>
 {/if}
 		<tr>
-			<td>
+			<td class="valign-top">
 				{icon name="ipnetwork"}
 			</td>
-			<td class="nobr">
-				<strong>{trans("Allowed hosts:")}</strong>
+			<td class="valign-top nobr">
+				<strong>{trans("Allowed hosts")}</strong>
 			</td>
 			<td class="nobr">
-				{if $userinfo.hosts}{$userinfo.hosts}{else}{trans("all")}{/if}
+				{if $userinfo.hosts}{nl2br($userinfo.hosts|escape)}{else}{trans("all")}{/if}
+			</td>
+		</tr>
+		<tr>
+			<td class="valign-top">
+				{icon name="ipnetwork"}
+			</td>
+			<td class="valign-top nobr">
+				<strong>{trans("Trusted hosts")}</strong>
+			</td>
+			<td class="nobr">
+				{if $userinfo.trustedhosts}{nl2br($userinfo.trustedhosts|escape)}{else}{trans("<!trusted-hosts>none")}{/if}
 			</td>
 		</tr>
 		<tr>

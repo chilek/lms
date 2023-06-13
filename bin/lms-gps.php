@@ -90,8 +90,8 @@ lms-gps.php
 -u, --update                    update nodes GPS coordinates
 -U, --update-netdevices         update netdevices GPS coordinates
 -N, --update-netnodes           update netnodes GPS coordinates
--p, --providers=<google,osm,siis>
--s, --sources=<google,osm,siis> use Google Maps API and/or SIIS building location database
+-p, --providers=<google,osm,prg>
+-s, --sources=<google,osm,prg>  use Google Maps API and/or PRG building location database
                                 to determine GPS coordinates (in specified order)
 -d, --debug                     only try to determine GPS coordinates without updating database
 -h, --help                      print this help and exit;
@@ -190,6 +190,7 @@ function array_provider_filter($provider)
         'google' => true,
         'osm' => true,
         'siis' => true,
+        'prg' => true,
     );
     return isset($all_providers[$provider]);
 }
@@ -201,7 +202,7 @@ if (isset($options['providers'])) {
     $providers = explode(',', $options['sources']);
 }
 if (empty($providers)) {
-    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,osm,siis'));
+    $providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,osm,prg'));
     $providers = preg_split('/([\s]+|[\s]*[,|][\s]*)/', $providers, -1, PREG_SPLIT_NO_EMPTY);
 }
 $providers = array_filter($providers, 'array_provider_filter');
@@ -215,8 +216,6 @@ $google_api_key = ConfigHelper::getConfig(
     true
 );
 
-$lc = new LocationCache('full');
-
 foreach ($types as $label => $type) {
     if (!$quiet) {
         echo $label . PHP_EOL;
@@ -224,7 +223,7 @@ foreach ($types as $label => $type) {
     $locations = $DB->GetAll(
         "SELECT
             t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
-            ld.name AS distict_name, lb.name AS borough_name,
+            ld.name AS district_name, lb.name AS borough_name,
             va.city AS city_name,
             va.zip AS zip,
             c.name AS country_name,
@@ -289,8 +288,7 @@ foreach ($types as $label => $type) {
                         break;
                     } else {
                         if (!$quiet) {
-                            echo 'google: #' . $row['id'] . " - ERROR - Accuracy: " . $res['accuracy']
-                                . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
+                            echo 'google: #' . $row['id'] . " - ERROR: " . $res['status'] . ' (' . $res['error'] . ')' . PHP_EOL;
                         }
                     }
                     if (empty($google_api_key)) {
@@ -318,7 +316,9 @@ foreach ($types as $label => $type) {
                         $params['postalcode'] = $row['zip'];
                     }
                     $res = osm_geocode($params);
-                    if (empty($res)) {
+                    if (empty($res)
+                        || isset($res['latitude']) && !strlen($res['latitude'])
+                        || isset($res['longitude']) && !strlen($res['longitude'])) {
                         if (!$quiet) {
                             echo 'osm: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
                         }
@@ -340,29 +340,49 @@ foreach ($types as $label => $type) {
                     }
 
                     sleep(1);
-                } elseif ($provider == 'siis' && !empty($row['state_name'])) {
-                    if (($building = $lc->buildingExists($row['city_id'], empty($row['street_id']) ? 'null' : $row['street_id'], $row['house']))
-                    && !empty($building['longitude']) && !empty($building['latitude'])) {
-                        if (!$debug) {
-                            $DB->Execute(
-                                "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
-                                array(
-                                    $building['latitude'],
-                                    $building['longitude'],
-                                    $row['id'],
-                                )
-                            );
-                        }
-                        if (!$quiet) {
-                            echo 'siis: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $building['latitude']
-                                . " long.: " . $building['longitude'] . ")" . PHP_EOL;
-                        }
-                        break;
-                    } else {
-                        if (!$quiet) {
-                            echo 'siis: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
-                        }
+
+                    break;
+                } elseif (($provider == 'prg' || $provider == 'siis') && !empty($row['state_name'])) {
+                    $args = array(
+                        'city_id' => $row['city_id'],
+                    );
+                    if (!empty($row['street_id'])) {
+                        $args['street_id'] = $row['street_id'];
                     }
+                    if (!empty($row['house'])) {
+                        $args['building_num'] = $row['house'];
+                    }
+
+                    $buildings = $DB->GetAll(
+                        'SELECT * FROM location_buildings
+                        WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?',
+                        array_values($args)
+                    );
+
+                    if (empty($buildings) || count($buildings) > 1 || empty($buildings[0]['longitude'])) {
+                        if (!$quiet) {
+                            echo 'prg: #' . $row['id'] . " - ERROR - Building: " . $row['location'] . PHP_EOL;
+                        }
+                        continue;
+                    }
+
+                    if (!$debug) {
+                        $DB->Execute(
+                            "UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?",
+                            array(
+                                $buildings[0]['latitude'],
+                                $buildings[0]['longitude'],
+                                $row['id'],
+                            )
+                        );
+                    }
+
+                    if (!$quiet) {
+                        echo 'prg: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $buildings[0]['latitude']
+                            . " long.: " . $buildings[0]['longitude'] . ")" . PHP_EOL;
+                    }
+
+                    break;
                 }
             }
         }

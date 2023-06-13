@@ -118,7 +118,7 @@ if (isset($netnodedata)) {
         && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($netnodedata['location_city_name']) && ($netnodedata['location_country_id'] == 2 || empty($netnodedata['location_country_id']))
         && (!isset($netnodedata['teryt']) || empty($netnodedata['location_city'])) && $LMS->isTerritState($netnodedata['location_state_name'])) {
-        $error['netnode[teryt]'] = trans('TERRIT address is required!');
+        $error['netnode[teryt]'] = trans('TERYT address is required!');
     }
 
     if (!$error) {

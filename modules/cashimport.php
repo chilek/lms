@@ -248,6 +248,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
 
             $DB->CommitTrans();
         }
+
+        $LMS->executeHook('cashimport_after_commit', array('cashimports' => $imports));
     }
 }
 
@@ -255,11 +257,18 @@ $divisions = $LMS->GetDivisions(array('order' => 'name'));
 
 $divisions[0] = array('id' => 0, 'name' => '');
 
-if ($importlist = $DB->GetAll('SELECT i.*, c.divisionid
-	FROM cashimport i
-	LEFT JOIN customerview c ON (i.customerid = c.id)
-	WHERE i.closed = 0 AND i.value > 0
-	ORDER BY i.id')) {
+if ($importlist = $DB->GetAll(
+    'SELECT
+        i.*,
+        c.divisionid,
+        cs.name AS sourcename
+    FROM cashimport i
+    LEFT JOIN customerview c ON i.customerid = c.id
+    LEFT JOIN cashsources cs ON cs.id = i.sourceid
+    WHERE i.closed = 0
+        AND i.value > 0
+    ORDER BY i.id'
+)) {
     $listdata['total'] = count($importlist);
 
     foreach ($importlist as $idx => $row) {

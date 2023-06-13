@@ -21,7 +21,8 @@
 </script>
 
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 <form name="setcustomer" id="setcustomer" method="POST" action="?m=invoiceedit&action=setcustomer">
 	<input type="submit" class="hiddenbtn">
@@ -119,8 +120,8 @@
 				</td>
 				<td class="nobr">
 					<select name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
-						{foreach $_PAYTYPES as $key => $item}
-							<option value="{$key}"{if $invoice.paytype==$key} selected{/if}>{trans($item)}</option>
+						{foreach Localisation::arraySort(Utils::array_column($_PAYTYPES, 'label')) as $key => $item}
+							<option value="{$key}"{if $invoice.paytype == $key} selected{/if}>{trans($item)}</option>
 						{/foreach}
 					</select>
 				</td>
@@ -291,7 +292,7 @@
 				addresses = $.extend(addr, addresses);
 			{/if}
 
-			setAddressList('#customer_addresses', addresses, true);
+			setAddressList('#customer_addresses', addresses);
 		});
 		updateDocumentFlags();
 	}

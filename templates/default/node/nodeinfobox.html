@@ -179,7 +179,7 @@
 												<div>
 												{if $nodeinfo.teryt}
 													{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}
-													{t a=$nodeinfo.location}$a (TERRIT){/t}
+													{t a=$nodeinfo.location}$a (TERYT){/t}
 												{else}
 													{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
 												{/if}
@@ -252,9 +252,8 @@
 															<select name="linktype" id="linktype"
 																{tip trigger="linktype" text="Select link type"}
 																onchange="change_linktype(this.options[this.selectedIndex].value)">
-																{foreach $_LINKTYPES as $key => $item}
-																	<option value="{$key}"
-																		{if $linktype == $key} selected{/if}>{$item}</option>
+																{foreach $_LINKTECHNOLOGIES as $key => $linktech}
+																	<option value="{$linktype}"{if $linktype == $key} selected{/if}>{$_LINKTYPES[$key]}</option>
 																{/foreach}
 															</select>
 
@@ -463,6 +462,15 @@
 											<td class="cell-flex">
 												{button type="link" icon="map" label="Show on map"
 													href="?m=netdevmap&nodeid={$nodeinfo.id}"}
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">
+											</td>
+											<td>
+												{$gps_coordinate_url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
+												{button type="link" icon="location" label="Show on external map" external=true
+													href="{$gps_coordinate_url|replace:"%longitude":$nodeinfo.longitude|replace:"%latitude":$nodeinfo.latitude}"}
 											</td>
 										</tr>
 									{/if}

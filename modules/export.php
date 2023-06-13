@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     } else {
         $from = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
     }
-        
+
     if ($_POST['to']) {
         list($year, $month, $day) = explode('/', $_POST['to']);
         $to = mktime(23, 59, 59, $month, $day, $year);
@@ -67,11 +67,12 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     header('Pragma: public');
 
     if ($list = $DB->GetAll(
-        'SELECT d.id AS id, value, number, cdate, customerid, 
+        'SELECT d.id AS id, value, number, cdate, d.customerid,
 		d.name AS customer, address, zip, city, ten, ssn, userid,
-		numberplans.template, extnumber, receiptcontents.description, 
-		cashregs.name AS cashreg
+		numberplans.template, extnumber, receiptcontents.description,
+		cashregs.name AS cashreg, b.balance
 		FROM documents d
+        JOIN customerbalances b ON b.customerid = d.customerid
 		LEFT JOIN receiptcontents ON (d.id = docid)
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 		LEFT JOIN cashregs ON (cashregs.id = regid)
@@ -124,9 +125,10 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $line = str_replace('%DESC', $row['description'], $line);
             $line = str_replace('%VALUE', $row['value'], $line);
             $line = str_replace('%ABSVALUE', str_replace('-', '', $row['value']), $line);
+            $line = str_replace('%BALANCE', form_num($row['balance']), $line);
             $line = str_replace('%N', $row['number'], $line);
             $line = str_replace('%I', $i, $line);
-            
+
             if (strpos($line, '%PREFIX')!==false || strpos($line, '%SUFFIX')!==false) {
                 $tmp = explode('%N', $row['template']);
                 if ($tmp[0]) {
@@ -152,24 +154,24 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
                     $line = str_replace('%SUFFIX', '', $line);
                 }
             }
-            
+
             if (strpos($line, '%TYPE')!==false) {
                 if ($row['value']<0) {
                     $type = $cash_out_type;
                 } else {
                     $type = $cash_in_type;
                 }
-                
+
                 // fragment dla systemu Enova: rozpoznawanie
-                // wyci�g�w bankowych na podstawie przedrostka
+                // wyciągów bankowych na podstawie przedrostka
                 // planu numeracyjnego
                 if (strpos($number, 'PB')===0) {
                     $type += 2;
                 }
-                    
+
                 $line = str_replace('%TYPE', $type, $line);
             }
-            
+
             if (strtoupper($encoding)!='UTF-8') {
                 if (strtoupper($encoding)=='MAZOVIA') {
                     $line = mazovia_to_utf8($line);
@@ -177,7 +179,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
                     $line = iconv('UTF-8', $encoding.'//TRANSLIT', $line);
                 }
             }
-            
+
             print $line.$endln;
         }
     }
@@ -186,6 +188,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 } elseif (isset($_GET['type']) && $_GET['type'] == 'invoices') {
     $from = $_POST['from'];
     $to = $_POST['to'];
+
+    $customergroups = isset($_POST['customergroups']) && is_array($_POST['customergroups']) ? Utils::filterIntegers($_POST['customergroups']) : array();
 
     // date format 'yyyy/mm/dd'
     if ($from) {
@@ -212,30 +216,40 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
     // because we need here incoices-like round-off
 
     // get documents items numeric values for calculations
-    $items = $DB->GetAll('SELECT docid, itemid, taxid, value, count, description, prodid, content, d.customerid
-		FROM documents d
-		LEFT JOIN invoicecontents ON docid = d.id 
-		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
-			' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '') . '
-			AND NOT EXISTS (
-		    		SELECT 1 FROM vcustomerassignments a
-				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-				WHERE e.userid = lms_current_user() AND a.customerid = d.customerid) 
-		ORDER BY cdate, docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+    $items = $DB->GetAll(
+        'SELECT docid, itemid, taxid,
+            grossprice, grossvalue, netprice, netvalue, taxvalue, count,
+            diff_grossprice, diff_grossvalue, diff_netprice, diff_netvalue, diff_taxvalue, diff_count,
+            description, prodid, content, d.customerid
+        FROM documents d
+        LEFT JOIN vinvoicecontents ON docid = d.id
+        WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
+            ' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '')
+            . (empty($customergroups) ? '' : ' AND EXISTS (
+                SELECT 1 FROM customerassignments ca WHERE ca.customerid = d.customerid AND ca.customergroupid IN (' . implode(',', $customergroups) . ')
+            )')
+            . ' AND NOT EXISTS (
+                    SELECT 1 FROM vcustomerassignments a
+                JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+                WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
+        ORDER BY cdate, docid',
+        array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto)
+    );
 
     // get documents data
     $docs = $DB->GetAllByKey(
-        'SELECT documents.id AS id, number, cdate, customerid, userid, name, address, zip, city, ten, ssn,
-			numberplans.template, reference, extnumber, paytime, closed
-		FROM documents 
-	        LEFT JOIN numberplans ON numberplanid = numberplans.id
-		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
-			' . ($divisionid ? ' AND divisionid = ' . $divisionid : ''),
+        'SELECT d.id AS id, number, cdate, d.customerid, userid, name, address, zip, city, ten, ssn,
+            numberplans.template, reference, extnumber, paytime, closed, b.balance
+        FROM documents d
+        JOIN customerbalances b ON b.customerid = d.customerid
+        LEFT JOIN numberplans ON d.numberplanid = numberplans.id
+        WHERE (d.type = ? OR d.type = ?) AND (d.cdate BETWEEN ? AND ?)
+            ' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : ''),
         'id',
         array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto)
     );
 
-        // wysy�amy ...
+    // wysyłamy ...
     header('Content-Type: application/octetstream');
     header('Content-Disposition: attachment; filename='.$inv_filename);
     header('Pragma: public');
@@ -244,6 +258,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
         // get taxes for calculations
         $taxes = $LMS->GetTaxes();
         $i = 0;
+
+        $record = '';
 
         if (is_array($inv_record)) {
             foreach ($inv_record as $r) {
@@ -256,55 +272,39 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
             $taxid = $row['taxid'];
             $doc = $docs[$docid];
 
-            if ($doc['reference']) {
-                // I think we can simply do query here instead of building
-                // big sql join in $items query, we've got so many credit notes?
-                $value = 0;
-                $count = 0;
-                $refid = $doc['reference'];
-                do {
-                    $item = $DB->GetRow(
-                        'SELECT taxid, value, count, reference
-                            FROM invoicecontents
-                            JOIN documents ON id = docid
-                            WHERE docid=? AND itemid=?',
-                        array($refid, $row['itemid'])
-                    );
-                    if (!isset($firstitem)) {
-                        $firstitem = $item;
-                    }
-                    $value += $item['value'];
-                    $count += $item['count'];
-                    $refid = $item['reference'];
-                } while (!empty($refid));
-
-                $row['value'] += $value;
-                $row['count'] += $count;
-
-                $refitemsum = $value * $count;
-                $refitemval = round($value / ($taxes[$firstitem['taxid']]['value'] + 100) * 100, 2) * $count;
-                $refitemtax = $refitemsum - $refitemval;
-
-                $rectax[$item['taxid']]['tax'] -= $refitemtax;
-                $rectax[$item['taxid']]['val'] -= $refitemval;
-                $rectax[$item['taxid']]['sum'] -= $refitemsum;
-                $rec['brutto'] -= $refitemsum;
+            if (!isset($rectax[$taxid])) {
+                $rectax[$taxid] = array(
+                    'tax' => 0,
+                    'val' => 0,
+                    'sum' => 0,
+                );
             }
 
-            $sum = $row['value'] * $row['count'];
-            $val = round($row['value'] / ($taxes[$taxid]['value']+100) * 100, 2) * $row['count'];
-            $tax = $sum - $val;
+            if (!isset($rec['brutto'])) {
+                $rec['brutto'] = 0;
+            }
+
+            if ($doc['reference']) {
+                $rectax[$taxid]['tax'] -= $row['taxvalue'] - $row['diff_taxvalue'];
+                $rectax[$taxid]['val'] -= $row['netvalue'] - $row['diff_netvalue'];
+                $rectax[$taxid]['sum'] -= $row['grossvalue'] - $row['diff_grossvalue'];
+                $rec['brutto'] -= $row['grossvalue'] - $row['diff_grossvalue'];
+            }
+
+            $sum = $row['grossvalue'];
+            $val = $row['netvalue'];
+            $tax = $row['taxvalue'];
 
             $rectax[$taxid]['tax'] += $tax;
             $rectax[$taxid]['val'] += $val;
             $rectax[$taxid]['sum'] += $sum;
             $rec['brutto'] += $sum;
 
-            if ($row['docid'] != $items[$idx+1]['docid']) {
+            if (!isset($items[$idx + 1]['docid']) || $row['docid'] != $items[$idx + 1]['docid']) {
                 $line = $record ? $record : $inv_record;
                 $i++;
 
-                $clariondate = intval($doc['cdate']/86400)+61731;
+                $clariondate = intval($doc['cdate'] / 86400) + 61731;
                 $date = date($date_format, $doc['cdate']);
                 $number = docnumber(array(
                     'number' => $doc['number'],
@@ -331,6 +331,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'cash') {
 //              $line = str_replace('%DESC', $row['description'], $line);
                 $line = str_replace('%VALUE', form_num($rec['brutto']), $line);
                 $line = str_replace('%ABSVALUE', str_replace('-', '', form_num($rec['brutto'])), $line);
+                $line = str_replace('%BALANCE', form_num($doc['balance']), $line);
 
                 $v = 0;
                 $netto_v = 0;
@@ -422,4 +423,5 @@ $layout['pagetitle'] = trans('Export');
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
 $SMARTY->assign('divisions', $LMS->GetDivisions());
+$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->display('export.html');

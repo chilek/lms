@@ -24,6 +24,7 @@ OpenLayers.Lang.pl = {
 	'Device Links': "Połączenia urządzeń",
 	'Nodes': "Komputery",
 	'Node Links': "Połączenia komputerów",
+	'Ranges': 'Zasięgi',
 	'Radio sectors 2.4GHz - areas': "Sektory radiowe 2.4GHz - obszary",
 	'Radio sectors 5GHz - areas': "Sektory radiowe 5GHz - obszary",
 	'Radio sectors 2.4GHz - directions': "Sektory radiowe 2.4GHz - kierunki",

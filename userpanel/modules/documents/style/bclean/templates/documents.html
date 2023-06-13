@@ -100,12 +100,13 @@
 				<th>{trans("Type:")}</th>
 				<th>{trans("Created:")}</th>
 				<th>{trans("Period:")}</th>
+				<th>{trans("Confirmation")}</th>
 				<th>&nbsp;</th>
 			</thead>
 		{/if}
 		{foreach $documents as $doc}
 			<tr class="align-middle p-2 {if !$doc.closed && ($doc.confirmdate <= 0 || $doc.confirmdate < $smarty.now)}text-muted{/if}">
-				<td>{number number=$doc.number template=$doc.template time=$doc.cdate}</td>
+				<td>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</td>
 				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
 				<td>{$doc.cdate|date_format:"Y-m-d"}</td>
 				<td>
@@ -121,6 +122,15 @@
 							{/if}
 							{trans("indefinitely")}
 						{/if}
+					{/if}
+				</td>
+				<td>
+					{if $doc.confirm_type == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SMS}
+						{icon name="sms"}
+						{$doc.confirm_date|date_format:'Y/m/d H:i:s'}
+					{elseif $doc.confirm_type == $smarty.const.DOC_CLOSED_AFTER_CUSTOMER_SCAN}
+						{icon name="sign"}
+						{$doc.confirm_date|date_format:'Y/m/d H:i:s'}
 					{/if}
 				</td>
 				<td>
@@ -171,7 +181,7 @@
 			</tr>
 		{foreachelse}
 			<tr>
-				<td colspan="5" class="text-center">
+				<td colspan="6" class="text-center">
 					{trans("No such documents on your account.")}
 				</td>
 			</tr>

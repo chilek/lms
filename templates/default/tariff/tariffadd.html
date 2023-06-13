@@ -32,6 +32,7 @@
 	</style>
 
 	{$default_taxrate = ConfigHelper::getConfig('phpui.default_taxrate')}
+	{$default_taxlabel = ConfigHelper::getConfig('phpui.default_taxlabel')}
 
 	<h1>{$layout.pagetitle}</h1>
 
@@ -186,7 +187,10 @@
 											<td>
 												<select size="1" id="tax" name="tariff[taxid]" {tip text="Select Tax rate" trigger="taxid"}{if empty($taxeslist)} required{/if}>
 													{foreach $taxeslist as $tax}
-														<option value="{$tax.id}"{if $tax.value == $default_taxrate || $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</option>
+														<option value="{$tax.id}"
+															{if !$tariff.taxid && (isset($default_taxlabel) && $tax.label == $default_taxlabel
+																|| !isset($default_taxlabel) && $tax.value == $default_taxrate)
+																|| $tariff.taxid && $tax.id == $tariff.taxid} selected{/if}>{$tax.label}</option>
 													{foreachelse}
 														<option value="">{trans("— no tax rates defined —")}</option>
 													{/foreach}
@@ -632,13 +636,13 @@
 					let selectedTaxId = $("#tax").find('option:selected').val();
 					let tax = $('#tax' + selectedTaxId).val();
 
-					let grossPrice = financeDecimals.round(grossPriceElemVal);
-					let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1));
+					let grossPrice = financeDecimals.round(grossPriceElemVal, 3);
+					let netPrice = financeDecimals.round(grossPrice / (tax / 100 + 1), 3);
 
-					netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+					netPrice = netPrice.toFixed(3).replace(/[\.]+/, ',');
 					netPriceElem.val(netPrice);
 
-					grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+					grossPrice = grossPrice.toFixed(3).replace(/[\.]+/, ',');
 					grossPriceElem.val(grossPrice);
 				} else {
 					netPriceElem.val('');
@@ -654,13 +658,13 @@
 					let selectedTaxId = $("#tax").find('option:selected').val();
 					let tax = $('#tax' + selectedTaxId).val();
 
-					let netPrice = financeDecimals.round(netPriceElemVal);
-					let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1));
+					let netPrice = financeDecimals.round(netPriceElemVal, 3);
+					let grossPrice = financeDecimals.round(netPrice * (tax / 100 + 1), 3);
 
-					grossPrice = grossPrice.toFixed(2).replace(/[\.]+/, ',');
+					grossPrice = grossPrice.toFixed(3).replace(/[\.]+/, ',');
 					grossPriceElem.val(grossPrice);
 
-					netPrice = netPrice.toFixed(2).replace(/[\.]+/, ',');
+					netPrice = netPrice.toFixed(3).replace(/[\.]+/, ',');
 					netPriceElem.val(netPrice);
 				} else {
 					grossPriceElem.val('');

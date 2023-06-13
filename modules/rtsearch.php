@@ -71,6 +71,8 @@ function RTSearch($search, $order = 'createtime,desc')
 
     $op = !empty($search['operator']) && $search['operator'] == 'OR' ? $op = ' OR ' : $op = ' AND ';
 
+    $where = $where_AND = array();
+
     if (!empty($search['owner']) && intval($search['owner'])) {
         $where[] = 'owner = '.intval($search['owner']);
     }
@@ -90,10 +92,16 @@ function RTSearch($search, $order = 'createtime,desc')
         $join[] = 'JOIN (SELECT DISTINCT ticketid, 0 AS messageid FROM rtmessages) m3 ON m3.ticketid = t.id';
     }
     if (isset($search['state']) && strlen($search['state'])) {
-        if ($search['state'] == '-1') {
-            $where[] = 't.state != '.RT_RESOLVED;
-        } else {
-            $where[] = 't.state = '.intval($search['state']);
+        switch ($search['state']) {
+            case '-1':
+                $where[] = 't.state != ' . RT_RESOLVED;
+                break;
+            case '-2':
+                $where_AND[] = 't.state != ' . RT_RESOLVED;
+                break;
+            default:
+                $where[] = 't.state = '.intval($search['state']);
+                break;
         }
     }
 
@@ -139,13 +147,13 @@ function RTSearch($search, $order = 'createtime,desc')
     }
 
     if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations')) {
-        $where[] = 't.deleted = 0';
+        $where_AND[] = 't.deleted = 0';
     } else {
         if (!empty($search['removed'])) {
             if ($search['removed'] == '-1') {
-                $where[] = 't.deleted = 0';
+                $where_AND[] = 't.deleted = 0';
             } else {
-                $where[] = 't.deleted = 1';
+                $where_AND[] = 't.deleted = 1';
             }
         }
     }
@@ -184,23 +192,23 @@ function RTSearch($search, $order = 'createtime,desc')
             . ')';
     }
 
-    if (isset($where)) {
-        $where = ' WHERE '.implode($op, $where);
-    }
-
     if ($search['count']) {
-        return $DB->GetOne('SELECT COUNT(DISTINCT t.id)
-			FROM rttickets t
-			JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ' . Auth::GetCurrentUser() . '
-			' . implode(' ', $join) . '
-			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
-			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
-			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
-			LEFT JOIN vusers ON (t.owner = vusers.id)
-			LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
-			LEFT JOIN customeraddressview c ON c.id = t.customerid
-			LEFT JOIN vaddresses va ON va.id = t.address_id'
-            .(isset($where) ? $where : ''));
+        return $DB->GetOne(
+            'SELECT COUNT(DISTINCT t.id)
+            FROM rttickets t
+            JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ' . Auth::GetCurrentUser() . '
+            ' . implode(' ', $join) . '
+            LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
+            LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
+            LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
+            LEFT JOIN vusers ON (t.owner = vusers.id)
+            LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
+            LEFT JOIN customeraddressview c ON c.id = t.customerid
+            LEFT JOIN vaddresses va ON va.id = t.address_id
+            WHERE '
+            . (!empty($where) ? '(' . implode($op, $where) . ')' : '1 = 1')
+            . (!empty($where_AND) ? ' AND (' . implode($op, $where_AND) . ')' : '')
+        );
     }
 
     $result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, t.service, t.type,
@@ -236,8 +244,10 @@ function RTSearch($search, $order = 'createtime,desc')
                 ticketid FROM events
             WHERE ticketid IS NOT NULL
             GROUP BY ticketid
-        ) ev ON ev.ticketid = t.id'
-        .(isset($where) ? $where : '')
+        ) ev ON ev.ticketid = t.id
+        WHERE '
+        . (!empty($where) ? '(' . implode($op, $where) . ')' : '1 = 1')
+        . (!empty($where_AND) ? ' AND (' . implode($op, $where_AND) . ')' : '')
         . ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type,
 			t.address_id, va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
 			vusers.name, rtqueues.name,

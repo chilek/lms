@@ -296,7 +296,7 @@ if ($id && !isset($_POST['ticket'])) {
                             );
                         }
                     }
-                    if (!empty($queue['resolveicketsmsbody']) && !empty($mobile_phones)) {
+                    if (!empty($queue['resolveticketsmsbody']) && !empty($mobile_phones)) {
                         $custsms_body = $queue['resolveticketsmsbody'];
                         $custsms_body = preg_replace_callback(
                             '/%(\\d*)tid/',

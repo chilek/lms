@@ -184,6 +184,8 @@ $local_number_pattern = ConfigHelper::getConfig(
     $config_section . '.local_number_pattern',
     '^(?<prefix>48)?(?<number>[0-9]{9})$'
 );
+$operator_number_pattern = ConfigHelper::getConfig($config_section . '.operator_number_pattern');
+$utc_datetime = ConfigHelper::checkConfig($config_section . '.utc_datetime');
 
 if (!is_dir($customer_call_dir)) {
     die('Fatal error: customer call directory does not exist!' . PHP_EOL);
@@ -308,6 +310,10 @@ foreach ($dirs as $dir) {
             $dt = mktime($m['hour'], $m['minute'], $m['second'], $m['month'], $m['day'], $m['year']);
         }
 
+        if ($utc_datetime) {
+            $dt = strtotime(date('Y/m/d H:i:s', $dt) . ' UTC');
+        }
+
         $duration = -1;
         if (isset($m['durationh'])) {
             $duration = (empty($m['durationh']) ? 0 : intval($m['durationh'])) * 3600
@@ -318,6 +324,11 @@ foreach ($dirs as $dir) {
         }
 
         $src = normalizePhoneNumber($m['src']);
+        $dst = normalizePhoneNumber($m['dst']);
+
+        $userid = null;
+        $outgoing = null;
+
         if (preg_match('/' . $local_number_pattern . '/', $src, $mn) && isset($mn['prefix'])) {
             $src_prefix = $mn['prefix'];
             $src_number = $mn['number'];
@@ -326,7 +337,6 @@ foreach ($dirs as $dir) {
             $src_number = $src;
         }
 
-        $dst = normalizePhoneNumber($m['dst']);
         if (preg_match('/' . $local_number_pattern . '/', $dst, $mn) && isset($mn['prefix'])) {
             $dst_prefix = $mn['prefix'];
             $dst_number = $mn['number'];
@@ -335,20 +345,34 @@ foreach ($dirs as $dir) {
             $dst_number = $dst;
         }
 
-        $userid = null;
-        $outgoing = null;
+        if (!empty($operator_number_pattern)) {
+            if (preg_match('/' . $operator_number_pattern . '/', $src)) {
+                $outgoing = true;
+            } elseif (preg_match('/' . $operator_number_pattern . '/', $dst)) {
+                $outgoing = false;
+            }
+        }
+
         if (!empty($src_prefix) && isset($users[$src_prefix . $src_number])) {
             $userid = $users[$src_prefix . $src_number];
-            $outgoing = true;
+            if (!isset($outgoing)) {
+                $outgoing = true;
+            }
         } elseif (isset($users[$src_number])) {
             $userid = $users[$src_number];
-            $outgoing = true;
+            if (!isset($outgoing)) {
+                $outgoing = true;
+            }
         } elseif (!empty($dst_prefix) && isset($users[$dst_prefix . $dst_number])) {
             $userid = $users[$dst_prefix . $dst_number];
-            $outgoing = false;
+            if (!isset($outgoing)) {
+                $outgoing = false;
+            }
         } elseif (isset($users[$dst_number])) {
             $userid = $users[$dst_number];
-            $outgoing = false;
+            if (!isset($outgoing)) {
+                $outgoing = false;
+            }
         }
 
         if (!isset($outgoing)) {
@@ -401,7 +425,30 @@ foreach ($dirs as $dir) {
         } else {
             $cmd = str_replace(
                 array('%i', '%o'),
-                array($src_file, $dst_file),
+                array(
+                    str_replace(
+                        array(
+                            '(',
+                            ')',
+                        ),
+                        array(
+                            '\\(',
+                            '\\)',
+                        ),
+                        $src_file
+                    ),
+                    str_replace(
+                        array(
+                            '(',
+                            ')',
+                        ),
+                        array(
+                            '\\(',
+                            '\\)',
+                        ),
+                        $dst_file
+                    ),
+                ),
                 $convert_command
             );
             $ret = 0;
@@ -424,7 +471,30 @@ foreach ($dirs as $dir) {
             } else {
                 $cmd = str_replace(
                     array('%i', '%o'),
-                    array($src_file, $dst_file),
+                    array(
+                        str_replace(
+                            array(
+                                '(',
+                                ')',
+                            ),
+                            array(
+                                '\\(',
+                                '\\)',
+                            ),
+                            $src_file
+                        ),
+                        str_replace(
+                            array(
+                                '(',
+                                ')',
+                            ),
+                            array(
+                                '\\(',
+                                '\\)',
+                            ),
+                            $dst_file
+                        ),
+                    ),
                     $duration_command
                 );
                 $ret = 0;
@@ -438,7 +508,7 @@ foreach ($dirs as $dir) {
             }
         }
 
-        chmod($dst_file, $storage_dir_permission);
+        chmod($dst_file, $storage_dir_permission & 0666);
         chown($dst_file, $storage_dir_owneruid);
         chgrp($dst_file, $storage_dir_ownergid);
 

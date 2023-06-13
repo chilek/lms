@@ -131,6 +131,15 @@
 												href="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"}
 										</td>
 									</tr>
+									<tr>
+										<td colspan="2">
+										</td>
+										<td>
+											{$gps_coordinate_url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
+											{button type="link" icon="location" label="Show on external map" external=true
+												href="{$gps_coordinate_url|replace:"%longitude":$nodeinfo.longitude|replace:"%latitude":$nodeinfo.latitude}"}
+										</td>
+									</tr>
 								{/if}
 								<tr>
 									<td>

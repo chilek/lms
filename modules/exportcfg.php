@@ -45,6 +45,7 @@
 %DESC - opis pozycji dokumentu/operacji (nie dotyczy faktur)
 %VALUE - kwota operacji (brutto)
 %ABSVALUE - kwota operacji bez znaku (wartość bezwzględna)
+%BALANCE - bieżące saldo klienta
 %DEADLINE - termin płatności faktury w formacie $date_format
 
 */

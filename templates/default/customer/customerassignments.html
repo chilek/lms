@@ -3,7 +3,7 @@
 {css}
 
 {$today = strtotime('today')}
-{$defaultDataset = ConfigHelper::getConfig('phpui.default_assignment_list_dataset', 'gross')}
+{$defaultDataset = ConfigHelper::getConfig('assignments.default_list_dataset', ConfigHelper::getConfig('phpui.default_assignment_list_dataset', 'gross'))}
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
@@ -189,6 +189,8 @@
 					data-currency="{$a.currency}"
 					data-gross-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
 					data-net-disc-value="{$a.real_disc_netvalue|default:"0"|replace:",":"."}"
+					data-discount-value="{$a.real_discount|default:"0"|replace:",":"."}"
+					data-discount-netvalue="{$a.real_netdiscount|default:"0"|replace:",":"."}"
 				{/if}
 				data-downceil="{$a.real_downceil|default:"0"}"
 				data-upceil="{$a.real_upceil|default:"0"}"
@@ -249,13 +251,13 @@
 							<div class="lms-ui-tab-table-column base_value">
 								<span class="net">
 									{if $a.tariffid || $a.liabilityid}
-										{moneyf($a.unitary_netvalue, $a.currency)}
+										{Utils::smartFormatMoney($a.unitary_netvalue, $a.currency)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
 								<span class="gross">
 									{if $a.tariffid || $a.liabilityid}
-										{moneyf($a.unitary_value, $a.currency)}
+										{Utils::smartFormatMoney($a.unitary_value, $a.currency)}
 									{/if}
 								</span>
 							</div>
@@ -273,7 +275,7 @@
 									{/if}
 									<br>
 								{/if}
-								{$a.count|rtrim:'0'|rtrim:'.'}
+								{rtrim(rtrim($a.count, '0'), '.')}
 							</div>
 							{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 							<div class="lms-ui-tab-table-column discount">
@@ -287,17 +289,17 @@
 											{/if}
 										{elseif $a.vdiscount != 0}
 											{if isset($a.real_unitary_netdiscount)}
-												{moneyf($a.real_unitary_netdiscount, $a.currency)}
+												{Utils::smartFormatMoney($a.real_unitary_netdiscount, $a.currency)}
 												{if $a.count != 1}
 													<span title="{trans("Total net discount")}">
-													({moneyf($a.real_netdiscount, $a.currency)})
-												</span>
+														({Utils::smartFormatMoney($a.real_netdiscount, $a.currency)})
+													</span>
 												{/if}
 											{else}
-												{moneyf($a.unitary_netdiscount, $a.currency)}
+												{Utils::smartFormatMoney($a.unitary_netdiscount, $a.currency)}
 												{if $a.count != 1}
 													<span title="{trans("Total net discount")}">
-															({moneyf($a.unitary_netdiscount *$a.count, $a.currency)})
+														({Utils::smartFormatMoney($a.unitary_netdiscount * $a.count, $a.currency)})
 													</span>
 												{/if}
 											{/if}
@@ -317,18 +319,18 @@
 											{/if}
 										{elseif $a.vdiscount != 0}
 											{if isset($a.real_unitary_discount)}
-												{moneyf($a.real_unitary_discount, $a.currency)}
+												{Utils::smartFormatMoney($a.real_unitary_discount, $a.currency)}
 												{if $a.count != 1}
 													<span title="{trans("Total gross discount")}">
-														({moneyf($a.real_discount, $a.currency)})
+														{Utils::smartFormatMoney($a.real_discount, $a.currency)}
 													</span>
 												{/if}
 											{else}
-												{moneyf($a.unitary_discount, $a.currency)}
+												{Utils::smartFormatMoney($a.unitary_discount, $a.currency)}
 												{if $a.count != 1}
-												<span title="{trans("Total net discount")}">
-														({moneyf($a.unitary_discount *$a.count, $a.currency)})
-												</span>
+													<span title="{trans("Total net discount")}">
+														({Utils::smartFormatMoney($a.unitary_discount * $a.count, $a.currency)})
+													</span>
 												{/if}
 											{/if}
 										{else}
@@ -347,17 +349,17 @@
 							<div class="lms-ui-tab-table-column price">
 								<span class="net">
 									{if isset($a.real_unitary_netprice)}
-										{moneyf($a.real_unitary_netprice, $a.currency)}
+										{Utils::smartFormatMoney($a.real_unitary_netprice, $a.currency)}
 									{else}
-										{moneyf($a.discounted_netprice, $a.currency)}
+										{Utils::smartFormatMoney($a.discounted_netprice, $a.currency)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
 								<span class="gross">
 									{if isset($a.real_unitary_price)}
-										{moneyf($a.real_unitary_price, $a.currency)}
+										{Utils::smartFormatMoney($a.real_unitary_price, $a.currency)}
 									{else}
-										{moneyf(($a.discounted_price), $a.currency)}
+										{Utils::smartFormatMoney($a.discounted_price, $a.currency)}
 									{/if}
 
 								</span>
@@ -365,17 +367,17 @@
 							<div class="lms-ui-tab-table-column total">
 								<span class="net">
 									{if isset($a.real_disc_netvalue)}
-										{moneyf($a.real_disc_netvalue, $a.currency)}
+										{Utils::formatMoney($a.real_disc_netvalue, $a.currency)}
 									{else}
-										{moneyf($a.discounted_netvalue, $a.currency)}
+										{Utils::formatMoney($a.discounted_netvalue, $a.currency)}
 									{/if}
 								</span>
 								<span class="net-gross"><br></span>
 								<span class="gross">
 									{if isset($a.real_disc_value)}
-										{moneyf($a.real_disc_value, $a.currency)}
+										{Utils::formatMoney($a.real_disc_value, $a.currency)}
 									{else}
-										{moneyf($a.discounted_value, $a.currency)}
+										{Utils::formatMoney($a.discounted_value, $a.currency)}
 									{/if}
 								</span>
 							</div>
@@ -546,8 +548,6 @@
 		{foreach $_SERVICETYPES as $type => $name}
 		tariff_types[{$type}] = '{$name}';
 		{/foreach}
-
-		var money_format = '%01.2f %s';
 	}
 
 	$(function() {
@@ -674,8 +674,8 @@
 				}
 				total_gross_disc_value[currency] += parseFloat($(this).attr('data-gross-disc-value'));
 				total_net_disc_value[currency] += parseFloat($(this).attr('data-net-disc-value'));
-				total_net_discount[currency] += (parseFloat($(this).attr('data-net-value')) - parseFloat($(this).attr('data-net-disc-value')));
-				total_gross_discount[currency] += (parseFloat($(this).attr('data-gross-value')) - parseFloat($(this).attr('data-gross-disc-value')));
+				total_net_discount[currency] += parseFloat($(this).attr('data-discount-netvalue'));
+				total_gross_discount[currency] += parseFloat($(this).attr('data-discount-value'));
 				{/if}
 			});
 
@@ -687,7 +687,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_gross_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -696,7 +696,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_net_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -705,7 +705,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += lms.utils.formatMoney(value, currency);
 			});
 			tab_elem.find('.total_gross_disc_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -714,7 +714,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += lms.utils.formatMoney(value, currency);
 			});
 			tab_elem.find('.total_net_disc_value').html('(' + (html.length ? html : '-') + ')');
 
@@ -723,7 +723,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_gross_discount').html('(' + (html.length ? html : '-') + ')');
 
@@ -732,7 +732,7 @@
 				if (html.length) {
 					html += '<br>';
 				}
-				html += sprintf(money_format, value, currency);
+				html += lms.utils.smartFormatMoney(value, currency);
 			});
 			tab_elem.find('.total_net_discount').html('(' + (html.length ? html : '-') + ')');
 			{/if}

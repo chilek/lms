@@ -75,19 +75,61 @@ if ($devices) {
         }
     }
 
-    $devids = implode(',', array_keys($devices));
-
-    $devlinks = $DB->GetAll('SELECT src, dst, type, technology, speed FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
+    $devlinks = $DB->GetAllByKey(
+        'SELECT id, src, dst, type, technology, speed
+        FROM netlinks
+        WHERE src IN ?
+            AND dst IN ?',
+        'id',
+        array(
+            array_keys($devices),
+            array_keys($devices),
+        )
+    );
     if ($devlinks) {
-        foreach ($devlinks as $devlinkidx => $devlink) {
-            $devlinks[$devlinkidx]['srclat'] = $devices[$devlink['src']]['lat'];
-            $devlinks[$devlinkidx]['srclon'] = $devices[$devlink['src']]['lon'];
-            $devlinks[$devlinkidx]['dstlat'] = $devices[$devlink['dst']]['lat'];
-            $devlinks[$devlinkidx]['dstlon'] = $devices[$devlink['dst']]['lon'];
-            $devlinks[$devlinkidx]['typename'] = trans("Link type:")." ".$LINKTYPES[$devlink['type']];
-            $devlinks[$devlinkidx]['technologyname'] = ($devlink['technology'] ? trans("Link technology:")." ".$LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
-            $devlinks[$devlinkidx]['speedname'] = trans("Link speed:")." ".$LINKSPEEDS[$devlink['speed']];
+        foreach ($devlinks as &$devlink) {
+            $devlink['netlinkid'] = $devlink['id'];
+            $devlink['srclat'] = $devices[$devlink['src']]['lat'];
+            $devlink['srclon'] = $devices[$devlink['src']]['lon'];
+            $devlink['dstlat'] = $devices[$devlink['dst']]['lat'];
+            $devlink['dstlon'] = $devices[$devlink['dst']]['lon'];
+            $devlink['typename'] = trans("Link type:") . ' ' . $LINKTYPES[$devlink['type']];
+            $devlink['technologyname'] = ($devlink['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$devlink['type']][$devlink['technology']] : '');
+            $devlink['speedname'] = trans("Link speed:") . ' ' . $LINKSPEEDS[$devlink['speed']];
+            $devlink['points'] = array(
+                0 => array(
+                    'lon' => $devices[$devlink['src']]['lon'],
+                    'lat' => $devices[$devlink['src']]['lat'],
+                ),
+            );
         }
+        unset($devlink);
+
+        $netlinkpoints = $DB->GetAll(
+            'SELECT *
+            FROM netlinkpoints
+            ORDER BY id'
+        );
+        if (empty($netlinkpoints)) {
+            $netlinkpoints = array();
+        }
+
+        foreach ($netlinkpoints as $netlinkpoint) {
+            $netlinkid = $netlinkpoint['netlinkid'];
+            $netlinkpointid = $netlinkpoint['id'];
+            $devlinks[$netlinkid]['points'][$netlinkpointid] = array(
+                'lon' => $netlinkpoint['longitude'],
+                'lat' => $netlinkpoint['latitude'],
+            );
+        }
+
+        foreach ($devlinks as &$devlink) {
+            $devlink['points'][PHP_INT_MAX] = array(
+                'lon' => $devlink['dstlon'],
+                'lat' => $devlink['dstlat'],
+            );
+        }
+        unset($devlink);
     }
 } else {
     $devlinks = null;
@@ -119,12 +161,20 @@ if ($nodes) {
         }
     }
 
-    $nodeids = implode(',', array_keys($nodes));
-
     if ($devices) {
-        $nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
-			linkspeed AS speed FROM vnodes n WHERE netdev IS NOT NULL AND ownerid IS NOT NULL
-			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
+        $nodelinks = $DB->GetAll(
+            'SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
+                linkspeed AS speed
+            FROM vnodes n
+            WHERE netdev IS NOT NULL
+                AND ownerid IS NOT NULL
+                AND n.id IN ?
+                AND netdev IN ?',
+            array(
+                array_keys($nodes),
+                array_keys($devices),
+            )
+        );
         if ($nodelinks) {
             foreach ($nodelinks as $nodelinkidx => $nodelink) {
                 $nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['lat'];
@@ -139,7 +189,65 @@ if ($nodes) {
     }
 }
 
+$ranges = $DB->GetAll(
+    'SELECT b.*,
+        lst.name AS street1,
+        lst.name2 AS street2,
+        (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name', "' '", 'lst.name2') . ' ELSE lst.name END) AS street,
+        (CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS rstreet,
+        t.name AS streettype,
+        lc.id AS cityid,
+        lc.name AS city,
+        lb.id AS boroughid,
+        lb.type AS boroughtype,
+        lb.name AS borough,
+        ld.id AS districtid,
+        ld.name AS district,
+        ls.id AS stateid,
+        ls.name AS state,
+        r.id AS netrangeid,
+        r.linktype,
+        r.linktechnology,
+        r.downlink,
+        r.uplink,
+        r.type,
+        r.services,
+        (CASE WHEN na.city_id IS NULL THEN 0 ELSE 1 END) AS existing
+    FROM location_buildings b
+    LEFT JOIN location_streets lst ON lst.id = b.street_id
+    LEFT JOIN location_street_types t ON t.id = lst.typeid
+    JOIN location_cities lc ON lc.id = b.city_id
+    JOIN location_boroughs lb ON lb.id = lc.boroughid
+    JOIN location_districts ld ON ld.id = lb.districtid
+    JOIN location_states ls ON ls.id = ld.stateid
+    JOIN netranges r ON r.buildingid = b.id
+    LEFT JOIN (
+        SELECT a.city_id, a.street_id, UPPER(a.house) AS house, COUNT(*) AS nodecount FROM nodes n
+        JOIN vaddresses a ON a.id = n.address_id
+        WHERE a.city_id IS NOT NULL
+        GROUP BY a.city_id, a.street_id, UPPER(a.house)
+    ) na ON b.city_id = na.city_id AND (b.street_id IS NULL OR b.street_id = na.street_id) AND na.house = UPPER(b.building_num)
+    ORDER BY ls.name, ld.name, lb.name, lc.name, lst.name, b.building_num'
+);
+
+if ($ranges) {
+    foreach ($ranges as &$range) {
+        $range['location'] = $range['city'] . (empty($range['street_id']) ? '' : ', ' . $range['streettype'] . ' ' . $range['street']) . ' ' . $range['building_num'];
+        $range['typename'] = trans("Link type:") . ' ' . $LINKTYPES[$range['linktype']];
+        $range['technologyname'] = ($range['linktechnology'] ? trans("Link technology:") . ' ' . $SIDUSIS_LINKTECHNOLOGIES[$range['linktype']][$range['linktechnology']] : '');
+        $range['speedname'] = trans("Link speed:") . ' ' . trans('$a Mbit/$b Mbit', $range['downlink'], $range['uplink']);
+        $range['rangetypename'] = trans('<!netrange>Type:') . ' ' . trans($range['type'] == 1 ? '<!netrange>real' : '<!netrange>theoretical');
+        $range['existingname'] = empty($range['existing']) ? '' : trans('<!netrange>Existing');
+        $range['servicesname'] = '<ul>' . trans('<!netrange>Services:')
+            . ($range['services'] & 1 ? '<li><span>' . trans('<!netrange>wholesale') . '</span></li>' : '')
+            . ($range['services'] & 2 ? '<li><span>' . trans('<!netrange>retail') . '</span></li>' : '')
+            . '</ul>';
+    }
+    unset($range);
+}
+
 $SMARTY->assign('devices', $devices);
 $SMARTY->assign('devlinks', $devlinks);
 $SMARTY->assign('nodes', $nodes);
 $SMARTY->assign('nodelinks', empty($nodelinks) ? null : $nodelinks);
+$SMARTY->assign('ranges', empty($ranges) ? null : $ranges);

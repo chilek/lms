@@ -118,12 +118,13 @@
 											data-tariffnetvalue="{$tariff.netvalue}"
 											data-tariffnetflag="{$tariff.netflag}"
 											data-tarifftaxid="{$tariff.taxid}"
+											data-tariffpricevariants='{json_encode($tariff.price_variants)}'
 											{if $tariff.id == $assignment.tariffid} selected{/if}
 											data-valid="{$tariff.valid}"
 											{if !$tariff.valid} class="blend"{if !$assignment.alltariffs && $tariff.id != $assignment.tariffid} style="display: none;"{/if}{/if}>
 									{$tariff.name}
 									{$bracket_open = false}
-									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}({moneyf($tariff.value, $tariff.currency)}{$bracket_open = true}{/if}{if $tariff.upceil || $tariff.downceil}{if $bracket_open}, {else}({$bracket_open = true}{/if}{convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if}{if $bracket_open}){/if}
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}({moneyf($tariff.value, $tariff.currency, 3)}{$bracket_open = true}{/if}{if $tariff.upceil || $tariff.downceil}{if $bracket_open}, {else}({$bracket_open = true}{/if}{convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if}{if $bracket_open}){/if}
 									</option>
 								{/foreach}
 							</select>
@@ -168,6 +169,7 @@
 	var assignmentNetvalue = '{$assignment.netvalue}';
 	var assignmentNetflag = '{$assignment.netflag}';
 	var assignmentTaxid = '{$assignment.taxid}';
+	var assignmentTariffId = '{$assignment.tariffid}';
 
 	var tariffTypes = [];
 	{foreach $tariffs as $tariff}
@@ -199,13 +201,9 @@
 	$(function() {
 		$('#submit-button').click(function(e) {
 			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
+			$("#netflag, #grossprice, #netprice, #tax").prop('disabled', false);
 
-			$("#grossprice").prop('disabled', !isNaN(tariffid));
-			$("#netprice").prop('disabled', !isNaN(tariffid));
-			$("#netflag").prop('disabled', false);
-			$("#tax").prop('disabled', false);
-
-			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
+			{if ConfigHelper::checkConfig('assignments.missed_node_warning', ConfigHelper::checkConfig('phpui.node_assignment_warning'))}
 			if (isNaN(tariffid)) {
 				document.assignment.submit();
 				return;

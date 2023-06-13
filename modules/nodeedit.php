@@ -61,21 +61,43 @@ switch ($action) {
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
-$macs = array();
 
-foreach ($nodeinfo['macs'] as $key => $value) {
-    $macs[] = $nodeinfo['macs'][$key]['mac'];
+$nodeinfo['macs'] = Utils::array_column($nodeinfo['macs'], 'mac');
+$node_empty_mac = ConfigHelper::getConfig('phpui.node_empty_mac', '', true);
+if (strlen($node_empty_mac)) {
+    if (check_mac($node_empty_mac)) {
+        $node_empty_mac = Utils::normalizeMac($node_empty_mac);
+        $nodeinfo['macs'] = array_filter($nodeinfo['macs'], function ($mac) use ($node_empty_mac) {
+            return $mac != $node_empty_mac;
+        });
+    } else {
+        $node_empty_mac = '';
+    }
 }
-
-$nodeinfo['macs'] = $macs;
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
 if (isset($_POST['nodeedit'])) {
     $nodeedit = $_POST['nodeedit'];
 
-    foreach ($nodeedit['macs'] as $key => $value) {
-        $nodeedit['macs'][$key] = str_replace('-', ':', $value);
+    if (empty($nodeedit['macs'])) {
+        $nodeedit['macs'] = array();
+    }
+
+    $nodeedit['macs'] = array_map(
+        function ($mac) {
+            return Utils::normalizeMac($mac);
+        },
+        $nodeedit['macs']
+    );
+
+    if (strlen($node_empty_mac)) {
+        $nodeedit['macs'] = array_filter(
+            $nodeedit['macs'],
+            function ($mac) use ($node_empty_mac) {
+                return $mac != $node_empty_mac;
+            }
+        );
     }
 
     foreach ($nodeedit as $key => $value) {
@@ -164,14 +186,14 @@ if (isset($_POST['nodeedit'])) {
         ++$key;
     }
 
-    if (empty($macs)) {
+    if (!strlen($node_empty_mac) && empty($macs)) {
         $error['mac0'] = trans('MAC address is required!');
     }
     $nodeedit['macs'] = $macs;
 
     if ($nodeedit['name'] == '') {
         $error['name'] = trans('Node name is required!');
-    } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $nodeedit['name'])) {
+    } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodeedit['name'])) {
         $error['name'] = trans('Specified name contains forbidden characters!');
     } elseif (strlen($nodeedit['name']) > 32) {
         $error['name'] = trans('Node name is too long (max. 32 characters)!');
@@ -184,7 +206,7 @@ if (isset($_POST['nodeedit'])) {
     if ($login_length = strlen($nodeedit['login'])) {
         if ($login_length > 32) {
             $error['login'] = trans('Login is too long (max. 32 characters)!');
-        } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9-.]+$') . '/i', $nodeedit['login'])) {
+        } elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_login_regexp', '^[_a-z0-9\-\.]+$') . '/i', $nodeedit['login'])) {
             $error['login'] = trans('Specified login contains forbidden characters!');
         } elseif (($tmp_nodeid = $LMS->GetNodeIDByLogin($nodeedit['login'])) && $tmp_nodeid != $nodeedit['id']) {
             $error['login'] = trans('Specified login is in use!');
@@ -197,15 +219,87 @@ if (isset($_POST['nodeedit'])) {
         }
     }
 
-    $password_required = ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('nodepassword_required', 'none'));
+    $password_required = ConfigHelper::getConfig('phpui.node_password_required', ConfigHelper::getConfig('phpui.nodepassword_required', 'none'));
 
     if (strlen($nodeedit['passwd']) > 32) {
         $error['passwd'] = trans('Password is too long (max. 32 characters)!');
     } elseif (!strlen($nodeedit['passwd']) && $password_required != 'none') {
-        if ($password_required == 'error' || $password_required == 'true') {
-            $error['passwd'] = trans('Password is required!');
-        } elseif ($password_required == 'warning' && !isset($warnings['nodeedit-passwd-'])) {
-            $warning['nodeedit[passwd]'] = trans('Password is empty!');
+        $auth_types = ConfigHelper::getConfig('phpui.node_password_required_for_auth_types', 'all');
+        if ($auth_types == 'all') {
+            $auth_types = null;
+        } else {
+            $auth_types = preg_split("/([\s]+|[\s]*,[\s]*)/", $auth_types, -1, PREG_SPLIT_NO_EMPTY);
+            if (empty($auth_types)) {
+                $auth_types = null;
+            } else {
+                $all_auth_types = Utils::array_column($SESSIONTYPES, 'alias');
+                $auth_types = array_intersect($all_auth_types, $auth_types);
+                if (empty($auth_types)) {
+                    $auth_types = null;
+                }
+            }
+        }
+        if (empty($auth_types)) {
+            $requiring_auth_type = true;
+        } else {
+            $requiring_auth_type = false;
+            foreach ($nodeedit['authtype'] as $val) {
+                if (isset($auth_types[$val])) {
+                    $requiring_auth_type = true;
+                    break;
+                }
+            }
+        }
+        if ($requiring_auth_type) {
+            if ($password_required == 'error' || $password_required == 'true') {
+                $error['passwd'] = trans('Password is required!');
+            } elseif ($password_required == 'warning' && !isset($warnings['nodeedit-passwd-'])) {
+                $warning['nodeedit[passwd]'] = trans('Password is empty!');
+            }
+        }
+    }
+
+    $gps_coordinates_required = ConfigHelper::getConfig('phpui.node_gps_coordinates_required', 'none');
+
+    $longitude = filter_var($nodeedit['longitude'], FILTER_VALIDATE_FLOAT);
+    $latitude = filter_var($nodeedit['latitude'], FILTER_VALIDATE_FLOAT);
+
+    if (strlen($nodeedit['longitude']) && $longitude === false) {
+        $error['longitude'] = trans('Invalid longitude format!');
+    }
+    if (strlen($nodeedit['latitude']) && $latitude === false) {
+        $error['latitude'] = trans('Invalid latitude format!');
+    }
+
+    if (!strlen($nodeedit['longitude']) != !strlen($nodeedit['latitude'])) {
+        if (!isset($error['longitude'])) {
+            $error['longitude'] = trans('Longitude and latitude cannot be empty!');
+        }
+        if (!isset($error['latitude'])) {
+            $error['latitude'] = trans('Longitude and latitude cannot be empty!');
+        }
+    }
+
+    if ($gps_coordinates_required != 'none'
+        && ($gps_coordinates_required == 'warning'
+            || $gps_coordinates_required == 'error'
+            || ConfigHelper::checkValue($gps_coordinates_required))) {
+        if ($gps_coordinates_required != 'warning' && $gps_coordinates_required != 'error') {
+            $gps_coordinates_required = 'error';
+        }
+        if (!isset($error['longitude']) && !strlen($nodeedit['longitude'])) {
+            if ($gps_coordinates_required == 'error') {
+                $error['longitude'] = trans('Longitude is required!');
+            } elseif ($gps_coordinates_required == 'warning' && !isset($warnings['nodeedit-longitude-'])) {
+                $warning['nodeedit[longitude]'] = trans('Longitude should not be empty!');
+            }
+        }
+        if (!isset($error['latitude']) && !strlen($nodeedit['latitude'])) {
+            if ($gps_coordinates_required == 'error') {
+                $error['latitude'] = trans('Latitude is required!');
+            } elseif ($gps_coordinates_required == 'warning' && !isset($warnings['nodeedit-latitude-'])) {
+                $warning['nodeedit[latitude]'] = trans('Latitude should not be empty!');
+            }
         }
     }
 
@@ -268,7 +362,7 @@ if (isset($_POST['nodeedit'])) {
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
         && !empty($nodeedit['address_id']) && !$LMS->isTerritAddress($nodeedit['address_id'])) {
-        $error['address_id'] = trans('TERRIT address is required!');
+        $error['address_id'] = trans('TERYT address is required!');
     }
 
     if ($nodeedit['invprojectid'] == '-1') { // nowy projekt
@@ -355,13 +449,19 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['ipaddr_pub'] = $nodeinfo['ip_pub'];
 
     if (empty($nodeinfo['netdev'])) {
-        $nodeinfo['linktype'] = intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE));
-        $nodeinfo['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
-        $nodeinfo['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
+        if (!ctype_digit($nodeinfo['linktype'])) {
+            $nodeinfo['linktype'] = intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE));
+        }
+        if (!ctype_digit($nodeinfo['linktechnology'])) {
+            $nodeinfo['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
+        }
+        if (!ctype_digit($nodeinfo['linkspeed'])) {
+            $nodeinfo['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
+        }
     }
 }
 
-if (empty($nodeinfo['macs'])) {
+if (!strlen($node_empty_mac) && empty($nodeinfo['macs'])) {
     $nodeinfo['macs'][] = '';
 }
 
@@ -434,6 +534,7 @@ if (!isset($resource_tabs['routednetworks']) || $resource_tabs['routednetworks']
 }
 
 $SMARTY->assign('error', $error);
+$SMARTY->assign('node_empty_mac', $node_empty_mac);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
 $SMARTY->assign('nodeedit_sortable_order', $SESSION->get_persistent_setting('nodeedit-sortable-order'));

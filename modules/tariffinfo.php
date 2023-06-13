@@ -44,6 +44,7 @@ if (!empty($tariff['numberplanid'])) {
     $tariff['numberplan'] = $DB->GetRow('SELECT template, period FROM numberplans WHERE id = ?', array($tariff['numberplanid']));
 }
 
+
 $layout['pagetitle'] = trans('Subscription Info: $a', $tariff['name']);
 
 $SESSION->add_history_entry();

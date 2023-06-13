@@ -244,6 +244,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         if (!isset($type)) {
             $type = '';
         }
+
         if (!isset($count)) {
             $count = false;
         }

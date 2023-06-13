@@ -72,16 +72,22 @@ $(function() {
         var address_type = box.find('[data-address="address_type"]').val();
         var location_name = box.find('[data-address="location-name"]').val();
         var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
+        var terc = box.find('[data-address="terc"]').val();
         var city   = box.find('[data-address="city"]').val();
+        var simc = box.find('[data-address="simc"]').val();
         var street = box.find('[data-address="street"]').val();
+        var ulic = box.find('[data-address="ulic"]').val();
         var house  = box.find('[data-address="house"]').val();
         var flat   = box.find('[data-address="flat"]').val();
         var zip    = box.find('[data-address="zip"]').val();
         var postoffice = box.find('[data-address="postoffice"]').val();
 
         var location = location_str({
+            terc: terc,
             city: city,
+            simc: simc,
             street: street,
+            ulic: ulic,
             house: house,
             flat: flat,
             zip: zip,
@@ -91,8 +97,11 @@ $(function() {
         location = (address_type == 1 || !location_name.length ? '' : location_name + ', ') + (location.length > 0 ? location : '...');
 
         var location2 = location_str({
+            terc: terc,
             city: city,
+            simc: simc,
             street: street,
+            ulic: ulic,
             house: house,
             flat: flat,
             zip: zip,
@@ -138,25 +147,65 @@ $(function() {
 					"country": country,
 					"countryid": countryid
 				}
-				if (lmsSettings.zipCodeBackend == 'pna') {
-					pna_get_zip_code(search, function (zip) {
-						if (zip.length) {
-							box.find('[data-address="zip"]').val(zip);
-							$(elem).trigger('input');
-						} else {
-							osm_get_zip_code(search, function (zip) {
-								box.find('[data-address="zip"]').val(zip);
-								$(elem).trigger('input');
-							});
-						}
-					});
-				} else {
-					osm_get_zip_code(search, function (zip) {
-						box.find('[data-address="zip"]').val(zip);
-						$(elem).trigger('input');
-					});
-				}
-			}, 500);
+                var backends = [...lmsSettings.zipCodeBackend];
+
+                var deferred = $.Deferred();
+                var backend = backends.shift();
+
+                function get_zip_code(backend) {
+                    switch (backend) {
+                        case 'osm':
+                            osm_get_zip_code(search, function (zip) {
+                                if (zip.length) {
+                                    box.find('[data-address="zip"]').val(zip);
+                                    $(elem).trigger('input');
+                                    deferred.resolve();
+                                } else {
+                                    deferred.reject();
+                                }
+                            });
+                            backend = '';
+                            break;
+                        case 'pna':
+                            pna_get_zip_code(search, function (zip) {
+                                if (zip.length) {
+                                    box.find('[data-address="zip"]').val(zip);
+                                    $(elem).trigger('input');
+                                    deferred.resolve();
+                                } else {
+                                    deferred.reject();
+                                }
+                            });
+                            backend = '';
+                            break;
+                        case 'prg':
+                            prg_get_zip_code(search, function (zip) {
+                                if (zip.length) {
+                                    box.find('[data-address="zip"]').val(zip);
+                                    $(elem).trigger('input');
+                                    deferred.resolve();
+                                } else {
+                                    deferred.reject();
+                                }
+                            });
+                            backend = '';
+                            break;
+                    }
+                }
+
+                function failHandler() {
+                    if (backends.length) {
+                        backend = backends.shift();
+                        deferred = $.Deferred();
+                        deferred.fail(failHandler);
+                        get_zip_code(backend);
+                    }
+                }
+
+                deferred.fail(failHandler);
+
+                get_zip_code(backend);
+            }, 500);
 		}
     });
 
@@ -172,32 +221,74 @@ $(function() {
 		var country = box.find('[data-address="country"] option:selected').text();
 		var countryid = box.find('[data-address="country"]').val();
 
-		if (city.length && house.length) {
-			var search = {
-				"city": city,
-				"cityid": cityid,
-				"street": street,
-				"streetid": streetid,
-				"house": house,
-				"country": country,
-				"countryid": countryid
-			}
-		    if (lmsSettings.zipCodeBackend == 'pna') {
-				pna_get_zip_code(search, function (zip) {
-					if (zip.length) {
-						zipelem.val(zip).trigger('input');
-					} else {
-						osm_get_zip_code(search, function (zip) {
-							zipelem.val(zip).trigger('input');
-						});
-					}
-				});
-			} else {
-				osm_get_zip_code(search, function (zip) {
-					zipelem.val(zip).trigger('input');
-				});
-			}
-		}
+        var backends = [...lmsSettings.zipCodeBackend];
+
+        var deferred = $.Deferred();
+        var backend = backends.shift();
+
+        function get_zip_code(backend) {
+            switch (backend) {
+                case 'osm':
+                    osm_get_zip_code(search, function (zip) {
+                        if (zip.length) {
+                            zipelem.val(zip).trigger('input');
+                            deferred.resolve();
+                        } else {
+                            deferred.reject();
+                        }
+                    });
+                    backend = '';
+                    break;
+                case 'pna':
+                    pna_get_zip_code(search, function (zip) {
+                        if (zip.length) {
+                            zipelem.val(zip).trigger('input');
+                            deferred.resolve();
+                        } else {
+                            deferred.reject();
+                        }
+                    });
+                    backend = '';
+                    break;
+                case 'prg':
+                    prg_get_zip_code(search, function (zip) {
+                        if (zip.length) {
+                            zipelem.val(zip).trigger('input');
+                            deferred.resolve();
+                        } else {
+                            deferred.reject();
+                        }
+                    });
+                    backend = '';
+                    break;
+            }
+        }
+
+        function failHandler() {
+            if (backends.length) {
+                backend = backends.shift();
+                deferred = $.Deferred();
+                deferred.fail(failHandler);
+                get_zip_code(backend);
+            }
+        }
+
+        if (city.length && house.length) {
+            var search = {
+                "city": city,
+                "cityid": cityid,
+                "street": street,
+                "streetid": streetid,
+                "house": house,
+                "country": country,
+                "countryid": countryid
+            }
+
+            deferred.fail(failHandler);
+
+            get_zip_code(backend);
+        }
+
 		return false;
 	});
 

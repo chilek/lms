@@ -39,6 +39,7 @@ $parameters = array(
     'help' => 'h',
     'version' => 'v',
     'test' => 't',
+    'section:' => 's:',
     'fakedate:' => 'f:',
     'issue-date:' => null,
     'customerid:' => null,
@@ -98,6 +99,8 @@ lms-payments.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -t, --test                      no changes are made to database;
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 -f, --fakedate=YYYY/MM/DD       override system date;
     --issue-date=YYYY/MM/DD     override system date for generated cash record issue date;
     --customerid=<id>           limit assignments to specifed customer
@@ -202,37 +205,45 @@ if (!empty($divisionid)) {
     ConfigHelper::setFilter($divisionid);
 }
 
-$deadline = ConfigHelper::getConfig('payments.deadline', 14);
-$sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
-$paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
-$comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attribute subscription for period %period");
-$backward_comment = ConfigHelper::getConfig('payments.backward_comment', $comment);
-$backward_on_the_last_day = ConfigHelper::checkConfig('payments.backward_on_the_last_day');
-$s_comment = ConfigHelper::getConfig('payments.settlement_comment', $comment);
-$s_backward_comment = ConfigHelper::getConfig('payments.settlement_backward_comment', $s_comment);
-$suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
-$suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
-$unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
-$check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
-$proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
-$delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after_days', 0));
-$prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_only');
-$prefer_netto = ConfigHelper::checkConfig('payments.prefer_netto');
-$customergroups = ConfigHelper::getConfig('payments.customergroups', '', true);
-$tariff_tags = ConfigHelper::getConfig('payments.tariff_tags', '', true);
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section'])
+    ? $options['section']
+    : 'payments';
 
-$reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig('payments.reward_penalty_deadline_grace_days'));
+$deadline = ConfigHelper::getConfig($config_section . '.deadline', 14);
+$sdate_next = ConfigHelper::checkConfig($config_section . '.saledate_next_month');
+$paytype = ConfigHelper::getConfig($config_section . '.paytype', PAYTYPE_TRANSFER);
+$comment = ConfigHelper::getConfig($config_section . '.comment', "Tariff %tariff - %attribute subscription for period %period");
+$backward_comment = ConfigHelper::getConfig($config_section . '.backward_comment', $comment);
+$backward_on_the_last_day = ConfigHelper::checkConfig($config_section . '.backward_on_the_last_day');
+$s_comment = ConfigHelper::getConfig($config_section . '.settlement_comment', $comment);
+$s_backward_comment = ConfigHelper::getConfig($config_section . '.settlement_backward_comment', $s_comment);
+$suspension_description = ConfigHelper::getConfig($config_section . '.suspension_description', '');
+$suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
+$unit_name = trans(ConfigHelper::getConfig($config_section . '.default_unit_name'));
+$check_invoices = ConfigHelper::checkConfig($config_section . '.check_invoices');
+$proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
+$delete_old_assignments_after_days = intval(ConfigHelper::getConfig($config_section . '.delete_old_assignments_after_days', 0));
+$prefer_settlement_only = ConfigHelper::checkConfig($config_section . '.prefer_settlement_only');
+$prefer_netto = ConfigHelper::checkConfig($config_section . '.prefer_netto');
+$customergroups = ConfigHelper::getConfig($config_section . '.customergroups', '', true);
+$tariff_tags = ConfigHelper::getConfig($config_section . '.tariff_tags', '', true);
+
+$reward_penalty_deadline_grace_days = intval(ConfigHelper::getConfig($config_section . '.reward_penalty_deadline_grace_days'));
 
 $force_telecom_service_flag = ConfigHelper::checkConfig('invoices.force_telecom_service_flag', true);
 $check_customer_vat_payer_flag_for_telecom_service = ConfigHelper::checkConfig('invoices.check_customer_vat_payer_flag_for_telecom_service');
 
-$billing_document_template = ConfigHelper::getConfig('payments.billing_document_template', '');
+$billing_document_template = ConfigHelper::getConfig($config_section . '.billing_document_template', '');
+
+$auto_payments = ConfigHelper::checkConfig($config_section . '.auto_payments');
+
+$use_comment_for_liabilities = ConfigHelper::checkConfig($config_section . '.use_comment_for_liabilities');
 
 $allowed_customer_status =
 Utils::determineAllowedCustomerStatus(
     isset($options['customer-status'])
         ? $options['customer-status']
-        : ConfigHelper::getConfig('payments.allowed_customer_status', '')
+        : ConfigHelper::getConfig($config_section . '.allowed_customer_status', '')
 );
 
 if (empty($allowed_customer_status)) {
@@ -276,7 +287,7 @@ if ($month > 6) {
     $halfyear = $dom + ($month - 1) * 100;
 }
 
-$date_format = ConfigHelper::getConfig('payments.date_format', '%Y/%m/%d');
+$date_format = ConfigHelper::getConfig($config_section . '.date_format', '%Y/%m/%d');
 
 $forward_periods = array(
     DAILY      => Utils::strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
@@ -516,12 +527,12 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
-			END), 2) AS unitary_value,
-		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
+			END), 3) AS unitary_value,
+		ROUND(ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN tvalue ELSE lvalue END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
-			END), 2) * a.count AS value,
+			END), 3) * a.count, 2) AS value,
 		(CASE WHEN a.liabilityid IS NULL THEN t.taxrate ELSE l.taxrate END) AS taxrate,
 		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
 		a.count AS count,
@@ -594,8 +605,8 @@ $services = $DB->GetAll(
     )
 );
 
-$billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
-$billing_invoice_separate_fractions = ConfigHelper::checkConfig('payments.billing_invoice_separate_fractions');
+$billing_invoice_description = ConfigHelper::getConfig($config_section . '.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
+$billing_invoice_separate_fractions = ConfigHelper::checkConfig($config_section . '.billing_invoice_separate_fractions');
 $empty_billings = ConfigHelper::checkConfig('voip.empty_billings');
 
 $query = "SELECT
@@ -674,6 +685,7 @@ $query = "SELECT
 					)
 				JOIN voip_number_assignments vna ON vna.number_id = vn.id
 				JOIN assignments a2 ON a2.id = vna.assignment_id
+				JOIN tariffs t ON t.id = a2.tariffid AND t.type = ?
 				WHERE (
 					(
 						vc.call_start_time >= (CASE a2.period
@@ -750,6 +762,7 @@ $billings = $DB->GetAll(
         TARIFF_FLAG_NET_ACCOUNT,
         1,
         array(CCONSENT_FULL_PHONE_BILLING, CCONSENT_SIMPLIFIED_PHONE_BILLING),
+        SERVICE_PHONE,
         SERVICE_PHONE,
         DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $doms, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
         $currtime,
@@ -870,8 +883,18 @@ if (!empty($assigns)) {
             'netlinkid'
         );
         if (!empty($uni_links)) {
-            function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks)
+            function find_nodes_for_netdev($netlink, &$customer_nodes, &$customer_netlinks, &$processed_netlinks)
             {
+                $customerid = $netlink['customerid'];
+                $netdevid = $netlink['netdevid'];
+                $netlinkid = $netlink['netlinkid'];
+
+                if (isset($processed_netlinks[$netlinkid])) {
+                    return array();
+                }
+
+                $processed_netlinks[$netlinkid] = $netlinkid;
+
                 if (isset($customer_nodes[$customerid . '_' . $netdevid])) {
                     $nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
                 } else {
@@ -887,12 +910,19 @@ if (!empty($assigns)) {
                         } else {
                             continue;
                         }
-                        $nodeids = array_merge($nodeids, find_nodes_for_netdev(
-                            $customerid,
-                            $next_netdevid,
-                            $customer_nodes,
-                            $customer_netlinks
-                        ));
+
+                        if (!isset($processed_netlinks[$customer_netlink['netlink']])) {
+                            $nodeids = array_merge($nodeids, find_nodes_for_netdev(
+                                array(
+                                    'netdevid' => $next_netdevid,
+                                    'customerid' => $customerid,
+                                    'netlinkid' => $customer_netlink['netlink'],
+                                ),
+                                $customer_nodes,
+                                $customer_netlinks,
+                                $processed_netlinks
+                            ));
+                        }
                     }
                     unset($customer_netlink);
                 }
@@ -900,13 +930,17 @@ if (!empty($assigns)) {
                 return $nodeids;
             }
 
+            $processed_netlinks = array();
+
             $customer_netlinks = $DB->GetAllByKey(
-                "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
-					FROM netlinks nl
-					JOIN netdevices ndsrc ON ndsrc.id = nl.src
-					JOIN netdevices nddst ON nddst.id = nl.dst
-					WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
-						AND ndsrc.ownerid = nddst.ownerid",
+                "SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink,
+                    nl.src,
+                    nl.dst
+                FROM netlinks nl
+                JOIN netdevices ndsrc ON ndsrc.id = nl.src
+                JOIN netdevices nddst ON nddst.id = nl.dst
+                WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
+                    AND ndsrc.ownerid = nddst.ownerid",
                 'netlink'
             );
 
@@ -938,10 +972,10 @@ if (!empty($assigns)) {
             // and then fill assignment linktechnologies relations
             foreach ($uni_links as $netlinkid => &$netlink) {
                 $nodes = find_nodes_for_netdev(
-                    $netlink['customerid'],
-                    $netlink['netdevid'],
+                    $netlink,
                     $customer_nodes,
-                    $customer_netlinks
+                    $customer_netlinks,
+                    $processed_netlinks
                 );
                 if (!empty($nodes)) {
                     foreach ($nodes as $nodeid) {
@@ -1044,12 +1078,13 @@ if (!empty($assigns)) {
             continue;
         }
         $history = $DB->GetAll(
-            'SELECT (CASE WHEN d.id IS NULL THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
+            'SELECT (CASE WHEN d.id IS NULL OR c.value > 0 THEN c.time ELSE c.time + (d.paytime + ?) * 86400 END) AS deadline,
                 d.id AS docid,
                 (c.value * c.currencyvalue) AS value
             FROM cash c
             LEFT JOIN documents d ON d.id = c.docid AND d.type IN ?
             WHERE c.customerid = ?
+                AND c.value <> 0
                 AND c.time >= ? AND c.time < ?
             ORDER BY deadline',
             array(
@@ -1063,7 +1098,7 @@ if (!empty($assigns)) {
         $rewards[$cid] = true;
         if (!empty($history)) {
             foreach ($history as &$record) {
-                if (!empty($record['docid'])) {
+                if (!empty($record['docid']) && $record['value'] < 0) {
                     $record['deadline'] = mktime(
                         23,
                         59,
@@ -1083,6 +1118,7 @@ if (!empty($assigns)) {
                     break;
                 }
                 $balance += $record['value'];
+                $balance = round($balance, 2);
                 if (empty($record['docid'])) {
                     continue;
                 }
@@ -1099,10 +1135,24 @@ $currencyvalues = array();
 if (!empty($assigns)) {
     // determine currency values for assignments with foreign currency
     // if payments.prefer_netto = true, use value netto+tax
+    // if assignment based on tariff with price variants get price by quantity
     foreach ($assigns as &$assign) {
+        if (!empty($assign['tariffid'])) {
+            $priceVariant = $LMS->getTariffPriceVariantByQuantityThreshold($assign['tariffid'], $assign['count']);
+            if (!empty($priceVariant)) {
+                $suspension = empty($assign['suspended']) ? 1 : ($suspension_percentage / 100);
+                if (!empty($assign['netflag'])) {
+                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['net_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
+                    $assign['netvalue'] = round($assign['unitary_value'] * $assign['count'], 2);
+                } else {
+                    $assign['unitary_value'] = round(((((100 - $assign['pdiscount']) * $priceVariant['gross_price']) / 100) - $assign['vdiscount']) * $suspension, 3);
+                    $assign['value'] = round($assign['unitary_value'] * $assign['count'], 2);
+                }
+            }
+        }
         if ($prefer_netto) {
             if (isset($assign['netvalue']) && !empty($assign['netvalue'])) {
-                $assign['value'] = $assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100;
+                $assign['value'] = round($assign['netvalue'] * (100 + $taxeslist[$assign['taxid']]['value']) / 100, 3);
             }
         }
 
@@ -1456,13 +1506,13 @@ foreach ($assigns as $assign) {
     $linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
     if (!$assign['suspended'] && $assign['allsuspended']) {
-        $assign['value'] = $assign['value'] * $suspension_percentage / 100;
+        $assign['value'] = round($assign['value'] * $suspension_percentage / 100, 3);
     }
     if (empty($assign['value']) && ($assign['liabilityid'] != 'set' || !$empty_billings)) {
         continue;
     }
 
-    if ($assign['liabilityid']) {
+    if ($assign['liabilityid'] && !$use_comment_for_liabilities) {
         $desc = $assign['name'];
     } else {
         if (empty($assign['backwardperiod'])) {
@@ -1477,6 +1527,7 @@ foreach ($assigns as $assign) {
     $desc = str_replace(
         array(
             '%type',
+            '%billing_period',
             '%tariff',
             '%attribute',
             '%desc',
@@ -1503,6 +1554,7 @@ foreach ($assigns as $assign) {
         ),
         array(
             $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '',
+            isset($BILLING_PERIODS[$assign['period']]) ? $BILLING_PERIODS[$assign['period']] : '',
             $assign['name'],
             $assign['attribute'],
             $assign['description'],
@@ -1653,7 +1705,7 @@ foreach ($assigns as $assign) {
             }
         }
 
-        $price = round($price, 2);
+        $price = round($price, 3);
         $value = round($price * $assign['count'], 2);
 
         $telecom_service = $force_telecom_service_flag && $assign['tarifftype'] != SERVICE_OTHER
@@ -1768,7 +1820,7 @@ foreach ($assigns as $assign) {
                     && $exported_telecom_service;
 
                 $DB->Execute(
-                    "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
+                    "INSERT INTO documents (number, numberplanid, type, countryid, divisionid,
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
@@ -1877,7 +1929,7 @@ foreach ($assigns as $assign) {
                 if ($tmp_itemid != 0) {
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $DB->Execute(
-                            "UPDATE debitnotecontents SET value = value + ? 
+                            "UPDATE debitnotecontents SET value = value + ?
                             WHERE docid = ? AND itemid = ?",
                             array($grossvalue, $invoices[$cid], $tmp_itemid)
                         );
@@ -1890,7 +1942,7 @@ foreach ($assigns as $assign) {
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "UPDATE cash SET value = value + ? 
+                            "UPDATE cash SET value = value + ?
                             WHERE docid = ? AND itemid = ?",
                             array(-$grossvalue, $invoices[$cid], $tmp_itemid)
                         );
@@ -1900,7 +1952,7 @@ foreach ($assigns as $assign) {
 
                     if ($assign['invoice'] == DOC_DNOTE) {
                         $DB->Execute(
-                            "INSERT INTO debitnotecontents (docid, value, description, itemid) 
+                            "INSERT INTO debitnotecontents (docid, value, description, itemid)
                             VALUES (?, ?, ?, ?)",
                             array($invoices[$cid], $grossvalue, $desc, $itemid)
                         );
@@ -1952,6 +2004,27 @@ foreach ($assigns as $assign) {
                                 $assign['tarifftype'],
                             )
                         );
+
+                        if ($auto_payments && ($PAYTYPES[$inv_paytype]['features'] & INVOICE_FEATURE_AUTO_PAYMENT)) {
+                            $DB->Execute(
+                                "INSERT INTO cash (type, time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology, servicetype)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                array(
+                                    1,
+                                    $issuetime,
+                                    $grossvalue,
+                                    $currency,
+                                    $currencyvalues[$currency],
+                                    null,
+                                    $cid,
+                                    $desc,
+                                    null,
+                                    0,
+                                    $linktechnology,
+                                    $assign['tarifftype'],
+                                )
+                            );
+                        }
                     }
 
                     if (!empty($billing_document_template) && !empty($assign['billingconsent']) && !isset($invoices_with_billings[$invoices[$cid]])) {
@@ -2169,7 +2242,11 @@ foreach ($assigns as $assign) {
         }
 
         if (!$quiet && (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom'])) {
-            echo  'CID:' . $cid . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
+            if ($assign['invoice']) {
+                echo 'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
+            } else {
+                echo 'CID:' . $cid . "\tVAL:" . $grossvalue . ' ' . $currency. "\tDESC:" . $desc . PHP_EOL;
+            }
         }
 
         // settlement accounting
@@ -2220,7 +2297,7 @@ foreach ($assigns as $assign) {
                     break;
             }
 
-            $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 2);
+            $partial_price = round($alldays != 30 ? $diffdays * $price / $alldays : $partial_price, 3);
 
             if (floatval($partial_price)) {
                 //print "price: $price diffdays: $diffdays alldays: $alldays settl_price: $partial_price" . PHP_EOL;
@@ -2315,7 +2392,7 @@ foreach ($assigns as $assign) {
 
                         if ($assign['invoice'] == DOC_DNOTE) {
                             $DB->Execute(
-                                "INSERT INTO debitnotecontents (docid, value, description, itemid) 
+                                "INSERT INTO debitnotecontents (docid, value, description, itemid)
 								VALUES (?, ?, ?, ?)",
                                 array($invoices[$cid], $partial_grossvalue, $desc, $itemid)
                             );
@@ -2388,7 +2465,11 @@ foreach ($assigns as $assign) {
                 }
 
                 if (!$quiet) {
-                    echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                    if ($assign['invoice']) {
+                        echo 'CID:' . $cid . "\tDOCNUMBER:" . $fullnumber . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                    } else {
+                        echo 'CID:' . $cid . "\tVAL:" . $partial_grossvalue . ' ' . $currency . "\tDESC:" . $sdesc . PHP_EOL;
+                    }
                 }
             }
 

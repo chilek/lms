@@ -104,6 +104,41 @@
 			</td>
 		</tr>
 		<tr>
+			<td>
+				{icon name="import"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("New files")}</strong>
+			</td>
+			<td>
+				{$item_custom_contents = array()}
+				{foreach $fileupload.attachments as $fileidx => $file}
+					{capture assign="item_custom_content"}{strip}
+						<label>
+							<input type="checkbox" name="fileupload[attachments][{$fileidx}][checked]"
+								value="1" form="schemaadd" {if $file.checked} checked{/if}>
+							{trans("default checked")}
+						</label>
+						<input size="10" type="text" name="fileupload[attachments][{$fileidx}][label]"
+							value="{$file.label}" form="schemaadd" placeholder="{trans("text label")}">
+					{/strip}{/capture}
+					{$item_custom_contents[] = $item_custom_content}
+				{/foreach}
+				{capture assign="new_item_custom_content"}{strip}
+					<label>
+						<input type="checkbox" name="fileupload[attachments][%idx%][checked]"
+							value="1" form="schemaadd">
+						{trans("default checked")}
+					</label>
+					<input size="10" type="text" name="fileupload[attachments][%idx%][label]"
+						value="" form="schemaadd" placeholder="{trans("text label")}">
+				{/strip}{/capture}
+				{fileupload id="attachments" fileupload=$fileupload form="schemaadd"
+					item_custom_contents=$item_custom_contents
+					new_item_custom_content=$new_item_custom_content}
+			</td>
+		</tr>
+		<tr>
 			<td class="lms-ui-box-buttons" colspan="3">
 				<div class="lms-ui-box-button-container">
 					{button type="submit" icon="save" label="Submit" form="schemaadd"}

@@ -90,6 +90,7 @@ DROP TABLE IF EXISTS rtmessages;
 DROP TABLE IF EXISTS rtticketlastview;
 DROP TABLE IF EXISTS rttickets;
 DROP TABLE IF EXISTS rtqueues;
+DROP TABLE IF EXISTS netlinkpoints;
 DROP TABLE IF EXISTS netlinks;
 DROP TABLE IF EXISTS stats;
 DROP TABLE IF EXISTS nodesessions;
@@ -130,6 +131,7 @@ DROP TABLE IF EXISTS debitnotecontents;
 DROP TABLE IF EXISTS invoicecontents;
 DROP TABLE IF EXISTS voip_number_assignments;
 DROP TABLE IF EXISTS assignments;
+DROP TABLE IF EXISTS promotionattachments;
 DROP TABLE IF EXISTS promotionassignments;
 DROP TABLE IF EXISTS promotionschemas;
 DROP TABLE IF EXISTS promotions;
@@ -167,6 +169,7 @@ DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS serviceproviders;
 DROP TABLE IF EXISTS divisions;
 DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS netranges;
 DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS location_streets;
 DROP TABLE IF EXISTS location_street_types;
@@ -203,6 +206,7 @@ CREATE TABLE users (
   position varchar(255) NOT NULL DEFAULT '',
   rights text           NOT NULL DEFAULT '',
   hosts varchar(255)    NOT NULL DEFAULT '',
+  trustedhosts varchar(255) DEFAULT NULL,
   passwd varchar(255)   NOT NULL DEFAULT '',
   netpasswd varchar(255)   DEFAULT NULL,
   passwdforcechange smallint NOT NULL DEFAULT 0,
@@ -379,15 +383,42 @@ CREATE TABLE location_buildings (
 	city_id      int(11) NOT NULL,
 	street_id    int(11) NULL,
 	building_num varchar(20) NULL,
+	zip          varchar(10) DEFAULT NULL,
 	latitude     numeric(10,6) NULL,
 	longitude    numeric(10,6) NULL,
 	updated      smallint DEFAULT 0,
+	extid        varchar(128) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT location_buildings_city_id_fkey
 		FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT location_buildings_street_id_fkey
 		FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY location_buildings_extid_ukey (extid),
 	INDEX location_cityid_index (city_id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table netranges
+#
+CREATE TABLE netranges (
+	id int(11) NOT NULL auto_increment,
+	buildingid int(11) NOT NULL,
+	linktype smallint NOT NULL,
+	linktechnology smallint NOT NULL,
+	downlink int(11) NOT NULL,
+	uplink int(11) NOT NULL,
+	type smallint NOT NULL,
+	services smallint NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT netranges_buildingid_fkey
+		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	INDEX netranges_linktype_idx (linktype),
+	INDEX netranges_linktechnology_idx (linktechnology),
+	INDEX netranges_downlink_idx (downlink),
+	INDEX netranges_uplink_idx (uplink),
+	INDEX netranges_type_idx (type),
+	INDEX netranges_services_idx (services)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -956,8 +987,8 @@ CREATE TABLE voip_cdr (
 	caller              varchar(20)   NOT NULL,
 	callee              varchar(20)   NOT NULL,
 	call_start_time     int(11)       NOT NULL,
-	totaltime           int(11)       NOT NULL,
-	billedtime          int(11)       NOT NULL,
+	totaltime           bigint        NOT NULL,
+	billedtime          bigint        NOT NULL,
 	price               decimal(12,5) NOT NULL,
 	status              smallint      NOT NULL,
 	direction           smallint      NOT NULL,
@@ -1008,7 +1039,7 @@ CREATE TABLE tariffs (
 	id int(11) 		NOT NULL auto_increment,
 	name varchar(255) 	NOT NULL DEFAULT '',
 	type tinyint 		NOT NULL DEFAULT '1',
-	value decimal(9,2) 	NOT NULL DEFAULT '0',
+	value decimal(9,3) 	NOT NULL DEFAULT '0',
     taxcategory smallint DEFAULT 0 NOT NULL,
 	taxid int(11) 	NOT NULL,
 	numberplanid integer DEFAULT NULL,
@@ -1062,7 +1093,7 @@ CREATE TABLE tariffs (
 	authtype tinyint(1) NOT NULL DEFAULT '0',
     currency varchar(3),
     flags tinyint(1) DEFAULT 0 NOT NULL,
-	netvalue decimal(9,2) DEFAULT NULL,
+	netvalue decimal(9,3) DEFAULT NULL,
     PRIMARY KEY  (id),
 	UNIQUE KEY tariffs_name_key (name, value, currency, period),
 	INDEX type (type),
@@ -1134,7 +1165,7 @@ CREATE TABLE liabilities (
 	prodid varchar(255)     NOT NULL DEFAULT '',
 	type smallint DEFAULT -1 NOT NULL,
     flags smallint DEFAULT 0 NOT NULL,
-	netvalue decimal(9,2) DEFAULT NULL,
+	netvalue decimal(9,3) DEFAULT NULL,
     PRIMARY KEY (id),
 	CONSTRAINT liabilities_taxid_fkey
 		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1197,6 +1228,25 @@ CREATE TABLE promotionassignments (
 
 # --------------------------------------------------------
 #
+# Structure of table promotionattachments
+#
+CREATE TABLE promotionattachments (
+    id int(11) NOT NULL auto_increment,
+    filename varchar(255) NOT NULL,
+    contenttype varchar(255) NOT NULL,
+    label varchar(255) NOT NULL,
+    checked smallint DEFAULT 0,
+    promotionid int(11) DEFAULT NULL,
+    promotionschemaid int(11) DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT promotionattachments_promotionid_fkey
+        FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT promotionattachments_promotionschemaid_fkey
+        FOREIGN KEY (promotionschemaid) REFERENCES promotionschemas (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table  assignments
 #
 CREATE TABLE assignments (
@@ -1213,7 +1263,7 @@ CREATE TABLE assignments (
 	suspended tinyint(1) NOT NULL DEFAULT '0',
 	settlement tinyint(1) NOT NULL DEFAULT '0',
 	pdiscount decimal(5,2) NOT NULL DEFAULT '0',
-	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
+	vdiscount decimal(9,3) NOT NULL DEFAULT '0',
 	paytime smallint DEFAULT NULL,
 	paytype smallint DEFAULT NULL,
 	numberplanid int(11) DEFAULT NULL,
@@ -1268,7 +1318,7 @@ CREATE TABLE invoicecontents (
 	itemid smallint NOT NULL DEFAULT '0',
 	value decimal(12,5) NOT NULL DEFAULT '0',
 	pdiscount decimal(5,2) NOT NULL DEFAULT '0',
-	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
+	vdiscount decimal(9,3) NOT NULL DEFAULT '0',
 	taxid int(11) NOT NULL,
 	prodid varchar(255) NOT NULL DEFAULT '',
 	content varchar(16) NOT NULL DEFAULT '',
@@ -1598,6 +1648,7 @@ CREATE TABLE netdeviceproducers (
 CREATE TABLE netdevicetypes (
     id int(11) NOT NULL auto_increment,
     name varchar(50) NOT NULL,
+    passive tinyint(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY netdevicetypes_name_ukey (name)
 ) ENGINE=InnoDB;
@@ -1624,7 +1675,7 @@ CREATE TABLE netdevicemodels (
 #
 CREATE TABLE netdevices (
   id 		int(11) 	NOT NULL auto_increment,
-  name 		varchar(32) 	NOT NULL DEFAULT '',
+  name 		varchar(100) 	NOT NULL DEFAULT '',
   description 	text 		NOT NULL DEFAULT '',
   producer 	varchar(256) 	NOT NULL DEFAULT '',
   model 	varchar(256) 	NOT NULL DEFAULT '',
@@ -1647,6 +1698,7 @@ CREATE TABLE netdevices (
   netdevicemodelid int(11) DEFAULT NULL,
   ownerid int(11) DEFAULT NULL,
   address_id int(11) DEFAULT NULL,
+  divisionid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX channelid (channelid),
   CONSTRAINT `netdevices_address_id_fk` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -1655,7 +1707,9 @@ CREATE TABLE netdevices (
   FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT netdevices_ownerid_fkey
-    FOREIGN KEY (ownerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL
+    FOREIGN KEY (ownerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT netdevices_divisionid_fkey
+    FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1690,7 +1744,7 @@ CREATE TABLE netradiosectors (
 	altitude smallint DEFAULT 0 NOT NULL,
 	rsrange int(11) DEFAULT 0 NOT NULL,
 	license varchar(64) DEFAULT NULL,
-	technology int(11) DEFAULT 0 NOT NULL,
+	technology int(11) DEFAULT NULL,
 	frequency decimal(9,5) DEFAULT NULL,
 	frequency2 decimal(9,5) DEFAULT NULL,
 	bandwidth decimal(9,5) DEFAULT NULL,
@@ -1719,10 +1773,10 @@ CREATE TABLE nodes (
   creatorid int(11) DEFAULT NULL,
   modid int(11) DEFAULT NULL,
   netdev int(11) DEFAULT NULL,
-  linktype tinyint(1) NOT NULL DEFAULT '0',
+  linktype tinyint(1) DEFAULT NULL,
   linkradiosector int(11) DEFAULT NULL,
-  linkspeed int(11) NOT NULL DEFAULT '100000',
-  linktechnology int(11) NOT NULL DEFAULT '0',
+  linkspeed int(11) DEFAULT NULL,
+  linktechnology int(11) DEFAULT NULL,
   port smallint NOT NULL DEFAULT '0',
   access tinyint(1) NOT NULL DEFAULT '1',
   warning tinyint(1) NOT NULL DEFAULT '0',
@@ -1899,6 +1953,23 @@ CREATE TABLE tariffassignments (
         CONSTRAINT `tariffassignments_tarifftagid_key` FOREIGN KEY (tarifftagid) REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+#  Structure of table "tariffpricevariants"
+#
+CREATE TABLE tariffpricevariants (
+    id int(11) NOT NULL auto_increment,
+    tariffid int(11) NOT NULL,
+    quantity_threshold int(11) NOT NULL,
+    net_price numeric(9,3) DEFAULT 0 NOT NULL,
+    gross_price numeric(9,3) DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT tariffpricevariants_tariffid_fkey
+        FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE KEY tariffpricevariants_tariffid_quantity_threshold_ukey (tariffid, quantity_threshold),
+    CONSTRAINT tariffpricevariants_quantity_threshold_ckey CHECK (quantity_threshold > 0)
+) ENGINE=InnoDB;
+
 ## --------------------------------------------------------
 #
 # Structure of table  payments
@@ -2036,11 +2107,13 @@ CREATE TABLE netlinks (
   id int(11) NOT NULL auto_increment,
   src int(11) NOT NULL,
   dst int(11) NOT NULL,
-  type tinyint(1) NOT NULL DEFAULT '0',
-  speed int(11) NOT NULL DEFAULT '100000',
-  technology int(11) NOT NULL DEFAULT '0',
+  type tinyint(1) DEFAULT NULL,
+  speed int(11) DEFAULT NULL,
+  technology int(11) DEFAULT NULL,
   srcport smallint NOT NULL DEFAULT '0',
   dstport smallint NOT NULL DEFAULT '0',
+  routetype smallint DEFAULT NULL,
+  linecount smallint DEFAULT NULL,
   srcradiosector int(11) DEFAULT NULL,
   dstradiosector int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
@@ -2053,6 +2126,20 @@ CREATE TABLE netlinks (
     FOREIGN KEY (src) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT netlinks_dst_fkey
     FOREIGN KEY (dst) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  netlinkpoints
+#
+CREATE TABLE netlinkpoints (
+	id int(11) NOT NULL auto_increment,
+	longitude decimal(10, 6) DEFAULT NULL,
+	latitude decimal(10, 6) DEFAULT NULL,
+	netlinkid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT netlinkpoints_netlinkid_fkey
+		FOREIGN KEY (netlinkid) REFERENCES netlinks (id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2302,13 +2389,16 @@ CREATE TABLE domains (
 	description text NOT NULL DEFAULT '',
 	master VARCHAR(128) DEFAULT NULL,
 	last_check INT(11) DEFAULT NULL,
-	type VARCHAR(6) NOT NULL,
+	type text DEFAULT '' NOT NULL,
 	notified_serial INT(11) DEFAULT NULL,
 	account VARCHAR(40) DEFAULT NULL,
 	mxbackup tinyint(1) NOT NULL DEFAULT '0',
+	options text DEFAULT NULL,
+	catalog text DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY (name),
 	INDEX ownerid (ownerid),
+	INDEX domains_catalog_idx (catalog(255)),
 	CONSTRAINT domains_ownerid_fkey
 	FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -3400,14 +3490,14 @@ CREATE VIEW vinvoicecontents AS
         ic.tariffid AS tariffid, ic.vdiscount AS vdiscount, ic.taxcategory AS taxcategory, ic.period AS period,
         (CASE WHEN (d.flags & 16) > 0 THEN 1 ELSE 0 END) AS netflag,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND(ic.value, 2)
+                ROUND(ic.value, 3)
             ELSE
-                ROUND((ic.value / (1 + (t.value / 100))), 2)
+                ROUND((ic.value / (1 + (t.value / 100))), 3)
         END) AS netprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND((ic.value * (1 + (t.value / 100))), 2)
+                ROUND((ic.value * (1 + (t.value / 100))), 3)
             ELSE
-                ROUND(ic.value, 2)
+                ROUND(ic.value, 3)
         END) AS grossprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
                 ROUND((ic.value * ABS(ic.count)), 2)
@@ -3428,14 +3518,14 @@ CREATE VIEW vinvoicecontents AS
         (ic.pdiscount - ic2.pdiscount) AS diff_pdiscount,
         (ic.vdiscount - ic2.vdiscount) AS diff_vdiscount,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+                ROUND(ic.value, 3) - ROUND(ic2.value, 3)
             ELSE
-                ROUND((ic.value / (1 + (t.value / 100))),2) - ROUND((ic2.value / (1 + (t.value / 100))), 2)
+                ROUND((ic.value / (1 + (t.value / 100))), 3) - ROUND((ic2.value / (1 + (t.value / 100))), 3)
         END) AS diff_netprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
-                ROUND((ic.value * (1 + (t.value / 100))),2) - ROUND((ic2.value * (1 + (t.value / 100))) ,2)
+                ROUND((ic.value * (1 + (t.value / 100))), 3) - ROUND((ic2.value * (1 + (t.value / 100))) , 3)
             ELSE
-                ROUND(ic.value, 2) - ROUND(ic2.value, 2)
+                ROUND(ic.value, 3) - ROUND(ic2.value, 3)
         END) AS diff_grossprice,
         (CASE WHEN (d.flags & 16) > 0 THEN
                 ROUND((ic.value * ABS(ic.count)), 2) - ROUND((ic2.value * ABS(ic2.count)), 2)
@@ -3766,10 +3856,10 @@ URL: %url
 ('phpui','note_check_payment','false','',0),
 ('phpui','radius','1','',0),
 ('phpui','public_ip','1','',0),
-('phpui','default_assignment_period','3','',0),
-('phpui','default_assignment_invoice','0','',0),
+('assignments','default_period','3','',0),
+('assignments','default_document_type','0','',0),
 ('phpui','default_editor','html','',0),
-('phpui','logging','false','',0),
+('logs','enabled','false','',0),
 ('phpui','hide_toolbar','false','',0),
 ('phpui','add_customer_group_required','false','',0),
 ('documents','margins','10,5,15,5','',0),
@@ -4081,18 +4171,22 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('mANT30 PA', NULL, 1),
 ('mANT30', NULL, 1);
 
-INSERT INTO netdevicetypes (name) VALUES
-('router'),
-('switch'),
-('antenna'),
-('access-point'),
-('PON OLT'),
-('PON ONT'),
-('PON splitter'),
-('GSM modem'),
-('DSL modem'),
-('power line adapter'),
-('IPTV decoder');
+INSERT INTO netdevicetypes (name, passive) VALUES
+('router', 0),
+('switch', 0),
+('antenna', 1),
+('access-point', 0),
+('PON OLT', 0),
+('PON ONT', 0),
+('PON splitter', 1),
+('GSM modem', 0),
+('DSL modem', 0),
+('power line adapter', 0),
+('IPTV decoder', 0),
+('cable joint', 1),
+('VoIP gateway', 0),
+('fiber cassette', 1),
+('splice tray', 1);
 
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', 2),
@@ -4240,4 +4334,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2022092201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023060700');

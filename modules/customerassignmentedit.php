@@ -257,7 +257,7 @@ if (isset($_POST['assignment'])) {
         $a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
         $a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
     }
-    if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99) {
+    if ($a['pdiscount'] < 0 || $a['pdiscount'] > 100) {
         $error['discount'] = trans('Wrong discount value!');
     }
 
@@ -564,6 +564,11 @@ if (isset($_POST['assignment'])) {
         $a['tariffid'] = -1;
     }
 
+    // tariff price variants
+    if (!empty($a['tariffid'])) {
+        $a['tariff_price_variants'] = $LMS->getTariffPriceVariants($a['tariffid']);
+    }
+
     // nodes assignments
     $a['nodes'] = $DB->GetCol('SELECT nodeid FROM nodeassignments WHERE assignmentid=?', array($a['id']));
 
@@ -575,7 +580,10 @@ if (isset($_POST['assignment'])) {
     }
 
     if (empty($a['pdiscount']) && empty($a['vdiscount'])) {
-        $default_assignment_discount_type = ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage');
+        $default_assignment_discount_type = ConfigHelper::getConfig(
+            'assignments.default_discount_type',
+            ConfigHelper::getConfig('phpui.default_assignment_discount_type', 'percentage')
+        );
         $a['discount_type'] = $default_assignment_discount_type == 'percentage' ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
     }
 }

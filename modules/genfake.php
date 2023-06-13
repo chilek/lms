@@ -1862,7 +1862,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
 
     if (ConfigHelper::getConfig('database.type')=='postgres') {
         $DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
-        $DB->Execite('DROP SEQUENCE "userdivisions_id_seq"; CREATE SEQUENCE "userdivisions_id_seq"');
+        $DB->Execute('DROP SEQUENCE "userdivisions_id_seq"; CREATE SEQUENCE "userdivisions_id_seq"');
         $DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
         $DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
         $DB->Execute('DROP SEQUENCE "customercontacts_id_seq"; CREATE SEQUENCE "customercontacts_id_seq"');
@@ -2156,7 +2156,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
 */
         if ($i>1) {
             $LMS->NetDevLink($i, $i-1, array(
-                'type' => 0,
+                'type' => LINKTYPE_WIRELESS,
                 'technology' => 8,
                 'speed' => 1000000,
             ));
@@ -2184,7 +2184,7 @@ if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l
 
         $inv['number'] = 0;
         $inv['paytime'] = 14;
-        $inv['paytype'] = 1; // cash
+        $inv['paytype'] = PAYTYPE_CASH;
         $inv['numberplanid'] = $numberplanid;
         $inv['type'] = DOC_INVOICE;
         $inv['cdate'] = time() - ($_GET['i']+1) * 86400;
