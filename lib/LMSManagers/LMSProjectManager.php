@@ -46,19 +46,30 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 
     public function GetProjects()
     {
-        return $this->db->GetAllByKey('SELECT ip.id, ip.name, ip.divisionid, 
-				n.ncount AS nodes, nn.ncount AS netnodes
-			FROM invprojects ip
-			LEFT JOIN (
-				SELECT invprojectid, COUNT(*) AS ncount FROM nodes
-				GROUP BY invprojectid
-			) n ON n.invprojectid = ip.id
-			LEFT JOIN (
-				SELECT invprojectid, COUNT(*) AS ncount FROM netnodes
-				GROUP BY invprojectid
-			) nn ON n.invprojectid = ip.id
-			WHERE ip.type <> ?
-			ORDER BY ip.name', 'id', array(INV_PROJECT_SYSTEM));
+        return $this->db->GetAllByKey(
+            'SELECT
+                ip.id,
+                ip.name,
+                ip.divisionid,
+                ip.cdate,
+                n.ncount AS nodes,
+                nn.ncount AS netnodes
+            FROM invprojects ip
+            LEFT JOIN (
+                SELECT invprojectid, COUNT(*) AS ncount
+                FROM nodes
+                GROUP BY invprojectid
+            ) n ON n.invprojectid = ip.id
+            LEFT JOIN (
+                SELECT invprojectid, COUNT(*) AS ncount
+                FROM netnodes
+                GROUP BY invprojectid
+            ) nn ON n.invprojectid = ip.id
+            WHERE ip.type <> ?
+            ORDER BY ip.name',
+            'id',
+            array(INV_PROJECT_SYSTEM)
+        );
     }
 
     public function GetProject($id)
@@ -100,10 +111,11 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
     public function AddProject($project)
     {
         $this->db->Execute(
-            "INSERT INTO invprojects (name, divisionid, type) VALUES (?, ?, ?)",
+            "INSERT INTO invprojects (name, divisionid, cdate, type) VALUES (?, ?, ?, ?)",
             array(
                 Utils::removeInsecureHtml($project['project']),
                 isset($project['divisionid']) && !empty($project['divisionid']) ? $project['divisionid'] : null,
+                empty($project['cdate']) ? null : $project['cdate'],
                 INV_PROJECT_REGULAR
             )
         );
@@ -118,10 +130,15 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
     public function UpdateProject($id, $project)
     {
         $project['projectname'] = Utils::removeInsecureHtml($project['projectname']);
+        $project['cdate'] = empty($project['cdate']) ? null : $project['cdate'];
         $project['type'] = INV_PROJECT_REGULAR;
         $project['id'] = $id;
-        return $this->db->Execute('UPDATE invprojects SET name=?, divisionid=?, type=?
-            WHERE id = ?', array_values($project));
+        return $this->db->Execute(
+            'UPDATE invprojects
+            SET name = ?, divisionid = ?, cdate = ?, type = ?
+            WHERE id = ?',
+            array_values($project)
+        );
     }
 
     public function GetProjectType($id)

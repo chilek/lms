@@ -4158,6 +4158,8 @@ $_LANG['Enter investment project name'] = 'Wpisz nazwę projektu inwestycyjnego'
 $_LANG['Display this form again, when this invproject is saved'] = 'Wyświetl formularz ponownie po dodaniu projektu inwestycyjnego';
 $_LANG['Investment project with specified name already exists!'] = 'Projekt inwestycyjny o podanej nazwie już istnieje!';
 $_LANG['Investment project name is required!'] = 'Nazwa projektu inwestycyjnego jest wymagana!';
+$_LANG['Edit investment project: $a'] = 'Edycja projektu inwestycyjnego: $a';
+$_LANG['Estimated completion date'] = 'Przewidywana data zakończenia';
 
 $_LANG['Select device status'] = 'Wybierz status urządzenia';
 $_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';

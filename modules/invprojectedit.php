@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2022 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,7 +32,7 @@ if (!empty($_POST['invprojectedit'])) {
     $invproject = $_POST['invprojectedit'];
     $invproject['id'] = $oldinv['id'];
 
-    if ($invproject['name']=='') {
+    if ($invproject['name'] == '') {
         $error['name'] = trans('Investment project name is required!');
     } elseif ($oldinv['name'] != $invproject['name'] && $LMS->ProjectByNameExists($invproject['name'])) {
         $error['name'] = trans('Investment project with specified name already exists!');
@@ -42,6 +42,7 @@ if (!empty($_POST['invprojectedit'])) {
         $LMS->UpdateProject($invproject['id'], array(
             'projectname' => $invproject['name'],
             'divisionid' => $invproject['divisionid'],
+            'cdate' => $invproject['cdate'],
         ));
         $SESSION->redirect('?m=invprojectlist');
     }

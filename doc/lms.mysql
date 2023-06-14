@@ -1536,12 +1536,13 @@ CREATE TABLE hosts (
 # Structure of table invprojects
 #
 CREATE TABLE invprojects (
-        id int(11) NOT NULL auto_increment,
+	id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL,
 	type tinyint DEFAULT 0,
-        divisionid int(11) DEFAULT NULL,
+	divisionid int(11) DEFAULT NULL,
+	cdate int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
-        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -4334,4 +4335,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023060700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023061400');
