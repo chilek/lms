@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 if (!$this->ResourceExists('netranges.invprojectid', LMSDB::RESOURCE_TYPE_COLUMN)) {
-    $this->Execute("ALTER TABLE netranges ADD COLUMN invprojectid integer DEFAULT NULL");
+    $this->Execute("ALTER TABLE netranges ADD COLUMN invprojectid int(11) DEFAULT NULL");
     $this->Execute("ALTER TABLE netranges ADD CONSTRAINT netranges_invprojectid_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE");
 }
 

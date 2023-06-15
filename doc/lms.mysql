@@ -410,7 +410,7 @@ CREATE TABLE netranges (
 	uplink int(11) NOT NULL,
 	type smallint NOT NULL,
 	services smallint NOT NULL,
-	invprojectid integer DEFAULT NULL,
+	invprojectid int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT netranges_buildingid_fkey
 		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
