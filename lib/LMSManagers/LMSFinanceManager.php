@@ -3031,7 +3031,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
 
-            $result['paytypename'] = $PAYTYPES[$result['paytype']]['label'];
+            $result['paytypename'] = $PAYTYPES[empty($result['paytype']) ? PAYTYPE_TRANSFER : $result['paytype']]['label'];
 
             $result['valuep'] = round(($result['value'] - floor($result['value'])) * 100);
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
