@@ -410,9 +410,12 @@ CREATE TABLE netranges (
 	uplink int(11) NOT NULL,
 	type smallint NOT NULL,
 	services smallint NOT NULL,
+	invprojectid integer DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT netranges_buildingid_fkey
 		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT netranges_invprojectid_fkey
+		FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	INDEX netranges_linktype_idx (linktype),
 	INDEX netranges_linktechnology_idx (linktechnology),
 	INDEX netranges_downlink_idx (downlink),
@@ -4335,4 +4338,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023061400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023061500');
