@@ -116,6 +116,7 @@ DROP TABLE IF EXISTS netdevicemodels;
 DROP TABLE IF EXISTS netdevicetypes;
 DROP TABLE IF EXISTS netdeviceproducers;
 DROP TABLE IF EXISTS netnodes;
+DROP TABLE IF EXISTS netranges;
 DROP TABLE IF EXISTS invprojects;
 DROP TABLE IF EXISTS vlans;
 DROP TABLE IF EXISTS networks;
@@ -169,7 +170,6 @@ DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS serviceproviders;
 DROP TABLE IF EXISTS divisions;
 DROP TABLE IF EXISTS addresses;
-DROP TABLE IF EXISTS netranges;
 DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS location_streets;
 DROP TABLE IF EXISTS location_street_types;
@@ -395,33 +395,6 @@ CREATE TABLE location_buildings (
 		FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	UNIQUE KEY location_buildings_extid_ukey (extid),
 	INDEX location_cityid_index (city_id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table netranges
-#
-CREATE TABLE netranges (
-	id int(11) NOT NULL auto_increment,
-	buildingid int(11) NOT NULL,
-	linktype smallint NOT NULL,
-	linktechnology smallint NOT NULL,
-	downlink int(11) NOT NULL,
-	uplink int(11) NOT NULL,
-	type smallint NOT NULL,
-	services smallint NOT NULL,
-	invprojectid int(11) DEFAULT NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT netranges_buildingid_fkey
-		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT netranges_invprojectid_fkey
-		FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	INDEX netranges_linktype_idx (linktype),
-	INDEX netranges_linktechnology_idx (linktechnology),
-	INDEX netranges_downlink_idx (downlink),
-	INDEX netranges_uplink_idx (uplink),
-	INDEX netranges_type_idx (type),
-	INDEX netranges_services_idx (services)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1547,6 +1520,33 @@ CREATE TABLE invprojects (
 	PRIMARY KEY (id),
 	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table netranges
+#
+CREATE TABLE netranges (
+	id int(11) NOT NULL auto_increment,
+	buildingid int(11) NOT NULL,
+	linktype smallint NOT NULL,
+	linktechnology smallint NOT NULL,
+	downlink int(11) NOT NULL,
+	uplink int(11) NOT NULL,
+	type smallint NOT NULL,
+	services smallint NOT NULL,
+	invprojectid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT netranges_buildingid_fkey
+		FOREIGN KEY (buildingid) REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT netranges_invprojectid_fkey
+		FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	INDEX netranges_linktype_idx (linktype),
+	INDEX netranges_linktechnology_idx (linktechnology),
+	INDEX netranges_downlink_idx (downlink),
+	INDEX netranges_uplink_idx (uplink),
+	INDEX netranges_type_idx (type),
+	INDEX netranges_services_idx (services)
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
