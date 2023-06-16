@@ -787,7 +787,8 @@
 		});
 
 		$('#icexpires-indefinitely').change(function() {
-			$('#icexpires').datepicker("option", "disabled", $(this).prop('checked'));
+			var checked = $(this).prop('checked');
+			$('#icexpires').datepicker("option", "disabled", checked).closest('.lms-ui-date-container').prev().prop('disabled', checked);
 		}).change();
 
 		if (!$('[name="customeradd[pin]"]').val().length) {
