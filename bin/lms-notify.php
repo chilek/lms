@@ -1320,7 +1320,7 @@ if (empty($types) || in_array('contracts', $types)) {
         JOIN cash ON (c.id = cash.customerid) "
         . ($expiration_type == 'assignments' ?
             "JOIN (
-                SELECT 0 AS cdate, MAX(a.dateto) AS dateto, a.customerid
+                SELECT 0 AS cdate, MAX(a.dateto) AS dateto, a.customerid, 0 AS number, 0 AS template
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
