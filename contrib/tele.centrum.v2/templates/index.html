@@ -31,10 +31,10 @@
 			</colgroup>
 			<tr>
 				<td colspan="2" class="center">
-					<span style="font-size: 5;">
+					<span>
 						<strong>System zgłoszeń</strong>
 					</span>
-					<span style="font-size: 3;">
+					<span>
 						<br>
 						Dla operatorów E-Południe Call Center
 						<br>
@@ -51,7 +51,7 @@
 				</tr>
 			{/if}
 			<tr>
-				<td >Przedstawienie się</td>
+				<td>Przedstawienie się</td>
 				<td class="center">
 					{$welcomeMsg}
 				</td>
@@ -60,9 +60,9 @@
 				<td>Określ temat rozmowy</td>
 				<td class="center">
 					<select name="queue" form="ticket" onchange="typ_zgloszenia(this.value)">
-						<option value="1">Zgłoszenie awarii</option>
-						<option value="2">Informacja handlowa</option>
-						<option value="3">Sprawy finansowe</option>
+						{foreach $_CUSTOMER_ISSUES as $idx => $i}
+						<option value="{$idx}">{$i.label}</option>
+						{/foreach}
 					</select>
 				</td>
 			</tr>
@@ -71,21 +71,14 @@
 					Wybierz usługę która uległa awarii
 				</td>
 				<td class="center">
-					<label>
-						<input type="checkbox" form="ticket" name="internet"
-							{if $ticket.internet} checked{/if} value="Internet">
-						Internet
-					</label>
-					<label>
-						<input type="checkbox" form="ticket" name="tv"
-							{if $ticket.tv} checked{/if} value="TV">
-						Telewizja
-					</label>
-					<label>
-						<input type="checkbox" form="ticket" name="telefon"
-							{if $ticket.telefon} checked{/if} value="telefon">
-						Telefon
-					</label>
+					{foreach $_CUSTOMER_VISIBLE_SERVICETYPES as $idx => $s}
+						<label>
+							<input type="checkbox" form="ticket" name="service[]"
+								{if !empty($ticket.service) && in_array($idx, $ticket.service)} checked{/if}
+									value="{$idx}">{$s.label}
+						</label>
+					{/foreach}
+					<br>
 					<br>
 					Czy urządzenie końcowe jest podłączone do zasilania?<br>
 					Czy świecą się na nim jakieś diody?<br>
@@ -98,8 +91,9 @@
 				</td>
 				<td class="center">
 					Proszę podać informację co dokładnie się dzieje?<br>
-					<input type="text" name="body" form="ticket" value="{$ticket.body}"
-						autofocus {if $error.body} class="error"{/if} size="80">
+
+					<textarea type="text" name="body" form="ticket" value="{if isset($ticket.body)}{$ticket.body}{/if}" placeholder="Opis usterki"
+						autofocus {if isset($error.body)} class="error"{/if} style="width: 550px; height:100px;">{if isset($ticket.body)}{$ticket.body}{/if}</textarea>
 				</td>
 			</tr>
 			<tr id="informacjahandlowa" style="display:none;">
@@ -172,11 +166,13 @@
 						Czy abonent to:&nbsp;
 						<select id="customer" name="customer" form="ticket" onchange="changeFormValues()">
 							{foreach $result as $k => $res}
-								<option value="{$k}"{if $k == $ticket.customer} selected{/if}>{$res.username|escape}</option>
+								<option value="{$k}"{if isset($ticket.customer) && $k == $ticket.customer} selected{/if}>
+									{$res.username|escape}
+								</option>
 							{/foreach}
 						</select>
-						{if count($result) >= 2}
-							<a style="color:#777;">{count($result)} możliwych</a>
+						{if count($result) > 1}
+							<a style="color:#777;">Telefon dopasowany do {count($result)} klientów</a>
 						{/if}
 						<br>
 						Jeśli nie:
@@ -189,30 +185,30 @@
 					{/if}
 
 					Proszę podać imię, nazwisko osoby na którą zawarta jest umowa.<br>
-					<input type="text" name="name" form="ticket" value="{$ticket.name}" autofocus
-						{if $error.name} class="error"{/if} size="80">
+					<input type="text" name="name" form="ticket" value="{if isset($ticket.name)}{$ticket.name}{/if}" autofocus
+						{if isset($error.name)} class="error"{/if} size="80" placeholder="Dane klienta z umowy">
 					<br><br>
 
 					Proszę podać adres instalacji<br>
-					<input type="text" name="address" form="ticket" value="{$ticket.address}"
-						{if $error.address} class="error"{/if} autofocus size="80">
+					<input type="text" name="address" form="ticket" value="{if isset($ticket.address)}{$ticket.address}{/if}"
+						{if isset($error.address)} class="error"{/if} autofocus size="80" placeholder="Adres instalacji">
 					<br><br>
 
 					Numer telefonu dzwoniącego<br>
-					<input type="text" name="phone" form="ticket" readonly value="{$phone}" autofocus
-						{if $error.phone} class="error"{/if} size="20">
+					<input type="text" name="phone" form="ticket" readonly value="{if isset($ticket.phone)}{$ticket.phone}{/if}" autofocus
+						{if isset($error.phone)} class="error"{/if} size="20" style="background: lightgrey;">
 					<br><br>
 
 					<label>
 						<input type="checkbox" id="phonetype" form="ticket" onchange="phoneContact()"
-							{if empty($ticket.contactphone)} checked{/if} name="phonetype">
+							{if isset($ticket.contactphone) && empty($contactphone) || isset($ticket.phone)} checked{/if} name="phonetype">
 						Telefon kontaktowy jak numer dzwoniącego
 					</label>
 					<div id="contact_phone" {if empty($ticket.contactphone)} style="display: none;" {else} style="display: block;"{/if}>
 						<br>
 
 						Proszę podać telefon kontaktowy<br>
-						<input type="text" name="contactphone" form="ticket" value="{$ticket.contactphone}"
+						<input type="text" name="contactphone" form="ticket" value="{if isset($ticket.contactphone)}{$ticket.contactphone}{/if}"
 							autofocus size="20">
 						<br>
 					</div>
@@ -285,9 +281,9 @@
 			if (document.getElementById("othercustomer").checked){
 				document.getElementById("customer").disabled = true;
 				document.getElementsByName("name")[0].readOnly = false;
-				document.getElementsByName("name")[0].value = "{$ticket.name}";
+				document.getElementsByName("name")[0].value = "{if isset($ticket.name)}{$ticket.name}{/if}";
 				document.getElementsByName("address")[0].readOnly = false;
-				document.getElementsByName("address")[0].value = "{$ticket.address}";
+				document.getElementsByName("address")[0].value = "{if isset($ticket.address)}{$ticket.address}{/if}";
 			}
 
 			function changeFormValues() {

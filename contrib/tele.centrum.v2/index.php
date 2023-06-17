@@ -2,19 +2,20 @@
 
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
+$uid = isset($_GET['id']) ? intval($_GET['id']) : null;
+$agentnr = isset($_GET['agentnr']) ? intval($_GET['agentnr']) : null;
+
 require_once('..' . DIRECTORY_SEPARATOR . 'initLMS.php');
 require_once('lib' . DIRECTORY_SEPARATOR . 'definitions.php');
 
-$uid        = intval($_GET['id']);
-$phone      = intval($_GET['phone']);
-$agentnr    = intval($_GET['agentnr']);
+if (!empty($_GET['phone'])) {
+    $phone = intval($_GET['phone']);
+    $ticket['phone'] = $phone;
+} else {
+    $phone = null;
+}
+
 $ticket['phonetype'] = 'on';
-
-$newticket_subject = ConfigHelper::getConfig(
-    'callcenter.newticket_subject',
-    'Zgłoszenie telefoniczne z E-Południe Call Center nr [#' . $uid . ']'
-);
-
 
 str_replace(
     array('%uid', '%customerphone', '%agentnr'),
@@ -53,45 +54,52 @@ if ($ip != $callcenterip) {
 // get all customers with valid phone number
 if (!empty($phone)) {
     $result = $DB->GetAll(
-        'SELECT c.id, cc.contact AS phone, address, city, deleted,
-        ' . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS username
+        'SELECT c.id, address, city, deleted,
+        ' . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS username,
+        REPLACE(REPLACE(cc.contact, \'-\', \'\'), \' \', \'\') AS phone
         FROM customerview c
-        LEFT JOIN customercontacts cc ON cc.customerid = c.id
-        WHERE REPLACE(REPLACE(cc.contact, \'-\', \'\'), \' \', \'\') ?LIKE? ?
+            LEFT JOIN customercontacts cc ON cc.customerid = c.id
+        WHERE
+            REPLACE(REPLACE(cc.contact, \'-\', \'\'), \' \', \'\') ?LIKE? \'?\'
             AND c.deleted = 0
-        ORDER BY deleted, username, cc.contact, address',
+            AND (cc.type & ' . CONTACT_MOBILE . ' > 0 OR cc.type & ' . CONTACT_LANDLINE . ' > 0)
+        ORDER BY username, cc.contact, address, deleted',
         array($phone)
     );
     // prepare result to put in js
-    $js_result  = json_encode($result, JSON_UNESCAPED_UNICODE);
+    if (!empty($result)) {
+        $js_result  = json_encode($result, JSON_UNESCAPED_UNICODE);
+    } else {
+        $js_result  = null;
+    }
 }
 
 if (!empty($_POST)) {
     $ticket = $_POST;
 
     if (empty($ticket['phone'])) {
-        $ticket['phone'] = $ticket['contactphone'];
+        $ticket['phone'] = empty($ticket['contactphone']) ? null : $ticket['contactphone'];
     }
 
     // simple form validation
-    if ($ticket['body'] == '' && $ticket['queue'] == 1) {
+    if (isset($ticket['body']) && $ticket['body'] == '' && $ticket['queue'] == 1) {
         $error['body'] = 'Podaj treść zgłoszenia!';
     }
 
-    if ($ticket['name'] == '') {
+    if (isset($ticket['name']) && $ticket['name'] == '') {
         $error['name'] = 'Podaj imię i nazwisko/nazwę klienta!';
     }
 
-    if ($ticket['address'] == '') {
+    if (isset($ticket['address']) && $ticket['address'] == '') {
         $error['address'] = 'Podaj adres instalacji z którą jest problem!';
     }
 
-    if ($ticket['phone'] == '') {
+    if (isset($ticket['phone']) && $ticket['phone'] == '') {
         $error['phone'] = 'Podaj telefon do kontaktu ze zgłaszającym usterkę!';
     }
 
     // continue if no error found
-    if (!$error) {
+    if (!isset($error) || empty($error)) {
         if (!$agentnr || !isset($agents[$agentnr])) {
             $agent = 'Brak informacji';
         } else {
@@ -99,61 +107,62 @@ if (!empty($_POST)) {
         }
 
         //prepare body
-        $ticket['contactphone'] = $ticket['phone'];
         $ticket['mailfrom'] = '';
         $ticket['owner'] = null;
         // if valid user found in db
         if (isset($ticket['othercustomer']) || empty($result)) {
             $ticket['customerid'] = null;
-            if ($ticket['odblokowanie_komunikatu'] == 'tak') {
+            if (isset($ticket['odblokowanie_komunikatu']) && $ticket['odblokowanie_komunikatu'] == 'tak') {
                 $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
-                $ticket['body'] = 'Prośba o odblokowanie internetu.' . PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
-            } elseif ($ticket['kontakt'] == 'tak') {
+                $ticket['body'] = 'Prośba o odblokowanie internetu.' . PHP_EOL;
+            } elseif (isset($ticket['kontakt']) && $ticket['kontakt'] == 'tak') {
                 $ticket['requestor'] = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.' . PHP_EOL . 'Agent: '.$agent . PHP_EOL .'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.' . PHP_EOL;
             } else {
                 $ticket['requestor'] = $ticket['name'].', '.$ticket['address'];
-                $ticket['body'] .=  PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             }
         } else {
             $ticket['customerid'] = $result[$ticket['customer']]['id'];
             $ticket['requestor'] = '';
-            if ($ticket['odblokowanie_komunikatu'] == 'tak') {
-                $ticket['requestor'] = $ticket['name'] . ', '.$ticket['address'];
-                $ticket['body'] = 'Prośba o odblokowanie internetu.' . PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
-            } elseif ($ticket['kontakt'] == 'tak') {
+            if (isset($ticket['odblokowanie_komunikatu']) && $ticket['odblokowanie_komunikatu'] == 'tak') {
                 $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
-                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.' . PHP_EOL . 'Agent: '.$agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
+                $ticket['body'] = 'Prośba o odblokowanie internetu.' . PHP_EOL;
+            } elseif (isset($ticket['kontakt']) && $ticket['kontakt'] == 'tak') {
+                $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
+                $ticket['body'] = 'Prośba o kontakt z ofertą handlową.' . PHP_EOL;
             } else {
                 $ticket['requestor'] = $ticket['name'] . ', ' . $ticket['address'];
-                $ticket['body'] .=  PHP_EOL . 'Agent: ' . $agent . PHP_EOL . 'Numer kontaktowy: ' . $ticket['contactphone'];
             }
         }
+        $ticket['body'] .= PHP_EOL . PHP_EOL
+            . (empty($ticket['address']) ? null : 'Adres instalacji: ' . $ticket['address'] . PHP_EOL)
+            . 'Agent: ' . $agent . PHP_EOL
+            . (empty($ticket['contactphone']) ? null : 'Numer kontaktowy: ' . $ticket['contactphone'] . PHP_EOL)
+            . (empty($phone) ? null : 'Numer dzwoniącego: ' . $phone . PHP_EOL);
         $ticket['subject'] = $newticket_subject;
-        // set real quque id
-        if ($ticket['queue'] == 1) {
-            $ticket['queue'] = $queues[0];
-        } elseif ($ticket['queue'] == 2) {
-            $ticket['queue'] = $queues[1];
-        } elseif ($ticket['queue'] == 3) {
-            $ticket['queue'] = $queues[2];
-        }
+        $queue = $CUSTOMER_ISSUES[$ticket['queue']]['queueid'];
+
+        $firstservice = empty($ticket['service']) ?
+            null : array_shift(array_slice($ticket['service'], 0, 1));
 
         //insert ticket
         $DB->Execute(
             'INSERT INTO rttickets (queueid, customerid, requestor, subject,
-                state, owner, createtime, cause, source, creatorid)
-                VALUES (?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)',
+                state, owner, createtime, cause, source, creatorid, type, service)
+                VALUES (?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)',
             array(
-                $ticket['queue'],
+                $queue,
                 $ticket['customerid'],
-                $ticket['requestor'],
+                //matched client by phone cleans requestor field - there is no use to duplicate this in requestor field
+                (empty($ticket['customerid']) ? $ticket['requestor'] : null),
                 $ticket['subject'],
                 RT_NEW,
                 $ticket['owner'],
                 RT_CAUSE_OTHER,
                 RT_SOURCE_CALLCENTER,
                 $user_id,
+                $CUSTOMER_ISSUES[$ticket['queue']]['ticket_type'],
+                $firstservice,
             )
         );
         $id = $DB->GetLastInsertID('rttickets');
@@ -162,7 +171,8 @@ if (!empty($_POST)) {
             'INSERT INTO rtmessages (ticketid, customerid, createtime,
                 subject, body, mailfrom)
                 VALUES (?, ?, ?NOW?, ?, ?, ?)',
-            array($id,
+            array(
+                $id,
                 $ticket['customerid'],
                 $ticket['subject'],
                 preg_replace("/\r/", "", $ticket['body']),
@@ -170,20 +180,16 @@ if (!empty($_POST)) {
             )
         );
 
-        if (isset($ticket['internet'])) {
-            $DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)', array($id, $categories[0]));
-        }
-        if (isset($ticket['tv'])) {
-            $DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)', array($id, $categories[1]));
-        }
-        if (isset($ticket['telefon'])) {
-            $DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)', array($id, $categories[2]));
-        }
-        if (is_null($ticket['internet']) && is_null($ticket['tv']) && is_null($ticket['telefon'])) {
-            $DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)', array($id, $categories[3]));
-        }
+        $ticket['service'] = empty($ticket['service']) ? array($default_category) : $ticket['service'];
 
-        $queue = $ticket['queue'];
+        foreach ($ticket['service'] as $idx => $t) {
+            if (isset($CUSTOMER_VISIBLE_SERVICETYPES[$idx]['categoryid'])) {
+                $DB->Execute(
+                    'INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+                    array($id, $t)
+                );
+            }
+        }
 
         if (ConfigHelper::checkConfig(
             'rt.new_ticket_notify',
@@ -257,7 +263,7 @@ if (!empty($_POST)) {
         }
 
         if ($id) {
-            $msg = 'Zgłoszenie zostoło dodane.';
+            $msg = 'Zgłoszenie o numerze ' . $id . ' zostało dodane.';
             $ticket = array();
         } else {
             $msg = 'Wystąpił błąd. Nie dodano zgłoszenia!';
@@ -271,12 +277,14 @@ if (!empty($_POST)) {
 $SMARTY->assign(array(
     'welcomeMsg' => $welcomeMsg,
     'warning' => $warning,
-    'result'    => $result,
-    'js_result' => $js_result,
+    '_CUSTOMER_ISSUES' => $CUSTOMER_ISSUES,
+    '_CUSTOMER_VISIBLE_SERVICETYPES' => $CUSTOMER_VISIBLE_SERVICETYPES,
+    'result'    => isset($result) ? $result : null,
+    'js_result' => isset($js_result) ? $js_result : null,
     'information' => $information,
     'ticket'    => $ticket,
     'phone' => $phone,
-    'error' => $error
+    'error' => !empty($error) ? $error : null,
 ));
 
 $SMARTY->display('index.html');

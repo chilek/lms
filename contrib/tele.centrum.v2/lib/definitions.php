@@ -20,15 +20,29 @@ $agents = array(
 );
 
 $user_id        = ConfigHelper::getConfig('callcenter.queueuser');
-$queues         = explode(',', ConfigHelper::getConfig('callcenter.queues'));
-$categories     = explode(',', ConfigHelper::getConfig('callcenter.categories'));
+$default_category = ConfigHelper::getConfig('callcenter.default_category');
+$default_queue = ConfigHelper::getConfig('callcenter.default_queue', 1);
 $warning        = ConfigHelper::getConfig('callcenter.warning');
 $information    = ConfigHelper::getConfig('callcenter.information');
 $callcenterip   = ConfigHelper::getConfig('callcenter.callcenterip');
 $networks       = explode(",", ConfigHelper::getConfig('callcenter.networks'));
 
+$service_internet_category = ConfigHelper::getConfig('callcenter.service_internet_category', $default_category);
+$service_phone_category = ConfigHelper::getConfig('callcenter.service_phone_category', $default_category);
+$service_tv_category = ConfigHelper::getConfig('callcenter.service_tv_category', $default_category);
+
+$fault_issues_queue = ConfigHelper::getConfig('callcenter.fault_issues_queue', $default_queue);
+$offer_issues_queue = ConfigHelper::getConfig('callcenter.offer_issues_queue', $default_queue);
+$payment_issues_queue = ConfigHelper::getConfig('callcenter.payment_issues_queue', $default_queue);
+
+$newticket_subject = ConfigHelper::getConfig(
+    'callcenter.newticket_subject',
+    'Zgłoszenie telefoniczne z E-Południe Call Center nr [#' . $uid . ']'
+);
+
 $time = localtime(time(), true)['tm_hour'];
-empty($agents[$agentnr]) ? $ag = '...' : $ag = $agents[$agentnr];
+
+$ag = empty($agents[$agentnr]) ? '...' : $agents[$agentnr];
 if ($time >= 19 or $time < 6) {
     $welcomeMsg = "Dobry wieczór. Nazywam się $ag, w czym mogę pomóc?";
 } else {
@@ -53,3 +67,48 @@ function ip_in_range($ip, $range)
 
     return ( ( $ip_decimal & $netmask_decimal ) == ( $range_decimal & $netmask_decimal ) );
 }
+
+define('CUSTOMER_ISSUE_FAULT', 1);
+define('CUSTOMER_ISSUE_OFFER', 2);
+define('CUSTOMER_ISSUE_PAYMENT', 3);
+
+$CUSTOMER_ISSUES = array(
+    CUSTOMER_ISSUE_FAULT => array(
+        'label' => 'Zgłoszenie awarii',
+        'queueid' => $fault_issues_queue,
+        'ticket_type' => RT_TYPE_FAULT,
+    ),
+    CUSTOMER_ISSUE_OFFER => array(
+        'label' => 'Informacja handlowa',
+        'queueid' => $offer_issues_queue,
+        'ticket_type' => RT_TYPE_OFFER,
+    ),
+    CUSTOMER_ISSUE_PAYMENT => array(
+        'label' => 'Sprawy finansowe',
+        'queueid' => $payment_issues_queue,
+        'ticket_type' => RT_TYPE_PAYMENT,
+    ),
+);
+
+$CUSTOMER_VISIBLE_SERVICETYPES = array(
+    SERVICE_INTERNET  => array(
+        'label' => 'Internet',
+        'categoryid' => $service_internet_category,
+        'value' => SERVICE_INTERNET,
+    ),
+    SERVICE_PHONE  => array(
+        'label' => 'Telefon',
+        'categoryid' => $service_phone_category,
+        'value' => SERVICE_PHONE,
+    ),
+    SERVICE_TV  => array(
+        'label' => 'Telewizja',
+        'categoryid' => $service_tv_category,
+        'value' => SERVICE_TV,
+    ),
+    SERVICE_OTHER => array(
+        'label' => 'Inna',
+        'categoryid' => $default_category,
+        'value' => SERVICE_OTHER,
+    ),
+);
