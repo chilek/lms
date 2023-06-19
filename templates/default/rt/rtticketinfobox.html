@@ -380,10 +380,10 @@
 				{/if}
 			{/if}
 			{buttons type="button" icon="dropdown2" label="Additional options"}
-				{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+				{if ($ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED)}
 					{button id="ticket-assign-to-me" icon="user" label="Assign to me" tip="Assign to me" data_href="?m=rtticketedit&id={$ticket.ticketid}&action=assign"}
 				{/if}
-				{if (!$ticket.verifier && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED) || ConfigHelper::checkPrivilege('superuser')}
+				{if (!$ticket.verifierid && $ticket.owner != $layout.logid && $ticket.state != $smarty.const.RT_RESOLVED)}
 					{button id="ticket-assign2-to-me" type='link-button' icon="user" label="Assign to me as verifier" tip="Assign to me as verifier" href="?m=rtticketedit&id={$ticket.ticketid}&action=assign2"}
 				{/if}
 				{if $ticket.watching}
