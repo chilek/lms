@@ -2373,6 +2373,27 @@
 				</select>
 			</td>
 		</tr>
+		{if !empty($invprojects)}
+			<tr>
+				<td>
+					{icon name="money" class="fa-fw"}
+				</td>
+				<td class="nobr">
+					<strong>{trans("<!invproject>Project")}</strong>
+				</td>
+				<td>
+					<select name="projects[]" form="sidusis-form" required
+						{tip text="Select projects" class="lms-ui-multiselect"}
+						data-default-value="{trans("<!invproject>— without project —")}"
+						multiple>
+						<option value="" data-exclusive selected>{trans("<!invproject>— without project —")}</option>
+						{foreach $invprojects as $project}
+							<option value="{$project.id}"{if !empty($project.divisionid)} data-divisionid="{$project.divisionid}"{/if}>{$project.name|escape}</option>
+						{/foreach}
+					</select>
+				</td>
+			</tr>
+		{/if}
 		<tr>
 			<td colspan="3" class="lms-ui-box-buttons">
 				{button type="submit" form="sidusis-form" icon="submit" label="Submit"}
@@ -2387,6 +2408,15 @@
 		$('#sidusis-form').submit(function () {
 			$('[form="sidusis-form"][type="submit"]').prop('disabled', false);
 		})
+
+		$('[form="sidusis-form"][name="division"]').change(function() {
+			var divisionId = $(this).val();
+			$('[form="sidusis-form"][name="projects[]"]').find('option').each(function() {
+				var optionDivisionId = $(this).attr('data-divisionid');
+				$(this).toggle(!optionDivisionId || divisionId == "" || optionDivisionId == divisionId);
+			});
+			$('[form="sidusis-form"][name="projects[]"]').trigger('lms:multiselect:updated');
+		});
 	});
 
 </script>
