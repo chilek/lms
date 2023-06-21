@@ -1,6 +1,6 @@
 {$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
 {$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
-
+{$ticket_service_required = ConfigHelper::checkConfig('rt.ticket_service_required')}
 <style>
 
 	#ticket.lms-ui-box-container .lms-ui-box-row-label {
@@ -31,8 +31,7 @@
 		{/box_header}
 		{box_header icon="service" label="Service type" icon_class="fa-fw"}
 			<select name="ticket[service]" id="ticket-service"
-				{tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"}
-				{if ConfigHelper::checkConfig('rt.ticket_service_required')} required{/if}>
+				{tip class="lms-ui-advanced-select" text="Choose service type" trigger="service"}>
 				<option value="" selected hidden>{trans("select")}</option>
 				{foreach $_SERVICETYPES as $key => $service}
 					<option value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</option>
@@ -57,11 +56,17 @@
 			{if $layout.module != 'eventadd'}
 			{box_row icon="customer" label="Customer" icon_class="fa-fw"}
 				{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
-				{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
-				{customerlist form="ticket-form" customers=$customerlist selected=$customerid version=2
-					selectname="ticket[customerid]" inputname="ticket[custid]"
+				{$address_selector="[name=&quot;ticket[address_id]&quot;]"}
+				{customerlist
+					form="ticket-form"
+					customers=$customerlist
+					selected=$customerid
+					version=2
+					selectname="ticket[customerid]"
+					inputname="ticket[custid]"
+					select_id='customer-selection'
 					selecttip="Select customer from list or enter his data if is not a customer"
-					customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+					customOnChange="change_customer('{$customer_selector}', '{$address_selector}');{if $ticket_service_required} set_service_require_attr();{/if}"}
 			{/box_row}
 			{/if}
 
@@ -388,6 +393,17 @@
 
 <script src="js/templates/rt/rtticketmodify.js"></script>
 <script>
+    {if $ticket_service_required}
+        function set_service_require_attr() {
+            var custidval = $('[name="ticket[custid]"]').val();
+            if (custidval == '' || custidval == 'undefined') {
+                $("#ticket-service").removeAttr('required');
+            } else {
+                $("#ticket-service").attr('required', '');
+            }
+            $("#ticket-service").chosen("destroy").chosen("init");
+        }
+    {/if}
 
 	$(function() {
 		$('#resolve').change(function() {
