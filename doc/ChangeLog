@@ -522,6 +522,7 @@ version 28-git (????-??-??):
   - enhancement: 'phpui.allowed_link_technologies' and 'sidusis.allowed_link_technologies' with default
     empty values allow to limit link technology selection lists in user interface [chilan]
   - enhancement: added estimated completion date property to investment projects [chilan]
+  - enhancement: uke/sidusis: implemented investment project csv export [chilan]
 
 version 27.0 (2021-08-20):
 
