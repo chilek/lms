@@ -40,7 +40,7 @@ class LMSMetroportMVNOPlugin extends LMSPlugin
     const PLUGIN_DOC_URL = 'https://lms-plus.org/wiki/metroportmvno/';
     const PLUGIN_REPO_URL = 'https://github.com/chilek/lms-plus/tree/metroportmvno';
     const PLUGIN_AUTHOR = 'Rafał Pietraszewicz &lt;r.pietraszewicz@gmail.com&gt;';
-    const PLUGIN_SOFTWARE_VERSION = '1.0.4';
+    const PLUGIN_SOFTWARE_VERSION = '1.0.5';
 
     private static $metroportmvno = null;
 

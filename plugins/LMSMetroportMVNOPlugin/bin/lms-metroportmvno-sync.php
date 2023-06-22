@@ -53,6 +53,7 @@ $parameters = array(
     'chunking' => null,
     'no-chunking' => null,
     'chunk-size:' => null,
+    'pricelist-file:' => null,
 );
 
 $long_to_shorts = array();
@@ -118,6 +119,7 @@ lms-metroportmvno-sync.php
                                 (enabled by default if --incremental parameter was also specifed)
     --no-chunking               disable chunking usage
     --chunk-size=<n>            specify chunk size when chunking is enabled (in days)
+    --pricelist-file            specify path to price list csv file
 
 EOF;
     exit(0);
@@ -320,6 +322,54 @@ preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $authResponse, $matches);
 $cookie = implode("; ", $matches[1]);
 //</editor-fold>
 
+//<editor-fold desc="Post MMSC price list">
+if (isset($options['pricelist-file'])) {
+    if (!$quiet) {
+        echo PHP_EOL . '---' . trans('Price list csv file import.') . '---' . PHP_EOL . PHP_EOL;
+    }
+
+    $file = $options['pricelist-file'];
+    if (!file_exists($file)) {
+        die(trans('Price list file ($a) does not exist!') . PHP_EOL);
+    }
+
+    $fh = fopen($file, "r");
+
+    curl_setopt_array($ch, $commonHeaders + array(
+            CURLOPT_URL => API_URL . '/mvno/retailRates/importRates',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_HEADER => false,
+            CURLOPT_POSTFIELDS => array('file'=> new CURLFILE($file)),
+            CURLOPT_HTTPHEADER => array(
+                "Cookie: " . $cookie
+            ),
+        ));
+
+    $pricelistResponse = curl_exec($ch);
+
+    if ($errno = curl_errno($ch)) {
+        $error_message = curl_error($ch);
+        curl_close($ch);
+        die(trans('Error: "$a"!', $error_message) . PHP_EOL);
+    }
+
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if ($http_code != 200 && $http_code != 204) {
+        curl_close($ch);
+        die(trans('Error - HTTP error code: "$a"!', $http_code) . PHP_EOL);
+    }
+
+    echo $pricelistResponse . PHP_EOL;
+}
+
+//</editor-fold>
+
 //<editor-fold desc="Get MMSC users">
 curl_setopt_array($ch, $commonHeaders + array(
         CURLOPT_URL => API_URL . '/Users/users?usertype=2',
@@ -344,6 +394,7 @@ if ($errno = curl_errno($ch)) {
     curl_close($ch);
     die(trans('Error getting users from Metroport API server: "$a"!', $error_message) . PHP_EOL);
 }
+
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 if ($http_code != 200 && $http_code != 204) {
     curl_close($ch);
@@ -884,42 +935,40 @@ if ($syncBillings) {
                 //<editor-fold desc="Get MMSC billings for user">
                 $datestart = '?datestart=' . urlencode($startdatestr);
                 $dateend = '&dateend=' . urlencode($enddatestr);
-                $userId = '&userid=' . $mmscUserCodes[$cextid]['userid'];
+                $userId = isset($mmscUserCodes[$cextid]) ? '&userid=' . $mmscUserCodes[$cextid]['userid'] : null;
 
-                curl_setopt_array($ch, $commonHeaders + array(
-                        CURLOPT_URL => API_URL . '/Mvno/Billings' . $datestart . $dateend . $userId,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => "",
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => "GET",
-                        CURLOPT_HEADER => false,
-                        CURLOPT_HTTPHEADER => array(
-                            "Content-Type: application/json; charset=utf-8",
-                            "Cookie: " . $cookie,
-                        ),
-                    ));
-
-                $billingsResponse = curl_exec($ch);
-
-                if ($errno = curl_errno($ch)) {
-                    $error_message = curl_error($ch);
-                    echo trans('Error getting billings from Metroport API server: "$a"!', $error_message) . PHP_EOL;
-                }
-
-                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                if ($http_code != 200 && $http_code != 204) {
-                    echo trans('Error getting billings from Metroport API server - HTTP error code: "$a"!', $http_code) . PHP_EOL;
-                }
-
-                $response = array();
-                if (!empty($billingsResponse)) {
-                    $response = json_decode($billingsResponse, true);
-                    if (isset($response[0]) && isset($response[1])) {
-                        $responseCount = $response[0];
-                        $response = $response[1];
+                if (!empty($userId)) {
+                    curl_setopt_array($ch, $commonHeaders + array(
+                            CURLOPT_URL => API_URL . '/Mvno/Billings' . $datestart . $dateend . $userId,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => "",
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 0,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => "GET",
+                            CURLOPT_HEADER => false,
+                            CURLOPT_HTTPHEADER => array(
+                                "Content-Type: application/json; charset=utf-8",
+                                "Cookie: " . $cookie,
+                            ),
+                        ));
+                    $billingsResponse = curl_exec($ch);
+                    if ($errno = curl_errno($ch)) {
+                        $error_message = curl_error($ch);
+                        echo trans('Error getting billings from Metroport API server: "$a"!', $error_message) . PHP_EOL;
+                    }
+                    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    if ($http_code != 200 && $http_code != 204) {
+                        echo trans('Error getting billings from Metroport API server - HTTP error code: "$a"!', $http_code) . PHP_EOL;
+                    }
+                    $response = array();
+                    if (!empty($billingsResponse)) {
+                        $response = json_decode($billingsResponse, true);
+                        if (isset($response[0]) && isset($response[1])) {
+                            $responseCount = $response[0];
+                            $response = $response[1];
+                        }
                     }
                 }
                 //</editor-fold>
