@@ -871,19 +871,21 @@ if (isset($options['update'])) {
                 $terc[$key]['valid'] = 1;
             } else {
                 // else insert new state
-                $DB->Execute(
-                    'INSERT INTO location_boroughs (districtid, name, ident, type) VALUES (?,?,?,?)',
-                    array($terc[$districtkey]['id'], $row['nazwa'], $row['gmi'], $row['rodz'])
-                );
+                if (isset($terc[$districtkey])) {
+                    $DB->Execute(
+                        'INSERT INTO location_boroughs (districtid, name, ident, type) VALUES (?,?,?,?)',
+                        array($terc[$districtkey]['id'], $row['nazwa'], $row['gmi'], $row['rodz'])
+                    );
 
-                ++$terc_insert;
-                $insertid = $DB->GetLastInsertID('location_boroughs');
-                $terc[$key] = array(
-                    'id'    => $insertid,
-                    'nazwa' => $row['nazwa'],
-                    'type'  => 'GMI',
-                    'valid' => 1
-                );
+                    ++$terc_insert;
+                    $insertid = $DB->GetLastInsertID('location_boroughs');
+                    $terc[$key] = array(
+                        'id'    => $insertid,
+                        'nazwa' => $row['nazwa'],
+                        'type'  => 'GMI',
+                        'valid' => 1
+                    );
+                }
             }
         }
     }
@@ -1108,7 +1110,7 @@ if (isset($options['update'])) {
         $data  = isset($simc[$id]) ? $simc[$id] : null;
         $refid = $row['sympod'];
 
-        if (!$terc[$key] && !$quiet) {
+        if (!isset($terc[$key]) && !$quiet) {
             echo 'Not recognised TERYT-TERC key: ' . $key . PHP_EOL;
         }
 
@@ -1126,41 +1128,45 @@ if (isset($options['update'])) {
             $refid = $simc[$refid]['id'];
         }
 
-        // entry exists
-        if ($data) {
-            if ($data['nazwa'] != $row['nazwa'] || $data['sympod'] != $row['sympod'] || $data['key'] != $key || $data['rodz_mi'] != $rodz_mi) {
-                $DB->Execute(
-                    'UPDATE location_cities SET boroughid=?, name=?, type = ?, cityid=? WHERE id=?',
-                    array($terc[$key]['id'], $row['nazwa'], $wmrodz[$rodz_mi]['id'], $refid, $data['id'])
-                );
+        if (isset($terc[$key])) {
+            // entry exists
+            if ($data) {
+                if ($data['nazwa'] != $row['nazwa'] || $data['sympod'] != $row['sympod'] || $data['key'] != $key || $data['rodz_mi'] != $rodz_mi) {
+                    $DB->Execute(
+                        'UPDATE location_cities SET boroughid=?, name=?, type = ?, cityid=? WHERE id=?',
+                        array($terc[$key]['id'], $row['nazwa'], $wmrodz[$rodz_mi]['id'], $refid, $data['id'])
+                    );
 
-                ++$simc_update;
+                    ++$simc_update;
+                }
+
+                // mark data as valid
+                $simc[$id]['valid'] = 1;
+                $cities[$id] = $data['id'];
+            } elseif (!$refid || isset($simc[$row['sympod']])) {
+                // add new city
+                if (isset($terc[$key])) {
+                    $DB->Execute(
+                        'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
+                        array($terc[$key]['id'], $row['nazwa'], $wmrodz[$rodz_mi]['id'], $refid, $id)
+                    );
+
+                    ++$simc_insert;
+                    $insertid = $DB->GetLastInsertID('location_cities');
+
+                    $simc[$id] = array(
+                         'key'    => $key,
+                         'nazwa'  => $row['nazwa'],
+                         'rodz_mi' => $rodz_mi,
+                         'sym'    => $id,
+                         'sympod' => $refid,
+                         'id'     => $insertid,
+                         'valid'  => 1,
+                    );
+
+                    $cities[$row['sym']] = $insertid;
+                }
             }
-
-            // mark data as valid
-            $simc[$id]['valid'] = 1;
-            $cities[$id] = $data['id'];
-        } elseif (!$refid || isset($simc[$row['sympod']])) {
-            // add new city
-            $DB->Execute(
-                'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
-                array($terc[$key]['id'], $row['nazwa'], $wmrodz[$rodz_mi]['id'], $refid, $id)
-            );
-
-            ++$simc_insert;
-            $insertid = $DB->GetLastInsertID('location_cities');
-
-            $simc[$id] = array(
-                 'key'    => $key,
-                 'nazwa'  => $row['nazwa'],
-                 'rodz_mi' => $rodz_mi,
-                 'sym'    => $id,
-                 'sympod' => $refid,
-                 'id'     => $insertid,
-                 'valid'  => 1,
-            );
-
-            $cities[$row['sym']] = $insertid;
         }
 
         // process references
