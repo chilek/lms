@@ -115,6 +115,7 @@
         "ext-gmp": "*",
         "ext-curl": "*",
         "ext-intl": "*",
+        "ext-ctype": "*",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^6",
