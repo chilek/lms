@@ -230,15 +230,17 @@ class Utils
                 $line = trim($line);
             }
             unset($line);
-            return preg_replace(
-                array(
-                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
-                    '#\[([^]]+)\]\((/[^\)]*)\)#',
-                ),
-                array(
-                    '[$1](https://wiki.lms.plus/$2)',
-                    '[$1](https://github.com$2)',
-                ),
+            return preg_replace_callback(
+                '#\[([^]]+)\]\(([^)]*)\)#',
+                function ($matches) {
+                    if (preg_match('#https?://#', $matches[2])) {
+                        return $matches[0];
+                    } elseif (preg_match('#\[([^]]+)\]\(([^/][^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://wiki.lms.plus/' . $matches[2] . ')';
+                    } elseif (preg_match('#\[([^]]+)\]\((/[^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://github.com' . $matches[2] . ')';
+                    }
+                },
                 implode("\n", $lines)
             );
         }
@@ -256,15 +258,17 @@ class Utils
 
         $content = explode(
             "\n",
-            preg_replace(
-                array(
-                    '#\[([^]]+)\]\(([^/][^\)]*)\)#',
-                    '#\[([^]]+)\]\((/[^\)]*)\)#',
-                ),
-                array(
-                    '[$1](https://wiki.lms.plus/$2)',
-                    '[$1](https://github.com$2)',
-                ),
+            preg_replace_callback(
+                '#\[([^]]+)\]\(([^)]*)\)#',
+                function ($matches) {
+                    if (preg_match('#https?://#', $matches[2])) {
+                        return $matches[0];
+                    } elseif (preg_match('#\[([^]]+)\]\(([^/][^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://wiki.lms.plus/' . $matches[2] . ')';
+                    } elseif (preg_match('#\[([^]]+)\]\((/[^\)]*)\)#', $matches[0])) {
+                        return '[' . $matches[1] . '](https://github.com' . $matches[2] . ')';
+                    }
+                },
                 $content
             )
         );
