@@ -523,6 +523,7 @@ version 28-git (????-??-??):
     empty values allow to limit link technology selection lists in user interface [chilan]
   - enhancement: added estimated completion date property to investment projects [chilan]
   - enhancement: uke/sidusis: implemented investment project csv export [chilan]
+  - enhancement: added operation date and operation external id to cash import records [chilan]
 
 version 27.0 (2021-08-20):
 
