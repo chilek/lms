@@ -1229,13 +1229,17 @@ CREATE TABLE cashimport (
 	sourcefileid integer    DEFAULT NULL
 		REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	srcaccount varchar(60) DEFAULT NULL,
-	PRIMARY KEY (id)
+	operdate integer DEFAULT NULL,
+	extid varchar(64) DEFAULT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT cashimport_sourceid_extid_ukey UNIQUE (sourceid, extid)
 );
 
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 CREATE INDEX cashimport_customerid_idx ON cashimport (customerid);
 CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
 CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
+CREATE INDEX cashimport_extid_idx ON cashimport (extid);
 
 /* ---------------------------------------------------
  Structure of table customerbalances
@@ -4382,6 +4386,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023061500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023062600');
 
 COMMIT;

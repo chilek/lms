@@ -113,18 +113,95 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 continue;
             }
 
-            $name = isset($pattern['pname'], $matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
-            $lastname = isset($pattern['lastname'], $matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
-            $customername = preg_replace('/[\s]{2,}/', ' ', (empty($lastname) ? '' : $lastname . ' ') . $name);
-            $comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
-            $time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
-            $value = str_replace(',', '.', isset($matches[$pattern['pvalue']]) ? preg_replace('/[\s]/', '', $matches[$pattern['pvalue']]) : '');
-            $srcaccount = isset($pattern['srcaccount']) && isset($matches[$pattern['srcaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]) : '';
-            $dstaccount = isset($pattern['dstaccount']) && isset($matches[$pattern['dstaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]) : '';
-            $optional_string = isset($pattern['optional_string'], $matches[$pattern['optional_string']]) ? trim($matches[$pattern['optional_string']]) : '';
+            if (isset($matches['name'])) {
+                $name = trim($matches['name']);
+            } elseif (isset($pattern['pname'], $matches[$pattern['pname']])) {
+                $name = trim($matches[$pattern['pname']]);
+            } elseif (isset($pattern['name'], $matches[$pattern['name']])) {
+                $name = trim($matches[$pattern['name']]);
+            } else {
+                $name = '';
+            }
 
-            if (!$pattern['pid']) {
-                if (!empty($pattern['pid_regexp'])) {
+            if (isset($matches['lastname'])) {
+                $lastname = trim($matches['lastname']);
+            } elseif (isset($pattern['plastname'], $matches[$pattern['plastname']])) {
+                $lastname = trim($matches[$pattern['plastname']]);
+            } elseif (isset($pattern['lastname'], $matches[$pattern['lastname']])) {
+                $lastname = trim($matches[$pattern['lastname']]);
+            } else {
+                $lastname = '';
+            }
+
+            $customername = preg_replace('/[\s]{2,}/', ' ', (empty($lastname) ? '' : $lastname . ' ') . $name);
+
+            if (isset($matches['comment'])) {
+                $comment = trim($matches['comment']);
+            } elseif (isset($pattern['pcomment'], $matches[$pattern['pcomment']])) {
+                $comment = trim($matches[$pattern['pcomment']]);
+            } elseif (isset($pattern['comment'], $matches[$pattern['comment']])) {
+                $comment = trim($matches[$pattern['comment']]);
+            } else {
+                $comment = '';
+            }
+
+            if (isset($matches['date'])) {
+                $time = trim($matches['date']);
+            } elseif (isset($pattern['pdate'], $matches[$pattern['pdate']])) {
+                $time = trim($matches[$pattern['pdate']]);
+            } elseif (isset($pattern['date'], $matches[$pattern['date']])) {
+                $time = trim($matches[$pattern['date']]);
+            } else {
+                $time = '';
+            }
+
+            if (isset($matches['operdate'])) {
+                $operdate = trim($matches['operdate']);
+            } elseif (isset($pattern['operdate'], $matches[$pattern['operdate']])) {
+                $operdate = trim($matches[$pattern['operdate']]);
+            } else {
+                $operdate = '';
+            }
+            if (!strlen($operdate)) {
+                $operdate = null;
+            }
+
+            if (isset($matches['value'])) {
+                $value = str_replace(',', '.', preg_replace('/[\s]/', '', $matches['value']));
+            } elseif (isset($pattern['pvalue'], $matches[$pattern['pvalue']])) {
+                $value = str_replace(',', '.', preg_replace('/[\s]/', '', $matches[$pattern['pvalue']]));
+            } elseif (isset($pattern['value'], $matches[$pattern['value']])) {
+                $value = str_replace(',', '.', preg_replace('/[\s]/', '', $matches[$pattern['value']]));
+            } else {
+                $value = '';
+            }
+
+            if (isset($matches['srcaccount'])) {
+                $srcaccount = preg_replace('/[\s]/', '', $matches['srcaccount']);
+            } elseif (isset($pattern['srcaccount'], $matches[$pattern['srcaccount']])) {
+                $srcaccount = preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]);
+            } else {
+                $srcaccount = '';
+            }
+
+            if (isset($matches['dstaccount'])) {
+                $dstaccount = preg_replace('/[\s]/', '', $matches['dstaccount']);
+            } elseif (isset($pattern['dstaccount'], $matches[$pattern['dstaccount']])) {
+                $dstaccount = preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]);
+            } else {
+                $dstaccount = '';
+            }
+
+            if (isset($matches['option_string'])) {
+                $optional_string = trim($matches['optional_string']);
+            } elseif (isset($pattern['optional_string'], $matches[$pattern['optional_string']])) {
+                $optional_string = trim($matches[$pattern['optional_string']]);
+            } else {
+                $optional_string = '';
+            }
+
+            if (empty($matches['id']) && empty($pattern['pid'])) {
+                if (isset($pattern['pid_regexp']) && strlen($pattern['pid_regexp'])) {
                     $regexp = $pattern['pid_regexp'];
                 } else {
                     $regexp = '/.*ID[:\-\/]([0-9]{0,4}).*/i';
@@ -133,14 +210,33 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 if (preg_match($regexp, $theline, $matches)) {
                     $id = $matches[1];
                 }
+            } elseif (isset($matches['id'])) {
+                $id = intval(preg_replace('/\s+/', '', $matches['id']));
+            } elseif (isset($pattern['pid'], $matches[$pattern['pid']])) {
+                $id = intval(preg_replace('/\s+/', '', $matches[$pattern['pid']]));
             } else {
-                $id = isset($matches[$pattern['pid']]) ? intval(preg_replace('/\s+/', '', $matches[$pattern['pid']])) : null;
+                $id = null;
+            }
+
+            if (isset($matches['extid'])) {
+                $extid = trim($matches['extid']);
+                if (!strlen($extid)) {
+                    $extid = null;
+                }
+            } elseif (isset($pattern['pextid'], $matches[$pattern['pextid']])) {
+                $extid = trim($matches[$pattern['pextid']]);
+                if (!strlen($extid)) {
+                    $extid = null;
+                }
+            } else {
+                $extid = null;
             }
 
             // seek invoice number
             if (!$id && !empty($pattern['invoice_regexp'])) {
                 if (preg_match($pattern['invoice_regexp'], $theline, $matches)) {
-                    if (!isset($pattern['pinvoice_year']) || !isset($pattern['pinvoice_month']) || !isset($pattern['pinvoice_number'])) {
+                    if (!isset($pattern['pinvoice_year'], $pattern['pinvoice_month'], $pattern['pinvoice_number'])
+                        && !isset($matches['invoice_year'], $matches['invoice_month'], $matches['invoice_number'])) {
                         $id = $this->db->GetOne(
                             'SELECT customerid
                             FROM documents
@@ -152,13 +248,41 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                             )
                         );
                     } else {
-                        $invnumber = $matches[$pattern['pinvoice_number']];
-                        $invyear = $matches[$pattern['pinvoice_year']];
-                        $invmonth = !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? intval($matches[$pattern['pinvoice_month']]) : 1;
+                        if (isset($matches['invoice_number'])) {
+                            $invnumber = $matches['invoice_number'];
+                        } elseif (isset($pattern['pinvoice_number'], $matches[$pattern['pinvoice_number']])) {
+                            $invnumber = $matches[$pattern['pinvoice_number']];
+                        } else {
+                            $invnumber = null;
+                        }
+                        if (isset($matches['invoice_year'])) {
+                            $invyear = $matches['invoice_year'];
+                        } elseif (isset($pattern['pinvoice_year'], $matches[$pattern['pinvoice_year']])) {
+                            $invyear = $matches[$pattern['pinvoice_year']];
+                        } else {
+                            $invyear = null;
+                        }
+                        if (isset($matches['invoice_month']) && $matches['invoice_month'] > 0) {
+                            $invmonth = intval($matches['invoice_month']);
+                        } elseif (isset($pattern['pinvoice_month'], $matches[$pattern['pinvoice_month']])
+                            && $matches[$pattern['pinvoice_month']] > 0) {
+                            $invmonth = intval($matches[$pattern['pinvoice_month']]);
+                        } else {
+                            $invmonth = 1;
+                        }
 
                         if ($invnumber && $invyear) {
                             $from = mktime(0, 0, 0, $invmonth, 1, $invyear);
-                            $to = mktime(0, 0, 0, !empty($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0 ? $invmonth + 1 : 13, 1, $invyear);
+
+                            if (isset($matches['invoice_month']) && $matches['invoice_month'] > 0) {
+                                $to_month = $invmonth + 1;
+                            } elseif (isset($pattern['pinvoice_month']) && $pattern['pinvoice_month'] > 0) {
+                                $to_month = $invmonth + 1;
+                            } else {
+                                $to_month = 13;
+                            }
+                            $to = mktime(0, 0, 0, $to_month, 1, $invyear);
+
                             $id = $this->db->GetOne(
                                 'SELECT customerid
                                 FROM documents
@@ -180,19 +304,25 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             // seek by explicitly given source or destination customer account numbers
             if (!$id) {
-                if (!empty($dstaccount)) {
+                if (strlen($dstaccount)) {
                     $id = $this->db->GetOne(
                         'SELECT customerid FROM customercontacts
-						WHERE contact = ? AND (type & ?) = ?',
-                        array($dstaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
-                        CONTACT_BANKACCOUNT | CONTACT_INVOICES)
+                        WHERE contact = ? AND (type & ?) = ?',
+                        array(
+                            $dstaccount,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES,
+                        )
                     );
-                } elseif (!empty($srcaccount)) {
+                } elseif (strlen($srcaccount)) {
                     $id = $this->db->GetOne(
                         'SELECT customerid FROM customercontacts
-						WHERE contact = ? AND (type & ?) = ?',
-                        array($srcaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
-                        CONTACT_BANKACCOUNT)
+                        WHERE contact = ? AND (type & ?) = ?',
+                        array(
+                            $srcaccount,
+                            CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+                            CONTACT_BANKACCOUNT,
+                        )
                     );
                     if (empty($id)) {
                         // find customer by source accounts stored in cash import record;
@@ -253,14 +383,28 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             if ($time) {
                 if (preg_match($pattern['date_regexp'], $time, $date)) {
-                    $time = mktime(
-                        0,
-                        0,
-                        0,
-                        $date[$pattern['pmonth']],
-                        $date[$pattern['pday']],
-                        $date[$pattern['pyear']]
-                    );
+                    if (isset($date['month'], $date['day'], $date['year'])) {
+                        $time = mktime(
+                            0,
+                            0,
+                            0,
+                            $date['month'],
+                            $date['day'],
+                            $date['year']
+                        );
+                    } elseif (isset($pattern['pmonth'], $pattern['pday'], $pattern['pyear'])) {
+                        $time = mktime(
+                            0,
+                            0,
+                            0,
+                            $date[$pattern['pmonth']],
+                            $date[$pattern['pday']],
+                            $date[$pattern['pyear']]
+                        );
+                    }
+                    if (empty($time)) {
+                        $time = time();
+                    }
                 } elseif (!is_numeric($time)) {
                     $time = time();
                 }
@@ -269,6 +413,26 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             } else {
                 $time = time();
+            }
+
+            if (isset($operdate)) {
+                if (isset($pattern['operdate_regexp'])
+                    && preg_match($pattern['operdate_regexp'], $operdate, $date)
+                    && isset($date['month'], $date['day'], $date['year'])) {
+                    $operdate = mktime(
+                        0,
+                        0,
+                        0,
+                        $date['month'],
+                        $date['day'],
+                        $date['year']
+                    );
+                    if (empty($operdate)) {
+                        $operdate = null;
+                    }
+                } elseif (!is_numeric($operdate)) {
+                    $operdate = null;
+                }
             }
 
             $hook_data = $LMS->executeHook(
@@ -310,7 +474,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
             foreach (array('srcaccount', 'dstaccount', 'customername', 'cid') as $replace_symbol) {
                 $variable = $$replace_symbol;
-                $variable = empty($variable) ? trans('none') : $variable;
+                $variable = strlen($variable) ? $variable : trans('none');
                 $comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
             }
 
@@ -338,8 +502,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                             'idate' => isset($filemtime) ? $filemtime : time(),
                             SYSLOG::RES_USER => Auth::GetCurrentUser(),
                         );
-                        $this->db->Execute('INSERT INTO sourcefiles (name, idate, userid)
-							VALUES (?, ?, ?)', array_values($args));
+                        $this->db->Execute(
+                            'INSERT INTO sourcefiles (name, idate, userid)
+                            VALUES (?, ?, ?)',
+                            array_values($args)
+                        );
                         $sourcefileid = $this->db->GetLastInsertID('sourcefiles');
                         if ($sourcefileid && $this->syslog) {
                             $args[SYSLOG::RES_SOURCEFILE] = $sourcefileid;
@@ -361,6 +528,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
                     $args = array(
                         'time' => $time,
+                        'operdate' => $operdate,
                         'value' => $value,
                         'customer' => $customer,
                         SYSLOG::RES_CUST => $id,
@@ -368,11 +536,15 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         'hash' => $hash,
                         SYSLOG::RES_CASHSOURCE => $sourceid,
                         SYSLOG::RES_SOURCEFILE => $sourcefileid,
-                        'srcaccount' => empty($srcaccount) ? null : $srcaccount,
+                        'srcaccount' => isset($srcaccount) && strlen($srcaccount) ? $srcaccount : null,
+                        'extid' => $extid,
                     );
-                    $res = $this->db->Execute('INSERT INTO cashimport (date, value, customer,
-						customerid, description, hash, sourceid, sourcefileid, srcaccount)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                    $res = $this->db->Execute(
+                        'INSERT INTO cashimport (date, operdate, value, customer,
+                        customerid, description, hash, sourceid, sourcefileid, srcaccount, extid)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        array_values($args)
+                    );
                     if ($res && $this->syslog) {
                         $args[SYSLOG::RES_CASHIMPORT] = $this->db->GetLastInsertID('cashimport');
                         $syslog_records[] = array(
@@ -388,8 +560,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         'customer' => $customer,
                         'customerid' => $id,
                         'date' => $time,
+                        'operdate' => $operdate,
                         'value' => $value,
-                        'comment' => $comment
+                        'comment' => $comment,
+                        'extid' => $extid,
                     );
                 }
             }

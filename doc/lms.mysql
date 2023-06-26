@@ -1374,11 +1374,15 @@ CREATE TABLE cashimport (
 	sourceid int(11) DEFAULT NULL,
 	sourcefileid int(11) DEFAULT NULL,
 	srcaccount varchar(60) DEFAULT NULL,
+	operdate int(11) DEFAULT NULL,
+	extid varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
+	UNIQUE KEY cashimport_sourceid_extid_ukey (sourceid, extid),
 	INDEX hash (hash),
 	INDEX customerid (customerid),
 	INDEX sourceid (sourceid),
 	INDEX sourcefileid (sourcefileid),
+	INDEX cashimport_extid_idx (extid),
 	CONSTRAINT cashimport_customerid_fkey
 	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT cashimport_sourceid_fkey
@@ -4338,4 +4342,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023061500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023062600');
