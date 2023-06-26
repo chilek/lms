@@ -1721,15 +1721,15 @@ if (isset($options['buildings'])) {
                             $fields_to_update[] = 'extid = ' . ($record['gml_id'] ? $DB->Escape($record['gml_id']) : 'null');
                         }
 
-                        if ($city['id'] != $building['city_id']) {
+                        if (!isset($building['city_id']) || $city['id'] != $building['city_id']) {
                             $fields_to_update[] = 'city_id = ' . $city['id'];
                         }
 
-                        if ($street['id'] != $building['street_id']) {
+                        if (!isset($building['street_id']) || $street['id'] != $building['street_id']) {
                             $fields_to_update[] = 'street_id = ' . ($street['id'] ?: 'null');
                         }
 
-                        if (mb_strtoupper($record['Nr budynku']) != $building['building_num']) {
+                        if (!isset($building['building_num']) || mb_strtoupper($record['Nr budynku']) != $building['building_num']) {
                             $fields_to_update[] = 'building_num = UPPER(' . $DB->Escape($record['Nr budynku']) . ')';
                         }
 
