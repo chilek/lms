@@ -491,7 +491,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             if (empty($cid)) {
                 $cid = '-';
             }
-            foreach (array('srcaccount', 'dstaccount', 'customername', 'cid') as $replace_symbol) {
+            foreach (array('srcaccount', 'dstaccount', 'customername', 'cid', 'extid') as $replace_symbol) {
                 $variable = $$replace_symbol;
                 $variable = strlen($variable) ? $variable : trans('none');
                 $comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
