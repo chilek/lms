@@ -157,8 +157,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             if (isset($matches['operdate'])) {
                 $operdate = trim($matches['operdate']);
-            } elseif (isset($pattern['operdate'], $matches[$pattern['operdate']])) {
-                $operdate = trim($matches[$pattern['operdate']]);
+            } elseif (isset($pattern['poperdate'], $matches[$pattern['poperdate']])) {
+                $operdate = trim($matches[$pattern['poperdate']]);
             } else {
                 $operdate = '';
             }
@@ -417,16 +417,35 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
             if (isset($operdate)) {
                 if (isset($pattern['operdate_regexp'])
-                    && preg_match($pattern['operdate_regexp'], $operdate, $date)
-                    && isset($date['month'], $date['day'], $date['year'])) {
-                    $operdate = mktime(
-                        0,
-                        0,
-                        0,
-                        $date['month'],
-                        $date['day'],
-                        $date['year']
-                    );
+                    && preg_match($pattern['operdate_regexp'], $operdate, $date)) {
+                    if (isset($date['month'], $date['day'], $date['year'])) {
+                        $operdate = mktime(
+                            0,
+                            0,
+                            0,
+                            $date['month'],
+                            $date['day'],
+                            $date['year']
+                        );
+                    } elseif (isset(
+                        $pattern['p_operdate_month'],
+                        $date[$pattern['p_operdate_month']],
+                        $pattern['p_operdate_day'],
+                        $date[$pattern['p_operdate_dat']],
+                        $pattern['p_operdate_year'],
+                        $date[$pattern['p_operdate_year']]
+                    )) {
+                        $operdate = mktime(
+                            0,
+                            0,
+                            0,
+                            $date[$pattern['p_operdate_month']],
+                            $date[$pattern['p_operdate_day']],
+                            $date[$pattern['p_operdate_year']]
+                        );
+                    } else {
+                        $operdate = null;
+                    }
                     if (empty($operdate)) {
                         $operdate = null;
                     }
