@@ -431,7 +431,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         $pattern['p_operdate_month'],
                         $date[$pattern['p_operdate_month']],
                         $pattern['p_operdate_day'],
-                        $date[$pattern['p_operdate_dat']],
+                        $date[$pattern['p_operdate_day']],
                         $pattern['p_operdate_year'],
                         $date[$pattern['p_operdate_year']]
                     )) {
