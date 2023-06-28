@@ -102,24 +102,24 @@ lms-metroportmvno-sync.php
 (C) 2001-2022 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--h, --help                      print this help and exit;
--v, --version                   print version info and exit;
--q, --quiet                     suppress any output, except errors;
--t, --test                      no changes are made to database;
-    --billings                  sync billings
-    --customers                 sync customers
-    --accounts                  sync accounts
--s, --start-date="YYYY-MM-DD HH:mm:ss"
--e, --end-date="YYYY-MM-DD HH:mm:ss"
-    --customerid=<id>           limit synchronization to specifed customer
--u, --update                    update existing records instead deleting them
--m, --mode=<customer|provider>  billing get method selection
--i, --incremental               get billing records incrementally
-    --chunking                  enable chunking usage
-                                (enabled by default if --incremental parameter was also specifed)
-    --no-chunking               disable chunking usage
-    --chunk-size=<n>            specify chunk size when chunking is enabled (in days)
-    --pricelist-file            specify path to price list csv file
+-h, --help                              print this help and exit;
+-v, --version                           print version info and exit;
+-q, --quiet                             suppress any output, except errors;
+-t, --test                              no changes are made to database;
+    --billings                          sync billings
+    --customers                         sync customers
+    --accounts                          sync accounts
+-s, --start-date="YYYY-MM-DD HH:mm:ss"  sync billings from date
+-e, --end-date="YYYY-MM-DD HH:mm:ss"    sync billings to date
+    --customerid=<id>                   limit synchronization to specifed customer
+-u, --update                            update existing billing records instead deleting them
+-m, --mode=<customer|provider>          billing get method selection
+-i, --incremental                       get billing records incrementally
+    --chunking                          enable billings chunking usage
+                                        (enabled by default if --incremental parameter was also specifed)
+    --no-chunking                       disable billings chunking usage
+    --chunk-size=<n>                    specify billings chunk size when chunking is enabled (in days)
+    --pricelist-file                    specify path to price list csv file
 
 EOF;
     exit(0);
