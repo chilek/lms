@@ -788,11 +788,14 @@ if (isset($options['update'])) {
             continue;
         }
 
-        $key  = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz'];
-        $data = isset($terc[$key]) ? $terc[$key] : null;
+        $statekey = $row['woj'] . ':0:0:0';
+        $districtkey = $row['woj'] . ':' . $row['pow'] . ':0:0';
+        $key = $row['woj'] . ':' . $row['pow'] . ':' . $row['gmi'] . ':' . $row['rodz'];
 
         // if $row['pow'] is empty then this row contains state
         if (empty($row['pow'])) {
+            $data = isset($terc[$statekey]) ? $terc[$statekey] : null;
+
             // if state already exists then try update
             if ($data) {
                 if ($data['nazwa'] != $row['nazwa']) {
@@ -804,17 +807,17 @@ if (isset($options['update'])) {
                     ++$terc_update;
                 }
 
-                $terc[$key]['valid'] = 1;
+                $terc[$statekey]['valid'] = 1;
             } else {
                 // else insert new state
                 $DB->Execute(
-                    'INSERT INTO location_states (name,ident) VALUES (?,?)',
+                    'INSERT INTO location_states (name,ident) VALUES (?, ?)',
                     array(mb_strtolower($row['nazwa']), $row['woj'])
                 );
 
                 ++$terc_insert;
                 $insertid = $DB->GetLastInsertID('location_states');
-                $terc[$key] = array(
+                $terc[$statekey] = array(
                     'id'    => $insertid,
                     'nazwa' => $row['nazwa'],
                     'type'  => 'WOJ',
@@ -823,30 +826,30 @@ if (isset($options['update'])) {
             }
         } elseif (empty($row['gmi'])) {
             // if $row['gmi'] is empty then this row contains district
-            $statekey = $row['woj'] . ':0:0:0';
+            $data = isset($terc[$districtkey]) ? $terc[$districtkey] : null;
 
             // if district already exists then try update
             if ($data) {
                 if ($data['nazwa'] != $row['nazwa']) {
                     $DB->Execute(
-                        'UPDATE location_districts SET stateid=?, name=? WHERE id=?',
+                        'UPDATE location_districts SET stateid = ?, name = ? WHERE id = ?',
                         array($terc[$statekey]['id'], $row['nazwa'], $data['id'])
                     );
 
                     ++$terc_update;
                 }
 
-                $terc[$key]['valid'] = 1;
+                $terc[$districtkey]['valid'] = 1;
             } else {
                 // else insert new state
                 $DB->Execute(
-                    'INSERT INTO location_districts (stateid, name, ident) VALUES (?,?,?)',
+                    'INSERT INTO location_districts (stateid, name, ident) VALUES (?, ?, ?)',
                     array($terc[$statekey]['id'], $row['nazwa'], $row['pow'])
                 );
 
                 ++$terc_insert;
                 $insertid = $DB->GetLastInsertID('location_districts');
-                $terc[$key] = array(
+                $terc[$districtkey] = array(
                     'id'    => $insertid,
                     'nazwa' => $row['nazwa'],
                     'type'  => 'POW',
@@ -855,7 +858,7 @@ if (isset($options['update'])) {
             }
         } else {
             // else row contains brough
-            $districtkey = $row['woj'] . ':' . $row['pow'] . ':0:0';
+            $data = isset($terc[$key]) ? $terc[$key] : null;
 
             // if district already exists then try update
             if ($data) {
@@ -1190,15 +1193,17 @@ if (isset($options['update'])) {
                     $simc[$rid]['valid'] = 1;
                     $cities[$rid] = $rid;
                 } else {
-                    // add new city
-                    $DB->Execute(
-                        'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
-                        array($terc[$key]['id'], $elem['nazwa'], $wmrodz[$elem['rodz_mi']]['id'], $cities[$id], $rid)
-                    );
+                    if (isset($terc[$key])) {
+                        // add new city
+                        $DB->Execute(
+                            'INSERT INTO location_cities (boroughid, name, type, cityid, ident) VALUES (?, ?, ?, ?, ?)',
+                            array($terc[$key]['id'], $elem['nazwa'], $wmrodz[$elem['rodz_mi']]['id'], $cities[$id], $rid)
+                        );
 
-                    ++$simc_insert;
-                    $insertid = $DB->GetLastInsertID('location_cities');
-                    $cities[$rid] = $insertid;
+                        ++$simc_insert;
+                        $insertid = $DB->GetLastInsertID('location_cities');
+                        $cities[$rid] = $insertid;
+                    }
                 }
             }
         }
