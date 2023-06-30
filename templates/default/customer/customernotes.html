@@ -192,6 +192,11 @@
             var noteid = row.attr('data-id');
             var val = row.find('.note .note-edit-mode').val();
 
+            if (val.trim().length < 4) {
+                alertDialog($t("Customer note is too short!"), this);
+                return;
+            }
+
             $.ajax({
                 url: action + '&api=1&oper=update',
                 async: true,
