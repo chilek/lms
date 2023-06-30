@@ -1684,6 +1684,7 @@ $_LANG['No such tickets matching search criteria.'] = 'Brak zgłoszeń spełniaj
 $_LANG['No such transactions'] = 'Brak transakcji';
 $_LANG['Note'] = 'Notatka';
 $_LANG['Note:'] = 'Notatka:';
+$_LANG['<!customer-note>Contents'] = 'Treść';
 $_LANG['Notes:'] = 'Notatki:';
 $_LANG['Notes'] = 'Notatki';
 $_LANG['No such transactions found in database.'] = 'Nie znaleziono żadnych transakcji w bazie danych.';
@@ -3803,6 +3804,10 @@ $_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
 $_LANG['Last modified by'] = 'Ostatnio zmodyfikował';
 $_LANG['Closed by'] = 'Zamknięte przez';
 $_LANG['Closed time'] = 'Czas zamknięcia';
+$_LANG['<!customer-note>Created'] = 'Utworzona';
+$_LANG['<!customer-note>Creator'] = 'Twórca';
+$_LANG['<!customer-note>Modified'] = 'Zmodyfikowana';
+$_LANG['<!customer-note>Modifier'] = 'Modyfikujący';
 
 $_LANG['current:'] = 'aktualnie:';
 
