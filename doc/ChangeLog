@@ -527,6 +527,7 @@ version 28-git (????-??-??):
   - enhancement: added --customer-types input parameter for bin/lms-notify.php script - notified
     customer types can be specified with symboli names 'company' and 'private' separated
     by colons [chilan]
+  - enhancement: implemented inline customer note modifications [chilan]
 
 version 27.0 (2021-08-20):
 
