@@ -834,6 +834,11 @@ class LMS
         return $manager->addCustomerNote($params);
     }
 
+    public function updateCustomerNote($params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerNote($params);
+    }
     public function delCustomerNote($id)
     {
         $manager = $this->getCustomerManager();

@@ -554,11 +554,15 @@ CREATE TABLE customernotes (
     customerid int(11) NOT NULL,
     dt int(11) NOT NULL,
     message text NOT NULL,
+    moddate int(11) DEFAULT NULL,
+    moduserid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT customernotes_userid_fkey
         FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT customernotes_customerid_fkey
-        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT customernotes_moduserid_fkey
+        FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL
 );
 
 # --------------------------------------------------------
@@ -4342,4 +4346,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023062600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023063000');
