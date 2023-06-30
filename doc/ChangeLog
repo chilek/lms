@@ -524,6 +524,9 @@ version 28-git (????-??-??):
   - enhancement: added estimated completion date property to investment projects [chilan]
   - enhancement: uke/sidusis: implemented investment project csv export [chilan]
   - enhancement: added operation date and operation external id to cash import records [chilan]
+  - enhancement: added --customer-types input parameter for bin/lms-notify.php script - notified
+    customer types can be specified with symboli names 'company' and 'private' separated
+    by colons [chilan]
 
 version 27.0 (2021-08-20):
 
