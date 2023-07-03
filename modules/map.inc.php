@@ -36,7 +36,7 @@ $devices = $DB->GetAllByKey('SELECT n.id, n.name, va.location, '.$DB->GroupConca
 				LEFT JOIN vnodes ON n.id = vnodes.netdev
 				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
 				WHERE ((nn.latitude IS NULL AND n.latitude IS NOT NULL) OR nn.latitude IS NOT NULL)
-					AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.latitude IS NOT NULL)
+					AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.longitude IS NOT NULL)
 				GROUP BY n.id, n.name, va.location, n.latitude, n.longitude, nn.latitude, nn.longitude, n.ownerid, n.netnodeid', 'id');
 
 if ($devices) {
