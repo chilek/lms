@@ -764,6 +764,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         } else {
             $count = false;
         }
+        if (isset($params['stats'])) {
+            $stats = $params['stats'];
+        } else {
+            $stats = false;
+        }
         if (isset($params['offset'])) {
             $offset = $params['offset'];
         } else {
@@ -879,6 +884,27 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                                      LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
                                      ' . $where_string);
+        }
+
+        if ($stats) {
+            return $DB->GetRow(
+                'SELECT
+                SUM(price) AS price,
+                SUM(totaltime) AS totaltime,
+                SUM(billedtime) AS billedtime,
+                COUNT(*) AS cnt
+                FROM
+                voip_cdr cdr
+                LEFT JOIN voipaccounts      vacc ON cdr.callervoipaccountid = vacc.id
+                LEFT JOIN voipaccounts     vacc2 ON cdr.calleevoipaccountid = vacc2.id
+                LEFT JOIN customers           c1 ON c1.id = vacc.ownerid
+                LEFT JOIN customers           c2 ON c2.id = vacc2.ownerid
+                LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c1.id AND ca1.type = ' . BILLING_ADDRESS . '
+                LEFT JOIN        addresses addr1 ON ca1.address_id = addr1.id
+                LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
+                LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id'
+                . $where_string
+            );
         }
 
         $bill_list = $DB->GetAll('SELECT

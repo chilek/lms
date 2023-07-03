@@ -192,13 +192,9 @@ if (!empty($params['fvoipaccid'])) {
 
 $SESSION->save('vablp', $page);
 
-$billing_stats = $DB->GetRow('SELECT
-                                 SUM(price) AS price,
-                                 SUM(totaltime) AS totaltime,
-                                 SUM(billedtime) AS billedtime,
-                                 COUNT(*) AS cnt
-                              FROM
-                                 voip_cdr');
+$params['stats'] = true;
+$billing_stats = $LMS->getVoipBillings($params);
+$params['stats'] = false;
 
 $SMARTY->assign('voipaccounts', $voipaccountlist);
 $SMARTY->assign('voipownerlist', $voipownerlist);
