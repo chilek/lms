@@ -528,6 +528,7 @@ version 28-git (????-??-??):
     customer types can be specified with symboli names 'company' and 'private' separated
     by colons [chilan]
   - enhancement: implemented inline customer note modifications [chilan]
+  - improvement: '%number' symbol support in 'invoices.payment_title' configuration variable [chilan]
 
 version 27.0 (2021-08-20):
 
