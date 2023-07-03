@@ -48,7 +48,14 @@ function getVoipAccountList($fownerid = null)
     unset($voipaccountlist['order']);
     unset($voipaccountlist['direction']);
 
-    return $voipaccountlist;
+    $hook_data =  $lms->executeHook(
+        'voipbillinglist_accountlist_init',
+        array(
+            'voipaccountlist' => $voipaccountlist,
+        )
+    );
+
+    return $hook_data['voipaccountlist'];
 }
 
 if (isset($_POST['str'])) {
