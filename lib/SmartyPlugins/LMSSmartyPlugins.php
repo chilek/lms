@@ -238,6 +238,7 @@ class LMSSmartyPlugins
 
         $form = isset($params['form']) ? $params['form'] : null;
         $icon = empty($params['icon']) ? null : $params['icon'];
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'customerid';
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -346,7 +347,7 @@ class LMSSmartyPlugins
                 . ' ' . self::tipFunction(
                     array(
                         'text' => isset($params['inputtip']) ? $params['inputtip'] : 'Search for customer',
-                        'trigger' => 'customerid',
+                        'trigger' => $trigger,
                         'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
                     ),
                     $template
