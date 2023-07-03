@@ -86,11 +86,12 @@ if (isset($_GET['init'])) {
     $params['fvoipaccid'] = 0;
 } else {
     $params['fvownerid'] = sessionHandler('fvownerid', 'vblfownerid');
+    $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 }
-if (isset($params['fvownerid']) && empty($params['fvownerid']) && !isset($_GET['fvoipaccid'])) {
+if (empty($params['fvoipaccid']) && !isset($_GET['fvoipaccid'])) {
     $params['id'] = null;
 } else {
-    $params['id'] = $params['fvoipaccid'] = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+    $params['id'] = $params['fvoipaccid'];
     if (!empty($params['id'])) {
         $params['fvownerid'] = $LMS->getVoipAccountOwner($params['id']);
         $SESSION->save('vblfownerid', $params['fvownerid']);
