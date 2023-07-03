@@ -118,7 +118,7 @@ $LMS->executeHook('voip_billing_preparation', array(
 $params['count'] = true;
 $total = intval($LMS->getVoipBillings($params));
 
-$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? ($SESSION->is_set('valp') ? $SESSION->get('valp') : 1) : intval($_POST['page'])) : intval($_GET['page']);
+$page  = !isset($_GET['page']) ? (!isset($_POST['page']) ? ($SESSION->is_set('vablp') ? $SESSION->get('vablp') : 1) : intval($_POST['page'])) : intval($_GET['page']);
 $limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
 $offset = ($page - 1) * $limit;
 
@@ -190,7 +190,7 @@ if (!empty($params['fvoipaccid'])) {
     $listdata['fvoipaccid'] = $params['fvoipaccid'];
 }
 
-$SESSION->save('valp', $page);
+$SESSION->save('vablp', $page);
 
 $billing_stats = $DB->GetRow('SELECT
                                  SUM(price) AS price,
