@@ -40,8 +40,21 @@ function sessionHandler($item, $name)
     return $o;
 }
 
-if (!empty($_POST['str'])) {
-    $voipaccounts = $LMS->GetCustomerVoipAccounts($_POST['str']);
+function getVoipAccountList($fownerid = null)
+{
+    $lms = LMS::getInstance();
+    $voipaccountlist = $lms->GetVoipAccountList('owner', empty($fownerid) ? null : array('ownerid' => $fownerid), null);
+    unset($voipaccountlist['total']);
+    unset($voipaccountlist['order']);
+    unset($voipaccountlist['direction']);
+
+    return $voipaccountlist;
+}
+
+if (isset($_POST['str'])) {
+    $str = !empty($_POST['str']) ? $_POST['str'] : null;
+    $voipaccounts = getVoipAccountList($str);
+
     $SMARTY->assign('voipaccounts', $voipaccounts);
     $content = $SMARTY->fetch('voipaccount/voipaccounts.html');
     echo json_encode($content);
@@ -145,11 +158,8 @@ if (isset($params['ftype'])) {
     $listdata['ftype'] = is_numeric($params['ftype']) ? $params['ftype'] : null;
 }
 
-$voipaccountlist = $LMS->GetVoipAccountList('owner', empty($params['fvownerid']) ? null : array('ownerid' => $params['fvownerid']), null);
-unset($voipaccountlist['total']);
-unset($voipaccountlist['order']);
-unset($voipaccountlist['direction']);
-
+$fvownerid = !empty($params['fvownerid']) ? $params['fvownerid'] : null;
+$voipaccountlist = getVoipAccountList($fvownerid);
 $voipownerlist = Utils::array_column($voipaccountlist, "owner", "ownerid");
 
 $order = explode(',', $params['o']);
