@@ -116,6 +116,9 @@ if ($devices) {
 
         foreach ($netlinkpoints as $netlinkpoint) {
             $netlinkid = $netlinkpoint['netlinkid'];
+            if (!isset($devlinks[$netlinkid])) {
+                continue;
+            }
             $netlinkpointid = $netlinkpoint['id'];
             $devlinks[$netlinkid]['points'][$netlinkpointid] = array(
                 'lon' => $netlinkpoint['longitude'],
