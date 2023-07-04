@@ -274,7 +274,7 @@ if ($AUTH->islogged) {
         $qs_properties = array();
     } else {
         foreach ($qs_properties as $mode => $properties) {
-            $qs_properties[$mode] = array_flip(explode(',', $properties));
+            $qs_properties[$mode] = strlen($properties) ? array_flip(explode(',', $properties)) : array();
         }
     }
 
