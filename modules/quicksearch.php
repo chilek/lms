@@ -337,7 +337,7 @@ switch ($mode) {
                 WHERE vn.phone ?LIKE? '%$phone_number%'";
 
             $candidatesSql = null;
-            if (empty($properties) || isset($properties['']) ||
+            if (empty($properties)) ||
                 (isset($properties['contact']) && isset($properties['account']))
             ) {
                 $candidatesSql = $sqlContact . " UNION " . $sqlAccount;
