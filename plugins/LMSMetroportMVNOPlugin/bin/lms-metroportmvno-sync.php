@@ -467,7 +467,7 @@ if ($syncCustomers) {
     $lmsCustomers = $metroportmvno->getCustomersForBind($customerid);
     if (!empty($lmsCustomers)) {
         //<editor-fold desc="Sanitize LMS customer ten and icn">
-        foreach ($lmsCustomers as $id => $lmsCustomer) {
+        foreach ($lmsCustomers as $id => &$lmsCustomer) {
             if (!empty($lmsCustomer['ten'])) {
                 $customerClearTen = preg_replace("/[-[:blank:]a-zA-Z]/", '', $lmsCustomer['ten']);
                 if (preg_match('/^[0-9]{10}$/', $customerClearTen)) {
