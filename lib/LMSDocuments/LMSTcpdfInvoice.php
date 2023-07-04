@@ -1131,12 +1131,20 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $payment_title = trans('Payment for invoice No. $a', $payment_docnumber);
             }
         } else {
-            $payment_title = preg_replace_callback(
-                '/%(\\d*)cid/',
-                function ($m) use ($customerid) {
-                    return sprintf('%0' . $m[1] . 'd', $customerid);
-                },
-                $payment_title
+            $payment_title = str_replace(
+                array(
+                    '%number',
+                ),
+                array(
+                    $payment_docnumber,
+                ),
+                preg_replace_callback(
+                    '/%(\\d*)cid/',
+                    function ($m) use ($customerid) {
+                        return sprintf('%0' . $m[1] . 'd', $customerid);
+                    },
+                    $payment_title
+                )
             );
         }
 
