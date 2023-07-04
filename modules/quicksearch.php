@@ -363,7 +363,7 @@ switch ($mode) {
                     $name_class .= $row['deleted'] ? ' blend' : '';
 
                     $description_class = '';
-                    $result[$row['id']] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
+                    $result[$idx] = compact('name', 'name_class', 'icon', 'description', 'description_class', 'action');
                 }
             }
             $hook_data = array(
