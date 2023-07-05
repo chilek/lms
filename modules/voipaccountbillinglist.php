@@ -115,6 +115,14 @@ $LMS->executeHook('voip_billing_preparation', array(
     'status' => $params['fstatus'],
 ));
 
+$hook_data = $plugin_manager->executeHook(
+    'voipbillinglist_init',
+    array(
+        'params' => $params,
+    )
+);
+$params = $hook_data['params'];
+
 $params['count'] = true;
 $total = intval($LMS->getVoipBillings($params));
 
