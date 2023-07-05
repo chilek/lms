@@ -314,7 +314,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
                 . ' d.customerid = ? AND d.type = ?'
                 . ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
-            ORDER BY time ' . $direction . ', id',
+            ORDER BY time ' . $direction . ', docid, id',
             array($id, $id, DOC_INVOICE_PRO)
         );
 
