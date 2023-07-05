@@ -867,9 +867,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $where[] = 'cdr.type = ' . $params['ftype'];
         }
 
-        // custom SQL condition
-        if (isset($params['custom_sql_condition'])) {
-            $where[] = $params['custom_sql_condition'];
+        // custom SQL conditions
+        if (isset($params['custom_sql_conditions']) && is_array($params['custom_sql_conditions'])) {
+            $where = array_merge($where, $params['custom_sql_conditions']);
         }
 
         $where_string = empty($where) ? '' : ' WHERE ' . implode(' AND ', $where);
