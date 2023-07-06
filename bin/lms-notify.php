@@ -595,7 +595,7 @@ foreach (array(
         array_filter(
             preg_split('/([\s]+|[\s]*,[\s]*)/', strtolower($recipients), -1, PREG_SPLIT_NO_EMPTY),
             function ($recipient) {
-                return $recipient == 'customers' || $recipients == 'users';
+                return $recipient == 'customers' || $recipient == 'users';
             }
         )
     );
