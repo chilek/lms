@@ -590,6 +590,15 @@ foreach (array(
     $notifications[$type]['deleted_customers'] = ConfigHelper::checkConfig($config_section . '.' . $type . '_deleted_customers', true);
     $notifications[$type]['aggregate_documents'] = ConfigHelper::checkConfig($config_section . '.' . $type . '_aggregate_documents');
     $record_types = ConfigHelper::getConfig($config_section . '.' . $type . '_type');
+    $recipients = ConfigHelper::getConfig($config_section . '.' . $type . '_recipients', 'customers,users');
+    $notifications[$type]['recipients'] = array_flip(
+        array_filter(
+            preg_split('/([\s]+|[\s]*,[\s]*)/', strtolower($recipients), -1, PREG_SPLIT_NO_EMPTY),
+            function ($recipient) {
+                return $recipient == 'customers' || $recipients == 'users';
+            }
+        )
+    );
     switch ($type) {
         case 'events':
             $all_event_types = array_flip(Utils::array_column($EVENTTYPES, 'alias'));
@@ -3124,17 +3133,24 @@ if (empty($types) || in_array('events', $types)) {
 
     if (!empty($events)) {
         $customers = array();
-        $users = $DB->GetAllByKey(
-            "SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
-                (CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
-            WHERE deleted = 0 AND access = 1
-                AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
-                AND ntype & ? > 0 AND (email <> '' OR phone <> '')
-            ORDER BY id",
-            'id',
-            array(MSG_MAIL, MSG_SMS, MSG_MAIL | MSG_SMS)
-        );
-        if (empty($users)) {
+
+        $recipients = $notifications['events']['recipients'];
+
+        if (empty($recipients) || isset($recipients['users'])) {
+            $users = $DB->GetAllByKey(
+                "SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
+                    (CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
+                WHERE deleted = 0 AND access = 1
+                    AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
+                    AND ntype & ? > 0 AND (email <> '' OR phone <> '')
+                ORDER BY id",
+                'id',
+                array(MSG_MAIL, MSG_SMS, MSG_MAIL | MSG_SMS)
+            );
+            if (empty($users)) {
+                $users = array();
+            }
+        } else {
             $users = array();
         }
 
@@ -3178,7 +3194,7 @@ if (empty($types) || in_array('events', $types)) {
             $cid = intval($event['customerid']);
             $uid = intval($event['userid']);
 
-            if ($cid) {
+            if ((empty($recipients) || isset($recipients['customers'])) && $cid) {
                 if (!array_key_exists($cid, $customers)) {
                     $customers[$cid] = $DB->GetRow(
                         "SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
@@ -3231,7 +3247,7 @@ if (empty($types) || in_array('events', $types)) {
                 }
             }
 
-            if ($uid && array_key_exists($uid, $users)) {
+            if ((empty($recipients) || isset($recipients['users'])) && $uid && array_key_exists($uid, $users)) {
                 if (!empty($users[$uid]['email'])) {
                     $emails = explode(',', $debug_email ? $debug_email : $users[$uid]['email']);
                     foreach ($emails as $contact) {
