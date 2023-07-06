@@ -529,6 +529,9 @@ version 28-git (????-??-??):
     by colons [chilan]
   - enhancement: implemented inline customer note modifications [chilan]
   - improvement: '%number' symbol support in 'invoices.payment_title' configuration variable [chilan]
+  - enhancement: 'notification-type_recipients' configuration variable used by lms-notify.php script
+    allow to select notification recipient categories - 'users' and 'customers' are supported
+    currently only for 'events' notifications [chilan]
 
 version 27.0 (2021-08-20):
 
