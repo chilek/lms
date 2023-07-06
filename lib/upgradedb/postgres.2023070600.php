@@ -25,7 +25,7 @@ $this->BeginTrans();
 
 if (!$this->GetOne('SELECT 1 FROM countries WHERE ccode = ?', array('en_GB'))) {
     $this->Execute(
-        'INSERT INTO countries (name, ccode) VALUES (?, ?)', 
+        'INSERT INTO countries (name, ccode) VALUES (?, ?)',
         array(
             'Great Britain',
             'en_GB',

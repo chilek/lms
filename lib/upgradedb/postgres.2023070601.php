@@ -23,16 +23,16 @@
 
 $this->BeginTrans();
 
-if (!$this->GetOne('SELECT 1 FROM countries WHERE ccode = ?', array('en_GB'))) {
+if (!$this->GetOne('SELECT 1 FROM countries WHERE name = ?', array('United Kingdom'))) {
     $this->Execute(
         'INSERT INTO countries (name, ccode) VALUES (?, ?)',
         array(
-            'Great Britain',
+            'United Kingdom',
             'en_GB',
         )
     );
 }
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2023070600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2023070601', 'dbversion'));
 
 $this->CommitTrans();

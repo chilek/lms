@@ -3815,7 +3815,8 @@ INSERT INTO countries (name, ccode) VALUES
 ('USA', 'en_US'),
 ('Czech', 'cs_CZ'),
 ('Guyana', 'en_GY'),
-('Great Britain', 'en_GB');
+('Great Britain', 'en_GB'),
+('United Kingdom', 'en_GB');
 
 INSERT INTO addresses (name) VALUES ('default');
 INSERT INTO divisions (shortname, name, address_id) VALUES ('default', 'default', (SELECT MAX(id) FROM addresses));
@@ -4390,6 +4391,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023070600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023070601');
 
 COMMIT;

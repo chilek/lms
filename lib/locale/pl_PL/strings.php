@@ -1249,6 +1249,7 @@ $_LANG['Guarantee period'] = 'Okres gwarancji';
 $_LANG['Warranty'] = 'Gwarancja';
 $_LANG['Guyana'] = 'Gujana';
 $_LANG['Great Britain'] = 'Wielka Brytania';
+$_LANG['United Kingdom'] = 'Zjednoczone Królestwo';
 $_LANG['Has'] = 'Ma';
 $_LANG['Headers:'] = 'Nagłówki:';
 $_LANG['Helpdesk'] = 'Helpdesk';
