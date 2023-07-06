@@ -532,6 +532,7 @@ version 28-git (????-??-??):
   - enhancement: 'notification-type_recipients' configuration variable used by lms-notify.php script
     allow to select notification recipient categories - 'users' and 'customers' are supported
     currently only for 'events' notifications [chilan]
+  - enhancement: added preliminary en_GB localisation support [chilan]
 
 version 27.0 (2021-08-20):
 
