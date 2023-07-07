@@ -217,9 +217,6 @@ $google_api_key = ConfigHelper::getConfig(
 );
 
 foreach ($types as $label => $type) {
-    if (!$quiet) {
-        echo $label . PHP_EOL;
-    }
     $locations = $DB->GetAll(
         "SELECT
             t.id, va.location, va.city_id, va.street_id, va.house, ls.name AS state_name,
@@ -264,7 +261,14 @@ foreach ($types as $label => $type) {
         )
     );
     if (!empty($locations)) {
+        $label_displayed = false;
+
         foreach ($locations as $row) {
+            if (!$quiet && !$label_displayed) {
+                echo $label . PHP_EOL;
+                $label_displayed = true;
+            }
+
             foreach ($providers as $provider) {
                 if ($provider == 'google') {
                     $res = geocode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
