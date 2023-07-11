@@ -533,6 +533,8 @@ version 28-git (????-??-??):
     allow to select notification recipient categories - 'users' and 'customers' are supported
     currently only for 'events' notifications [chilan]
   - enhancement: added preliminary en_GB localisation support [chilan]
+  - improvement: 'invoices.qr2pay_comment' configuration variable supports %cid substitution
+    symbol [chilan]
 
 version 27.0 (2021-08-20):
 
