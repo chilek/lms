@@ -88,11 +88,10 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
             $this->_dbhost = $dbhost;
             $this->_dbuser = $dbuser;
             $this->_dbname = $dbname;
+            $this->_loaded = true;
         } else {
             $this->_error = true;
         }
-
-        $this->_loaded = true;
 
         return $this->_dblink;
     }
