@@ -189,7 +189,7 @@ class LMSSmartyPlugins
 
         if ($force_global_division_context) {
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
-                . '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all"))
+                . '<span class="division-context bold">' . (!empty($user_divisions) ? htmlspecialchars($user_divisions['label']) : trans("all"))
                 . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
                     || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
                 . ($label ? '</label>' : '')
@@ -215,7 +215,7 @@ class LMSSmartyPlugins
                 $user_division = reset($user_divisions);
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
                     . '<span class="division-context bold">'
-                    . (empty($user_divisions) ? trans("all") : ($shortname ? $user_division['shortname'] : $user_division['name']))
+                    . (empty($user_divisions) ? trans("all") : htmlspecialchars($shortname ? $user_division['label'] : $user_division['name']))
                     . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
                       || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
                     . ($label ? '</label>' : '')
