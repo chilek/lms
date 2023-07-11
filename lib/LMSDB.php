@@ -104,7 +104,7 @@ class LMSDB
         }
 
         if (!$db->IsLoaded()) {
-            throw new Exception('PHP Driver for "' . $dbtype . '" database doesn\'t seems to be loaded.');
+            throw new Exception('PHP Driver for "' . $dbtype . '" database doesn\'t seem to be loaded.');
         }
 
         if (!$db->GetDbLink()) {

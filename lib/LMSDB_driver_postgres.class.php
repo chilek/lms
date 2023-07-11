@@ -104,10 +104,11 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
             $this->_dbuser = $dbuser;
             $this->_dbname = $dbname;
             $this->_error = false;
-            $this->_loaded = true;
         } else {
             $this->_error = true;
         }
+
+        $this->_loaded = true;
 
         return $this->_dblink;
     }
