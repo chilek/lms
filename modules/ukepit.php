@@ -914,7 +914,7 @@ if ($report_type == 'full') {
                 $netnodename = mb_strtoupper($netnodename);
 
                 if (array_key_exists($netnodename, $netnodes)) {
-                    if (!in_array($netdevice['invproject'], $netnodes[$netnodename]['invproject'])) {
+                    if (strlen($netdevice['invproject']) && !in_array($netdevice['invproject'], $netnodes[$netnodename]['invproject'])) {
                         $netnodes[$netnodename]['invproject'][] = $netdevice['invproject'];
                     }
                 } else {
