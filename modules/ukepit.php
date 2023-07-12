@@ -34,6 +34,21 @@ if (!class_exists('ZipArchive')) {
 //$old_locale = setlocale(LC_NUMERIC, '0');
 setlocale(LC_NUMERIC, 'C');
 
+function sanitizeTechnologyName($technologyName)
+{
+    static $dash_character = null;
+
+    if (!isset($dash_character)) {
+        $dash_character = isset($_POST['dash-character']) && $_POST['dash-character'] == 'pit' ? 1 : 2;
+    }
+
+    if ($dash_character == 1) {
+        return $technologyName;
+    } else {
+        return str_replace('–', '-', $technologyName);
+    }
+}
+
 function technologyName($technology)
 {
     static $LINKTECHNOLOGIES = null;
@@ -43,11 +58,11 @@ function technologyName($technology)
     }
 
     if ($technology < 100) {
-        return $LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology]);
     } elseif ($technology < 200) {
-        return $LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology]);
     } else {
-        return $LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology]);
     }
 }
 
