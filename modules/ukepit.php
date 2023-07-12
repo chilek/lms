@@ -931,7 +931,7 @@ if ($report_type == 'full') {
                 }
 
                 $netnodes[$netnodename]['id'] = $netnodeid;
-                $netnodes[$netnodename]['invproject'] = array($projectname);
+                $netnodes[$netnodename]['invproject'] = strlen($projectname) ? array($projectname) : array();
                 $netnodes[$netnodename]['name'] = $netnodename;
 
                 if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
