@@ -906,6 +906,7 @@ $_LANG['Device connected to other device or node can\'t be deleted.'] = 'Urządz
 $_LANG['Device Edit: $a ($b)'] = 'Edycja urządzenia: $a ($b)';
 $_LANG['Device Edit: $a'] = 'Edycja urządzenia: $a';
 $_LANG['No free ports on device!'] = 'Urządzenie nie posiada wolnych portów!';
+$_LANG['No free addresses in selected network!'] = 'Brak dostępnych adresów w wybranej sieci!';
 $_LANG['No IP addresses on device.'] = 'Urządzenie nie posiada adresu IP.';
 $_LANG['Device Info: $a $b $c'] = 'Informacje o urządzeniu: $a $b $c';
 $_LANG['Device name is required!'] = 'Nazwa urządzenia jest wymagana!';

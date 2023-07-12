@@ -235,6 +235,14 @@ function getFirstFreeAddress($netid, $elemid)
     $ip = $LMS->GetFirstFreeAddress($netid);
     if ($ip != false) {
         $result->assign($elemid, 'value', $ip);
+        $result->script('
+            $("#ipaddr").removeClass("lms-ui-warning").removeAttr("data-tooltip").attr("title", null);
+        ');
+    } else {
+        $result->script('
+            $("#ipaddr").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
+                $t("No free addresses in selected network!"));
+        ');
     }
 
     return $result;
