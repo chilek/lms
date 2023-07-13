@@ -2360,6 +2360,7 @@ $_LANG['No. of issued documents:'] = 'Wystawiono dokumentów:';
 $_LANG['Document type:'] = 'Typ dokumentu:';
 $_LANG['Default:'] = 'Domyślny:';
 $_LANG['Default'] = 'Domyślny';
+$_LANG['default:'] = 'domyślny:';
 $_LANG['Are you sure, you want to delete numberplan \'$a\'?'] = 'Jesteś pewien, że chcesz usunąć plan \'$a\'?';
 $_LANG['Numbering Plans List'] = 'Lista planów numeracyjnych';
 $_LANG['Add plan'] = 'Dodaj plan';
