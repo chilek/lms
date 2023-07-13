@@ -43,6 +43,9 @@ $tranferform_custom_data = array(
 if ($type == LMSTcpdfTransferForm::VALUE_ASSIGNMENTS) {
     //get assignments grouped by currency
     $currency_assignments = $LMS->GetCustomerAssignmentValue($cid);
+    if (empty($currency_assignments)) {
+        die;
+    }
 
     $form_count = 0;
     $perpage_form_count = 1;
