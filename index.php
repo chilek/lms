@@ -512,6 +512,11 @@ if ($AUTH->islogged) {
             $LMS->InitUI();
             $LMS->executeHook($module.'_on_load');
 
+            $serviceproviders = $LMS->getServiceProviders();
+            if (!$api) {
+                $SMARTY->assign('serviceproviders', $serviceproviders);
+            }
+
             try {
                 include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
             } catch (Exception $e) {

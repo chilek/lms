@@ -5016,6 +5016,7 @@ $_LANG['Click here to select which customer properties should be used during sea
 $_LANG['Click here to select which node properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości komputera powinny być używane podczas wyszukiwania';
 $_LANG['Click here to select which network device properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości urządzenia sieciowego powinny być używane podczas wyszukiwania';
 $_LANG['Click here to select which ticket properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości zgłoszenia powinny być używane podczas wyszukiwania';
+$_LANG['Click here to select which service providers should be used during external customer identifiers search'] = 'Kliknij tutaj, aby wybrać, którzy dostawcy usługi powinni być używani podczas wyszukiwania zewnętrznych identyfikatorów klientów';
 
 $_LANG['Clear filter'] = 'Wyczyść filtr';
 

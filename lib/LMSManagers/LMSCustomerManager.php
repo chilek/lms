@@ -3752,7 +3752,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getServiceProviders()
     {
-        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders', 'id');
+        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders ORDER BY name', 'id');
         return empty($result) ? array() : $result;
     }
 }

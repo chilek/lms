@@ -259,18 +259,41 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
-				post_name, post_full_address AS post_address, deleted, c.status, altname,
-			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
-				FROM customerview c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-				WHERE LOWER(c.extid) ?LIKE? LOWER($sql_search)
-				ORDER by deleted, customername, cc.contact, full_address
-				LIMIT ?", array(CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+            $candidates = $DB->GetAll(
+                "SELECT
+                    c.id,
+                    cc.contact AS email,
+                    full_address AS address,
+                    post_name,
+                    post_full_address AS post_address,
+                    deleted,
+                    c.status,
+                    altname,
+                    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
+                    extids.extid,
+                    sp.name AS serviceprovidername
+                FROM customerview c
+                LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+                LEFT JOIN customerextids extids ON extids.customerid = c.id
+                LEFT JOIN serviceproviders sp ON sp.id = extids.serviceproviderid
+                WHERE LOWER(extids.extid) ?LIKE? LOWER($sql_search)
+                ORDER by deleted, customername, cc.contact, full_address
+                LIMIT ?",
+                array(
+                    CONTACT_EMAIL,
+                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
+                )
+            );
 
             $result = array();
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
+                    if (!empty($properties)
+                        && (!isset($properties['default']) && empty($row['serviceprovidername'])
+                            || !empty($row['serviceprovidername']) && !isset($properties[$row['serviceprovidername']]))) {
+                        continue;
+                    }
+
                     $name = truncate_str($row['customername'], 50);
 
                     $name_classes = array();
@@ -284,8 +307,15 @@ switch ($mode) {
                     $description_class = '';
                     $action = '?m=customerinfo&id=' . $row['id'];
 
-                    if (preg_match("~^$search\$~i", $row['id'])) {
-                        $description = trans('Id:') . ' ' . $row['id'];
+                    if ((empty($properties) || isset($properties['default'])) && empty($row['serviceprovidername'])) {
+                        $description = trans('default:') . ' ' . $row['extid'];
+                    } elseif (!empty($row['serviceprovidername']) && (empty($properties) || isset($properties[$row['serviceprovidername']]))) {
+                        foreach ($serviceproviders as $serviceprovider) {
+                            if (empty($properties) || isset($properties[$serviceprovider['name']])) {
+                                $description = $serviceprovider['name'] . ': ' . $row['extid'];
+                                break;
+                            }
+                        }
                     }
 
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
