@@ -97,6 +97,9 @@ if (!empty($docids)) {
                 $list,
             )
         );
+        if (empty($list)) {
+            die;
+        }
 
         $htmls = $pdfs = $others = 0;
         foreach ($list as $doc) {
