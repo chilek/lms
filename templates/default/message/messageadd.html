@@ -278,8 +278,9 @@
 							</td>
 							<td class="nobr">{trans("Network")}</td>
 							<td>
-								<select name="message[network]" {tip trigger="network" text="Select IP network"}>
-									<option value="0">{trans("— all networks —")}</option>
+								<select name="message[network][]" multiple class="lms-ui-multiselect"
+									data-default-value="{trans("— all networks —")}"
+									{tip trigger="network" text="Select IP network"}>
 									{foreach $networks as $network}
 										<option value="{$network.id}"{if $message.network == $network.id} selected{/if}
 											>{$network.name|trunescape:30}</option>
