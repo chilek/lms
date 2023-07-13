@@ -536,6 +536,8 @@ version 28-git (????-??-??):
   - improvement: 'invoices.qr2pay_comment' configuration variable supports %cid substitution
     symbol [chilan]
   - enhancement: multi network selection in new message form [chilan]
+  - enhancement: allow to quick search customers by different extids depending on selected
+    service providers [chilan]
 
 version 27.0 (2021-08-20):
 
