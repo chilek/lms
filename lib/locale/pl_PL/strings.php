@@ -5011,6 +5011,7 @@ $_LANG['<!qs>ticket'] = 'zgłoszenie';
 $_LANG['<!qs>account'] = 'konto hostingowe';
 $_LANG['<!qs>document'] = 'dokument';
 $_LANG['<!qs>customer external id'] = 'zewnętrzny identyfikator klienta';
+$_LANG['<!qs>default'] = 'domyślny';
 
 $_LANG['Click here to select which quick search fields should be visible'] = 'Kliknij tutaj, aby wybrać, które pola szybkiego wyszukiwania powinny być widoczne';
 $_LANG['Click here to select which customer properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości klienta powinny być używane podczas wyszukiwania';
