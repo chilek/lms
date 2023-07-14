@@ -97,7 +97,7 @@ if (!empty($docids)) {
             )
         );
         if (empty($list)) {
-            die;
+            access_denied('No document attachments meet document view filter settings!');
         }
 
         $htmls = $pdfs = $others = 0;

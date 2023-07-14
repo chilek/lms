@@ -233,6 +233,7 @@ $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa
 $_LANG['(limited to first 100)'] = '(ograniczone do pierwszych 100)';
 
 $_LANG['No documents to JPK export!'] = 'Brak dokumentów do eksportu JPK!';
+$_LANG['No document attachments meet document view filter settings!'] = 'Brak załączników dokumentów spełniających ustawienia filtra podglądu dokuemntów!';
 
 $_LANG['Customer has not any assigned email contacts with "documents" flag!'] = 'Klient nie posiada przypisanych żadnych adresów poczty elektronicznej z ustawioną flagą "dokumenty"!';
 
