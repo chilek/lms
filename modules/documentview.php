@@ -34,8 +34,7 @@ if (!empty($_POST['marks'])) {
     }
 } elseif (isset($_GET['id']) && is_numeric($_GET['id'])) {
     if (!$LMS->DocumentExists($_GET['id'])) {
-        $SMARTY->assign('message', trans('Document does not exist!'));
-        access_denied();
+        access_denied('Document does not exist!');
     }
     $docids[] = intval($_GET['id']);
 }
