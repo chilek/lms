@@ -538,6 +538,8 @@ version 28-git (????-??-??):
   - enhancement: multi network selection in new message form [chilan]
   - enhancement: allow to quick search customers by different extids depending on selected
     service providers [chilan]
+  - enhancement: added new actions 'customer deletion' and 'customer restoration' for customer
+    search result list [chilan]
 
 version 27.0 (2021-08-20):
 
