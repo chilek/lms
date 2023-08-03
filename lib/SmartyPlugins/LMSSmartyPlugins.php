@@ -38,6 +38,7 @@ class LMSSmartyPlugins
             'type' => 'button',
             'tip' => null,
             'label' => null,
+            'text' => null,
             'href' => null,
             'class' => null,
             'onclick' => null,
@@ -73,6 +74,7 @@ class LMSSmartyPlugins
                 case 'tip':
                 // optional - button with icon only don't use label
                 case 'label':
+                case 'text':
                     if (isset($value)) {
                         $$name = trans($value);
                     }
@@ -111,7 +113,8 @@ class LMSSmartyPlugins
             . ($visible ? '' : ' style="display: none;"')
             . ($disabled ? ' disabled' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
-            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '') . '
+            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '')
+            . ($text ? '<span class="lms-ui-label">' . $text . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
 
