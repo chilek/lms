@@ -546,6 +546,11 @@ class LMS
         return $manager->deleteCustomerPermanent($id);
     }
 
+    public function restoreCustomer($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->restoreCustomer($id);
+    }
     public function CustomerUpdate($customerdata)
     {
         $manager = $this->getCustomerManager();

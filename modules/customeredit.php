@@ -62,8 +62,9 @@ if (isset($_GET['search'])) {
         || ($_GET['oper'] == 'changetype' && ($_GET['type'] == CTYPES_PRIVATE || $_GET['type'] == CTYPES_COMPANY))
         || (isset($_GET['type']) && isset($_POST['contactflags'][$_GET['type']]) && !empty($_POST['contactflags'][$_GET['type']])
             && isset($CUSTOMERCONTACTTYPES[$_GET['type']]))
-        || ($_GET['oper'] == 'changestatus' && isset($_GET['status']) && isset($CSTATUSES[$_GET['status']])))
-    ) {
+        || ($_GET['oper'] == 'changestatus' && isset($_GET['status']) && isset($CSTATUSES[$_GET['status']]))
+        || ($_GET['oper'] == 'restore')
+    )) {
         foreach ($customerlist as $row) {
             switch ($_GET['oper']) {
                 case 'addconsents':
@@ -83,6 +84,11 @@ if (isset($_GET['search'])) {
                     break;
                 case 'changestatus':
                     $LMS->changeCustomerStatus($row['id'], $_GET['status']);
+                    break;
+                case 'restore':
+                    if (!empty($row['deleted'])) {
+                        $LMS->restoreCustomer($row['id']);
+                    }
                     break;
             }
         }

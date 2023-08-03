@@ -5473,6 +5473,9 @@ $_LANG['<!customersearch>Remove flags'] = 'Usuń flagi';
 $_LANG['<!customersearch>Messages'] = 'Wiadomości';
 $_LANG['<!customersearch>New email message'] = 'Nowa wiadomość e-mail';
 $_LANG['<!customersearch>New sms message'] = 'Nowa wiadomość SMS';
+$_LANG['<!customersearch>Customer deletion'] = 'Usunięcie klienta';
+$_LANG['<!customersearch>Deletion'] = 'Usunięcie';
+$_LANG['<!customersearch>Restoration'] = 'Przywrócenie';
 
 $_LANG['Apply'] = 'Zastosuj';
 

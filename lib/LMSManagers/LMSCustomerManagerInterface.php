@@ -82,6 +82,8 @@ interface LMSCustomerManagerInterface
 
     public function deleteCustomerPermanent($id);
 
+    public function restoreCustomer($id);
+
     public function checkCustomerAddress($a_id, $c_id);
 
     public function determineDefaultCustomerAddress(array &$caddr);

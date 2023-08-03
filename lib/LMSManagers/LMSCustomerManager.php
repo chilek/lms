@@ -2386,6 +2386,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $this->db->CommitTrans();
     }
 
+    public function restoreCustomer($id)
+    {
+        $this->db->BeginTrans();
+
+        $this->db->Execute(
+            'UPDATE customers
+            SET deleted = 0, moddate = ?NOW?, modid = ?
+            WHERE id = ?',
+            array(
+                Auth::GetCurrentUser(),
+                $id,
+            )
+        );
+
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_CUST,
+                SYSLOG::OPER_UPDATE,
+                array(SYSLOG::RES_CUST => $id, 'deleted' => 0)
+            );
+        }
+
+        $this->db->CommitTrans();
+    }
+
     /**
      * Check if address is belong to customer.
      *
