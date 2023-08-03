@@ -40,7 +40,6 @@ if (empty($customers)) {
     return;
 }
 
-$error = false;
 foreach ($customers as $customerid) {
     if (!$LMS->CustomerExists($customerid)) {
         $layout['pagetitle'] = trans($permanent ? 'Permanent Customer Remove: $a' : 'Customer Remove: $a', sprintf("%04d", $customerid));
@@ -49,11 +48,8 @@ foreach ($customers as $customerid) {
         $body .= '<A HREF="?' . $SESSION->remove_history_entry() . '">' . trans('Back') . '</A></P>';
         $SMARTY->assign('body', $body);
         $SMARTY->display('dialog.html');
-        $error = true;
+        return;
     }
-}
-if ($error) {
-    return;
 }
 
 foreach ($customers as $customerid) {
