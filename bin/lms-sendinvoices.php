@@ -498,7 +498,9 @@ if ($backup || $archive) {
                     AND c.invoicenotice = 1
                     AND d.cdate >= $daystart
                     AND d.cdate <= $dayend"
-                    . ($customergroups ?: ''), $args));
+                    . ($customergroups ?: ''),
+                $args
+            ));
             if (empty($count)) {
                 die;
             }
