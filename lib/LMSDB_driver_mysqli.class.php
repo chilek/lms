@@ -92,6 +92,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
         } else {
             $this->_error = true;
         }
+
         return $this->_dblink;
     }
 

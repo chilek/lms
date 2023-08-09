@@ -546,6 +546,11 @@ class LMS
         return $manager->deleteCustomerPermanent($id);
     }
 
+    public function restoreCustomer($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->restoreCustomer($id);
+    }
     public function CustomerUpdate($customerdata)
     {
         $manager = $this->getCustomerManager();
@@ -834,6 +839,11 @@ class LMS
         return $manager->addCustomerNote($params);
     }
 
+    public function updateCustomerNote($params)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->updateCustomerNote($params);
+    }
     public function delCustomerNote($id)
     {
         $manager = $this->getCustomerManager();

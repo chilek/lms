@@ -1011,6 +1011,8 @@ switch ($type) {
         $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
         $SMARTY->assign('printmenu', 'finances');
 
+        $SMARTY->assign('invprojects', $LMS->GetProjects());
+
         $SMARTY->display('print/printindex.html');
 
         break;

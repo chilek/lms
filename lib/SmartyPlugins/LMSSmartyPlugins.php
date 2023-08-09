@@ -38,6 +38,7 @@ class LMSSmartyPlugins
             'type' => 'button',
             'tip' => null,
             'label' => null,
+            'text' => null,
             'href' => null,
             'class' => null,
             'onclick' => null,
@@ -73,6 +74,7 @@ class LMSSmartyPlugins
                 case 'tip':
                 // optional - button with icon only don't use label
                 case 'label':
+                case 'text':
                     if (isset($value)) {
                         $$name = trans($value);
                     }
@@ -111,7 +113,8 @@ class LMSSmartyPlugins
             . ($visible ? '' : ' style="display: none;"')
             . ($disabled ? ' disabled' : '') . '>'
             . ($icon ? '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>' : '')
-            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '') . '
+            . ($label ? '<span class="lms-ui-label">' . htmlspecialchars($label) . '</span>' : '')
+            . ($text ? '<span class="lms-ui-label">' . $text . '</span>' : '') . '
 		</' . ($type == 'link' || $type == 'link-button' ? 'a' : 'button') . '>';
     }
 
@@ -189,7 +192,7 @@ class LMSSmartyPlugins
 
         if ($force_global_division_context) {
             $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
-                . '<span class="division-context bold">' . (!empty($user_divisions) ? $user_divisions['shortname'] : trans("all"))
+                . '<span class="division-context bold">' . (!empty($user_divisions) ? htmlspecialchars($user_divisions['label']) : trans("all"))
                 . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
                     || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
                 . ($label ? '</label>' : '')
@@ -215,7 +218,7 @@ class LMSSmartyPlugins
                 $user_division = reset($user_divisions);
                 $result .= ($label ? '<label>' : '') . ($label ? trans($label) : '')
                     . '<span class="division-context bold">'
-                    . (empty($user_divisions) ? trans("all") : ($shortname ? $user_division['shortname'] : $user_division['name']))
+                    . (empty($user_divisions) ? trans("all") : htmlspecialchars($shortname ? $user_division['label'] : $user_division['name']))
                     . (empty($icon) ? '' : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0
                       || strpos($icon, 'fa') === 0 ? $icon : 'lms-ui-icon-' . $icon) . '"></i>&nbsp;') . '</span>'
                     . ($label ? '</label>' : '')
@@ -238,6 +241,7 @@ class LMSSmartyPlugins
 
         $form = isset($params['form']) ? $params['form'] : null;
         $icon = empty($params['icon']) ? null : $params['icon'];
+        $trigger = isset($params['trigger']) ? $params['trigger'] : 'customerid';
 
         if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected'])) {
             $params['selected'] = '';
@@ -346,7 +350,7 @@ class LMSSmartyPlugins
                 . ' ' . self::tipFunction(
                     array(
                         'text' => isset($params['inputtip']) ? $params['inputtip'] : 'Search for customer',
-                        'trigger' => 'customerid',
+                        'trigger' => $trigger,
                         'class' => 'lms-ui-customer-select-suggestion-input lms-ui-autogrow'
                     ),
                     $template

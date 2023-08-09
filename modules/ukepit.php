@@ -34,6 +34,21 @@ if (!class_exists('ZipArchive')) {
 //$old_locale = setlocale(LC_NUMERIC, '0');
 setlocale(LC_NUMERIC, 'C');
 
+function sanitizeTechnologyName($technologyName)
+{
+    static $dash_character = null;
+
+    if (!isset($dash_character)) {
+        $dash_character = isset($_POST['dash-character']) && $_POST['dash-character'] == 'pit' ? 1 : 2;
+    }
+
+    if ($dash_character == 1) {
+        return $technologyName;
+    } else {
+        return str_replace('–', '-', $technologyName);
+    }
+}
+
 function technologyName($technology)
 {
     static $LINKTECHNOLOGIES = null;
@@ -43,11 +58,11 @@ function technologyName($technology)
     }
 
     if ($technology < 100) {
-        return $LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_WIRE][$technology]);
     } elseif ($technology < 200) {
-        return $LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_WIRELESS][$technology]);
     } else {
-        return $LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology];
+        return sanitizeTechnologyName($LINKTECHNOLOGIES[LINKTYPE_FIBER][$technology]);
     }
 }
 
@@ -311,7 +326,7 @@ function radioTransmissionNameByTechnology($technology)
  */
 function networkSpeedCode($speed)
 {
-    $speed = round($speed / 1000, 2);
+    $speed = round($speed / $GLOBALS['speed_unit_type'], 2);
 
     if ($speed <= 2) {
         return '01';
@@ -382,6 +397,10 @@ $customers = array();
 
 $report_type = isset($_POST['report-type']) && $_POST['report-type'] == 'customer-services' ? 'customer-services' : 'full';
 
+$speed_unit_type = intval(ConfigHelper::getConfig('phpui.speed_unit_type', 1000));
+if (!$speed_unit_type) {
+    $speed_unit_type = 1000;
+}
 $root_netdevice_id = intval(ConfigHelper::getConfig('phpui.root_netdevice_id'));
 
 if ($report_type == 'full' && empty($root_netdevice_id)) {
@@ -895,7 +914,7 @@ if ($report_type == 'full') {
                 $netnodename = mb_strtoupper($netnodename);
 
                 if (array_key_exists($netnodename, $netnodes)) {
-                    if (!in_array($netdevice['invproject'], $netnodes[$netnodename]['invproject'])) {
+                    if (strlen($netdevice['invproject']) && !in_array($netdevice['invproject'], $netnodes[$netnodename]['invproject'])) {
                         $netnodes[$netnodename]['invproject'][] = $netdevice['invproject'];
                     }
                 } else {
@@ -912,7 +931,7 @@ if ($report_type == 'full') {
                 }
 
                 $netnodes[$netnodename]['id'] = $netnodeid;
-                $netnodes[$netnodename]['invproject'] = array($projectname);
+                $netnodes[$netnodename]['invproject'] = strlen($projectname) ? array($projectname) : array();
                 $netnodes[$netnodename]['name'] = $netnodename;
 
                 if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
@@ -1167,6 +1186,7 @@ if ($report_type == 'full') {
                     n.linktype,
                     n.linktechnology,
                     a.city_id AS location_city,
+                    a.street AS location_street_name,
                     a.street_id AS location_street,
                     a.house AS location_house,
                     0 AS from_uni_link
@@ -1177,7 +1197,7 @@ if ($report_type == 'full') {
                     " . ($division ? ' AND c.divisionid = ' . $division : '') . "
                     AND a.city_id IS NOT NULL
                     AND n.netdev IN ?
-                GROUP BY n.linktype, n.linktechnology, a.city_id, a.street_id, a.house",
+                GROUP BY n.linktype, n.linktechnology, a.city_id, a.street, a.street_id, a.house",
                 array(
                     $netnode['netdevices'],
                 )
@@ -1271,6 +1291,7 @@ if ($report_type == 'full') {
                             AND n.linktype = ?
                             AND n.linktechnology = ?
                             AND addr.city_id = ?
+                            " . (empty($range['location_street_name']) ? '' : ' AND addr.street = ' . $DB->Escape($range['location_street_name'])) . "
                             AND (addr.street_id = ? OR addr.street_id IS NULL)
                             AND addr.house = ?
                             AND a.commited = 1
@@ -2097,7 +2118,7 @@ if ($report_type == 'full') {
                             $service_name[] = 'TEL';
                         }
 
-                        $service_name[] = round($range['downstream'] / 1000);
+                        $service_name[] = round($range['downstream'] / $speed_unit_type);
 
                         if (isset($range_keys[$range_key])) {
                             $range_keys[$range_key]++;
@@ -2210,7 +2231,7 @@ if ($report_type == 'full') {
                 $service_name[] = 'TEL';
             }
 
-            $service_name[] = round($range['downstream'] / 1000);
+            $service_name[] = round($range['downstream'] / $speed_unit_type);
 
             $data = array(
                 'ua01_id_punktu_adresowego' => $aggregate_customer_services ? $range_key : ($range_key + 1),
@@ -2326,7 +2347,7 @@ if ($report_type == 'full') {
 
                     if (!isset($processed_netlinks[$netnodelinkid])) {
                         $linkspeed = $netlink['speed'];
-                        $speed = floor($linkspeed / 1000);
+                        $speed = floor($linkspeed / $speed_unit_type);
 
                         if ($netlink['src'] == $netdevice['id']) {
                             if ($netdevnetnode != $dstnetnode) {
@@ -2453,7 +2474,7 @@ if ($report_type == 'full') {
                             'lb05_nr_pozwolenia_radiowego' => $netlink['license'],
                             'lb06_pasmo_radiowe' => strlen($netlink['license']) ? '' : $frequency,
                             'lb07_system_transmisyjny' => radioTransmissionNameByTechnology($technology),
-                            'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * 1000),
+                            'lb08_przepustowosc' => networkSpeedCode($netlink['speed'] * $speed_unit_type),
                             'lb09_mozliwosc_udostepnienia' => 'Nie',
                         );
 

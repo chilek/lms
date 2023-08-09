@@ -186,6 +186,10 @@
 							<option value="{($statusid + 100)}">{$status.singularlabel}</option>
 						{/foreach}
 					</optgroup>
+					<optgroup label="{trans("<!customersearch>Customer deletion")}">
+						<option value="14">{trans("<!customersearch>Deletion")}</option>
+						<option value="15">{trans("<!customersearch>Restoration")}</option>
+					</optgroup>
 					{if is_array($listdata.customergroup)}
 						<optgroup label="{trans("Customer groups")}">
 							{$groups = array_flip($listdata.customergroup)}
@@ -432,6 +436,18 @@
 			$('#customersearchresults').attr('action', action).submit();
 		}
 
+		function deleteCustomer() {
+			var action = '?m=customerdel';
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
+		function restoreCustomer() {
+			var action = '?m=customeredit&search=1&oper=restore';
+
+			$('#customersearchresults').attr('action', action).submit();
+		}
+
 		$('#customer-action').change(function() {
 			var action = parseInt($(this).val());
 
@@ -510,6 +526,12 @@
 					break;
 				case 13:
 					changeCustomerType({$smarty.const.CTYPES_COMPANY});
+					break;
+				case 14:
+					deleteCustomer();
+					break;
+				case 15:
+					restoreCustomer();
 					break;
 				default:
 					if (action >= {($smarty.const.CSTATUS_CONNECTED + 100)} && action <= {($smarty.const.CSTATUS_LAST + 100)}) {

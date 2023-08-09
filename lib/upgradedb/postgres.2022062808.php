@@ -22,7 +22,9 @@
  */
 
 
-if (!$this->ResourceExists('voip_cdr_type_uniqueid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+if ($this->ResourceExists('voip_cdr_uniqueid_key', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE voip_cdr DROP CONSTRAINT voip_cdr_uniqueid_key");
+}
+if (!$this->ResourceExists('voip_cdr_type_uniqueid_ukey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
     $this->Execute("ALTER TABLE voip_cdr ADD CONSTRAINT voip_cdr_type_uniqueid_ukey UNIQUE (type, uniqueid)");
 }

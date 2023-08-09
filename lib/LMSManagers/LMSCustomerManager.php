@@ -314,7 +314,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
                 . ' d.customerid = ? AND d.type = ?'
                 . ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
-            ORDER BY time ' . $direction . ', id',
+            ORDER BY time ' . $direction . ', docid, id',
             array($id, $id, DOC_INVOICE_PRO)
         );
 
@@ -2386,6 +2386,31 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $this->db->CommitTrans();
     }
 
+    public function restoreCustomer($id)
+    {
+        $this->db->BeginTrans();
+
+        $this->db->Execute(
+            'UPDATE customers
+            SET deleted = 0, moddate = ?NOW?, modid = ?
+            WHERE id = ?',
+            array(
+                Auth::GetCurrentUser(),
+                $id,
+            )
+        );
+
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_CUST,
+                SYSLOG::OPER_UPDATE,
+                array(SYSLOG::RES_CUST => $id, 'deleted' => 0)
+            );
+        }
+
+        $this->db->CommitTrans();
+    }
+
     /**
      * Check if address is belong to customer.
      *
@@ -3026,9 +3051,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerNotes($cid)
     {
         return $this->db->GetAll(
-            'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
+            'SELECT
+                n.id,
+                u.login AS user,
+                u.name AS username,
+                u.rname AS rusername,
+                dt,
+                u2.login AS moduser,
+                u2.name AS modusername,
+                u2.rname AS modrusername,
+                moddate,
+                message AS note
             FROM customernotes n
             LEFT JOIN vusers u ON u.id = n.userid
+            LEFT JOIN vusers u2 ON u2.id = n.moduserid
             WHERE customerid = ? ORDER BY dt DESC',
             array($cid)
         );
@@ -3037,13 +3073,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerNote($id)
     {
         $result = $this->db->GetRow(
-            'SELECT n.id, u.login AS user, u.name AS username, u.rname AS rusername, dt, message AS note
+            'SELECT
+                n.id,
+                u.login AS user,
+                u.name AS username,
+                u.rname AS rusername,
+                dt,
+                u2.login AS moduser,
+                u2.name AS modusername,
+                u2.rname AS modrusername,
+                moddate,
+                message AS note
             FROM customernotes n
             LEFT JOIN vusers u ON u.id = n.userid
+            LEFT JOIN vusers u2 ON u2.id = n.moduserid
             WHERE n.id = ?',
             array($id)
         );
         $result['date'] = date('Y/m/d H:i', $result['dt']);
+        $result['moddate'] = empty($result['moddate']) ? '' : date('Y/m/d H:i', $result['moddate']);
         $result['text'] = htmlspecialchars($result['note']);
         return $result;
     }
@@ -3064,6 +3112,38 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     'message' => $params['customernote'],
                 );
                 $this->syslog->AddMessage(SYSLOG::RES_CUSTNOTE, SYSLOG::OPER_ADD, $args);
+            }
+        } else {
+            $id = null;
+        }
+
+        return $id;
+    }
+
+    public function updateCustomerNote($params)
+    {
+        if (!isset($params['noteid'], $params['customernote'])) {
+            return null;
+        }
+
+        $res = $this->db->Execute(
+            'UPDATE customernotes SET message = ?, moddate = ?NOW?, moduserid = ? WHERE id = ?',
+            array(
+                $params['customernote'],
+                Auth::GetCurrentUser(),
+                $params['noteid'],
+            )
+        );
+
+        if ($res) {
+            $id = $params['noteid'];
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_CUSTNOTE => $params['noteid'],
+                    SYSLOG::RES_CUST => $params['customerid'],
+                    'message' => $params['customernote'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_CUSTNOTE, SYSLOG::OPER_UPDATE, $args);
             }
         } else {
             $id = null;
@@ -3697,7 +3777,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function getServiceProviders()
     {
-        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders', 'id');
+        $result = $this->db->GetAllByKey('SELECT * FROM serviceproviders ORDER BY name', 'id');
         return empty($result) ? array() : $result;
     }
 }

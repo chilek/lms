@@ -479,17 +479,28 @@ if ($backup || $archive) {
         if ($percent < 1 || $percent > 99) {
             $part_size = 0;
         } else {
-            $count = intval($DB->GetOne("SELECT COUNT(*)
-				FROM documents d
-				LEFT JOIN customeraddressview c ON c.id = d.customerid
-				JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-					FROM customercontacts
-					WHERE (type & ?) = ?
-					GROUP BY customerid
-				) m ON m.customerid = c.id
-				WHERE " . ($customerid ? 'c.id = ' . $customerid . ' AND ' : '') . "c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?) AND c.invoicenotice = 1
-					AND d.cdate >= $daystart AND d.cdate <= $dayend"
-                . ($customergroups ?: ''), $args));
+            $count = intval($DB->GetOne(
+                "SELECT COUNT(*)
+                FROM documents d
+                LEFT JOIN customeraddressview c ON c.id = d.customerid
+                JOIN (
+                    SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+                    FROM customercontacts
+                    WHERE (type & ?) = ?
+                    GROUP BY customerid
+                ) m ON m.customerid = c.id
+                WHERE "
+                    . ($divisionid ? 'd.divisionid = ' . $divisionid : '1 = 1')
+                    . ($customerid ? ' AND c.id = ' . $customerid : '')
+                    . " AND c.deleted = 0
+                    AND d.cancelled = 0
+                    AND d.type IN (?, ?, ?, ?)
+                    AND c.invoicenotice = 1
+                    AND d.cdate >= $daystart
+                    AND d.cdate <= $dayend"
+                    . ($customergroups ?: ''),
+                $args
+            ));
             if (empty($count)) {
                 die;
             }

@@ -83,7 +83,7 @@ if (isset($_GET['oper']) && !empty($customerId)) {
             }
             break;
         case 'showextids':
-            die(json_encode($lms->getServiceProviders()));
+            die(json_encode($serviceproviders));
     }
 }
 

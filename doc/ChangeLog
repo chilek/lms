@@ -521,6 +521,25 @@ version 28-git (????-??-??):
     specify building base provider which should be used [chilan]
   - enhancement: 'phpui.allowed_link_technologies' and 'sidusis.allowed_link_technologies' with default
     empty values allow to limit link technology selection lists in user interface [chilan]
+  - enhancement: added estimated completion date property to investment projects [chilan]
+  - enhancement: uke/sidusis: implemented investment project csv export [chilan]
+  - enhancement: added operation date and operation external id to cash import records [chilan]
+  - enhancement: added --customer-types input parameter for bin/lms-notify.php script - notified
+    customer types can be specified with symboli names 'company' and 'private' separated
+    by colons [chilan]
+  - enhancement: implemented inline customer note modifications [chilan]
+  - improvement: '%number' symbol support in 'invoices.payment_title' configuration variable [chilan]
+  - enhancement: 'notification-type_recipients' configuration variable used by lms-notify.php script
+    allow to select notification recipient categories - 'users' and 'customers' are supported
+    currently only for 'events' notifications [chilan]
+  - enhancement: added preliminary en_GB localisation support [chilan]
+  - improvement: 'invoices.qr2pay_comment' configuration variable supports %cid substitution
+    symbol [chilan]
+  - enhancement: multi network selection in new message form [chilan]
+  - enhancement: allow to quick search customers by different extids depending on selected
+    service providers [chilan]
+  - enhancement: added new actions 'customer deletion' and 'customer restoration' for customer
+    search result list [chilan]
 
 version 27.0 (2021-08-20):
 

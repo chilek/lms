@@ -1919,12 +1919,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     'UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, modtime = ?, subject = ?,
 					customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
 					verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-					requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ? WHERE id = ?',
+					requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?,
+					resolvetime = ?
+					WHERE id = ?',
                     array(
                         $props['queueid'], $props['owner'], $props['cause'], $props['state'], $modtime, $props['subject'],
                         $props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
                         $props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
                         $props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $props['parentid'],
+                        0,
                         $ticketid
                     )
                 );

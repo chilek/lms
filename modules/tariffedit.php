@@ -293,10 +293,7 @@ if (isset($_POST['tariff'])) {
     $tariff = $LMS->GetTariff($_GET['id']);
 
     if (!empty($tariff['customers']) && !ConfigHelper::checkPrivilege('used_tariff_edit')) {
-        $SMARTY->assign('message', trans('You can\'t edit tariff which is assigned to customers through assignments!'));
-        $SMARTY->display('noaccess.html');
-        $SESSION->close();
-        die;
+        access_denied('You can\'t edit tariff which is assigned to customers through assignments!');
     }
 
     if ($tariff['dateto']) {

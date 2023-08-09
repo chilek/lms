@@ -88,7 +88,7 @@ $args = array(
     'type' => $t,
     'status' => $status,
     'datefrom' => $datefrom,
-    'dateto' => $dateto,
+    'dateto' => empty($dateto) ? $dateto : strtotime('tomorrow', $dateto) - 1,
     'count' => true
 );
 

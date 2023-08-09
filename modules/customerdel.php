@@ -26,35 +26,54 @@
 
 $permanent = ConfigHelper::checkPrivilege('permanent_customer_removal') && isset($_GET['type']) && $_GET['type'] == 'permanent';
 
-if (!$LMS->CustomerExists($_GET['id'])) {
-    $layout['pagetitle'] = trans($permanent ? 'Permanent Customer Remove: $a' : 'Customer Remove: $a', sprintf("%04d", $_GET['id']));
-    $SMARTY->assign('customerid', $_GET['id']);
-    $body = '<P>' . trans('Incorrect Customer ID.') . '</P>';
-    $body .= '<A HREF="?' . $SESSION->remove_history_entry() . '">' . trans('Back') . '</A></P>';
-    $SMARTY->assign('body', $body);
-    $SMARTY->display('dialog.html');
+if (!empty($_POST['setwarnings'])) {
+    $setwarnings = $_POST['setwarnings'];
+
+    $customers = $setwarnings['mcustomerid'];
+} elseif (isset($_GET['id'])) {
+    $customers = array($_GET['id']);
 } else {
+    return;
+}
+$customers = Utils::filterIntegers($customers);
+if (empty($customers)) {
+    return;
+}
+
+foreach ($customers as $customerid) {
+    if (!$LMS->CustomerExists($customerid)) {
+        $layout['pagetitle'] = trans($permanent ? 'Permanent Customer Remove: $a' : 'Customer Remove: $a', sprintf("%04d", $customerid));
+        $SMARTY->assign('customerid', $customerid);
+        $body = '<P>' . trans('Incorrect Customer ID.') . '</P>';
+        $body .= '<A HREF="?' . $SESSION->remove_history_entry() . '">' . trans('Back') . '</A></P>';
+        $SMARTY->assign('body', $body);
+        $SMARTY->display('dialog.html');
+        return;
+    }
+}
+
+foreach ($customers as $customerid) {
     $LMS->executeHook(
         'customerdel_before_submit',
         array(
-            'id' => $_GET['id'],
+            'id' => $customerid,
             'permanent' => $permanent,
         )
     );
 
     if ($permanent) {
-        $LMS->DeleteCustomerPermanent($_GET['id']);
+        $LMS->DeleteCustomerPermanent($customerid);
     } else {
-        $LMS->DeleteCustomer($_GET['id']);
+        $LMS->DeleteCustomer($customerid);
     }
 
     $LMS->executeHook(
         'customerdel_after_submit',
         array(
-            'id' => $_GET['id'],
+            'id' => $customerid,
             'permanent' => $permanent,
         )
     );
-
-    $SESSION->redirect_to_history_entry();
 }
+
+$SESSION->redirect_to_history_entry();

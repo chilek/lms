@@ -87,7 +87,7 @@ if (isset($_GET['attachmentaction'])) {
                     if ($pdf) {
                         header('Content-Disposition: inline; filename="'.$file['filename'] . '"');
                         header('Content-Transfer-Encoding: binary');
-                        header('Content-Length: ' . filesize($file['filepath']) . ' bytes');
+                        header('Content-Length: ' . filesize($file['filepath']));
                     } else {
                         if (isset($_GET['thumbnail']) && ($width = intval($_GET['thumbnail'])) > 0
                             && class_exists('Imagick') && strpos($file['contenttype'], 'image/') === 0) {

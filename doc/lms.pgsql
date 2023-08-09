@@ -226,31 +226,6 @@ CREATE TABLE location_buildings (
 DROP INDEX IF EXISTS location_cityid_index;
 CREATE INDEX location_cityid_index ON location_buildings (city_id);
 
-/* --------------------------------------------------------
-  Structure of table "netranges"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS netranges_id_seq;
-CREATE SEQUENCE netranges_id_seq;
-DROP TABLE IF EXISTS netranges;
-CREATE TABLE netranges (
-    id integer DEFAULT nextval('netranges_id_seq'::text) NOT NULL,
-    buildingid integer NOT NULL
-        CONSTRAINT netranges_buildingid_fkey REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    linktype smallint NOT NULL,
-    linktechnology smallint NOT NULL,
-    downlink integer NOT NULL,
-    uplink integer NOT NULL,
-    type smallint NOT NULL,
-    services smallint NOT NULL,
-    PRIMARY KEY (id)
-);
-CREATE INDEX netranges_linktype_idx ON netranges (linktype);
-CREATE INDEX netranges_linktechnology_idx ON netranges (linktechnology);
-CREATE INDEX netranges_downlink_idx ON netranges (downlink);
-CREATE INDEX netranges_uplink_idx ON netranges (uplink);
-CREATE INDEX netranges_type_idx ON netranges (type);
-CREATE INDEX netranges_services_idx ON netranges (services);
-
 /* ---------------------------------------------------
  Structure of table "addresses"
 ------------------------------------------------------*/
@@ -409,6 +384,9 @@ CREATE TABLE customernotes (
        CONSTRAINT customernotes_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     dt integer NOT NULL,
     message text NOT NULL,
+    moddate integer DEFAULT NULL,
+    moduserid integer DEFAULT NULL
+        CONSTRAINT customernotes_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE SET NULL,
     PRIMARY KEY (id)
 );
 
@@ -1254,13 +1232,17 @@ CREATE TABLE cashimport (
 	sourcefileid integer    DEFAULT NULL
 		REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	srcaccount varchar(60) DEFAULT NULL,
-	PRIMARY KEY (id)
+	operdate integer DEFAULT NULL,
+	extid varchar(64) DEFAULT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT cashimport_sourceid_extid_ukey UNIQUE (sourceid, extid)
 );
 
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 CREATE INDEX cashimport_customerid_idx ON cashimport (customerid);
 CREATE INDEX cashimport_sourcefileid_idx ON cashimport (sourcefileid);
 CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
+CREATE INDEX cashimport_extid_idx ON cashimport (extid);
 
 /* ---------------------------------------------------
  Structure of table customerbalances
@@ -1401,8 +1383,36 @@ CREATE TABLE invprojects (
 	type smallint DEFAULT 0,
 	divisionid integer DEFAULT NULL
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	cdate integer DEFAULT NULL,
 	PRIMARY KEY(id)
 );
+
+/* --------------------------------------------------------
+  Structure of table "netranges"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS netranges_id_seq;
+CREATE SEQUENCE netranges_id_seq;
+DROP TABLE IF EXISTS netranges;
+CREATE TABLE netranges (
+    id integer DEFAULT nextval('netranges_id_seq'::text) NOT NULL,
+    buildingid integer NOT NULL
+        CONSTRAINT netranges_buildingid_fkey REFERENCES location_buildings (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    linktype smallint NOT NULL,
+    linktechnology smallint NOT NULL,
+    downlink integer NOT NULL,
+    uplink integer NOT NULL,
+    type smallint NOT NULL,
+    services smallint NOT NULL,
+    invprojectid integer DEFAULT NULL
+        CONSTRAINT netranges_invprojectid_fkey REFERENCES invprojects (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
+CREATE INDEX netranges_linktype_idx ON netranges (linktype);
+CREATE INDEX netranges_linktechnology_idx ON netranges (linktechnology);
+CREATE INDEX netranges_downlink_idx ON netranges (downlink);
+CREATE INDEX netranges_uplink_idx ON netranges (uplink);
+CREATE INDEX netranges_type_idx ON netranges (type);
+CREATE INDEX netranges_services_idx ON netranges (services);
 
 /* ---------------------------------------------------
  Structure of table "netnodes"
@@ -3804,7 +3814,9 @@ INSERT INTO countries (name, ccode) VALUES
 ('Slovakia', 'sk_SK'),
 ('USA', 'en_US'),
 ('Czech', 'cs_CZ'),
-('Guyana', 'en_GY');
+('Guyana', 'en_GY'),
+('Great Britain', 'en_GB'),
+('United Kingdom', 'en_GB');
 
 INSERT INTO addresses (name) VALUES ('default');
 INSERT INTO divisions (shortname, name, address_id) VALUES ('default', 'default', (SELECT MAX(id) FROM addresses));
@@ -4379,6 +4391,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023060700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023070601');
 
 COMMIT;
