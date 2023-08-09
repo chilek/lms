@@ -86,7 +86,7 @@ if ($alias) {
 
     if (empty($_GET['addaccount']) && empty($_GET['delaccount'])
         && empty($_GET['addmailforward']) && empty($_GET['delmailforward'])) {
-        if (!count($alias['accounts']) && !count($alias['mailforwards'])) {
+        if (empty($alias['accounts']) && empty($alias['mailforwards'])) {
             $error['accountid'] = trans('You have to select destination account!');
             $error['mailforward'] = trans('You have to specify forward e-mail!');
         }
@@ -120,7 +120,7 @@ if ($alias) {
 
         $id = $DB->GetLastInsertId('aliases');
 
-        if (count($alias['accounts'])) {
+        if (!empty($alias['accounts'])) {
             foreach ($alias['accounts'] as $account) {
                 $DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
 					VALUES(?,?)', array($id, $account['id']));
