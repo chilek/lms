@@ -171,11 +171,13 @@ if ($nodes) {
             $node['linktypeicon'] = 'wired';
         } elseif ($node['linktype'] == LINKTYPE_WIRELESS) {
             $node['linktypeicon'] = 'wireless';
-        } else {
+        } elseif ($node['linktype'] == LINKTYPE_FIBER) {
             $node['linktypeicon'] = 'fiber';
+        } else {
+            $node['linktypeicon'] = '';
         }
-        $node['linktypename'] = $LINKTYPES[$node['linktype']];
-        $node['linktechnologyname'] = $node['linktechnology'] ? $LINKTECHNOLOGIES[$node['linktype']][$node['linktechnology']] : '';
+        $node['linktypename'] = isset($node['linktype']) ? $LINKTYPES[$node['linktype']] : '';
+        $node['linktechnologyname'] = isset($node['linktype'], $node['linktechnology']) ? $LINKTECHNOLOGIES[$node['linktype']][$node['linktechnology']] : '';
 
         $urls = $DB->GetRow(
             'SELECT ' . $DB->GroupConcat('url') . ' AS url,

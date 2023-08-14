@@ -1054,10 +1054,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 							if (data.location) {
 								content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-location fa-fw"></i>&nbsp;' + data.location + '</div>';
 							}
-							content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-' +
-								data.linktypeicon + ' fa-fw"></i><div class="lms-ui-map-info-popup-details-list"><div>' + data.linktypename +
-								'</div>' + (data.linktechnologyname.length ? '<div>' + data.linktechnologyname + '</div>' : '') +
-								'</div></div>';
+							if (data.linktype.length) {
+								content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-' +
+									data.linktypeicon + ' fa-fw"></i><div class="lms-ui-map-info-popup-details-list"><div>' + data.linktypename +
+									'</div>' + (data.linktechnologyname.length ? '<div>' + data.linktechnologyname + '</div>' : '') +
+									'</div></div>';
+							}
 							if (data.url) {
 								var urls = data.url.split(',');
 								var comments = data.comment.split(',');
