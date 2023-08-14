@@ -1031,6 +1031,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					var data, state;
 					for (i in features) {
 						data = features[i].data;
+						content += '<div class="lms-ui-map-info-popup-entry">';
 						if (data.type == 'netdevinfo') {
 							content += '<div class="lms-ui-map-info-popup-name">' + data.name + '</div>';
 							if (data.ipaddr.length) {
@@ -1073,6 +1074,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 								content += '</div></div>';
 							}
 						}
+						content += '</div>';
 					}
 					content += '</div>';
 					featurepopup.setContentHTML(content);
