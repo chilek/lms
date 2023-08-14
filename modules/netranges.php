@@ -462,8 +462,10 @@ function getBuildings(array $filter)
             }
             if (!empty($majortechs)
                 && isset($nodes[$city_id][$street_ident][$building_num])
-                && !array_intersect($majortechs,
-                        array_keys($nodes[$city_id][$street_ident][$building_num]['linktechnologies']))) {
+                && !array_intersect(
+                    $majortechs,
+                    array_keys($nodes[$city_id][$street_ident][$building_num]['linktechnologies'])
+                )) {
                 unset($buildings[$key]);
             }
         }
