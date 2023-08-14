@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2023 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -138,31 +138,58 @@ if ($devices) {
     $devlinks = null;
 }
 
-$nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude AS lat, n.longitude AS lon 
-				FROM vnodes n 
-				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL', 'id');
+$nodes = $DB->GetAllByKey(
+    'SELECT
+        n.id,
+        n.name,
+        INET_NTOA(n.ipaddr) AS ipaddr,
+        n.location,
+        n.lastonline,
+        n.latitude AS lat,
+        n.longitude AS lon,
+        n.linktype,
+        n.linktechnology
+    FROM vnodes n
+    WHERE n.latitude IS NOT NULL
+        AND n.longitude IS NOT NULL',
+    'id'
+);
 
 if ($nodes) {
-    foreach ($nodes as $nodeidx => $node) {
+    foreach ($nodes as &$node) {
         if ($node['lastonline']) {
             if (time() - $node['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit')) {
-                $nodes[$nodeidx]['state'] = 2;
+                $node['state'] = 2;
             } else {
-                $nodes[$nodeidx]['state'] = 1;
+                $node['state'] = 1;
             }
         } else {
-            $nodes[$nodeidx]['state'] = 0;
+            $node['state'] = 0;
         }
-            $urls = $DB->GetRow(
-                'SELECT '.$DB->GroupConcat('url').' AS url,
-			'.$DB->GroupConcat('comment').' AS comment FROM managementurls WHERE nodeid = ?',
-                array($node['id'])
-            );
+
+        if ($node['linktype'] == LINKTYPE_WIRE) {
+            $node['linktypeicon'] = 'wired';
+        } elseif ($node['linktype'] == LINKTYPE_WIRELESS) {
+            $node['linktypeicon'] = 'wireless';
+        } else {
+            $node['linktypeicon'] = 'fiber';
+        }
+        $node['linktypename'] = $LINKTYPES[$node['linktype']];
+        $node['linktechnologyname'] = $node['linktechnology'] ? $LINKTECHNOLOGIES[$node['linktype']][$node['linktechnology']] : '';
+
+        $urls = $DB->GetRow(
+            'SELECT ' . $DB->GroupConcat('url') . ' AS url,
+            ' . $DB->GroupConcat('comment') . ' AS comment
+            FROM managementurls
+            WHERE nodeid = ?',
+            array($node['id'])
+        );
         if ($urls) {
-            $nodes[$nodeidx]['url'] = $urls['url'];
-            $nodes[$nodeidx]['comment'] = $urls['comment'];
+            $node['url'] = $urls['url'];
+            $node['comment'] = $urls['comment'];
         }
     }
+    unset($node);
 
     if ($devices) {
         $nodelinks = $DB->GetAll(
