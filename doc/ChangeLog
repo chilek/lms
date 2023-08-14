@@ -540,6 +540,8 @@ version 28-git (????-??-??):
     service providers [chilan]
   - enhancement: added new actions 'customer deletion' and 'customer restoration' for customer
     search result list [chilan]
+  - enhancement: show link properties (type and technology) in node details popup of openlayers
+    map [chilan]
 
 version 27.0 (2021-08-20):
 
