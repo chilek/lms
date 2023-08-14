@@ -542,6 +542,7 @@ version 28-git (????-??-??):
     search result list [chilan]
   - enhancement: show link properties (type and technology) in node details popup of openlayers
     map [chilan]
+  - improvement: close openlayer map popups after mouse double click on them [chilan]
 
 version 27.0 (2021-08-20):
 
