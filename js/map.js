@@ -1090,6 +1090,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					featurepopup.groupDiv.style.height = 'auto';
 					featurepopup.contentDiv.style.width = 'auto';
 					featurepopup.contentDiv.style.heigh = 'auto';
+					featurepopup.feature = feature;
 					//featurepopup.updateSize();
 					feature.popup = featurepopup;
 				}
@@ -1287,6 +1288,29 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 	map.events.register('moveend', map, function(e) {
 		setCookie('mapSettings',  map.getCenter().lon + ';' + map.getCenter().lat + ';' + map.getZoom(), true);
 	});
+
+	// closes popups after mouse double click on them
+	document.getElementById('map').addEventListener(
+		'dblclick',
+		function(e) {
+			var closestElement = e.target;
+			while (closestElement && 'className' in closestElement &&
+				(typeof(closestElement.className) != 'string' || !closestElement.className.match(/^olPopup$/))) {
+				closestElement = closestElement.parentElement;
+			}
+			if (closestElement !== null) {
+				for (var i in map.popups) {
+					if (map.popups[i].visible() && map.popups[i].id == closestElement.id) {
+						selectlayer.unselect(map.popups[i].feature);
+						map.removePopup(map.popups[i]);
+					}
+				}
+			}
+		},
+		{
+			capture: true
+		}
+	);
 
 	//map.events.register('mousemove', map, function(e) {
 	//	removeInvisiblePopups();
