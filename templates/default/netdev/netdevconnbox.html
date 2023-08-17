@@ -86,12 +86,14 @@
 								</a>
 							</div>
 							<div class="lms-ui-tab-table-column netnode" data-target-url="?m=netnodeinfo&id={$netdevice.netnodeid}">
-								{icon name="netnode" class="fa-fw"}
-								<a name="{$netdevice.netnodeid}">
-									<strong>
-										{$netdevice.netnodename}
-									</strong>
-								</a>
+								{if strlen($netdevice.netnodename)}
+									{icon name="netnode" class="fa-fw"}
+									<a name="{$netdevice.netnodeid}">
+										<strong>
+											{$netdevice.netnodename}
+										</strong>
+									</a>
+								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column location" data-target-url="?m=netdevinfo&id={$netdevice.id}">
 								{if $netdevice.location}
