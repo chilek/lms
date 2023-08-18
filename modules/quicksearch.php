@@ -762,6 +762,9 @@ switch ($mode) {
         if (empty($properties) || isset($properties['serial'])) {
             $s['serialnumber'] = $search;
         }
+        if (empty($properties) || isset($properties['location_address'])) {
+            $s['location'] = $search;
+        }
         $SESSION->save('netdevsearch', $s);
         $SESSION->save('ndlsk', 'OR');
 
