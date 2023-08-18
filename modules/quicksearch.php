@@ -666,22 +666,36 @@ switch ($mode) {
         }
 
         if (isset($_GET['ajax'])) { // support for AutoSuggest
-            $candidates = $DB->GetAll("SELECT id, name, serialnumber, description, no.lastonline FROM netdevices
+            $candidates = $DB->GetAll(
+                "SELECT
+                    d.id,
+                    d.name,
+                    d.serialnumber,
+                    d.description,
+                    a.location,
+                    no.lastonline
+                FROM netdevices d
                 LEFT JOIN (
                     SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
                     FROM nodes
                     WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
                         AND lastonline > 0
                     GROUP BY netdev
-                ) no ON no.netdevid = netdevices.id
+                ) no ON no.netdevid = d.id
+                LEFT JOIN vaddresses a ON d.address_id = a.id
                 WHERE "
-                . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
-                . (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
-                . (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
-                . (empty($properties) || isset($properties['description']) ? " OR LOWER(description) ?LIKE? LOWER($sql_search)" : '')
-                . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = netdevices.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
-                . "	ORDER by name
-                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+                . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'd.id = ' . $search : '1=0') : '1=0')
+                . (empty($properties) || isset($properties['name']) ? " OR LOWER(d.name) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['serial']) ? " OR LOWER(d.serialnumber) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['description']) ? " OR LOWER(d.description) ?LIKE? LOWER($sql_search)" : '')
+                . (empty($properties) || isset($properties['mac']) ? " OR EXISTS (SELECT 1 FROM netdevicemacs WHERE netdevicemacs.netdevid = d.id AND LOWER(netdevicemacs.mac) ?LIKE? LOWER($sql_search))" : '')
+                . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(a.location) ?LIKE? LOWER($sql_search)" : '')
+                . ' ORDER by name
+                LIMIT ?',
+                array(
+                    intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
+                )
+            );
 
                 $result = array();
             if ($candidates) {
@@ -709,6 +723,8 @@ switch ($mode) {
                         $description = trans('Name') . ': ' . htmlspecialchars($row['name']);
                     } else if ((empty($properties) || isset($properties['serial'])) && preg_match("~$search~i", $row['serialnumber'])) {
                         $description = trans('Serial number:') . ' ' . $row['serialnumber'];
+                    } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
+                        $description = trans('Address') . ': ' . htmlspecialchars($row['location']);
                     } else if ((empty($properties) || isset($properties['description'])) && preg_match("~$search~i", $row['description'])) {
                         //$description = trans('Description:') . ' ' . htmlspecialchars($row['description']);
                         $description = trans('Description:') . ' &hellip;';

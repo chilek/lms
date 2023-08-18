@@ -93,6 +93,7 @@
 		<option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
 		<option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
 		<option value="mac"{if !isset($qs_properties.mac) || isset($qs_properties.netdevice.mac)} selected{/if}>{trans("<!qs>device mac")}</option>
+		<option value="location_address"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
 		<option value="description"{if !isset($qs_properties.description) || isset($qs_properties.netdevice.description)} selected{/if}>{trans("<!qs>device description")}</option>
 	</select>
 </div>
