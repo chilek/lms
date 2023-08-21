@@ -357,10 +357,32 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
-            if (!$id && $name && $lastname) {
+            if (!$id && strlen($name)) {
+                $customer_name_parts = array(
+                    'name' => $name,
+                );
+                if (strlen($lastname)) {
+                    $customer_name_parts['lastname'] = $lastname;
+                }
+                if (!empty($pattern['customer_replace'])) {
+                    foreach ($customer_name_parts as &$customer_name_part) {
+                        $customer_name_part = preg_replace($pattern['customer_replace']['from'], $pattern['customer_replace']['to'], $customer_name_part);
+                    }
+                    unset($customer_name_part);
+                }
+                $customer_name_parts = array_filter($customer_name_parts, function($customer_name_part) {
+                    return strlen($customer_name_part);
+                });
+
                 $uids = $this->db->GetCol(
-                    'SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
-                    array($lastname, $name)
+                    'SELECT id
+                    FROM customers
+                    WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
+                        OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)',
+                    array(
+                        implode(' ', $customer_name_parts),
+                        implode(' ', array_reverse($customer_name_parts)),
+                    )
                 );
                 if (!empty($uids) && count($uids) == 1) {
                     $id = $uids[0];
