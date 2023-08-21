@@ -2043,10 +2043,10 @@ if ($report_type == 'full') {
                             $error = array(
                                 'srcid' => $netdevice['id'],
                                 'srcname' => $netdevice['name'],
-                                'srcnetnodename' => $netdevnetnodename,
+                                'srcnetnode' => $netnodes[$netdevnetnodename],
                                 'dstid' => $othernetdevice['id'],
                                 'dstname' => $othernetdevice['name'],
-                                'dstnetnodename' => $othernetnode['name'],
+                                'dstnetnode' => $othernetnode,
                             );
                             if (empty($netdevnetnode['mode'])) {
                                 $error['srcerror'] = true;
@@ -2088,16 +2088,23 @@ foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resou
             } elseif ($errorous_resource == 'netlinks') {
                 $error_message = '<!uke-pit>Wireless link can connect only network nodes, but it connects network device "$a" (#$b) located in $c "$d" with network device "$e" (#$f) located in $g "$h"';
 
+                $srcnetnode = $error['srcnetnode'];
+                $dstnetnode = $error['dstnetnode'];
+
                 echo trans(
                     $error_message,
                     '<a href="' . '?m=netdevinfo&id=' . $error['srcid'] . '">' . $error['srcname'] . '</a>',
                     $error['srcid'],
                     trans(isset($error['srcerror']) ? '<!uke-pit>flexibility point' : '<!uke-pit>network node'),
-                    (isset($error['srcerror']) ? 'P' : 'W') . '-' . $error['srcnetnodename'],
+                    (isset($srcnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $srcnetnode['real_id'] : '')
+                        . (isset($error['srcerror']) ? 'P' : 'W') . '-' . $srcnetnode['name']
+                        . (isset($srcnetnode['real_id']) ? '</a>' : ''),
                     '<a href="' . '?m=netdevinfo&id=' . $error['dstid'] . '">' . $error['dstname'] . '</a>',
                     $error['dstid'],
                     trans(isset($error['dsterror']) ? '<!uke-pit>flexibility point' : '<!uke-pit>network node'),
-                    (isset($error['dsterror']) ? 'P' : 'W') . '-' . $error['srcnetnodename'],
+                    (isset($dstnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $dstnetnode['real_id'] : '')
+                        . (isset($error['dsterror']) ? 'P' : 'W') . '-' . $dstnetnode['name']
+                        . (isset($dstnetnode['real_id']) ? '</a>' : '')
                 ) . '<br>';
 
                 $stop = true;
