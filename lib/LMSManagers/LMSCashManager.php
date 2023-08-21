@@ -357,6 +357,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 }
             }
 
+            $found_by_name = false;
+
             if (!$id && strlen($name)) {
                 $customer_name_parts = array(
                     'name' => $name,
@@ -364,43 +366,51 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                 if (strlen($lastname)) {
                     $customer_name_parts['lastname'] = $lastname;
                 }
-                if (!empty($pattern['customer_replace'])) {
-                    foreach ($customer_name_parts as &$customer_name_part) {
-                        $customer_name_part = preg_replace($pattern['customer_replace']['from'], $pattern['customer_replace']['to'], $customer_name_part);
-                    }
-                    unset($customer_name_part);
+                $customer_names = array(
+                    implode(' ', $customer_name_parts),
+                );
+                if (count($customer_name_parts) > 1) {
+                    $customer_names[] = implode(' ', array_reverse($customer_name_parts));
                 }
-                $customer_name_parts = array_filter($customer_name_parts, function($customer_name_part) {
-                    return strlen($customer_name_part);
+
+                if (!empty($pattern['customer_replace'])) {
+                    foreach ($customer_names as &$customer_name) {
+                        $customer_name = preg_replace($pattern['customer_replace']['from'], $pattern['customer_replace']['to'], $customer_name);
+                    }
+                    unset($customer_name);
+                }
+                $customer_names = array_filter($customer_names, function($customer_name) {
+                    return strlen($customer_name);
                 });
 
-                $uids = $this->db->GetCol(
-                    'SELECT id
-                    FROM customers
-                    WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
-                        OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)',
-                    array(
-                        implode(' ', $customer_name_parts),
-                        implode(' ', array_reverse($customer_name_parts)),
-                    )
-                );
-                if (!empty($uids) && count($uids) == 1) {
-                    $id = $uids[0];
-                    $found_by_name = true;
-                }
-                // if id is still not found try again with switched name/lastname strings
-                if (!$id) { // optionally add && $found_by_name == false? I personally use only id check
-                    $uids = $this->db->GetCol(
-                        'SELECT id FROM customers WHERE UPPER(lastname) = UPPER(?) and UPPER(name) = UPPER(?)',
-                        array($name, $lastname) // switched strings here
-                    );
+                if (!empty($customer_names)) {
+                    if (count($customer_names) > 1) {
+                        $uids = $this->db->GetCol(
+                            'SELECT id
+                            FROM customers
+                            WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
+                                OR UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)',
+                            array(
+                                reset($customer_names),
+                                end($customer_names),
+                            )
+                        );
+                    } else {
+                        $uids = $this->db->GetCol(
+                            'SELECT id
+                            FROM customers
+                            WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)',
+                            array(
+                                reset($customer_names),
+                            )
+                        );
+                    }
+
                     if (!empty($uids) && count($uids) == 1) {
                         $id = $uids[0];
                         $found_by_name = true;
                     }
                 }
-            } else {
-                $found_by_name = false;
             }
 
             if ($time) {
