@@ -389,8 +389,12 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                             'SELECT id
                             FROM customers
                             WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
-                                OR UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)',
+                                OR UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
+                                OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)
+                                OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)',
                             array(
+                                reset($customer_names),
+                                end($customer_names),
                                 reset($customer_names),
                                 end($customer_names),
                             )
@@ -399,8 +403,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                         $uids = $this->db->GetCol(
                             'SELECT id
                             FROM customers
-                            WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)',
+                            WHERE UPPER(' . $this->db->Concat('lastname', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'name') . ') = UPPER(?)
+                                OR UPPER(' . $this->db->Concat('name', "(CASE WHEN name <> '' THEN ' ' ELSE '' END)", 'lastname') . ') = UPPER(?)',
                             array(
+                                reset($customer_names),
                                 reset($customer_names),
                             )
                         );
