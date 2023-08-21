@@ -2491,7 +2491,7 @@ unset($teryt_cities);
 unset($teryt_streets);
 
 if ($report_type == 'full') {
-   if (!$summary_only) {
+    if (!$summary_only) {
         $lk_buffer = 'lk01_id_lk,lk02_id_punktu_poczatkowego,lk03_punkty_zalamania,lk04_id_punktu_koncowego,'
             . 'lk05_medium_transmisyjne,lk06_rodzaj_linii_kablowej,lk07_liczba_wlokien,lk08_liczba_wlokien_wykorzystywanych,'
             . 'lk09_liczba_wlokien_udostepnienia,lk10_finansowanie_publ,lk11_numery_projektow_publ,'
