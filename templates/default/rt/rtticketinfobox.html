@@ -439,10 +439,9 @@
 		<TBODY>
 		<TR>
 			<TD style="width: 1%;" class="dark bold nobr">
-				{icon name="customer" label="Customer" class="lms-ui-sortable-handle"}
+				<a href="?m=customerinfo&amp;id={$ticket.customerid}">{icon name="customer" class="lms-ui-sortable-handle" label=$customerinfo.customername}</a>
 			</TD>
 			<TD style="width: 1%;" class="dark nobr">
-				<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
 				{icon name="home"} {$customerinfo.address} &nbsp;{$customerinfo.zip} {$customerinfo.city}
 				{if $customerinfo.phone}
 					<a class="phone_number" href="tel:{$customerinfo.phone|escape}">
