@@ -1348,9 +1348,9 @@ $NETELEMENTTYPEGROUPS = array(
         12 => true,
         3 => true,
         13 => true,
+        10 => true,
     ),
     trans('infrastructure elements (PIT)') => array(
-        10 => true,
         17 => true,
         9 => true,
         20 => true,
