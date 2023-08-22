@@ -379,7 +379,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     }
                     unset($customer_name);
                 }
-                $customer_names = array_filter($customer_names, function($customer_name) {
+                $customer_names = array_filter($customer_names, function ($customer_name) {
                     return strlen($customer_name);
                 });
 
