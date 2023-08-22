@@ -3110,6 +3110,7 @@ $_LANG['Prefixes already exists:'] = 'Prefiksy już istniejące:';
 $_LANG['Next ticket'] = 'Następne zgłoszenie';
 $_LANG['Division'] = 'Firma';
 $_LANG['Transaction type:'] = 'Typ operacji:';
+$_LANG['Transaction type'] = 'Typ operacji';
 $_LANG['Select transaction type'] = 'Wybierz typ operacji';
 $_LANG['Are you sure, you want to remove customer VoIP account?'] = 'Czy na pewno chcesz usunąć konto VoIP klienta?';
 $_LANG['Incorrect month number (max.6)!'] = 'Niepoprawny numer miesiąca (max.6)!';
