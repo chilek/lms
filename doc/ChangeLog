@@ -544,6 +544,7 @@ version 28-git (????-??-??):
     map [chilan]
   - improvement: close openlayer map popups after mouse double click on them [chilan]
   - enhancement: quick search network devices by location address [chilan]
+  - improvement: multi customer group selection in balance list report [chilan]
 
 version 27.0 (2021-08-20):
 
