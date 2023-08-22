@@ -2048,10 +2048,10 @@ if ($report_type == 'full') {
                                 'dstname' => $othernetdevice['name'],
                                 'dstnetnode' => $othernetnode,
                             );
-                            if (empty($netdevnetnode['mode'])) {
+                            if (!empty($netdevnetnode['mode'])) {
                                 $error['srcerror'] = true;
                             }
-                            if (empty($othernetnode['mode'])) {
+                            if (!empty($othernetnode['mode'])) {
                                 $error['dsterror'] = true;
                             }
                             if (isset($error['srcerror']) || isset($error['dsterror'])) {
@@ -2096,13 +2096,13 @@ foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resou
                     '<a href="' . '?m=netdevinfo&id=' . $error['srcid'] . '">' . $error['srcname'] . '</a>',
                     $error['srcid'],
                     trans(isset($error['srcerror']) ? '<!uke-pit>flexibility point' : '<!uke-pit>network node'),
-                    (isset($srcnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $srcnetnode['real_id'] : '')
+                    (isset($srcnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $srcnetnode['real_id'] . '">' : '')
                         . (isset($error['srcerror']) ? 'P' : 'W') . '-' . $srcnetnode['name']
                         . (isset($srcnetnode['real_id']) ? '</a>' : ''),
                     '<a href="' . '?m=netdevinfo&id=' . $error['dstid'] . '">' . $error['dstname'] . '</a>',
                     $error['dstid'],
                     trans(isset($error['dsterror']) ? '<!uke-pit>flexibility point' : '<!uke-pit>network node'),
-                    (isset($dstnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $dstnetnode['real_id'] : '')
+                    (isset($dstnetnode['real_id']) ? '<a href="?m=netnodeinfo&id=' . $dstnetnode['real_id'] . '">' : '')
                         . (isset($error['dsterror']) ? 'P' : 'W') . '-' . $dstnetnode['name']
                         . (isset($dstnetnode['real_id']) ? '</a>' : '')
                 ) . '<br>';
