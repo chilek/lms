@@ -2048,10 +2048,10 @@ if ($report_type == 'full') {
                                 'dstname' => $othernetdevice['name'],
                                 'dstnetnode' => $othernetnode,
                             );
-                            if (!empty($netdevnetnode['mode'])) {
+                            if ($netdevnetnode['mode'] == 1) {
                                 $error['srcerror'] = true;
                             }
-                            if (!empty($othernetnode['mode'])) {
+                            if ($othernetnode['mode'] == 1) {
                                 $error['dsterror'] = true;
                             }
                             if (isset($error['srcerror']) || isset($error['dsterror'])) {
