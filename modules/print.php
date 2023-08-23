@@ -169,7 +169,7 @@ switch ($type) {
         }
         $division = intval($_POST['division']);
         $source = intval($_POST['source']);
-        $types = isset($_POST['types']) ? $_POST['types'] : null;
+        $types = isset($_POST['types']) ? Utils::filterIntegers($_POST['types']) : array();
         $docs = $_POST['docs'];
 
         // date format 'yyyy/mm/dd'
@@ -196,7 +196,8 @@ switch ($type) {
             $layout['pagetitle'] = trans('Balance Sheet ($a to $b)', ($from ? $from : ''), $to);
         }
 
-        if ($types) {
+        $typetxt = array();
+        if (!empty($types)) {
             foreach ($types as $tt) {
                 switch ($tt) {
                     case 1:
@@ -231,7 +232,7 @@ switch ($type) {
                 . ($source ? ' AND c.sourceid = ' . intval($source) : '')
                 . ($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
                 . ($division ? ' AND customerview.divisionid = ' . $division : '')
-                . ($types ? $typewhere : ''),
+                . (empty($types) ? '' : $typewhere),
                 array(
                     $date['from'],
                 )
@@ -264,7 +265,7 @@ switch ($type) {
             . (isset($date['from']) ? ' AND c.time >= ' . $date['from'] : '')
             . ($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
             . ($division ? ' AND customerview.divisionid = ' . $division : '')
-            . ($types ? $typewhere : '')
+            . (empty($types) ? '' : $typewhere)
             . ' ORDER BY c.time ASC',
             array(
                 $date['to'],
@@ -277,8 +278,8 @@ switch ($type) {
 
             foreach ($balancelist as $idx => $row) {
                 if ($user) {
-                    if ($row['userid']!=$user) {
-                        if ($row['value']>0 || !$row['customerid']) {  // skip cust. covenants
+                    if ($row['userid'] != $user) {
+                        if ($row['value'] > 0 || !$row['customerid']) {  // skip cust. covenants
                             $lastafter += $row['value'];
                         }
                         unset($balancelist[$idx]);
@@ -328,9 +329,10 @@ switch ($type) {
         if ($net) {
             $SMARTY->assign('net', $net['name']);
         }
-        if ($types) {
-            $SMARTY->assign('types', implode(', ', $typetxt));
-        }
+
+        $SMARTY->assign('types', array_flip(empty($types) ? array(1, 2, 3) : $types));
+        $SMARTY->assign('typetxt', implode(', ', $typetxt));
+
         if (!empty($group)) {
             $SMARTY->assign('groups', $DB->GetCol('SELECT name FROM customergroups WHERE id IN ? ORDER BY name', array($group)));
         }
