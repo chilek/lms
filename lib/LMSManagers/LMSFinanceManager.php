@@ -4719,7 +4719,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             foreach ($promotion_schemas as $promotion_schema) {
                 $period_labels = array(trans('Activation'));
                 if (empty($promotion_schema['sdata'])) {
-                    $period_labels[] = trans('Months $a-', 1);
+                    $period_labels[] = trans('Months $a-$b', 1, '&hellip;');
                 } else {
                     $periods = explode(';', $promotion_schema['sdata']);
                     $month = 1;
@@ -4728,7 +4728,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         : trans('Months $a-$b', $month, $month + $period - 1));
                         $month += $period;
                     }
-                    $period_labels[] = trans('Months $a-', $month);
+                    $period_labels[] = trans('Months $a-$b', $month, '&hellip;');
                 }
 
                 $promotions[$promotion_schema['promotionid']]['schemas'][$promotion_schema['id']] = array(

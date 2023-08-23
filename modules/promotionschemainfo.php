@@ -60,7 +60,7 @@ foreach ($schema['data'] as $idx => $data) {
     }
     $schema['periods'][] = $period;
 }
-$schema['periods'][] = trans('Months $a-', $mon);
+$schema['periods'][] = trans('Months $a-$b', $mon, '&hellip;');
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
