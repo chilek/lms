@@ -91,7 +91,22 @@
 				{/if}
 			</TD>
 			<TD ALIGN="LEFT" NOWRAP>
-				{$item.customername|trunescape:25}
+				<b>{$item.customername|trunescape:25}</b>
+				{if !$hideid}(#{$item.customerid}){/if}
+				{if !$hideaddress}
+					<br>
+					{$item.address}, {if strlen($item.zip)}{$item.zip} {/if}{$item.city}
+				{/if}
+				{if !$hidessnten
+					&& ($item.ctype == $smarty.const.CTYPES_PRIVATE && strlen($item.ssn)
+						|| $item.ctype == $smarty.const.CTYPES_COMPANY && strlen($item.ten))}
+					<br>
+					{if $item.ctype == $smarty.const.CTYPES_PRIVATE}
+						{t a=$item.ssn}SSN: $a{/t}
+					{else}
+						{t a=$item.ten}TEN: $a{/t}
+					{/if}
+				{/if}
 			</TD>
 			<TD ALIGN="LEFT">
 				{$item.comment|wordwrap:42:"<br />\n"}

@@ -172,6 +172,10 @@ switch ($type) {
         $types = isset($_POST['types']) ? Utils::filterIntegers($_POST['types']) : array();
         $docs = $_POST['docs'];
 
+        $hideid = isset($_POST['printcustomerhideid']);
+        $hidessnten = isset($_POST['printcustomerhidessnten']);
+        $hideaddress = isset($_POST['printcustomerhideaddress']);
+
         // date format 'yyyy/mm/dd'
         if ($from) {
             list($year, $month, $day) = explode('/', $from);
@@ -246,6 +250,12 @@ switch ($type) {
                 c.id AS id,
                 c.time,
                 c.userid,
+                customerview.type AS ctype,
+                COALESCE(d.ssn, customerview.ssn) AS ssn,
+                COALESCE(d.ten, customerview.ten) AS ten,
+                COALESCE(d.address, customerview.address) AS address,
+                COALESCE(d.zip, customerview.zip) AS zip,
+                COALESCE(d.city, customerview.city) AS city,
                 c.value AS value,
                 c.currency,
                 c.currencyvalue,
@@ -256,6 +266,7 @@ switch ($type) {
                 cs.name AS sourcename
             FROM cash c
             JOIN customerview ON customerview.id = c.customerid
+            LEFT JOIN documents d ON d.id = c.docid
             LEFT JOIN cashsources cs ON cs.id = c.sourceid
             LEFT JOIN taxes ON taxid = taxes.id
             WHERE time <= ?'
@@ -287,14 +298,7 @@ switch ($type) {
                     }
                 }
 
-                $list[$x]['value'] = $row['value'];
-                $list[$x]['currency'] = $row['currency'];
-                $list[$x]['currencyvalue'] = $row['currencyvalue'];
-                $list[$x]['taxlabel'] = $row['taxlabel'];
-                $list[$x]['time'] = $row['time'];
-                $list[$x]['sourcename'] = $row['sourcename'];
-                $list[$x]['comment'] = $row['comment'];
-                $list[$x]['customerid'] = $row['customerid'];
+                $list[$x] = $row;
                 $list[$x]['customername'] = empty($row['customerid']) ? '' : $customerslist[$row['customerid']]['customername'];
 
                 if (!empty($row['customerid']) && empty($row['type'])) {
@@ -342,6 +346,8 @@ switch ($type) {
         if ($source) {
             $SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
         }
+
+        $SMARTY->assign(compact('hideid', 'hidessnten', 'hideaddress'));
 
         if (strtolower($report_type) == 'pdf') {
             $output = $SMARTY->fetch('print/printbalancelist.html');

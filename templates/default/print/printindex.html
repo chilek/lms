@@ -463,6 +463,42 @@
 							</span>
 						</td>
 					</tr>
+					<tr>
+						<td colspan="5">
+							<table>
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+								<tbody>
+									<td>
+										{icon name="configuration"}
+									</td>
+									<td class="nobr">
+										<strong>{trans("Adjust the print")}</strong>
+									</td>
+									<td class="nobr">
+										<label>
+											<input type="checkbox" name="printcustomerhideid" value="1"
+												form="printbalancelist">
+											{trans("hide customer ID")}
+										</label>
+										<label>
+											<input type="checkbox" name="printcustomerhidessnten" value="1"
+												form="printbalancelist">
+											{trans("hide customer SSN/TEN")}
+										</label>
+										<label>
+											<input type="checkbox" name="printcustomerhideaddress" value="1"
+												form="printbalancelist">
+											{trans("hide customer address")}
+										</label>
+									</td>
+								</tbody>
+							</table>
+						</td>
+					</tr>
 				</table>
 			</td>
 		</tr>
