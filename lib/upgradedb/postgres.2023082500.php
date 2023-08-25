@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 if (!$this->GetOne(
-   'SELECT 1 FROM uiconfig WHERE section = ? AND var = ?',
+    'SELECT 1 FROM uiconfig WHERE section = ? AND var = ?',
     array(
         'rt',
         'parser_default_queue',
