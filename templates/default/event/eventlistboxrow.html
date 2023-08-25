@@ -3,7 +3,7 @@
     data-event-id="{$event.id}"
     data-popup-menu-title="{t a=$event.id|string_format:"#%06d"}Event $a{/t}">
 	<td style="min-width: 90px; {if isset($_EVENTTYPES[$event.type])} {$_EVENTTYPES[$event.type].style}{/if}" class="text-center bold {if !$event.closed || ($event.closed && ($smarty.now - $event.closeddate < ConfigHelper::getConfig('timetable.allow_modify_closed_events_newer_than', ConfigHelper::getConfig('phpui.allow_modify_closed_events_newer_than', 604800)))) || ConfigHelper::checkPrivilege('superuser')}event-single-sortable-handler{/if}">
-        {$_EVENTTYPES[$event.type].label}
+        {trans($_EVENTTYPES[$event.type].label)}
         {if isset($_EVENTTYPES[$event.type])}
             <br>
         {/if}

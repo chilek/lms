@@ -72,7 +72,7 @@
 
 					{box_row icon="type" label="Type:" icon_class="fa-fw"}
 						<select name="event[type]" size="1">
-							{foreach $_EVENTTYPES as $idx => $eventtype}
+							{foreach Localisation::arraySort($_EVENTTYPES, 'label') as $idx => $eventtype}
 								<option value="{$idx}"
 									{if $idx == $event.type || (!$event.type && $idx == $smarty.const.EVENT_OTHER)} selected{/if}
 									>{$eventtype.label}</option>

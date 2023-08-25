@@ -1427,52 +1427,52 @@ define('EVENT_TECHNICAL_VERIFICATION', 10);
 
 $EVENTTYPES = array(
     EVENT_OTHER => array(
-        'label' => trans('other'),
+        'label' => 'other',
         'style' => 'background-color: gray; color: white;',
         'alias' => 'other',
     ),
     EVENT_NETWORK => array(
-        'label' => trans('network'),
+        'label' => 'network',
         'style' => 'background-color: blue; color: white;',
         'alias' => 'network',
     ),
     EVENT_SERVICE => array(
-        'label' => trans('service<!event>'),
+        'label' => 'service<!event>',
         'style' => 'background-color: red; color: white;',
         'alias' => 'service',
     ),
     EVENT_INSTALLATION => array(
-        'label' => trans('installation'),
+        'label' => 'installation',
         'style' => 'background-color: green; color: white;',
         'alias'=> 'installation',
     ),
     EVENT_MEETING => array(
-        'label' => trans('meeting'),
+        'label' => 'meeting',
         'style' => 'background-color: gold; color: black;',
         'alias' => 'meeting',
     ),
     EVENT_VACATION => array(
-        'label' => trans('vacation'),
+        'label' => 'vacation',
         'style' => 'background-color: white; color: black;',
         'alias' => 'vacation',
     ),
     EVENT_DUTY => array(
-        'label' => trans('duty'),
+        'label' => 'duty',
         'style' => 'background-color: brown; color: white;',
         'alias' => 'duty',
     ),
     EVENT_PHONE => array(
-        'label' => trans('phone'),
+        'label' => 'phone',
         'style' => 'background-color: yellow; color: black;',
         'alias' => 'phone',
     ),
     EVENT_TV => array(
-        'label' => trans('tv'),
+        'label' => 'tv',
         'style' => 'background-color: greenyellow; color: blue;',
         'alias' => 'tv',
     ),
     EVENT_TECHNICAL_VERIFICATION => array(
-        'label' => trans('technical verification'),
+        'label' => 'technical verification',
         'style' => 'background-color: #30D5C8; color: black;',
         'alias' => 'technical_verification',
     ),
