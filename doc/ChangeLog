@@ -548,6 +548,8 @@ version 28-git (????-??-??):
   - improvement: balance list report: allow to customise visibility of customer id, ssn, ten
     and address [chilan]
   - improvement: balance list report: show only form selected value columns in table [chilan]
+  - enhancement: added click-triggered popup as hint icon near network name of customer nodes box/panel
+    in which VLAN id and network notes are displayed [chilan]
 
 version 27.0 (2021-08-20):
 
