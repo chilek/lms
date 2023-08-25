@@ -32,6 +32,12 @@ function CustomerAssignmentHelper(options) {
 			this.phoneTariffType = 0;
 		}
 
+		if ('tvTariffType' in options) {
+			this.tvTariffType = options.tvTariffType;
+		} else {
+			this.tvTariffType = 0;
+		}
+
 		if ('tariffTypes' in options) {
 			this.tariffTypes = options.tariffTypes;
 		} else {
@@ -66,6 +72,7 @@ function CustomerAssignmentHelper(options) {
 		this.selected = {};
 		this.internetTariffType = 0;
 		this.phoneTariffType = 0;
+		this.tvTariffType = 0;
 		this.tariffTypes = {};
 		this.promotionAttachments = {};
 		this.assignmentPromotionAttachments = {};
@@ -240,10 +247,10 @@ function CustomerAssignmentHelper(options) {
 		period_tables.hide();
 		period_tables.filter('[data-assignment-id="' + assignment_id + '"]').show();
 
-		tr.find('.nodes,.netdevnodes').toggle(tariffType == helper.internetTariffType);
+		tr.find('.nodes,.netdevnodes').toggle(tariffType == helper.internetTariffType || tariffType == helper.tvTariffType);
 		tr.find('.phones').toggle(tariffType == helper.phoneTariffType);
 
-		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : (tariffType == helper.internetTariffType ? '.nodes select,.netdevnodes select' : ''));
+		var selects = tr.find(tariffType == helper.phoneTariffType ? '.phones select' : (tariffType == helper.internetTariffType || tariffType == helper.tvTariffType ? '.nodes select,.netdevnodes select' : ''));
 		if (!selects.length) {
 			return;
 		}
