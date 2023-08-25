@@ -552,6 +552,8 @@ version 28-git (????-??-??):
     in which VLAN id and network notes are displayed [chilan]
   - improvement: added 'technical verification' event type [chilan]
   - improvement: event types are ordered by localised label in user interface [chilan]
+  - improvement: 'rt.parser_default_queue' does not take it default value from 'rt.default_queue'
+    as this behavior was problematic [chilan]
 
 version 27.0 (2021-08-20):
 
