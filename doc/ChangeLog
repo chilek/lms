@@ -551,6 +551,7 @@ version 28-git (????-??-??):
   - enhancement: added click-triggered popup as hint icon near network name of customer nodes box/panel
     in which VLAN id and network notes are displayed [chilan]
   - improvement: added 'technical verification' event type [chilan]
+  - improvement: event types are ordered by localised label in user interface [chilan]
 
 version 27.0 (2021-08-20):
 
