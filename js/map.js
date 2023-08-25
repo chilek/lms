@@ -1031,16 +1031,25 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 					var data, state;
 					for (i in features) {
 						data = features[i].data;
+						if (!data.hasOwnProperty('type')) {
+							continue;
+						}
 						content += '<div class="lms-ui-map-info-popup-entry">';
 						if (data.type == 'netdevinfo') {
 							content += '<div class="lms-ui-map-info-popup-name">' + data.name + '</div>';
 							if (data.ipaddr.length) {
 								var ips = data.ipaddr.split(',');
 								var nodeids = data.nodeid.split(',');
-								for (j in nodeids)
+								for (j in nodeids) {
 									content += '<div class="lms-ui-map-info-popup-address"><a href="#" onclick="ping_host(\'' +
 										featurepopup.id + '\', \'' + ips[j] + '\')"><i class="lms-ui-icon-routed fa-fw"></i>&nbsp;' +
 										ips[j] + '</a></div>';
+								}
+							}
+							content += '<div class="lms-ui-map-info-popup-details">' +
+								'<i class="lms-ui-icon-location fa-fw"></i><a href="?m=' + data.type + '&id=' + data.id + '">&nbsp;Info</a></div>';
+							if (data.location) {
+								content += '<div class="lms-ui-map-info-popup-details"><i class="lms-ui-icon-location fa-fw"></i>&nbsp;' + data.location + '</div>';
 							}
 						} else {
 							state = data.state;
