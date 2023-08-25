@@ -191,7 +191,7 @@ $queue = 0;
 if (isset($options['queue'])) {
     $queue = $options['queue'];
 }
-$queue = ConfigHelper::getConfig($config_section . '.parser_default_queue', ConfigHelper::getConfig($config_section . '.default_queue', $queue));
+$queue = ConfigHelper::getConfig($config_section . '.parser_default_queue');
 
 if (preg_match('/^[0-9]+$/', $queue)) {
     $queue = intval($queue);
