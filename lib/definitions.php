@@ -1423,6 +1423,7 @@ define('EVENT_VACATION', 6);
 define('EVENT_DUTY', 7);
 define('EVENT_PHONE', 8);
 define('EVENT_TV', 9);
+define('EVENT_TECHNICAL_VERIFICATION', 10);
 
 $EVENTTYPES = array(
     EVENT_OTHER => array(
@@ -1469,6 +1470,11 @@ $EVENTTYPES = array(
         'label' => trans('tv'),
         'style' => 'background-color: greenyellow; color: blue;',
         'alias' => 'tv',
+    ),
+    EVENT_TECHNICAL_VERIFICATION => array(
+        'label' => trans('technical verification'),
+        'style' => 'background-color: #30D5C8; color: black;',
+        'alias' => 'technical_verification',
     ),
 );
 

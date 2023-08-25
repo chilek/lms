@@ -1160,6 +1160,7 @@ $_LANG['Event title is required!'] = 'Tytuł zdarzenia jest wymagany!';
 $_LANG['Event title is too long!'] = 'Tytuł zdarzenia jest za długi!';
 $_LANG['Holiday:'] = 'Dzień wolny od pracy:';
 $_LANG['service<!event>'] = 'serwis';
+$_LANG['technical verification'] = 'weryfikacja techniczna';
 $_LANG['<!netrange>Services'] = 'Usługi';
 $_LANG['<!netrange>Services:'] = 'Usługi:';
 $_LANG['installation'] = 'instalacja';
