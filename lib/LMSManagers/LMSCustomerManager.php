@@ -1760,7 +1760,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         (SELECT COUNT(*)
                                         FROM nodegroupassignments
                                         WHERE nodeid = n.id) AS gcount,
-                                        n.netid, net.name AS netname,
+                                        n.netid,
+                                        net.name AS netname,
+                                        net.notes AS netnotes,
+                                        vlans.vlanid,
+                                        vlans.description AS vlandescription,
                                         (CASE WHEN EXISTS (
                                             SELECT 1 FROM nodelocks
                                             WHERE disabled = 0 AND (days & " . $weekday . ") > 0 AND " . $daysecond . " >= fromsec
@@ -1770,6 +1774,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         vnodes n
                                      LEFT JOIN addresses addr ON addr.id = n.address_id
                                      JOIN networks net ON net.id = n.netid
+                                     LEFT JOIN vlans ON vlans.id = net.vlanid
                                         " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
                                      WHERE
                                         " . ($type == 'netdev' ? 'nd.ownerid = ? AND n.ownerid IS NULL' : 'n.ownerid = ?') . "
