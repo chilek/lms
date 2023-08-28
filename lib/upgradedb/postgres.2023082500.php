@@ -31,7 +31,7 @@ if (!$this->GetOne(
     )
 )) {
     $config = $this->GetRow(
-        'SELECT section, var, value FROM uiconfig WHERE section = ? AND var = ?',
+        'SELECT section, var, value, disabled FROM uiconfig WHERE section = ? AND var = ?',
         array(
             'rt',
             'default_queue',
@@ -40,11 +40,12 @@ if (!$this->GetOne(
 
     if (!empty($config)) {
         $this->Execute(
-            'INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)',
+            'INSERT INTO uiconfig (section, var, value, disabled) VALUES (?, ?, ?, ?)',
             array(
                 'rt',
                 'parser_default_queue',
                 $config['value'],
+                $config['disabled'],
             )
         );
     }
