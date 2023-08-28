@@ -119,7 +119,10 @@ if (empty($projects)) {
             OPERATOR_REPRESENTATIVE_ID,
             $division['email'],
             $phone,
-            ConfigHelper::getConfig('sidusis.operator_offer_url', 'http://firma.pl/offer/')
+            ConfigHelper::getConfig(
+                'uke.sidusis_operator_offer_url',
+                ConfigHelper::getConfig('sidusis.operator_offer_url', 'http://firma.pl/offer/')
+            ),
         )
     );
 
@@ -209,8 +212,16 @@ if (empty($projects)) {
                 'retail' => ($building['services'] & 2) ? 'TAK' : 'NIE',
                 'downlink' => $building['downlink'],
                 'uplink' => $building['uplink'],
-                'email' => ConfigHelper::getConfig('sidusis.operator_project_email', '', true),
-                'phone' => ConfigHelper::getConfig('sidusis.operator_project_phone', '', true),
+                'email' => ConfigHelper::getConfig(
+                    'uke.sidusis_operator_project_email',
+                    ConfigHelper::getConfig('sidusis.operator_project_email', '', true),
+                    true
+                ),
+                'phone' => ConfigHelper::getConfig(
+                    'uke.sidusis_operator_project_phone',
+                    ConfigHelper::getConfig('sidusis.operator_project_phone', '', true),
+                    true
+                ),
                 'buildings' => array(),
             );
         }
