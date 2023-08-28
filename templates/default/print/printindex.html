@@ -2173,6 +2173,23 @@
 					id="uke-pit-customer-resources-as-operator-resources" value="1">
 			</td>
 		</tr>
+		{$report_other_duct_type_as = ConfigHelper::getConfig('uke.pit_report_other_duct_type_as')}
+		<tr>
+			<td>
+				{icon name="wired" class="fa-fw"}
+			</td>
+			<td class="nobr">
+				<strong>{trans("<!uke-pit>Report other duct type as")}</strong>
+			</td>
+			<td>
+				<select size="1" name="report-other-duct-type-as" form="uke-pit">
+					<option value="0">{trans("<!uke-pit>— preserve —")}</option>
+					{foreach $_NETWORK_DUCT_TYPES as $duct => $duct_type}
+						<option value="{$duct}"{if $duct == $report_other_duct_type_as} selected{/if}>{$duct_type}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				{icon name="location" class="fa-fw"}

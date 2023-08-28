@@ -236,6 +236,7 @@ function isMobileTechnology($technology)
 function routeTypeName($routetype)
 {
     static $route_types = null;
+    static $report_other_duct_type_as = null;
 
     if (!isset($route_types)) {
         $route_types = array(
@@ -245,12 +246,19 @@ function routeTypeName($routetype)
             4 => 'Linia kablowa nadziemna na podbudowie słupowej telekomunikacyjnej',
             5 => 'Linia kablowa nadziemna na podbudowie elektroenergetycznej, oświetleniowej lub trakcyjnej',
         );
+
+        $report_other_duct_type_as = intval(ConfigHelper::getConfig('uke.pit_report_other_duct_type_as'));
+        if (isset($route_types[$report_other_duct_type_as])) {
+            $report_other_duct_type_as = $route_types[$report_other_duct_type_as];
+        } else {
+            $report_other_duct_type_as = 'Inna określona w narzędziu teleinformatycznym';
+        }
     }
 
     if (isset($route_types[$routetype])) {
         return $route_types[$routetype];
     } else {
-        return 'Inna określona w narzędziu teleinformatycznym';
+        return $report_other_duct_type_as;
     }
 }
 
