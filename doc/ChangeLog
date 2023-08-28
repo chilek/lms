@@ -562,6 +562,7 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'sidusis.operator_offer_url', 'sidusis.operator_project_email',
     'sidusis.operator_project_phone', 'siis.header' to 'uke.sidusis_operator_offer_url',
     'uke.sidusis_operator_project_email', 'uke.sidusis_operator_project_phone', 'uke.siis_header' [chilan]
+  - devel/cleanup: renamed 'sidusis.allowed_link_technologies' to 'uke.sidusis_allowed_link_technologies' [chilan]
 
 version 27.0 (2021-08-20):
 
