@@ -381,6 +381,17 @@ if (isset($_POST['nodeedit'])) {
     }
     $nodeedit['authtype'] = $authtype;
 
+    $technology_required = ConfigHelper::getConfig('phpui.node_link_technology_required', 'error');
+    $technology = intval($nodeedit['linktechnology']);
+
+    if ($technology_required != 'none' && empty($technology)) {
+        if ($technology_required == 'error' || $technology_required == 'true') {
+            $error['linktechnology'] = trans('Link technology is required!');
+        } elseif ($technology_required == 'warning' && !isset($warnings['nodeedit-linktechnology-'])) {
+            $warning['nodeedit[linktechnology]'] = trans('Link technology is not selected!');
+        }
+    }
+
     $hook_data = $LMS->executeHook(
         'nodeedit_validation_before_submit',
         array(
