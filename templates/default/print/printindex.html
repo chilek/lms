@@ -2179,10 +2179,13 @@
 				{icon name="wired" class="fa-fw"}
 			</td>
 			<td class="nobr">
-				<strong>{trans("<!uke-pit>Report other duct type as")}</strong>
+				<label for="uke-pit-report-other-duct-type-as">
+					<strong>{trans("<!uke-pit>Report other duct type as")}</strong>
+				</label>
 			</td>
 			<td>
-				<select size="1" name="report-other-duct-type-as" form="uke-pit">
+				<select size="1" name="report-other-duct-type-as" form="uke-pit"
+					id="uke-pit-report-other-duct-type-as">
 					<option value="0">{trans("<!uke-pit>— preserve —")}</option>
 					{foreach $_NETWORK_DUCT_TYPES as $duct => $duct_type}
 						<option value="{$duct}"{if $duct == $report_other_duct_type_as} selected{/if}>{$duct_type}</option>
@@ -2274,6 +2277,7 @@
 		$('[name="report-type"]').change(function() {
 			var checked = $(this).prop('checked') && $(this).is('[value="customer-services"]');
 			$('#uke-pit-aggregate-customer-services').prop('disabled', !checked).closest('tr').find('label').toggleClass('lms-ui-disabled', !checked);
+			$('#uke-pit-report-other-duct-type-as').prop('disabled', checked).closest('tr').find('label').toggleClass('lms-ui-disabled', checked);
 		});
 	});
 
