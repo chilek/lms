@@ -321,7 +321,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         $cm = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 
         // check if customer exists
-        if ($cm->customerExists($customer_id) !== true) {
+        if ($cm->customerExists($customer_id) === false) {
             return -1;
         }
 
