@@ -451,6 +451,7 @@ if (isset($_POST['nodeedit'])) {
     $nodeinfo['authtype'] = $nodeedit['authtype'];
     $nodeinfo['info'] = $nodeedit['info'];
     $nodeinfo['wysiwyg'] = $nodeedit['wysiwyg'];
+    $nodeinfo['linktechnology'] = $nodeedit['linktechnology'];
 
     if ($nodeedit['ipaddr_pub'] == '0.0.0.0') {
         $nodeinfo['ipaddr_pub'] = '';
