@@ -554,6 +554,8 @@ version 28-git (????-??-??):
   - improvement: event types are ordered by localised label in user interface [chilan]
   - improvement: 'rt.parser_default_queue' does not take it default value from 'rt.default_queue'
     as this behavior was problematic [chilan]
+  - improvement: 'phpui.node_link_technology_required' with default value of 'error' controls if node
+    link technology is required, recommended [chilan]
 
 version 27.0 (2021-08-20):
 
