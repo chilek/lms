@@ -559,6 +559,9 @@ version 28-git (????-??-??):
   - improvement: 'report other duct type as' form option which instructs how to transform 'other duct type'
     to uke well-known duct types ('uke.pit_report_other_duct_type_as' controls default value of new form
     option with default empty value preserving other duct type) [chilan]
+  - devel/cleanup: renamed 'sidusis.operator_offer_url', 'sidusis.operator_project_email',
+    'sidusis.operator_project_phone', 'siis.header' to 'uke.sidusis_operator_offer_url',
+    'uke.sidusis_operator_project_email', 'uke.sidusis_operator_project_phone', 'uke.siis_header' [chilan]
 
 version 27.0 (2021-08-20):
 
