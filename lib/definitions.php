@@ -1244,10 +1244,14 @@ $SIDUSIS_LINKTECHNOLOGIES = array(
 );
 
 $allowed_link_technologies = trim(ConfigHelper::getConfig(
-    'sidusis.allowed_link_technologies',
+    'uke.sidusis_allowed_link_technologies',
     ConfigHelper::getConfig(
-        'phpui.allowed_link_technologies',
-        '',
+        'sidusis.allowed_link_technologies',
+        ConfigHelper::getConfig(
+            'phpui.allowed_link_technologies',
+            '',
+            true
+        ),
         true
     ),
     true
