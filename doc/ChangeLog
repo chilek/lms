@@ -556,6 +556,9 @@ version 28-git (????-??-??):
     as this behavior was problematic [chilan]
   - improvement: 'phpui.node_link_technology_required' with default value of 'error' controls if node
     link technology is required, recommended [chilan]
+  - improvement: 'report other duct type as' form option which instructs how to transform 'other duct type'
+    to uke well-known duct types ('uke.pit_report_other_duct_type_as' controls default value of new form
+    option with default empty value preserving other duct type) [chilan]
 
 version 27.0 (2021-08-20):
 
