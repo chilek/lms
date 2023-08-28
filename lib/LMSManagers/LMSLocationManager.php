@@ -183,7 +183,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         global $LMS;
 
         // check if customer exists
-        if ($LMS->customerExists($customer_id) !== true) {
+        if ($LMS->customerExists($customer_id) === false) {
             return -1;
         }
 
