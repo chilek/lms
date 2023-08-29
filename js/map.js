@@ -971,6 +971,23 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, rangeArr
 							mappopup.contentDiv.style.width = 'auto';
 							mappopup.contentDiv.style.heigh = 'auto';
 							//mappopup.updateSize();
+
+							// workaround popup positioning error manually moving popup to correct position
+							var point = this.handlers.feature.evt.xy;
+							var popupSize = {
+								height: mappopup.div.scrollHeight,
+								width: mappopup.div.scrollWidth,
+							};
+							var mapSize = {
+								height: map.div.scrollHeight,
+								width: map.div.scrollWidth
+							}
+							mappopup.moveTo(
+								new OpenLayers.Pixel(
+									point.x + popupSize.width >= mapSize.width ? point.x - popupSize.width : point.x,
+									point.y + popupSize.height >= mapSize.height ? point.y - popupSize.height : point.y
+								)
+							);
 						}
 					}
 				}
