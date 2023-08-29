@@ -32,6 +32,7 @@ function smarty_block_box_header($params, $content, $template, $repeat)
         $icon = isset($params['icon']) ? $params['icon'] : null;
         $label = isset($params['label']) ? $params['label'] : null;
         $icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
+        $content_id = isset($params['content_id']) ? $params['content_id'] : null;
 
         if ($multi_row) {
             return '<div class="lms-ui-box-header-multi-row">'
@@ -43,7 +44,7 @@ function smarty_block_box_header($params, $content, $template, $repeat)
 		' . (isset($icon) ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
                     : '<i class="' . (strpos($icon, 'lms-ui-icon-') === 0 ? $icon : 'lms-ui-icon-' . $icon)
                     . (!empty($icon_class) ? ' ' . $icon_class : '') . '"></i>') : '')
-                  . (isset($label) ? trans($label) : '')
+                  . (isset($label) ? '<label' . (isset($content_id) ? ' for="' . $content_id . '"' : '') . '>' . trans($label) . '</label>' : '')
                   . $content . '
 				</div>';
         }
