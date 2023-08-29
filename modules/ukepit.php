@@ -247,7 +247,7 @@ function routeTypeName($routetype)
             5 => 'Linia kablowa nadziemna na podbudowie elektroenergetycznej, oświetleniowej lub trakcyjnej',
         );
 
-        $report_other_duct_type_as = intval($_POST['report_other_duct_type_as']);
+        $report_other_duct_type_as = intval($_POST['report-other-duct-type-as']);
         if (isset($route_types[$report_other_duct_type_as])) {
             $report_other_duct_type_as = $route_types[$report_other_duct_type_as];
         } else {
