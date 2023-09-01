@@ -2291,7 +2291,7 @@
 		$('[name="report-type"]').change(function() {
 			var checked = $(this).prop('checked') && $(this).is('[value="customer-services"]');
 			$('#uke-pit-aggregate-customer-services').prop('disabled', !checked).closest('tr').find('label').toggleClass('lms-ui-disabled', !checked);
-			$('#uke-pit-report-other-duct-type-as,#uke-pit-complement-netlink-points').prop('disabled', checked).closest('tr').find('label').toggleClass('lms-ui-disabled', checked);
+			$('#uke-pit-report-other-duct-type-as,#uke-pit-complete-breakdown-points').prop('disabled', checked).closest('tr').find('label').toggleClass('lms-ui-disabled', checked);
 		});
 	});
 
