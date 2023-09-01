@@ -57,6 +57,7 @@ $_LANG['<!uke-pit>TERC'] = 'TERC';
 $_LANG['<!uke-pit>SIMC'] = 'SIMC';
 $_LANG['<!uke-pit>building number'] = 'numer budynku';
 $_LANG['<!uke-pit>GPS coordinates'] = 'współrzędne GPS';
+$_LANG['<!uke-pit>network node type out of allowed values'] = 'typ węzła sieciowego spoza dozwolonej listy wartości';
 $_LANG['<!uke-pit>Network node "$a" (#$b) has missed properties: $c'] = 'Węzłowi sieciowemu "$a" (#$b) brakuje właściwości: $c';
 $_LANG['<!uke-pit>Network device "$a" (#$b) has missed properties: $c'] = 'Urządzeniu sieciowemu "$a" (#$b) brakuje właściwości: $c';
 $_LANG['<!uke-pit>Node "$a" (#$b) has missed properties: $c'] = 'Komputerowi "$a" (#$b) brakuje właściwości: $c';

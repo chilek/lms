@@ -1143,7 +1143,17 @@ if ($report_type == 'full') {
     }
 
     if ($netnodes) {
+        $pit_netnode_types = $NETELEMENTTYPEGROUPS[trans('infrastructure elements (PIT)')];
+
         foreach ($netnodes as $netnodename => &$netnode) {
+            if (!isset($pit_netnode_types[$netnode['type']])) {
+                $errors['netnodes'][] = array(
+                    'id' => $netnode['real_id'],
+                    'name' => $netnode['name'],
+                    'type' => true,
+                );
+            }
+
             // if teryt location is not set then try to get location address from network node name
             if (!isset($netnode['area_woj'])) {
                 $address = mb_split("[[:blank:]]+", $netnodename);
@@ -2134,6 +2144,15 @@ foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resou
             if ($validate_gps && isset($error['gps'])) {
                 $missed_properties[] = trans('<!uke-pit>GPS coordinates');
             }
+
+            switch ($errorous_resource) {
+                case 'netnodes':
+                    if (isset($error['type'])) {
+                        $missed_properties[] = trans('<!uke-pit>network node type out of allowed values');
+                    }
+                    break;
+            }
+
             if (empty($missed_properties)) {
                 continue;
             }
