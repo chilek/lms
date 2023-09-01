@@ -423,7 +423,7 @@ $validate_teryt = isset($_POST['validate-teryt']);
 $validate_building_numbers = isset($_POST['validate-building-numbers']);
 $validate_gps = isset($_POST['validate-gps']);
 $validate_wireless_links = isset($_POST['validate-wireless-links']);
-$complement_netlink_points = isset($_POST['complement-netlink-points']);
+$complete_breakdown_points = isset($_POST['complete-breakdown-points']);
 $detect_loops = isset($_POST['detectloops']);
 
 $pit_ethernet_technologies = array();
@@ -2590,7 +2590,7 @@ if ($report_type == 'full') {
                             'latitude' => $dstnetnode['latitude'],
                         );
 
-                        if (isset($complement_netlink_points) && count($points) == 2) {
+                        if (isset($complete_breakdown_points) && count($points) == 2) {
                             $points[1] = array(
                                 'longitude' => round(($points[0]['longitude'] + points[PHP_INT_MAX]['longitude']) / 2, 5),
                                 'latitude' => round(($points[0]['latitude'] + points[PHP_INT_MAX]['latitude']) / 2, 5),

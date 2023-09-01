@@ -73,7 +73,7 @@ $_LANG['<!uke-pit>Passive network devices:'] = 'Pasywne urządzenia sieciowe:';
 $_LANG['<!uke-pit>Dash character'] = 'Znak myślnika';
 $_LANG['<!uke-pit>— preserve —'] = '— zachowaj —';
 $_LANG['<!uke-pit>Report other duct type as'] = 'Raportuj inny typ traktu jako';
-$_LANG['<!uke-pit>Complement network link points'] = 'Dopełniaj punktu połączeń sieciowych';
+$_LANG['<!uke-pit>Complete breakdown points of network connections'] = 'Dopełniaj punkty załamania połączeń sieciowych';
 
 $_LANG['underground (placed directly in the ground)'] = 'podziemny (umieszczona bezpośrednio w ziemi)';
 $_LANG['placed in cable ducts (including cable pipeline, microducts)'] = 'umieszczony w kanalizacji kablowej (w tym w rurociągu kablowym, mikrokanalizacji)';
