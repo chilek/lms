@@ -285,14 +285,15 @@ foreach ($types as $label => $type) {
                             );
                         }
                         if (!$quiet) {
-                            echo 'google: #' . $row['id'] . " - OK - Accuracy: " . $res['accuracy']
+                            echo 'google: #' . $row['id'] . " - OK - Building: " . $row['location'] . " - Accuracy: " . $res['accuracy']
                                 . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
                         }
                         sleep(2);
                         break;
                     } else {
                         if (!$quiet) {
-                            echo 'google: #' . $row['id'] . " - ERROR: " . $res['status'] . ' (' . $res['error'] . ')' . PHP_EOL;
+                            echo 'google: #' . $row['id'] . " - ERROR - Building: " . $row['location']
+                                . " - Status: " . $res['status'] . ' (' . $res['error'] . ')' . PHP_EOL;
                         }
                     }
                     if (empty($google_api_key)) {
@@ -340,7 +341,7 @@ foreach ($types as $label => $type) {
                         );
                     }
                     if (!$quiet) {
-                        echo 'osm: #' . $row['id'] . " - OK (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
+                        echo 'osm: #' . $row['id'] . " - OK - Building: " . $row['location'] . " (lat.: " . $res['latitude'] . " long.: " . $res['longitude'] . ")" . PHP_EOL;
                     }
 
                     sleep(1);
