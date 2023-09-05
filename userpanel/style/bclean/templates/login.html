@@ -135,7 +135,11 @@
                     {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                         || ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
                         <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
-                            <input type="hidden" name="remindform[type]" id="remindType" value="1">
+                            {if ConfigHelper::checkConfig('userpanel.sms_credential_reminders' && !ConfigHelper::checkConfig('userpanel.mail_credential_reminders'))
+                                <input type="hidden" name="remindform[type]" id="remindType" value="2">
+                            {else}
+                                <input type="hidden" name="remindform[type]" id="remindType" value="1">
+                            {/if}
                             {$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
                             {if !empty($sms_service) && ConfigHelper::checkConfig('userpanel.sms_credential_reminders')
                                 && ConfigHelper::checkConfig('userpanel.mail_credential_reminders')}
