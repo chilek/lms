@@ -235,7 +235,7 @@ $_LANG['<!invoice>Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
 $_LANG['<!invoice>receipt'] = 'paragon';
 $_LANG['<!invoice>(receipt)'] = '(paragon)';
 
-$_LANG['<!node-address>(implicit)'] = 'niejawny';
+$_LANG['<!node-address>(implicit)'] = '(niejawny)';
 
 $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
