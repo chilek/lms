@@ -1518,6 +1518,7 @@ if ($report_type == 'full') {
             n.name,
             n.linktype,
             n.linktechnology,
+            n.address_id,
             addr.city_id AS location_city,
             addr.street_id AS location_street,
             addr.house AS location_house, "
@@ -1561,6 +1562,7 @@ if ($report_type == 'full') {
             n.name,
             n.linktype,
             n.linktechnology,
+            n.address_id,
             addr.city_id,
             addr.street_id,
             addr.house",
@@ -1622,14 +1624,18 @@ if ($report_type == 'full') {
                 'id' => $node['nodeid'],
                 'name' => $node['name'],
             );
-            if (!isset($teryt['area_terc'])) {
-                $error['terc'] = true;
-            }
-            if (!isset($teryt['area_simc'])) {
-                $error['simc'] = true;
-            }
-            if (!isset($node['location_house']) || !strlen($node['location_house'])) {
-                $error['location_house'] = true;
+            if (empty($node['address_id'])) {
+                $error['address_id'] = true;
+            } else {
+                if (!isset($teryt['area_terc'])) {
+                    $error['terc'] = true;
+                }
+                if (!isset($teryt['area_simc'])) {
+                    $error['simc'] = true;
+                }
+                if (!isset($node['location_house']) || !strlen($node['location_house'])) {
+                    $error['location_house'] = true;
+                }
             }
             $errors['nodes'][] = $error;
         }
@@ -2132,11 +2138,15 @@ foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resou
             }
             $missed_properties = array();
             if ($validate_teryt) {
-                if (isset($error['terc'])) {
-                    $missed_properties[] = trans('<!uke-pit>TERC');
-                }
-                if (isset($error['simc'])) {
-                    $missed_properties[] = trans('<!uke-pit>SIMC');
+                if ($errorous_resource == 'nodes' && !empty($error['address_id'])) {
+                    $missed_properties[] = trans('<!uke-pit>explicitly assigned address');
+                } else {
+                    if (isset($error['terc'])) {
+                        $missed_properties[] = trans('<!uke-pit>TERC');
+                    }
+                    if (isset($error['simc'])) {
+                        $missed_properties[] = trans('<!uke-pit>SIMC');
+                    }
                 }
             }
             if ($validate_building_numbers && isset($error['location_building'])) {
