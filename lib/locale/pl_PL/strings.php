@@ -235,6 +235,8 @@ $_LANG['<!invoice>Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
 $_LANG['<!invoice>receipt'] = 'paragon';
 $_LANG['<!invoice>(receipt)'] = '(paragon)';
 
+$_LANG['<!node-address>(implicit)'] = 'niejawny';
+
 $_LANG['<!assignment>backward'] = 'wstecz';
 $_LANG['<!assignment>Backward:'] = 'Wstecz:';
 $_LANG['Check if tariff should be accounted backward'] = 'Zaznacz, jeśli taryfa powinna być naliczana za okres wsteczny';

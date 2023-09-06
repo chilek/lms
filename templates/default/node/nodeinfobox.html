@@ -183,6 +183,9 @@
 												{else}
 													{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
 												{/if}
+												{if empty($nodeinfo.address_id)}
+													<span class="lms-ui-alert">{trans("<!node-address>(implicit)")}</span>
+												{/if}
 												</div>
 											</td>
 										</tr>
