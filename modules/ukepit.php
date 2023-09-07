@@ -2602,8 +2602,8 @@ if ($report_type == 'full') {
 
                         if (isset($complete_breakdown_points) && count($points) == 2) {
                             $points[1] = array(
-                                'longitude' => round(($points[0]['longitude'] + points[PHP_INT_MAX]['longitude']) / 2, 5),
-                                'latitude' => round(($points[0]['latitude'] + points[PHP_INT_MAX]['latitude']) / 2, 5),
+                                'longitude' => round(($points[0]['longitude'] + $points[PHP_INT_MAX]['longitude']) / 2, 5),
+                                'latitude' => round(($points[0]['latitude'] + $points[PHP_INT_MAX]['latitude']) / 2, 5),
                             );
                         }
 
