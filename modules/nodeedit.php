@@ -75,6 +75,8 @@ if (strlen($node_empty_mac)) {
     }
 }
 
+$netdevices = $LMS->GetNetDevNames();
+
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
 if (isset($_POST['nodeedit'])) {
@@ -381,14 +383,16 @@ if (isset($_POST['nodeedit'])) {
     }
     $nodeedit['authtype'] = $authtype;
 
-    $technology_required = ConfigHelper::getConfig('phpui.node_link_technology_required', 'error');
-    $technology = intval($nodeedit['linktechnology']);
+    if (!empty($netdevices)) {
+        $technology_required = ConfigHelper::getConfig('phpui.node_link_technology_required', 'error');
+        $technology = intval($nodeedit['linktechnology']);
 
-    if ($technology_required != 'none' && empty($technology)) {
-        if ($technology_required == 'error' || $technology_required == 'true') {
-            $error['linktechnology'] = trans('Link technology is required!');
-        } elseif ($technology_required == 'warning' && !isset($warnings['nodeedit-linktechnology-'])) {
-            $warning['nodeedit[linktechnology]'] = trans('Link technology is not selected!');
+        if ($technology_required != 'none' && empty($technology)) {
+            if ($technology_required == 'error' || $technology_required == 'true') {
+                $error['linktechnology'] = trans('Link technology is required!');
+            } elseif ($technology_required == 'warning' && !isset($warnings['nodeedit-linktechnology-'])) {
+                $warning['nodeedit[linktechnology]'] = trans('Link technology is not selected!');
+            }
         }
     }
 
@@ -530,7 +534,7 @@ if (!isset($resource_tabs['nodesessions']) || $resource_tabs['nodesessions']) {
     $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 }
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
-$SMARTY->assign('netdevices', $LMS->GetNetDevNames());
+$SMARTY->assign('netdevices', $netdevices);
 if (!isset($resource_tabs['nodegroups']) || $resource_tabs['nodegroups']) {
     $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNamesByNode($nodeid));
     $SMARTY->assign('othernodegroups', $LMS->GetNodeGroupNamesWithoutNode($nodeid));
