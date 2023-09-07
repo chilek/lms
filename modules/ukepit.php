@@ -1965,6 +1965,7 @@ if ($report_type == 'full') {
             if ($ndnetlinks) {
                 foreach ($ndnetlinks as $netlink) {
                     $netdevnetnodename = $netdevs[$netdevice['id']];
+                    $netdevnetnode = $netnodes[$netdevnetnodename];
                     $srcnetnodename = $netdevs[$netlink['src']];
                     $dstnetnodename = $netdevs[$netlink['dst']];
                     $srcnetdevice = $netdevices[$netlink['src']];
@@ -2068,7 +2069,7 @@ if ($report_type == 'full') {
                             $error = array(
                                 'srcid' => $netdevice['id'],
                                 'srcname' => $netdevice['name'],
-                                'srcnetnode' => $netnodes[$netdevnetnodename],
+                                'srcnetnode' => $netdevnetnode,
                                 'dstid' => $othernetdevice['id'],
                                 'dstname' => $othernetdevice['name'],
                                 'dstnetnode' => $othernetnode,
