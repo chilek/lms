@@ -30,6 +30,23 @@
  */
 class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterface
 {
+    const CUSTOMER_LAST_BALANCE_TABLE_STYLE = '<style>
+        .customer-last-balance-table th {
+            border: 1px solid black;
+            white-space: nowrap;
+            padding: 0.3em;
+            vertical-align: middle;
+        }
+
+        .customer-last-balance-table tbody td {
+            border: 1px solid black;
+            white-space: nowrap;
+            padding: 0.3em;
+            text-align: center;
+            vertical-align: middle;
+        }
+        </style>';
+
     /**
      * Returns customer name
      *
@@ -446,9 +463,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             } else {
                 // ok, now we are going to rise up system's load
                 if ($format == 'html') {
-                    $lN = '<table><thead><tr>' . PHP_EOL;
+                    $lN = '<table class="customer-last-balance-table"><thead><tr>' . PHP_EOL;
                     foreach ($cols as $col_name => $col) {
-                        $lN .= '<th style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: ' . $col['align'] . '; vertical-align: middle;">' . $col['label'] . '</th>' . PHP_EOL;
+                        $lN .= '<th style="text-align: ' . $col['align'] . ';">' . $col['label'] . '</th>' . PHP_EOL;
                     }
                     $lN .= '</thead><tbody>' . PHP_EOL;
                 } else {
@@ -477,16 +494,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $cols['description']['value'] = $row_s['comment'];
                     if ($format == 'html') {
                         $lN .= '<tr>' . PHP_EOL
-                            . '<td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: center; vertical-align: middle;">'
+                            . '<td>'
                                 . $cols['date']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;">'
+                            <td>'
                                 . $cols['liability']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                            <td style="'
                                 . ($cols['payment']['value'] > 0 ? ' color: green;' : ($cols['payment'] < 0 ? 'color: red;' : '')) . '">'
                                 . ($cols['payment']['value'] > 0 ? '+' : '') . $cols['payment']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: right; vertical-align: middle;'
+                            <td style="'
                                 . ($cols['balance']['value'] < 0 ? 'color: red;' : '') . '">' . $cols['balance']['value'] . '</td>' . PHP_EOL . '
-                            <td style="border: 1px solid black; white-space: nowrap; padding: 0.3em; text-align: left; vertical-align: middle;">'
+                            <td>'
                                 . $cols['description']['value'] . '</td>' . PHP_EOL
                         . '</tr>' . PHP_EOL;
                     } else {
@@ -503,7 +520,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $lN .= $horizontal_line . PHP_EOL;
                 }
             }
-            $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
+            $body = preg_replace(
+                '/%last_[0-9]+_in_a_table/',
+                $lN,
+                ($format == 'html' ? self::CUSTOMER_LAST_BALANCE_TABLE_STYLE : '') . $body
+            );
         }
 
         return $body;
