@@ -1325,4 +1325,4 @@ if ($syncBillings) {
 }
 
 curl_close($ch);
-echo 'done!';
+echo 'done!' . PHP_EOL;
