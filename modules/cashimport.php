@@ -231,7 +231,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 }
             }
 
-            $DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
+            $DB->Execute(
+                'UPDATE cashimport
+                SET customerid = ?, closed = 1
+                WHERE id = ?',
+                array(
+                    $balance['customerid'],
+                    $import['id'],
+                )
+            );
             if ($SYSLOG) {
                 $args = array(
                     SYSLOG::RES_CASHIMPORT => $import['id'],
