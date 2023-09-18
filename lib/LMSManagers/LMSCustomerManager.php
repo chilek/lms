@@ -1191,6 +1191,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
         }
 
+        if (!empty($assignment) && isset($search['tarifftype'])) {
+            $assignment .= ' AND a.id = aid AND atype = ' . intval($search['tarifftype']);
+        }
+
         if (isset($search['assignment'])) {
             if (is_array($search['assignment'])) {
                 $assignment_properties = $search['assignment'];
@@ -1482,7 +1486,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.balance < 0 THEN b.balance ELSE 0 END) AS balancebelow ';
         } else {
             $capitalize_customer_names = ConfigHelper::checkConfig('phpui.capitalize_customer_names', true);
-            $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
+            $sql .= 'SELECT assingmentsiv.aid AS aid, assingmentsiv.atype AS atype, assingmentsiv.dateto,
+                assingmentsiv.suspended, assingmentsiv.commited,
+                c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
                 c.karma, c.type, c.deleted,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.balance, 0) AS balance,
@@ -1587,7 +1593,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     FROM nodes
                     WHERE ownerid > 0 AND ipaddr <> 0
                     GROUP BY ownerid
-                ) s ON (s.ownerid = c.id) '
+                ) s ON (s.ownerid = c.id)
+                 LEFT JOIN (SELECT a.customerid, a.id AS aid, a.dateto,
+                    a.suspended, a.commited, (CASE WHEN a.tariffid IS NOT NULL THEN t.type ELSE l.type END) as atype
+                    FROM assignments a
+                    LEFT JOIN tariffs t ON (t.id = a.tariffid)
+                    LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period <> 0)
+                    WHERE a.commited = 1 AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
+                ) assingmentsiv ON (assingmentsiv.customerid = c.id) '
                 . ($contracts == 1 ?
                     ($contracts_expiration_type == 'documents' ?
                         'LEFT JOIN (
