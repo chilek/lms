@@ -46,6 +46,8 @@ $parameters = array(
     'customergroups:' => 'g:',
     'customer-status:' => null,
     'customer-types:' => null,
+    'scopes:' => null,
+    'scope:' => null,
     'customerid:' => null,
     'division:' => null,
     'omit-free-days' => null,
@@ -128,6 +130,10 @@ lms-notify.php
                                 select customer types which should be notified
     --customer-status=<status1,status2,...>
                                 notify only customers with specified status
+    --scopes=<users,customers>
+    --scope=<users,customers>
+                                specify if users or customers or both should be notified
+                                (handled only by selected notification types)
     --customerid=<id>           limit notifications to selected customer
     --division=<shortname>
                                 limit notifications to customers which belong to specified
@@ -513,6 +519,21 @@ if (isset($options['customer-types'])) {
     );
 } else {
     $customer_types = array();
+}
+
+$scopes = array();
+if (isset($options['scopes'])) {
+    $scopes = preg_split('/([\s]+|[\s]*,[\s]*)/', $options['scopes']);
+} elseif (isset($options['scope'])) {
+    $scopes = preg_split('/([\s]+|[\s]*,[\s]*)/', $options['scope']);
+}
+if (!empty($scopes)) {
+    foreach ($scopes as $scope) {
+        if ($scope != 'users' && $scope != 'customers') {
+            die('Fatal error: Invalid scope value \'' . $scope . '\'!' . PHP_EOL);
+        }
+    }
+    $scopes = array_flip($scopes);
 }
 
 if (isset($options['interval'])) {
@@ -3136,7 +3157,7 @@ if (empty($types) || in_array('events', $types)) {
 
         $recipients = $notifications['events']['recipients'];
 
-        if (empty($recipients) || isset($recipients['users'])) {
+        if ((empty($scopes) || isset($scopes['users'])) && (empty($recipients) || isset($recipients['users']))) {
             $users = $DB->GetAllByKey(
                 "SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
                     (CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
@@ -3167,34 +3188,36 @@ if (empty($types) || in_array('events', $types)) {
             $message = $event['description'];
             $subject = $event['title'];
 
-            $customer_message = str_replace(
-                array(
-                    '%title',
-                    '%description',
-                ),
-                array(
-                    $subject,
-                    $message,
-                ),
-                $customer_message_pattern
-            );
+            if (empty($scopes) || isset($scopes['customers'])) {
+                $customer_message = str_replace(
+                    array(
+                        '%title',
+                        '%description',
+                    ),
+                    array(
+                        $subject,
+                        $message,
+                    ),
+                    $customer_message_pattern
+                );
 
-            $customer_subject = str_replace(
-                array(
-                    '%title',
-                    '%description',
-                ),
-                array(
-                    $subject,
-                    $message,
-                ),
-                $customer_subject_pattern
-            );
+                $customer_subject = str_replace(
+                    array(
+                        '%title',
+                        '%description',
+                    ),
+                    array(
+                        $subject,
+                        $message,
+                    ),
+                    $customer_subject_pattern
+                );
+            }
 
             $cid = intval($event['customerid']);
             $uid = intval($event['userid']);
 
-            if ((empty($recipients) || isset($recipients['customers'])) && $cid) {
+            if ((empty($scopes) || isset($scopes['customers'])) && (empty($recipients) || isset($recipients['customers'])) && $cid) {
                 if (!array_key_exists($cid, $customers)) {
                     $customers[$cid] = $DB->GetRow(
                         "SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
@@ -3247,7 +3270,7 @@ if (empty($types) || in_array('events', $types)) {
                 }
             }
 
-            if ((empty($recipients) || isset($recipients['users'])) && $uid && array_key_exists($uid, $users)) {
+            if ((empty($scopes) || isset($scopes['users'])) && (empty($recipients) || isset($recipients['users'])) && $uid && array_key_exists($uid, $users)) {
                 if (!empty($users[$uid]['email'])) {
                     $emails = explode(',', $debug_email ? $debug_email : $users[$uid]['email']);
                     foreach ($emails as $contact) {
