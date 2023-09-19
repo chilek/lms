@@ -1126,7 +1126,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         switch ($as) {
             case -1:
-                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
+                if (!empty($search['tarifftype'])) {
+                    $assignment = 'SELECT DISTINCT(a.customerid)
+                        FROM assignments a
+                        LEFT JOIN tariffs t ON t.id = a.tariffid
+                        LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period <> 0)
+                        WHERE a.suspended = 0
+                        AND a.commited = 1
+                        AND a.dateto = 0
+                        AND (t.type = ' . intval($search['tarifftype']) . ' OR l.type = ' . intval($search['tarifftype']) . ')';
+                } else {
+                    $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
+                }
                 break;
             case -2:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
