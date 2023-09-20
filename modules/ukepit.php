@@ -646,9 +646,12 @@ if ($report_type == 'full') {
                 c.id AS customerid,
                 c.type AS customertype,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN ndsrc.name ELSE nddst.name END) AS operator_netdevname,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN ndsrc.status ELSE nddst.status END) AS operator_netdevstatus,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.invprojectid ELSE ndsrc.invprojectid END) AS invprojectid,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.src END) AS netdevid,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.name ELSE ndsrc.name END) AS netdevname,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.address_id ELSE ndsrc.address_id END) AS address_id,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.city_id ELSE asrc.city_id END) AS location_city,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.city ELSE asrc.city END) AS location_city_name,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.street_id ELSE asrc.street_id END) AS location_street,
@@ -1279,8 +1282,10 @@ if ($report_type == 'full') {
                     $nodes = $DB->GetAll(
                         "SELECT
                             na.nodeid,
+                            n.name AS nodename,
                             n.linktype,
-                            n.linktechnology, "
+                            n.linktechnology,
+                            n.address_id, "
                         . $DB->GroupConcat(
                             "DISTINCT (CASE t.type WHEN " . SERVICE_INTERNET . " THEN 'INT'
                                 WHEN " . SERVICE_PHONE . " THEN 'TEL'
@@ -1321,7 +1326,7 @@ if ($report_type == 'full') {
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                             AND allsuspended.total IS NULL
-                        GROUP BY na.nodeid, n.linktype, n.linktechnology",
+                        GROUP BY na.nodeid, n.name, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $range['linktype'],
                             $range['linktechnology'],
@@ -1341,9 +1346,11 @@ if ($report_type == 'full') {
 
                     $uni_nodes = $DB->GetAll(
                         "SELECT
-                            na.nodeid, "
+                            na.nodeid,
+                            n.name AS nodename, "
                         . $uni_link['type'] . " AS linktype, "
-                        . $uni_link['technology'] . " AS linktechnology, "
+                        . $uni_link['technology'] . " AS linktechnology,
+                            n.address_id, "
                         . $uni_link['operator_netdevid'] . " AS netdevid, "
                         . $DB->GroupConcat(
                             "DISTINCT (CASE t.type WHEN " . SERVICE_INTERNET . " THEN 'INT'
@@ -1379,7 +1386,7 @@ if ($report_type == 'full') {
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                             AND allsuspended.total IS NULL
-                        GROUP BY na.nodeid, n.linktype, n.linktechnology",
+                        GROUP BY na.nodeid, n.name, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $uni_link['nodes'],
                             array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE),
@@ -1503,6 +1510,49 @@ if ($report_type == 'full') {
                         $netnode['ranges'][$range_key] = array_merge($range, $range_access_props);
                     }
                     $netnode['ranges'][$range_key]['count']++;
+
+                    if (!strlen($range['terc']) || !strlen($range['simc']) || !strlen($range['building'])) {
+                        if (empty($node['netdevid'])) {
+                            $error = array(
+                                'id' => $node['nodeid'],
+                                'name' => $node['nodename'],
+                            );
+                            if (empty($node['address_id'])) {
+                                $error['address_id'] = true;
+                            } else {
+                                if (!strlen($range['terc'])) {
+                                    $error['terc'] = true;
+                                }
+                                if (!strlen($range['simc'])) {
+                                    $error['simc'] = true;
+                                }
+                                if (!strlen($range['building'])) {
+                                    $error['location_house'] = true;
+                                }
+                            }
+                            $errors['nodes'][] = $error;
+                        } else {
+                            $error = array(
+                                'id' => $uni_link['netdevid'],
+                                'name' => $uni_link['netdevname'],
+                                'customerid' => $uni_link['customerid'],
+                            );
+                            if (empty($uni_link['address_id'])) {
+                                $error['address_id'] = true;
+                            } else {
+                                if (!strlen($range['terc'])) {
+                                    $error['terc'] = true;
+                                }
+                                if (!strlen($range['simc'])) {
+                                    $error['simc'] = true;
+                                }
+                                if (!strlen($range['building'])) {
+                                    $error['location_house'] = true;
+                                }
+                            }
+                            $errors['netdevices'][] = $error;
+                        }
+                    }
                 }
 
                 $netnode['technologies'][$range['technology']] = $range['technology'];
@@ -2103,7 +2153,7 @@ foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resou
                 $error_message = '<!uke-pit>Network node "$a" (#$b) has missed properties: $c';
                 $url_prefix = '?m=netnodeinfo&id=';
             } elseif ($errorous_resource == 'netdevices') {
-                if (!isset($processed_netnodes[$netdevs[$error['id']]])) {
+                if (empty($error['customerid']) && !isset($processed_netnodes[$netdevs[$error['id']]])) {
                     continue;
                 }
                 $error_message = '<!uke-pit>Network device "$a" (#$b) has missed properties: $c';
@@ -2139,7 +2189,7 @@ foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resou
             }
             $missed_properties = array();
             if ($validate_teryt) {
-                if ($errorous_resource == 'nodes' && !empty($error['address_id'])) {
+                if (($errorous_resource == 'nodes' || $errorous_resource == 'netdevices') && !empty($error['address_id'])) {
                     $missed_properties[] = trans('<!uke-pit>explicitly assigned address');
                 } else {
                     if (isset($error['terc'])) {
