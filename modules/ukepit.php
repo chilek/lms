@@ -1555,6 +1555,23 @@ if ($report_type == 'full') {
                     }
                 }
 
+                if (!strlen($range['longitude']) || !strlen($range['latitude'])) {
+                    if (empty($node['netdevid'])) {
+                        $errors['nodes'][] = array(
+                            'id' => $node['nodeid'],
+                            'name' => $node['nodename'],
+                            'gps' => true,
+                        );
+                    } else {
+                        $errors['netdevices'][] = array(
+                            'id' => $uni_link['netdevid'],
+                            'name' => $uni_link['netdevname'],
+                            'customerid' => $uni_link['customerid'],
+                            'gps' => true,
+                        );
+                    }
+                }
+
                 $netnode['technologies'][$range['technology']] = $range['technology'];
             }
         }
