@@ -651,6 +651,8 @@ if ($report_type == 'full') {
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.invprojectid ELSE ndsrc.invprojectid END) AS invprojectid,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.src END) AS netdevid,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.name ELSE ndsrc.name END) AS netdevname,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.longitude ELSE ndsrc.longitude END) AS longitude,
+                (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.latitude ELSE ndsrc.latitude END) AS latitude,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN nddst.address_id ELSE ndsrc.address_id END) AS address_id,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.city_id ELSE asrc.city_id END) AS location_city,
                 (CASE WHEN ndsrc.ownerid IS NULL THEN adst.city ELSE asrc.city END) AS location_city_name,
@@ -1283,6 +1285,8 @@ if ($report_type == 'full') {
                         "SELECT
                             na.nodeid,
                             n.name AS nodename,
+                            n.longitude,
+                            n.latitude,
                             n.linktype,
                             n.linktechnology,
                             n.address_id, "
@@ -1326,7 +1330,7 @@ if ($report_type == 'full') {
                             AND a.datefrom < ?NOW?
                             AND (a.dateto = 0 OR a.dateto > ?NOW?)
                             AND allsuspended.total IS NULL
-                        GROUP BY na.nodeid, n.name, n.linktype, n.linktechnology, n.address_id",
+                        GROUP BY na.nodeid, n.name, n.longitude, n.latitude, n.linktype, n.linktechnology, n.address_id",
                         array(
                             $range['linktype'],
                             $range['linktechnology'],
@@ -1553,16 +1557,16 @@ if ($report_type == 'full') {
                             $errors['netdevices'][] = $error;
                         }
                     }
-                }
 
-                if (!strlen($range['longitude']) || !strlen($range['latitude'])) {
                     if (empty($node['netdevid'])) {
-                        $errors['nodes'][] = array(
-                            'id' => $node['nodeid'],
-                            'name' => $node['nodename'],
-                            'gps' => true,
-                        );
-                    } else {
+                        if (empty($node['longitude']) || empty($node['latitude'])) {
+                            $errors['nodes'][] = array(
+                                'id' => $node['nodeid'],
+                                'name' => $node['nodename'],
+                                'gps' => true,
+                            );
+                        }
+                    } elseif (empty($uni_link['longitude']) || empty($uni_link['latitude'])) {
                         $errors['netdevices'][] = array(
                             'id' => $uni_link['netdevid'],
                             'name' => $uni_link['netdevname'],
