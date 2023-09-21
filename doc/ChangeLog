@@ -565,6 +565,8 @@ version 28-git (????-??-??):
   - devel/cleanup: renamed 'sidusis.allowed_link_technologies' to 'uke.sidusis_allowed_link_technologies' [chilan]
   - enhancement: implemented --scope/--scopes script parameter support which allows to specify if customers,
     users or both should be notified (handled only by selected notification types) [chilan]
+  - improvement: unified (customer and user) special symbol support in events-type notification message
+    and subject configuration [chilan]
 
 version 27.0 (2021-08-20):
 
