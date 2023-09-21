@@ -3175,44 +3175,39 @@ if (empty($types) || in_array('events', $types)) {
             $users = array();
         }
 
-        $customer_message_pattern = $notifications['events']['message'] == 'events notification'
+        $message_pattern = $notifications['events']['message'] == 'events notification'
             ? '%description'
             : $notifications['events']['message'];
-        $customer_subject_pattern = $notifications['events']['subject'] == 'events notification'
+        $subject_pattern = $notifications['events']['subject'] == 'events notification'
             ? '%title'
             : $notifications['events']['subject'];
 
         foreach ($events as $event) {
             $contacts = array();
 
-            $message = $event['description'];
-            $subject = $event['title'];
+            $message = str_replace(
+                array(
+                    '%title',
+                    '%description',
+                ),
+                array(
+                    $event['title'],
+                    $event['description'],
+                ),
+                $message_pattern
+            );
 
-            if (empty($scopes) || isset($scopes['customers'])) {
-                $customer_message = str_replace(
-                    array(
-                        '%title',
-                        '%description',
-                    ),
-                    array(
-                        $subject,
-                        $message,
-                    ),
-                    $customer_message_pattern
-                );
-
-                $customer_subject = str_replace(
-                    array(
-                        '%title',
-                        '%description',
-                    ),
-                    array(
-                        $subject,
-                        $message,
-                    ),
-                    $customer_subject_pattern
-                );
-            }
+            $subject = str_replace(
+                array(
+                    '%title',
+                    '%description',
+                ),
+                array(
+                    $event['title'],
+                    $event['description'],
+                ),
+                $subject_pattern
+            );
 
             $cid = intval($event['customerid']);
             $uid = intval($event['userid']);
@@ -3335,14 +3330,14 @@ if (empty($types) || in_array('events', $types)) {
                                 $contact['email']
                             );
                             if (!$debug) {
-                                $msgid = create_message(MSG_MAIL, $customer_subject, $customer_message);
+                                $msgid = create_message(MSG_MAIL, $subject, $message);
                                 send_mail(
                                     $msgid,
                                     $cid,
                                     $contact['email'],
                                     $customers[$cid]['name'],
-                                    $customer_subject,
-                                    $customer_message
+                                    $subject,
+                                    $message
                                 );
                             }
                         }
@@ -3355,8 +3350,8 @@ if (empty($types) || in_array('events', $types)) {
                                 $contact['phone']
                             );
                             if (!$debug) {
-                                $msgid = create_message(MSG_SMS, $customer_subject, $customer_message);
-                                send_sms($msgid, $cid, $contact['phone'], $customer_message);
+                                $msgid = create_message(MSG_SMS, $subject, $message);
+                                send_sms($msgid, $cid, $contact['phone'], $message);
                             }
                         }
                     }
