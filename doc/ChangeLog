@@ -569,6 +569,7 @@ version 28-git (????-??-??):
     and subject configuration [chilan]
   - enhancement: 'documents.default_type' configuraton variable controls what document type is pre-selected
     in documentadd and documentgen forms [chilan]
+  - enhancement: added some new useful substitution symbols support for 'events' type notifications [chilan]
 
 version 27.0 (2021-08-20):
 
