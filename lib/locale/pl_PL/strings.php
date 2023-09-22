@@ -63,6 +63,7 @@ $_LANG['<!uke-pit>Network device "$a" (#$b) has missed properties: $c'] = 'Urzą
 $_LANG['<!uke-pit>Node "$a" (#$b) has missed properties: $c'] = 'Komputerowi "$a" (#$b) brakuje właściwości: $c';
 $_LANG['<!uke-pit>Wireless link can connect only network nodes, but it connects network device "$a" (#$b) located in $c "$d" with network device "$e" (#$f) located in $g "$h"'] = 'Połączenie bezprzewodowe może łączyć wyłącznie węzły sieciowe, a łączy urządzenie sieciowe "$a" (#$b) umieszczone w $c "$d" z urządzeniem sieciowym "$e" (#$f) umieszczonym w $g "$h"';
 $_LANG['<!uke-pit>flexibility point'] = 'punkt elastyczności';
+$_LANG['<!uke-pit>Flexibility point \'$a\' with location \'$b\' does not have defined feeding network node!'] = 'Punkt elastyczności \'$a\' o lokalizacji \'$b\' nie ma zdefiniowanego zasilającego węzła sieciowego!';
 $_LANG['<!uke-pit>network node'] = 'węzeł sieciowy';
 $_LANG['<!uke-pit>Validate TERYT properties'] = 'Weryfikuj właściwości TERYT';
 $_LANG['<!uke-pit>Validate building numbers'] = 'Weryfikuj numery budynków';

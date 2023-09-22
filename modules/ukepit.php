@@ -510,6 +510,7 @@ if ($report_type == 'full') {
             nn.longitude, nn.latitude,
             a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat,
             a.city as location_city_name, a.street as location_street_name,
+            a.zip AS location_zip,
             (CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE " . $DB->Concat('a.house', "'/'", 'a.flat') . " END) AS address_budynek
         FROM netnodes nn
         LEFT JOIN addresses a ON nn.address_id = a.id
@@ -532,6 +533,7 @@ if ($report_type == 'full') {
             a.city AS location_city_name,
             a.street AS location_street_name,
             (CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE " . $DB->Concat('a.house', "'/'", 'a.flat') . " END) AS address_budynek,
+            a.zip AS location_zip,
             COALESCE(t.passive, 1) AS passive,
             nd.name AS name
         FROM netdevices nd
@@ -790,6 +792,7 @@ $errors = array(
     'netdevices' => array(),
     'nodes' =>  array(),
     'netlinks' => array(),
+    'flexibility-points' => array(),
 );
 
 if ($report_type == 'full') {
@@ -959,6 +962,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['location_street'] = $netnode['location_street'];
                     $netnodes[$netnodename]['location_street_name'] = $netnode['location_street_name'];
                     $netnodes[$netnodename]['location_house'] = $netnode['location_house'];
+                    $netnodes[$netnodename]['location_zip'] = $netnode['location_zip'];
                     $netnodes[$netnodename]['status'] = intval($netnode['status']);
                     $netnodes[$netnodename]['type'] = intval($netnode['type']);
                     $netnodes[$netnodename]['ownership'] = intval($netnode['ownership']);
@@ -1033,6 +1037,7 @@ if ($report_type == 'full') {
                     $netnodes[$netnodename]['location_street'] = $netdevice['location_street'];
                     $netnodes[$netnodename]['location_street_name'] = $netdevice['location_street_name'];
                     $netnodes[$netnodename]['location_house'] = $netdevice['location_house'];
+                    $netnodes[$netnodename]['location_zip'] = $netdevice['location_zip'];
                     $netnodes[$netnodename]['status'] = 0;
                     $netnodes[$netnodename]['type'] = 8;
                     $netnodes[$netnodename]['ownership'] = 0;
@@ -1987,6 +1992,15 @@ if ($report_type == 'full') {
             die;
         }
 
+        if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename'])) {
+            $errors['flexibility-points'][] = array(
+                'name' => $netnodename,
+                'location' => $netnode['location_street_name'] . ' ' . $netnode['location_house'] . ', '
+                    . (strlen($netnode['location_zip']) ? $netnode['location_zip'] . ' ' : '')
+                    . $netnode['location_city_name'],
+            );
+        }
+
         $netnode['local_technologies'] = $netnode['technologies'];
     }
 
@@ -2192,7 +2206,7 @@ if ($report_type == 'full') {
 
 $stop = false;
 
-foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resource) {
+foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks', 'flexibility-points') as $errorous_resource) {
     if (!empty($errors[$errorous_resource])) {
         foreach ($errors[$errorous_resource] as $error) {
             if ($errorous_resource == 'netnodes') {
@@ -2235,6 +2249,16 @@ foreach (array('netnodes', 'netdevices', 'nodes', 'netlinks') as $errorous_resou
                 $stop = true;
 
                 continue;
+            } elseif ($errorous_resource == 'flexibility-points') {
+                $error_message = '<!uke-pit>Flexibility point \'$a\' with location \'$b\' does not have defined feeding network node!';
+
+                echo trans(
+                    $error_message,
+                    'P-' . (strlen($error['name']) ? $error['name'] : 'BEZ-NAZWY'),
+                    $error['location']
+                ) . '<br>';
+
+                $stop = true;
             }
             $missed_properties = array();
             if ($validate_teryt) {
