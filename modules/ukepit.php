@@ -425,6 +425,7 @@ $validate_gps = isset($_POST['validate-gps']);
 $validate_wireless_links = isset($_POST['validate-wireless-links']);
 $complete_breakdown_points = isset($_POST['complete-breakdown-points']);
 $detect_loops = isset($_POST['detectloops']);
+$report_elements_outside_network_infrastructure = isset($_POST['report-elements-outside-network-infrastructure']);
 
 $pit_ethernet_technologies = array();
 
@@ -1998,7 +1999,8 @@ if ($report_type == 'full') {
     $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
 
     foreach ($netnodes as $netnodename => $netnode) {
-        if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename']) && isset($processed_netnodes[$netnodename])) {
+        if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename'])
+            && (isset($processed_netnodes[$netnodename]) || $report_elements_outside_network_infrastructure)) {
             $errors['flexibility-points'][] = array(
                 'name' => $netnodename,
                 'location' => $netnode['location_street_name'] . ' ' . $netnode['location_house'] . ', '
@@ -2343,7 +2345,7 @@ if ($report_type == 'full') {
 
     foreach ($netnodes as $netnodename => &$netnode) {
         if (!$summary_only) {
-            if (!isset($processed_netnodes[$netnodename])) {
+            if (!isset($processed_netnodes[$netnodename]) && !$report_elements_outside_network_infrastructure) {
                 continue;
             }
 
