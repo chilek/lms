@@ -1421,15 +1421,27 @@ if ($report_type == 'full') {
                 );
 
                 foreach ($nodes as $node) {
-                    if (isset($nodecoords[$node['nodeid']])) {
+                    if (empty($node['netdevid'])) {
+                        if (isset($nodecoords[$node['nodeid']])) {
+                            if (!strlen($netrange['longitude'])) {
+                                $netrange['longitude'] = 0;
+                            }
+                            if (!strlen($netrange['latitude'])) {
+                                $netrange['latitude'] = 0;
+                            }
+                            $netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
+                            $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
+                            $netrange['count']++;
+                        }
+                    } elseif (isset($uni_link['longitude'], $uni_link['latitude'])) {
                         if (!strlen($netrange['longitude'])) {
                             $netrange['longitude'] = 0;
                         }
                         if (!strlen($netrange['latitude'])) {
                             $netrange['latitude'] = 0;
                         }
-                        $netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
-                        $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
+                        $netrange['longitude'] += $uni_link['longitude'];
+                        $netrange['latitude'] += $uni_link['latitude'];
                         $netrange['count']++;
                     }
                 }
@@ -1573,6 +1585,21 @@ if ($report_type == 'full') {
                             'customerid' => $uni_link['customerid'],
                             'gps' => true,
                         );
+                    } elseif (empty($range['longitude']) || empty($range['latitude'])) {
+                        if (empty($node['netdevid'])) {
+                            $errors['nodes'][] = array(
+                                'id' => $node['nodeid'],
+                                'name' => $node['nodename'],
+                                'gps' => true,
+                            );
+                        } else {
+                            $errors['netdevices'][] = array(
+                                'id' => $uni_link['netdevid'],
+                                'name' => $uni_link['netdevname'],
+                                'customerid' => $uni_link['customerid'],
+                                'gps' => true,
+                            );
+                        }
                     }
                 }
 
