@@ -445,6 +445,22 @@ if (isset($_POST['document'])) {
             ));
         }
     }
+} else {
+    $document['type'] = '';
+
+    $default_type = ConfigHelper::getConfig('documents.default_type', '', true);
+    if (strlen($default_type)) {
+        $doctype_aliases_flipped = array_flip($DOCTYPE_ALIASES);
+        if (ctype_digit($default_type)) {
+            if (isset($DOCTYPE_ALIASES[$default_type])) {
+                $document['type'] = $default_type;
+            }
+        } else {
+            if (isset($doctype_aliases_flipped[$default_type])) {
+                $document['type'] = $doctype_aliases_flipped[$default_type];
+            }
+        }
+    }
 }
 
 $SMARTY->setDefaultResourceType('extendsall');
