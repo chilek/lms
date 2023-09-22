@@ -1992,7 +1992,13 @@ if ($report_type == 'full') {
             die;
         }
 
-        if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename'])) {
+        $netnode['local_technologies'] = $netnode['technologies'];
+    }
+
+    $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
+
+    foreach ($netnodes as $netnodename => $netnode) {
+        if ($netnode['mode'] != 2 && !isset($netnode['parent_netnodename']) && isset($processed_netnodes[$netnodename])) {
             $errors['flexibility-points'][] = array(
                 'name' => $netnodename,
                 'location' => $netnode['location_street_name'] . ' ' . $netnode['location_house'] . ', '
@@ -2000,11 +2006,7 @@ if ($report_type == 'full') {
                     . $netnode['location_city_name'],
             );
         }
-
-        $netnode['local_technologies'] = $netnode['technologies'];
     }
-
-    $processed_netnodes = analyze_network_tree($root_netnode_name, $root_netdevice_id, null, false, $root_netnode_name, array(), $netnodes, $netdevices, $all_netlinks);
 }
 
 $tmp_netlinkpoints = $DB->GetAll(
@@ -2341,6 +2343,10 @@ if ($report_type == 'full') {
 
     foreach ($netnodes as $netnodename => &$netnode) {
         if (!$summary_only) {
+            if (!isset($processed_netnodes[$netnodename])) {
+                continue;
+            }
+
             $media = array();
             foreach ($netnode['technologies'] as $technology) {
                 $mediaCode = mediaCodeByTechnology($technology);
