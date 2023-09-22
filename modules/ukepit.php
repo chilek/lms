@@ -1279,6 +1279,7 @@ if ($report_type == 'full') {
 
                 $nodes = array();
                 $uni_nodes = array();
+                $uni_link = null;
                 if ($customer_resources_as_operator_resources || empty($range['from_uni_link'])) {
                     // get info about computers connected to network node
                     $nodes = $DB->GetAll(
@@ -1433,7 +1434,7 @@ if ($report_type == 'full') {
                             $netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
                             $netrange['count']++;
                         }
-                    } elseif (isset($uni_link['longitude'], $uni_link['latitude'])) {
+                    } elseif (!empty($uni_link) && isset($uni_link['longitude'], $uni_link['latitude'])) {
                         if (!strlen($netrange['longitude'])) {
                             $netrange['longitude'] = 0;
                         }
@@ -1547,7 +1548,7 @@ if ($report_type == 'full') {
                                 }
                             }
                             $errors['nodes'][] = $error;
-                        } else {
+                        } elseif (!empty($uni_link)) {
                             $error = array(
                                 'id' => $uni_link['netdevid'],
                                 'name' => $uni_link['netdevname'],
@@ -1578,7 +1579,7 @@ if ($report_type == 'full') {
                                 'gps' => true,
                             );
                         }
-                    } elseif (empty($uni_link['longitude']) || empty($uni_link['latitude'])) {
+                    } elseif (!empty($uni_link) && (empty($uni_link['longitude']) || empty($uni_link['latitude']))) {
                         $errors['netdevices'][] = array(
                             'id' => $uni_link['netdevid'],
                             'name' => $uni_link['netdevname'],
@@ -1592,7 +1593,7 @@ if ($report_type == 'full') {
                                 'name' => $node['nodename'],
                                 'gps' => true,
                             );
-                        } else {
+                        } elseif (!empty($uni_link)) {
                             $errors['netdevices'][] = array(
                                 'id' => $uni_link['netdevid'],
                                 'name' => $uni_link['netdevname'],
