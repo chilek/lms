@@ -37,10 +37,10 @@
 									data-exclusive>— {trans("unassigned")} —
 							</OPTION>
 							{foreach $userlist as $user}
-								{if !ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')
-									&& !ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')
-									|| (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $user.access)
-									|| (ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users') && !$user.deleted)
+								{if !ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))
+									&& !ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users'))
+									|| (ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) && $user.access)
+									|| (ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users')) && !$user.deleted)
 									|| is_array($filter.owner) && in_array($user.id, $filter.owner)}
 									<option value="{$user.id}"
 										{if is_array($filter.userid) && in_array($user.id, $filter.userid)}} selected{/if}
