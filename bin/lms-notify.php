@@ -865,6 +865,57 @@ function parse_node_data($data, $row)
     return $data;
 }
 
+function parse_event_data($text, $event, $customer)
+{
+    return str_replace(
+        array(
+            '%title',
+            '%description',
+            '%location',
+            '%customername',
+            '%customerphone',
+            '%customeremail',
+            '%begin-date',
+            '%begin-year',
+            '%begin-month',
+            '%begin-day',
+            '%begin-time',
+            '%begin-hour',
+            '%begin-minute',
+            '%end-date',
+            '%end-year',
+            '%end-month',
+            '%end-day',
+            '%end-time',
+            '%end-hour',
+            '%end-minute',
+        ),
+        array(
+            $event['title'],
+            $event['description'],
+            $event['location'],
+            $customer['name'],
+            $customer['phone'],
+            $customer['email'],
+            date('Y/m/d', $event['begindate']),
+            date('Y', $event['begindate']),
+            date('m', $event['begindate']),
+            date('d', $event['begindate']),
+            date('H:i', $event['begindate']),
+            date('H', $event['begindate']),
+            date('i', $event['begindate']),
+            date('Y/m/d', $event['enddate']),
+            date('Y', $event['enddate']),
+            date('m', $event['enddate']),
+            date('d', $event['enddate']),
+            date('H:i', $event['enddate']),
+            date('H', $event['enddate']),
+            date('i', $event['enddate']),
+        ),
+        $text
+    );
+}
+
 function create_message($type, $subject, $template)
 {
     global $content_types;
@@ -3143,13 +3194,28 @@ if (empty($types) || in_array('events', $types)) {
     $date_start = $days ? strtotime('+' . $days . ' days', $daystart) : $daystart;
     $date_end = $days ? strtotime('+' . $days . ' days', $dayend) : $dayend;
     $events = $DB->GetAll(
-        "SELECT id, title, description, customerid, userid FROM events
-        WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0
-            AND date <= ? AND enddate + 86400 >= ?
-            " . ($days ? '' : " AND begintime <= " . $time . " AND (endtime = 0 OR endtime >= " . $time . ")")
-        . ($customerid ? ' AND customerid = ' . $customerid : '')
-        . (empty($notifications['events']['type']) ? '' : ' AND type IN (' . implode(', ', $notifications['events']['type']) .')'),
-        array($date_start, $date_end)
+        "SELECT
+            e.id,
+            e.title,
+            e.description,
+            (e.date + e.begintime) AS begindate,
+            (e.enddate + (CASE WHEN e.endtime = 0 THEN e.begintime ELSE e.endtime END)) AS enddate,
+            e.customerid,
+            e.userid,
+            va.location
+        FROM events e
+        LEFT JOIN vaddresses va ON va.id = e.address_id
+        WHERE (e.customerid IS NOT NULL OR e.userid IS NOT NULL)
+            AND e.closed = 0
+            AND e.date <= ?
+            AND e.enddate + 86400 >= ?"
+        . ($days ? '' : " AND e.begintime <= " . $time . " AND (e.endtime = 0 OR e.endtime >= " . $time . ")")
+        . ($customerid ? ' AND e.customerid = ' . $customerid : '')
+        . (empty($notifications['events']['type']) ? '' : ' AND e.type IN (' . implode(', ', $notifications['events']['type']) .')'),
+        array(
+            $date_start,
+            $date_end,
+        )
     );
 
     if (!empty($events)) {
@@ -3185,37 +3251,12 @@ if (empty($types) || in_array('events', $types)) {
         foreach ($events as $event) {
             $contacts = array();
 
-            $message = str_replace(
-                array(
-                    '%title',
-                    '%description',
-                ),
-                array(
-                    $event['title'],
-                    $event['description'],
-                ),
-                $message_pattern
-            );
-
-            $subject = str_replace(
-                array(
-                    '%title',
-                    '%description',
-                ),
-                array(
-                    $event['title'],
-                    $event['description'],
-                ),
-                $subject_pattern
-            );
-
             $cid = intval($event['customerid']);
             $uid = intval($event['userid']);
 
-            if ((empty($scopes) || isset($scopes['customers'])) && (empty($recipients) || isset($recipients['customers'])) && $cid) {
-                if (!array_key_exists($cid, $customers)) {
-                    $customers[$cid] = $DB->GetRow(
-                        "SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
+            if ($cid && !array_key_exists($cid, $customers)) {
+                $customers[$cid] = $DB->GetRow(
+                    "SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
                             m.email, x.phone
                         FROM customerview c
                         LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -3230,17 +3271,19 @@ if (empty($types) || in_array('events', $types)) {
                             GROUP BY customerid
                         ) x ON (x.customerid = c.id) " . ($ignore_customer_consents ? '' : 'AND c.smsnotice = 1') . "
                         WHERE 1 = 1" . $customer_status_condition
-                        . $customer_type_condition
-                        . " AND c.id = ?",
-                        array(
-                            $checked_mail_contact_flags,
-                            $required_mail_contact_flags,
-                            $checked_phone_contact_flags,
-                            $required_phone_contact_flags,
-                            $cid
-                        )
-                    );
-                }
+                    . $customer_type_condition
+                    . " AND c.id = ?",
+                    array(
+                        $checked_mail_contact_flags,
+                        $required_mail_contact_flags,
+                        $checked_phone_contact_flags,
+                        $required_phone_contact_flags,
+                        $cid
+                    )
+                );
+            }
+
+            if ((empty($scopes) || isset($scopes['customers'])) && (empty($recipients) || isset($recipients['customers'])) && $cid) {
                 if (!empty($customers[$cid]['email'])) {
                     $emails = explode(',', $debug_email ? $debug_email : $customers[$cid]['email']);
                     foreach ($emails as $contact) {
@@ -3289,6 +3332,19 @@ if (empty($types) || in_array('events', $types)) {
                     }
                 }
             }
+
+            if ($cid && isset($customers[$cid])) {
+                $customer = $customers[$cid];
+            } else {
+                $customer = array(
+                    'name' => '-',
+                    'phone' => '-',
+                    'email' => '-',
+                );
+            }
+
+            $message = parse_event_data($message_pattern, $event, $customer);
+            $subject = parse_event_data($subject_pattern, $event, $customer);
 
             if (!$quiet) {
                 foreach ($contacts as $contact) {
