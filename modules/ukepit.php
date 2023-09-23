@@ -1285,7 +1285,9 @@ if ($report_type == 'full') {
 
                 $nodes = array();
                 $uni_nodes = array();
-                $uni_link = null;
+                if (isset($uni_link)) {
+                    unset($uni_link);
+                }
                 if ($customer_resources_as_operator_resources || empty($range['from_uni_link'])) {
                     // get info about computers connected to network node
                     $nodes = $DB->GetAll(
