@@ -161,7 +161,7 @@ if ($eventlist) {
                         $item['userlist'][$uidx]['noaccess'] = 1;
                 }
             }
-            if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users') && $usersWithoutAccess == $usersCount) {
+            if (ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) && $usersWithoutAccess == $usersCount) {
                 $item['hide'] = 1;
             }
         }

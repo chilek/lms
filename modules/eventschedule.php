@@ -177,7 +177,7 @@ $userid = isset($filter['userid']) ? $filter['userid'] : null;
 $userlistcount = empty($userid) ? 0 : count($userid);
 
 $params['short'] = 1;
-if (ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) {
+if (ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))) {
     $params['userAccess'] = 1;
 }
 $params['withDeleted'] = 1;
