@@ -1556,7 +1556,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
                         if (isset($values[$label][$tariffid])) {
                             foreach ($values[$label][$tariffid] as $period_idx => $value) {
-                                if (!preg_match('/^[0-9]+([.,][0-9]{1,3})?$/', $value)) {
+                                if (!preg_match('/^[0-9]+([\.,][0-9]{1,3})?$/', $value)) {
                                     $error['value-' . $schemaid . '-'
                                     . iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))
                                     . '-' . $tariffid . '-' . $period_idx] = trans('Incorrect value!');
@@ -1593,9 +1593,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $error['value'] = trans('Liability value is required!');
                     } elseif (!$a['netvalue'] && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Liability value is required!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']) && empty($a['netflag'])) {
+                    } elseif (!preg_match('/^[-]?[0-9\.,]+$/', $a['value']) && empty($a['netflag'])) {
                         $error['value'] = trans('Incorrect value!');
-                    } elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['netvalue']) && !empty($a['netflag'])) {
+                    } elseif (!preg_match('/^[-]?[0-9\.,]+$/', $a['netvalue']) && !empty($a['netflag'])) {
                         $error['netvalue'] = trans('Incorrect value!');
                     } elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
                         $error['value'] = trans('Value less than discount are not allowed!');
