@@ -292,22 +292,24 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         if ($user_inserted) {
             $id = $this->db->GetLastInsertID('users');
 
-            if (!empty($user['usergroups'])) {
-                $usergroup_manager = new LMSUserGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
-                foreach ($user['usergroups'] as $group) {
-                    $usergroup_manager->UserassignmentAdd(array(
-                        'userid' => $id,
-                        'usergroupid' => $group,
-                    ));
-                }
+            $customergroup_manager = new LMSCustomerGroupManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $customergroups = $customergroup_manager->getAllCustomerGroups();
+            if (empty($customergroups)) {
+                $customergroups = array();
             }
+            $customergroups = array_keys($customergroups);
 
-            if (!empty($user['customergroups'])) {
-                foreach ($user['customergroups'] as $group) {
+            if (empty($user['customergroups'])) {
+                $user['customergroups'] = array();
+            }
+            $excludedgroups_to_add = array_diff($customergroups, $user['customergroups']);
+
+            if (!empty($excludedgroups_to_add)) {
+                foreach ($excludedgroups_to_add as $group) {
                     if ($this->db->Execute(
-                        'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
-                        array($id, $group)
-                    ) && $this->syslog) {
+                            'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
+                            array($id, $group)
+                        ) && $this->syslog) {
                         $args = array(
                             SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
                             SYSLOG::RES_CUSTGROUP => $group,
