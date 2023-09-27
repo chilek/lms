@@ -203,7 +203,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             if (empty($matches['id']) && empty($pattern['pid'])) {
                 if (isset($pattern['pid_regexp'])) {
                     if (is_array($pattern['pid_regexp'])) {
-                        $regexps = array_filter($pattern['pid_regexp'], function($regexp) {
+                        $regexps = array_filter($pattern['pid_regexp'], function ($regexp) {
                             return strlen($regexp) > 2;
                         });
                     } elseif (strlen($pattern['pid_regexp']) > 2) {
