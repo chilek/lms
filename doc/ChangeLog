@@ -570,6 +570,8 @@ version 28-git (????-??-??):
   - enhancement: 'documents.default_type' configuraton variable controls what document type is pre-selected
     in documentadd and documentgen forms [chilan]
   - enhancement: added some new useful substitution symbols support for 'events' type notifications [chilan]
+  - improvement: allow to check/uncheck all user resource permission to be copied
+    from selected user with single click [chilan]
 
 version 27.0 (2021-08-20):
 
