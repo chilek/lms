@@ -201,14 +201,23 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
             }
 
             if (empty($matches['id']) && empty($pattern['pid'])) {
-                if (isset($pattern['pid_regexp']) && strlen($pattern['pid_regexp'])) {
-                    $regexp = $pattern['pid_regexp'];
+                if (isset($pattern['pid_regexp'])) {
+                    if (is_array($pattern['pid_regexp'])) {
+                        $regexps = array_filter($pattern['pid_regexp'], function($regexp) {
+                            return strlen($regexp) > 2;
+                        });
+                    } elseif (strlen($pattern['pid_regexp']) > 2) {
+                        $regexps = array($pattern['pid_regexp']);
+                    }
                 } else {
-                    $regexp = '/.*ID[:\-\/]([0-9]{0,4}).*/i';
+                    $regexps = array('/.*ID[:\-\/]([0-9]{0,4}).*/i');
                 }
 
-                if (preg_match($regexp, $theline, $matches)) {
-                    $id = $matches[1];
+                foreach ($regexps as $regexp) {
+                    if (preg_match($regexp, $theline, $matches)) {
+                        $id = $matches[1];
+                        break;
+                    }
                 }
             } elseif (isset($matches['id'])) {
                 $id = intval(preg_replace('/\s+/', '', $matches['id']));
