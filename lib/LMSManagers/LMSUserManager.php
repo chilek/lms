@@ -307,9 +307,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             if (!empty($excludedgroups_to_add)) {
                 foreach ($excludedgroups_to_add as $group) {
                     if ($this->db->Execute(
-                            'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
-                            array($id, $group)
-                        ) && $this->syslog) {
+                        'INSERT INTO excludedgroups (userid, customergroupid) VALUES (?, ?)',
+                        array($id, $group)
+                    ) && $this->syslog) {
                         $args = array(
                             SYSLOG::RES_EXCLGROUP => $this->db->GetLastInsertID('excludedgroups'),
                             SYSLOG::RES_CUSTGROUP => $group,
