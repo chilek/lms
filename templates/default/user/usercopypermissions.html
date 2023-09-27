@@ -35,7 +35,7 @@
         $('.user-copy-permission').change(function() {
             var allChecks = $('.user-copy-permission');
             $('#user-copy-permissions-check-all').prop('checked', allChecks.length == allChecks.filter(':checked').length);
-        });
+        }).change();
     });
 
 </script>
