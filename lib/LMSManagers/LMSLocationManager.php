@@ -496,6 +496,24 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         return array_merge($result, $street);
     }
 
+    public function getCoordinatesForAddress($params)
+    {
+        $streetfilter = empty($params['streetid']) ?
+            'AND street_id IS NULL' : ' AND street_id = ' . $params['streetid'];
+        return $this->db->GetRow(
+            'SELECT latitude, longitude
+            FROM location_buildings
+            WHERE
+                city_id = ?'
+                . $streetfilter
+                . ' AND building_num ILIKE ?',
+            array(
+                $params['cityid'],
+                $params['building_num']
+            )
+        );
+    }
+
     private function fixTerritAddress(array $address)
     {
         // exceptional query for cities with subcities

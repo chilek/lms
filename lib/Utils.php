@@ -29,6 +29,9 @@ use GusApi\RegonConstantsInterface;
 use GusApi\Exception\InvalidUserKeyException;
 use GusApi\ReportTypes;
 use GusApi\ReportTypeMapper;
+use proj4php\Proj4php;
+use proj4php\Proj;
+use proj4php\Point;
 
 class Utils
 {
@@ -905,6 +908,21 @@ class Utils
             $currency = Localisation::getCurrentCurrency();
         }
         return sprintf('%s %s', Localisation::smartFormatNumber($value), $currency);
+    }
+
+    public static function convertLMStoGeoportal($latitude, $longitude)
+    {
+        $proj4 = new Proj4php();
+        $projWGS84  = new Proj('EPSG:4326', $proj4); //EPSG:4326 WGS 84
+        $projL93    = new Proj('EPSG:2180', $proj4); //EPSG:2154 RGF93 v1 / Lambert-93
+
+        // Create a point.
+        $pointWGS84 = new Point($longitude, $latitude, $projWGS84);
+
+        // Transform the point between datums.
+        $pointL93 = $proj4->transform($projL93, $pointWGS84);
+
+        return $pointL93->toArray();
     }
 
     public static function formatMoney($value, $currency = null)

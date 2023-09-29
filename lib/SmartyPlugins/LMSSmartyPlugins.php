@@ -1143,6 +1143,80 @@ class LMSSmartyPlugins
         ';
     }
 
+    public static function showOnMapButtonFunction(array $params)
+    {
+        $LMS = LMS::getInstance();
+        $latitude = $params['latitude'] ?? '';
+        $longitude = $params['longitude'] ?? '';
+        $type = $params['type'];
+        $nodeid = empty($params['nodeid']) ? '' : intval($params['nodeid']);
+        $external = empty($params['external']) ? false : true;
+
+
+        if (empty($latitude) && empty($longitude) && !empty($params['building_num'])) {
+            $args = array(
+                'streetid' => empty($params['streetid']) ? '' : $params['streetid'],
+                'cityid' => $params['cityid'],
+                'building_num' => $params['building_num'],
+            );
+            $coordinates = $LMS->getCoordinatesForAddress($args);
+
+            if (empty($coordinates)) {
+                $disabled = true;
+            } else {
+                $latitude = $coordinates['latitude'];
+                $longitude = $coordinates['longitude'];
+            }
+        }
+
+        switch ($type) {
+            case 'geoportal':
+                $url = '?m=linkconverter&type=geoportal&latitude=' . $latitude . '&longitude=' . $longitude;
+                $icon = 'lms-ui-icon-location-geoportal';
+                $label = $tip = trans('Show on GeoPortal Maps');
+                break;
+            case 'google':
+                //$googleLocationUrl = ConfigHelper::getConfig('phpui.gps_location_url', 'https://www.google.com/maps/place/%location')}
+                $googleApiUrl = ConfigHelper::getConfig('google.api_url', 'https://www.google.com/maps/search/?api=1&query=');
+                $url = $googleApiUrl . $latitude . ',' . $longitude;
+                $icon = 'lms-ui-icon-location-google';
+                $label = $tip = trans('Show on Google Maps');
+                break;
+            case 'netstork':
+                $webUrl = ConfigHelper::getConfig('netstork.web_url');
+                $mapZoomRange = ConfigHelper::getConfig('netstork.map_zoom_range', 18);
+                $url = $webUrl . '#' . $longitude . ',' . $latitude . ',' . $mapZoomRange;
+                $icon = 'lms-ui-icon-location-netstork';
+                $label = $tip = trans('Show on NetStorkWeb Maps');
+                break;
+            default:
+                $url = '?m=netdevmap&nodeid=' . $nodeid;
+                $icon = 'lms-ui-icon-map';
+                $label = $tip = trans('Show on map');
+                break;
+        }
+
+        $label = isset($params['label']) ? $params['label'] : $label;
+        $tip = ($disabled ? trans('No GPS coordinates for this address') : $tip);
+
+        if ($type == 'netstork' && !ConfigHelper::getConfig('netstork.web_url')) {
+            return '';
+        }
+
+        return self::buttonFunction(
+            array(
+                'href' => $url,
+                'type' => 'link',
+                'label' => $label,
+                'disabled' => (bool)$disabled,
+                'icon' => $icon,
+                'tip' => $tip,
+                'external' => $external,
+            ),
+            'text'
+        );
+    }
+
     public static function deadlineSelectionFunction(array $params, $template)
     {
         $name = $params['name'];

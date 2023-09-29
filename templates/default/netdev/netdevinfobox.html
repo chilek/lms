@@ -224,9 +224,24 @@
 										<td colspan="2">
 										</td>
 										<td>
-											{$gps_coordinate_url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude%2C%longitude')}
-											{button type="link" icon="location" label="Show on external map" external=true
-												href="{$gps_coordinate_url|replace:"%longitude":$longitude|replace:"%latitude":$latitude}"}
+												{show_on_map_button
+													type='google'
+													latitude=$latitude
+													longitude=$longitude
+													external=true
+												}
+												{show_on_map_button
+													type='geoportal'
+													latitude=$latitude
+													longitude=$longitude
+													external=true
+												}
+												{show_on_map_button
+													type='netstork'
+													latitude=$latitude
+													longitude=$longitude
+													external=true
+												}
 										</td>
 									</tr>
 								{/if}

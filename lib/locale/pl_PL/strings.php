@@ -3677,8 +3677,12 @@ $_LANG['GPS longitude'] = 'Długość geograficzna';
 $_LANG['Click to select GPS coordinates from map'] = 'Kliknij, aby wybrać współrzędne geograficzne z mapy';
 $_LANG['Select GPS coordinates'] = 'Wybierz współrzędne geograficzne';
 $_LANG['Select GPS coordinates:'] = 'Wybierz współrzędne geograficzne:';
+$_LANG['No GPS coordinates for this address'] = 'Brak współrzędnych dla tego adresu';
 $_LANG['Show on map'] = 'Pokaż na mapie';
 $_LANG['Show on external map'] = 'Pokaż na mapie zewnętrznej';
+$_LANG['Show on GeoPortal Maps'] = 'Pokaż na mapach GeoPortal';
+$_LANG['Show on Google Maps'] = 'Pokaż na mapach Google';
+$_LANG['Show on NetStorkWeb Maps'] = 'Pokaż na mapach NetStorkWeb';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';
 $_LANG['Unicast reply from $a [$b]: time=$c'] = 'Odpowiedź unicast od $a [$b]: czas=$c';
