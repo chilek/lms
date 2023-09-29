@@ -313,7 +313,7 @@ $access_table = array(
     ),
     'user_management_forbidden' => array(
         'label' => trans('users edition and addition forbidden'),
-        'deny_regexp' => '^(user(add|del|edit|passwd))$',
+        'deny_regexp' => '^(user(add|del|edit|passwd|access|switch))$',
     ),
     'no_access' => array(
         'label' => trans('no access'),
