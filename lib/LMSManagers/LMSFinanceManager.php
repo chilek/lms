@@ -4903,7 +4903,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
-        return $promotions;
+        return $promotion_schema_item;
     }
 
     public function AggregateDocuments($list)
