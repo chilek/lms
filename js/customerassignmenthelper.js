@@ -119,7 +119,7 @@ function CustomerAssignmentHelper(options) {
 			confirm($t('No location has been selected!'));
 			return false;
 		}
-		if ($.isEmptyObject(tariffs)) {
+		if (lmsSettings.missedNodeWarning && $.isEmptyObject(tariffs)) {
 			return confirm($t('No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'));
 		}
 		var cancelled = 0;
@@ -128,7 +128,8 @@ function CustomerAssignmentHelper(options) {
 				return false;
 			}
 			var selector  = '[name^="' + helper.variablePrefix + '[snodes][' + schemaid + '][' + label + ']"]';
-			if (helper.tariffTypes[tariffid] == helper.internetTariffType &&
+			if (lmsSettings.missedNodeWarning &&
+				helper.tariffTypes[tariffid] == helper.internetTariffType &&
 				(($('input' + selector).length && $('div#' + $(selector).closest('div').attr('id').replace('-layer', '') + ':visible').length &&
 						!$(selector + ':checked').length) ||
 					($('select' + selector).length && !$(selector).val().length)) &&
