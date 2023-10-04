@@ -291,7 +291,7 @@ if (!empty($posts)) {
                                 }
 
                                 foreach (preg_split('/\r?\n/', $body) as $line) {
-                                    if (preg_match('/To jest potwierdzenie dla wiadomości wysłanej przez Ciebie do.+[[:blank:]]+(?<mday>[0-9]+)[[:blank:]]+(?<mname>[[:alpha:]]+)[[:blank:]]+(?<year>[0-9]{4})[[:blank:]]+o[[:blank:]]+godz\.[[:blank:]]+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})\./', $line, $m)) {
+                                    if (preg_match('/To jest potwierdzenie dla wiadomości wysłanej przez Ciebie do.+[[:blank:]]+(?<mday>[0-9]+)[[:blank:]]+(?<mname>[[:alpha:]]+)[[:blank:]]+(?<year>[0-9]{4})[[:blank:]]+o[[:blank:]]+godz\.[[:blank:]]+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})\./u', $line, $m)) {
                                         $month_mapping_index = mb_substr($m['mname'], 0, 3);
                                         if (!isset($month_mappings[$month_mapping_index])) {
                                             break 3;
