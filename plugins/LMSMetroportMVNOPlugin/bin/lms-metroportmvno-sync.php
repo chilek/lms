@@ -49,7 +49,8 @@ $parameters = array(
     'customerid:' => null,
     'update' => 'u',
     'mode:' => 'm:',
-    'incremental' => 'i',
+    'incremental-by-call-start-time' => null,
+    'incremental-by-last-id' => null,
     'chunking' => null,
     'no-chunking' => null,
     'chunk-size:' => null,
@@ -114,9 +115,11 @@ lms-metroportmvno-sync.php
     --customerid=<id>                   limit synchronization to specifed customer
 -u, --update                            update existing billing records instead deleting them
 -m, --mode=<customer|provider>          billing get method selection
--i, --incremental                       get billing records incrementally
+    --incremental-by-call-start-time    get billing records incrementally based on max call start time after --start-date
+    --incremental-by-last-id            get billing records incrementally based on max unique id after --start-date
     --chunking                          enable billings chunking usage
-                                        (enabled by default if --incremental parameter was also specifed)
+                                        (enabled by default if --incremental-by-call-start-time or --incremental-by-last-id
+                                        parameter was specifed)
     --no-chunking                       disable billings chunking usage
     --chunk-size=<n>                    specify billings chunk size when chunking is enabled (in days)
     --pricelist-file                    specify path to price list csv file
@@ -246,9 +249,14 @@ if ($mode != 'customer' && $mode != 'provider') {
     die(trans('Fatal error: unsupported mode "$a"!', $mode) . PHP_EOL);
 }
 
-$incremental = isset($options['incremental']);
+$incrementalByLastId = isset($options['incremental-by-last-id']);
+$incrementalByCallStartTime = isset($options['incremental-by-call-start-time']);
 
-$chunking = isset($options['chunking']) || $incremental;
+if ($incrementalByLastId && $incrementalByCallStartTime) {
+    die(trans('Fatal error: Using both parameters --incremental-by-last-id and incremental-by-call-start-time at the same time is not supported!', $mode) . PHP_EOL);
+}
+
+$chunking = (isset($options['chunking']) || $incrementalByCallStartTime || $incrementalByLastId);
 
 if (isset($options['no-chunking'])) {
     $chunking = false;
@@ -776,68 +784,95 @@ if ($syncBillings) {
     //</editor-fold>
 
     //<editor-fold desc="Get MMSC billings">
-    if ($customerid) {
-        $voip_account_ids = $DB->GetCol(
-            'SELECT id
-            FROM voipaccounts
-            WHERE ownerid = ?
-            AND serviceproviderid = ?',
-            array(
-                $customerid,
-                $metroportmvno->serviceProviderId
-            )
-        );
-        $voip_numbers = $DB->GetCol(
-            'SELECT n.phone
-            FROM voip_numbers n
-            JOIN voipaccounts a ON a.id = n.voip_account_id
-            WHERE a.ownerid = ?
-            AND a.serviceproviderid = ?',
-            array(
-                $customerid,
-                $metroportmvno->serviceProviderId
-            )
-        );
-    }
+    $voip_account_ids = $DB->GetCol(
+        'SELECT id
+        FROM voipaccounts
+        WHERE serviceproviderid = ?'
+        . (!empty($customerid) ? ' AND ownerid = ' . $customerid : ''),
+        array(
+            $metroportmvno->serviceProviderId
+        )
+    );
+    $voip_numbers = $DB->GetCol(
+        'SELECT n.phone
+        FROM voip_numbers n
+        JOIN voipaccounts a ON a.id = n.voip_account_id
+        WHERE a.serviceproviderid = ?'
+        . (!empty($customerid) ? ' AND a.ownerid = ' . $customerid : ''),
+        array(
+            $metroportmvno->serviceProviderId
+        )
+    );
 
-    if ($incremental) {
-        if ($customerid) {
-            if (!empty($voip_account_ids) || !empty($voip_numbers)) {
-                $max_call_start_time = $DB->GetOne(
-                    'SELECT MAX(call_start_time)
-                    FROM voip_cdr
-                    WHERE incremental = 0
-                        AND call_start_time > ?
-                        AND (
-                            callervoipaccountid IN ?
-                            OR calleevoipaccountid IN ?
-                            OR caller IN ?
-                            OR callee IN ?
-                        )',
-                    array(
-                        $startdate,
-                        $voip_account_ids,
-                        $voip_account_ids,
-                        $voip_numbers,
-                        $voip_numbers,
-                    )
-                );
-            }
-        } else {
+    if ($incrementalByCallStartTime) {
+        if (!empty($voip_account_ids) || !empty($voip_numbers)) {
             $max_call_start_time = $DB->GetOne(
                 'SELECT MAX(call_start_time)
                 FROM voip_cdr
                 WHERE incremental = 0
-                    AND call_start_time > ?',
+                    AND call_start_time > ?
+                    AND (
+                        callervoipaccountid IN ?
+                        OR calleevoipaccountid IN ?
+                        OR caller IN ?
+                        OR callee IN ?
+                    )',
                 array(
                     $startdate,
+                    $voip_account_ids,
+                    $voip_account_ids,
+                    $voip_numbers,
+                    $voip_numbers,
                 )
             );
         }
+
         if (empty($max_call_start_time)) {
             $max_call_start_time = 0;
         }
+
         $startdate = max($startdate, $max_call_start_time);
+        $enddate = strtotime('today') - 1;
+    }
+
+    if ($incrementalByLastId) {
+        if (!empty($voip_account_ids) || !empty($voip_numbers)) {
+            $idAfter = $DB->GetOne(
+                'SELECT MAX(uniqueid)
+                FROM voip_cdr
+                WHERE incremental = 0
+                    AND call_start_time > ?
+                    AND (
+                        callervoipaccountid IN ?
+                        OR calleevoipaccountid IN ?
+                        OR caller IN ?
+                        OR callee IN ?
+                    )',
+                array(
+                    $startdate,
+                    $voip_account_ids,
+                    $voip_account_ids,
+                    $voip_numbers,
+                    $voip_numbers,
+                )
+            );
+        }
+
+        if (empty($idAfter)) {
+            $idAfter = null;
+        } else {
+            $startdate = $DB->GetOne(
+                'SELECT call_start_time
+                FROM voip_cdr
+                WHERE uniqueid = ?',
+                array(
+                    $idAfter
+                )
+            );
+
+            $startdate = strtotime('- 3 days', $startdate);
+        }
+
         $enddate = strtotime('today') - 1;
     }
 
@@ -847,8 +882,12 @@ if ($syncBillings) {
 
     $startdatestr = date('Y-m-d H:i:s', $startdate);
     $enddatestr = date('Y-m-d H:i:s', $enddate);
+
     if (!$quiet) {
         echo PHP_EOL . '---' . trans('Getting billing records for period') . ' ' . $startdatestr . ' - ' . $enddatestr . '---' . PHP_EOL;
+        if (!empty($idAfter)) {
+            echo '---' . trans('Getting billing records after id') . ' ' . $idAfter . '---' . PHP_EOL;
+        }
     }
 
     $customers = $DB->GetAllByKey(
@@ -867,7 +906,7 @@ if ($syncBillings) {
             AND a.datefrom <= ?
             AND (a.dateto = 0 OR a.dateto >= ?)
             AND ce.serviceproviderid = ?
-            ' . ($customerid ? ' AND c.id = ' . $customerid : '') . '
+            ' . (!empty($customerid) ? ' AND c.id = ' . $customerid : '') . '
         ORDER BY c.id',
         'id',
         array(
@@ -944,13 +983,14 @@ if ($syncBillings) {
                 $datestart = '?datestart=' . urlencode($startdatestr);
                 $dateend = '&dateend=' . urlencode($enddatestr);
                 $userId = !empty($cextid) ? '&userid=' . $cextid : null;
+                $id_after = !empty($idAfter) ? '&id_after=' . $idAfter : '';
 
                 $response = array();
                 $responseCount = 0;
 
                 if (!empty($userId)) {
                     curl_setopt_array($ch, $commonHeaders + array(
-                            CURLOPT_URL => API_URL . '/Mvno/Billings' . $datestart . $dateend . $userId,
+                            CURLOPT_URL => API_URL . '/Mvno/Billings' . $datestart . $dateend . $userId . $id_after,
                             CURLOPT_RETURNTRANSFER => true,
                             CURLOPT_ENCODING => "",
                             CURLOPT_MAXREDIRS => 10,
@@ -987,22 +1027,11 @@ if ($syncBillings) {
                 }
                 //</editor-fold>
                 if (!empty($response) && $responseCount !== 0) {
-//                    foreach ($response as $key => $item) {
                     foreach ($response as $item) {
                         if ((!empty($item['src']) && !preg_match('/^[0-9]+$/', $item['src']))
                             || (!empty($item['dst']) && !preg_match('/^[0-9]+$/', $item['dst']))) {
                             continue;
                         }
-
-                        /*if (!empty($item['src']) && !empty($item['dst'])) {
-                            echo $key . PHP_EOL;
-                        } elseif (empty($item['src']) && !empty($item['dst'])) {
-                            echo $key . PHP_EOL;
-                        } elseif (!empty($item['src']) && empty($item['dst'])) {
-                            echo $key . PHP_EOL;
-                        } elseif (empty($item['src']) && empty($item['dst'])) {
-                            echo $key . PHP_EOL;
-                        }*/
 
                         $id = $item['id'];
                         $src = $item['src'];
@@ -1093,12 +1122,13 @@ if ($syncBillings) {
             //<editor-fold desc="Get MMSC billings for user">
             $datestart = '?datestart=' . urlencode($startdatestr);
             $dateend = '&dateend=' . urlencode($enddatestr);
+            $id_after = !empty($idAfter) ? '&id_after=' . $idAfter : '';
 
             $response = array();
             $responseCount = 0;
 
             curl_setopt_array($ch, $commonHeaders + array(
-                    CURLOPT_URL => API_URL . '/Mvno/Billings' . $datestart . $dateend,
+                    CURLOPT_URL => API_URL . '/Mvno/Billings' . $datestart . $dateend . $id_after,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => "",
                     CURLOPT_MAXREDIRS => 10,
@@ -1238,70 +1268,44 @@ if ($syncBillings) {
         billedtime = ?, price = ?, status = ?, callervoipaccountid = ?, calleevoipaccountid = ?,
         type = ?, fraction = ? WHERE id = ?';
 
-    if ($customerid) {
-        if ($update) {
-            $cdr = $DB->GetAllByKey(
-                'SELECT id, direction, uniqueid, ' . $DB->Concat('direction', "'_'", 'uniqueid') . ' AS direction_uniqueid
-                FROM voip_cdr
-                WHERE call_start_time >= ?
-                    AND call_start_time <= ?
-                    AND (
-                        callervoipaccountid IN ?
-                        OR calleevoipaccountid IN ?
-                        OR caller IN ?
-                        OR callee IN ?
-                    )',
-                'direction_uniqueid',
-                array(
-                    $startdate,
-                    $enddate,
-                    $voip_account_ids,
-                    $voip_account_ids,
-                    $voip_numbers,
-                    $voip_numbers,
-                )
-            );
-        } else {
-            $DB->Execute(
-                'DELETE FROM voip_cdr
-                WHERE call_start_time >= ?
-                    AND call_start_time <= ?
-                    AND (
-                        callervoipaccountid IN ?
-                        OR calleevoipaccountid IN ?
-                    )',
-                array(
-                    $startdate,
-                    $enddate,
-                    $voip_account_ids,
-                    $voip_account_ids,
-                )
-            );
-        }
+    if ($update) {
+        $cdr = $DB->GetAllByKey(
+            'SELECT id, direction, uniqueid, ' . $DB->Concat('direction', "'_'", 'uniqueid') . ' AS direction_uniqueid
+            FROM voip_cdr
+            WHERE call_start_time >= ?
+                AND call_start_time <= ?
+                AND (
+                    callervoipaccountid IN ?
+                    OR calleevoipaccountid IN ?
+                    OR caller IN ?
+                    OR callee IN ?
+                )',
+            'direction_uniqueid',
+            array(
+                $startdate,
+                $enddate,
+                $voip_account_ids,
+                $voip_account_ids,
+                $voip_numbers,
+                $voip_numbers,
+            )
+        );
     } else {
-        if ($update) {
-            $cdr = $DB->GetAllByKey(
-                'SELECT id, direction, uniqueid, ' . $DB->Concat('direction', "'_'", 'uniqueid') . ' AS direction_uniqueid
-                FROM voip_cdr
-                WHERE call_start_time >= ?
-                    AND call_start_time <= ?',
-                'direction_uniqueid',
-                array(
-                    $startdate,
-                    $enddate,
-                )
-            );
-        } else {
-            $DB->Execute(
-                'DELETE FROM voip_cdr
-                WHERE call_start_time >= ?
-                    AND call_start_time <= ?',
-                array(
-                    $startdate,
-                    $enddate,
-                )
-            );
-        }
+        $DB->Execute(
+            'DELETE FROM voip_cdr
+            WHERE call_start_time >= ?
+                AND call_start_time <= ?
+                AND (
+                    callervoipaccountid IN ?
+                    OR calleevoipaccountid IN ?
+                )',
+            array(
+                $startdate,
+                $enddate,
+                $voip_account_ids,
+                $voip_account_ids,
+            )
+        );
     }
 
     if (empty($cdr)) {
