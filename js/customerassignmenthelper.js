@@ -821,19 +821,19 @@ $("#netprice").on('change', function () {
 
 $(".format-3f").on('change', function () {
 	if ($(this).val()) {
-		let roundedValue = financeRound($(this).val(), 3);
+		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 3);
 		$(this).val(roundedValue);
 	}
 });
 
 $("#discount_value").on('change', function () {
 	if ($("#discount_type").val() == 2) {
-		let roundedValue = financeRound($(this).val(), 3);
+		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 3);
 		$(this).val(roundedValue);
 	}
 
 	if ($("#discount_type").val() == 1) {
-		let roundedValue = financeRound($(this).val(), 2);
+		let roundedValue = financeRound($(this).val().replaceAll(' ', ''), 2);
 		$(this).val(roundedValue);
 	}
 });
