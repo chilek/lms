@@ -241,7 +241,7 @@ $syncBillings = isset($options['billings']);
 $syncCustomers = isset($options['customers']);
 $syncAccounts = isset($options['accounts']);
 
-$mode = isset($options['mode']) ? $options['mode'] : 'customer';
+$mode = $options['mode'] ?? 'customer';
 if ($mode != 'customer' && $mode != 'provider') {
     die(trans('Fatal error: unsupported mode "$a"!', $mode) . PHP_EOL);
 }
@@ -426,6 +426,7 @@ if (!empty($mmscUsers)) {
     unset($mmscUser);
 
     $mmscUserCodes = array_column($mmscUsers, null, 'usercode');
+    $mmscUserIds = array_column($mmscUsers, null, 'id');
     $mmscUserTens = array_column($mmscUsers, null, 'nip');
     $mmscUserSsns = array_column($mmscUsers, null, 'pesel');
     $mmscUserIcns = array_column($mmscUsers, null, 'idcardno');
@@ -441,7 +442,7 @@ if ($syncCustomers) {
 
     $lmsAllCustomers = $metroportmvno->getCustomersForBind();
     if (!empty($lmsAllCustomers)) {
-        //<editor-fold desc="Sanitize LMS customer ten and icn and build data for ten,ssn,icn duplicastes">
+        //<editor-fold desc="Sanitize LMS customer ten and icn and build data for ten,ssn,icn duplicates">
         foreach ($lmsAllCustomers as $id => $lmsCustomer) {
             if (!empty($lmsCustomer['ten'])) {
                 $customerClearTen = preg_replace("/[-[:blank:]a-zA-Z]/", '', $lmsCustomer['ten']);
@@ -492,13 +493,15 @@ if ($syncCustomers) {
             );
 
             $matchingResult = false;
-            if ($lmsCustomer['type'] == 1 && !empty($lmsCustomer['ten']) && isset($mmscUserTens[$lmsCustomer['ten']])) {
+            if (isset($mmscUserCodes[$lmsCustomer['id']]) && is_int($mmscUserCodes[$lmsCustomer['id']])) {
+                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserCodes[$lmsCustomer['id']]['id']);
+            } elseif ($lmsCustomer['type'] == 1 && !empty($lmsCustomer['ten']) && isset($mmscUserTens[$lmsCustomer['ten']])) {
                 if (isset($lmsAllCustomersByTen[$lmsCustomer['ten']]) && count($lmsAllCustomersByTen[$lmsCustomer['ten']]) > 1 && !$quiet) {
                     echo trans('Customer #$a could not be synchronized. There is another customer with same ten number.', $lmsCustomer['id']) . PHP_EOL;
                     continue;
                 }
 
-                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserTens[$lmsCustomer['ten']]['usercode']);
+                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserTens[$lmsCustomer['ten']]['id']);
                 $args['mmsc_user_code_name'] = $mmscUserTens[$lmsCustomer['ten']]['UserCodeName'];
             } elseif ($lmsCustomer['type'] == 0 && !empty($lmsCustomer['ssn']) && isset($mmscUserSsns[$lmsCustomer['ssn']])) {
                 if (isset($lmsAllCustomersBySsn[$lmsCustomer['ssn']]) && count($lmsAllCustomersBySsn[$lmsCustomer['ssn']]) > 1 && !$quiet) {
@@ -506,7 +509,7 @@ if ($syncCustomers) {
                     continue;
                 }
 
-                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserSsns[$lmsCustomer['ssn']]['usercode']);
+                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserSsns[$lmsCustomer['ssn']]['id']);
                 $args['mmsc_user_code_name'] = $mmscUserSsns[$lmsCustomer['ssn']]['UserCodeName'];
             } elseif ($lmsCustomer['type'] == 0 && !empty($lmsCustomer['icn']) && isset($mmscUserIcns[$lmsCustomer['icn']])) {
                 if (isset($lmsAllCustomersByIcn[$lmsCustomer['icn']]) && count($lmsAllCustomersByIcn[$lmsCustomer['icn']]) > 1 && !$quiet) {
@@ -514,7 +517,7 @@ if ($syncCustomers) {
                     continue;
                 }
 
-                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserIcns[$lmsCustomer['idcardno']]['usercode']);
+                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserIcns[$lmsCustomer['idcardno']]['id']);
                 $args['mmsc_user_code_name'] = $mmscUserIcns[$lmsCustomer['ssn']]['UserCodeName'];
             }
 
@@ -538,13 +541,14 @@ if ($syncAccounts) {
     $DB->BeginTrans();
     //<editor-fold desc="Get MMSC mvno accounts">
     if (!empty($customerid)) {
-        $customerUserCode = $LMS->getCustomerExternalIDs($customerid, $metroportmvno->serviceProviderId);
-        $customerUserCode = array_values($customerUserCode);
-        $userCode = strval($customerUserCode[0]['extid']);
-        $userId = '?userid=' . $mmscUserCodes[$userCode]['userid'];
+        $customerExtIds = $LMS->getCustomerExternalIDs($customerid, $metroportmvno->serviceProviderId);
+        $customerExtIds = array_values($customerExtIds);
+        $customerExtId = intval($customerExtIds[0]['extid']);
+        $userId = '?userid=' . $customerExtId;
     } else {
         $userId = '';
     }
+
     curl_setopt_array($ch, $commonHeaders + array(
             CURLOPT_URL => API_URL . '/Mvno/Mobiles' . $userId,
             CURLOPT_RETURNTRANSFER => true,
@@ -560,17 +564,21 @@ if ($syncAccounts) {
                 "Cookie: " . $cookie,
             ),
         ));
+
     $accountsResponse = curl_exec($ch);
+
     if ($errno = curl_errno($ch)) {
         $error_message = curl_error($ch);
         curl_close($ch);
         die(trans('Error getting users accounts from Metroport API server: "$a"!', $error_message) . PHP_EOL);
     }
+
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     if ($http_code != 200 && $http_code != 204) {
         curl_close($ch);
         die('Error getting users accounts from Metroport API server - HTTP error code: ' . $http_code . '!' . PHP_EOL);
     }
+
     $mmscAccounts = array();
     if (!empty($accountsResponse)) {
         $mmscAccounts = json_decode($accountsResponse, true);
@@ -578,17 +586,17 @@ if ($syncAccounts) {
     //</editor-fold>
 
     //<editor-fold desc="Prepare LMS customers accounts">
-    $lmsBoundCustomersByUsercode = array();
+    $lmsBoundCustomersByExtId = array();
     $lmsBoundCustomers = $metroportmvno->getBoundCustomers($customerid);
     if (!empty($lmsBoundCustomers)) {
         foreach ($lmsBoundCustomers as $key => $item) {
-            $lmsBoundCustomersByUsercode[$item['extid']] = $item;
+            $lmsBoundCustomersByExtId[$item['extid']] = $item;
         }
     }
     //</editor-fold>
 
     //<editor-fold desc="Sync LMS customers accounts with MMSC users mvno accounts">
-    if (!empty($mmscAccounts) && !empty($lmsBoundCustomersByUsercode)) {
+    if (!empty($mmscAccounts) && !empty($lmsBoundCustomersByExtId)) {
         if (!$quiet) {
             echo PHP_EOL . '---' . trans('LMS customers accounts with MMSC users mvno accounts synchronization') . '---' . PHP_EOL;
         }
@@ -598,7 +606,7 @@ if ($syncAccounts) {
 
         foreach ($lmsBoundCustomers as $lmsBoundCustomer) {
             $customerAccounts = $LMS->getCustomerVoipAccounts($lmsBoundCustomer['id']);
-            if ($customerAccounts) {
+            if (!empty($customerAccounts)) {
                 foreach ($customerAccounts as $customerAccount) {
                     $customerAccountPhone = $customerAccount['phones'][0]['phone'];
                     $customerAccountAno = substr($customerAccountPhone, 2);
@@ -614,10 +622,10 @@ if ($syncAccounts) {
 
         foreach ($mmscAccounts as $mmscAccount) {
             $mmscAccountId = strval($mmscAccount['id']);
-            $mmscUserCode = $mmscAccount['usercode'];
+            $mmscUserId = $mmscAccount['userid'];
 
             //get LMS customer account by extid = $mmscUsersAccountId
-            if (isset($lmsBoundCustomersByUsercode[$mmscUserCode])) {
+            if (isset($lmsBoundCustomersByExtId[$mmscUserId])) {
                 $login = strval($mmscAccount['ano']);
                 $phone = ('48' . $mmscAccount['ano']);
 
@@ -641,7 +649,7 @@ if ($syncAccounts) {
                         break;
                 }
 
-                $lmsCustomerId = $lmsBoundCustomersByUsercode[$mmscUserCode]['id'];
+                $lmsCustomerId = $lmsBoundCustomersByExtId[$mmscUserId]['id'];
 
                 if (isset($customerNoSynchronizedAccountsByAno[$login])) {
                     $customerAccountId = $customerNoSynchronizedAccountsByAno[$mmscAccount['ano']]['id'];
@@ -935,7 +943,10 @@ if ($syncBillings) {
                 //<editor-fold desc="Get MMSC billings for user">
                 $datestart = '?datestart=' . urlencode($startdatestr);
                 $dateend = '&dateend=' . urlencode($enddatestr);
-                $userId = isset($mmscUserCodes[$cextid]) ? '&userid=' . $mmscUserCodes[$cextid]['userid'] : null;
+                $userId = !empty($cextid) ? '&userid=' . $cextid : null;
+
+                $response = array();
+                $responseCount = 0;
 
                 if (!empty($userId)) {
                     curl_setopt_array($ch, $commonHeaders + array(
@@ -953,16 +964,19 @@ if ($syncBillings) {
                                 "Cookie: " . $cookie,
                             ),
                         ));
+
                     $billingsResponse = curl_exec($ch);
+
                     if ($errno = curl_errno($ch)) {
                         $error_message = curl_error($ch);
                         echo trans('Error getting billings from Metroport API server: "$a"!', $error_message) . PHP_EOL;
                     }
+
                     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                     if ($http_code != 200 && $http_code != 204) {
                         echo trans('Error getting billings from Metroport API server - HTTP error code: "$a"!', $http_code) . PHP_EOL;
                     }
-                    $response = array();
+
                     if (!empty($billingsResponse)) {
                         $response = json_decode($billingsResponse, true);
                         if (isset($response[0]) && isset($response[1])) {
@@ -973,11 +987,22 @@ if ($syncBillings) {
                 }
                 //</editor-fold>
                 if (!empty($response) && $responseCount !== 0) {
+//                    foreach ($response as $key => $item) {
                     foreach ($response as $item) {
                         if ((!empty($item['src']) && !preg_match('/^[0-9]+$/', $item['src']))
                             || (!empty($item['dst']) && !preg_match('/^[0-9]+$/', $item['dst']))) {
                             continue;
                         }
+
+                        /*if (!empty($item['src']) && !empty($item['dst'])) {
+                            echo $key . PHP_EOL;
+                        } elseif (empty($item['src']) && !empty($item['dst'])) {
+                            echo $key . PHP_EOL;
+                        } elseif (!empty($item['src']) && empty($item['dst'])) {
+                            echo $key . PHP_EOL;
+                        } elseif (empty($item['src']) && empty($item['dst'])) {
+                            echo $key . PHP_EOL;
+                        }*/
 
                         $id = $item['id'];
                         $src = $item['src'];
@@ -1069,6 +1094,9 @@ if ($syncBillings) {
             $datestart = '?datestart=' . urlencode($startdatestr);
             $dateend = '&dateend=' . urlencode($enddatestr);
 
+            $response = array();
+            $responseCount = 0;
+
             curl_setopt_array($ch, $commonHeaders + array(
                     CURLOPT_URL => API_URL . '/Mvno/Billings' . $datestart . $dateend,
                     CURLOPT_RETURNTRANSFER => true,
@@ -1099,7 +1127,6 @@ if ($syncBillings) {
                 die('Error getting billings from Metroport API server - HTTP error code: ' . $http_code . '!' . PHP_EOL);
             }
 
-            $response = array();
             if (!empty($billingsResponse)) {
                 $response = json_decode($billingsResponse, true);
                 if (isset($response[0]) && isset($response[1])) {
@@ -1277,7 +1304,7 @@ if ($syncBillings) {
         }
     }
 
-    if (!isset($cdr) || empty($cdr)) {
+    if (empty($cdr)) {
         $cdr = array();
     }
     foreach ($records as $cid => $customer_records) {
