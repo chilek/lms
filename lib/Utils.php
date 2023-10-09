@@ -915,6 +915,6 @@ class Utils
         if (empty($currency)) {
             $currency = Localisation::getCurrentCurrency();
         }
-        return sprintf('%s %s', Localisation::formatNumber($value), $currency);
+        return sprintf('%s %s', Localisation::formatNumber(round($value, 2)), $currency);
     }
 }
