@@ -572,6 +572,10 @@ version 28-git (????-??-??):
   - enhancement: added some new useful substitution symbols support for 'events' type notifications [chilan]
   - improvement: allow to check/uncheck all user resource permission to be copied
     from selected user with single click [chilan]
+  - enhancement: show Geoportal Maps and NetStorkWeb Maps links near gps coordinates and customer
+    addresses [imterduo/chilan]
+  - enhancement: 'netstork.web_url' (without default value) and 'netstork.map_zoom_range' (with default
+    value of '18') [interduo/chilan]
 
 version 27.0 (2021-08-20):
 
