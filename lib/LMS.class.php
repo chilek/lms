@@ -3867,6 +3867,12 @@ class LMS
         return $manager->TerytToLocation($terc, $simc, $ulic);
     }
 
+    public function getCoordinatesForAddress($params)
+    {
+        $manager = $this->getLocationManager();
+        return $manager->getCoordinatesForAddress($params);
+    }
+
     public function GetZipCode(array $params)
     {
         $manager = $this->getLocationManager();

@@ -1143,6 +1143,108 @@ class LMSSmartyPlugins
         ';
     }
 
+    public static function showOnMapButtonFunction(array $params, $template)
+    {
+        static $loaded = false;
+
+        $latitude = isset($params['latitude']) ? $params['latitude'] : null;
+        $longitude = isset($params['longitude']) ? $params['longitude'] : null;
+        $type = isset($params['type']) ? $params['type'] : null;
+        $nodeid = empty($params['nodeid']) ? null : intval($params['nodeid']);
+        $netdevid = empty($params['netdevid']) ? null : intval($params['netdevid']);
+        $external = !empty($params['external']);
+        $disabled = empty($nodeid) && empty($netdevid) && !isset($latitude, $longitude) && isset($params['building_num']) && strlen($params['building_num']);
+
+        $script = '';
+        if ($disabled) {
+            $address = array(
+                'city_id' => $params['cityid'],
+                'street_id' => empty($params['streetid']) ? null : $params['streetid'],
+                'building_num' => $params['building_num'],
+            );
+            $address = base64_encode(json_encode($address));
+            $class = 'lms-ui-geocoding';
+            if (!$loaded) {
+                $script = '<script src="js/lms-ui-geocoding.js"></script>';
+                $loaded = true;
+            }
+        } else {
+            $address = '';
+            $class = '';
+        }
+
+        switch ($type) {
+            case 'geoportal':
+                $url = '?m=maplink&action=get-geoportal-link&latitude=%latitude&longitude=%longitude';
+                $icon = 'lms-ui-icon-location-geoportal';
+                $label = $tip = trans('Show on GeoPortal Maps');
+                break;
+
+            case 'default':
+                $url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude,%longitude');
+                $icon = 'lms-ui-icon-map-pin';
+                $label = $tip = trans('Show on default external map');
+                break;
+
+            case 'netstork':
+                $url = ConfigHelper::getConfig('netstork.web_url', '', true);
+                if (!strlen($url)) {
+                    return '';
+                }
+                $mapZoomRange = ConfigHelper::getConfig('netstork.map_zoom_range', 18);
+                $url .=  '#%longitude,%latitude,' . $mapZoomRange;
+                $icon = 'lms-ui-icon-location-netstork';
+                $label = $tip = trans('Show on NetStorkWeb Maps');
+                break;
+
+            default:
+                if (!empty($nodeid)) {
+                    $url = '?m=netdevmap&nodeid=' . $nodeid;
+                    $icon = 'lms-ui-icon-map';
+                    $label = $tip = trans('Show on map');
+                } elseif (!empty($netdevid)) {
+                    $url = '?m=netdevmap&netdevid=' . $netdevid;
+                    $icon = 'lms-ui-icon-map';
+                    $label = $tip = trans('Show on map');
+                } else {
+                    return '';
+                }
+                break;
+        }
+
+        if (!$disabled) {
+            $url = str_replace(
+                array(
+                    '%longitude',
+                    '%latitude',
+                ),
+                array(
+                    $longitude,
+                    $latitude,
+                ),
+                $url
+            );
+        }
+
+        $label = isset($params['label']) ? $params['label'] : $label;
+        $tip = $disabled ? trans('No GPS coordinates for this address') : $tip;
+
+        return self::buttonFunction(
+            array(
+                'href' => $url,
+                'type' => 'link',
+                'class' => $class,
+                'data_address' => $address,
+                'label' => $label,
+                'disabled' => $disabled,
+                'icon' => $icon,
+                'tip' => $tip,
+                'external' => $external,
+            ),
+            $template
+        ) . $script;
+    }
+
     public static function deadlineSelectionFunction(array $params, $template)
     {
         $name = $params['name'];
