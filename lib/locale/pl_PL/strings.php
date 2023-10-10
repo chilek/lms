@@ -3680,7 +3680,7 @@ $_LANG['Select GPS coordinates:'] = 'Wybierz współrzędne geograficzne:';
 $_LANG['No GPS coordinates for this address'] = 'Brak współrzędnych dla tego adresu';
 $_LANG['Show on map'] = 'Pokaż na mapie';
 $_LANG['Show on default external map'] = 'Pokaż na domyślnej mapie zewnętrznej';
-$_LANG['Show on GeoPortal Maps'] = 'Pokaż na mapach GeoPortal';
+$_LANG['Show in GeoPortal'] = 'Pokaż w GeoPortalu';
 $_LANG['Show on NetStorkWeb Maps'] = 'Pokaż na mapach NetStorkWeb';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';

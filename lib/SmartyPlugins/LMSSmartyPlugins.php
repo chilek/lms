@@ -1177,7 +1177,7 @@ class LMSSmartyPlugins
             case 'geoportal':
                 $url = '?m=maplink&action=get-geoportal-link&latitude=%latitude&longitude=%longitude';
                 $icon = 'lms-ui-icon-location-geoportal';
-                $label = $tip = trans('Show on GeoPortal Maps');
+                $label = $tip = trans('Show in GeoPortal');
                 break;
 
             case 'default':
