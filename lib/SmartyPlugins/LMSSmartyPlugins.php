@@ -1227,7 +1227,10 @@ class LMSSmartyPlugins
         }
 
         $label = isset($params['label']) ? $params['label'] : $label;
-        $tip = $disabled ? trans('No GPS coordinates for this address') : $tip;
+        if ($disabled) {
+            $data_tip = $tip;
+            $tip = trans('No GPS coordinates for this address');
+        }
 
         return self::buttonFunction(
             array(
@@ -1239,6 +1242,7 @@ class LMSSmartyPlugins
                 'disabled' => $disabled,
                 'icon' => $icon,
                 'tip' => $tip,
+                'data_tip' => $data_tip,
                 'external' => $external,
             ),
             $template

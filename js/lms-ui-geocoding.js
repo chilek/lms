@@ -40,7 +40,9 @@ $(function() {
                         href: function (index, value) {
                             return value.replace('%longitude', data.longitude).replace('%latitude', data.latitude);
                         },
-                        disabled: null
+                        disabled: null,
+                        title: elem.attr('data-tip'),
+                        "data-title": null,
                     });
                 }
             }
