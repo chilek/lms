@@ -1153,7 +1153,13 @@ class LMSSmartyPlugins
         $nodeid = empty($params['nodeid']) ? null : intval($params['nodeid']);
         $netdevid = empty($params['netdevid']) ? null : intval($params['netdevid']);
         $external = !empty($params['external']);
-        $disabled = empty($nodeid) && empty($netdevid) && !isset($latitude, $longitude) && isset($params['building_num']) && strlen($params['building_num']);
+        $disabled = false;
+        if (empty($nodeid) && empty($netdevid) && !isset($latitude, $longitude)) {
+            if (empty($params['cityid'])) {
+                return '';
+            }
+            $disabled = isset($params['building_num']) && strlen($params['building_num']);
+        }
 
         $script = '';
         if ($disabled) {
@@ -1192,7 +1198,7 @@ class LMSSmartyPlugins
                     return '';
                 }
                 $mapZoomRange = ConfigHelper::getConfig('netstork.map_zoom_range', 18);
-                $url .=  '#%longitude,%latitude,' . $mapZoomRange;
+                $url .= '#%longitude,%latitude,' . $mapZoomRange;
                 $icon = 'lms-ui-icon-location-netstork';
                 $label = $tip = trans('Show on NetStorkWeb Maps');
                 break;
@@ -1206,7 +1212,7 @@ class LMSSmartyPlugins
                     $url = '?m=netdevmap&netdevid=' . $netdevid;
                     $icon = 'lms-ui-icon-map';
                     $label = $tip = trans('Show on map');
-                } else {
+                } elseif (!$disabled) {
                     return '';
                 }
                 break;
@@ -1226,27 +1232,36 @@ class LMSSmartyPlugins
             );
         }
 
-        $label = isset($params['label']) ? $params['label'] : $label;
+        if (isset($params['label'])) {
+            $label = $params['label'];
+        }
+
         if ($disabled) {
             $data_tip = $tip;
             $tip = trans('No GPS coordinates for this address');
         }
 
-        return self::buttonFunction(
-            array(
-                'href' => $url,
-                'type' => 'link',
-                'class' => $class,
-                'data_address' => $address,
-                'label' => $label,
-                'disabled' => $disabled,
-                'icon' => $icon,
-                'tip' => $tip,
-                'data_tip' => $data_tip,
-                'external' => $external,
-            ),
-            $template
-        ) . $script;
+        $args = array(
+            'href' => $url,
+            'type' => 'link',
+            'label' => $label,
+            'disabled' => $disabled,
+            'icon' => $icon,
+            'tip' => $tip,
+            'external' => $external,
+        );
+
+        if (!empty($address)) {
+            $args['data_address'] = $address;
+        }
+        if (strlen($class)) {
+            $args['class'] = $class;
+        }
+        if (isset($data_tip)) {
+            $args['data_tip'] = $data_tip;
+        }
+
+        return self::buttonFunction($args, $template) . $script;
     }
 
     public static function deadlineSelectionFunction(array $params, $template)

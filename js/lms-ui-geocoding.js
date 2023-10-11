@@ -27,7 +27,7 @@ $(function() {
         var elem = $(this);
         console.log(elem);
         $.ajax({
-            url: '?m=maplink&action=geocoding',
+            url: '?m=maplink&api=1&action=geocoding',
             async: true,
             method: 'POST',
             dataType: 'json',

@@ -340,7 +340,7 @@
 													<a href="{$gps_location_url|replace:"%location":$v.location|replace:"%state":$v.location_state_name|replace:"%city":$v.location_city_name|replace:"%zip":$v.location_zip|replace:"%street":$v.location_street_name|replace:"%full_street":$v.location_full_street_name|replace:"%full_reversed_street":$v.location_full_reversed_street_name|replace:"%short_street":$v.location_short_street_name|replace:"%house":$v.location_house|escape}"
 														title="{trans("Show on map")}">{icon name="location"}</a>
 													{show_on_map_button
-														type="google"
+														type="default"
 														cityid=$v.location_city
 														streetid=$v.location_street
 														building_num=$v.location_house
