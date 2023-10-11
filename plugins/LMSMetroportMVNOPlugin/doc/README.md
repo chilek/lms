@@ -46,8 +46,11 @@ Przykłady:
 
 --config-file=<path to lms.ini> --billings --start-date="2023-05-28 00:00:00" --end-date="2023-06-31 23:59:59" - spowoduje zaczytanie billingów z datą rozpoczęcia połączenia pomiedzy datą startową i końcową.
 
---config-file=<path to lms.ini> --billings --start-date="2023-06-01 00:00:00" --incremental-by-last-id - spowoduje zaczytanie wszystkich bilingów z Metroport, których
-ID będzie większe od największego ID zachowanego w LMS (największe ID w LMS jest wyznaczane tylko dla rekordów bilingowych po podanej dacie).
+--config-file=<path to lms.ini> --billings --start-date="2023-06-01 00:00:00" --incremental - spowoduje zaczytanie wszystkich bilingów z Metroport, których
+ID będzie większe od największego ID zachowanego w LMS (największe ID w LMS jest wyznaczane tylko dla rekordów bilingowych po dacie podanej w --start-date).
+
+--config-file=<path to lms.ini> --billings --start-date="2023-06-01 00:00:00" --incremental --use-call-start-time - spowoduje zaczytanie wszystkich bilingów z Metroport, których
+data rozpoczęcia poołączenia będzie większe od największej daty rozpoczęcia połączenia zachowanej w LMS (największa data rozpoczęcia połączenia w LMS jest wyznaczana tylko dla rekordów bilingowych po dacie podanej w --start-date).
 
 #### Generowania obciążeń z tytułu billingów w LMS
 Do generowania obciążeń z tytułu billingów należy użyć skryptu lms-payments.php, który jest dostepny w LMS.
