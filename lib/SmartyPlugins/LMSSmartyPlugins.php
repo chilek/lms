@@ -1153,6 +1153,7 @@ class LMSSmartyPlugins
         $nodeid = empty($params['nodeid']) ? null : intval($params['nodeid']);
         $netdevid = empty($params['netdevid']) ? null : intval($params['netdevid']);
         $external = !empty($params['external']);
+
         $disabled = false;
         if (empty($nodeid) && empty($netdevid) && !isset($latitude, $longitude)) {
             if (empty($params['cityid'])) {
@@ -1183,13 +1184,13 @@ class LMSSmartyPlugins
             case 'geoportal':
                 $url = '?m=maplink&action=get-geoportal-link&latitude=%latitude&longitude=%longitude';
                 $icon = 'lms-ui-icon-location-geoportal';
-                $label = $tip = trans('Show in GeoPortal');
+                $tip = trans('Show in GeoPortal');
                 break;
 
             case 'default':
                 $url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude,%longitude');
                 $icon = 'lms-ui-icon-map-pin';
-                $label = $tip = trans('Show on default external map');
+                $tip = trans('Show on default external map');
                 break;
 
             case 'netstork':
@@ -1200,18 +1201,18 @@ class LMSSmartyPlugins
                 $mapZoomRange = ConfigHelper::getConfig('netstork.map_zoom_range', 18);
                 $url .= '#%longitude,%latitude,' . $mapZoomRange;
                 $icon = 'lms-ui-icon-location-netstork';
-                $label = $tip = trans('Show on NetStorkWeb Maps');
+                $tip = trans('Show on NetStorkWeb Maps');
                 break;
 
             default:
                 if (!empty($nodeid)) {
                     $url = '?m=netdevmap&nodeid=' . $nodeid;
                     $icon = 'lms-ui-icon-map';
-                    $label = $tip = trans('Show on map');
+                    $tip = trans('Show on map');
                 } elseif (!empty($netdevid)) {
                     $url = '?m=netdevmap&netdevid=' . $netdevid;
                     $icon = 'lms-ui-icon-map';
-                    $label = $tip = trans('Show on map');
+                    $tip = trans('Show on map');
                 } elseif (!$disabled) {
                     return '';
                 }
@@ -1232,10 +1233,6 @@ class LMSSmartyPlugins
             );
         }
 
-        if (isset($params['label'])) {
-            $label = $params['label'];
-        }
-
         if ($disabled) {
             $data_tip = $tip;
             $tip = trans('No GPS coordinates for this address');
@@ -1244,14 +1241,13 @@ class LMSSmartyPlugins
         $args = array(
             'href' => $url,
             'type' => 'link',
-            'label' => $label,
+            'external' => $external,
             'disabled' => $disabled,
             'icon' => $icon,
             'tip' => $tip,
-            'external' => $external,
         );
 
-        if (!empty($address)) {
+        if (strlen($address)) {
             $args['data_address'] = $address;
         }
         if (strlen($class)) {
@@ -1259,6 +1255,13 @@ class LMSSmartyPlugins
         }
         if (isset($data_tip)) {
             $args['data_tip'] = $data_tip;
+        }
+        if (isset($params['label'])) {
+            if (is_string($params['label'])) {
+                $args['label'] = $params['label'];
+            } elseif (!empty($params['label']) && isset($tip)) {
+                $args['label'] = $tip;
+            }
         }
 
         return self::buttonFunction($args, $template) . $script;

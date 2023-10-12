@@ -25,7 +25,6 @@
 $(function() {
     $('.lms-ui-geocoding').each(function() {
         var elem = $(this);
-        console.log(elem);
         $.ajax({
             url: '?m=maplink&api=1&action=geocoding',
             async: true,
