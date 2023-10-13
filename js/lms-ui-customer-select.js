@@ -32,7 +32,7 @@ function __getCustomerNames(ids, success) {
     if (!ids || String(ids).length == 0)
         return 0;
 
-    $.ajax('?m=customerinfo&api=1&ajax=1', {
+    $.ajax('?m=customername&api=1', {
         async: true,
         method: 'POST',
         data: {

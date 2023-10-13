@@ -24,37 +24,6 @@
  *  $Id$
  */
 
-if (isset($_GET['ajax'])) {
-    if (!isset($_POST['id'])) {
-        die;
-    }
-    if (is_array($_POST['id'])) {
-        $ids = $_POST['id'];
-    } else {
-        $ids = array($_POST['id']);
-    }
-
-    $customernames = array();
-    foreach ($ids as $id) {
-        if (!($id = intval($id))) {
-            continue;
-        }
-        $customername = $LMS->GetCustomerName($id);
-        if (!empty($customername)) {
-            $customernames[$id] = $customername;
-        }
-    }
-    header('Content-Type: application/json');
-
-    if (empty($customernames)) {
-        echo json_encode(array('error' => trans("Not exists")));
-    } else {
-        echo json_encode(array('customernames' => $customernames));
-    }
-
-    die;
-}
-
 $customerid = intval($_GET['id']);
 
 $LMS->InitXajax();
