@@ -260,7 +260,7 @@ if (isset($options['use-call-start-time']) && isset($options['use-last-id'])) {
     die(trans('Fatal error: Using --use-last-id and --use-call-start-time parameters at the same time is not supported!') . PHP_EOL);
 }
 
-$incrementalUseLastId = isset($options['incremental']) || isset($options['use-last-id']);
+$incrementalUseLastId = isset($options['incremental']) && (!isset($options['use-call-start-time']) || isset($options['use-last-id']));
 $incrementalUseCallStartTime = isset($options['incremental']) && isset($options['use-call-start-time']);
 
 $chunking = (isset($options['chunking']) || $incrementalUseLastId || $incrementalUseCallStartTime);
