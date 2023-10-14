@@ -49,7 +49,8 @@ $parameters = array(
     'customerid:' => null,
     'update' => 'u',
     'mode:' => 'm:',
-    'incremental-by-last-id' => null,
+    'incremental' => null,
+    'use-last-id' => null,
     'use-call-start-time' => null,
     'chunking' => null,
     'no-chunking' => null,
@@ -115,8 +116,9 @@ lms-metroportmvno-sync.php
     --customerid=<id>                   limit synchronization to specifed customer
 -u, --update                            update existing billing records instead deleting them
 -m, --mode=<customer|provider>          billing get method selection
-    --use-call-start-time    get billing records incrementally based on max call start time after --start-date
-    --incremental                       get billing records incrementally based on max unique id after --start-date
+    --incremental                       get billing records incrementally after --start-date
+    --use-last-id                       get billing records incrementally based on max unique id after --start-date
+    --use-call-start-time               get billing records incrementally based on max call start time after --start-date
     --chunking                          enable billings chunking usage
                                         (enabled by default if --incremental parameter was specifed)
     --no-chunking                       disable billings chunking usage
@@ -248,14 +250,20 @@ if ($mode != 'customer' && $mode != 'provider') {
     die(trans('Fatal error: unsupported mode "$a"!', $mode) . PHP_EOL);
 }
 
-$incremental = isset($options['incremental']);
-$useCallStartTime = isset($options['use-call-start-time']);
-
-if (!$incremental && $useCallStartTime) {
-    die(trans('Fatal error: Using --use-call-start-time parameter needs --incremental parameter!', $mode) . PHP_EOL);
+if (!isset($options['incremental']) && isset($options['use-call-start-time'])) {
+    die(trans('Fatal error: Using --use-call-start-time parameter needs --incremental parameter!') . PHP_EOL);
+}
+if (!isset($options['incremental']) && isset($options['use-last-id'])) {
+    die(trans('Fatal error: Using --use-last-id parameter needs --incremental parameter!') . PHP_EOL);
+}
+if (isset($options['use-call-start-time']) && isset($options['use-last-id'])) {
+    die(trans('Fatal error: Using --use-last-id and --use-call-start-time parameters at the same time is not supported!') . PHP_EOL);
 }
 
-$chunking = (isset($options['chunking']) || $incremental);
+$incrementalUseLastId = isset($options['incremental']) || isset($options['use-last-id']);
+$incrementalUseCallStartTime = isset($options['incremental']) && isset($options['use-call-start-time']);
+
+$chunking = (isset($options['chunking']) || $incrementalUseLastId || $incrementalUseCallStartTime);
 
 if (isset($options['no-chunking'])) {
     $chunking = false;
@@ -803,11 +811,10 @@ if ($syncBillings) {
         )
     );
 
-    if ($incremental) {
-        if ($useCallStartTime) {
-            if (!empty($voip_account_ids) || !empty($voip_numbers)) {
-                $max_call_start_time = $DB->GetOne(
-                    'SELECT MAX(call_start_time)
+    if ($incrementalUseLastId) {
+        if (!empty($voip_account_ids) || !empty($voip_numbers)) {
+            $idAfter = $DB->GetOne(
+                'SELECT MAX(uniqueid)
                 FROM voip_cdr
                 WHERE incremental = 0
                     AND call_start_time > ?
@@ -817,60 +824,60 @@ if ($syncBillings) {
                         OR caller IN ?
                         OR callee IN ?
                     )',
-                    array(
-                        $startdate,
-                        $voip_account_ids,
-                        $voip_account_ids,
-                        $voip_numbers,
-                        $voip_numbers,
-                    )
-                );
-            }
-
-            if (empty($max_call_start_time)) {
-                $max_call_start_time = 0;
-            }
-
-            $startdate = max($startdate, $max_call_start_time);
-        } else {
-            if (!empty($voip_account_ids) || !empty($voip_numbers)) {
-                $idAfter = $DB->GetOne(
-                    'SELECT MAX(uniqueid)
-                    FROM voip_cdr
-                    WHERE incremental = 0
-                        AND call_start_time > ?
-                        AND (
-                            callervoipaccountid IN ?
-                            OR calleevoipaccountid IN ?
-                            OR caller IN ?
-                            OR callee IN ?
-                        )',
-                    array(
-                        $startdate,
-                        $voip_account_ids,
-                        $voip_account_ids,
-                        $voip_numbers,
-                        $voip_numbers,
-                    )
-                );
-            }
-
-            if (empty($idAfter)) {
-                $idAfter = null;
-            } else {
-                $startdate = $DB->GetOne(
-                    'SELECT call_start_time
-                    FROM voip_cdr
-                    WHERE uniqueid = ?',
-                    array(
-                        $idAfter
-                    )
-                );
-
-                $startdate = strtotime('- 3 days', $startdate);
-            }
+                array(
+                    $startdate,
+                    $voip_account_ids,
+                    $voip_account_ids,
+                    $voip_numbers,
+                    $voip_numbers,
+                )
+            );
         }
 
+        if (empty($idAfter)) {
+            $idAfter = null;
+        } else {
+            $startdate = $DB->GetOne(
+                'SELECT call_start_time
+                FROM voip_cdr
+                WHERE uniqueid = ?',
+                array(
+                    $idAfter
+                )
+            );
+
+            $startdate = strtotime('- 3 days', $startdate);
+        }
+
+        $enddate = strtotime('today') - 1;
+    } elseif ($incrementalUseCallStartTime) {
+        if (!empty($voip_account_ids) || !empty($voip_numbers)) {
+            $max_call_start_time = $DB->GetOne(
+                'SELECT MAX(call_start_time)
+            FROM voip_cdr
+            WHERE incremental = 0
+                AND call_start_time > ?
+                AND (
+                    callervoipaccountid IN ?
+                    OR calleevoipaccountid IN ?
+                    OR caller IN ?
+                    OR callee IN ?
+                )',
+                array(
+                    $startdate,
+                    $voip_account_ids,
+                    $voip_account_ids,
+                    $voip_numbers,
+                    $voip_numbers,
+                )
+            );
+        }
+
+        if (empty($max_call_start_time)) {
+            $max_call_start_time = 0;
+        }
+
+        $startdate = max($startdate, $max_call_start_time);
         $enddate = strtotime('today') - 1;
     }
 
