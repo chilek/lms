@@ -1033,9 +1033,11 @@ if ($syncBillings) {
                 //</editor-fold>
                 if (!empty($response) && $responseCount !== 0) {
                     foreach ($response as $item) {
-                        if ((!empty($item['src']) && !preg_match('/^[0-9]+$/', $item['src']))
-                            || (!empty($item['dst']) && !preg_match('/^[0-9]+$/', $item['dst']))) {
-                            continue;
+                        if (!empty($item['src']) && !preg_match('/^[0-9]+$/', $item['src'])) {
+                            $item['src'] = preg_replace("/^D[0-9]/", '', $item['src']);
+                        }
+                        if (!empty($item['dst']) && !preg_match('/^[0-9]+$/', $item['dst'])) {
+                            $item['dst'] = preg_replace("/^D[0-9]/", '', $item['dst']);
                         }
 
                         $id = $item['id'];
@@ -1173,9 +1175,11 @@ if ($syncBillings) {
 
             if (!empty($responseCount)) {
                 foreach ($response as $item) {
-                    if ((!empty($item['src']) && !preg_match('/^[0-9]+$/', $item['src']))
-                        || (!empty($item['dst']) && !preg_match('/^[0-9]+$/', $item['dst']))) {
-                        continue;
+                    if (!empty($item['src']) && !preg_match('/^[0-9]+$/', $item['src'])) {
+                        $item['src'] = preg_replace("/^D[0-9]/", '', $item['src']);
+                    }
+                    if (!empty($item['dst']) && !preg_match('/^[0-9]+$/', $item['dst'])) {
+                        $item['dst'] = preg_replace("/^D[0-9]/", '', $item['dst']);
                     }
 
                     $id = $item['id'];
