@@ -77,7 +77,7 @@ if ($resourceKeyOnly) {
 
 switch ($mode) {
     case 'customer':
-        if (empty($search) || (!ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
+        if (empty($search) || ($module != 'customerselect' && !ConfigHelper::checkPrivilege('customer_management') && !ConfigHelper::checkPrivilege('read_only'))) {
             die;
         }
 
