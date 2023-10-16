@@ -137,7 +137,7 @@ function initCustomerList(selector)
                 new AutoSuggest({
                     form: suggestionInput[0].form,
                     elem: suggestionInput[0],
-                    uri: '?m=quicksearch&mode=customer&ajax=1&api=1&what=',
+                    uri: '?m=customerselect&mode=customer&ajax=1&api=1&what=',
                     suggestionContainer: container.find('.lms-ui-customer-select-suggestion-container'),
                     autoSubmitForm: false,
                     onSubmit: function (data) {
