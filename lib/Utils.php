@@ -519,6 +519,9 @@ class Utils
                 'tel' => true,
                 'data' => true,
             ));
+            $hm_config->set('Attr.ForbiddenClasses', array(
+                'lms-ui-datatable' => true,
+            ));
             $hm_config->set('CSS.MaxImgLength', null);
             $hm_config->set('HTML.MaxImgLength', null);
             if (defined('CACHE_DIR')) {
