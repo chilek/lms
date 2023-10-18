@@ -116,7 +116,7 @@ lms-metroportmvno-sync.php
     --customerid=<id>                   limit synchronization to specifed customer
 -u, --update                            update existing billing records instead deleting them
 -m, --mode=<customer|provider>          billing get method selection
-    --incremental                       get billing records incrementally after --start-date
+-i, --incremental                       get billing records incrementally after --start-date
     --use-last-id                       get billing records incrementally based on max unique id after --start-date
     --use-call-start-time               get billing records incrementally based on max call start time after --start-date
     --chunking                          enable billings chunking usage
