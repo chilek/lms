@@ -92,6 +92,8 @@ class LMSEzpdfReceipt extends LMSDocument
         $this->backend->text_align_center($x+315, $y, $font_size, '<b>' . trans('Cash') . '</b>');
         $y -= $this->backend->text_align_center($x+385, $y, $font_size, '<b>' . trans('Account<!singular:noun>') . '</b>');
 
+        $y2 = $y;
+
         $y = $yy - $font_size;
         if ($this->data['type'] == 'out') {
             $this->backend->text_align_left($x+2, $y+2, $font_size-4, trans('To whom:'));
@@ -121,6 +123,8 @@ class LMSEzpdfReceipt extends LMSDocument
         if (!empty($address)) {
             $y = $this->backend->text_wrap($x + 2, $y, 240, $font_size - 2, '<b>' . $address . '</b>', null);
         }
+
+        $y = min($y, $y2);
 
         $y += $font_size/2;
         $this->backend->line($x, $yy, $x, $y);
