@@ -173,6 +173,8 @@ function CustomerAssignmentHelper(options) {
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
+		var allAttachments = 0;
+		var allCheckedAttachments = 0;
 		var html = '';
 
 		if (helper.promotionAttachments.hasOwnProperty(schemaId) && !$.isEmptyObject(helper.promotionAttachments[schemaId].promotions)) {
@@ -181,15 +183,22 @@ function CustomerAssignmentHelper(options) {
 				'<ul>';
 
 			$.each(helper.promotionAttachments[schemaId].promotions, function (index, attachment) {
+				allAttachments++;
+				var checked = helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
+					helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
+					!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) &&
+					attachment.checked;
+				if (checked) {
+					allCheckedAttachments++;
+				}
 				html +=
-					'<li>' +
-						'<label>' +
+					'<li class="lms-ui-tab-table-row">' +
+						'<label class="lms-ui-multi-check-ignore">' +
 							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
 								' value="0">' +
 							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-attachments][' + attachment.id + ']"' +
-								' value="' + attachment.id + '"' +
-								(helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionAttachments[attachment.id] == attachment.id ||
-									!helper.assignmentPromotionAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+								' value="' + attachment.id + '" class="lms-ui-multi-check"' +
+								(checked ? ' checked' : '') + '>' +
 							'<span>' +
 								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
 							'</span>' +
@@ -206,15 +215,22 @@ function CustomerAssignmentHelper(options) {
 				'<ul>';
 
 			$.each(helper.promotionAttachments[schemaId].promotionschemas, function (index, attachment) {
+				allAttachments++;
+				var checked = helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
+					helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
+					!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) &&
+					attachment.checked;
+				if (checked) {
+					allCheckedAttachments++;
+				}
 				html +=
-					'<li>' +
-						'<label>' +
+					'<li class="lms-ui-tab-table-row">' +
+						'<label class="lms-ui-multi-check-ignore">' +
 							'<input type="hidden" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
 								' value="0">' +
 							'<input type="checkbox" name="' + helper.variablePrefix + '[promotion-schema-attachments][' + attachment.id + ']"' +
-								' value="' + attachment.id + '"' +
-								(helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && helper.assignmentPromotionSchemaAttachments[attachment.id] == attachment.id ||
-									!helper.assignmentPromotionSchemaAttachments.hasOwnProperty(attachment.id) && attachment.checked ? ' checked' : '') + '>' +
+								' value="' + attachment.id + '" class="lms-ui-multi-check"' +
+								(checked ? ' checked' : '') + '>' +
 							'<span>' +
 								escapeHtml(attachment.label.length ? attachment.label : attachment.filename) +
 							'</span>' +
@@ -225,7 +241,16 @@ function CustomerAssignmentHelper(options) {
 			html += '</ul></div>';
 		}
 
+		if (html.length) {
+			html += '<label class="lms-ui-dotted-line-top multi-check-all-label">' +
+				'<input type="checkbox" class="lms-ui-multi-check-all"' +
+				(allAttachments == allCheckedAttachments ? ' checked' : '') + '>' +
+				$t("Check All") +
+				'</label>';
+		}
+
 		$('#promotion-attachments').html(html);
+		initMultiChecks('#promotion-attachments');
 		$('#a_attachments').toggle($('#tariff-select').val() == -2 && typeof(promotionAttachments) != 'undefined' && html.length > 0);
 
 		$('#location-select').trigger('change');
