@@ -183,7 +183,10 @@ if (array_key_exists('import-file', $options)) {
     $filemtime = time();
 }
 
-$import_config = ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php');
+$import_config = ConfigHelper::getConfig(
+    (isset($options['section']) ? $config_section : 'phpui') . '.import_config',
+    'cashimportcfg.php'
+);
 if (strpos($import_config, DIRECTORY_SEPARATOR) === false) {
     $import_config = MODULES_DIR . DIRECTORY_SEPARATOR . $import_config;
 }
