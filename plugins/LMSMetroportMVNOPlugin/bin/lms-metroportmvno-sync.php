@@ -49,7 +49,7 @@ $parameters = array(
     'customerid:' => null,
     'update' => 'u',
     'mode:' => 'm:',
-    'incremental' => null,
+    'incremental' => 'i',
     'use-last-id' => null,
     'use-call-start-time' => null,
     'chunking' => null,
@@ -260,10 +260,10 @@ if (isset($options['use-call-start-time']) && isset($options['use-last-id'])) {
     die(trans('Fatal error: Using --use-last-id and --use-call-start-time parameters at the same time is not supported!') . PHP_EOL);
 }
 
-$incrementalUseLastId = isset($options['incremental']) && (!isset($options['use-call-start-time']) || isset($options['use-last-id']));
-$incrementalUseCallStartTime = isset($options['incremental']) && isset($options['use-call-start-time']);
+$useLastId = isset($options['incremental']) && (!isset($options['use-call-start-time']) || isset($options['use-last-id']));
+$useCallStartTime = isset($options['incremental']) && isset($options['use-call-start-time']);
 
-$chunking = (isset($options['chunking']) || $incrementalUseLastId || $incrementalUseCallStartTime);
+$chunking = (isset($options['chunking']) || $useLastId || $useCallStartTime);
 
 if (isset($options['no-chunking'])) {
     $chunking = false;
@@ -811,7 +811,7 @@ if ($syncBillings) {
         )
     );
 
-    if ($incrementalUseLastId) {
+    if ($useLastId) {
         if (!empty($voip_account_ids) || !empty($voip_numbers)) {
             $idAfter = $DB->GetOne(
                 'SELECT MAX(uniqueid)
@@ -850,7 +850,7 @@ if ($syncBillings) {
         }
 
         $enddate = strtotime('today') - 1;
-    } elseif ($incrementalUseCallStartTime) {
+    } elseif ($useCallStartTime) {
         if (!empty($voip_account_ids) || !empty($voip_numbers)) {
             $max_call_start_time = $DB->GetOne(
                 'SELECT MAX(call_start_time)
