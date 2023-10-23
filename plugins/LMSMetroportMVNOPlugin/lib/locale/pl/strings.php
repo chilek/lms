@@ -33,3 +33,7 @@ $_LANG['Fatal error: no customers with "metroport-mvno"-tagged tariffs assigned!
 $_LANG['has been bound with MMSC user'] = 'został powiazany z użytkownikiem MMSC';
 $_LANG['Price list file ($a) does not exist!'] = 'Plik z cennikiem ($a) nie istnieje!';
 $_LANG['Price list csv file import.'] = 'Import pliku csv z cennikiem.';
+
+$_LANG['Fatal error: Using --use-call-start-time parameter needs --incremental parameter!'] = 'Błąd krytyczny: Użycie parametru --use-call-start-time wymaga użycia parametru --incremental!';
+$_LANG['Fatal error: Using --use-last-id parameter needs --incremental parameter!'] = 'Błąd krytyczny: Użycie parametru --use-last-id wymaga użycia parametru --incremental!';
+$_LANG['Fatal error: Using --use-last-id and --use-call-start-time parameters at the same time is not supported!'] = 'Błąd krytyczny: Jednoczesne użycie parametrów --use-last-id i --use-call-start-time nie jest wspierane!';

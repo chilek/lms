@@ -133,11 +133,11 @@ class MetroportMVNO
      * set LMS customer Extid
      *
      * @param int $lmsCustomerId LMS customer ID
-     * @param string $mmcsUserCode MMSC user code
+     * @param int $mmcsUserId MMSC user ID
      * @return int
      * @throws
      */
-    public function setCustomerExtid(int $lmsCustomerId, string $mmcsUserCode)
+    public function setCustomerExtid(int $lmsCustomerId, int $mmcsUserId)
     {
         $extId = $this->getLMSCustomerExtid($lmsCustomerId);
         if (empty($extId)) {
@@ -146,19 +146,7 @@ class MetroportMVNO
                 VALUES (?, ?, ?)',
                 array(
                     $lmsCustomerId,
-                    $mmcsUserCode,
-                    $this->serviceProviderId
-                )
-            );
-        } else {
-            return $this->db->Execute(
-                'UPDATE customerextids SET extid = ?, serviceproviderid = ?
-                WHERE customerid = ?
-                AND serviceproviderid = ?',
-                array(
-                    $mmcsUserCode,
-                    $this->serviceProviderId,
-                    $lmsCustomerId,
+                    $mmcsUserId,
                     $this->serviceProviderId
                 )
             );
