@@ -143,6 +143,7 @@ $SESSION->restore('cnoteerror', $error, true);
 
 $args = array(
     'doctype' => DOC_CNOTE,
+    'cdate' => $invoice['cdate'],
     'customerid' => $invoice['customerid'],
     'division' => $invoice['divisionid'],
 );
@@ -285,6 +286,7 @@ switch ($action) {
 
         $args = array(
             'doctype' => DOC_CNOTE,
+            'cdate' => $cnote['cdate'],
             'customerid' => $invoice['customerid'],
             'division' => $divisionid,
             'next' => false,
@@ -521,6 +523,7 @@ switch ($action) {
 
         $args = array(
             'doctype' => DOC_CNOTE,
+            'cdate' => $cnote['cdate'],
             'customerid' => $invoice['customerid'],
             'division' => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
                 : (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),

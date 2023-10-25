@@ -408,11 +408,22 @@ $plans = array();
 $periods = array(
     0 => YEARLY,
 );
-$query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault 
-		FROM numberplans n 
-		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
-		WHERE doctype IN (?, ?, ?)";
-$results = $DB->GetAll($query, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE));
+$query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault
+    FROM numberplans n
+    LEFT JOIN numberplanassignments a ON a.planid = n.id
+    WHERE doctype IN ?
+        AND n.datefrom <= ?
+        AND (n.dateto = 0 OR n.dateto >= ?)";
+$results = $DB->GetAll(
+        $query,
+        array(
+            array(
+                DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE,
+            ),
+            $currtime,
+            $currtime,
+        )
+);
 if (!empty($results)) {
     foreach ($results as $row) {
         if ($row['isdefault']) {

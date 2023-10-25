@@ -430,6 +430,7 @@ switch ($action) {
 
         $args = array(
             'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'cdate' => $invoice['cdate'],
             'customerid' => $invoice['customerid'],
             'division' => $invoice['divisionid'],
             'next' => false,
@@ -513,6 +514,7 @@ switch ($action) {
 
         $args = array(
             'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
+            'cdate' => $invoice['cdate'],
             'customerid' => $invoice['customerid'],
             'division' => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
                 : (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
@@ -834,7 +836,7 @@ $SMARTY->assign('taxeslist', $taxeslist);
 
 $args = array(
     'doctype' => isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
-    'cdate' => date('Y/m', $invoice['cdate']),
+    'cdate' => $invoice['cdate'],
 );
 if (isset($invoice['customerid']) && !empty($invoice['customerid'])) {
     $args['customerid'] = $invoice['customerid'];

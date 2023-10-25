@@ -409,7 +409,7 @@ $SMARTY->assign('note', $note);
 
 $args = array(
     'doctype' => DOC_DNOTE,
-    'cdate' => date('Y/m', $note['cdate']),
+    'cdate' => $note['cdate'],
 );
 if (isset($customer)) {
     $args['customerid'] = $customer['id'];

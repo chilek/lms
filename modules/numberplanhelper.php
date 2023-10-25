@@ -35,7 +35,7 @@ $db = LMSDB::getInstance();
 if ($documentType) {
     $args = array(
         'doctype' => $documentType,
-        'cdate' => date('Y/m', $cdate),
+        'cdate' => $cdate,
     );
     if (!empty($customerID)) {
         $args['customerid'] = $customerID;

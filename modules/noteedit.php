@@ -171,6 +171,7 @@ switch ($action) {
 
         $args = array(
             'doctype' => DOC_DNOTE,
+            'cdate' => $note['cdate'],
             'customerid' => $note['customerid'],
             'division' => $note['divisionid'],
             'next' => false,
@@ -231,6 +232,7 @@ switch ($action) {
 
             $args = array(
                 'doctype' => DOC_DNOTE,
+                'cdate' => $note['cdate'],
                 'customerid' => $note['customerid'],
                 'division' => (empty($note['divisionid']) ? null : $note['divisionid']),
                 'next' => false,
@@ -444,7 +446,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 
 $args = array(
     'doctype' => DOC_DNOTE,
-    'cdate' => date('Y/m', $note['cdate']),
+    'cdate' => $note['cdate'],
 );
 if (isset($note['customerid']) && !empty($note['customerid'])) {
     $args['customerid'] = $note['customerid'];

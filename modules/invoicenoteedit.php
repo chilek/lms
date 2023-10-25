@@ -300,6 +300,7 @@ switch ($action) {
 
         $args = array(
             'doctype' => DOC_CNOTE,
+            'cdate' => $cnote['cdate'],
             'customerid' => $cnote['customerid'],
             'division' => $divisionid,
             'next' => false,
@@ -559,6 +560,7 @@ switch ($action) {
 
         $args = array(
             'doctype' => DOC_CNOTE,
+            'cdate' => $cnote['cdate'],
             'customerid' => $cnote['customerid'],
             'division' => $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'],
             'next' => false,
@@ -859,7 +861,7 @@ $SMARTY->assign('taxeslist', $taxeslist);
 
 $args = array(
     'doctype' => DOC_CNOTE,
-    'cdate' => date('Y/m', $cnote['cdate']),
+    'cdate' => $cnote['cdate'],
     'customerid' => $cnote['customerid'],
     'division' => $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cnote['customerid'])),
 );
