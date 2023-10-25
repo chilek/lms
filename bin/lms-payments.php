@@ -1141,6 +1141,14 @@ if (!empty($assigns)) {
     }
 }
 
+// correct currency values for foreign currency documents with today's cdate or sdate
+// which have estimated currency value earlier (in the moment of document issue)
+$daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
+$dayend = $daystart + 86399;
+$currencydaystart = strtotime('yesterday', $daystart);
+$currencycurrtime = strtotime('yesterday', $currtime);
+$currencydayend = strtotime('yesterday', $dayend);
+
 $currencyvalues = array();
 
 if (!empty($assigns)) {
@@ -1191,14 +1199,6 @@ if (!empty($currencyvalues) && !$quiet) {
     }
 }
 $currencyvalues[Localisation::getCurrentCurrency()] = 1.0;
-
-// correct currency values for foreign currency documents with today's cdate or sdate
-// which have estimated currency value earlier (in the moment of document issue)
-$daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
-$dayend = $daystart + 86399;
-$currencydaystart = strtotime('yesterday', $daystart);
-$currencycurrtime = strtotime('yesterday', $currtime);
-$currencydayend = strtotime('yesterday', $dayend);
 
 $documents = $DB->GetAll(
     'SELECT d.id, d.currency FROM documents d
