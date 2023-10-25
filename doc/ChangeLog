@@ -576,6 +576,7 @@ version 28-git (????-??-??):
     addresses [imterduo/chilan]
   - enhancement: 'netstork.web_url' (without default value) and 'netstork.map_zoom_range' (with default
     value of '18') [interduo/chilan]
+  - enhancement: implemented validity intervals for numbering plans [chilan]
 
 version 27.0 (2021-08-20):
 
