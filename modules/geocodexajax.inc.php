@@ -136,7 +136,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
                 $params['postalcode'] = $address['zip'];
             }
             $geocode = osm_geocode($params);
-            if (empty($geocode)) {
+            if (empty($geocode)
+                || isset($geocode['latitude'], $geocode['longitude']) && (!strlen($geocode['latitude']) || !strlen($geocode['longitude']))) {
                 continue;
             }
 
