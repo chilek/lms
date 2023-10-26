@@ -3527,18 +3527,26 @@ if (in_array('www', $channels) && !empty($types)) {
 
 $intersect = array_intersect(array('block', 'unblock'), $channels);
 if (!empty($intersect)) {
-    $customers = array();
+    $existing_or_deleted_customers = array();
+    $existing_customers = array();
     foreach ($notifications as $type => $notification) {
-        if (array_key_exists('customers', $notification)) {
-            $customers = array_merge($customers, $notification['customers']);
+        if (!empty($notification['customers'])) {
+            if ($notification['deleted_customers']) {
+                $existing_or_deleted_customers = array_merge($existing_or_deleted_customers, $notification['customers']);
+            } else {
+                $existing_customers = array_merge($existing_customers, $notification['customers']);
+            }
         }
     }
-    $customers = array_unique($customers);
+    $existing_or_deleted_customers = array_unique($existing_or_deleted_customers);
+    $existing_customers = array_unique($existing_customers);
 
     foreach (array('block', 'unblock') as $channel) {
         if (in_array($channel, $channels)) {
             switch ($channel) {
                 case 'block':
+                    $customers = array_unique(array_merge($existing_or_deleted_customers, $existing_customers));
+
                     if (empty($customers)) {
                         break;
                     }
@@ -3951,7 +3959,8 @@ if (!empty($intersect)) {
                         WHERE 1 = 1' . $customer_status_condition
                         . $customer_type_condition
                         . ($customerid ? ' AND c.id = ' . $customerid : '')
-                        . (empty($customers) ? '' : ' AND c.id NOT IN (' . implode(',', $customers) . ')')
+                        . (empty($existing_or_deleted_customers) ? '' : ' AND c.id NOT IN (' . implode(',', $existing_or_deleted_customers) . ')')
+                        . (empty($existing_customers) ? '' : ' AND c.deleted = 0 AND c.id NOT IN (' . implode(',', $existing_customers) . ')')
                         . ($divisionid ? ' AND c.divisionid = ' . $divisionid : '')
                         . (empty($where_customers) ? '' : ' AND (' . implode(' AND ', $where_customers) . ')')
                         . ($customergroups ?: '')
