@@ -415,14 +415,14 @@ $query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, is
         AND n.datefrom <= ?
         AND (n.dateto = 0 OR n.dateto >= ?)";
 $results = $DB->GetAll(
-        $query,
+    $query,
+    array(
         array(
-            array(
-                DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE,
-            ),
-            $currtime,
-            $currtime,
-        )
+            DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE,
+        ),
+        $currtime,
+        $currtime,
+    )
 );
 if (!empty($results)) {
     foreach ($results as $row) {
