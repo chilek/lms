@@ -318,6 +318,7 @@ define('RT_SOURCE_MESSCHAT', 5);
 define('RT_SOURCE_PAPER', 6);
 define('RT_SOURCE_SMS', 7);
 define('RT_SOURCE_CALLCENTER', 8);
+define('RT_SOURCE_SIDUSIS', 9);
 
 $RT_SOURCES = array(
     RT_SOURCE_UNKNOWN => 'unknown/other',
@@ -329,6 +330,7 @@ $RT_SOURCES = array(
     RT_SOURCE_PAPER => 'complaint',
     RT_SOURCE_SMS => 'SMS',
     RT_SOURCE_CALLCENTER => 'call center',
+    RT_SOURCE_SIDUSIS => 'sidusis',
 );
 
 //Helpdesk ticket priority
