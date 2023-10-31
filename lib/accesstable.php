@@ -123,6 +123,9 @@ $access_table = array(
             'documents' => Permission::MENU_ALL,
         ),
     ),
+    'customer_sensible_data' => array(
+        'label' => trans('customer sensible data view'),
+    ),
     'customer_call_view' => array(
         'label' => trans('customer phone call view'),
         'allow_regexp' => '^customercalllist$',

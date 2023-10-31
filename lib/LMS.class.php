@@ -599,6 +599,11 @@ class LMS
         return $manager->getCustomerConsents($id);
     }
 
+    public function getCustomerSensibleData($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerSensibleData($id);
+    }
     public function GetCustomer($id, $short = false)
     {
         $manager = $this->getCustomerManager();

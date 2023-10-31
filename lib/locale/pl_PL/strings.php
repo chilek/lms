@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['Show sensible data'] = 'Pokaż dane wrażliwe';
+$_LANG['customer sensible data view'] = 'podgląd danych wrażliwych klienta';
+
 $_LANG['(hidden)'] = '(ukryto)';
 
 $_LANG['<!nodesearch>Address origin'] = 'Pochodzenie adresu';
@@ -3977,6 +3980,7 @@ $_LANG['ticket<!syslog>'] = 'zgłoszenie Helpdesk';
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';
 $_LANG['update<!syslog>'] = 'aktualizacja';
+$_LANG['get<!syslog>'] = 'pobranie';
 $_LANG['recover<!syslog>'] = 'przywrócenie';
 $_LANG['password change<!syslog>'] = 'zmiana hasła';
 $_LANG['access denied<!syslog>'] = 'odmowa dostępu';
