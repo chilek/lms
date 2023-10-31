@@ -871,7 +871,7 @@
 			var btn = $(this);
 
 			$.ajax({
-				url: "?m={$layout.module}&id={$customerinfo.id}&action=get_sensible_data",
+				url: "?m={$layout.module}&api=1&id={$customerinfo.id}&action=get_sensible_data",
 				dataType: "json",
 				success: function(data) {
 					$('.customer-sensible-data[data-type]').each(function() {
