@@ -124,7 +124,7 @@ $access_table = array(
         ),
     ),
     'customer_sensitive_data_view' => array(
-        'label' => trans('customer sensible data view'),
+        'label' => trans('customer sensitive data view'),
     ),
     'customer_call_view' => array(
         'label' => trans('customer phone call view'),
