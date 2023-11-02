@@ -123,7 +123,7 @@ $access_table = array(
             'documents' => Permission::MENU_ALL,
         ),
     ),
-    'customer_sensible_data' => array(
+    'customer_sensitive_data_view' => array(
         'label' => trans('customer sensible data view'),
     ),
     'customer_call_view' => array(

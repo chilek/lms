@@ -157,7 +157,7 @@
 													{if isset($_IDENTITY_TYPES[$customerinfo.ict])}
 														{trans($_IDENTITY_TYPES[$customerinfo.ict])}
 													{/if}
-													{if ConfigHelper::checkPrivilege('customer_sensible_data')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
 														{$icn = $customerinfo.icn|escape}
 													{else}
 														{$icn = preg_replace('/[^\s]/', '*', $customerinfo.icn)}
@@ -165,7 +165,7 @@
 													<span class="customer-sensible-data" data-type="icn">
 														{$icn}
 													</span>
-													{if ConfigHelper::checkPrivilege('customer_sensible_data')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$icn}
 													{else}
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
@@ -195,7 +195,7 @@
 												</td>
 												<td>
 													{trans("SSN")}
-													{if ConfigHelper::checkPrivilege('customer_sensible_data')}
+													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
 														{$customerinfo.ssn|escape}
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
 													{else}
@@ -829,7 +829,7 @@
 							{/if}
 						{/block}
 					</div>
-					{if !ConfigHelper::checkPrivilege('customer_sensible_data')}
+					{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
 						<div class="customerinfo-buttons">
 							{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
 						</div>

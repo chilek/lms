@@ -397,7 +397,7 @@
 														{if $customerinfo.icnwarning}
 															<input type="hidden" name="customerdata[icnwarning]" value="1">
 														{/if}
-														{if ConfigHelper::checkPrivilege('customer_sensible_data')}
+														{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
 															{$icn = $customerinfo.icn}
 															{$disabled = false}
 														{else}
@@ -433,7 +433,7 @@
 											{trans("SSN")}
 										</td>
 										<td>
-											{if ConfigHelper::checkPrivilege('customer_sensible_data')}
+											{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
 												{$ssn = $customerinfo.ssn}
 												{$disabled = false}
 											{else}
@@ -729,7 +729,7 @@
 					{button type="submit" id="save-button" icon="save" label="Submit"}
 					{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '{$backurl}';"}
 				</div>
-				{if !ConfigHelper::checkPrivilege('customer_sensible_data')}
+				{if !ConfigHelper::checkPrivilege('customer_sensitive_data_view') && !ConfigHelper::checkPrivilege('hide_customer_sensitive_data')}
 					<div class="customeredit-buttons">
 						{button icon="sensible-data" label="Show sensible data" id="customer-sensible-data-button"}
 					</div>
