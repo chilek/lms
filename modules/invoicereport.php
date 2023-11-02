@@ -461,7 +461,7 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
 
-    if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+    if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport-ext.html');
         html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
     } else {
@@ -472,7 +472,7 @@ if (isset($_POST['extended'])) {
     $SMARTY->assign('printcustomerssn', isset($_POST['printcustomerssn']));
     $SMARTY->assign('printonlysummary', isset($_POST['printonlysummary']));
 
-    if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
+    if (strtolower(ConfigHelper::getConfig('phpui.report_type', '', true)) == 'pdf') {
         $output = $SMARTY->fetch('invoice/invoicereport.html');
         html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
     } else {
