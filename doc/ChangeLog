@@ -580,6 +580,8 @@ version 28-git (????-??-??):
   - enhancement: don't show customer sensible data for regular users and store all requested sensible data views
     in transaction log; new permission 'customer_sensitive_data_view' allows to disable this mechanism
     for selected users [chilan]
+  - enhancement: added new option to 'sale registry' report which allows to check matches between document
+    content service types and service type form filter [chilan]
 
 version 27.0 (2021-08-20):
 
