@@ -116,6 +116,8 @@ if (!empty($_POST['servicetypes'])) {
         $sql_servicetypes[] = 'EXISTS (SELECT 1 FROM cash WHERE servicetype = ' . $servicetype . ' AND cash.docid = d.id)';
     }
     $servicetypewhere = ' AND ( ' . implode($servicetypeoper == 'and' ? ' AND ' : ' OR ', $sql_servicetypes) . ')';
+
+    $servicetypes = array_flip($servicetypes);
 }
 
 if (!empty($_POST['division'])) {
@@ -196,6 +198,8 @@ $args = array($doctypes, $unixfrom, $unixto);
 
 $taxes = $DB->GetAllByKey('SELECT id, value, label, taxed FROM taxes', 'id');
 
+$match_content_service_type = isset($_POST['print-match-content-service-type']);
+
 $documents = $DB->GetAll('SELECT d.id, d.type,
             cn.name AS country, n.template,
             a.state AS rec_state, a.state_id AS rec_state_id,
@@ -261,6 +265,18 @@ if ($documents) {
             case DOC_DNOTE:
                 $document = $LMS->GetNoteContent($idx);
                 break;
+        }
+
+        if ($match_content_service_type && !empty($servicetypes)) {
+            $document['content'] = array_filter(
+                $document['content'],
+                function ($item) use ($servicetypes) {
+                    return isset($servicetypes[$item['servicetype']]);
+                }
+            );
+        }
+        if (empty($document['content'])) {
+            continue;
         }
 
         $invoicelist[$idx]['custname'] = $document['name'];

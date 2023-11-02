@@ -3825,6 +3825,7 @@ $_LANG['hide customer SSN'] = 'ukryj PESEL klienta';
 $_LANG['hide customer SSN/TEN'] = 'ukryj PESEL/NIP klienta';
 $_LANG['hide customer address'] = 'ukryj adres klienta';
 $_LANG['only summary'] = 'tylko podsumowanie';
+$_LANG['match document content service type'] = 'dopasowuj typ usługi z zawartości dokumentu';
 
 $_LANG['Active from:'] = 'Aktywne od:';
 $_LANG['Active to:'] = 'Aktywne do:';

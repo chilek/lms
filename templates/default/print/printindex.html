@@ -767,10 +767,10 @@
 									<td>
 										{icon name="configuration"}
 									</td>
-									<td class="nobr">
+									<td class="nobr valign-top">
 										<strong>{trans("Adjust the print")}</strong>
 									</td>
-									<td colspan="2" class="nobr">
+									<td colspan="2">
 										<label>
 											<input type="checkbox" name="printcustomerid" value="1"
 												form="invoicereport">
@@ -780,6 +780,11 @@
 											<input type="checkbox" name="printcustomerssn" value="1"
 												form="invoicereport">
 											{trans("hide customer SSN")}
+										</label>
+										<label>
+											<input type="checkbox" name="print-match-content-service-type" value="1"
+												form="invoicereport">
+											{trans("match document content service type")}
 										</label>
 										<label>
 											<input type="checkbox" name="printonlysummary" value="1"
