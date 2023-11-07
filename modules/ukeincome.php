@@ -191,7 +191,7 @@ if ($bandwidths) {
     $customer_links = $DB->GetAll(
         'SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
             t.downceil,
-            ROUND(SUM((CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ROUND(ic.count) ELSE 0 END)
+            (SUM((CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ROUND(ic.count) ELSE 0 END)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
                     WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
@@ -199,7 +199,7 @@ if ($bandwidths) {
                     WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
                     ELSE 0 END)
             )) AS private,
-            ROUND(SUM((CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ROUND(ic.count) ELSE 0 END)
+            (SUM((CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ROUND(ic.count) ELSE 0 END)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
                     WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
@@ -207,7 +207,7 @@ if ($bandwidths) {
                     WHEN ic.period = ' . YEARLY . ' THEN ' . str_replace(',', '.', 1 / $months / 12) . '
                     ELSE 0 END)
             )) AS bussiness,
-            ROUND(SUM(ROUND(ic.count)
+            (SUM(ROUND(ic.count)
                 * (CASE
                     WHEN ic.period IS NULL OR ic.period = ' . MONTHLY . ' THEN ' . str_replace(',', '.', 1 / $months) . '
                     WHEN ic.period = ' . QUARTERLY . ' THEN ' . str_replace(',', '.', 1 / $months / 3) . '
@@ -246,6 +246,15 @@ if ($bandwidths) {
             }
             unset($bandwidth_interval);
         }
+        foreach ($bandwidth_variation as &$bv) {
+            foreach ($bv as &$bi) {
+                $bi['total'] = round($bi['total']);
+                $bi['private'] = round($bi['private']);
+                $bi['bussiness'] = round($bi['bussiness']);
+            }
+            unset($bi);
+        }
+        unset($bv);
     }
     $SMARTY->assign('bandwidth_variation', $bandwidth_variation);
 }
