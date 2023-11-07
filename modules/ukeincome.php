@@ -107,8 +107,8 @@ switch ($customergroup_intersection) {
 
 $income = $DB->GetAll('
 	SELECT ' . ($type == 'linktechnologies' ? 'cash.linktechnology' : 'cash.servicetype') . ' AS type,
-		COUNT(DISTINCT CASE WHEN c.type = 0 THEN c.id ELSE null END) AS privatecount,
-		COUNT(DISTINCT CASE WHEN c.type = 1 THEN c.id ELSE null END) AS bussinesscount,
+		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN c.id ELSE null END) AS privatecount,
+		COUNT(DISTINCT CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN c.id ELSE null END) AS bussinesscount,
 		COUNT(DISTINCT c.id) AS totalcount,
 		SUM(CASE WHEN c.type = ' . CTYPES_PRIVATE . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
 		SUM(CASE WHEN c.type = ' . CTYPES_COMPANY . ' THEN ' . $value_formula . ' ELSE 0 END) * -1 AS bussinessincome,
