@@ -248,9 +248,9 @@ if ($bandwidths) {
         }
         foreach ($bandwidth_variation as &$bv) {
             foreach ($bv as &$bi) {
-                $bi['total'] = round($bi['total']);
                 $bi['private'] = round($bi['private']);
                 $bi['bussiness'] = round($bi['bussiness']);
+                $bi['total'] = $bi['private'] + $bi['bussiness'];
             }
             unset($bi);
         }
