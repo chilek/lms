@@ -1099,7 +1099,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
         if (!empty($customer_statuses)) {
-            $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ') AND c.deleted = 0)';
+            $state_conditions[] = '((c.status = ' . implode(' ' . $statesqlskey . ' c.status = ', $customer_statuses) . ')'
+                . ($ignore_deleted_customers ? ' AND c.deleted = 0' : '') . ')';
             $ignore_deleted_customers = false;
         }
 
