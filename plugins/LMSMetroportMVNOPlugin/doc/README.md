@@ -29,7 +29,7 @@ Przykład:
 
 #### Import cennika Metroport MVNO (wywołanie skryptu z paramterem --pricelist-file)
 
-Do poprawnego rozliczenia biliongów należy dokonać importu pliku cennika do systemu Metroport MVNO. Plik cennika w formacie 'csv' każdy operator otrzymuje bezpośrednio od Metroport.
+Do poprawnego rozliczenia bilingów należy dokonać importu pliku cennika do systemu Metroport MVNO. Plik cennika w formacie 'csv' każdy operator otrzymuje bezpośrednio od Metroport.
 
 #### Wczytanie bilingów Metroport MVNO do LMS (wywołanie skryptu z paramterem --billings)
 
