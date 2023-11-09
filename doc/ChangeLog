@@ -582,6 +582,7 @@ version 28-git (????-??-??):
     for selected users [chilan]
   - enhancement: added new option to 'sale registry' report which allows to check matches between document
     content service types and service type form filter [chilan]
+  - enhancement: 'commited'/'not commited' assignment filter in customer search form [chilan]
 
 version 27.0 (2021-08-20):
 
