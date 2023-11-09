@@ -1192,6 +1192,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case -10:
                 $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.datefrom = 0';
                 break;
+            case -11:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.commited = 1';
+                break;
+            case -12:
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.commited = 0';
+                break;
             default:
                 if ($as > 0) {
                     $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE

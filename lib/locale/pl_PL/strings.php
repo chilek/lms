@@ -4949,6 +4949,8 @@ $_LANG['(payment without title)'] = '(płatność bez tytułu)';
 
 $_LANG['<!assignment>Expired'] = 'Przeterminowane';
 $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
+$_LANG['<!assignment>commited'] = 'zatwierdzone';
+$_LANG['<!assignment>not commited'] = 'niezatwierdzone';
 
 $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['<!rt>Unread'] = 'Nieprzeczytany:';
