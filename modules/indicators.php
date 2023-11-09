@@ -142,9 +142,9 @@ switch ($action) {
         break;
     case 'watching':
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
-            $count = $LMS->GetQueueContents(array('watching' => 1, 'count' => true));
+            $count = $LMS->GetQueueContents(array('watching' => 1, 'count' => true, 'state' => -2));
             if ($count == 1) {
-                $ticket = $LMS->GetQueueContents(array('watching' => 1, 'count' => false));
+                $ticket = $LMS->GetQueueContents(array('watching' => 1, 'count' => false, 'state' => -2));
                 $ticket = reset($ticket);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
