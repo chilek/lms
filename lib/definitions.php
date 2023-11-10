@@ -330,7 +330,7 @@ $RT_SOURCES = array(
     RT_SOURCE_PAPER => 'complaint',
     RT_SOURCE_SMS => 'SMS',
     RT_SOURCE_CALLCENTER => 'call center',
-    RT_SOURCE_SIDUSIS => 'sidusis',
+    RT_SOURCE_SIDUSIS => 'SIDUSIS',
 );
 
 //Helpdesk ticket priority
