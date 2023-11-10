@@ -2564,7 +2564,7 @@ if (empty($types) || in_array('invoices', $types)) {
 if (empty($types) || in_array('notes', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-            d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
+            d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
             acc.alternative_accounts,
         COALESCE(ca.balance, 0) AS balance, v.value, v.currency
         FROM documents d
