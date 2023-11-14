@@ -164,7 +164,7 @@ class MetroportMVNO
     {
         $msg = '';
         if ($params['matching_result']) {
-            $msg = 'LMS customer ' . $params['lms_customer_lsatname'] . $params['lms_customer_name'] . '(#' . $params['lms_customer_id'] . ')' . trans('has been bound with MMSC user') . ' #' . $params['mmsc_user_id'];
+            $msg = 'LMS customer ' . $params['lms_customer_lsatname'] . $params['lms_customer_name'] . '(#' . $params['lms_customer_id'] . ') ' . trans('has been bound with MMSC user') . ' #' . $params['mmsc_user_id'];
         } /*else {
             $msg = 'LMS customer ' . $params['lms_customer_lsatname'] . $params['lms_customer_name'] . '(#' . $params['lms_customer_id'] . ') was not mached with MMSC user.';
         }*/
