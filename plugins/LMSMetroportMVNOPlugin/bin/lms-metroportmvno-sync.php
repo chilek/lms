@@ -529,7 +529,7 @@ if ($syncCustomers) {
         foreach ($lmsCustomers as $lmsCustomer) {
             $args = array(
                 'lms_customer_id' => $lmsCustomer['id'],
-                'lms_customer_lsatname' => $lmsCustomer['lastname'],
+                'lms_customer_lastname' => $lmsCustomer['lastname'],
                 'lms_customer_name' => $lmsCustomer['name'],
             );
 
