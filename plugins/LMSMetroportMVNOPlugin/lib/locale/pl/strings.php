@@ -30,7 +30,7 @@ $_LANG['Customer #$a - LMS account #$b has been bound with MVNO account #$c.'] =
 $_LANG['Getting billing records for period'] = 'Pobieranie rekordów bilingowych dla okresu';
 $_LANG['Getting billing records for subperiod'] = 'Pobieranie rekordów bilingowych dla podokresu';
 $_LANG['Fatal error: no customers with "metroport-mvno"-tagged tariffs assigned!'] = 'Błąd krytyczny: brak klientów LMS z przypisaną taryfą z etykietą "metroport-mvno"';
-$_LANG['has been bound with MMSC user'] = 'został powiazany z użytkownikiem MMSC';
+$_LANG['has been bound with MMSC user'] = 'został powiązany z użytkownikiem MMSC';
 $_LANG['Price list file ($a) does not exist!'] = 'Plik z cennikiem ($a) nie istnieje!';
 $_LANG['Price list csv file import.'] = 'Import pliku csv z cennikiem.';
 
