@@ -154,7 +154,7 @@ class MetroportMVNO
     }
 
     /**
-     * Print customer synchronization message
+     * Print LMS customer synchronization message
      *
      * @param array $params
      * @return string
@@ -177,6 +177,29 @@ class MetroportMVNO
                 . (!empty($params['mmsc_user_ssn']) ? ' ' . trans('SSN') . ':' . $params['mmsc_user_ssn'] : '')
                 . (!empty($params['mmsc_user_icn']) ? ' ' . trans('ICN') . ':' . $params['mmsc_user_icn'] : '')
                 . ' (#' . $params['mmsc_user_id'] . ')';
+        }
+
+        return $msg;
+    }
+
+    /**
+     * Print Metroport user synchronization message
+     *
+     * @param array $params
+     * @return string
+     * @throws
+     */
+    public function setUserMissmatchingMessage(array $params)
+    {
+        $msg = '';
+        if ($params['unmatching_result']) {
+            $msg = trans('Metropport user')
+                . ' ' . $params['mmsc_user_code_name']
+                . (!empty($params['mmsc_user_ten']) ? ' ' . trans('TEN') . ':' . $params['mmsc_user_ten'] : '')
+                . (!empty($params['mmsc_user_ssn']) ? ' ' . trans('SSN') . ':' . $params['mmsc_user_ssn'] : '')
+                . (!empty($params['mmsc_user_icn']) ? ' ' . trans('ICN') . ':' . $params['mmsc_user_icn'] : '')
+                . ' (#' . $params['mmsc_user_id'] . ')'
+                . ' ' . trans('could not be bound with any LMS client');
         }
 
         return $msg;

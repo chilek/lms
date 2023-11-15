@@ -458,7 +458,7 @@ if ($syncCustomers) {
     $lmsAllCustomers = $metroportmvno->getCustomersForBind();
     if (!empty($lmsAllCustomers)) {
         //<editor-fold desc="Sanitize LMS customer ten and icn and build data for ten,ssn,icn duplicates">
-        foreach ($lmsAllCustomers as $id => $lmsCustomer) {
+        foreach ($lmsAllCustomers as $id => &$lmsCustomer) {
             if (!empty($lmsCustomer['ten'])) {
                 $customerClearTen = preg_replace("/[-[:blank:]a-zA-Z]/", '', $lmsCustomer['ten']);
                 if (preg_match('/^[0-9]{10}$/', $customerClearTen)) {
@@ -478,6 +478,27 @@ if ($syncCustomers) {
         }
         unset($lmsCustomer);
         //</editor-fold>
+    }
+
+    $unmatchingResult = false;
+
+    if (!empty($mmscUsers) && !empty($lmsAllCustomers)) {
+        foreach ($mmscUsers as $mmcsUser) {
+            if (!isset($lmsAllCustomersByTen[$mmcsUser['nip']])
+                && !isset($lmsAllCustomersBySsn[$mmcsUser['pesel']])
+                && !isset($lmsAllCustomersByIcn[$mmcsUser['idcardno']])) {
+                $args['unmatching_result'] = true;
+                $args['mmsc_user_id'] = $mmcsUser['id'];
+                $args['mmsc_user_code_name'] = trim($mmcsUser['UserCodeName']);
+                $args['mmsc_user_ten'] = !empty($mmcsUser['nip']) ? trim($mmcsUser['nip']) : null;
+                $args['mmsc_user_ssn'] = !empty($mmcsUser['pesel']) ? trim($mmcsUser['pesel']) : null;
+                $args['mmsc_user_icn'] = !empty($mmcsUser['idcardno']) ? trim($mmcsUser['idcardno']) : null;
+                $message = $metroportmvno->setUserMissmatchingMessage($args);
+                if (!empty($message) && !$quiet) {
+                    echo $message . PHP_EOL;
+                }
+            }
+        }
     }
 
     $lmsCustomers = $metroportmvno->getCustomersForBind($customerid);
