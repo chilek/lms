@@ -18,6 +18,7 @@ $_LANG['Error getting traffic types from Metroport API server - HTTP error code:
 $_LANG['Error getting billings from Metroport API server: "$a"!'] = 'Błąd w pobieraniu billingów z serwera Metroport API: "$a"!';
 $_LANG['Error getting billings from Metroport API server - HTTP error code: "$a"!'] = 'Błąd w pobieraniu billingów z serwera Metroport API - kod błędu HTTP: "$a"!';
 
+$_LANG['LMS customer'] = 'Klient LMS';
 $_LANG['LMS customers with MMSC users synchronization'] = 'Synchronizacja klientów LMS z użytkownikami MMSC';
 $_LANG['LMS customers accounts with MMSC users mvno accounts synchronization'] = 'Synchronizacja kont LMS z kontami mvno z MMSC';
 $_LANG['Customer #$a could not be synchronized. There is another customer with same ten number.'] = 'Nie można zsynchronizować klienta #$a. Jest inny klient z tym samym numerem nip.';
