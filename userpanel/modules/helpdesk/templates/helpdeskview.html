@@ -42,7 +42,7 @@
 		</td>
 		<td width="1%">
 			{if ($ticket.state != $smarty.const.RT_RESOLVED || $allow_message_add_to_closed_tickets)
-				&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
+				|| (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
 				<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
 			{else}
 				&nbsp;
