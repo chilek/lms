@@ -540,7 +540,7 @@ if ($syncCustomers) {
                 $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserCodes[$lmsCustomer['id']]['id']);
             } elseif (!empty($lmsCustomer['ten']) && isset($mmscUserTens[$lmsCustomer['ten']]) && !isset($lmsBoundCustomersByTen[$lmsCustomer['ten']])) {
                 if (isset($lmsAllCustomersByTen[$lmsCustomer['ten']]) && count($lmsAllCustomersByTen[$lmsCustomer['ten']]) > 1 && !$quiet) {
-                    echo trans('Customer #$a could not be synchronized. There is another customer with same ten number.', $lmsCustomer['id']) . PHP_EOL;
+                    echo trans('LMS customer #$a could not be synchronized. There is another customer with same ten number.', $lmsCustomer['id']) . PHP_EOL;
                     continue;
                 }
 
@@ -550,7 +550,7 @@ if ($syncCustomers) {
                 $args['mmsc_user_ten'] = trim($mmscUserTens[$lmsCustomer['ten']]['nip']);
             } elseif (!empty($lmsCustomer['ssn']) && isset($mmscUserSsns[$lmsCustomer['ssn']]) && !isset($lmsBoundCustomersBySsn[$lmsCustomer['ssn']])) {
                 if (isset($lmsAllCustomersBySsn[$lmsCustomer['ssn']]) && count($lmsAllCustomersBySsn[$lmsCustomer['ssn']]) > 1 && !$quiet) {
-                    echo trans('Customer #$a could not be synchronized. There is another customer with same ssn number.', $lmsCustomer['id']) . PHP_EOL;
+                    echo trans('LMS customer #$a could not be synchronized. There is another customer with same ssn number.', $lmsCustomer['id']) . PHP_EOL;
                     continue;
                 }
 
@@ -560,7 +560,7 @@ if ($syncCustomers) {
                 $args['mmsc_user_ssn'] = trim($mmscUserSsns[$lmsCustomer['ssn']]['pesel']);
             } elseif (!empty($lmsCustomer['icn']) && isset($mmscUserIcns[$lmsCustomer['icn']]) && !isset($lmsBoundCustomersByIcn[$lmsCustomer['icn']])) {
                 if (isset($lmsAllCustomersByIcn[$lmsCustomer['icn']]) && count($lmsAllCustomersByIcn[$lmsCustomer['icn']]) > 1 && !$quiet) {
-                    echo trans('Customer #$a could not be synchronized. There is another customer with same icn number.', $lmsCustomer['id']) . PHP_EOL;
+                    echo trans('LMS customer #$a could not be synchronized. There is another customer with same icn number.', $lmsCustomer['id']) . PHP_EOL;
                     continue;
                 }
 
@@ -579,6 +579,7 @@ if ($syncCustomers) {
         unset($lmsCustomer, $matchingResult, $message);
     }
     //</editor-fold>
+
     if ($test) {
         $DB->RollbackTrans();
     } else {
