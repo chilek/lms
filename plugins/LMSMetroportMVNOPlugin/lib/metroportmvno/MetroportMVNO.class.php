@@ -154,7 +154,7 @@ class MetroportMVNO
     }
 
     /**
-     * Print customer synchronization message
+     * Print LMS customer synchronization message
      *
      * @param array $params
      * @return string
@@ -164,10 +164,43 @@ class MetroportMVNO
     {
         $msg = '';
         if ($params['matching_result']) {
-            $msg = 'LMS customer ' . $params['lms_customer_lastname'] . ' ' . $params['lms_customer_name'] . ' (#' . $params['lms_customer_id'] . ') ' . trans('has been bound with MMSC user') . ' (#' . $params['mmsc_user_id'] . ')';
-        } /*else {
-            $msg = 'LMS customer ' . $params['lms_customer_lastname'] . ' ' . $params['lms_customer_name'] . ' (#' . $params['lms_customer_id'] . ') was not mached with MMSC user.';
-        }*/
+            $msg = trans('LMS customer')
+                . ' ' . $params['lms_customer_lastname']
+                . (!empty($params['lms_customer_name']) ? ' ' . $params['lms_customer_name'] : '')
+                . (!empty($params['lms_customer_ten']) ? ' ' . trans('TEN') . ':' . $params['lms_customer_ten'] : '')
+                . (!empty($params['lms_customer_ssn']) ? ' ' . trans('SSN') . ':' . $params['lms_customer_ssn'] : '')
+                . (!empty($params['lms_customer_icn']) ? ' ' . trans('ICN') . ':' . $params['lms_customer_icn'] : '')
+                . ' (#' . $params['lms_customer_id'] . ') '
+                . trans('has been bound with MMSC user')
+                . ' ' . $params['mmsc_user_code_name']
+                . (!empty($params['mmsc_user_ten']) ? ' ' . trans('TEN') . ':' . $params['mmsc_user_ten'] : '')
+                . (!empty($params['mmsc_user_ssn']) ? ' ' . trans('SSN') . ':' . $params['mmsc_user_ssn'] : '')
+                . (!empty($params['mmsc_user_icn']) ? ' ' . trans('ICN') . ':' . $params['mmsc_user_icn'] : '')
+                . ' (#' . $params['mmsc_user_id'] . ')';
+        }
+
+        return $msg;
+    }
+
+    /**
+     * Print Metroport user synchronization message
+     *
+     * @param array $params
+     * @return string
+     * @throws
+     */
+    public function setUserMissmatchingMessage(array $params)
+    {
+        $msg = '';
+        if ($params['unmatching_result']) {
+            $msg = trans('Metropport user')
+                . ' ' . $params['mmsc_user_code_name']
+                . (!empty($params['mmsc_user_ten']) ? ' ' . trans('TEN') . ':' . $params['mmsc_user_ten'] : '')
+                . (!empty($params['mmsc_user_ssn']) ? ' ' . trans('SSN') . ':' . $params['mmsc_user_ssn'] : '')
+                . (!empty($params['mmsc_user_icn']) ? ' ' . trans('ICN') . ':' . $params['mmsc_user_icn'] : '')
+                . ' (#' . $params['mmsc_user_id'] . ')'
+                . ' ' . trans('could not be bound with any LMS client');
+        }
 
         return $msg;
     }
