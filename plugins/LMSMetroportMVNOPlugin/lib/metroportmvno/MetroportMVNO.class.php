@@ -77,7 +77,7 @@ class MetroportMVNO
             LEFT JOIN customerextids ce ON ce.customerid = c.id 
             WHERE ce.serviceproviderid IS NULL
             AND NOT EXISTS (SELECT 1 FROM customerextids ce1 WHERE ce1.customerid = ce.customerid AND ce1.serviceproviderid = ?)
-            AND ((c.ssn IS NOT NULL AND c.ssn <> '') OR (c.ten IS NOT NULL AND c.ten <> ''))
+            AND ((c.ssn IS NOT NULL AND c.ssn <> '') OR (c.ten IS NOT NULL AND c.ten <> '') OR (c.icn IS NOT NULL AND c.icn <> ''))
             AND c.deleted = 0"
             . (!empty($customerid) ? " AND c.id = " . $customerid : "")
             . " ORDER BY id",
@@ -191,18 +191,27 @@ class MetroportMVNO
      */
     public function setUserMissmatchingMessage(array $params)
     {
-        $msg = '';
-        if ($params['unmatching_result']) {
-            $msg = trans('Metropport user')
-                . ' ' . $params['mmsc_user_code_name']
-                . (!empty($params['mmsc_user_ten']) ? ' ' . trans('TEN') . ':' . $params['mmsc_user_ten'] : '')
-                . (!empty($params['mmsc_user_ssn']) ? ' ' . trans('SSN') . ':' . $params['mmsc_user_ssn'] : '')
-                . (!empty($params['mmsc_user_icn']) ? ' ' . trans('ICN') . ':' . $params['mmsc_user_icn'] : '')
-                . ' (#' . $params['mmsc_user_id'] . ')'
-                . ' ' . trans('could not be bound with any LMS client');
-        }
+        return trans('Metropport user')
+            . ' ' . $params['mmsc_user_code_name']
+            . (!empty($params['mmsc_user_ten']) ? ' ' . trans('TEN') . ':' . $params['mmsc_user_ten'] : '')
+            . (!empty($params['mmsc_user_ssn']) ? ' ' . trans('SSN') . ':' . $params['mmsc_user_ssn'] : '')
+            . (!empty($params['mmsc_user_icn']) ? ' ' . trans('ICN') . ':' . $params['mmsc_user_icn'] : '')
+            . ' (#' . $params['mmsc_user_id'] . ')'
+            . ' ' . trans('could not be bound with any LMS client');
+    }
 
-        return $msg;
+    /**
+     * Print Metroport insufficient user data synchronization message
+     *
+     * @param array $params
+     * @return string
+     * @throws
+     */
+    public function setUserInsufficientDataMessage(array $params)
+    {
+        return trans('Insufficient Metroport user data')
+            . ' ' . $params['mmsc_user_code_name']
+            . ' (#' . $params['mmsc_user_id'] . ')';
     }
 
     /**

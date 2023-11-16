@@ -434,8 +434,12 @@ if (!empty($mmscUsers)) {
                 $mmscUser['nip'] = $mmscUserClearTen;
             }
         }
+        if (!empty($mmscUser['pesel'])) {
+            $mmscUser['pesel'] = preg_replace("/[[:blank:]]/", '', $mmscUser['pesel']);
+        }
+
         if (!empty($mmscUser['idcardno'])) {
-            $mmscUser['idcardno'] = preg_replace("/[[:blank:]]/", '', $mmscUser['idcardno']);
+            $mmscUser['idcardno'] = strtoupper(preg_replace("/[[:blank:]]/", '', $mmscUser['idcardno']));
         }
     }
     unset($mmscUser);
@@ -472,7 +476,7 @@ if ($syncCustomers) {
             }
 
             if (!empty($lmsCustomer['icn'])) {
-                $lmsCustomer['icn'] = preg_replace("/[[:blank:]]/", '', $lmsCustomer['icn']);
+                $lmsCustomer['icn'] = strtoupper(preg_replace("/[[:blank:]]/", '', $lmsCustomer['icn']));
                 $lmsAllCustomersByIcn[$lmsCustomer['icn']][$lmsCustomer['id']] = $lmsCustomer;
             }
         }
@@ -480,24 +484,47 @@ if ($syncCustomers) {
         //</editor-fold>
     }
 
-    $unmatchingResult = false;
-
     if (!empty($mmscUsers) && !empty($lmsAllCustomers)) {
+        $insufficientDataCount = 0;
+        $userMissmatchingCount = 0;
+
         foreach ($mmscUsers as $mmcsUser) {
-            if (!isset($lmsAllCustomersByTen[$mmcsUser['nip']])
+            if (empty($mmcsUser['nip'])
+                && empty($mmcsUser['pesel'])
+                && empty($mmcsUser['idcardno'])) {
+                $insufficientDataCount++;
+                $args = array(
+                    'mmsc_user_id' => $mmcsUser['id'],
+                    'mmsc_user_code_name' => trim($mmcsUser['UserCodeName'])
+                );
+                $message = $metroportmvno->setUserInsufficientDataMessage($args);
+                if (!empty($message) && !$quiet) {
+                    echo $message . PHP_EOL;
+                }
+            } elseif (!isset($lmsAllCustomersByTen[$mmcsUser['nip']])
                 && !isset($lmsAllCustomersBySsn[$mmcsUser['pesel']])
                 && !isset($lmsAllCustomersByIcn[$mmcsUser['idcardno']])) {
-                $args['unmatching_result'] = true;
-                $args['mmsc_user_id'] = $mmcsUser['id'];
-                $args['mmsc_user_code_name'] = trim($mmcsUser['UserCodeName']);
-                $args['mmsc_user_ten'] = !empty($mmcsUser['nip']) ? trim($mmcsUser['nip']) : null;
-                $args['mmsc_user_ssn'] = !empty($mmcsUser['pesel']) ? trim($mmcsUser['pesel']) : null;
-                $args['mmsc_user_icn'] = !empty($mmcsUser['idcardno']) ? trim($mmcsUser['idcardno']) : null;
+                $userMissmatchingCount++;
+                $args = array(
+                    'mmsc_user_id' => $mmcsUser['id'],
+                    'mmsc_user_code_name' => trim($mmcsUser['UserCodeName']),
+                    'mmsc_user_ten' => (!empty($mmcsUser['nip']) ? $mmcsUser['nip'] : null),
+                    'mmsc_user_ssn' => (!empty($mmcsUser['pesel']) ? $mmcsUser['pesel'] : null),
+                    'mmsc_user_icn' => (!empty($mmcsUser['idcardno']) ? $mmcsUser['idcardno'] : null)
+                );
                 $message = $metroportmvno->setUserMissmatchingMessage($args);
                 if (!empty($message) && !$quiet) {
                     echo $message . PHP_EOL;
                 }
             }
+        }
+
+        if (!empty($insufficientDataCount) && !$quiet) {
+            echo trans('Metroport users with insufficient data') . ': ' . $insufficientDataCount . PHP_EOL;
+        }
+
+        if (!empty($userMissmatchingCount) && !$quiet) {
+            echo trans('Metroport users could not be bound with any LMS client') . ': ' . $userMissmatchingCount . PHP_EOL;
         }
     }
 
@@ -513,7 +540,7 @@ if ($syncCustomers) {
             }
 
             if (!empty($lmsCustomer['icn'])) {
-                $lmsCustomer['icn'] = preg_replace("/[[:blank:]]/", '', $lmsCustomer['icn']);
+                $lmsCustomer['icn'] = strtoupper(preg_replace("/[[:blank:]]/", '', $lmsCustomer['icn']));
             }
         }
         unset($lmsCustomer);
@@ -539,7 +566,7 @@ if ($syncCustomers) {
                 }
 
                 if (!empty($lmsCustomer['icn'])) {
-                    $lmsCustomer['icn'] = preg_replace("/[[:blank:]]/", '', $lmsCustomer['icn']);
+                    $lmsCustomer['icn'] = strtoupper(preg_replace("/[[:blank:]]/", '', $lmsCustomer['icn']));
                     $lmsBoundCustomersByIcn[$lmsCustomer['icn']][$lmsCustomer['id']] = $lmsCustomer;
                 }
             }
@@ -547,13 +574,17 @@ if ($syncCustomers) {
             //</editor-fold>
         }
 
+        $synCount = 0;
+        $notSyncCount = 0;
+
         foreach ($lmsCustomers as $lmsCustomer) {
             $args = array(
                 'lms_customer_id' => $lmsCustomer['id'],
                 'lms_customer_lastname' => $lmsCustomer['lastname'],
-                'lms_customer_name' => $lmsCustomer['name'],
-                'lms_customer_ten' => $lmsCustomer['ten'],
-                'lms_customer_icn' => $lmsCustomer['icn'],
+                'lms_customer_name' => !empty($lmsCustomer['name']) ? $lmsCustomer['name'] : null,
+                'lms_customer_ten' => !empty($lmsCustomer['ten']) ? $lmsCustomer['ten'] : null,
+                'lms_customer_ssn' => !empty($lmsCustomer['ssn']) ? $lmsCustomer['ssn'] : null,
+                'lms_customer_icn' => !empty($lmsCustomer['icn']) ? $lmsCustomer['icn'] : null,
             );
 
             $matchingResult = false;
@@ -561,34 +592,52 @@ if ($syncCustomers) {
                 $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserCodes[$lmsCustomer['id']]['id']);
             } elseif (!empty($lmsCustomer['ten']) && isset($mmscUserTens[$lmsCustomer['ten']]) && !isset($lmsBoundCustomersByTen[$lmsCustomer['ten']])) {
                 if (isset($lmsAllCustomersByTen[$lmsCustomer['ten']]) && count($lmsAllCustomersByTen[$lmsCustomer['ten']]) > 1 && !$quiet) {
+                    $notSyncCount++;
                     echo trans('LMS customer #$a could not be synchronized. There is another customer with same ten number.', $lmsCustomer['id']) . PHP_EOL;
                     continue;
                 }
 
                 $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserTens[$lmsCustomer['ten']]['id']);
-                $args['mmsc_user_id'] = $mmscUserTens[$lmsCustomer['ten']]['id'];
-                $args['mmsc_user_code_name'] = trim($mmscUserTens[$lmsCustomer['ten']]['UserCodeName']);
-                $args['mmsc_user_ten'] = trim($mmscUserTens[$lmsCustomer['ten']]['nip']);
+                if ($matchingResult) {
+                    $synCount++;
+                    $args['mmsc_user_id'] = $mmscUserTens[$lmsCustomer['ten']]['id'];
+                    $args['mmsc_user_code_name'] = trim($mmscUserTens[$lmsCustomer['ten']]['UserCodeName']);
+                    $args['mmsc_user_ten'] = $mmscUserTens[$lmsCustomer['ten']]['nip'];
+                    $args['mmsc_user_ssn'] = $mmscUserTens[$lmsCustomer['ten']]['pesel'];
+                    $args['mmsc_user_icn'] = $mmscUserTens[$lmsCustomer['ten']]['idcardno'];
+                }
             } elseif (!empty($lmsCustomer['ssn']) && isset($mmscUserSsns[$lmsCustomer['ssn']]) && !isset($lmsBoundCustomersBySsn[$lmsCustomer['ssn']])) {
                 if (isset($lmsAllCustomersBySsn[$lmsCustomer['ssn']]) && count($lmsAllCustomersBySsn[$lmsCustomer['ssn']]) > 1 && !$quiet) {
+                    $notSyncCount++;
                     echo trans('LMS customer #$a could not be synchronized. There is another customer with same ssn number.', $lmsCustomer['id']) . PHP_EOL;
                     continue;
                 }
 
                 $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserSsns[$lmsCustomer['ssn']]['id']);
-                $args['mmsc_user_id'] = $mmscUserSsns[$lmsCustomer['ssn']]['id'];
-                $args['mmsc_user_code_name'] = trim($mmscUserSsns[$lmsCustomer['ssn']]['UserCodeName']);
-                $args['mmsc_user_ssn'] = trim($mmscUserSsns[$lmsCustomer['ssn']]['pesel']);
+                if ($matchingResult) {
+                    $synCount++;
+                    $args['mmsc_user_id'] = $mmscUserSsns[$lmsCustomer['ssn']]['id'];
+                    $args['mmsc_user_code_name'] = trim($mmscUserSsns[$lmsCustomer['ssn']]['UserCodeName']);
+                    $args['mmsc_user_ten'] = $mmscUserSsns[$lmsCustomer['ssn']]['nip'];
+                    $args['mmsc_user_ssn'] = $mmscUserSsns[$lmsCustomer['ssn']]['pesel'];
+                    $args['mmsc_user_icn'] = $mmscUserSsns[$lmsCustomer['ssn']]['idcardno'];
+                }
             } elseif (!empty($lmsCustomer['icn']) && isset($mmscUserIcns[$lmsCustomer['icn']]) && !isset($lmsBoundCustomersByIcn[$lmsCustomer['icn']])) {
                 if (isset($lmsAllCustomersByIcn[$lmsCustomer['icn']]) && count($lmsAllCustomersByIcn[$lmsCustomer['icn']]) > 1 && !$quiet) {
+                    $notSyncCount++;
                     echo trans('LMS customer #$a could not be synchronized. There is another customer with same icn number.', $lmsCustomer['id']) . PHP_EOL;
                     continue;
                 }
 
-                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserIcns[$lmsCustomer['idcardno']]['id']);
-                $args['mmsc_user_id'] = $mmscUserIcns[$lmsCustomer['icn']]['id'];
-                $args['mmsc_user_code_name'] = trim($mmscUserIcns[$lmsCustomer['icn']]['UserCodeName']);
-                $args['mmsc_user_icn'] = trim($mmscUserIcns[$lmsCustomer['icn']]['idcardno']);
+                $matchingResult = $metroportmvno->setCustomerExtid($lmsCustomer['id'], $mmscUserIcns[$lmsCustomer['icn']]['id']);
+                if ($matchingResult) {
+                    $synCount++;
+                    $args['mmsc_user_id'] = $mmscUserIcns[$lmsCustomer['icn']]['id'];
+                    $args['mmsc_user_code_name'] = trim($mmscUserIcns[$lmsCustomer['icn']]['UserCodeName']);
+                    $args['mmsc_user_ten'] = $mmscUserIcns[$lmsCustomer['icn']]['nip'];
+                    $args['mmsc_user_ssn'] = $mmscUserIcns[$lmsCustomer['icn']]['pesel'];
+                    $args['mmsc_user_icn'] = $mmscUserIcns[$lmsCustomer['icn']]['idcardno'];
+                }
             }
 
             $args['matching_result'] = $matchingResult;
@@ -598,6 +647,14 @@ if ($syncCustomers) {
             }
         }
         unset($lmsCustomer, $matchingResult, $message);
+
+        if (!empty($synCount) && !$quiet) {
+            echo trans('Synchronized') . ': ' . $synCount . PHP_EOL;
+        }
+
+        if (!empty($notSyncCount) && !$quiet) {
+            echo trans('Not synchronized') . ': ' . $notSyncCount . PHP_EOL;
+        }
     }
     //</editor-fold>
 
