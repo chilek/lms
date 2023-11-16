@@ -484,24 +484,46 @@ if ($syncCustomers) {
         //</editor-fold>
     }
 
-    $unmatchingResult = false;
-
     if (!empty($mmscUsers) && !empty($lmsAllCustomers)) {
+        $insufficientDataCount = 0;
+        $userMissmatchingCount = 0;
         foreach ($mmscUsers as $mmcsUser) {
-            if (!isset($lmsAllCustomersByTen[$mmcsUser['nip']])
+            if (empty($mmcsUser['nip'])
+                && empty($mmcsUser['pesel'])
+                && empty($mmcsUser['idcardno'])) {
+                $insufficientDataCount++;
+                $args = array(
+                    'mmsc_user_id' => $mmcsUser['id'],
+                    'mmsc_user_code_name' => trim($mmcsUser['UserCodeName'])
+                );
+                $message = $metroportmvno->setUserInsufficientDataMessage($args);
+                if (!empty($message) && !$quiet) {
+                    echo $message . PHP_EOL;
+                }
+            } elseif (!isset($lmsAllCustomersByTen[$mmcsUser['nip']])
                 && !isset($lmsAllCustomersBySsn[$mmcsUser['pesel']])
                 && !isset($lmsAllCustomersByIcn[$mmcsUser['idcardno']])) {
-                $args['unmatching_result'] = true;
-                $args['mmsc_user_id'] = $mmcsUser['id'];
-                $args['mmsc_user_code_name'] = trim($mmcsUser['UserCodeName']);
-                $args['mmsc_user_ten'] = !empty($mmcsUser['nip']) ? $mmcsUser['nip'] : null;
-                $args['mmsc_user_ssn'] = !empty($mmcsUser['pesel']) ? $mmcsUser['pesel'] : null;
-                $args['mmsc_user_icn'] = !empty($mmcsUser['idcardno']) ? $mmcsUser['idcardno'] : null;
+                $userMissmatchingCount++;
+                $args = array(
+                    'mmsc_user_id' => $mmcsUser['id'],
+                    'mmsc_user_code_name' => trim($mmcsUser['UserCodeName']),
+                    'mmsc_user_ten' => (!empty($mmcsUser['nip']) ? $mmcsUser['nip'] : null),
+                    'mmsc_user_ssn' => (!empty($mmcsUser['pesel']) ? $mmcsUser['pesel'] : null),
+                    'mmsc_user_icn' => (!empty($mmcsUser['idcardno']) ? $mmcsUser['idcardno'] : null)
+                );
                 $message = $metroportmvno->setUserMissmatchingMessage($args);
                 if (!empty($message) && !$quiet) {
                     echo $message . PHP_EOL;
                 }
             }
+        }
+
+        if (!empty($insufficientDataCount) && !$quiet) {
+            echo 'Metroport users with insufficient data' . ': ' . $insufficientDataCount . PHP_EOL;
+        }
+
+        if (!empty($userMissmatchingCount) && !$quiet) {
+            echo 'Metroport users could not be bound with any LMS client' . ': ' . $userMissmatchingCount . PHP_EOL;
         }
     }
 

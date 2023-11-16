@@ -21,6 +21,9 @@ $_LANG['Error getting billings from Metroport API server - HTTP error code: "$a"
 $_LANG['LMS customer'] = 'Klient LMS';
 $_LANG['Metropport user'] = 'Użytkownik Metroport';
 $_LANG['could not be bound with any LMS client'] = 'nie może zostać powiązany z żadnym klientem LMS';
+$_LANG['Insufficient Metroport user data'] = 'Niewystarczające dane użytkownika Metroport';
+$_LANG['Metroport users with insufficient data'] = 'Użytkownicy Metroport z niewystarczającymi danymi';
+$_LANG['Metroport users could not be bound with any LMS client'] = 'Użytkownicy Metroport, którzy nie mogli zostać powiązani z jakimkolwiek klientem LMS';
 $_LANG['LMS customers with MMSC users synchronization'] = 'Synchronizacja klientów LMS z użytkownikami MMSC';
 $_LANG['LMS customers accounts with MMSC users mvno accounts synchronization'] = 'Synchronizacja kont LMS z kontami mvno z MMSC';
 $_LANG['LMS customer #$a could not be synchronized. There is another customer with same ten number.'] = 'Nie można zsynchronizować klienta LMS #$a. Jest inny klient z tym samym numerem nip.';
