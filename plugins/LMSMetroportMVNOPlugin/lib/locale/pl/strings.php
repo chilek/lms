@@ -19,6 +19,8 @@ $_LANG['Error getting billings from Metroport API server: "$a"!'] = 'Błąd w po
 $_LANG['Error getting billings from Metroport API server - HTTP error code: "$a"!'] = 'Błąd w pobieraniu billingów z serwera Metroport API - kod błędu HTTP: "$a"!';
 
 $_LANG['LMS customer'] = 'Klient LMS';
+$_LANG['Synchronized'] = 'Zsynchronizowano';
+$_LANG['Not synchronized'] = 'Niezsynchronizowano';
 $_LANG['Metropport user'] = 'Użytkownik Metroport';
 $_LANG['could not be bound with any LMS client'] = 'nie może zostać powiązany z żadnym klientem LMS';
 $_LANG['Insufficient Metroport user data'] = 'Niewystarczające dane użytkownika Metroport';
