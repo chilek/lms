@@ -77,7 +77,7 @@ class MetroportMVNO
             LEFT JOIN customerextids ce ON ce.customerid = c.id 
             WHERE ce.serviceproviderid IS NULL
             AND NOT EXISTS (SELECT 1 FROM customerextids ce1 WHERE ce1.customerid = ce.customerid AND ce1.serviceproviderid = ?)
-            AND ((c.ssn IS NOT NULL AND c.ssn <> '') OR (c.ten IS NOT NULL AND c.ten <> ''))
+            AND ((c.ssn IS NOT NULL AND c.ssn <> '') OR (c.ten IS NOT NULL AND c.ten <> '') OR (c.icn IS NOT NULL AND c.icn <> ''))
             AND c.deleted = 0"
             . (!empty($customerid) ? " AND c.id = " . $customerid : "")
             . " ORDER BY id",
