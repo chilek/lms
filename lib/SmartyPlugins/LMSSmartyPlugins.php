@@ -479,6 +479,7 @@ class LMSSmartyPlugins
             $params = array();
         }
 
+        $zip_required = ConfigHelper::checkConfig('phpui.zip_required');
         // generate unique id for location box
         $LOCATION_ID = 'lmsui-' . uniqid();
 
@@ -620,7 +621,8 @@ class LMSSmartyPlugins
         echo '<tr>
               <td class="nobr">' . trans('Postcode') . '</td>
               <td>
-                <input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10">
+                <input type="text" value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip
+                    . '" data-address="zip" size="7" maxlength="10"' . ($zip_required ? ' required' : '') . '>
                 <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
               </td>
           </tr>';
