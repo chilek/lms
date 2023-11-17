@@ -24,6 +24,13 @@
  *  $Id$
  */
 
+$_LANG['Check in PESEL Reservation Registry'] = 'Sprawdź w Rejestrze Zastrzeżeń PESEL';
+$_LANG['Empty PESEL Reservation Registry API secret key!'] = 'Pusty klucz API Rejestru Zastrzeżeń PESEL!';
+$_LANG['Incorrect PESEL format!'] = 'Błędny format PESEL!';
+$_LANG['Unexpected empty reply from PESEL Reservation Registry API server!'] = 'Nieoczekiwana pusta odpowiedź serwera API Rejestru Zastrzeżeń PESEL!';
+$_LANG['Malformed reply from PESEL Reservation Registry API server!'] = 'Błędna odpowiedź serwera API Rejestru Zastrzeżeń PESEL!';
+$_LANG['telecommunication service contract'] = 'umowa na usługi telekomunikacyjne';
+
 $_LANG['Show sensible data'] = 'Pokaż dane wrażliwe';
 $_LANG['customer sensitive data view'] = 'podgląd danych wrażliwych klientów';
 

@@ -48,6 +48,14 @@
 		display: none;
 	}
 
+	.lms-ui-button-clipboard[data-type] > #check-ssn-button {
+		display: none;
+	}
+
+	[data-type="ssn"].lms-ui-error {
+		color: red;
+	}
+
 	.customerinfo-button-panel {
 		display: flex;
 		flex-direction: column;
@@ -196,7 +204,9 @@
 												<td>
 													{trans("SSN")}
 													{if ConfigHelper::checkPrivilege('customer_sensitive_data_view')}
-														{$customerinfo.ssn|escape}
+														<span data-type="ssn">
+															{$customerinfo.ssn|escape}
+														</span>
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_text=$customerinfo.ssn}
 													{else}
 														<span class="customer-sensible-data" data-type="ssn">
@@ -205,6 +215,7 @@
 														{icon name="copy" class="lms-ui-button-clipboard" data_clipboard_handler=true
 															data_type="ssn"}
 													{/if}
+													{button type="link" icon="check" id="check-ssn-button" tip="Check in PESEL Reservation Registry"}
 												</td>
 											</tr>
 										{/if}
@@ -880,7 +891,7 @@
 							$(this).html(data[type]);
 						}
 					});
-					$('.lms-ui-button-clipboard[data-type]').show();
+					$('.lms-ui-button-clipboard[data-type],#check-ssn-button').show();
 					btn.prop('disabled', true);
 				}
 			});
@@ -888,6 +899,49 @@
 
 		$('.lms-ui-button-clipboard[data-type]').on('lms:clipboard:click', function() {
 			return $('.customer-sensible-data[data-type="' + $(this).attr('data-type') + '"]').text().trim();
+		});
+
+		$('#check-ssn-button').click(function() {
+			var btn = $(this);
+			var ssnElem = $('[data-type="ssn"]');
+
+			ssnElem.attr({
+				"data-tooltip": null,
+				title: null
+			}).css({
+				color: ''
+			}).removeClass('lms-ui-error');
+
+			btn.prop('disabled', true);
+
+			$.ajax({
+				url: '?m=customerssncheck&api=1&ssn=' + ssnElem.text().trim(),
+				//url: '?m=customerssncheck&api=1&ssn=80103193344', // not reserved
+				//url: '?m=customerssncheck&api=1&ssn=70030158839', // reserved
+				dataType: "json",
+				success: function(data) {
+					if (data.hasOwnProperty('error')) {
+						ssnElem.addClass('lms-ui-error').attr({
+							title: data.error,
+							"data-tooltip": null
+						});
+					} else if (data.errors.length) {
+						ssnElem.addClass('lms-ui-error').attr({
+							title: data.errors.join('<br>'),
+							"data-tooltip": null
+						});
+					} else {
+						if (data.reserved) {
+							ssnElem.css('color', 'Sienna');
+						} else {
+							ssnElem.css('color', 'green');
+						}
+					}
+
+					btn.prop('disabled', false);
+				}
+
+			});
 		});
 	});
 

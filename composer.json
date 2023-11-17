@@ -149,7 +149,8 @@
         "ezyang/htmlpurifier": "^4",
         "phpoffice/phpspreadsheet": "*",
         "gasparesganga/php-shapefile": "^3",
-        "proj4php/proj4php": "^2"
+        "proj4php/proj4php": "^2",
+        "ramsey/uuid": "^4"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
