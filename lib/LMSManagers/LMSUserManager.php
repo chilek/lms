@@ -134,8 +134,9 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'SELECT id, login, name, rname, login, deleted,
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
             FROM vusers
-            WHERE deleted = 0'
-            . (isset($withDeleted) ? ' OR deleted = 1' : '' )
+            WHERE
+                deleted IN (0' . (empty($withDeleted) ? ')' : ',1)')
+                . ' AND access IN (1' . (empty($withDisabled) ? ')' : ',0)')
             . ' ORDER BY rname ASC'
         );
     }
