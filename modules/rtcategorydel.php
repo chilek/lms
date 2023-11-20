@@ -40,7 +40,9 @@ if (!$LMS->CategoryExists($_GET['id'])) {
     if (!empty($userpanel_rtcategories)) {
         $cats = array_filter(
             explode(',', $userpanel_rtcategories),
-            function ($elem) use ($category) { return $elem != $category; }
+            function ($elem) use ($category) {
+                return $elem != $category;
+            }
         );
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_categories\'', array(implode(',', $cats)));
     }
