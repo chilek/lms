@@ -35,6 +35,5 @@ $engine = array(
     'output' => 'default.html',         // output file name
     'plugin' => 'plugin',           // form plugin (in 'name' dir)
     'post-action' => 'post-action',     // action file executed after document addition (in transaction)
-    'promotion-schema-selection' => true, // show promotion schema selection
     'attachments' => array(),       // associative array with directly pointed optional attachment files (key = label; value = full path file name)
 );
