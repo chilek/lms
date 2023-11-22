@@ -128,8 +128,10 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
 
     $JSResponse->script(
         empty($engine['promotion-schema-selection']) ?
-            "document.querySelectorAll('select.schema-tariff-selection').forEach(e => e.removeAttribute('required')); $('#documentpromotions').toggle(false);" :
-            "document.querySelectorAll('select.schema-tariff-selection').forEach(e => e.setAttribute('required', '')); $('#documentpromotions').toggle(true);"
+            "document.querySelectorAll('select.schema-tariff-selection').forEach(e => e.removeAttribute('required'));
+            document.getElementById('documentpromotions').toggle(false);"
+            : "document.querySelectorAll('select.schema-tariff-selection').forEach(e => e.setAttribute('required', ''));
+	    document.getElementById('documentpromotions').toggle(true);"
     );
 }
 
