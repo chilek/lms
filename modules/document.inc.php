@@ -126,11 +126,7 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
         $JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
     }
 
-    $JSResponse->script(
-        empty($engine['promotion-schema-selection']) ?
-            "document.querySelectorAll('select.schema-tariff-selection').forEach(e => e.removeAttribute('required')); $('#documentpromotions').toggle(false);" :
-            "document.querySelectorAll('select.schema-tariff-selection').forEach(e => e.setAttribute('required', '')); $('#documentpromotions').toggle(true);"
-    );
+    $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
 }
 
 function GetDocumentTemplates($rights, $type = null)
