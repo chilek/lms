@@ -1,7 +1,7 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{$warn_privacy_status_change = ConfigHelper::checkConfig('timetable.warn_privacy_status_change')}
+{$privacy_status_change_warning = ConfigHelper::checkConfig('timetable.privacy_status_change_warning')}
 {$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'))}
 {$hide_deleted_users = ConfigHelper::checkConfig('timetable.hide_deleted_users', ConfigHelper::checkConfig('phpui.timetable_hide_deleted_users'))}
 	<!--// $Id$ //-->
@@ -275,10 +275,10 @@
 		$(function() {
 			$('[name="event[title]"]').focus();
 
-			{if $warn_privacy_status_change}
-			$('input[type="checkbox"][name="event[private]"]').change(function () {
-				alertDialog($t('Warning! You have changed privacy status for this timetable event!'));
-			});
+			{if $privacy_status_change_warning}
+				$('input[name="event[private]"]').change(function () {
+					alertDialog($t('Warning! You have changed privacy status for this timetable event!'));
+				});
 			{/if}
 
 			$('[name="event[rtqueue]"]').change(function () {

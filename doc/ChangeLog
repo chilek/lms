@@ -584,7 +584,7 @@ version 28-git (????-??-??):
     content service types and service type form filter [chilan]
   - enhancement: 'commited'/'not commited' assignment filter in customer search form [chilan]
   - improvement: show warning when changing privacy status flag
-  (variable: timetable.warn_privacy_status_change, default:false) [interduo]
+    (configuration variable: timetable.privacy_status_change_warning, default:false) [interduo]
 
 version 27.0 (2021-08-20):
 
