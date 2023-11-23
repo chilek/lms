@@ -267,7 +267,9 @@ if (isset($_GET['ticketid'])) {
 
             // Don't notify verifier adding note
             $currentuser = Auth::GetCurrentUser();
+            $author_notify = ConfigHelper::checkConfig('rt.author_notify');
             if (empty($note['verifierid'])
+                || !$author_notify
                 || $props['verifierid'] == $currentuser
                 || $note['verifierid'] == $currentuser) {
                 $note['verifierid'] = null;
