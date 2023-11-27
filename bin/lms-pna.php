@@ -494,6 +494,7 @@ $DB->Execute('DELETE FROM pna');
 
 while (!feof($fh)) {
     $line = fgets($fh, 200);
+    $line = iconv('WINDOWS-1250', 'UTF-8', $line);
     $data = explode(';', trim($line));
     $state_name = iconv('UTF-8', 'ASCII//TRANSLIT', $data[STATE]);
     if (!isset($all_states[$state_name])) {
