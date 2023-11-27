@@ -244,6 +244,10 @@ function get_city_ids()
     );
 
     $city_ids = array();
+    if (empty($cities)) {
+        return $city_ids;
+    }
+
     foreach ($cities as $city) {
         $city_ids[$city['state_name'] . '_' . $city['district_name'] . '_'
             . $city['borough_name'] . '_' . $city['city_name']] = $city['id'];
@@ -491,7 +495,11 @@ $DB->Execute('DELETE FROM pna');
 while (!feof($fh)) {
     $line = fgets($fh, 200);
     $data = explode(';', trim($line));
-    $state = $all_states[iconv('UTF-8', 'ASCII//TRANSLIT', $data[STATE])];
+    $state_name = iconv('UTF-8', 'ASCII//TRANSLIT', $data[STATE]);
+    if (!isset($all_states[$state_name])) {
+        continue;
+    }
+    $state = $all_states[$state_name];
     if (preg_match('/^[0-9]{2}-[0-9]{3}$/', $data[PNA])
         && (!isset($state_list) || (isset($state_list) && isset($state_list[$state])))) {
         convert_pna_to_teryt($data);
@@ -499,5 +507,3 @@ while (!feof($fh)) {
 }
 
 fclose($fh);
-
-?>
