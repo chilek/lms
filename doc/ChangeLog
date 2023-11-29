@@ -585,6 +585,7 @@ version 28-git (????-??-??):
   - enhancement: 'commited'/'not commited' assignment filter in customer search form [chilan]
   - improvement: show warning when changing privacy status flag
     (configuration variable: timetable.privacy_status_change_warning, default:false) [interduo]
+  - improvement: multi customer group selection is possible in document generation form [chilan]
 
 version 27.0 (2021-08-20):
 
