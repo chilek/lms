@@ -1648,7 +1648,7 @@ if (empty($types) || in_array('debtors', $types)) {
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
                     OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
+                        OR d.type IN ?) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1681,9 +1681,11 @@ if (empty($types) || in_array('debtors', $types)) {
             DOC_RECEIPT,
             DOC_CNOTE,
             DOC_CNOTE,
-            DOC_INVOICE,
-            DOC_INVOICE_PRO,
-            DOC_DNOTE,
+            array(
+                DOC_INVOICE,
+                DOC_INVOICE_PRO,
+                DOC_DNOTE,
+            ),
             $days,
             $checked_mail_contact_flags,
             $required_mail_contact_flags,
@@ -1883,12 +1885,12 @@ if (empty($types) || in_array('reminder', $types)) {
             ) tv ON tv.docid = cash.docid
             WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
                 OR (cash.type = 0 AND cash.value > 0 AND cash.time < $currtime)
-                OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
-                    (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < $currtime)))
+                OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) - ?) * 86400 < $currtime)))
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
                     OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?, ?)) AND d.cdate + (d.paytime - ?) * 86400 < $currtime)))
+                        OR d.type IN ?) AND d.cdate + (d.paytime - ?) * 86400 < $currtime)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1915,7 +1917,7 @@ if (empty($types) || in_array('reminder', $types)) {
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         WHERE 1 = 1" . $customer_status_condition
             . $customer_type_condition
-            . " AND d.type IN (?, ?, ?) AND d.closed = 0 AND b2.balance < ?
+            . " AND d.type IN ? AND d.closed = 0 AND b2.balance < ?
             AND (d.cdate + (d.paytime - ? + 1) * 86400) >= $daystart
             AND (d.cdate + (d.paytime - ? + 1) * 86400) < $dayend"
             . ($customerid ? ' AND c.id = ' . $customerid : '')
@@ -1925,12 +1927,15 @@ if (empty($types) || in_array('reminder', $types)) {
             . ' ORDER BY d.id',
         array(
             DOC_CNOTE,
+            $days,
             DOC_RECEIPT,
             DOC_CNOTE,
             DOC_CNOTE,
-            DOC_INVOICE,
-            DOC_INVOICE_PRO,
-            DOC_DNOTE,
+            array(
+                DOC_INVOICE,
+                DOC_INVOICE_PRO,
+                DOC_DNOTE,
+            ),
             $days,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
@@ -1938,9 +1943,11 @@ if (empty($types) || in_array('reminder', $types)) {
             $required_phone_contact_flags,
             CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
             CONTACT_BANKACCOUNT | CONTACT_INVOICES,
-            DOC_INVOICE,
-            DOC_INVOICE_PRO,
-            DOC_DNOTE,
+            array(
+                DOC_INVOICE,
+                DOC_INVOICE_PRO,
+                DOC_DNOTE,
+            ),
             $limit,
             $days,
             $days
