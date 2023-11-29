@@ -484,7 +484,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             . $overduefilter
             . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
             . $closedfilter
-            .' ORDER BY date, begintime'
+            .' ORDER BY date, begintime, events.type'
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''),
             array(
@@ -571,7 +571,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         switch ($order) {
             default:
-                $sqlord = ' ORDER BY date ' . $direction . ', begintime ' . $direction;
+                $sqlord = ' ORDER BY date ' . $direction . ', begintime ' . $direction . ', events.type';
                 break;
         }
 
