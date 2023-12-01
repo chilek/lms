@@ -128,8 +128,6 @@ if (isset($_POST['document'])) {
     if (!isset($customerlist) || $customerlist['total'] == 0) {
         $error['customer'] = trans('Customers list is empty!');
     }
-    var_dump($customerlist);
-    die;
 
     $SMARTY->assign(array(
         'filter' => $state,
