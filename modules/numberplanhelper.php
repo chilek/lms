@@ -47,7 +47,7 @@ if ($documentType) {
     }
 } else {
     $args = array(
-        'cdate' => date('Y/m', $cdate),
+        'cdate' => $cdate,
     );
     $numberplanlist = $lms->getSystemDefaultNumberPlan($args);
 }
