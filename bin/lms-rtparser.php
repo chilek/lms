@@ -847,7 +847,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
                     'Message-ID' => "<confirm.$ticket_id.$queue.$timestamp@rtsystem.$hostname>",
                 );
 
-                if (!empty($ccemails)) {
+                if (!empty($reqcustid) && !empty($ccemails)) {
                     $headers['Cc'] = implode(
                         ', ',
                         array_map(function ($address, $display) {
