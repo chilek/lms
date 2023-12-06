@@ -126,13 +126,7 @@ function GetPlugin($template, $customer, $update_title, $JSResponse)
         $JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
     }
 
-    $JSResponse->script(
-        empty($engine['promotion-schema-selection']) ?
-            "$('select.schema-tariff-selection').each( function(e){ $(this).removeAttr('required') });
-            $('#documentpromotions').toggle(false);"
-            : "$('select.schema-tariff-selection').each( function(e){ $(this).attr('required') });
-            $('#documentpromotions').toggle(true);"
-    );
+    $JSResponse->script('$("#documentpromotions").toggle(' . (empty($engine['promotion-schema-selection']) ? 'false' : 'true') . ')');
 }
 
 function GetDocumentTemplates($rights, $type = null)
