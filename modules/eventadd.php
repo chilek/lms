@@ -493,7 +493,7 @@ if (isset($_POST['event'])) {
         }
     }
     if (!isset($eventticketid)) {
-        $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment') ? 'new' : 'none';
+        $event['helpdesk'] = empty($_GET['id']) ? (ConfigHelper::checkConfig('phpui.default_event_ticket_assignment') ? 'new' : 'none') : 'none';
     }
 
     $SMARTY->assign('backurl', $backurl);
