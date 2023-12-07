@@ -573,7 +573,7 @@ if (isset($_POST['event'])) {
 
 $SMARTY->assign('queue', $queue);
 
-if (isset($eventticketid)) {
+if (isset($eventticketid) && empty($_GET['id'])) {
     $event['ticketid'] = $eventticketid;
     $event['ticket'] = $LMS->getTickets($eventticketid);
     $event['customerid'] = $event['ticket']['customerid'];
