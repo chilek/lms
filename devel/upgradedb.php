@@ -133,6 +133,7 @@ if (file_exists($composer_autoload_path)) {
 
 // Do some checks and load config defaults
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 // Init database
 
