@@ -1188,13 +1188,11 @@ class LMSSmartyPlugins
                 $icon = 'lms-ui-icon-location-geoportal';
                 $tip = trans('Show in GeoPortal');
                 break;
-
             case 'default':
                 $url = ConfigHelper::getConfig('phpui.gps_coordinate_url', 'https://www.google.com/maps/search/?api=1&query=%latitude,%longitude');
                 $icon = 'lms-ui-icon-map-pin';
                 $tip = trans('Show on default external map');
                 break;
-
             case 'netstork':
                 $url = ConfigHelper::getConfig('netstork.web_url', '', true);
                 if (!strlen($url)) {
@@ -1205,7 +1203,11 @@ class LMSSmartyPlugins
                 $icon = 'lms-ui-icon-location-netstork';
                 $tip = trans('Show on NetStorkWeb Maps');
                 break;
-
+            case 'sidusis':
+                $url = '?m=maplink&action=get-sidusis-link&latitude=%latitude&longitude=%longitude';
+                $icon = 'lms-ui-icon-location-sidusis';
+                $tip = trans('Show on SIDUSIS Maps');
+                break;
             default:
                 if (!empty($nodeid)) {
                     $url = '?m=netdevmap&nodeid=' . $nodeid;

@@ -33,10 +33,9 @@ switch ($action) {
     case 'get-geoportal-link':
         $latitude = filter_var($_GET['latitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $longitude = filter_var($_GET['longitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-
-        //converts URL containing coordinates in latitude/longitude format to Geoportal BBOX
         $geoportalApiUrl = ConfigHelper::getConfig('geoportal.api_url', 'https://mapy.geoportal.gov.pl/imap/Imgp_2.html?composition=default&bbox=');
         $geoportalZoomFactor = ConfigHelper::getConfig('geoportal.zoom_factor', 100);
+        //converts URL containing coordinates in latitude/longitude format to Geoportal BBOX (EPSG:2180)
         $mapPosition = Utils::convertToGeoportalCoordinates($latitude, $longitude);
         $pos = array(
             'xMin' => number_format($mapPosition[0] - $geoportalZoomFactor, 6, '.', ''),
@@ -47,7 +46,19 @@ switch ($action) {
 
         header('Location: ' . $geoportalApiUrl . $pos['xMin'] . ',' . $pos['yMin'] . ',' . $pos['xMax'] . ',' . $pos['yMax']);
         break;
-
+    case 'get-sidusis-link':
+        $latitude = filter_var($_GET['latitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $longitude = filter_var($_GET['longitude'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $sidusisApiUrl = ConfigHelper::getConfig('sidusis.web_url', 'https://internet.gov.pl/map/?center=');
+        $sidusisZoomFactor = ConfigHelper::getConfig('sidusis.zoom_factor', 20);
+        //converts URL containing coordinates in latitude/longitude format to SIDUSIS (EPSG:3857) format
+        $mapPosition = Utils::convertToSidusisCoordinates($latitude, $longitude);
+        $pos = array(
+            'x' => number_format($mapPosition[0], 6, '.', ''),
+            'y' => number_format($mapPosition[1], 6, '.', ''),
+        );
+        header('Location: ' . $sidusisApiUrl . $pos['x'] . ';' . $pos['y'] . '&zoom=' . $sidusisZoomFactor);
+        break;
     case 'geocoding':
         if (!isset($_POST['address'])) {
             die('[]');
@@ -61,5 +72,7 @@ switch ($action) {
             die('[]');
         }
         die(json_encode($coordinates));
+        break;
+    default:
         break;
 }
