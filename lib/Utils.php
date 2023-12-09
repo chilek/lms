@@ -936,6 +936,21 @@ class Utils
         return $pointL93->toArray();
     }
 
+    public static function convertToSidusisCoordinates($latitude, $longitude)
+    {
+        $proj4 = new Proj4php();
+        $projWGS84  = new Proj('EPSG:4326', $proj4); //EPSG:4326 WGS 84
+        $proj3857    = new Proj('EPSG:3857', $proj4); //EPSG:3857
+
+        // Create a point.
+        $pointWGS84 = new Point($longitude, $latitude, $projWGS84);
+
+        // Transform the point between datums.
+        $point3857 = $proj4->transform($proj3857, $pointWGS84);
+
+        return $point3857->toArray();
+    }
+
     public static function formatMoney($value, $currency = null)
     {
         if (is_string($value)) {

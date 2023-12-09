@@ -587,7 +587,9 @@ version 28-git (????-??-??):
     (configuration variable: timetable.privacy_status_change_warning, default:false) [interduo]
   - improvement: multi customer group selection is possible in document generation form [chilan]
   - improvement: allow to search for node sessions using mac address fragment [chilan]
-  
+  - enhancement: added SIDUSIS Maps link type, added variables:
+  'sidusis.web_url' and 'sidusis.map_zoom_range' (default: 20) [interduo]
+
 version 27.0 (2021-08-20):
 
   - enhancement: require user selection in event(add/edit) forms,

@@ -3698,6 +3698,7 @@ $_LANG['Show on map'] = 'Pokaż na mapie';
 $_LANG['Show on default external map'] = 'Pokaż na domyślnej mapie zewnętrznej';
 $_LANG['Show in GeoPortal'] = 'Pokaż w GeoPortalu';
 $_LANG['Show on NetStorkWeb Maps'] = 'Pokaż na mapach NetStorkWeb';
+$_LANG['Show on SIDUSIS Maps'] = 'Pokaż na mapach SIDUSIS';
 
 $_LANG['$a bytes from $b: icmp_req=$c ttl=$d time=$e'] = '$a bajtów od $b: icmp_req=$c ttl=$d czas=$e';
 $_LANG['Unicast reply from $a [$b]: time=$c'] = 'Odpowiedź unicast od $a [$b]: czas=$c';
