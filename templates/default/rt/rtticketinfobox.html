@@ -35,7 +35,7 @@
 								<TD style="width: 1%;" class="bold nobr">
 									{icon name="subject" label="Subject"}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD style="width: 99%;" class="nobr" {tip text=$ticket.subject}>
 									{$ticket.subject|trunescape:50}
 								</TD>
 							</TR>
