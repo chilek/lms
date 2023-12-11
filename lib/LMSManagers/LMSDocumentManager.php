@@ -2403,8 +2403,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         if ($userid) {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn, d.name, d.reference
+                    d.fullnumber, n.template, d.ssn, d.name, d.reference,
+                    dc.title
                 FROM documents d
+                JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 WHERE d.id = ? AND r.userid = ? AND (r.rights & ?) > 0',
@@ -2417,8 +2419,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         } else {
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
-                    d.fullnumber, n.template, d.ssn, d.name
+                    d.fullnumber, n.template, d.ssn, d.name,
+                    dc.title
                 FROM documents d
+                JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
                 JOIN docrights r ON (r.doctype = d.type)
                 WHERE d.id = ?',
@@ -2651,6 +2655,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     '%cdate-m',
                     '%cdate-d',
                     '%type',
+                    '%title',
                     '%today',
                     '\n',
                 ),
@@ -2660,6 +2665,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     date('m', $document['cdate']),
                     date('d', $document['cdate']),
                     $DOCTYPES[$document['type']],
+                    $document['title'],
                     $year . '-' . $month . '-' . $day,
                     "\n",
                 ),
@@ -2670,10 +2676,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array(
                     '%document',
                     '%type',
+                    '%title',
                 ),
                 array(
                     $document['fullnumber'],
                     $DOCTYPES[$document['type']],
+                    $document['title'],
                 ),
                 $subject
             );
