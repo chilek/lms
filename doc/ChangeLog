@@ -590,6 +590,7 @@ version 28-git (????-??-??):
   - enhancement: added SIDUSIS Maps link type, added variables:
     'uke.sidusis_map_url' and 'uke.sidusis_default_map_zoom' (default: 20) [interduo]
   - improvement: '%title' symbol is replaced by document title during document send via mail [chilan]
+  - enhancement: added new indicator - outdated tickets [interduo]
 
 version 27.0 (2021-08-20):
 

@@ -14,6 +14,9 @@
     #indicator-expired {
         color: red;
     }
+    #indicator-outdated {
+        color:orange;
+    }
     #indicator-verify {
         color: green;
     }
@@ -51,6 +54,11 @@
 <a href="?m=indicators&action=expired" class="lms-ui-indicator" title="{trans("<!rt>Expired tickets owned by You")}"
     id="indicator-expired">
     <i class="lms-ui-indicator-icon lms-ui-icon-deadline"></i>
+    <span class="lms-ui-indicator-counter">0</span>
+</a>
+<a href="?m=indicators&action=outdated" class="lms-ui-indicator" title="{trans("<!rt>Outdated tickets owned by You")}"
+    id="indicator-outdated">
+    <i class="lms-ui-indicator-icon lms-ui-icon-sticky-note"></i>
     <span class="lms-ui-indicator-counter">0</span>
 </a>
 <a href="?m=indicators&action=verify" class="lms-ui-indicator" title="{trans("<!rt>Tickets waiting for my verification")}"
