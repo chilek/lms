@@ -1194,12 +1194,12 @@ class LMSSmartyPlugins
                 $tip = trans('Show on default external map');
                 break;
             case 'netstork':
-                $url = ConfigHelper::getConfig('netstork.web_url', '', true);
+                $url = ConfigHelper::getConfig('netstork.map_url', '', true);
                 if (!strlen($url)) {
                     return '';
                 }
-                $mapZoomRange = ConfigHelper::getConfig('netstork.map_zoom_range', 18);
-                $url .= '#%longitude,%latitude,' . $mapZoomRange;
+                $defaultMapZoom = ConfigHelper::getConfig('netstork.default_map_zoom', 18);
+                $url .= '#%longitude,%latitude,' . $defaultMapZoom;
                 $icon = 'lms-ui-icon-location-netstork';
                 $tip = trans('Show on NetStorkWeb Maps');
                 break;
