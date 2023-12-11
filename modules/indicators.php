@@ -89,6 +89,18 @@ switch ($action) {
             }
         }
         break;
+    case 'outdated':
+        if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+            $count = $LMS->GetQueueContents(array('count' => true, 'state' => RT_EXPIRED, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
+            if ($count == 1) {
+                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => RT_EXPIRED, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
+                $ticket = reset($tickets);
+                $redirect = '?m=rtticketview&id=' . $ticket['id'];
+            } else {
+                $redirect = '?m=rtqueueview&persistent-filter=-1&s[]=' . RT_EXPIRED . '&owner=' . $currentuser . '&rights=' . RT_RIGHT_INDICATOR;
+            }
+        }
+        break;
     case 'verify':
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED, 'verifierids' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));

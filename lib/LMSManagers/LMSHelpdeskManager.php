@@ -2323,6 +2323,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'urgent' => 0,
             'unread' => 0,
             'expired' => 0,
+            'outdated' => 0,
             'verify' => 0,
             'left' => 0,
             'events' => 0,
@@ -2338,6 +2339,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
                 'rights' => RT_RIGHT_INDICATOR));
             $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
+                'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR));
+            $result['outdated'] = $this->GetQueueContents(array('count' => true, 'state' => RT_EXPIRED,
                 'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR));
             $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED,
                 'verifierids' => $userid, 'rights' => RT_RIGHT_INDICATOR));
