@@ -137,6 +137,7 @@ $_LANG['Correction value: $a (to pay)'] = 'Wartość korekty: $a (do zapłaty)';
 $_LANG['Correction value: $a (to repay)'] = 'Wartość korekty: $a (do zwrotu)';
 
 $_LANG['Select tariff'] = 'Wybierz taryfę';
+$_LANG['— Select tariff —'] = '— Wybierz taryfę —';
 $_LANG['Document flags'] = 'Flagi dokumentu';
 $_LANG['The document is issued according to the $a price'] = 'Dokument wystawiony według ceny $a';
 $_LANG['calculated from net'] = 'liczone od netto';
