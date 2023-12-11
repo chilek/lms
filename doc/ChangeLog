@@ -573,8 +573,8 @@ version 28-git (????-??-??):
   - improvement: allow to check/uncheck all user resource permission to be copied
     from selected user with single click [chilan]
   - enhancement: show Geoportal Maps and NetStorkWeb Maps links near gps coordinates and customer
-    addresses [imterduo/chilan]
-  - enhancement: 'netstork.web_url' (without default value) and 'netstork.map_zoom_range' (with default
+    addresses [interduo/chilan]
+  - enhancement: 'netstork.map_url' (without default value) and 'netstork.default_map_zoom' (with default
     value of '18') [interduo/chilan]
   - enhancement: implemented validity intervals for numbering plans [chilan]
   - enhancement: don't show customer sensible data for regular users and store all requested sensible data views
@@ -588,7 +588,7 @@ version 28-git (????-??-??):
   - improvement: multi customer group selection is possible in document generation form [chilan]
   - improvement: allow to search for node sessions using mac address fragment [chilan]
   - enhancement: added SIDUSIS Maps link type, added variables:
-  'sidusis.web_url' and 'sidusis.map_zoom_range' (default: 20) [interduo]
+    'uke.sidusis_map_url' and 'uke.sidusis_default_map_zoom' (default: 20) [interduo]
 
 version 27.0 (2021-08-20):
 
