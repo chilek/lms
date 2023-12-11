@@ -32,6 +32,7 @@ if (isset($_GET['ajax'])) {
 
 $action = $_GET['action'];
 $redirect = '';
+$currentuser = Auth::GetCurrentUser();
 
 switch ($action) {
     case 'critical':
@@ -44,7 +45,7 @@ switch ($action) {
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
             } else {
-                $redirect = '?m=rtqueueview&persistent-filter=-1&priority=' . RT_PRIORITY_CRITICAL .'&rights='. RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&persistent-filter=-1&priority=' . RT_PRIORITY_CRITICAL .'&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
@@ -78,25 +79,25 @@ switch ($action) {
         break;
     case 'expired':
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
-                $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2, 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+                $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
-                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'deadline' => -2, 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'deadline' => -2, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&persistent-filter=-1&d=-2&owner=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&persistent-filter=-1&d=-2&owner=' . $currentuser . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
     case 'verify':
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
-            $count = $LMS->GetQueueContents(array('count' => true, 'state' => 7, 'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+            $count = $LMS->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED, 'verifierids' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
-                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => 7, 'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => RT_VERIFIED, 'verifierids' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&persistent-filter=-1&s=7&vids=' . Auth::GetCurrentUser() . '&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&persistent-filter=-1&s=' . RT_VERIFIED . '&vids=' . $currentuser . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
@@ -104,39 +105,39 @@ switch ($action) {
         if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
             $count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => -3, 'rights' => RT_RIGHT_INDICATOR));
             if ($count == 1) {
-                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+                $tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'owner' => $currentuser, 'rights' => RT_RIGHT_INDICATOR));
                 $ticket = reset($tickets);
                 $redirect = '?m=rtticketview&id=' . $ticket['id'];
             } else {
-                $redirect = '?m=rtqueueview&persistent-filter=-1&owner='. Auth::GetCurrentUser() .'&rights=' . RT_RIGHT_INDICATOR;
+                $redirect = '?m=rtqueueview&persistent-filter=-1&owner=' . $currentuser . '&rights=' . RT_RIGHT_INDICATOR;
             }
         }
         break;
     case 'events':
         if (ConfigHelper::CheckPrivilege('timetable_management')) {
-            $count = $LMS->GetEventList(array('userid' => Auth::GetCurrentUser(),
+            $count = $LMS->GetEventList(array('userid' => $currentuser,
                 'forward' => 1, 'closed' => 0, 'count' => true));
             if ($count == 1) {
-                $events = $LMS->GetEventList(array('userid' => Auth::GetCurrentUser(),
+                $events = $LMS->GetEventList(array('userid' => $currentuser,
                     'forward' => 1, 'closed' => 0, 'count' => false));
                 $event = reset($events);
                 $redirect = '?m=eventinfo&id=' . $event['id'];
             } else {
-                $redirect = '?m=eventlist&persistent-filter=-1&a[]=' . Auth::GetCurrentUser();
+                $redirect = '?m=eventlist&persistent-filter=-1&a[]=' . $currentuser;
             }
         }
         break;
     case 'overdue':
         if (ConfigHelper::CheckPrivilege('timetable_management')) {
-            $count = $LMS->GetEventList(array('userid' => Auth::GetCurrentUser(),
+            $count = $LMS->GetEventList(array('userid' => $currentuser,
                 'forward' => -1, 'closed' => 0, 'count' => true));
             if ($count == 1) {
-                $events = $LMS->GetEventList(array('userid' => Auth::GetCurrentUser(),
+                $events = $LMS->GetEventList(array('userid' => $currentuser,
                     'forward' => -1, 'closed' => 0, 'count' => false));
                 $event = reset($events);
                 $redirect = '?m=eventinfo&id=' . $event['id'];
             } else {
-                $redirect = '?m=eventlist&persistent-filter=-1&force_overdue_events=1&a[]=' . Auth::GetCurrentUser();
+                $redirect = '?m=eventlist&persistent-filter=-1&force_overdue_events=1&a[]=' . $currentuser;
             }
         }
         break;

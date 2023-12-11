@@ -2316,6 +2316,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetIndicatorStats()
     {
+        $userid = Auth::GetCurrentUser();
+
         $result = array(
             'critical' => 0,
             'urgent' => 0,
@@ -2336,10 +2338,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
                 'rights' => RT_RIGHT_INDICATOR));
             $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
-                'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
-            $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => 7,
-                'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
-            $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => Auth::GetCurrentUser(),
+                'owner' => $userid, 'rights' => RT_RIGHT_INDICATOR));
+            $result['verify'] = $this->GetQueueContents(array('count' => true, 'state' => RT_VERIFIED,
+                'verifierids' => $userid, 'rights' => RT_RIGHT_INDICATOR));
+            $result['left'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'owner' => $userid,
                 'rights' => RT_RIGHT_INDICATOR));
             $result['watching'] = $this->GetQueueContents(array('count' => true, 'watching' => 1,
                 'rights' => RT_RIGHT_INDICATOR));
@@ -2347,9 +2349,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if (ConfigHelper::CheckPrivilege('timetable_management')) {
             $event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
+            $result['events'] = $event_manager->GetEventList(array('userid' => $userid,
                 'forward' => 1, 'closed' => 0, 'count' => true));
-            $result['overdue'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
+            $result['overdue'] = $event_manager->GetEventList(array('userid' => $userid,
                 'forward' => -1, 'closed' => 0, 'count' => true));
         }
 

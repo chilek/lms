@@ -385,6 +385,7 @@ $_LANG['Enter invoice comment'] = 'Wprowadź komentarz do faktury';
 $_LANG['<!rt>Expired'] = 'Przeterminowany';
 $_LANG['<!rt>Not expired'] = 'Nieprzeterminowany';
 $_LANG['<!rt>less than 7 days to deadline'] = 'mniej niż 7 dni do terminu ostatecznego';
+$_LANG['<!rt>Outdated tickets owned by You'] = 'Twoje przedawnione zgłoszenia';
 $_LANG['<!rt>Expired tickets owned by You'] = 'Twoje przeterminowane zgłoszenia';
 $_LANG['<!rt>Tickets waiting for my verification'] = 'Zgłoszenia oczekujące na Twoją weryfikację';
 $_LANG['<!rt>Without deadline'] = 'Bez terminu ostatecznego';
