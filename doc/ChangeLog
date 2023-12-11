@@ -589,6 +589,7 @@ version 28-git (????-??-??):
   - improvement: allow to search for node sessions using mac address fragment [chilan]
   - enhancement: added SIDUSIS Maps link type, added variables:
     'uke.sidusis_map_url' and 'uke.sidusis_default_map_zoom' (default: 20) [interduo]
+  - improvement: '%title' symbol is replaced by document title during document send via mail [chilan]
 
 version 27.0 (2021-08-20):
 
