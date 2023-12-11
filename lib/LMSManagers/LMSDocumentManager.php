@@ -2404,7 +2404,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
                     d.fullnumber, n.template, d.ssn, d.name, d.reference,
-                    dc.title
+                    dc.title AS content_title
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -2420,7 +2420,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $document = $this->db->GetRow(
                 'SELECT d.id, d.number, d.cdate, d.type, d.customerid,
                     d.fullnumber, n.template, d.ssn, d.name,
-                    dc.title
+                    dc.title AS content_title
                 FROM documents d
                 JOIN documentcontents dc ON dc.docid = d.id
                 LEFT JOIN numberplans n ON (d.numberplanid = n.id)
@@ -2665,7 +2665,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                     date('m', $document['cdate']),
                     date('d', $document['cdate']),
                     $DOCTYPES[$document['type']],
-                    $document['title'],
+                    $document['content_title'],
                     $year . '-' . $month . '-' . $day,
                     "\n",
                 ),
@@ -2681,7 +2681,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 array(
                     $document['fullnumber'],
                     $DOCTYPES[$document['type']],
-                    $document['title'],
+                    $document['content_title'],
                 ),
                 $subject
             );
