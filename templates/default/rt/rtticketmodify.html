@@ -387,40 +387,6 @@
 
 <script src="js/templates/rt/rtticketmodify.js"></script>
 <script>
-		$("#resolve").change(function() {
-			var stateelem = $("#state");
-			var ownerelem = $("#owner");
-			if ($(this).prop("checked")) {
-				stateelem.attr("prev-state", stateelem.val()).val({$smarty.const.RT_RESOLVED});
-				ownerelem.attr("prev-state", ownerelem.val()).val({$layout.logid});
-			} else {
-				var state_prev_state = stateelem.attr("prev-state");
-				if (state_prev_state) {
-					stateelem.val(state_prev_state);
-				}
-				var owner_prev_state = ownerelem.attr("prev-state");
-				if (owner_prev_state) {
-					ownerelem.val(owner_prev_state);
-				}
-			}
-			updateAdvancedSelects(stateelem);
-			updateAdvancedSelects(ownerelem);
-		});
-
-		$( "#queue-selection" ).change(
-			function() {
-				{if !empty($reset_ticket_state)}
-					$("#state option:eq({$_RT_NEW})").prop("selected", true);
-					updateAdvancedSelects(state);
-					$("#resolve").prop("checked", false);
-				{/if}
-				xajax_queue_changed($(this).val(), $("#rtverifiers select").val());
-			}
-		);
-
-		$('#state').change(function() {
-			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
-		});
 
 		$('body').on('change', '.template-selector', function() {
 			var selected = $('option:selected', this);
