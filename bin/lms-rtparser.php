@@ -374,7 +374,7 @@ while (isset($buffer) || ($postid !== false && $postid !== null)) {
             if (is_array($headers['return-path'])) {
                 $return_paths = $headers['return-path'];
             } else {
-                $return_paths = array($return_paths);
+                $return_paths = array($headers['return-path']);
             }
             $return_paths = array_filter($return_paths, function ($var) {
                 return $var == '<>' || strtolower($var) == '<mailer-daemon>';
