@@ -599,7 +599,7 @@ switch ($action) {
         }
 
         if ($SYSLOG) {
-            $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata'));
+            $tables = array_merge($tables, array('logmessages', 'logmessagekeys', 'logmessagedata', 'logtransactions'));
         }
 
         $hook_data = array(
