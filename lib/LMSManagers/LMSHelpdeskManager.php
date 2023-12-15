@@ -1872,69 +1872,57 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($type) {
             $note = implode("\n", $notes);
-            if ($props['state'] == RT_RESOLVED) {
-                $resolvetime = time();
-                if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {
-                    $this->db->Execute(
-                        'UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, modtime = ?, resolvetime=?, subject = ?,
-						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
-						verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-						requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ? WHERE id = ?',
-                        array(
-                            $props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $resolvetime, $props['subject'],
-                            $props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-                            $props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
-                            $props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $props['parentid'],
-                            $ticketid
-                        )
-                    );
-                    if (!empty($note)) {
-                        $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-							VALUES(?, ?, ?, ?, ?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note, $resolvetime));
-                    }
-                } else {
-                    $this->db->Execute(
-                        'UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, modtime = ?, resolvetime = ?, subject = ?,
-						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
-						verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-						requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?
-						WHERE id = ?',
-                        array(
-                            $props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $resolvetime, $props['subject'],
-                            $props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-                            $props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
-                            $props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $props['parentid'],
-                            $ticketid
-                        )
-                    );
-                    if (!empty($note)) {
-                        $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-							VALUES(?, ?, ?, ?, ?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note, $resolvetime));
-                    }
-                }
-            } else {
-                $modtime = time();
-
+            $modtime = time();
+            $resolvetime = ($props['state'] == RT_RESOLVED) ? $modtime : 0;
+            $newticketowner = ($props['state'] == RT_RESOLVED && empty($props['owner'])) ?
+                $userid : $props['owner'];
+            $this->db->Execute(
+                'UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, modtime = ?, resolvetime=?, subject = ?,
+                customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
+                verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
+                requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?
+                WHERE id = ?',
+                array(
+                    $props['queueid'],
+                    $newticketowner,
+                    $props['cause'],
+                    $props['state'],
+                    $modtime,
+                    $resolvetime,
+                    $props['subject'],
+                    $props['customerid'],
+                    $props['source'],
+                    $props['priority'],
+                    $props['address_id'],
+                    $props['nodeid'],
+                    $props['netnodeid'],
+                    $props['netdevid'],
+                    $props['verifierid'],
+                    $props['verifier_rtime'],
+                    $props['deadline'],
+                    $props['service'],
+                    $props['type'],
+                    $props['invprojectid'],
+                    $props['requestor_userid'],
+                    $props['requestor'],
+                    $props['requestor_mail'],
+                    $props['requestor_phone'],
+                    $props['parentid'],
+                    $ticketid
+                )
+            );
+            if (!empty($note)) {
                 $this->db->Execute(
-                    'UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, modtime = ?, subject = ?,
-					customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
-					verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-					requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?,
-					resolvetime = ?
-					WHERE id = ?',
+                    'INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
+                    VALUES(?, ?, ?, ?, ?)',
                     array(
-                        $props['queueid'], $props['owner'], $props['cause'], $props['state'], $modtime, $props['subject'],
-                        $props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-                        $props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
-                        $props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $props['parentid'],
-                        0,
-                        $ticketid
+                        $userid,
+                        $ticketid,
+                        $type,
+                        $note,
+                        $modtime
                     )
                 );
-                if (!empty($note)) {
-                    $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-						VALUES(?, ?, ?, ?, ?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note, $modtime));
-                }
             }
         }
 

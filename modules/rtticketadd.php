@@ -29,6 +29,7 @@ check_file_uploads();
 $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
+$userid = Auth::GetCurrentUser();
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
@@ -42,7 +43,7 @@ $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 $ticket['parentid'] = isset($_GET['parentid']) ? intval($_GET['parentid']) : null;
 
-$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories($userid);
 if (!$categories) {
     access_denied();
 }
@@ -78,7 +79,7 @@ if (isset($_POST['ticket'])) {
         }
     }
 
-    if (($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2) {
+    if (($LMS->GetUserRightsRT($userid, $queue) & 2) != 2) {
         $error['queue'] = trans('You have no privileges to this queue!');
     }
 
@@ -145,7 +146,7 @@ if (isset($_POST['ticket'])) {
             if ((!isset($ticket['requestor_name']) || $ticket['requestor_name'] == '')
                 && (!isset($ticket['requestor_phone']) || $ticket['requestor_phone'] == '')
                 && (!isset($ticket['requestor_mail']) || $ticket['requestor_mail'] == '')) {
-                $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+                $userinfo = $LMS->GetUserInfo($userid);
                 $ticket['requestor_userid'] = $userinfo['id'];
             }
         }
@@ -232,7 +233,7 @@ if (isset($_POST['ticket'])) {
                 ConfigHelper::checkConfig('phpui.newticket_notify', true)
             )
         ) {
-            $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+            $user = $LMS->GetUserInfo($userid);
 
             $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
             if (!empty($helpdesk_sender_name)) {
@@ -592,9 +593,7 @@ if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
 }
 
 $netnodelist = $LMS->GetNetNodeList(array('short' => true), 'name');
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
+unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
 if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
     $search = array('netnode' => $ticket['netnodeid']);
@@ -603,14 +602,10 @@ if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
 }
 $search['short'] = true;
 $netdevlist = $LMS->GetNetDevList('name', $search);
-unset($netdevlist['total']);
-unset($netdevlist['order']);
-unset($netdevlist['direction']);
+unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
 $invprojectlist = $LMS->GetProjects('name', array());
-unset($invprojectlist['total']);
-unset($invprojectlist['order']);
-unset($invprojectlist['direction']);
+unset($invprojectlist['total'], $invprojectlist['order'], $invprojectlist['direction']);
 
 $hook_data = $LMS->executeHook(
     'ticketadd_before_display',
@@ -627,15 +622,19 @@ if (!empty($ticket['customerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('queue', $queue);
-$SMARTY->assign('queuelist', $queuelist);
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('netdevlist', $netdevlist);
-$SMARTY->assign('invprojectlist', $invprojectlist);
-$SMARTY->assign('customerid', $ticket['customerid']);
-$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
-$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR));
-$SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE));
+$SMARTY->assign(
+    array(
+        'ticket' => $ticket,
+        'queue' => $queue,
+        'queuelist' => $queuelist,
+        'categories' => $categories,
+        'netnodelist' => $netnodelist,
+        'netdevlist' => $netdevlist,
+        'invprojectlist' => $invprojectlist,
+        'customerid' => $ticket['customerid'],
+        'userlist' => $LMS->GetUserNames(array('withDeleted' => 1)),
+        'messagetemplates' => $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR),
+        'notetemplates' => $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE),
+    )
+);
 $SMARTY->display('rt/rtticketadd.html');
