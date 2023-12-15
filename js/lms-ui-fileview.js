@@ -22,7 +22,7 @@
  *  $Id$
  */
 
-function lmsFileView(file) {
+function lmsFileView(file, view_selector) {
     if (typeof(file) == 'undefined') {
         alert("404, Error: no file to view");
         return;
@@ -49,14 +49,19 @@ function lmsFileView(file) {
         default:
             object = $('<object/>').attr({
                 data: objUrl,
-                type: file.type
+                type: file.type,
+                height: "100%",
+                width: "100%",
             });
             content = $('<div/>').append(object);
             dialogOptions.height = $(window).height() * 0.8;
             break;
     }
 
-    $(content).dialog(dialogOptions);
-
-    url.revokeObjectURL(objUrl);
+    if (typeof(view_selector) === 'undefined') {
+        $(content).dialog(dialogOptions);
+        url.revokeObjectURL(objUrl);
+    } else {
+        $( '#' + view_selector ).html(object).removeClass('hidden').addClass('attachment-loaded');
+    }
 }
