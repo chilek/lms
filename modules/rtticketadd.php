@@ -622,15 +622,19 @@ if (!empty($ticket['customerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('queue', $queue);
-$SMARTY->assign('queuelist', $queuelist);
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('netdevlist', $netdevlist);
-$SMARTY->assign('invprojectlist', $invprojectlist);
-$SMARTY->assign('customerid', $ticket['customerid']);
-$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
-$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR));
-$SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE));
+$SMARTY->assign(
+    array(
+        'ticket' => $ticket,
+        'queue' => $queue,
+        'queuelist' => $queuelist,
+        'categories' => $categories,
+        'netnodelist' => $netnodelist,
+        'netdevlist' => $netdevlist,
+        'invprojectlist' => $invprojectlist,
+        'customerid' => $ticket['customerid'],
+        'userlist' => $LMS->GetUserNames(array('withDeleted' => 1)),
+        'messagetemplates' => $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR),
+        'notetemplates' => $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE),
+    )
+);
 $SMARTY->display('rt/rtticketadd.html');
