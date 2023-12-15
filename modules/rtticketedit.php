@@ -790,14 +790,10 @@ if (!empty($ticket['customerid'])) {
 }
 
 $netnodelist = $LMS->GetNetNodeList(array('short' => true), 'name');
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
+unset($netnodelist['total'], $netnodelist['order'], $netnodelist['direction']);
 
 $invprojectlist = $LMS->GetProjects('name', array());
-unset($invprojectlist['total']);
-unset($invprojectlist['order']);
-unset($invprojectlist['direction']);
+unset($invprojectlist['total'], $invprojectlist['order'], $invprojectlist['direction']);
 
 if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
     $search = array('netnode' => $ticket['netnodeid']);
@@ -806,9 +802,7 @@ if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
 }
 $search['short'] = true;
 $netdevlist = $LMS->GetNetDevList('name', $search);
-unset($netdevlist['total']);
-unset($netdevlist['order']);
-unset($netdevlist['direction']);
+unset($netdevlist['total'], $netdevlist['order'], $netdevlist['direction']);
 
 $hook_data = $LMS->executeHook(
     'ticketedit_before_display',
