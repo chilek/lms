@@ -183,17 +183,18 @@ $hook_data = $LMS->executeHook(
 );
 $ticket = $hook_data['ticket'];
 
-$SMARTY->assign('xajax', $LMS->RunXajax());
-
-$SMARTY->assign('aet', $aet);
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('relatedticketscontent', isset($relatedticketscontent) ? $relatedticketscontent : null);
-$SMARTY->assign('childticketscontent', isset($childticketscontent) ? $childticketscontent : null);
-$SMARTY->assign('parentticketcontent', isset($parentticketcontent) ? $parentticketcontent : null);
-
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('assignedevents', $assignedevents);
-
-$SMARTY->assign('rtticketview_sortable_order', $SESSION->get_persistent_setting('rtticketview-sortable-order'));
+$SMARTY->assign(
+    array(
+        'xajax' => $LMS->RunXajax(),
+        'aet' => $aet,
+        'ticket' => $ticket,
+        'relatedticketscontent' => isset($relatedticketscontent) ? $relatedticketscontent : null,
+        'childticketscontent' => isset($childticketscontent) ? $childticketscontent : null,
+        'parentticketcontent' => isset($parentticketcontent) ? $parentticketcontent : null,
+        'categories' => $categories,
+        'assignedevents' => $assignedevents,
+        'rtticketview_sortable_order' => $SESSION->get_persistent_setting('rtticketview-sortable-order'),
+    )
+);
 
 $SMARTY->display('rt/rtticketview.html');

@@ -819,14 +819,19 @@ if (!empty($ticket['customerid'])) {
     $SMARTY->assign('addresses', $addresses);
 }
 
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->assign('customerid', $ticket['customerid']);
-$SMARTY->assign('queuelist', $queuelist);
-$SMARTY->assign('queue', $ticket['queueid']);
-$SMARTY->assign('categories', $categories);
-$SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('netdevlist', $netdevlist);
-$SMARTY->assign('invprojectlist', $invprojectlist);
-$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
-$SMARTY->assign('error', $error);
+$SMARTY->assign(
+    array(
+        'ticket' => $ticket,
+        'customerid' => $ticket['customerid'],
+        'queuelist' => $queuelist,
+        'queue' => $ticket['queueid'],
+        'categories' => $categories,
+        'netnodelist' => $netnodelist,
+        'netdevlist' => $netdevlist,
+        'invprojectlist' => $invprojectlist,
+        'userlist' => $LMS->GetUserNames(array('withDeleted' => 1)),
+        'error' => (isset($error) ? $error : null),
+    )
+);
+
 $SMARTY->display('rt/rtticketedit.html');
