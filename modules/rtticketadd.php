@@ -29,6 +29,7 @@ check_file_uploads();
 $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
+$userid = Auth::GetCurrentUser();
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
@@ -42,7 +43,7 @@ $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 $ticket['parentid'] = isset($_GET['parentid']) ? intval($_GET['parentid']) : null;
 
-$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories($userid);
 if (!$categories) {
     access_denied();
 }
@@ -78,7 +79,7 @@ if (isset($_POST['ticket'])) {
         }
     }
 
-    if (($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2) {
+    if (($LMS->GetUserRightsRT($userid, $queue) & 2) != 2) {
         $error['queue'] = trans('You have no privileges to this queue!');
     }
 
@@ -145,7 +146,7 @@ if (isset($_POST['ticket'])) {
             if ((!isset($ticket['requestor_name']) || $ticket['requestor_name'] == '')
                 && (!isset($ticket['requestor_phone']) || $ticket['requestor_phone'] == '')
                 && (!isset($ticket['requestor_mail']) || $ticket['requestor_mail'] == '')) {
-                $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+                $userinfo = $LMS->GetUserInfo($userid);
                 $ticket['requestor_userid'] = $userinfo['id'];
             }
         }
@@ -232,7 +233,7 @@ if (isset($_POST['ticket'])) {
                 ConfigHelper::checkConfig('phpui.newticket_notify', true)
             )
         ) {
-            $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+            $user = $LMS->GetUserInfo($userid);
 
             $helpdesk_sender_name = ConfigHelper::getConfig('rt.sender_name', ConfigHelper::getConfig('phpui.helpdesk_sender_name'));
             if (!empty($helpdesk_sender_name)) {
