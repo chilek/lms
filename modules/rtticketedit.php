@@ -745,6 +745,7 @@ if (isset($_POST['ticket'])) {
     $ticket['nodeid'] = $ticketedit['nodeid'];
     $ticket['netnodeid'] = isset($ticketedit['netnodeid']) ? $ticketedit['netnodeid'] : null;
     $ticket['netdevid'] = $ticketedit['netdevid'];
+    $ticket['invprojectid'] = empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'];
     $ticket['priority'] = $ticketedit['priority'];
     $ticket['requestor_userid'] = $ticketedit['requestor_userid'];
     $ticket['requestor_name'] = isset($ticketedit['requestor_name']) ? $ticketedit['requestor_name'] : null;
