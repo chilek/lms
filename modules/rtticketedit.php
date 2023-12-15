@@ -39,6 +39,8 @@ if (isset($_GET['id'])) {
     }
 }
 
+$userid = Auth::GetCurrentUser();
+
 if (!empty($_GET['action'])) {
     $action = $_GET['action'];
 }
@@ -66,7 +68,7 @@ if ($id && !isset($_POST['ticket'])) {
                 $LMS->TicketChange($id, array('state' => RT_VERIFIED, 'verifier_rtime' => time()));
 
                 $queue = $LMS->GetQueueByTicketId($id);
-                $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+                $user = $LMS->GetUserInfo($userid);
 
                 if ($ticket['customerid']) {
                     $info = $LMS->GetCustomer($ticket['customerid'], true);
@@ -156,11 +158,11 @@ if ($id && !isset($_POST['ticket'])) {
                     header('Content-Type: application/json');
                     die(json_encode($LMS->TicketIsAssigned($id)));
                 }
-                $LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
+                $LMS->TicketChange($id, array('owner' => $userid));
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'assign2':
-                $LMS->TicketChange($id, array('verifierid' => Auth::GetCurrentUser()));
+                $LMS->TicketChange($id, array('verifierid' => $userid));
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'read':
@@ -202,7 +204,7 @@ if ($id && !isset($_POST['ticket'])) {
                 }
 
                 $queue = $LMS->GetQueueByTicketId($id);
-                $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+                $user = $LMS->GetUserInfo($userid);
                 if ($ticket['customerid']) {
                     $info = $LMS->GetCustomer($ticket['customerid'], true);
 
@@ -402,7 +404,7 @@ $ticket = $LMS->GetTicketContents($id);
 $LMS->MarkTicketAsRead($id);
 $LMS->getTicketImageGalleries($ticket);
 $ticket['oldverifierid'] = $ticket['verifierid'];
-$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories($userid);
 if (empty($categories)) {
     $categories = array();
 }
@@ -437,7 +439,7 @@ if (isset($_POST['ticket'])) {
     $deadline = datetime_to_timestamp($ticketedit['deadline']);
     if ($deadline != $ticket['deadline']) {
         if (!ConfigHelper::checkConfig('rt.allow_all_users_modify_deadline', ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline'))
-            && !empty($ticket['verifierid']) && $ticket['verifierid'] != Auth::GetCurrentUser()) {
+            && !empty($ticket['verifierid']) && $ticket['verifierid'] != $userid) {
             $error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
             $ticketedit['deadline'] = $ticket['deadline'];
         }
@@ -455,7 +457,7 @@ if (isset($_POST['ticket'])) {
         }
     }
 
-    if (!($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queue']) & RT_RIGHT_WRITE)) {
+    if (!($LMS->GetUserRightsRT($userid, $ticketedit['queue']) & RT_RIGHT_WRITE)) {
         $error['queue'] = trans('You have no privileges to this queue!');
     }
 
@@ -483,11 +485,11 @@ if (isset($_POST['ticket'])) {
 
     if (!ConfigHelper::checkPrivilege('superuser') && $ticket['state'] == RT_VERIFIED) {
         if ($ticketedit['state'] != RT_VERIFIED) {
-            if (!empty($ticket['verifierid']) && $ticket['verifierid'] != Auth::GetCurrentUser()) {
+            if (!empty($ticket['verifierid']) && $ticket['verifierid'] != $userid) {
                 $error['state'] = trans('Ticket is already transferred to verifier!');
             }
         } else {
-            if ($ticket['verifierid'] != $ticketedit['verifierid'] && $ticketedit['verifierid'] != Auth::GetCurrentUser()) {
+            if ($ticket['verifierid'] != $ticketedit['verifierid'] && $ticketedit['verifierid'] != $userid) {
                 $error['verifierid'] = trans('Ticket is already transferred to verifier!');
             }
         }
@@ -580,7 +582,7 @@ if (isset($_POST['ticket'])) {
                 || $ticket['parentid'] != $ticketedit['parentid']))
             || ($ticket['queueid'] != $ticketedit['queue'] && !empty($newticket_notify))
             || ($ticket['verifierid'] != $ticketedit['verifierid'] && !empty($ticketedit['verifierid'])))) {
-            $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+            $user = $LMS->GetUserInfo($userid);
             $queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
             $verifierid = $ticket['verifierid'];
             $mailfname = '';

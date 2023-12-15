@@ -1890,7 +1890,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     );
                     if (!empty($note)) {
                         $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-							VALUES(?, ?, ?, ?, ?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note, $resolvetime));
+							VALUES(?, ?, ?, ?, ?)', array($userid, $ticketid, $type, $note, $resolvetime));
                     }
                 } else {
                     $this->db->Execute(
@@ -1900,7 +1900,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?, parentid = ?
 						WHERE id = ?',
                         array(
-                            $props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $resolvetime, $props['subject'],
+                            $props['queueid'], $userid, $props['cause'], $props['state'], $resolvetime, $resolvetime, $props['subject'],
                             $props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
                             $props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
                             $props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $props['parentid'],
@@ -1909,7 +1909,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     );
                     if (!empty($note)) {
                         $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-							VALUES(?, ?, ?, ?, ?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note, $resolvetime));
+							VALUES(?, ?, ?, ?, ?)', array($userid, $ticketid, $type, $note, $resolvetime));
                     }
                 }
             } else {
@@ -1933,7 +1933,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 );
                 if (!empty($note)) {
                     $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-						VALUES(?, ?, ?, ?, ?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note, $modtime));
+						VALUES(?, ?, ?, ?, ?)', array($userid, $ticketid, $type, $note, $modtime));
                 }
             }
         }
