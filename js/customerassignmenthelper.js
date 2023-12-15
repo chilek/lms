@@ -86,6 +86,10 @@ function CustomerAssignmentHelper(options) {
 
 	this.initEventHandlers = function() {
 		$('#submit-button,#print-button').click(function () {
+			$('#a-day-of-month').prop('required', function() {
+				return $(this).is(':visible');
+			});
+
 			if ($(this)[0].form.checkValidity()) {
 				$('.schema-tariff-checkbox[data-mandatory]:checkbox').prop('disabled', false);
 			}
