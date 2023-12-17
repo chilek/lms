@@ -10,6 +10,7 @@ matrix:
       language: php
       php: 7.2
       dist: xenial
+      virt: lxd
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
@@ -19,6 +20,7 @@ matrix:
       language: php
       php: 7.3
       dist: xenial
+      virt: lxd
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
@@ -28,6 +30,7 @@ matrix:
       language: php
       php: 7.4
       dist: xenial
+      virt: lxd
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
@@ -37,6 +40,7 @@ matrix:
       language: php
       php: 8.0
       dist: xenial
+      virt: lxd
       env:
         PHPCS_VER="^3"
         PHPCS_STANDARD="phpcs3.xml"
