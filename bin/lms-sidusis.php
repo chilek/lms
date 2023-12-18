@@ -2,9 +2,9 @@
 <?php
 
 /*
- * LMS version 28.x
+ * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2023 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,7 +23,6 @@
  *  USA.
  *
  *  $Id$
- *  Author: Jarosław Kłopotek github:@interduo,
  */
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
