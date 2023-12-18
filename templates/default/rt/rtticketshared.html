@@ -1,6 +1,6 @@
-{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users'))}
-{$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users'))}
-{$reset_ticket_state = ConfigHelper::checkConfig('rt.ticket_queue_change_resets_ticket_state')}
+{$hide_disabled_users = ConfigHelper::checkConfig('rt.hide_disabled_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')) scope=global}
+{$hide_deleted_users = ConfigHelper::checkConfig('rt.hide_deleted_users', ConfigHelper::checkConfig('phpui.helpdesk_hide_deleted_users')) scope=global}
+{$reset_ticket_state = ConfigHelper::checkConfig('rt.ticket_queue_change_resets_ticket_state') scope=global}
 
 <script>
 
