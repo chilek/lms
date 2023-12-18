@@ -47,8 +47,8 @@ php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff0319065
 php composer-setup.php
 php -r "unlink('composer-setup.php');"
 
-composer.phar update --no-dev
-cd ${USERPANELDIR}/style/bclean; composer.phar update --no-dev
+php composer.phar update --no-dev
+cd ${USERPANELDIR}/style/bclean; php composer.phar update --no-dev
 
 #LMS DB APP
 PGCONF=`find /etc/postgresql -type f -name 'pg_hba.conf' | tail -1`
