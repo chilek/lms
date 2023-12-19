@@ -2,9 +2,9 @@
 <?php
 
 /*
- * LMS version 28.x
+ * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2023 LMS Developers
+ *  (C) Copyright 2001-2022 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,7 +23,6 @@
  *  USA.
  *
  *  $Id$
- *  Author: Jarosław Kłopotek github:@interduo,
  */
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_DEPRECATED);
@@ -82,7 +81,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-sidusis.php
-(C) 2001-2022 LMS Developers
+(C) 2001-2023 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -370,7 +369,7 @@ if (array_key_exists('import-demands', $options)) {
 
     if ($debug) {
         print_r($response);
-        echo 'Ilość znalezionych zapotrzebowań na Internet: ' . $response_count . PHP_EOL;
+        echo 'Liczba znalezionych zapotrzebowań na Internet: ' . $response_count . PHP_EOL;
     }
 
     curl_close($ch);
