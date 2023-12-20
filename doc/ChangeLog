@@ -592,7 +592,10 @@ version 28-git (????-??-??):
   - improvement: '%title' symbol is replaced by document title during document send via mail [chilan]
   - enhancement: added new indicator - outdated tickets [interduo]
   - enhancement: lms-sidusis.php script for reporting ranges and importing internet
-  demands as a tickets [interduo]
+    demands as a tickets [interduo]
+  - improvement: 'phpui.node_access_change_allowed_customer_statuses' configuration variable
+    with 'connected' as default value, allows to specify for customer with which status node access flag
+    change is allowed [chilan]
 
 version 27.0 (2021-08-20):
 
