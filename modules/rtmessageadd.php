@@ -483,6 +483,7 @@ if (isset($_POST['message'])) {
                 if (isset($message['notify'])) {
                     $params = array(
                         'id' => $ticketid,
+                        'author' => Auth::GetCurrentUserName(),
                         'queue' => $queue['name'],
                         'messageid' => isset($msgid) ? $msgid : null,
                         'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],

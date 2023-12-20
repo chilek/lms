@@ -120,6 +120,7 @@ if ($id && !isset($_POST['ticket'])) {
                 $params = array(
                     'id' => $id,
                     'queue' => $queue['name'],
+                    'author' => Auth::GetCurrentUserName(),
                     'verifierid' => $ticket['verifierid'],
                     'customerid' => $ticket['customerid'],
                     'status' => $ticket['status'],
