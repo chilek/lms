@@ -358,8 +358,18 @@ if (isset($_POST['nodeedit'])) {
     } else if (! $LMS->CustomerExists($nodeedit['ownerid'])) {
         $error['nodeedit[customerid]'] = trans('Inexistent owner selected!');
         $error['nodeedit[ownerid]'] = trans('Inexistent owner selected!');
-    } else if ($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) != CSTATUS_CONNECTED) {
-        $error['access'] = trans('Node owner is not connected!');
+    } elseif ($nodeedit['access']) {
+        $allowed_statuses = array_flip(
+            Utils::determineAllowedCustomerStatus(
+                ConfigHelper::getConfig('phpui.node_access_change_allowed_customer_statuses'),
+                array(
+                    CSTATUS_CONNECTED,
+                )
+            )
+        );
+        if (!isset($allowed_statuses[$LMS->GetCustomerStatus($nodeedit['ownerid'])])) {
+            $error['access'] = trans('Node owner is not connected!');
+        }
     }
 
     if (!ConfigHelper::checkPrivilege('full_access') && ConfigHelper::checkConfig('phpui.teryt_required')
