@@ -644,6 +644,7 @@ $_LANG['ascending'] = 'rosnąco';
 $_LANG['Assigned:'] = 'Korzysta:';
 $_LANG['Assigned to:'] = 'Przypisane dla:';
 $_LANG['unassigned'] = 'nieprzypisany';
+$_LANG['— unassigned —'] = '— nieprzypisany —';
 $_LANG['Assign node to customer'] = 'Przypisz komputer klientowi';
 $_LANG['Attach stats'] = 'Dołącz statystyki';
 $_LANG['Attachment:'] = 'Załącznik:';
