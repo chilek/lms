@@ -69,7 +69,7 @@ class Auth
 
     public static function GetCurrentUserName()
     {
-	return (self::$auth ? self::$auth->logname : null);
+        return (self::$auth ? self::$auth->logname : null);
     }
 
     public function __construct(&$DB, &$SESSION)
