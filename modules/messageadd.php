@@ -739,9 +739,16 @@ foreach ($divisions as $division) {
         $division_count++;
     }
 }
-$SMARTY->assign('division_count', $division_count);
 
 $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+$sender_name = ConfigHelper::getConfig('messages.sender_name', $userinfo['name']);
+
+$SMARTY->assign(
+    array(
+        'division_count' => $division_count,
+        'sender_name' => $sender_name
+    )
+);
 
 if (isset($_POST['message']) && !isset($_GET['sent'])) {
     $message = $_POST['message'];
