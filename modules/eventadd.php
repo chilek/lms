@@ -400,6 +400,7 @@ if (isset($_POST['event'])) {
 
                     $params = array(
                         'id' => $event['ticketid'],
+                        'author' => Auth::GetCurrentUserName(),
                         'queue' => $queuedata['name'],
                         'customerid' => $ticket['customerid'],
                         'status' => $ticketdata['status'],

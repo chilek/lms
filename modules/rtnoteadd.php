@@ -239,6 +239,7 @@ if (isset($_GET['ticketid'])) {
 
             $params = array(
                 'id' => $note['ticketid'],
+                'author' => Auth::GetCurrentUserName(),
                 'queue' => $queue['name'],
                 'messageid' => isset($msgid) ? $msgid : null,
                 'customerid' => $ticket['customerid'],

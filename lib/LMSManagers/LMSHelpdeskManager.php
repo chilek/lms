@@ -1992,6 +1992,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $text = str_replace('%status', $params['status']['label'], $text);
         $text = str_replace('%cat', implode(' ; ', $params['categories']), $text);
         $text = str_replace('%subject', isset($params['subject']) ? $params['subject'] : '', $text);
+        $text = str_replace('%author', isset($params['author']) ? $params['author'] : '', $text);
         if (isset($params['contenttype']) && $params['contenttype'] == 'text/html') {
             $text = str_replace('%body', '<hr>' . (isset($params['body']) ? $params['body'] : '') . '<hr>', $text);
         } else {

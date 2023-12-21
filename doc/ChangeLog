@@ -596,6 +596,7 @@ version 28-git (????-??-??):
   - improvement: 'phpui.node_access_change_allowed_customer_statuses' configuration variable
     with 'connected' as default value, allows to specify for customer with which status node access flag
     change is allowed [chilan]
+  - improvement: added support for %author in ticket notify templates [interduo]
 
 version 27.0 (2021-08-20):
 

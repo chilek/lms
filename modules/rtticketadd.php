@@ -336,6 +336,7 @@ if (isset($_POST['ticket'])) {
                 $params = array(
                     'id' => $id,
                     'queue' => $queuedata['name'],
+                    'author' => Auth::GetCurrentUserName(),
                     'customerid' => $ticket['customerid'],
                     'status' => $ticketdata['status'],
                     'categories' => $ticketdata['categorynames'],
