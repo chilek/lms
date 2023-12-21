@@ -2966,21 +2966,37 @@ class LMS
     {
         $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
 
+        $mail_backend = ConfigHelper::getConfig('mail.backend');
+        $hide_sensitive_headers = ConfigHelper::checkConfig('mail.hide_sensitive_headers');
         $debug_email = ConfigHelper::getConfig('mail.debug_email');
         $debug_level = intval(ConfigHelper::getConfig('mail.debug_level', empty($debug_email) ? 0 : 2));
 
-        if (ConfigHelper::getConfig('mail.backend') == 'pear') {
+        $smtp_host = ConfigHelper::getConfig('mail.smtp_host');
+        $smtp_port = ConfigHelper::getConfig('mail.smtp_port');
+        $smtp_auth_type = ConfigHelper::getConfig('mail.smtp_auth_type', true);
+        $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+        $smtp_password =  ConfigHelper::getConfig('mail.smtp_password');
+        $smtp_secure = ConfigHelper::getConfig('mail.smtp_secure', '', true);
+        $smtp_ssl_verify_peer = ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer');
+        $smtp_ssl_verify_peer_name = ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer_name');
+        $smtp_ssl_allow_self_signed = ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed', true);
+
+        $smime_certificate = ConfigHelper::getConfig('mail.smime_certificate', LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert');
+        $smime_key = ConfigHelper::getConfig('mail.smime_key', LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key');
+        $smime_ca_chain = ConfigHelper::getConfig('mail.smime_ca_chain', '');
+        $smime_sender_email = ConfigHelper::getConfig('mail.smime_sender_email', $sender_email);
+
+        if ($mail_backend == 'pear') {
             if (!is_object($this->mail_object) || !$persist) {
-                $params['host'] = (!isset($smtp_options['host']) ? ConfigHelper::getConfig('mail.smtp_host') : $smtp_options['host']);
-                $params['port'] = (!isset($smtp_options['port']) ? ConfigHelper::getConfig('mail.smtp_port') : $smtp_options['port']);
-                $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+                $params['host'] = (!isset($smtp_options['host']) ? $smtp_host : $smtp_options['host']);
+                $params['port'] = (!isset($smtp_options['port']) ? $smtp_port : $smtp_options['port']);
                 if (!empty($smtp_username) || isset($smtp_options['user'])) {
-                    $params['auth'] = (!isset($smtp_options['auth']) ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $smtp_options['auth']);
+                    $params['auth'] = (!isset($smtp_options['auth']) ? $smtp_auth_type : $smtp_options['auth']);
                     if ($params['auth'] == 'false') {
                         $params['auth'] = false;
                     }
                     $params['username'] = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
-                    $params['password'] = (!isset($smtp_options['pass']) ? ConfigHelper::getConfig('mail.smtp_password') : $smtp_options['pass']);
+                    $params['password'] = (!isset($smtp_options['pass']) ? $smtp_password : $smtp_options['pass']);
                 } else {
                     $params['auth'] = false;
                 }
@@ -2993,7 +3009,7 @@ class LMS
             }
 
             $headers['X-Mailer'] = 'LMS-' . self::SOFTWARE_VERSION;
-            if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
+            if (!$hide_sensitive_headers) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
                 }
@@ -3005,9 +3021,8 @@ class LMS
             $headers['Subject'] = qp_encode($headers['Subject']);
             $headers['Precedence'] = 'bulk';
 
-            $debug_email = ConfigHelper::getConfig('mail.debug_email');
             if (!empty($debug_email)) {
-                $recipients = ConfigHelper::getConfig('mail.debug_email');
+                $recipients = $debug_email;
                 $headers['To'] = '<' . $recipients . '>';
             } else {
                 if (isset($headers['Cc'])) {
@@ -3063,19 +3078,18 @@ class LMS
             } else {
                 return MSG_SENT;
             }
-        } elseif (ConfigHelper::getConfig('mail.backend') == 'phpmailer') {
+        } elseif ($mail_backend == 'phpmailer') {
             $this->mail_object = new \PHPMailer\PHPMailer\PHPMailer();
             $this->mail_object->isSMTP();
 
             $this->mail_object->SMTPKeepAlive = $persist;
 
-            $this->mail_object->Host = (!isset($smtp_options['host']) ? ConfigHelper::getConfig('mail.smtp_host') : $smtp_options['host']);
-            $this->mail_object->Port = (!isset($smtp_options['port']) ? ConfigHelper::getConfig('mail.smtp_port') : $smtp_options['port']);
-            $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+            $this->mail_object->Host = (!isset($smtp_options['host']) ? $smtp_host : $smtp_options['host']);
+            $this->mail_object->Port = (!isset($smtp_options['port']) ? $smtp_port : $smtp_options['port']);
             if (!empty($smtp_username) || isset($smtp_options['user'])) {
                 $this->mail_object->Username = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
-                $this->mail_object->Password = (!isset($smtp_options['pass']) ? ConfigHelper::getConfig('mail.smtp_password') : $smtp_options['pass']);
-                $auth_type = isset($smtp_options['auth']) ? $smtp_options['auth'] : ConfigHelper::getConfig('mail.smtp_auth_type', true);
+                $this->mail_object->Password = (!isset($smtp_options['pass']) ? $smtp_password : $smtp_options['pass']);
+                $auth_type = isset($smtp_options['auth']) ? $smtp_options['auth'] : $smtp_auth_type;
                 if (is_bool($auth_type)) {
                     $this->mail_object->SMTPAuth = $auth_type;
                 } elseif ($auth_type == 'false') {
@@ -3089,7 +3103,7 @@ class LMS
             }
 
             $this->mail_object->SMTPSecure = (!isset($smtp_options['secure'])
-                ? ConfigHelper::getConfig('mail.smtp_secure', '', true)
+                ? $smtp_secure
                 : $smtp_options['secure']);
             if ($this->mail_object->SMTPSecure == 'false') {
                 $this->mail_object->SMTPSecure = '';
@@ -3099,16 +3113,16 @@ class LMS
             $this->mail_object->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => isset($smtp_options['ssl_verify_peer']) ? $smtp_options['ssl_verify_peer']
-                        : ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer'),
+                        : $smtp_ssl_verify_peer,
                     'verify_peer_name' => isset($smtp_options['ssl_verify_peer_name']) ? $smtp_options['ssl_verify_peer_name']
-                        : ConfigHelper::checkConfig('mail.smtp_ssl_verify_peer_name'),
+                        : $smtp_ssl_verify_peer_name,
                     'allow_self_signed' => isset($smtp_options['ssl_allow_self_signed']) ? $smtp_options['ssl_allow_self_signed']
-                        : ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed', true),
+                        : $smtp_ssl_allow_self_signed,
                 )
             );
 
             $this->mail_object->XMailer = 'LMS-' . self::SOFTWARE_VERSION;
-            if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
+            if (!$hide_sensitive_headers) {
                 if (!empty($_SERVER['REMOTE_ADDR'])) {
                     $this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
                 }
@@ -3229,16 +3243,16 @@ class LMS
 
             $smime = array(
                 'cert' => !isset($smtp_options['smime_certificate'])
-                    ? ConfigHelper::getConfig('mail.smime_certificate', LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert')
+                    ? $smime_certificate
                     : $smtp_options['smime_certificate'],
                 'key' => !isset($smtp_options['smime_key'])
-                    ? ConfigHelper::getConfig('mail.smime_key', LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key')
+                    ? $smime_key
                     : $smtp_options['smime_key'],
                 'ca_chain' => !isset($smtp_options['smime_ca_chain'])
-                    ? ConfigHelper::getConfig('mail.smime_ca_chain', '')
+                    ? $smime_ca_chain
                     : $smtp_options['smime_ca_chain'],
                 'sender_email' => !isset($smtp_options['smime_sender_email'])
-                    ? ConfigHelper::getConfig('mail.smime_sender_email', $sender_email)
+                    ? $smime_sender_email
                     : $smtp_options['smime_sender_email'],
             );
 
