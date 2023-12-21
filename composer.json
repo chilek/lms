@@ -104,6 +104,7 @@
         "php" : ">=7.2",
         "ext-mbstring": "*",
         "ext-xml": "*",
+        "ext-sockets": "*",
         "ext-json": "*",
         "ext-fileinfo": "*",
         "ext-bcmath": "*",

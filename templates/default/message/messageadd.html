@@ -482,7 +482,7 @@
 				<strong>{trans("Sender")}</strong>
 			</td>
 			<td>
-				<input type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{elseif $userinfo.name}{$userinfo.name}{/if}"
+				<input type="text" name="message[from]" size="40"  value="{if $message.from}{$message.from}{else}{$sender_name}{/if}"
 					{tip trigger="from" text="Enter sender name"}>
 			</td>
 		</tr>
