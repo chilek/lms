@@ -1264,78 +1264,104 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         global $RT_STATES;
 
         $userid = Auth::GetCurrentUser();
+        $helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
-				t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
-				t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, t.verifier_rtime, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
-				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
-				t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
-				t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name,
-				t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid' .
-                                (!empty($userid) ? ', (CASE WHEN t.id = w.ticketid AND w.userid = ' . $userid . ' THEN 1 ELSE 0 END) as watching ' : '') . '
-				FROM rttickets t
-				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
-				LEFT JOIN vusers o ON (t.owner = o.id)
-				LEFT JOIN vusers c ON (t.creatorid = c.id)
-				LEFT JOIN vusers d ON (t.requestor_userid = d.id)
-				LEFT JOIN rtticketwatchers w ON (t.id = w.ticketid)
-				LEFT JOIN customers ON (customers.id = t.customerid)
-				LEFT JOIN vaddresses va ON va.id = t.address_id
-				LEFT JOIN vnodes n ON n.id = t.nodeid
-				LEFT JOIN netnodes nn ON nn.id = t.netnodeid
-				LEFT JOIN netdevices nd ON nd.id = t.netdevid
-				LEFT JOIN invprojects i ON i.id = t.invprojectid
-				LEFT JOIN vusers e ON (t.verifierid = e.id)
-				LEFT JOIN (
-					SELECT SUM(CASE WHEN closed !=1 THEN 1 ELSE 0 END) AS openeventcount,
-					ticketid FROM events WHERE ticketid IS NOT NULL GROUP BY ticketid
-				) ev ON ev.ticketid = t.id
-				WHERE 1=1 '
-                . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND t.deleted = 0' : '')
-                . (' AND t.id = ?'), array($id));
+            t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
+            t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, t.verifier_rtime, '
+            . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
+            o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
+            t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
+            t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name,
+            t.verifierid, e.name AS verifier_username, t.deadline, openeventcount, t.type, t.service, t.parentid' .
+            (!empty($userid) ? ', (CASE WHEN t.id = w.ticketid AND w.userid = ' . $userid . ' THEN 1 ELSE 0 END) as watching ' : '') . '
+            FROM rttickets t
+            LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
+            LEFT JOIN vusers o ON (t.owner = o.id)
+            LEFT JOIN vusers c ON (t.creatorid = c.id)
+            LEFT JOIN vusers d ON (t.requestor_userid = d.id)
+            LEFT JOIN rtticketwatchers w ON (t.id = w.ticketid)
+            LEFT JOIN customers ON (customers.id = t.customerid)
+            LEFT JOIN vaddresses va ON va.id = t.address_id
+            LEFT JOIN vnodes n ON n.id = t.nodeid
+            LEFT JOIN netnodes nn ON nn.id = t.netnodeid
+            LEFT JOIN netdevices nd ON nd.id = t.netdevid
+            LEFT JOIN invprojects i ON i.id = t.invprojectid
+            LEFT JOIN vusers e ON (t.verifierid = e.id)
+            LEFT JOIN (
+                SELECT SUM(CASE WHEN closed !=1 THEN 1 ELSE 0 END) AS openeventcount,
+                ticketid FROM events WHERE ticketid IS NOT NULL GROUP BY ticketid
+            ) ev ON ev.ticketid = t.id
+            WHERE 1=1 '
+            . ($helpdesk_advanced_operations ? '' : ' AND t.deleted = 0')
+            . (' AND t.id = ?'), array($id));
 
         if (empty($ticket)) {
             return null;
         }
 
         $ticket['requestor_name'] = $ticket['requestor'];
-        if (empty($ticket['requestor_userid']) && (!empty($ticket['requestor']) || !empty($ticket['requestor_mail']) || !empty($ticket['requestor_phone']))) {
+        if (empty($ticket['requestor_userid'])
+            && (!empty($ticket['requestor'])
+                || !empty($ticket['requestor_mail'])
+                || !empty($ticket['requestor_phone']))) {
             $ticket['requestor_userid'] = 0;
         }
 
-        $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id, c.name, c.style
-								FROM rtticketcategories tc
-								JOIN rtcategories c ON c.id = tc.categoryid
-								WHERE ticketid = ?', 'id', array($id));
-        $ticket['categorynames'] = empty($ticket['categories']) ? array() : array_map(function ($elem) {
+        $ticket['categories'] = $this->GetTicketCategories($id);
+
+        $ticket['categorynames'] = empty($ticket['categories']) ? array() :
+            array_map(function ($elem) {
                 return $elem['name'];
-        }, $ticket['categories']);
+            }, $ticket['categories']);
 
         $ticket['parent'] = $this->getTickets($ticket['parentid']);
         $ticket['relatedtickets'] = $this->GetRelatedTickets($id);
 
         if (!$short) {
-            $ticket['messages'] = $this->db->GetAll(
-                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, contenttype, createtime, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
-					userid, vusers.name AS username, customerid, rtmessages.type, rtmessages.deleted, rtmessages.deltime, rtmessages.deluserid
-					FROM rtmessages
-					LEFT JOIN customers ON (customers.id = customerid)
-					LEFT JOIN vusers ON (vusers.id = userid)
-					WHERE 1=1'
-                . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rtmessages.deleted = 0' : '')
-                . (' AND ticketid = ?)')
-                . (' ORDER BY createtime ASC, rtmessages.id'),
-                array($id)
-            );
+            $ticket['messages'] = $this->GetTicketMessages($id);
+        }
 
-            foreach ($ticket['messages'] as &$message) {
+        $ticket['status'] = $RT_STATES[$ticket['state']];
+        $ticket['uptime'] = uptimef($ticket['resolvetime'] ?
+            $ticket['resolvetime'] - $ticket['createtime'] :
+            time() - $ticket['createtime']);
+
+        if (!empty($ticket['nodeid']) && empty($ticket['node_location'])) {
+            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $ticket['node_location'] = $customer_manager->getAddressForCustomerStuff($ticket['customerid']);
+        }
+        return $ticket;
+    }
+
+    private function GetTicketMessages($ticketid)
+    {
+        if (empty(intval($ticketid))) {
+            die('Ticket ID is empty or invalid');
+        }
+
+        $ticketid = intval($ticketid);
+        $hide_attachments = !empty($params['hide_attachments']);
+        $helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
+
+        $messages = $this->db->GetAll(
+            '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, contenttype, createtime, '
+            . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
+                userid, vusers.name AS username, customerid, rtmessages.type, rtmessages.deleted, rtmessages.deltime, rtmessages.deluserid
+                FROM rtmessages
+                LEFT JOIN customers ON (customers.id = customerid)
+                LEFT JOIN vusers ON (vusers.id = userid)
+                WHERE 1=1'
+            . ($helpdesk_advanced_operations ? '' : ' AND rtmessages.deleted = 0')
+            . (' AND ticketid = ?)')
+            . (' ORDER BY createtime ASC, rtmessages.id'),
+            array($ticketid)
+        );
+
+        if (!$hide_attachments) {
+            foreach ($messages as &$message) {
                 $message['attachments'] = array();
-                $attachments = $this->db->GetAll(
-                    'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ?',
-                    array($message['id'])
-                );
+                $attachments = $this->GetTicketMessageAttachments($message['id']);
                 if ($attachments) {
                     if ($message['contenttype'] == 'text/html') {
                         $url_prefix = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
@@ -1348,7 +1374,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         } elseif ($message['contenttype'] == 'text/html') {
                             $message['body'] = str_ireplace(
                                 '"CID:' . $attachment['cid'] . '"',
-                                '"' . $url_prefix . '?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $id . '&mid=' . $message['id'] . '"',
+                                '"' . $url_prefix . '?m=rtmessageview&api=1&cid=' . $attachment['cid'] . '&tid=' . $ticketid . '&mid=' . $message['id'] . '"',
                                 $message['body']
                             );
                         }
@@ -1357,14 +1383,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        $ticket['status'] = $RT_STATES[$ticket['state']];
-        $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
-
-        if (!empty($ticket['nodeid']) && empty($ticket['node_location'])) {
-            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $ticket['node_location'] = $customer_manager->getAddressForCustomerStuff($ticket['customerid']);
-        }
-        return $ticket;
+        return $messages;
     }
 
     public function changeTicketWatching($ticketid, $watching)
@@ -2473,6 +2492,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             'SELECT id, subject AS name, parentid FROM rttickets WHERE id <> ? AND parentid = (SELECT parentid FROM rttickets WHERE id = ?) ORDER BY id',
             'id',
             array($ticketid, $ticketid)
+        );
+    }
+
+    public function GetTicketCategories($ticketid)
+    {
+        return $this->db->GetAllByKey(
+            'SELECT categoryid AS id, c.name, c.style
+                FROM rtticketcategories tc
+                JOIN rtcategories c ON c.id = tc.categoryid
+                WHERE ticketid = ?',
+            'id',
+            array($ticketid)
+        );
+    }
+
+    private function GetTicketMessageAttachments($messageid)
+    {
+        return $this->db->GetAll(
+            'SELECT filename, contenttype, cid FROM rtattachments WHERE messageid = ?',
+            array($messageid)
         );
     }
 
