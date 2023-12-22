@@ -344,7 +344,7 @@ if ($locations) {
 
         $loc    = parse_address($v['address'], false);
         $street = (!empty($loc['street'])) ? $loc['street'] : $v['address'];
-        $house  = (!empty($loc['house']))  ? $loc['house']  : $v['house'];
+        $house  = (!empty($loc['house']))  ? $loc['house']  : null;
         $flat   = (!empty($loc['flat']))   ? $loc['flat']   : null;
 
         if (isset($loc['zip'])) {
