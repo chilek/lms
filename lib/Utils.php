@@ -1071,4 +1071,37 @@ class Utils
 
         return $result;
     }
+
+    public static function formatStreetName(array $args)
+    {
+        static $teryt_street_address_format = null;
+
+        if (!isset($teryt_street_address_format)) {
+            $teryt_street_address_format = ConfigHelper::getConfig('phpui.teryt_street_address_format', '%type% %street2% %street1%');
+        }
+
+        if (preg_match('/^rynek$/i', $args['type']) &&
+            (preg_match('/^rynek/i', $args['name']) || preg_match('/^rynek/i', $args['name2']))) {
+            $args['type'] = '';
+        } else if (!strlen($args['name2']) && preg_match('/^[0-9]+(\.|-go)?$/', $args['name'])) {
+            $args['type'] = '';
+        }
+        return preg_replace(
+            '/[ ]{2,}/',
+            ' ',
+            str_replace(
+                array(
+                    '%type%',
+                    '%street1%',
+                    '%street2%',
+                ),
+                array(
+                    $args['type'],
+                    $args['name'],
+                    $args['name2'],
+                ),
+                $teryt_street_address_format
+            )
+        );
+    }
 }

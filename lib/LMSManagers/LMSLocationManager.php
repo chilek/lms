@@ -525,13 +525,20 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     private function fixTerritAddress(array $address)
     {
+        static $teryt_street_address_format = null;
+
+        if (!isset($teryt_street_address_format)) {
+            $teryt_street_address_format = ConfigHelper::getConfig('phpui.teryt_street_address_format', '%type% %street2% %street1%');
+        }
+
         // exceptional query for cities with subcities
         $v = $this->db->GetRow(
             'SELECT lb.name AS location_city_name,
                 lb.name AS location_borough_name,
                 ld.name AS location_district_name,
                 lst.name AS location_street_name,
-                (' . $this->db->Concat('t.name', "' '", '(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . ') AS location_street_name
+                lst.name2 AS location_street_name2,
+                t.name AS location_street_type_name,
             FROM location_cities lc
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
@@ -549,6 +556,13 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         );
 
         if (!empty($v)) {
+            $v['location_street_name'] = Utils::formatStreetName(array(
+                'type' => $v['location_street_type_name'],
+                'name' => $v['location_street_name'],
+                'name2' => $v['location_street_name2'],
+            ));
+            unset($v['location_street_name2'], $v['location_street_type_name']);
+
             $v = array_merge($address, $v);
             return $v;
         }
@@ -558,7 +572,9 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 lb.name AS location_borough_name,
                 ld.name AS location_district_name,
                 ls.name AS location_state_name,
-                (' . $this->db->Concat('t.name', "' '", '(CASE WHEN lst.name2 IS NULL THEN lst.name ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END)') . ') AS location_street_name
+                lst.name AS location_street_name,
+                lst.name2 AS location_street_name2,
+                t.name AS location_street_type_name,
             FROM location_cities lc
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
@@ -575,6 +591,13 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         if (empty($v)) {
             $v = $address;
         } else {
+            $v['location_street_name'] = Utils::formatStreetName(array(
+                'type' => $v['location_street_type_name'],
+                'name' => $v['location_street_name'],
+                'name2' => $v['location_street_name2'],
+            ));
+            unset($v['location_street_name2'], $v['location_street_type_name']);
+
             $v = array_merge($address, $v);
         }
 

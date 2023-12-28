@@ -1966,8 +1966,6 @@ if (isset($options['reverse'])) {
     }
     unset($cities_with_sections);
 
-    $teryt_street_address_format = ConfigHelper::getConfig('phpui.teryt_street_address_format', '%type% %street2% %street1%');
-
     foreach ($addresses as $a) {
         $city_id = $a['city_id'];
         $street_id = empty($a['street_id']) ? '-' : $a['street_id'];
@@ -1987,29 +1985,11 @@ if (isset($options['reverse'])) {
                 $names = getNames($city_id, $street_id == '-' ? null : $street_id);
             }
             if (isset($names['streettype'])) {
-                if (preg_match('/^rynek$/i', $names['streettype']) &&
-                   (preg_match('/^rynek/i', $names['street']) || preg_match('/^rynek/i', $names['street2']))) {
-                    $names['streettype'] = '';
-                } else if (!strlen($names['street2']) && preg_match('/^[0-9]+(\.|-go)?$/', $names['street1'])) {
-                    $names['streettype'] = '';
-                }
-                $names['street'] = preg_replace(
-                    '/[ ]{2,}/',
-                    ' ',
-                    str_replace(
-                        array(
-                            '%type%',
-                            '%street1%',
-                            '%street2%',
-                        ),
-                        array(
-                            $names['streettype'],
-                            $names['street'],
-                            $names['street2'],
-                        ),
-                        $teryt_street_address_format
-                    )
-                );
+                $names['street'] = Utils::formatStreetName(array(
+                    'type' => $names['streettype'],
+                    'name' => $names['street'],
+                    'name2' => $names['street2'],
+                ));
                 unset($names['streettype'], $names['street2']);
             }
             $location_cache[$key] = $names;
