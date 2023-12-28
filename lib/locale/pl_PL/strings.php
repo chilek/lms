@@ -136,6 +136,7 @@ $_LANG['Invoice value: $a (to repay)'] = 'Wartość faktury: $a (do zwrotu)';
 $_LANG['Correction value: $a (to pay)'] = 'Wartość korekty: $a (do zapłaty)';
 $_LANG['Correction value: $a (to repay)'] = 'Wartość korekty: $a (do zwrotu)';
 
+$_LANG['Ticket ID is empty or invalid'] = 'Brak ID zgłoszenia lub jest ono nieprawidłowe';
 $_LANG['Select tariff'] = 'Wybierz taryfę';
 $_LANG['Document flags'] = 'Flagi dokumentu';
 $_LANG['The document is issued according to the $a price'] = 'Dokument wystawiony według ceny $a';
