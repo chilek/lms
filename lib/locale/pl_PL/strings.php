@@ -3271,6 +3271,7 @@ $_LANG['Enable RADIUS support. Default: 1'] = 'Włącza wsparcie dla RADIUS-a. D
 $_LANG['NAS'] = 'NAS';
 $_LANG['Select NAS on or off'] = 'Włącz/wyłącz NAS';
 $_LANG['Access rights'] = 'Prawa dostępu';
+$_LANG['Access date range'] = 'Dostęp w zakresie dat';
 $_LANG['Creating'] = 'Tworzenie';
 $_LANG['Deleting'] = 'Usuwanie';
 $_LANG['Document Types List'] = 'Lista typów dokumentów';
