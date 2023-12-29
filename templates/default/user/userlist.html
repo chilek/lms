@@ -44,11 +44,8 @@
 		<TH scope="col">
 			<SPAN class="nobr">{trans("Phone")}</SPAN>
 		</TH>
-		<TH scope="col">
-			<SPAN class="nobr">{trans("Active from:")}</SPAN>
-		</TH>
-		<TH scope="col">
-			<SPAN class="nobr">{trans("Active to:")}</SPAN>
+		<TH scope="col" colspan="2">
+			<SPAN class="nobr">{trans("Access date range")}</SPAN>
 		</TH>
 		<TH scope="col">
 			<SPAN class="nobr">{trans("Last login:")}</SPAN>
@@ -61,7 +58,7 @@
     <TBODY>
 	{foreach $userslist as $user}
 	{if $user.id}
-	<TR class="highlight{if !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}" data-name="{$user.login}">
+	<TR class="highlight{if !$user.accessinfo || !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}" data-name="{$user.login}">
 		<TD class="nobr bold">
 			{$user.login}
 		</TD>
@@ -71,10 +68,8 @@
 		<TD class="nobr">
 			{if $user.phone}{$user.phone}{else} - {/if}
 		</TD>
-		<td class="nobr">
-			{$user.accessfrom}
-		</td>
-		<td class="nobr">
+		<td class="nobr{if !$user.accessinfo} red{/if}">
+			{$user.accessfrom}<br>
 			{$user.accessto}
 		</td>
 		<TD class="nobr">
