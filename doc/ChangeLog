@@ -597,6 +597,7 @@ version 28-git (????-??-??):
     with 'connected' as default value, allows to specify for customer with which status node access flag
     change is allowed [chilan]
   - improvement: added support for %author in ticket notify templates [interduo]
+  - improvement: introduced smarty {user_selection} component [interduo]
 
 version 27.0 (2021-08-20):
 
