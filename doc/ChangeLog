@@ -597,6 +597,7 @@ version 28-git (????-??-??):
     with 'connected' as default value, allows to specify for customer with which status node access flag
     change is allowed [chilan]
   - improvement: added support for %author in ticket notify templates [interduo]
+  - enhancement: added support of number plan to customer type relations [chilan]
 
 version 27.0 (2021-08-20):
 
