@@ -485,6 +485,7 @@ switch ($action) {
                 'cdate' => $invoice['cdate'],
                 'customerid' => $customer['id'],
                 'division' => $customer['divisionid'],
+                'customertype' => $customer['type'],
                 'next' => false,
             );
             $numberplans = $LMS->GetNumberPlans($args);
@@ -561,6 +562,7 @@ switch ($action) {
             'cdate' => $invoice['cdate'],
             'customerid' => $customer['id'],
             'division' => $customer['divisionid'],
+            'customertype' => $customer['type'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);
@@ -768,7 +770,8 @@ $args = array(
 );
 if (isset($customer)) {
     $args['customerid'] = $customer['id'];
-    $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customer['id']));
+    $args['division'] = $customer['divisionid'];
+    $args['customertype'] = $customer['type'];
 } else {
     $args['customerid'] = null;
 }

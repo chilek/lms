@@ -174,6 +174,7 @@ switch ($action) {
             'cdate' => $note['cdate'],
             'customerid' => $note['customerid'],
             'division' => $note['divisionid'],
+            'customertype' => $note['customertype'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);

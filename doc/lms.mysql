@@ -567,7 +567,7 @@ CREATE TABLE customernotes (
 
 # --------------------------------------------------------
 #
-# Structure of table numberplans
+# Structure of table customerkarmalastchanges
 #
 CREATE TABLE customerkarmalastchanges (
     id int(11) NOT NULL auto_increment,
@@ -631,6 +631,7 @@ CREATE TABLE numberplans (
 	isdefault tinyint(1) NOT NULL DEFAULT '0',
 	datefrom int(11) NOT NULL DEFAULT 0,
 	dateto int(11) NOT NULL DEFAULT 0,
+	customertype smallint DEFAULT NULL,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -4350,4 +4351,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023102500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2023122900');

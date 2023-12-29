@@ -87,15 +87,23 @@ $(function () {
             .done( function (data) {
                 let html = '';
                 let options = '';
+                let alreadySelected = false;
                 selectElem.html(html);
 
                 if(!$.isEmptyObject(data)) {
                     if (Object.keys(data).length > 1) {
-                        options += '<option value="" disabled selected hidden>' + $t('— select —') + '</option>';
+                        options += '<option value="" disabled hidden>' + $t('— select —') + '</option>';
                     }
                     $.each(data, function(key, item) {
-                        options += '<option value="' + item.id + '"' + (parseInt(item.isdefault) !== 0 ? ' selected' : '');
-                        options += '>';
+                        let isDefault = parseInt(item.isdefault) !== 0;
+                        if (isDefault) {
+                            if (alreadySelected) {
+                                isDefault = false;
+                            } else {
+                                alreadySelected = true;
+                            }
+                        }
+                        options += '<option value="' + item.id + '"' + (isDefault ? ' selected' : '') + '>';
                         options += item.nextNumber + ' (' + item.period_name + ')';
                         options += '</option>';
                     });

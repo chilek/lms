@@ -110,6 +110,9 @@
 						{capture assign="tip"}{foreach $plan.users as $user}{if !$user@first}<br>{/if}{$user.rname|escape|escape} ({$user.login|escape|escape}){/foreach}{/capture}
 						{icon name="user" tip=$tip}
 					{/if}
+					{if isset($plan.customertype)}
+						{icon name="legal-personality" tip=$_CTYPES[$plan.customertype]}
+					{/if}
 				</strong>
 				{if !empty($plan.datefrom) || !empty($plan.dateto)}
 					<br>
