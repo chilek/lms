@@ -2968,6 +2968,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.post_address_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.type AS customertype,
 				c.street, c.building, c.apartment,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,

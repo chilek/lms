@@ -538,7 +538,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 ld.name AS location_district_name,
                 lst.name AS location_street_name,
                 lst.name2 AS location_street_name2,
-                t.name AS location_street_type_name,
+                t.name AS location_street_type_name
             FROM location_cities lc
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid
@@ -574,7 +574,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 ls.name AS location_state_name,
                 lst.name AS location_street_name,
                 lst.name2 AS location_street_name2,
-                t.name AS location_street_type_name,
+                t.name AS location_street_type_name
             FROM location_cities lc
             JOIN location_boroughs lb ON lb.id = lc.boroughid
             JOIN location_districts ld ON ld.id = lb.districtid

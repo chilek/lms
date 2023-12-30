@@ -408,7 +408,10 @@ $plans = array();
 $periods = array(
     0 => YEARLY,
 );
-$query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault
+$query = "SELECT n.id, n.period, doctype,
+        COALESCE(a.divisionid, 0) AS divid,
+        COALESCE(n.customertype, -1) AS customertype,
+        n.isdefault
     FROM numberplans n
     LEFT JOIN numberplanassignments a ON a.planid = n.id
     WHERE doctype IN ?
@@ -427,7 +430,7 @@ $results = $DB->GetAll(
 if (!empty($results)) {
     foreach ($results as $row) {
         if ($row['isdefault']) {
-            $plans[$row['divid']][$row['doctype']] = $row['id'];
+            $plans[$row['divid']][$row['doctype']][$row['customertype']] = $row['id'];
         }
         $periods[$row['id']] = ($row['period'] ? $row['period'] : YEARLY);
     }
@@ -1755,7 +1758,13 @@ foreach ($assigns as $assign) {
             } elseif ($assign['tariffnumberplanid']) {
                 $plan = $assign['tariffnumberplanid'];
             } else {
-                $plan = isset($plans[$divid][$assign['invoice']]) ? $plans[$divid][$assign['invoice']] : 0;
+                if (isset($plans[$divid][$assign['invoice']][$assign['customertype']])) {
+                    $plan = $plans[$divid][$assign['invoice']][$assign['customertype']];
+                } elseif (isset($plans[$divid][$assign['invoice']]['-1'])) {
+                    $plan = $plans[$divid][$assign['invoice']]['-1'];
+                } else {
+                    $plan = 0;
+                }
             }
 
             if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice']

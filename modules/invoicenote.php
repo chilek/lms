@@ -146,6 +146,7 @@ $args = array(
     'cdate' => $invoice['cdate'],
     'customerid' => $invoice['customerid'],
     'division' => $invoice['divisionid'],
+    'customertype' => $invoice['customertype'],
 );
 $numberplanlist = $LMS->GetNumberPlans($args);
 if (!$numberplanlist) {
@@ -289,6 +290,7 @@ switch ($action) {
             'cdate' => $cnote['cdate'],
             'customerid' => $invoice['customerid'],
             'division' => $divisionid,
+            'customertype' => $invoice['customertype'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);
@@ -527,6 +529,7 @@ switch ($action) {
             'customerid' => $invoice['customerid'],
             'division' => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
                 : (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),
+            'customertype' => $invoice['customertype'],
             'next' => false,
         );
         $numberplans = $LMS->GetNumberPlans($args);

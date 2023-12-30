@@ -413,7 +413,8 @@ $args = array(
 );
 if (isset($customer)) {
     $args['customerid'] = $customer['id'];
-    $args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customer['id']));
+    $args['division'] = $customer['divisionid'];
+    $args['customertype'] = $customer['type'];
 } else {
     $args['customerid'] = null;
 }

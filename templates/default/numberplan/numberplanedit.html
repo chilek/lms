@@ -113,6 +113,28 @@
 			</td>
 		</tr>
 		<tr>
+			<td class="valign-top">
+				{icon name="legal-personality"}
+			</td>
+			<td class="nobr valign-top">
+				<strong>{trans("Customer type")}</strong>
+			</td>
+			<td>
+				<select name="numberplanedit[customertype]" id="customertype"
+						form="numberplanedit"
+						{tip text="Select customer type" trigger="customertype"}>
+					<option value="">{trans("<!customer-type>— any —")}</option>
+					<option value="{$smarty.const.CTYPES_PRIVATE}"
+						{if isset($numberplanedit.customertype) && $numberplanedit.customertype == $smarty.const.CTYPES_PRIVATE} selected{/if}
+						>{$_CTYPES[$smarty.const.CTYPES_PRIVATE]}</option>
+					<option value="{$smarty.const.CTYPES_COMPANY}"
+						{if isset($numberplanedit.customertype) && $numberplanedit.customertype == $smarty.const.CTYPES_COMPANY} selected{/if}
+						>{$_CTYPES[$smarty.const.CTYPES_COMPANY]}</option>
+					<label>
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<td>
 				{icon name="calendar"}
 			</td>
