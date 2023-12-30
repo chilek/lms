@@ -1343,8 +1343,8 @@ class LMSSmartyPlugins
         $LMS = LMS::getInstance();
 
         $argv = array(
-            'userAccess' => empty($params['hideDisabled']) ? true : false,
-            'hideDeleted' => empty($params['hideDeleted']) ? true : false,
+            'userAccess' => empty($params['hide_disabled']) ? true : false,
+            'hideDeleted' => empty($params['hide_deleted']) ? true : false,
             'short' => true
         );
         $userlist = $LMS->getUserList($argv);
@@ -1359,6 +1359,7 @@ class LMSSmartyPlugins
         $form = isset($params['form']) ? $params['form'] : null;
         $multiple = empty($params['multiple']) ? false : true;
         $onChange = empty($params['onchange']) ? 'document.filter.submit();' : $params['onchange'];
+        $required = empty($params['required']) ? false : true;
 
         $options = '';
 
@@ -1375,6 +1376,7 @@ class LMSSmartyPlugins
             . ($elemid ? ' id="' . $elemid . '"' : '')
             . ($form ? ' form="' . $form . '"' : '')
             . ($multiple ? ' multiple' : '')
+            . ($required ? ' required' : '')
             . ' class="lms-ui-advanced-select' . ($class ? ' ' . $class : '') . '"'
             . ' onChange="' . $onChange . '"'
             . ' ' . self::tipFunction(array('text' => $tip, 'trigger' => $trigger), $template) . '>'

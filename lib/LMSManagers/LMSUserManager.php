@@ -206,7 +206,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
         $userid = Auth::GetCurrentUser();
         $deletedFilter = !empty($hideDeleted) || !isset($hideDeleted) ? ' AND deleted = 0' : '';
-        $disabledFilter = empty($userAccess) ? '' : ' AND accessinfo = 1';
+        $disabledFilter = empty($userAccess) ? '' : ' AND (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) = 1';
 
         $userlist = $this->db->GetAllByKey(
             'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, deleted,
