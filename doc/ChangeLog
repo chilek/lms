@@ -598,6 +598,7 @@ version 28-git (????-??-??):
     change is allowed [chilan]
   - improvement: added support for %author in ticket notify templates [interduo]
   - enhancement: added support of number plan to customer type relations [chilan]
+  - improvement: introduced smarty {user_selection} component [interduo]
 
 version 27.0 (2021-08-20):
 

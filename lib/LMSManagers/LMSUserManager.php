@@ -204,13 +204,18 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         extract($params);
 
+        $userid = Auth::GetCurrentUser();
+        $deletedFilter = !empty($hideDeleted) || !isset($hideDeleted) ? ' AND deleted = 0' : '';
+        $disabledFilter = empty($userAccess) ? '' : ' AND accessinfo = 1';
+
         $userlist = $this->db->GetAllByKey(
-            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, deleted,
             (CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS accessinfo,
             accessfrom, accessto, rname, twofactorauth'
             . ' FROM ' . (isset($superuser) ? 'vallusers' : 'vusers')
-            . ' WHERE deleted = 0'
-            . (isset($userAccess) ? ' AND access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0)' : '' )
+            . ' WHERE 1=1'
+            . $deletedFilter
+            . $disabledFilter
             . (isset($divisions) && !empty($divisions) ? ' AND id IN 
                 (SELECT userid
                 FROM userdivisions
@@ -222,7 +227,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
         if ($userlist) {
             foreach ($userlist as &$row) {
-                if ($row['id'] == Auth::GetCurrentUser()) {
+                if ($row['id'] == $userid) {
                     $row['lastlogindate'] = $this->auth->last;
                     $row['lastloginip'] = $this->auth->lastip;
                 }

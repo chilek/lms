@@ -239,7 +239,6 @@ $SMARTY->assign('days', $days);
 $SMARTY->assign('daylist', $daylist);
 $SMARTY->assign('date', $date);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('userlist', $LMS->GetUserNames(array('withDeleted' => 1)));
 $SMARTY->assign('netnodes', $LMS->GetNetNodes());
 $SMARTY->assign('netdevices', $LMS->GetNetDevList('name,asc', array('short' => true)));
 $SMARTY->assign('overdue_events_only', $overdue_events_only);
