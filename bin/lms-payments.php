@@ -1753,9 +1753,9 @@ foreach ($assigns as $assign) {
                 $inv_paytime = $deadline;
             }
 
-            if ($assign['numberplanid']) {
+            if ($assign['numberplanid'] && isset($periods[$assign['numberplanid']])) {
                 $plan = $assign['numberplanid'];
-            } elseif ($assign['tariffnumberplanid']) {
+            } elseif ($assign['tariffnumberplanid'] && isset($periods[$assign['tariffnumberplanid']])) {
                 $plan = $assign['tariffnumberplanid'];
             } else {
                 if (isset($plans[$divid][$assign['invoice']][$assign['customertype']])) {
