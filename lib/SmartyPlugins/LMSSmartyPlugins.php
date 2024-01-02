@@ -1353,7 +1353,7 @@ class LMSSmartyPlugins
         $elemname = isset($params['elemname']) ? $params['elemname'] : false;
         $class = isset($params['class']) ? $params['class'] : false;
         $selected = empty($params['selected']) ? false : (is_array($params['selected']) ? $params['selected'] : array($params['selected']));
-        $placeholder = empty($params['placeholder']) ? trans('Select users') : $params['placeholder'];
+        $placeholder = empty($params['placeholder']) ? trans('Select users') : trans($params['placeholder']);
         $tip = empty($params['tip']) ? trans('Select user(s) (optional)') : $params['tip'];
         $trigger = isset($params['trigger']) ? $params['trigger'] : $elemname;
         $form = isset($params['form']) ? $params['form'] : null;
