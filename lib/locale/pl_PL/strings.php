@@ -4574,6 +4574,8 @@ $_LANG['<!voip>Begin time'] = 'Czas rozpoczęcia';
 $_LANG['Debit Note No.'] = 'Numer noty obciążeniowej';
 
 $_LANG['Privacy:'] = 'Prywatność:';
+$_LANG['Privacy'] = 'Prywatność';
+$_LANG['Select privacy flag'] = 'Wybierz flagę prywatności';
 
 $_LANG['Debit Note No. $a for $b'] = 'Nota obciążeniowa nr $a dla $b';
 $_LANG['Credit Note No. $a for $b'] = 'Faktura korygująca nr $a dla $b';
@@ -5469,6 +5471,7 @@ $_LANG['no connections'] = 'bez połączeń';
 
 $_LANG['Phone number validation failed!'] = 'Weryfikacja poprawności numeru telefonu nie powiodła się!';
 
+$_LANG['Choose events types'] = 'Wybierz typy zdarzeń';
 $_LANG['Choose ticket type'] = 'Wybierz rodzaj zgłoszenia';
 $_LANG['Choose service type'] = 'Wybierz typ usługi';
 
