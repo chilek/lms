@@ -47,6 +47,7 @@ $default_queue = ConfigHelper::getConfig('rt.default_queue');
 $copy_ticket_summary_to_assigned_event = ConfigHelper::checkConfig('phpui.copy_ticket_summary_to_assigned_event');
 $big_networks = ConfigHelper::checkConfig('phpui.big_networks');
 $max_userlist_size = ConfigHelper::getConfig('timetable.event_max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
+$now = time();
 
 if (isset($_GET['ticketid']) && !empty($_GET['ticketid']) && intval($_GET['ticketid'])) {
     $eventticketid = intval($_GET['ticketid']);
@@ -121,11 +122,11 @@ if (isset($_POST['event'])) {
         }
 
         if (!empty($date)) {
-            if (!$allow_past_events && $date + $begintime < time()) {
+            if (!$allow_past_events && $date + $begintime < $now) {
                 $error['begin'] = trans('Events which begin in the past are not allowed!');
             }
 
-            if ($distant_event_restriction != 'none' && $distant_event_day_trigger && $date >= time() + $distant_event_day_trigger * 86400) {
+            if ($distant_event_restriction != 'none' && $distant_event_day_trigger && $date >= $now + $distant_event_day_trigger * 86400) {
                 switch ($distant_event_restriction) {
                     case 'error':
                         $error['begin'] = trans('Event too distant in time!');
@@ -231,7 +232,7 @@ if (isset($_POST['event'])) {
 
     if (!empty($ticket['deadline'])) {
         $dtime = datetime_to_timestamp($ticket['deadline']);
-        if ($dtime < time()) {
+        if ($dtime < $now) {
             $error['deadline'] = trans('Ticket deadline could not be set in past');
         }
     }

@@ -34,6 +34,11 @@ if (!$LMS->CheckTicketAccess($id)) {
     access_denied();
 }
 
+$show_stats = ConfigHelper::checkConfig('rt.show_stats', ConfigHelper::checkConfig('phpui.helpdesk_stats'));
+$helpdesk_advanced_operations = ConfigHelper::checkPrivilege('helpdesk_advanced_operations');
+$notification_customerinfo = ConfigHelper::checkConfig('rt.notification_customerinfo', ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'));
+$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
+
 $ticket = $LMS->GetTicketContents($id);
 if (empty($ticket)) {
     access_denied('Ticket is unavailable!');
@@ -80,29 +85,19 @@ if ($ticket['deluserid']) {
     $ticket['delusername'] = $LMS->GetUserName($ticket['deluserid']);
 }
 
-if ($ticket['customerid']
-    && ConfigHelper::checkConfig(
-        'rt.show_stats',
-        ConfigHelper::checkConfig('phpui.helpdesk_stats')
-    )
-) {
+if ($ticket['customerid'] && $show_stats) {
     $yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
     //$del = 0;
     $stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets
 				WHERE 1=1'
-                . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rttickets.deleted = 0' : '')
+                . ($helpdesk_advanced_operations ? '' : ' AND rttickets.deleted = 0')
                 . ' AND customerid = ? AND createtime >= ?'
                 . ' GROUP BY cause', 'cause', array($ticket['customerid'], $yearago));
 
     $SMARTY->assign('stats', $stats);
 }
 
-if ($ticket['customerid']
-    && ConfigHelper::checkConfig(
-        'rt.notification_customerinfo',
-        ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
-    )
-) {
+if ($ticket['customerid'] && $notification_customerinfo) {
     $customer = $LMS->GetCustomer($ticket['customerid'], true);
     $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
 
@@ -169,8 +164,6 @@ if (isset($_GET['highlight'])) {
     }
         unset($message);
 }
-
-$aet = ConfigHelper::getConfig('rt.allow_modify_resolved_tickets_newer_than', 86400);
 
 $LMS->InitXajax();
 
