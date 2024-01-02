@@ -19,9 +19,7 @@
 				<div class="lms-ui-filter-definition">
 					<FORM method="POST" action="?m=eventlist" name="filter" id="filter">
 						<INPUT type="submit" class="hiddenbtn"> <INPUT type="HIDDEN" name="m" value="eventlist">
-						<span class="bold">{trans("Filter:")} </span>
-						{trans("Type:")}
-						<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("— all —")}">
+						<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("Choose events types")}">
 							{foreach Localisation::arraySort($_EVENTTYPES, 'label') as $id => $eventtype}
 								<OPTION value="{$id}"{if is_array($filter.type) && in_array($id, $filter.type)} selected{/if}>{$eventtype.label}</OPTION>
 							{/foreach}
@@ -35,27 +33,27 @@
 
 						{user_selection
 							elemname="a[]"
+							placeholder="Users"
 							multiple=true
 							selected=$filter.userid
 							hide_disabled=$hide_disabled_users
 							hide_deleted=$hide_deleted_users
 						}
 
-						{trans("Privacy:")}
-						<SELECT name="privacy" onchange="document.filter.submit();">
+						<SELECT name="privacy" onchange="document.filter.submit();" {tip text="Select privacy flag"}>
 							<OPTION value="0"{if $filter.privacy == "0"} selected{/if}>{trans("— all —")}</OPTION>
 							<OPTION value="1"{if $filter.privacy == "1"} selected{/if}>{trans("public")}</OPTION>
 							<OPTION value="2"{if $filter.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
+							<OPTION value="" selected disabled>{trans("Privacy")}</OPTION>
 						</SELECT>
-						{trans("Customer:")}
 						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
 						{button label="Today" onclick="location.href='?m=eventlist&day={$smarty.now|date_format:"d"}&month={$smarty.now|date_format:"m"}&year={$smarty.now|date_format:"Y"}';"}
 						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{sprintf("%04d/%02d/%02d", $filter.year, $filter.month, $filter.day)}{/if}" onchange="document.filter.submit();">
-						{trans("Status:")}
-						<SELECT name="closed" onchange="document.filter.submit();">
+						<SELECT name="closed" onchange="document.filter.submit();" {tip text="Select status"}>
 							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("— all —")}</OPTION>
 							<OPTION value="0"{if $filter.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
 							<OPTION value="1"{if $filter.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
+							<OPTION value="" selected disabled>{trans("Status")}</OPTION>
 						</SELECT>
 					</FORM>
 				</div>
