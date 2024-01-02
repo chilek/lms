@@ -29,14 +29,11 @@ if (!$_GET['id']) {
 }
 
 $event = $LMS->GetEvent($_GET['id']);
-$userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
-	WHERE deleted = 0 AND access = 1 ORDER BY lastname ASC', 'id');
 
 $layout['pagetitle'] = trans('Event Info');
 
 $SESSION->add_history_entry();
 
 $SMARTY->assign('event', $event);
-$SMARTY->assign('userlist', $userlist);
 
 $SMARTY->display('event/eventinfo.html');

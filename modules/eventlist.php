@@ -34,6 +34,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
     die('[]');
 }
 
+$default_forward_day_limit = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
+$hide_disabled_users = ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users'));
+$show_delayed_events = ConfigHelper::checkConfig('timetable.show_delayed_events', ConfigHelper::checkConfig('phpui.timetable_overdue_events'));
+$big_networks = ConfigHelper::checkConfig('phpui.big_networks');
+$params['userid'] = Auth::GetCurrentUser();
+
 if (isset($filter['edate']) && !empty($filter['edate'])) {
     list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
 }
@@ -147,7 +153,7 @@ if (!isset($filter['year'])) {
 
 $layout['pagetitle'] = trans('Timetable');
 
-$filter['forward'] = ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward'));
+$filter['forward'] = $default_forward_day_limit;
 $eventlist = $LMS->GetEventList($filter);
 
 if ($eventlist) {
@@ -161,7 +167,7 @@ if ($eventlist) {
                         $item['userlist'][$uidx]['noaccess'] = 1;
                 }
             }
-            if (ConfigHelper::checkConfig('timetable.hide_disabled_users', ConfigHelper::checkConfig('phpui.timetable_hide_disabled_users')) && $usersWithoutAccess == $usersCount) {
+            if ($hide_disabled_users && $usersWithoutAccess == $usersCount) {
                 $item['hide'] = 1;
             }
         }
@@ -174,9 +180,7 @@ $force_overdue_events = isset($_GET['force_overdue_events']) ? 1 : 0;
 
 $overdue_events = array();
 
-$params['userid'] = Auth::GetCurrentUser();
-if (ConfigHelper::checkConfig('timetable.show_delayed_events', ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
-    && empty($overdue_events_only)) {
+if ($show_delayed_events && empty($overdue_events_only)) {
     $params['forward'] = -1;
     $params['closed'] = 0;
     $params['type'] = 0;
@@ -210,7 +214,7 @@ if (ConfigHelper::checkConfig('timetable.show_delayed_events', ConfigHelper::che
 }
 
 // create calendars
-for ($i = 0; $i < ConfigHelper::getConfig('timetable.default_forward_day_limit', ConfigHelper::getConfig('phpui.timetable_days_forward')); $i++) {
+for ($i = 0; $i < $default_forward_day_limit; $i++) {
     $dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
     $daylist[$i] = $dt;
 }
@@ -229,21 +233,20 @@ $SESSION->add_history_entry();
 $SESSION->remove('backid');
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
-$SMARTY->assign('today', $today);
 
-$SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'));
-$SMARTY->assign('eventlist', $eventlist);
-$SMARTY->assign('overdue_events', $overdue_events);
-
-$SMARTY->assign('days', $days);
-$SMARTY->assign('daylist', $daylist);
-$SMARTY->assign('date', $date);
-$SMARTY->assign('error', $error);
-$SMARTY->assign('netnodes', $LMS->GetNetNodes());
-$SMARTY->assign('netdevices', $LMS->GetNetDevList('name,asc', array('short' => true)));
-$SMARTY->assign('overdue_events_only', $overdue_events_only);
-if (!ConfigHelper::checkConfig('phpui.big_networks')) {
-    $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-}
-$SMARTY->assign('getHolidays', getHolidays(isset($year) ? $year : null));
+$SMARTY->assign(array(
+        'today' => $today,
+        'period' => $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'),
+        'eventlist' => $eventlist,
+        'overdue_events' => $overdue_events,
+        'days' => $days,
+        'daylist' => $daylist,
+        'date' => $date,
+        'error' => $error,
+        'netnodes' => $LMS->GetNetNodes(),
+        'netdevices' => $LMS->GetNetDevList('name,asc', array('short' => true)),
+        'overdue_events_only' => $overdue_events_only,
+        'getHolidays', getHolidays(isset($year) ? $year : null),
+        'customerlist' => $big_networks ? null : $LMS->GetCustomerNames(),
+    ));
 $SMARTY->display('event/eventlist.html');
