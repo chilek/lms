@@ -18,8 +18,7 @@
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
-        <COL style="width: 91%">
-        <COL style="width: 2%">
+        <COL style="width: 93%">
         <COL style="width: 2%">
         <COL style="width: 2%">
         <COL style="width: 1%">
@@ -27,10 +26,10 @@
     </COLGROUP>
     <THEAD>
 	<tr>
-		<td colspan="6">
+		<td colspan="5">
 			{division_selection name="division" selected=$selectedDivision onchange="document.choosefilter.submit();" label="Division:" superuser="{if !empty($superuser)}1{/if}"}
 		</td>
-		<td>
+		<td class="text-right">
 			{button icon="add" label="New User" href="?m=useradd"}
 		</td>
 	</tr>
@@ -44,7 +43,7 @@
 		<TH scope="col">
 			<SPAN class="nobr">{trans("Phone")}</SPAN>
 		</TH>
-		<TH scope="col" colspan="2">
+		<TH scope="col">
 			<SPAN class="nobr">{trans("Access period")}</SPAN>
 		</TH>
 		<TH scope="col">
