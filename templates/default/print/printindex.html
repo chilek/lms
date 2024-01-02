@@ -515,12 +515,12 @@
 
 	$(function() {
 		$('#printbalancelist-csv').click(function() {
-			$('[form="printbalancelist"][name="disposition"]').val('csv');
+			$('form[name="printbalancelist"] [name="disposition"]').val('csv');
 			$('#printbalancelist').submit();
 		});
 
 		$('#printbalancelist-print').click(function() {
-			$('[form="printbalancelist"][name="disposition"]').val('print');
+			$('form[name="printbalancelist"] [name="disposition"]').val('print');
 			$('#printbalancelist').submit();
 		});
 	});
